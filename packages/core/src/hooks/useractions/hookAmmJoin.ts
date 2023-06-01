@@ -57,7 +57,7 @@ export const useAmmJoin = ({
   const { t } = useTranslation(["common", "error"]);
   const [isLoading, setIsLoading] = React.useState(false);
   const { tokenMap, idIndex, marketMap } = useTokenMap();
-  const { allowTrade, chainId } = useSystem();
+  const { allowTrade } = useSystem();
   const { ammMap } = useAmmMap();
   const ammInfo = ammMap["AMM-" + market];
 
@@ -228,8 +228,14 @@ export const useAmmJoin = ({
 
           myLog("join ammpool req:", req);
           let response;
-          if (store.getState().system.chainId === 5 && market == "CLRC-USDT") {
-            console.log("test case not please do not submit to backend", req);
+          if (
+            store.getState().system.chainId === 5 &&
+            /CLRC-USDT/gi.test(ammInfo.name)
+          ) {
+            console.log(
+              "Test case for new amm join, please do not submit request",
+              req
+            );
           } else {
             response = await LoopringAPI.ammpoolAPI.joinAmmPool(
               req,

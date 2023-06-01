@@ -178,7 +178,7 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
         ...ammpools[key as string],
         tokens: {
           pooled: ["0", "0"],
-          lp: "0",
+          lp: "0" as any,
         },
       };
     }

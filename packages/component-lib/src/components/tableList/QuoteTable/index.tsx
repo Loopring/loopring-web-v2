@@ -351,18 +351,19 @@ export const QuoteTable = withTranslation("tables")(
             // resizable: true,
             sortable: true,
             formatter: ({ row }: any) => {
-              const value = row["volume"];
-              const precision = row["precision"] || 6;
-              const price = Number.isFinite(value)
-                ? getValuePrecisionThousand(
-                    value,
-                    precision,
-                    undefined,
-                    undefined,
-                    true,
-                    { isTrade: true }
-                  )
-                : EmptyValueTag;
+              const value = row.volume;
+              const precision = row.volume || 6;
+              const price =
+                value && value !== "0"
+                  ? getValuePrecisionThousand(
+                      value,
+                      precision,
+                      undefined,
+                      undefined,
+                      true,
+                      { isTrade: true }
+                    )
+                  : EmptyValueTag;
               return (
                 <div className="rdg-cell-value textAlignRight">
                   <span>{price}</span>
