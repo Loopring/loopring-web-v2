@@ -69,6 +69,7 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
     };
     const lpToken = tokenMap["LP-" + ammInfo.market];
     const { totalLPToken, totalA, totalB } = ammInfo;
+
     const {
       close: _close,
       stob,
@@ -80,7 +81,16 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
         ammPoolSnapshot: {
           poolName: ammInfo.name,
           poolAddress: ammInfo.address,
-          pooled: ammInfo.tokens.pooled, //[ammInfo., TokenVolumeV3];
+          pooled: [
+            {
+              tokenId: tokenMap[ammInfo.coinA].tokenId,
+              volume: ammInfo.tokens?.pooled[0] ?? 0,
+            },
+            {
+              tokenId: tokenMap[ammInfo.coinB].tokenId,
+              volume: ammInfo.tokens?.pooled[1] ?? 0,
+            },
+          ], //[ammInfo., TokenVolumeV3];
           lp: {
             tokenId: lpToken.tokenId,
             volume: ammInfo.tokens.lp,

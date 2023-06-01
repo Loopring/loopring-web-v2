@@ -383,7 +383,7 @@ export const useAmmJoin = ({
             rawB !== "0"
               ? (sdk
                   .toBig(request.joinTokens.pooled[0].volume)
-                  .div("1e" + tokenCoinB.decimals)
+                  .div("1e" + tokenCoinA.decimals)
                   .toFixed(marketMap[ammInfo.market].precisionForPrice) as any)
               : undefined;
         }
