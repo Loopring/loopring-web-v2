@@ -109,7 +109,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         });
         updateData({ searchValue });
       },
-      [getFilteredData]
+      []
     );
 
     const sortMethod = React.useCallback(
@@ -126,8 +126,8 @@ export const PoolsTable = withTranslation(["tables", "common"])(
           case "liquidity":
             _rawData = rawData.sort((a, b) => {
               return sdk
-                .toBig(b.amountU.replaceAll(sdk.SEP, "") ?? 0)
-                .minus(a.amountU.replaceAll(sdk.SEP, "") ?? 0)
+                .toBig(b.amountU?.replaceAll(sdk.SEP, "") ?? 0)
+                .minus(a.amountU?.replaceAll(sdk.SEP, "") ?? 0)
                 .toNumber();
             });
             break;

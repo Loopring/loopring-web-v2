@@ -58,6 +58,7 @@ export function useAmmMapUI<
         return prev;
       }, [] as R[]);
     }
+
     setFilteredData(rawData);
 
     nodeTimer.current = setTimeout(() => {
