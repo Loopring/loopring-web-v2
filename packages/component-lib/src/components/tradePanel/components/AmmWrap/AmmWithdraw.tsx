@@ -416,9 +416,8 @@ export const AmmWithdrawWrap = <
               flexDirection={"row"}
               alignItems={"center"}
               className={"logo-icon"}
-              height={"var(--withdraw-coin-size"}
+              height={"var(--withdraw-coin-size)"}
               justifyContent={"flex-start"}
-              width={"var(--withdraw-coin-size)"}
               marginRight={1 / 2}
             >
               {tokenBIcon ? (
