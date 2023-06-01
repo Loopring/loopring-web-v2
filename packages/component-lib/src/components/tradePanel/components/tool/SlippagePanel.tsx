@@ -127,7 +127,7 @@ export const SlippagePanel = ({
       if (Number(_value) <= max) {
         setValue(_value);
         setCustomSlippage(_value);
-        if (_value > alertMax) {
+        if (_value >= alertMax) {
           setShowAlert(true);
         } else {
           setShowAlert(false);
