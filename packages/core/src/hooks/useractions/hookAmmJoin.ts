@@ -40,12 +40,14 @@ export const useAmmJoin = ({
   updateJoinFee,
   setToastOpen,
   market,
+  refreshRef,
 }: // ammCalcDefault,
 // ammDataDefault,
 {
   market: string;
   updateJoinFee: () => Promise<void>;
   setToastOpen: any;
+  refreshRef: React.Ref<any>;
   // ammCalcDefault: Partial<AmmInData<any>>;
   // ammDataDefault: Partial<AmmJoinData<IBData<string>, string>>;
 }) => {
@@ -328,6 +330,8 @@ export const useAmmJoin = ({
         } finally {
           setIsLoading(false);
           walletLayer2Service.sendUserUpdate();
+          // @ts-ignore
+          refreshRef?.current?.firstElementChild.click();
         }
 
         if (props.__cache__) {

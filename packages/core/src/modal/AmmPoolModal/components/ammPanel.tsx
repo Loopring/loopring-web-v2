@@ -92,6 +92,7 @@ export const AmmPanelView = ({
     updateJoinFee,
     setToastOpen,
     market,
+    refreshRef,
   });
   const {
     ammCalcData: ammCalcDataWithdraw,
@@ -106,6 +107,7 @@ export const AmmPanelView = ({
     updateExitFee,
     setToastOpen,
     market,
+    refreshRef,
     // ammCalcDefault: ammExit.ammCalcData,
     // ammDataDefault: ammExit.ammData,
     setConfirmExitSmallOrder,

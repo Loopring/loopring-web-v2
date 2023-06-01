@@ -70,7 +70,7 @@ const ammMapSlice: Slice<AmmMapStates<any, any>> = createSlice({
       } else {
         const { ammMap, ammArrayEnable, __timer__ } = action.payload;
         if (ammMap) {
-          myLog(ammMap, "ammMap");
+          myLog(ammMap["AMM-LRC-USDT"].tokens, "ammMap");
           state.ammMap = ammMap;
         }
         if (ammArrayEnable) {

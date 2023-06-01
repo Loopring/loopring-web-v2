@@ -37,6 +37,7 @@ export const useAmmExit = ({
   setToastOpen,
   setConfirmExitSmallOrder,
   updateExitFee,
+  refreshRef,
 }: // ammCalcDefault,
 // ammDataDefault,
 {
@@ -48,6 +49,7 @@ export const useAmmExit = ({
     open: boolean;
     type: "Disabled" | "Mini";
   }) => void;
+  refreshRef: React.Ref<any>;
   // ammCalcDefault: Partial<AmmExitData<any>>;
   // ammDataDefault: Partial<AmmJoinData<IBData<string>, string>>;
 }) => {
@@ -447,7 +449,11 @@ export const useAmmExit = ({
         },
       },
     });
+
     walletLayer2Service.sendUserUpdate();
+    // @ts-ignore
+    refreshRef?.current?.firstElementChild.click();
+
     // await updateExitFee();
   }, [ammData, account, ammInfo]);
 
