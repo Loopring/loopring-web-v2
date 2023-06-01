@@ -10,7 +10,6 @@ import {
   myLog,
   ReverseIcon,
   SlippageTolerance,
-  SoursURL,
   TokenType,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -18,9 +17,8 @@ import { AmmWithdrawWrapProps } from "./Interface";
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import { Avatar, Box, Grid, Link, Typography } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import {
-  AvatarCoin,
   BtnPercentage,
   ButtonStyle,
   CoinIcons,
@@ -376,7 +374,7 @@ export const AmmWithdrawWrap = <
               <CoinIcons
                 size={18}
                 type={TokenType.single}
-                tokenIcon={[coinJson[ammData?.coinA?.belong]]}
+                tokenIcon={[tokenAIcon]}
               />
               <Typography variant={"body1"} component={"span"} paddingLeft={1}>
                 {ammData?.coinA?.belong}
@@ -404,7 +402,7 @@ export const AmmWithdrawWrap = <
               <CoinIcons
                 size={18}
                 type={TokenType.single}
-                tokenIcon={[coinJson[ammData?.coinB?.belong]]}
+                tokenIcon={[tokenBIcon]}
               />
               <Typography variant={"body1"} component={"span"} paddingLeft={1}>
                 {ammData?.coinB?.belong}

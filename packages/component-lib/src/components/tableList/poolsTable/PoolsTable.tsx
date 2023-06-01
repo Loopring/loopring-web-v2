@@ -133,12 +133,18 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             break;
           case "volume24":
             _rawData = rawData.sort((a, b) => {
-              return b?.tradeFloat?.volume ?? 0 - (a?.tradeFloat?.volume ?? 0);
+              return sdk
+                .toBig(b?.tradeFloat?.priceU ?? 0)
+                .minus(a?.tradeFloat?.priceU ?? 0)
+                .toNumber();
             });
             break;
           case "APR":
             _rawData = rawData.sort((a, b) => {
-              return b.APR ?? 0 - (a.APR ?? 0);
+              return sdk
+                .toBig(b.APR ?? 0)
+                .minus(a.APR ?? 0)
+                .toNumber();
             });
             break;
           default:
@@ -595,7 +601,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             marginBottom={3}
             display={"inline-flex"}
             flexDirection={"row"}
-            justifyContent={"space-between"}
+            justifyContent={"flex-end"}
             paddingX={3}
             paddingTop={3}
             alignItems={"center"}

@@ -68,13 +68,9 @@ export const AmmPanelView = ({
     type: "Disabled" | "Mini";
   }>({ open: false, type: "Disabled" });
   const { ammMap } = useAmmMap();
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
 
   const [index, setIndex] = React.useState(
-    searchParams?.get("type") === "remove"
-      ? AmmPanelType.Exit
-      : AmmPanelType.Join
+    ammType == 1 ? AmmPanelType.Exit : AmmPanelType.Join
   );
   const handleTabChange = React.useCallback(
     (newValue: any) => {

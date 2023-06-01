@@ -127,7 +127,7 @@ export const setAmmState = ({
         tokenMap[coinA].precision,
         tokenMap[coinA].precision,
         false,
-        { isAbbreviate: true }
+        { isFait: true }
       ),
       totalBStr: getValuePrecisionThousand(
         result.totalB,
