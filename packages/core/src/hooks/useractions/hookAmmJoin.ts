@@ -352,6 +352,7 @@ export const useAmmJoin = ({
       const {
         ammJoin: { ammCalcData },
       } = store.getState()._router_pageAmmPool;
+      const { ammMap } = store.getState().amm.ammMap;
       const ammInfo = ammMap["AMM-" + market];
       const { slippage } = data;
 
