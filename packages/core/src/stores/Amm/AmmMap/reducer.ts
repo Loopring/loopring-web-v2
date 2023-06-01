@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { AmmMapStates, GetAmmMapParams } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { myLog, SagaStatus } from "@loopring-web/common-resources";
 import {
   AmmPoolInfoV3,
   ChainId,
@@ -70,6 +70,7 @@ const ammMapSlice: Slice<AmmMapStates<any, any>> = createSlice({
       } else {
         const { ammMap, ammArrayEnable, __timer__ } = action.payload;
         if (ammMap) {
+          myLog(ammMap, "ammMap");
           state.ammMap = ammMap;
         }
         if (ammArrayEnable) {

@@ -18,6 +18,7 @@ import { LoopringAPI } from "../../../api_wrapper";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AmmDetailStore, GetAmmMapParams } from "./interface";
 import { volumeToCount, volumeToCountAsBigNumber } from "../../../hooks";
+import _ from "lodash";
 
 const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
   // const system = store.getState().system;
@@ -262,36 +263,38 @@ export function* getPostsSaga({
 export function* updateRealTimeSaga({ payload }: any) {
   try {
     const { ammPoolStats } = payload;
-    let { ammMap, ammArrayEnable } = store.getState().amm.ammMap;
+    let { ammMap: _ammMap, ammArrayEnable: _ammArrayEnable } =
+      store.getState().amm.ammMap;
+    let ammMap;
+    let ammArrayEnable = _.cloneDeep(_ammArrayEnable);
     if (ammPoolStats) {
-      // @ts-ignore
-      Reflect.ownKeys(ammPoolStats).map((key: string) => {
+      ammMap = Reflect.ownKeys(ammPoolStats).reduce((_ammMap, key) => {
         const market = (key as string).replace("AMM-", "");
+        const ammMarket = "AMM-" + market;
+        myLog("ammPoolStats[ammMarket]", ammPoolStats[ammMarket]);
+        const result = setAmmState({
+          ammPoolState: {
+            ..._ammMap[ammMarket]?.__ammPoolState__,
+            ...ammPoolStats[ammMarket],
+          },
+          market,
+        });
         // @ts-ignore
-        ammMap[key] = {
-          ...ammMap[key],
-          ...setAmmState({
-            ammPoolState: {
-              ...ammMap[key]?.__ammPoolState__,
-              ...ammPoolStats[key as string],
-            },
-            market,
-          }),
+        _ammMap[ammMarket] = {
+          ..._ammMap[ammMarket],
+          ...result,
           market,
         };
-        // @ts-ignore
-        if (!ammMap[key].showDisable) {
+        if (!_ammMap[ammMarket].showDisable) {
           const index = ammArrayEnable.findIndex(
-            // @ts-ignore
-            (item) => ammMap[key].market === item.market
+            (item) => _ammMap[ammMarket].market === item.market
           );
           if (index != -1) {
-            // @ts-ignore
-            ammArrayEnable[index] = ammMap[key];
+            ammArrayEnable[index] = _ammMap[ammMarket];
           }
         }
-        return ammMap;
-      });
+        return _ammMap;
+      }, _.cloneDeep(_ammMap));
     }
     yield put(getAmmMapStatus({ ammMap, ammArrayEnable }));
   } catch (err) {
