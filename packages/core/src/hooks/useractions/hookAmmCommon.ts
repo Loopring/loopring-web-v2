@@ -169,7 +169,7 @@ export const useAmmCommon = ({ market }: { market: string }) => {
   const { updatePageAmmExit, updatePageAmmJoin } = usePageAmmPool();
   const ammInfo = ammMap["AMM-" + market];
   const { ammExit, ammJoin } = usePairInit({
-    ammInfo: ammMap["AMM-" + market],
+    ammInfo,
   });
   const updateAmmPoolSnapshot = React.useCallback(async () => {
     const { ammMap } = store.getState().amm.ammMap;

@@ -231,7 +231,7 @@ export const ModalCoinPairPanel = () => {
         position={"relative"}
         style={{ alignItems: "stretch" }}
       >
-        {market && market !== "" ? (
+        {market && ammMap["AMM-" + market] ? (
           <Content
             market={market.replace("AMM-", "")}
             panelIndex={panelIndex}

@@ -45,11 +45,16 @@ export const setAmmState = ({
   market: string;
 }) => {
   const { idIndex, tokenMap } = store.getState().tokenMap;
+  const { chainId } = store.getState().system;
   const { tokenPrices } = store.getState().tokenPrices;
   const { tickerMap } = store.getState().tickerMap;
   // @ts-ignore
   const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
   if (idIndex && coinA && coinB && tokenPrices) {
+    if (chainId === 5 && market == "CLRC-USDT") {
+      ammPoolState.liquidity = ["0", "0"];
+      ammPoolState.lpLiquidity = "0";
+    }
     const totalA = volumeToCountAsBigNumber(coinA, ammPoolState.liquidity[0]); //parseInt(ammPoolState.liquidity[ 0 ]),
     const totalB = volumeToCountAsBigNumber(coinB, ammPoolState.liquidity[1]); //parseInt(ammPoolState.liquidity[ 1 ]),
     const totalAU = totalA?.times(tokenPrices[coinA]) ?? sdk.toBig(0);
@@ -154,6 +159,7 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
   }
   let ammMap: AmmMap<R> = {}; //
   let ammArrayEnable: AmmDetailStore<R>[] = [];
+  const { chainId } = store.getState().system;
   const { ammMap: _ammMap } = store.getState().amm.ammMap;
   myLog("loop get ammPoolStats");
 
@@ -166,7 +172,16 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({
     // throw e;
   }
   Reflect.ownKeys(ammpools).forEach(async (key) => {
-    const item: AmmPoolInfoV3 = ammpools[key as string];
+    let item: AmmPoolInfoV3 = ammpools[key as string];
+    if (chainId === 5 && key == "AMM-CLRC-USDT") {
+      item = {
+        ...ammpools[key as string],
+        tokens: {
+          pooled: ["0", "0"],
+          lp: "0",
+        },
+      };
+    }
     if (item.market === key && item.tokens.pooled && idIndex) {
       const coinA = idIndex[item.tokens.pooled[0] as any];
       const coinB = idIndex[item.tokens.pooled[1] as any];
