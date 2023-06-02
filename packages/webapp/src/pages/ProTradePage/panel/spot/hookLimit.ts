@@ -467,13 +467,9 @@ export const useLimit = <C extends { [key: string]: any }>({
           marketRatePrice =
             tradeData.type === "sell"
               ? sdk
-                  .toBig(tradeData.price.tradeValue)
-                  .minus(marketPrice)
-                  .div(marketPrice)
-              : sdk
-                  .toBig(marketPrice)
-                  .minus(tradeData.price.tradeValue)
-                  .div(marketPrice);
+                  .toBig(1)
+                  .minus(sdk.toBig(tradeData.price.tradeValue).div(marketPrice))
+              : sdk.toBig(tradeData.price.tradeValue).div(marketPrice).minus(1);
           isNotMatchMarketPrice = marketRatePrice.gt(0.05);
           marketPrice = getValuePrecisionThousand(
             marketPrice.toString(),
@@ -714,4 +710,4 @@ export const useLimit = <C extends { [key: string]: any }>({
     },
     // marketTicker,
   };
-};
+};;
