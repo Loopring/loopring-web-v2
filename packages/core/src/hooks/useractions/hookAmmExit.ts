@@ -6,6 +6,7 @@ import {
   IBData,
   myLog,
   SDK_ERROR_MAP_TO_UI,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
@@ -440,7 +441,6 @@ export const useAmmExit = ({
         });
       }
     }
-    setIsLoading(false);
     updatePageAmmExit({
       ammData: {
         ...ammData,
@@ -453,19 +453,10 @@ export const useAmmExit = ({
     walletLayer2Service.sendUserUpdate();
     // @ts-ignore
     refreshRef?.current?.firstElementChild.click();
-
+    await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+    setIsLoading(false);
     // await updateExitFee();
   }, [ammData, account, ammInfo]);
-
-  // const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-  //   [fnType.ACTIVATED]: [onSubmitBtnClick],
-  // });
-  // const onAmmClick = React.useCallback(
-  //   (props: AmmExitData<IBData<any>>) => {
-  //     accountStaticCallBack(onAmmClickMap, [props]);
-  //   },
-  //   [onAmmClickMap, updatePageAmmExitBtn]
-  // );
 
   const walletLayer2Callback = React.useCallback(async () => {
     updateExitFee();
