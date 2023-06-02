@@ -137,6 +137,7 @@ export const useOverview = <
         ...myAmmLPMap[key],
         ammDetail: ammMap["AMM-" + key],
       }));
+
       if (hideSmallBalances) {
         myLog("hideSmallBalances", hideSmallBalances, resultData);
         resultData = resultData.filter((o) =>
@@ -158,7 +159,7 @@ export const useOverview = <
     }
 
     // if (filter.hideSmallBalance) {
-  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData]);
+  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray]);
   const handleFilterChange = React.useCallback(
     (filter) => {
       setFilter(filter);
@@ -190,102 +191,43 @@ export const useOverview = <
     return _walletMap;
   }, []);
 
-  // const makeMyPoolRow = React.useCallback(
-  //   async (_walletMap): Promise<MyPoolRow<R>[]> => {
-  //     let totalCurrentInvest = {
-  //       ammPoolDollar: 0,
-  //       stakeETHDollar: 0,
-  //     };
-  //     if (_walletMap && ammMap && userRewardsMap && tokenPrices && myAmmLPMap) {
-  //       // @ts-ignore
-  //       const _myPoolRow: MyPoolRow<R>[] = Reflect.ownKeys(_walletMap).reduce(
-  //         (prev, walletKey) => {
-  //           if (/LP-/i.test(walletKey as string)) {
-  //             const ammKey = walletKey.toString().replace("LP-", "AMM-");
-  //             const marketKey = walletKey.toString().replace("LP-", "");
-  //             let rowData: MyPoolRow<R> | undefined;
-  //             rowData = {
-  //               ammDetail: ammMap[ammKey],
-  //               ...myAmmLPMap[marketKey],
-  //             };
-  //             // rowData = makeMyPoolRowWithPoolState({
-  //             //   ammDetail: ammMap[ammKey],
-  //             //   walletMap: _walletMap,
-  //             //   market: marketKey,
-  //             //   ammUserRewardMap: userRewardsMap,
-  //             // }) as any;
-  //             if (rowData !== undefined) {
-  //               prev.push(rowData);
-  //             }
-  //           }
-  //
-  //           return prev;
-  //         },
-  //         [] as MyPoolRow<R>[]
-  //       );
-  //
-  //       const formattedPoolRow = _myPoolRow.map((o: MyPoolRow<R>) => {
-  //         const market = `LP-${o.ammDetail?.coinAInfo.simpleName}-${o.ammDetail?.coinBInfo.simpleName}`;
-  //         const totalAmount = o.totalLpAmount ?? 0;
-  //         const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount;
-  //         const coinA = o.ammDetail?.coinAInfo?.simpleName;
-  //         const coinB = o.ammDetail?.coinBInfo?.simpleName;
-  //         const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
-  //         const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
-  //         // totalCurrentInvest.investDollar += Number(o.balanceU ?? 0);
-  //         totalCurrentInvest.ammPoolDollar += Number(o.balanceU ?? 0);
-  //         return {
-  //           ...o,
-  //           totalAmmValueDollar,
-  //           precisionA,
-  //           precisionB,
-  //         };
-  //       });
-  //       defiCoinArray?.forEach((defiCoinKey) => {
-  //         totalCurrentInvest.stakeETHDollar += Number(
-  //           (_walletMap[defiCoinKey]?.count.replaceAll(sdk.SEP, "") ?? 0) *
-  //             tokenPrices[defiCoinKey] ?? 0
-  //         );
-  //       }, []);
-  //       // if (dualOnInvestAsset) {
-  //       //   Object.keys(dualOnInvestAsset).forEach((key) => {
-  //       //     const item = dualOnInvestAsset[key];
-  //       //     const { amount, tokenId } = item;
-  //       //     const tokenInfo = tokenMap[idIndex[tokenId]];
-  //       //     totalCurrentInvest.dualStakeDollar +=
-  //       //       volumeToCountAsBigNumber(tokenInfo.symbol, amount)
-  //       //         ?.times(tokenPrices[tokenInfo.symbol] ?? 0)
-  //       //         .toNumber() ?? 0;
-  //       //   });
-  //       // }
-  //
-  //       setSummaryMyInvest((state) => {
-  //         return {
-  //           ...state,
-  //           ...totalCurrentInvest,
-  //           investDollar: sdk
-  //             .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
-  //             .plus(state.dualStakeDollar ?? 0)
-  //             .plus(totalCurrentInvest.stakeETHDollar ?? 0)
-  //             .plus(state.stakeLRCDollar ?? 0)
-  //             .toString(),
-  //         };
-  //       });
-  //       return formattedPoolRow as any;
-  //     }
-  //     return [];
-  //   },
-  //   [ammMap, userRewardsMap, tokenPrices, tokenMap, dualOnInvestAsset]
-  // );
-
   const walletLayer2Callback = React.useCallback(async () => {
     if (ammMap && tokenPrices && userRewardsMap && myAmmLPMap) {
       setShowLoading(true);
-
-      // const _walletMap = await walletLayer2DoIt();
-      // const _myPoolRow = await makeMyPoolRow(_walletMap);
-      // debugger;
       updateData();
+      let resultData: MyPoolRow<R>[] = Object.keys(myAmmLPMap).map((key) => ({
+        ...myAmmLPMap[key],
+        ammDetail: ammMap["AMM-" + key],
+      }));
+      let totalCurrentInvest = {
+        ammPoolDollar: 0,
+        stakeETHDollar: 0,
+      };
+      const { walletMap: _walletMap } = makeWalletLayer2(false);
+
+      defiCoinArray?.forEach((defiCoinKey) => {
+        totalCurrentInvest.stakeETHDollar += Number(
+          // @ts-ignore
+          (_walletMap[defiCoinKey]?.count
+            ?.toString()
+            ?.replaceAll(sdk.SEP, "") ?? 0) * tokenPrices[defiCoinKey] ?? 0
+        );
+      }, []);
+      resultData.forEach((item) => {
+        totalCurrentInvest.ammPoolDollar += Number(item.balanceU ?? 0);
+      });
+      setSummaryMyInvest((state) => {
+        return {
+          ...state,
+          ...totalCurrentInvest,
+          investDollar: sdk
+            .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
+            .plus(state.dualStakeDollar ?? 0)
+            .plus(totalCurrentInvest.stakeETHDollar ?? 0)
+            .plus(state.stakeLRCDollar ?? 0)
+            .toString(),
+        };
+      });
       setShowLoading(false);
     }
   }, [ammMap, tokenPrices, userRewardsMap, walletLayer2DoIt]);
@@ -294,9 +236,10 @@ export const useOverview = <
   React.useEffect(() => {
     if (ammMapStatus === SagaStatus.UNSET) {
       walletLayer2Service.sendUserUpdate();
-      if (store.getState().account.readyState === AccountStatus.ACTIVATED) {
-        getUserRewards();
-      }
+      getUserRewards();
+      // if (store.getState().account.readyState === AccountStatus.ACTIVATED) {
+      //   getUserRewards();
+      // }
     }
   }, [ammMapStatus]);
 

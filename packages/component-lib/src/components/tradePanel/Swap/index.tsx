@@ -381,7 +381,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                         </Typography>
                         <SlippagePanel
                           t={rest.t}
-                          max={5}
+                          max={100}
                           slippageList={
                             tradeCalcData.isBtrade
                               ? (SlippageBtradeTolerance.concat(

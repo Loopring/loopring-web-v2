@@ -63,12 +63,6 @@ const InputStyled = styled(CurrencyInput)`
   .MuiButtonBase-root & {
   }
 
-  // &:after {
-  //   display: block;
-    //   content: '${suffix}';
-  //   position: absolute;
-  //   right: 0;
-  // } 
   :focus {
     outline: 0;
     border-color: transparent;

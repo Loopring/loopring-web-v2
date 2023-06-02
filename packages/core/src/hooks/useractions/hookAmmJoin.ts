@@ -134,7 +134,10 @@ export const useAmmJoin = ({
           ) {
             return {
               tradeBtnStatus: TradeBtnStatus.DISABLED,
-              label: `labelAMMMax| ${maxCoinA} ${ammData.coinA.belong} - ${maxCoinB} ${ammData.coinB.belong} `,
+              label: `labelAMMMax| ${t("labelAMMMaxAND", {
+                coinA: `${maxCoinA} ${ammData.coinA.belong}}`,
+                coinB: `& ${maxCoinB} ${ammData.coinB.belong}`,
+              })}`,
             };
           } else if (!validAmt1 || !validAmt2) {
             const tokenA = tokenMap[ammInfo.coinA ?? ""];
@@ -214,7 +217,7 @@ export const useAmmJoin = ({
           !account?.eddsaKey?.sk
         ) {
           myLog(
-            " onAmmJoin ammpoolAPI:",
+            "onAmmJoin ammpoolAPI:",
             LoopringAPI.ammpoolAPI,
             "joinRequest:",
             request
