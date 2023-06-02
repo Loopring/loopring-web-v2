@@ -359,14 +359,7 @@ export const useAmmExit = ({
           burnedReq,
           account.apiKey
         );
-        // updatePageAmmExit({
-        //   ammData: {
-        //     ...ammData,
-        //     ...{
-        //       coinLP: { ...ammData.coinLP, tradeValue: 0 },
-        //     },
-        //   },
-        // });
+
         myLog("exit ammpool request:", {
           ...ammExit.request,
           domainSeparator: ammInfo.domainSeparator,
