@@ -331,6 +331,10 @@ footer .group .Typography-root {
   line-height: 2em;
 }
 
+.Button-root {
+  cursor: pointer;
+}
+
 .groupIcon li {
   padding-right: 8px;
 }
@@ -427,7 +431,6 @@ footer .group .Typography-root {
   footer .content {
     flex-direction: column;
   }
-
   #labelEthereumUnleashed {
     width: 100%;
     font-size: 36px;
