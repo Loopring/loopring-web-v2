@@ -710,4 +710,4 @@ export const useLimit = <C extends { [key: string]: any }>({
     },
     // marketTicker,
   };
-};;
+};
