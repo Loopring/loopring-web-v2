@@ -286,7 +286,7 @@ export const ModalCloseButtonPosition = ({
   closeIcon = <CloseIcon />,
   t,
   right,
-  top
+  top,
 }: {
   className?: string;
   closeIcon?: JSX.Element;

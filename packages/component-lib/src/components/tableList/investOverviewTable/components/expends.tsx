@@ -121,7 +121,7 @@ export function investRowReducer(
 //             );
 //           }
 //           const {
-//             balanceDollar,
+//             balanceU,
 //             balanceA,
 //             balanceB,
 //             ammDetail: { coinAInfo, coinBInfo },
@@ -136,11 +136,11 @@ export function investRowReducer(
 //               justifyContent={"center"}
 //             >
 //               <Typography component={"span"}>
-//                 {typeof balanceDollar === "undefined"
+//                 {typeof balanceU === "undefined"
 //                   ? EmptyValueTag
 //                   : PriceTag[CurrencyToTag[currency]] +
 //                     getValuePrecisionThousand(
-//                       (balanceDollar || 0) * (forexMap[currency] ?? 0),
+//                       (balanceU || 0) * (forexMap[currency] ?? 0),
 //                       undefined,
 //                       undefined,
 //                       2,

@@ -287,8 +287,7 @@ export const SwapTradeWrap = <
             />
           </IconButtonStyled>
         </Box>
-        {/*</Grid>*/}
-        {/*<Grid item>*/}
+
         <InputButton<any, I, CoinInfo<I>>
           ref={buyRef}
           disabled={getDisabled()}

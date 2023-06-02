@@ -1,4 +1,4 @@
-import { Box, Divider, MenuItem, Radio, Typography } from "@mui/material";
+import { Box, MenuItem, Radio, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React, { ForwardedRef } from "react";
@@ -93,7 +93,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
   selectedValue,
   handleSelected,
   disabled,
-  detectedWalletType
+  detectedWalletType,
 }: {
   selectedValue: WALLET_TYPE | EXCHANGE_TYPE | undefined;
   handleSelected: (value: WALLET_TYPE | EXCHANGE_TYPE) => void;
@@ -101,7 +101,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
   detectedWalletType: WALLET_TYPE;
 }) => {
   const { t } = useTranslation("common");
-  const { walletList, walletListFn } = useAddressTypeLists<T>();
+  const { walletListFn } = useAddressTypeLists<T>();
   const desMenuItem = React.useMemo(() => {
     return (
       <MenuItemStyle disabled={true} value={-1}>
@@ -144,35 +144,39 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
         onOpen,
         autoWidth: false,
         renderValue: (selectedValue) =>
-          walletListFn(detectedWalletType).find((item) => item.value === selectedValue)?.label ?? "",
+          walletListFn(detectedWalletType).find(
+            (item) => item.value === selectedValue
+          )?.label ?? "",
       }}
       label={t("labelL2toL2AddressType")}
       // inputProps={{}}
     >
       <Box maxWidth={"470px"}>
         {desMenuItem}
-        {walletListFn(detectedWalletType).map(({ value, label, description, disabled, maxWidth }) => (
-          <WalletItemOptions
-            key={value}
-            value={value}
-            myValue={value}
-            handleSelected={(value) => {
-              if (value === EXCHANGE_TYPE.Others) {
-                setShowOtherExchange({ isShow: true });
-              } else {
-                handleSelected(value as T);
-                onClose();
-              }
-              // handleSelected(value);
-              // onClose();
-            }}
-            maxWidth={maxWidth}
-            selectedValue={selectedValue}
-            label={label}
-            description={description}
-            disabled={disabled}
-          />
-        ))}
+        {walletListFn(detectedWalletType).map(
+          ({ value, label, description, disabled, maxWidth }) => (
+            <WalletItemOptions
+              key={value}
+              value={value}
+              myValue={value}
+              handleSelected={(value) => {
+                if (value === EXCHANGE_TYPE.Others) {
+                  setShowOtherExchange({ isShow: true });
+                } else {
+                  handleSelected(value as T);
+                  onClose();
+                }
+                // handleSelected(value);
+                // onClose();
+              }}
+              maxWidth={maxWidth}
+              selectedValue={selectedValue}
+              label={label}
+              description={description}
+              disabled={disabled}
+            />
+          )
+        )}
       </Box>
     </TextField>
   );
@@ -182,7 +186,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
   selectedValue,
   handleSelected,
   disabled,
-  detectedWalletType
+  detectedWalletType,
 }: {
   selectedValue: WALLET_TYPE | EXCHANGE_TYPE | undefined;
   handleSelected: (value: WALLET_TYPE | EXCHANGE_TYPE) => void;
@@ -190,7 +194,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
   detectedWalletType: WALLET_TYPE;
 }) => {
   const { t } = useTranslation("common");
-  const { walletListFn, nonExchangeList, exchangeList } = useAddressTypeLists<T>();
+  const { walletListFn } = useAddressTypeLists<T>();
   const {
     setShowOtherExchange,
     modals: { isShowOtherExchange },
@@ -233,28 +237,32 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
     >
       <Box maxWidth={"470px"}>
         <MenuItemStyle disabled={true} value={-1}>
-          <Typography component={"span"}>{t("labelExchangeTypeDes")}</Typography>
+          <Typography component={"span"}>
+            {t("labelExchangeTypeDes")}
+          </Typography>
         </MenuItemStyle>
-        {walletListFn(detectedWalletType).map(({ value, label, description, disabled, maxWidth }) => (
-          <WalletItemOptions
-            key={value}
-            value={value}
-            myValue={value}
-            handleSelected={async (value) => {
-              if (value === EXCHANGE_TYPE.Others) {
-                setShowOtherExchange({ isShow: true });
-              } else {
-                handleSelected(value);
-                onClose();
-              }
-            }}
-            selectedValue={selectedValue}
-            label={label}
-            maxWidth={maxWidth}
-            description={description}
-            disabled={disabled}
-          />
-        ))}
+        {walletListFn(detectedWalletType).map(
+          ({ value, label, description, disabled, maxWidth }) => (
+            <WalletItemOptions
+              key={value}
+              value={value}
+              myValue={value}
+              handleSelected={async (value) => {
+                if (value === EXCHANGE_TYPE.Others) {
+                  setShowOtherExchange({ isShow: true });
+                } else {
+                  handleSelected(value);
+                  onClose();
+                }
+              }}
+              selectedValue={selectedValue}
+              label={label}
+              maxWidth={maxWidth}
+              description={description}
+              disabled={disabled}
+            />
+          )
+        )}
       </Box>
     </TextField>
   );

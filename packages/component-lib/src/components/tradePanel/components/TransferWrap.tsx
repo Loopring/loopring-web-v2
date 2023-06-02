@@ -39,6 +39,7 @@ import {
   FeeTokenItemWrapper,
   TextField,
   Toast,
+  ToastType,
 } from "../../index";
 import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";
@@ -601,7 +602,7 @@ export const TransferWrap = <
         onClose={() => {
           setCopyToastOpen(false);
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
     </Grid>
   );

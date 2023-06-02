@@ -30,7 +30,6 @@ import {
   NFTWholeINFO,
   UIERROR_CODE,
   YEAR_DAY_MINUTE_FORMAT,
-  YEAR_DAY_SECOND_FORMAT,
 } from "@loopring-web/common-resources";
 import { store, useAccount, useSystem, useTokenMap } from "../../stores";
 import {
@@ -222,7 +221,6 @@ export function useRedPacketModal() {
         // (_info.status === sdk.LuckyTokenItemStatus.COMPLETED ||
         //   _info.status === sdk.LuckyTokenItemStatus.OVER_DUE)
       ) {
-        
         return {
           ImageEle,
           memo: _info.info.memo,
@@ -230,7 +228,6 @@ export function useRedPacketModal() {
             ? _info.sender?.ens
             : getShortAddr(_info.sender?.address),
           viewDetail: () => {
-            // debugger
             if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
               setShowRedPacket({
                 isShow,
@@ -238,22 +235,25 @@ export function useRedPacketModal() {
                 info: {
                   hash: _info.hash,
                   // type: _info.type,
-                }
+                },
               });
             } else {
-              LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
-                hash: _info.hash,
-              }, account.apiKey).then(response => {
-                setShowRedPacket({
-                  isShow,
-                  step: RedPacketViewStep.DetailPanel,
-                  info: {
-                    ...response.detail.luckyToken
-                  } ,
+              LoopringAPI.luckTokenAPI
+                ?.getLuckTokenDetail(
+                  {
+                    hash: _info.hash,
+                  },
+                  account.apiKey
+                )
+                .then((response) => {
+                  setShowRedPacket({
+                    isShow,
+                    step: RedPacketViewStep.DetailPanel,
+                    info: {
+                      ...response.detail.luckyToken,
+                    },
+                  });
                 });
-
-              })
-              
             }
           },
         };
@@ -283,23 +283,23 @@ export function useRedPacketModal() {
             sender: _info.sender?.ens
               ? _info.sender?.ens
               : getShortAddr(_info.sender?.address),
-            viewDetail: info['hideViewDetail']
+            viewDetail: info["hideViewDetail"]
               ? undefined
               : () => {
-                if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-                  setShowRedPacket({
-                    isShow,
-                    step: RedPacketViewStep.BlindBoxDetail,
-                    info: _info,
-                  });
-                } else {
-                  setShowRedPacket({
-                    isShow,
-                    step: RedPacketViewStep.DetailPanel,
-                    info: _info,
-                  });
-                }
-              },
+                  if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+                    setShowRedPacket({
+                      isShow,
+                      step: RedPacketViewStep.BlindBoxDetail,
+                      info: _info,
+                    });
+                  } else {
+                    setShowRedPacket({
+                      isShow,
+                      step: RedPacketViewStep.DetailPanel,
+                      info: _info,
+                    });
+                  }
+                },
 
             onOpen: callOpen,
           };
@@ -414,18 +414,20 @@ export function useRedPacketModal() {
               info: _info,
             });
           },
-          ImageEle
+          ImageEle,
         };
       }
 
       return undefined;
     }, [info, amountClaimStr, amountStr, account.accAddress, isShow, step]);
-    
-  const [opendBlindBoxCount, setOpendBlindBoxCount] = React.useState(0)
-    React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
+
+  const [opendBlindBoxCount, setOpendBlindBoxCount] = React.useState(0);
+  React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
   const redPacketDetailCall = React.useCallback(
     async ({
-      limit = detail?.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit,
+      limit = detail?.luckyToken.isNft
+        ? RedPacketNFTDetailLimit
+        : RedPacketDetailLimit,
       offset = 0,
     }: {
       limit?: number;
@@ -565,8 +567,7 @@ export function useRedPacketModal() {
             } as any,
             account.apiKey
           );
-          // debugger
-          setOpendBlindBoxCount((responseTemp.raw_data as any).claims.length)
+          setOpendBlindBoxCount((responseTemp.raw_data as any).claims.length);
           let response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
             {
               accountId: account.accountId,
@@ -705,8 +706,7 @@ export function useRedPacketModal() {
             const detail = (response as any).detail;
             const luckTokenInfo: sdk.LuckyTokenItemForReceive =
               detail.luckyToken;
-            // const
-            // debugger
+
             if (luckTokenInfo && response2.raw_data) {
               setDetail(detail);
               setBlindBoxDetail(response2.raw_data);
@@ -765,16 +765,16 @@ export function useRedPacketModal() {
       setQrcode(luckTokenInfo);
     }
   }, [isShow, step, info]);
-  const [page, setPage] = useState(1)
-  const [pageForBlindbox, setPageForBlindbox] = useState(1)
+  const [page, setPage] = useState(1);
+  const [pageForBlindbox, setPageForBlindbox] = useState(1);
   React.useEffect(() => {
     if (isShow) {
       const info = store.getState().modals.isShowRedPacket.info;
       if (step === RedPacketViewStep.DetailPanel) {
-        setPage(1)
+        setPage(1);
         redPacketDetailCall({});
       } else if (step === RedPacketViewStep.BlindBoxDetail) {
-        setPage(1)
+        setPage(1);
         redPacketBlindBoxDetailCall({});
       } else if (step === RedPacketViewStep.QRCodePanel && info?.hash) {
         if (info?.id) {
@@ -857,17 +857,10 @@ export function useRedPacketModal() {
           ) +
           " " +
           symbol;
-        relyAmount = getValuePrecisionThousand(
-          value,
-          0,
-          0,
-          undefined,
-          false,
-          {
-            floor: false,
-            // isTrade: true,
-          }
-        );
+        relyAmount = getValuePrecisionThousand(value, 0, 0, undefined, false, {
+          floor: false,
+          // isTrade: true,
+        });
         list = getUserNFTReceiveList(
           detail.claims as any,
           _info.nftTokenInfo as any,
@@ -914,18 +907,16 @@ export function useRedPacketModal() {
         | "claim"
         | "claiming"
         | "expired"
-        | "hidden" = 
-        detail.luckyToken.isNft
-          ? (
-            detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
-              ? "claim"
-              : (detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED || detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING)
-                ? "claimed"
-                : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
-                  ? "expired"
-                  : "hidden"
-          )
+        | "hidden" = detail.luckyToken.isNft
+        ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
+          ? "claim"
+          : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED ||
+            detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+          ? "claimed"
+          : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
+          ? "expired"
           : "hidden"
+        : "hidden";
 
       return {
         redPacketType,
@@ -945,8 +936,14 @@ export function useRedPacketModal() {
         relyNumber: relyNumber ? relyNumber?.toString() : undefined,
         isShouldSharedRely,
         handlePageChange: (page: number = 1) => {
-          setPage(page)
-          redPacketDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+          setPage(page);
+          redPacketDetailCall({
+            offset:
+              (detail.luckyToken.isNft
+                ? RedPacketNFTDetailLimit
+                : RedPacketDetailLimit) *
+              (page - 1),
+          });
         },
         onShared: () => {
           setShowRedPacket({
@@ -967,41 +964,43 @@ export function useRedPacketModal() {
         page,
         claimButton,
         onClickClaim: () => {
-          LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
-            {
-              accountId: account.accountId,
-              isNft: detail.luckyToken.isNft,
-              tokens: [detail.luckyToken.tokenId],
-            },
-            account.apiKey
-          ).then(response => {
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-            } else {
-              setShowClaimWithdraw({
-                isShow: true,
-                claimToken: {
-                  tokenId: detail.luckyToken.tokenId,
-                  // response!.tokenBalance[0].tokenId,
-                  total: detail.claimAmount.toString(),
-                  locked: response!.tokenBalance[0].locked,
-                  pending: response!.tokenBalance[0].pending,
-                  nftTokenInfo: detail.luckyToken.nftTokenInfo,
-                  isNft: detail.luckyToken.isNft,
-                  luckyTokenHash: detail.luckyToken.hash,
-                },
-                claimType: CLAIM_TYPE.redPacket,
-                successCallback: () => {
-                  redPacketDetailCall({ offset: 0 });
-                  info.refreshCallback && info.refreshCallback()
-                },
-              });
-            }
-          })
+          LoopringAPI.luckTokenAPI
+            ?.getLuckTokenBalances(
+              {
+                accountId: account.accountId,
+                isNft: detail.luckyToken.isNft,
+                tokens: [detail.luckyToken.tokenId],
+              },
+              account.apiKey
+            )
+            .then((response) => {
+              if (
+                (response as sdk.RESULT_INFO).code ||
+                (response as sdk.RESULT_INFO).message
+              ) {
+              } else {
+                setShowClaimWithdraw({
+                  isShow: true,
+                  claimToken: {
+                    tokenId: detail.luckyToken.tokenId,
+                    // response!.tokenBalance[0].tokenId,
+                    total: detail.claimAmount.toString(),
+                    locked: response!.tokenBalance[0].locked,
+                    pending: response!.tokenBalance[0].pending,
+                    nftTokenInfo: detail.luckyToken.nftTokenInfo,
+                    isNft: detail.luckyToken.isNft,
+                    luckyTokenHash: detail.luckyToken.hash,
+                  },
+                  claimType: CLAIM_TYPE.redPacket,
+                  successCallback: () => {
+                    redPacketDetailCall({ offset: 0 });
+                    info.refreshCallback && info.refreshCallback();
+                  },
+                });
+              }
+            });
         },
-        totalNumber: (detail as any).totalNum
+        totalNumber: (detail as any).totalNum,
       } as RedPacketDetailProps;
     } else {
       return undefined;
@@ -1033,10 +1032,11 @@ export function useRedPacketModal() {
       blindBoxType
     ) {
       // detail.luckyToken.status === sdk.LuckyTokenItemStatus.
-      
-      const shareButton: "hidden" | "share" = (blindBoxType === 'Not Started' || blindBoxType === 'Blind Box Started')
-        ? "share"
-        : "hidden";
+
+      const shareButton: "hidden" | "share" =
+        blindBoxType === "Not Started" || blindBoxType === "Blind Box Started"
+          ? "share"
+          : "hidden";
 
       const claimButton:
         | "claimed"
@@ -1044,18 +1044,17 @@ export function useRedPacketModal() {
         | "claiming"
         | "expired"
         | "hidden" =
-        Date.now() > detail.luckyToken.validUntil || detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
-          ? (
-            detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
-              ? "claim"
-              : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
-                ? "claimed"
-                : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
-                  ? "claiming"
-                  : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED 
-                    ? "expired"
-                    : "hidden"
-          )
+        Date.now() > detail.luckyToken.validUntil ||
+        detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
+          ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
+            ? "claim"
+            : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
+            ? "claimed"
+            : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+            ? "claiming"
+            : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
+            ? "expired"
+            : "hidden"
           : "hidden";
 
       return {
@@ -1090,7 +1089,7 @@ export function useRedPacketModal() {
           redPacketBlindBoxDetailCall({}).then(() => {
             setViewDetailFrom(blindBoxType);
             setBlindBoxType("BlindBox Claime Detail");
-          })
+          });
         },
         NFTClaimList: detail!.claims.map((x) => {
           return {
@@ -1101,8 +1100,8 @@ export function useRedPacketModal() {
             when: x.createdAt,
             amount: x.amount,
             showLuckiest:
-              (detail.luckyToken.tokenAmount.remainAmount == "0")
-              && detail.champion?.accountId === x.claimer.accountId,
+              detail.luckyToken.tokenAmount.remainAmount == "0" &&
+              detail.champion?.accountId === x.claimer.accountId,
           };
         }),
         // to change
@@ -1113,7 +1112,7 @@ export function useRedPacketModal() {
               : getShortAddr(x.claimer?.address),
             when: x.createdAt,
             amount: x.amount ? x.amount : 0,
-            isMe: x.claimer.accountId === account.accountId
+            isMe: x.claimer.accountId === account.accountId,
           };
         }),
         showOpenLottery:
@@ -1121,7 +1120,7 @@ export function useRedPacketModal() {
           blindBoxType === "Lottery Started and Not Win Lottery",
         wonNFTInfo: wonNFTInfo,
         onCloseOpenModal: () => {
-          setShowRedPacket({isShow: false})
+          setShowRedPacket({ isShow: false });
         },
         onClickClaimDetailBack: () => {
           setBlindBoxType(viewDetailFrom);
@@ -1155,7 +1154,7 @@ export function useRedPacketModal() {
               claimType: CLAIM_TYPE.redPacket,
               successCallback: () => {
                 redPacketBlindBoxDetailCall({ offset: 0 });
-                info.refreshCallback && info.refreshCallback()
+                info.refreshCallback && info.refreshCallback();
               },
             });
           }
@@ -1188,10 +1187,10 @@ export function useRedPacketModal() {
               },
               claimType: CLAIM_TYPE.redPacket,
               successCallback: () => {
-                info.refreshCallback && info.refreshCallback()
-                redPacketBlindBoxDetailCall({ offset: 0 }).then(x => {
-                  setShowRedPacket({isShow: false})
-                })
+                info.refreshCallback && info.refreshCallback();
+                redPacketBlindBoxDetailCall({ offset: 0 }).then(() => {
+                  setShowRedPacket({ isShow: false });
+                });
                 // setBlindBoxType("Lottery Started")
               },
             });
@@ -1203,9 +1202,9 @@ export function useRedPacketModal() {
             ? detail.luckyToken.nftTokenInfo?.metadata?.imageSize.original
             : undefined,
         description: "",
-          // Date.now() > detail!.luckyToken.validUntil
-          //   ? t("labelBlindBoxExplainationEnded")
-          //   : t("labelBlindBoxExplainationNotEnded"),
+        // Date.now() > detail!.luckyToken.validUntil
+        //   ? t("labelBlindBoxExplainationEnded")
+        //   : t("labelBlindBoxExplainationNotEnded"),
         claimButton,
         shareButton,
         didClaimABlindBox: blinBoxDetail.blindBoxStatus !== "",
@@ -1215,9 +1214,15 @@ export function useRedPacketModal() {
           amount: detail.claimAmount,
         },
         handlePageChange: (page: number = 1) => {
-          setPage(page)
+          setPage(page);
           // redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
-          redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
+          redPacketBlindBoxDetailCall({
+            offset:
+              (detail.luckyToken.isNft
+                ? RedPacketNFTDetailLimit
+                : RedPacketDetailLimit) *
+              (page - 1),
+          });
         },
         totalCount: detail.luckyToken.tokenAmount.giftCount,
         remainCount: detail.luckyToken.tokenAmount.remainCount,
@@ -1225,27 +1230,29 @@ export function useRedPacketModal() {
         totalClaimedNFTsCount: (detail as any).totalNum,
         totalBlindboxCount: opendBlindBoxCount,
         handlePageChange_BlindBox: (page: number = 1) => {
-          setPageForBlindbox(page)
+          setPageForBlindbox(page);
           // setPage(page)
-          LoopringAPI.luckTokenAPI?.getBlindBoxDetail(
-            {
-              accountId: account.accountId,
-              hash: _info.hash,
-              limit: RedPacketBlindBoxLimit,
-              offset: (page - 1) * RedPacketBlindBoxLimit,
-            } as any,
-            account.apiKey
-          ).then(response2=> {
-            setBlindBoxDetail(response2.raw_data)
-          })
+          LoopringAPI.luckTokenAPI
+            ?.getBlindBoxDetail(
+              {
+                accountId: account.accountId,
+                hash: _info.hash,
+                limit: RedPacketBlindBoxLimit,
+                offset: (page - 1) * RedPacketBlindBoxLimit,
+              } as any,
+              account.apiKey
+            )
+            .then((response2) => {
+              setBlindBoxDetail(response2.raw_data);
+            });
         },
         pageForBlindbox,
         onClickClaimPopViewDetail: () => {
           redPacketBlindBoxDetailCall({}).then(() => {
-            setBlindBoxType("Lottery Started")
-          })
+            setBlindBoxType("Lottery Started");
+          });
         },
-        expired: Date.now() > detail!.luckyToken.nftExpireTime
+        expired: Date.now() > detail!.luckyToken.nftExpireTime,
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;

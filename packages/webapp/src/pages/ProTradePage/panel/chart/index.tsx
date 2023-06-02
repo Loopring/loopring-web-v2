@@ -47,10 +47,12 @@ export const ChartView = withTranslation("common")(
     rowLength,
     t,
     i18n,
+    isShowDepth = true,
     ...rest
   }: {
     market?: MarketType;
     rowLength: number;
+    isShowDepth?: boolean;
   } & WithTranslation) => {
     const { candlestickViewData, timeInterval, handleTimeIntervalChange } =
       useKlineChart(market);
@@ -58,7 +60,9 @@ export const ChartView = withTranslation("common")(
     const [chosenIndicators, setChosenIndicators] = React.useState<string[]>(
       chartFearturesList.map((o) => o.id)
     );
-    const [chosenChart, setChosenChart] = React.useState(ChartType.Kline);
+    const [chosenChart, setChosenChart] = React.useState(
+      !isShowDepth ? ChartType.Kline : ChartType.Kline
+    );
 
     const [depthViewData, setDepthViewData] = React.useState<{
       asks: DepthViewData[];
@@ -266,40 +270,44 @@ export const ChartView = withTranslation("common")(
                 </Grid>
               )}
             </Box>
-            <Box style={{ overflowX: "scroll" }}>
-              <Grid container spacing={2} minWidth={160}>
-                <Grid
-                  item
-                  onClick={() => handleChartTypeChange(ChartType.Kline)}
-                >
-                  <ChartItemStyled
-                    style={{ fontSize: 14 }}
-                    color={
-                      isKline
-                        ? "var(--color-text-primary)"
-                        : "var(--color-text-third)"
-                    }
+            {isShowDepth ? (
+              <Box style={{ overflowX: "scroll" }}>
+                <Grid container spacing={2} minWidth={160}>
+                  <Grid
+                    item
+                    onClick={() => handleChartTypeChange(ChartType.Kline)}
                   >
-                    {t("labelProChartTradingView")}
-                  </ChartItemStyled>
-                </Grid>
-                <Grid
-                  item
-                  onClick={() => handleChartTypeChange(ChartType.Depth)}
-                >
-                  <ChartItemStyled
-                    style={{ fontSize: 14 }}
-                    color={
-                      !isKline
-                        ? "var(--color-text-primary)"
-                        : "var(--color-text-third)"
-                    }
+                    <ChartItemStyled
+                      style={{ fontSize: 14 }}
+                      color={
+                        isKline
+                          ? "var(--color-text-primary)"
+                          : "var(--color-text-third)"
+                      }
+                    >
+                      {t("labelProChartTradingView")}
+                    </ChartItemStyled>
+                  </Grid>
+                  <Grid
+                    item
+                    onClick={() => handleChartTypeChange(ChartType.Depth)}
                   >
-                    {t("labelProChartDepth")}
-                  </ChartItemStyled>
+                    <ChartItemStyled
+                      style={{ fontSize: 14 }}
+                      color={
+                        !isKline
+                          ? "var(--color-text-primary)"
+                          : "var(--color-text-third)"
+                      }
+                    >
+                      {t("labelProChartDepth")}
+                    </ChartItemStyled>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
+              </Box>
+            ) : (
+              <></>
+            )}
           </Box>
           <Divider style={{ marginTop: "-1px" }} />
           <Box flex={1} width={"100%"}>

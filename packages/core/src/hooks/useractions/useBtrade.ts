@@ -48,6 +48,7 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -63,24 +64,35 @@ const useBtradeSocket = () => {
   const { account } = useAccount();
   const { tradeBtrade } = useTradeBtrade();
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade.info) {
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      tradeBtrade?.depth?.symbol
+    ) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
-        // @ts-ignore
-        [sdk.WsTopicType.btradeOrderBook]: {
-          showOverlap: false,
-          markets: [tradeBtrade.info.btradeMarket],
-          level: 0,
-          snapshot: true,
-        },
+        // TODO: btrade Socket
+        // [sdk.WsTopicType.btradedepth]: {
+        //   showOverlap: false,
+        //   markets: [tradeBtrade?.depth?.symbol],
+        //   level: 0,
+        //   snapshot: true,
+        // },
       });
-    } else {
-      socketEnd();
+    } else if (tradeBtrade?.depth?.symbol) {
+      // TODO: btrade Socket
+      // sendSocketTopic({
+      //   [sdk.WsTopicType.btradedepth]: {
+      //     showOverlap: false,
+      //     markets: [tradeBtrade?.depth?.symbol],
+      //     level: 0,
+      //     snapshot: true,
+      //   },
+      // });
     }
     return () => {
       socketEnd();
     };
-  }, [account.readyState]);
+  }, [account.readyState, tradeBtrade?.depth?.symbol]);
 };
 
 export const useBtradeSwap = <
@@ -364,6 +376,7 @@ export const useBtradeSwap = <
           eddsaSignature: "",
           clientOrderId: "",
           orderType: sdk.OrderTypeResp.TakerOnly,
+          fastMode: false,
         };
         myLog("useBtradeSwap: submitOrder request", request);
         const response: { hash: string } | any =
@@ -441,7 +454,7 @@ export const useBtradeSwap = <
           (orderConfirm as sdk.RESULT_INFO).message
         ) {
         } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
-          throw "orderConfirm   failed";
+          throw "orderConfirm failed";
         } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
@@ -483,7 +496,7 @@ export const useBtradeSwap = <
       });
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content,
       });
     }
@@ -601,7 +614,32 @@ export const useBtradeSwap = <
       });
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState]);
-
+  // TODO: btrade Socket
+  // const subject = React.useMemo(() => btradeOrderbookService.onSocket(), []);
+  // React.useEffect(() => {
+  //   // const tradeBtrade = store.getState()._router_tradeBtrade
+  //   const subscription = subject.subscribe(({ btradeOrderbookMap }) => {
+  //     const { depth } = store.getState()._router_tradeBtrade.tradeBtrade;
+  //     if (
+  //       depth?.symbol &&
+  //       btradeOrderbookMap &&
+  //       btradeOrderbookMap[depth?.symbol]
+  //     ) {
+  //       updateTradeBtrade({
+  //         depth: {
+  //           ...depth,
+  //           ...btradeOrderbookMap[depth.symbol],
+  //           timestamp: Date.now(),
+  //         },
+  //       });
+  //     }
+  //
+  //     // const walletLayer2Status = store.getState().walletLayer2.status;
+  //     // const walletLayer1Status = store.getState().walletLayer1.status;
+  //     // _socketUpdate({ walletLayer2Status, walletLayer1Status });
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [subject]);
   useBtradeSocket();
   useWalletLayer2Socket({ walletLayer2Callback });
 
@@ -1030,6 +1068,7 @@ export const useBtradeSwap = <
               sellToken.precision,
               undefined
             ),
+
             lastStepAt: type,
           };
           return _tradeCalcData;

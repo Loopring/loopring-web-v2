@@ -1,6 +1,5 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import { MarketType } from "@loopring-web/common-resources";
-import { Ticker } from "../../ticker";
+import { MarketType, Ticker } from "@loopring-web/common-resources";
 import { MarketCalcParams, OrderInfoPatch } from "../tradePro";
 
 export type PageTradeLite = {

@@ -25,6 +25,7 @@ import {
   AssetsRawDataItem,
   CurrencyToTag,
   EmptyValueTag,
+  getValuePrecisionThousand,
   myLog,
   PriceTag,
   SagaStatus,
@@ -39,8 +40,8 @@ import { WsTopicType } from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
 import moment from "moment";
 
-export type AssetPanelProps = {
-  assetsRawData: AssetsRawDataItem[];
+export type AssetPanelProps<R = AssetsRawDataItem> = {
+  assetsRawData: R[];
   account: any;
   hideL2Assets: any;
   onSend: any;
@@ -57,6 +58,8 @@ export type AssetPanelProps = {
   getTokenRelatedMarketArray: any;
   hideSmallBalances: any;
   assetBtnStatus: TradeBtnStatus;
+  onTokenLockHold: (item: R) => void;
+  tokenLockDetail: any[] | undefined;
 };
 export const useGetAssets = (): AssetPanelProps & {
   assetTitleProps: any;
@@ -112,7 +115,7 @@ export const useGetAssets = (): AssetPanelProps & {
 
   React.useEffect(() => {
     if (walletL2Status === SagaStatus.DONE || assetsRawData.length) {
-      myLog("setLoadingBtn enableBtn");
+      // myLog("setLoadingBtn enableBtn");
       enableBtn();
     }
   }, [walletL2Status, assetsRawData]);
@@ -368,6 +371,8 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   };
+  const [tokenLockDetail, setTokenLockDetail] =
+    React.useState<undefined | any[]>(undefined);
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
@@ -386,6 +391,48 @@ export const useGetAssets = (): AssetPanelProps & {
     setHideLpToken,
     setHideSmallBalances,
     themeMode,
+    onTokenLockHold: async (_item) => {
+      setTokenLockDetail(undefined);
+      const account = store.getState().account;
+      if (LoopringAPI.userAPI && account.accountId) {
+        const response = await LoopringAPI.userAPI.getUserLockSummary(
+          {
+            accountId: account.accountId,
+            tokenId: tokenMap[_item.name].tokenId,
+            // @ts-ignore
+            lockTags: [
+              sdk.LOCK_TYPE.DUAL_CURRENCY,
+              sdk.LOCK_TYPE.DUAL_BASE,
+              sdk.LOCK_TYPE.BTRADE,
+              sdk.LOCK_TYPE.L2STAKING,
+              sdk.LOCK_TYPE.STOP_LIMIT,
+            ].join(","),
+          },
+          account.apiKey
+        );
+
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+        } else {
+          setTokenLockDetail(
+            response.lockRecord.map((item) => {
+              return {
+                key: `label${item.lockTag}`,
+                value: getValuePrecisionThousand(
+                  item.amount,
+                  tokenMap[_item.name].precision,
+                  tokenMap[_item.name].precision,
+                  undefined
+                ),
+              };
+            })
+          );
+        }
+      }
+    },
+    tokenLockDetail,
     getTokenRelatedMarketArray,
     hideSmallBalances,
   };

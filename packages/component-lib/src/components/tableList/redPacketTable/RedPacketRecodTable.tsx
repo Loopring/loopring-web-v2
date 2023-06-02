@@ -117,11 +117,15 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           name: t("labelRecordToken"),
           formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
             if (token.type === TokenType.single) {
-              const _token = token as CoinInfo<any> & {type: TokenType;}
-              return <ColumnCoinDeep token={{
-                ..._token,
-                name: '' // for not displaying name here
-              }}/>;
+              const _token = token as CoinInfo<any> & { type: TokenType };
+              return (
+                <ColumnCoinDeep
+                  token={{
+                    ..._token,
+                    name: "", // for not displaying name here
+                  }}
+                />
+              );
             } else {
               const { metadata } = token as sdk.UserNFTBalanceInfo;
               return (
@@ -192,11 +196,11 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
                   row.type.mode === sdk.LuckyTokenClaimType.RELAY
                     ? "labelLuckyRelayToken"
                     : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                      ? "labelLuckyBlindBox"
-                      : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
-                        ? "labelRedPacketSendCommonTitle"
-                        : "labelRedPacketSenRandomTitle",
-                  
+                    ? "labelLuckyBlindBox"
+                    : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
+                    ? "labelRedPacketSendCommonTitle"
+                    : "labelRedPacketSenRandomTitle",
+
                   { ns: "common" }
                 ) +
                   " — " +
@@ -218,9 +222,11 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
               [3, t(`labelRedPacketStatusEnded`, { ns: "common" })],
               [4, t(`labelRedPacketStatusEnded`, { ns: "common" })],
               [5, t(`labelRedPacketStatusEnded`, { ns: "common" })],
-            ] as [number, string][]
-            const found = statusMap.find(x => x[0] === LuckyTokenItemStatusMap[row.status])
-            return <>{found ? found[1] : ''}</> 
+            ] as [number, string][];
+            const found = statusMap.find(
+              (x) => x[0] === LuckyTokenItemStatusMap[row.status]
+            );
+            return <>{found ? found[1] : ""}</>;
           },
         },
         // {
@@ -256,7 +262,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [ tokenType]);
+    }, [tokenType]);
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),

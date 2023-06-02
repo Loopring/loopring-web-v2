@@ -1,9 +1,8 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getTickers, getTickerStatus, updateTicker } from "./reducer";
 import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
-
-import { store, LoopringAPI, makeTickerMap } from "../../index";
-import { LoopringMap, TickerData } from "@loopring-web/loopring-sdk";
+import { LoopringAPI, makeTickerMap, store } from "../../index";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { PayloadAction } from "@reduxjs/toolkit";
 
 const getTickersApi = async <R extends { [key: string]: any }>(
@@ -30,6 +29,7 @@ const getTickersApi = async <R extends { [key: string]: any }>(
       market: list.join(","),
     });
     const data = makeTickerMap({ tickerMap: tickers.tickMap });
+
     return { data, __timer__ };
   } else {
     if (__timer__ && __timer__ !== -1) {
@@ -49,6 +49,7 @@ function* getPostsSaga({ payload }: any) {
         tickerKey ? [tickerKey] : tickerKeys
       );
       yield put(getTickerStatus({ tickerMap: data, __timer__ }));
+      // store.dispatch(updateRealTimeAmmMap({}));
     } else {
       throw new CustomError(ErrorMap.NO_TOKEN_KEY_LIST);
     }
@@ -57,10 +58,11 @@ function* getPostsSaga({ payload }: any) {
   }
 }
 
-function* tickerMakeMap({ payload }: PayloadAction<LoopringMap<TickerData>>) {
+function* tickerMakeMap({
+  payload,
+}: PayloadAction<sdk.LoopringMap<sdk.TickerData>>) {
   try {
     let { tickerMap } = store.getState().tickerMap;
-
     const data = makeTickerMap({ tickerMap: payload });
     yield put(getTickerStatus({ tickerMap: { ...tickerMap, ...data } }));
   } catch (err) {

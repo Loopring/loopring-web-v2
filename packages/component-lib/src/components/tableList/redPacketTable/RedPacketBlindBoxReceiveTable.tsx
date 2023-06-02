@@ -15,6 +15,7 @@ import {
   myLog,
   RowConfig,
   TokenType,
+  YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -202,21 +203,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           return <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>;
         },
       },
-      // {
-      //   key: "End Time",
-      //   cellClass: "textAlignRight",
-      //   headerCellClass: "textAlignRight",
-      //   name: t("labelBlindBoxEndTime"),
-      //   formatter: ({ row }: FormatterProps<R>) => {
-      //     return (
-      //       <>
-      //         {moment(row.rawData.luckyToken.nftExpireTime).format(
-      //           YEAR_DAY_MINUTE_FORMAT
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
       {
         key: "Status",
         cellClass: "textAlignRight",
@@ -231,7 +217,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
               <>
                 {t("labelBlindBoxStartTime", {
                   time: moment(row.rawData.luckyToken.validUntil).format(
-                    "YYYY.MM.DD HH:mm"
+                    YEAR_DAY_MINUTE_FORMAT
                   ),
                 })}{" "}
               </>
@@ -255,7 +241,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                 <Typography>
                   {t("labelBlindBoxExpiredTime", {
                     time: moment(row.rawData.luckyToken.nftExpireTime).format(
-                      "YYYY.MM.DD HH:mm"
+                      YEAR_DAY_MINUTE_FORMAT
                     ),
                   })}
                 </Typography>

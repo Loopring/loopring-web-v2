@@ -1,25 +1,18 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
-import {
-  Account,
-  AccountState,
-  AccountStatus,
-  SagaStatus,
-} from "@loopring-web/common-resources";
-import { ConnectProviders } from "@loopring-web/web3-provider";
 import { AddressType } from "@loopring-web/loopring-sdk";
 
 type DisplayContact = {
-  name: string
-  address: string
-  avatarURL: string
-  editing: boolean
-  addressType: AddressType
-}
+  name: string;
+  address: string;
+  avatarURL: string;
+  editing: boolean;
+  addressType: AddressType;
+};
 
 type ContactsState = {
   contacts: DisplayContact[] | undefined;
-}
+};
 
 const initialState: ContactsState = {
   contacts: [],
@@ -34,7 +27,7 @@ export const contactsSlice: Slice<ContactsState> = createSlice<
   reducers: {
     updateContacts(state, action: PayloadAction<DisplayContact[]>) {
       // const contacts = action.payload
-      state.contacts = action.payload
+      state.contacts = action.payload;
     },
     // changeShowModel(
     //   state,

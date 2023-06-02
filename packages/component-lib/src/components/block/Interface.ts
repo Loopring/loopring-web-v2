@@ -97,7 +97,7 @@ export const RedPacketDetailLimit = 5;
 export const RedPacketNFTDetailLimit = 5;
 export const RedPacketBlindBoxLimit = 8;
 export type RedPacketDetailProps = {
-  redPacketType: 'normal' | 'lucky' | 'relay';
+  redPacketType: "normal" | "lucky" | "relay";
   sender: string;
   amountStr: string;
   amountClaimStr: string;
@@ -118,17 +118,18 @@ export type RedPacketDetailProps = {
   showShareBtn: boolean;
   tokenSymbol?: string;
   ended: boolean;
-  bottomButton: 'ended' | 'share'
-  claimButton: 'claim' | 'claimed' | 'expired' | 'hidden'
+  bottomButton: "ended" | "share";
+  claimButton: "claim" | "claimed" | "expired" | "hidden";
   onClickClaim?: () => void;
   totalNumber: number;
 };
-export type RedPacketBlindBoxDetailTypes = 'Not Started' 
-  | 'Blind Box Started' 
-  | 'Lottery Started' 
-  | 'Lottery Started and Win Lottery' 
-  | 'Lottery Started and Not Win Lottery' 
-  | 'BlindBox Claime Detail';
+export type RedPacketBlindBoxDetailTypes =
+  | "Not Started"
+  | "Blind Box Started"
+  | "Lottery Started"
+  | "Lottery Started and Win Lottery"
+  | "Lottery Started and Not Win Lottery"
+  | "BlindBox Claime Detail";
 export type RedPacketBlindBoxDetailProps = {
   sender: string;
   memo: string;
@@ -138,59 +139,59 @@ export type RedPacketBlindBoxDetailProps = {
   // Lottery Started: Phase 3, users can participate in lottery if they have blind boxs, everyone can view this detail
   // Lottery Started And Open: Phase 3, Same as 'Lottery Started' but one more popup to show if win NFTs
   // BlindBox Claime Detail: Phase 2 or Phase 3, shows detail of blindboxs distribution.
-  type: RedPacketBlindBoxDetailTypes; 
-  blindBoxStartTime?: number; 
-  lotteryStartTime?: number; 
-  lotteryEndTime?: number; 
+  type: RedPacketBlindBoxDetailTypes;
+  blindBoxStartTime?: number;
+  lotteryStartTime?: number;
+  lotteryEndTime?: number;
   opendBlindBoxAmount: number;
   totalBlindBoxAmount: number;
   deliverdGiftsAmount: number;
   totalGiftsAmount: number;
-  imageEle?: JSX.Element | undefined; 
+  imageEle?: JSX.Element | undefined;
   onShared?: () => void;
   onClickViewDetail?: () => void;
-  NFTClaimList?: { 
-    who: string,
-    isMe: boolean,
-    when: number,
-    amount: number,
-    showLuckiest?: boolean,
-  }[]; 
-  BlindBoxClaimList?: { 
-    who: string,
-    isMe: boolean,
-    when: number,
-    amount: number
-  }[]; 
-  showOpenLottery?: boolean; 
-  wonNFTInfo?: { 
+  NFTClaimList?: {
+    who: string;
+    isMe: boolean;
+    when: number;
+    amount: number;
+    showLuckiest?: boolean;
+  }[];
+  BlindBoxClaimList?: {
+    who: string;
+    isMe: boolean;
+    when: number;
+    amount: number;
+  }[];
+  showOpenLottery?: boolean;
+  wonNFTInfo?: {
     name: string;
     url: string;
-  }
+  };
   onClickClaim?: () => void;
   onClickClaim2?: () => void;
   onCloseOpenModal?: () => void;
   onClickClaimDetailBack?: () => void;
   description: string;
-  shareButton: 'hidden' | 'share';
-  claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden';
+  shareButton: "hidden" | "share";
+  claimButton: "claimed" | "claim" | "claiming" | "expired" | "hidden";
   didClaimABlindBox: boolean;
   wonInfo: {
     participated: boolean;
     won: boolean;
     amount: number;
-  }
-  page: number
-  totalCount: number
-  remainCount: number
+  };
+  page: number;
+  totalCount: number;
+  remainCount: number;
   handlePageChange: (page: number, limit?: number) => void;
-  totalClaimedNFTsCount: number
-  totalBlindboxCount: number
-  pageForBlindbox: number
+  totalClaimedNFTsCount: number;
+  totalBlindboxCount: number;
+  pageForBlindbox: number;
   handlePageChange_BlindBox: (page: number, limit?: number) => void;
   // didClaimABlindBox: boolean;
-  onClickClaimPopViewDetail: () => void
-  expired: boolean
+  onClickClaimPopViewDetail: () => void;
+  expired: boolean;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;
