@@ -135,8 +135,8 @@ export const useAmmJoin = ({
             return {
               tradeBtnStatus: TradeBtnStatus.DISABLED,
               label: `labelAMMMax| ${t("labelAMMMaxAND", {
-                coinA: `${maxCoinA} ${ammData.coinA.belong}}`,
-                coinB: `& ${maxCoinB} ${ammData.coinB.belong}`,
+                coinA: `${maxCoinA} ${ammData.coinA.belong}`,
+                coinB: `${maxCoinB} ${ammData.coinB.belong}`,
               })}`,
             };
           } else if (!validAmt1 || !validAmt2) {

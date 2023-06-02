@@ -237,9 +237,6 @@ export const useOverview = <
     if (ammMapStatus === SagaStatus.UNSET) {
       walletLayer2Service.sendUserUpdate();
       getUserRewards();
-      // if (store.getState().account.readyState === AccountStatus.ACTIVATED) {
-      //   getUserRewards();
-      // }
     }
   }, [ammMapStatus]);
 

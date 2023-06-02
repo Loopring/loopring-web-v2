@@ -118,7 +118,7 @@ export const SlippagePanel = ({
     ) {
       var _value = event.target?.value ?? "";
       _value = _value.replace(suffix, "");
-      if (Number(_value) <= max) {
+      if (Number(_value) < max) {
         setValue(_value);
         setCustomSlippage(_value);
         if (_value >= alertMax) {
@@ -129,7 +129,7 @@ export const SlippagePanel = ({
       } else {
         setShowAlert(true);
         setValue(max);
-        setCustomSlippage(max);
+        setCustomSlippage(max - 1);
       }
     } else {
     }
