@@ -5,11 +5,8 @@ import {
   RawDataDefiSideStakingItem,
 } from "@loopring-web/component-lib";
 import {
-  getUserAmmTransaction,
   LoopringAPI,
   makeDefiInvestReward,
-  makeMyAmmMarketArray,
-  // makeMyPoolRowWithPoolState,
   makeWalletLayer2,
   store,
   SummaryMyInvest,
@@ -20,7 +17,7 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
-  useWalletLayer2,
+  // useWalletLayer2,
   useWalletLayer2Socket,
   walletLayer2Service,
   // volumeToCountAsBigNumber,
@@ -35,7 +32,7 @@ import {
   STAKING_INVEST_LIMIT,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { walletServices } from "@loopring-web/web3-provider";
+// import { walletServices } from "@loopring-web/web3-provider";
 
 export const useOverview = <
   R extends { [key: string]: any },
@@ -69,8 +66,7 @@ export const useOverview = <
   totalClaimableRewards: string;
   stakedSymbol: string;
 } => {
-  const { account } = useAccount();
-  const { status: walletLayer2Status } = useWalletLayer2();
+  const { account, status: accountStatus } = useAccount();
   const { getUserRewards } = useUserRewards();
   const {
     status: userRewardsStatus,
@@ -120,6 +116,7 @@ export const useOverview = <
   });
 
   // const [totalData, setTotalData] = React.useState<MyPoolRow<R>[]>([]);
+  const [summaryDefiReward, setSummaryDefiReward] = React.useState("");
   const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([]);
   const [tableHeight, setTableHeight] = React.useState(0);
   const resetTableData = React.useCallback(
@@ -157,8 +154,6 @@ export const useOverview = <
       }
       resetTableData(resultData);
     }
-
-    // if (filter.hideSmallBalance) {
   }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray]);
   const handleFilterChange = React.useCallback(
     (filter) => {
@@ -176,22 +171,7 @@ export const useOverview = <
   const [showLoading, setShowLoading] = React.useState(false);
   const mountedRef = React.useRef(false);
 
-  const walletLayer2DoIt = React.useCallback(async () => {
-    const { walletMap: _walletMap } = makeWalletLayer2(false);
-    if (_walletMap) {
-      const res = await getUserAmmTransaction({});
-      let _myTradeArray = makeMyAmmMarketArray(
-        undefined,
-        res ? res.userAmmPoolTxs : []
-      );
-      if (mountedRef.current) {
-        setMyAmmMarketArray(_myTradeArray ? _myTradeArray : []);
-      }
-    }
-    return _walletMap;
-  }, []);
-
-  const walletLayer2Callback = React.useCallback(async () => {
+  const walletLayer2Callback = React.useCallback(() => {
     if (ammMap && tokenPrices && userRewardsMap && myAmmLPMap) {
       setShowLoading(true);
       updateData();
@@ -202,6 +182,7 @@ export const useOverview = <
       let totalCurrentInvest = {
         ammPoolDollar: 0,
         stakeETHDollar: 0,
+        // dualStakeDollar: summaryDefiReward,
       };
       const { walletMap: _walletMap } = makeWalletLayer2(false);
 
@@ -222,23 +203,41 @@ export const useOverview = <
           ...totalCurrentInvest,
           investDollar: sdk
             .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
-            .plus(state.dualStakeDollar ?? 0)
             .plus(totalCurrentInvest.stakeETHDollar ?? 0)
+            // .plus(totalCurrentInvest.dualStakeDollar ?? 0)
             .plus(state.stakeLRCDollar ?? 0)
             .toString(),
         };
       });
       setShowLoading(false);
     }
-  }, [ammMap, tokenPrices, userRewardsMap, walletLayer2DoIt]);
+  }, [ammMap, tokenPrices, userRewardsMap, summaryDefiReward]);
 
-  useWalletLayer2Socket({ walletLayer2Callback });
   React.useEffect(() => {
-    if (ammMapStatus === SagaStatus.UNSET) {
+    if (
+      ammMapStatus === SagaStatus.UNSET &&
+      accountStatus === SagaStatus.UNSET
+    ) {
       walletLayer2Service.sendUserUpdate();
-      getUserRewards();
+      const account = store.getState().account;
+      if (account.readyState == AccountStatus.ACTIVATED) {
+        getUserRewards();
+        getStakingList({});
+        makeDefiInvestReward().then((summaryDefiReward) => {
+          if (mountedRef.current) {
+            setSummaryDefiReward(summaryDefiReward.toString());
+          }
+        });
+      }
     }
-  }, [ammMapStatus]);
+  }, [ammMapStatus, accountStatus]);
+
+  React.useEffect(() => {
+    if (userRewardsStatus === SagaStatus.UNSET) {
+      walletLayer2Callback();
+    }
+  }, [userRewardsStatus, summaryDefiReward]);
+  useWalletLayer2Socket({ walletLayer2Callback });
 
   React.useEffect(() => {
     mountedRef.current = true;
@@ -247,28 +246,6 @@ export const useOverview = <
       mountedRef.current = false;
     };
   }, []);
-
-  React.useEffect(() => {
-    if (userRewardsStatus === SagaStatus.UNSET) {
-      makeDefiInvestReward().then((summaryDefiReward) => {
-        const dualStakeDollar = sdk.toBig(summaryDefiReward);
-        setSummaryMyInvest((state) => {
-          return {
-            ...state,
-            investDollar: sdk
-              .toBig(state.ammPoolDollar ?? 0)
-              .plus(dualStakeDollar ?? 0)
-              .plus(state.stakeETHDollar ?? 0)
-              .plus(state.stakeLRCDollar ?? 0)
-              .toString(),
-            dualStakeDollar: dualStakeDollar.toString(),
-          };
-        });
-      });
-
-      walletLayer2Callback();
-    }
-  }, [userRewardsStatus]);
 
   const getStakingList = React.useCallback(
     async ({
@@ -354,14 +331,7 @@ export const useOverview = <
     },
     [account, tokenPrices]
   );
-  React.useEffect(() => {
-    if (
-      walletLayer2Status === SagaStatus.UNSET &&
-      stakingMapStatus === SagaStatus.UNSET
-    ) {
-      getStakingList({});
-    }
-  }, [account.readyState, stakingMapStatus, walletLayer2Status]);
+
   return {
     myAmmMarketArray,
     summaryMyInvest,

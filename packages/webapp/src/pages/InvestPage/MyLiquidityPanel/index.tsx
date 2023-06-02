@@ -225,6 +225,10 @@ const MyLiquidity: any = withTranslation("common")(
             .toString();
         }, "0")
       : undefined;
+    const _summaryMyInvest = sdk
+      .toBig(dualStakeDollar ?? 0)
+      .plus(summaryMyInvest.investDollar ?? 0)
+      .toString();
     return (
       <Box
         display={"flex"}
@@ -296,11 +300,11 @@ const MyLiquidity: any = withTranslation("common")(
                 {t("labelTotalPositionValue")}
               </Typography>
               <Typography variant={fontSize.count} marginTop={1}>
-                {summaryMyInvest?.investDollar
+                {_summaryMyInvest
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
                       sdk
-                        .toBig(summaryMyInvest.investDollar)
+                        .toBig(_summaryMyInvest)
                         .times(forexMap[currency] ?? 0)
                         .toString(),
                       undefined,
