@@ -109,25 +109,25 @@ const resources = {
       labelGooglePlay: "Google Play",
       labelFeature1: "Fast, Secure, and 100x \nLower Fees",
       labelFeatureDes1:
-        "Experience DeFi as it should be - fast and affordable. Built with zkRollups,\n  Loopring provides instant transactions at 100x \n lower fees than Ethereum without sacrificing any of its security.",
+        "Experience DeFi as it should be - fast and affordable. Built with zkRollups,  Loopring provides instant transactions at 100x  lower fees than Ethereum without sacrificing any of its security.",
       labelFeature2: "Invest, Stake and Earn",
       labelFeatureDes2:
-        "Easily earn yield on your \n crypto. Your funds never leave your wallet and can be accessed at any time.",
+        "Easily earn yield on your  crypto. Your funds never leave your wallet and can be accessed at any time.",
       labelFeature3: "Dual Investment",
       labelFeatureDes3:
-        "Buy Low or Sell High. Get \nrewarded no matter which direction the market moves.",
+        "Buy Low or Sell High. Get rewarded no matter which direction the market moves.",
       labelFeature4: "Buy Crypto on L2",
       labelFeatureDes4:
-        "Use card, bank transfer,\nor Apple Pay without ever having to leave your wallet.",
+        "Use card, bank transfer, or Apple Pay without ever having to leave your wallet.",
       labelFeature5: "Your Personal Vault",
       labelFeatureDes5:
-        "Forget seed phrases.  Choose people, institutions, \nand hardware you trust to be your Guardians. Set limits on daily \n transfers or even lock your wallet if needed. You",
+        "Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You",
       labelFeature6: "Manage and Display \nYour NFT Collection",
       labelFeatureDes6:
-        "Immerse yourself in the world of unique digital assets. Safeguard\n your growing collection, all while enjoying easy access to\n your favorite marketplaces.",
+        "Immerse yourself in the world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to your favorite marketplaces.",
       labelFeature7: "Digital Red Packets",
       labelFeatureDes7:
-        "Create memorable experiences for friends, family, \nand your community. Red Packets are perfect for gifts, \nsocial events, gaming rewards, airdrops, and more!",
+        "Create memorable experiences for friends, family, and your community. Red Packets are perfect for gifts, social events, gaming rewards, airdrops, and more!",
       labelFeatureDes8: "Loopring Wallet",
       labelFeatureDes8_2: "Crypto exchange on the go",
       labelCopyRight:
@@ -160,6 +160,8 @@ const settingPersist = "persist:settings";
     if (_this) {
       _this.setAttribute("value", value);
     }
+    //https://static.loopring.io/assets/images/landPage/wallet_banner
+    //imageChang1,imageChang2,imageChang3
     // document.getElementById("themeModeCss").setAttribute("link", link);
   };
 

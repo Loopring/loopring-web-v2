@@ -47,7 +47,10 @@
 					</li>
 				</ul>
 			</nav>
-			<div class="Box-root">
+			<div class="Box-root flexBox flex-row">
+
+				<button id="changeColor"></button>
+
 				<button class="Button-root Button-contained Button-containedPrimary Button-sizeSmall Button-containedSizeSmall ButtonBase-root"
 								id='labelNavLanuch'
 								onclick="window.open('./#/','_parent')"
@@ -55,6 +58,7 @@
 								type="button"></button>
 			</div>
 		</div>
+
 	</div>
 	<div
 					class="Box-root ">
@@ -63,38 +67,50 @@
 			<p aria-label="Your Gateway to Ethereum DeFi,  NFTs, and Financial Freedom"
 				 class="Typography-root Typography-body1 subtitle" id="labelGatewayToEthereum"/>
 			<div class="Box-root buttons downLoadBtnGroup">
-				<button class="ios" href='https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126' rel="noopener"
+				<button class="ios gradient-border"
+
+								href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126"
+								onClick="window.open('https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126','_parent');"
+								rel="noopener"
 								target="_blank">
 					<div id="iconIos"></div>
 					<!--					<img alt="download-btn" height="18"-->
 					<!--							 src="https://static.loopring.io/assets/images/landPage/wallet_ios.svg" width="18">-->
 					<span aria-label="IOS" class="Typography-root Typography-body1" id="labelIOS"></span>
 				</button>
-				<button class="android" href="https://download.loopring.io/LoopringWallet.apk" rel="noopener" target="_blank">
-					<div id="iconAndroid"></div>
+				<button class="android gradient-border"
+								href="https://download.loopring.io/LoopringWallet.apk"
+								onClick="window.open('https://download.loopring.io/LoopringWallet.apk','_parent');"
+								rel="noopener" target="_blank">
+					<div id="iconAndroid "></div>
 					<span aria-label="Android" class="Typography-root Typography-body1" id="labelAndroid"></span>
 				</button>
-				<button class="google-play" href="https://play.google.com/store/apps/details?id=loopring.defi.wallet"
+				<button class="google-play gradient-border"
+								href="https://play.google.com/store/apps/details?id=loopring.defi.wallet"
+								onClick="window.open('https://play.google.com/store/apps/details?id=loopring.defi.wallet','_parent');"
 								rel="noopener" target="_blank">
 					<div id="iconGooglePlay"></div>
 					<span aria-label="Google Play" class="Typography-root Typography-body1" id="labelGooglePlay"></span>
 				</button>
 			</div>
+
 			<section class="carousel-container">
 				<div class="carousel-item first"
 						 style="width: 224px; margin-left: 0%; margin-right: 4%; transition: all 1s ease-in-out 0s; transform: scale(1); cursor: pointer; display: flex; align-items: center;">
 					<img alt="Earn Investment Uer Interface"
-							 src="https://static.loopring.io/assets/images/landPage/wallet_banner1.png"
+							 src="https://static.loopring.io/assets/images/landPage/wallet_banner1.png" id="imageChang1"
 							 style="width: 224px; object-fit: contain; border-radius: 32px;">
 				</div>
 				<div class="carousel-item"
 						 style="width: 224px; margin-left: 4%; margin-right: 4%; transition: all 1s ease-in-out 0s; transform: scale(1.3); cursor: pointer; display: flex; align-items: center;">
 					<img alt="Assets & market" src="https://static.loopring.io/assets/images/landPage/wallet_banner2.png"
+							 id="imageChang2"
 							 style="width: 224px; object-fit: contain; border-radius: 32px;">
 				</div>
 				<div class="carousel-item"
 						 style="width: 224px; margin-left: 4%; margin-right: 4%; transition: all 1s ease-in-out 0s; transform: scale(1); cursor: pointer; display: flex; align-items: center;">
 					<img alt="Loopring L2 orderbook" src="https://static.loopring.io/assets/images/landPage/wallet_banner3.png"
+							 id="imageChang3"
 							 style="width: 224px; object-fit: contain; border-radius: 32px;">
 				</div>
 			</section>
@@ -103,9 +119,9 @@
 </header>
 <section class="Box-root" style="flex: 1">
 	<div class="Box-root">
-		<div class="Box-root sectionFull sectionDetail">
+		<div class="Box-root sectionFull ">
 			<section class="wrap flex-row flexBox">
-				<div class="Box-root">
+				<div class="Box-root sectionDetail">
 					<h3 aria-label="Fast, Secure, and 100x Lower Fees" class="Typography-root Typography-h1"
 							id="labelFeature1"></h3>
 					<p aria-label="Experience DeFi as it should be - fast and affordable. Built with zkRollups, Loopring provides instant transactions at 100x lower fees than Ethereum without sacrificing any of its security."
@@ -118,9 +134,9 @@
 				</div>
 			</section>
 		</div>
-		<div class="Box-root sectionFull sectionDetail">
+		<div class="Box-root sectionFull ">
 			<section class="wrap flex-row flexBox">
-				<div class="Box-root">
+				<div class="Box-root sectionDetail">
 					<h3 aria-label="Invest, Stake and Earn" class="Typography-root Typography-h1" id="labelFeature2"></h3>
 					<p aria-label="Easily earn yield on your \n crypto. Your funds never leave your wallet and can be accessed at any time."
 						 class="Typography-root Typography-body1" id="labelFeatureDes2"/>
@@ -133,9 +149,9 @@
 				</div>
 			</section>
 		</div>
-		<div class="Box-root sectionFull sectionDetail">
+		<div class="Box-root sectionFull ">
 			<section class="wrap flex-row flexBox">
-				<div class="Box-root">
+				<div class="Box-root sectionDetail">
 					<h3 Id="labelFeature3" aria-label="Dual Investment" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Buy Low or Sell High. Get rewarded no matter which direction the market moves."
 						 class="Typography-root Typography-body1" id="labelFeatureDes3"></p>
@@ -147,9 +163,9 @@
 				</div>
 			</section>
 		</div>
-		<div class="Box-root sectionFull sectionDetail">
+		<div class="Box-root sectionFull ">
 			<section class="wrap flex-row flexBox">
-				<div class="Box-root">
+				<div class="Box-root sectionDetail">
 					<h3 Id="labelFeature4" aria-label="Buy Crypto on L2" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Use card, bank transfer, or Apple Pay without ever having to leave your wallet."
 						 class="Typography-root Typography-body1" id="labelFeatureDes4"></p>
@@ -161,9 +177,9 @@
 				</div>
 			</section>
 		</div>
-		<div class="Box-root sectionFull sectionDetail">
+		<div class="Box-root sectionFull ">
 			<section class="wrap flex-row flexBox">
-				<div class="Box-root">
+				<div class="Box-root sectionDetail">
 					<h3 Id="labelFeature5" aria-label="Your Personal Vault" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Forget seed phrases.
 									Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily
@@ -178,9 +194,9 @@
 				</div>
 			</section>
 		</div>
-		<div class="Box-root sectionFull sectionDetail">
+		<div class="Box-root sectionFull ">
 			<section class="wrap flex-row flexBox">
-				<div class="Box-root">
+				<div class="Box-root sectionDetail">
 					<h3 Id="labelFeature6" aria-label="Manage and Display Your NFT
 										Collection" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Immerse yourself in the
@@ -194,9 +210,9 @@
 				</div>
 			</section>
 		</div>
-		<div class="Box-root sectionFull sectionDetail">
+		<div class="Box-root sectionFull ">
 			<section class="wrap flex-row flexBox">
-				<div class="Box-root">
+				<div class="Box-root sectionDetail">
 					<h3 Id="labelFeature7" aria-label="Digital Red Packets" class="Typography-root Typography-h1"></h3>
 					<p aria-label="Create memorable
 										experiences for friends, family, and your community. Red Packets are perfect for gifts, social events,
@@ -225,18 +241,26 @@
 				</div>
 			</div>
 			<div class="Box-root buttons downLoadBtnGroup">
-				<button class="ios" href='https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126' rel="noopener"
+				<button class="ios gradient-border"
+								href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126"
+								onClick="window.open('https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126','_parent');"
+								rel="noopener"
 								target="_blank">
 					<div id="iconIos2"></div>
 					<!--					<img alt="download-btn" height="18"-->
 					<!--							 src="https://static.loopring.io/assets/images/landPage/wallet_ios.svg" width="18">-->
 					<span aria-label="IOS" class="Typography-root Typography-body1" id="labelIOS2"></span>
 				</button>
-				<button class="android" href="https://download.loopring.io/LoopringWallet.apk" rel="noopener" target="_blank">
+				<button class="android gradient-border"
+								href="https://download.loopring.io/LoopringWallet.apk"
+								onClick="window.open('https://download.loopring.io/LoopringWallet.apk','_parent');"
+								rel="noopener" target="_blank">
 					<div id="iconAndroid2"></div>
 					<span aria-label="Android" class="Typography-root Typography-body1" id="labelAndroid2"></span>
 				</button>
-				<button class="google-play" href="https://play.google.com/store/apps/details?id=loopring.defi.wallet"
+				<button class="google-play gradient-border"
+								href="https://play.google.com/store/apps/details?id=loopring.defi.wallet"
+								onClick="window.open('https://play.google.com/store/apps/details?id=loopring.defi.wallet','_parent');"
 								rel="noopener" target="_blank">
 					<div id="iconGooglePlay2"></div>
 					<span aria-label="Google Play" class="Typography-root Typography-body1" id="labelGooglePlay2"></span>

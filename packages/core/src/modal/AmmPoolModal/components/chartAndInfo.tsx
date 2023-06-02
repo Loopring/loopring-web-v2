@@ -393,20 +393,24 @@ export const ChartAndInfoPanel = ({
                   {t("label24Volume")}
                 </Typography>
                 <Typography variant={"body1"} component={"span"}>
-                  {PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      sdk.toBig(ticker.priceU).times(forexMap[currency] ?? 0),
-                      undefined,
-                      undefined,
-                      undefined,
-                      true,
-                      {
-                        isFait: true,
-                        floor: false,
-                        isAbbreviate: true,
-                        abbreviate: 6,
-                      }
-                    )}
+                  {ticker?.priceU
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        sdk
+                          .toBig(ticker?.priceU ?? 0)
+                          .times(forexMap[currency] ?? 0),
+                        undefined,
+                        undefined,
+                        undefined,
+                        true,
+                        {
+                          isFait: true,
+                          floor: false,
+                          isAbbreviate: true,
+                          abbreviate: 6,
+                        }
+                      )
+                    : EmptyValueTag}
                 </Typography>
               </Typography>
 
