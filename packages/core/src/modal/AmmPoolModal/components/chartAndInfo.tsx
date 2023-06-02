@@ -32,7 +32,6 @@ import {
   useSystem,
   useTicker,
   useTokenMap,
-  useTokenPrices,
   useUserRewards,
 } from "../../../stores";
 import { BoxWrapperStyled } from "./ammPanel";
@@ -66,7 +65,6 @@ export const ChartAndInfoPanel = ({
   const { ammMap } = useAmmMap();
   const { tokenMap } = useTokenMap();
   const { tickerMap } = useTicker();
-  const { tokenPrices } = useTokenPrices();
   const ammInfo = ammMap["AMM-" + market];
   const { myAmmLPMap } = useUserRewards();
   const [pairHistory, setPairHistory] = React.useState<
@@ -397,9 +395,7 @@ export const ChartAndInfoPanel = ({
                 <Typography variant={"body1"} component={"span"}>
                   {PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      (ticker?.volume ?? 0) *
-                        (tokenPrices[ammInfo?.coinA ?? ""] ?? 0) *
-                        (forexMap[currency] ?? 0),
+                      sdk.toBig(ticker.priceU).times(forexMap[currency] ?? 0),
                       undefined,
                       undefined,
                       undefined,
