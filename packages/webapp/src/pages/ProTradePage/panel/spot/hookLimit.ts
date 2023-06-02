@@ -467,7 +467,11 @@ export const useLimit = <C extends { [key: string]: any }>({
           marketRatePrice =
             tradeData.type === "sell"
               ? marketPrice.div(tradeData?.price?.tradeValue)
-              : marketPrice.div(1 / tradeData?.price?.tradeValue);
+              : sdk
+                  .toBig(1)
+                  .div(marketPrice)
+                  .div(1 / tradeData?.price?.tradeValue);
+
           isNotMatchMarketPrice = marketRatePrice.gt(1.05);
           marketPrice = getValuePrecisionThousand(
             marketPrice.toString(),
