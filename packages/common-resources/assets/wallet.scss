@@ -482,14 +482,23 @@ footer {
     align-items: flex-start;
     justify-content: center;
     height: initial;
-    margin: 40px 0;
+    margin: 80px 0;
   }
 
-  .sectionDetail .wrap {
+  .sectionFull .wrap {
     flex-direction: column !important;
+
+    .sectionDetail {
+      width: auto;
+      min-width: auto;
+
+      h3, p {
+        text-align: center;
+      }
+    }
   }
 
-  .sectionDetail .img-container {
+  .sectionFull .img-container {
     display: flex;
     margin-top: 24px;
     justify-content: center !important;
