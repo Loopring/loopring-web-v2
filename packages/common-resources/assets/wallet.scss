@@ -232,7 +232,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100vw;
-  margin-bottom: 160px;
+  margin: 160px 0;
 
   &:nth-child(even) .wrap {
     flex-direction: row-reverse;
