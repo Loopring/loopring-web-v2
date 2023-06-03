@@ -823,6 +823,9 @@ const settingPersist = "persist:settings";
     document
       .getElementById("imageChang3")
       .setAttribute("src", basicUrl + "wallet_banner3" + imageEnd);
+    // document
+    //   .getElementById("imageChang4")
+    //   .setAttribute("src", basicUrl + "wallet_banner3" + imageEnd);
     document
       .getElementById("imageSection1")
       .setAttribute("src", basicUrl + "wallet_section1" + imageEnd);
@@ -1026,5 +1029,21 @@ const settingPersist = "persist:settings";
       handleScroll();
     }, 50);
     window.addEventListener("scroll", handleScroll);
+    let clear = -1;
+    var options = document.getElementsByName("slider"); //.options;
+
+    function loopScroll() {
+      if (clear !== -1) {
+        clearTimeout(clear);
+      }
+      let i = [].slice.call(options).findIndex((item) => item.checked == true);
+      let next = i + 1;
+      options[options.length - next > 0 ? next : 0].checked = true;
+      clear = setTimeout(() => {
+        loopScroll();
+      }, 3000);
+    }
+
+    loopScroll();
   };
 })();

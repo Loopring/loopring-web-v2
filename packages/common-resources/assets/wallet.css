@@ -374,10 +374,76 @@ footer .group .Typography-root {
 }
 
 .carousel-container {
+  --height: 596px;
+  --width: 280px;
   display: flex;
   overflow: hidden;
   width: 800px;
-  height: 800px;
+  height: calc(var(--height) + 32px);
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.carousel-container .container {
+  height: 100%;
+  width: 100%;
+}
+
+.carousel-container #slider {
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-container input[type="radio"] {
+  display: none;
+}
+
+.carousel-container .cards {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-container .card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: calc(var(--width) / -2);
+  margin-top: calc(var(--height) / -2);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.carousel-container img {
+  width: var(--width);
+  object-fit: cover;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-1,
+.carousel-container #item-2:checked ~ .cards #selector-2,
+.carousel-container #item-3:checked ~ .cards #selector-3 {
+  transform: translateX(0%) scale(1);
+  z-index: 80;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-3,
+.carousel-container #item-2:checked ~ .cards #selector-1,
+.carousel-container #item-3:checked ~ .cards #selector-2 {
+  transform: translateX(100%) scale(0.8);
+  z-index: 70;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-2,
+.carousel-container #item-2:checked ~ .cards #selector-3,
+.carousel-container #item-3:checked ~ .cards #selector-1 {
+  transform: translateX(-100%) scale(0.8);
+  z-index: 70;
 }
 
 @media only screen and (max-device-width: 1024px) {
@@ -386,6 +452,7 @@ footer .group .Typography-root {
     padding: 0 16px;
     margin: 0 auto;
   }
+
   .carousel-container {
     display: flex;
     overflow: hidden;
@@ -464,6 +531,27 @@ footer .group .Typography-root {
     display: flex;
     margin-top: 24px;
     justify-content: center !important;
+  }
+
+  .carousel-container #item-1:checked ~ .cards #selector-1,
+  .carousel-container #item-2:checked ~ .cards #selector-2,
+  .carousel-container #item-3:checked ~ .cards #selector-3 {
+    transform: translateX(0%) scale(1);
+    z-index: 80;
+  }
+
+  .carousel-container #item-1:checked ~ .cards #selector-3,
+  .carousel-container #item-2:checked ~ .cards #selector-1,
+  .carousel-container #item-3:checked ~ .cards #selector-2 {
+    transform: translateX(80%) scale(0.8);
+    z-index: 70;
+  }
+
+  .carousel-container #item-1:checked ~ .cards #selector-2,
+  .carousel-container #item-2:checked ~ .cards #selector-3,
+  .carousel-container #item-3:checked ~ .cards #selector-1 {
+    transform: translateX(-80%) scale(0.8);
+    z-index: 70;
   }
 }
 
