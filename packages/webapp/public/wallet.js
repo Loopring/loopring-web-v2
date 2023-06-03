@@ -844,6 +844,9 @@ const settingPersist = "persist:settings";
     document
       .getElementById("imageSection6")
       .setAttribute("src", basicUrl + "wallet_section6" + imageEnd);
+    document
+      .getElementById("imageSection7" + "")
+      .setAttribute("src", basicUrl + "wallet_section7" + imageEnd);
     document.getElementById("bgContent").innerHTML =
       value !== "light" ? svgGroup.blackSvg : svgGroup.lightSvg;
     document.getElementById("changeColor").innerHTML =

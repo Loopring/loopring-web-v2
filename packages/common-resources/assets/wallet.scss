@@ -568,8 +568,7 @@ footer {
 
 
 
-
-@media only screen and (max-device-width: 1024px) {
+@media only screen and (max-width: 1024px) {
   .Container-root, .wrap {
     width: 100vw;
     padding: 0 16px;
@@ -612,7 +611,7 @@ footer {
 
   .downLoadBtnGroup {
     flex-direction: column;
-    min-height: 200px;
+    min-height: 260px;
     margin-left: 0;
   }
 
@@ -649,7 +648,8 @@ footer {
   }
 
   .sectionFull .wrap {
-    flex-direction: column !important;
+    //flex-direction: column !important;
+    flex-direction: column-reverse !important;
 
     .sectionDetail {
       width: auto;
@@ -726,6 +726,40 @@ footer {
   }
 
   //border-radius: var(--borderWidth);
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  #labelEthereumUnleashed {
+    width: 522px;
+    height: 72px;
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 72px;
+    background: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /*background-clip: text;*/
+    border-radius: 2px;
+    text-fill-color: transparent;
+    margin-top: 120px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  #labelGatewayToEthereum {
+    margin-bottom: 32px;
+    font-size: var(--h4);
+    text-align: center;
+  }
+  h3.Typography-root {
+    font-size: var(--h1);
+    margin: 80px 0 40px 0;
+  }
+
+  h3 ~ p.Typography-root {
+    color: var(--color-text-third);
+    font-size: var(--h5)
+  }
 }
 
 @keyframes boxShow {
