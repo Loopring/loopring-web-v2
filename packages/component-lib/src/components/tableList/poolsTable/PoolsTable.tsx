@@ -466,7 +466,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               {/*</Typography>*/}
             </Box>
           );
-        };,
+        },
       },
       {
         key: "liquidity",
@@ -533,7 +533,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               <Box className={"textAlignRight"} display={"inline-flex"}>
                 <Typography component={"span"}>
                   {priceU
-                    ? PriceTag[ CurrencyToTag[ currency ] ] + priceU
+                    ? PriceTag[CurrencyToTag[currency]] + priceU
                     : EmptyValueTag}
                 </Typography>
               </Box>
