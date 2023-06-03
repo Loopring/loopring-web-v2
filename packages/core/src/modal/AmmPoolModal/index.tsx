@@ -149,6 +149,7 @@ const Content = withTranslation("common")(
               marginBottom={2}
               display={"flex"}
               width={isMobile ? "100%" : "initial"}
+              flexDirection={isMobile ? "column" : "row"}
             >
               <Toast
                 alertText={toastOpen?.content ?? ""}
