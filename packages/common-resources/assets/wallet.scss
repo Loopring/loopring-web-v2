@@ -407,6 +407,7 @@ footer {
   --height: 596px;
   --width: 280px;
   display: flex;
+  margin-top: 80px;
   overflow: hidden;
   width: 800px;
   height: calc(var(--height) + 32px);
