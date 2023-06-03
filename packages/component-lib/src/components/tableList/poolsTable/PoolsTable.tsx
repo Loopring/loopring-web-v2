@@ -48,7 +48,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 240px auto auto auto 200px !important;`
-        : ` --template-columns: 16% 60% auto 8% !important;
+        : ` --template-columns: 16% 54% auto 8% !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -421,51 +421,52 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               height={"100%"}
               alignContent={"center"}
               display={"flex"}
+              alignItems={"center"}
             >
               <CoinIcons
                 type={TokenType.lp}
-                tokenIcon={[row.coinAInfo, row.coinBInfo]}
+                tokenIcon={[coinJson[row.coinA], coinJson[row.coinB]]}
               />
-              <Typography
-                variant={"inherit"}
-                color={"textPrimary"}
-                display={"flex"}
-                flexDirection={"column"}
-                marginLeft={2}
-                component={"span"}
-                paddingRight={1}
-              >
-                <Typography component={"span"} className={"next-coin"}>
-                  <Typography
-                    variant="inherit"
-                    component={"span"}
-                    className={"next-coin"}
-                  >
-                    {row.coinAInfo?.simpleName}
-                  </Typography>
-                  <Typography variant="inherit" component={"i"}>
-                    /
-                  </Typography>
-                  <Typography
-                    variant="inherit"
-                    component={"span"}
-                    title={"buy"}
-                  >
-                    {row.coinBInfo?.simpleName}
-                  </Typography>
-                </Typography>
-                {campaignTagConfig && (
-                  <TagIconList
-                    scenario={SCENARIO.AMM}
-                    campaignTagConfig={campaignTagConfig}
-                    symbol={row.market}
-                  />
-                )}
-                {row.isNew && <NewTagIcon />}
-              </Typography>
+              {/*<Typography*/}
+              {/*  variant={"inherit"}*/}
+              {/*  color={"textPrimary"}*/}
+              {/*  display={"flex"}*/}
+              {/*  flexDirection={"column"}*/}
+              {/*  marginLeft={2}*/}
+              {/*  component={"span"}*/}
+              {/*  paddingRight={1}*/}
+              {/*>*/}
+              {/*  <Typography component={"span"} className={"next-coin"}>*/}
+              {/*    <Typography*/}
+              {/*      variant="inherit"*/}
+              {/*      component={"span"}*/}
+              {/*      className={"next-coin"}*/}
+              {/*    >*/}
+              {/*      {row.coinAInfo?.simpleName}*/}
+              {/*    </Typography>*/}
+              {/*    <Typography variant="inherit" component={"i"}>*/}
+              {/*      /*/}
+              {/*    </Typography>*/}
+              {/*    <Typography*/}
+              {/*      variant="inherit"*/}
+              {/*      component={"span"}*/}
+              {/*      title={"buy"}*/}
+              {/*    >*/}
+              {/*      {row.coinBInfo?.simpleName}*/}
+              {/*    </Typography>*/}
+              {/*  </Typography>*/}
+              {/*  {campaignTagConfig && (*/}
+              {/*    <TagIconList*/}
+              {/*      scenario={SCENARIO.AMM}*/}
+              {/*      campaignTagConfig={campaignTagConfig}*/}
+              {/*      symbol={row.market}*/}
+              {/*    />*/}
+              {/*  )}*/}
+              {/*  {row.isNew && <NewTagIcon />}*/}
+              {/*</Typography>*/}
             </Box>
           );
-        },
+        };,
       },
       {
         key: "liquidity",
@@ -529,10 +530,10 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               justifyContent={"center"}
               height={"100%"}
             >
-              <Box className={"textAlignRight"}>
+              <Box className={"textAlignRight"} display={"inline-flex"}>
                 <Typography component={"span"}>
                   {priceU
-                    ? PriceTag[CurrencyToTag[currency]] + priceU
+                    ? PriceTag[ CurrencyToTag[ currency ] ] + priceU
                     : EmptyValueTag}
                 </Typography>
               </Box>
