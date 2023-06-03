@@ -48,7 +48,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 240px auto auto auto 200px !important;`
-        : ` --template-columns: 16% 54% auto 8% !important;
+        : ` --template-columns: 16% 50% auto 8% !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -484,9 +484,17 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               justifyContent={"center"}
             >
               <Typography component={"span"}>
-                {typeof amountU === "undefined"
+                {typeof amountU === "undefined" || !Number(amountU)
                   ? EmptyValueTag
-                  : PriceTag[CurrencyToTag[currency]] + amountU}
+                  : PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(amountU).times(forexValue),
+                      undefined,
+                      undefined,
+                      2,
+                      true,
+                      { isFait: true }
+                    )}
               </Typography>
               <Typography
                 component={"span"}
@@ -529,11 +537,20 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               flexDirection={"column"}
               justifyContent={"center"}
               height={"100%"}
+              alignItems={"flex-end"}
             >
               <Box className={"textAlignRight"} display={"inline-flex"}>
                 <Typography component={"span"}>
                   {priceU
-                    ? PriceTag[CurrencyToTag[currency]] + priceU
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        sdk.toBig(priceU).times(forexValue),
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true }
+                      )
                     : EmptyValueTag}
                 </Typography>
               </Box>
