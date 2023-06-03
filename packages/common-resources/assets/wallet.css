@@ -23,12 +23,10 @@ button:hover {
 
 header .headerGg {
   width: 100vw;
-  background-color: var(--color-box);
 }
 
 header .Toolbar-root {
   height: var(--header-height);
-  background-color: var(--color-box);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -194,27 +192,28 @@ body {
 .sectionDetail {
   display: flex;
   flex-direction: column;
+  width: 587px;
   min-width: 587px;
 }
 
 .sectionDetail h3 {
-  word-break: break-all;
-  white-space: pre;
+  word-break: break-word;
+  white-space: pre-line;
   line-height: 1.2em;
   margin: 24px 0;
 }
 
 .sectionDetail p {
   line-height: 1.2em;
-  word-break: break-all;
-  white-space: pre;
+  word-break: break-word;
+  white-space: pre-line;
 }
 
 .sectionFull {
   align-items: center;
   justify-content: center;
   width: 100vw;
-  margin-bottom: 40px;
+  margin: 160px 0;
 }
 
 .sectionFull:nth-child(even) .wrap {
@@ -280,7 +279,7 @@ h3 ~ p.Typography-root {
   /*background-clip: text;*/
   border-radius: 2px;
   text-fill-color: transparent;
-  margin-top: 40px;
+  margin-top: 120px;
   margin-bottom: 16px;
   text-align: center;
 }
@@ -304,6 +303,7 @@ footer .content {
 }
 
 footer .footerWallet {
+  z-index: 99;
   background: var(--color-box);
   padding-top: 16px;
   padding-bottom: 16px;
@@ -329,6 +329,10 @@ footer .group h6 {
 footer .group .Typography-root {
   font-size: var(--body2);
   line-height: 2em;
+}
+
+.Button-root {
+  cursor: pointer;
 }
 
 .groupIcon li {
@@ -370,13 +374,80 @@ footer .group .Typography-root {
 }
 
 .carousel-container {
+  --height: 596px;
+  --width: 280px;
   display: flex;
+  margin-top: 120px;
   overflow: hidden;
   width: 800px;
-  height: 800px;
+  height: calc(var(--height) + 32px);
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
-@media only screen and (max-device-width: 1024px) {
+.carousel-container .container {
+  height: 100%;
+  width: 100%;
+}
+
+.carousel-container #slider {
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-container input[type="radio"] {
+  display: none;
+}
+
+.carousel-container .cards {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-container .card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: calc(var(--width) / -2);
+  margin-top: calc(var(--height) / -2);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.carousel-container img {
+  width: var(--width);
+  object-fit: cover;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-1,
+.carousel-container #item-2:checked ~ .cards #selector-2,
+.carousel-container #item-3:checked ~ .cards #selector-3 {
+  transform: translateX(0%) scale(1);
+  z-index: 80;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-3,
+.carousel-container #item-2:checked ~ .cards #selector-1,
+.carousel-container #item-3:checked ~ .cards #selector-2 {
+  transform: translateX(100%) scale(0.8);
+  z-index: 70;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-2,
+.carousel-container #item-2:checked ~ .cards #selector-3,
+.carousel-container #item-3:checked ~ .cards #selector-1 {
+  transform: translateX(-100%) scale(0.8);
+  z-index: 70;
+}
+
+@media only screen and (max-width: 1024px) {
   .Container-root, .wrap {
     width: 100vw;
     padding: 0 16px;
@@ -391,7 +462,6 @@ footer .group .Typography-root {
     align-items: center;
     justify-content: center;
   }
-
   #logo {
     min-width: auto;
     /*border-radius: 0px;*/
@@ -402,41 +472,33 @@ footer .group .Typography-root {
     height: 40px;
     margin-left: 8px;
   }
-
   h3.Typography-root {
     font-size: var(--h4);
     text-align: center;
   }
-
   h3 ~ p.Typography-root {
     font-size: var(--body);
     white-space: initial;
   }
-
   header ul li:first-child {
     display: none;
   }
-
   .downLoadBtnGroup {
     flex-direction: column;
-    min-height: 200px;
+    min-height: 260px;
     margin-left: 0;
   }
-
   .downLoadBtnGroup button {
     margin-left: 0;
   }
-
   footer .footerWallet .wrap {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
   }
-
   footer .content {
     flex-direction: column;
   }
-
   #labelEthereumUnleashed {
     width: 100%;
     font-size: 36px;
@@ -450,29 +512,69 @@ footer .group .Typography-root {
     align-items: flex-start;
     justify-content: center;
     height: initial;
-    margin: 24px 0;
+    margin: 80px 0;
   }
 
-  .sectionDetail .wrap {
-    flex-direction: column !important;
+  .sectionFull .wrap {
+    flex-direction: column-reverse !important;
   }
 
-  .sectionDetail .img-container {
+  .sectionFull .wrap .sectionDetail {
+    width: auto;
+    min-width: auto;
+  }
+
+  .sectionFull .wrap .sectionDetail h3, .sectionFull .wrap .sectionDetail p {
+    text-align: center;
+  }
+
+  .sectionFull .img-container {
     display: flex;
     margin-top: 24px;
     justify-content: center !important;
+  }
+
+  .carousel-container #item-1:checked ~ .cards #selector-1,
+  .carousel-container #item-2:checked ~ .cards #selector-2,
+  .carousel-container #item-3:checked ~ .cards #selector-3 {
+    transform: translateX(0%) scale(1);
+    z-index: 80;
+  }
+
+  .carousel-container #item-1:checked ~ .cards #selector-3,
+  .carousel-container #item-2:checked ~ .cards #selector-1,
+  .carousel-container #item-3:checked ~ .cards #selector-2 {
+    transform: translateX(80%) scale(0.8);
+    z-index: 70;
+  }
+
+  .carousel-container #item-1:checked ~ .cards #selector-2,
+  .carousel-container #item-2:checked ~ .cards #selector-3,
+  .carousel-container #item-3:checked ~ .cards #selector-1 {
+    transform: translateX(-80%) scale(0.8);
+    z-index: 70;
   }
 }
 
 .gradient-border {
   --borderWidth: 3px;
-  background: #1D1F20;
+  background: var(--color-global-Bg);
   position: relative;
 }
 
-.gradient-border:after {
+.gradient-border:hover {
+  border: 0;
+  box-shadow: 0 5px 15px #f7953304, 0 10px 30px #f3705502;
+  animation: boxShow 3s ease alternate infinite;
+}
+
+.gradient-border:hover:after {
   content: '';
   position: absolute;
+  top: calc(-1 * var(--borderWidth));
+  left: calc(-1 * var(--borderWidth));
+  right: calc(-1 * var(--borderWidth));
+  bottom: calc(-1 * var(--borderWidth));
   background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
   border-radius: calc(2 * var(--borderWidth));
   z-index: -1;
@@ -480,18 +582,89 @@ footer .group .Typography-root {
   background-size: 300% 300%;
 }
 
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  #labelEthereumUnleashed {
+    width: 522px;
+    height: 72px;
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 72px;
+    background: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /*background-clip: text;*/
+    border-radius: 2px;
+    text-fill-color: transparent;
+    margin-top: 120px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  #labelGatewayToEthereum {
+    margin-bottom: 32px;
+    font-size: var(--h4);
+    text-align: center;
+  }
+
+  h3.Typography-root {
+    font-size: var(--h1);
+    margin: 80px 0 40px 0;
+  }
+
+  h3 ~ p.Typography-root {
+    color: var(--color-text-third);
+    font-size: var(--h5);
+  }
+}
+
+@keyframes boxShow {
+  0% {
+    box-shadow: 0 5px 15px rgba(247, 149, 51, 0.4), 0 10px 30px rgba(243, 112, 85, 0.2);
+  }
+  25% {
+    box-shadow: 0 5px 15px rgba(239, 78, 123, 0.4), 0 10px 30px rgba(161, 102, 171, 0.2);
+  }
+  50% {
+    box-shadow: 0 5px 15px rgba(80, 115, 184, 0.4), 0 10px 30px rgba(16, 152, 173, 0.2);
+  }
+  75% {
+    box-shadow: 0 5px 15px rgba(7, 179, 155, 0.4), 0 10px 30px rgba(111, 186, 130, 0.2);
+  }
+}
+
 @keyframes animatedgradient {
   0% {
     background-position: 0% 50%;
   }
-  50% {
-    background-position: 100% 50%;
+  25% {
+    background-position: 25% 50%;
   }
-  100% {
-    background-position: 0% 50%;
+  50% {
+    background-position: 50% 50%;
+  }
+  75% {
+    background-position: 75% 50%;
   }
 }
 
 #changeColor {
   margin-right: 24px;
+  border: 0;
+}
+
+#bgContent {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#bgContent #bgAlpha {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(20%, -10%) rotate(13deg);
 }
