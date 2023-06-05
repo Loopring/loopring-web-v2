@@ -775,3 +775,8 @@ export enum TradeBaseType {
   stopPrice = "stopPrice",
   checkMarketPrice = "checkMarketPrice",
 }
+
+export type AmmHistoryItem = {
+  close: number;
+  timeStamp: number;
+};

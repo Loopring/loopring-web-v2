@@ -13,6 +13,9 @@ import {
   TransactionTable,
   useSettings,
   BtradeSwapTable,
+  ToastType,
+  useToggle,
+  ComingSoonPanel,
 } from "@loopring-web/component-lib";
 import {
   StylePaper,
@@ -51,11 +54,10 @@ const HistoryPanel = withTranslation("common")(
     const history = useHistory();
     const { search } = useLocation();
     const { isMobile } = useSettings();
+    const {
+      toggle: { StopLimit },
+    } = useToggle();
     const match: any = useRouteMatch("/l2assets/:history/:tab/:orderTab?");
-    // const orderTabMatch: any = useRouteMatch(
-    //   "/l2assets/:history/:tab/:orderTab"
-    // );
-
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(() => {
       return match?.params.tab ?? RecordTabIndex.transactions;
@@ -188,7 +190,7 @@ const HistoryPanel = withTranslation("common")(
         <StylePaper ref={container} flex={1}>
           <Toast
             alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? "success"}
+            severity={toastOpen?.type ?? ToastType.success}
             open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}
@@ -414,56 +416,64 @@ const HistoryPanel = withTranslation("common")(
                 flexDirection={"column"}
                 marginTop={-2}
               >
-                <Box marginBottom={2} marginLeft={3}>
-                  <Tabs
-                    value={currentOrderTab}
-                    onChange={(_event, value) => {
-                      setCurrentOrderTab(value);
-                      history.replace(
-                        `/l2assets/history/stopLimitOrder/${value}?${search.replace(
-                          "?",
-                          ""
-                        )}`
-                      );
-                    }}
-                    aria-label="l2-history-tabs"
-                    variant="scrollable"
-                  >
-                    <Tab
-                      label={t("labelOrderTableOpenOrder")}
-                      value={TabOrderIndex.orderOpenTable}
-                    />
-                    <Tab
-                      label={t("labelOrderTableOrderHistory")}
-                      value={TabOrderIndex.orderHistoryTable}
-                    />
-                  </Tabs>
-                </Box>
+                {StopLimit.enable == false && StopLimit.reason === "no view" ? (
+                  <>
+                    <ComingSoonPanel />
+                  </>
+                ) : (
+                  <>
+                    <Box marginBottom={2} marginLeft={3}>
+                      <Tabs
+                        value={currentOrderTab}
+                        onChange={(_event, value) => {
+                          setCurrentOrderTab(value);
+                          history.replace(
+                            `/l2assets/history/stopLimitOrder/${value}?${search.replace(
+                              "?",
+                              ""
+                            )}`
+                          );
+                        }}
+                        aria-label="l2-history-tabs"
+                        variant="scrollable"
+                      >
+                        <Tab
+                          label={t("labelOrderTableOpenOrder")}
+                          value={TabOrderIndex.orderOpenTable}
+                        />
+                        <Tab
+                          label={t("labelOrderTableOrderHistory")}
+                          value={TabOrderIndex.orderHistoryTable}
+                        />
+                      </Tabs>
+                    </Box>
 
-                <OrderHistoryTable
-                  {...{
-                    pagination:
-                      currentOrderTab === TabOrderIndex.orderOpenTable
-                        ? undefined
-                        : {
-                            pageSize: pageSize - 1,
-                            total: totalNumStopLimit,
-                          },
-                    isStopLimit: true,
-                    rawData: stopLimitRawData,
-                    showFilter: true,
-                    getOrderList: getStopLimitOrderList,
-                    marketArray: orderRaw,
-                    showDetailLoading: false,
-                    userOrderDetailList,
-                    getUserOrderDetailTradeList,
-                    ...rest,
-                    showLoading: showLoadingStopLimit,
-                    isOpenOrder:
-                      currentOrderTab === TabOrderIndex.orderOpenTable,
-                    cancelOrder: cancelOrderStopLimit,
-                  }}
-                />
+                    <OrderHistoryTable
+                      {...{
+                        pagination:
+                          currentOrderTab === TabOrderIndex.orderOpenTable
+                            ? undefined
+                            : {
+                                pageSize: pageSize - 1,
+                                total: totalNumStopLimit,
+                              },
+                        isStopLimit: true,
+                        rawData: stopLimitRawData,
+                        showFilter: true,
+                        getOrderList: getStopLimitOrderList,
+                        marketArray: orderRaw,
+                        showDetailLoading: false,
+                        userOrderDetailList,
+                        getUserOrderDetailTradeList,
+                        ...rest,
+                        showLoading: showLoadingStopLimit,
+                        isOpenOrder:
+                          currentOrderTab === TabOrderIndex.orderOpenTable,
+                        cancelOrder: cancelOrderStopLimit,
+                      }}
+                    />
+                  </>
+                )}
               </Box>
             ) : currentTab === RecordTabIndex.btradeSwapRecords ? (
               <Box

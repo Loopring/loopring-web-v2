@@ -160,7 +160,7 @@ export const Toolbar = withTranslation("common")(
         );
         const isRise = ticker.floatTag === "increase";
 
-        const basePriceDollar =
+        const basepriceU =
           ticker.close * (tokenPrices[quote] ?? 0) ?? tokenPrices[base] ?? 0;
         setMarketTicker((state: any) => {
           return {
@@ -171,7 +171,7 @@ export const Toolbar = withTranslation("common")(
             isRise,
             baseVol,
             quoteVol,
-            basePriceDollar,
+            basepriceU,
           };
         });
       }
@@ -413,8 +413,7 @@ export const Toolbar = withTranslation("common")(
               <PriceValueStyled>
                 {PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
-                    (marketTicker.basePriceDollar || 0) *
-                      (forexMap[currency] ?? 0),
+                    (marketTicker.basepriceU || 0) * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
                     2,

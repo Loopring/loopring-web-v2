@@ -1,26 +1,13 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import styled from "@emotion/styled";
 
 import React from "react";
 import { useAmmMapUI } from "./hook";
 
-import {
-  PoolsTable,
-  InputSearch,
-  useSettings,
-  useOpenModals,
-  AmmPanelType,
-  Button,
-} from "@loopring-web/component-lib";
+import { Button, PoolsTable, useSettings } from "@loopring-web/component-lib";
 
-import {
-  store,
-  useAccount,
-  useSystem,
-  useTokenMap,
-  useNotify,
-} from "@loopring-web/core";
+import { useNotify, useSystem } from "@loopring-web/core";
 import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 
@@ -37,6 +24,7 @@ const StylePaper = styled(Box)`
   //height: 100%;
   flex: 1;
   padding-bottom: ${({ theme }) => theme.unit}px;
+
   .rdg {
     flex: 1;
   }
@@ -47,24 +35,11 @@ export const PoolsPanel = withTranslation("common")(
     t,
   }: WithTranslation & {}) => {
     const container = React.useRef(null);
-    const { account } = useAccount();
     const history = useHistory();
-    const {
-      filteredData,
-      sortMethod,
-      tableHeight,
-      getFilteredData,
-      filterValue,
-      rawData,
-    } = useAmmMapUI();
-    const { setShowAmm } = useOpenModals();
-    const { coinJson } = useSettings();
-    const { forexMap, allowTrade } = useSystem();
-    const { tokenMap } = useTokenMap();
-    const { tokenPrices } = store.getState().tokenPrices;
-    const showLoading = rawData && !rawData.length;
+    const { forexMap } = useSystem();
+    const { currency } = useSettings();
+    const poolTableProps = useAmmMapUI();
     const { campaignTagConfig } = useNotify().notifyMap ?? {};
-
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
         <Box
@@ -93,27 +68,6 @@ export const PoolsPanel = withTranslation("common")(
           </Button>
         </Box>
         <WrapperStyled flex={1} marginBottom={3}>
-          <Box
-            marginBottom={3}
-            display={"inline-flex"}
-            flexDirection={"row"}
-            justifyContent={"space-between"}
-            paddingX={3}
-            paddingTop={3}
-            alignItems={"center"}
-          >
-            <Typography variant={"h5"} color={"textSecondary"} component={"h2"}>
-              {/* {t("labelLiquidityPageTitle")} */}
-            </Typography>
-            <InputSearch
-              key={"search"}
-              className={"search"}
-              aria-label={"search"}
-              placeholder={t("labelFilter")}
-              value={filterValue}
-              onChange={getFilteredData as any}
-            />
-          </Box>
           <StylePaper
             display={"flex"}
             flexDirection={"column"}
@@ -121,35 +75,11 @@ export const PoolsPanel = withTranslation("common")(
             className={"table-divide"}
           >
             <PoolsTable
-              tokenMap={tokenMap as any}
               {...{
-                rawData: filteredData,
-                showLoading,
-                tableHeight,
-                sortMethod,
+                ...poolTableProps,
                 campaignTagConfig,
-                coinJson,
-                account,
-                tokenPrices,
-                allowTrade,
-                forexMap: forexMap as any,
                 rowConfig: RowInvestConfig,
-                handleWithdraw: (row) => {
-                  const pair = `${row.coinAInfo?.simpleName}-${row.coinBInfo?.simpleName}`;
-                  setShowAmm({
-                    isShow: true,
-                    type: AmmPanelType.Exit,
-                    symbol: pair,
-                  });
-                },
-                handleDeposit: (row) => {
-                  const pair = `${row.coinAInfo?.simpleName}-${row.coinBInfo?.simpleName}`;
-                  setShowAmm({
-                    isShow: true,
-                    type: AmmPanelType.Join,
-                    symbol: pair,
-                  });
-                },
+                forexValue: forexMap[currency],
               }}
             />
           </StylePaper>

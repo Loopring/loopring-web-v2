@@ -115,10 +115,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       },
       [tradeData, onChangeEvent]
     );
-    const [symbolSell, symbolBuy] =
-      tradeData.type == TradeProType.sell
-        ? [tradeData.base, tradeData.quote]
-        : [tradeData.quote, tradeData.base];
+
     const priceImpactColor = tradeCalcProData?.priceImpactColor
       ? tradeCalcProData.priceImpactColor
       : "textPrimary";
@@ -504,9 +501,12 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                         interpolation={{ escapeValue: false }}
                         tOptions={{
                           // ,symbolBuy
-                          symbolSell: symbolSell?.belong,
-                          symbolBuy: symbolBuy?.belong,
-                          stob: tradeCalcProData.StoB,
+                          symbolSell: tradeData.base.belong,
+                          symbolBuy: tradeData.quote.belong,
+                          stob:
+                            tradeType === TradeProType.sell
+                              ? tradeCalcProData.StoB
+                              : tradeCalcProData.BtoS,
                           marketPrice: tradeCalcProData.marketPrice,
                           marketRatePrice: tradeCalcProData.marketRatePrice,
                         }}

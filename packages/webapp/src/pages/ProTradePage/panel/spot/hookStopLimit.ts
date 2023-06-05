@@ -28,6 +28,7 @@ import {
 } from "@loopring-web/common-resources";
 import {
   StopLimitTradeData,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -142,7 +143,7 @@ export const useStopLimit = <
     } else {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: t("labelLimitMarket"),
       });
     }
@@ -245,7 +246,7 @@ export const useStopLimit = <
           ) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content: t("labelLimitFailed") + " : " + response.message,
             });
           } else {
@@ -292,13 +293,13 @@ export const useStopLimit = <
                   if (percentage1 === 0 || percentage2 === 0) {
                     setToastOpen({
                       open: true,
-                      type: "warning",
+                      type: ToastType.warning,
                       content: t("labelSwapCancelled"),
                     });
                   } else {
                     setToastOpen({
                       open: true,
-                      type: "success",
+                      type: ToastType.success,
                       content: t("labelSwapSuccess"),
                     });
                   }
@@ -306,21 +307,21 @@ export const useStopLimit = <
                 case sdk.OrderStatus.processed:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelSwapSuccess"),
                   });
                   break;
                 case sdk.OrderStatus.processing:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelOrderProcessing"),
                   });
                   break;
                 default:
                   setToastOpen({
                     open: true,
-                    type: "error",
+                    type: ToastType.error,
                     content: t("labelLimitFailed"),
                   });
               }
@@ -334,7 +335,7 @@ export const useStopLimit = <
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content: t("labelLimitFailed"),
           });
         }
@@ -414,6 +415,11 @@ export const useStopLimit = <
                 : undefined,
           },
         });
+        myLog(
+          "stopLimit",
+          calcTradeParams?.baseVolShow as number,
+          calcTradeParams?.quoteVolShow as number
+        );
         setStopLimitTradeData((state) => {
           const tradePrice = tradeData.price.tradeValue;
           let balance =
@@ -450,11 +456,17 @@ export const useStopLimit = <
             } as IBData<any>,
             base: {
               ...state.base,
-              tradeValue: calcTradeParams?.baseVolShow as number,
+              tradeValue:
+                calcTradeParams?.baseVolShow == Infinity
+                  ? undefined
+                  : (calcTradeParams?.baseVolShow as number),
             },
             quote: {
               ...state.quote,
-              tradeValue: calcTradeParams?.quoteVolShow as number,
+              tradeValue:
+                calcTradeParams?.quoteVolShow == Infinity
+                  ? undefined
+                  : (calcTradeParams?.quoteVolShow as number),
             },
           };
         });
@@ -651,10 +663,16 @@ export const useStopLimit = <
       quoteSymbol,
       tradeType: pageTradePro.tradeType,
       limitPrice: stopLimitTradeData?.price?.tradeValue,
-      stopPrice: pageTradePro.request?.stopPrice,
+      stopPrice: stopLimitTradeData?.stopPrice.tradeValue,
       baseValue: stopLimitTradeData?.base?.tradeValue,
       quoteValue: stopLimitTradeData?.quote?.tradeValue,
+      stopSide: pageTradePro.request?.stopSide,
+      handleClose: () => {
+        setIsLimitLoading(false);
+        setConfirmed(false);
+      },
       onSubmit: (e: any) => {
+        setConfirmed(false);
         limitSubmit(e as any, true);
       },
     },
@@ -671,7 +689,5 @@ export const useStopLimit = <
           : "1.6rem",
       },
     },
-
-    // marketTicker,
   };
 };

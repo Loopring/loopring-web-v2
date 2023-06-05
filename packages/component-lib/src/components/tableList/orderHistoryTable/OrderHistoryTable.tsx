@@ -138,7 +138,7 @@ export type OrderHistoryRawDataItem = {
   status: TradeStatus;
   hash: string;
   orderId: string;
-  extraOrderInfo: {
+  extraOrderInfo?: {
     extraOrderType: string;
     isTriggerd: boolean;
     stopPrice: string;

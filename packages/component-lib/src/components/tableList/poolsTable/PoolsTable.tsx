@@ -2,10 +2,12 @@ import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state/es";
+import * as sdk from "@loopring-web/loopring-sdk";
+
 import {
-  AvatarCoin,
   Button,
   Column,
+  InputSearch,
   NewTagIcon,
   Popover,
   PopoverPure,
@@ -15,7 +17,6 @@ import {
   TableProps,
 } from "../../basic-lib";
 import {
-  AmmDetail,
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -23,11 +24,12 @@ import {
   MoreIcon,
   PriceTag,
   RowConfig,
+  RowInvestConfig,
   SCENARIO,
-  SoursURL,
+  TokenType,
 } from "@loopring-web/common-resources";
-import { Avatar, Box, BoxProps, Grid, Typography } from "@mui/material";
-import { IconColumnProps, PoolTableProps, Row } from "./Interface";
+import { Box, BoxProps, Grid, Typography } from "@mui/material";
+import { PoolRow, PoolTableProps } from "./Interface";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 
@@ -35,8 +37,10 @@ import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
 import { AmmAPRDetail, AmmPairDetail, TagIconList } from "../../block";
 import { ActionPopContent } from "../myPoolTable/components/ActionPop";
+import { CoinIcons } from "../assetsTable";
+import _ from "lodash";
+import { useHistory, useLocation } from "react-router-dom";
 
-const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
     border-radius: ${({ theme }) => theme.unit}px;
@@ -44,7 +48,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 240px auto auto auto 200px !important;`
-        : ` --template-columns: 16% 60% auto 8% !important;
+        : ` --template-columns: 16% 50% auto 8% !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -52,6 +56,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
       align-items: center;
     }
   }
+
   .textAlignRight {
     text-align: right;
 
@@ -64,212 +69,157 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
-export const IconColumn = React.memo(
-  <R extends AmmDetail<T>, T>({
-    row,
-    size = 24,
-    campaignTagConfig,
-  }: IconColumnProps<R>) => {
-    const { coinJson, isMobile } = useSettings();
-    if (!row || !row.coinAInfo || !row.coinBInfo) {
-      return <BoxStyled />;
-    }
-    const { coinAInfo, coinBInfo, isNew } = row;
-    const coinAIcon: any = coinJson[coinAInfo?.simpleName];
-    const coinBIcon: any = coinJson[coinBInfo?.simpleName];
-    const pair = coinAInfo?.simpleName + "-" + coinBInfo?.simpleName;
-    return (
-      <BoxStyled
-        display={"flex"}
-        flexDirection={"row"}
-        justifyContent={"flex-start"}
-        alignItems={"center"}
-      >
-        <Box display={"flex"} alignContent={"center"} height={"initial"}>
-          <Box
-            className={"logo-icon"}
-            display={"flex"}
-            height={"var(--list-menu-coin-size)"}
-            position={"relative"}
-            zIndex={20}
-            width={"var(--list-menu-coin-size)"}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            {coinAIcon ? (
-              <AvatarCoin
-                imgx={coinAIcon.x}
-                imgy={coinAIcon.y}
-                imgheight={coinAIcon.h}
-                imgwidth={coinAIcon.w}
-                size={size}
-                variant="circular"
-                alt={coinAInfo?.simpleName as string}
-                // src={sellData?.icon}
-                src={
-                  "data:image/svg+xml;utf8," +
-                  '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                }
-              />
-            ) : (
-              <Avatar
-                variant="circular"
-                alt={coinAInfo?.simpleName as string}
-                style={{
-                  height: "var(--list-menu-coin-size)",
-                  width: "var(--list-menu-coin-size)",
-                }}
-                // src={sellData?.icon}
-                src={SoursURL + "images/icon-default.png"}
-              />
-            )}
-          </Box>
-          <Box
-            className={"logo-icon"}
-            display={"flex"}
-            height={"var(--list-menu-coin-size)"}
-            position={"relative"}
-            zIndex={18}
-            left={-8}
-            width={"var(--list-menu-coin-size)"}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            {coinBIcon ? (
-              <AvatarCoin
-                imgx={coinBIcon.x}
-                imgy={coinBIcon.y}
-                imgheight={coinBIcon.h}
-                imgwidth={coinBIcon.w}
-                size={size}
-                variant="circular"
-                alt={coinBInfo?.simpleName as string}
-                // src={sellData?.icon}
-                src={
-                  "data:image/svg+xml;utf8," +
-                  '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                }
-              />
-            ) : (
-              <Avatar
-                variant="circular"
-                alt={coinBInfo?.simpleName as string}
-                style={{
-                  height: "var(--list-menu-coin-size)",
-                  width: "var(--list-menu-coin-size)",
-                }}
-                // src={sellData?.icon}
-                src={SoursURL + "images/icon-default.png"}
-              />
-            )}
-          </Box>
-        </Box>
-
-        {!isMobile && (
-          <Typography
-            variant={isMobile ? "body2" : "inherit"}
-            display={"flex"}
-            flexDirection={"column"}
-            marginLeft={isMobile ? 0 : 1}
-            component={"div"}
-            paddingRight={isMobile ? 0 : 1}
-            textOverflow={"ellipsis"}
-          >
-            <Typography
-              variant="inherit"
-              component={"span"}
-              color={"textPrimary"}
-              title={"sell"}
-            >
-              <Typography
-                variant="inherit"
-                component={"span"}
-                className={"next-coin"}
-              >
-                {coinAInfo?.simpleName}
-              </Typography>
-              <Typography variant="inherit" component={"i"}>
-                /
-              </Typography>
-              <Typography variant="inherit" component={"span"} title={"buy"}>
-                {coinBInfo?.simpleName}
-              </Typography>
-            </Typography>
-          </Typography>
-        )}
-        {campaignTagConfig && (
-          <TagIconList
-            scenario={SCENARIO.AMM}
-            campaignTagConfig={campaignTagConfig}
-            symbol={pair}
-          />
-        )}
-        {isNew && <NewTagIcon />}
-      </BoxStyled>
-    );
-  }
-) as unknown as <R extends AmmDetail<T>, T>(
-  props: IconColumnProps<R>
-) => JSX.Element;
-
 export const PoolsTable = withTranslation(["tables", "common"])(
-  <T extends { [key: string]: any }>({
+  <T extends PoolRow<any>>({
     t,
     i18n,
     tReady,
     campaignTagConfig,
     showFilter = true,
     rawData,
-    sortMethod,
+    filterValue: _filterValue,
+    getFilteredData,
     wait = globalSetup.wait,
-    tableHeight = 350,
-    coinJson,
-    account,
-    tokenPrices,
     showLoading,
     handleWithdraw,
     handleDeposit,
-    tokenMap,
-    forexMap,
-    allowTrade,
     rowConfig = RowConfig,
+    forexValue = 1,
     ...rest
   }: WithTranslation & PoolTableProps<T>) => {
-    const { currency, isMobile } = useSettings();
+    const { currency, isMobile, coinJson } = useSettings();
+    const { search, pathname } = useLocation();
+    const searchParams = new URLSearchParams(search);
+    const history = useHistory();
+    const [filterValue, setFilterValue] = React.useState(_filterValue ?? "");
 
-    const getPopoverState = React.useCallback((label: string) => {
-      return usePopupState({
-        variant: "popover",
-        popupId: `popup-poolsTable-${label}`,
-      });
-    }, []);
+    const updateData = _.debounce(
+      ({ searchValue = "" }: { searchValue: string }) => {
+        getFilteredData(searchValue);
+      },
+      wait
+    );
+    const handleFilterChange = React.useCallback(
+      async ({ searchValue }: any) => {
+        setFilterValue(searchValue);
+        searchParams.set("search", searchValue ?? "");
+        history.push({
+          pathname,
+          search: searchParams.toString(),
+        });
+        updateData({ searchValue });
+      },
+      []
+    );
 
-    const getPopoverAprState = React.useCallback((label: string) => {
-      return usePopupState({
-        variant: "popover",
-        popupId: `popup-poolsTable-${label}`,
-      });
-    }, []);
-    const columnMode = <R extends Row<T>, T>(): Column<R, unknown>[] => [
+    const sortMethod = React.useCallback(
+      (_sortedRows, sortColumn) => {
+        let _rawData = [];
+        switch (sortColumn) {
+          case "pools":
+            _rawData = rawData.sort((a, b) => {
+              const valueA = a.coinAInfo.simpleName;
+              const valueB = b.coinAInfo.simpleName;
+              return valueB.localeCompare(valueA);
+            });
+            break;
+          case "liquidity":
+            _rawData = rawData.sort((a, b) => {
+              return sdk
+                .toBig(b.amountU?.replaceAll(sdk.SEP, "") ?? 0)
+                .minus(a.amountU?.replaceAll(sdk.SEP, "") ?? 0)
+                .toNumber();
+            });
+            break;
+          case "volume24":
+            _rawData = rawData.sort((a, b) => {
+              return sdk
+                .toBig(b?.tradeFloat?.priceU ?? 0)
+                .minus(a?.tradeFloat?.priceU ?? 0)
+                .toNumber();
+            });
+            break;
+          case "APR":
+            _rawData = rawData.sort((a, b) => {
+              return sdk
+                .toBig(b.APR ?? 0)
+                .minus(a.APR ?? 0)
+                .toNumber();
+            });
+            break;
+          default:
+            _rawData = rawData;
+        }
+        return _rawData;
+      },
+      [rawData]
+    );
+    const columnMode = (): Column<T, any>[] => [
       {
         key: "pools",
         sortable: true,
         width: "auto",
         minWidth: 240,
         name: t("labelPool"),
-        formatter: ({ row }: FormatterProps<R>) => {
+        formatter: ({ row }: FormatterProps<T>) => {
           return (
             <Box
               flex={1}
               height={"100%"}
               alignContent={"center"}
               display={"flex"}
+              alignItems={"center"}
             >
-              <IconColumn
-                row={row as any}
-                account={account}
-                campaignTagConfig={campaignTagConfig}
+              <CoinIcons
+                type={TokenType.lp}
+                tokenIcon={[coinJson[row.coinA], coinJson[row.coinB]]}
               />
+              <Typography
+                variant={"inherit"}
+                color={"textPrimary"}
+                display={"flex"}
+                flexDirection={"row"}
+                marginLeft={2}
+                component={"span"}
+                paddingRight={1}
+              >
+                <Typography component={"span"} className={"next-coin"}>
+                  <Typography
+                    variant="inherit"
+                    component={"span"}
+                    className={"next-coin"}
+                  >
+                    {row.coinAInfo?.simpleName}
+                  </Typography>
+                  <Typography variant="inherit" component={"i"}>
+                    /
+                  </Typography>
+                  <Typography
+                    variant="inherit"
+                    component={"span"}
+                    title={"buy"}
+                  >
+                    {row.coinBInfo?.simpleName}
+                  </Typography>
+                </Typography>
+                <Typography
+                  variant="inherit"
+                  component={"span"}
+                  display={"inline-flex"}
+                  title={"buy"}
+                  alignItems={"center"}
+                  paddingLeft={1 / 2}
+                >
+                  {campaignTagConfig && (
+                    <TagIconList
+                      scenario={SCENARIO.AMM}
+                      campaignTagConfig={campaignTagConfig}
+                      symbol={row.market}
+                    />
+                  )}
+                  {row.isNew && <NewTagIcon />}
+                </Typography>
+              </Typography>
             </Box>
           );
         },
@@ -281,34 +231,34 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         headerCellClass: "textAlignRight",
         name: t("labelLiquidity"),
         formatter: ({ row, rowIdx }) => {
-          const { coinA, coinB, totalA, totalB, amountDollar } = row as any;
-          const popoverState = getPopoverState(rowIdx.toString());
-
+          const { coinA, coinB, totalAStr, totalBStr, amountU } = row;
+          const popoverState = usePopupState({
+            variant: "popover",
+            popupId: `popup-poolsTable-${rowIdx.toString()}`,
+          });
           return (
-            <>
-              <Box className={"textAlignRight"}>
-                <Typography
-                  {...bindHover(popoverState)}
-                  paddingTop={1}
-                  component={"span"}
-                  style={{
-                    cursor: "pointer",
-                    textDecoration: "underline dotted",
-                  }}
-                >
-                  {typeof amountDollar === "undefined"
-                    ? EmptyValueTag
-                    : PriceTag[CurrencyToTag[currency]] +
-                      getValuePrecisionThousand(
-                        amountDollar * (forexMap[currency] ?? 0),
-                        undefined,
-                        undefined,
-                        undefined,
-                        true,
-                        { isFait: true }
-                      )}
-                </Typography>
-              </Box>
+            <Box className={"textAlignRight"}>
+              <Typography
+                {...bindHover(popoverState)}
+                paddingTop={1}
+                component={"span"}
+                style={{
+                  cursor: "pointer",
+                  textDecoration: "underline dotted",
+                }}
+              >
+                {typeof amountU === "undefined" || !Number(amountU)
+                  ? EmptyValueTag
+                  : PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(amountU).times(forexValue),
+                      undefined,
+                      undefined,
+                      2,
+                      true,
+                      { isFait: true }
+                    )}
+              </Typography>
               <PopoverPure
                 className={"arrow-top-center"}
                 {...bindPopper(popoverState)}
@@ -321,18 +271,14 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                   horizontal: "center",
                 }}
               >
-                {coinA && coinB && (
-                  <AmmPairDetail
-                    coinA={coinA}
-                    coinB={coinB}
-                    balanceA={totalA}
-                    balanceB={totalB}
-                    precisionA={tokenMap[coinA]?.precision}
-                    precisionB={tokenMap[coinB]?.precision}
-                  />
-                )}
+                <AmmPairDetail
+                  coinA={coinA as any}
+                  coinB={coinB as any}
+                  balanceA={totalAStr}
+                  balanceB={totalBStr}
+                />
               </PopoverPure>
-            </>
+            </Box>
           );
         },
       },
@@ -344,23 +290,17 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         headerCellClass: "textAlignRight",
         name: t("label24TradeVolume"),
         formatter: ({ row }) => {
-          const { volume } =
-            row.tradeFloat && row.tradeFloat.volume
-              ? row.tradeFloat
-              : { volume: EmptyValueTag };
-          const totalAmountDollar =
-            (Number(volume) || 0) *
-            (tokenPrices[row.coinAInfo?.simpleName] || 0);
+          const { priceU } = row?.tradeFloat ?? {};
           return (
             <Box className={"textAlignRight"}>
               <Typography component={"span"}>
-                {volume && Number.isFinite(volume)
+                {priceU
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      totalAmountDollar * (forexMap[currency] ?? 0),
+                      sdk.toBig(priceU).times(forexValue),
                       undefined,
                       undefined,
-                      undefined,
+                      2,
                       true,
                       { isFait: true }
                     )
@@ -380,7 +320,11 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         formatter: ({ row, rowIdx }) => {
           const APR =
             typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag;
-          const popoverState = getPopoverAprState(rowIdx.toString());
+          const popoverState = usePopupState({
+            variant: "popover",
+            popupId: `popup-poolsTable-${rowIdx.toString()}`,
+          });
+
           return (
             <Box className={"textAlignRight"}>
               <Typography
@@ -439,7 +383,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                 // href={`liquidity/pools/coinPair/${
                 //   row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
                 // }`}
-                disabled={!allowTrade?.joinAmm?.enable}
+                // disabled={!allowTrade?.joinAmm?.enable}
                 className={"btn"}
                 variant={"text"}
                 size={"small"}
@@ -464,26 +408,62 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         },
       },
     ];
-    const columnModeMobile = <R extends Row<T>, T>(): Column<R, unknown>[] => [
+    const columnModeMobile = (): Column<T, any>[] => [
       {
         key: "pools",
         sortable: true,
         width: "auto",
         name: t("labelPool"),
-        formatter: ({ row }: FormatterProps<R>) => {
+        formatter: ({ row }: FormatterProps<T>) => {
           return (
             <Box
               flex={1}
               height={"100%"}
               alignContent={"center"}
               display={"flex"}
+              alignItems={"center"}
             >
-              <IconColumn
-                account={account}
-                row={row as any}
-                size={20}
-                campaignTagConfig={campaignTagConfig}
+              <CoinIcons
+                type={TokenType.lp}
+                tokenIcon={[coinJson[row.coinA], coinJson[row.coinB]]}
               />
+              {/*<Typography*/}
+              {/*  variant={"inherit"}*/}
+              {/*  color={"textPrimary"}*/}
+              {/*  display={"flex"}*/}
+              {/*  flexDirection={"column"}*/}
+              {/*  marginLeft={2}*/}
+              {/*  component={"span"}*/}
+              {/*  paddingRight={1}*/}
+              {/*>*/}
+              {/*  <Typography component={"span"} className={"next-coin"}>*/}
+              {/*    <Typography*/}
+              {/*      variant="inherit"*/}
+              {/*      component={"span"}*/}
+              {/*      className={"next-coin"}*/}
+              {/*    >*/}
+              {/*      {row.coinAInfo?.simpleName}*/}
+              {/*    </Typography>*/}
+              {/*    <Typography variant="inherit" component={"i"}>*/}
+              {/*      /*/}
+              {/*    </Typography>*/}
+              {/*    <Typography*/}
+              {/*      variant="inherit"*/}
+              {/*      component={"span"}*/}
+              {/*      title={"buy"}*/}
+              {/*    >*/}
+              {/*      {row.coinBInfo?.simpleName}*/}
+              {/*    </Typography>*/}
+              {/*  </Typography>*/}
+              {/*  {campaignTagConfig && (*/}
+              {/*    <TagIconList*/}
+              {/*      scenario={SCENARIO.AMM}*/}
+              {/*      campaignTagConfig={campaignTagConfig}*/}
+              {/*      symbol={row.market}*/}
+              {/*    />*/}
+              {/*  )}*/}
+              {/*  {row.isNew && <NewTagIcon />}*/}
+              {/*</Typography>*/}
             </Box>
           );
         },
@@ -494,7 +474,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         headerCellClass: "textAlignRight",
         name: t("labelLiquidity"),
         formatter: ({ row }) => {
-          const { coinA, coinB, totalA, totalB, amountDollar } = row as any;
+          const { coinA, coinB, totalA, totalB, amountU } = row as any;
           return (
             <Box
               className={"textAlignRight"}
@@ -504,14 +484,14 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               justifyContent={"center"}
             >
               <Typography component={"span"}>
-                {typeof amountDollar === "undefined"
+                {typeof amountU === "undefined" || !Number(amountU)
                   ? EmptyValueTag
                   : PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      amountDollar * (forexMap[currency] ?? 0),
+                      sdk.toBig(amountU).times(forexValue),
                       undefined,
                       undefined,
-                      undefined,
+                      2,
                       true,
                       { isFait: true }
                     )}
@@ -546,13 +526,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         headerCellClass: "textAlignRight",
         name: t("label24VolumeSimple", { ns: "common" }) + "/" + t("labelAPR"),
         formatter: ({ row }) => {
-          const { volume } =
-            row.tradeFloat && row.tradeFloat.volume
-              ? row.tradeFloat
-              : { volume: EmptyValueTag };
-          const totalAmountDollar =
-            (Number(volume) || 0) *
-            (tokenPrices[row.coinAInfo?.simpleName] || 0);
+          const { priceU } = row?.tradeFloat ?? {};
           const APR =
             typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag;
 
@@ -563,24 +537,23 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               flexDirection={"column"}
               justifyContent={"center"}
               height={"100%"}
+              alignItems={"flex-end"}
             >
-              <Typography
-                component={"span"}
-                variant={"body2"}
-                color={"textPrimary"}
-              >
-                {volume && Number.isFinite(volume)
-                  ? PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      totalAmountDollar * (forexMap[currency] ?? 0),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true }
-                    )
-                  : EmptyValueTag}
-              </Typography>
+              <Box className={"textAlignRight"} display={"inline-flex"}>
+                <Typography component={"span"}>
+                  {priceU
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        sdk.toBig(priceU).times(forexValue),
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true }
+                      )
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
               <Typography
                 component={"span"}
                 variant={"body2"}
@@ -607,7 +580,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             children: <MoreIcon cursor={"pointer"} />,
             popoverContent: (
               <ActionPopContent
-                {...{ row, allowTrade, handleWithdraw, handleDeposit, t }}
+                {...{ row, handleWithdraw, handleDeposit, t }}
               />
             ),
             anchorOrigin: {
@@ -631,8 +604,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
       rawData,
       columnMode: isMobile ? columnModeMobile() : columnMode(),
       generateRows: (rawData: any) => rawData,
-      generateColumns: ({ columnsRaw }) =>
-        columnsRaw as Column<Row<any>, unknown>[],
+      generateColumns: ({ columnsRaw }) => columnsRaw as Column<T, any>[],
     };
 
     return (
@@ -642,8 +614,33 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         display={"flex"}
         isMobile={isMobile}
       >
+        {showFilter && (
+          <Box
+            marginBottom={3}
+            display={"inline-flex"}
+            flexDirection={"row"}
+            justifyContent={"flex-end"}
+            paddingX={3}
+            paddingTop={3}
+            alignItems={"center"}
+          >
+            <InputSearch
+              key={"search"}
+              className={"search"}
+              aria-label={"search"}
+              placeholder={t("labelFilter")}
+              value={filterValue}
+              onChange={(value: any) =>
+                handleFilterChange({ searchValue: value })
+              }
+            />
+          </Box>
+        )}
         <Table
-          style={{ height: tableHeight }}
+          style={{
+            height: (rawData.length + 1) * RowInvestConfig.rowHeight,
+            minHeight: "350px",
+          }}
           {...{
             ...defaultArgs,
             t,
@@ -654,8 +651,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             rowHeight: rowConfig.rowHeight,
             rowHeaderHeight: rowConfig.rowHeaderHeight,
             showloading: showLoading,
-            sortMethod: (sortedRows: any[], sortColumn: string) =>
-              sortMethod(sortedRows, sortColumn),
+            sortMethod,
             sortDefaultKey: "liquidity",
           }}
         />

@@ -28,6 +28,7 @@ import {
 import {
   DepthType,
   LimitTradeData,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -301,7 +302,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           ) {
             setToastOpen({
               open: true,
-              type: "error",
+              type: ToastType.error,
               content: t("labelLimitFailed") + " : " + response.message,
             });
           } else {
@@ -348,13 +349,13 @@ export const useLimit = <C extends { [key: string]: any }>({
                   if (percentage1 === 0 || percentage2 === 0) {
                     setToastOpen({
                       open: true,
-                      type: "warning",
+                      type: ToastType.warning,
                       content: t("labelSwapCancelled"),
                     });
                   } else {
                     setToastOpen({
                       open: true,
-                      type: "success",
+                      type: ToastType.success,
                       content: t("labelSwapSuccess"),
                     });
                   }
@@ -362,21 +363,21 @@ export const useLimit = <C extends { [key: string]: any }>({
                 case sdk.OrderStatus.processed:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelSwapSuccess"),
                   });
                   break;
                 case sdk.OrderStatus.processing:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelOrderProcessing"),
                   });
                   break;
                 default:
                   setToastOpen({
                     open: true,
-                    type: "error",
+                    type: ToastType.error,
                     content: t("labelLimitFailed"),
                   });
               }
@@ -390,7 +391,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content: t("labelLimitFailed"),
           });
         }
@@ -458,26 +459,27 @@ export const useLimit = <C extends { [key: string]: any }>({
           tokenPrices &&
           tradeData?.price?.tradeValue &&
           // @ts-ignore
-          tradeData.price.tradeValue !== "0"
+          sdk.toBig(tradeData.price.tradeValue).gt(0)
         ) {
           marketPrice = sdk
             .toBig(tokenPrices[tradeData.base.belong])
             .div(tokenPrices[tradeData.quote.belong]);
-          marketRatePrice = marketPrice.div(tradeData.price.tradeValue);
-          isNotMatchMarketPrice =
+          marketRatePrice =
             tradeData.type === "sell"
-              ? marketRatePrice.gt(1.05)
-              : marketRatePrice.lt(0.95);
+              ? marketPrice.div(tradeData?.price?.tradeValue)
+              : sdk
+                  .toBig(1)
+                  .div(marketPrice)
+                  .div(1 / tradeData?.price?.tradeValue);
+
+          isNotMatchMarketPrice = marketRatePrice.gt(1.05);
           marketPrice = getValuePrecisionThousand(
             marketPrice.toString(),
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision
           );
-          marketRatePrice =
-            tradeData.type === "sell"
-              ? marketRatePrice.minus(1).times(100).toFixed(2)
-              : sdk.toBig(1).minus(marketRatePrice).times(100).toFixed(2);
+          marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
         }
         updatePageTradePro({
           market,

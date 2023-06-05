@@ -27,6 +27,7 @@ import {
   IBData,
   Info2Icon,
   LoadingIcon,
+  myLog,
   NFTWholeINFO,
   TOAST_TIME,
   TradeBtnStatus,
@@ -38,6 +39,7 @@ import {
   FeeTokenItemWrapper,
   TextField,
   Toast,
+  ToastType,
 } from "../../index";
 import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";
@@ -154,7 +156,7 @@ export const TransferWrap = <
 
   const isExchangeEOA = detectedWalletType === WALLET_TYPE.EOA && isExchange;
   const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart;
-
+  myLog("transferWrap", realAddr);
   const view = React.useMemo(() => {
     if (isInvalidAddressOrENS) {
       return (
@@ -292,6 +294,7 @@ export const TransferWrap = <
     feeWithActive,
     addrStatus,
     realAddr,
+    isAddressCheckLoading,
     activeAccountPrice,
     isInvalidAddressOrENS,
     isExchangeEOA,
@@ -599,7 +602,7 @@ export const TransferWrap = <
         onClose={() => {
           setCopyToastOpen(false);
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
     </Grid>
   );

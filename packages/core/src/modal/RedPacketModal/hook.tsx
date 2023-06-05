@@ -30,7 +30,6 @@ import {
   NFTWholeINFO,
   UIERROR_CODE,
   YEAR_DAY_MINUTE_FORMAT,
-  YEAR_DAY_SECOND_FORMAT,
 } from "@loopring-web/common-resources";
 import { store, useAccount, useSystem, useTokenMap } from "../../stores";
 import {
@@ -1189,7 +1188,7 @@ export function useRedPacketModal() {
               claimType: CLAIM_TYPE.redPacket,
               successCallback: () => {
                 info.refreshCallback && info.refreshCallback();
-                redPacketBlindBoxDetailCall({ offset: 0 }).then((x) => {
+                redPacketBlindBoxDetailCall({ offset: 0 }).then(() => {
                   setShowRedPacket({ isShow: false });
                 });
                 // setBlindBoxType("Lottery Started")

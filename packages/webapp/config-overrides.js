@@ -123,7 +123,6 @@ module.exports = override(
       "@material-ui/core": "@mui/material",
       "@material-ui/core/Popover": "@mui/material/Popover",
     };
-
     return config;
   }
 );

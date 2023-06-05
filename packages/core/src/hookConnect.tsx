@@ -180,13 +180,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 }
 
 export const ViewAccountTemplate = React.memo(
-  ({
-    activeViewTemplate,
-    unlockWording,
-  }: {
-    activeViewTemplate: JSX.Element;
-    unlockWording?: string;
-  }) => {
+  ({ activeViewTemplate }: { activeViewTemplate: JSX.Element }) => {
     const { account } = useAccount();
     const { t } = useTranslation(["common", "layout"]);
     const { isMobile } = useSettings();
@@ -227,7 +221,7 @@ export const ViewAccountTemplate = React.memo(
                 variant={isMobile ? "h4" : "h1"}
                 textAlign={"center"}
               >
-                {unlockWording ?? t("describeTitleLocked")}
+                {t("describeTitleLocked")}
               </Typography>
               <WalletConnectL2Btn />
             </Box>

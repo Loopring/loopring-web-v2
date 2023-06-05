@@ -154,9 +154,9 @@ export const AssetsTable = withTranslation("tables")(
       setHideSmallBalances,
       forexMap,
       rowConfig = RowConfig,
+      hideAssets,
       onTokenLockHold,
       tokenLockDetail,
-      hideAssets,
       ...rest
     } = props;
 

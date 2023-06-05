@@ -594,14 +594,10 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                   ) : (
                     <NodeMenuItem
                       {...{ ...headerMenuLandingData[1], ...rest, t }}
-                      handleListKeyDown={() =>
-                        history.push(
-                          headerMenuLandingData[1].router?.pathName?.replace(
-                            "${pair}",
-                            pair
-                          ) ?? ""
-                        )
-                      }
+                      handleListKeyDown={() => {
+                        window.location.href =
+                          headerMenuLandingData[1].router!.path;
+                      }}
                     />
                   )}
 

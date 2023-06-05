@@ -35,6 +35,7 @@ import {
   FeeTokenItemWrapper,
   PopoverPure,
   Toast,
+  ToastType,
 } from "../..";
 import { Button, TextField, useSettings } from "../../../index";
 import { WithdrawViewProps } from "./Interface";
@@ -543,7 +544,7 @@ export const WithdrawWrap = <
         onClose={() => {
           setCopyToastOpen(false);
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
     </Grid>
   );

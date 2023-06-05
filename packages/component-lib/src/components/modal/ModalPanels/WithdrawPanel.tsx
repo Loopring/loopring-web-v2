@@ -65,7 +65,12 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       });
       return clonedWalletMap;
     }, [walletMap]);
-
+    type DisplayContact = {
+      name: string;
+      address: string;
+      avatarURL: string;
+      editing: boolean;
+    };
     // const [contacts, setContacts] = React.useState([] as DisplayContact[]);
     const dispatch = useDispatch();
     const contacts = useSelector((state: RootState) => state.contacts.contacts);

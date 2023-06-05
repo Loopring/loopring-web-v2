@@ -8,7 +8,7 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { Button, Toast, useAddressTypeLists } from "../../index";
+import { Button, Toast, ToastType, useAddressTypeLists } from "../../index";
 import { TransferViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -175,7 +175,7 @@ export const TransferConfirm = <
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

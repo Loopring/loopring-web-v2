@@ -23,7 +23,6 @@ export type SocketMap = {
     snapshot?: boolean;
   };
   [sdk.WsTopicType.btradedepth]?: {
-  // @ts-ignore
     showOverlap?: boolean;
     markets: any[];
     level?: number;

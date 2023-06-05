@@ -8,19 +8,21 @@ import {
   getValuePrecisionThousand,
   IBData,
   myLog,
+  ReverseIcon,
   SlippageTolerance,
-  SoursURL,
+  TokenType,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { AmmWithdrawWrapProps } from "./Interface";
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import { Avatar, Box, Grid, Link, Typography } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import {
-  AvatarCoin,
   BtnPercentage,
   ButtonStyle,
+  CoinIcons,
+  IconButtonStyled,
   InputCoin,
   LinkActionStyle,
   PopoverPure,
@@ -30,8 +32,6 @@ import { SlippagePanel } from "../tool";
 import { useSettings } from "../../../../stores";
 import { SvgStyled } from "./styled";
 import * as sdk from "@loopring-web/loopring-sdk";
-
-import { useAmmViewData } from "./ammViewHook";
 
 import _ from "lodash";
 
@@ -53,6 +53,7 @@ export const AmmWithdrawWrap = <
   ammWithdrawBtnI18nKey,
   onRemoveChangeEvent,
   handleError,
+  propsLPExtends = {},
   ammData,
   ...rest
 }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
@@ -77,34 +78,49 @@ export const AmmWithdrawWrap = <
       : 0;
   }, [ammData?.coinLP?.tradeValue, ammData.coinLP.balance]);
 
-  // const [_selectedPercentage, setSelectedPercentage] =
-  //   React.useState(percentage);
-  // myLog(
-  //   "_selectedPercentage",
-  //   ammData?.coinLP?.tradeValue,
-  //   ammData.coinLP.balance,
-  //   percentage
-  // );
+  const label = React.useMemo(() => {
+    if (ammWithdrawBtnI18nKey) {
+      const key = ammWithdrawBtnI18nKey.split("|");
+      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
+    } else {
+      return t(`labelRemoveLiquidityBtn`);
+    }
+  }, [ammWithdrawBtnI18nKey]);
 
-  const [_isStoB, setIsStoB] = React.useState(
-    typeof isStob !== "undefined" ? isStob : true
-  );
-  const [error, setError] = React.useState<{
-    error: boolean;
-    message?: string | JSX.Element;
-  }>({
-    error: false,
-    message: "",
-  });
-  const _onSwitchStob = React.useCallback(
-    (_event: any) => {
-      setIsStoB(!_isStoB);
-      if (typeof switchStobEvent === "function") {
-        switchStobEvent(!_isStoB);
+  const [_isStoB, setIsStoB] = React.useState(isStob ?? true);
+  const stob = React.useMemo(() => {
+    if (
+      ammCalcData &&
+      ammCalcData?.lpCoinA &&
+      ammCalcData?.lpCoinB &&
+      ammCalcData.AtoB
+    ) {
+      let price: string;
+      if (_isStoB) {
+        price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${
+          ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag
+        } ${ammCalcData?.lpCoinB?.belong}`;
+      } else {
+        price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${
+          ammCalcData.BtoA ? ammCalcData.BtoA : EmptyValueTag
+        } ${ammCalcData?.lpCoinA?.belong}`;
       }
-    },
-    [switchStobEvent, _isStoB]
-  );
+      return (
+        <>
+          {price}
+          <IconButtonStyled
+            size={"small"}
+            aria-label={t("tokenExchange")}
+            onClick={() => setIsStoB(!_isStoB)}
+          >
+            <ReverseIcon />
+          </IconButtonStyled>
+        </>
+      );
+    } else {
+      return EmptyValueTag;
+    }
+  }, [_isStoB, ammCalcData]);
 
   const getDisabled = () => {
     return (
@@ -113,20 +129,6 @@ export const AmmWithdrawWrap = <
       ammCalcData.coinInfoMap === undefined
     );
   };
-  if (typeof handleError !== "function") {
-    handleError = ({ belong, balance, tradeValue }: any) => {
-      if (balance < tradeValue || (tradeValue && !balance)) {
-        const _error = {
-          error: true,
-          message: t("tokenNotEnough", { belong: belong }),
-        };
-        setError(_error);
-        return _error;
-      }
-      setError({ error: false, message: "" });
-      return { error: false, message: "" };
-    };
-  }
 
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _ref: any) => {
@@ -136,14 +138,6 @@ export const AmmWithdrawWrap = <
           ammData?.coinLP.tradeValue !== ibData.tradeValue &&
           ammData?.coinLP.balance
         ) {
-          // const percentageValue = toBig(ibData.tradeValue ?? 0)
-          //   .div(ammData.coinLP.balance)
-          //   .times(100)
-          //   .toFixed(2);
-          // if (!isNaN(Number(percentageValue))) {
-          //   myLog("selected", Number(percentageValue));
-          //   setSelectedPercentage(Number(percentageValue));
-          // }
           onRemoveChangeEvent({
             tradeData: { ...ammData, coinLP: ibData },
             type: "lp",
@@ -212,15 +206,14 @@ export const AmmWithdrawWrap = <
     popupId: "slippagePop",
   });
 
-  const { label, stob } = useAmmViewData({
-    error,
-    i18nKey: ammWithdrawBtnI18nKey,
-    t,
-    _isStoB,
-    ammCalcData,
-    _onSwitchStob,
-    isAdd: false,
-  });
+  // const { label, stob } = useAmmViewData({
+  //   i18nKey: ammWithdrawBtnI18nKey,
+  //   t,
+  //   _isStoB,
+  //   ammCalcData,
+  //   _onSwitchStob,
+  //   isAdd: false,
+  // });
 
   const showPercentage =
     percentage < 0 || percentage > 100 ? EmptyValueTag + "%" : `${percentage}%`;
@@ -378,33 +371,12 @@ export const AmmWithdrawWrap = <
               justifyContent={"flex-start"}
               marginRight={1 / 2}
             >
-              {tokenAIcon ? (
-                <AvatarCoin
-                  imgx={tokenAIcon.x}
-                  imgy={tokenAIcon.y}
-                  imgheight={tokenAIcon.h}
-                  imgwidth={tokenAIcon.w}
-                  size={16}
-                  variant="circular"
-                  style={{ marginLeft: "-8px" }}
-                  alt={ammCalcData?.lpCoinA?.belong as string}
-                  src={
-                    "data:image/svg+xml;utf8," +
-                    '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                  }
-                />
-              ) : (
-                <Avatar
-                  variant="circular"
-                  alt={ammCalcData?.lpCoinA?.belong as string}
-                  style={{
-                    width: "var(--withdraw-coin-size)",
-                    height: "var(--withdraw-coin-size)",
-                  }}
-                  src={SoursURL + "images/icon-default.png"}
-                />
-              )}
-              <Typography variant={"body1"}>
+              <CoinIcons
+                size={18}
+                type={TokenType.single}
+                tokenIcon={[tokenAIcon]}
+              />
+              <Typography variant={"body1"} component={"span"} paddingLeft={1}>
                 {ammData?.coinA?.belong}
               </Typography>
             </Box>
@@ -423,38 +395,16 @@ export const AmmWithdrawWrap = <
               flexDirection={"row"}
               alignItems={"center"}
               className={"logo-icon"}
-              height={"var(--withdraw-coin-size"}
+              height={"var(--withdraw-coin-size)"}
               justifyContent={"flex-start"}
-              width={"var(--withdraw-coin-size)"}
               marginRight={1 / 2}
             >
-              {tokenBIcon ? (
-                <AvatarCoin
-                  imgx={tokenBIcon.x}
-                  imgy={tokenBIcon.y}
-                  imgheight={tokenBIcon.h}
-                  imgwidth={tokenBIcon.w}
-                  size={16}
-                  variant="circular"
-                  style={{ marginLeft: "-8px" }}
-                  alt={ammCalcData?.lpCoinB?.belong as string}
-                  src={
-                    "data:image/svg+xml;utf8," +
-                    '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                  }
-                />
-              ) : (
-                <Avatar
-                  variant="circular"
-                  alt={ammCalcData?.lpCoinB?.belong as string}
-                  style={{
-                    width: "var(--withdraw-coin-size)",
-                    height: "var(--withdraw-coin-size)",
-                  }}
-                  src={SoursURL + "images/icon-default.png"}
-                />
-              )}
-              <Typography variant={"body1"}>
+              <CoinIcons
+                size={18}
+                type={TokenType.single}
+                tokenIcon={[tokenBIcon]}
+              />
+              <Typography variant={"body1"} component={"span"} paddingLeft={1}>
                 {ammData?.coinB?.belong}
               </Typography>
             </Box>
@@ -557,7 +507,9 @@ export const AmmWithdrawWrap = <
                 {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {ammCalcData ? ammCalcData?.fee.toString() : EmptyValueTag}
+                {ammCalcData?.fee && ammCalcData?.fee != "0"
+                  ? ammCalcData.fee + " " + ammCalcData.myCoinB.belong
+                  : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>
@@ -579,8 +531,7 @@ export const AmmWithdrawWrap = <
               disabled={
                 getDisabled() ||
                 ammWithdrawBtnStatus === TradeBtnStatus.DISABLED ||
-                ammWithdrawBtnStatus === TradeBtnStatus.LOADING ||
-                error.error
+                ammWithdrawBtnStatus === TradeBtnStatus.LOADING
               }
               fullWidth={true}
             >

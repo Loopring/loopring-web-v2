@@ -60,10 +60,7 @@ const list = [
 ];
 export const MarkdownPage = () => {
   const location = useLocation();
-  const path = location.pathname
-    .split('/')
-    .slice(2)
-    .join('/')
+  const path = location.pathname.split("/").slice(2).join("/");
   const [input, setInput] = React.useState<string>("");
   const { t } = useTranslation("common");
   React.useEffect(() => {
@@ -82,10 +79,8 @@ export const MarkdownPage = () => {
           .then((input) => {
             setInput(input);
           })
-          .catch(() => {
-          });
-      } catch (e: any) {
-      }
+          .catch(() => {});
+      } catch (e: any) {}
     }
   }, [path]);
   const theme = useTheme();

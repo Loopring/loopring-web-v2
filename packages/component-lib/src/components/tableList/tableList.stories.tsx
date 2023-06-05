@@ -29,14 +29,16 @@ const rawDatacoinBPrice: QuoteTableRawDataItem[] = [
     high: 123.34,
     low: 23.41,
     volume: 21759000,
-    changeDollar: 21759000,
-    closeDollar: 21759000,
-    coinAPriceDollar: 21759000,
+    changeU: 21759000,
+    closeU: 21759000,
+    coinApriceU: 21759000,
     precision: 3,
-    priceDollar: 3,
+    priceU: 3,
     reward: 3,
     rewardToken: "3",
     timeUnit: "24h",
+    open: 100,
+    __rawTicker__: {} as any,
   },
 ];
 
@@ -58,6 +60,7 @@ const rawDataOrderHistory: OrderHistoryRawDataItem[] = [
     status: TradeStatus.Expired,
     hash: "xxxxxxxxxxx",
     orderId: "xxxxxx",
+    __raw__: {} as any,
   },
   {
     market: "ETH-LRC",
@@ -76,6 +79,7 @@ const rawDataOrderHistory: OrderHistoryRawDataItem[] = [
     status: TradeStatus.Expired,
     hash: "xxxxxxxxxxx",
     orderId: "xxxxxx",
+    __raw__: {} as any,
   },
   {
     market: "ETH-LRC",
@@ -94,6 +98,7 @@ const rawDataOrderHistory: OrderHistoryRawDataItem[] = [
     status: TradeStatus.Expired,
     hash: "xxxxxxxxxxx",
     orderId: "xxxxxx",
+    __raw__: {} as any,
   },
   {
     market: "ETH-LRC",
@@ -112,6 +117,7 @@ const rawDataOrderHistory: OrderHistoryRawDataItem[] = [
     status: TradeStatus.Expired,
     hash: "xxxxxxxxxxx",
     orderId: "xxxxxx",
+    __raw__: {} as any,
   },
 ];
 

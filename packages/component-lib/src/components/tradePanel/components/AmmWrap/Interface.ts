@@ -1,9 +1,5 @@
 import { InputButtonProps } from "../../../basic-lib";
-import {
-  AccountStatus,
-  CoinInfo,
-  TradeBtnStatus,
-} from "@loopring-web/common-resources";
+import { CoinInfo, TradeBtnStatus } from "@loopring-web/common-resources";
 
 export type AmmChgData<AT> = {
   type: "coinA" | "coinB";
@@ -18,6 +14,8 @@ export type AmmDepositBaseProps<T, I> = {
   ammDepositBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   onAmmAddClick: (AmmSendData: T) => void | any;
   ammDepositBtnI18nKey?: string;
+  propsAExtends?: Partial<InputButtonProps<T, I, unknown>>;
+  propsBExtends?: Partial<InputButtonProps<T, I, unknown>>;
 } & Partial<Pick<InputButtonProps<T, I, unknown>, "handleError">>;
 
 export type AmmDepositExtendProps<T, I, C, ACD> = {
@@ -28,7 +26,6 @@ export type AmmDepositExtendProps<T, I, C, ACD> = {
   tokenAProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>;
   tokenBProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>;
   ammCalcData: ACD;
-  accStatus?: AccountStatus;
 };
 export type AmmDepositWrapProps<T, I, ACD, C> = AmmDepositBaseProps<T, I> &
   AmmDepositExtendProps<T, I, C, ACD> & {
@@ -42,6 +39,7 @@ export type AmmWithdrawBaseProps<T, I> = {
   onAmmRemoveClick: (AmmSendData: T) => void | any;
   ammWithdrawBtnI18nKey?: string;
   anchors?: number[];
+  propsLPExtends?: Partial<InputButtonProps<T, I, unknown>>;
 } & Partial<Pick<InputButtonProps<T, I, unknown>, "handleError">>;
 export type AmmWithdrawExtendProps<T, I, C, ACD> = {
   disabled?: boolean;
@@ -49,7 +47,6 @@ export type AmmWithdrawExtendProps<T, I, C, ACD> = {
   switchStobEvent?: (_isStoB: boolean) => void;
   onRemoveChangeEvent: (data: AmmWithdrawChgData<T>) => void;
   tokenLPProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>;
-  // tokenBProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
   ammCalcData: ACD;
 };
 export type AmmWithdrawWrapProps<T, I, ACD, C> = AmmWithdrawBaseProps<T, I> &

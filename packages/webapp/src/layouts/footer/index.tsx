@@ -5,7 +5,11 @@ import {
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useLocation } from "react-router-dom";
-import { Footer as FooterUI, Toast } from "@loopring-web/component-lib";
+import {
+  Footer as FooterUI,
+  Toast,
+  ToastType,
+} from "@loopring-web/component-lib";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
 
@@ -38,7 +42,7 @@ export const Footer = () => {
         onClose={() => {
           setShowBeta(false);
         }}
-        severity={"warning"}
+        severity={ToastType.warning}
       />
       <FooterUI
         isBeta={process.env?.REACT_APP_TEST_ENV == "true"}

@@ -9,6 +9,7 @@ import {
   PopoverPure,
   SmallOrderAlert,
   Toast,
+  ToastType,
 } from "@loopring-web/component-lib";
 import {
   EmptyValueTag,
@@ -240,7 +241,7 @@ export const SpotView = withTranslation("common")(
       <>
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
@@ -251,7 +252,7 @@ export const SpotView = withTranslation("common")(
               ? marketUnavailableConent
               : toastOpenL?.content ?? ""
           }
-          severity={toastOpenL?.type ?? "success"}
+          severity={toastOpenL?.type ?? ToastType.success}
           open={toastOpenL?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}
