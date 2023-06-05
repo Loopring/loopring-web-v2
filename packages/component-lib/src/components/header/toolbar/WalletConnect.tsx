@@ -5,6 +5,7 @@ import {
   AccountStatus,
   ChainIdExtends,
   CircleIcon,
+  DropDownIcon,
   gatewayList,
   getShortAddr,
   LoadingIcon,
@@ -14,11 +15,17 @@ import {
   UnConnectIcon,
 } from "@loopring-web/common-resources";
 import { Typography, Box } from "@mui/material";
-import { Button, ButtonProps } from "../../basic-lib";
+import {
+  Button,
+  ButtonProps,
+  OutlineSelect,
+  OutlineSelectItem,
+} from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { Currency } from "@loopring-web/loopring-sdk";
 
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
@@ -192,21 +199,39 @@ export const WalletConnectBtn = ({
   });
   return (
     <>
-      {networkLabel ? (
-        <TestNetworkStyle
-          display={"inline-flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          paddingX={1}
-          component={"span"}
-          color={"var(--vip-text)"}
-          marginRight={1 / 2}
-        >
-          {networkLabel}
-        </TestNetworkStyle>
-      ) : (
-        <></>
-      )}
+      <OutlineSelect
+        aria-label={t(label)}
+        IconComponent={DropDownIcon}
+        labelId="language-selected"
+        id="language-selected"
+        value={state}
+        autoWidth
+        onChange={_handleChange}
+      >
+        <OutlineSelectItem value={Currency.usd}>
+          $ {t("labelUSDollar")}
+        </OutlineSelectItem>
+        <OutlineSelectItem value={Currency.cny}>
+          ¥ {t("labelCNYYuan")}
+        </OutlineSelectItem>
+      </OutlineSelect>
+      {/*{networkLabel ? (*/}
+
+      {/*  // <Input*/}
+      {/*  // <TestNetworkStyle*/}
+      {/*  //   display={"inline-flex"}*/}
+      {/*  //   alignItems={"center"}*/}
+      {/*  //   justifyContent={"center"}*/}
+      {/*  //   paddingX={1}*/}
+      {/*  //   component={"span"}*/}
+      {/*  //   color={"var(--vip-text)"}*/}
+      {/*  //   marginRight={1 / 2}*/}
+      {/*  // >*/}
+      {/*  //   {networkLabel}*/}
+      {/*  // </TestNetworkStyle>*/}
+      {/*// ) : (*/}
+      {/*//   <></>*/}
+      {/*)}*/}
       {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
