@@ -406,7 +406,7 @@ export const WalletConnectL1Btn = ({
   accountState,
   handleClick,
 }: WalletConnectBtnProps) => {
-  const {t, i18n} = useTranslation(["layout", "common"]);
+  const { t, i18n } = useTranslation(["layout", "common"]);
   // const { isMobile } = useSettings();
   const { chainId } = useSystem();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
