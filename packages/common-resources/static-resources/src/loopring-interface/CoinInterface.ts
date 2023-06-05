@@ -499,8 +499,14 @@ export type Ticker = TradeFloat & {
   quote: string;
   __rawTicker__: TickerData;
 };
+export type NetworkItemInfo = {
+  label: string;
+  chainId: string;
+  RPC?: string;
+  link?: string;
+};
 
-export const NetworkMap = {
+export const NetworkMap: { [key: string]: NetworkItemInfo } = {
   "1": {
     label: "Ethereum",
     chainId: "1",
@@ -514,4 +520,12 @@ export const NetworkMap = {
     chainId: "",
     RPC: "https://arb1.arbitrum.io/rpc",
   },
+  xxx: {
+    label: "Taiko",
+    chainId: "xxx",
+    RPC: "",
+  },
+  // "xxx":{
+  //
+  // }
 };

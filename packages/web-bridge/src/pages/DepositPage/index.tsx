@@ -20,7 +20,6 @@ import {
   accountStaticCallBack,
   btnClickMap,
   useAccount,
-  WalletConnectL1Btn,
 } from "@loopring-web/core";
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
