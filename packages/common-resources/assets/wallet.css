@@ -286,6 +286,7 @@ h3 ~ p.Typography-root {
 
 #labelGatewayToEthereum {
   margin-bottom: 32px;
+  line-height: 1.5em;
   font-size: var(--h4);
   text-align: center;
 }
@@ -376,6 +377,7 @@ footer .group .Typography-root {
 .carousel-container {
   --height: 596px;
   --width: 280px;
+  --size-image: .8;
   display: flex;
   margin-top: 120px;
   overflow: hidden;
@@ -426,27 +428,6 @@ footer .group .Typography-root {
   object-fit: cover;
 }
 
-.carousel-container #item-1:checked ~ .cards #selector-1,
-.carousel-container #item-2:checked ~ .cards #selector-2,
-.carousel-container #item-3:checked ~ .cards #selector-3 {
-  transform: translateX(0%) scale(1);
-  z-index: 80;
-}
-
-.carousel-container #item-1:checked ~ .cards #selector-3,
-.carousel-container #item-2:checked ~ .cards #selector-1,
-.carousel-container #item-3:checked ~ .cards #selector-2 {
-  transform: translateX(100%) scale(0.8);
-  z-index: 70;
-}
-
-.carousel-container #item-1:checked ~ .cards #selector-2,
-.carousel-container #item-2:checked ~ .cards #selector-3,
-.carousel-container #item-3:checked ~ .cards #selector-1 {
-  transform: translateX(-100%) scale(0.8);
-  z-index: 70;
-}
-
 @media only screen and (max-width: 1024px) {
   .Container-root, .wrap {
     width: 100vw;
@@ -461,6 +442,7 @@ footer .group .Typography-root {
     width: 100%;
     align-items: center;
     justify-content: center;
+    margin-top: 40px;
   }
   #logo {
     min-width: auto;
@@ -485,7 +467,8 @@ footer .group .Typography-root {
   }
   .downLoadBtnGroup {
     flex-direction: column;
-    min-height: 260px;
+    justify-content: space-between;
+    height: calc(48px * 3 + 16px * 3);
     margin-left: 0;
   }
   .downLoadBtnGroup button {
@@ -502,6 +485,7 @@ footer .group .Typography-root {
   #labelEthereumUnleashed {
     width: 100%;
     font-size: 36px;
+    margin-top: 32px;
   }
 
   #logSvg {
@@ -534,25 +518,8 @@ footer .group .Typography-root {
     justify-content: center !important;
   }
 
-  .carousel-container #item-1:checked ~ .cards #selector-1,
-  .carousel-container #item-2:checked ~ .cards #selector-2,
-  .carousel-container #item-3:checked ~ .cards #selector-3 {
-    transform: translateX(0%) scale(1);
-    z-index: 80;
-  }
-
-  .carousel-container #item-1:checked ~ .cards #selector-3,
-  .carousel-container #item-2:checked ~ .cards #selector-1,
-  .carousel-container #item-3:checked ~ .cards #selector-2 {
-    transform: translateX(80%) scale(0.8);
-    z-index: 70;
-  }
-
-  .carousel-container #item-1:checked ~ .cards #selector-2,
-  .carousel-container #item-2:checked ~ .cards #selector-3,
-  .carousel-container #item-3:checked ~ .cards #selector-1 {
-    transform: translateX(-80%) scale(0.8);
-    z-index: 70;
+  .carousel-container {
+    --size-image: 0.5;
   }
 }
 
@@ -585,19 +552,12 @@ footer .group .Typography-root {
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   #labelEthereumUnleashed {
     width: 522px;
-    height: 72px;
-    font-weight: 700;
     font-size: 56px;
-    line-height: 72px;
-    background: linear-gradient(90deg, #D7B2FF 0%, #77AAFF 53.24%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    /*background-clip: text;*/
-    border-radius: 2px;
-    text-fill-color: transparent;
-    margin-top: 120px;
-    margin-bottom: 16px;
-    text-align: center;
+  }
+
+  .carousel-container {
+    --size-image: 0.7;
+    margin-top: 40px;
   }
 
   #labelGatewayToEthereum {
@@ -667,4 +627,25 @@ footer .group .Typography-root {
   position: absolute;
   pointer-events: none;
   transform: translate(20%, -10%) rotate(13deg);
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-1,
+.carousel-container #item-2:checked ~ .cards #selector-2,
+.carousel-container #item-3:checked ~ .cards #selector-3 {
+  transform: translateX(0%) scale(1);
+  z-index: 80;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-3,
+.carousel-container #item-2:checked ~ .cards #selector-1,
+.carousel-container #item-3:checked ~ .cards #selector-2 {
+  transform: translateX(100%) scale(var(--size-image));
+  z-index: 70;
+}
+
+.carousel-container #item-1:checked ~ .cards #selector-2,
+.carousel-container #item-2:checked ~ .cards #selector-3,
+.carousel-container #item-3:checked ~ .cards #selector-1 {
+  transform: translateX(-100%) scale(var(--size-image));
+  z-index: 70;
 }

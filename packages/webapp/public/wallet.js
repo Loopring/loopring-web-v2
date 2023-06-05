@@ -1031,6 +1031,7 @@ const settingPersist = "persist:settings";
     setTimeout(() => {
       handleScroll();
     }, 50);
+
     window.addEventListener("scroll", handleScroll);
     let clear = -1;
     var options = document.getElementsByName("slider"); //.options;
@@ -1043,7 +1044,9 @@ const settingPersist = "persist:settings";
       let next = i + 1;
       options[options.length - next > 0 ? next : 0].checked = true;
       clear = setTimeout(() => {
-        loopScroll();
+        if (window.innerWidth < 768) {
+          loopScroll();
+        }
       }, 3000);
     }
 
