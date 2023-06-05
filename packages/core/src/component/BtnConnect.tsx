@@ -1,6 +1,6 @@
 import { withTranslation } from "react-i18next";
 import {
-  accountReducer,
+  // accountReducer,
   useAccount,
   store,
   accountStaticCallBack,
@@ -8,11 +8,11 @@ import {
   btnLabel,
 } from "../index";
 import {
-  AccountStep,
+  // AccountStep,
   Button,
-  setShowAccount,
+  // setShowAccount,
   setShowConnect,
-  WalletConnectUI,
+  // WalletConnectUI,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import React from "react";

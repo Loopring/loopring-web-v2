@@ -18,10 +18,10 @@ export const ContainerStyle = styled(Box)`
       `;
     if (theme.mode === ThemeType.dark) {
       result += `
-            --main-page-bg: #060D42;
+            --main-page-bg: var(--color-global-bg);
             --color-primary: #4169FF;
             --layer-2: #1A32A2;
-            --second-bg: #0D1655;
+            --second-bg: var(--color-box);
             --box-card-decorate:rgba(255, 255, 255, 0.1);
             --box-card-background: #283485;
             --box-card-background-hover:#4169FF;
