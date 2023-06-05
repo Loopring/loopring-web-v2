@@ -771,7 +771,7 @@ const resources = {
         "Use card, bank transfer, or Apple Pay without ever having to leave your wallet.",
       labelFeature5: "Your Personal Vault",
       labelFeatureDes5:
-        "Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You",
+        "Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You’re always in control.",
       labelFeature6: "Manage and Display \nYour NFT Collection",
       labelFeatureDes6:
         "Immerse yourself in the world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to your favorite marketplaces.",
