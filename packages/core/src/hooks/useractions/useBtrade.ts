@@ -49,6 +49,7 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -502,7 +503,7 @@ export const useBtradeSwap = <
       });
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content,
       });
     }
