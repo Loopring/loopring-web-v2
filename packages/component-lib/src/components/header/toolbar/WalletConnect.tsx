@@ -11,23 +11,15 @@ import {
   LoadingIcon,
   LockIcon,
   myLog,
-  NetworkMap,
+  SagaStatus,
   UnConnectIcon,
 } from "@loopring-web/common-resources";
-import { Box, Typography } from "@mui/material";
-import {
-  Button,
-  ButtonProps,
-  OutlineSelect,
-  OutlineSelectItem,
-} from "../../basic-lib";
+import { Typography, Box } from "@mui/material";
+import { Button, ButtonProps } from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { ChainId } from "@loopring-web/loopring-sdk";
-import { AvaiableNetwork } from "@loopring-web/web3-provider";
-import { useSystem } from "@loopring-web/core";
 
 // type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
@@ -86,32 +78,32 @@ const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
     }
   }};
 ` as (props: ButtonProps & { account: any }) => JSX.Element;
-const TestNetworkStyle = styled(Typography)`
-  // display: inline-flex;
-  position: relative;
-  cursor: initial;
-  height: 3rem;
-
-  &:after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--network-bg);
-    ${({ theme }) =>
-      theme.border.defaultFrame({
-        d_W: 0,
-        d_R: 1 / 2,
-        c_key: "var(--opacity)",
-      })};
-  }
-
-  ${({ theme }) =>
-    theme.border.defaultFrame({ d_W: 0, d_R: 1 / 2, c_key: "var(--opacity)" })};
-` as typeof Typography;
+// const TestNetworkStyle = styled(Typography)`
+//   // display: inline-flex;
+//   position: relative;
+//   cursor: initial;
+//   height: 3rem;
+//
+//   &:after {
+//     content: "";
+//     position: absolute;
+//     z-index: -1;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: var(--network-bg);
+//     ${({ theme }) =>
+//       theme.border.defaultFrame({
+//         d_W: 0,
+//         d_R: 1 / 2,
+//         c_key: "var(--opacity)",
+//       })};
+//   }
+//
+//   ${({ theme }) =>
+//     theme.border.defaultFrame({ d_W: 0, d_R: 1 / 2, c_key: "var(--opacity)" })};
+// ` as typeof Typography;
 
 export const WalletConnectBtn = ({
   accountState,
@@ -179,11 +171,11 @@ export const WalletConnectBtn = ({
         default:
       }
 
-      // if (account && account._chainId === sdk.ChainId.GOERLI) {
-      //   setNetworkLabel(isMobile ? "G ö" : "Görli");
-      // } else {
-      //   setNetworkLabel("");
-      // }
+      if (account && account._chainId === sdk.ChainId.GOERLI) {
+        setNetworkLabel(isMobile ? "G ö" : "Görli");
+      } else {
+        setNetworkLabel("");
+      }
     } else {
       setLabel("labelConnectWallet");
     }
@@ -202,6 +194,21 @@ export const WalletConnectBtn = ({
   });
   return (
     <>
+      {networkLabel ? (
+        <TestNetworkStyle
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          paddingX={1}
+          component={"span"}
+          color={"var(--vip-text)"}
+          marginRight={1 / 2}
+        >
+          {networkLabel}
+        </TestNetworkStyle>
+      ) : (
+        <></>
+      )}
       {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
@@ -399,13 +406,14 @@ export const WalletConnectL1Btn = ({
   accountState,
   handleClick,
 }: WalletConnectBtnProps) => {
-  const { t, i18n } = useTranslation(["layout", "common"]);
-  const { isMobile } = useSettings();
+  const {t, i18n} = useTranslation(["layout", "common"]);
+  // const { isMobile } = useSettings();
+  const { chainId } = useSystem();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
   const [networkSelected, setNetworkSelected] = React.useState<
-    string | undefined
+    string | number | undefined
   >(chainId ?? ChainId.MAINNET);
-  const hanleOnNetworkSwitch = (value) => {
+  const hanleOnNetworkSwitch = (value: string) => {
     //TODO before
     setNetworkSelected(value);
   };
@@ -419,14 +427,14 @@ export const WalletConnectL1Btn = ({
         id="language-selected"
         value={networkSelected}
         autoWidth
-        onChange={() => {
-          //TODO:
-        }}
+        onChange={(event: SelectChangeEvent<any>) =>
+          hanleOnNetworkSwitch(event.target.value)
+        }
       >
         {AvaiableNetwork.map((id) => {
           if (NetworkMap[id]) {
             return (
-              <OutlineSelectItem key="id" value={NetworkMap[id].id}>
+              <OutlineSelectItem key="id" value={NetworkMap[id].chainId}>
                 $ {t(NetworkMap[id].label)}
               </OutlineSelectItem>
             );
@@ -538,21 +546,7 @@ export const WalletConnectL1Btn = ({
   });
   return (
     <>
-      {networkLabel ? (
-        <TestNetworkStyle
-          display={"inline-flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          paddingX={1}
-          component={"span"}
-          color={"var(--vip-text)"}
-          marginRight={1}
-        >
-          {networkLabel}
-        </TestNetworkStyle>
-      ) : (
-        <></>
-      )}
+      {NetWorkItems}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(
