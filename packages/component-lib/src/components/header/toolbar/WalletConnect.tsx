@@ -12,7 +12,6 @@ import {
   LockIcon,
   myLog,
   NetworkMap,
-  SagaStatus,
   UnConnectIcon,
 } from "@loopring-web/common-resources";
 import { Box, Typography } from "@mui/material";
@@ -403,10 +402,14 @@ export const WalletConnectL1Btn = ({
   const { t, i18n } = useTranslation(["layout", "common"]);
   const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
+  const [networkSelected, setNetworkSelected] = React.useState<
+    string | undefined
+  >(chainId ?? ChainId.MAINNET);
   const hanleOnNetworkSwitch = (value) => {
     //TODO before
     setNetworkSelected(value);
   };
+
   const NetWorkItems = React.useMemo(() => {
     return (
       <OutlineSelect
