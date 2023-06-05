@@ -792,7 +792,7 @@ export const MuiTab = ({
         "&:focus-visible::after, &:active::after, &.Mui-selected:after": hr({
           colorBase,
         }),
-        "&.MuiTab-fullWidth:focus-visible::after, &.MuiTab-fullWidth:active::after, &.MuiTab-fullWidth.Mui-selected:after":
+        "&MuiTab-fullWidth.:focus-visible::after, &.MuiTab-fullWidth:active::after, &.MuiTab-fullWidth.Mui-selected:after":
           {
             margin: 0,
           },
@@ -802,6 +802,11 @@ export const MuiTab = ({
         },
         ".MuiTabs-indicator": {
           display: "none",
+        },
+        ".MuiTabs-small &.MuiTab-root": {
+          fontSize: fontDefault.body1,
+          padding: `${unit}px`,
+          minHeight: `36px`,
         },
       },
     },
@@ -814,6 +819,11 @@ export const MuiTabs = () => {
         "& .MuiTabs-indicator": {
           display: "none",
           background: "red",
+        },
+        "& .MuiTabs-small": {
+          minHeight: "28px",
+          height: "28px",
+          fontSize: "",
         },
       },
     },
@@ -883,7 +893,7 @@ export const MuiDialog = ({ colorBase }: any) => {
     styleOverrides: {
       root: {
         " .MuiPaper-root": {
-          background: colorBase.box,
+          background: colorBase.popBg,
           borderRadius: pxToRem(4),
         },
         " .MuiDialogContent-root": {

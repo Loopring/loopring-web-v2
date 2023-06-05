@@ -723,13 +723,12 @@ export const useMarket = <C extends { [key: string]: any }>({
     closeToast,
     isMarketLoading,
     marketSubmit,
-    marketBtnClick,
     marketTradeData,
     resetMarketData: resetTradeData,
     onChangeMarketEvent,
     tradeMarketBtnStatus,
     tradeMarketI18nKey,
-
+    marketBtnClick,
     tradeMarketBtnStyle: {
       ...tradeMarketBtnStyle,
       ...{ fontSize: isMobile ? "1.4rem" : "1.6rem" },

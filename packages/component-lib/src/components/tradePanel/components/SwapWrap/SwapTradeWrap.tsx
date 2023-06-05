@@ -1,6 +1,7 @@
 import { SwapTradeData } from "../../Interface";
 import {
   BtradeTradeCalcData,
+  BtradeType,
   CheckBoxIcon,
   CheckedIcon,
   CoinInfo,
@@ -26,12 +27,13 @@ import {
   Tooltip,
   Typography,
   Link,
+  Tab,
 } from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
-import { ButtonStyle, IconButtonStyled } from "../Styled";
+import { ButtonStyle, IconButtonStyled, TabsStyle } from "../Styled";
 import { useHistory } from "react-router-dom";
 
 export const SwapTradeWrap = <
@@ -235,9 +237,46 @@ export const SwapTradeWrap = <
       flex={isMobile ? "1" : "initial"}
       height={"100%"}
     >
+      {tradeCalcData.isBtrade && (
+        <Box
+          className={"tool-bar"}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <Box component={"header"} width={"100%"}>
+            <TabsStyle
+              className={"trade-tabs swap"}
+              variant={"fullWidth"}
+              value={tradeData.btradeType}
+              onChange={(_e, value) =>
+                onChangeEvent(0, {
+                  tradeData: {
+                    ...swapData.tradeData,
+                    btradeType: value,
+                  } as SwapTradeData<T>,
+                  type: (tradeCalcData as unknown as SCD)?.lastStepAt ?? "sell",
+                  to: "button",
+                })
+              }
+            >
+              <Tab
+                className={"trade-tab-quantity"}
+                value={BtradeType.Quantity}
+                label={t("labelBtrade" + BtradeType.Quantity)}
+              />
+              <Tab
+                className={"trade-tab-speed"}
+                value={BtradeType.Speed}
+                label={t("labelBtrade" + BtradeType.Speed)}
+              />
+            </TabsStyle>
+          </Box>
+        </Box>
+      )}
       <Grid
         item
-        marginTop={3}
+        marginTop={tradeCalcData.isBtrade ? 1 : 3}
         display={"flex"}
         alignSelf={"stretch"}
         justifyContent={"flex-start"}
@@ -267,7 +306,7 @@ export const SwapTradeWrap = <
           top={60}
           sx={{
             boxSizing: "border-box",
-            border: "3px solid var(--color-pop-bg)",
+            border: "3px solid var(--color-box)",
             background: "var(--color-box-secondary)",
             borderRadius: "50%",
           }}
@@ -333,7 +372,9 @@ export const SwapTradeWrap = <
               variant={"inherit"}
               color={"textPrimary"}
             >
-              {tradeCalcData?.totalQuota ?? EmptyValueTag}
+              {(tradeCalcData?.totalQuota ?? EmptyValueTag) +
+                " " +
+                tradeData.sell?.belong}
             </Typography>
           </Typography>
         ) : (

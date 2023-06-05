@@ -10,18 +10,18 @@ import {
   myLog,
   ReverseIcon,
   SlippageTolerance,
-  SoursURL,
+  TokenType,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { AmmWithdrawWrapProps } from "./Interface";
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import { Avatar, Box, Grid, Link, Typography } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import {
-  AvatarCoin,
   BtnPercentage,
   ButtonStyle,
+  CoinIcons,
   IconButtonStyled,
   InputCoin,
   LinkActionStyle,
@@ -371,33 +371,12 @@ export const AmmWithdrawWrap = <
               justifyContent={"flex-start"}
               marginRight={1 / 2}
             >
-              {tokenAIcon ? (
-                <AvatarCoin
-                  imgx={tokenAIcon.x}
-                  imgy={tokenAIcon.y}
-                  imgheight={tokenAIcon.h}
-                  imgwidth={tokenAIcon.w}
-                  size={16}
-                  variant="circular"
-                  style={{ marginLeft: "-8px" }}
-                  alt={ammCalcData?.lpCoinA?.belong as string}
-                  src={
-                    "data:image/svg+xml;utf8," +
-                    '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                  }
-                />
-              ) : (
-                <Avatar
-                  variant="circular"
-                  alt={ammCalcData?.lpCoinA?.belong as string}
-                  style={{
-                    width: "var(--withdraw-coin-size)",
-                    height: "var(--withdraw-coin-size)",
-                  }}
-                  src={SoursURL + "images/icon-default.png"}
-                />
-              )}
-              <Typography variant={"body1"}>
+              <CoinIcons
+                size={18}
+                type={TokenType.single}
+                tokenIcon={[tokenAIcon]}
+              />
+              <Typography variant={"body1"} component={"span"} paddingLeft={1}>
                 {ammData?.coinA?.belong}
               </Typography>
             </Box>
@@ -416,38 +395,16 @@ export const AmmWithdrawWrap = <
               flexDirection={"row"}
               alignItems={"center"}
               className={"logo-icon"}
-              height={"var(--withdraw-coin-size"}
+              height={"var(--withdraw-coin-size)"}
               justifyContent={"flex-start"}
-              width={"var(--withdraw-coin-size)"}
               marginRight={1 / 2}
             >
-              {tokenBIcon ? (
-                <AvatarCoin
-                  imgx={tokenBIcon.x}
-                  imgy={tokenBIcon.y}
-                  imgheight={tokenBIcon.h}
-                  imgwidth={tokenBIcon.w}
-                  size={16}
-                  variant="circular"
-                  style={{ marginLeft: "-8px" }}
-                  alt={ammCalcData?.lpCoinB?.belong as string}
-                  src={
-                    "data:image/svg+xml;utf8," +
-                    '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                  }
-                />
-              ) : (
-                <Avatar
-                  variant="circular"
-                  alt={ammCalcData?.lpCoinB?.belong as string}
-                  style={{
-                    width: "var(--withdraw-coin-size)",
-                    height: "var(--withdraw-coin-size)",
-                  }}
-                  src={SoursURL + "images/icon-default.png"}
-                />
-              )}
-              <Typography variant={"body1"}>
+              <CoinIcons
+                size={18}
+                type={TokenType.single}
+                tokenIcon={[tokenBIcon]}
+              />
+              <Typography variant={"body1"} component={"span"} paddingLeft={1}>
                 {ammData?.coinB?.belong}
               </Typography>
             </Box>

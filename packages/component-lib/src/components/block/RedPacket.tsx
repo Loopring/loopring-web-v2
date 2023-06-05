@@ -57,9 +57,7 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -97,8 +95,7 @@ export const RedPacketBg = styled(Box)<
       }
 
       .open.openUnready {
-        background: url("${SoursURL}/images/redpacketLock.webp") center
-          no-repeat;
+        background: url("${SoursURL}images/redpacketLock.webp") center no-repeat;
         color: ${({ type }) =>
           RedPacketCssColorConfig[type]?.colorTop}; //#7c3400;
         width: 76px;

@@ -459,26 +459,27 @@ export const useLimit = <C extends { [key: string]: any }>({
           tokenPrices &&
           tradeData?.price?.tradeValue &&
           // @ts-ignore
-          tradeData.price.tradeValue !== "0"
+          sdk.toBig(tradeData.price.tradeValue).gt(0)
         ) {
           marketPrice = sdk
             .toBig(tokenPrices[tradeData.base.belong])
             .div(tokenPrices[tradeData.quote.belong]);
-          marketRatePrice = marketPrice.div(tradeData.price.tradeValue);
-          isNotMatchMarketPrice =
+          marketRatePrice =
             tradeData.type === "sell"
-              ? marketRatePrice.gt(1.05)
-              : marketRatePrice.lt(0.95);
+              ? marketPrice.div(tradeData?.price?.tradeValue)
+              : sdk
+                  .toBig(1)
+                  .div(marketPrice)
+                  .div(1 / tradeData?.price?.tradeValue);
+
+          isNotMatchMarketPrice = marketRatePrice.gt(1.05);
           marketPrice = getValuePrecisionThousand(
             marketPrice.toString(),
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision
           );
-          marketRatePrice =
-            tradeData.type === "sell"
-              ? marketRatePrice.minus(1).times(100).toFixed(2)
-              : sdk.toBig(1).minus(marketRatePrice).times(100).toFixed(2);
+          marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
         }
         updatePageTradePro({
           market,

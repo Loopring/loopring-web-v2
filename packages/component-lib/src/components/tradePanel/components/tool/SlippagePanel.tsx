@@ -63,12 +63,6 @@ const InputStyled = styled(CurrencyInput)`
   .MuiButtonBase-root & {
   }
 
-  // &:after {
-  //   display: block;
-    //   content: '${suffix}';
-  //   position: absolute;
-  //   right: 0;
-  // } 
   :focus {
     outline: 0;
     border-color: transparent;
@@ -84,19 +78,21 @@ export const SlippagePanel = ({
   wait = globalSetup.wait,
   handleChange,
   max = 100,
+  alertMax = 5,
   ...rest
 }: { t: TFunction } & {
   slippageList: Array<number | string>;
   slippage: number | string;
   wait?: number;
   max?: number;
+  alertMax?: number;
   handleChange: (newValue: any, customValue: any) => void;
 }) => {
   let { slippage: _slippage } = useSettings();
   const [customSlippage, setCustomSlippage] =
     React.useState<string | number | "N">(_slippage);
   const [showAlert, setShowAlert] = React.useState<boolean>(
-    _slippage !== "N" && _slippage > 5
+    _slippage !== "N" && _slippage > alertMax
   );
   // const [cValue, setCValue] = React.useState<number | 'N'>(_slippage);
   const inputEle = useFocusRef({
@@ -122,10 +118,10 @@ export const SlippagePanel = ({
     ) {
       var _value = event.target?.value ?? "";
       _value = _value.replace(suffix, "");
-      if (Number(_value) <= max) {
+      if (Number(_value) < max) {
         setValue(_value);
         setCustomSlippage(_value);
-        if (_value > max) {
+        if (_value >= alertMax) {
           setShowAlert(true);
         } else {
           setShowAlert(false);
@@ -133,7 +129,7 @@ export const SlippagePanel = ({
       } else {
         setShowAlert(true);
         setValue(max);
-        setCustomSlippage(max);
+        setCustomSlippage(max - 1);
       }
     } else {
     }

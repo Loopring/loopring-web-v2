@@ -13,7 +13,6 @@ import {
   ErrorMap,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { info } from "console";
 
 export function useOpenRedpacket() {
   const { setShowRedPacket, setShowAccount } = useOpenModals();
@@ -186,7 +185,6 @@ export const useRedPacketScanQrcodeSuccess = () => {
   const {
     account: { apiKey, accountId },
   } = useAccount();
-  const { callOpen } = useOpenRedpacket();
 
   const [redPacketInfo, setRedPacketInfo] =
     React.useState<{ hash: string; referrer: string } | undefined>(undefined);

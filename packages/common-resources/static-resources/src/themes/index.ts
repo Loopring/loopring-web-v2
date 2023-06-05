@@ -14,7 +14,6 @@ export * from "./globalSetup";
 export { hexToRGB } from "./css/color-lib";
 //transform-origin: top left;
 export { hr };
-//https://static.loopring.io/assets/images/coin/loopring.png
 export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
   &.MuiAvatar-root {
     height: 72px;
