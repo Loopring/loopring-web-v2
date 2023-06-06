@@ -720,8 +720,52 @@ const svgGroup = {
 <stop offset="1" stop-color="#1C60FF" stop-opacity="0.31"/>
 </linearGradient>
 </defs>
+</svg>`,
+  darkSvgBG: `<svg id="bgAlphaBg" width="1920" height="1626" viewBox="0 0 1920 1626" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.1" d="M0 64L1046.69 1110.69H0V64Z" fill="url(#paint0_radial_0_1)"/>
+<path opacity="0.1" d="M0 266L814 1080H0V266Z" fill="url(#paint1_radial_0_1)"/>
+<path opacity="0.1" d="M2161 -461L540 1160H2161V-461Z" fill="url(#paint2_radial_0_1)"/>
+<path d="M5 -461H1915V1626H5V-461Z" fill="url(#paint3_radial_0_1)"/>
+<defs>
+<radialGradient id="paint0_radial_0_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(523.344 587.344) rotate(134.7) scale(312.545)">
+<stop stop-color="#67698E"/>
+<stop offset="1" stop-color="#50516F" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint1_radial_0_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(407 673) rotate(134.7) scale(243.064)">
+<stop stop-color="#67698E"/>
+<stop offset="1" stop-color="#50516F" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint2_radial_0_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1350.5 349.5) rotate(45.2997) scale(484.037)">
+<stop stop-color="#67698E"/>
+<stop offset="1" stop-color="#50516F" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint3_radial_0_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(578.497 110.606) rotate(58.751) scale(1070.04 1040.14)">
+<stop stop-color="#4868A7" stop-opacity="0.44"/>
+<stop offset="1" stop-color="#1F2034" stop-opacity="0"/>
+</radialGradient>
+</defs>
 </svg>
 `,
+  lightSvgBG: `<svg id="bgAlphaBg" width="1920" height="1626" viewBox="0 0 1920 1626" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.1" d="M0 64L1046.69 1110.69H0V64Z" fill="url(#paint0_radial_14267_4338)"/>
+<path opacity="0.1" d="M0 266L814 1080H0V266Z" fill="url(#paint1_radial_14267_4338)"/>
+<path opacity="0.1" d="M2161 -461L540 1160H2161V-461Z"  fill="url(#paint2_radial_14267_4338)"/>
+<path d="M5 -461H1915V1626H5V-461Z" fill=""/>
+<defs>
+<radialGradient id="paint0_radial_14267_4338" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(523.344 587.344) rotate(134.7) scale(312.545)">
+<stop stop-color="#67698E"/>
+<stop offset="1" stop-color="#50516F" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint1_radial_14267_4338" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(407 673) rotate(134.7) scale(243.064)">
+<stop stop-color="#67698E"/>
+<stop offset="1" stop-color="#50516F" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint2_radial_14267_4338" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1350.5 349.5) rotate(45.2997) scale(484.037)">
+<stop stop-color="#ACAED9"/>
+<stop offset="1" stop-color="#8C8EB7" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>`,
 };
 
 const resources = {
@@ -771,7 +815,7 @@ const resources = {
         "Use card, bank transfer, or Apple Pay without ever having to leave your wallet.",
       labelFeature5: "Your Personal Vault",
       labelFeatureDes5:
-        "Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You",
+        "Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You’re always in control.",
       labelFeature6: "Manage and Display \nYour NFT Collection",
       labelFeatureDes6:
         "Immerse yourself in the world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to your favorite marketplaces.",
@@ -848,7 +892,9 @@ const settingPersist = "persist:settings";
       .getElementById("imageSection7" + "")
       .setAttribute("src", basicUrl + "wallet_section7" + imageEnd);
     document.getElementById("bgContent").innerHTML =
-      value !== "light" ? svgGroup.blackSvg : svgGroup.lightSvg;
+      value !== "light"
+        ? svgGroup.blackSvg + svgGroup.darkSvgBG
+        : svgGroup.lightSvg + svgGroup.lightSvgBG;
     document.getElementById("changeColor").innerHTML =
       value !== "light" ? svgGroup.DarkIcon : svgGroup.LightIcon;
     document
@@ -1031,6 +1077,7 @@ const settingPersist = "persist:settings";
     setTimeout(() => {
       handleScroll();
     }, 50);
+
     window.addEventListener("scroll", handleScroll);
     let clear = -1;
     var options = document.getElementsByName("slider"); //.options;
@@ -1043,7 +1090,9 @@ const settingPersist = "persist:settings";
       let next = i + 1;
       options[options.length - next > 0 ? next : 0].checked = true;
       clear = setTimeout(() => {
-        loopScroll();
+        if (window.innerWidth < 768) {
+          loopScroll();
+        }
       }, 3000);
     }
 
