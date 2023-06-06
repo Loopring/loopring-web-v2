@@ -37,7 +37,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 export function useSettings(): SettingsState & {
   setPlatform(value: keyof typeof PlatFormType): void;
   setTheme(value: ThemeKeys): void;
-  setDefaultNetwork(value: sdk.ChainId | number): void;
+  setDefaultNetwork(value: sdk.ChainId): void;
   setUpColor(value: keyof typeof UpColor): void;
   setCurrency(value: Currency): void;
   setLanguage(value: LanguageKeys): void;
