@@ -522,6 +522,10 @@ footer {
       justify-content: space-between;
     }
 
+    .downLoadBtnGroup {
+      margin-top: 24px;
+    }
+
     .content {
       flex-direction: column;
     }
@@ -684,11 +688,21 @@ footer {
   overflow: hidden;
   pointer-events: none;
 
+  #bgAlphaBg {
+    position: absolute;
+    pointer-events: none;
+    transform: translate(0, -461px) rotate(0);
+    top: 0;
+    left: 0;
+  }
+
   #bgAlpha {
     position: absolute;
     pointer-events: none;
     transform: translate(20%, -10%) rotate(13deg);
+
   }
+
 }
 
 //0%,

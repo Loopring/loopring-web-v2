@@ -465,23 +465,32 @@ footer .group .Typography-root {
   header ul li:first-child {
     display: none;
   }
+
   .downLoadBtnGroup {
     flex-direction: column;
     justify-content: space-between;
     height: calc(48px * 3 + 16px * 3);
     margin-left: 0;
   }
+
   .downLoadBtnGroup button {
     margin-left: 0;
   }
+
   footer .footerWallet .wrap {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
   }
+
+  footer .downLoadBtnGroup {
+    margin-top: 24px;
+  }
+
   footer .content {
     flex-direction: column;
   }
+
   #labelEthereumUnleashed {
     width: 100%;
     font-size: 36px;
@@ -621,6 +630,15 @@ footer .group .Typography-root {
   height: 100vh;
   overflow: hidden;
   pointer-events: none;
+}
+
+#bgContent #bgAlphaBg {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(0, -320px) rotate(0);
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 #bgContent #bgAlpha {
