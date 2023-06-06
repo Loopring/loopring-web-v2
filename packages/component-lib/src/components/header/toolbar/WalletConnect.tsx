@@ -5,29 +5,19 @@ import {
   AccountStatus,
   ChainIdExtends,
   CircleIcon,
-  DropDownIcon,
   gatewayList,
   getShortAddr,
   LoadingIcon,
   LockIcon,
   myLog,
-  NetworkMap,
   UnConnectIcon,
 } from "@loopring-web/common-resources";
-import { Typography, Box, SelectChangeEvent } from "@mui/material";
-import {
-  Button,
-  ButtonProps,
-  OutlineSelect,
-  OutlineSelectItem,
-} from "../../basic-lib";
+import { Typography, Box } from "@mui/material";
+import { Button, ButtonProps } from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useSystem } from "@loopring-web/core";
-import { ChainId } from "@loopring-web/loopring-sdk";
-import { AvaiableNetwork } from "@loopring-web/web3-provider";
 
 // type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
@@ -87,66 +77,14 @@ const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
   }};
 ` as (props: ButtonProps & { account: any }) => JSX.Element;
 
-export const useSelectNetwork = () => {
-  const { t } = useTranslation();
-  const { chainId } = useSystem();
-  const [networkSelected, setNetworkSelected] = React.useState<
-    string | undefined
-  >((chainId ?? ChainId.MAINNET).toString());
-  const handleOnNetworkSwitch = (value: string) => {
-    //TODO before
-    setNetworkSelected(value);
-  };
-  const NetWorkItems = React.useMemo(() => {
-    return (
-      <OutlineSelect
-        // aria-label={t(label)}
-        IconComponent={DropDownIcon}
-        labelId="network-selected"
-        id="network-selected"
-        value={networkSelected}
-        autoWidth
-        onChange={(event: SelectChangeEvent<any>) =>
-          handleOnNetworkSwitch(event.target.value)
-        }
-      >
-        {AvaiableNetwork.map((id) => {
-          if (NetworkMap[id]) {
-            return (
-              <OutlineSelectItem
-                key="id"
-                aria-label={NetworkMap[id].label}
-                value={NetworkMap[id].chainId}
-              >
-                {t(NetworkMap[id].label)}
-              </OutlineSelectItem>
-            );
-          } else {
-            return {
-              chainId: id.toString(),
-              name: "Network Unknown:" + id,
-            };
-          }
-        })}
-      </OutlineSelect>
-    );
-  }, []);
-  return {
-    networkSelected,
-    NetWorkItems,
-    handleOnNetworkSwitch,
-  };
-};
-
 export const WalletConnectBtn = ({
   accountState,
   handleClick,
+  NetWorkItems,
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(["layout", "common"]);
   const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
-  const { NetWorkItems, handleOnNetworkSwitch, networkSelected } =
-    useSelectNetwork();
 
   const [btnClassname, setBtnClassname] =
     React.useState<string | undefined>("");
@@ -205,10 +143,10 @@ export const WalletConnectBtn = ({
           break;
         default:
       }
-      if (account && account._chainId && account._chainId !== networkSelected) {
-        // netWorkItems
-        handleOnNetworkSwitch(account._chainId.toString());
-      }
+      // if (account && account._chainId && account._chainId !== defaultNetwork) {
+      //   // netWorkItems
+      //   handleOnNetworkSwitch(account._chainId.toString());
+      // }
       // if (account && account._chainId === sdk.ChainId.GOERLI) {
       //   setNetworkLabel(isMobile ? "G ö" : "Görli");
       // } else {
@@ -277,7 +215,9 @@ export const WalletConnectBtn = ({
 export const WalletConnectL1Btn = ({
   accountState,
   handleClick,
-}: WalletConnectBtnProps) => {
+  NetWorkItems,
+}: // isShowOnUnConnect,
+WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(["layout", "common"]);
   // const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
@@ -285,8 +225,6 @@ export const WalletConnectL1Btn = ({
   const [btnClassname, setBtnClassname] =
     React.useState<string | undefined>("");
   const [icon, setIcon] = React.useState<JSX.Element | undefined>();
-  const { NetWorkItems, handleOnNetworkSwitch, networkSelected } =
-    useSelectNetwork();
 
   React.useEffect(() => {
     const account = accountState?.account;
@@ -353,13 +291,10 @@ export const WalletConnectL1Btn = ({
           break;
         default:
       }
-      if (account && account._chainId && account._chainId !== networkSelected) {
-        handleOnNetworkSwitch(account._chainId.toString());
-      }
     } else {
       setLabel("labelConnectWallet");
     }
-  }, [accountState?.account?.readyState, i18n, networkSelected]);
+  }, [accountState?.account?.readyState, i18n]);
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)
