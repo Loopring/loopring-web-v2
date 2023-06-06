@@ -746,10 +746,11 @@ const svgGroup = {
 </defs>
 </svg>
 `,
-  lightSvgBG: `<svg id="bgAlphaBg" width="1920" height="1160" viewBox="0 0 1920 1160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  lightSvgBG: `<svg id="bgAlphaBg" width="1920" height="1626" viewBox="0 0 1920 1626" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path opacity="0.1" d="M0 64L1046.69 1110.69H0V64Z" fill="url(#paint0_radial_14267_4338)"/>
 <path opacity="0.1" d="M0 266L814 1080H0V266Z" fill="url(#paint1_radial_14267_4338)"/>
-<path opacity="0.1" d="M2161 -461L540 1160H2161V-461Z" fill="url(#paint2_radial_14267_4338)"/>
+<path opacity="0.1" d="M2161 -461L540 1160H2161V-461Z"  fill="url(#paint2_radial_14267_4338)"/>
+<path d="M5 -461H1915V1626H5V-461Z" fill=""/>
 <defs>
 <radialGradient id="paint0_radial_14267_4338" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(523.344 587.344) rotate(134.7) scale(312.545)">
 <stop stop-color="#67698E"/>

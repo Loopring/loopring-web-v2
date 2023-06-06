@@ -462,6 +462,33 @@ footer {
   }
 }
 
+#bgContent {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+
+  #bgAlphaBg {
+    position: absolute;
+    pointer-events: none;
+    transform: translate(0, -300px) rotate(0);
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  #bgAlpha {
+    position: absolute;
+    pointer-events: none;
+    transform: translate(20%, -10%) rotate(13deg);
+
+  }
+
+}
 @media only screen and (max-width: 1024px) {
   .Container-root, .wrap {
     width: 100vw;
@@ -571,6 +598,19 @@ footer {
   .carousel-container {
     --size-image: 0.5;
   }
+  #bgContent {
+    #bgAlphaBg {
+      display: none;
+    }
+
+    #bgAlpha {
+      position: absolute;
+      pointer-events: none;
+      transform: translate(-30%, -20%) rotate(13deg) scale(.5);
+
+    }
+
+  }
 
 }
 
@@ -678,32 +718,7 @@ footer {
   border: 0;
 }
 
-#bgContent {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 100vh;
-  overflow: hidden;
-  pointer-events: none;
 
-  #bgAlphaBg {
-    position: absolute;
-    pointer-events: none;
-    transform: translate(0, -461px) rotate(0);
-    top: 0;
-    left: 0;
-  }
-
-  #bgAlpha {
-    position: absolute;
-    pointer-events: none;
-    transform: translate(20%, -10%) rotate(13deg);
-
-  }
-
-}
 
 //0%,
 // to {
