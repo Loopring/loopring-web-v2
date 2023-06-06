@@ -23,22 +23,23 @@ import {
   SagaStatus,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 import { accountReducer, useAccount } from "./stores/account";
-import { useSystem } from "./stores";
-import { networkUpdate } from "./services";
-import { checkAccount } from "./services";
+import { useModalData, useSystem } from "./stores";
+import {
+  checkAccount,
+  networkUpdate,
+  resetLayer12Data,
+  useConnectHook,
+} from "./services";
 import { REFRESH_RATE } from "./defs";
-import { resetLayer12Data } from "./services";
 import {
   gameStopCallback,
   metaMaskCallback,
   store,
   WalletConnectL2Btn,
 } from "./index";
-import { useModalData } from "./stores";
-import { useConnectHook } from "./services";
 import { useTranslation } from "react-i18next";
 import { Box, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { useGatewayList } from "./modal/WalletModal";
@@ -63,7 +64,7 @@ export const useSelectNetwork = () => {
   const { defaultNetwork, setDefaultNetwork } = useSettings();
   const { setShowConnect } = useOpenModals();
 
-  const handleOnNetworkSwitch = (value: NETWORKEXTEND) => {
+  const handleOnNetworkSwitch = (value: sdk.ChainId) => {
     const account = store.getState().account;
     // const system = store.getState().system;
     if (value !== defaultNetwork) {
@@ -117,20 +118,13 @@ export const useSelectNetwork = () => {
           id="network-selected"
           className={
             /test/gi.test(
-              NetworkMap[
-                defaultNetwork === NETWORKEXTEND.NONETWORK || !defaultNetwork
-                  ? ChainId.MAINNET
-                  : defaultNetwork
-              ].label
+              NetworkMap[!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork]
+                .label
             )
               ? "test"
               : ""
           }
-          value={
-            (defaultNetwork === NETWORKEXTEND.NONETWORK || !defaultNetwork
-              ? ChainId.MAINNET
-              : defaultNetwork) as unknown as NETWORKEXTEND
-          }
+          value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
           autoWidth
           onChange={(event: SelectChangeEvent<any>) =>
             handleOnNetworkSwitch(event.target.value)
@@ -201,7 +195,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     }: {
       accounts: string;
       provider: any;
-      chainId: ChainId | "unknown";
+      chainId: sdk.ChainId | "unknown";
     }) => {
       const accAddress = accounts[0];
       myLog("After connect >>,network part start: step1 networkUpdate");
@@ -222,7 +216,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         isShow: !!shouldShow ?? false,
         step: WalletConnectStep.SuccessConnect,
       });
-      await sleep(REFRESH_RATE);
+      await sdk.sleep(REFRESH_RATE);
       setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect });
     },
     [
@@ -270,10 +264,10 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   const handleError = React.useCallback(
     (props: { type: keyof typeof ErrorType; opts?: any }) => {
       const chainId =
-        account._chainId === ChainId.MAINNET ||
-        account._chainId === ChainId.GOERLI
+        account._chainId === sdk.ChainId.MAINNET ||
+        account._chainId === sdk.ChainId.GOERLI
           ? account._chainId
-          : ChainId.MAINNET;
+          : sdk.ChainId.MAINNET;
 
       myLog("---> shouldShow:", shouldShow);
 
@@ -298,7 +292,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
           // code: UIERROR_CODE.PROVIDER_ERROR,
           // message: props.opts.error,
           // ...props.errorObj,
-        } as RESULT_INFO,
+        } as sdk.RESULT_INFO,
       });
     },
     [
