@@ -18,7 +18,7 @@ import {
   SoursURL,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { Toast } from "@loopring-web/component-lib";
+import { Toast, ToastType } from "@loopring-web/component-lib";
 
 const BoxStyled = styled(Box)`
   ol {
@@ -181,7 +181,7 @@ const ReferView = () => {
         onClose={() => {
           setCopyToastOpen(false);
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
       <ReferHeader handleCopy={handleCopy} />
       <Container>
