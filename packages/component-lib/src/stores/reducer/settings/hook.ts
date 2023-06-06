@@ -32,11 +32,12 @@ import {
 import React from "react";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Layouts } from "react-grid-layout";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export function useSettings(): SettingsState & {
   setPlatform(value: keyof typeof PlatFormType): void;
   setTheme(value: ThemeKeys): void;
-  setDefaultNetwork(value: NETWORKEXTEND | number): void;
+  setDefaultNetwork(value: sdk.ChainId | number): void;
   setUpColor(value: keyof typeof UpColor): void;
   setCurrency(value: Currency): void;
   setLanguage(value: LanguageKeys): void;

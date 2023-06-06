@@ -38,7 +38,7 @@ export const metaMaskCallback = async () => {
   );
   await connectProvides.MetaMask({
     darkMode: themeMode === ThemeType.dark,
-    chainId: defaultNetwork,
+    chainId: defaultNetwork.toString(),
   });
   providerCallback();
 };
@@ -51,7 +51,7 @@ export const CoinbaseCallback = async () => {
   );
   await connectProvides.Coinbase({
     darkMode: themeMode === ThemeType.dark,
-    chainId: defaultNetwork,
+    chainId: defaultNetwork.toString(),
   });
 
   providerCallback();
@@ -65,7 +65,7 @@ export const gameStopCallback = async () => {
   );
   await connectProvides.GameStop({
     darkMode: themeMode === ThemeType.dark,
-    chainId: defaultNetwork,
+    chainId: defaultNetwork.toString(),
   });
   // statusAccountUnset();
   providerCallback();
