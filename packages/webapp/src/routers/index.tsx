@@ -223,7 +223,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
           <LandPage />
         </Route>
-        <Route exact path="/document/:path">
+        <Route path="/document">
           {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
