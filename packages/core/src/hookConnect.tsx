@@ -18,7 +18,6 @@ import {
   DropDownIcon,
   GatewaySort,
   myLog,
-  NETWORKEXTEND,
   NetworkMap,
   SagaStatus,
   SoursURL,
