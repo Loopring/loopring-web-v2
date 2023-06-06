@@ -273,7 +273,11 @@ export const useBtradeSwap = <
           };
         } else if (!validAmt) {
           const sellSymbol = tradeData?.sell.belong;
-          if (sellMinAmtInfo === undefined || !sellSymbol) {
+          if (
+            sellMinAmtInfo === undefined ||
+            !sellSymbol ||
+            sellMinAmtInfo === "NaN"
+          ) {
             return {
               label: "labelEnterAmount",
               tradeBtnStatus: TradeBtnStatus.DISABLED,

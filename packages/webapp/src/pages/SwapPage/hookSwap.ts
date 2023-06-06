@@ -297,7 +297,7 @@ export const useSwap = <
           //!validAmt) {
           const sellSymbol = tradeData?.sell.belong;
 
-          if (sellMinAmt === undefined || !sellSymbol) {
+          if (sellMinAmt === undefined || !sellSymbol || sellMinAmt === "NaN") {
             return {
               label: "labelEnterAmount",
               tradeBtnStatus: TradeBtnStatus.DISABLED,
