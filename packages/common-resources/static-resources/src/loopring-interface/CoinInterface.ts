@@ -528,7 +528,7 @@ export const NetworkMap: { [key: string]: NetworkItemInfo } = {
     chainId: "",
     RPC: "https://arb1.arbitrum.io/rpc",
   },
-  xxx: {
+  "": {
     label: "Taiko",
     chainId: "xxx",
     RPC: "",

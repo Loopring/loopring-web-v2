@@ -2,6 +2,7 @@ import {
   LanguageKeys,
   ThemeKeys,
   UpColor,
+  NETWORKEXTEND,
 } from "@loopring-web/common-resources";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Layouts } from "react-grid-layout";
@@ -45,4 +46,5 @@ export interface SettingsState {
   swapSecondConfirmation: boolean | undefined;
   isTaikoTest?: boolean | undefined;
   isShowTestToggle?: boolean | undefined;
+  defaultNetwork: NETWORKEXTEND | number;
 }

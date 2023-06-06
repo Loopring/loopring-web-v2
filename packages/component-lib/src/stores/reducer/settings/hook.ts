@@ -18,6 +18,7 @@ import {
   setTheme,
   setUpColor,
   setStopLimitLayouts,
+  setDefaultNetwork,
 } from "./reducer";
 import { PlatFormType, SettingsState } from "./interface";
 import {
@@ -26,6 +27,7 @@ import {
   ThemeKeys,
   ThemeType,
   UpColor,
+  NETWORKEXTEND,
 } from "@loopring-web/common-resources";
 import React from "react";
 import { Currency } from "@loopring-web/loopring-sdk";
@@ -34,6 +36,7 @@ import { Layouts } from "react-grid-layout";
 export function useSettings(): SettingsState & {
   setPlatform(value: keyof typeof PlatFormType): void;
   setTheme(value: ThemeKeys): void;
+  setDefaultNetwork(value: NETWORKEXTEND | number): void;
   setUpColor(value: keyof typeof UpColor): void;
   setCurrency(value: Currency): void;
   setLanguage(value: LanguageKeys): void;
@@ -55,6 +58,10 @@ export function useSettings(): SettingsState & {
   const dispatch = useDispatch();
   return {
     ...settings,
+    setDefaultNetwork: React.useCallback(
+      (value: NETWORKEXTEND | number) => dispatch(setDefaultNetwork(value)),
+      [dispatch]
+    ),
     setIsShowTestToggle: React.useCallback(
       (value: boolean) => dispatch(setIsShowTestToggle(value)),
       [dispatch]

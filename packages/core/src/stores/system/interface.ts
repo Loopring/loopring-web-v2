@@ -1,14 +1,14 @@
-import { ForexMap, StateBase } from "@loopring-web/common-resources";
+import {
+  ForexMap,
+  NETWORKEXTEND,
+  StateBase,
+} from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum ENV {
   DEV = "DEV",
   UAT = "UAT",
   PROD = "PROD",
-}
-
-export enum NETWORKEXTEND {
-  NONETWORK = "unknown",
 }
 
 export type NETWORK = NETWORKEXTEND | sdk.ChainId;

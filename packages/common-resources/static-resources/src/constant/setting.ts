@@ -96,3 +96,7 @@ export enum ChainIdExtends {
 }
 
 export const REDPACKET_SHOW_NFTS = false; // Toogle to hide or show NFT Red Packet
+
+export enum NETWORKEXTEND {
+  NONETWORK = "unknown",
+}

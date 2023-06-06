@@ -1,14 +1,25 @@
 import React from "react";
 import {
+  OutlineSelect,
+  OutlineSelectItem,
   setShowAccount,
   useOpenModals,
   useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
-import { ErrorType, ProcessingType } from "@loopring-web/web3-provider";
+import {
+  AvaiableNetwork,
+  ConnectProviders,
+  ErrorType,
+  ProcessingType,
+} from "@loopring-web/web3-provider";
 import {
   AccountStatus,
+  DropDownIcon,
+  GatewaySort,
   myLog,
+  NETWORKEXTEND,
+  NetworkMap,
   SagaStatus,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -20,11 +31,141 @@ import { networkUpdate } from "./services";
 import { checkAccount } from "./services";
 import { REFRESH_RATE } from "./defs";
 import { resetLayer12Data } from "./services";
-import { store, WalletConnectL2Btn } from "./index";
+import {
+  gameStopCallback,
+  metaMaskCallback,
+  store,
+  WalletConnectL2Btn,
+} from "./index";
 import { useModalData } from "./stores";
 import { useConnectHook } from "./services";
 import { useTranslation } from "react-i18next";
-import { Box, Typography } from "@mui/material";
+import { Box, SelectChangeEvent, styled, Typography } from "@mui/material";
+import { useGatewayList } from "./modal/WalletModal";
+
+export const OutlineSelectStyle = styled(OutlineSelect)`
+  &.test .MuiSelect-outlined span {
+    background: var(--network-bg);
+    display: inline-flex;
+    padding: 3px 4px;
+    border-radius: 4px;
+    color: var(--network-text);
+  }
+
+  .MuiSelect-outlined {
+    padding-right: 24px;
+  }
+` as typeof OutlineSelect;
+
+export const useSelectNetwork = () => {
+  const { t } = useTranslation();
+  const { gatewayList } = useGatewayList({});
+  const { defaultNetwork, setDefaultNetwork } = useSettings();
+  const { setShowConnect } = useOpenModals();
+
+  const handleOnNetworkSwitch = (value: NETWORKEXTEND) => {
+    const account = store.getState().account;
+    // const system = store.getState().system;
+    if (value !== defaultNetwork) {
+      if (account.readyState === AccountStatus.UN_CONNECT) {
+        // const networkFlag =
+        networkUpdate({ value });
+        setDefaultNetwork(value);
+      } else {
+        if (
+          account.connectName === ConnectProviders.WalletConnect &&
+          gatewayList[GatewaySort.WalletConnect] &&
+          gatewayList[GatewaySort.WalletConnect]?.handleSelect
+        ) {
+          setDefaultNetwork(value);
+          // @ts-ignore
+          gatewayList[GatewaySort.WalletConnect]?.handleSelect();
+        } else if (account.connectName === ConnectProviders.MetaMask) {
+          setDefaultNetwork(value);
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.CommonProcessing,
+          });
+          metaMaskCallback();
+        } else if (account.connectName === ConnectProviders.GameStop) {
+          //TODO:
+          setDefaultNetwork(value);
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.CommonProcessing,
+          });
+          gameStopCallback();
+        } else if (account.connectName === ConnectProviders.Coinbase) {
+          //TODO:
+          setDefaultNetwork(value);
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.CommonProcessing,
+          });
+          gameStopCallback();
+        }
+      }
+    }
+  };
+  const NetWorkItems = React.useMemo(() => {
+    return (
+      <>
+        <OutlineSelectStyle
+          aria-label={NetworkMap[defaultNetwork]?.label}
+          IconComponent={DropDownIcon}
+          labelId="network-selected"
+          id="network-selected"
+          className={
+            /test/gi.test(
+              NetworkMap[
+                defaultNetwork === NETWORKEXTEND.NONETWORK || !defaultNetwork
+                  ? ChainId.MAINNET
+                  : defaultNetwork
+              ].label
+            )
+              ? "test"
+              : ""
+          }
+          value={
+            (defaultNetwork === NETWORKEXTEND.NONETWORK || !defaultNetwork
+              ? ChainId.MAINNET
+              : defaultNetwork) as unknown as NETWORKEXTEND
+          }
+          autoWidth
+          onChange={(event: SelectChangeEvent<any>) =>
+            handleOnNetworkSwitch(event.target.value)
+          }
+        >
+          {AvaiableNetwork.map((id) => {
+            if (NetworkMap[id]) {
+              return (
+                <OutlineSelectItem
+                  key="id"
+                  className={"viewNetwork" + NetworkMap[id]}
+                  aria-label={NetworkMap[id].label}
+                  value={id}
+                >
+                  <span>{t(NetworkMap[id].label)}</span>
+                </OutlineSelectItem>
+              );
+            } else {
+              return {
+                chainId: id.toString(),
+                name: "Network Unknown:" + id,
+              };
+            }
+          })}
+        </OutlineSelectStyle>
+      </>
+    );
+  }, [defaultNetwork]);
+  React.useEffect(() => {}, []);
+
+  return {
+    NetWorkItems,
+    handleOnNetworkSwitch,
+  };
+};
 
 export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   const {
