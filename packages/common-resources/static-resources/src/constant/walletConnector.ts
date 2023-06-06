@@ -31,7 +31,7 @@ gatewayMap.set(GatewaySort.Coinbase, {
   keyi18n: ConnectProviders.Coinbase,
   imgSrc: SoursURL + "svg/coinbase-wallet.svg",
 });
-export const gatewayList: GatewayItem[] = new Array(gatewayMap.keys()).reduce(
+export const gatewayList: GatewayItem[] = [...gatewayMap.keys()].reduce(
   (prev, key) => {
     // @ts-ignore
     prev[key as any] = gatewayMap.get(key as any);

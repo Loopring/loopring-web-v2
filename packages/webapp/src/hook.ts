@@ -53,7 +53,7 @@ export function useInit() {
       return SagaStatus.PENDING;
     }
   });
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
   const theme = useTheme();
 
   const {
@@ -107,7 +107,9 @@ export function useInit() {
         try {
           ConnectProvides.IsMobile = isMobile;
           await connectProvides[account.connectName]({
+            // @ts-ignore
             account: account.accAddress,
+            chainId: defaultNetwork.toString(),
             darkMode: theme.mode === ThemeType.dark,
           });
           updateAccount({});
