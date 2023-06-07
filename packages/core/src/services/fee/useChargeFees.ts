@@ -28,7 +28,7 @@ export function useChargeFees({
   requestType: _requestType,
   amount,
   extraType,
-  isNFT = false,
+  isNFT,
   tokenAddress,
   updateData,
   needAmountRefresh,
@@ -230,10 +230,10 @@ export function useChargeFees({
               sdk.OffchainNFTFeeReqType.NFT_MINT,
               sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
               sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
-              sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+              sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
               sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
             ].includes(requestType as any) ||
-              (sdk.OffchainNFTFeeReqType.EXTRA_TYPES == requestType &&
+              (sdk.OffchainNFTFeeReqType.NFT_TRANSFER == requestType &&
                 isNFT)) &&
             account.accountId &&
             account.accountId !== -1 &&
@@ -421,11 +421,7 @@ export function useChargeFees({
           if ((reason as sdk.RESULT_INFO).code) {
           }
         }
-        if (
-          isSame &&
-          Number.isFinite(_intervalTime) &&
-          !Number.isNaN(_intervalTime)
-        ) {
+        if (isSame) {
           nodeTimer.current = setTimeout(() => {
             getFeeList();
           }, _intervalTime);
@@ -584,7 +580,7 @@ export function useChargeFees({
     chargeFeeTokenList,
     isFeeNotEnough,
     resetIntervalTime: () => {
-      setIntervalTime(intervalTime);
+      setIntervalTime(INTERVAL_TIME);
     },
     checkFeeIsEnough,
     handleFeeChange,

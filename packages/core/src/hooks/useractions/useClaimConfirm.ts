@@ -68,17 +68,18 @@ export const useClaimConfirm = <
     claimValue.tradeType === TRADE_TYPE.TOKEN
       ? claimType === CLAIM_TYPE.lrcStaking
         ? {
-            requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
             extraType: 3,
           }
         : {
-            requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
             extraType: 2,
           }
       : {
           requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           tokenAddress: claimValue?.tokenAddress,
           extraType: 2,
+          isNFT: true,
         };
   const {
     chargeFeeTokenList,
