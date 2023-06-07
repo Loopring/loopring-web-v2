@@ -1,30 +1,164 @@
 import React from "react";
 import {
+  OutlineSelect,
+  OutlineSelectItem,
   setShowAccount,
   useOpenModals,
   useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
-import { ErrorType, ProcessingType } from "@loopring-web/web3-provider";
+import {
+  AvaiableNetwork,
+  ConnectProviders,
+  ErrorType,
+  ProcessingType,
+} from "@loopring-web/web3-provider";
 import {
   AccountStatus,
+  DropDownIcon,
+  GatewaySort,
   myLog,
+  NetworkMap,
   SagaStatus,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 import { accountReducer, useAccount } from "./stores/account";
-import { useSystem } from "./stores";
-import { networkUpdate } from "./services";
-import { checkAccount } from "./services";
+import { useModalData, useSystem } from "./stores";
+import {
+  checkAccount,
+  networkUpdate,
+  resetLayer12Data,
+  useConnectHook,
+} from "./services";
 import { REFRESH_RATE } from "./defs";
-import { resetLayer12Data } from "./services";
-import { store, WalletConnectL2Btn } from "./index";
-import { useModalData } from "./stores";
-import { useConnectHook } from "./services";
+import {
+  gameStopCallback,
+  metaMaskCallback,
+  store,
+  WalletConnectL2Btn,
+} from "./index";
 import { useTranslation } from "react-i18next";
-import { Box, Typography } from "@mui/material";
+import { Box, SelectChangeEvent, styled, Typography } from "@mui/material";
+import { useGatewayList } from "./modal/WalletModal";
+
+export const OutlineSelectStyle = styled(OutlineSelect)`
+  &.test .MuiSelect-outlined span {
+    background: var(--network-bg);
+    display: inline-flex;
+    padding: 3px 4px;
+    border-radius: 4px;
+    color: var(--network-text);
+  }
+
+  .MuiSelect-outlined {
+    padding-right: 24px;
+  }
+` as typeof OutlineSelect;
+
+export const useSelectNetwork = () => {
+  const { t } = useTranslation();
+  const { gatewayList } = useGatewayList({});
+  const { defaultNetwork, setDefaultNetwork } = useSettings();
+  const { setShowConnect } = useOpenModals();
+
+  const handleOnNetworkSwitch = (value: sdk.ChainId) => {
+    const account = store.getState().account;
+    // const system = store.getState().system;
+    if (value !== defaultNetwork) {
+      if (account.readyState === AccountStatus.UN_CONNECT) {
+        // const networkFlag =
+        networkUpdate({ value });
+        setDefaultNetwork(value);
+      } else {
+        if (
+          account.connectName === ConnectProviders.WalletConnect &&
+          gatewayList[GatewaySort.WalletConnect] &&
+          gatewayList[GatewaySort.WalletConnect]?.handleSelect
+        ) {
+          setDefaultNetwork(value);
+          // @ts-ignore
+          gatewayList[GatewaySort.WalletConnect]?.handleSelect();
+        } else if (account.connectName === ConnectProviders.MetaMask) {
+          setDefaultNetwork(value);
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.CommonProcessing,
+          });
+          metaMaskCallback();
+        } else if (account.connectName === ConnectProviders.GameStop) {
+          //TODO:
+          setDefaultNetwork(value);
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.CommonProcessing,
+          });
+          gameStopCallback();
+        } else if (account.connectName === ConnectProviders.Coinbase) {
+          //TODO:
+          setDefaultNetwork(value);
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.CommonProcessing,
+          });
+          gameStopCallback();
+        }
+      }
+    }
+  };
+  const NetWorkItems = React.useMemo(() => {
+    return (
+      <>
+        <OutlineSelectStyle
+          aria-label={NetworkMap[defaultNetwork]?.label}
+          IconComponent={DropDownIcon}
+          labelId="network-selected"
+          id="network-selected"
+          className={
+            /test/gi.test(
+              NetworkMap[!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork]
+                .label
+            )
+              ? "test"
+              : ""
+          }
+          value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
+          autoWidth
+          onChange={(event: SelectChangeEvent<any>) =>
+            handleOnNetworkSwitch(event.target.value)
+          }
+        >
+          {AvaiableNetwork.map((id) => {
+            if (NetworkMap[id]) {
+              return (
+                <OutlineSelectItem
+                  key="id"
+                  className={"viewNetwork" + NetworkMap[id]}
+                  aria-label={NetworkMap[id].label}
+                  value={id}
+                >
+                  <span>{t(NetworkMap[id].label)}</span>
+                </OutlineSelectItem>
+              );
+            } else {
+              return {
+                chainId: id.toString(),
+                name: "Network Unknown:" + id,
+              };
+            }
+          })}
+        </OutlineSelectStyle>
+      </>
+    );
+  }, [defaultNetwork]);
+  React.useEffect(() => {}, []);
+
+  return {
+    NetWorkItems,
+    handleOnNetworkSwitch,
+  };
+};
 
 export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   const {
@@ -60,7 +194,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     }: {
       accounts: string;
       provider: any;
-      chainId: ChainId | "unknown";
+      chainId: sdk.ChainId | "unknown";
     }) => {
       const accAddress = accounts[0];
       myLog("After connect >>,network part start: step1 networkUpdate");
@@ -81,7 +215,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         isShow: !!shouldShow ?? false,
         step: WalletConnectStep.SuccessConnect,
       });
-      await sleep(REFRESH_RATE);
+      await sdk.sleep(REFRESH_RATE);
       setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect });
     },
     [
@@ -129,10 +263,10 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   const handleError = React.useCallback(
     (props: { type: keyof typeof ErrorType; opts?: any }) => {
       const chainId =
-        account._chainId === ChainId.MAINNET ||
-        account._chainId === ChainId.GOERLI
+        account._chainId === sdk.ChainId.MAINNET ||
+        account._chainId === sdk.ChainId.GOERLI
           ? account._chainId
-          : ChainId.MAINNET;
+          : sdk.ChainId.MAINNET;
 
       myLog("---> shouldShow:", shouldShow);
 
@@ -157,7 +291,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
           // code: UIERROR_CODE.PROVIDER_ERROR,
           // message: props.opts.error,
           // ...props.errorObj,
-        } as RESULT_INFO,
+        } as sdk.RESULT_INFO,
       });
     },
     [

@@ -8,13 +8,14 @@ import {
   delay,
 } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
-import { ENV, NETWORKEXTEND } from "./interface";
+import { ENV } from "./interface";
 import { store, LoopringSocket, LoopringAPI, toggleCheck } from "../../index";
 import {
   CustomError,
   ErrorMap,
   ForexMap,
   myLog,
+  NETWORKEXTEND,
 } from "@loopring-web/common-resources";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
 import { getAmmMap, initAmmMap } from "../Amm/AmmMap/reducer";

@@ -3,10 +3,14 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  NETWORKEXTEND,
   EddsaKey,
 } from "../../index";
-import { FeeInfo, myLog, UIERROR_CODE } from "@loopring-web/common-resources";
+import {
+  FeeInfo,
+  myLog,
+  UIERROR_CODE,
+  NETWORKEXTEND,
+} from "@loopring-web/common-resources";
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
 import Web3 from "web3";
