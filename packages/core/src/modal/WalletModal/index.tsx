@@ -38,6 +38,7 @@ import {
   metaMaskCallback,
   RootState,
   useAccount,
+  useSelectNetwork,
   walletConnectCallback,
 } from "@loopring-web/core";
 import { useSelector } from "react-redux";
@@ -348,11 +349,14 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             }
           };
     }, [account.readyState, setShowAccount, setShowConnect]);
+    const { NetWorkItems } = useSelectNetwork();
+
     const walletList = React.useMemo(() => {
       return Object.values({
         [WalletConnectStep.Provider]: {
           view: (
             <ProviderMenu
+              NetWorkItems={NetWorkItems}
               termUrl={"https://www.iubenda.com/terms-and-conditions/74969935"}
               gatewayList={gatewayList}
               providerName={account.connectName as ConnectProviders}
