@@ -401,7 +401,7 @@ export const OrderHistoryTable = withTranslation("tables")(
             name: t("labelStopLimitStopPrice"),
             headerCellClass: "textAlignRight",
             formatter: ({ row }: any) => {
-              return row.extraOrderInfo?.isTriggerd ? (
+              return row?.extraOrderInfo?.isTriggerd ? (
                 <Box
                   style={{ cursor: "pointer" }}
                   className="rdg-cell-value textAlignRight"
@@ -412,20 +412,20 @@ export const OrderHistoryTable = withTranslation("tables")(
                     style={{ cursor: "pointer" }}
                     className="rdg-cell-value textAlignRight"
                     title={t("labelStopLimitTriggered", {
-                      time: row.extraOrderInfo.triggerdTime
+                      time: row.extraOrderInfo?.triggerdTime
                         ? moment(
-                            new Date(row.extraOrderInfo.triggerdTime)
+                            new Date(row.extraOrderInfo?.triggerdTime)
                           ).format(YEAR_DAY_MINUTE_FORMAT)
                         : "",
                     }).toString()}
                   >
                     <>
                       <Typography component={"span"} paddingRight={1 / 2}>
-                        {row.extraOrderInfo.stopSide ==
+                        {row.extraOrderInfo?.stopSide ==
                         sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
                           ? "≤"
                           : "≥"}
-                        {row.extraOrderInfo.stopPrice}
+                        {row.extraOrderInfo?.stopPrice}
                       </Typography>
                       <GoodIcon />
                     </>
@@ -437,11 +437,11 @@ export const OrderHistoryTable = withTranslation("tables")(
                   className="rdg-cell-value textAlignRight"
                 >
                   <Typography component={"span"}>
-                    {row.extraOrderInfo.stopSide ==
+                    {row.extraOrderInfo?.stopSide ==
                     sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
                       ? "≤"
                       : "≥"}
-                    {row.extraOrderInfo.stopPrice}
+                    {row.extraOrderInfo?.stopPrice}
                   </Typography>
                 </Box>
               );
