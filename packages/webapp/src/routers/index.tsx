@@ -21,7 +21,7 @@ import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  myLog,
+  RouterPath,
   SagaStatus,
   setMyLog,
   ThemeType,

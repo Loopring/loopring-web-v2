@@ -23,4 +23,6 @@ export type RawDataBtradeSwapsItem = {
   feeSymbol: string;
   time: number;
   filledPercent: string;
+  settledFromAmount: string;
+  settledToAmount: string;
 };
