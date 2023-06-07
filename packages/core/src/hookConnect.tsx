@@ -9,14 +9,13 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AvaiableNetwork,
-  ConnectProviders,
+  connectProvides,
   ErrorType,
   ProcessingType,
 } from "@loopring-web/web3-provider";
 import {
   AccountStatus,
   DropDownIcon,
-  GatewaySort,
   myLog,
   NetworkMap,
   SagaStatus,
@@ -33,12 +32,7 @@ import {
   useConnectHook,
 } from "./services";
 import { REFRESH_RATE } from "./defs";
-import {
-  gameStopCallback,
-  metaMaskCallback,
-  store,
-  WalletConnectL2Btn,
-} from "./index";
+import { store, WalletConnectL2Btn } from "./index";
 import { useTranslation } from "react-i18next";
 import { Box, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { useGatewayList } from "./modal/WalletModal";
@@ -60,10 +54,10 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
 
 export const useSelectNetwork = () => {
   const { t } = useTranslation();
-  const { gatewayList } = useGatewayList({});
+  // const { gatewayList } = useGatewayList({});
   const { defaultNetwork, setDefaultNetwork } = useSettings();
   const { setShowConnect } = useOpenModals();
-  const { account } = useAccount();
+  // const { account } = useAccount();
   React.useEffect(() => {
     const account = store.getState().account;
     if (account.readyState === AccountStatus.UN_CONNECT) {
@@ -76,37 +70,38 @@ export const useSelectNetwork = () => {
     // const system = store.getState().system;
     if (value !== defaultNetwork) {
       setDefaultNetwork(value);
-
-      if (
-        account.connectName === ConnectProviders.WalletConnect &&
-        gatewayList[GatewaySort.WalletConnect] &&
-        gatewayList[GatewaySort.WalletConnect]?.handleSelect
-      ) {
-        // @ts-ignore
-        gatewayList[GatewaySort.WalletConnect]?.handleSelect();
-      } else if (account.connectName === ConnectProviders.MetaMask) {
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.CommonProcessing,
-        });
-        metaMaskCallback();
-      } else if (account.connectName === ConnectProviders.GameStop) {
-        //TODO:
-        setDefaultNetwork(value);
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.CommonProcessing,
-        });
-        gameStopCallback();
-      } else if (account.connectName === ConnectProviders.Coinbase) {
-        //TODO:
-
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.CommonProcessing,
-        });
-        gameStopCallback();
-      }
+      setShowConnect({
+        isShow: true,
+        step: WalletConnectStep.CommonProcessing,
+      });
+      connectProvides.sendChainIdChange({ chainId: value });
+      // setShowConnect({
+      //   isShow: true,
+      //   step: WalletConnectStep.CommonProcessing,
+      // });
+      // if (
+      //   account.connectName === ConnectProviders.WalletConnect &&
+      //   gatewayList[GatewaySort.WalletConnect] &&
+      //   gatewayList[GatewaySort.WalletConnect]?.handleSelect
+      // ) {
+      //   // @ts-ignore
+      //   // gatewayList[GatewaySort.WalletConnect]?.handleSelect();
+      // } else if (account.connectName === ConnectProviders.MetaMask) {
+      //   setShowConnect({
+      //     isShow: true,
+      //     step: WalletConnectStep.CommonProcessing,
+      //   });
+      //   // metaMaskCallback();
+      // } else if (account.connectName === ConnectProviders.GameStop) {
+      //
+      //
+      // } else if (account.connectName === ConnectProviders.Coinbase) {
+      //
+      //   setShowConnect({
+      //     isShow: true,
+      //     step: WalletConnectStep.CommonProcessing,
+      //   });
+      // }
     }
   };
 
