@@ -91,11 +91,12 @@ export const useCreateRedPacket = <
     redPacketOrder.tradeType === "TOKEN"
       ? {
           requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
-          extraType: "",
+          extraType: 1,
         }
       : {
           requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           tokenAddress: redPacketOrder?.tokenAddress,
+          extraType: 1,
         };
 
   const {

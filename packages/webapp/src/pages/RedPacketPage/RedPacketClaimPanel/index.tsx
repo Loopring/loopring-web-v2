@@ -8,14 +8,13 @@ import {
   useWalletLayer2,
 } from "@loopring-web/core";
 import {
-  EmptyDefault,
   RedPacketClaimTable,
   Toast,
   ToastType,
   TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useClaimNFTRedPacket, useClaimRedPacket } from "./hooks";
 import {
@@ -25,8 +24,6 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Tab,
-  Tabs,
   Typography,
 } from "@mui/material";
 import {
@@ -34,10 +31,8 @@ import {
   RedPacketIcon,
   RowConfig,
   SagaStatus,
-  TabTokenTypeIndex,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { toBig } from "@loopring-web/loopring-sdk";
 
 export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
   const container = React.useRef<HTMLDivElement>(null);
