@@ -205,25 +205,28 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     ]
   );
 
-  const handleAccountDisconnect = React.useCallback(async () => {
-    // const {};
+  const handleAccountDisconnect = React.useCallback(
+    async ({ reason, code }: { reason?: string; code?: number }) => {
+      // const {};
 
-    myLog("account:", account);
-    resetAccount({ shouldUpdateProvider: true });
-    setStateAccount(SagaStatus.PENDING);
-    resetLayer12Data();
+      myLog("handleAccountDisconnect:", account, reason, code);
+      resetAccount({ shouldUpdateProvider: true });
+      setStateAccount(SagaStatus.PENDING);
+      resetLayer12Data();
 
-    resetWithdrawData();
-    resetTransferData();
-    resetDepositData();
-    // await sleep(REFRESH_RATE)
-  }, [
-    account,
-    resetAccount,
-    resetDepositData,
-    resetTransferData,
-    resetWithdrawData,
-  ]);
+      resetWithdrawData();
+      resetTransferData();
+      resetDepositData();
+      // await sleep(REFRESH_RATE)
+    },
+    [
+      account,
+      resetAccount,
+      resetDepositData,
+      resetTransferData,
+      resetWithdrawData,
+    ]
+  );
 
   const handleProcessing = React.useCallback(
     ({ opts }: { type: ProcessingType; opts: any }) => {
