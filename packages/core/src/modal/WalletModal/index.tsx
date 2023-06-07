@@ -363,6 +363,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               {...{ t, ...rest }}
             />
           ),
+          height: "auto",
           onBack: providerBack,
         },
         [WalletConnectStep.CommonProcessing]: {
