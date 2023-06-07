@@ -282,8 +282,6 @@ export const useContact = () => {
   }, [apiKey, contacts])
   const [addLoading, setAddLoading] = React.useState(false);
   const submitAddContact = React.useCallback(async (address: string, name: string, callBack: (success: boolean) => void) => {
-    
-
     setAddLoading(true)
     const isHebao = await checkIsHebao(accAddress)
     LoopringAPI.contactAPI!.createContact({
