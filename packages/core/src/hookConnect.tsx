@@ -121,7 +121,7 @@ export const useSelectNetwork = () => {
           className={
             /test/gi.test(
               NetworkMap[!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork]
-                .label
+                ?.label ?? ""
             )
               ? "test"
               : ""
@@ -233,6 +233,8 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   );
 
   const handleAccountDisconnect = React.useCallback(async () => {
+    // const {};
+
     myLog("account:", account);
     resetAccount({ shouldUpdateProvider: true });
     setStateAccount(SagaStatus.PENDING);
