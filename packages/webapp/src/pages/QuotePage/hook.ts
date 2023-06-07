@@ -242,7 +242,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       keyword?: string;
     }) => {
       let data = _.cloneDeep(tickList);
-      myLog("tickList", data);
+      // myLog("tickList", data);
       if (type === TableFilterParams.favourite) {
         data = data.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`;
