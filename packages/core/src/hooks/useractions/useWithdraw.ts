@@ -51,13 +51,13 @@ import {
   useIsHebao,
   RootState,
   useAddressCheckWithContacts,
+  getAllContacts,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
-import { AddressType } from "@loopring-web/loopring-sdk";
-import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "../../stores/contacts/reducer";
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from "@loopring-web/core";
+import { useTheme } from "@emotion/react";
+import { useContacts } from "../../stores/contacts/hooks";
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
@@ -371,7 +371,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setAddress(account.accAddress);
     } else if (contactAddress) {
       setAddress(contactAddress)
-      setIsContactSelection(true)
+      // setIsContactSelection(true)
     } else {
       setAddress("");
     }
@@ -670,9 +670,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     [lastRequest, processRequest, setShowAccount]
   );
   const { isHebao } = useIsHebao()
-  const [isContactSelection, setIsContactSelection] = React.useState(contactAddress !== undefined ? true : false)
-  const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const dispatch = useDispatch()
+  const {contacts,currentAccountId: cachedForAccountId, updateContacts, updateAccountId} = useContacts() 
   React.useEffect(() => {
     const addressType = contacts?.find(x => x.address === realAddr)?.addressType
     if (isShow === false) {
@@ -684,6 +682,25 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setSureIsAllowAddress(found)
     }
   }, [realAddr, isShow, contacts])
+  
+  const {
+    account: { accountId, apiKey, accAddress },
+  } = useAccount();
+  const theme = useTheme()
+  const loadContacts = React.useCallback(async (accountId: number) => {
+    if (accountId === cachedForAccountId) return
+    updateContacts(undefined)
+    try {
+      const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
+      updateContacts(allContacts)
+      updateAccountId(accountId)
+    } catch (e) {
+      updateContacts([])
+    }
+  }, [cachedForAccountId])
+  React.useEffect(() => {
+    loadContacts(accountId)
+  }, [accountId, apiKey])
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
@@ -720,13 +737,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           addressType: found,
           contactName: contact.name
         }, account.apiKey).then(() => {
-          dispatch(updateContacts(contacts?.map(x => {
-            if (x.address === realAddr) {
-              return {...x, addressType: found}
+          updateContacts(contacts?.map(x => {
+            if (x.address === realAddr && found) {
+              return { ...x, addressType: found }
             } else {
               return x
             }
-          })))
+          }))
         })
       }
       setSureIsAllowAddress(value);
@@ -782,14 +799,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
-      setIsContactSelection(isContactSelection ? true : false)
+      // setIsContactSelection(isContactSelection ? true : false)
       setAddress(value);
     },
     isFromContact: contactAddress ? true : false,
     contact: contactAddress 
       ? {address: contactAddress, name: contactName!, addressType: contactAddressType!}
       : undefined,
-    loopringSmartWalletVersion
+    loopringSmartWalletVersion,
+    contacts,
   };
 
   return {

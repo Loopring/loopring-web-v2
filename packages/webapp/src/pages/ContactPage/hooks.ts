@@ -23,6 +23,7 @@ import { debounce, filter, throttle, uniqBy } from "lodash";
 import { updateAccountId, updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
 import { DefaultRootState, RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
+import { useContacts } from "@loopring-web/core/src/stores/contacts/hooks";
 
 
 export type Contact = {
@@ -92,15 +93,15 @@ export const useContact = () => {
   const {
     account: { accountId, apiKey, accAddress },
   } = useAccount();
-  const dispatch = useDispatch()
-  const contacts = useSelector((state: RootState) => state.contacts.contacts);
   const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId);
   const { t } = useTranslation()
   const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset);
   const [loading, setLoading] = useState(false);
-  const total = contacts?.length
   const [page, setPage] = useState(1);
   const pageSize = Math.floor(tableHeight / RowHeight);
+  const theme = useTheme()
+  const {contacts, updateAccountId, updateContacts} = useContacts()
+  const total = contacts?.length
   const pagination = total
     ? {
       page,
@@ -108,27 +109,20 @@ export const useContact = () => {
       total
     }
     : undefined  
-  const theme = useTheme()
   const getContacts = useCallback(async (accountId: number) => {
     if (cachedForAccountId === accountId) return
     if (!apiKey || accountId == -1) return
     // if (contacts && contacts.length > 0) return // Not refetch contacts if contacts were fetched and 'useCache' is true
-    dispatch(updateContacts(undefined))
+    updateContacts(undefined)
     setLoading(true)
     try {
       const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
-      dispatch(
-        allContacts
-          ? updateContacts(allContacts)
-          : updateContacts([])
-      )
-      dispatch(
-        updateAccountId(accountId)
-      )
+      allContacts
+        ? updateContacts(allContacts)
+        : updateContacts([])
+      updateAccountId(accountId)
     } catch {
-      dispatch(
-        updateContacts([])
-      )
+      updateContacts([])
     }
     setLoading(false)
   }, [accountId, apiKey, contacts, cachedForAccountId])
@@ -143,12 +137,12 @@ export const useContact = () => {
     setSearchValue('')
   },[])
   const onClickEditing = React.useCallback((address: string) => {
-    dispatch(updateContacts(contacts!.map(x => {
+    updateContacts(contacts!.map(x => {
       return {
         ...x,
         editing: x.address === address
       }
-    })))
+    }))
   },[contacts])
   const onClickDelete = React.useCallback((address: string, name: string) => {
     setDeleteInfo({
@@ -194,15 +188,13 @@ export const useContact = () => {
   });
 
   const onInputBlue = React.useCallback(async (address: string) => {
-    dispatch(
-      updateContacts(
-        contacts!.map(x => {
-          return {
-            ...x,
-            editing: false
-          }
-        })
-      )
+    updateContacts(
+      contacts!.map(x => {
+        return {
+          ...x,
+          editing: false
+        }
+      })
     )
     const isHebao = await checkIsHebao(accAddress)
     const found = contacts!.find(x => x.address === address)!;
@@ -232,18 +224,15 @@ export const useContact = () => {
     })
   },[contacts, apiKey, accAddress])
   const onChangeInput = React.useCallback((address: string, inputValue) => {
-    // updateContacts
-    dispatch(
-      updateContacts(
-        contacts!.map(x => {
-          return {
-            ...x,
-            name: x.address === address 
-              ? inputValue
-              : x.name
-          }
-        })
-      )
+    updateContacts(
+      contacts!.map(x => {
+        return {
+          ...x,
+          name: x.address === address 
+            ? inputValue
+            : x.name
+        }
+      })
     )
   },[contacts])
   const [deleteLoading, setDeleteLoading] = React.useState(false);
@@ -265,9 +254,7 @@ export const useContact = () => {
     }, apiKey)
     .then(response => {
       if (response === true) {
-        dispatch(
-          updateContacts(contacts!.filter(contact => contact.address !== address))
-        )
+        updateContacts(contacts!.filter(contact => contact.address !== address))
         setToastInfo({
           open: true,
           isSuccess: true,
@@ -331,13 +318,15 @@ export const useContact = () => {
             contactAddress: address,
             contactName: name
           }, apiKey).then(x => {
-            dispatch(updateContacts(contacts?.map(x => {
-              if (x.address === address) {
-                return {...x, addressType}
-              } else {
-                return x
-              }
-            })))
+            updateContacts(
+              contacts?.map(contact => {
+                if (contact.address === address) {
+                  return { ...contact, addressType: addressType! }
+                } else {
+                  return contact
+                }
+              })
+            )
           })
         }
       })
@@ -348,10 +337,8 @@ export const useContact = () => {
           const all = contacts 
             ? contacts.concat(newContacts)
             : newContacts
-          dispatch(
-            updateContacts(
-              uniqBy(all, contact => contact.address)
-            )
+          updateContacts(
+            uniqBy(all, contact => contact.address)
           )
         } catch {}
         setLoading(false)
@@ -403,8 +390,8 @@ export const useContact = () => {
           (page - 1) * pageSize, 
           page * pageSize >= contacts.length ? contacts.length : page * pageSize
         )
-        : contacts.filter(x => {
-          return x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
+        : contacts.filter(contact => {
+          return contact.address.toLowerCase().includes(searchValue.toLowerCase()) || contact.name.toLowerCase().includes(searchValue.toLowerCase())
         })
     ),
     onClickEditing,

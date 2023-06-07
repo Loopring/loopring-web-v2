@@ -56,15 +56,59 @@ import {
   useIsHebao,
   RootState,
   useAddressCheckWithContacts,
+  createImageFromInitials,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
-import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "../../stores/contacts/reducer";
 import {
   addressToExWalletMapFn,
   exWalletToAddressMapFn,
 } from "@loopring-web/core";
+import { useTheme } from "@emotion/react";
+import { useContacts } from "../../stores/contacts/hooks";
+
+const checkIsHebao = (accountAddress: string) => LoopringAPI.walletAPI!.getWalletType({
+  wallet: accountAddress,
+}).then(walletType => {
+  return walletType?.walletType?.loopringWalletContractVersion !== ""
+})
+type DisplayContact = {
+  name: string
+  address: string
+  avatarURL: string
+  editing: boolean
+  addressType: sdk.AddressType
+}
+export const getAllContacts = async (offset: number, accountId: number, apiKey: string, accountAddress: string, color: string) => {
+  const limit = 100
+  const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
+    const isHebao = await checkIsHebao(accountAddress)
+    const response = await LoopringAPI.contactAPI!.getContacts({
+      isHebao,
+      accountId,
+      limit,
+      offset
+    }, apiKey)
+    const displayContacts = response.contacts
+      .filter(contact => contact.addressType !== sdk.AddressType.OFFICIAL)
+      .map((contact) => {
+        return {
+          name: contact.contactName,
+          address: contact.contactAddress,
+          avatarURL: createImageFromInitials(32, contact.contactName, color),
+          editing: false,
+          addressType: contact.addressType
+        } as DisplayContact
+      })
+    if (response.total > offset + limit) {
+      const rest = await recursiveLoad(offset + limit)
+      return displayContacts.concat(rest)
+    } else {
+      return displayContacts
+    }
+  }
+  return recursiveLoad(offset)
+}
 
 export const useTransfer = <R extends IBData<T>, T>() => {
   const { setShowAccount, setShowTransfer } = useOpenModals();
@@ -626,8 +670,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   }, [isActiveAccount, realAddr]);
 
   const { isHebao } = useIsHebao();
-  const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const dispatch = useDispatch();
+  // const contacts = useSelector((state: RootState) => state.contacts.contacts);
+  // const dispatch = useDispatch();
+  const {contacts} = useContacts()
   React.useEffect(() => {
     const addressType = contacts?.find(
       (x) => x.address === realAddr
@@ -641,6 +686,25 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       setSureItsLayer2(found);
     }
   }, [realAddr, isShow, contacts]);
+  const { account: {accountId, apiKey, accAddress} } = useAccount()
+  
+  const {currentAccountId: cachedForAccountId, updateAccountId, updateContacts}  = useContacts() 
+  const theme = useTheme()
+  const loadContacts = React.useCallback(async (accountId: number) => {
+    if (accountId === cachedForAccountId) return
+    updateContacts(undefined)
+    try {
+      const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
+      updateContacts
+      updateContacts(allContacts)
+      updateAccountId(accountId)
+    } catch (e) {
+      updateContacts([])
+    }
+  }, [cachedForAccountId]) 
+  React.useEffect(() => {
+    loadContacts(accountId)
+  }, [accountId, apiKey])
   const transferProps: TransferProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     addressDefault: address,
@@ -669,17 +733,15 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             account.apiKey
           )
           .then(() => {
-            dispatch(
-              updateContacts(
-                contacts?.map((x) => {
-                  if (x.address === realAddr) {
-                    return { ...x, addressType: found };
-                  } else {
-                    return x;
-                  }
-                })
-              )
-            );
+            updateContacts(
+              contacts?.map((x) => {
+                if (x.address === realAddr) {
+                  return { ...x, addressType: found };
+                } else {
+                  return x;
+                }
+              })
+            )
           });
       }
       setSureItsLayer2(sure);
@@ -755,6 +817,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         }
       : undefined,
     loopringSmartWalletVersion,
+    contacts
   };
 
   return {

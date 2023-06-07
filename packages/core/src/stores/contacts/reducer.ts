@@ -1,15 +1,8 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
-import {
-  Account,
-  AccountState,
-  AccountStatus,
-  SagaStatus,
-} from "@loopring-web/common-resources";
-import { ConnectProviders } from "@loopring-web/web3-provider";
 import { AddressType } from "@loopring-web/loopring-sdk";
 
-type DisplayContact = {
+export type DisplayContact = {
   name: string
   address: string
   avatarURL: string
@@ -17,7 +10,7 @@ type DisplayContact = {
   addressType: AddressType
 }
 
-type ContactsState = {
+export type ContactsState = {
   contacts: DisplayContact[] | undefined;
   currentAccountId: number | undefined
 }
