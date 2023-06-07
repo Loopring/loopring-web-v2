@@ -11,9 +11,6 @@ import { setDefaultNetwork } from "@loopring-web/component-lib";
 
 const providerCallback = async () => {
   const { defaultNetwork } = store.getState().settings;
-  // const { _chainId } = store.getState().system;
-  // statusAccountUnset();
-  debugger;
   if (connectProvides.usedProvide) {
     let chainId: sdk.ChainId = Number(
       await connectProvides.usedWeb3?.eth.getChainId()
