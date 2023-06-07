@@ -23,7 +23,7 @@ const getTickersApi = async <R extends { [key: string]: any }>(
         store.dispatch(getTickers({ tickerKey: marketArray }));
       }, 1000 * 60 * 5);
     })(__timer__);
-    myLog("loop get getMixTicker");
+    // myLog("loop get getMixTicker");
 
     const tickers = await LoopringAPI.exchangeAPI.getMixTicker({
       market: list.join(","),

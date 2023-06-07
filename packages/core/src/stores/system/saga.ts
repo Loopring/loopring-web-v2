@@ -306,28 +306,31 @@ const should15MinutesUpdateDataGroup = async (
 };
 
 const getSystemsApi = async <_R extends { [key: string]: any }>(
-  chainId: any
+  _chainId: any
 ) => {
   const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
     (item) => ![1, 5].includes(Number(item))
   );
+  // chainId =
 
   const env =
     window.location.hostname === "localhost"
       ? ENV.DEV
-      : sdk.ChainId.GOERLI === chainId
+      : sdk.ChainId.GOERLI === Number(_chainId)
       ? ENV.UAT
       : ENV.PROD;
-  chainId = AvaiableNetwork.includes(chainId.toString())
-    ? chainId
-    : NETWORKEXTEND.NONETWORK;
+  const chainId: sdk.ChainId = (
+    AvaiableNetwork.includes(_chainId.toString())
+      ? Number(_chainId)
+      : NETWORKEXTEND.NONETWORK
+  ) as sdk.ChainId;
   // chainId =
   //   ChainId.GOERLI === chainId
   //     ? ChainId.GOERLI
   //     : ChainId.MAINNET === chainId
   //     ? ChainId.MAINNET
   //     : NETWORKEXTEND.NONETWORK;
-  if (chainId === NETWORKEXTEND.NONETWORK) {
+  if (_chainId === NETWORKEXTEND.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
     LoopringAPI.InitApi(chainId as sdk.ChainId);

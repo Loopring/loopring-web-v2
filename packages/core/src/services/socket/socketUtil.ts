@@ -243,7 +243,7 @@ export class LoopringSocket {
         this.resetSocketEvents();
         this._socketKeyMap = socket;
         const { topics } = this.makeMessageArray({ socket });
-        myLog("makeMessageArray", socket, topics);
+        // myLog("makeMessageArray", socket, topics);
 
         if (!this.isConnectSocket()) {
           await this.socketConnect({ topics, apiKey });

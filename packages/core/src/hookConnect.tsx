@@ -42,6 +42,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Box, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { useGatewayList } from "./modal/WalletModal";
+import { updateAccountStatus } from "./stores/account/reducer";
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.test .MuiSelect-outlined span {
@@ -62,51 +63,53 @@ export const useSelectNetwork = () => {
   const { gatewayList } = useGatewayList({});
   const { defaultNetwork, setDefaultNetwork } = useSettings();
   const { setShowConnect } = useOpenModals();
+  const { account } = useAccount();
+  React.useEffect(() => {
+    const account = store.getState().account;
+    if (account.readyState === AccountStatus.UN_CONNECT) {
+      // const networkFlag =
+      networkUpdate();
+    }
+  }, [defaultNetwork]);
 
   const handleOnNetworkSwitch = (value: sdk.ChainId) => {
-    const account = store.getState().account;
     // const system = store.getState().system;
     if (value !== defaultNetwork) {
-      if (account.readyState === AccountStatus.UN_CONNECT) {
-        // const networkFlag =
-        networkUpdate({ value });
+      setDefaultNetwork(value);
+
+      if (
+        account.connectName === ConnectProviders.WalletConnect &&
+        gatewayList[GatewaySort.WalletConnect] &&
+        gatewayList[GatewaySort.WalletConnect]?.handleSelect
+      ) {
+        // @ts-ignore
+        gatewayList[GatewaySort.WalletConnect]?.handleSelect();
+      } else if (account.connectName === ConnectProviders.MetaMask) {
+        setShowConnect({
+          isShow: true,
+          step: WalletConnectStep.CommonProcessing,
+        });
+        metaMaskCallback();
+      } else if (account.connectName === ConnectProviders.GameStop) {
+        //TODO:
         setDefaultNetwork(value);
-      } else {
-        if (
-          account.connectName === ConnectProviders.WalletConnect &&
-          gatewayList[GatewaySort.WalletConnect] &&
-          gatewayList[GatewaySort.WalletConnect]?.handleSelect
-        ) {
-          setDefaultNetwork(value);
-          // @ts-ignore
-          gatewayList[GatewaySort.WalletConnect]?.handleSelect();
-        } else if (account.connectName === ConnectProviders.MetaMask) {
-          setDefaultNetwork(value);
-          setShowConnect({
-            isShow: true,
-            step: WalletConnectStep.CommonProcessing,
-          });
-          metaMaskCallback();
-        } else if (account.connectName === ConnectProviders.GameStop) {
-          //TODO:
-          setDefaultNetwork(value);
-          setShowConnect({
-            isShow: true,
-            step: WalletConnectStep.CommonProcessing,
-          });
-          gameStopCallback();
-        } else if (account.connectName === ConnectProviders.Coinbase) {
-          //TODO:
-          setDefaultNetwork(value);
-          setShowConnect({
-            isShow: true,
-            step: WalletConnectStep.CommonProcessing,
-          });
-          gameStopCallback();
-        }
+        setShowConnect({
+          isShow: true,
+          step: WalletConnectStep.CommonProcessing,
+        });
+        gameStopCallback();
+      } else if (account.connectName === ConnectProviders.Coinbase) {
+        //TODO:
+
+        setShowConnect({
+          isShow: true,
+          step: WalletConnectStep.CommonProcessing,
+        });
+        gameStopCallback();
       }
     }
   };
+
   const NetWorkItems = React.useMemo(() => {
     return (
       <>
@@ -133,10 +136,10 @@ export const useSelectNetwork = () => {
             if (NetworkMap[id]) {
               return (
                 <OutlineSelectItem
-                  key="id"
                   className={"viewNetwork" + NetworkMap[id]}
                   aria-label={NetworkMap[id].label}
                   value={id}
+                  key={"viewNetwork" + NetworkMap[id]}
                 >
                   <span>{t(NetworkMap[id].label)}</span>
                 </OutlineSelectItem>
@@ -198,7 +201,8 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     }) => {
       const accAddress = accounts[0];
       myLog("After connect >>,network part start: step1 networkUpdate");
-      const networkFlag = networkUpdate({ chainId });
+      store.dispatch(updateAccountStatus({ _chainId: chainId }));
+      const networkFlag = networkUpdate();
       myLog("After connect >>,network part done: step2 check account");
 
       if (networkFlag) {
