@@ -32,26 +32,25 @@ export const networkUpdate = (): boolean => {
       return false;
     }
   } else {
-    if (
-      statusChainId !== userSettingChainId &&
-      AvaiableNetwork.includes(userSettingChainId.toString())
-    ) {
-      console.log(
-        "unconnected: networkUpdate updateSystem",
-        userSettingChainId
-      );
-      store.dispatch(updateSystem({ chainId: userSettingChainId }));
-      store.dispatch(
-        updateAccountStatus({
-          wrongChain: false,
-          // _chainId: userSettingChainId
-        })
-      );
-      return true;
-    } else {
+    if (statusChainId !== userSettingChainId) {
+      if (AvaiableNetwork.includes(userSettingChainId.toString())) {
+        console.log(
+          "unconnected: networkUpdate updateSystem",
+          userSettingChainId
+        );
+        store.dispatch(updateSystem({ chainId: userSettingChainId }));
+        store.dispatch(
+          updateAccountStatus({
+            wrongChain: false,
+            // _chainId: userSettingChainId
+          })
+        );
+        return true;
+      }
       store.dispatch(updateAccountStatus({ wrongChain: true }));
       return false;
     }
+    return true;
   }
 
   // const _chainId = store.getState().system.chainId;
