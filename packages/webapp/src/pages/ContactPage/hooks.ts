@@ -109,7 +109,7 @@ export const useContact = () => {
       total
     }
     : undefined  
-  const getContacts = useCallback(async (accountId: number) => {
+  const getContacts = useCallback(async () => {
     if (cachedForAccountId === accountId) return
     if (!apiKey || accountId == -1) return
     // if (contacts && contacts.length > 0) return // Not refetch contacts if contacts were fetched and 'useCache' is true
@@ -127,8 +127,8 @@ export const useContact = () => {
     setLoading(false)
   }, [accountId, apiKey, contacts, cachedForAccountId])
   useEffect(() => {
-    getContacts(accountId)
-  }, [accountId, apiKey])
+    getContacts()
+  }, [apiKey])
   
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input)
@@ -390,8 +390,8 @@ export const useContact = () => {
           (page - 1) * pageSize, 
           page * pageSize >= contacts.length ? contacts.length : page * pageSize
         )
-        : contacts.filter(contact => {
-          return contact.address.toLowerCase().includes(searchValue.toLowerCase()) || contact.name.toLowerCase().includes(searchValue.toLowerCase())
+        : contacts.filter(x => {
+          return x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
         })
     ),
     onClickEditing,

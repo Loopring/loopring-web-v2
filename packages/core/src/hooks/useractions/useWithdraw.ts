@@ -687,7 +687,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     account: { accountId, apiKey, accAddress },
   } = useAccount();
   const theme = useTheme()
-  const loadContacts = React.useCallback(async (accountId: number) => {
+  const loadContacts = React.useCallback(async () => {
     if (accountId === cachedForAccountId) return
     updateContacts(undefined)
     try {
@@ -697,10 +697,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     } catch (e) {
       updateContacts([])
     }
-  }, [cachedForAccountId])
+  }, [cachedForAccountId, apiKey, accountId, accAddress])
   React.useEffect(() => {
-    loadContacts(accountId)
-  }, [accountId, apiKey])
+    loadContacts()
+  }, [apiKey])
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
