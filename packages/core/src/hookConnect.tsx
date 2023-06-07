@@ -20,6 +20,7 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
+  ThemeType,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -35,7 +36,6 @@ import { REFRESH_RATE } from "./defs";
 import { store, WalletConnectL2Btn } from "./index";
 import { useTranslation } from "react-i18next";
 import { Box, SelectChangeEvent, styled, Typography } from "@mui/material";
-import { useGatewayList } from "./modal/WalletModal";
 import { updateAccountStatus } from "./stores/account/reducer";
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
@@ -54,8 +54,9 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
 
 export const useSelectNetwork = () => {
   const { t } = useTranslation();
+
   // const { gatewayList } = useGatewayList({});
-  const { defaultNetwork, setDefaultNetwork } = useSettings();
+  const { defaultNetwork, setDefaultNetwork, themeMode } = useSettings();
   const { setShowConnect } = useOpenModals();
   // const { account } = useAccount();
   React.useEffect(() => {
@@ -64,44 +65,25 @@ export const useSelectNetwork = () => {
       // const networkFlag =
       networkUpdate();
     }
-  }, [defaultNetwork]);
+  }, []);
 
-  const handleOnNetworkSwitch = (value: sdk.ChainId) => {
-    // const system = store.getState().system;
+  const handleOnNetworkSwitch = async (value: sdk.ChainId) => {
+    const account = store.getState().account;
     if (value !== defaultNetwork) {
       setDefaultNetwork(value);
+    }
+    if (account.readyState !== AccountStatus.UN_CONNECT) {
       setShowConnect({
         isShow: true,
         step: WalletConnectStep.CommonProcessing,
       });
-      connectProvides.sendChainIdChange({ chainId: value });
-      // setShowConnect({
-      //   isShow: true,
-      //   step: WalletConnectStep.CommonProcessing,
-      // });
-      // if (
-      //   account.connectName === ConnectProviders.WalletConnect &&
-      //   gatewayList[GatewaySort.WalletConnect] &&
-      //   gatewayList[GatewaySort.WalletConnect]?.handleSelect
-      // ) {
-      //   // @ts-ignore
-      //   // gatewayList[GatewaySort.WalletConnect]?.handleSelect();
-      // } else if (account.connectName === ConnectProviders.MetaMask) {
-      //   setShowConnect({
-      //     isShow: true,
-      //     step: WalletConnectStep.CommonProcessing,
-      //   });
-      //   // metaMaskCallback();
-      // } else if (account.connectName === ConnectProviders.GameStop) {
-      //
-      //
-      // } else if (account.connectName === ConnectProviders.Coinbase) {
-      //
-      //   setShowConnect({
-      //     isShow: true,
-      //     step: WalletConnectStep.CommonProcessing,
-      //   });
-      // }
+      myLog(connectProvides);
+      await connectProvides.sendChainIdChange(
+        value,
+        themeMode === ThemeType.dark
+      );
+    } else {
+      networkUpdate();
     }
   };
 
@@ -127,25 +109,21 @@ export const useSelectNetwork = () => {
             handleOnNetworkSwitch(event.target.value)
           }
         >
-          {AvaiableNetwork.map((id) => {
+          {AvaiableNetwork.reduce((prew, id, index) => {
             if (NetworkMap[id]) {
-              return (
+              prew.push(
                 <OutlineSelectItem
                   className={"viewNetwork" + NetworkMap[id]}
                   aria-label={NetworkMap[id].label}
                   value={id}
-                  key={"viewNetwork" + NetworkMap[id]}
+                  key={"viewNetwork" + NetworkMap[id] + index}
                 >
                   <span>{t(NetworkMap[id].label)}</span>
                 </OutlineSelectItem>
               );
-            } else {
-              return {
-                chainId: id.toString(),
-                name: "Network Unknown:" + id,
-              };
             }
-          })}
+            return prew;
+          }, [] as JSX.Element[])}
         </OutlineSelectStyle>
       </>
     );
@@ -424,7 +402,6 @@ export const ViewAccountTemplate = React.memo(
                 width="60"
                 src={`${SoursURL}images/loading-line.gif`}
               />
-              {/*<LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />*/}
               <Typography
                 marginY={3}
                 variant={isMobile ? "h4" : "h1"}
@@ -432,7 +409,6 @@ export const ViewAccountTemplate = React.memo(
               >
                 {t("describeTitleOpenAccounting")}
               </Typography>
-              {/*<WalletConnectL2Btn/>*/}
             </Box>
           );
           break;
@@ -454,7 +430,6 @@ export const ViewAccountTemplate = React.memo(
                   connectName: account.connectName,
                 })}
               </Typography>
-              {/*<WalletConnectL2Btn/>*/}
             </Box>
           );
           break;
