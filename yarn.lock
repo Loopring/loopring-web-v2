@@ -4344,10 +4344,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@loopring-web/loopring-sdk@3.3.27-test.1":
-  version "3.3.27-test.1"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.3.27-test.1.tgz#58602b0df1f74ba65644fbfbaef7a45769d60db3"
-  integrity sha512-YRKA0f3pis7ZEU6Ww16aqSiuTlFeMIdWnVP+y2lwuUKFxEbv1KLu2sl1GN55g8Xk2E9lTjYZT5g7kUzAt/8JIg==
+"@loopring-web/loopring-sdk@3.3.28":
+  version "3.3.28"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.3.28.tgz#cbd7a8a62cb3618d1941837745a5f9ea8e272a9d"
+  integrity sha512-dlIauqhXac5fsNtZfBVSreOSH4YcUzvgSgS9qKDWpH9nkafpx6EA/2NTphr5ojyB8uFHHBItl6MAFcGiR47FIw==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -4388,7 +4388,7 @@
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-"@loopring-web/web3-provider@^1.3.15":
+"@loopring-web/web3-provider@^1.2.4":
   version "1.3.15"
   resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.3.15.tgz#bdbdb11f8800ffaad02e70c3a42dcf3e8d017b06"
   integrity sha512-mO+9E9r09Bp9jJ/4GU/ez3Q8GhHVwhD5I8Cv+XoByvtfgSOLQ9OAlZdLgYdQZwNgtncpbMXmGMClEjih13KMvQ==
