@@ -85,8 +85,7 @@ export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
   const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] = React.useState(undefined as number | undefined)
   React.useEffect(() => {
     (async () => {
-      // @ts-ignore
-      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenUnclaimNFTBlindboxCnt({
+      const response: any = await LoopringAPI.luckTokenAPI?.getLuckTokenUnclaimNFTBlindboxCnt({
         accountId: account.accountId,
       }, account.apiKey)
       setTotalLuckyTokenNFTBalance(response.count)
