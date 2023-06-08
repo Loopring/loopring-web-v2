@@ -27,6 +27,8 @@ export function useChargeFees({
   tokenSymbol,
   requestType: _requestType,
   amount,
+  extraType,
+  isNFT,
   tokenAddress,
   updateData,
   needAmountRefresh,
@@ -36,11 +38,13 @@ export function useChargeFees({
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
+  isNFT?: boolean;
   requestType:
     | sdk.OffchainFeeReqType
     | sdk.OffchainNFTFeeReqType
     | "UPDATE_ACCOUNT_BY_NEW"
     | "TRANSFER_ACTIVE";
+  extraType?: number;
   amount?: number;
   intervalTime?: number;
   updateData?:
@@ -189,6 +193,7 @@ export function useChargeFees({
             accountId: account.accountId,
             tokenSymbol,
             tokenAddress,
+            extraType,
             requestType: requestType as any,
             amount:
               tokenInfo && _amount.amount && _amount.needAmountRefresh
@@ -221,13 +226,15 @@ export function useChargeFees({
             }
           } else if (
             requestType !== undefined &&
-            [
+            ([
               sdk.OffchainNFTFeeReqType.NFT_MINT,
               sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
               sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
-              sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+              sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
               sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
-            ].includes(requestType as any) &&
+            ].includes(requestType as any) ||
+              (sdk.OffchainNFTFeeReqType.NFT_TRANSFER == requestType &&
+                isNFT)) &&
             account.accountId &&
             account.accountId !== -1 &&
             account.apiKey
@@ -512,9 +519,11 @@ export function useChargeFees({
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.TRANSFER,
+          sdk.OffchainFeeReqType.EXTRA_TYPES,
           sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
           sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
           sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
         ].includes(Number(requestType))) ||
