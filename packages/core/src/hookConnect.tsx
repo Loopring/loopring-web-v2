@@ -73,6 +73,7 @@ export const useSelectNetwork = () => {
       setDefaultNetwork(value);
     }
     if (account.readyState !== AccountStatus.UN_CONNECT) {
+      // await walletServices.sendDisconnect();
       setShowConnect({
         isShow: true,
         step: WalletConnectStep.CommonProcessing,
