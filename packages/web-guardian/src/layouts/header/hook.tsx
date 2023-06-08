@@ -97,7 +97,6 @@ export const useHeader = () => {
     };
     headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
       ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
-      // isTestOpen: isTestNet,
       onTestOpen: (isTestNet: boolean) => {
         const chainId = store.getState().system.chainId;
         updateSystem({ chainId });

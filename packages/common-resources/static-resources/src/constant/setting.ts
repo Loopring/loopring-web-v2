@@ -90,25 +90,29 @@ const MapChainIdMap = new Map([
   [5, "GOERLI"],
 ]);
 export const ChainIdExtends = {};
+
 export const ChainTests: any[] = [5];
+export const MapChainId = {};
 
-process.env.REACT_APP_RPC_OTHERS?.split(",").forEach((item, index) => {
-  let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
-    "|"
-  ) ?? [""];
-  if (name) {
-    ChainIdExtends[name] = Number(item);
-    MapChainIdMap.set(Number(item), name);
-    if (isTest) {
-      ChainTests.push(item);
+(function () {
+  process.env.REACT_APP_RPC_URL_OTHERS?.split(",").forEach((item, index) => {
+    let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
+      "|"
+    ) ?? [""];
+    if (name) {
+      ChainIdExtends[name] = Number(item);
+      MapChainIdMap.set(Number(item), name);
+      if (isTest) {
+        ChainTests.push(item);
+      }
+    } else {
+      ChainIdExtends["unknown" + index] = item;
+      MapChainIdMap.set(Number(item), "unknown");
     }
-  } else {
-    ChainIdExtends["unknown" + index] = item;
-    MapChainIdMap.set(Number(item), "unknown");
-  }
-});
+  });
 
-export const MapChainId = [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
-  prev[key] = value;
-  return prev;
-}, {});
+  [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
+    prev[key] = value;
+    return prev;
+  }, MapChainId);
+})();
