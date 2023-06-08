@@ -1140,7 +1140,6 @@ export const useBtradeSwap = <
               sellToken.precision,
               undefined
             ),
-
             lastStepAt: type,
           };
           return _tradeCalcData;
