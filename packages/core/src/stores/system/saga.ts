@@ -11,11 +11,11 @@ import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
 import { ENV } from "./interface";
 import { store, LoopringSocket, LoopringAPI, toggleCheck } from "../../index";
 import {
+  ChainIdExtends,
   CustomError,
   ErrorMap,
   ForexMap,
   myLog,
-  NETWORKEXTEND,
 } from "@loopring-web/common-resources";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
 import { getAmmMap, initAmmMap } from "../Amm/AmmMap/reducer";
@@ -322,7 +322,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
   const chainId: sdk.ChainId = (
     AvaiableNetwork.includes(_chainId.toString())
       ? Number(_chainId)
-      : NETWORKEXTEND.NONETWORK
+      : ChainIdExtends.NONETWORK
   ) as sdk.ChainId;
   // chainId =
   //   ChainId.GOERLI === chainId
@@ -330,7 +330,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
   //     : ChainId.MAINNET === chainId
   //     ? ChainId.MAINNET
   //     : NETWORKEXTEND.NONETWORK;
-  if (_chainId === NETWORKEXTEND.NONETWORK) {
+  if (_chainId === ChainIdExtends.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
     LoopringAPI.InitApi(chainId as sdk.ChainId);

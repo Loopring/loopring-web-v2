@@ -6,10 +6,10 @@ import {
   EddsaKey,
 } from "../../index";
 import {
+  ChainIdExtends,
   FeeInfo,
   myLog,
   UIERROR_CODE,
-  NETWORKEXTEND,
 } from "@loopring-web/common-resources";
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -35,7 +35,7 @@ export async function activateAccount({
 
   if (
     !system.exchangeInfo?.exchangeAddress ||
-    system.chainId === NETWORKEXTEND.NONETWORK ||
+    system.chainId === ChainIdExtends.NONETWORK ||
     connectName === ConnectProviders.Unknown ||
     !LoopringAPI?.exchangeAPI ||
     !accAddress

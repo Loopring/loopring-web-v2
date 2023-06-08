@@ -27,7 +27,6 @@ import {
   ThemeKeys,
   ThemeType,
   UpColor,
-  NETWORKEXTEND,
 } from "@loopring-web/common-resources";
 import React from "react";
 import { Currency } from "@loopring-web/loopring-sdk";
@@ -60,7 +59,7 @@ export function useSettings(): SettingsState & {
   return {
     ...settings,
     setDefaultNetwork: React.useCallback(
-      (value: NETWORKEXTEND | number) => dispatch(setDefaultNetwork(value)),
+      (value: number) => dispatch(setDefaultNetwork(value)),
       [dispatch]
     ),
     setIsShowTestToggle: React.useCallback(

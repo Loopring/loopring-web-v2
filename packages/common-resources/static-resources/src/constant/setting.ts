@@ -89,13 +89,15 @@ const MapChainIdMap = new Map([
   [1, "ETHEREUM"],
   [5, "GOERLI"],
 ]);
-export const ChainIdExtends = {};
+export const ChainIdExtends = {
+  NONETWORK = "unknown",
+};
 
 export const ChainTests: any[] = [5];
 export const MapChainId = {};
 
 (function () {
-  process.env.REACT_APP_RPC_URL_OTHERS?.split(",").forEach((item, index) => {
+  process.env.REACT_APP_RPC_OTHERS?.split(",").forEach((item, index) => {
     let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
       "|"
     ) ?? [""];
