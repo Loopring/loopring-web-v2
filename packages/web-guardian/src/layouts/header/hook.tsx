@@ -33,7 +33,7 @@ export const useHeader = () => {
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { chainId, updateSystem } = useSystem();
   const { isTaikoTest } = useSettings();
-  const { NetWorkItems } = useSelectNetwork();
+  const { NetWorkItems } = useSelectNetwork({ className: "header" });
 
   const { setShowAccount } = useOpenModals();
   const accountState = React.useMemo(() => {

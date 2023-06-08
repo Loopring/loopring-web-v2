@@ -27,6 +27,7 @@ import {
   gatewayList as DefaultGatewayList,
   globalSetup,
   myLog,
+  NetworkMap,
   SagaStatus,
   SoursURL,
   TOAST_TIME,
@@ -272,6 +273,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     onClose?: (e: MouseEvent) => void;
   } & WithTranslation) => {
     const { account, setShouldShow } = useAccount();
+    const { defaultNetwork } = useSettings();
     const {
       modals: { isShowConnect, isWrongNetworkGuide },
       setShowConnect,
@@ -355,7 +357,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             }
           };
     }, [account.readyState, setShowAccount, setShowConnect]);
-    const { NetWorkItems } = useSelectNetwork();
+    const { NetWorkItems } = useSelectNetwork({ className: "walletModal" });
 
     const walletList = React.useMemo(() => {
       return Object.values({
@@ -375,7 +377,12 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         [WalletConnectStep.CommonProcessing]: {
           view: (
             <CommonConnectInProgress
-              {...{ t, ...rest, providerName: connectProvider }}
+              {...{
+                t,
+                ...rest,
+                providerName: connectProvider,
+                network: NetworkMap[defaultNetwork]?.label,
+              }}
             />
           ),
         },
@@ -414,6 +421,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 errorOptions: { name: connectProvider },
                 ...rest,
               }}
+              NetWorkItems={NetWorkItems}
               btnInfo={{ btnTxt: "labelRetry", callback: onRetry }}
             />
           ),

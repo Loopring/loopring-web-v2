@@ -63,6 +63,8 @@ export interface PanelProps {
   errorOptions?: any;
   updateDepositHash?: any;
   className?: string;
+
+  [key: string]: any;
 }
 
 const BoxStyle = styled(Box)`

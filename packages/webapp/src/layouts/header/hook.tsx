@@ -75,7 +75,7 @@ export const useHeader = () => {
     accountStaticCallBack(_btnClickMap, []);
   }, [account, setShouldShow, _btnClickMap]);
 
-  const { NetWorkItems } = useSelectNetwork();
+  const { NetWorkItems } = useSelectNetwork({ className: "header" });
 
   const [headerToolBarData, setHeaderToolBarData] = React.useState<
     typeof _initHeaderToolBarData
