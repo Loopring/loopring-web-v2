@@ -141,7 +141,7 @@ export let headerToolBarData: Array<{
 }> = [
   {
     buttonComponent: ButtonComponentsMap.Download,
-    url: "https://loopring.io/wallet.html",
+    url: "https://wallet.loopring.io",
   },
   {
     buttonComponent: ButtonComponentsMap.Notification,
@@ -236,7 +236,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://loopring.io/wallet.html" },
+    router: { path: "https://wallet.loopring.io" },
   },
   // {
   //   label: {

@@ -797,14 +797,14 @@ const resources = {
       labelFollowus: "Follow us",
       labelEthereumUnleashed: "Ethereum Unleashed",
       labelGatewayToEthereum:
-        "Your Gateway to Ethereum DeFi, \n NFTs, and Financial Freedom",
+        "Your Gateway to Ethereum, DeFi, \n NFTs, and Financial Freedom",
       labelIOS: "iOS",
       labelAndroid: "Android",
       labelGooglePlay: "Google Play",
       labelFeature1: "Fast, Secure, and 100x \nLower Fees",
       labelFeatureDes1:
         "Experience DeFi as it should be - fast and affordable. Built with zkRollups,  Loopring provides instant transactions at 100x  lower fees than Ethereum without sacrificing any of its security.",
-      labelFeature2: "Invest, Stake and Earn",
+      labelFeature2: "Invest, Stake, and Earn",
       labelFeatureDes2:
         "Easily earn yield on your  crypto. Your funds never leave your wallet and can be accessed at any time.",
       labelFeature3: "Dual Investment",
