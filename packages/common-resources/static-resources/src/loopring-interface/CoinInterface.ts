@@ -92,6 +92,7 @@ export interface TradeCalcData<T> {
   isBtrade: undefined | boolean;
   totalQuota: string;
 }
+
 export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isNotMatchMarketPrice?: boolean;
   marketPrice?: string;
@@ -140,12 +141,12 @@ export type TradeCalcProData<T> = {
   fee: string;
   feeTakerRate?: number;
   tradeCost?: string;
+  lastStepAt?: "base" | "quote";
+  stopRange?: [string | undefined, string | undefined];
   isNotMatchMarketPrice?: boolean;
   marketPrice?: string;
   marketRatePrice?: string;
   isChecked?: boolean;
-  lastStepAt?: "base" | "quote";
-  stopRange?: [string | undefined, string | undefined];
 };
 
 /**
@@ -410,6 +411,9 @@ export enum EXPLORE_TYPE {
   NFTMINT = "nftMint",
   NFTWITHDRAW = "nftWithdraw",
   NFTTRANSFER = "nftTransfer",
+  NFTSEND_BACK_LUCKY_TOKEN = "nftTransfer",
+  NFTSEND_LUCKY_TOKEN = "nftTransfer",
+  NFTWITHDRAW_LUCKY_TOKEN = "nftWithdraw",
 }
 
 /**
@@ -481,6 +485,10 @@ export type RedPacketSend = {
 export type LuckyRedPacketItem = {
   labelKey: string;
   desKey: string;
+  showInNFTS?: boolean;
+  showInERC20?: boolean;
+  defaultForERC20?: boolean;
+  defaultForNFT?: boolean;
   value: {
     value: number;
     partition: sdk.LuckyTokenAmountType;
@@ -507,24 +515,5 @@ export type NetworkItemInfo = {
   isTest?: boolean | undefined;
 };
 
-export const NetworkMap: { [key: string]: NetworkItemInfo } = {
-  "1": {
-    label: "Ethereum",
-    chainId: "1",
-  },
-  "5": {
-    label: "Görli",
-    chainId: "",
-    isTest: true,
-  },
-  // "42161": {
-  //   label: "Arbitrum",
-  //   chainId: "",
-  //   RPC: "https://arb1.arbitrum.io/rpc",
-  // },
-  // "": {
-  //   label: "Taiko",
-  //   chainId: "xxx",
-  //   RPC: "",
-  // },
-};
+export const url_path = "https://static.loopring.io/events";
+export const url_test_path = "https://static.loopring.io/events/testEvents";
