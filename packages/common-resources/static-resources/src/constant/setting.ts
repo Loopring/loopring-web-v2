@@ -89,29 +89,30 @@ const MapChainIdMap = new Map([
   [1, "ETHEREUM"],
   [5, "GOERLI"],
 ]);
-export const ChainIdExtends = {
-  NONETWORK = "unknown",
+export const ChainIdExtends: any = {
+  NONETWORK: "unknown",
 };
 
 export const ChainTests: any[] = [5];
 export const MapChainId = {};
-
-(function () {
-  process.env.REACT_APP_RPC_OTHERS?.split(",").forEach((item, index) => {
-    let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
-      "|"
-    ) ?? [""];
-    if (name) {
-      ChainIdExtends[name] = Number(item);
-      MapChainIdMap.set(Number(item), name);
-      if (isTest) {
-        ChainTests.push(item);
+(function (): void {
+  process.env.REACT_APP_RPC_OTHERS?.split(",").forEach(
+    (item: string, index: number) => {
+      let [name, isTest] = process.env[
+        `REACT_APP_RPC_CHAINNAME_${item}`
+      ]?.split("|") ?? [""];
+      if (name) {
+        ChainIdExtends[name] = Number(item);
+        MapChainIdMap.set(Number(item), name);
+        if (isTest) {
+          ChainTests.push(item);
+        }
+      } else {
+        ChainIdExtends["unknown" + index] = item;
+        MapChainIdMap.set(Number(item), "unknown");
       }
-    } else {
-      ChainIdExtends["unknown" + index] = item;
-      MapChainIdMap.set(Number(item), "unknown");
     }
-  });
+  );
 
   [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
     prev[key] = value;
