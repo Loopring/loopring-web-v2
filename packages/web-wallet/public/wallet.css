@@ -451,7 +451,7 @@ footer .group .Typography-root {
 #bgContent #bgAlpha {
   position: absolute;
   pointer-events: none;
-  transform: translate(20%, -10%) rotate(13deg);
+  transform: translate(20%, -40%) rotate(-13deg);
 }
 
 @media only screen and (max-width: 1024px) {

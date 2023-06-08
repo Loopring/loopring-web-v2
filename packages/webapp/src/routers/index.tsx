@@ -168,7 +168,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   });
   React.useEffect(() => {
     if (location.pathname === "wallet") {
-      window.open("https://loopring.io/wallet.html", "_black");
+      window.open("https://wallet.loopring.io", "_black");
       window.opener = null;
     }
   }, [location.pathname]);
@@ -223,7 +223,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
           <LandPage />
         </Route>
-        <Route exact path="/document/:path">
+        <Route path="/document">
           {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
