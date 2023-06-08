@@ -45,6 +45,14 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     padding: 3px 4px;
     border-radius: 4px;
     color: var(--network-text);
+
+    &:after {
+      content: " test";
+      padding-left: 0.5em;
+      display: inline-flex;
+      font-size: var(body2);
+      color: inherit;
+    }
   }
 
   .MuiSelect-outlined {
@@ -96,14 +104,7 @@ export const useSelectNetwork = () => {
           IconComponent={DropDownIcon}
           labelId="network-selected"
           id="network-selected"
-          className={
-            /test/gi.test(
-              NetworkMap[!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork]
-                ?.label ?? ""
-            )
-              ? "test"
-              : ""
-          }
+          className={NetworkMap[defaultNetwork]?.isTest ? "test" : ""}
           value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
           autoWidth
           onChange={(event: SelectChangeEvent<any>) =>
@@ -114,7 +115,14 @@ export const useSelectNetwork = () => {
             if (NetworkMap[id]) {
               prew.push(
                 <OutlineSelectItem
-                  className={"viewNetwork" + NetworkMap[id]}
+                  className={
+                    "viewNetwork" +
+                    NetworkMap[id] +
+                    " " +
+                    NetworkMap[defaultNetwork]?.isTest
+                      ? "provider-test"
+                      : ""
+                  }
                   aria-label={NetworkMap[id].label}
                   value={id}
                   key={"viewNetwork" + NetworkMap[id] + index}

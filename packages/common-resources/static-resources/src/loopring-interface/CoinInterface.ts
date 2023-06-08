@@ -504,6 +504,7 @@ export type NetworkItemInfo = {
   chainId: string;
   RPC?: string;
   link?: string;
+  isTest?: boolean | undefined;
 };
 
 export const NetworkMap: { [key: string]: NetworkItemInfo } = {
@@ -512,20 +513,18 @@ export const NetworkMap: { [key: string]: NetworkItemInfo } = {
     chainId: "1",
   },
   "5": {
-    label: "Görli test",
+    label: "Görli",
     chainId: "",
+    isTest: true,
   },
-  "42161": {
-    label: "Arbitrum",
-    chainId: "",
-    RPC: "https://arb1.arbitrum.io/rpc",
-  },
-  "": {
-    label: "Taiko",
-    chainId: "xxx",
-    RPC: "",
-  },
-  // "xxx":{
-  //
-  // }
+  // "42161": {
+  //   label: "Arbitrum",
+  //   chainId: "",
+  //   RPC: "https://arb1.arbitrum.io/rpc",
+  // },
+  // "": {
+  //   label: "Taiko",
+  //   chainId: "xxx",
+  //   RPC: "",
+  // },
 };
