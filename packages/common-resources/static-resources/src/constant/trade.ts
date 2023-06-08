@@ -440,7 +440,7 @@ export const useAddressTypeLists = <
 };
 
 export const defaultSlipage = 0.1;
-export const defaultBlockTradeSlipage = 0.2;
+export const defaultBlockTradeSlipage = 0.1;
 
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 

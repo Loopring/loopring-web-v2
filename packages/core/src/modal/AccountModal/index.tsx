@@ -38,11 +38,7 @@ export const ModalAccountInfo = withTranslation("common")(
     // const { isMobile } = useSettings();
     const { baseURL } = useSystem();
     const {
-      modals: {
-        // isShowNFTDetail,
-        isShowAccount,
-      },
-      // setShowNFTDetail,
+      modals: { isShowAccount },
       setShowAccount,
       setShowDeposit,
       setShowTransfer,
