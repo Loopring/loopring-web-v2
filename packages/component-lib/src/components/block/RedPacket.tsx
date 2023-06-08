@@ -257,12 +257,23 @@ export const RedPacketQRCode = ({
   const colorConfig = RedPacketColorConfig[type];
   const qrCode = new QRCodeStyling({
     type: "svg",
-    // data: url,
-    width: 160,
-    height: 160,
+    width: 200,
+    height: 200,
     image: `${SoursURL + "svg/loopring.svg"}`,
     dotsOptions: {
-      color: colorConfig.qrColor,
+      gradient: {
+        type: 'linear',
+        rotation: 45,
+        colorStops: [{
+          offset: 0,
+          color: 'var(--color-primary)'
+        },
+        {
+          offset: 1,
+          color: '#000'
+        }
+      ]
+      },
       type: "dots",
     },
     backgroundOptions: {
@@ -272,6 +283,12 @@ export const RedPacketQRCode = ({
       crossOrigin: "anonymous",
       margin: 4,
     },
+    cornersSquareOptions: {
+      type: 'extra-rounded'
+    },
+    cornersDotOptions: {
+      type: 'square'
+    }
   });
   const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
 
