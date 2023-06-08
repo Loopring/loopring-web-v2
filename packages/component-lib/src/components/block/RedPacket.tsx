@@ -2099,13 +2099,6 @@ export const RedPacketBlindBoxDetail = ({
                                     ? ` (${t("labelRedPacketMe")})`
                                     : ""}
                                 </Typography>
-                                {/* <Typography
-                                variant={"body1"}
-                                component={"span"}
-                                color={"textPrimary"}
-                              >
-                                *{info.amount}
-                              </Typography> */}
                               </Typography>
                               <Typography
                                 component={"span"}

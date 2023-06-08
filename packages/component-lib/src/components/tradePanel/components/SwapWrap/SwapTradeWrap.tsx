@@ -287,8 +287,7 @@ export const SwapTradeWrap = <
             />
           </IconButtonStyled>
         </Box>
-        {/*</Grid>*/}
-        {/*<Grid item>*/}
+
         <InputButton<any, I, CoinInfo<I>>
           ref={buyRef}
           disabled={getDisabled()}
@@ -384,7 +383,12 @@ export const SwapTradeWrap = <
         </Grid>
       )}
 
-      <Grid item display={"flex"} alignItems={"center"}>
+      <Grid
+        item
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
         <Typography
           variant="body1"
           textAlign={"center"}

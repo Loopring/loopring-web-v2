@@ -444,7 +444,8 @@ export const MuiInputBase = ({
 
           " svg": {
             right: ".4rem",
-            top: 1,
+            top: "50%",
+            transform: "translateY(-50%)",
             position: "absolute",
             // pointerEvents: 'none',
             transition: "fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",

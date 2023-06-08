@@ -3,11 +3,12 @@ import { TFunction, withTranslation } from "react-i18next";
 import * as _ from "lodash";
 import {
   CoinInfo,
+  ConfigLayout,
   CurrencyToTag,
   DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
-  layoutConfigs,
+  layoutConfigs as _layoutConfigs,
   MarketType,
   PriceTag,
   SagaStatus,
@@ -75,11 +76,13 @@ export const Toolbar = withTranslation("common")(
     market,
     handleLayoutChange,
     handleOnMarketChange,
+    layoutConfigs = _layoutConfigs,
     // ,marketTicker
     t,
   }: {
     t: TFunction<"translation">;
     market: MarketType;
+    layoutConfigs?: Array<ConfigLayout>;
     handleLayoutChange: (
       currentLayout: Layout[],
       allLayouts?: Layouts,
@@ -115,10 +118,6 @@ export const Toolbar = withTranslation("common")(
     const { currency } = useSettings();
     const { forexMap } = useSystem();
     const { tokenPrices } = useTokenPrices();
-    const history = useHistory();
-
-    const isUSD = currency === Currency.usd;
-
     const getMarketPrecision = React.useCallback(
       (market: string) => {
         if (marketMap) {
@@ -161,7 +160,7 @@ export const Toolbar = withTranslation("common")(
         );
         const isRise = ticker.floatTag === "increase";
 
-        const basePriceDollar =
+        const basepriceU =
           ticker.close * (tokenPrices[quote] ?? 0) ?? tokenPrices[base] ?? 0;
         setMarketTicker((state: any) => {
           return {
@@ -172,7 +171,7 @@ export const Toolbar = withTranslation("common")(
             isRise,
             baseVol,
             quoteVol,
-            basePriceDollar,
+            basepriceU,
           };
         });
       }
@@ -183,13 +182,13 @@ export const Toolbar = withTranslation("common")(
       }
     }, [tickerStatus, market, setDefaultData]);
     const getFilteredTickList = React.useCallback(() => {
-      if (!!ammPoolBalances.length && tickList && !!tickList.length) {
+      if (tickList && !!tickList.length) {
         return tickList.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-          if (ammPoolBalances.find((o) => o.poolName === pair)) {
-            return !ammPoolBalances.find((o) => o.poolName === pair).risky;
-          }
-          return true;
+          const status = ("00" + marketMap[pair]?.status?.toString(2)).split(
+            ""
+          );
+          return status[status.length - 2] === "1";
         });
       }
       return [];
@@ -205,7 +204,7 @@ export const Toolbar = withTranslation("common")(
     React.useEffect(() => {
       const data = getFilteredTickList();
       resetTableData(data);
-    }, [getFilteredTickList, resetTableData]);
+    }, [tickerStatus, tickList]);
 
     const handleTableFilterChange = React.useCallback(
       ({
@@ -414,8 +413,7 @@ export const Toolbar = withTranslation("common")(
               <PriceValueStyled>
                 {PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
-                    (marketTicker.basePriceDollar || 0) *
-                      (forexMap[currency] ?? 0),
+                    (marketTicker.basepriceU || 0) * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
                     2,

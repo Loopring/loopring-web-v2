@@ -66,32 +66,36 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       return clonedWalletMap;
     }, [walletMap]);
     type DisplayContact = {
-      name: string
-      address: string
-      avatarURL: string
-      editing: boolean
-    }
+      name: string;
+      address: string;
+      avatarURL: string;
+      editing: boolean;
+    };
     // const [contacts, setContacts] = React.useState([] as DisplayContact[]);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const contacts = useSelector((state: RootState) => state.contacts.contacts);
     const {
-      account: { accountId, apiKey, accAddress},
+      account: { accountId, apiKey, accAddress },
     } = useAccount();
-    const theme = useTheme()
+    const theme = useTheme();
     const loadContacts = async () => {
-      dispatch(updateContacts(undefined))
+      dispatch(updateContacts(undefined));
       try {
-        const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)  
-        dispatch(updateContacts(allContacts))
+        const allContacts = await getAllContacts(
+          0,
+          accountId,
+          apiKey,
+          accAddress,
+          theme.colorBase.warning
+        );
+        dispatch(updateContacts(allContacts));
       } catch (e) {
-        dispatch(
-          updateContacts([])
-        )
+        dispatch(updateContacts([]));
       }
-    }
+    };
     React.useEffect(() => {
-      loadContacts()
-    }, [accountId])
+      loadContacts();
+    }, [accountId]);
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(
@@ -117,8 +121,8 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           }}
           {...rest}
         />
-      )
-    }
+      ),
+    };
     const tradePanel = {
       key: "trade",
       element: React.useMemo(
@@ -126,14 +130,11 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           // @ts-ignore
           <WithdrawWrap
             key={"transfer"}
-            
             {...{
               ...rest,
               type,
               handleConfirm,
-              chargeFeeTokenList: chargeFeeTokenList
-                ? chargeFeeTokenList
-                : [],
+              chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
               tradeData: switchData.tradeData,
               onChangeEvent,
               coinMap,
@@ -146,9 +147,9 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
               isFromContact,
               contact,
               onClickContact: () => {
-                setPanelIndex(3); // todo handle tradeMenuList 
+                setPanelIndex(3); // todo handle tradeMenuList
                 // rest.handleOnAddressChange(address)
-              }
+              },
             }}
           />
         ),
@@ -185,7 +186,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
         ),
         [onBack]
       ),
-    }
+    };
     const tokenSelectionPanel = {
       key: "tradeMenuList",
       element: React.useMemo(
@@ -208,8 +209,8 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       ),
       toolBarItem: undefined,
     };
-    
-    const contactSelectionPanel =  {
+
+    const contactSelectionPanel = {
       key: "contactSelection",
       element: React.useMemo(
         () => (
@@ -218,7 +219,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             contacts={contacts}
             onSelect={(address) => {
               setPanelIndex(1);
-              rest.handleOnAddressChange(address, true)
+              rest.handleOnAddressChange(address, true);
             }}
             scrollHeight={"320px"}
           />
@@ -239,7 +240,6 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
         [onBack]
       ),
     };
-    
 
     const props: SwitchPanelProps<string> = {
       index: panelIndex, // show default show
@@ -248,7 +248,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
         tradePanel,
         tokenSelectionPanel,
         contactSelectionPanel,
-      ]
+      ],
     };
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }

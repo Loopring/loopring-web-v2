@@ -182,6 +182,7 @@ export enum NFT_TYPE_STRING {
 }
 
 export const EmptyValueTag = "--";
+export const HiddenTag = "*****";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
 export const MINT_LIMIT = 100000;
@@ -350,8 +351,10 @@ export const useAddressTypeLists = <
       description: t(`label${WALLET_TYPE.Exchange}Des`),
     },
   ];
-  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (type: WALLET_TYPE) => {
-    if (type === WALLET_TYPE.Exchange) throw 'wrong type'
+  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
+    type: WALLET_TYPE
+  ) => {
+    if (type === WALLET_TYPE.Exchange) throw "wrong type";
     return [
       {
         label: t("labelWalletTypeOptions", {
@@ -381,22 +384,22 @@ export const useAddressTypeLists = <
         label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
-        description: t('labelContactsBinanceNotSupportted'),
+        description: t("labelContactsBinanceNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
-        description: t('labelContactsHuobiNotSupportted') 
+        description: t("labelContactsHuobiNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
-        description: t('labelContactsOtherExchangesNotSupportted'),
+        description: t("labelContactsOtherExchangesNotSupportted"),
       },
     ];
-  } 
+  };
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
@@ -437,6 +440,8 @@ export const useAddressTypeLists = <
 };
 
 export const defaultSlipage = 0.1;
+export const defaultBlockTradeSlipage = 0.2;
+
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
 export const enum InvestMapType {
@@ -753,4 +758,25 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
+
 export const BTRDE_PRE = "BTRADE-";
+
+export enum TradeProType {
+  sell = "sell",
+  buy = "buy",
+}
+
+export enum TradeBaseType {
+  price = "price",
+  quote = "quote",
+  base = "base",
+  tab = "tab",
+  slippage = "slippage",
+  stopPrice = "stopPrice",
+  checkMarketPrice = "checkMarketPrice",
+}
+
+export type AmmHistoryItem = {
+  close: number;
+  timeStamp: number;
+};

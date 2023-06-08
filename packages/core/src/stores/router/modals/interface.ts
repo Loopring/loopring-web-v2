@@ -57,7 +57,7 @@ export type ClaimData = {
   tradeType: TRADE_TYPE;
   claimType: CLAIM_TYPE;
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined;
-  successCallback?: () => void
+  successCallback?: () => void;
 } & XOR<
   {
     tradeType: TRADE_TYPE.TOKEN;

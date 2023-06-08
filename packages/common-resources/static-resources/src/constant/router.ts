@@ -133,10 +133,7 @@ export let headerToolBarData: Array<{
 }> = [
   {
     buttonComponent: ButtonComponentsMap.Download,
-    url: "https://loopring.io/#/wallet",
-    // i18nTitle: "labelDownloadAppTitle",
-    // handleClick: undefined,
-    // i18nDescription: "labelDownloadBtn",
+    url: "https://wallet.loopring.io",
   },
   {
     buttonComponent: ButtonComponentsMap.Notification,
@@ -164,6 +161,13 @@ export const toolBarMobileAvailableItem = [
   ButtonComponentsMap.WalletConnect,
 ];
 
+export enum RouterPath {
+  lite = "/trade/lite",
+  pro = "/trade/pro",
+  stoplimit = "/trade/stoplimit",
+  btrade = "/trade/btrade",
+  fiat = "/trade/fiat",
+}
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -171,7 +175,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelClassic",
       description: "labelClassicDescription",
     },
-    router: { path: "/trade/lite/${pair}" },
+    router: { path: RouterPath.lite + "/${pair}" },
   },
   {
     label: {
@@ -179,7 +183,15 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelAdvanced",
       description: "labelAdvancedDescription",
     },
-    router: { path: "/trade/pro/${pair}" },
+    router: { path: RouterPath.pro + "/${pair}" },
+  },
+  {
+    label: {
+      id: "stopLimit",
+      i18nKey: "labelStopLimit",
+      description: "labelStopLimitDescription",
+    },
+    router: { path: RouterPath.stoplimit + "/${pair}" },
   },
   {
     label: {
@@ -187,15 +199,16 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelBtradeTrade",
       description: "labelBtradeTradeDescription",
     },
-    router: { path: "/trade/btrade/${pair}" },
+    router: { path: RouterPath.btrade + "/${pair}" },
   },
+
   {
     label: {
       id: "fiat",
       i18nKey: "labelFiat",
       description: "labelFiatDescription",
     },
-    router: { path: "/trade/fiat" },
+    router: { path: RouterPath.fiat },
   },
 ];
 
@@ -215,7 +228,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://loopring.io/#/wallet" },
+    router: { path: "https://wallet.loopring.io" },
   },
   // {
   //   label: {
@@ -596,10 +609,9 @@ export enum RecordTabIndex {
   trades = "trades",
   ammRecords = "ammRecords",
   orders = "orders",
-  // orderOpenTable = "orderOpenTable",
-  // orderHistoryTable = "orderHistoryTable",
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",
   btradeSwapRecords = "BtradeSwap",
+  stopLimitRecords = "stopLimitRecords",
 }

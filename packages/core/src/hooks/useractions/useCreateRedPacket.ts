@@ -52,7 +52,6 @@ import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redPacket";
 import { useHistory } from "react-router-dom";
-import { LuckTokenAPI } from "@loopring-web/loopring-sdk";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -106,11 +105,9 @@ export const useCreateRedPacket = <
     feeInfo,
     checkFeeIsEnough,
     resetIntervalTime,
-    // setIsFeeNotEnough,
   } = useChargeFees({
     ...feeProps,
     updateData: ({ fee }) => {
-      // debugger
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
       if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN) {
         updateRedPacketOrder({
@@ -152,7 +149,6 @@ export const useCreateRedPacket = <
   const handleOnDataChange = React.useCallback(
     (tradeData: Partial<T>) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      myLog("redPacketOrder handleOnDataChange", redPacketOrder, tradeData);
       if (tradeData.tradeType) {
         resetDefault(tradeData.tradeType);
       } else {
@@ -281,7 +277,7 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
       redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
-      _tradeData.tradeValue 
+      _tradeData.tradeValue
       // &&
       // redPacketOrder.memo &&
       // redPacketOrder.memo?.trim().length > 0
@@ -331,23 +327,30 @@ export const useCreateRedPacket = <
       } else {
         balance = redPacketOrder.balance ?? 0;
         tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
-        if (redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE) {
+        if (
+          redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
+        ) {
           // console.log('isExceedBalance = tradeValue.times(redPacketOrder.giftNumbers ?? 1).gt(balance)', redPacketOrder.numbers, balance, tradeValue.toString())
-          isExceedBalance = tradeValue.times(redPacketOrder.numbers ?? 1).gt(balance)
+          isExceedBalance = tradeValue
+            .times(redPacketOrder.numbers ?? 1)
+            .gt(balance);
         } else {
-          isExceedBalance = tradeValue.gt(balance)
+          isExceedBalance = tradeValue.gt(balance);
         }
-        const eachValue = redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-          ? sdk.toBig(redPacketOrder.tradeValue ?? 0).div(redPacketOrder.giftNumbers ?? 1)
-          : sdk.toBig(_tradeData.eachValue ?? 0);
+        const eachValue =
+          redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+            ? sdk
+                .toBig(redPacketOrder.tradeValue ?? 0)
+                .div(redPacketOrder.giftNumbers ?? 1)
+            : sdk.toBig(_tradeData.eachValue ?? 0);
         tooSmall = eachValue.lt(1);
         tooLarge = tradeValue
           .div(
-            redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
-            ? 1
-            : redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-              ? (redPacketOrder.giftNumbers ?? 1)
-              : (redPacketOrder.numbers ?? 1)
+            redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
+              ? 1
+              : redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ? redPacketOrder.giftNumbers ?? 1
+              : redPacketOrder.numbers ?? 1
           )
           .gt(REDPACKET_ORDER_NFT_LIMIT);
       }
@@ -406,13 +409,16 @@ export const useCreateRedPacket = <
                     ),
                     symbol: tradeToken.symbol,
                   }
-                : { value: 
-                    redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
-                      ? redPacketOrder.giftNumbers
-                      : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
-                        ? 1 
-                        : redPacketOrder.numbers, 
-                    symbol: "NFT" 
+                : {
+                    value:
+                      redPacketOrder.type?.mode ===
+                      sdk.LuckyTokenClaimType.BLIND_BOX
+                        ? redPacketOrder.giftNumbers
+                        : redPacketOrder.type?.partition ===
+                          sdk.LuckyTokenAmountType.AVERAGE
+                        ? 1
+                        : redPacketOrder.numbers,
+                    symbol: "NFT",
                   }
             );
           } else {
@@ -447,14 +453,20 @@ export const useCreateRedPacket = <
                   ),
                   symbol: tradeToken.symbol,
                 }
-              : { value: sdk.toBig(REDPACKET_ORDER_NFT_LIMIT).times(
-                redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                  ? (redPacketOrder.giftNumbers ?? 1)
-                  : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE 
-                    ? 1
-                    : (redPacketOrder.numbers ?? 1)
-                ), symbol: "NFT"
-              }
+              : {
+                  value: sdk
+                    .toBig(REDPACKET_ORDER_NFT_LIMIT)
+                    .times(
+                      redPacketOrder.type?.mode ===
+                        sdk.LuckyTokenClaimType.BLIND_BOX
+                        ? redPacketOrder.giftNumbers ?? 1
+                        : redPacketOrder.type?.partition ===
+                          sdk.LuckyTokenAmountType.AVERAGE
+                        ? 1
+                        : redPacketOrder.numbers ?? 1
+                    ),
+                  symbol: "NFT",
+                }
           );
         } else if (blindBoxGiftsLargerThanPackets) {
           setLabelAndParams("labelRedPacketsGiftsLargerThanPackets", {});
@@ -562,22 +574,25 @@ export const useCreateRedPacket = <
               shared:
                 request.type.scope == sdk.LuckyTokenViewType.PUBLIC
                   ? () => {
-                    LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
-                      hash: (response as sdk.TX_HASH_API).hash!,
-                    }, apiKey).then(response => {
-                      setShowAccount({ isShow: false });
-                      setShowRedPacket({
-                        isShow: true,
-                        info: {
-                          ...response.detail.luckyToken,
-                          // sender: account,
-                          // hash: (response as sdk.TX_HASH_API).hash,
-                        },
-                        step: RedPacketViewStep.QRCodePanel,
-                      });
-
-                    })
-                      
+                      LoopringAPI.luckTokenAPI
+                        ?.getLuckTokenDetail(
+                          {
+                            hash: (response as sdk.TX_HASH_API).hash!,
+                          },
+                          apiKey
+                        )
+                        .then((response) => {
+                          setShowAccount({ isShow: false });
+                          setShowRedPacket({
+                            isShow: true,
+                            info: {
+                              ...response.detail.luckyToken,
+                              // sender: account,
+                              // hash: (response as sdk.TX_HASH_API).hash,
+                            },
+                            step: RedPacketViewStep.QRCodePanel,
+                          });
+                        });
                     }
                   : undefined,
             },
@@ -597,10 +612,14 @@ export const useCreateRedPacket = <
             (response as sdk.TX_HASH_API)?.hash
           ) {
             setShowAccount({ isShow: false });
-            const blindBoxRepspnse = await LoopringAPI.luckTokenAPI.getBlindBoxDetail({
-              hash: (response as sdk.TX_HASH_API).hash!,
-              showHelper: false
-            }, apiKey) as any
+            const blindBoxRepspnse =
+              (await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
+                {
+                  hash: (response as sdk.TX_HASH_API).hash!,
+                  showHelper: false,
+                },
+                apiKey
+              )) as any;
             setShowRedPacket({
               isShow: true,
               info: {

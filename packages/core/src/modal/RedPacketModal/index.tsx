@@ -34,7 +34,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketOpenedProps,
       redPacketDetailProps,
       redPacketClockProps,
-      redPacketBlindBoxDetailProps
+      redPacketBlindBoxDetailProps,
     } = useRedPacketModal();
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
@@ -143,7 +143,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
         },
 
         [RedPacketViewStep.PreparePanel]: { view: <></> },
-        [RedPacketViewStep.BlindBoxDetail]: { 
+        [RedPacketViewStep.BlindBoxDetail]: {
           view: redPacketBlindBoxDetailProps ? (
             <Box
               minHeight={RedPacketSize.large.height}
@@ -153,14 +153,13 @@ export const ModalRedPacketPanel = withTranslation("common")(
               justifyContent={"center"}
               alignItems={"start"}
             >
-              <RedPacketBlindBoxDetail
-                {...(redPacketBlindBoxDetailProps)}
-              />
+              <RedPacketBlindBoxDetail {...redPacketBlindBoxDetailProps} />
             </Box>
-          )
-          : <></>
+          ) : (
+            <></>
+          ),
         },
-        [RedPacketViewStep.Loading]: { 
+        [RedPacketViewStep.Loading]: {
           view: (
             <Box
               minHeight={RedPacketSize.large.height}
@@ -177,7 +176,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
                 src={`${SoursURL}images/loading-line.gif`}
               />
             </Box>
-          )
+          ),
         },
       });
     }, [
@@ -195,9 +194,7 @@ export const ModalRedPacketPanel = withTranslation("common")(
           setShowRedPacket({ isShow: false });
         }}
         etherscanBaseUrl={etherscanBaseUrl}
-        step={
-          isShowRedPacket.step
-        }
+        step={isShowRedPacket.step}
         open={isShowRedPacket.isShow}
         panelList={redPacketList}
       />

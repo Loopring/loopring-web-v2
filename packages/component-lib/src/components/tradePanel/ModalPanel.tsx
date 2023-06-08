@@ -179,8 +179,6 @@ export const ModalPanel = <
   const { isMobile } = useSettings();
   const {
     modals,
-    // setShowAmm,
-    // setShowSwap,
     setShowTransfer,
     setShowDeposit,
     setShowWithdraw,
@@ -239,8 +237,9 @@ export const ModalPanel = <
         open={isShowTransfer.isShow}
         contentClassName={"trade-wrap"}
         onClose={() => {
-          isShowTransfer.info?.onCloseCallBack && isShowTransfer.info?.onCloseCallBack()
-          setShowTransfer({ isShow: false })
+          isShowTransfer.info?.onCloseCallBack &&
+            isShowTransfer.info?.onCloseCallBack();
+          setShowTransfer({ isShow: false });
         }}
         content={
           <TransferPanel<any, any>
@@ -259,8 +258,9 @@ export const ModalPanel = <
         open={isShowWithdraw.isShow}
         contentClassName={"trade-wrap"}
         onClose={() => {
-          isShowWithdraw.info?.onCloseCallBack && isShowWithdraw.info?.onCloseCallBack()
-          setShowWithdraw({ isShow: false })
+          isShowWithdraw.info?.onCloseCallBack &&
+            isShowWithdraw.info?.onCloseCallBack();
+          setShowWithdraw({ isShow: false });
         }}
         content={
           <WithdrawPanel<any, any>
@@ -273,11 +273,10 @@ export const ModalPanel = <
               isFromContact: isShowWithdraw.address ? true : false,
               contact: isShowWithdraw.address
                 ? {
-                  address: isShowWithdraw.address!,
-                  name: isShowWithdraw.name!,
-                }
+                    address: isShowWithdraw.address!,
+                    name: isShowWithdraw.name!,
+                  }
                 : undefined,
-
             }}
           />
         }
@@ -338,9 +337,9 @@ export const ModalPanel = <
               isFromContact: isShowNFTWithdraw.address ? true : false,
               contact: isShowNFTWithdraw.address
                 ? {
-                  address: isShowNFTWithdraw.address!,
-                  name: isShowNFTWithdraw.name!,
-                }
+                    address: isShowNFTWithdraw.address!,
+                    name: isShowNFTWithdraw.name!,
+                  }
                 : undefined,
             }}
             onBack={() => {

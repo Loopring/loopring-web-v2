@@ -6,7 +6,6 @@ import {
 import { BasicACoinTradeHookProps } from "../Interface";
 import React from "react";
 import { SwitchData } from "../../Interface";
-import { useDeepCompareEffect } from "react-use";
 import { ToolBarItemBack } from "../tool";
 import { debounceTime, Subject } from "rxjs";
 
@@ -29,11 +28,11 @@ export const useBasicTrade = <
   } as SwitchData<T>);
   // index is switch panel index number 1 is btn view
   const [index, setIndex] = React.useState(0);
-  useDeepCompareEffect(() => {
+  React.useEffect(() => {
     if (tradeData !== switchData.tradeData) {
       setSwitchData({ ...switchData, tradeData: tradeData });
     }
-  }, [tradeData]);
+  }, [tradeData?.tradeValue, tradeData?.belong, tradeData?.balance]);
 
   const panelEventSubject = new Subject<
     { _index: 0 | 1; switchData: SwitchData<T> } | undefined

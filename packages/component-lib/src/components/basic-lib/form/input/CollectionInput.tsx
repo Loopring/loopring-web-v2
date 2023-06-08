@@ -25,6 +25,7 @@ import {
   DropdownIconStyled,
   SwitchPanelStyled,
   Toast,
+  ToastType,
 } from "../../../index";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -364,7 +365,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
             onClose={() => {
               collectionListProps.setCopyToastOpen({ isShow: false, type: "" });
             }}
-            severity={"success"}
+            severity={ToastType.success}
           />
         </SwitchPanelStyled>
       </Modal>

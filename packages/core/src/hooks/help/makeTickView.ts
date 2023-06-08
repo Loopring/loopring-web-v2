@@ -1,49 +1,39 @@
 import { LoopringMap, TickerData, toBig } from "@loopring-web/loopring-sdk";
-import { store, VolToNumberWithPrecision } from "../../index";
-import { FloatTag, TradeFloat } from "@loopring-web/common-resources";
+import { store } from "../../index";
 import { volumeToCount } from "./volumeToCount";
-import { Ticker, TickerMap } from "../../stores";
+import { TickerMap } from "../../stores";
+import { Ticker } from "@loopring-web/common-resources";
 
-export const makeTickView = (tick: Partial<TickerData>) => {
+export const makeTickView = (tick: TickerData) => {
   const { tokenPrices } = store.getState().tokenPrices;
+  // const { forexMap } = store.getState().system;
+  if (tick && tick.base && tick.quote) {
+    const price = tokenPrices[tick.base];
+    const volume = volumeToCount(tick.quote, tick.quote_token_volume);
+    const priceU = toBig(volume ? volume : 0).times(price);
 
-  if (tick) {
-    const floatTag =
-      (tick.close ?? 0) || (tick.open ?? 0) || tick.open === tick.close
-        ? FloatTag.none
-        : tick.close > tick.open
-        ? FloatTag.increase
-        : FloatTag.decrease;
-    let _tradeFloat: Partial<TradeFloat> = {
-      change: (tick.close ?? 0 - (tick.open ?? 0)) / (tick.open ?? 1),
+    const change =
+      tick.change && tick.change !== 0 ? tick.change * 100 : undefined;
+    const qPrice = tick.quote === "DAI" ? 1 : tokenPrices[tick.quote] || 0;
+    const closeU = toBig(tick.close).times(qPrice).toNumber();
+    // const extraTickerInfo = makeTickView(item);
+
+    return {
+      ...tick,
+      changeU: toBig(tick.close - (tick.open ?? 0)).toNumber(),
+      volume: volume ? Number(volume) : undefined,
+      closeDollar: closeU,
       timeUnit: "24h",
-      priceDollar: 0,
-      floatTag,
-      reward: 0,
-      close: isNaN(tick.close || 0) ? undefined : tick.close,
+      priceU: priceU.toNumber(),
+      floatTag: tick.close > tick.open ? "increase" : "decrease",
+      change: change,
+      close: isNaN(tick.close) ? undefined : tick.close,
       high: tick.high === 0 ? undefined : tick.high,
       low: tick.low === 0 ? undefined : tick.low,
-    };
-    if (tick.close && tokenPrices) {
-      const volume = VolToNumberWithPrecision(
-        tick.base_token_volume ?? 0,
-        tick.base as string
-      );
-      const qPrice =
-        tick.quote === "DAI" ? 1 : tokenPrices[tick.quote as string] || 0;
-      const closeDollar = toBig(tick.close).times(qPrice);
-
-      _tradeFloat = {
-        ..._tradeFloat,
-        changeDollar: toBig(tick.close - (tick.open ?? 0))
-          .times(qPrice)
-          .toNumber(),
-
-        volume: volume ? Number(volume) : undefined,
-        closeDollar: closeDollar.toNumber(),
-      };
-    }
-    return _tradeFloat;
+      reward: 0,
+      rewardToken: "",
+      __rawTicker__: tick,
+    } as Ticker;
   }
 };
 export const makeTickerMap = <R extends { [key: string]: any }>({
@@ -55,25 +45,25 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
   const { tokenPrices } = store.getState().tokenPrices;
 
   return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
-    const item: TickerData = tickerMap[key as any];
-    if (item && item.base && forexMap && tokenPrices[item.base]) {
-      const price = tokenPrices[item.base];
+    const item = tickerMap[key as any];
+    if (item && item.quote && forexMap && tokenPrices[item.quote]) {
+      const price = tokenPrices[item.quote];
       const volume = volumeToCount(
         item.symbol.split("-")[1],
         item.quote_token_volume
       );
-      const priceDollar = toBig(volume ? volume : 0).times(price);
+      const priceU = toBig(volume ? volume : 0).times(price);
       const change =
         item.change && item.change !== 0 ? item.change * 100 : undefined;
 
       const extraTickerInfo = makeTickView(item);
 
       prev[key as keyof R] = {
+        ...item,
         ...extraTickerInfo,
         timeUnit: "24h",
-        priceDollar:
-          priceDollar?.toNumber() === 0 ? undefined : priceDollar?.toNumber(),
-        volume: volume ? Number(volume) : undefined,
+        priceU: priceU?.toNumber() === 0 ? undefined : priceU?.toNumber(),
+        volume: volume ? volume.toString() : undefined,
         floatTag: item.close > item.open ? "increase" : "decrease",
         change: change,
         close: isNaN(item.close) ? undefined : item.close,
