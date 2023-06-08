@@ -102,6 +102,7 @@ const _NetworkMap = new Map([
     {
       label: "Ethereum",
       chainId: "1",
+      isTest: false,
     },
   ],
   [

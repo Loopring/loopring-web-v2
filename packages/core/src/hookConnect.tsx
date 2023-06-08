@@ -59,6 +59,17 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     padding-right: 24px;
   }
 ` as typeof OutlineSelect;
+export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
+  &.provider-test {
+    &:after {
+      content: " test";
+      padding-left: 0.5em;
+      display: inline-flex;
+      font-size: var(body2);
+      color: var(--network-text);
+    }
+  }
+` as typeof OutlineSelectItem;
 
 export const useSelectNetwork = () => {
   const { t } = useTranslation();
@@ -114,21 +125,16 @@ export const useSelectNetwork = () => {
           {AvaiableNetwork.reduce((prew, id, index) => {
             if (NetworkMap[id]) {
               prew.push(
-                <OutlineSelectItem
-                  className={
-                    "viewNetwork" +
-                    NetworkMap[id] +
-                    " " +
-                    NetworkMap[defaultNetwork]?.isTest
-                      ? "provider-test"
-                      : ""
-                  }
+                <OutlineSelectItemStyle
+                  className={`viewNetwork${id} ${
+                    NetworkMap[id]?.isTest ? "provider-test" : ""
+                  }`}
                   aria-label={NetworkMap[id].label}
                   value={id}
                   key={"viewNetwork" + NetworkMap[id] + index}
                 >
                   <span>{t(NetworkMap[id].label)}</span>
-                </OutlineSelectItem>
+                </OutlineSelectItemStyle>
               );
             }
             return prew;
