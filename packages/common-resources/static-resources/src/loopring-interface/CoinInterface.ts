@@ -515,27 +515,5 @@ export type NetworkItemInfo = {
   isTest?: boolean | undefined;
 };
 
-export const NetworkMap: { [key: string]: NetworkItemInfo } = {
-  "1": {
-    label: "Ethereum",
-    chainId: "1",
-  },
-  "5": {
-    label: "Görli",
-    chainId: "",
-    isTest: true,
-  },
-  // "42161": {
-  //   label: "Arbitrum",
-  //   chainId: "",
-  //   RPC: "https://arb1.arbitrum.io/rpc",
-  // },
-  // "": {
-  //   label: "Taiko",
-  //   chainId: "xxx",
-  //   RPC: "",
-  // },
-};
-
 export const url_path = "https://static.loopring.io/events";
 export const url_test_path = "https://static.loopring.io/events/testEvents";

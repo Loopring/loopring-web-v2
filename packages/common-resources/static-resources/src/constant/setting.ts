@@ -1,5 +1,4 @@
 import { IsMobile, myLog } from "../utils";
-import { NetworkMap } from "../loopring-interface";
 
 export enum UpColor {
   green = "green",
@@ -96,8 +95,27 @@ export const ChainIdExtends: any = {
 
 export const ChainTests: any[] = [5];
 export const MapChainId = {};
+export const NetworkMap = {};
+const _NetworkMap = new Map([
+  [
+    1,
+    {
+      label: "Ethereum",
+      chainId: "1",
+    },
+  ],
+  [
+    5,
+    {
+      label: "Görli",
+      chainId: "",
+      isTest: true,
+    },
+  ],
+]);
+
 (function (): void {
-  process.env.REACT_APP_RP_OTHERS?.split(",").forEach(
+  process.env.REACT_APP_RPC_OTHERS?.split(",").forEach(
     (item: string, index: number) => {
       let [name, isTest] = process.env[
         `REACT_APP_RPC_CHAINNAME_${item}`
@@ -113,15 +131,19 @@ export const MapChainId = {};
         ChainIdExtends["unknown" + index] = item;
         MapChainIdMap.set(Number(item), "unknown");
       }
-      NetworkMap[index] = {
+      _NetworkMap.set(Number(item), {
         label: name,
         chainId: index.toString(),
-        RPC: process.env[`REACT_APP_RPC_URL_${item}`],
+        // RPC: process.env[`REACT_APP_RPC_URL_${item}`] ?? "",
         isTest: isTest ? true : false,
-      };
+      });
     }
   );
-
+  [..._NetworkMap.entries()].reduce((prev, [key, value]) => {
+    prev[key] = value;
+    return prev;
+  }, NetworkMap);
+  myLog("NetworkMap", NetworkMap);
   [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
     prev[key] = value;
     return prev;

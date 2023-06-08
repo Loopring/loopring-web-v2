@@ -136,7 +136,7 @@ export const useSelectNetwork = () => {
         </OutlineSelectStyle>
       </>
     );
-  }, [defaultNetwork]);
+  }, [defaultNetwork, NetworkMap]);
   React.useEffect(() => {}, []);
 
   return {
