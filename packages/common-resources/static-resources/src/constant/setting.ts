@@ -1,4 +1,5 @@
 import { IsMobile, myLog } from "../utils";
+import { NetworkItemInfo } from "../loopring-interface";
 
 export enum UpColor {
   green = "green",
@@ -95,7 +96,7 @@ export const ChainIdExtends: any = {
 
 export const ChainTests: any[] = [5];
 export const MapChainId = {};
-export const NetworkMap = {};
+export const NetworkMap: { [key: number]: NetworkItemInfo } = {};
 const _NetworkMap = new Map([
   [
     1,

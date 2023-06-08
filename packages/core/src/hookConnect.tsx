@@ -35,10 +35,20 @@ import {
 import { REFRESH_RATE } from "./defs";
 import { store, WalletConnectL2Btn } from "./index";
 import { useTranslation } from "react-i18next";
-import { Box, SelectChangeEvent, styled, Typography } from "@mui/material";
+import { Box, SelectChangeEvent, Typography } from "@mui/material";
 import { updateAccountStatus } from "./stores/account/reducer";
+import styled from "@emotion/styled";
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
+  &.walletModal {
+    background: var(--field-opacity);
+    height: var(--input-height-large);
+  }
+
+  .MuiSelect-select {
+    padding-left: ${({ theme }) => theme.unit * 3}px;
+  }
+
   &.test .MuiSelect-outlined span {
     background: var(--network-bg);
     display: inline-flex;
@@ -71,7 +81,7 @@ export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
   }
 ` as typeof OutlineSelectItem;
 
-export const useSelectNetwork = () => {
+export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
 
   // const { gatewayList } = useGatewayList({});
@@ -115,7 +125,9 @@ export const useSelectNetwork = () => {
           IconComponent={DropDownIcon}
           labelId="network-selected"
           id="network-selected"
-          className={NetworkMap[defaultNetwork]?.isTest ? "test" : ""}
+          className={`${className} ${
+            NetworkMap[defaultNetwork]?.isTest ? "test " : ""
+          }`}
           value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
           autoWidth
           onChange={(event: SelectChangeEvent<any>) =>

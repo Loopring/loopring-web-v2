@@ -69,7 +69,7 @@ export const DepositToPage = withTranslation(["common"])(
     const [_depositBtnStatus, setDepositBtnStatus] = React.useState(
       TradeBtnStatus.AVAILABLE
     );
-    const { NetWorkItems } = useSelectNetwork();
+    const { NetWorkItems } = useSelectNetwork({ className: "deposit" });
     const { account, status: accountStatus } = useAccount();
     const { onDepositClick, btnInfo, depositBtnStatus, ...restProps } =
       depositProps;
