@@ -266,7 +266,7 @@ export const RedPacketQRCode = ({
         rotation: 45,
         colorStops: [{
           offset: 0,
-          color: 'var(--color-primary)'
+          color: '#4169FF' // hardcode for export png
         },
         {
           offset: 1,
