@@ -503,3 +503,6 @@ export type Ticker = TradeFloat & {
   quote: string;
   __rawTicker__: TickerData;
 };
+
+export const url_path = "https://static.loopring.io/events";
+export const url_test_path = "https://static.loopring.io/events/testEvents";

@@ -114,7 +114,7 @@ module.exports = override(
     const setConfig = (index) => {
       console.log("-----> enter setConfig!!!!!!! index:", index);
       let babelLoader = config.module.rules[1].oneOf[index];
-      babelLoader.include = babelLoader.include.replace("/webapp/src", "");
+      babelLoader.include = babelLoader.include.replace("/web-bridge/src", "");
       babelLoader.include = [
         babelLoader.include,
         ...(process.env.NODE_ENV === "development"
