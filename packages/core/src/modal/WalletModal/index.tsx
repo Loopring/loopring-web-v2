@@ -282,8 +282,14 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const qrCodeUrl = useSelector(
       (state: RootState) => state.account.qrCodeUrl
     );
-    const [connectProvider, setConnectProvider] =
-      React.useState<boolean>(false);
+    const [connectProvider, setConnectProvider] = React.useState<boolean>(
+      account?.connectName ?? false
+    );
+    React.useEffect(() => {
+      if (account?.connectName !== connectProvider) {
+        setConnectProvider(account?.connectName);
+      }
+    }, [account?.connectName]);
 
     const _onClose = React.useCallback(
       async (e: any) => {
@@ -359,7 +365,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               NetWorkItems={NetWorkItems}
               termUrl={"https://www.iubenda.com/terms-and-conditions/74969935"}
               gatewayList={gatewayList}
-              providerName={account.connectName as ConnectProviders}
+              providerName={connectProvider}
               {...{ t, ...rest }}
             />
           ),
@@ -394,7 +400,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         [WalletConnectStep.SuccessConnect]: {
           view: (
             <ConnectSuccess
-              providerName={account.connectName as ConnectProviders}
+              providerName={connectProvider}
               {...{ t, ...rest }}
             />
           ),
