@@ -1,4 +1,5 @@
-import { IsMobile } from "../utils";
+import { IsMobile, myLog } from "../utils";
+import { NetworkMap } from "../loopring-interface";
 
 export enum UpColor {
   green = "green",
@@ -96,7 +97,7 @@ export const ChainIdExtends: any = {
 export const ChainTests: any[] = [5];
 export const MapChainId = {};
 (function (): void {
-  process.env.REACT_APP_RPC_OTHERS?.split(",").forEach(
+  process.env.REACT_APP_RP_OTHERS?.split(",").forEach(
     (item: string, index: number) => {
       let [name, isTest] = process.env[
         `REACT_APP_RPC_CHAINNAME_${item}`
@@ -104,6 +105,7 @@ export const MapChainId = {};
       if (name) {
         ChainIdExtends[name] = Number(item);
         MapChainIdMap.set(Number(item), name);
+        myLog("MapChainIdMap", item, MapChainIdMap);
         if (isTest) {
           ChainTests.push(item);
         }
@@ -111,6 +113,12 @@ export const MapChainId = {};
         ChainIdExtends["unknown" + index] = item;
         MapChainIdMap.set(Number(item), "unknown");
       }
+      NetworkMap[index] = {
+        label: name,
+        chainId: index.toString(),
+        RPC: process.env[`REACT_APP_RPC_URL_${item}`],
+        isTest: isTest ? true : false,
+      };
     }
   );
 

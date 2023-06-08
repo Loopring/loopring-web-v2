@@ -78,7 +78,7 @@ export function useInit() {
           await connectProvides[account.connectName]({
             account: account.accAddress,
             darkMode: theme.mode === ThemeType.dark,
-          });
+          } as any);
           updateAccount({});
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
             let chainId = Number(
