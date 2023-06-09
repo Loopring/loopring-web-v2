@@ -537,3 +537,6 @@ export const NetworkMap: { [key: string]: NetworkItemInfo } = {
   //
   // }
 };
+
+export const url_path = "https://static.loopring.io/events";
+export const url_test_path = "https://static.loopring.io/events/testEvents";

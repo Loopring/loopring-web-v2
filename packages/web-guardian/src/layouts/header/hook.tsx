@@ -97,12 +97,11 @@ export const useHeader = () => {
     };
     headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
       ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
-      // isTestOpen: isTestNet,
       onTestOpen: (isTestNet: boolean) => {
         const chainId = store.getState().system.chainId;
         updateSystem({ chainId });
       },
-      isShow: (chainId as any) === ChainIdExtends.TAIKO_A2,
+      isShow: (chainId as any) === ChainIdExtends["TAIKO"],
     };
     headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
       ...headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect],
@@ -117,7 +116,7 @@ export const useHeader = () => {
       myLog("isTestNet", isTaikoTest, chainId);
       headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
         ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
-        isShow: (chainId as any) == ChainIdExtends.TAIKO_A2,
+        isShow: (chainId as any) == ChainIdExtends["TAIKO"],
       };
       return headerToolBarData;
     });

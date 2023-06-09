@@ -5,11 +5,11 @@ import { accountServices } from "./services/account/accountServices";
 import { UserStorage } from "./storage";
 import { store } from "./index";
 
-enum WindowEvent {
-  Click = "click",
-  Scroll = "scroll",
-  Mouseover = "mouseover",
-}
+const WindowEvent = {
+  Click: "click",
+  Scroll: "scroll",
+  Mouseover: "mouseover",
+};
 
 const events = [WindowEvent.Click, WindowEvent.Mouseover, WindowEvent.Scroll];
 
