@@ -60,4 +60,6 @@ export default {
   errorRedpacketClaimTimeOut: "You opened the Red Packet Too Later",
   errorOffRampExpired: "The order has expired. please create a neworder ",
   errorNFTRedPacketMaxError: "Total Amount cannot exceeds {{value}} NTFs",
+  errorBetaEnv:
+    "Oops! This site is not released yet and could contain bugs. Please use it with caution!.",
 };
