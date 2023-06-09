@@ -40,12 +40,7 @@ import { Filter, FilterOrderTypes } from "./components/Filter";
 import { OrderDetailPanel } from "./components/modal";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  GetOrdersRequest,
-  GetUserTradesRequest,
-  OrderType,
-  Side,
-} from "@loopring-web/loopring-sdk";
+
 import { useSettings } from "../../../stores";
 import _ from "lodash";
 import { useLocation } from "react-router-dom";
@@ -71,7 +66,7 @@ export type OrderPair = {
 
 export interface OrderHistoryRow {
   side: keyof typeof TradeTypes;
-  orderType: keyof typeof OrderType;
+  orderType: sdk.OrderType;
   amount: OrderPair;
   average: number;
   filledAmount: OrderPair;
@@ -208,10 +203,12 @@ export interface OrderHistoryTableProps {
     total: number;
   };
   showFilter?: boolean;
-  getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<any>;
+  getOrderList: (
+    props: Omit<sdk.GetOrdersRequest, "accountId">
+  ) => Promise<any>;
   userOrderDetailList?: any[];
   getUserOrderDetailTradeList?: (
-    props?: Omit<GetUserTradesRequest, "accountId">
+    props?: Omit<sdk.GetUserTradesRequest, "accountId">
   ) => Promise<void>;
   showLoading?: boolean;
   marketArray?: string[];
@@ -307,7 +304,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         await getOrderList({
           limit: pagination?.pageSize ?? 10,
           offset: (currPage - 1) * (pagination?.pageSize ?? 10),
-          side: [types] as Side[],
+          side: [types] as sdk.Side[],
           market: currFilterToken === "all" ? "" : currFilterToken,
           start: Number.isNaN(start) ? -1 : start,
           end: Number.isNaN(end) ? -1 : end,
@@ -561,24 +558,28 @@ export const OrderHistoryTable = withTranslation("tables")(
         key: "types",
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
-          const value = row["orderType"] as any;
           let renderValue = "";
-          switch (value) {
-            case "AMM":
-              renderValue = t("labelOrderMarketOrder");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            default:
-              break;
+          if (row.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderMarketOrder");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              default:
+                break;
+            }
           }
+
           return <div className="rdg-cell-value">{renderValue}</div>;
         },
       },
@@ -708,23 +709,26 @@ export const OrderHistoryTable = withTranslation("tables")(
         key: "types",
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
-          const value = row["orderType"] as any;
           let renderValue = "";
-          switch (value) {
-            case "AMM":
-              renderValue = t("labelOrderAmm");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderMaker");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderTaker");
-              break;
-            default:
-              break;
+          if (row.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderAmm");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderMaker");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderTaker");
+                break;
+              default:
+                break;
+            }
           }
           return <div className="rdg-cell-value">{renderValue}</div>;
         },
@@ -933,21 +937,25 @@ export const OrderHistoryTable = withTranslation("tables")(
             default:
               break;
           }
-          switch (row.orderType as string) {
-            case "AMM":
-              renderValue = t("labelOrderMarketOrder");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            default:
-              break;
+          if (row?.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderMarketOrder");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              default:
+                break;
+            }
           }
           return (
             <Box
@@ -1084,21 +1092,25 @@ export const OrderHistoryTable = withTranslation("tables")(
             default:
               break;
           }
-          switch (row.orderType as string) {
-            case "AMM":
-              renderValue = t("labelOrderMarketOrder");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            default:
-              break;
+          if (row.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderMarketOrder");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              default:
+                break;
+            }
           }
           return (
             <Box

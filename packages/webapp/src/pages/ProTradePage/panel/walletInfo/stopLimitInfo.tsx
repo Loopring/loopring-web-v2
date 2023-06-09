@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { SoursURL, ThemeType } from "@loopring-web/common-resources";
 import React from "react";
+import { useTheme } from "@emotion/react";
 
 export const StopLimitInfo = withTranslation("common")(
   ({ t }: WithTranslation) => {
