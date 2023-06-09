@@ -8,11 +8,12 @@ import {
   ListItem,
   Typography,
 } from "@mui/material";
-import { SoursURL } from "@loopring-web/common-resources";
+import { SoursURL, ThemeType } from "@loopring-web/common-resources";
 import React from "react";
 
 export const StopLimitInfo = withTranslation("common")(
   ({ t }: WithTranslation) => {
+    const theme = useTheme();
     return (
       <Box
         display={"flex"}
@@ -117,7 +118,12 @@ export const StopLimitInfo = withTranslation("common")(
                 }}
                 alt={""}
                 // src={sellData?.icon}
-                src={SoursURL + "images/stoplimitDemo.webp"}
+                src={
+                  SoursURL +
+                  (theme.mode === ThemeType.dark
+                    ? "images/stoplimit_dark.svg"
+                    : "images/stoplimit_light.svg")
+                }
               />
             </Typography>
           </Box>
