@@ -631,7 +631,11 @@ export const OrderHistoryTable = withTranslation("tables")(
             precisionTo,
             precisionTo
           )} ${keyTo}`;
-          return <div className="rdg-cell-value">{renderValue}</div>;
+          return (
+            <div className="rdg-cell-value" title={renderValue}>
+              {renderValue}
+            </div>
+          );
         },
       },
       {
@@ -781,7 +785,11 @@ export const OrderHistoryTable = withTranslation("tables")(
             precisionTo,
             precisionTo
           )} ${keyTo}`;
-          return <div className="rdg-cell-value">{renderValue}</div>;
+          return (
+            <div className="rdg-cell-value" title={renderValue}>
+              {renderValue}
+            </div>
+          );
         },
       },
       {

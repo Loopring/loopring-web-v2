@@ -43,6 +43,7 @@ import {
 import { useHistory, useLocation } from "react-router-dom";
 import BigNumber from "bignumber.js";
 import { modalContentBaseStyle } from "../../../styled";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const ModelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
@@ -65,6 +66,7 @@ const DialogStyle = styled(Dialog)`
       line-height: 1.5em;
     }
   }
+
   .MuiDialogContentText-root {
     white-space: pre-line;
   }
@@ -2234,9 +2236,9 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
     stopPrice,
     baseValue,
     quoteValue,
+    stopSide,
     onSubmit,
-  }: // ...props
-  WithTranslation & {
+  }: WithTranslation & {
     open: boolean;
     handleClose: (event: any) => void;
   } & Partial<{
@@ -2247,6 +2249,7 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
       quoteValue: string | number;
       limitPrice: string;
       stopPrice: string;
+      stopSide: sdk.STOP_SIDE;
       onSubmit: (event: any) => void;
     }>) => {
     return (
@@ -2281,33 +2284,17 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 component={"span"}
                 color={"var(--color-text-secondary)"}
               >
-                {t("labelStopLimitProduct")}
-              </Typography>
-              <Typography
-                variant={"body1"}
-                component={"span"}
-                color={"var(--color-text-secondary)"}
-              >
                 {baseSymbol + " / " + quoteSymbol}
               </Typography>
-            </Typography>
-            <Typography
-              component={"span"}
-              display={"inline-flex"}
-              justifyContent={"space-between"}
-              marginTop={2}
-            >
               <Typography
                 variant={"body1"}
                 component={"span"}
-                color={"var(--color-text-secondary)"}
-              >
-                {t("labelStopLimitLabelType")}
-              </Typography>
-              <Typography
-                variant={"body1"}
-                component={"span"}
-                color={"var(--color-text-primary)"}
+                color={
+                  tradeType == TradeProType.sell
+                    ? "var(--color-error)"
+                    : "var(--color-success)"
+                }
+                // color={"var(--color-text-primary)"}
               >
                 {t("labelStopLimitType", {
                   tradeType: tradeType
@@ -2388,6 +2375,17 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 value2: quoteValue,
                 symbol2: quoteSymbol,
                 symbol1: baseSymbol,
+                stopPrice,
+                limitPrice,
+                tradeType,
+                from:
+                  stopSide == sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
+                    ? t("labelStopLimitFromGoesUp")
+                    : t("labelStopLimitFromDropsDown"),
+                behavior:
+                  stopSide == sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
+                    ? t("labelStopLimitBehaviorAbove")
+                    : t("labelStopLimitBehaviorBelow"),
               }}
               components={{
                 p: (
@@ -2396,35 +2394,38 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                     component={"span"}
                     variant={"body1"}
                     display={"block"}
-                    marginBottom={1}
+                    marginY={1}
                     color={"textSecondary"}
+                    sx={{ background: "var(--field-opacity)" }}
+                    borderRadius={1 / 2}
+                    padding={1}
                   />
                 ),
               }}
             >
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                marginBottom={1}
-                color={"textSecondary"}
-              >
+              <p>
                 If the last price goes up to or above value Symbol2 , and order
                 to tradeType value2 Symbol1 at a price of price Symbol2 will be
                 placed.
-              </Typography>
+              </p>
             </Trans>
           </DialogContentText>
         </DialogContent>
 
         <DialogActions>
           <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelStopLimitCancel")}
+          </Button>
+          <Button
             variant={"contained"}
             size={"small"}
-            fullWidth={true}
+            // fullWidth={true}
             onClick={(e) => {
-              handleClose(e as any);
+              // handleClose(e as any);
               if (typeof onSubmit === "function") {
                 onSubmit(e);
               }
