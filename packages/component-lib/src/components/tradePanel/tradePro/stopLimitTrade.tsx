@@ -343,4 +343,4 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
   I = CoinKey<any>
 >(
   props: TradeLimitProps<L, T, TCD, I>
-) => JSX.Element;;
+) => JSX.Element;
