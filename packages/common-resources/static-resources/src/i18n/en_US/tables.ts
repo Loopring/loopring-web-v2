@@ -128,6 +128,7 @@ export default {
   labelOrderWaiting: "Waiting",
   // labelOrderAmm: 'AMM',
   labelOrderLimitOrder: "Limit",
+  labelOrderStopLimitOrder: "Stop-Limit",
   labelOrderMarketOrder: "Market",
   // labelOrderMaker: 'Maker',
   labelOrderTaker: "Taker",

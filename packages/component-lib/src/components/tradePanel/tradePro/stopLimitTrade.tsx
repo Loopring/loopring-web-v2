@@ -25,7 +25,23 @@ import { Button } from "./../../index";
 import React from "react";
 import { useSettings } from "../../../stores";
 import * as sdk from "@loopring-web/loopring-sdk";
+import styled from "@emotion/styled";
 
+const BoxStyle = styled(Box)`
+  .stopPrice {
+    input::placeholder {
+      white-space: pre-wrap;
+      font-size: 10px;
+      position: absolute;
+      height: fit-content;
+      align-items: center;
+      top: 50%;
+      left: 50%;
+      width: 90%;
+      transform: translate(-50%, -50%);
+    }
+  }
+` as typeof Box;
 export const StopLimitTrade = withTranslation("common", { withRef: true })(
   <
     L extends StopLimitTradeData<T>,
@@ -118,8 +134,12 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
             tradeCalcProData.stopRange &&
             tradeCalcProData.stopRange[1] &&
             tradeCalcProData.stopRange[0] &&
-            (sdk.toBig(data.tradeValue).gt(tradeCalcProData.stopRange[1]) ||
-              sdk.toBig(data.tradeValue).lt(tradeCalcProData.stopRange[0]))
+            (sdk
+              .toBig(data.tradeValue)
+              .gt(tradeCalcProData.stopRange[1]?.replaceAll(sdk.SEP, "")) ||
+              sdk
+                .toBig(data.tradeValue)
+                .lt(tradeCalcProData.stopRange[0]?.replaceAll(sdk.SEP, "")))
           ) {
             return {
               error: true,
@@ -134,7 +154,7 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
     }, [tradeType, TradeProType, stopPriceProps, handleCountChange]);
 
     return (
-      <Box
+      <BoxStyle
         flex={1}
         display={"flex"}
         flexDirection={"column"}
@@ -172,6 +192,7 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
             <InputCoin<any, I, CoinInfo<I>>
               ref={stopPriceRef as any}
               name={TradeBaseType.stopPrice}
+              className={"stopPrice"}
               disabled={false}
               {...({
                 ...propsStopPrice,
@@ -312,7 +333,7 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
             {btnLabel}
           </Button>
         </Box>
-      </Box>
+      </BoxStyle>
     );
   }
 ) as <

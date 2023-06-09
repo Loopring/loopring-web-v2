@@ -174,6 +174,54 @@ export const CancelAllOrdersAlert = withTranslation("common", {
     );
   }
 );
+export const CancelOneOrdersAlert = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleCancelOne,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleCancelOne: () => Promise<void>;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-cancel-all-orders-description"
+      >
+        <DialogTitle style={{ padding: "2.4rem", paddingBottom: "1.6rem" }}>
+          {t("labelOrderCancelConfirm")}
+        </DialogTitle>
+
+        <DialogActions style={{ padding: "2.4rem", paddingTop: 0 }}>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelOrderCancelOrder")}
+          </Button>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={async (e) => {
+              await handleCancelOne();
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelConfirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
 export const AlertNotSupport = withTranslation("common")(
   ({
     t,
@@ -2329,6 +2377,7 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 symbol1: baseSymbol,
                 stopPrice,
                 limitPrice,
+                tradeType,
                 from:
                   stopSide == sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
                     ? t("labelStopLimitFromGoesUp")
