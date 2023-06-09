@@ -2377,6 +2377,7 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 symbol1: baseSymbol,
                 stopPrice,
                 limitPrice,
+                tradeType,
                 from:
                   stopSide == sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
                     ? t("labelStopLimitFromGoesUp")
