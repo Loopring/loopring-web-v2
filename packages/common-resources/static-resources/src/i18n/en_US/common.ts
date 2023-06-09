@@ -1767,4 +1767,6 @@ export default {
   labelBtradeQuantity: "Prioritize Quantity",
   labelBtradeSpeed: "Prioritize Speed",
   labelBtradeSettled: "Settled",
+  labelOrderCancelConfirm: "Confirm to cancel this order?",
+  labelOrderCancelOrder: "Cancel",
 };

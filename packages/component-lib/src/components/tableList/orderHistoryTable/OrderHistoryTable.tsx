@@ -2,6 +2,7 @@ import React from "react";
 import {
   Button,
   CancelAllOrdersAlert,
+  CancelOneOrdersAlert,
   PopoverPure,
   QuoteTableRawDataItem,
 } from "../../index";
@@ -275,6 +276,13 @@ export const OrderHistoryTable = withTranslation("tables")(
     const [modalState, setModalState] = React.useState(false);
     const [currOrderId, setCurrOrderId] = React.useState("");
     const [showCancelAllAlert, setShowCancelAllAlert] = React.useState(false);
+    const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
+      open: boolean;
+      row?: OrderHistoryRawDataItem;
+    }>({
+      open: false,
+      row: undefined,
+    });
 
     const updateData = _.debounce(
       async ({
@@ -841,23 +849,12 @@ export const OrderHistoryTable = withTranslation("tables")(
             {t("labelOrderCancelAll")}
           </CancelColHeaderStyled>
         ),
-        formatter: ({ row, index }: any) => {
-          const orderHash = row["hash"];
-          const clientOrderId = row["orderId"];
-          const popState = getPopoverState(index);
-          const handleClose = () => {
-            popState.setOpen(false);
-          };
-          const handleRequestCancel = async () => {
-            await cancelOrder({ orderHash, clientOrderId });
-            handleClose();
-          };
+        formatter: ({ row }: any) => {
           return (
             <>
               <Box
-                {...bindTrigger(popState)}
                 onClick={(e: any) => {
-                  bindTrigger(popState).onClick(e);
+                  setShowCancelOndAlert({ open: true, row });
                 }}
                 style={{ cursor: "pointer" }}
                 className="rdg-cell-value textAlignRight"
@@ -866,47 +863,6 @@ export const OrderHistoryTable = withTranslation("tables")(
                   {t("labelOrderCancelOrder")}
                 </Typography>
               </Box>
-
-              {/*<PopoverPure*/}
-              {/*  className={isPro ? "arrow-top-right" : "arrow-top-center"}*/}
-              {/*  {...bindPopper(popState)}*/}
-              {/*  anchorOrigin={{*/}
-              {/*    vertical: "top",*/}
-              {/*    horizontal: "center",*/}
-              {/*  }}*/}
-              {/*  transformOrigin={{*/}
-              {/*    vertical: "bottom",*/}
-              {/*    horizontal: "center",*/}
-              {/*  }}*/}
-              {/*>*/}
-              {/*  <Box padding={2}>*/}
-              {/*    <Typography marginBottom={1}>*/}
-              {/*      {t("labelOrderCancelConfirm")}*/}
-              {/*    </Typography>*/}
-              {/*    <Grid*/}
-              {/*      container*/}
-              {/*      spacing={1}*/}
-              {/*      display={"flex"}*/}
-              {/*      justifyContent={"flex-end"}*/}
-              {/*      alignItems={"center"}*/}
-              {/*    >*/}
-              {/*      <Grid item>*/}
-              {/*        <Button variant={"outlined"} onClick={handleClose}>*/}
-              {/*          {t("labelOrderCancel")}*/}
-              {/*        </Button>*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item>*/}
-              {/*        <Button*/}
-              {/*          variant={"contained"}*/}
-              {/*          size={"small"}*/}
-              {/*          onClick={handleRequestCancel}*/}
-              {/*        >*/}
-              {/*          {t("labelOrderConfirm")}*/}
-              {/*        </Button>*/}
-              {/*      </Grid>*/}
-              {/*    </Grid>*/}
-              {/*  </Box>*/}
-              {/*</PopoverPure>*/}
             </>
           );
         },
@@ -1305,6 +1261,12 @@ export const OrderHistoryTable = withTranslation("tables")(
         await cancelOrderByHashList(openOrdresList);
       }
     }, [rawData, cancelOrderByHashList]);
+    const handleCancelOne = React.useCallback(async () => {
+      if (showCancelOneAlert?.row) {
+        const { orderHash, clientOrderId } = showCancelOneAlert?.row;
+        await cancelOrder({ orderHash, clientOrderId });
+      }
+    }, [showCancelOneAlert]);
     const [isDropDown, setIsDropDown] = React.useState(true);
 
     return (
@@ -1362,6 +1324,13 @@ export const OrderHistoryTable = withTranslation("tables")(
           handleCancelAll={handleCancelAll}
           handleClose={() => setShowCancelAllAlert(false)}
         />
+        <CancelOneOrdersAlert
+          open={showCancelOneAlert.open}
+          handleCancel={handleCancelOne}
+          handleClose={() =>
+            setShowCancelOndAlert({ open: false, row: undefined })
+          }
+        ></CancelOneOrdersAlert>
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <OrderDetailPanel
             rawData={userOrderDetailList || []}

@@ -178,15 +178,11 @@ export const CancelOneOrdersAlert = withTranslation("common", {
   ({
     t,
     open,
-    orderHash,
-    clientOrderId,
-    handleCancelAll,
+    handleCancelOne,
     handleClose,
   }: WithTranslation & {
     open: boolean;
-    orderHash: string;
-    clientOrderId: string;
-    handleCancelAll: () => void;
+    handleCancelOne: () => Promise<void>;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
     return (
@@ -197,7 +193,7 @@ export const CancelOneOrdersAlert = withTranslation("common", {
         aria-describedby="alert-dialog-cancel-all-orders-description"
       >
         <DialogTitle style={{ padding: "2.4rem", paddingBottom: "1.6rem" }}>
-          {t("labelOrderCancelOrder")}
+          {t("labelOrderCancelConfirm")}
         </DialogTitle>
 
         <DialogActions style={{ padding: "2.4rem", paddingTop: 0 }}>
@@ -206,13 +202,13 @@ export const CancelOneOrdersAlert = withTranslation("common", {
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {t("labelOrderCancelConfirm")}
+            {t("labelOrderCancelOrder")}
           </Button>
           <Button
             variant={"contained"}
             size={"small"}
-            onClick={(e) => {
-              handleCancelAll();
+            onClick={async (e) => {
+              await handleCancelOne();
               handleClose(e as any, true);
             }}
             color={"primary"}

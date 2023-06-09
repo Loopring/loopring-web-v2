@@ -134,8 +134,12 @@ export const StopLimitTrade = withTranslation("common", { withRef: true })(
             tradeCalcProData.stopRange &&
             tradeCalcProData.stopRange[1] &&
             tradeCalcProData.stopRange[0] &&
-            (sdk.toBig(data.tradeValue).gt(tradeCalcProData.stopRange[1]) ||
-              sdk.toBig(data.tradeValue).lt(tradeCalcProData.stopRange[0]))
+            (sdk
+              .toBig(data.tradeValue)
+              .gt(tradeCalcProData.stopRange[1]?.replaceAll(sdk.SEP, "")) ||
+              sdk
+                .toBig(data.tradeValue)
+                .lt(tradeCalcProData.stopRange[0]?.replaceAll(sdk.SEP, "")))
           ) {
             return {
               error: true,
