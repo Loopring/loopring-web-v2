@@ -1,5 +1,9 @@
 // @ts-nocheck
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 import {
   AccountStep,
   CommonConnectInProgress,
@@ -53,6 +57,7 @@ export const useGatewayList = ({
   setConnectProvider?: any;
 }) => {
   const { search } = useLocation();
+  const { t } = useTranslation();
   const searchParams = new URLSearchParams(search);
   const { isMobile } = useSettings();
   const { setShowConnect } = useOpenModals();
