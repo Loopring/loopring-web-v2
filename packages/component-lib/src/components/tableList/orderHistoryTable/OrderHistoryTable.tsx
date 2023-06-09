@@ -23,12 +23,12 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
+  CompleteIcon,
   DirectionTag,
   DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
-  GoodIcon,
   RowConfig,
   TableType,
   TradeStatus,
@@ -406,7 +406,7 @@ export const OrderHistoryTable = withTranslation("tables")(
             name: t("labelStopLimitStopPrice"),
             headerCellClass: "textAlignRight",
             formatter: ({ row }: any) => {
-              return row?.extraOrderInfo?.isTriggerd ? (
+              return !row?.extraOrderInfo?.isTriggered ? (
                 <Box
                   style={{ cursor: "pointer" }}
                   className="rdg-cell-value textAlignRight"
@@ -417,9 +417,9 @@ export const OrderHistoryTable = withTranslation("tables")(
                     style={{ cursor: "pointer" }}
                     className="rdg-cell-value textAlignRight"
                     title={t("labelStopLimitTriggered", {
-                      time: row.extraOrderInfo?.triggerdTime
+                      time: row.extraOrderInfo?.triggeredTime
                         ? moment(
-                            new Date(row.extraOrderInfo?.triggerdTime)
+                            new Date(row.extraOrderInfo?.triggeredTime)
                           ).format(YEAR_DAY_MINUTE_FORMAT)
                         : "",
                     }).toString()}
@@ -432,7 +432,7 @@ export const OrderHistoryTable = withTranslation("tables")(
                           : "≥"}
                         {row.extraOrderInfo?.stopPrice}
                       </Typography>
-                      <GoodIcon />
+                      <CompleteIcon />
                     </>
                   </Tooltip>
                 </Box>
@@ -861,7 +861,7 @@ export const OrderHistoryTable = withTranslation("tables")(
           return (
             <>
               <Box
-                onClick={(e: any) => {
+                onClick={(_e: any) => {
                   setShowCancelOndAlert({ open: true, row });
                 }}
                 style={{ cursor: "pointer" }}
@@ -1271,7 +1271,8 @@ export const OrderHistoryTable = withTranslation("tables")(
     }, [rawData, cancelOrderByHashList]);
     const handleCancelOne = React.useCallback(async () => {
       if (showCancelOneAlert?.row) {
-        const { orderHash, clientOrderId } = showCancelOneAlert?.row;
+        // @ts-ignore
+        const { orderHash, clientOrderId } = showCancelOneAlert?.row ?? {};
         await cancelOrder({ orderHash, clientOrderId });
       }
     }, [showCancelOneAlert]);
@@ -1334,7 +1335,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         />
         <CancelOneOrdersAlert
           open={showCancelOneAlert.open}
-          handleCancel={handleCancelOne}
+          handleCancelOne={handleCancelOne}
           handleClose={() =>
             setShowCancelOndAlert({ open: false, row: undefined })
           }
