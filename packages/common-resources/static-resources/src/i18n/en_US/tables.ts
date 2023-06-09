@@ -326,4 +326,8 @@ export default {
   labelBTRADE: "Block Trade",
   labelL2STAKING: "Staking",
   labelSTOP_LIMIT: "Stop-Limit",
+  labelStopLimitTriggered:
+    "Triggered: The limit order has been submitted to the order book.\n Time:{time}}",
+  labelStopLimitWaitingTrigger:
+    "The limit order is not placed until the stop price has been triggered.",
 };

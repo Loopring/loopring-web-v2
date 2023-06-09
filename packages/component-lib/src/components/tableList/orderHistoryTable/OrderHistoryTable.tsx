@@ -161,15 +161,15 @@ const TableStyled = styled(Box)<
         ? `--template-columns: ${
             isopen === "open"
               ? ispro === "pro"
-                ? `auto auto ${isStopLimit ? 220 : 250}px auto auto ${
-                    isStopLimit ? "auto" : ""
+                ? `auto auto ${isStopLimit ? 234 : 250}px auto auto ${
+                    isStopLimit ? "110px" : ""
                   } auto auto`
                 : `auto auto ${isStopLimit ? 200 : 230}px auto auto ${
                     isStopLimit ? "auto" : ""
                   } 130px 140px`
               : ispro === "pro"
-              ? `auto auto  ${isStopLimit ? 220 : 250}px auto auto ${
-                  isStopLimit ? "auto" : ""
+              ? `auto auto  ${isStopLimit ? 234 : 250}px auto  ${
+                  isStopLimit ? "110px" : ""
                 } auto auto`
               : `auto auto ${isStopLimit ? 200 : 230}px auto 130px ${
                   isStopLimit ? "auto" : ""
@@ -406,50 +406,41 @@ export const OrderHistoryTable = withTranslation("tables")(
             name: t("labelStopLimitStopPrice"),
             headerCellClass: "textAlignRight",
             formatter: ({ row }: any) => {
-              return row?.extraOrderInfo?.isTriggered ? (
-                <Box
-                  style={{ cursor: "pointer" }}
+              return (
+                <Tooltip
+                  style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
                   className="rdg-cell-value textAlignRight"
-                  display={"inline-flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
+                  title={(row?.extraOrderInfo?.isTriggered
+                    ? t("labelStopLimitTriggered", {
+                        time: row.extraOrderInfo?.triggeredTime
+                          ? moment(
+                              new Date(row.extraOrderInfo?.triggeredTime)
+                            ).format(YEAR_DAY_MINUTE_FORMAT)
+                          : "",
+                        interpolation: {
+                          escapeValue: false,
+                        },
+                      })
+                    : t("labelStopLimitWaitingTrigger")
+                  ).toString()}
                 >
-                  <Tooltip
+                  <Box
                     style={{ cursor: "pointer" }}
                     className="rdg-cell-value textAlignRight"
-                    title={t("labelStopLimitTriggered", {
-                      time: row.extraOrderInfo?.triggeredTime
-                        ? moment(
-                            new Date(row.extraOrderInfo?.triggeredTime)
-                          ).format(YEAR_DAY_MINUTE_FORMAT)
-                        : "",
-                    }).toString()}
+                    display={"inline-flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
                   >
-                    <>
-                      <Typography component={"span"} paddingRight={1 / 2}>
-                        {row.extraOrderInfo?.stopSide ==
-                        sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
-                          ? "≤"
-                          : "≥"}
-                        {row.extraOrderInfo?.stopPrice}
-                      </Typography>
-                      <CompleteIcon />
-                    </>
-                  </Tooltip>
-                </Box>
-              ) : (
-                <Box
-                  style={{ cursor: "pointer" }}
-                  className="rdg-cell-value textAlignRight"
-                >
-                  <Typography component={"span"}>
-                    {row.extraOrderInfo?.stopSide ==
-                    sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
-                      ? "≤"
-                      : "≥"}
-                    {row.extraOrderInfo?.stopPrice}
-                  </Typography>
-                </Box>
+                    <Typography component={"span"} paddingRight={1 / 2}>
+                      {row.extraOrderInfo?.stopSide ==
+                      sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+                        ? "≤"
+                        : "≥"}
+                      {row.extraOrderInfo?.stopPrice}
+                    </Typography>
+                    {row?.extraOrderInfo?.isTriggered && <CompleteIcon />}
+                  </Box>
+                </Tooltip>
               );
             },
           },

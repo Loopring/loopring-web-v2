@@ -1504,11 +1504,11 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
-  labelRedPacketStartWithTime: "{{time}} Start",
   labelRedPacketTabReceived: "Received",
   labelRedPacketTabSent: "Sent",
   labelRedPacketTabNFTs: "NFTs",
   labelRedPacketTabBlindBox: "Blind Box",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1735,7 +1735,9 @@ export default {
   labelStopLimitNotSupport:
     "Sorry, there is currently insufficient liquidity in this token pair to execute Stop-Limit orders. Please try again later or consider using a market / limit order instead.",
   labelStopLimitTriggered:
-    " The market order has been submitted to the orderbook. Time: {{time}}",
+    "Triggered: The limit order has been submitted to the order book.\n Time:{time}}",
+  labelStopLimitWaitingTrigger:
+    "The limit order is not placed until the stop price has been triggered.",
   labelStopLimitCurrentlyInsufficient: "Currently insufficient",
   labelDUAL_CURRENCY: "DUAL CURRENCY",
   labelDUAL_BASE: "DUAL BASE",
