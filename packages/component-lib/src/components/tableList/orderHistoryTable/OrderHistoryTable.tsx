@@ -406,12 +406,13 @@ export const OrderHistoryTable = withTranslation("tables")(
             name: t("labelStopLimitStopPrice"),
             headerCellClass: "textAlignRight",
             formatter: ({ row }: any) => {
-              return !row?.extraOrderInfo?.isTriggered ? (
+              return row?.extraOrderInfo?.isTriggered ? (
                 <Box
                   style={{ cursor: "pointer" }}
                   className="rdg-cell-value textAlignRight"
                   display={"inline-flex"}
                   justifyContent={"center"}
+                  alignItems={"center"}
                 >
                   <Tooltip
                     style={{ cursor: "pointer" }}
