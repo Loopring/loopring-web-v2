@@ -36,6 +36,8 @@ const BoxStyle = styled(Box)`
     min-height: initial;
   }
 
+  overflow: scroll;
+
   &.min-height .rdg {
     min-height: 240px;
   }

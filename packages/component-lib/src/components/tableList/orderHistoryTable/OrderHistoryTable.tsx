@@ -867,48 +867,46 @@ export const OrderHistoryTable = withTranslation("tables")(
                 </Typography>
               </Box>
 
-              <PopoverPure
-                className={isPro ? "arrow-top-right" : "arrow-top-center"}
-                {...bindPopper(popState)}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-              >
-                <ClickAwayListener onClickAway={() => popState.setOpen(false)}>
-                  <Box padding={2}>
-                    <Typography marginBottom={1}>
-                      {t("labelOrderCancelConfirm")}
-                    </Typography>
-                    <Grid
-                      container
-                      spacing={1}
-                      display={"flex"}
-                      justifyContent={"flex-end"}
-                      alignItems={"center"}
-                    >
-                      <Grid item>
-                        <Button variant={"outlined"} onClick={handleClose}>
-                          {t("labelOrderCancel")}
-                        </Button>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          variant={"contained"}
-                          size={"small"}
-                          onClick={handleRequestCancel}
-                        >
-                          {t("labelOrderConfirm")}
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </ClickAwayListener>
-              </PopoverPure>
+              {/*<PopoverPure*/}
+              {/*  className={isPro ? "arrow-top-right" : "arrow-top-center"}*/}
+              {/*  {...bindPopper(popState)}*/}
+              {/*  anchorOrigin={{*/}
+              {/*    vertical: "top",*/}
+              {/*    horizontal: "center",*/}
+              {/*  }}*/}
+              {/*  transformOrigin={{*/}
+              {/*    vertical: "bottom",*/}
+              {/*    horizontal: "center",*/}
+              {/*  }}*/}
+              {/*>*/}
+              {/*  <Box padding={2}>*/}
+              {/*    <Typography marginBottom={1}>*/}
+              {/*      {t("labelOrderCancelConfirm")}*/}
+              {/*    </Typography>*/}
+              {/*    <Grid*/}
+              {/*      container*/}
+              {/*      spacing={1}*/}
+              {/*      display={"flex"}*/}
+              {/*      justifyContent={"flex-end"}*/}
+              {/*      alignItems={"center"}*/}
+              {/*    >*/}
+              {/*      <Grid item>*/}
+              {/*        <Button variant={"outlined"} onClick={handleClose}>*/}
+              {/*          {t("labelOrderCancel")}*/}
+              {/*        </Button>*/}
+              {/*      </Grid>*/}
+              {/*      <Grid item>*/}
+              {/*        <Button*/}
+              {/*          variant={"contained"}*/}
+              {/*          size={"small"}*/}
+              {/*          onClick={handleRequestCancel}*/}
+              {/*        >*/}
+              {/*          {t("labelOrderConfirm")}*/}
+              {/*        </Button>*/}
+              {/*      </Grid>*/}
+              {/*    </Grid>*/}
+              {/*  </Box>*/}
+              {/*</PopoverPure>*/}
             </>
           );
         },
