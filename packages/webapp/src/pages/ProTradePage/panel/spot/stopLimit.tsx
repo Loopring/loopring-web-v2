@@ -97,6 +97,7 @@ export const StopLimitView = withTranslation("common")(
           height={"inherit"}
           sx={{ overflowY: "scroll" }}
           marginBottom={2}
+          flex={1}
         >
           <Box component={"header"} width={"100%"}>
             <Typography variant={"body1"} paddingX={2} lineHeight={"44px"}>
@@ -104,12 +105,7 @@ export const StopLimitView = withTranslation("common")(
             </Typography>
           </Box>
           <Divider style={{ marginTop: "-1px" }} />
-          <Box
-            display={"flex"}
-            flex={1}
-            component={"section"}
-            flexDirection={"column"}
-          >
+          <Box display={"flex"} component={"section"} flexDirection={"column"}>
             {pageTradePro.market && (
               <StopLimitTrade
                 // @ts-ignore
