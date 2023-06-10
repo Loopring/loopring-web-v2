@@ -319,4 +319,14 @@ export default {
   labelBtradeCancelled: "Cancelled",
   labelBtradePending: "Pending",
   labelBtradeSwapFailed: "Filled",
+  labelStopLimitStopPrice: "Trigger Condition",
+  labelDUAL_CURRENCY: "DUAL CURRENCY",
+  labelDUAL_BASE: "DUAL BASE",
+  labelBTRADE: "Block Trade",
+  labelL2STAKING: "Staking",
+  labelSTOP_LIMIT: "Stop-Limit",
+  labelStopLimitTriggered:
+    "Triggered: The limit order has been submitted to the order book.\n Time:{time}}",
+  labelStopLimitWaitingTrigger:
+    "The limit order is not placed until the stop price has been triggered.",
 };
