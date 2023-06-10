@@ -309,11 +309,13 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
     socketEventSubject.next(dataSocket);
   };
   const sendCallback = async (dataSocket: SocketMap) => {
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout);
-    }
-    noSocketAndAPILoop();
-    if (socketStatus !== SagaStatus.PENDING) {
+    myLog(
+      "doSocket Pro Send",
+      pageTradePro.market,
+      socketStatus,
+      nodeTimer.current
+    );
+    if (socketStatus !== SagaStatus.PENDING || nodeTimer.current == -1) {
       myLog("doSocket Pro Send", pageTradePro.market);
       if (account.readyState === AccountStatus.ACTIVATED) {
         sendSocketTopic({
@@ -325,6 +327,10 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
         sendSocketTopic(dataSocket);
       }
     }
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+    }
+    noSocketAndAPILoop();
   };
 
   React.useEffect(() => {
@@ -335,6 +341,7 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
       .pipe()
       .subscribe((dataSocket) => {
         if (dataSocket) {
+          myLog("pro socketEventSubject", dataSocket);
           sendCallback(dataSocket);
         }
       });
