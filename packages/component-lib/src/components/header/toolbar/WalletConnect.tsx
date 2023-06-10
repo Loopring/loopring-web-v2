@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
-  ChainIdExtends,
   ChainTests,
   CircleIcon,
   gatewayList,
