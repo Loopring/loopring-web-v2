@@ -327,9 +327,9 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
         sendSocketTopic(dataSocket);
       }
     }
-    // if (nodeTimer.current !== -1) {
-    //   clearTimeout(nodeTimer.current as NodeJS.Timeout);
-    // }
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+    }
     noSocketAndAPILoop();
   };
 
