@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
-  ChainIdExtends,
+  ChainTests,
   CircleIcon,
   gatewayList,
   getShortAddr,
   LoadingIcon,
   LockIcon,
   myLog,
+  SagaStatus,
   UnConnectIcon,
 } from "@loopring-web/common-resources";
 import { Typography, Box } from "@mui/material";
@@ -143,15 +144,6 @@ export const WalletConnectBtn = ({
           break;
         default:
       }
-      // if (account && account._chainId && account._chainId !== defaultNetwork) {
-      //   // netWorkItems
-      //   handleOnNetworkSwitch(account._chainId.toString());
-      // }
-      // if (account && account._chainId === sdk.ChainId.GOERLI) {
-      //   setNetworkLabel(isMobile ? "G ö" : "Görli");
-      // } else {
-      //   setNetworkLabel("");
-      // }
     } else {
       setLabel("labelConnectWallet");
     }
@@ -269,14 +261,20 @@ WalletConnectBtnProps) => {
                 // <CircleIcon fontSize={"large"} ChainIdhtmlColor={"var(--color-success)"} />
               );
               break;
-            case sdk.ChainId.GOERLI:
-            case ChainIdExtends.TAIKO_A2:
-              setIcon(
-                <Typography paddingRight={1} color={"var(--color-text-third)"}>
-                  Test
-                </Typography>
-                // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
-              );
+            // case sdk.ChainId.GOERLI:
+            // case ChainIdExtends[]:
+            default:
+              if (ChainTests.includes(Number(chainId))) {
+                setIcon(
+                  <Typography
+                    paddingRight={1}
+                    color={"var(--color-text-third)"}
+                  >
+                    Test
+                  </Typography>
+                  // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
+                );
+              }
               break;
             // setIcon(
             //   <Typography color={'--color-text-third'>{ChainIdExtends[account._chainId]}</Typography>
