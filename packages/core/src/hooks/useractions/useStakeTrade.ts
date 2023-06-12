@@ -312,6 +312,7 @@ export const useStakeTradeJOIN = <
             },
           });
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          walletLayer2Service.sendUserUpdate();
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==

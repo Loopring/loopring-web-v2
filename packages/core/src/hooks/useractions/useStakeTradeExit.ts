@@ -35,6 +35,7 @@ import { LoopringAPI } from "../../api_wrapper";
 import { useSubmitBtn } from "../common";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
+import { walletLayer2Service } from "../../services";
 
 export const useStakeRedeemClick = () => {
   const { tokenMap, idIndex } = useTokenMap();
@@ -277,6 +278,7 @@ export const useStakeTradeExit = <
             },
           });
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          walletLayer2Service.sendUserUpdate();
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==
