@@ -20,23 +20,22 @@ const ContentWrapperStyled = styled(Box)`
 
 const HeaderStyled = styled(Box)`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   width: 100%;
   margin-top: ${({ theme }) => theme.unit * 2}px;
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
   padding: 0 ${({ theme }) => theme.unit * 3}px;
-  // height: ${({ theme }) => theme.unit * 7.5}px;
-  // box-shadow: 0px ${({ theme }) => theme.unit / 4}px ${({ theme }) =>
-    theme.unit}px rgba(0, 0, 0, 0.25);
-  // border-radius: ${({ theme }) => theme.unit}px ${({ theme }) =>
-    theme.unit}px 0px 0px;
 `;
 
 export const LockDetailPanel = ({
   tokenLockDetail,
 }: {
-  tokenLockDetail?: any[] | undefined;
+  tokenLockDetail?:
+    | undefined
+    | {
+        list: any[];
+        row: any;
+      };
 }) => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
@@ -45,14 +44,15 @@ export const LockDetailPanel = ({
       <HeaderStyled
         flexDirection={isMobile ? "column" : "row"}
         alignItems={"flex-start"}
+        justifyContent={"center"}
       >
         <Typography variant={"h4"} display={"flex"} justifyContent={"center"}>
-          {t("labelLocketInfo")}
+          {t("labelLocketInfo", { symbol: tokenLockDetail?.row?.token?.value })}
         </Typography>
       </HeaderStyled>
       <Box borderRadius={"inherit"} minWidth={110} paddingBottom={2}>
-        {tokenLockDetail && tokenLockDetail.length ? (
-          tokenLockDetail.map((item) => {
+        {tokenLockDetail && tokenLockDetail.list?.length ? (
+          tokenLockDetail.list.map((item) => {
             return (
               <Box
                 display={"flex"}

@@ -293,7 +293,12 @@ export const LockedMemo = React.memo(
     props: RawDataAssetsItem & {
       hideAssets?: boolean;
       onTokenLockHold?: (item: any) => void;
-      tokenLockDetail?: any[] | undefined;
+      tokenLockDetail?:
+        | undefined
+        | {
+            list: any[];
+            row: any;
+          };
     }
   ) => {
     const { onTokenLockHold, tokenLockDetail, ...row } = props;
