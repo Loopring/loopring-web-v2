@@ -1771,4 +1771,5 @@ export default {
   labelBtradeSettled: "Settled",
   labelOrderCancelConfirm: "Confirm to cancel this order?",
   labelOrderCancelOrder: "Cancel",
+  labelLocketInfo: "{{symbol}} Locked Detail",
 };
