@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import React, { MouseEvent, MouseEventHandler } from "react";
 import {
   Button,
   CancelAllOrdersAlert,
@@ -1168,7 +1168,8 @@ export const OrderHistoryTable = withTranslation("tables")(
           const handleClose = () => {
             popState.setOpen(false);
           };
-          const handleRequestCancel = async (e: MouseEventHandler) => {
+          const handleRequestCancel = async (e: MouseEvent<any>) => {
+            // @ts-ignore
             e.preventDefault();
             await cancelOrder({ orderHash, clientOrderId });
             handleClose();
