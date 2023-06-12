@@ -29,6 +29,7 @@ import {
 import {
   CloseIcon,
   RedPacketIcon,
+  RowConfig,
   SagaStatus,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
@@ -62,9 +63,8 @@ export const RedPacketClaimPanel = ({hideAssets} : {hideAssets?: boolean}) => {
   let match: any = useRouteMatch("/l2assets/assets/RedPacket/:item");
 
   React.useEffect(() => {
-    if (walletLayer2Status === SagaStatus.UNSET) {
+    if (getClaimRedPacket && walletLayer2Status === SagaStatus.UNSET) {
       getClaimRedPacket();
-      getClaimNFTRedPacket({});
     }
   }, [walletLayer2Status]);
   //TODO:
