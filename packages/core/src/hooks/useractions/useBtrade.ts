@@ -930,7 +930,12 @@ export const useBtradeSwap = <
           if (btradeType === BtradeType.Speed) {
             const calcDexL2Output = sdk.calcDex({
               info,
-              input: sellBuyStr == market ? l2Amount.quote : l2Amount.base, //input.toString(),
+              input: (sellBuyStr == market
+                ? sdk.toBig(l2Amount.quote ?? 0)
+                : sdk.toBig(l2Amount.base ?? 0)
+              )
+                .div("1e" + buyToken.decimals)
+                .toString(), //input.toString(),
               sell: sellToken.symbol,
               buy: buyToken.symbol,
               isAtoB: false,
