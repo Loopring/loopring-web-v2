@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import {
   Button,
   CancelAllOrdersAlert,
@@ -258,11 +258,6 @@ export const OrderHistoryTable = withTranslation("tables")(
       isStopLimit,
     } = props;
     const { isMobile } = useSettings();
-    // const [tableHeight] = React.useState(() => {
-    //   if (isOpenOrder) {
-    //     return ;
-    //   }
-    // });
 
     const actionColumns = ["status"];
     const [filterType, setFilterType] = React.useState(
@@ -1173,7 +1168,8 @@ export const OrderHistoryTable = withTranslation("tables")(
           const handleClose = () => {
             popState.setOpen(false);
           };
-          const handleRequestCancel = async () => {
+          const handleRequestCancel = async (e: MouseEventHandler) => {
+            e.preventDefault();
             await cancelOrder({ orderHash, clientOrderId });
             handleClose();
           };
