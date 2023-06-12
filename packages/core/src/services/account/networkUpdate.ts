@@ -1,7 +1,7 @@
 import { cleanLayer2, goErrorNetWork, store } from "../../index";
 
 import { AvaiableNetwork } from "@loopring-web/web3-provider";
-import { AccountStatus } from "@loopring-web/common-resources";
+import { AccountStatus, SagaStatus } from "@loopring-web/common-resources";
 import { updateAccountStatus } from "../../stores/account/reducer";
 import { updateSystem } from "../../stores/system/reducer";
 import { setDefaultNetwork } from "@loopring-web/component-lib";
@@ -9,7 +9,8 @@ import { setDefaultNetwork } from "@loopring-web/component-lib";
 export const networkUpdate = (): boolean => {
   const { _chainId: accountChainId, readyState } = store.getState().account;
   const { defaultNetwork: userSettingChainId } = store.getState().settings;
-  const { chainId: statusChainId } = store.getState().system;
+  const { chainId: statusChainId, status: systemStatus } =
+    store.getState().system;
   // accountChainId
   if (readyState !== AccountStatus.UN_CONNECT) {
     if (
@@ -32,7 +33,10 @@ export const networkUpdate = (): boolean => {
       return false;
     }
   } else {
-    if (statusChainId !== userSettingChainId) {
+    if (
+      statusChainId.toString() !== userSettingChainId.toString() &&
+      systemStatus !== SagaStatus.PENDING
+    ) {
       if (AvaiableNetwork.includes(userSettingChainId.toString())) {
         console.log(
           "unconnected: networkUpdate updateSystem",
