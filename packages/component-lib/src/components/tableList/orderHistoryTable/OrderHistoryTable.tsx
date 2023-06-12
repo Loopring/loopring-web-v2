@@ -1,4 +1,4 @@
-import React, { MouseEvent, MouseEventHandler } from "react";
+import React from "react";
 import {
   Button,
   CancelAllOrdersAlert,
@@ -1335,7 +1335,7 @@ export const OrderHistoryTable = withTranslation("tables")(
           handleClose={() =>
             setShowCancelOndAlert({ open: false, row: undefined })
           }
-        ></CancelOneOrdersAlert>
+        />
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <OrderDetailPanel
             rawData={userOrderDetailList || []}
