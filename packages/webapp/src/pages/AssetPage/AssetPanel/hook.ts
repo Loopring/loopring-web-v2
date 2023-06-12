@@ -421,7 +421,7 @@ export const useGetAssets = (): AssetPanelProps & {
               return {
                 key: `label${item.lockTag}`,
                 value: getValuePrecisionThousand(
-                  item.amount,
+                  sdk.toBig(item.amount).div(tokenMap[_item.name].decimals),
                   tokenMap[_item.name].precision,
                   tokenMap[_item.name].precision,
                   undefined
