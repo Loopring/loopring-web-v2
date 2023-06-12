@@ -1160,9 +1160,9 @@ export const OrderHistoryTable = withTranslation("tables")(
         headerCellClass: "textAlignRight",
         formatter: ({ row, rowIdx }) => {
           const time = Number.isFinite(row.time)
-            ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
+            ? moment(new Date(row.time), "YYYYMMDDHHMM").fromNow()
             : EmptyValueTag;
-          const orderHash = row["hash"];
+          const orderHash = row.hash;
           const clientOrderId = row["orderId"];
           const popState = getPopoverState(rowIdx);
           const handleClose = () => {
