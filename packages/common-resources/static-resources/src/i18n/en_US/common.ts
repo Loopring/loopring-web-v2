@@ -1735,7 +1735,7 @@ export default {
   labelStopLimitNotSupport:
     "Sorry, there is currently insufficient liquidity in this token pair to execute Stop-Limit orders. Please try again later or consider using a market / limit order instead.",
   labelStopLimitTriggered:
-    "Triggered: The limit order has been submitted to the order book.\n Time:{time}}",
+    "Triggered: The limit order has been submitted to the order book.\n Time: {{time}}",
   labelStopLimitWaitingTrigger:
     "The limit order is not placed until the stop price has been triggered.",
   labelStopLimitCurrentlyInsufficient: "Currently insufficient",

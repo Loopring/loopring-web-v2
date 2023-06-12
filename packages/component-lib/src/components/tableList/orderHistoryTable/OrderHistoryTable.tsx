@@ -408,21 +408,28 @@ export const OrderHistoryTable = withTranslation("tables")(
             formatter: ({ row }: any) => {
               return (
                 <Tooltip
-                  style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
+                  style={{ cursor: "pointer", whiteSpace: "pre-line" }}
                   className="rdg-cell-value textAlignRight"
-                  title={(row?.extraOrderInfo?.isTriggered
-                    ? t("labelStopLimitTriggered", {
-                        time: row.extraOrderInfo?.triggeredTime
-                          ? moment(
-                              new Date(row.extraOrderInfo?.triggeredTime)
-                            ).format(YEAR_DAY_MINUTE_FORMAT)
-                          : "",
-                        interpolation: {
-                          escapeValue: false,
-                        },
-                      })
-                    : t("labelStopLimitWaitingTrigger")
-                  ).toString()}
+                  title={
+                    <Typography
+                      color={"inherit"}
+                      whiteSpace={"pre-line"}
+                      variant={"inherit"}
+                    >
+                      {row?.extraOrderInfo?.isTriggered
+                        ? t("labelStopLimitTriggered", {
+                            time: row.extraOrderInfo?.triggeredTime
+                              ? moment(
+                                  new Date(row.extraOrderInfo?.triggeredTime)
+                                ).format(YEAR_DAY_MINUTE_FORMAT)
+                              : "",
+                            interpolation: {
+                              escapeValue: false,
+                            },
+                          })
+                        : t("labelStopLimitWaitingTrigger")}
+                    </Typography>
+                  }
                 >
                   <Box
                     style={{ cursor: "pointer" }}
