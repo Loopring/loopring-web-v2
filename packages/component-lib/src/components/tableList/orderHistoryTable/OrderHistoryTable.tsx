@@ -1168,8 +1168,8 @@ export const OrderHistoryTable = withTranslation("tables")(
           const handleClose = () => {
             popState.setOpen(false);
           };
+          // @ts-ignore
           const handleRequestCancel = async (e: MouseEvent<any>) => {
-            // @ts-ignore
             e.preventDefault();
             await cancelOrder({ orderHash, clientOrderId });
             handleClose();
