@@ -258,11 +258,6 @@ export const OrderHistoryTable = withTranslation("tables")(
       isStopLimit,
     } = props;
     const { isMobile } = useSettings();
-    // const [tableHeight] = React.useState(() => {
-    //   if (isOpenOrder) {
-    //     return ;
-    //   }
-    // });
 
     const actionColumns = ["status"];
     const [filterType, setFilterType] = React.useState(
@@ -408,21 +403,28 @@ export const OrderHistoryTable = withTranslation("tables")(
             formatter: ({ row }: any) => {
               return (
                 <Tooltip
-                  style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
+                  style={{ cursor: "pointer", whiteSpace: "pre-line" }}
                   className="rdg-cell-value textAlignRight"
-                  title={(row?.extraOrderInfo?.isTriggered
-                    ? t("labelStopLimitTriggered", {
-                        time: row.extraOrderInfo?.triggeredTime
-                          ? moment(
-                              new Date(row.extraOrderInfo?.triggeredTime)
-                            ).format(YEAR_DAY_MINUTE_FORMAT)
-                          : "",
-                        interpolation: {
-                          escapeValue: false,
-                        },
-                      })
-                    : t("labelStopLimitWaitingTrigger")
-                  ).toString()}
+                  title={
+                    <Typography
+                      color={"inherit"}
+                      whiteSpace={"pre-line"}
+                      variant={"inherit"}
+                    >
+                      {row?.extraOrderInfo?.isTriggered
+                        ? t("labelStopLimitTriggered", {
+                            time: row.extraOrderInfo?.triggeredTime
+                              ? moment(
+                                  new Date(row.extraOrderInfo?.triggeredTime)
+                                ).format(YEAR_DAY_MINUTE_FORMAT)
+                              : "",
+                            interpolation: {
+                              escapeValue: false,
+                            },
+                          })
+                        : t("labelStopLimitWaitingTrigger")}
+                    </Typography>
+                  }
                 >
                   <Box
                     style={{ cursor: "pointer" }}
@@ -1158,15 +1160,17 @@ export const OrderHistoryTable = withTranslation("tables")(
         headerCellClass: "textAlignRight",
         formatter: ({ row, rowIdx }) => {
           const time = Number.isFinite(row.time)
-            ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
+            ? moment(new Date(row.time), "YYYYMMDDHHMM").fromNow()
             : EmptyValueTag;
-          const orderHash = row["hash"];
+          const orderHash = row.hash;
           const clientOrderId = row["orderId"];
           const popState = getPopoverState(rowIdx);
           const handleClose = () => {
             popState.setOpen(false);
           };
-          const handleRequestCancel = async () => {
+          // @ts-ignore
+          const handleRequestCancel = async (e: MouseEvent<any>) => {
+            e.preventDefault();
             await cancelOrder({ orderHash, clientOrderId });
             handleClose();
           };
@@ -1331,7 +1335,7 @@ export const OrderHistoryTable = withTranslation("tables")(
           handleClose={() =>
             setShowCancelOndAlert({ open: false, row: undefined })
           }
-        ></CancelOneOrdersAlert>
+        />
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <OrderDetailPanel
             rawData={userOrderDetailList || []}
