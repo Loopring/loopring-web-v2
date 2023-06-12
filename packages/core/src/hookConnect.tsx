@@ -271,18 +271,14 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const handleError = React.useCallback(
     (props: { type: keyof typeof ErrorType; opts?: any }) => {
-      const chainId =
-        account._chainId === sdk.ChainId.MAINNET ||
-        account._chainId === sdk.ChainId.GOERLI
-          ? account._chainId
-          : sdk.ChainId.MAINNET;
-
-      myLog("---> shouldShow:", shouldShow);
-
-      if (store.getState().system.chainId !== chainId) {
-        myLog("try to updateSystem...");
-        updateSystem({ chainId });
-      }
+      // if (
+      //   account._chainId &&
+      //   store.getState().system.chainId !== account._chainId
+      // ) {
+      //   myLog("---> shouldShow:", shouldShow);
+      //   myLog("try to updateSystem...");
+      //   updateSystem({ chainId: account._chainId });
+      // }
 
       if (!!account.accAddress) {
         myLog("try to resetAccount...");
