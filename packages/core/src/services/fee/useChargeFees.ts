@@ -28,7 +28,7 @@ export function useChargeFees({
   requestType: _requestType,
   amount,
   extraType,
-  isNFT,
+  isNFT = false,
   tokenAddress,
   updateData,
   needAmountRefresh,
@@ -230,10 +230,10 @@ export function useChargeFees({
               sdk.OffchainNFTFeeReqType.NFT_MINT,
               sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
               sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
-              sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+              sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
               sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
             ].includes(requestType as any) ||
-              (sdk.OffchainNFTFeeReqType.NFT_TRANSFER == requestType &&
+              (sdk.OffchainNFTFeeReqType.EXTRA_TYPES == requestType &&
                 isNFT)) &&
             account.accountId &&
             account.accountId !== -1 &&
