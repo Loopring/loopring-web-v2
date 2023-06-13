@@ -117,7 +117,7 @@ export const useCreateRedPacket = <
         (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) ||
         (redPacketOrder.tradeType === TRADE_TYPE.NFT && feeProps.isNFT)
       ) {
-        updateRedPacketOrder({ ...redPacketOrder, fee: fee });
+        updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee });
       }
     },
   });
