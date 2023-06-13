@@ -20,10 +20,10 @@ export const networkUpdate = (): boolean => {
       store.dispatch(updateAccountStatus({ wrongChain: false }));
       store.dispatch(setDefaultNetwork(accountChainId));
       console.log("connected: networkUpdate updateSetting", accountChainId);
-      cleanLayer2();
       if (statusChainId !== accountChainId) {
         console.log("connected: networkUpdate updateSystem", accountChainId);
         store.dispatch(updateSystem({ chainId: accountChainId }));
+        cleanLayer2();
       }
       console.log("connected: networkUpdate");
       return true;
