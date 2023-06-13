@@ -56,6 +56,7 @@ export interface ModalState {
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;
   isShowLayerSwapNotice: ModalStatePlayLoad;
+  isShowAnotherNetwork: ModalStatePlayLoad;
   isShowSwap: ModalStatePlayLoad;
   isShowAmm: ModalStatePlayLoad & Transaction & { type?: AmmPanelType };
   isShowTradeIsFrozen: ModalStatePlayLoad & {
