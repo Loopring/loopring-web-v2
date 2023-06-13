@@ -45,9 +45,9 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     height: var(--input-height-large);
   }
 
-  .MuiSelect-select {
-    padding-left: ${({ theme }) => theme.unit * 3}px;
-  }
+  // .MuiSelect-select {
+  //   padding-left: ${({ theme }) => theme.unit * 3}px;
+  // }
 
   &.test .MuiSelect-outlined span {
     background: var(--network-bg);
@@ -65,8 +65,27 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     }
   }
 
-  .MuiSelect-outlined {
-    padding-right: 24px;
+  .MuiSelect-outlined.MuiSelect-outlined {
+    padding-right: ${({ theme }) => theme.unit * 3}px;
+    padding-left: ${({ theme }) => theme.unit * 3}px;
+  }
+
+  &.mobile .MuiSelect-outlined.MuiSelect-outlined {
+    padding-left: 0px;
+    padding-right: ${({ theme }) => theme.unit * 2}px;
+  }
+
+  &.header.mobile {
+    padding-left: 0;
+    padding-right: 0;
+    position: relative;
+
+    .MuiSelect-icon {
+      position: absolute;
+      top: 85%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 ` as typeof OutlineSelect;
 export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
@@ -83,9 +102,8 @@ export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
 
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
-
-  // const { gatewayList } = useGatewayList({});
-  const { defaultNetwork, setDefaultNetwork, themeMode } = useSettings();
+  const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } =
+    useSettings();
   const { setShowConnect } = useOpenModals();
   // const { account } = useAccount();
   React.useEffect(() => {
@@ -127,7 +145,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
           id="network-selected"
           className={`${className} ${
             NetworkMap[defaultNetwork]?.isTest ? "test " : ""
-          }`}
+          } ${isMobile ? "mobile" : ""}`}
           value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
           autoWidth
           onChange={(event: SelectChangeEvent<any>) =>
@@ -271,15 +289,6 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const handleError = React.useCallback(
     (props: { type: keyof typeof ErrorType; opts?: any }) => {
-      // if (
-      //   account._chainId &&
-      //   store.getState().system.chainId !== account._chainId
-      // ) {
-      //   myLog("---> shouldShow:", shouldShow);
-      //   myLog("try to updateSystem...");
-      //   updateSystem({ chainId: account._chainId });
-      // }
-
       if (!!account.accAddress) {
         myLog("try to resetAccount...");
         resetAccount();

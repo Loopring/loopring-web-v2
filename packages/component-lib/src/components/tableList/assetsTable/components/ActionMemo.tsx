@@ -12,7 +12,6 @@ import {
   getValuePrecisionThousand,
   HiddenTag,
   MoreIcon,
-  myLog,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
@@ -304,7 +303,7 @@ export const LockedMemo = React.memo(
     const { onTokenLockHold, tokenLockDetail, ...row } = props;
     const value = row["locked"];
     const precision = row["precision"];
-    myLog(tokenLockDetail);
+    // myLog(tokenLockDetail);
     if (!Number(value)) {
       return <Box className={"textAlignRight"}>{EmptyValueTag}</Box>;
     } else {
