@@ -1491,11 +1491,11 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelRedPacketTabReceived: "Received",
   labelRedPacketTabSent: "Sent",
   labelRedPacketTabNFTs: "NFTs",
   labelRedPacketTabBlindBox: "Blind Box",
-  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1722,7 +1722,7 @@ export default {
   labelStopLimitNotSupport:
     "Sorry, there is currently insufficient liquidity in this token pair to execute Stop-Limit orders. Please try again later or consider using a market / limit order instead.",
   labelStopLimitTriggered:
-    "Triggered: The limit order has been submitted to the order book.\n Time:{time}}",
+    "Triggered: The limit order has been submitted to the order book.\n Time: {{time}}",
   labelStopLimitWaitingTrigger:
     "The limit order is not placed until the stop price has been triggered.",
   labelStopLimitCurrentlyInsufficient: "Currently insufficient",
@@ -1758,4 +1758,13 @@ export default {
   labelBtradeSettled: "Settled",
   labelOrderCancelConfirm: "Confirm to cancel this order?",
   labelOrderCancelOrder: "Cancel",
+  labelLocketInfo: "{{symbol}} Locked Detail",
+  labelSendAssetToAnotherNet: "To another network",
+  labelFromAnotherNet: "From another network",
+  labelAddAssetTitleAnotherNetDes:
+    "If you have transferred tokens from another network, please wait. ",
+  labelAddAssetTitleAnotherNetDesActive:
+    "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelAnotherNetworkDes: "XXXXXXXXXXXXX <1>TOS</1>.",
+  labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
 };

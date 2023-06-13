@@ -239,6 +239,11 @@ export const AddAssetList = {
     svgIcon: "ExchangeAIcon",
     enableKey: null,
   },
+  FromAnotherNet: {
+    key: "FromAnotherNet",
+    svgIcon: "ExchangeAIcon",
+    enableKey: null,
+  },
 };
 
 export const SendAssetList = {
@@ -254,6 +259,11 @@ export const SendAssetList = {
   },
   SendAssetToOtherL1: {
     key: "SendToOtherL1",
+    svgIcon: "L1l2Icon",
+    enableKey: "withdraw",
+  },
+  SendAssetToAnotherNet: {
+    key: "SendAssetToAnotherNet",
     svgIcon: "L1l2Icon",
     enableKey: "withdraw",
   },

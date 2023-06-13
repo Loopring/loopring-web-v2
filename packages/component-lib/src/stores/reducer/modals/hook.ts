@@ -10,6 +10,7 @@ import {
   setShowAccount,
   setShowActiveAccount,
   setShowAmm,
+  setShowAnotherNetworkNotice,
   setShowClaimWithdraw,
   setShowCollectionAdvance,
   setShowConnect,
@@ -269,6 +270,11 @@ export const useOpenModals = () => {
     ),
     setShowLayerSwapNotice: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowLayerSwapNotice(state)),
+      [dispatch]
+    ),
+    setShowAnotherNetworkNotice: React.useCallback(
+      (state: ModalStatePlayLoad) =>
+        dispatch(setShowAnotherNetworkNotice(state)),
       [dispatch]
     ),
     setShowTradeIsFrozen: React.useCallback(

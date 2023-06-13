@@ -2,6 +2,8 @@ import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
   AccountStep,
   ActiveAccountPanel,
+  AnoterNetworkNotice,
+  AnotherNetworkNotice,
   ClaimProps,
   CollectionAdvanceProps,
   DeFiStackRedeemWrap,
@@ -206,6 +208,7 @@ export const ModalPanel = <
     isShowActiveAccount,
     isShowCollectionAdvance,
     isShowLayerSwapNotice,
+    isShowAnotherNetwork,
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
     // isShowDual,
@@ -462,6 +465,10 @@ export const ModalPanel = <
         }
       />
       <LayerswapNotice open={isShowLayerSwapNotice.isShow} account={account} />
+      <AnotherNetworkNotice
+        open={isShowAnotherNetwork.isShow}
+        account={account}
+      />
       <Modal
         open={isShowCollectionAdvance?.isShow}
         onClose={() => setShowCollectionAdvance({ isShow: false })}

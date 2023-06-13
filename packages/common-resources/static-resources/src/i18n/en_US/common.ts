@@ -1504,11 +1504,11 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelRedPacketTabReceived: "Received",
   labelRedPacketTabSent: "Sent",
   labelRedPacketTabNFTs: "NFTs",
   labelRedPacketTabBlindBox: "Blind Box",
-  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1772,4 +1772,12 @@ export default {
   labelOrderCancelConfirm: "Confirm to cancel this order?",
   labelOrderCancelOrder: "Cancel",
   labelLocketInfo: "{{symbol}} Locked Detail",
+  labelSendAssetToAnotherNet: "To another network",
+  labelFromAnotherNet: "From another network",
+  labelAddAssetTitleAnotherNetDes:
+    "If you have transferred tokens from another network, please wait. ",
+  labelAddAssetTitleAnotherNetDesActive:
+    "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelAnotherNetworkDes: "XXXXXXXXXXXXX <1>TOS</1>.",
+  labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
 };
