@@ -113,14 +113,14 @@ export const useCreateRedPacket = <
     intervalTime: undefined,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN) {
+      if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) {
         updateRedPacketOrder({
           ...(redPacketOrder as any),
           fee: fee,
         });
       } else if (
         redPacketOrder.tradeType === TRADE_TYPE.NFT &&
-        redPacketOrder.tokenAddress
+        feeProps.isNFT
       ) {
         updateRedPacketOrder({ ...redPacketOrder, fee: fee });
       }
@@ -167,7 +167,6 @@ export const useCreateRedPacket = <
         checkFeeIsEnough();
         return;
       }
-      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
       const walletMap = makeWalletLayer2(true).walletMap ?? {};
       if (TRADE_TYPE.TOKEN === value && !redPacketOrder.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap);
@@ -631,13 +630,18 @@ export const useCreateRedPacket = <
     if (isShow) {
       resetDefault(TRADE_TYPE.TOKEN);
       walletLayer2Service.sendUserUpdate();
+    }
+  }, [isShow]);
+  React.useEffect(() => {
+    if (isShow) {
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     } else {
       resetIntervalTime();
     }
     return () => {
       resetIntervalTime();
     };
-  }, [isShow]);
+  }, [isShow, redPacketOrder.tradeType]);
 
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isHardwareRetry: boolean = false) => {
