@@ -36,6 +36,7 @@ import {
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import * as _ from "lodash";
+import BigNumber from "bignumber.js";
 
 export const useLimit = <C extends { [key: string]: any }>({
   market,
@@ -419,6 +420,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           formType === TradeBaseType.quote
             ? tradeData.quote.tradeValue
             : undefined;
+        let dustCalcTradeParams: any;
 
         if (
           formType === TradeBaseType.price ||
@@ -459,32 +461,71 @@ export const useLimit = <C extends { [key: string]: any }>({
           tokenPrices &&
           tradeData?.price?.tradeValue &&
           // @ts-ignore
-          tradeData.price.tradeValue !== "0"
+          sdk.toBig(tradeData.price.tradeValue).gt(0)
         ) {
           marketPrice = sdk
             .toBig(tokenPrices[tradeData.base.belong])
             .div(tokenPrices[tradeData.quote.belong]);
-          marketRatePrice = marketPrice.div(tradeData.price.tradeValue);
-          isNotMatchMarketPrice =
+          marketRatePrice =
             tradeData.type === "sell"
-              ? marketRatePrice.gt(1.05)
-              : marketRatePrice.lt(0.95);
+              ? marketPrice.div(tradeData?.price?.tradeValue)
+              : sdk
+                  .toBig(1)
+                  .div(marketPrice)
+                  .div(1 / tradeData?.price?.tradeValue);
+
+          isNotMatchMarketPrice = marketRatePrice.gt(1.05);
           marketPrice = getValuePrecisionThousand(
             marketPrice.toString(),
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision,
             tokenMap[tradeData.quote.belong].precision
           );
-          marketRatePrice =
-            tradeData.type === "sell"
-              ? marketRatePrice.minus(1).times(100).toFixed(2)
-              : sdk.toBig(1).minus(marketRatePrice).times(100).toFixed(2);
+          marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
+          dustCalcTradeParams = makeLimitReqInHook({
+            isBuy: tradeData.type === "buy",
+            base: tradeData.base.belong,
+            quote: tradeData.quote.belong,
+            price: tradeData.price.tradeValue as number,
+            depth: pageTradePro.depthForCalc,
+            // @ts-ignore
+            amountBase:
+              tradeData.type === "buy"
+                ? undefined
+                : sdk
+                    .toBig(tokenMap[baseSymbol]?.orderAmounts.dust)
+                    .div(tokenPrices[tradeData.base.belong])
+                    .toString(),
+            // @ts-ignore
+            amountQuote:
+              tradeData.type === "buy"
+                ? sdk
+                    .toBig(tokenMap[quoteSymbol]?.orderAmounts.dust)
+                    .div(tokenPrices[tradeData.quote.belong])
+                    .toString()
+                : undefined,
+          }).calcTradeParams;
         }
+        const minAmount = BigNumber.max(
+          minOrderInfo?.minAmount ?? 0,
+          dustCalcTradeParams?.baseVol ?? 0
+        ).toString();
+        const minAmtShow = sdk
+          .toBig(minAmount)
+          .div("1e" + tokenMap[minOrderInfo?.symbol ?? baseSymbol].decimals)
+          .toNumber();
         updatePageTradePro({
           market,
           sellUserOrderInfo,
           buyUserOrderInfo,
-          minOrderInfo,
+          minOrderInfo: {
+            ...minOrderInfo,
+            minAmount,
+            minAmtShow,
+            minAmtCheck: sdk
+              .toBig(calcTradeParams?.baseVol ?? 0)
+              .gte(minAmount),
+          },
           request: limitRequest as sdk.SubmitOrderRequestV3,
           limitCalcTradeParams: calcTradeParams,
           tradeCalcProData: {

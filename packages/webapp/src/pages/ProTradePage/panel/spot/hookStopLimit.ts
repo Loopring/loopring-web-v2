@@ -36,6 +36,7 @@ import {
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import * as _ from "lodash";
+import BigNumber from "bignumber.js";
 
 export const useStopLimit = <
   C extends { [key: string]: any },
@@ -351,7 +352,7 @@ export const useStopLimit = <
   const onChangeLimitEvent = React.useCallback(
     (tradeData: T, formType: TradeBaseType) => {
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-
+      let dustCalcTradeParams: any;
       if (formType === TradeBaseType.tab) {
         resetTradeData(tradeData.type);
       } else {
@@ -379,6 +380,31 @@ export const useStopLimit = <
               ? tradeData.quote.tradeValue
               : undefined;
         }
+        if (tradeData.price?.tradeValue) {
+          dustCalcTradeParams = makeStopLimitReqInHook({
+            isBuy: tradeData.type === "buy",
+            base: tradeData.base.belong,
+            quote: tradeData.quote.belong,
+            price: tradeData.price.tradeValue as number,
+            depth: pageTradePro.depthForCalc,
+            // @ts-ignore
+            amountBase:
+              tradeData.type === "buy"
+                ? undefined
+                : sdk
+                    .toBig(tokenMap[baseSymbol]?.orderAmounts.dust)
+                    .div(tokenPrices[tradeData.base.belong])
+                    .toString(),
+            // @ts-ignore
+            amountQuote:
+              tradeData.type === "buy"
+                ? sdk
+                    .toBig(tokenMap[quoteSymbol]?.orderAmounts.dust)
+                    .div(tokenPrices[tradeData.quote.belong])
+                    .toString()
+                : undefined,
+          }).calcTradeParams;
+        }
 
         const {
           stopLimitRequest,
@@ -397,11 +423,26 @@ export const useStopLimit = <
           amountQuote,
         });
 
+        const minAmount = BigNumber.max(
+          minOrderInfo?.minAmount ?? 0,
+          dustCalcTradeParams?.baseVol ?? 0
+        ).toString();
+        const minAmtShow = sdk
+          .toBig(minAmount)
+          .div("1e" + tokenMap[minOrderInfo?.symbol ?? baseSymbol].decimals)
+          .toNumber();
         updatePageTradePro({
           market,
           sellUserOrderInfo,
           buyUserOrderInfo,
-          minOrderInfo,
+          minOrderInfo: {
+            ...minOrderInfo,
+            minAmount,
+            minAmtShow,
+            minAmtCheck: sdk
+              .toBig(calcTradeParams?.baseVol ?? 0)
+              .gte(minAmount),
+          },
           request: stopLimitRequest as sdk.SubmitOrderRequestV3,
           stopLimitCalcTradeParams: {
             ...calcTradeParams,

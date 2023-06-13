@@ -421,7 +421,7 @@ export function useChargeFees({
           if ((reason as sdk.RESULT_INFO).code) {
           }
         }
-        if (isSame) {
+        if (isSame && !Number.isFinite(_intervalTime)) {
           nodeTimer.current = setTimeout(() => {
             getFeeList();
           }, _intervalTime);
@@ -580,7 +580,7 @@ export function useChargeFees({
     chargeFeeTokenList,
     isFeeNotEnough,
     resetIntervalTime: () => {
-      setIntervalTime(INTERVAL_TIME);
+      setIntervalTime(intervalTime);
     },
     checkFeeIsEnough,
     handleFeeChange,

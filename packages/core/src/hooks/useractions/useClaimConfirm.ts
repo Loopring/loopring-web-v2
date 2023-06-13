@@ -90,11 +90,13 @@ export const useClaimConfirm = <
     resetIntervalTime,
   } = useChargeFees({
     ...feeProps,
+    intervalTime: Infinity,
     updateData: ({ fee }) => {
       const claimValue = store.getState()._router_modalData.claimValue;
       if (claimValue.tradeType === TRADE_TYPE.TOKEN) {
         updateClaimData({
           ...(claimValue as any),
+          tokenAddress: undefined,
           fee: fee,
         });
       } else if (

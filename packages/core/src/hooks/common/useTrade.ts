@@ -797,8 +797,7 @@ export function usePlaceOrder() {
       if (exchangeInfo && params?.depth?.symbol && params.quote && tickerMap) {
         const ticker = tickerMap[params.depth.symbol];
 
-        // const { close } = tickerMap[params.market];
-        let midStopPrice = ticker?.close; // params.depth.mid_price ?? 0;
+        let midStopPrice = ticker?.close;
         if (params.stopLimitPrice == undefined) {
           params.stopLimitPrice = 0;
         }
