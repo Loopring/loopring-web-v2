@@ -421,7 +421,11 @@ export function useChargeFees({
           if ((reason as sdk.RESULT_INFO).code) {
           }
         }
-        if (isSame && !Number.isFinite(_intervalTime)) {
+        if (
+          isSame &&
+          !Number.isFinite(_intervalTime) &&
+          !Number.isNaN(_intervalTime)
+        ) {
           nodeTimer.current = setTimeout(() => {
             getFeeList();
           }, _intervalTime);

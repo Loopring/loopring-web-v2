@@ -110,7 +110,7 @@ export const useCreateRedPacket = <
     // setIsFeeNotEnough,
   } = useChargeFees({
     ...feeProps,
-    intervalTime: Infinity,
+    intervalTime: undefined,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
       if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN) {
