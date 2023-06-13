@@ -113,14 +113,9 @@ export const useCreateRedPacket = <
     intervalTime: undefined,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) {
-        updateRedPacketOrder({
-          ...(redPacketOrder as any),
-          fee: fee,
-        });
-      } else if (
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
-        feeProps.isNFT
+      if (
+        (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) ||
+        (redPacketOrder.tradeType === TRADE_TYPE.NFT && feeProps.isNFT)
       ) {
         updateRedPacketOrder({ ...redPacketOrder, fee: fee });
       }
