@@ -93,15 +93,18 @@ export const useClaimConfirm = <
     intervalTime: undefined,
     updateData: ({ fee }) => {
       const claimValue = store.getState()._router_modalData.claimValue;
-      if (claimValue.tradeType === TRADE_TYPE.TOKEN) {
-        updateClaimData({
-          ...(claimValue as any),
-          tokenAddress: undefined,
-          fee: fee,
-        });
-      } else if (
-        claimValue.tradeType === TRADE_TYPE.NFT &&
-        claimValue.tokenAddress
+      if (
+        (claimValue.tradeType === TRADE_TYPE.TOKEN &&
+          claimValue.claimType === CLAIM_TYPE.lrcStaking &&
+          feeProps.extraType === 3) ||
+        (claimValue.tradeType === TRADE_TYPE.TOKEN &&
+          claimType === CLAIM_TYPE.redPacket &&
+          feeProps.extraType === 2 &&
+          !feeProps.isNFT) ||
+        (claimValue.tradeType === TRADE_TYPE.NFT &&
+          claimType === CLAIM_TYPE.redPacket &&
+          feeProps.extraType === 2 &&
+          feeProps.isNFT)
       ) {
         updateClaimData({ ...claimValue, fee: fee });
       }
