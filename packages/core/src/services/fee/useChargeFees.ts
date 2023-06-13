@@ -423,7 +423,7 @@ export function useChargeFees({
         }
         if (
           isSame &&
-          !Number.isFinite(_intervalTime) &&
+          Number.isFinite(_intervalTime) &&
           !Number.isNaN(_intervalTime)
         ) {
           nodeTimer.current = setTimeout(() => {
