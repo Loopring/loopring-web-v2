@@ -118,7 +118,6 @@ export const useClaimConfirm = <
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     // claimToken
     if (claimToken) {
       if (claimToken?.isNft) {
@@ -156,13 +155,18 @@ export const useClaimConfirm = <
     if (isShow) {
       resetDefault();
       walletLayer2Service.sendUserUpdate();
+    }
+  }, [isShow]);
+  React.useEffect(() => {
+    if (isShow) {
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     } else {
       resetIntervalTime();
     }
     return () => {
       resetIntervalTime();
     };
-  }, [isShow]);
+  }, [isShow, claimValue.claimType, claimValue.tradeType]);
   const processRequest = React.useCallback(
     async (
       request:
