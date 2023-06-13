@@ -4,7 +4,7 @@ import {
   ConnectProviders,
   connectProvides,
 } from "@loopring-web/web3-provider";
-import { ThemeType } from "@loopring-web/common-resources";
+import { myLog, ThemeType } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { updateSystem } from "../../stores/system/reducer";
 import { setDefaultNetwork } from "@loopring-web/component-lib";
@@ -27,16 +27,29 @@ const providerCallback = async () => {
   }
 };
 export const metaMaskCallback = async () => {
-  const { defaultNetwork, themeMode } = store.getState().settings;
-  store.dispatch(
-    accountReducer.updateAccountStatus({
-      connectName: ConnectProviders.MetaMask,
-    })
-  );
+  const { defaultNetwork, themeMode, isMobile } = store.getState().settings;
+
+  if (!isMobile) {
+    store.dispatch(
+      accountReducer.updateAccountStatus({
+        connectName: ConnectProviders.MetaMask,
+      })
+    );
+  }
+
   await connectProvides.MetaMask({
     darkMode: themeMode === ThemeType.dark,
     chainId: defaultNetwork.toString(),
   });
+  if (isMobile) {
+    myLog("connectProvides", connectProvides);
+    store.dispatch(
+      accountReducer.updateAccountStatus({
+        connectName: connectProvides.provideName,
+      })
+    );
+  }
+
   providerCallback();
 };
 export const CoinbaseCallback = async () => {
