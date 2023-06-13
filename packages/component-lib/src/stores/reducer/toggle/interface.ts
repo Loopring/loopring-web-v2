@@ -21,4 +21,11 @@ export type ToggleState = {
   LRCStackInvest: { enable: boolean; reason?: string };
   BTradeInvest: { enable: boolean; reason?: string };
   StopLimit: { enable: boolean; reason?: string };
+  send: {
+    orbiter: string[];
+  };
+  receive: {
+    layerSwap: string[];
+    orbiter: string[];
+  };
 };

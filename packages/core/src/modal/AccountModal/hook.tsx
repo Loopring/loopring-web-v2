@@ -450,7 +450,8 @@ export function useAccountModalForUI({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
-  const { setShowLayerSwapNotice } = useOpenModals();
+  const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } =
+    useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
     () => [
@@ -536,6 +537,34 @@ export function useAccountModalForUI({
           setShowLayerSwapNotice({ isShow: true });
         },
       },
+      {
+        ...AddAssetList.FromAnotherNet,
+        handleSelect: () => {
+          let dex = "labelAddAssetTitleAnotherNetDes";
+          if (
+            account.readyState &&
+            [
+              AccountStatus.DEPOSITING,
+              AccountStatus.NOT_ACTIVE,
+              AccountStatus.NO_ACCOUNT,
+            ].includes(
+              // @ts-ignore
+              account?.readyState
+            )
+          ) {
+            dex = "labelAddAssetTitleAnotherNetDesActive";
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ThirdPanelReturn,
+            info: {
+              title: t("labelFromAnotherNet"),
+              description: t(dex),
+            },
+          });
+          setShowAnotherNetworkNotice({ isShow: true });
+        },
+      },
     ],
     [
       account.accAddress,
@@ -577,6 +606,18 @@ export function useAccountModalForUI({
             info: { isToMyself: false },
             symbol: isShowAccount?.info?.symbol,
           });
+        },
+      },
+      {
+        ...SendAssetList.SendAssetToAnotherNet,
+        handleSelect: () => {
+          setShowAccount({
+            isShow: false,
+          });
+          window.open(
+            "https://www.orbiter.finance/?source=Loopring&dest=Ethereum"
+          );
+          window.opener = null;
         },
       },
     ],
@@ -706,6 +747,7 @@ export function useAccountModalForUI({
         ),
         height: "auto",
       },
+
       [AccountStep.CheckingActive]: {
         view: (
           <CheckActiveStatus
@@ -722,6 +764,7 @@ export function useAccountModalForUI({
         height: "auto",
       },
       [AccountStep.AddAssetGateway]: {
+        height: "auto",
         view: (
           <AddAsset
             symbol={isShowAccount?.info?.symbol}

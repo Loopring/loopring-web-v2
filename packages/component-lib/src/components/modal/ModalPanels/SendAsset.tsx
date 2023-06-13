@@ -11,7 +11,7 @@ import {
   L2l2Icon,
   OutputIcon,
 } from "@loopring-web/common-resources";
-import { useSettings } from "../../../stores";
+import { useSettings, useToggle } from "../../../stores";
 
 const BoxStyled = styled(Box)`` as typeof Box;
 
@@ -37,6 +37,9 @@ export const SendAsset = ({
 }: SendAssetProps) => {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
+  const {
+    toggle: { send },
+  } = useToggle();
 
   return (
     <BoxStyled
@@ -74,45 +77,53 @@ export const SendAsset = ({
         >
           {t("labelSendAssetHowto")}
         </Typography>
-        {sendAssetList.map((item) => {
-          return (
-            <Box key={item.key} marginTop={1.5}>
-              <MenuBtnStyled
-                variant={"outlined"}
-                size={"large"}
-                className={`sendAsset  ${isMobile ? "isMobile" : ""}`}
-                fullWidth
-                disabled={
-                  !!(
-                    item.enableKey &&
-                    allowTrade[item.enableKey]?.enable === false
-                  ) ||
-                  (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
-                }
-                endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
-                onClick={(e) => {
-                  item.handleSelect(e);
-                }}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"inherit"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  lineHeight={"1.2em"}
-                  sx={{
-                    textIndent: 0,
-                    textAlign: "left",
+        {sendAssetList.reduce((prev, item) => {
+          if (
+            !symbol ||
+            (item.key == "SendAssetToAnotherNet" &&
+              send["orbiter"]?.includes(symbol)) ||
+            !["SendAssetToAnotherNet"].includes(item.key)
+          ) {
+            prev.push(
+              <Box key={item.key} marginTop={1.5}>
+                <MenuBtnStyled
+                  variant={"outlined"}
+                  size={"large"}
+                  className={`sendAsset  ${isMobile ? "isMobile" : ""}`}
+                  fullWidth
+                  disabled={
+                    !!(
+                      item.enableKey &&
+                      allowTrade[item.enableKey]?.enable === false
+                    ) ||
+                    (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
+                  }
+                  endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
+                  onClick={(e) => {
+                    item.handleSelect(e);
                   }}
                 >
-                  <>{IconItem({ svgIcon: item.svgIcon })}</>
-                  {t("label" + item.key)}
-                </Typography>
-              </MenuBtnStyled>
-            </Box>
-          );
-        })}
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"inherit"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                    lineHeight={"1.2em"}
+                    sx={{
+                      textIndent: 0,
+                      textAlign: "left",
+                    }}
+                  >
+                    <>{IconItem({ svgIcon: item.svgIcon })}</>
+                    {t("label" + item.key)}
+                  </Typography>
+                </MenuBtnStyled>
+              </Box>
+            );
+          }
+          return prev;
+        }, [] as JSX.Element[])}
       </Box>
     </BoxStyled>
   );
