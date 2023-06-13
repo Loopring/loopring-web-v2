@@ -337,7 +337,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       };
     },
     setShowLayerSwapNotice(state, action: PayloadAction<{ isShow: boolean }>) {
-      const {isShow} = action.payload;
+      const { isShow } = action.payload;
       state.isShowLayerSwapNotice = {
         isShow,
       };
@@ -346,7 +346,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<{ isShow: boolean }>
     ) {
-      const {isShow} = action.payload;
+      const { isShow } = action.payload;
       state.isShowAnotherNetwork = {
         isShow,
       };
@@ -359,7 +359,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         messageKey?: string;
       }>
     ) {
-      const {isShow, type, messageKey} = action.payload;
+      const { isShow, type, messageKey } = action.payload;
       state.isShowTradeIsFrozen = {
         isShow,
         type,
