@@ -90,7 +90,7 @@ export const useClaimConfirm = <
     resetIntervalTime,
   } = useChargeFees({
     ...feeProps,
-    intervalTime: Infinity,
+    intervalTime: undefined,
     updateData: ({ fee }) => {
       const claimValue = store.getState()._router_modalData.claimValue;
       if (claimValue.tradeType === TRADE_TYPE.TOKEN) {
