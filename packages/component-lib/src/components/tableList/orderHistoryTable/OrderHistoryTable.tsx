@@ -561,7 +561,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
           let renderValue = "";
-          if (row.extraOrderInfo?.extraOrderType) {
+          if (row.extraOrderInfo?.extraOrderType == "STOP_LIMIT") {
             renderValue = t("labelOrderStopLimitOrder");
           } else {
             switch (row.orderType) {
@@ -716,7 +716,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
           let renderValue = "";
-          if (row.extraOrderInfo?.extraOrderType) {
+          if (row.extraOrderInfo?.extraOrderType == "STOP_LIMIT") {
             renderValue = t("labelOrderStopLimitOrder");
           } else {
             switch (row.orderType) {
