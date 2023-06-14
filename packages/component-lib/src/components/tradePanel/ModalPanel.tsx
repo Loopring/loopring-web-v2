@@ -2,7 +2,6 @@ import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
   AccountStep,
   ActiveAccountPanel,
-  AnoterNetworkNotice,
   AnotherNetworkNotice,
   ClaimProps,
   CollectionAdvanceProps,
