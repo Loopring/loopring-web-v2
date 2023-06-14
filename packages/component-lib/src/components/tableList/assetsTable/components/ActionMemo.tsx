@@ -338,5 +338,5 @@ export const LockedMemo = React.memo(
         </Box>
       );
     }
-  };
+  }
 );
