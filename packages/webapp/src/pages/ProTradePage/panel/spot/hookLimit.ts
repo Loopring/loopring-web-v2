@@ -494,14 +494,14 @@ export const useLimit = <C extends { [key: string]: any }>({
                 ? undefined
                 : sdk
                     .toBig(tokenMap[baseSymbol]?.orderAmounts.dust)
-                    .div(tokenPrices[tradeData.base.belong])
+                    .div("1e" + tokenMap[tradeData.base.belong].decimals)
                     .toString(),
             // @ts-ignore
             amountQuote:
               tradeData.type === "buy"
                 ? sdk
                     .toBig(tokenMap[quoteSymbol]?.orderAmounts.dust)
-                    .div(tokenPrices[tradeData.quote.belong])
+                    .div("1e" + tokenMap[tradeData.quote.belong].decimals)
                     .toString()
                 : undefined,
           }).calcTradeParams;
