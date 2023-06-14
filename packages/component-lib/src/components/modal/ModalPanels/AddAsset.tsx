@@ -4,6 +4,7 @@ import { AddAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import {
   AddAssetList,
+  AnotherIcon,
   BackIcon,
   CardIcon,
   ExchangeAIcon,
