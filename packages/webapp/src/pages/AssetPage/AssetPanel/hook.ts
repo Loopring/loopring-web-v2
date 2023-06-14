@@ -59,7 +59,12 @@ export type AssetPanelProps<R = AssetsRawDataItem> = {
   hideSmallBalances: any;
   assetBtnStatus: TradeBtnStatus;
   onTokenLockHold: (item: R) => void;
-  tokenLockDetail: any[] | undefined;
+  tokenLockDetail:
+    | undefined
+    | {
+        list: any[];
+        row: any;
+      };
 };
 export const useGetAssets = (): AssetPanelProps & {
   assetTitleProps: any;
@@ -372,7 +377,13 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   };
   const [tokenLockDetail, setTokenLockDetail] =
-    React.useState<undefined | any[]>(undefined);
+    React.useState<
+      | undefined
+      | {
+          list: any[];
+          row: any;
+        }
+    >(undefined);
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
@@ -416,19 +427,24 @@ export const useGetAssets = (): AssetPanelProps & {
           (response as sdk.RESULT_INFO).message
         ) {
         } else {
-          setTokenLockDetail(
-            response.lockRecord.map((item) => {
+          setTokenLockDetail({
+            list: response.lockRecord.map((item) => {
+              const amount = sdk
+                .toBig(item.amount)
+                .div("1e" + tokenMap[_item.name].decimals)
+                .toString();
               return {
                 key: `label${item.lockTag}`,
                 value: getValuePrecisionThousand(
-                  item.amount,
+                  amount,
                   tokenMap[_item.name].precision,
                   tokenMap[_item.name].precision,
                   undefined
                 ),
               };
-            })
-          );
+            }),
+            row: _item,
+          });
         }
       }
     },

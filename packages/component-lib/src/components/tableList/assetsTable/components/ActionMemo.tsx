@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 import {
   Button,
   Popover,
-  PopoverPure,
   PopoverType,
   PopoverWrapProps,
 } from "../../../basic-lib";
@@ -19,10 +18,6 @@ import { TFunction } from "i18next";
 import { useOpenModals, useSettings, useToggle } from "../../../../stores";
 import { AmmPanelType } from "../../../tradePanel";
 import { RawDataAssetsItem } from "../AssetsTable";
-import { bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
-import { bindPopover } from "material-ui-popup-state/core";
-import { LoadingBlock } from "../../../block";
-import { useTranslation } from "react-i18next";
 
 const GridStyled = styled(Grid)`
   .MuiGrid-item {
@@ -297,18 +292,18 @@ export const LockedMemo = React.memo(
     props: RawDataAssetsItem & {
       hideAssets?: boolean;
       onTokenLockHold?: (item: any) => void;
-      tokenLockDetail?: any[] | undefined;
+      tokenLockDetail?:
+        | undefined
+        | {
+            list: any[];
+            row: any;
+          };
     }
   ) => {
-    const { t } = useTranslation(["tables", "common"]);
     const { onTokenLockHold, tokenLockDetail, ...row } = props;
-    const popupState = usePopupState({
-      variant: "popover",
-      popupId: "lockedDetail",
-    });
-    const bindAction = bindTrigger(popupState);
     const value = row["locked"];
     const precision = row["precision"];
+    // myLog(tokenLockDetail);
     if (!Number(value)) {
       return <Box className={"textAlignRight"}>{EmptyValueTag}</Box>;
     } else {
@@ -318,12 +313,14 @@ export const LockedMemo = React.memo(
             display={"inline-flex"}
             alignItems={"center"}
             component={"span"}
-            sx={{ textDecoration: onTokenLockHold ? "underline dotted" : "" }}
+            sx={{
+              textDecoration: onTokenLockHold ? "underline dotted" : "",
+              cursor: "pointer",
+            }}
             // @ts-ignore
             onClick={(e) => {
               if (onTokenLockHold) {
                 onTokenLockHold(row);
-                bindAction.onClick(e as any);
               }
             }}
           >
@@ -338,57 +335,8 @@ export const LockedMemo = React.memo(
                   { floor: true }
                 )}
           </Typography>
-          <PopoverPure
-            className={"arrow-right"}
-            {...bindPopover(popupState)}
-            {...{
-              anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "right",
-              },
-              transformOrigin: {
-                vertical: "top",
-                horizontal: "right",
-              },
-            }}
-          >
-            <Box borderRadius={"inherit"} minWidth={110}>
-              {tokenLockDetail ? (
-                tokenLockDetail.map((item) => {
-                  return (
-                    <Box
-                      display={"flex"}
-                      key={item.key}
-                      flexDirection={"row"}
-                      justifyContent={"space-between"}
-                      paddingX={1}
-                    >
-                      <Typography
-                        display={"inline-flex"}
-                        alignItems={"center"}
-                        component={"span"}
-                        color={"textSecondary"}
-                      >
-                        {t(item.key)}
-                      </Typography>
-                      <Typography
-                        display={"inline-flex"}
-                        alignItems={"center"}
-                        component={"span"}
-                        color={"textPrimary"}
-                      >
-                        {item.value}
-                      </Typography>
-                    </Box>
-                  );
-                })
-              ) : (
-                <LoadingBlock />
-              )}
-            </Box>
-          </PopoverPure>
         </Box>
       );
     }
-  }
+  };
 );
