@@ -31,7 +31,6 @@ const Header = withTranslation("common")(
       location,
       isHideOnScroll = false,
       isLandPage = false,
-      isWrap = false,
       ...rest
     }: any & RouteComponentProps) => {
       const {
@@ -52,7 +51,7 @@ const Header = withTranslation("common")(
             <HideOnScroll window={undefined}>
               <HeaderUI
                 account={account}
-                isWrap={isLandPage || isWrap}
+                isWrap={isLandPage}
                 chainId={chainId}
                 {...rest}
                 isLandPage={isLandPage}

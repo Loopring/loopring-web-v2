@@ -16,7 +16,6 @@ import {
   store,
   useAccount,
   useNotify,
-  useSelectNetwork,
   useSystem,
 } from "@loopring-web/core";
 
@@ -32,8 +31,7 @@ export const useHeader = () => {
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { chainId, updateSystem } = useSystem();
-  const { isTaikoTest } = useSettings();
-  const { NetWorkItems } = useSelectNetwork({ className: "header" });
+  const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
 
   const { setShowAccount } = useOpenModals();
   const accountState = React.useMemo(() => {
@@ -133,7 +131,6 @@ export const useHeader = () => {
         headerToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
           ...headerToolBarData[GuardianToolBarComponentsMap.WalletConnect],
           isLayer1Only: true,
-          NetWorkItems,
           accountState,
         };
         return headerToolBarData;

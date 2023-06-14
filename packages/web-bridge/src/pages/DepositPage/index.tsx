@@ -2,33 +2,25 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
-  ButtonComponentsMap,
   Exchange,
   fnType,
-  headerToolBarData,
   LoopringIcon,
-  myLog,
   SagaStatus,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
-  AccountStep,
   boxLiner,
   BtnInfo,
   DepositPanel,
   DepositProps,
-  setShowAccount,
   SwitchPanelStyled,
   useSettings,
-  WalletConnectL1Btn,
 } from "@loopring-web/component-lib";
 import {
-  accountReducer,
   accountStaticCallBack,
   btnClickMap,
-  store,
   useAccount,
-  useSelectNetwork,
+  WalletConnectL1Btn,
 } from "@loopring-web/core";
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
@@ -69,7 +61,6 @@ export const DepositToPage = withTranslation(["common"])(
     const [_depositBtnStatus, setDepositBtnStatus] = React.useState(
       TradeBtnStatus.AVAILABLE
     );
-    const { NetWorkItems } = useSelectNetwork({ className: "deposit" });
     const { account, status: accountStatus } = useAccount();
     const { onDepositClick, btnInfo, depositBtnStatus, ...restProps } =
       depositProps;
@@ -117,75 +108,6 @@ export const DepositToPage = withTranslation(["common"])(
       },
       [onDepositClick]
     );
-
-    const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-      [fnType.UN_CONNECT]: [
-        function () {
-          btnClickMap[fnType.UN_CONNECT][0];
-        },
-      ],
-      [fnType.ERROR_NETWORK]: [
-        function () {
-          myLog("get error network!");
-        },
-      ],
-      [fnType.NO_ACCOUNT]: [
-        function () {
-          store.dispatch(
-            accountReducer.changeShowModel({ _userOnModel: true })
-          );
-          store.dispatch(
-            setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-          );
-        },
-      ],
-      [fnType.DEFAULT]: [
-        function () {
-          store.dispatch(
-            accountReducer.changeShowModel({ _userOnModel: true })
-          );
-          store.dispatch(
-            setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-          );
-        },
-      ],
-      [fnType.NOT_ACTIVE]: [
-        function () {
-          store.dispatch(
-            accountReducer.changeShowModel({ _userOnModel: true })
-          );
-          store.dispatch(
-            setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-          );
-        },
-      ],
-      [fnType.ACTIVATED]: [
-        function () {
-          store.dispatch(
-            accountReducer.changeShowModel({ _userOnModel: true })
-          );
-          store.dispatch(
-            setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-          );
-        },
-      ],
-      [fnType.LOCKED]: [
-        function () {
-          store.dispatch(
-            accountReducer.changeShowModel({ _userOnModel: true })
-          );
-          store.dispatch(
-            setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-          );
-        },
-      ],
-    });
-
-    const onWalletBtnConnect = React.useCallback(async () => {
-      myLog(`onWalletBtnConnect click: ${account.readyState}`);
-      accountStaticCallBack(_btnClickMap, []);
-    }, [account, _btnClickMap]);
-
     return (
       <Box
         flex={1}
@@ -223,15 +145,7 @@ export const DepositToPage = withTranslation(["common"])(
               </Typography>
             )}
             <Box display={"flex"} alignItems={"center"}>
-              <WalletConnectL1Btn
-                {...{
-                  ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-                  handleClick: onWalletBtnConnect,
-                  NetWorkItems,
-                  accountState: { account },
-                }}
-                // isShowOnUnConnect={false}
-              />
+              <WalletConnectL1Btn isShowOnUnConnect={false} />
             </Box>
           </Box>
         </Box>

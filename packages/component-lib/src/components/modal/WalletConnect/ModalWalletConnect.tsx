@@ -4,8 +4,10 @@ import {
   ModalBackButton,
   ModalCloseButton,
   ModalWalletConnectProps,
-  ModelPanelStyle,
+  SwipeableViewsStyled,
+  SwitchPanelStyled,
 } from "../../../index";
+import { useTheme } from "@emotion/react";
 
 export const ModalWalletConnect = withTranslation("common", { withRef: true })(
   ({
@@ -18,6 +20,9 @@ export const ModalWalletConnect = withTranslation("common", { withRef: true })(
     style,
     ...rest
   }: ModalWalletConnectProps & WithTranslation) => {
+    const theme = useTheme();
+    const { w, h } = style ? style : { w: undefined, h: undefined };
+
     return (
       <Modal
         open={open}
@@ -26,25 +31,42 @@ export const ModalWalletConnect = withTranslation("common", { withRef: true })(
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <ModelPanelStyle style={{ boxShadow: "24" }}>
+        <SwitchPanelStyled
+          style={{ boxShadow: "24" }}
+          {...{
+            _height: h ? h : "var(--modal-height)",
+            _width: w ? w : "var(--modal-width)",
+          }}
+        >
           <Box display={"flex"} width={"100%"} flexDirection={"column"}>
             <ModalCloseButton onClose={onClose} {...rest} />
             {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
           </Box>
-          {panelList.map((panel, index) => {
-            return (
-              <Box
-                display={step === index ? "flex" : "none"}
-                alignItems={"stretch"}
-                height={panel.height ? panel.height : "var(--modal-height)"}
-                width={panel.width ? panel.width : "var(--modal-width)"}
-                key={index}
-              >
-                {panel.view}
-              </Box>
-            );
-          })}
-        </ModelPanelStyle>
+          <SwipeableViewsStyled
+            animateTransitions={false}
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={step}
+            {...{
+              _height: h ? h : "var(--modal-height)",
+              _width: w ? w : "var(--modal-width)",
+            }}
+          >
+            {panelList.map((panel, index) => {
+              return (
+                <Box
+                  flexDirection={"column"}
+                  flex={1}
+                  display={"flex"}
+                  key={index}
+                  justifyContent={"center"}
+                  alignItems={"stretch"}
+                >
+                  {panel.view}
+                </Box>
+              );
+            })}
+          </SwipeableViewsStyled>
+        </SwitchPanelStyled>
       </Modal>
     );
   }

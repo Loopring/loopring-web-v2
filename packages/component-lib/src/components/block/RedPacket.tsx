@@ -57,7 +57,9 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
+export const RedPacketBg = styled(Box)<
+  BoxProps & { imageSrc?: string; type: string }
+>`
   display: flex;
   align-items: center;
   position: relative;
@@ -95,7 +97,8 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
       }
 
       .open.openUnready {
-        background: url("${SoursURL}images/redpacketLock.webp") center no-repeat;
+        background: url("${SoursURL}/images/redpacketLock.webp") center
+          no-repeat;
         color: ${({ type }) =>
           RedPacketCssColorConfig[type]?.colorTop}; //#7c3400;
         width: 76px;
@@ -262,17 +265,18 @@ export const RedPacketQRCode = ({
     image: `${SoursURL + "svg/loopring.svg"}`,
     dotsOptions: {
       gradient: {
-        type: 'linear',
+        type: "linear",
         rotation: 45,
-        colorStops: [{
-          offset: 0,
-          color: '#4169FF' // hardcode for export png
-        },
-        {
-          offset: 1,
-          color: '#000'
-        }
-      ]
+        colorStops: [
+          {
+            offset: 0,
+            color: "#4169FF", // hardcode for export png
+          },
+          {
+            offset: 1,
+            color: "#000",
+          },
+        ],
       },
       type: "dots",
     },
@@ -284,11 +288,11 @@ export const RedPacketQRCode = ({
       margin: 4,
     },
     cornersSquareOptions: {
-      type: 'extra-rounded'
+      type: "extra-rounded",
     },
     cornersDotOptions: {
-      type: 'square'
-    }
+      type: "square",
+    },
   });
   const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
 

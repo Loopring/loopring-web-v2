@@ -1,185 +1,30 @@
 import React from "react";
 import {
-  OutlineSelect,
-  OutlineSelectItem,
   setShowAccount,
   useOpenModals,
   useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
-import {
-  AvaiableNetwork,
-  connectProvides,
-  ErrorType,
-  ProcessingType,
-} from "@loopring-web/web3-provider";
+import { ErrorType, ProcessingType } from "@loopring-web/web3-provider";
 import {
   AccountStatus,
-  DropDownIcon,
   myLog,
-  NetworkMap,
   SagaStatus,
   SoursURL,
-  ThemeType,
 } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
+import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
 
 import { accountReducer, useAccount } from "./stores/account";
-import { useModalData, useSystem } from "./stores";
-import {
-  checkAccount,
-  networkUpdate,
-  resetLayer12Data,
-  useConnectHook,
-} from "./services";
+import { useSystem } from "./stores";
+import { networkUpdate } from "./services";
+import { checkAccount } from "./services";
 import { REFRESH_RATE } from "./defs";
+import { resetLayer12Data } from "./services";
 import { store, WalletConnectL2Btn } from "./index";
+import { useModalData } from "./stores";
+import { useConnectHook } from "./services";
 import { useTranslation } from "react-i18next";
-import { Box, SelectChangeEvent, Typography } from "@mui/material";
-import { updateAccountStatus } from "./stores/account/reducer";
-import styled from "@emotion/styled";
-
-export const OutlineSelectStyle = styled(OutlineSelect)`
-  &.walletModal {
-    background: var(--field-opacity);
-    height: var(--input-height-large);
-  }
-
-  // .MuiSelect-select {
-  //   padding-left: ${({ theme }) => theme.unit * 3}px;
-  // }
-
-  &.test .MuiSelect-outlined span {
-    background: var(--network-bg);
-    display: inline-flex;
-    padding: 3px 4px;
-    border-radius: 4px;
-    color: var(--network-text);
-
-    &:after {
-      content: " test";
-      padding-left: 0.5em;
-      display: inline-flex;
-      font-size: var(body2);
-      color: inherit;
-    }
-  }
-
-  .MuiSelect-outlined.MuiSelect-outlined {
-    padding-right: ${({ theme }) => theme.unit * 3}px;
-    padding-left: ${({ theme }) => theme.unit * 3}px;
-  }
-
-  &.mobile .MuiSelect-outlined.MuiSelect-outlined {
-    padding-left: 0px;
-    padding-right: ${({ theme }) => theme.unit * 2}px;
-  }
-
-  &.header.mobile {
-    padding-left: 0;
-    padding-right: 0;
-    position: relative;
-
-    .MuiSelect-icon {
-      position: absolute;
-      top: 85%;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-  }
-` as typeof OutlineSelect;
-export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
-  &.provider-test {
-    &:after {
-      content: " test";
-      padding-left: 0.5em;
-      display: inline-flex;
-      font-size: var(body2);
-      color: var(--network-text);
-    }
-  }
-` as typeof OutlineSelectItem;
-
-export const useSelectNetwork = ({ className }: { className?: string }) => {
-  const { t } = useTranslation();
-  const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } =
-    useSettings();
-  const { setShowConnect } = useOpenModals();
-  // const { account } = useAccount();
-  React.useEffect(() => {
-    const account = store.getState().account;
-    if (account.readyState === AccountStatus.UN_CONNECT) {
-      // const networkFlag =
-      networkUpdate();
-    }
-  }, []);
-
-  const handleOnNetworkSwitch = async (value: sdk.ChainId) => {
-    const account = store.getState().account;
-    if (value !== defaultNetwork) {
-      setDefaultNetwork(value);
-    }
-    if (account.readyState !== AccountStatus.UN_CONNECT) {
-      // await walletServices.sendDisconnect();
-      setShowConnect({
-        isShow: true,
-        step: WalletConnectStep.CommonProcessing,
-      });
-      myLog(connectProvides);
-      await connectProvides.sendChainIdChange(
-        value,
-        themeMode === ThemeType.dark
-      );
-    } else {
-      networkUpdate();
-    }
-  };
-
-  const NetWorkItems = React.useMemo(() => {
-    return (
-      <>
-        <OutlineSelectStyle
-          aria-label={NetworkMap[defaultNetwork]?.label}
-          IconComponent={DropDownIcon}
-          labelId="network-selected"
-          id="network-selected"
-          className={`${className} ${
-            NetworkMap[defaultNetwork]?.isTest ? "test " : ""
-          } ${isMobile ? "mobile" : ""}`}
-          value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
-          autoWidth
-          onChange={(event: SelectChangeEvent<any>) =>
-            handleOnNetworkSwitch(event.target.value)
-          }
-        >
-          {AvaiableNetwork.reduce((prew, id, index) => {
-            if (NetworkMap[id]) {
-              prew.push(
-                <OutlineSelectItemStyle
-                  className={`viewNetwork${id} ${
-                    NetworkMap[id]?.isTest ? "provider-test" : ""
-                  }`}
-                  aria-label={NetworkMap[id].label}
-                  value={id}
-                  key={"viewNetwork" + NetworkMap[id] + index}
-                >
-                  <span>{t(NetworkMap[id].label)}</span>
-                </OutlineSelectItemStyle>
-              );
-            }
-            return prew;
-          }, [] as JSX.Element[])}
-        </OutlineSelectStyle>
-      </>
-    );
-  }, [defaultNetwork, NetworkMap]);
-  React.useEffect(() => {}, []);
-
-  return {
-    NetWorkItems,
-    handleOnNetworkSwitch,
-  };
-};
+import { Box, Typography } from "@mui/material";
 
 export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   const {
@@ -215,12 +60,11 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     }: {
       accounts: string;
       provider: any;
-      chainId: sdk.ChainId | "unknown";
+      chainId: ChainId | "unknown";
     }) => {
       const accAddress = accounts[0];
       myLog("After connect >>,network part start: step1 networkUpdate");
-      store.dispatch(updateAccountStatus({ _chainId: chainId }));
-      const networkFlag = networkUpdate();
+      const networkFlag = networkUpdate({ chainId });
       myLog("After connect >>,network part done: step2 check account");
 
       if (networkFlag) {
@@ -237,7 +81,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         isShow: !!shouldShow ?? false,
         step: WalletConnectStep.SuccessConnect,
       });
-      await sdk.sleep(REFRESH_RATE);
+      await sleep(REFRESH_RATE);
       setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect });
     },
     [
@@ -250,28 +94,23 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     ]
   );
 
-  const handleAccountDisconnect = React.useCallback(
-    async ({ reason, code }: { reason?: string; code?: number }) => {
-      // const {};
+  const handleAccountDisconnect = React.useCallback(async () => {
+    myLog("account:", account);
+    resetAccount({ shouldUpdateProvider: true });
+    setStateAccount(SagaStatus.PENDING);
+    resetLayer12Data();
 
-      myLog("handleAccountDisconnect:", account, reason, code);
-      resetAccount({ shouldUpdateProvider: true });
-      setStateAccount(SagaStatus.PENDING);
-      resetLayer12Data();
-
-      resetWithdrawData();
-      resetTransferData();
-      resetDepositData();
-      // await sleep(REFRESH_RATE)
-    },
-    [
-      account,
-      resetAccount,
-      resetDepositData,
-      resetTransferData,
-      resetWithdrawData,
-    ]
-  );
+    resetWithdrawData();
+    resetTransferData();
+    resetDepositData();
+    // await sleep(REFRESH_RATE)
+  }, [
+    account,
+    resetAccount,
+    resetDepositData,
+    resetTransferData,
+    resetWithdrawData,
+  ]);
 
   const handleProcessing = React.useCallback(
     ({ opts }: { type: ProcessingType; opts: any }) => {
@@ -289,6 +128,19 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const handleError = React.useCallback(
     (props: { type: keyof typeof ErrorType; opts?: any }) => {
+      const chainId =
+        account._chainId === ChainId.MAINNET ||
+        account._chainId === ChainId.GOERLI
+          ? account._chainId
+          : ChainId.MAINNET;
+
+      myLog("---> shouldShow:", shouldShow);
+
+      if (store.getState().system.chainId !== chainId) {
+        myLog("try to updateSystem...");
+        updateSystem({ chainId });
+      }
+
       if (!!account.accAddress) {
         myLog("try to resetAccount...");
         resetAccount();
@@ -305,7 +157,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
           // code: UIERROR_CODE.PROVIDER_ERROR,
           // message: props.opts.error,
           // ...props.errorObj,
-        } as sdk.RESULT_INFO,
+        } as RESULT_INFO,
       });
     },
     [
@@ -437,6 +289,7 @@ export const ViewAccountTemplate = React.memo(
                 width="60"
                 src={`${SoursURL}images/loading-line.gif`}
               />
+              {/*<LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />*/}
               <Typography
                 marginY={3}
                 variant={isMobile ? "h4" : "h1"}
@@ -444,6 +297,7 @@ export const ViewAccountTemplate = React.memo(
               >
                 {t("describeTitleOpenAccounting")}
               </Typography>
+              {/*<WalletConnectL2Btn/>*/}
             </Box>
           );
           break;
@@ -465,6 +319,7 @@ export const ViewAccountTemplate = React.memo(
                   connectName: account.connectName,
                 })}
               </Typography>
+              {/*<WalletConnectL2Btn/>*/}
             </Box>
           );
           break;

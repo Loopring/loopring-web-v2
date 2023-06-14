@@ -24,8 +24,6 @@ import {
 } from "@loopring-web/component-lib";
 import React, { Provider as TProvider } from "react";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
-// import { DevSupport } from "@react-buddy/ide-toolbox";
-// import { ComponentPreviews, useInitial } from "../../../dev";
 
 if (process.env.REACT_APP_VER) {
   console.log("VER:", process.env.REACT_APP_VER);
@@ -57,12 +55,6 @@ ReactDOM.render(
     <ReactReduxFirebaseProvider {...firebaseProps}>
       <ProviderThen>
         <App />
-        {/*<DevSupport*/}
-        {/*  ComponentPreviews={ComponentPreviews}*/}
-        {/*  useInitialHook={useInitial}*/}
-        {/*>*/}
-        {/*  <App />*/}
-        {/*</DevSupport>*/}
       </ProviderThen>
     </ReactReduxFirebaseProvider>
   </ProviderApp>,

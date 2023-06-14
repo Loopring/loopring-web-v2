@@ -1245,7 +1245,7 @@ export const AnotherNetworkNotice = withTranslation("common", {
     return (
       <DialogStyle
         open={open}
-        onClose={() => setShowLayerSwapNotice({ isShow: false })}
+        onClose={() => setShowAnotherNetworkNotice({ isShow: false })}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelInformation")}</DialogTitle>

@@ -3,14 +3,10 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
+  NETWORKEXTEND,
   EddsaKey,
 } from "../../index";
-import {
-  ChainIdExtends,
-  FeeInfo,
-  myLog,
-  UIERROR_CODE,
-} from "@loopring-web/common-resources";
+import { FeeInfo, myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
 import Web3 from "web3";
@@ -35,7 +31,7 @@ export async function activateAccount({
 
   if (
     !system.exchangeInfo?.exchangeAddress ||
-    system.chainId === ChainIdExtends.NONETWORK ||
+    system.chainId === NETWORKEXTEND.NONETWORK ||
     connectName === ConnectProviders.Unknown ||
     !LoopringAPI?.exchangeAPI ||
     !accAddress
@@ -97,9 +93,8 @@ export async function activateAccount({
       },
       validUntil: getTimestampDaysLater(DAYS),
       keySeed,
-      // @ts-ignore
-      recommenderAccountId: "",
       nonce: accInfo.nonce as number,
+      recommenderAccountId: "" as any,
     };
 
     myLog("updateAccountFromServer req:", request);
@@ -108,7 +103,7 @@ export async function activateAccount({
         {
           request,
           web3: connectProvides.usedWeb3 as unknown as Web3,
-          chainId: system.chainId as any,
+          chainId: system.chainId,
           walletType: (ConnectProviders[connectName] ??
             connectName) as unknown as sdk.ConnectorNames,
           isHWAddr,

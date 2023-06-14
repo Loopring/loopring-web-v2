@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, BoxProps, Modal, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import { Column, Table } from "../../basic-lib";
@@ -20,7 +20,6 @@ import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo, { LockedMemo } from "./components/ActionMemo";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { XOR } from "../../../types/lib";
-import { LockDetailPanel } from "./components/modal";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -124,12 +123,7 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
   disableWithdrawList: string[];
   forexMap: ForexMap<Currency>;
   onTokenLockHold?: (item: R) => void;
-  tokenLockDetail?:
-    | undefined
-    | {
-        list: any[];
-        row: any;
-      };
+  tokenLockDetail?: any[] | undefined;
   hideAssets?: boolean;
 } & XOR<
   {
@@ -174,8 +168,8 @@ export const AssetsTable = withTranslation("tables")(
     const [viewData, setViewData] =
       React.useState<RawDataAssetsItem[]>(rawData);
     const [tableHeight, setTableHeight] = React.useState(props.tableHeight);
-    const { language, isMobile, coinJson, currency } = useSettings();
-    const [modalState, setModalState] = React.useState(false);
+    const { language, isMobile } = useSettings();
+    const { coinJson, currency } = useSettings();
     const resetTableData = React.useCallback(
       (viewData) => {
         setViewData(viewData);
@@ -294,12 +288,7 @@ export const AssetsTable = withTranslation("tables")(
               {...{
                 ...row,
                 hideAssets,
-                onTokenLockHold: (row: any) => {
-                  if (row) {
-                    setModalState(true);
-                    onTokenLockHold && onTokenLockHold(row);
-                  }
-                },
+                onTokenLockHold,
                 tokenLockDetail,
               }}
             />
@@ -441,12 +430,7 @@ export const AssetsTable = withTranslation("tables")(
               {...{
                 ...row,
                 HiddenTag,
-                onTokenLockHold: (row: any) => {
-                  if (row) {
-                    setModalState(true);
-                    onTokenLockHold && onTokenLockHold(row);
-                  }
-                },
+                onTokenLockHold,
                 tokenLockDetail,
               }}
             />
@@ -506,9 +490,7 @@ export const AssetsTable = withTranslation("tables")(
             />
           </Box>
         )}
-        <Modal open={modalState} onClose={() => setModalState(false)}>
-          <LockDetailPanel tokenLockDetail={tokenLockDetail} />
-        </Modal>
+
         <Table
           className={isInvest ? "investAsset" : ""}
           {...{ ...rest, t }}
