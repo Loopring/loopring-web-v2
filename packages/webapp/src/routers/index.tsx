@@ -21,7 +21,7 @@ import { LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  myLog,
+  RouterPath,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -167,8 +167,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     query: searchParams,
   });
   React.useEffect(() => {
-    if (location.pathname === "wallet") {
-      window.open("https://wallet.loopring.io", "_black");
+    if (/^\/?wallet/.test(location.pathname)) {
+      window.open("https://wallet.loopring.io", "_self");
       window.opener = null;
     }
   }, [location.pathname]);

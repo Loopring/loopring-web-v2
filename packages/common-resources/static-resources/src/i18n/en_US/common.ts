@@ -415,6 +415,7 @@ export default {
   labelNFTMinter: "Minter:",
   labelNFTMetadata: "Metadata:",
   labelNFTMint: "Create NFT",
+  labelNFTCreateCollection: "+ Create Collection",
   labelNFTTitleMyNFT: "My NFTs",
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
@@ -1503,11 +1504,11 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
-  labelRedPacketStartWithTime: "{{time}} Start",
   labelRedPacketTabReceived: "Received",
   labelRedPacketTabSent: "Sent",
   labelRedPacketTabNFTs: "NFTs",
   labelRedPacketTabBlindBox: "Blind Box",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1734,7 +1735,9 @@ export default {
   labelStopLimitNotSupport:
     "Sorry, there is currently insufficient liquidity in this token pair to execute Stop-Limit orders. Please try again later or consider using a market / limit order instead.",
   labelStopLimitTriggered:
-    " The market order has been submitted to the orderbook. Time: {{time}}",
+    "Triggered: The limit order has been submitted to the order book.\n Time: {{time}}",
+  labelStopLimitWaitingTrigger:
+    "The limit order is not placed until the stop price has been triggered.",
   labelStopLimitCurrentlyInsufficient: "Currently insufficient",
   labelDUAL_CURRENCY: "DUAL CURRENCY",
   labelDUAL_BASE: "DUAL BASE",
@@ -1750,4 +1753,22 @@ export default {
   labelAMMMax: "Max {{arg}} ",
   labelAMMMaxAND: "{{coinA}} and {{coinB}}",
   labelDepositTo: "Deposit to",
+  labelReferTitle: "Invite friends to join in \nLoopring and receive rewards",
+  labelReferTitleDes:
+    "As referrer: will receive a one-year commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.",
+  labelCopy: "Copy",
+  labelReferralRules: "Reward rules",
+  labelReferralMethod1: "Method 1",
+  labelReferralMethod2: "Method 2",
+  labelReferralMethod1Step1: "Download the Loopring Wallet App",
+  labelReferralMethod1Step2: "Sign up with referral code: 0****4",
+  labelReferralMethod1Step3: "Activate Loopring L2 Account",
+  labelReferralMethod1Step4: "Both of us receive rewards",
+  labelReferralMyReferrals: "My Referrals",
+  labelReferralReferralsRefunds: "Referee Refunds",
+  labelBtradeQuantity: "Prioritize Quantity",
+  labelBtradeSpeed: "Prioritize Speed",
+  labelBtradeSettled: "Settled",
+  labelOrderCancelConfirm: "Confirm to cancel this order?",
+  labelOrderCancelOrder: "Cancel",
 };

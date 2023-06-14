@@ -126,19 +126,6 @@ export const useAmmJoin = ({
               tradeBtnStatus: TradeBtnStatus.DISABLED,
               label: `labelAMMNoEnough|${ammData.coinB.belong}`,
             };
-          } else if (
-            !Number.isFinite(maxCoinA) &&
-            !Number.isFinite(maxCoinB) &&
-            (sdk.toBig(ammData.coinA.tradeValue).gt(maxCoinA) ||
-              sdk.toBig(ammData.coinB.tradeValue).gt(maxCoinB))
-          ) {
-            return {
-              tradeBtnStatus: TradeBtnStatus.DISABLED,
-              label: `labelAMMMax| ${t("labelAMMMaxAND", {
-                coinA: `${maxCoinA} ${ammData.coinA.belong}`,
-                coinB: `${maxCoinB} ${ammData.coinB.belong}`,
-              })}`,
-            };
           } else if (!validAmt1 || !validAmt2) {
             const tokenA = tokenMap[ammInfo.coinA ?? ""];
             const tokenB = tokenMap[ammInfo.coinB ?? ""];
@@ -165,6 +152,19 @@ export const useAmmJoin = ({
               }  ${t("labelAmmMinAnd")} ${viewQuoteMintAmt} ${
                 ammData?.coinB.belong
               }`,
+            };
+          } else if (
+            !Number.isFinite(maxCoinA) &&
+            !Number.isFinite(maxCoinB) &&
+            (sdk.toBig(ammData.coinA.tradeValue).gt(maxCoinA) ||
+              sdk.toBig(ammData.coinB.tradeValue).gt(maxCoinB))
+          ) {
+            return {
+              tradeBtnStatus: TradeBtnStatus.DISABLED,
+              label: `labelAMMMax| ${t("labelAMMMaxAND", {
+                coinA: `${maxCoinA} ${ammData.coinA.belong}`,
+                coinB: `${maxCoinB} ${ammData.coinB.belong}`,
+              })}`,
             };
           }
           return {

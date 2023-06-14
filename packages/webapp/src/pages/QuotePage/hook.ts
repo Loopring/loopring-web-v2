@@ -42,17 +42,19 @@ export function useTickList<C extends { [key: string]: string }>() {
         ? Reflect.ownKeys(tickerMap).reduce((prev, key) => {
             // @ts-ignore
             const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
-          const ticker = tickerMap[key as string];
-          const coinApriceU =
-            ticker.close * (tokenPrices[coinB] ?? 0) ?? tokenPrices[coinB] ?? 0;
-          let _item: QuoteTableRawDataItem = {
-            ...ticker,
-            pair: {
-              coinA,
-              coinB,
-            },
-            coinApriceU,
-          } as QuoteTableRawDataItem;
+            const ticker = tickerMap[key as string];
+            const coinApriceU =
+              ticker.close * (tokenPrices[coinB] ?? 0) ??
+              tokenPrices[coinB] ??
+              0;
+            let _item: QuoteTableRawDataItem = {
+              ...ticker,
+              pair: {
+                coinA,
+                coinB,
+              },
+              coinApriceU,
+            } as QuoteTableRawDataItem;
 
             if (marketArray && marketArray.findIndex((m) => m === key) !== -1) {
               defaultRecommendationsFloat.push(_.cloneDeep(_item));
@@ -240,7 +242,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       keyword?: string;
     }) => {
       let data = _.cloneDeep(tickList);
-      myLog("tickList", data);
+      // myLog("tickList", data);
       if (type === TableFilterParams.favourite) {
         data = data.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`;

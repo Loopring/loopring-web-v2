@@ -66,12 +66,20 @@ export const useClaimConfirm = <
   const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus();
   const feeProps =
     claimValue.tradeType === TRADE_TYPE.TOKEN
-      ? {
-          requestType: sdk.OffchainFeeReqType.TRANSFER,
-        }
+      ? claimType === CLAIM_TYPE.lrcStaking
+        ? {
+            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+            extraType: 3,
+          }
+        : {
+            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+            extraType: 2,
+          }
       : {
-          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           tokenAddress: claimValue?.tokenAddress,
+          extraType: 2,
+          isNFT: true,
         };
   const {
     chargeFeeTokenList,
@@ -82,18 +90,21 @@ export const useClaimConfirm = <
     resetIntervalTime,
   } = useChargeFees({
     ...feeProps,
-    intervalTime: Infinity,
+    intervalTime: undefined,
     updateData: ({ fee }) => {
       const claimValue = store.getState()._router_modalData.claimValue;
-      if (claimValue.tradeType === TRADE_TYPE.TOKEN) {
-        updateClaimData({
-          ...(claimValue as any),
-          tokenAddress: undefined,
-          fee: fee,
-        });
-      } else if (
-        claimValue.tradeType === TRADE_TYPE.NFT &&
-        claimValue.tokenAddress
+      if (
+        (claimValue.tradeType === TRADE_TYPE.TOKEN &&
+          claimValue.claimType === CLAIM_TYPE.lrcStaking &&
+          feeProps.extraType === 3) ||
+        (claimValue.tradeType === TRADE_TYPE.TOKEN &&
+          claimType === CLAIM_TYPE.redPacket &&
+          feeProps.extraType === 2 &&
+          !feeProps.isNFT) ||
+        (claimValue.tradeType === TRADE_TYPE.NFT &&
+          claimType === CLAIM_TYPE.redPacket &&
+          feeProps.extraType === 2 &&
+          feeProps.isNFT)
       ) {
         updateClaimData({ ...claimValue, fee: fee });
       }
@@ -107,7 +118,6 @@ export const useClaimConfirm = <
       checkFeeIsEnough();
       return;
     }
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     // claimToken
     if (claimToken) {
       if (claimToken?.isNft) {
@@ -145,13 +155,18 @@ export const useClaimConfirm = <
     if (isShow) {
       resetDefault();
       walletLayer2Service.sendUserUpdate();
+    }
+  }, [isShow]);
+  React.useEffect(() => {
+    if (isShow) {
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     } else {
       resetIntervalTime();
     }
     return () => {
       resetIntervalTime();
     };
-  }, [isShow]);
+  }, [isShow, claimValue.claimType, claimValue.tradeType]);
   const processRequest = React.useCallback(
     async (
       request:
@@ -330,13 +345,11 @@ export const useClaimConfirm = <
           const fee = sdk.toBig(feeRaw);
 
           let token: any;
-          // let nftData: any = undefined;
           let amount: any = 0;
           if (claimValue?.nftData) {
             token = {
               tokenId: claimValue.tokenId,
             };
-            // nftData = claimValue.nftData;
             amount = claimValue.volume;
           } else {
             token = tokenMap[claimValue?.belong];

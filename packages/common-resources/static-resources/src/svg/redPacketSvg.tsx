@@ -397,7 +397,7 @@ export const RedPacketQRCodeSvg = React.memo(
         }
       }, [textContent]);
 
-      const station = imageEleUrl ? [36, 68, 86, 208] : [56, 88, 106, 186];
+      const station = imageEleUrl ? [36, 68, 86, 188] : [56, 88, 106, 186];
       // const qrcodeRef = React.createRef();
       return (
         <>
@@ -500,7 +500,7 @@ export const RedPacketQRCodeSvg = React.memo(
             </defs>
             <g
               ref={qrcodeRef}
-              transform={"translate(87 236)"}
+              transform={"translate(67 210)"}
               width="160"
               height="160"
               dangerouslySetInnerHTML={{ __html: qrCodeG ?? "" }}
@@ -510,7 +510,7 @@ export const RedPacketQRCodeSvg = React.memo(
             </g>
             {imageEleUrl && (
               <image
-                transform={"translate(128 110)"}
+                transform={"translate(128 90)"}
                 href={imageBase64}
                 height="80"
                 width="80"

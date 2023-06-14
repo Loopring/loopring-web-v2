@@ -703,10 +703,34 @@ export const useStopLimit = <
       baseSymbol,
       quoteSymbol,
       tradeType: pageTradePro.tradeType,
-      limitPrice: stopLimitTradeData?.price?.tradeValue,
-      stopPrice: stopLimitTradeData?.stopPrice.tradeValue,
-      baseValue: stopLimitTradeData?.base?.tradeValue,
-      quoteValue: stopLimitTradeData?.quote?.tradeValue,
+      limitPrice: getValuePrecisionThousand(
+        stopLimitTradeData?.price?.tradeValue,
+        tokenMap[quoteSymbol]?.precision,
+        tokenMap[quoteSymbol]?.precision,
+        undefined,
+        false
+      ),
+      stopPrice: getValuePrecisionThousand(
+        stopLimitTradeData?.stopPrice.tradeValue,
+        tokenMap[quoteSymbol]?.precision,
+        tokenMap[quoteSymbol]?.precision,
+        undefined,
+        false
+      ),
+      baseValue: getValuePrecisionThousand(
+        stopLimitTradeData?.base?.tradeValue,
+        tokenMap[baseSymbol]?.precision,
+        tokenMap[baseSymbol]?.precision,
+        undefined,
+        false
+      ),
+      quoteValue: getValuePrecisionThousand(
+        stopLimitTradeData?.quote?.tradeValue,
+        tokenMap[quoteSymbol]?.precision,
+        tokenMap[quoteSymbol]?.precision,
+        undefined,
+        false
+      ),
       stopSide: pageTradePro.request?.stopSide,
       handleClose: () => {
         setIsLimitLoading(false);

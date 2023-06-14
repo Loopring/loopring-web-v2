@@ -6,8 +6,8 @@ export enum UpColor {
 }
 
 export const SlippageTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1];
-export const SlippageBtradeTolerance: Array<0.2 | 0.5 | 1 | string> = [
-  0.2, 0.5, 1,
+export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [
+  0.1, 0.5, 1,
 ];
 
 export const RowConfig = {
@@ -85,14 +85,34 @@ export enum TradeBtnStatus {
   LOADING = "LOADING",
 }
 
-export const MapChainId = {
-  167004: "TAIKO",
-  1: "ETHEREUM",
-  5: "GOERLI",
-};
+const MapChainIdMap = new Map([
+  [1, "ETHEREUM"],
+  [5, "GOERLI"],
+]);
+export const ChainIdExtends = {};
 
-export enum ChainIdExtends {
-  TAIKO_A2 = 167004,
-}
+export const ChainTests: any[] = [5];
+export const MapChainId = {};
 
-export const REDPACKET_SHOW_NFTS = false; // Toogle to hide or show NFT Red Packet
+(function () {
+  process.env.REACT_APP_RPC_URL_OTHERS?.split(",").forEach((item, index) => {
+    let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
+      "|"
+    ) ?? [""];
+    if (name) {
+      ChainIdExtends[name] = Number(item);
+      MapChainIdMap.set(Number(item), name);
+      if (isTest) {
+        ChainTests.push(item);
+      }
+    } else {
+      ChainIdExtends["unknown" + index] = item;
+      MapChainIdMap.set(Number(item), "unknown");
+    }
+  });
+
+  [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
+    prev[key] = value;
+    return prev;
+  }, MapChainId);
+})();

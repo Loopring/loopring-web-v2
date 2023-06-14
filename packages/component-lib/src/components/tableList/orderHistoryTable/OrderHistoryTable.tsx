@@ -2,6 +2,7 @@ import React from "react";
 import {
   Button,
   CancelAllOrdersAlert,
+  CancelOneOrdersAlert,
   PopoverPure,
   QuoteTableRawDataItem,
 } from "../../index";
@@ -22,12 +23,12 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
+  CompleteIcon,
   DirectionTag,
   DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
-  GoodIcon,
   RowConfig,
   TableType,
   TradeStatus,
@@ -40,12 +41,7 @@ import { Filter, FilterOrderTypes } from "./components/Filter";
 import { OrderDetailPanel } from "./components/modal";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  GetOrdersRequest,
-  GetUserTradesRequest,
-  OrderType,
-  Side,
-} from "@loopring-web/loopring-sdk";
+
 import { useSettings } from "../../../stores";
 import _ from "lodash";
 import { useLocation } from "react-router-dom";
@@ -71,7 +67,7 @@ export type OrderPair = {
 
 export interface OrderHistoryRow {
   side: keyof typeof TradeTypes;
-  orderType: keyof typeof OrderType;
+  orderType: sdk.OrderType;
   amount: OrderPair;
   average: number;
   filledAmount: OrderPair;
@@ -165,15 +161,15 @@ const TableStyled = styled(Box)<
         ? `--template-columns: ${
             isopen === "open"
               ? ispro === "pro"
-                ? `auto auto ${isStopLimit ? 220 : 250}px auto auto ${
-                    isStopLimit ? "auto" : ""
+                ? `auto auto ${isStopLimit ? 234 : 250}px auto auto ${
+                    isStopLimit ? "110px" : ""
                   } auto auto`
                 : `auto auto ${isStopLimit ? 200 : 230}px auto auto ${
                     isStopLimit ? "auto" : ""
                   } 130px 140px`
               : ispro === "pro"
-              ? `auto auto  ${isStopLimit ? 220 : 250}px auto auto ${
-                  isStopLimit ? "auto" : ""
+              ? `auto auto  ${isStopLimit ? 234 : 250}px auto  ${
+                  isStopLimit ? "110px" : ""
                 } auto auto`
               : `auto auto ${isStopLimit ? 200 : 230}px auto 130px ${
                   isStopLimit ? "auto" : ""
@@ -208,10 +204,12 @@ export interface OrderHistoryTableProps {
     total: number;
   };
   showFilter?: boolean;
-  getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<any>;
+  getOrderList: (
+    props: Omit<sdk.GetOrdersRequest, "accountId">
+  ) => Promise<any>;
   userOrderDetailList?: any[];
   getUserOrderDetailTradeList?: (
-    props?: Omit<GetUserTradesRequest, "accountId">
+    props?: Omit<sdk.GetUserTradesRequest, "accountId">
   ) => Promise<void>;
   showLoading?: boolean;
   marketArray?: string[];
@@ -260,11 +258,6 @@ export const OrderHistoryTable = withTranslation("tables")(
       isStopLimit,
     } = props;
     const { isMobile } = useSettings();
-    // const [tableHeight] = React.useState(() => {
-    //   if (isOpenOrder) {
-    //     return ;
-    //   }
-    // });
 
     const actionColumns = ["status"];
     const [filterType, setFilterType] = React.useState(
@@ -278,6 +271,13 @@ export const OrderHistoryTable = withTranslation("tables")(
     const [modalState, setModalState] = React.useState(false);
     const [currOrderId, setCurrOrderId] = React.useState("");
     const [showCancelAllAlert, setShowCancelAllAlert] = React.useState(false);
+    const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
+      open: boolean;
+      row?: OrderHistoryRawDataItem;
+    }>({
+      open: false,
+      row: undefined,
+    });
 
     const updateData = _.debounce(
       async ({
@@ -307,7 +307,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         await getOrderList({
           limit: pagination?.pageSize ?? 10,
           offset: (currPage - 1) * (pagination?.pageSize ?? 10),
-          side: [types] as Side[],
+          side: [types] as sdk.Side[],
           market: currFilterToken === "all" ? "" : currFilterToken,
           start: Number.isNaN(start) ? -1 : start,
           end: Number.isNaN(end) ? -1 : end,
@@ -401,49 +401,48 @@ export const OrderHistoryTable = withTranslation("tables")(
             name: t("labelStopLimitStopPrice"),
             headerCellClass: "textAlignRight",
             formatter: ({ row }: any) => {
-              return row.extraOrderInfo.isTriggerd ? (
-                <Box
-                  style={{ cursor: "pointer" }}
+              return (
+                <Tooltip
+                  style={{ cursor: "pointer", whiteSpace: "pre-line" }}
                   className="rdg-cell-value textAlignRight"
-                  display={"inline-flex"}
-                  justifyContent={"center"}
+                  title={
+                    <Typography
+                      color={"inherit"}
+                      whiteSpace={"pre-line"}
+                      variant={"inherit"}
+                    >
+                      {row?.extraOrderInfo?.isTriggered
+                        ? t("labelStopLimitTriggered", {
+                            time: row.extraOrderInfo?.triggeredTime
+                              ? moment(
+                                  new Date(row.extraOrderInfo?.triggeredTime)
+                                ).format(YEAR_DAY_MINUTE_FORMAT)
+                              : "",
+                            interpolation: {
+                              escapeValue: false,
+                            },
+                          })
+                        : t("labelStopLimitWaitingTrigger")}
+                    </Typography>
+                  }
                 >
-                  <Tooltip
+                  <Box
                     style={{ cursor: "pointer" }}
                     className="rdg-cell-value textAlignRight"
-                    title={t("labelStopLimitTriggered", {
-                      time: row.extraOrderInfo.triggerdTime
-                        ? moment(
-                            new Date(row.extraOrderInfo.triggerdTime)
-                          ).format(YEAR_DAY_MINUTE_FORMAT)
-                        : "",
-                    }).toString()}
+                    display={"inline-flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
                   >
-                    <>
-                      <Typography component={"span"} paddingRight={1 / 2}>
-                        {row.extraOrderInfo.stopSide ==
-                        sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
-                          ? "≤"
-                          : "≥"}
-                        {row.extraOrderInfo.stopPrice}
-                      </Typography>
-                      <GoodIcon />
-                    </>
-                  </Tooltip>
-                </Box>
-              ) : (
-                <Box
-                  style={{ cursor: "pointer" }}
-                  className="rdg-cell-value textAlignRight"
-                >
-                  <Typography component={"span"}>
-                    {row.extraOrderInfo.stopSide ==
-                    sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
-                      ? "≤"
-                      : "≥"}
-                    {row.extraOrderInfo.stopPrice}
-                  </Typography>
-                </Box>
+                    <Typography component={"span"} paddingRight={1 / 2}>
+                      {row.extraOrderInfo?.stopSide ==
+                      sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+                        ? "≤"
+                        : "≥"}
+                      {row.extraOrderInfo?.stopPrice}
+                    </Typography>
+                    {row?.extraOrderInfo?.isTriggered && <CompleteIcon />}
+                  </Box>
+                </Tooltip>
               );
             },
           },
@@ -561,24 +560,28 @@ export const OrderHistoryTable = withTranslation("tables")(
         key: "types",
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
-          const value = row["orderType"] as any;
           let renderValue = "";
-          switch (value) {
-            case "AMM":
-              renderValue = t("labelOrderMarketOrder");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            default:
-              break;
+          if (row.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderMarketOrder");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              default:
+                break;
+            }
           }
+
           return <div className="rdg-cell-value">{renderValue}</div>;
         },
       },
@@ -622,7 +625,11 @@ export const OrderHistoryTable = withTranslation("tables")(
             precisionTo,
             precisionTo
           )} ${keyTo}`;
-          return <div className="rdg-cell-value">{renderValue}</div>;
+          return (
+            <div className="rdg-cell-value" title={renderValue}>
+              {renderValue}
+            </div>
+          );
         },
       },
       {
@@ -708,23 +715,26 @@ export const OrderHistoryTable = withTranslation("tables")(
         key: "types",
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
-          const value = row["orderType"] as any;
           let renderValue = "";
-          switch (value) {
-            case "AMM":
-              renderValue = t("labelOrderAmm");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderMaker");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderTaker");
-              break;
-            default:
-              break;
+          if (row.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderAmm");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderMaker");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderTaker");
+                break;
+              default:
+                break;
+            }
           }
           return <div className="rdg-cell-value">{renderValue}</div>;
         },
@@ -769,7 +779,11 @@ export const OrderHistoryTable = withTranslation("tables")(
             precisionTo,
             precisionTo
           )} ${keyTo}`;
-          return <div className="rdg-cell-value">{renderValue}</div>;
+          return (
+            <div className="rdg-cell-value" title={renderValue}>
+              {renderValue}
+            </div>
+          );
         },
       },
       {
@@ -837,23 +851,12 @@ export const OrderHistoryTable = withTranslation("tables")(
             {t("labelOrderCancelAll")}
           </CancelColHeaderStyled>
         ),
-        formatter: ({ row, index }: any) => {
-          const orderHash = row["hash"];
-          const clientOrderId = row["orderId"];
-          const popState = getPopoverState(index);
-          const handleClose = () => {
-            popState.setOpen(false);
-          };
-          const handleRequestCancel = async () => {
-            await cancelOrder({ orderHash, clientOrderId });
-            handleClose();
-          };
+        formatter: ({ row }: any) => {
           return (
             <>
               <Box
-                {...bindTrigger(popState)}
-                onClick={(e: any) => {
-                  bindTrigger(popState).onClick(e);
+                onClick={(_e: any) => {
+                  setShowCancelOndAlert({ open: true, row });
                 }}
                 style={{ cursor: "pointer" }}
                 className="rdg-cell-value textAlignRight"
@@ -862,49 +865,6 @@ export const OrderHistoryTable = withTranslation("tables")(
                   {t("labelOrderCancelOrder")}
                 </Typography>
               </Box>
-
-              <PopoverPure
-                className={isPro ? "arrow-top-right" : "arrow-top-center"}
-                {...bindPopper(popState)}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-              >
-                <ClickAwayListener onClickAway={() => popState.setOpen(false)}>
-                  <Box padding={2}>
-                    <Typography marginBottom={1}>
-                      {t("labelOrderCancelConfirm")}
-                    </Typography>
-                    <Grid
-                      container
-                      spacing={1}
-                      display={"flex"}
-                      justifyContent={"flex-end"}
-                      alignItems={"center"}
-                    >
-                      <Grid item>
-                        <Button variant={"outlined"} onClick={handleClose}>
-                          {t("labelOrderCancel")}
-                        </Button>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          variant={"contained"}
-                          size={"small"}
-                          onClick={handleRequestCancel}
-                        >
-                          {t("labelOrderConfirm")}
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </ClickAwayListener>
-              </PopoverPure>
             </>
           );
         },
@@ -933,21 +893,25 @@ export const OrderHistoryTable = withTranslation("tables")(
             default:
               break;
           }
-          switch (row.orderType as string) {
-            case "AMM":
-              renderValue = t("labelOrderMarketOrder");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            default:
-              break;
+          if (row?.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderMarketOrder");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              default:
+                break;
+            }
           }
           return (
             <Box
@@ -1084,21 +1048,25 @@ export const OrderHistoryTable = withTranslation("tables")(
             default:
               break;
           }
-          switch (row.orderType as string) {
-            case "AMM":
-              renderValue = t("labelOrderMarketOrder");
-              break;
-            case "LIMIT_ORDER":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "MAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            case "TAKER_ONLY":
-              renderValue = t("labelOrderLimitOrder");
-              break;
-            default:
-              break;
+          if (row.extraOrderInfo?.extraOrderType) {
+            renderValue = t("labelOrderStopLimitOrder");
+          } else {
+            switch (row.orderType) {
+              case "AMM":
+                renderValue = t("labelOrderMarketOrder");
+                break;
+              case "LIMIT_ORDER":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "MAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              case "TAKER_ONLY":
+                renderValue = t("labelOrderLimitOrder");
+                break;
+              default:
+                break;
+            }
           }
           return (
             <Box
@@ -1192,15 +1160,17 @@ export const OrderHistoryTable = withTranslation("tables")(
         headerCellClass: "textAlignRight",
         formatter: ({ row, rowIdx }) => {
           const time = Number.isFinite(row.time)
-            ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
+            ? moment(new Date(row.time), "YYYYMMDDHHMM").fromNow()
             : EmptyValueTag;
-          const orderHash = row["hash"];
+          const orderHash = row.hash;
           const clientOrderId = row["orderId"];
           const popState = getPopoverState(rowIdx);
           const handleClose = () => {
             popState.setOpen(false);
           };
-          const handleRequestCancel = async () => {
+          // @ts-ignore
+          const handleRequestCancel = async (e: MouseEvent<any>) => {
+            e.preventDefault();
             await cancelOrder({ orderHash, clientOrderId });
             handleClose();
           };
@@ -1295,6 +1265,13 @@ export const OrderHistoryTable = withTranslation("tables")(
         await cancelOrderByHashList(openOrdresList);
       }
     }, [rawData, cancelOrderByHashList]);
+    const handleCancelOne = React.useCallback(async () => {
+      if (showCancelOneAlert?.row) {
+        // @ts-ignore
+        const { orderHash, clientOrderId } = showCancelOneAlert?.row ?? {};
+        await cancelOrder({ orderHash, clientOrderId });
+      }
+    }, [showCancelOneAlert]);
     const [isDropDown, setIsDropDown] = React.useState(true);
 
     return (
@@ -1351,6 +1328,13 @@ export const OrderHistoryTable = withTranslation("tables")(
           open={showCancelAllAlert}
           handleCancelAll={handleCancelAll}
           handleClose={() => setShowCancelAllAlert(false)}
+        />
+        <CancelOneOrdersAlert
+          open={showCancelOneAlert.open}
+          handleCancelOne={handleCancelOne}
+          handleClose={() =>
+            setShowCancelOndAlert({ open: false, row: undefined })
+          }
         />
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <OrderDetailPanel

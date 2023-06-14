@@ -6,9 +6,8 @@ import gfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 
-import { MarkdownStyle } from "@loopring-web/common-resources";
+import { MarkdownStyle, url_test_path } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
-import { url_test_path } from "../TradeRacePage/interface";
 import { useNotify, useSystem } from "@loopring-web/core";
 
 const url_path = "https://static.loopring.io/documents/notification";
