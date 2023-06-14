@@ -1289,7 +1289,7 @@ export const AnotherNetworkNotice = withTranslation("common", {
             disabled={!agree}
             onClick={() => {
               window.open(
-                `https://www.orbiter.finance/?source=Loopring&dest=Ethereum&destAddress=${account.accAddress}`
+                `https://www.orbiter.finance/?source=Ethereum&dest=Loopring`
               );
               window.opener = null;
               setShowAnotherNetworkNotice({ isShow: false });

@@ -490,6 +490,7 @@ export function useAccountModalForUI({
             step: AccountStep.ThirdPanelReturn,
             info: { title: t("labelAddAssetTitleBridge"), description: t(dex) },
           });
+
           window.open(
             Bridge +
               `?l2account=${account.accAddress}&token=${
