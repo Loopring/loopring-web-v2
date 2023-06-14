@@ -79,6 +79,7 @@ export async function activateAccount({
     }
     myLog("generateKeyPair done");
 
+    // @ts-ignore
     const request: sdk.UpdateAccountRequestV3 = {
       // // @ts-ignore
       // recommenderAccountId: "" as any,
