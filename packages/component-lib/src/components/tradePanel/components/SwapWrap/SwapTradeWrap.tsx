@@ -372,7 +372,9 @@ export const SwapTradeWrap = <
               variant={"inherit"}
               color={"textPrimary"}
             >
-              {tradeCalcData?.totalQuota ?? EmptyValueTag}
+              {tradeCalcData?.totalQuota
+                ? tradeCalcData?.totalQuota + " " + tradeData?.sell?.belong
+                : EmptyValueTag}
             </Typography>
           </Typography>
         ) : (
