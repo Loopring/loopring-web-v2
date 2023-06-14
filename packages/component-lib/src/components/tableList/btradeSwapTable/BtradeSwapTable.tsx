@@ -121,7 +121,13 @@ export const BtradeSwapTable = withTranslation(["tables", "common"])(
                 height={"100%"}
               >
                 {row?.type === BtradeSwapsType.Delivering ? (
-                  <Tooltip title={t("labelBtradeDeliveringDes").toString()}>
+                  <Tooltip
+                    title={
+                      <Typography whiteSpace={"pre-line"}>
+                        {t("labelBtradeDeliveringDes").toString()}
+                      </Typography>
+                    }
+                  >
                     <Typography
                       color={found ? found[1].toString() : ""}
                       marginLeft={1}
