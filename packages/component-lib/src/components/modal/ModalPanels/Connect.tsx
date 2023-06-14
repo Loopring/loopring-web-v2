@@ -13,10 +13,10 @@ export const CommonConnectInProgress = (props: PanelProps) => {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelProviderProcessing", {
       name: isMobile
-        ? "DApp, network:" + props?.network
+        ? "DApp"
         : providerName
-        ? providerName + ", network:" + props?.network
-        : props.t("labelUnknown") + ", network:" + props?.network,
+        ? providerName
+        : props.t("labelUnknown"),
     }),
   };
   return <ConnectBase {...propsPatch} {...props} />;
@@ -63,12 +63,11 @@ export const ConnectSuccess = (props: PanelProps) => {
 };
 
 // value symbol
-export const ConnectFailed = ({ NetWorkItems, ...props }: PanelProps) => {
+export const ConnectFailed = (props: PanelProps) => {
   const propsPatch = {
     providerName: undefined,
     iconType: IconType.FailedIcon,
     describe1: props.t("labelFailedConnect"),
-    describe2: <>{NetWorkItems}</>,
   };
   return <ConnectBase {...propsPatch} {...props} />;
 };

@@ -7,7 +7,11 @@ export enum ENV {
   PROD = "PROD",
 }
 
-export type NETWORK = number | sdk.ChainId | "unknown";
+export enum NETWORKEXTEND {
+  NONETWORK = "unknown",
+}
+
+export type NETWORK = NETWORKEXTEND | sdk.ChainId;
 export type System = {
   env: keyof typeof ENV;
   chainId: NETWORK;

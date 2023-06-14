@@ -6,12 +6,8 @@ import {
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import { fnType, myLog } from "@loopring-web/common-resources";
-import {
-  accountReducer,
-  metaMaskCallback,
-  store,
-  unlockAccount,
-} from "../../index";
+import { accountReducer, store, unlockAccount } from "../../index";
+import { metaMaskCallback } from "../../modal/WalletModal";
 
 export const accountStaticCallBack = (
   onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] },

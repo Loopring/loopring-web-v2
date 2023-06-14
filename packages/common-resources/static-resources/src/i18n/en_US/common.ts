@@ -1778,6 +1778,7 @@ export default {
     "If you have transferred tokens from another network, please wait. ",
   labelAddAssetTitleAnotherNetDesActive:
     "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
-  labelAnotherNetworkDes: "XXXXXX X XXXXXX <1>TOS</1>.",
+  labelAnotherNetworkDes:
+    "Orbiter.finance is a 3rd party service provider to help move tokens between various Ethereum L1 and L2 networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
 };

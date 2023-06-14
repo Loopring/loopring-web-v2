@@ -12,4 +12,3 @@ export * from "./makeInvest";
 export * from "./makeDual";
 export * from "./marketRedPacket";
 export * from "./makeDefiSideStaking";
-export * from "./providorConnect";

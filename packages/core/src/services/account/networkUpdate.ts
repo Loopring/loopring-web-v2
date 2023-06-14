@@ -1,83 +1,30 @@
-import { cleanLayer2, goErrorNetWork, store } from "../../index";
-
-import { AvaiableNetwork } from "@loopring-web/web3-provider";
-import { AccountStatus, SagaStatus } from "@loopring-web/common-resources";
+import { cleanLayer2, goErrorNetWork } from "./lockAccount";
+import { store } from "../../index";
 import { updateAccountStatus } from "../../stores/account/reducer";
 import { updateSystem } from "../../stores/system/reducer";
-import { setDefaultNetwork } from "@loopring-web/component-lib";
 
-export const networkUpdate = (): boolean => {
-  const { _chainId: accountChainId, readyState } = store.getState().account;
-  const { defaultNetwork: userSettingChainId } = store.getState().settings;
-  const { chainId: statusChainId, status: systemStatus } =
-    store.getState().system;
-  // accountChainId
-  if (readyState !== AccountStatus.UN_CONNECT) {
-    if (
-      accountChainId !== undefined &&
-      AvaiableNetwork.includes(accountChainId.toString())
-    ) {
-      store.dispatch(updateAccountStatus({ wrongChain: false }));
-      store.dispatch(setDefaultNetwork(accountChainId));
-      console.log("connected: networkUpdate updateSetting", accountChainId);
-      if (statusChainId !== accountChainId) {
-        console.log("connected: networkUpdate updateSystem", accountChainId);
-        store.dispatch(updateSystem({ chainId: accountChainId }));
-        cleanLayer2();
-      }
-      console.log("connected: networkUpdate");
-      return true;
-    } else {
-      store.dispatch(updateAccountStatus({ wrongChain: true }));
-      goErrorNetWork();
-      return false;
-    }
+export const networkUpdate = ({ chainId }: any): boolean => {
+  const _chainId = store.getState().system.chainId;
+  if (chainId === "unknown") {
+    store.dispatch(
+      updateAccountStatus({ wrongChain: true, _chainId: chainId })
+    );
+    goErrorNetWork();
+    return false;
+  } else if (
+    chainId !== _chainId &&
+    _chainId !== "unknown" &&
+    chainId !== "unknown"
+  ) {
+    store.dispatch(updateAccountStatus({ _chainId: chainId }));
+    store.dispatch(updateSystem({ chainId }));
+    cleanLayer2();
+    // window.location.reload();
+    return true;
   } else {
-    if (
-      statusChainId.toString() !== userSettingChainId.toString() &&
-      systemStatus !== SagaStatus.PENDING
-    ) {
-      if (AvaiableNetwork.includes(userSettingChainId.toString())) {
-        console.log(
-          "unconnected: networkUpdate updateSystem",
-          userSettingChainId
-        );
-        store.dispatch(updateSystem({ chainId: userSettingChainId }));
-        store.dispatch(
-          updateAccountStatus({
-            wrongChain: false,
-            // _chainId: userSettingChainId
-          })
-        );
-        return true;
-      }
-      store.dispatch(updateAccountStatus({ wrongChain: true }));
-      return false;
-    }
+    store.dispatch(
+      updateAccountStatus({ wrongChain: false, _chainId: chainId })
+    );
     return true;
   }
-
-  // const _chainId = store.getState().system.chainId;
-  // if (chainId === "unknown") {
-  //   store.dispatch(
-  //     updateAccountStatus({ wrongChain: true, _chainId: chainId })
-  //   );
-  //   goErrorNetWork();
-  //   return false;
-  // } else if (
-  //   chainId !== _chainId &&
-  //   _chainId !== "unknown" &&
-  //   chainId !== "unknown"
-  // ) {
-  //   store.dispatch(updateAccountStatus({ _chainId: chainId }));
-  //   store.dispatch(updateSystem({ chainId }));
-  //   cleanLayer2();
-  //   // window.location.reload();
-  //   return true;
-  // } else {
-  //   store.dispatch(
-  //     updateAccountStatus({ wrongChain: false, _chainId: chainId })
-  //   );
-  //   return true;
-  // }
 };

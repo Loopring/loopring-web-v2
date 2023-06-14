@@ -139,9 +139,9 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
 `;
 export const ModelPanelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
-  background: var(--color-pop-bg);
+  background: ${({ theme }) => theme.colorBase.box};
 ` as typeof Box;
-//${theme.colorBase.box};
+
 export const SwitchPanelStyled: any = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`
@@ -171,8 +171,9 @@ export const SwitchPanelStyled: any = styled(Box)<
 
   && {
     ${({ theme }) => modalContentBaseStyle({ theme: theme })}
-    ${({ _height, _width }) => `  
-      background: var(--color-pop-bg); 
+    ${({ _height, _width, theme }) => `
+     
+      background: ${theme.colorBase.box};
       .react-swipeable-view-container {
            height: ${
              _height && Number.isNaN(_height)

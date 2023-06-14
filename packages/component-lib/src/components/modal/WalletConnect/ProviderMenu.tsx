@@ -47,7 +47,6 @@ export const ProviderMenu = ({
   gatewayList,
   termUrl,
   handleSelect,
-  NetWorkItems,
   providerName = ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
   const { isMobile } = useSettings();
@@ -94,7 +93,6 @@ export const ProviderMenu = ({
       alignItems={"center"}
       justifyContent={"space-between"}
       flexDirection={"column"}
-      // sx={{ marginTop: "-40px" }}
     >
       <Typography
         component={"h3"}
@@ -165,9 +163,6 @@ export const ProviderMenu = ({
         paddingX={isMobile ? 7 : 10}
         paddingBottom={4}
       >
-        <Box display={"flex"} justifyContent={"center"}>
-          {NetWorkItems}
-        </Box>
         {gatewayList.map((item: GatewayItem) => (
           <Box key={item.key} marginTop={1.5}>
             <MenuBtnStyled

@@ -2,7 +2,6 @@ import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
   AccountStep,
   ActiveAccountPanel,
-  AnoterNetworkNotice,
   AnotherNetworkNotice,
   ClaimProps,
   CollectionAdvanceProps,
@@ -49,7 +48,7 @@ const BoxStyle = styled(Box)<
   flex-direction: column;
   justify-content: center;
   ${({ theme }) => modalContentBaseStyle({ theme: theme })}
-  background: var(--color-pop-bg);
+  background: ${({ theme }) => theme.colorBase.box};
 
   .trade-wrap {
     margin-top: -26px;

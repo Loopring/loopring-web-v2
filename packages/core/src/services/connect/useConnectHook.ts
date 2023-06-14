@@ -26,7 +26,7 @@ export function useConnectHook({
     provider: provider;
     chainId: ChainId | "unknown";
   }) => void;
-  handleAccountDisconnect?: (props: { reason?: string; code?: number }) => void;
+  handleAccountDisconnect?: () => void;
 }) {
   const subject = React.useMemo(() => walletServices.onSocket(), []);
   React.useEffect(() => {
@@ -60,14 +60,8 @@ export function useConnectHook({
             }
             break;
           case "DisConnect":
-            // const { reason, code } = data
-            //   ? data
-            //   : {
-            //     reason:undefined,
-            //     code:undefined,
-            //   };
             if (handleAccountDisconnect) {
-              handleAccountDisconnect(data);
+              handleAccountDisconnect();
             }
         }
       }

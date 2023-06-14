@@ -17,7 +17,6 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import { GuardianStep } from "@loopring-web/component-lib";
-import { AvaiableNetwork } from "@loopring-web/web3-provider";
 
 export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
@@ -76,14 +75,11 @@ export const useHebaoMain = <
   const { clearOneItem } = layer1Store.useLayer1Store();
   const { chainId } = useSystem();
   const [isLoading, setIsLoading] = React.useState(false);
-  myLog(
-    MapChainId[AvaiableNetwork.includes(chainId.toString()) ? chainId : 1],
-    MapChainId
-  );
   const network =
     sdk.NetworkWallet[
-      MapChainId[AvaiableNetwork.includes(chainId.toString()) ? chainId : 1]
+      MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
     ];
+
   const loadData = React.useCallback(async () => {
     const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
     if (LoopringAPI.walletAPI && account.accAddress) {

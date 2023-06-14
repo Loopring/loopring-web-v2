@@ -38,7 +38,7 @@ export type Account = {
   keySeed: string;
   nonce: number | undefined;
   keyNonce: number | undefined;
-  connectName: ConnectProviders;
+  connectName: keyof typeof ConnectProviders;
   wrongChain?: boolean | undefined;
   isInCounterFactualStatus?: boolean;
   isContract1XAddress?: boolean;

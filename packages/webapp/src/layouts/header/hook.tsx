@@ -16,7 +16,6 @@ import {
   useNotify,
   accountStaticCallBack,
   btnClickMap,
-  useSelectNetwork,
 } from "@loopring-web/core";
 
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
@@ -75,8 +74,6 @@ export const useHeader = () => {
     accountStaticCallBack(_btnClickMap, []);
   }, [account, setShouldShow, _btnClickMap]);
 
-  const { NetWorkItems } = useSelectNetwork({ className: "header" });
-
   const [headerToolBarData, setHeaderToolBarData] = React.useState<
     typeof _initHeaderToolBarData
   >({ ..._initHeaderToolBarData });
@@ -88,7 +85,6 @@ export const useHeader = () => {
         headerToolBarData[ButtonComponentsMap.WalletConnect] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
           handleClick: onWalletBtnConnect,
-          NetWorkItems,
           accountState: { account },
         };
         headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
