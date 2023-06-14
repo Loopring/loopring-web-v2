@@ -400,7 +400,7 @@ export const useStopLimit = <
               tradeData.type === "buy"
                 ? sdk
                     .toBig(tokenMap[quoteSymbol]?.orderAmounts.dust)
-                    .div("1e" + tokenPrices[tradeData.quote.belong]?.decimals)
+                    .div("1e" + tokenMap[tradeData.quote.belong]?.decimals)
                     .toString()
                 : undefined,
           }).calcTradeParams;
