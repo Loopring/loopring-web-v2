@@ -53,7 +53,6 @@ export const decorators = [
 
     // store.dispatch(setCoinJson(imgConfig.frames))
 
-    // let url = "https://static.loopring.io/assets/images/coin/loopring.json";
     // fetch(url)
     //   .then(res => res.json()).then(imgConfig => {
     //   // @ts-ignore

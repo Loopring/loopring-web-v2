@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { ENV, NETWORKEXTEND, System, SystemStatus } from "./interface";
+import { ENV, System, SystemStatus } from "./interface";
 import { ForexMap, SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: SystemStatus = {
   env: ENV.PROD,
-  chainId: NETWORKEXTEND.NONETWORK,
+  chainId: "unknown",
   baseURL: "",
   socketURL: "",
   dexToggleUrl: "",

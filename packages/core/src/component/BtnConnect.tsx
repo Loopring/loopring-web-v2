@@ -1,6 +1,6 @@
 import { withTranslation } from "react-i18next";
 import {
-  accountReducer,
+  // accountReducer,
   useAccount,
   store,
   accountStaticCallBack,
@@ -8,11 +8,11 @@ import {
   btnLabel,
 } from "../index";
 import {
-  AccountStep,
+  // AccountStep,
   Button,
-  setShowAccount,
+  // setShowAccount,
   setShowConnect,
-  WalletConnectUI,
+  // WalletConnectUI,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -75,130 +75,6 @@ export const WalletConnectL2Btn = withTranslation(["common"], {
     </Button>
   );
 }) as typeof Button;
-
-export const WalletConnectL1Btn = ({
-  isShowOnUnConnect,
-}: {
-  isShowOnUnConnect: Boolean;
-}) => {
-  const accountState = useAccount();
-
-  const btnLabel = {
-    [fnType.UN_CONNECT]: [
-      function () {
-        return isShowOnUnConnect ? (
-          <WalletConnectUI
-            handleClick={btnClickMap[fnType.UN_CONNECT][0]}
-            accountState={accountState}
-          />
-        ) : (
-          <></>
-        );
-      },
-    ],
-    [fnType.ERROR_NETWORK]: [
-      function () {
-        return (
-          <WalletConnectUI
-            accountState={accountState}
-            handleClick={() => {
-              myLog("get error network!");
-            }}
-          />
-        );
-      },
-    ],
-    [fnType.NO_ACCOUNT]: [
-      function () {
-        return (
-          <WalletConnectUI
-            accountState={accountState}
-            handleClick={() => {
-              store.dispatch(
-                accountReducer.changeShowModel({ _userOnModel: true })
-              );
-              store.dispatch(
-                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-              );
-            }}
-          />
-        );
-      },
-    ],
-    [fnType.DEFAULT]: [
-      function () {
-        return (
-          <WalletConnectUI
-            accountState={accountState}
-            handleClick={() => {
-              store.dispatch(
-                accountReducer.changeShowModel({ _userOnModel: true })
-              );
-              store.dispatch(
-                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-              );
-            }}
-          />
-        );
-      },
-    ],
-    [fnType.NOT_ACTIVE]: [
-      function () {
-        return (
-          <WalletConnectUI
-            accountState={accountState}
-            handleClick={() => {
-              store.dispatch(
-                accountReducer.changeShowModel({ _userOnModel: true })
-              );
-              store.dispatch(
-                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-              );
-            }}
-          />
-        );
-      },
-    ],
-    [fnType.ACTIVATED]: [
-      function () {
-        return (
-          <WalletConnectUI
-            accountState={accountState}
-            handleClick={() => {
-              store.dispatch(
-                accountReducer.changeShowModel({ _userOnModel: true })
-              );
-              store.dispatch(
-                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-              );
-            }}
-          />
-        );
-      },
-    ],
-    [fnType.LOCKED]: [
-      function () {
-        return (
-          <WalletConnectUI
-            accountState={accountState}
-            handleClick={() => {
-              store.dispatch(
-                accountReducer.changeShowModel({ _userOnModel: true })
-              );
-              store.dispatch(
-                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
-              );
-            }}
-          />
-        );
-      },
-    ],
-  };
-  const view = React.useMemo(() => {
-    return accountStaticCallBack(btnLabel);
-  }, [btnLabel, isShowOnUnConnect]);
-  return <>{view}</>;
-};
 
 export const BtnConnectL1 = withTranslation(["common", "layout"], {
   withRef: true,

@@ -129,6 +129,7 @@ import {
   YoutubeIcon,
   ZoomIcon,
   ContactIcon,
+  LinkSharedIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -267,6 +268,7 @@ const listIcon = [
   <UploadedIcon />,
   <EditIcon />,
   <ConvertToIcon />,
+  <LinkSharedIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

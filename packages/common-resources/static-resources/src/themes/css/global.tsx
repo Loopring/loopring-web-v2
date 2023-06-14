@@ -276,7 +276,7 @@ export const globalCss = ({ theme }: any) => css`
     @media only screen and (max-width: 768px) {
       --modal-width: 320px;
       --lage-modal-width: 460px;
-      --walletconnect-width: 126px;
+      --walletconnect-width: 120px;
     }
   }
 
