@@ -622,7 +622,7 @@ export const BtradeSwap_Delivering = (props: PanelProps) => {
           marginTop={2}
           component={"span"}
           whiteSpace={"pre-line"}
-          sx={{ workBreak: "break-word" }}
+          sx={{ wordBreak: "break-word" }}
         >
           {t("labelBtradeSwapDeliverDes")}
         </Typography>
