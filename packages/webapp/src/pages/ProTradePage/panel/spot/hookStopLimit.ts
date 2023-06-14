@@ -393,14 +393,14 @@ export const useStopLimit = <
                 ? undefined
                 : sdk
                     .toBig(tokenMap[baseSymbol]?.orderAmounts.dust)
-                    .div(tokenPrices[tradeData.base.belong])
+                    .div("1e" + tokenMap[tradeData.base.belong]?.decimals)
                     .toString(),
             // @ts-ignore
             amountQuote:
               tradeData.type === "buy"
                 ? sdk
                     .toBig(tokenMap[quoteSymbol]?.orderAmounts.dust)
-                    .div(tokenPrices[tradeData.quote.belong])
+                    .div("1e" + tokenPrices[tradeData.quote.belong]?.decimals)
                     .toString()
                 : undefined,
           }).calcTradeParams;
