@@ -1651,7 +1651,7 @@ export default {
   labelBtradeSwapSettled: "Settled",
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
-    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
+    "The Loopring pool is currently unable to swap the full requested amount. The tokens that were successfully swapped will be transferred to your account now. The unswapped tokens will be locked until they can be swapped. \n We’ll rebalance the pool shortly and swap the remaining portion.",
   labelBtradeSwapDeliverDes:
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
   labelGoBtradeSwap:

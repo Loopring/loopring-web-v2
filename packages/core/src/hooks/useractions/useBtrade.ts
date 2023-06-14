@@ -171,7 +171,6 @@ export const useBtradeSwap = <
         btradeType: state?.btradeType ? state.btradeType : BtradeType.Quantity,
         sell: { ...state?.sell, tradeValue: undefined },
         buy: { ...state?.buy, tradeValue: undefined },
-        isChecked: undefined,
       } as T;
     });
 
@@ -180,7 +179,6 @@ export const useBtradeSwap = <
         ...(state ?? {}),
         maxFeeBips: undefined,
         lockedNotification: true,
-        isLockedNotificationChecked: false,
         volumeSell: undefined,
         volumeBuy: undefined,
         btradeType,
@@ -304,11 +302,6 @@ export const useBtradeSwap = <
               };
             }
           }
-        } else if (!tradeCalcData?.isLockedNotificationChecked) {
-          return {
-            label: `labelBtradeConfirm`,
-            tradeBtnStatus: TradeBtnStatus.DISABLED,
-          };
         } else {
           return {
             label: undefined,
@@ -327,7 +320,6 @@ export const useBtradeSwap = <
     tokenMap,
     tradeData?.sell.belong,
     tradeData?.buy.belong,
-    tradeCalcData?.isLockedNotificationChecked,
     tradeBtrade.maxFeeBips,
     tradeData?.sell.tradeValue,
     tradeData?.buy.tradeValue,
@@ -768,7 +760,6 @@ export const useBtradeSwap = <
             fee: undefined,
             tradeCost: undefined,
             lockedNotification: true,
-            isLockedNotificationChecked: false,
             volumeSell: undefined,
             volumeBuy: undefined,
             sellMinAmtStr: undefined,
@@ -1099,10 +1090,7 @@ export const useBtradeSwap = <
             false
           ),
         };
-        if (_tradeData?.isChecked !== undefined) {
-          myLog("tradeCalcData?.isChecked", _tradeData);
-          _tradeCalcData.isLockedNotificationChecked = _tradeData.isChecked;
-        }
+
         setTradeCalcData((state) => {
           const [mid_price, _mid_price_convert] = calcDexOutput
             ? [
@@ -1324,7 +1312,6 @@ export const useBtradeSwap = <
           tokenMap[tradeCalcData.coinSell as string].precision;
         const _tradeCalcData = {
           ...tradeCalcData,
-          isLockedNotificationChecked: false,
           coinSell: tradeCalcData.coinBuy,
           coinBuy: tradeCalcData.coinSell,
           sellPrecision,
@@ -1380,7 +1367,6 @@ export const useBtradeSwap = <
                 ? walletMap[_tradeCalcData.coinBuy as string]?.count
                 : 0,
             },
-            isChecked: undefined,
           };
         });
         break;

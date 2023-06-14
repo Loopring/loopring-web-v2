@@ -114,7 +114,6 @@ export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true;
   maxFeeBips: number;
   lockedNotification: true;
-  isLockedNotificationChecked?: boolean;
   volumeSell: string | undefined;
   volumeBuy: string | undefined;
   sellMinAmtStr: string | undefined;
