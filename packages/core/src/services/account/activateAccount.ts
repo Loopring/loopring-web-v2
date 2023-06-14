@@ -80,7 +80,8 @@ export async function activateAccount({
     myLog("generateKeyPair done");
 
     const request: sdk.UpdateAccountRequestV3 = {
-      recommenderAccountId: "" as any,
+      // // @ts-ignore
+      // recommenderAccountId: "" as any,
       exchange: system.exchangeInfo.exchangeAddress,
       owner: accInfo.owner,
       accountId: accInfo.accountId,
