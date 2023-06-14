@@ -142,7 +142,4 @@ export const AddAsset = ({
       </Box>
     </Box>
   );
-  {
-    /*</WalletConnectPanelStyled>*/
-  }
 };
