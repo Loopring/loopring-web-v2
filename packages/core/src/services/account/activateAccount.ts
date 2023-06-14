@@ -80,6 +80,7 @@ export async function activateAccount({
     myLog("generateKeyPair done");
 
     const request: sdk.UpdateAccountRequestV3 = {
+      recommenderAccountId: "" as any,
       exchange: system.exchangeInfo.exchangeAddress,
       owner: accInfo.owner,
       accountId: accInfo.accountId,
@@ -92,6 +93,7 @@ export async function activateAccount({
       keySeed,
       nonce: accInfo.nonce as number,
     };
+
     myLog("updateAccountFromServer req:", request);
     try {
       const response = await LoopringAPI?.userAPI?.updateAccount(
