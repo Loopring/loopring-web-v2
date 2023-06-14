@@ -4,6 +4,7 @@ import { MenuBtnStyled } from "../../styled";
 import { SendNFTAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import {
+  AnotherIcon,
   BackIcon,
   ExchangeAIcon,
   IncomingIcon,
