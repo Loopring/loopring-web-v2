@@ -939,17 +939,17 @@ export const useBtradeSwap = <
             });
             totalQuote = poolToVol
               ? getValuePrecisionThousand(
-                  BigNumber.min(
-                    sellDeepStr,
-                    poolToVol,
-                    calcDexL2Output?.amountS ?? 0
-                  ),
-                  sellToken.decimals,
-                  sellToken.decimals,
-                  undefined,
-                  false,
-                  { isAbbreviate: true }
-                )
+                BigNumber.min(
+                  sellDeepStr,
+                  poolToVol,
+                  calcDexL2Output?.amountS ?? 0
+                ),
+                sellToken.precision,
+                sellToken.precision,
+                undefined,
+                false,
+                {isAbbreviate: true}
+              )
               : EmptyValueTag;
             sellMaxAmtInfo = poolToVol
               ? BigNumber.min(
@@ -964,13 +964,13 @@ export const useBtradeSwap = <
               : sellDeepStr;
             totalQuote = poolToVol
               ? getValuePrecisionThousand(
-                  BigNumber.min(sellDeepStr, poolToVol),
-                  sellToken.decimals,
-                  sellToken.decimals,
-                  undefined,
-                  false,
-                  { isAbbreviate: true }
-                )
+                BigNumber.min(sellDeepStr, poolToVol),
+                sellToken.precision,
+                sellToken.precision,
+                undefined,
+                false,
+                {isAbbreviate: true}
+              )
               : (
                   sellBuyStr == market
                     ? btradeAmount.base == "0"
