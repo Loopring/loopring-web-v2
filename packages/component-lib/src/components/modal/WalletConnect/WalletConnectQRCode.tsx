@@ -5,9 +5,9 @@ import { SoursURL } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
 
 export const WalletConnectQRCode = ({
-                                      url,
-                                      onCopy,
-                                      t,
+  url,
+  onCopy,
+  t,
 }: { url: string; onCopy: () => void } & WithTranslation) => {
   const theme = useTheme();
   return (
