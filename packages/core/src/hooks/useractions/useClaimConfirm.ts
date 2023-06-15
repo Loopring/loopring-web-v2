@@ -314,7 +314,7 @@ export const useClaimConfirm = <
             break;
         }
       }
-    };,
+    },
     [account]
   );
 
@@ -377,8 +377,8 @@ export const useClaimConfirm = <
           });
           let request:
             | (sdk.OriginLuckTokenWithdrawsRequestV3 & {
-            luckyTokenHash?: string;
-          })
+                luckyTokenHash?: string;
+              })
             | sdk.OriginStakeClaimRequestV3 = {} as any;
 
           if (claimValue.claimType === CLAIM_TYPE.redPacket) {
@@ -528,7 +528,7 @@ export const useClaimConfirm = <
           claimValue?.tradeValue,
           tokenMap[claimValue?.belong?.toString() ?? ""]?.precision,
           tokenMap[claimValue?.belong?.toString() ?? ""]?.precision,
-          tokenMap[ claimValue?.belong?.toString() ?? "" ]?.precision,
+          tokenMap[claimValue?.belong?.toString() ?? ""]?.precision,
           false
         ),
       },
