@@ -246,7 +246,7 @@ export const globalCss = ({ theme }: any) => css`
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
-    --modal-width: 480px;
+    --modal-width: 358px;
     --modal-height: 400px;
     --swap-box-width: 338px;
     --mobile-full-panel-width: 352px;
@@ -274,7 +274,7 @@ export const globalCss = ({ theme }: any) => css`
     --redPacket-avatar: 72px;
     --notification-activited-heigth: 80px;
     @media only screen and (max-width: 768px) {
-      --modal-width: 320px;
+      //--modal-width: 320px;
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
     }
