@@ -6,6 +6,7 @@ import {
   PopoverPure,
   QuoteTableRawDataItem,
 } from "../../index";
+import { bindTrigger } from "material-ui-popup-state/es";
 import styled from "@emotion/styled";
 import {
   Box,
@@ -735,7 +736,6 @@ export const OrderHistoryTable = withTranslation("tables")(
                 break;
             }
           }
-
           return <div className="rdg-cell-value">{renderValue}</div>;
         },
       },
@@ -1177,8 +1177,9 @@ export const OrderHistoryTable = withTranslation("tables")(
           return (
             <>
               <Box
-                onClick={(_e: any) => {
-                  setShowCancelOndAlert({ open: true, row: row as any });
+                {...bindTrigger(popState)}
+                onClick={(e: any) => {
+                  bindTrigger(popState).onClick(e);
                 }}
                 style={{ cursor: "pointer" }}
                 className="rdg-cell-value textAlignRight"
@@ -1266,8 +1267,8 @@ export const OrderHistoryTable = withTranslation("tables")(
     }, [rawData, cancelOrderByHashList]);
     const handleCancelOne = React.useCallback(async () => {
       if (showCancelOneAlert?.row) {
-        const orderHash = showCancelOneAlert?.row?.hash;
-        const clientOrderId = showCancelOneAlert?.row?.orderId;
+        // @ts-ignore
+        const { orderHash, clientOrderId } = showCancelOneAlert?.row ?? {};
         await cancelOrder({ orderHash, clientOrderId });
       }
     }, [showCancelOneAlert]);
