@@ -174,6 +174,54 @@ export const CancelAllOrdersAlert = withTranslation("common", {
     );
   }
 );
+export const CancelOneOrdersAlert = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleCancelOne,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleCancelOne: () => Promise<void>;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-cancel-all-orders-description"
+      >
+        <DialogTitle style={{ padding: "2.4rem", paddingBottom: "1.6rem" }}>
+          {t("labelOrderCancelConfirm")}
+        </DialogTitle>
+
+        <DialogActions style={{ padding: "2.4rem", paddingTop: 0 }}>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelOrderCancelOrder")}
+          </Button>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={async (e) => {
+              await handleCancelOne();
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelConfirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
 export const AlertNotSupport = withTranslation("common")(
   ({
     t,
@@ -2112,36 +2160,22 @@ export const ConfirmBtradeSwapRisk = withTranslation("common")(
                     color={"textSecondary"}
                   />
                 ),
+                h6: (
+                  <Typography
+                    component={"h6"}
+                    whiteSpace={"pre-line"}
+                    variant={"h5"}
+                    display={"block"}
+                    marginBottom={1}
+                    marginTop={1}
+                    fontWeight="600"
+                    color={"textPrimary"}
+                  />
+                ),
+                li: <li style={{ display: "list", listStyle: "inside" }} />,
+                ul: <ul style={{ display: "initial" }} />,
               }}
-            >
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                marginBottom={1}
-                color={"textSecondary"}
-              >
-                Block Trade offers a secure and trustless way for users to swap
-                tokens using CEX liquidity. The trades happen exclusively
-                between designated entities, ensuring that the existing
-                liquidity of the DEX remains unaffected. There is no price
-                impact to other DEX users as a result of the transaction.
-              </Typography>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                marginBottom={1}
-                color={"textSecondary"}
-              >
-                This is similar to the traditional stock market’s Block Trade
-                System. A block trade is a large, privately negotiated
-                transaction, which can be made outside the open market through a
-                private purchase agreement.
-              </Typography>
-            </Trans>
+            ></Trans>
           </DialogContentText>
           <MuiFormControlLabel
             control={
@@ -2329,6 +2363,7 @@ export const ConfirmStopLimitRisk = withTranslation("common")(
                 symbol1: baseSymbol,
                 stopPrice,
                 limitPrice,
+                tradeType,
                 from:
                   stopSide == sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
                     ? t("labelStopLimitFromGoesUp")

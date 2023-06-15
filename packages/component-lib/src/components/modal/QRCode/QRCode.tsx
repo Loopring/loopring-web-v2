@@ -25,13 +25,15 @@ const ModalContentStyled = styled(Box)`
 export type QCodeProps = {
   url: string;
   size?: number;
-  fgColor?: string;
+  fgColor1?: string;
+  fgColor2?: string;
   bgColor?: string;
   imageInfo?: { imageSrc?: string; size?: number };
 };
 export const QRCode = ({
   size = 160,
-  fgColor = "#000",
+  fgColor1 = "var(--color-primary)",
+  fgColor2 = "#000",
   bgColor = "#fff",
   url = "https://exchange.loopring.io/",
   imageInfo = {
@@ -46,8 +48,20 @@ export const QRCode = ({
     height: size,
     image: imageInfo.imageSrc,
     dotsOptions: {
-      color: fgColor,
-      type: "rounded",
+      gradient: {
+        rotation: 45,
+        type: 'linear',
+        colorStops: [{
+          offset: 0,
+          color: fgColor1,
+        },
+        {
+          offset: 1,
+          color: fgColor2
+        }
+      ]
+      },
+      type: "dots",
     },
     backgroundOptions: {
       color: bgColor,
@@ -56,6 +70,12 @@ export const QRCode = ({
       crossOrigin: "anonymous",
       margin: 8,
     },
+    cornersSquareOptions: {
+      type: 'extra-rounded'
+    },
+    cornersDotOptions: {
+      type: 'square'
+    }
   });
   const ref = React.useRef();
   React.useEffect(() => {

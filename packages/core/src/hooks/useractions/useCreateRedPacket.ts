@@ -91,11 +91,14 @@ export const useCreateRedPacket = <
   const feeProps =
     redPacketOrder.tradeType === "TOKEN"
       ? {
-          requestType: sdk.OffchainFeeReqType.TRANSFER,
+          requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+          extraType: 1,
         }
       : {
-          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
           tokenAddress: redPacketOrder?.tokenAddress,
+          extraType: 1,
+          isNFT: true,
         };
 
   const {
@@ -107,18 +110,14 @@ export const useCreateRedPacket = <
     resetIntervalTime,
   } = useChargeFees({
     ...feeProps,
+    intervalTime: undefined,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (redPacketOrder.tradeType === TRADE_TYPE.TOKEN) {
-        updateRedPacketOrder({
-          ...(redPacketOrder as any),
-          fee: fee,
-        });
-      } else if (
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
-        redPacketOrder.tokenAddress
+      if (
+        (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) ||
+        (redPacketOrder.tradeType === TRADE_TYPE.NFT && feeProps.isNFT)
       ) {
-        updateRedPacketOrder({ ...redPacketOrder, fee: fee });
+        updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee });
       }
     },
   });
@@ -163,7 +162,6 @@ export const useCreateRedPacket = <
         checkFeeIsEnough();
         return;
       }
-      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
       const walletMap = makeWalletLayer2(true).walletMap ?? {};
       if (TRADE_TYPE.TOKEN === value && !redPacketOrder.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap);
@@ -697,13 +695,18 @@ export const useCreateRedPacket = <
     if (isShow) {
       resetDefault(TRADE_TYPE.TOKEN);
       walletLayer2Service.sendUserUpdate();
+    }
+  }, [isShow]);
+  React.useEffect(() => {
+    if (isShow) {
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
     } else {
       resetIntervalTime();
     }
     return () => {
       resetIntervalTime();
     };
-  }, [isShow]);
+  }, [isShow, redPacketOrder.tradeType]);
 
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isHardwareRetry: boolean = false) => {
