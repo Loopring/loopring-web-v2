@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useAccount, useSubmitBtn } from "@loopring-web/core";
 import {
   AccountStatus,
+  copyToClipBoard,
   LinkSharedIcon,
   SoursURL,
   TOAST_TIME,
@@ -97,7 +98,7 @@ const ReferHeader = ({
                 size={"medium"}
                 className={"copy"}
                 placeholder={"copy"}
-                value={`https//loopring.io?referralcode=${account.accountId}`}
+                value={`https//wallet.loopring.io?referralcode=${account.accountId}`}
                 disabled={true}
                 fullWidth={true}
                 // onChange={(event: any) => {}}
@@ -156,12 +157,8 @@ const ReferHeader = ({
         break;
     }
   }, [account.readyState, account.connectName, isMobile, t]);
-  const { btnStatus, onBtnClick, btnLabel, btnStyle } = useSubmitBtn({
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
-      // const account = store.getState().account;
-      // if (account.readyState === AccountStatus.ACTIVATED) {
-      //  return    { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }
-      // }
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
     },
     isLoading: false,
@@ -206,18 +203,20 @@ const ReferHeader = ({
               {t("labelReferTitleDes")}
             </Typography>
             {viewTemplate}
-            <Button
-              size={"medium"}
-              onClick={onBtnClick}
-              loading={"false"}
-              disabled={
-                btnStatus === TradeBtnStatus.DISABLED ||
-                btnStatus === TradeBtnStatus.LOADING
-              }
-              fullWidth={true}
-            >
-              {label}
-            </Button>
+            <Box marginY={2}>
+              <Button
+                size={"medium"}
+                onClick={onBtnClick}
+                loading={"false"}
+                variant={"contained"}
+                disabled={
+                  btnStatus === TradeBtnStatus.DISABLED ||
+                  btnStatus === TradeBtnStatus.LOADING
+                }
+              >
+                {label}
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Container>
@@ -226,18 +225,24 @@ const ReferHeader = ({
 };
 
 const ReferView = () => {
+  const { account } = useAccount();
   const { t } = useTranslation();
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
   const [copyToastOpen, setCopyToastOpen] = useState(false);
   const handleCopy = (selected: "id" | "link") => {
     switch (selected) {
       case "id":
-      //todo:
+        copyToClipBoard(account?.accountId?.toString());
+        break;
       case "link":
-      //todo:
+        copyToClipBoard(
+          `https//wallet.loopring.io?referralcode=${account.accountId}`
+        );
+        break;
     }
     setCopyToastOpen(true);
   };
+
   return (
     <>
       <Toast
@@ -279,19 +284,23 @@ const ReferView = () => {
             )}
             {currentTab === ReferStep.method2 && <></>}
           </Box>
-        </BoxStyled>
-        <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-          <Typography component={"h3"} variant={"h4"} marginY={1}>
-            {t("labelReferralMyReferrals")}
-          </Typography>
+          {account.readyState === AccountStatus.ACTIVATED && (
+            <>
+              <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
+                <Typography component={"h3"} variant={"h4"} marginY={1}>
+                  {t("labelReferralMyReferrals")}
+                </Typography>
 
-          <Box></Box>
-        </BoxStyled>
-        <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-          <Typography component={"h3"} variant={"h4"} marginY={1}>
-            {t("labelReferralReferralsRefunds")}
-          </Typography>
-          <Box></Box>
+                <Box></Box>
+              </BoxStyled>
+              <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
+                <Typography component={"h3"} variant={"h4"} marginY={1}>
+                  {t("labelReferralReferralsRefunds")}
+                </Typography>
+                <Box></Box>
+              </BoxStyled>
+            </>
+          )}
         </BoxStyled>
       </Container>
     </>
