@@ -466,7 +466,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               {/*</Typography>*/}
             </Box>
           );
-        };,
+        },
       },
       {
         key: "liquidity",
@@ -486,15 +486,15 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               <Typography component={"span"}>
                 {typeof amountU === "undefined" || !Number(amountU)
                   ? EmptyValueTag
-                  : PriceTag[ CurrencyToTag[ currency ] ] +
-                  getValuePrecisionThousand(
-                    sdk.toBig(amountU).times(forexValue),
-                    undefined,
-                    undefined,
-                    2,
-                    true,
-                    {isFait: true}
-                  )}
+                  : PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(amountU).times(forexValue),
+                      undefined,
+                      undefined,
+                      2,
+                      true,
+                      { isFait: true }
+                    )}
               </Typography>
               <Typography
                 component={"span"}
@@ -542,15 +542,15 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               <Box className={"textAlignRight"} display={"inline-flex"}>
                 <Typography component={"span"}>
                   {priceU
-                    ? PriceTag[ CurrencyToTag[ currency ] ] +
-                    getValuePrecisionThousand(
-                      sdk.toBig(priceU).times(forexValue),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      {isFait: true}
-                    )
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        sdk.toBig(priceU).times(forexValue),
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true }
+                      )
                     : EmptyValueTag}
                 </Typography>
               </Box>
