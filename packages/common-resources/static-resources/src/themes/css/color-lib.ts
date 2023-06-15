@@ -43,7 +43,7 @@ export const ColorDarkDefault = Object.freeze({
   textButton: ColorBlack.light,
   textButtonSelect: ColorBlack.light,
   textDisable: `${hexToRGB(ColorBlack.light, "0.45")}`,
-  border: ColorBlack.light400,
+  border: "#49527D",
   borderHover: ColorBlack.light,
   borderDark: ColorBlack.dark400,
   borderSelect: ColorBlack.light,
