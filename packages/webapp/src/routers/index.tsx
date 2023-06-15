@@ -26,6 +26,7 @@ import {
   setMyLog,
   ThemeType,
   VendorProviders,
+  WalletSite,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import {
@@ -169,7 +170,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   });
   React.useEffect(() => {
     if (/^\/?wallet/.test(location.pathname)) {
-      window.open("https://wallet.loopring.io", "_self");
+      window.open(WalletSite, "_self");
       window.opener = null;
     }
   }, [location.pathname]);

@@ -35,6 +35,7 @@ export const FeeChargeOrderUATDefault = ["USDT", "ETH", "LRC", "DAI"];
 export const Explorer = "https://explorer.loopring.io/";
 export const Bridge = "https://bridge.loopring.io/#/";
 export const Exchange = "https://loopring.io/#/";
+export const WalletSite = "https://wallet.loopring.io";
 
 export const YEAR_PROMATE = "YYYY";
 export const DAY_FORMAT = "MM/DD";

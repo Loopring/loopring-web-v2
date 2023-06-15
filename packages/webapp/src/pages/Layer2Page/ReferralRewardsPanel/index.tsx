@@ -19,6 +19,7 @@ import {
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
+  WalletSite,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -71,7 +72,9 @@ enum ReferStep {
 const ReferHeader = ({
   isActive = true,
   handleCopy,
+  link,
 }: {
+  link: string;
   isActive?: boolean;
   handleCopy: (selected: "id" | "link") => void;
 }) => {
@@ -79,84 +82,6 @@ const ReferHeader = ({
   const { t } = useTranslation(["common", "layout"]);
   const { isMobile } = useSettings();
 
-  const viewTemplate = React.useMemo(() => {
-    switch (account.readyState) {
-      case AccountStatus.UN_CONNECT:
-      case AccountStatus.LOCKED:
-      case AccountStatus.NO_ACCOUNT:
-      case AccountStatus.NOT_ACTIVE:
-      case AccountStatus.DEPOSITING:
-      case AccountStatus.ERROR_NETWORK:
-        return <></>;
-        break;
-      case AccountStatus.ACTIVATED:
-        return (
-          <>
-            {" "}
-            <Box paddingTop={1} width={"70%"}>
-              <OutlinedInput
-                size={"medium"}
-                className={"copy"}
-                placeholder={"copy"}
-                value={`https//wallet.loopring.io?referralcode=${account.accountId}`}
-                disabled={true}
-                fullWidth={true}
-                // onChange={(event: any) => {}}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <LinkSharedIcon color={"inherit"} />
-                  </InputAdornment>
-                }
-                endAdornment={
-                  <Button
-                    size={"small"}
-                    variant={"text"}
-                    onClick={() => handleCopy("link")}
-                  >
-                    {t("labelCopy")}
-                  </Button>
-                }
-              />
-            </Box>
-            <Box paddingTop={1} width={"70%"}>
-              <OutlinedInput
-                size={"medium"}
-                className={"copy"}
-                placeholder={"copy"}
-                value={account.accountId}
-                disabled={true}
-                fullWidth={true}
-                // onChange={(event: any) => {}}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <Typography
-                      color={"var(--color-text-third)"}
-                      variant={"body1"}
-                      component={"span"}
-                      paddingX={1 / 2}
-                    >
-                      #
-                    </Typography>
-                    {/*<LinkIcon color={"inherit"} />*/}
-                  </InputAdornment>
-                }
-                endAdornment={
-                  <Button
-                    size={"small"}
-                    variant={"text"}
-                    onClick={() => handleCopy("id")}
-                  >
-                    {t("labelCopy")}
-                  </Button>
-                }
-              />
-            </Box>
-          </>
-        );
-      default:
-        break;
-    }
-  }, [account.readyState, account.connectName, isMobile, t]);
   const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
@@ -202,7 +127,68 @@ const ReferHeader = ({
             >
               {t("labelReferTitleDes")}
             </Typography>
-            {viewTemplate}
+            {account.readyState == AccountStatus.ACTIVATED && (
+              <>
+                <Box paddingTop={1} width={"70%"}>
+                  <OutlinedInput
+                    size={"medium"}
+                    className={"copy"}
+                    placeholder={"copy"}
+                    value={link}
+                    disabled={true}
+                    fullWidth={true}
+                    // onChange={(event: any) => {}}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <LinkSharedIcon color={"inherit"} />
+                      </InputAdornment>
+                    }
+                    endAdornment={
+                      <Button
+                        size={"small"}
+                        variant={"text"}
+                        onClick={() => handleCopy("link")}
+                      >
+                        {t("labelCopy")}
+                      </Button>
+                    }
+                  />
+                </Box>
+                <Box paddingTop={1} width={"70%"}>
+                  <OutlinedInput
+                    size={"medium"}
+                    className={"copy"}
+                    placeholder={"copy"}
+                    value={account.accountId}
+                    disabled={true}
+                    fullWidth={true}
+                    // onChange={(event: any) => {}}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Typography
+                          color={"var(--color-text-third)"}
+                          variant={"body1"}
+                          component={"span"}
+                          paddingX={1 / 2}
+                        >
+                          #
+                        </Typography>
+                        {/*<LinkIcon color={"inherit"} />*/}
+                      </InputAdornment>
+                    }
+                    endAdornment={
+                      <Button
+                        size={"small"}
+                        variant={"text"}
+                        onClick={() => handleCopy("id")}
+                      >
+                        {t("labelCopy")}
+                      </Button>
+                    }
+                  />
+                </Box>
+              </>
+            )}
             <Box marginY={2}>
               <Button
                 size={"medium"}
@@ -229,15 +215,14 @@ const ReferView = () => {
   const { t } = useTranslation();
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
   const [copyToastOpen, setCopyToastOpen] = useState(false);
+  const link = `${WalletSite}?referralcode=${account.accountId}`;
   const handleCopy = (selected: "id" | "link") => {
     switch (selected) {
       case "id":
         copyToClipBoard(account?.accountId?.toString());
         break;
       case "link":
-        copyToClipBoard(
-          `https//wallet.loopring.io?referralcode=${account.accountId}`
-        );
+        copyToClipBoard(link);
         break;
     }
     setCopyToastOpen(true);
@@ -254,7 +239,7 @@ const ReferView = () => {
         }}
         severity={ToastType.success}
       />
-      <ReferHeader handleCopy={handleCopy} />
+      <ReferHeader handleCopy={handleCopy} link={link} />
       <Container>
         <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
           <Typography component={"h3"} variant={"h4"} marginY={1}>

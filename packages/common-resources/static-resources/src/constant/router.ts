@@ -19,6 +19,7 @@ import {
   InvestAdvice,
 } from "../loopring-interface";
 import { InvestMapType } from "./trade";
+import { Exchange, WalletSite } from "./setting";
 
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const headerRoot = "Landing-page";
@@ -141,7 +142,7 @@ export let headerToolBarData: Array<{
 }> = [
   {
     buttonComponent: ButtonComponentsMap.Download,
-    url: "https://wallet.loopring.io",
+    url: WalletSite,
   },
   {
     buttonComponent: ButtonComponentsMap.Notification,
@@ -229,14 +230,14 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "https://loopring.io/#/" },
+    router: { path: Exchange },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://wallet.loopring.io" },
+    router: { path: WalletSite },
   },
   // {
   //   label: {
