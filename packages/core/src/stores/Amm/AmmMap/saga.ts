@@ -262,8 +262,8 @@ export function* getPostsSaga({
 
 export function* updateRealTimeSaga({ payload }: any) {
   try {
-    const {ammPoolStats} = payload;
-    let {ammMap: _ammMap, ammArrayEnable: _ammArrayEnable} =
+    const { ammPoolStats } = payload;
+    let { ammMap: _ammMap, ammArrayEnable: _ammArrayEnable } =
       store.getState().amm.ammMap;
     let ammMap;
     let ammArrayEnable = _.cloneDeep(_ammArrayEnable);
@@ -271,26 +271,26 @@ export function* updateRealTimeSaga({ payload }: any) {
       ammMap = Reflect.ownKeys(ammPoolStats).reduce((_ammMap, key) => {
         const market = (key as string).replace("AMM-", "");
         const ammMarket = "AMM-" + market;
-        myLog("ammPoolStats[ammMarket]", ammPoolStats[ ammMarket ]);
+        myLog("ammPoolStats[ammMarket]", ammPoolStats[ammMarket]);
         const result = setAmmState({
           ammPoolState: {
-            ..._ammMap[ ammMarket ]?.__ammPoolState__,
-            ...ammPoolStats[ ammMarket ],
+            ..._ammMap[ammMarket]?.__ammPoolState__,
+            ...ammPoolStats[ammMarket],
           },
           market,
         });
         // @ts-ignore
-        _ammMap[ ammMarket ] = {
-          ..._ammMap[ ammMarket ],
+        _ammMap[ammMarket] = {
+          ..._ammMap[ammMarket],
           ...result,
           market,
         };
-        if (!_ammMap[ ammMarket ].showDisable) {
+        if (!_ammMap[ammMarket].showDisable) {
           const index = ammArrayEnable.findIndex(
-            (item) => _ammMap[ ammMarket ].market === item.market
+            (item) => _ammMap[ammMarket].market === item.market
           );
           if (index != -1) {
-            ammArrayEnable[ index ] = _ammMap[ ammMarket ];
+            ammArrayEnable[index] = _ammMap[ammMarket];
           }
         }
         return _ammMap;

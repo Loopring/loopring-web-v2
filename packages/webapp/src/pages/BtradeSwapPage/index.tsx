@@ -23,6 +23,7 @@ import {
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "@emotion/styled";
+
 const BoxStyle = styled(Box)`
   &.btradePage {
     .input-wrap {
@@ -130,8 +131,7 @@ export const BtradeSwapPage = withTranslation("common")(
           handleClose={(_e, isAgree) => {
             setConfirmedBtradeSwap(false);
             if (!isAgree) {
-              history.replace("/markets");
-              // history.goBack();
+              history.goBack();
             } else {
               confirmedBtradeSwapFunc();
             }

@@ -222,4 +222,4 @@ export const useAddressCheck = () => {
     isActiveAccountFee,
     loopringSmartWalletVersion,
   };
-};;
+};
