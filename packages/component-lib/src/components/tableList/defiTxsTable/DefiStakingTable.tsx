@@ -190,20 +190,23 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.remainAmount && row.remainAmount !== "0"
-                ? (hideAssets
+                ? hideAssets
                   ? HiddenTag
                   : getValuePrecisionThousand(
-                    sdk.toBig(row.remainAmount).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  ) + " " + tokenInfo.symbol
-                  ) 
+                      sdk
+                        .toBig(row.remainAmount)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    ) +
+                    " " +
+                    tokenInfo.symbol
                 : EmptyValueTag;
 
             return <> {amountStr}</>;
@@ -220,20 +223,23 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.totalRewards && row.totalRewards !== "0"
-                ? (hideAssets
+                ? hideAssets
                   ? HiddenTag
                   : getValuePrecisionThousand(
-                    sdk.toBig(row.totalRewards).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )+ " " + tokenInfo.symbol
-                ) 
+                      sdk
+                        .toBig(row.totalRewards)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    ) +
+                    " " +
+                    tokenInfo.symbol
                 : EmptyValueTag;
             return <> {amountStr}</>;
           },
@@ -249,22 +255,23 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.lastDayPendingRewards && row.lastDayPendingRewards !== "0"
-                ? (hideAssets
+                ? hideAssets
                   ? HiddenTag
                   : getValuePrecisionThousand(
-                    sdk
-                      .toBig(row.lastDayPendingRewards)
-                      .div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )+ " " + tokenInfo.symbol
-                ) 
+                      sdk
+                        .toBig(row.lastDayPendingRewards)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    ) +
+                    " " +
+                    tokenInfo.symbol
                 : EmptyValueTag;
             return <> {amountStr}</>;
           },
@@ -348,20 +355,22 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const amountStr =
               row.remainAmount && row.remainAmount !== "0"
                 ? (hideAssets
-                  ? HiddenTag
-                  : getValuePrecisionThousand(
-                    sdk.toBig(row.remainAmount).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )) +
-                " " +
-                tokenInfo.symbol
+                    ? HiddenTag
+                    : getValuePrecisionThousand(
+                        sdk
+                          .toBig(row.remainAmount)
+                          .div("1e" + tokenInfo.decimals),
+                        tokenInfo.precision,
+                        tokenInfo.precision,
+                        undefined,
+                        false,
+                        {
+                          floor: false,
+                          // isTrade: true,
+                        }
+                      )) +
+                  " " +
+                  tokenInfo.symbol
                 : EmptyValueTag;
 
             return (
@@ -393,39 +402,41 @@ export const DefiStakingTable = withTranslation(["tables", "common"])(
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? ""]];
             const amountStr =
               row.lastDayPendingRewards && row.lastDayPendingRewards !== "0"
-                ? (hideAssets
+                ? hideAssets
                   ? HiddenTag
                   : getValuePrecisionThousand(
-                    sdk
-                      .toBig(row.lastDayPendingRewards)
-                      .div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  ))
+                      sdk
+                        .toBig(row.lastDayPendingRewards)
+                        .div("1e" + tokenInfo.decimals),
+                      tokenInfo.precision,
+                      tokenInfo.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    )
                 : EmptyValueTag;
             const amountPreviousEarnStr =
               row.totalRewards && row.totalRewards != "0"
                 ? (hideAssets
-                  ? HiddenTag
-                  : getValuePrecisionThousand(
-                    sdk.toBig(row.totalRewards).div("1e" + tokenInfo.decimals),
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                      // isTrade: true,
-                    }
-                  )) +
-                " " +
-                tokenInfo.symbol
+                    ? HiddenTag
+                    : getValuePrecisionThousand(
+                        sdk
+                          .toBig(row.totalRewards)
+                          .div("1e" + tokenInfo.decimals),
+                        tokenInfo.precision,
+                        tokenInfo.precision,
+                        undefined,
+                        false,
+                        {
+                          floor: false,
+                          // isTrade: true,
+                        }
+                      )) +
+                  " " +
+                  tokenInfo.symbol
                 : EmptyValueTag;
             return <>{amountStr + "/" + amountPreviousEarnStr}</>;
           },

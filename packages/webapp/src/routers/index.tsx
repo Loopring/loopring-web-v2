@@ -1,6 +1,6 @@
 import { Route, Switch, useLocation } from "react-router-dom";
 import React from "react";
-import { Box, Container } from "@mui/material";
+import { Box, Container, Link } from "@mui/material";
 import Header from "layouts/header";
 import { QuotePage } from "pages/QuotePage";
 import { SwapPage } from "pages/SwapPage";
@@ -167,18 +167,25 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     pathname: window.location.pathname,
     query: searchParams,
   });
+  React.useEffect(() => {
+    if (/^\/?wallet/.test(location.pathname)) {
+      window.open("https://wallet.loopring.io", "_self");
+      window.opener = null;
+    }
+  }, [location.pathname]);
 
   return (
     <>
       <Switch>
-        <Route exact path="/wallet">
-          {searchParams && searchParams.has("noheader") ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} isLandPage />
-          )}
-          <WalletPage />
-        </Route>
+        {/*<Route exact path="/wallet">*/}
+        {/*  {searchParams && searchParams.has("noheader") ? (*/}
+        {/*    <></>*/}
+        {/*  ) : (*/}
+        {/*    <Header isHideOnScroll={true} isLandPage />*/}
+        {/*  )}*/}
+        {/*  <Link></Link>*/}
+        {/*  /!*<WalletPage />*!/*/}
+        {/*</Route>*/}
 
         <Route exact path="/loading">
           <LoadingPage />
@@ -217,7 +224,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
           <LandPage />
         </Route>
-        <Route exact path="/document/:path">
+        <Route path="/document">
           {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (

@@ -88,7 +88,6 @@ const TYPE_COLOR_MAPPING = [
 ];
 const CellStatus = ({ row }: any) => {
   const status = row["status"];
-  // debugger
   const RenderValue = styled.div`
     display: flex;
     align-items: center;
@@ -900,7 +899,7 @@ export const ContactTransactionsPage = withTranslation("common")(
             color={"inherit"}
             onClick={history.goBack}
           >
-            Contacts
+            {rest.t("labelContacts")}
           </Button>
         </Box>
         <StylePaper ref={container} flex={1}>

@@ -7,11 +7,16 @@ import {
 } from "@loopring-web/component-lib";
 
 import { Grid } from "@mui/material";
-import { useAmmMap } from "../../../index";
+import {
+  useAccount,
+  useAmmMap,
+  usePageAmmPool,
+  walletLayer2Service,
+} from "../../../index";
 import styled from "@emotion/styled";
-import { useLocation } from "react-router-dom";
 import { useAmmJoin } from "../../../hooks/useractions/hookAmmJoin";
 import { useAmmExit } from "../../../hooks/useractions/hookAmmExit";
+import { SagaStatus } from "@loopring-web/common-resources";
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
@@ -62,13 +67,9 @@ export const AmmPanelView = ({
     type: "Disabled" | "Mini";
   }>({ open: false, type: "Disabled" });
   const { ammMap } = useAmmMap();
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
 
   const [index, setIndex] = React.useState(
-    searchParams?.get("type") === "remove"
-      ? AmmPanelType.Exit
-      : AmmPanelType.Join
+    ammType == 1 ? AmmPanelType.Exit : AmmPanelType.Join
   );
   const handleTabChange = React.useCallback(
     (newValue: any) => {
@@ -91,6 +92,7 @@ export const AmmPanelView = ({
     updateJoinFee,
     setToastOpen,
     market,
+    refreshRef,
   });
   const {
     ammCalcData: ammCalcDataWithdraw,
@@ -105,10 +107,28 @@ export const AmmPanelView = ({
     updateExitFee,
     setToastOpen,
     market,
+    refreshRef,
     // ammCalcDefault: ammExit.ammCalcData,
     // ammDataDefault: ammExit.ammData,
     setConfirmExitSmallOrder,
   });
+  const { resetAmmPool } = usePageAmmPool();
+  const { status: accountStatus } = useAccount();
+
+  React.useEffect(() => {
+    if (refreshRef.current) {
+      // @ts-ignore
+      refreshRef.current.firstElementChild.click();
+    }
+    return () => {
+      resetAmmPool();
+    };
+  }, []);
+  React.useEffect(() => {
+    if (accountStatus === SagaStatus.UNSET) {
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, [accountStatus]);
 
   return (
     <>

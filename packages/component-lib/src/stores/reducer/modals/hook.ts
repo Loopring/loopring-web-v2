@@ -240,6 +240,7 @@ export const useOpenModals = () => {
         state: ModalStatePlayLoad & {
           claimToken?: ClaimToken;
           claimType?: CLAIM_TYPE;
+          successCallback?: () => void;
         }
       ) => {
         if (toggle.claim.enable) {

@@ -6,6 +6,7 @@ import {
   IBData,
   myLog,
   SDK_ERROR_MAP_TO_UI,
+  SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import {
@@ -37,6 +38,7 @@ export const useAmmExit = ({
   setToastOpen,
   setConfirmExitSmallOrder,
   updateExitFee,
+  refreshRef,
 }: // ammCalcDefault,
 // ammDataDefault,
 {
@@ -48,6 +50,7 @@ export const useAmmExit = ({
     open: boolean;
     type: "Disabled" | "Mini";
   }) => void;
+  refreshRef: React.Ref<any>;
   // ammCalcDefault: Partial<AmmExitData<any>>;
   // ammDataDefault: Partial<AmmJoinData<IBData<string>, string>>;
 }) => {
@@ -304,12 +307,12 @@ export const useAmmExit = ({
         risky: false,
       };
 
-      if (data.coinLP.tradeValue !== undefined) {
+      if (data.coinLP.tradeValue !== undefined && ammExit.ammCalcData) {
         const { volA_show, volB_show, request } = sdk.makeExitAmmPoolRequest2(
           rawVal.toString(),
           slippageReal,
           account.accAddress,
-          fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
+          ammExit.ammCalcData?.fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
           ammPoolSnapshot,
           tokenMap as any,
           idIndex as IdMap,
@@ -356,14 +359,7 @@ export const useAmmExit = ({
           burnedReq,
           account.apiKey
         );
-        // updatePageAmmExit({
-        //   ammData: {
-        //     ...ammData,
-        //     ...{
-        //       coinLP: { ...ammData.coinLP, tradeValue: 0 },
-        //     },
-        //   },
-        // });
+
         myLog("exit ammpool request:", {
           ...ammExit.request,
           domainSeparator: ammInfo.domainSeparator,
@@ -438,7 +434,6 @@ export const useAmmExit = ({
         });
       }
     }
-    setIsLoading(false);
     updatePageAmmExit({
       ammData: {
         ...ammData,
@@ -447,19 +442,14 @@ export const useAmmExit = ({
         },
       },
     });
+
     walletLayer2Service.sendUserUpdate();
+    // @ts-ignore
+    refreshRef?.current?.firstElementChild.click();
+    await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+    setIsLoading(false);
     // await updateExitFee();
   }, [ammData, account, ammInfo]);
-
-  // const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-  //   [fnType.ACTIVATED]: [onSubmitBtnClick],
-  // });
-  // const onAmmClick = React.useCallback(
-  //   (props: AmmExitData<IBData<any>>) => {
-  //     accountStaticCallBack(onAmmClickMap, [props]);
-  //   },
-  //   [onAmmClickMap, updatePageAmmExitBtn]
-  // );
 
   const walletLayer2Callback = React.useCallback(async () => {
     updateExitFee();

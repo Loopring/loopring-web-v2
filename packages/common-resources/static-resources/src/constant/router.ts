@@ -33,6 +33,7 @@ export const BANXA_URLS = {
   1: "https://loopring.banxa.com",
   5: "https://loopring.banxa-sandbox.com",
 };
+export const LOOPRING_DOCUMENT = "https://loopring.io/#/document/";
 
 //
 //
@@ -140,10 +141,7 @@ export let headerToolBarData: Array<{
 }> = [
   {
     buttonComponent: ButtonComponentsMap.Download,
-    url: "https://loopring.io/wallet.html",
-    // i18nTitle: "labelDownloadAppTitle",
-    // handleClick: undefined,
-    // i18nDescription: "labelDownloadBtn",
+    url: "https://wallet.loopring.io",
   },
   {
     buttonComponent: ButtonComponentsMap.Notification,
@@ -171,6 +169,13 @@ export const toolBarMobileAvailableItem = [
   ButtonComponentsMap.WalletConnect,
 ];
 
+export enum RouterPath {
+  lite = "/trade/lite",
+  pro = "/trade/pro",
+  stoplimit = "/trade/stoplimit",
+  btrade = "/trade/btrade",
+  fiat = "/trade/fiat",
+}
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -178,7 +183,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelClassic",
       description: "labelClassicDescription",
     },
-    router: { path: "/trade/lite/${pair}" },
+    router: { path: RouterPath.lite + "/${pair}" },
   },
   {
     label: {
@@ -186,7 +191,15 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelAdvanced",
       description: "labelAdvancedDescription",
     },
-    router: { path: "/trade/pro/${pair}" },
+    router: { path: RouterPath.pro + "/${pair}" },
+  },
+  {
+    label: {
+      id: "stopLimit",
+      i18nKey: "labelStopLimit",
+      description: "labelStopLimitDescription",
+    },
+    router: { path: RouterPath.stoplimit + "/${pair}" },
   },
   {
     label: {
@@ -194,7 +207,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelBtradeTrade",
       description: "labelBtradeTradeDescription",
     },
-    router: { path: "/trade/btrade/${pair}" },
+    router: { path: RouterPath.btrade + "/${pair}" },
   },
 
   {
@@ -203,7 +216,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelFiat",
       description: "labelFiatDescription",
     },
-    router: { path: "/trade/fiat" },
+    router: { path: RouterPath.fiat },
   },
 ];
 
@@ -223,7 +236,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://loopring.io/wallet.html" },
+    router: { path: "https://wallet.loopring.io" },
   },
   // {
   //   label: {
@@ -402,17 +415,17 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: "Privacy", //Privacy policy
-      linkHref: "https://loopring.io/#/document/privacy_en.md",
+      linkHref: LOOPRING_DOCUMENT + "privacy_en.md",
     },
     {
       linkName: "Risks", //Risks Disclosure
-      linkHref: "https://loopring.io/#/document/risks_en.md",
+      linkHref: LOOPRING_DOCUMENT + "risks_en.md",
     },
   ],
   Platform: [
     {
       linkName: "Fees", //Fees
-      linkHref: "https://loopring.io/#/document/dex_fees_en.md",
+      linkHref: LOOPRING_DOCUMENT + "dex_fees_en.md",
     },
     {
       linkName: "VIP", //VIP
@@ -448,7 +461,7 @@ export const FOOTER_LIST_MAP = {
   Developers: [
     {
       linkName: "SmartContract", // Smart Contract
-      linkHref: "https://loopring.io/#/document/contracts_en.md",
+      linkHref: LOOPRING_DOCUMENT + "contracts_en.md",
     },
 
     {
@@ -461,7 +474,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: "BugBounty", //BugBounty
-      linkHref: "https://loopring.io/#/document/bug_bounty_en.md",
+      linkHref: LOOPRING_DOCUMENT + "bug_bounty_en.md",
     },
     {
       linkName: "Subgraph", //Subgraph
@@ -604,8 +617,6 @@ export enum RecordTabIndex {
   trades = "trades",
   ammRecords = "ammRecords",
   orders = "orders",
-  // orderOpenTable = "orderOpenTable",
-  // orderHistoryTable = "orderHistoryTable",
   defiRecords = "defiRecords",
   dualRecords = "dualRecords",
   sideStakingRecords = "sideStakingRecords",

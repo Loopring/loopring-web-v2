@@ -76,7 +76,7 @@ export const StopLimitView = withTranslation("common")(
         <ConfirmStopLimitRisk
           open={confirmed}
           handleClose={(_e) => {
-            setConfirmed(false);
+            confirmStopLimit.handleClose();
           }}
           {...{ ...(confirmStopLimit as any) }}
         />

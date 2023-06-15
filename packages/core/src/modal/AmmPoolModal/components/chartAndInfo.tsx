@@ -16,7 +16,6 @@ import {
   AmmHistoryItem,
   CurrencyToTag,
   CustomError,
-  EmptyIcon,
   EmptyValueTag,
   FloatTag,
   getValuePrecisionThousand,
@@ -27,13 +26,12 @@ import {
   TokenType,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   useAmmMap,
   useSystem,
   useTicker,
   useTokenMap,
-  useTokenPrices,
   useUserRewards,
 } from "../../../stores";
 import { BoxWrapperStyled } from "./ammPanel";
@@ -67,7 +65,6 @@ export const ChartAndInfoPanel = ({
   const { ammMap } = useAmmMap();
   const { tokenMap } = useTokenMap();
   const { tickerMap } = useTicker();
-  const { tokenPrices } = useTokenPrices();
   const ammInfo = ammMap["AMM-" + market];
   const { myAmmLPMap } = useUserRewards();
   const [pairHistory, setPairHistory] = React.useState<
@@ -160,7 +157,7 @@ export const ChartAndInfoPanel = ({
                 quoteSymbol={ammInfo.coinB}
                 showXAxis
               />
-            ) : pairHistory == undefined ? (
+            ) : pairHistory == undefined || pairHistory?.length == 0 ? (
               <Box
                 flex={1}
                 display={"flex"}
@@ -396,22 +393,24 @@ export const ChartAndInfoPanel = ({
                   {t("label24Volume")}
                 </Typography>
                 <Typography variant={"body1"} component={"span"}>
-                  {PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      (ticker?.volume ?? 0) *
-                        (tokenPrices[ammInfo?.coinA ?? ""] ?? 0) *
-                        (forexMap[currency] ?? 0),
-                      undefined,
-                      undefined,
-                      undefined,
-                      true,
-                      {
-                        isFait: true,
-                        floor: false,
-                        isAbbreviate: true,
-                        abbreviate: 6,
-                      }
-                    )}
+                  {ticker?.priceU
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        sdk
+                          .toBig(ticker?.priceU ?? 0)
+                          .times(forexMap[currency] ?? 0),
+                        undefined,
+                        undefined,
+                        undefined,
+                        true,
+                        {
+                          isFait: true,
+                          floor: false,
+                          isAbbreviate: true,
+                          abbreviate: 6,
+                        }
+                      )
+                    : EmptyValueTag}
                 </Typography>
               </Typography>
 

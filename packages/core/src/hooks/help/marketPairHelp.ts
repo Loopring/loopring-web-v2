@@ -34,24 +34,31 @@ export const swapDependAsync = (
     if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
       Promise.all([
         LoopringAPI.exchangeAPI.getMixDepth({ market, level, limit }),
-        LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({ poolAddress }),
+        poolAddress
+          ? LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({ poolAddress })
+          : Promise.resolve({ ammPoolSnapshot: undefined }),
         LoopringAPI.exchangeAPI.getMixTicker({ market: market }),
       ]).then(([{ depth }, { ammPoolSnapshot }, { tickMap }]) => {
         store.dispatch(tickerReducer.updateTicker(tickMap));
-        store.dispatch(
-          ammMapReducer.updateRealTimeAmmMap({
-            ammPoolStats: {
-              ["AMM-" + market]: {
-                ...ammMap["AMM-" + market].__rawConfig__,
-                liquidity: [
-                  ammPoolSnapshot.pooled[0].volume,
-                  ammPoolSnapshot.pooled[1].volume,
-                ],
-                lpLiquidity: ammPoolSnapshot.lp.volume,
+        const { ammMap } = store.getState().amm.ammMap;
+        const ammInfo = ammMap["AMM-" + market];
+        if (ammPoolSnapshot && ammInfo) {
+          store.dispatch(
+            ammMapReducer.updateRealTimeAmmMap({
+              ammPoolStats: {
+                ["AMM-" + market]: {
+                  ...ammInfo.__rawConfig__,
+                  liquidity: [
+                    ammPoolSnapshot.pooled[0].volume,
+                    ammPoolSnapshot.pooled[1].volume,
+                  ],
+                  lpLiquidity: ammPoolSnapshot.lp.volume,
+                },
               },
-            },
-          })
-        );
+            })
+          );
+        }
+
         resolve({
           ammPoolSnapshot: ammPoolSnapshot,
           tickMap,

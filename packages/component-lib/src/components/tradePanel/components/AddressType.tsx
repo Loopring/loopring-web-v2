@@ -193,7 +193,6 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
   disabled: boolean;
   detectedWalletType: WALLET_TYPE;
 }) => {
-  console.log("found", selectedValue);
   const { t } = useTranslation("common");
   const { walletListFn } = useAddressTypeLists<T>();
   const {

@@ -225,6 +225,10 @@ const MyLiquidity: any = withTranslation("common")(
             .toString();
         }, "0")
       : undefined;
+    const _summaryMyInvest = sdk
+      .toBig(dualStakeDollar ?? 0)
+      .plus(summaryMyInvest.investDollar ?? 0)
+      .toString();
     return (
       <Box
         display={"flex"}
@@ -296,12 +300,13 @@ const MyLiquidity: any = withTranslation("common")(
                 {t("labelTotalPositionValue")}
               </Typography>
               <Typography variant={fontSize.count} marginTop={1}>
-                {summaryMyInvest?.investDollar
+                {_summaryMyInvest
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
                       sdk
-                        .toBig(summaryMyInvest.investDollar)
-                        .times(forexMap[currency] ?? 0),
+                        .toBig(_summaryMyInvest)
+                        .times(forexMap[currency] ?? 0)
+                        .toString(),
                       undefined,
                       undefined,
                       2,
@@ -449,9 +454,11 @@ const MyLiquidity: any = withTranslation("common")(
                       </Typography>
                       {summaryMyInvest?.stakeLRCDollar !== undefined ? (
                         <Typography component={"h4"} variant={"h3"} marginX={3}>
-                            {summaryMyInvest?.stakeLRCDollar
-                              ? (hideAssets ? HiddenTag
-                                : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
+                          {summaryMyInvest?.stakeLRCDollar
+                            ? hideAssets
+                              ? HiddenTag
+                              : PriceTag[CurrencyToTag[currency]] +
+                                getValuePrecisionThousand(
                                   sdk
                                     .toBig(summaryMyInvest?.stakeLRCDollar)
                                     .times(forexMap[currency] ?? 0),
@@ -460,8 +467,8 @@ const MyLiquidity: any = withTranslation("common")(
                                   2,
                                   true,
                                   { isFait: true, floor: true }
-                                ))
-                              : EmptyValueTag}
+                                )
+                            : EmptyValueTag}
                         </Typography>
                       ) : (
                         ""
@@ -489,10 +496,10 @@ const MyLiquidity: any = withTranslation("common")(
                         marginX={3}
                         component={"span"}
                       >
-                          {totalStakedRewards && totalStakedRewards !== "0"
-                            ? (hideAssets
-                              ? HiddenTag
-                              : getValuePrecisionThousand(
+                        {totalStakedRewards && totalStakedRewards !== "0"
+                          ? hideAssets
+                            ? HiddenTag
+                            : getValuePrecisionThousand(
                                 sdk
                                   .toBig(totalStakedRewards ?? 0)
                                   .div("1e" + tokenMap[stakedSymbol].decimals),
@@ -501,9 +508,10 @@ const MyLiquidity: any = withTranslation("common")(
                                 tokenMap[stakedSymbol].precision,
                                 false,
                                 { floor: true, isAbbreviate: true }
-                              ) + " " + stakedSymbol
-                            )
-                            : EmptyValueTag}
+                              ) +
+                              " " +
+                              stakedSymbol
+                          : EmptyValueTag}
                       </Typography>
                     </Grid>
 
@@ -538,7 +546,11 @@ const MyLiquidity: any = withTranslation("common")(
                               display={"inline-flex"}
                               paddingRight={2}
                             >
-                              {(hideAssets ? HiddenTag : totalClaimableRewardsAmount  + " " + stakedSymbol)}
+                              {hideAssets
+                                ? HiddenTag
+                                : totalClaimableRewardsAmount +
+                                  " " +
+                                  stakedSymbol}
                             </Typography>
                             <Button
                               variant={"contained"}
@@ -618,21 +630,21 @@ const MyLiquidity: any = withTranslation("common")(
                   >
                     {summaryMyInvest?.stakeETHDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
-                          {summaryMyInvest?.stakeETHDollar
-                            ? (
-                              hideAssets
-                                ? HiddenTag
-                                : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
-                                  sdk
-                                    .toBig(summaryMyInvest?.stakeETHDollar)
-                                    .times(forexMap[currency] ?? 0),
-                                  undefined,
-                                  undefined,
-                                  2,
-                                  true,
-                                  { isFait: true, floor: true }
-                                ))
-                            : EmptyValueTag}
+                        {summaryMyInvest?.stakeETHDollar
+                          ? hideAssets
+                            ? HiddenTag
+                            : PriceTag[CurrencyToTag[currency]] +
+                              getValuePrecisionThousand(
+                                sdk
+                                  .toBig(summaryMyInvest?.stakeETHDollar)
+                                  .times(forexMap[currency] ?? 0),
+                                undefined,
+                                undefined,
+                                2,
+                                true,
+                                { isFait: true, floor: true }
+                              )
+                          : EmptyValueTag}
                       </Typography>
                     ) : (
                       ""
@@ -681,13 +693,13 @@ const MyLiquidity: any = withTranslation("common")(
                     {dualStakeDollar !== undefined ? (
                       <Typography component={"h4"} variant={"h3"} marginX={3}>
                         {dualStakeDollar
-                          ? (hideAssets 
-                            ? HiddenTag 
+                          ? hideAssets
+                            ? HiddenTag
                             : PriceTag[CurrencyToTag[currency]] +
-                            sdk
-                              .toBig(dualStakeDollar)
-                              .times(forexMap[currency] ?? 0)
-                              .toFixed(2, 1))
+                              sdk
+                                .toBig(dualStakeDollar)
+                                .times(forexMap[currency] ?? 0)
+                                .toFixed(2, 1)
                           : EmptyValueTag}
                       </Typography>
                     ) : (

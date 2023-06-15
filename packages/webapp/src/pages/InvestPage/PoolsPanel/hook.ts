@@ -1,7 +1,7 @@
 import React from "react";
-import { RowInvestConfig, SagaStatus } from "@loopring-web/common-resources";
+import { SagaStatus } from "@loopring-web/common-resources";
 
-import { store, useAmmMap, useSystem, useTicker } from "@loopring-web/core";
+import { store, useAmmMap, useSystem } from "@loopring-web/core";
 
 import { useLocation } from "react-router-dom";
 import {
@@ -11,7 +11,6 @@ import {
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 
 // type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat };
@@ -33,7 +32,6 @@ export function useAmmMapUI<
   const [filteredData, setFilteredData] = React.useState<R[]>([]);
   // const { status: tokenMapStatus } = useTokenMap();
   const { status: ammStatus } = useAmmMap();
-  const { tickerMap } = useTicker();
   const { allowTrade } = useSystem();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const nodePopTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -60,6 +58,7 @@ export function useAmmMapUI<
         return prev;
       }, [] as R[]);
     }
+
     setFilteredData(rawData);
 
     nodeTimer.current = setTimeout(() => {

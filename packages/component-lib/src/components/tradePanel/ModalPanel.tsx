@@ -53,7 +53,8 @@ const BoxStyle = styled(Box)<
   .trade-wrap {
     margin-top: -26px;
   }
-  Map .trade-panel {
+
+  .trade-panel {
     position: relative;
     height: ${({ _height }) =>
       _height && Number.isNaN(_height)

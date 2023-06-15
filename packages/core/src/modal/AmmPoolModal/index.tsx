@@ -10,7 +10,7 @@ import {
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/common-resources";
+import { myLog, TOAST_TIME } from "@loopring-web/common-resources";
 import { Box, Link, Modal as MuiModal } from "@mui/material";
 import styled from "@emotion/styled";
 import { store, useAmmMap } from "../../index";
@@ -74,7 +74,7 @@ const Content = withTranslation("common")(
       updateExitFee,
       updateJoinFee,
     } = useAmmCommon({ market });
-
+    myLog("amm type", type);
     return (
       <>
         <Box
@@ -149,6 +149,7 @@ const Content = withTranslation("common")(
               marginBottom={2}
               display={"flex"}
               width={isMobile ? "100%" : "initial"}
+              flexDirection={isMobile ? "column" : "row"}
             >
               <Toast
                 alertText={toastOpen?.content ?? ""}
@@ -231,7 +232,7 @@ export const ModalCoinPairPanel = () => {
         position={"relative"}
         style={{ alignItems: "stretch" }}
       >
-        {market && market !== "" ? (
+        {market && ammMap["AMM-" + market] ? (
           <Content
             market={market.replace("AMM-", "")}
             panelIndex={panelIndex}

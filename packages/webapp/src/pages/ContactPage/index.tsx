@@ -133,7 +133,9 @@ export const ContactPage = () => {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      <Typography color={"var(--color-text-third)"}>No Contact</Typography>
+      <Typography color={"var(--color-text-third)"}>
+        {t("labelContactsNoContact")}
+      </Typography>
     </Box>
   );
   const loadingView = (
@@ -317,10 +319,5 @@ export const ContactPage = () => {
       </Box>
     </ContactPageStyle>
   );
-  return (
-    <ViewAccountTemplate
-      unlockWording={"Unlock your account to view your contacts."}
-      activeViewTemplate={activeView}
-    />
-  );
+  return <ViewAccountTemplate activeViewTemplate={activeView} />;
 };

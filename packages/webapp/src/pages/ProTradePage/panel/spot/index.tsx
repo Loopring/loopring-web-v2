@@ -80,16 +80,12 @@ export const SpotView = withTranslation("common")(
       tradeMarketI18nKey,
       tradeMarketBtnStatus,
       tradeMarketBtnStyle,
-      marketSubmit,
       resetMarketData,
       marketBtnClick,
       isMarketLoading,
       priceAlertCallBack,
       smallOrderAlertCallBack,
-      secondConfirmationCallBack,
       smallOrderAlertOpen,
-      secondConfirmationOpen,
-      setToastOpen,
     } = useMarket({ market, resetTradeCalcData });
     const onTabChange = React.useCallback(
       (_e, value) => {

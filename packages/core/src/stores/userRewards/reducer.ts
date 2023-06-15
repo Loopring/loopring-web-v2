@@ -26,7 +26,6 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
       const { myAmmLPMap, rewardU, feeU } = makeSummaryMyAmm({
         userRewardsMap: state.userRewardsMap,
       });
-      debugger;
       state.rewardU = rewardU;
       state.feeU = feeU;
       state.myAmmLPMap = myAmmLPMap;

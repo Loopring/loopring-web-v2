@@ -5,6 +5,7 @@ import {
   EmptyValueTag,
   IBData,
   LinkedIcon,
+  ReverseIcon,
   SlippageTolerance,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -18,8 +19,7 @@ import { bindHover, bindPopover } from "material-ui-popup-state/es";
 import { SlippagePanel } from "../tool";
 import { SvgStyled } from "./styled";
 import { useSettings } from "../../../../stores";
-import { useAmmViewData } from "./ammViewHook";
-import { ButtonStyle } from "../Styled";
+import { ButtonStyle, IconButtonStyled } from "../Styled";
 
 export const AmmDepositWrap = <
   T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
@@ -38,7 +38,6 @@ export const AmmDepositWrap = <
   tokenAProps,
   tokenBProps,
   onAddChangeEvent,
-  handleError,
   ammData,
   propsAExtends = {},
   propsBExtends = {},
@@ -53,35 +52,40 @@ export const AmmDepositWrap = <
     `slippage:${slippage}`
   ) as Array<number | string>;
 
-  const [errorA, setErrorA] = React.useState<{
-    error: boolean;
-    message?: string | JSX.Element;
-  }>({
-    error: false,
-    message: "",
-  });
-  const [errorB, setErrorB] = React.useState<{
-    error: boolean;
-    message?: string | JSX.Element;
-  }>({
-    error: false,
-    message: "",
-  });
-
-  const [_isStoB, setIsStoB] = React.useState(
-    typeof isStob !== "undefined" ? isStob : true
-  );
-
-  const _onSwitchStob = React.useCallback(
-    (_event: any) => {
-      setIsStoB(!_isStoB);
-      if (typeof switchStobEvent === "function") {
-        switchStobEvent(!_isStoB);
+  const [_isStoB, setIsStoB] = React.useState(isStob ?? true);
+  const stob = React.useMemo(() => {
+    if (
+      ammCalcData &&
+      ammCalcData?.lpCoinA &&
+      ammCalcData?.lpCoinB &&
+      ammCalcData.AtoB
+    ) {
+      let price: string;
+      if (_isStoB) {
+        price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${
+          ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag
+        } ${ammCalcData?.lpCoinB?.belong}`;
+      } else {
+        price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${
+          ammCalcData.BtoA ? ammCalcData.BtoA : EmptyValueTag
+        } ${ammCalcData?.lpCoinA?.belong}`;
       }
-    },
-    [switchStobEvent, _isStoB]
-  );
-
+      return (
+        <>
+          {price}
+          <IconButtonStyled
+            size={"small"}
+            aria-label={t("tokenExchange")}
+            onClick={() => setIsStoB(!_isStoB)}
+          >
+            <ReverseIcon />
+          </IconButtonStyled>
+        </>
+      );
+    } else {
+      return EmptyValueTag;
+    }
+  }, [_isStoB, ammCalcData]);
   const getDisabled = () => {
     return (
       disabled ||
@@ -89,33 +93,18 @@ export const AmmDepositWrap = <
       ammCalcData.coinInfoMap === undefined
     );
   };
+  const handleError = () => {
+    if (
+      ammDepositBtnStatus === TradeBtnStatus.DISABLED &&
+      ammDepositBtnI18nKey &&
+      (/labelAMMNoEnough/.test(ammDepositBtnI18nKey) ||
+        /labelAMMMax/.test(ammDepositBtnI18nKey))
+    ) {
+      return { error: true };
+    }
+    return { error: false };
+  };
 
-  if (typeof handleError !== "function") {
-    handleError = ({ belong, balance, tradeValue }: any) => {
-      if (ammCalcData?.myCoinA?.belong && ammCalcData?.myCoinB?.belong) {
-        const isCoinA = belong === ammCalcData.myCoinA.belong;
-        if (balance < tradeValue || (tradeValue && !balance)) {
-          const _error = {
-            error: true,
-            message: t("tokenNotEnough", { belong: belong }),
-          };
-          if (isCoinA) {
-            setErrorA(_error);
-          } else {
-            setErrorB(_error);
-          }
-          return _error;
-        }
-
-        if (isCoinA) {
-          setErrorA({ error: false, message: "" });
-        } else {
-          setErrorB({ error: false, message: "" });
-        }
-      }
-      return { error: false, message: "" };
-    };
-  }
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _name: string, _ref: any) => {
       const focus: "coinA" | "coinB" =
@@ -173,18 +162,14 @@ export const AmmDepositWrap = <
     },
     [ammData, onAddChangeEvent]
   );
-
-  const { label, stob } = useAmmViewData({
-    error: { errorA, errorB },
-    i18nKey: ammDepositBtnI18nKey,
-    t,
-    _isStoB,
-    ammCalcData,
-    _onSwitchStob,
-    isAdd: true,
-  });
-
-  // myLog('amm deposit ammData:', ammData)
+  const label = React.useMemo(() => {
+    if (ammDepositBtnI18nKey) {
+      const key = ammDepositBtnI18nKey.split("|");
+      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
+    } else {
+      return t(`labelAddLiquidityBtn`);
+    }
+  }, [ammDepositBtnI18nKey]);
 
   return (
     <Grid

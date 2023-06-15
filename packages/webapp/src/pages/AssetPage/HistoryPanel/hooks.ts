@@ -113,27 +113,30 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
           });
         } else {
           const formattedList: RawDataTransactionItem[] = response.userTxs.map(
-            (o) => {
+            (order) => {
               const feePrecision = tokenMap
-                ? tokenMap[o.feeTokenSymbol].precision
+                ? tokenMap[order.feeTokenSymbol].precision
                 : undefined;
               return {
-                ...o,
-                side: o.txType as any,
+                ...order,
+                side: order.txType as any,
                 amount: {
-                  unit: o.symbol || "",
-                  value: Number(volumeToCount(o.symbol, o.amount)),
+                  unit: order.symbol || "",
+                  value: Number(volumeToCount(order.symbol, order.amount)),
                 },
                 fee: {
-                  unit: o.feeTokenSymbol || "",
+                  unit: order.feeTokenSymbol || "",
                   value: Number(
-                    volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
+                    volumeToCountAsBigNumber(
+                      order.feeTokenSymbol,
+                      order.feeAmount || 0
+                    )
                   ),
                 },
-                memo: o.memo || "",
-                time: o.timestamp,
-                txnHash: o.hash,
-                status: getTxnStatus(o.status),
+                memo: order.memo || "",
+                time: order.timestamp,
+                txnHash: order.hash,
+                status: getTxnStatus(order.status),
                 feePrecision: feePrecision,
               } as RawDataTransactionItem;
             }
@@ -259,7 +262,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       if (tokenMap) {
         const keys = Object.keys(tokenMap);
         const values = Object.values(tokenMap);
-        const index = values.findIndex((o) => o.tokenId === tokenId);
+        const index = values.findIndex((token) => token.tokenId === tokenId);
         if (index > -1) {
           return keys[index];
         }
@@ -302,45 +305,45 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
                 : (response as sdk.RESULT_INFO).message,
           });
         } else {
-          const result = response.userAmmPoolTxs.map((o) => ({
+          const result = response.userAmmPoolTxs.map((order) => ({
             side:
-              o.txType === sdk.AmmTxType.JOIN
+              order.txType === sdk.AmmTxType.JOIN
                 ? AmmSideTypes.Join
                 : AmmSideTypes.Exit,
             amount: {
               from: {
-                key: getTokenName(o.poolTokens[0]?.tokenId),
+                key: getTokenName(order.poolTokens[0]?.tokenId),
                 value: String(
                   volumeToCount(
-                    getTokenName(o.poolTokens[0]?.tokenId),
-                    o.poolTokens[0]?.actualAmount
+                    getTokenName(order.poolTokens[0]?.tokenId),
+                    order.poolTokens[0]?.actualAmount
                   )
                 ),
               },
               to: {
-                key: getTokenName(o.poolTokens[1]?.tokenId),
+                key: getTokenName(order.poolTokens[1]?.tokenId),
                 value: String(
                   volumeToCount(
-                    getTokenName(o.poolTokens[1]?.tokenId),
-                    o.poolTokens[1]?.actualAmount
+                    getTokenName(order.poolTokens[1]?.tokenId),
+                    order.poolTokens[1]?.actualAmount
                   )
                 ),
               },
             },
             lpTokenAmount: String(
               volumeToCount(
-                getTokenName(o.lpToken?.tokenId),
-                o.lpToken?.actualAmount
+                getTokenName(order.lpToken?.tokenId),
+                order.lpToken?.actualAmount
               )
             ),
             fee: {
-              key: getTokenName(o.poolTokens[1]?.tokenId),
+              key: getTokenName(order.poolTokens[1]?.tokenId),
               value: volumeToCount(
-                getTokenName(o.poolTokens[1]?.tokenId),
-                o.poolTokens[1]?.feeAmount
+                getTokenName(order.poolTokens[1]?.tokenId),
+                order.poolTokens[1]?.feeAmount
               )?.toFixed(6),
             },
-            time: o.updatedAt,
+            time: order.updatedAt,
           }));
           setAmmRecordList(result);
           setShowLoading(false);
@@ -532,16 +535,16 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
         } else {
           if (userOrders && Array.isArray(userOrders.orders)) {
             setTotalNum(userOrders.totalNum);
-            const data = userOrders.orders.map((o) => {
+            const data = userOrders.orders.map((order) => {
               const { baseAmount, quoteAmount, baseFilled, quoteFilled } =
-                o.volumes;
+                order.volumes;
 
-              const marketList = o.market.split("-");
+              const marketList = order.market.split("-");
               if (marketList.length === 3) {
                 marketList.shift();
               }
               const side =
-                o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
+                order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
               const isBuy = side === TradeTypes.Buy;
               const [tokenFirst, tokenLast] = marketList;
               const baseToken = isBuy ? tokenLast : tokenFirst;
@@ -558,7 +561,7 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
               const quoteValue = isBuy
                 ? volumeToCount(quoteToken, baseAmount)
                 : (volumeToCount(baseToken, baseAmount) || 0) *
-                  Number(o.price || 0);
+                  Number(order.price || 0);
               const baseVolume = volumeToCountAsBigNumber(
                 baseToken,
                 actualBaseFilled
@@ -586,12 +589,12 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
                 ? (tokenMap as any)[quoteToken]?.precisionForOrder
                 : undefined;
               const precisionMarket = marketMap
-                ? marketMap[o.market]?.precisionForPrice
+                ? marketMap[order.market]?.precisionForPrice
                 : undefined;
               return {
-                market: o.market,
-                side: o.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
-                orderType: o.orderType,
+                market: order.market,
+                side: order.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
+                orderType: order.orderType,
                 amount: {
                   from: {
                     key: baseToken,
@@ -608,15 +611,18 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
 
                 price: {
                   key: quoteToken,
-                  value: Number(o.price),
+                  value: Number(order.price),
                 },
-                time: o.validity.start * 1000,
-                status: o.status as unknown as TradeStatus,
-                hash: o.hash,
-                orderId: o.clientOrderId,
-                tradeChannel: o.tradeChannel,
+                time: order.validity.start * 1000,
+                status: order.status as unknown as TradeStatus,
+                hash: order.hash,
+                orderId: order.clientOrderId,
+                tradeChannel: order.tradeChannel,
                 completion: completion,
                 precisionMarket: precisionMarket,
+                // @ts-ignore
+                extraOrderInfo: order.extraOrderInfo,
+                __raw__: order,
               };
             });
 

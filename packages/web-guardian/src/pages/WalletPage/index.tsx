@@ -14,6 +14,7 @@ import {
   FailedIcon,
   HelpIcon,
   LockGuardianIcon,
+  LOOPRING_DOCUMENT,
   MapChainId,
   myLog,
   RefuseIcon,
@@ -238,7 +239,7 @@ export const GuardianPage = withTranslation(["common"])(
               color={"textSecondary"}
               target="_blank"
               rel="noopener noreferrer"
-              href={"https://loopring.io/#/document/walletdesign_en.md"}
+              href={LOOPRING_DOCUMENT + "walletdesign_en.md"}
             >
               {t("describeWhatIsGuardian")}
             </Link>

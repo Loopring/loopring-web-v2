@@ -71,7 +71,7 @@ export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   isNFT?: boolean;
   getClaimRedPacket: (props: any) => void;
   totalLuckyTokenNFTBalance?: number;
-  hideAssets?: boolean
+  hideAssets?: boolean;
 } & XOR<
   {
     pagination?: {
@@ -107,10 +107,16 @@ export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
     pageSize: number;
     total: number;
   };
-  onItemClick: (item: sdk.LuckTokenHistory, refreshCallback?: () => void) => void;
-  onClaimItem: (item: sdk.LuckTokenHistory, successCallback: () => void) => void;
+  onItemClick: (
+    item: sdk.LuckTokenHistory,
+    refreshCallback?: () => void
+  ) => void;
+  onClaimItem: (
+    item: sdk.LuckTokenHistory,
+    successCallback: () => void
+  ) => void;
   getRedPacketReceiveList: (props: any) => void;
-  showActionableRecords: boolean
+  showActionableRecords: boolean;
 }
 
 export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
@@ -122,9 +128,12 @@ export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
     pageSize: number;
     total: number;
   };
-  onItemClick: (item: sdk.LuckyTokenBlindBoxItemReceive, pageInfo?: {offset: number, limit: number, filter: any}) => any;
+  onItemClick: (
+    item: sdk.LuckyTokenBlindBoxItemReceive,
+    pageInfo?: { offset: number; limit: number; filter: any }
+  ) => any;
   getRedPacketReceiveList: (props: any) => void;
-  showActionableRecords: boolean
+  showActionableRecords: boolean;
 }
 
 export enum LuckyTokenItemStatusMap {

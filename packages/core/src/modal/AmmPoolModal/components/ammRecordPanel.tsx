@@ -2,10 +2,10 @@ import React from "react";
 import { StylePaper } from "../../../component";
 import { BoxProps, Divider, Tab, Tabs } from "@mui/material";
 import { AmmRecordTable, useSettings } from "@loopring-web/component-lib";
-import { RowConfig } from "@loopring-web/common-resources";
+import { AccountStatus, RowConfig } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
-import { useSystem } from "../../../stores";
+import { store, useSystem } from "../../../stores";
 import { useAmmRecord } from "../hooks";
 
 const TabsStyled = styled(Tabs)`
@@ -37,16 +37,13 @@ export const AmmRecordPanel = ({ market }: { market: string }) => {
     isMyAmmLoading,
     isRecentLoading,
     ammMarketArray,
-    // ammTotal,
+    container,
     myAmmMarketArray,
     ammUserTotal,
     getUserAmmPoolTxs,
-    // getRecentAmmPoolTxs,
+    getRecentAmmPoolTxs,
     pageSize,
-    setPageSize,
   } = useAmmRecord({ market });
-  const container = React.useRef(null);
-
   const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
 
   const { t } = useTranslation("common");
@@ -55,20 +52,22 @@ export const AmmRecordPanel = ({ market }: { market: string }) => {
   const tableHeight =
     RowConfig.rowHeaderHeight +
     (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
-  React.useEffect(() => {
-    // @ts-ignore
-    let height = container?.current?.offsetHeight;
-    if (height) {
-      // const pageSize =
-      setPageSize(
-        Math.floor((height - RowConfig.rowHeight * 2) / RowConfig.rowHeight) - 1
-      );
-      // getUserAmmPoolTxs()
-    }
-  }, [container]);
+
   const handleTabsChange = React.useCallback((_: any, value: 0 | 1) => {
     setTabIndex(value);
   }, []);
+  React.useEffect(() => {
+    if (container.current) {
+      if (tabIndex == 0) {
+        getRecentAmmPoolTxs({});
+      } else if (
+        store.getState().account.readyState === AccountStatus.ACTIVATED &&
+        tabIndex == 1
+      ) {
+        getUserAmmPoolTxs({});
+      }
+    }
+  }, [tabIndex, container]);
   return (
     <AMMPanelStyled
       isMobile={isMobile}

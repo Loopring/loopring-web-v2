@@ -67,19 +67,19 @@ const App = () => {
 
           body:before {
             ${
-                    theme.mode === "dark"
-                            ? `
+              theme.mode === "dark"
+                ? `
             background: var(--color-global-bg);
        `
-                            : ""
+                : ""
             }
-          }
-        }`}
+      }
+    }`}
       />
 
       <Router>
-        <ScrollToTop/>
-        <RouterView state={state}/>
+        <ScrollToTop />
+        <RouterView state={state} />
       </Router>
     </>
   );

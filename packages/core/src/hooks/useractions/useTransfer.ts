@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -132,7 +132,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     requestType: undefined as any,
   });
   const handleOnMemoChange = React.useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       setMemo(e.target.value);
     },
     []
@@ -151,10 +151,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isContractAddress,
     loopringSmartWalletVersion,
   } = useAddressCheck();
-  React.useEffect(() => {
-    // setSureItsLayer2(undefined);
-    // debugger
-  }, [realAddr]);
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
@@ -271,7 +267,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     setMemo("");
     if (contactAddress) {
       setAddress(contactAddress);
-      setIsContactSelection(true);
     } else {
       setAddress("");
     }
@@ -630,7 +625,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   }, [isActiveAccount, realAddr]);
 
   const { isHebao } = useIsHebao();
-  const [isContactSelection, setIsContactSelection] = React.useState(false);
   const contacts = useSelector((state: RootState) => state.contacts.contacts);
   const dispatch = useDispatch();
   React.useEffect(() => {
@@ -704,7 +698,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     memo,
     handleOnMemoChange,
     handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
-      // setIsContactSelection(isContactSelection ? true : false)
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
         requestType: undefined as any,
