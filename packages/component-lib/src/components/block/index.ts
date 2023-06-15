@@ -17,3 +17,4 @@ export * from "./LoadingBlock";
 export * from "./TagIconList";
 export * from "./RedPacket";
 export * from "./CollectionDetailView";
+export * from "./Referral";

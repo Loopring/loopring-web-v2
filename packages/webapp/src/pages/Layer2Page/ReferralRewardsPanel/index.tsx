@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import {
   Box,
   BoxProps,
-  Button,
   Container,
   InputAdornment,
   OutlinedInput,
@@ -12,13 +11,20 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAccount, ViewAccountTemplate } from "@loopring-web/core";
+import { useAccount, useSubmitBtn } from "@loopring-web/core";
 import {
+  AccountStatus,
   LinkSharedIcon,
   SoursURL,
   TOAST_TIME,
+  TradeBtnStatus,
 } from "@loopring-web/common-resources";
-import { Toast, ToastType } from "@loopring-web/component-lib";
+import {
+  Button,
+  Toast,
+  ToastType,
+  useSettings,
+} from "@loopring-web/component-lib";
 
 const BoxStyled = styled(Box)`
   ol {
@@ -69,31 +75,23 @@ const ReferHeader = ({
   handleCopy: (selected: "id" | "link") => void;
 }) => {
   const { account } = useAccount();
-  const { t } = useTranslation();
-  return (
-    <BoxBannerStyle
-      backGroundUrl={SoursURL + "/images/giftReward.webp"}
-      direction={"right"}
-    >
-      <Container>
-        <Box className={"bg"} marginY={3} display={"flex"}>
-          <Box width={"65%"}>
-            <Typography
-              component={"h1"}
-              variant={"h2"}
-              sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
-            >
-              {t("labelReferTitle")}
-            </Typography>
-            <Typography
-              paddingY={1}
-              component={"h2"}
-              variant={"body1"}
-              color={"textSecondary"}
-              sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
-            >
-              {t("labelReferTitleDes")}
-            </Typography>
+  const { t } = useTranslation(["common", "layout"]);
+  const { isMobile } = useSettings();
+
+  const viewTemplate = React.useMemo(() => {
+    switch (account.readyState) {
+      case AccountStatus.UN_CONNECT:
+      case AccountStatus.LOCKED:
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.NOT_ACTIVE:
+      case AccountStatus.DEPOSITING:
+      case AccountStatus.ERROR_NETWORK:
+        return <></>;
+        break;
+      case AccountStatus.ACTIVATED:
+        return (
+          <>
+            {" "}
             <Box paddingTop={1} width={"70%"}>
               <OutlinedInput
                 size={"medium"}
@@ -152,6 +150,74 @@ const ReferHeader = ({
                 }
               />
             </Box>
+          </>
+        );
+      default:
+        break;
+    }
+  }, [account.readyState, account.connectName, isMobile, t]);
+  const { btnStatus, onBtnClick, btnLabel, btnStyle } = useSubmitBtn({
+    availableTradeCheck: () => {
+      // const account = store.getState().account;
+      // if (account.readyState === AccountStatus.ACTIVATED) {
+      //  return    { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }
+      // }
+      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
+    },
+    isLoading: false,
+    submitCallback: () => handleCopy("id"),
+  });
+
+  const label = React.useMemo(() => {
+    if (btnLabel) {
+      const key = btnLabel.split("|");
+      if (key) {
+        return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      } else {
+        return t(btnLabel);
+      }
+    } else {
+      return t(`labelInvite`);
+    }
+  }, [t, btnLabel]);
+
+  return (
+    <BoxBannerStyle
+      backGroundUrl={SoursURL + "/images/giftReward.webp"}
+      direction={"right"}
+    >
+      <Container>
+        <Box className={"bg"} marginY={3} display={"flex"}>
+          <Box width={"65%"}>
+            <Typography
+              component={"h1"}
+              variant={"h2"}
+              sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
+            >
+              {t("labelReferTitle")}
+            </Typography>
+            <Typography
+              paddingY={1}
+              component={"h2"}
+              variant={"body1"}
+              color={"textSecondary"}
+              sx={{ whiteSpace: "pre-line", wordBreak: "break-all" }}
+            >
+              {t("labelReferTitleDes")}
+            </Typography>
+            {viewTemplate}
+            <Button
+              size={"medium"}
+              onClick={onBtnClick}
+              loading={"false"}
+              disabled={
+                btnStatus === TradeBtnStatus.DISABLED ||
+                btnStatus === TradeBtnStatus.LOADING
+              }
+              fullWidth={true}
+            >
+              {label}
+            </Button>
           </Box>
         </Box>
       </Container>
@@ -232,5 +298,6 @@ const ReferView = () => {
   );
 };
 export const ReferralRewardsPanel = () => {
-  return <ViewAccountTemplate activeViewTemplate={<ReferView />} />;
+  return <ReferView />;
+  // <ViewAccountTemplate activeViewTemplate={<ReferView />} />;
 };

@@ -57,9 +57,7 @@ import { NFTMedia } from "./nftMedia";
 import { sanitize } from "dompurify";
 import { useTheme } from "@emotion/react";
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -97,6 +95,7 @@ export const RedPacketBg = styled(Box)<
       }
 
       .open.openUnready {
+        /*ts-ignore*/
         background: url("${SoursURL}/images/redpacketLock.webp") center
           no-repeat;
         color: ${({ type }) =>
@@ -257,7 +256,7 @@ export const RedPacketQRCode = ({
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>();
   const ref = React.useRef();
-  const colorConfig = RedPacketColorConfig[type];
+  // const colorConfig:any = RedPacketColorConfig[type];
   const qrCode = new QRCodeStyling({
     type: "svg",
     width: 200,
