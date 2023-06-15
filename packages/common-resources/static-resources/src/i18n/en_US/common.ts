@@ -1662,7 +1662,16 @@ export default {
   labelBtradeSwapTitleDes: "What is Block Trade?",
   labelBtradeSwapContentDes:
     "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
-    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.</p>",
+    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.</p>" +
+    "<p>The Loopring pool is currently unable to swap the fully requested amount. If you choose to continue, the unswapped tokens will be locked until they can be swapped. We'll rebalance the pool shortly.</p>" +
+    "<p>Block Trade offers two options:</p><ul>" +
+    "<li>Prioritize Speed.</li>" +
+    "<li>Prioritize Quantity.</li></ul>" +
+    "<h6>Prioritize Speed</h6>" +
+    "<p>This option prioritizes quick trade execution to ensure that trades are completed as soon as possible. It’s ideal for users who need to complete their trades quickly.</p>" +
+    "<h6>Prioritize Quantity</h6>" +
+    "<p>This option prioritizes trading as much of the asset as possible, even if it means waiting longer for the order to be fully executed. It’s ideal for users who want to maximize their trading volume and are willing to wait for the market to be favorable before completing the transaction.</p>" +
+    "<p>We’ll use the Loopring pool to swap your tokens. If your request exceeds the pool’s available balance, we’ll swap as many tokens as we can. Afterwards, we’ll rebalance the pool and then swap the remaining portion. The entire transaction should complete within 24 hours.</p>",
   labelRefereeRewards: "Referee Rewards",
   labelReferralRewards: "Referral Rewards",
   labelRewardLRC: "Rewards LRC",
