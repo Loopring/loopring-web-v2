@@ -50,16 +50,17 @@ export const QRCode = ({
     dotsOptions: {
       gradient: {
         rotation: 45,
-        type: 'linear',
-        colorStops: [{
-          offset: 0,
-          color: fgColor1,
-        },
-        {
-          offset: 1,
-          color: fgColor2
-        }
-      ]
+        type: "linear",
+        colorStops: [
+          {
+            offset: 0,
+            color: fgColor1,
+          },
+          {
+            offset: 1,
+            color: fgColor2,
+          },
+        ],
       },
       type: "dots",
     },
@@ -71,11 +72,11 @@ export const QRCode = ({
       margin: 8,
     },
     cornersSquareOptions: {
-      type: 'extra-rounded'
+      type: "extra-rounded",
     },
     cornersDotOptions: {
-      type: 'square'
-    }
+      type: "square",
+    },
   });
   const ref = React.useRef();
   React.useEffect(() => {
