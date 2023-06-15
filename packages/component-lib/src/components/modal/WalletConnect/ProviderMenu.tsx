@@ -112,7 +112,7 @@ export const ProviderMenu = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={isMobile ? 7 : 10}
+        paddingX={5}
       >
         <BoxStyle
           paddingX={5 / 3}
@@ -162,7 +162,7 @@ export const ProviderMenu = ({
         alignSelf={"stretch"}
         className="modalContent"
         marginTop={3}
-        paddingX={isMobile ? 7 : 10}
+        paddingX={5}
         paddingBottom={4}
       >
         <Box display={"flex"} justifyContent={"center"}>
