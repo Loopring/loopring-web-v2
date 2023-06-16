@@ -41,46 +41,54 @@ export const QRCode = ({
     size: 40,
   },
 }: QCodeProps & QRCodePanelProps) => {
-  const qrCode = new QRCodeStyling({
-    type: "svg",
-    data: url,
-    width: size,
-    height: size,
-    image: imageInfo.imageSrc,
-    dotsOptions: {
-      gradient: {
-        rotation: 45,
-        type: 'linear',
-        colorStops: [{
-          offset: 0,
-          color: fgColor1,
-        },
-        {
-          offset: 1,
-          color: fgColor2
-        }
-      ]
-      },
-      type: "dots",
-    },
-    backgroundOptions: {
-      color: bgColor,
-    },
-    imageOptions: {
-      crossOrigin: "anonymous",
-      margin: 8,
-    },
-    cornersSquareOptions: {
-      type: 'extra-rounded'
-    },
-    cornersDotOptions: {
-      type: 'square'
-    }
-  });
   const ref = React.useRef();
   React.useEffect(() => {
-    qrCode.append(ref.current);
-  }, []);
+    if (url) {
+      const qrCode = new QRCodeStyling({
+        type: "svg",
+        data: url,
+        width: size,
+        height: size,
+        image: imageInfo.imageSrc,
+        dotsOptions: {
+          gradient: {
+            rotation: 45,
+            type: 'linear',
+            colorStops: [{
+              offset: 0,
+              color: fgColor1,
+            },
+            {
+              offset: 1,
+              color: fgColor2
+            }
+          ]
+          },
+          type: "dots",
+        },
+        backgroundOptions: {
+          color: bgColor,
+        },
+        imageOptions: {
+          crossOrigin: "anonymous",
+          margin: 8,
+        },
+        cornersSquareOptions: {
+          type: 'extra-rounded'
+        },
+        cornersDotOptions: {
+          type: 'square'
+        }
+      });
+      if (ref.current) {
+        const boxRef = ref.current as any
+        while( boxRef.hasChildNodes() ){
+          boxRef.removeChild(boxRef.lastChild);
+        }
+      }
+      qrCode.append(ref.current)
+    }
+  }, [url]);
   return <Box ref={ref} />;
 };
 export const QRCodePanel = ({
