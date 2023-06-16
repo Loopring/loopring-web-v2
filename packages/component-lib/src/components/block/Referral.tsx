@@ -55,15 +55,17 @@ export const ReferralImage = React.forwardRef(
     });
 
     return (
-      base64 && (
-        <ShareReferralSvg
-          ref={ref}
-          src={base64}
-          width={width}
-          height={height}
-          {...{ ...props }}
-        />
-      )
+      <>
+        {base64 && (
+          <ShareReferralSvg
+            ref={ref}
+            src={base64}
+            width={width}
+            height={height}
+            {...{ ...props }}
+          />
+        )}
+      </>
     );
   }
-);
+) as (props: ShareReferralSvgProps) => JSX.Element;
