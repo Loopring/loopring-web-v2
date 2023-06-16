@@ -18,6 +18,7 @@ import {
   useAccount,
   useAmmMap,
   useAmount,
+  useBtradeMap,
   usePageTradeLite,
   usePairMatch,
   useSocket,
@@ -96,6 +97,7 @@ export const useSwap = <
   const { isMobile, swapSecondConfirmation } = useSettings();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { account, status: accountStatus } = useAccount();
+  const { marketArray: bTradeMarketArray } = useBtradeMap();
   const {
     toggle: { order },
   } = useToggle();
@@ -176,6 +178,7 @@ export const useSwap = <
         marketPrice: undefined,
         marketRatePrice: undefined,
         isChecked: undefined,
+        isShowBtradeAllow: false,
       };
     });
     updatePageTradeLite({
@@ -733,6 +736,7 @@ export const useSwap = <
         return {
           ...state,
           walletMap: {},
+          isShowBtradeAllow: false,
           minimumReceived: undefined,
           priceImpact: undefined,
           fee: undefined,
@@ -879,8 +883,8 @@ export const useSwap = <
             walletMap,
             coinSell: coinA,
             coinBuy: coinB,
-            sellPrecision: tokenMap[coinA as string].precision,
-            buyPrecision: tokenMap[coinB as string].precision,
+            sellPrecision: tokenMap[coinA as string]?.precision,
+            buyPrecision: tokenMap[coinB as string]?.precision,
             sellCoinInfoMap,
             buyCoinInfoMap,
             priceImpact: "",
@@ -891,6 +895,7 @@ export const useSwap = <
             fee: undefined,
             feeTakerRate: undefined,
             tradeCost: undefined,
+            isShowBtradeAllow: false,
           };
         });
         setTradeData({ ...tradeDataTmp });
@@ -1337,6 +1342,7 @@ export const useSwap = <
             tokenMap[_tradeData.buy.belong].precision,
             tokenMap[_tradeData.buy.belong].precision
           );
+
           _tradeCalcData.marketRatePrice = marketRatePrice
             .minus(1)
             .times(100)
@@ -1349,6 +1355,20 @@ export const useSwap = <
             _tradeCalcData.marketRatePrice,
             isNotMatchMarketPrice
           );
+        }
+        let isShowBtradeAllow = false;
+        if (
+          priceImpactObj.value &&
+          priceImpactObj.value > 1 &&
+          bTradeMarketArray &&
+          (bTradeMarketArray.includes(
+            _tradeData.buy.belong + "-" + _tradeData.sell.belong
+          ) ||
+            bTradeMarketArray.includes(
+              _tradeData.sell.belong + "-" + _tradeData.buy.belong
+            ))
+        ) {
+          isShowBtradeAllow = true;
         }
 
         updatePageTradeLite({
@@ -1382,6 +1402,7 @@ export const useSwap = <
         setTradeCalcData((state) => ({
           ...state,
           ..._tradeCalcData,
+          isShowBtradeAllow,
           lastStepAt: type,
         }));
         setTradeData((state) => ({
@@ -1400,6 +1421,7 @@ export const useSwap = <
       tokenMap,
       marketMap,
       marketArray,
+      bTradeMarketArray,
     ]
   );
 
@@ -1479,6 +1501,7 @@ export const useSwap = <
             market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
               ? btos
               : close,
+          isShowBtradeAllow: false,
           priceImpact: undefined,
           priceImpactColor: "inherit",
           minimumReceived: undefined,

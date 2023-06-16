@@ -1655,7 +1655,7 @@ export default {
   labelBtradeSwapDeliverDes:
     "The Loopring pool is currently unable to swap the full requested amount. The tokens that were successfully swapped will be transferred to your account now. The unswapped tokens will be locked until they can be swapped. \n We’ll rebalance the pool shortly and swap the remaining portion.",
   labelGoBtradeSwap:
-    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade</link> option to help minimize potential losses.",
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <a>Block Trade</a> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
   labelBtrade: "Block Trade",
   labelBtradeSwapFailed: "Failed!",
