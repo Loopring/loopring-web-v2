@@ -246,7 +246,7 @@ export const globalCss = ({ theme }: any) => css`
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
-    --modal-width: 358px;
+    --modal-width: 480px;
     --modal-height: 400px;
     --swap-box-width: 338px;
     --mobile-full-panel-width: 352px;
