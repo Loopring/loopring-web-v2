@@ -9,7 +9,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAccount, useSubmitBtn } from "@loopring-web/core";
 import {
@@ -19,10 +19,12 @@ import {
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
+  url_path,
   WalletSite,
 } from "@loopring-web/common-resources";
 import {
   Button,
+  ReferralImage,
   Toast,
   ToastType,
   useSettings,
@@ -81,13 +83,125 @@ const ReferHeader = ({
   const { account } = useAccount();
   const { t } = useTranslation(["common", "layout"]);
   const { isMobile } = useSettings();
+  const [imageList, setImageList] = React.useState<{
+    referralBanners: { en: string[] };
+    lng: string[];
+    position: {
+      code: { default: any[]; [key: number]: any[] };
+      [key: string]: any;
+    };
+  }>({
+    referralBanners: {
+      en: [],
+    },
+    lng: ["en"],
+    position: {
+      code: { default: [48, 30, 230, 64, "#000000", 630, 880] },
+    },
+  });
+  const [images, setImages] = React.useState<JSX.Element[]>([]);
+  React.useEffect(() => {
+    fetch(`${url_path}/referral/information.json`)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.referralBanners) {
+          setImageList(result);
+        }
+      });
+  }, []);
+  const renderImage = React.useCallback(() => {
+    const images = imageList?.referralBanners?.en.map((item, index) => {
+      const ref = React.createRef<SVGSVGElement>();
+      let _default = undefined;
+      if (imageList?.position?.code[index]) {
+        _default = imageList?.position?.code[index];
+      } else {
+        _default = imageList?.position?.code?.default;
+      }
+      let [left, bottom, , , color, width, height] = _default ?? [
+        48,
+        30,
+        230,
+        64,
+        "#000000",
+        630,
+        880,
+      ];
+      return (
+        <ReferralImage
+          ref={ref}
+          src={item}
+          code={account?.accountId?.toString()}
+          height={height}
+          width={width}
+          bottom={bottom}
+          left={left}
+          fontColor={color ?? "#000000"}
+        />
+      );
+    });
+    setImages(images);
+  }, [imageList, account]);
+  React.useEffect(() => {
+    if (imageList?.referralBanners?.en) {
+      renderImage();
+    }
+  }, [imageList?.referralBanners?.en]);
 
   const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
     },
     isLoading: false,
-    submitCallback: () => handleCopy("id"),
+    submitCallback: () => {
+      images?.map((item) => {
+        // @ts-ignore
+        if (item && item.ref?.current) {
+          const a = document.createElement("a");
+          const my_evt = new MouseEvent("click");
+          // @ts-ignore
+          const svg = item.ref?.current;
+          const w = Number(
+            svg.getAttribute("width") ?? imageList?.position?.code[5]
+          );
+          const h = Number(
+            svg.getAttribute("height") ?? imageList?.position?.code[5]
+          );
+          const canvas = document.createElement("canvas");
+
+          const img_to_download = document.createElement("img");
+
+          img_to_download.onload = function () {
+            canvas.setAttribute("width", w.toString());
+            canvas.setAttribute("height", h.toString());
+            // @ts-ignore
+            const context: CanvasRenderingContext2D = canvas.getContext("2d");
+            context.drawImage(img_to_download, 0, 0, w, h);
+            const dataURL = canvas.toDataURL("image/png");
+            const name = svg.getAttribute("name");
+            // @ts-ignore
+            if (window.navigator.msSaveBlob) {
+              // @ts-ignore
+              window.navigator.msSaveBlob(
+                // @ts-ignore
+                canvas.msToBlob(),
+                name
+              );
+              // e.preventDefault();
+            } else {
+              const a = document.createElement("a");
+              const my_evt = new MouseEvent("click");
+              a.download = name;
+              a.href = dataURL;
+              a.dispatchEvent(my_evt);
+            }
+          };
+          img_to_download.src = svg.getAttribute("base64doc");
+
+          img_to_download.onload();
+        }
+      });
+    },
   });
 
   const label = React.useMemo(() => {
@@ -195,6 +309,7 @@ const ReferHeader = ({
                 onClick={onBtnClick}
                 loading={"false"}
                 variant={"contained"}
+                sx={{ minWidth: "var(--walletconnect-width)" }}
                 disabled={
                   btnStatus === TradeBtnStatus.DISABLED ||
                   btnStatus === TradeBtnStatus.LOADING
@@ -202,6 +317,16 @@ const ReferHeader = ({
               >
                 {label}
               </Button>
+              <Box
+                sx={{ display: "block" }}
+                // height={0}
+                // width={0}
+                overflow={"hidden"}
+              >
+                {images.map((item, index) => (
+                  <React.Fragment key={index}>{item}</React.Fragment>
+                ))}
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -214,7 +339,7 @@ const ReferView = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
-  const [copyToastOpen, setCopyToastOpen] = useState(false);
+  const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const link = `${WalletSite}?referralcode=${account.accountId}`;
   const handleCopy = (selected: "id" | "link") => {
     switch (selected) {

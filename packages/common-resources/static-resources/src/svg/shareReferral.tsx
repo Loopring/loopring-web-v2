@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import React, { ForwardedRef } from "react";
+import React from "react";
 
 export type ShareReferralSvgProps = {
   src: string;
@@ -11,7 +11,7 @@ export type ShareReferralSvgProps = {
   left?: number;
   fontColor?: string;
 };
-export const ShareReferralSvg = withTranslation("common")(
+export const ShareReferralSvg = withTranslation("common", { withRef: true })(
   React.memo(
     React.forwardRef(
       (
@@ -26,58 +26,62 @@ export const ShareReferralSvg = withTranslation("common")(
           left = 48,
           fontColor = "#000000",
         }: ShareReferralSvgProps & WithTranslation,
-        ref: ForwardedRef<any>
+        ref: React.ForwardedRef<any>
       ) => {
-        const refImage = React.createRef<SVGImageElement>();
-        const lebelY = height - bottom - 100;
+        const lebelY = height - bottom - 100 + 10;
         const lebelX = left;
-        const lebelCodeY = lebelY + 56;
+        const lebelCodeY = lebelY + 60;
         const lebelCodeX = left;
-        const labelCode = t("labelReferralImageCode", code);
+        const labelCode = t("labelReferralImageCode", { code });
+
         return (
-          <svg
-            ref={ref}
-            width={width}
-            height={height}
-            viewBox={`0 0 ${width} ${height}`}
-            aria-hidden="true"
-          >
-            <image ref={refImage} width={width} height={height} href={src} />
-            <g transform={`translate(${lebelX} ${lebelY})`}>
-              <text
-                id={"amountStr"}
-                strokeWidth="0"
-                fill={fontColor}
-                x="1"
-                y="1"
-                style={{
-                  dominantBaseline: "central",
-                  textAnchor: "start",
-                  fontSize: "28px",
-                }}
-              >
-                {label}
-              </text>
-            </g>
-            <g transform={`translate(${lebelCodeX} ${lebelCodeY})`}>
-              <text
-                id={"amountStr"}
-                strokeWidth="0"
-                fill={fontColor}
-                x="1"
-                y="1"
-                style={{
-                  dominantBaseline: "central",
-                  textAnchor: "start",
-                  fontSize: "44px",
-                }}
-              >
-                {labelCode}
-              </text>
-            </g>
-          </svg>
+          <>
+            <svg
+              ref={ref}
+              width={width}
+              height={height}
+              viewBox={`0 0 ${width} ${height}`}
+              aria-hidden="true"
+            >
+              <image width={width} height={height} href={src} />
+              <g transform={`translate(${lebelX} ${lebelY})`}>
+                <text
+                  strokeWidth="0"
+                  fill={fontColor}
+                  x="1"
+                  y="1"
+                  style={{
+                    dominantBaseline: "central",
+                    textAnchor: "start",
+                    fontSize: "28px",
+                  }}
+                >
+                  {label}
+                </text>
+              </g>
+              <g transform={`translate(${lebelCodeX} ${lebelCodeY})`}>
+                <text
+                  strokeWidth="0"
+                  fill={fontColor}
+                  x="1"
+                  y="1"
+                  style={{
+                    dominantBaseline: "central",
+                    textAnchor: "start",
+                    fontSize: "44px",
+                  }}
+                >
+                  {labelCode}
+                </text>
+              </g>
+            </svg>
+          </>
         );
       }
     )
   )
 );
+// export const ShareReferralSvg = _ShareReferralSvg)
+// ) as (
+//   props: ShareReferralSvgProps & WithTranslation & RefAttributes<any>
+// ) => JSX.Element;
