@@ -58,7 +58,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
   if (sorted === undefined) {
     sorted = true;
   }
-  React.useEffect(() => {
+  const update = React.useCallback(() => {
     if (coinMap) {
       setList(
         Object.keys(coinMap)
@@ -98,7 +98,10 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
           })
       );
     }
-  }, [coinMap, walletMap, filterString, sorted]);
+  }, [coinMap, filterString, sorted, walletMap, nonZero]);
+  React.useEffect(() => {
+    update();
+  }, [coinMap, filterString, sorted]);
 
   const handleListItemClick = React.useCallback(
     (_event: React.MouseEvent, select: CoinKey<C>) => {
@@ -124,7 +127,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
               <CoinItem<C>
                 key={index}
                 {...{
-                  coinInfo: coinMap[key] as CoinInfo<C>,
+                  coinInfo: coinMap[key] ?? ({} as CoinInfo<C>),
                   walletCoin,
                   select: select,
                   handleListItemClick,
