@@ -198,7 +198,8 @@ const ReferHeader = ({
           };
           img_to_download.src = svg.getAttribute("base64doc");
 
-          img_to_download.onload();
+          // @ts-ignore
+          img_to_download?.onload();
         }
       });
     },
