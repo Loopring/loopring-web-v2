@@ -100,7 +100,6 @@ export async function activateAccount({
       // @ts-ignore
       recommenderAccountId: "" as any,
       nonce: accInfo.nonce as number,
-      recommenderAccountId: "" as any,
     };
 
     myLog("updateAccountFromServer req:", request);
