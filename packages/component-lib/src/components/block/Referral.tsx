@@ -68,4 +68,4 @@ export const ReferralImage = React.forwardRef(
       </>
     );
   }
-) as (props: ShareReferralSvgProps) => JSX.Element;
+);
