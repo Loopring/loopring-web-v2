@@ -30,6 +30,8 @@ export type QCodeProps = {
   bgColor?: string;
   imageInfo?: { imageSrc?: string; size?: number };
 };
+const qrCode = new QRCodeStyling();
+
 export const QRCode = ({
   size = 160,
   fgColor1 = "var(--color-primary)",
@@ -42,9 +44,10 @@ export const QRCode = ({
   },
 }: QCodeProps & QRCodePanelProps) => {
   const ref = React.useRef();
+
   React.useEffect(() => {
     if (url) {
-      const qrCode = new QRCodeStyling({
+      qrCode.update({
         type: "svg",
         data: url,
         width: size,
@@ -79,7 +82,7 @@ export const QRCode = ({
         cornersDotOptions: {
           type: 'square'
         }
-      });
+      })
       if (ref.current) {
         const boxRef = ref.current as any
         while(boxRef.hasChildNodes()){
