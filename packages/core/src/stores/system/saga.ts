@@ -8,7 +8,7 @@ import {
   delay,
 } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
-import { ENV, NETWORKEXTEND } from "./interface";
+import { ENV } from "./interface";
 import { store, LoopringSocket, LoopringAPI, toggleCheck } from "../../index";
 import {
   ChainIdExtends,
