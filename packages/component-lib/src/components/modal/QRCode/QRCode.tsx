@@ -82,11 +82,11 @@ export const QRCode = ({
       });
       if (ref.current) {
         const boxRef = ref.current as any
-        while( boxRef.hasChildNodes() ){
+        while(boxRef.hasChildNodes()){
           boxRef.removeChild(boxRef.lastChild);
         }
+        qrCode.append(ref.current)
       }
-      qrCode.append(ref.current)
     }
   }, [url]);
   return <Box ref={ref} />;
