@@ -372,9 +372,9 @@ export const SwapTradeWrap = <
               variant={"inherit"}
               color={"textPrimary"}
             >
-              {(tradeCalcData?.totalQuota ?? EmptyValueTag) +
-                " " +
-                tradeData.sell?.belong}
+              {tradeCalcData?.totalQuota
+                ? tradeCalcData?.totalQuota + " " + tradeData?.sell?.belong
+                : EmptyValueTag}
             </Typography>
           </Typography>
         ) : (
@@ -598,7 +598,7 @@ export const SwapTradeWrap = <
             </Grid>
           </Grid>
           {(tradeCalcData as SCD).isNotMatchMarketPrice && (
-            <Grid item>
+            <Grid item marginBottom={1}>
               <MuiFormControlLabel
                 sx={{ alignItems: "flex-start" }}
                 control={
@@ -834,6 +834,52 @@ export const SwapTradeWrap = <
           </ButtonStyle>
         </Grid>
       </Grid>
+      {!tradeCalcData.isBtrade && tradeCalcData.isShowBtradeAllow && (
+        <Grid
+          item
+          marginTop={3}
+          display={"flex"}
+          alignSelf={"stretch"}
+          justifyContent={"flex-start"}
+          alignItems={"stretch"}
+          flexDirection={"column"}
+          flexBasis={"initial"}
+        >
+          <Typography
+            variant={"body2"}
+            color={"textSecondary"}
+            borderRadius={1}
+            paddingY={2}
+            paddingX={1}
+          >
+            <Trans
+              i18nKey={"labelGoBtradeSwap"}
+              components={{
+                a: (
+                  <Link
+                    onClick={() => {
+                      history.push(
+                        "/trade/btrade/" +
+                          tradeData.sell?.belong +
+                          "-" +
+                          tradeData.buy?.belong
+                      );
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant={"inherit"}
+                    color={"primary"}
+                  />
+                ),
+              }}
+            >
+              Swapping on the DEX will result in a large Price Impact (loss of
+              assets). We recommend using the <a>Block Trade</a> option to help
+              minimize potential losses.
+            </Trans>
+          </Typography>
+        </Grid>
+      )}
     </Grid>
   );
 };

@@ -1,12 +1,7 @@
 import { CoinInfo, CoinKey, IBData } from "@loopring-web/common-resources";
-import { Trans, WithTranslation } from "react-i18next";
+import { WithTranslation } from "react-i18next";
 import React from "react";
-import {
-  CoinMenu,
-  EmptyDefault,
-  InputSelect,
-  InputSelectProps,
-} from "../../../basic-lib";
+import { CoinMenu, InputSelect, InputSelectProps } from "../../../basic-lib";
 import { Box, Link, Typography } from "@mui/material";
 import { TradeMenuListProps } from "../Interface";
 import { useTheme } from "@emotion/react";
@@ -31,18 +26,18 @@ export const TradeMenuList = <T extends IBData<I>, I>({
     selected: "",
     panelRender: () => <></>,
   };
-  const PanelEmptyRender = () => {
-    return (
-      <>
-        <EmptyDefault
-          height={"calc(100% - 35px)"}
-          message={() => {
-            return <Trans i18nKey="labelEmptyDefault">Content is Empty</Trans>;
-          }}
-        />
-      </>
-    );
-  };
+  // const PanelEmptyRender = () => {
+  //   return (
+  //     <>
+  //       <EmptyDefault
+  //         height={"calc(100% - 35px)"}
+  //         message={() => {
+  //           return <Trans i18nKey="labelEmptyDefault">Content is Empty</Trans>;
+  //         }}
+  //       />
+  //     </>
+  //   );
+  // };
   const theme = useTheme();
   const backElement = React.useMemo(
     () => (
@@ -61,81 +56,65 @@ export const TradeMenuList = <T extends IBData<I>, I>({
     ),
     [onChangeEvent, tradeData]
   );
-  try {
-    // const selected: string | undefined = swapData.tradeData[ swapData.type ].belong ? swapData.tradeData[ swapData.type ]?.belong : '';
-    const filterBy = (coinInfo: CoinInfo<I>, filterString: string) => {
-      return filterString && filterString.length
-        ? RegExp(filterString, "i").test(coinInfo.simpleName as string)
-        : true;
-    };
-    const PanelRender = ({ selected, value }: any) => {
-      const handleSelect = (_event: any, itemKey: CoinKey<I>) => {
-        onChangeEvent(0, {
-          ...{ tradeData: { ...tradeData, belong: itemKey } },
-          to: "button",
-        });
-      };
-      return (
-        <CoinMenu
-          height={
-            _height
-              ? typeof _height === "number"
-                ? ` calc(${
-                    _height + "px"
-                  }  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px ) `
-                : ` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${
-                    theme.unit * 3
-                  }px )`
-              : "460px"
-          }
-          {...{
-            coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
-            filterBy,
-            nonZero,
-            sorted,
-            // height: '410px',
-            filterString: value,
-            handleSelect,
-            walletMap: walletMap, //tradeCalcData?.walletMap as any,
-            selected,
-            t,
-            ...rest,
-          }}
-          ref={ref}
-        ></CoinMenu>
-      );
-    };
+  const filterBy = (coinInfo: CoinInfo<I>, filterString: string) => {
+    return filterString && filterString.length
+      ? RegExp(filterString, "i").test(coinInfo.simpleName as string)
+      : true;
+  };
+
+  const PanelRender = ({ selected, value }: any) => {
     return (
-      <Box
-        className={"menu-panel"}
-        flexDirection={"column"}
-        flex={1}
-        height={"100%"}
-        display={"flex"}
-      >
-        <InputSelect
-          {...{
-            ...{ ...inputSelectProps, selected },
-            backElement,
-            panelRender: PanelRender,
-            t,
-            ...rest,
-          }}
-        />
-      </Box>
+      <CoinMenu
+        height={
+          _height
+            ? typeof _height === "number"
+              ? ` calc(${_height + "px"}  - 2 * var(--toolbar-row-padding) - ${
+                  theme.unit * 3
+                }px ) `
+              : ` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${
+                  theme.unit * 3
+                }px )`
+            : "460px"
+        }
+        {...{
+          coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
+          filterBy,
+          nonZero,
+          sorted,
+          // height: '410px',
+          filterString: value && value.trim() ? value : undefined,
+          handleSelect: (_event: any, itemKey: CoinKey<I>) => {
+            onChangeEvent(0, {
+              ...{ tradeData: { ...tradeData, belong: itemKey } },
+              to: "button",
+            });
+          },
+          walletMap: walletMap, //tradeCalcData?.walletMap as any,
+          selected,
+          t,
+          ...rest,
+        }}
+        ref={ref}
+      />
     );
-  } catch (error) {
-    return (
-      <Box flex={1} height={"100%"}>
-        <InputSelect
-          {...{
-            ...inputSelectProps,
-            panelRender: PanelEmptyRender,
-            t,
-            ...rest,
-          }}
-        />
-      </Box>
-    );
-  }
+  };
+  return (
+    <Box
+      className={"menu-panel"}
+      flexDirection={"column"}
+      flex={1}
+      height={"100%"}
+      display={"flex"}
+    >
+      <InputSelect
+        {...{
+          ...{ ...inputSelectProps, selected },
+          backElement,
+          panelRender: PanelRender,
+          t,
+          ...rest,
+        }}
+      />
+    </Box>
+  );
 };

@@ -13,7 +13,6 @@ import {
   CheckBoxIcon,
   CheckedIcon,
   MarketType,
-  RowConfig,
 } from "@loopring-web/common-resources";
 import { useOrderList } from "./hookTable";
 import {

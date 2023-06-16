@@ -219,7 +219,10 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                   time: moment(row.rawData.luckyToken.validUntil).format(
                     YEAR_DAY_MINUTE_FORMAT
                   ),
-                })}{" "}
+                  interpolation: {
+                    escapeValue: false,
+                  },
+                })}
               </>
             );
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
@@ -243,6 +246,9 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                     time: moment(row.rawData.luckyToken.nftExpireTime).format(
                       YEAR_DAY_MINUTE_FORMAT
                     ),
+                    interpolation: {
+                      escapeValue: false,
+                    },
                   })}
                 </Typography>
               </Box>

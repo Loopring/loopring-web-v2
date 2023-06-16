@@ -14,6 +14,9 @@ const getBtradeMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined;
   }
+  const { chainId } = store.getState().system;
+  const btradeMapStorage = window.localStorage.getItem("btradeMarkets");
+
   // const { idIndex } = store.getState().tokenMap;
   const {
     // markets: marketMap,
@@ -22,9 +25,28 @@ const getBtradeMapApi = async () => {
     // tokenArr: marketCoins,
     raw_data,
   } = await LoopringAPI.defiAPI?.getBtradeMarkets();
-  const reformat: any = (raw_data as sdk.BTRADE_MARKET[]).reduce(
+  let localStorageData: any[] = [];
+  const reformat: any[] = (raw_data as sdk.BTRADE_MARKET[]).reduce(
     (prev, ele) => {
       if (/-/gi.test(ele.market) && ele.enabled) {
+        localStorageData.push({
+          ...ele,
+          btradeMarket: ele.market,
+          market: ele.market.replace(BTRDE_PRE, ""),
+          feeBips: undefined,
+          minAmount: {
+            base: undefined,
+            quote: undefined,
+          },
+          btradeAmount: {
+            base: undefined,
+            quote: undefined,
+          },
+          l2Amount: {
+            base: undefined,
+            quote: undefined,
+          },
+        });
         return [
           ...prev,
           {
@@ -39,12 +61,21 @@ const getBtradeMapApi = async () => {
     },
     [] as sdk.BTRADE_MARKET[]
   );
+  localStorage.setItem(
+    "btradeMarkets",
+    JSON.stringify({
+      ...(btradeMapStorage ? JSON.parse(btradeMapStorage) : {}),
+      [chainId]: localStorageData,
+    })
+  );
+
   const {
     markets: marketMap,
     pairs,
     marketArr: marketArray,
     tokenArr: marketCoins,
   } = sdk.makeMarkets({ markets: reformat });
+
   const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
     const tradePairs = pairs[key as string]?.tokenList?.sort();
     prev[key] = {

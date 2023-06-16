@@ -621,7 +621,8 @@ export const BtradeSwap_Delivering = (props: PanelProps) => {
           color={"var(--color-text-secondary)"}
           marginTop={2}
           component={"span"}
-          sx={{ workBreak: "break-word" }}
+          whiteSpace={"pre-line"}
+          sx={{ wordBreak: "break-word" }}
         >
           {t("labelBtradeSwapDeliverDes")}
         </Typography>

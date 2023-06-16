@@ -6,7 +6,6 @@ import {
   PopoverPure,
   QuoteTableRawDataItem,
 } from "../../index";
-import { bindTrigger } from "material-ui-popup-state/es";
 import styled from "@emotion/styled";
 import {
   Box,
@@ -561,7 +560,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
           let renderValue = "";
-          if (row.extraOrderInfo?.extraOrderType) {
+          if (row.extraOrderInfo?.extraOrderType == "STOP_LIMIT") {
             renderValue = t("labelOrderStopLimitOrder");
           } else {
             switch (row.orderType) {
@@ -716,7 +715,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         name: t("labelOrderTypes"),
         formatter: ({ row }) => {
           let renderValue = "";
-          if (row.extraOrderInfo?.extraOrderType) {
+          if (row.extraOrderInfo?.extraOrderType == "STOP_LIMIT") {
             renderValue = t("labelOrderStopLimitOrder");
           } else {
             switch (row.orderType) {
@@ -736,6 +735,7 @@ export const OrderHistoryTable = withTranslation("tables")(
                 break;
             }
           }
+
           return <div className="rdg-cell-value">{renderValue}</div>;
         },
       },
@@ -1048,7 +1048,7 @@ export const OrderHistoryTable = withTranslation("tables")(
             default:
               break;
           }
-          if (row.extraOrderInfo?.extraOrderType) {
+          if (row.extraOrderInfo?.extraOrderType == "STOP_LIMIT") {
             renderValue = t("labelOrderStopLimitOrder");
           } else {
             switch (row.orderType) {
@@ -1177,9 +1177,8 @@ export const OrderHistoryTable = withTranslation("tables")(
           return (
             <>
               <Box
-                {...bindTrigger(popState)}
-                onClick={(e: any) => {
-                  bindTrigger(popState).onClick(e);
+                onClick={(_e: any) => {
+                  setShowCancelOndAlert({ open: true, row: row as any });
                 }}
                 style={{ cursor: "pointer" }}
                 className="rdg-cell-value textAlignRight"
@@ -1267,8 +1266,8 @@ export const OrderHistoryTable = withTranslation("tables")(
     }, [rawData, cancelOrderByHashList]);
     const handleCancelOne = React.useCallback(async () => {
       if (showCancelOneAlert?.row) {
-        // @ts-ignore
-        const { orderHash, clientOrderId } = showCancelOneAlert?.row ?? {};
+        const orderHash = showCancelOneAlert?.row?.hash;
+        const clientOrderId = showCancelOneAlert?.row?.orderId;
         await cancelOrder({ orderHash, clientOrderId });
       }
     }, [showCancelOneAlert]);

@@ -31,11 +31,9 @@ export const ModalAccountInfo = withTranslation("common")(
     isLayer1Only?: boolean;
     account: Account;
     depositProps: DepositProps<any, any>;
-    // onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
-    // const { isMobile } = useSettings();
     const { baseURL } = useSystem();
     const {
       modals: { isShowAccount },
@@ -57,8 +55,6 @@ export const ModalAccountInfo = withTranslation("common")(
       nftTransferProps,
       nftWithdrawProps,
       nftDeployProps,
-      // nftMintAdvanceProps,
-      // checkActiveStatusProps,
       resetProps,
       claimProps,
       activeAccountProps,
@@ -81,10 +77,7 @@ export const ModalAccountInfo = withTranslation("common")(
       isLayer1Only,
       ...rest,
     });
-    // myLog(
-    //   "resetProps.chargeFeeTokenList",
-    //   activeAccountProps.chargeFeeTokenList
-    // );
+
     return (
       <>
         <Toast

@@ -1289,7 +1289,7 @@ export const AnotherNetworkNotice = withTranslation("common", {
             disabled={!agree}
             onClick={() => {
               window.open(
-                `https://www.orbiter.finance/?source=Loopring&dest=Ethereum&destAddress=${account.accAddress}`
+                `https://www.orbiter.finance/?source=Ethereum&dest=Loopring`
               );
               window.opener = null;
               setShowAnotherNetworkNotice({ isShow: false });
@@ -2240,36 +2240,22 @@ export const ConfirmBtradeSwapRisk = withTranslation("common")(
                     color={"textSecondary"}
                   />
                 ),
+                h6: (
+                  <Typography
+                    component={"h6"}
+                    whiteSpace={"pre-line"}
+                    variant={"h5"}
+                    display={"block"}
+                    marginBottom={1}
+                    marginTop={1}
+                    fontWeight="600"
+                    color={"textPrimary"}
+                  />
+                ),
+                li: <li style={{ display: "list", listStyle: "inside" }} />,
+                ul: <ul style={{ display: "initial" }} />,
               }}
-            >
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                marginBottom={1}
-                color={"textSecondary"}
-              >
-                Block Trade offers a secure and trustless way for users to swap
-                tokens using CEX liquidity. The trades happen exclusively
-                between designated entities, ensuring that the existing
-                liquidity of the DEX remains unaffected. There is no price
-                impact to other DEX users as a result of the transaction.
-              </Typography>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                marginBottom={1}
-                color={"textSecondary"}
-              >
-                This is similar to the traditional stock market’s Block Trade
-                System. A block trade is a large, privately negotiated
-                transaction, which can be made outside the open market through a
-                private purchase agreement.
-              </Typography>
-            </Trans>
+            ></Trans>
           </DialogContentText>
           <MuiFormControlLabel
             control={

@@ -171,7 +171,6 @@ export const useBtradeSwap = <
         btradeType: state?.btradeType ? state.btradeType : BtradeType.Quantity,
         sell: { ...state?.sell, tradeValue: undefined },
         buy: { ...state?.buy, tradeValue: undefined },
-        isChecked: undefined,
       } as T;
     });
 
@@ -180,7 +179,6 @@ export const useBtradeSwap = <
         ...(state ?? {}),
         maxFeeBips: undefined,
         lockedNotification: true,
-        isLockedNotificationChecked: false,
         volumeSell: undefined,
         volumeBuy: undefined,
         btradeType,
@@ -304,11 +302,6 @@ export const useBtradeSwap = <
               };
             }
           }
-        } else if (!tradeCalcData?.isLockedNotificationChecked) {
-          return {
-            label: `labelBtradeConfirm`,
-            tradeBtnStatus: TradeBtnStatus.DISABLED,
-          };
         } else {
           return {
             label: undefined,
@@ -327,7 +320,6 @@ export const useBtradeSwap = <
     tokenMap,
     tradeData?.sell.belong,
     tradeData?.buy.belong,
-    tradeCalcData?.isLockedNotificationChecked,
     tradeBtrade.maxFeeBips,
     tradeData?.sell.tradeValue,
     tradeData?.buy.tradeValue,
@@ -484,7 +476,6 @@ export const useBtradeSwap = <
         throw new Error("api not ready");
       }
     } catch (error: any) {
-      console.log(error, error?.message, error?.stack);
       let content: string = "";
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
         content =
@@ -736,14 +727,14 @@ export const useBtradeSwap = <
           },
         };
 
-        const sellCoinInfoMap = tradeMap[coinB].tradePairs?.reduce(
+        const sellCoinInfoMap = tradeMap[coinB]?.tradePairs?.reduce(
           (prev: any, item: string | number) => {
             return { ...prev, [item]: coinMap[item] };
           },
           {} as CoinMap<C>
         );
 
-        const buyCoinInfoMap = tradeMap[coinA].tradePairs?.reduce(
+        const buyCoinInfoMap = tradeMap[coinA]?.tradePairs?.reduce(
           (prev: any, item: string | number) => {
             return { ...prev, [item]: coinMap[item] };
           },
@@ -759,8 +750,8 @@ export const useBtradeSwap = <
             walletMap,
             coinSell: coinA,
             coinBuy: coinB,
-            sellPrecision: tokenMap[coinA as string].precision,
-            buyPrecision: tokenMap[coinB as string].precision,
+            sellPrecision: tokenMap[coinA as string]?.precision,
+            buyPrecision: tokenMap[coinB as string]?.precision,
             sellCoinInfoMap,
             buyCoinInfoMap,
             StoB: undefined,
@@ -768,7 +759,6 @@ export const useBtradeSwap = <
             fee: undefined,
             tradeCost: undefined,
             lockedNotification: true,
-            isLockedNotificationChecked: false,
             volumeSell: undefined,
             volumeBuy: undefined,
             sellMinAmtStr: undefined,
@@ -953,8 +943,8 @@ export const useBtradeSwap = <
                     poolToVol,
                     calcDexL2Output?.amountS ?? 0
                   ),
-                  sellToken.decimals,
-                  sellToken.decimals,
+                  sellToken.precision,
+                  sellToken.precision,
                   undefined,
                   false,
                   { isAbbreviate: true }
@@ -974,8 +964,8 @@ export const useBtradeSwap = <
             totalQuote = poolToVol
               ? getValuePrecisionThousand(
                   BigNumber.min(sellDeepStr, poolToVol),
-                  sellToken.decimals,
-                  sellToken.decimals,
+                  sellToken.precision,
+                  sellToken.precision,
                   undefined,
                   false,
                   { isAbbreviate: true }
@@ -1099,10 +1089,7 @@ export const useBtradeSwap = <
             false
           ),
         };
-        if (_tradeData?.isChecked !== undefined) {
-          myLog("tradeCalcData?.isChecked", _tradeData);
-          _tradeCalcData.isLockedNotificationChecked = _tradeData.isChecked;
-        }
+
         setTradeCalcData((state) => {
           const [mid_price, _mid_price_convert] = calcDexOutput
             ? [
@@ -1324,7 +1311,6 @@ export const useBtradeSwap = <
           tokenMap[tradeCalcData.coinSell as string].precision;
         const _tradeCalcData = {
           ...tradeCalcData,
-          isLockedNotificationChecked: false,
           coinSell: tradeCalcData.coinBuy,
           coinBuy: tradeCalcData.coinSell,
           sellPrecision,
@@ -1380,7 +1366,6 @@ export const useBtradeSwap = <
                 ? walletMap[_tradeCalcData.coinBuy as string]?.count
                 : 0,
             },
-            isChecked: undefined,
           };
         });
         break;

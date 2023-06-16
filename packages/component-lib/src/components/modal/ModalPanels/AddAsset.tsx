@@ -4,6 +4,7 @@ import { AddAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import {
   AddAssetList,
+  AnotherIcon,
   BackIcon,
   CardIcon,
   ExchangeAIcon,
@@ -28,6 +29,8 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
       return <ExchangeAIcon color={"inherit"} sx={{ marginRight: 1 }} />;
     case "OutputIcon":
       return <OutputIcon color={"inherit"} sx={{ marginRight: 1 }} />;
+    case "AnotherIcon":
+      return <AnotherIcon color={"inherit"} sx={{ marginRight: 1 }} />;
   }
 };
 export const AddAsset = ({
