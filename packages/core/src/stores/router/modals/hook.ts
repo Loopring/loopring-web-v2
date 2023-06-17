@@ -59,6 +59,7 @@ import {
   TradeNFT,
   RedPacketOrderData,
   TRADE_TYPE,
+  RedPacketOrderType,
 } from "@loopring-web/common-resources";
 import { RootState } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -167,7 +168,7 @@ export function useModalData(): {
 
   redPacketOrder: RedPacketOrderData<any>;
   updateRedPacketOrder: (redPacketOrder: RedPacketOrderData<any>) => void;
-  resetRedPacketOrder: (type?: TRADE_TYPE) => void;
+  resetRedPacketOrder: (type?: RedPacketOrderType) => void;
 
   claimValue: Partial<ClaimData>;
   updateClaimData: (value: Partial<ClaimData>) => void;
@@ -376,7 +377,7 @@ export function useModalData(): {
       dispatch(resetOffBanxaData(undefined));
     }, [dispatch]),
     resetRedPacketOrder: React.useCallback(
-      (type?: TRADE_TYPE) => {
+      (type?: RedPacketOrderType) => {
         dispatch(resetRedPacketOrder({ type }));
       },
       [dispatch]

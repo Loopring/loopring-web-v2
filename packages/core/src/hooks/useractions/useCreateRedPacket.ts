@@ -16,6 +16,7 @@ import {
   UIERROR_CODE,
   WalletMap,
   BLINDBOX_REDPACKET_LIMIT,
+  RedPacketOrderType,
 } from "@loopring-web/common-resources";
 import {
   store,
@@ -113,10 +114,10 @@ export const useCreateRedPacket = <
     intervalTime: undefined,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (
-        (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) ||
-        (redPacketOrder.tradeType === TRADE_TYPE.NFT && feeProps.isNFT)
-      ) {
+      updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee });
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+      if ((isToken && !feeProps.isNFT) || (!isToken && feeProps.isNFT)) {
         updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee });
       }
     },
@@ -129,15 +130,17 @@ export const useCreateRedPacket = <
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+    
     if (
-      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
+      RedPacketOrderType.TOKEN === redPacketOrder.tradeType &&
       !redPacketOrder.belong &&
       walletMap
     ) {
-      resetDefault(TRADE_TYPE.TOKEN);
+      resetDefault(RedPacketOrderType.TOKEN);
     } else if (
-      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
-      walletMap &&
+      RedPacketOrderType.TOKEN === redPacketOrder.tradeType &&
+      walletMap && 
+      redPacketOrder.belong && 
       walletMap[redPacketOrder.belong]
     ) {
       handleOnDataChange({
@@ -157,13 +160,15 @@ export const useCreateRedPacket = <
     [updateRedPacketOrder]
   );
   const resetDefault = React.useCallback(
-    (value: TRADE_TYPE) => {
+    (value: RedPacketOrderType) => {
       if (info?.isRetry) {
         checkFeeIsEnough();
         return;
       }
       const walletMap = makeWalletLayer2(true).walletMap ?? {};
-      if (TRADE_TYPE.TOKEN === value && !redPacketOrder.belong && walletMap) {
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+      if (isToken && !redPacketOrder.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap);
         for (let key in keys) {
           const keyVal = keys[key];
@@ -184,7 +189,7 @@ export const useCreateRedPacket = <
           }
         }
       } else if (
-        TRADE_TYPE.TOKEN === value &&
+        isToken &&
         redPacketOrder.belong &&
         walletMap
       ) {
@@ -200,7 +205,7 @@ export const useCreateRedPacket = <
           validUntil: undefined,
           tradeType: value,
         } as unknown as T);
-      } else if (TRADE_TYPE.NFT === value) {
+      } else if (!isToken) {
         resetRedPacketOrder(value);
       } else {
         updateRedPacketOrder({
@@ -244,12 +249,13 @@ export const useCreateRedPacket = <
       const eachValue = sdk
         .toBig(redPacketOrder?.tradeValue ?? 0)
         .div(redPacketOrder.numbers ?? 1);
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
       return {
         tradeValue: redPacketOrder?.tradeValue,
-        eachValue:
-          redPacketOrder.tradeType === TRADE_TYPE.TOKEN
-            ? eachValue.toString()
-            : eachValue.toFixed(),
+        eachValue: isToken
+          ? eachValue.toString()
+          : eachValue.toFixed(),
       };
     } else {
       return {
@@ -291,19 +297,20 @@ export const useCreateRedPacket = <
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
       const blindBoxGiftsLargerThanPackets =
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
         sdk
           .toBig(redPacketOrder.giftNumbers ?? "0")
           .isGreaterThan(redPacketOrder.numbers);
       const blindBoxPacketsNumberTooLarge =
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
         sdk
           .toBig(redPacketOrder.numbers)
           .isGreaterThan(BLINDBOX_REDPACKET_LIMIT);
+      // @ts-ignore
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
       if (
-        (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
+        isToken &&
         redPacketOrder.belong &&
         tokenMap[(redPacketOrder as T).belong as any]
       ) {
@@ -358,7 +365,7 @@ export const useCreateRedPacket = <
         !isExceedBalance &&
         !tooSmall &&
         !tooLarge &&
-        ((redPacketOrder.tradeType === TRADE_TYPE.NFT &&
+        ((redPacketOrder.tradeType === RedPacketOrderType.NFT &&
           redPacketOrder.nftData) ||
           // @ts-ignore
           redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
@@ -375,13 +382,13 @@ export const useCreateRedPacket = <
         } else if (isExceedBalance) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol:
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
+              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN
                 ? (tradeToken.symbol as string)
                 : "NFT",
           });
         } else if (
           isExceedBalance &&
-          (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
+          (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN &&
           feeToken.tokenId === tradeToken.tokenId
         ) {
           setLabelAndParams("labelReserveFee", {
@@ -393,7 +400,7 @@ export const useCreateRedPacket = <
           if (tooSmall) {
             setLabelAndParams(
               "labelRedPacketsMin",
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
                 ? {
                     value: getValuePrecisionThousand(
                       sdk
@@ -421,13 +428,13 @@ export const useCreateRedPacket = <
             );
           } else {
             let value =
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
                 ? tradeValue
                     .div(tradeToken.luckyTokenAmounts.minimum)
                     .toFixed(0, 1)
                 : tradeValue;
             const limit =
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
+              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN
                 ? REDPACKET_ORDER_LIMIT
                 : REDPACKET_ORDER_NFT_LIMIT;
             setLabelAndParams("labelRedPacketsSplitNumber", {
@@ -437,7 +444,7 @@ export const useCreateRedPacket = <
         } else if (tooLarge) {
           setLabelAndParams(
             "labelRedPacketsMax",
-            (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+            (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
               ? {
                   value: getValuePrecisionThousand(
                     sdk
@@ -604,7 +611,7 @@ export const useCreateRedPacket = <
           history.push(
             `/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`
           );
-          resetDefault(TRADE_TYPE.TOKEN);
+          resetDefault(RedPacketOrderType.TOKEN);
           if (
             request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
             (response as sdk.TX_HASH_API)?.hash
@@ -693,7 +700,7 @@ export const useCreateRedPacket = <
   );
   React.useEffect(() => {
     if (isShow) {
-      resetDefault(TRADE_TYPE.TOKEN);
+      resetDefault(RedPacketOrderType.TOKEN);
       walletLayer2Service.sendUserUpdate();
     }
   }, [isShow]);
@@ -723,7 +730,7 @@ export const useCreateRedPacket = <
         chargeFeeTokenList.length &&
         !isFeeNotEnough.isFeeNotEnough &&
         redPacketOrder.belong &&
-        (redPacketOrder.tradeType === TRADE_TYPE.NFT
+        (redPacketOrder.tradeType === RedPacketOrderType.NFT
           ? redPacketOrder.nftData
           : tokenMap[redPacketOrder.belong]) &&
         redPacketOrder.fee &&
@@ -745,7 +752,7 @@ export const useCreateRedPacket = <
             step: AccountStep.RedPacketSend_WaitForAuth,
           });
           let tradeToken, tradeValue;
-          if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+          if (redPacketOrder.tradeType === RedPacketOrderType.NFT) {
             tradeToken = {
               tokenId: redPacketOrder.tokenId,
               nftDta: redPacketOrder.nftData,
@@ -781,7 +788,7 @@ export const useCreateRedPacket = <
             type: {
               ...redPacketOrder.type,
               mode:
-                redPacketOrder.tradeType === TRADE_TYPE.NFT
+                redPacketOrder.tradeType === RedPacketOrderType.NFT
                   ? redPacketOrder.type.mode ===
                     sdk.LuckyTokenClaimType.BLIND_BOX
                     ? sdk.LuckyTokenClaimType.BLIND_BOX
@@ -794,7 +801,7 @@ export const useCreateRedPacket = <
             memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
             signerFlag: false as any,
             nftData:
-              redPacketOrder.tradeType === TRADE_TYPE.NFT
+              redPacketOrder.tradeType === RedPacketOrderType.NFT
                 ? redPacketOrder.nftData
                 : undefined,
             // @ts-ignore
@@ -874,7 +881,7 @@ export const useCreateRedPacket = <
     [walletMap]
   );
   const [minimum, maximum] = React.useMemo(() => {
-    if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+    if (redPacketOrder.tradeType === RedPacketOrderType.NFT) {
       const minimum = sdk
         .toBig(redPacketOrder?.tradeValue ?? 0)
         .div(REDPACKET_ORDER_NFT_LIMIT)

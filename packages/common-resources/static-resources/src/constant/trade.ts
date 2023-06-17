@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
 import { XOR } from "@loopring-web/loopring-sdk";
 import { VendorProviders } from "./vendor";
+import { type } from "os";
 
 export enum DeFiChgType {
   coinSell = "coinSell",
@@ -647,17 +648,17 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       mode: sdk.LuckyTokenClaimType.RELAY,
     },
   },
-  {
-    labelKey: "labelLuckyBlindBox",
-    desKey: "labelLuckyBlindBoxDes",
-    defaultForNFT: true,
-    showInNFTS: true,
-    value: {
-      value: 3,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-  },
+  // {
+  //   labelKey: "labelLuckyBlindBox",
+  //   desKey: "labelLuckyBlindBoxDes",
+  //   defaultForNFT: true,
+  //   showInNFTS: true,
+  //   value: {
+  //     value: 3,
+  //     partition: sdk.LuckyTokenAmountType.RANDOM,
+  //     mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+  //   },
+  // },
   {
     labelKey: "labelLuckyRandomToken",
     desKey: "labelRedPacketsSplitLuckyDetail",
@@ -679,6 +680,30 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
       mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
+  {
+    labelKey: "Tokens-tot",
+    desKey: "",
+    showInBlindbox: true,
+    defaultForBlindbox: true,
+    icon: 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=',
+    value: {
+      value: 4,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
+    labelKey: "NFTs-tot",
+    desKey: "",
+    showInBlindbox: true,
+    icon: 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=',
+    isBlindboxNFT: true,
+    value: {
+      value: 5,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
     },
   },
 ];
@@ -735,18 +760,20 @@ export type OffRampHashInfos = {
   [key in sdk.ChainId extends string ? string : string]: OffRampHashInfo;
 };
 
-export type RedPacketOrderData<I> = XOR<
+export enum RedPacketOrderType {
+  TOKEN = "TOKEN",
+  NFT = "NFT",
+  BlindBox = "BlindBox",
+}
+
+export type RedPacketOrderData<I> =
   {
-    tradeType: TRADE_TYPE.TOKEN;
-  } & IBData<I>,
-  {
-    tradeType: TRADE_TYPE.NFT;
-    tradeValue: number;
-  } & Partial<NFTWholeINFO>
-> & {
-  fee: FeeInfo | undefined;
-  __request__: any;
-} & Partial<sdk.LuckyTokenItemForSendV3>;
+    tradeType: RedPacketOrderType;
+    isNFT: boolean;
+    tradeValue?: number,
+    fee: FeeInfo | undefined;
+    __request__: any;
+  } & Partial<IBData<I>> & Partial<NFTWholeINFO> & Partial<sdk.LuckyTokenItemForSendV3>;
 
 export enum TabTokenTypeIndex {
   ERC20 = "ERC20",

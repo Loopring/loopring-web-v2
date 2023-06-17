@@ -3,9 +3,11 @@ import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import { CreateRedPacketProps, RedPacketStep } from "../../tradePanel";
 import {
   FeeInfo,
+  LuckyRedPacketItem,
   LuckyRedPacketList,
   NFTWholeINFO,
   RedPacketOrderData,
+  RedPacketOrderType,
   TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import {
@@ -22,6 +24,7 @@ import {
   CreateRedPacketStepWrap,
 } from "../../tradePanel/components/CreateRedPacketWrap";
 import { Box, styled } from "@mui/material";
+import { LuckyTokenClaimType } from "@loopring-web/loopring-sdk";
 
 const steps = [
   "labelRedPacketTypeTokens", //labelADMint2
@@ -66,7 +69,7 @@ export const CreateRedPacketPanel = <
 
   React.useEffect(() => {
     if (
-      tradeType === TRADE_TYPE.NFT &&
+      tradeType === RedPacketOrderType.NFT &&
       tradeData.nftData &&
       panelIndex === RedPacketStep.NFTList
     ) {
@@ -126,19 +129,40 @@ export const CreateRedPacketPanel = <
   }, [walletMap]);
 
   const [selectedType, setSelectType] = React.useState(
-    tradeData.tradeType === TRADE_TYPE.NFT
-      ? LuckyRedPacketList.find((x) => x.defaultForNFT)
-      : LuckyRedPacketList.find((x) => x.defaultForERC20)
+    tradeData.tradeType === RedPacketOrderType.NFT
+      ? LuckyRedPacketList.find((config) => config.defaultForNFT)
+      : LuckyRedPacketList.find((config) => config.defaultForERC20)
   );
   React.useEffect(() => {
     setSelectType(() => {
       if (tradeData && tradeData.type) {
         // if (tradeData.)
-        const found = LuckyRedPacketList.find(
-          (x) =>
-            tradeData.type?.partition == x.value.partition &&
-            tradeData.type?.mode == x.value.mode
-        );
+        let found: LuckyRedPacketItem | undefined
+        if (tradeData.type?.mode === LuckyTokenClaimType.BLIND_BOX) {
+          // debugger
+          found = LuckyRedPacketList.find(
+            (config) =>
+              config.value.mode === LuckyTokenClaimType.BLIND_BOX &&
+              (tradeData.isNFT ? true : false) === (config.isBlindboxNFT ? true : false)
+          )
+          // debugger
+        } else {
+          found = LuckyRedPacketList.find(
+            (config) =>
+              tradeData.type?.partition == config.value.partition &&
+              tradeData.type?.mode == config.value.mode 
+              // (tradeData.type?.mode === LuckyTokenClaimType.BLIND_BOX && tradeData.isNFT === config.isBlindboxNFT)
+              // tradeData nftData == config.value.mode &&
+          );
+
+        }
+        // const found = LuckyRedPacketList.find(
+        //   (config) =>
+        //     tradeData.type?.partition == config.value.partition &&
+        //     tradeData.type?.mode == config.value.mode && 
+        //     (tradeData.type?.mode === LuckyTokenClaimType.BLIND_BOX && tradeData.isNFT === config.isBlindboxNFT)
+        //     // tradeData nftData == config.value.mode &&
+        // );
         // found?.value.mode ===
         return found ?? LuckyRedPacketList[2];
       } else {
@@ -150,14 +174,17 @@ export const CreateRedPacketPanel = <
     tradeData?.type?.partition,
     // tradeData?.type?.scope,
     tradeData?.type?.mode,
+    tradeData.isNFT
   ]);
 
   // tradeData.tradeType === TRADE_TYPE.NFT
   React.useEffect(() => {
     const found =
-      tradeData.tradeType === TRADE_TYPE.NFT
-        ? LuckyRedPacketList.find((x) => x.defaultForNFT)
-        : LuckyRedPacketList.find((x) => x.defaultForERC20);
+      tradeData.tradeType === RedPacketOrderType.NFT
+        ? LuckyRedPacketList.find((config) => config.defaultForNFT)
+        : tradeData.tradeType === RedPacketOrderType.BlindBox
+          ? LuckyRedPacketList.find((config) => config.defaultForBlindbox)
+          : LuckyRedPacketList.find((config) => config.defaultForERC20);
 
     setSelectType(found);
     handleOnDataChange({
@@ -246,7 +273,7 @@ export const CreateRedPacketPanel = <
           toolBarItem: undefined,
         },
       ].concat(
-        tradeType === TRADE_TYPE.TOKEN
+        tradeType === RedPacketOrderType.TOKEN
           ? ([
               {
                 key: "tradeMenuList",
