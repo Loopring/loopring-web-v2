@@ -68,8 +68,9 @@ export const CreateRedPacketPanel = <
   const [panelIndex, setPanelIndex] = React.useState(RedPacketStep.TradeType);
 
   React.useEffect(() => {
+    // isToken
     if (
-      tradeType === RedPacketOrderType.NFT &&
+      !isToken &&
       tradeData.nftData &&
       panelIndex === RedPacketStep.NFTList
     ) {
@@ -78,6 +79,7 @@ export const CreateRedPacketPanel = <
   }, [tradeData?.nftData, panelIndex, tradeType]);
 
   const setActiveStep = React.useCallback((index: RedPacketStep) => {
+
     switch (index) {
       case RedPacketStep.TradeType:
         setPanelIndex(0);
@@ -177,7 +179,6 @@ export const CreateRedPacketPanel = <
     tradeData.isNFT
   ]);
 
-  // tradeData.tradeType === TRADE_TYPE.NFT
   React.useEffect(() => {
     const found =
       tradeData.tradeType === RedPacketOrderType.NFT
@@ -197,6 +198,8 @@ export const CreateRedPacketPanel = <
   }, [tradeData.tradeType]);
 
   const [privateChecked, setPrivateChecked] = React.useState(false);
+  const isToken = tradeType === RedPacketOrderType.TOKEN ||
+    (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT)
 
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     return {
@@ -273,7 +276,7 @@ export const CreateRedPacketPanel = <
           toolBarItem: undefined,
         },
       ].concat(
-        tradeType === RedPacketOrderType.TOKEN
+        isToken
           ? ([
               {
                 key: "tradeMenuList",

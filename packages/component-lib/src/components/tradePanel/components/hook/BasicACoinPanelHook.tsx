@@ -39,6 +39,7 @@ export const useBasicTrade = <
   >();
 
   const onChangeEvent = (_index: 0 | 1, { to, tradeData }: SwitchData<T>) => {
+
     panelEventSubject.next({ _index: _index, switchData: { to, tradeData } });
   };
   const panelEventNext = React.useCallback(

@@ -359,16 +359,18 @@ export const useCreateRedPacket = <
           )
           .gt(REDPACKET_ORDER_NFT_LIMIT);
       }
+      // const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+      //   (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
 
       if (
         tradeValue &&
         !isExceedBalance &&
         !tooSmall &&
         !tooLarge &&
-        ((redPacketOrder.tradeType === RedPacketOrderType.NFT &&
+        ((!isToken &&
           redPacketOrder.nftData) ||
           // @ts-ignore
-          redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
+          isToken) &&
         redPacketConfigs?.luckTokenAgents &&
         !blindBoxGiftsLargerThanPackets &&
         !blindBoxPacketsNumberTooLarge
@@ -721,6 +723,8 @@ export const useCreateRedPacket = <
       const redPacketOrder = store.getState()._router_modalData
         .redPacketOrder as T;
       const _tradeData = calcNumberAndAmount();
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
 
       if (
         readyState === AccountStatus.ACTIVATED &&
@@ -730,7 +734,7 @@ export const useCreateRedPacket = <
         chargeFeeTokenList.length &&
         !isFeeNotEnough.isFeeNotEnough &&
         redPacketOrder.belong &&
-        (redPacketOrder.tradeType === RedPacketOrderType.NFT
+        (!isToken
           ? redPacketOrder.nftData
           : tokenMap[redPacketOrder.belong]) &&
         redPacketOrder.fee &&
@@ -752,7 +756,7 @@ export const useCreateRedPacket = <
             step: AccountStep.RedPacketSend_WaitForAuth,
           });
           let tradeToken, tradeValue;
-          if (redPacketOrder.tradeType === RedPacketOrderType.NFT) {
+          if (!isToken) {
             tradeToken = {
               tokenId: redPacketOrder.tokenId,
               nftDta: redPacketOrder.nftData,
@@ -788,22 +792,20 @@ export const useCreateRedPacket = <
             type: {
               ...redPacketOrder.type,
               mode:
-                redPacketOrder.tradeType === RedPacketOrderType.NFT
-                  ? redPacketOrder.type.mode ===
-                    sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? sdk.LuckyTokenClaimType.BLIND_BOX
-                    : sdk.LuckyTokenClaimType.COMMON
+              redPacketOrder.tradeType === RedPacketOrderType.BlindBox 
+                ? sdk.LuckyTokenClaimType.BLIND_BOX
+                : (redPacketOrder.tradeType === RedPacketOrderType.NFT
+                  ? sdk.LuckyTokenClaimType.COMMON
                   : // @ts-ignore
-                    redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON,
+                    redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON)
             },
             numbers: redPacketOrder.numbers,
             giftNumbers: redPacketOrder.giftNumbers!,
             memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
             signerFlag: false as any,
-            nftData:
-              redPacketOrder.tradeType === RedPacketOrderType.NFT
-                ? redPacketOrder.nftData
-                : undefined,
+            nftData: isToken
+              ? undefined
+              : redPacketOrder.nftData,
             // @ts-ignore
             templateId: 0,
             validSince: Math.round(

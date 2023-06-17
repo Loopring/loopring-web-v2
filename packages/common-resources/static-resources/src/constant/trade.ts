@@ -665,6 +665,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     showInNFTS: true,
     showInERC20: true,
     defaultForERC20: true,
+    defaultForNFT: true,
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -690,7 +691,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     icon: 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=',
     value: {
       value: 4,
-      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.BLIND_BOX,
     },
   },
@@ -702,7 +703,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     isBlindboxNFT: true,
     value: {
       value: 5,
-      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.BLIND_BOX,
     },
   },

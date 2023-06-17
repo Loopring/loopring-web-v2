@@ -159,6 +159,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
       React.useState<"up" | "down">("down");
     const inputBtnRef = React.useRef();
     const inputSplitRef = React.useRef();
+    const isToken = tradeType === RedPacketOrderType.TOKEN || 
+      (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT)
     const {total: redPacketTotalValue, splitValue} = React.useMemo(() => {
       // if (tradeType == TRADE_TYPE.TOKEN) {
       //
@@ -183,7 +185,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 .toBig(tradeData?.tradeValue ?? 0)
                 .times(tradeData?.numbers ?? 0)
             : sdk.toBig(tradeData?.tradeValue ?? 0);
-        if (tradeType == RedPacketOrderType.TOKEN) {
+        if (isToken) {
           return {
             total:
               getValuePrecisionThousand(
@@ -410,7 +412,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const endMaxDateTime = startDateTime
       ? startDateTime.clone().add(timeRangeMaxInSeconds, "seconds")
       : undefined;
-
+    
     // @ts-ignore
     return (
       <RedPacketBoxStyle className={"redPacket"} justifyContent={"center"}>
@@ -450,14 +452,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
           position={"relative"}
           flexDirection={"column"}
         >
-          {tradeType === RedPacketOrderType.TOKEN ? (
+          {isToken ? (
             // @ts-ignore
             <BasicACoinTrade
               {...{
                 ...rest,
                 t,
-
-                type: tradeType ?? "TOKEN",
+                type: "TOKEN",
                 disabled,
                 walletMap,
                 tradeData:
@@ -555,8 +556,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             })}
           </Typography>
         </Box>
-        {tradeType === RedPacketOrderType.NFT &&
-          selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
+        {tradeType === RedPacketOrderType.BlindBox && (
             <Box
               marginY={1}
               display={"flex"}
