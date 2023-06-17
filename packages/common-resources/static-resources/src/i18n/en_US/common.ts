@@ -1790,4 +1790,13 @@ export default {
   labelAnotherNetworkDes:
     "Orbiter.finance is a 3rd party service provider to help move tokens between various Ethereum L1 and L2 networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
+  labelReferralImageDes: "Scan QR code xxxx",
+  labelReferralImageCode: "Code: {{code}}",
+  labelInvite: "Invite Friends",
+  labelReferralsTotalEarning: "Total Earning",
+  labelReferralsClaimEarning: "Claim Earning",
+  labelReferralsTotalReferrals: "Total Referrals",
+  labelReferralsTotalRefund: "Total Refunds",
+  labelReferralsClaimRefund: "Claim Refunds",
+  labelReferralsTotalVolume: "Total Volume",
 };
