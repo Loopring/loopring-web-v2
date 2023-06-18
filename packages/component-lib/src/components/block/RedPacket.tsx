@@ -50,6 +50,7 @@ import {
 } from "./Interface";
 import {
   BoxNFT,
+  CoinIcon,
   ModalCloseButtonPosition,
   TablePagination,
 } from "../basic-lib";
@@ -1604,7 +1605,7 @@ export const RedPacketBlindBoxDetail = ({
   NFTClaimList,
   BlindBoxClaimList,
   showOpenLottery,
-  wonNFTInfo,
+  wonPrizeInfo,
   onClickClaim,
   onClickClaim2,
   onCloseOpenModal,
@@ -1655,6 +1656,11 @@ export const RedPacketBlindBoxDetail = ({
       size={"small"}
     />
   );
+  // wonPrizeInfo = {
+  //   isNFT: false,
+  //   amountStr: '1000000000000.000000000000 LRC',
+  //   tokenName: 'USDC'
+  // }
   const LooteryModal = (
     <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
       <>
@@ -1682,18 +1688,49 @@ export const RedPacketBlindBoxDetail = ({
               onClose={onCloseOpenModal!}
             />
             <Typography marginBottom={3} variant={"h3"}>
-              {wonNFTInfo
+              {wonPrizeInfo
                 ? t("labelBlindBoxCongratulations")
                 : t("labelBlindBoxSorry")}
             </Typography>
-            <Typography variant={"h5"}>
-              {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
+            {wonPrizeInfo
+              ? (
+                wonPrizeInfo.isNFT ? (
+                  <>
+                    <Typography variant={"h5"}>
+                      {wonPrizeInfo.name}{" "}
+                    </Typography>
+                    <img width={"40%"} alt={""} src={wonPrizeInfo.url} />
+                  </>
+                )
+                  : (
+                    <>
+                    <Box marginTop={3}/>
+                    <CoinIcon symbol={wonPrizeInfo.tokenName} size={48}/>
+                      {/* <img width={6} alt={""} src={wonPrizeInfo.tokenURL} /> */}
+                      <Typography marginTop={2} marginBottom={3} variant={"h2"}>
+                        {wonPrizeInfo.amountStr}
+                      </Typography>
+                    </>
+                  )
+              )
+              : (
+                <>
+                  <Typography variant={"h5"}>
+                    {t("labelBlindBoxNoRewards") + " "}
+                  </Typography>
+                  <img src={emptyImg} alt={""} />
+                </>
+              )
+            }
+
+            {/* <Typography variant={"h5"}>
+              {wonPrizeInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
             </Typography>
             {wonNFTInfo ? (
               <img width={"40%"} alt={""} src={wonNFTInfo.url} />
             ) : (
               <img src={emptyImg} alt={""} />
-            )}
+            )} */}
             <Link
               marginBottom={3}
               onClick={onClickClaimPopViewDetail}
@@ -1706,7 +1743,7 @@ export const RedPacketBlindBoxDetail = ({
             {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
           {t("labelClaimBtn")}
         </Button> */}
-            {wonNFTInfo && (
+            {wonPrizeInfo && (
               <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
                 {t("labelClaimBtn")}
               </Button>

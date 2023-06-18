@@ -17,6 +17,8 @@ import {
   RedPacketBlindBoxDetailTypes,
   RedPacketNFTDetailLimit,
   RedPacketBlindBoxLimit,
+  useSettings,
+  CoinIcon,
 } from "@loopring-web/component-lib";
 import React, { useState } from "react";
 import {
@@ -63,7 +65,7 @@ export function useRedPacketModal() {
   const { account } = useAccount();
   const { updateRedpacketHash } = useRedPacketHistory();
   const { chainId, baseURL } = useSystem();
-  const { tokenMap, idIndex } = useTokenMap();
+  const { tokenMap, idIndex, coinMap } = useTokenMap();
   const { t } = useTranslation("common");
   const { callOpen } = useOpenRedpacket();
 
@@ -532,9 +534,19 @@ export function useRedPacketModal() {
   const [viewDetailFrom, setViewDetailFrom] = React.useState(
     undefined as RedPacketBlindBoxDetailTypes | undefined
   );
-  const [wonNFTInfo, setWonNFTInfo] = React.useState(
-    undefined as { name: string; url: string } | undefined
+  const [wonPrizeInfo, setWonPrizeInfo] = React.useState(
+    undefined as { 
+      name: string; 
+      url: string;
+      isNFT: true;
+    } | {
+      amountStr: string; 
+      tokenURL: string;
+      tokenName: string;
+      isNFT: false;
+    } | undefined
   );
+  const { coinJson } = useSettings();
   const redPacketBlindBoxDetailCall = React.useCallback(
     async ({
       limit = RedPacketBlindBoxLimit,
@@ -663,14 +675,45 @@ export function useRedPacketModal() {
                   setBlindBoxType("Lottery Started and Not Win Lottery");
                 } else {
                   setBlindBoxType("Lottery Started and Win Lottery");
-                  setWonNFTInfo({
-                    name:
-                      response.detail.luckyToken.nftTokenInfo?.metadata?.base
-                        .name ?? "",
-                    url:
-                      response.detail.luckyToken.nftTokenInfo?.metadata
-                        ?.imageSize.original ?? "",
-                  });
+                  if (response.detail.luckyToken.isNft) {
+                    setWonPrizeInfo({
+                      name:
+                        response.detail.luckyToken.nftTokenInfo?.metadata?.base
+                          .name ?? "",
+                      url:
+                        response.detail.luckyToken.nftTokenInfo?.metadata
+                          ?.imageSize.original ?? "",
+                      isNFT: true
+                    });
+                  } else {
+                    
+                    // tokenMap[]
+                    const token = tokenMap[idIndex[response.detail.tokenId]];
+                    const coin = coinMap[idIndex[response.detail.tokenId]];
+                    const tokenIcon = coinJson[coin?.simpleName!]
+        // ? [coinJson[head], undefined]
+        // : [undefined, undefined];
+                    // token.symbol
+
+                    const amount = getValuePrecisionThousand(
+                      volumeToCountAsBigNumber(token.symbol, response.detail.claimAmount as any),
+                      token.precision,
+                      token.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: false,
+                        // isTrade: true,
+                      }
+                    );
+
+                    setWonPrizeInfo({
+                      tokenURL: 'tokenIcon',
+                      tokenName: coin?.simpleName ?? "",
+                      amountStr: amount + (coin?.simpleName ?? ""),
+                      isNFT: false
+                    });
+                  }
                 }
                 // refetch
                 response = await LoopringAPI.luckTokenAPI.getLuckTokenDetail(
@@ -1118,7 +1161,7 @@ export function useRedPacketModal() {
         showOpenLottery:
           blindBoxType === "Lottery Started and Win Lottery" ||
           blindBoxType === "Lottery Started and Not Win Lottery",
-        wonNFTInfo: wonNFTInfo,
+        wonPrizeInfo: wonPrizeInfo,
         onCloseOpenModal: () => {
           setShowRedPacket({ isShow: false });
         },
@@ -1267,7 +1310,7 @@ export function useRedPacketModal() {
     step,
     blinBoxDetail,
     blindBoxType,
-    wonNFTInfo,
+    wonPrizeInfo,
   ]);
   const redPacketQRCodeProps: RedPacketQRCodeProps | undefined =
     React.useMemo(() => {

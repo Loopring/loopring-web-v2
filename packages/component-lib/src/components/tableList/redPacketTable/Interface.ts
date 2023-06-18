@@ -66,7 +66,7 @@ export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   showloading: boolean;
   forexMap: ForexMap<C>;
   onItemClick: (item: ClaimToken) => void;
-  onViewMoreNFTsClick?: () => void;
+  onViewMoreClick?: (type: 'NFTs' | 'blindbox') => void;
   etherscanBaseUrl: string;
   isNFT?: boolean;
   getClaimRedPacket: (props: any) => void;

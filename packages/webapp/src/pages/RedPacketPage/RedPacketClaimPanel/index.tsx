@@ -53,7 +53,7 @@ export const RedPacketClaimPanel = ({
     showLoading,
     getClaimRedPacket,
     onItemClick,
-    onViewMoreNFTsClick,
+    onViewMoreClick,
     onCloseNFts,
   } = useClaimRedPacket(setToastOpen);
   const {
@@ -149,7 +149,7 @@ export const RedPacketClaimPanel = ({
               onItemClick,
               etherscanBaseUrl,
               getClaimRedPacket,
-              onViewMoreNFTsClick,
+              onViewMoreClick,
               hideAssets,
             }}
             totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}

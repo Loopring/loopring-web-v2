@@ -10,6 +10,7 @@ import {
   TablePagination,
 } from "../../basic-lib";
 import {
+  CoinInfo,
   EmptyValueTag,
   globalSetup,
   myLog,
@@ -27,6 +28,8 @@ import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { ColumnCoinDeep } from "../assetsTable";
+import { useTokenMap } from "@loopring-web/core";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -118,60 +121,74 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         updateData.cancel();
       };
     }, [showActionableRecords]);
+    // const { tokenMap, idIndex } = useTokenMap();
     const columnModeTransaction = [
       {
         key: "Token",
         name: t("labelToken"),
         formatter: ({ row }: FormatterProps<R>) => {
-          const metadata = row.rawData.luckyToken.nftTokenInfo.metadata;
-          return (
-            <Box
-              className="rdg-cell-value"
-              height={"100%"}
-              display={"flex"}
-              alignItems={"center"}
-            >
-              {metadata?.imageSize ? (
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  height={RowConfig.rowHeight + "px"}
-                  width={RowConfig.rowHeight + "px"}
-                  padding={1 / 4}
-                  style={{ background: "var(--field-opacity)" }}
-                >
-                  {metadata?.imageSize && (
-                    <NftImage
-                      alt={metadata?.base?.name}
-                      onError={() => undefined}
-                      src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
-                    />
-                  )}
-                </Box>
-              ) : (
-                <BoxNFT
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  height={RowConfig.rowHeight + "px"}
-                  width={RowConfig.rowHeight + "px"}
-                />
-              )}
-              <Typography
-                color={"inherit"}
-                flex={1}
-                display={"inline-block"}
+          if ( row.rawData.luckyToken.isNft){
+            const metadata = row.rawData.luckyToken.nftTokenInfo?.metadata;
+            return (
+              <Box
+                className="rdg-cell-value"
+                height={"100%"}
+                display={"flex"}
                 alignItems={"center"}
-                paddingLeft={1}
-                overflow={"hidden"}
-                textOverflow={"ellipsis"}
-                component={"span"}
               >
-                {metadata?.base?.name ?? "NFT"}
-              </Typography>
-            </Box>
-          );
+                {metadata?.imageSize ? (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                    padding={1 / 4}
+                    style={{ background: "var(--field-opacity)" }}
+                  >
+                    {metadata?.imageSize && (
+                      <NftImage
+                        alt={metadata?.base?.name}
+                        onError={() => undefined}
+                        src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                      />
+                    )}
+                  </Box>
+                ) : (
+                  <BoxNFT
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                  />
+                )}
+                <Typography
+                  color={"inherit"}
+                  flex={1}
+                  display={"inline-block"}
+                  alignItems={"center"}
+                  paddingLeft={1}
+                  overflow={"hidden"}
+                  textOverflow={"ellipsis"}
+                  component={"span"}
+                >
+                  {metadata?.base?.name ?? "NFT"}
+                </Typography>
+              </Box>
+            );
+          } else {
+            const _token = row.token as CoinInfo<any> & { type: TokenType };
+            return (
+              <ColumnCoinDeep
+                token={{
+                  ..._token,
+                  name: "", // for not displaying name here
+                }}
+              />
+            );
+            
+          }
         },
       },
       {

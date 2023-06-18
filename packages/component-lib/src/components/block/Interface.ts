@@ -164,9 +164,14 @@ export type RedPacketBlindBoxDetailProps = {
     amount: number;
   }[];
   showOpenLottery?: boolean;
-  wonNFTInfo?: {
-    name: string;
+  wonPrizeInfo?: { 
+    name: string; 
     url: string;
+    isNFT: true;
+  } | {
+    amountStr: string; 
+    tokenName: string;
+    isNFT: false;
   };
   onClickClaim?: () => void;
   onClickClaim2?: () => void;
