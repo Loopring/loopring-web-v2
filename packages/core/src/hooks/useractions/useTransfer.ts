@@ -195,6 +195,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
     isContractAddress,
     loopringSmartWalletVersion,
+    reCheck
   } = useAddressCheckWithContacts(true);
 
   const checkBtnStatus = React.useCallback(() => {
@@ -245,6 +246,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isFeeNotEnough.isFeeNotEnough,
     isAddressCheckLoading,
     transferValue,
+    addrStatus
   ]);
 
   const walletLayer2Callback = React.useCallback(() => {
@@ -742,6 +744,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                 }
               })
             )
+            reCheck()
           });
       }
       setSureItsLayer2(sure);

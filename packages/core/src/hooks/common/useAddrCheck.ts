@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { connectProvides } from "@loopring-web/web3-provider";
 import {
@@ -389,8 +389,6 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0:{
-            setIsLoopringAddress(true)
-            setIsActiveAccount(true)
             setIsCFAddress(found.addressType === sdk.AddressType.LOOPRING_HEBAO_CF)
             setIsContractAddress(true)
             setIsContract1XAddress(
@@ -402,6 +400,29 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
               version: undefined
             })
             setAddrStatus(AddressError.NoError)
+            if (checkEOA) {
+              try {
+                const response = await LoopringAPI.exchangeAPI?.getAccount({
+                  owner: address, //realAddr != "" ? realAddr : address,
+                })
+                if (
+                  (response && ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message))
+                  || !response
+                ) {
+                  setIsLoopringAddress(false)
+                  setIsActiveAccount(false);
+                  setIsActiveAccountFee(false);
+                } else {
+                  setIsLoopringAddress(true)
+                  setIsActiveAccount(response.accInfo.nonce !== 0);
+                  setIsActiveAccountFee(
+                    response.accInfo.nonce === 0 &&
+                      /FirstUpdateAccountPaid/gi.test(response.accInfo.tags ?? "")
+                  );
+                }
+              } catch {}
+              setIsAddressCheckLoading(false)
+            }
             break
           }
           case sdk.AddressType.EXCHANGE_OTHER:
@@ -486,6 +507,15 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
       debounceCheck.cancel();
     };
   }, [address, isAddressCheckLoading, chainId]);
+  const reCheck = useCallback(() => {
+    if (_address.current !== address && isAddressCheckLoading === false) {
+      debounceCheck(address);
+    }
+    _address.current = address;
+    return () => {
+      debounceCheck.cancel();
+    };
+  },[])
 
   React.useEffect(() => {
     setIsSameAddress(realAddr.toLowerCase() === accAddress.toLowerCase());
@@ -504,6 +534,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
     isContract1XAddress,
     isContractAddress,
     isActiveAccountFee,
-    loopringSmartWalletVersion
+    loopringSmartWalletVersion,
+    reCheck
   };
 };
