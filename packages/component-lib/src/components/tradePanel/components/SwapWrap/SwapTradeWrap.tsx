@@ -306,7 +306,7 @@ export const SwapTradeWrap = <
           top={60}
           sx={{
             boxSizing: "border-box",
-            border: "3px solid var(--color-box)",
+            border: "3px solid var(--color-pop-bg)",
             background: "var(--color-box-secondary)",
             borderRadius: "50%",
           }}

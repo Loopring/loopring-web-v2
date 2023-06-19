@@ -106,12 +106,10 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: undefined | false;
   isShowBtradeAllow?: boolean;
 };
-
 export enum BtradeType {
   Quantity = "Quantity",
   Speed = "Speed",
 }
-
 export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true;
   maxFeeBips: number;
@@ -513,7 +511,30 @@ export type NetworkItemInfo = {
   chainId: string;
   RPC?: string;
   link?: string;
-  isTest?: boolean | undefined;
+};
+
+export const NetworkMap: { [key: string]: NetworkItemInfo } = {
+  "1": {
+    label: "Ethereum",
+    chainId: "1",
+  },
+  "5": {
+    label: "Görli test",
+    chainId: "",
+  },
+  "42161": {
+    label: "Arbitrum",
+    chainId: "",
+    RPC: "https://arb1.arbitrum.io/rpc",
+  },
+  "": {
+    label: "Taiko",
+    chainId: "xxx",
+    RPC: "",
+  },
+  // "xxx":{
+  //
+  // }
 };
 
 export const url_path = "https://static.loopring.io/events";

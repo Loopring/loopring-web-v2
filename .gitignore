@@ -1,3 +1,4 @@
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -109,5 +110,3 @@ openapitools.json
 testkey.txt
 
 test_datadir
-
-dev

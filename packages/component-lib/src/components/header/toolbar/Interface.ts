@@ -15,7 +15,6 @@ export type WalletNotificationInterface = {
 };
 
 export type WalletConnectBtnProps = {
-  NetWorkItems: () => JSX.Element | JSX.Element;
   handleClick: (_e: React.MouseEvent) => void;
   accountState: AccountFull;
   isLayer1Only?: boolean;

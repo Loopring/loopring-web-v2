@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
+  ChainIdExtends,
   ChainTests,
   CircleIcon,
   gatewayList,
@@ -24,7 +25,6 @@ import * as sdk from "@loopring-web/loopring-sdk";
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
-
   &.wallet-btn {
     //width:;
     justify-content: center;
@@ -77,16 +77,42 @@ const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
     }
   }};
 ` as (props: ButtonProps & { account: any }) => JSX.Element;
+const TestNetworkStyle = styled(Typography)`
+  // display: inline-flex;
+  position: relative;
+  cursor: initial;
+  height: 3rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--network-bg);
+    ${({ theme }) =>
+      theme.border.defaultFrame({
+        d_W: 0,
+        d_R: 1 / 2,
+        c_key: "var(--opacity)",
+      })};
+  }
+
+  ${({ theme }) =>
+    theme.border.defaultFrame({ d_W: 0, d_R: 1 / 2, c_key: "var(--opacity)" })};
+` as typeof Typography;
 
 export const WalletConnectBtn = ({
   accountState,
   handleClick,
-  NetWorkItems,
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(["layout", "common"]);
   const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
-
+  const [networkLabel, setNetworkLabel] =
+    React.useState<string | undefined>(undefined);
   const [btnClassname, setBtnClassname] =
     React.useState<string | undefined>("");
   const [icon, setIcon] = React.useState<JSX.Element | undefined>();
@@ -144,6 +170,12 @@ export const WalletConnectBtn = ({
           break;
         default:
       }
+
+      if (account && account._chainId === sdk.ChainId.GOERLI) {
+        setNetworkLabel(isMobile ? "G ö" : "Görli");
+      } else {
+        setNetworkLabel("");
+      }
     } else {
       setLabel("labelConnectWallet");
     }
@@ -162,7 +194,149 @@ export const WalletConnectBtn = ({
   });
   return (
     <>
-      {NetWorkItems}
+      {networkLabel ? (
+        <TestNetworkStyle
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          paddingX={1}
+          component={"span"}
+          color={"var(--vip-text)"}
+          marginRight={1 / 2}
+        >
+          {networkLabel}
+        </TestNetworkStyle>
+      ) : (
+        <></>
+      )}
+      {!isMobile && <ProviderBox account={accountState?.account} />}
+      <WalletConnectBtnStyled
+        variant={
+          ["un-connect", "wrong-network"].findIndex(
+            (ele) => btnClassname === ele
+          ) !== -1
+            ? "contained"
+            : "outlined"
+        }
+        size={
+          ["un-connect", "wrong-network"].findIndex(
+            (ele) => btnClassname === ele
+          ) !== -1
+            ? "small"
+            : "medium"
+        }
+        color={"primary"}
+        className={`wallet-btn ${btnClassname}`}
+        onClick={_handleClick}
+        {...bindHover(popupState)}
+      >
+        {icon ? (
+          <Typography component={"i"} marginLeft={-1}>
+            {icon}
+          </Typography>
+        ) : (
+          <></>
+        )}
+        <Typography
+          component={"span"}
+          variant={"body1"}
+          lineHeight={1}
+          color={"inherit"}
+        >
+          {t(label)}
+        </Typography>
+      </WalletConnectBtnStyled>
+    </>
+  );
+};
+
+export const WalletConnectUI = ({
+  accountState,
+  handleClick,
+}: WalletConnectBtnProps) => {
+  const { t } = useTranslation(["layout", "common"]);
+  const { isMobile } = useSettings();
+  const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
+  const [networkLabel, setNetworkLabel] =
+    React.useState<string | undefined>(undefined);
+  const [btnClassname, setBtnClassname] =
+    React.useState<string | undefined>("");
+  const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+  const update = React.useCallback(() => {
+    const { account } = accountState;
+    const addressShort = account.accAddress
+      ? getShortAddr(account?.accAddress)
+      : undefined;
+    if (addressShort) {
+      setLabel(addressShort);
+    }
+    setIcon(undefined);
+
+    myLog("wallet connect account.readyState:", account.readyState);
+
+    switch (account.readyState) {
+      case AccountStatus.UN_CONNECT:
+        setBtnClassname("un-connect");
+        setLabel("labelConnectWallet");
+        break;
+      case AccountStatus.LOCKED:
+      case AccountStatus.ACTIVATED:
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.DEPOSITING:
+      case AccountStatus.NOT_ACTIVE:
+        setBtnClassname("unlocked");
+        setIcon(
+          <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
+        );
+        break;
+      case AccountStatus.ERROR_NETWORK:
+        setBtnClassname("wrong-network");
+        setLabel("labelWrongNetwork");
+        setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />);
+        break;
+      default:
+    }
+
+    if (account && account._chainId === sdk.ChainId.GOERLI) {
+      setNetworkLabel("Görli");
+    } else {
+      setNetworkLabel("");
+    }
+  }, [accountState]);
+  React.useEffect(() => {
+    if (accountState.status === SagaStatus.UNSET) {
+      update();
+    }
+  }, [accountState.status]);
+
+  const _handleClick = (event: React.MouseEvent) => {
+    // debounceCount(event)
+    if (handleClick) {
+      handleClick(event);
+    }
+  };
+
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId: 'wallet-connect-notification'`,
+  });
+  return (
+    <>
+      {networkLabel ? (
+        <TestNetworkStyle
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          paddingX={1}
+          component={"span"}
+          color={"var(--vip-text)"}
+          marginRight={1 / 2}
+        >
+          {networkLabel}
+        </TestNetworkStyle>
+      ) : (
+        <></>
+      )}
       {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
@@ -207,13 +381,12 @@ export const WalletConnectBtn = ({
 export const WalletConnectL1Btn = ({
   accountState,
   handleClick,
-  NetWorkItems,
-}: // isShowOnUnConnect,
-WalletConnectBtnProps) => {
+}: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(["layout", "common"]);
-  // const { isMobile } = useSettings();
+  const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
-
+  const [networkLabel, setNetworkLabel] =
+    React.useState<string | undefined>(undefined);
   const [btnClassname, setBtnClassname] =
     React.useState<string | undefined>("");
   const [icon, setIcon] = React.useState<JSX.Element | undefined>();
@@ -289,6 +462,17 @@ WalletConnectBtnProps) => {
           break;
         default:
       }
+
+      if (account && account._chainId === sdk.ChainId.GOERLI) {
+        setNetworkLabel(isMobile ? "G ö" : "Görli");
+      } else if (
+        account &&
+        (account._chainId as any) == ChainIdExtends["TAIKO"]
+      ) {
+        setNetworkLabel(isMobile ? "Taiko" : "Taiko");
+      } else {
+        setNetworkLabel("");
+      }
     } else {
       setLabel("labelConnectWallet");
     }
@@ -307,7 +491,21 @@ WalletConnectBtnProps) => {
   });
   return (
     <>
-      {NetWorkItems}
+      {networkLabel ? (
+        <TestNetworkStyle
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          paddingX={1}
+          component={"span"}
+          color={"var(--vip-text)"}
+          marginRight={1}
+        >
+          {networkLabel}
+        </TestNetworkStyle>
+      ) : (
+        <></>
+      )}
       <WalletConnectBtnStyled
         variant={
           ["un-connect", "wrong-network"].findIndex(

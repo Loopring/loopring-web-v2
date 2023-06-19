@@ -131,8 +131,7 @@ export const BtradeSwapPage = withTranslation("common")(
           handleClose={(_e, isAgree) => {
             setConfirmedBtradeSwap(false);
             if (!isAgree) {
-              history.replace("/markets");
-              // history.goBack();
+              history.goBack();
             } else {
               confirmedBtradeSwapFunc();
             }

@@ -355,32 +355,6 @@ export const RedPacketQRCodeSvg = React.memo(
             });
         }
       }, [imageEleUrl]);
-      // const onLoad = (event: any) => {
-      //   try {
-      //     let canvas: HTMLCanvasElement = document.createElement(
-      //       "CANVAS"
-      //     ) as HTMLCanvasElement;
-      //     let ctx: CanvasRenderingContext2D = canvas.getContext("2d") as any;
-      //     let dataURL: any;
-      //     canvas.height = imageRef.current.naturalHeight;
-      //     canvas.width = imageRef.current.naturalWidth;
-      //     ctx.drawImage(event.target, 0, 0);
-      //     dataURL = canvas.toDataURL();
-      //     myLog("read image", dataURL);
-      //     // fetch(event.target.href.baseVal, { mode: "no-cors" })
-      //     //   .then((result) => result.blob())
-      //     //   .then((result) => {
-      //     //
-      //     //   });
-      //     // if(event.target){
-      //     //
-      //     // }
-      //
-      //     // setImageBase64((state) => dataURL ?? state);
-      //   } catch (error) {
-      //     myLog("read error", error);
-      //   }
-      // };
 
       React.useEffect(() => {
         const [str1, str2] = textContent?.split("\n");
@@ -398,18 +372,8 @@ export const RedPacketQRCodeSvg = React.memo(
       }, [textContent]);
 
       const station = imageEleUrl ? [36, 68, 86, 188] : [56, 88, 106, 186];
-      // const qrcodeRef = React.createRef();
       return (
         <>
-          {/*{imageBase64 && (*/}
-          {/*  <img*/}
-          {/*    crossOrigin={"anonymous"}*/}
-          {/*    src={imageBase64}*/}
-          {/*    onLoad={onLoad}*/}
-          {/*    ref={imageRef}*/}
-          {/*    style={{ display: "none" }}*/}
-          {/*  />*/}
-          {/*)}*/}
           <svg
             ref={ref}
             width="334"

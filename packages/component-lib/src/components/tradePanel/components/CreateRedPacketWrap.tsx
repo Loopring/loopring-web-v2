@@ -139,7 +139,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
         : "0.00",
     };
 
-    const inputNFTButtonDefaultProps: Partial<InputButtonProps<T, I, CoinInfo<I>>> = {
+    const inputNFTButtonDefaultProps: Partial<
+      InputButtonProps<T, I, CoinInfo<I>>
+    > = {
       label:
         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
           ? t("labelAmountEach")
@@ -158,7 +160,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
       React.useState<"up" | "down">("down");
     const inputBtnRef = React.useRef();
     const inputSplitRef = React.useRef();
-    const {total: redPacketTotalValue, splitValue} = React.useMemo(() => {
+    const { total: redPacketTotalValue, splitValue } = React.useMemo(() => {
       // if (tradeType == TRADE_TYPE.TOKEN) {
       //
       // } else {
