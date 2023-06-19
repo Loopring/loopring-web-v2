@@ -29,7 +29,6 @@ import {
 import { myLog } from "@loopring-web/common-resources";
 
 import _ from "lodash";
-import { AvaiableNetwork } from "@loopring-web/web3-provider";
 
 export const useHeader = () => {
   const accountTotal = useAccount();
