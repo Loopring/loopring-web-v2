@@ -492,9 +492,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   );
 
   const onTransferClick = React.useCallback(
-    async (transferValue, isFirstTime: boolean = true) => {
+    async (_transferValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-
+      const transferValue = store.getState()._router_modalData.transferValue;
       if (
         readyState === AccountStatus.ACTIVATED &&
         tokenMap &&
