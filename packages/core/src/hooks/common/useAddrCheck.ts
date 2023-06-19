@@ -9,7 +9,7 @@ import {
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { checkAddr } from "../../utils";
-import { LoopringAPI, RootState, useAccount, useSystem } from "../../index";
+import { LoopringAPI, RootState, store, useAccount, useSystem } from "../../index";
 import { useSelector } from "react-redux";
 
 export const useAddressCheck = () => {
@@ -367,7 +367,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
 
   const debounceCheck = _.debounce(
     async (address) => {
-      const found = contacts?.find(contact => contact.address === address)
+      const found = store.getState().contacts.contacts?.find(contact => contact.address === address)
       const listNoCheckRequired = [
         sdk.AddressType.LOOPRING_HEBAO_CF,
         sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6,
@@ -508,14 +508,12 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
     };
   }, [address, isAddressCheckLoading, chainId]);
   const reCheck = useCallback(() => {
-    if (_address.current !== address && isAddressCheckLoading === false) {
-      debounceCheck(address);
-    }
+    debounceCheck(address);
     _address.current = address;
     return () => {
       debounceCheck.cancel();
     };
-  },[])
+  },[address])
 
   React.useEffect(() => {
     setIsSameAddress(realAddr.toLowerCase() === accAddress.toLowerCase());
