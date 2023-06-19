@@ -57,6 +57,7 @@ export const AddAsset = ({
       alignItems={"center"}
       justifyContent={"space-between"}
       flexDirection={"column"}
+      width={"var(--modal-width)"}
     >
       <Typography
         component={"h3"}
@@ -77,7 +78,7 @@ export const AddAsset = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={isMobile ? 7 : 10}
+        paddingX={3}
         paddingBottom={4}
       >
         <Typography
@@ -88,7 +89,7 @@ export const AddAsset = ({
         >
           {t("labelAddAssetHowto")}
         </Typography>
-        <>
+        <Box flex={1} flexDirection={"column"}>
           {addAssetList.reduce((prev, item) => {
             if (
               !symbol ||
@@ -138,7 +139,7 @@ export const AddAsset = ({
             }
             return prev;
           }, [] as JSX.Element[])}
-        </>
+        </Box>
       </Box>
     </Box>
   );

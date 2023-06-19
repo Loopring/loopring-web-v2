@@ -399,10 +399,12 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     font-size: ${({ theme }) => theme.fontDefault.h5};
     justify-content: flex-start;
     flex-direction: row;
-
+    //width: 80%;
     &.isMobile {
       font-size: ${({ theme }) => theme.fontDefault.h6};
     }
+
+    padding: 0 ${({ theme }) => theme.unit}px;
   }
 
   &.banxaEnter {

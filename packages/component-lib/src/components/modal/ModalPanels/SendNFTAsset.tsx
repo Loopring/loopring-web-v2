@@ -48,6 +48,7 @@ export const SendNFTAsset = ({
       alignItems={"center"}
       justifyContent={"space-between"}
       flexDirection={"column"}
+      width={"var(--modal-width)"}
     >
       <Typography
         component={"h3"}
@@ -66,7 +67,7 @@ export const SendNFTAsset = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={isMobile ? 7 : 10}
+        paddingX={3}
         paddingBottom={4}
       >
         <Typography

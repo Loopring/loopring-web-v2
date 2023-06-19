@@ -48,6 +48,7 @@ export const SendAsset = ({
       alignItems={"center"}
       justifyContent={"space-between"}
       flexDirection={"column"}
+      width={"var(--modal-width)"}
     >
       <Typography
         component={"h3"}
@@ -66,7 +67,7 @@ export const SendAsset = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={isMobile ? 7 : 10}
+        paddingX={3}
         paddingBottom={4}
       >
         <Typography
@@ -77,53 +78,55 @@ export const SendAsset = ({
         >
           {t("labelSendAssetHowto")}
         </Typography>
-        {sendAssetList.reduce((prev, item) => {
-          if (
-            !symbol ||
-            (item.key == "SendAssetToAnotherNet" &&
-              send["orbiter"]?.includes(symbol)) ||
-            !["SendAssetToAnotherNet"].includes(item.key)
-          ) {
-            prev.push(
-              <Box key={item.key} marginTop={1.5}>
-                <MenuBtnStyled
-                  variant={"outlined"}
-                  size={"large"}
-                  className={`sendAsset  ${isMobile ? "isMobile" : ""}`}
-                  fullWidth
-                  disabled={
-                    !!(
-                      item.enableKey &&
-                      allowTrade[item.enableKey]?.enable === false
-                    ) ||
-                    (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
-                  }
-                  endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
-                  onClick={(e) => {
-                    item.handleSelect(e);
-                  }}
-                >
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"inherit"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
-                    lineHeight={"1.2em"}
-                    sx={{
-                      textIndent: 0,
-                      textAlign: "left",
+        <Box flex={1} flexDirection={"column"}>
+          {sendAssetList.reduce((prev, item) => {
+            if (
+              !symbol ||
+              (item.key == "SendAssetToAnotherNet" &&
+                send["orbiter"]?.includes(symbol)) ||
+              !["SendAssetToAnotherNet"].includes(item.key)
+            ) {
+              prev.push(
+                <Box key={item.key} marginTop={1.5}>
+                  <MenuBtnStyled
+                    variant={"outlined"}
+                    size={"large"}
+                    className={`sendAsset  ${isMobile ? "isMobile" : ""}`}
+                    fullWidth
+                    disabled={
+                      !!(
+                        item.enableKey &&
+                        allowTrade[item.enableKey]?.enable === false
+                      ) ||
+                      (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
+                    }
+                    endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
+                    onClick={(e) => {
+                      item.handleSelect(e);
                     }}
                   >
-                    <>{IconItem({ svgIcon: item.svgIcon })}</>
-                    {t("label" + item.key)}
-                  </Typography>
-                </MenuBtnStyled>
-              </Box>
-            );
-          }
-          return prev;
-        }, [] as JSX.Element[])}
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={"inherit"}
+                      display={"inline-flex"}
+                      alignItems={"center"}
+                      lineHeight={"1.2em"}
+                      sx={{
+                        textIndent: 0,
+                        textAlign: "left",
+                      }}
+                    >
+                      <>{IconItem({ svgIcon: item.svgIcon })}</>
+                      {t("label" + item.key)}
+                    </Typography>
+                  </MenuBtnStyled>
+                </Box>
+              );
+            }
+            return prev;
+          }, [] as JSX.Element[])}
+        </Box>
       </Box>
     </BoxStyled>
   );
