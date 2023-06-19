@@ -332,9 +332,11 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
-            const isNFTs =
-              row.token.type === TokenType.single && row.token.name === "NFTs";
-            if (!isNFTs) {
+            
+            const isNFTsOrBlindbox =
+              row.token.type === TokenType.single && 
+              (row.token.name === "NFTs" || row.token.name === "Blind Box");
+            if (!isNFTsOrBlindbox) {
               onItemClick(row.rawData);
             }
           }}
