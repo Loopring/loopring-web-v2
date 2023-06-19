@@ -239,7 +239,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       });
       await sdk.sleep(REFRESH_RATE);
       setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect });
-    };,
+    },
     [
       resetWithdrawData,
       resetTransferData,
