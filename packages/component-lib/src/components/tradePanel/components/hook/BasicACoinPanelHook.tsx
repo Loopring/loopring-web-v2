@@ -32,7 +32,7 @@ export const useBasicTrade = <
     if (tradeData !== switchData.tradeData) {
       setSwitchData({ ...switchData, tradeData: tradeData });
     }
-  }, [tradeData?.tradeValue, tradeData?.belong, tradeData?.balance, tradeData?.fee]);
+  }, [tradeData?.tradeValue, tradeData?.belong, tradeData?.balance]);
 
   const panelEventSubject = new Subject<
     { _index: 0 | 1; switchData: SwitchData<T> } | undefined
