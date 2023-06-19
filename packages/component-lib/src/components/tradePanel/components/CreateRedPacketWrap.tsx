@@ -1301,7 +1301,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                           width: "var(--redPacket-avatar)",
                         }}
                         // src={sellData?.icon}
-                        src={SoursURL + "images/redPacketNFT.webp"}
+                        src={SoursURL + "images/redPacketBlindbox.png"}
                       />
                     </Typography>
                   </Typography>
