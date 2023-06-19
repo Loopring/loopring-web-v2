@@ -39,7 +39,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   makeWalletLayer2,
-  useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,
   walletLayer2Service,
@@ -54,7 +53,6 @@ import {
   volumeToCountAsBigNumber,
   useTokenPrices,
   useIsHebao,
-  RootState,
   useAddressCheckWithContacts,
   createImageFromInitials,
 } from "../../index";

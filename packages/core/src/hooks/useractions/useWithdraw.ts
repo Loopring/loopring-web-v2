@@ -9,22 +9,22 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
-  CoinMap,
-  Explorer,
-  IBData,
-  myLog,
-  SagaStatus,
-  UIERROR_CODE,
-  WalletMap,
-  WithdrawTypes,
   AddressError,
+  CoinMap,
   EXCHANGE_TYPE,
-  LIVE_FEE_TIMES,
+  Explorer,
   getValuePrecisionThousand,
   globalSetup,
+  IBData,
+  LIVE_FEE_TIMES,
+  myLog,
+  SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
+  UIERROR_CODE,
   WALLET_TYPE,
+  WalletMap,
+  WithdrawTypes,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -33,32 +33,30 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import {
   BIGO,
   DAYS,
+  getAllContacts,
   getTimestampDaysLater,
+  isAccActivated,
+  LAST_STEP,
   LoopringAPI,
   makeWalletLayer2,
-  useAddressCheck,
-  useBtnStatus,
-  useTokenMap,
+  store,
   useAccount,
+  useAddressCheckWithContacts,
+  useBtnStatus,
   useChargeFees,
+  useIsHebao,
+  useModalData,
+  useSystem,
+  useTokenMap,
   useWalletLayer2Socket,
   walletLayer2Service,
-  useSystem,
-  useModalData,
-  isAccActivated,
-  store,
-  LAST_STEP,
-  useIsHebao,
-  RootState,
-  useAddressCheckWithContacts,
-  getAllContacts,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
-import { AddressType } from "@loopring-web/loopring-sdk";
-import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "../../stores/contacts/reducer";
-import { addressToExWalletMapFn, exWalletToAddressMapFn } from "@loopring-web/core";
+import {
+  addressToExWalletMapFn,
+  exWalletToAddressMapFn,
+} from "@loopring-web/core";
 import { useContacts } from "../../stores/contacts/hooks";
 import { useTheme } from "@emotion/react";
 
@@ -371,7 +369,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     if (info?.isToMyself) {
       setAddress(account.accAddress);
     } else if (contactAddress) {
-      setAddress(contactAddress)
+      setAddress(contactAddress);
     } else {
       setAddress("");
     }
@@ -669,8 +667,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  const { isHebao } = useIsHebao()
-  const {contacts,currentAccountId: cachedForAccountId, updateContacts, updateAccountId} = useContacts() 
+  const { isHebao } = useIsHebao();
+  const {
+    contacts,
+    currentAccountId: cachedForAccountId,
+    updateContacts,
+    updateAccountId,
+  } = useContacts();
   React.useEffect(() => {
     const addressType = contacts?.find(
       (x) => x.address === realAddr
@@ -683,26 +686,32 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         : undefined;
       setSureIsAllowAddress(found);
     }
-  }, [realAddr, isShow, contacts])
-  
+  }, [realAddr, isShow, contacts]);
+
   const {
     account: { accountId, apiKey, accAddress },
   } = useAccount();
-  const theme = useTheme()
+  const theme = useTheme();
   const loadContacts = React.useCallback(async () => {
-    if (accountId === cachedForAccountId) return
-    updateContacts(undefined)
+    if (accountId === cachedForAccountId) return;
+    updateContacts(undefined);
     try {
-      const allContacts = await getAllContacts(0, accountId, apiKey, accAddress, theme.colorBase.warning)
-      updateContacts(allContacts)
-      updateAccountId(accountId)
+      const allContacts = await getAllContacts(
+        0,
+        accountId,
+        apiKey,
+        accAddress,
+        theme.colorBase.warning
+      );
+      updateContacts(allContacts);
+      updateAccountId(accountId);
     } catch (e) {
-      updateContacts([])
+      updateContacts([]);
     }
-  }, [cachedForAccountId, apiKey, accountId, accAddress])
+  }, [cachedForAccountId, apiKey, accountId, accAddress]);
   React.useEffect(() => {
-    loadContacts()
-  }, [apiKey])
+    loadContacts();
+  }, [apiKey]);
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
@@ -732,21 +741,28 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       // const found = map.find(x => x[0] === value)![1]
       const contact = contacts?.find((x) => x.address === realAddr);
       if (isHebao !== undefined && contact) {
-        LoopringAPI.contactAPI?.updateContact({
-          contactAddress: realAddr,
-          isHebao,
-          accountId: account.accountId,
-          addressType: found,
-          contactName: contact.name
-        }, account.apiKey).then(() => {
-          updateContacts(contacts?.map(x => {
-            if (x.address === realAddr && found) {
-              return { ...x, addressType: found }
-            } else {
-              return x
-            }
-          }))
-        })
+        LoopringAPI.contactAPI
+          ?.updateContact(
+            {
+              contactAddress: realAddr,
+              isHebao,
+              accountId: account.accountId,
+              addressType: found,
+              contactName: contact.name,
+            },
+            account.apiKey
+          )
+          .then(() => {
+            updateContacts(
+              contacts?.map((x) => {
+                if (x.address === realAddr && found) {
+                  return { ...x, addressType: found };
+                } else {
+                  return x;
+                }
+              })
+            );
+          });
       }
       setSureIsAllowAddress(value);
     },
