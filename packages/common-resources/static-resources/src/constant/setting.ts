@@ -1,4 +1,5 @@
-import { IsMobile } from "../utils";
+import { IsMobile, myLog } from "../utils";
+import { NetworkItemInfo } from "../loopring-interface";
 
 export enum UpColor {
   green = "green",
@@ -90,30 +91,70 @@ const MapChainIdMap = new Map([
   [1, "ETHEREUM"],
   [5, "GOERLI"],
 ]);
-export const ChainIdExtends = {};
+export const ChainIdExtends: any = {
+  NONETWORK: "unknown",
+};
 
 export const ChainTests: any[] = [5];
 export const MapChainId = {};
+export const NetworkMap: { [key: number]: NetworkItemInfo } = {};
+const _NetworkMap = new Map([
+  [
+    1,
+    {
+      label: "Ethereum",
+      chainId: "1",
+      isTest: false,
+    },
+  ],
+  [
+    5,
+    {
+      label: "Görli",
+      chainId: "",
+      isTest: true,
+    },
+  ],
+]);
 
-(function () {
-  process.env.REACT_APP_RPC_URL_OTHERS?.split(",").forEach((item, index) => {
-    let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
-      "|"
-    ) ?? [""];
-    if (name) {
-      ChainIdExtends[name] = Number(item);
-      MapChainIdMap.set(Number(item), name);
-      if (isTest) {
-        ChainTests.push(item);
+(function (): void {
+  process.env.REACT_APP_RPC_OTHERS?.split(",").forEach(
+    (item: string, index: number) => {
+      let [name, isTest] = process.env[
+        `REACT_APP_RPC_CHAINNAME_${item}`
+      ]?.split("|") ?? [""];
+      if (name) {
+        ChainIdExtends[name] = Number(item);
+        MapChainIdMap.set(Number(item), name);
+        myLog("MapChainIdMap", item, MapChainIdMap);
+        if (isTest) {
+          ChainTests.push(item);
+        }
+      } else {
+        ChainIdExtends["unknown" + index] = item;
+        MapChainIdMap.set(Number(item), "unknown");
       }
-    } else {
-      ChainIdExtends["unknown" + index] = item;
-      MapChainIdMap.set(Number(item), "unknown");
+      _NetworkMap.set(Number(item), {
+        label: name,
+        chainId: index.toString(),
+        // RPC: process.env[`REACT_APP_RPC_URL_${item}`] ?? "",
+        isTest: isTest ? true : false,
+      });
     }
-  });
-
+  );
+  [..._NetworkMap.entries()].reduce((prev, [key, value]) => {
+    prev[key] = value;
+    return prev;
+  }, NetworkMap);
+  myLog("NetworkMap", NetworkMap);
   [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
     prev[key] = value;
     return prev;
   }, MapChainId);
+  if (window) {
+    // @ts-ignore
+    window.__ChainIdExtends = ChainIdExtends;
+    // @ts-ignore
+    window.__MapChainId = MapChainId;
+  }
 })();

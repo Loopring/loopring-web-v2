@@ -9,7 +9,6 @@ import {
 
 import {
   Layer1Action,
-  MapChainId,
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
@@ -73,7 +72,7 @@ export const useHebaoMain = <
   const { clearOneItem } = layer1Store.useLayer1Store();
   const { chainId } = useSystem();
   const [isLoading, setIsLoading] = React.useState(false);
-  const network = sdk.NetworkWallet[MapChainId[chainId]];
+  const network = sdk.NetworkWallet[window.__MapChainId[chainId]];
 
   const loadData = React.useCallback(async () => {
     const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;

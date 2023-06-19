@@ -367,24 +367,40 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
       let baseURL, socketURL, etherscanBaseUrl;
       if (extendsChain.includes(chainId.toString())) {
         const { isTaikoTest } = store.getState().settings;
-        baseURL = !isTaikoTest
-          ? `https://${process.env.REACT_APP_API_URL}`
-          : `https://${process.env.REACT_APP_API_URL_UAT}`;
-        socketURL = !isTaikoTest
-          ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
-          : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
-        etherscanBaseUrl = !isTaikoTest
-          ? `https://etherscan.io/`
-          : `https://goerli.etherscan.io/`;
+        if (isTaikoTest) {
+          baseURL = `https://${process.env["REACT_APP_API_URL_" + 5]}`;
+          socketURL = `wss://ws.${process.env["REACT_APP_API_URL_" + 5]}/v3/ws`;
+        } else {
+          baseURL = `https://${
+            process.env["REACT_APP_API_URL_" + chainId.toString()]
+          }`;
+          socketURL = `wss://ws.${
+            process.env["REACT_APP_API_URL_" + chainId.toString()]
+          }/v3/ws`;
+        }
+        etherscanBaseUrl =
+          chainId == 5
+            ? `https://goerli.etherscan.io/`
+            : `https://etherscan.io/`;
+
+        // baseURL = !isTaikoTest
+        //   ? `https://${process.env.REACT_APP_API_URL}`
+        //   : `https://${process.env.REACT_APP_API_URL_UAT}`;
+        // socketURL = !isTaikoTest
+        //   ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
+        //   : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
+        // etherscanBaseUrl = !isTaikoTest
+        //   ? `https://etherscan.io/`
+        //   : `https://goerli.etherscan.io/`;
       } else {
         baseURL =
           sdk.ChainId.MAINNET === chainId
-            ? `https://${process.env.REACT_APP_API_URL}`
-            : `https://${process.env.REACT_APP_API_URL_UAT}`;
+            ? `https://${process.env.REACT_APP_API_URL_1}`
+            : `https://${process.env.REACT_APP_API_URL_5}`;
         socketURL =
           sdk.ChainId.MAINNET === chainId
-            ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
-            : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
+            ? `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
+            : `wss://ws.${process.env.REACT_APP_API_URL_5}/v3/ws`;
         etherscanBaseUrl =
           sdk.ChainId.MAINNET === chainId
             ? `https://etherscan.io/`

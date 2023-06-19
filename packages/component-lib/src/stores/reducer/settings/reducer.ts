@@ -12,8 +12,9 @@ import {
 } from "@loopring-web/common-resources";
 import moment from "moment";
 import { Slice } from "@reduxjs/toolkit/src/createSlice";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { ChainId, Currency } from "@loopring-web/loopring-sdk";
 import { Layouts } from "react-grid-layout";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const initialState: SettingsState = {
   themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
@@ -34,12 +35,16 @@ const initialState: SettingsState = {
   swapSecondConfirmation: true,
   isTaikoTest: false,
   isShowTestToggle: false,
+  defaultNetwork: ChainId.MAINNET,
 };
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
   name: "settings",
   initialState,
   reducers: {
+    setDefaultNetwork(state, action: PayloadAction<sdk.ChainId>) {
+      state.defaultNetwork = action.payload;
+    },
     setIsTaikoTest(state, action: PayloadAction<boolean>) {
       state.isTaikoTest = action.payload;
     },
@@ -205,5 +210,6 @@ export const {
   setIsMobile,
   setSwapSecondConfirmation,
   setIsShowTestToggle,
+  setDefaultNetwork,
 } = settingsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

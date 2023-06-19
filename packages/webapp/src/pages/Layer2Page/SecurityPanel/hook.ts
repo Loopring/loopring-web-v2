@@ -67,7 +67,8 @@ export function useExportAccountInfo() {
         });
         const walletTypePromise: Promise<{ walletType: any }> =
           window.ethereum &&
-          _account.connectName === sdk.ConnectorNames.MetaMask &&
+          (_account.connectName as unknown as sdk.ConnectorNames) ===
+            sdk.ConnectorNames.MetaMask &&
           isMobile
             ? Promise.resolve({ walletType: undefined })
             : LoopringAPI.walletAPI.getWalletType({

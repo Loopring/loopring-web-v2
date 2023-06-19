@@ -1,15 +1,13 @@
-import QRCode from "qrcode.react";
 import { Box, Link, Typography } from "@mui/material";
 import { WithTranslation } from "react-i18next";
 import { SoursURL } from "@loopring-web/common-resources";
-import { useTheme } from "@emotion/react";
+import { QRCode } from "../QRCode";
 
 export const WalletConnectQRCode = ({
   url,
   onCopy,
   t,
 }: { url: string; onCopy: () => void } & WithTranslation) => {
-  const theme = useTheme();
   return (
     <Box
       flex={1}
@@ -32,18 +30,7 @@ export const WalletConnectQRCode = ({
         />
         WalletConnect
       </Typography>
-      <QRCode
-        value={url}
-        size={240}
-        style={{ padding: theme.unit + "px", backgroundColor: "#fff" }}
-        aria-label={`link:${url}`}
-        imageSettings={{
-          src: `${SoursURL + "svg/loopring.svg"}`,
-          height: 30,
-          width: 30,
-          excavate: true,
-        }}
-      />
+      <QRCode url={url} size={240} />
 
       <Box
         display={"flex"}

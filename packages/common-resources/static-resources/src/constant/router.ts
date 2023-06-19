@@ -6,6 +6,7 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
+  RewardIcon,
   // RewardIcon,
   SecurityIcon,
   VipIcon,
@@ -75,16 +76,16 @@ export const profile = {
       },
     },
   ],
-  // referralrewards: [
-  //   {
-  //     icon: RewardIcon,
-  //     router: { path: "/referralrewards" },
-  //     label: {
-  //       id: "referralrewards",
-  //       i18nKey: "labelReferralReward",
-  //     },
-  //   },
-  // ],
+  referralrewards: [
+    {
+      icon: RewardIcon,
+      router: { path: "/referralrewards" },
+      label: {
+        id: "referralrewards",
+        i18nKey: "labelReferralReward",
+      },
+    },
+  ],
 };
 
 export enum ButtonComponentsMap {
@@ -623,3 +624,49 @@ export enum RecordTabIndex {
   btradeSwapRecords = "BtradeSwap",
   stopLimitRecords = "stopLimitRecords",
 }
+
+export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
+  TAIKO: [
+    {
+      label: {
+        id: "L2Assets",
+        i18nKey: "labelAssets",
+      },
+      router: { path: "/l2assets" },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: "Markets",
+        i18nKey: "labelMarkets",
+      },
+      router: { path: "/markets" },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: "Trade",
+        i18nKey: "labelTrade",
+      },
+      status: HeaderMenuTabStatus.default,
+      child: [
+        {
+          label: {
+            id: "lite",
+            i18nKey: "labelClassic",
+            description: "labelClassicDescription",
+          },
+          router: { path: RouterPath.lite + "/${pair}" },
+        },
+        {
+          label: {
+            id: "pro",
+            i18nKey: "labelAdvanced",
+            description: "labelAdvancedDescription",
+          },
+          router: { path: RouterPath.pro + "/${pair}" },
+        },
+      ],
+    },
+  ],
+};

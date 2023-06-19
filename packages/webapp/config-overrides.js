@@ -100,12 +100,9 @@ module.exports = override(
         babelLoader.include,
         ...(process.env.NODE_ENV === "development"
           ? [
-              // path.resolve(__dirname, "../../node_modules/@web3modal"),
-              // path.resolve(__dirname, "../../node_modules/@walletconnect"),
-              // path.resolve(
-              //   __dirname,
-              //   "../../node_modules/@walletconnect/ethereum-provider/"
-              // ),
+              path.resolve(__dirname, "../../node_modules/@web3modal"),
+              path.resolve(__dirname, "../../node_modules/@walletconnect"),
+              path.resolve(__dirname, "../../node_modules/@metamask"),
             ]
           : []),
       ];
