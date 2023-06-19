@@ -15,10 +15,12 @@ export type Row = DepthViewData & {
 };
 export const GridStyle = styled(Grid)`
   margin: 0;
+
   &:hover {
     background: var(--color-box-hover);
     transition: background 0.4s ease-out;
   }
+
   & > .MuiGrid-item {
     padding-top: 0;
     padding-left: 0;
@@ -127,18 +129,16 @@ export const Depth = ({
 export const DepthTitle = withTranslation("common")(
   ({
     marketInfo,
-
     t,
   }: {
-    // type: DepthType,
-    // tokenBaseInfo: TokenInfo, tokenQuoteInfo: TokenInfo,
     marketInfo: MarketInfo;
   } & WithTranslation) => {
     // @ts-ignore
-    const [, baseSymbol, quoteSymbol] = marketInfo.market.match(/(\w+)-(\w+)/i);
+    const [, baseSymbol, quoteSymbol] =
+      marketInfo?.market?.match(/(\w+)-(\w+)/i);
     const { isMobile } = useSettings();
 
-    return (
+    return marketInfo?.market ? (
       <GridStyle container spacing={1} position={"relative"} wrap={"nowrap"}>
         <Grid item xs={6} lg={4} alignSelf={"flex-start"}>
           <Typography
@@ -181,6 +181,8 @@ export const DepthTitle = withTranslation("common")(
           </Grid>
         )}
       </GridStyle>
+    ) : (
+      <></>
     );
   }
 );

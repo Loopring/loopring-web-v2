@@ -88,7 +88,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       t,
       onItemClick,
       onClaimItem,
-      showActionableRecords
+      showActionableRecords,
     } = props;
     // const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -100,10 +100,11 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         limit: pagination?.pageSize ?? 12,
         filter: {
           ...filter,
-          statuses: (tokenType === TokenType.nft && showActionableRecords)
-            ? [0]
-            : undefined
-        }
+          statuses:
+            tokenType === TokenType.nft && showActionableRecords
+              ? [0]
+              : undefined,
+        },
       });
     }, globalSetup.wait);
 
@@ -215,10 +216,10 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                   row.type.mode === sdk.LuckyTokenClaimType.RELAY
                     ? "labelLuckyRelayToken"
                     : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                      ? "labelLuckyBlindBox"
-                      : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
-                        ? "labelRedPacketSendCommonTitle"
-                        : "labelRedPacketSenRandomTitle",
+                    ? "labelLuckyBlindBox"
+                    : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
+                    ? "labelRedPacketSendCommonTitle"
+                    : "labelRedPacketSenRandomTitle",
                   { ns: "common" }
                 ) +
                   " — " +
@@ -280,7 +281,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                         onClick={(e) => {
                           e.stopPropagation();
                           onClaimItem(row.rawData, () => {
-                            handlePageChange({ page })
+                            handlePageChange({ page });
                           });
                         }}
                       >
@@ -322,7 +323,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
             onItemClick(row.rawData, () => {
-              handlePageChange({page})
+              handlePageChange({ page });
             });
           }}
           sortMethod={React.useCallback(

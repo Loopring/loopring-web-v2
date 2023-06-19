@@ -88,8 +88,8 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           }}
           {...rest}
         />
-      )
-    }
+      ),
+    };
     const tradePanel = {
       key: "trade",
       element: React.useMemo(
@@ -97,14 +97,11 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           // @ts-ignore
           <WithdrawWrap
             key={"transfer"}
-            
             {...{
               ...rest,
               type,
               handleConfirm,
-              chargeFeeTokenList: chargeFeeTokenList
-                ? chargeFeeTokenList
-                : [],
+              chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
               tradeData: switchData.tradeData,
               onChangeEvent,
               coinMap,
@@ -117,9 +114,9 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
               isFromContact,
               contact,
               onClickContact: () => {
-                setPanelIndex(3); // todo handle tradeMenuList 
+                setPanelIndex(3); // todo handle tradeMenuList
                 // rest.handleOnAddressChange(address)
-              }
+              },
             }}
           />
         ),
@@ -156,7 +153,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
         ),
         [onBack]
       ),
-    }
+    };
     const tokenSelectionPanel = {
       key: "tradeMenuList",
       element: React.useMemo(
@@ -179,8 +176,8 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       ),
       toolBarItem: undefined,
     };
-    
-    const contactSelectionPanel =  {
+
+    const contactSelectionPanel = {
       key: "contactSelection",
       element: React.useMemo(
         () => (
@@ -189,7 +186,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             contacts={contacts}
             onSelect={(address) => {
               setPanelIndex(1);
-              rest.handleOnAddressChange(address, true)
+              rest.handleOnAddressChange(address, true);
             }}
             scrollHeight={"320px"}
           />
@@ -210,7 +207,6 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
         [onBack]
       ),
     };
-    
 
     const props: SwitchPanelProps<string> = {
       index: panelIndex, // show default show
@@ -219,7 +215,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
         tradePanel,
         tokenSelectionPanel,
         contactSelectionPanel,
-      ]
+      ],
     };
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }

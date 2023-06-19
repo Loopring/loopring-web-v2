@@ -14,6 +14,7 @@ import {
   FeeToggle,
   FeeTokenItemWrapper,
   Toast,
+  ToastType,
 } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -237,7 +238,7 @@ export const BanxaConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

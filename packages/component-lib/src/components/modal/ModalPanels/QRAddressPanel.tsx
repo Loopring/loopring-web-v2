@@ -10,7 +10,7 @@ import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { Button } from "../../basic-lib";
 import React from "react";
-import { Toast } from "../../toast";
+import { Toast, ToastType } from "../../toast";
 import { QRCode } from "../QRCode";
 
 const BoxStyle = styled(Box)`
@@ -124,7 +124,7 @@ export const QRAddressPanel = withTranslation("common")(
           onClose={() => {
             setCopyToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
       </Box>
     );

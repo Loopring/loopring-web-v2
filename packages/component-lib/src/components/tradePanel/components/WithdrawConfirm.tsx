@@ -7,7 +7,7 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { Button, Toast, useAddressTypeLists } from "../../index";
+import { Button, Toast, ToastType, useAddressTypeLists } from "../../index";
 import { WithdrawViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -170,7 +170,7 @@ export const WithdrawConfirm = <
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

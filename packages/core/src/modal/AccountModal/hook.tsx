@@ -120,6 +120,7 @@ import {
   BtradeSwap_Delivering,
   BtradeSwap_Failed,
   BtradeSwap_Pending,
+  AMM_Pending,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -449,7 +450,8 @@ export function useAccountModalForUI({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
-  const { setShowLayerSwapNotice } = useOpenModals();
+  const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } =
+    useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
     () => [
@@ -488,6 +490,7 @@ export function useAccountModalForUI({
             step: AccountStep.ThirdPanelReturn,
             info: { title: t("labelAddAssetTitleBridge"), description: t(dex) },
           });
+
           window.open(
             Bridge +
               `?l2account=${account.accAddress}&token=${
@@ -535,6 +538,34 @@ export function useAccountModalForUI({
           setShowLayerSwapNotice({ isShow: true });
         },
       },
+      {
+        ...AddAssetList.FromAnotherNet,
+        handleSelect: () => {
+          let dex = "labelAddAssetTitleAnotherNetDes";
+          if (
+            account.readyState &&
+            [
+              AccountStatus.DEPOSITING,
+              AccountStatus.NOT_ACTIVE,
+              AccountStatus.NO_ACCOUNT,
+            ].includes(
+              // @ts-ignore
+              account?.readyState
+            )
+          ) {
+            dex = "labelAddAssetTitleAnotherNetDesActive";
+          }
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.ThirdPanelReturn,
+            info: {
+              title: t("labelFromAnotherNet"),
+              description: t(dex),
+            },
+          });
+          setShowAnotherNetworkNotice({ isShow: true });
+        },
+      },
     ],
     [
       account.accAddress,
@@ -576,6 +607,18 @@ export function useAccountModalForUI({
             info: { isToMyself: false },
             symbol: isShowAccount?.info?.symbol,
           });
+        },
+      },
+      {
+        ...SendAssetList.SendAssetToAnotherNet,
+        handleSelect: () => {
+          setShowAccount({
+            isShow: false,
+          });
+          window.open(
+            "https://www.orbiter.finance/?source=Loopring&dest=Ethereum"
+          );
+          window.opener = null;
         },
       },
     ],
@@ -705,6 +748,7 @@ export function useAccountModalForUI({
         ),
         height: "auto",
       },
+
       [AccountStep.CheckingActive]: {
         view: (
           <CheckActiveStatus
@@ -721,6 +765,7 @@ export function useAccountModalForUI({
         height: "auto",
       },
       [AccountStep.AddAssetGateway]: {
+        height: "auto",
         view: (
           <AddAsset
             symbol={isShowAccount?.info?.symbol}
@@ -3001,6 +3046,18 @@ export function useAccountModalForUI({
               account,
               info: isShowAccount?.info,
               error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        height: "auto",
+      },
+      [AccountStep.AMM_Pending]: {
+        view: (
+          <AMM_Pending
+            btnInfo={undefined}
+            {...{
+              ...rest,
               t,
             }}
           />

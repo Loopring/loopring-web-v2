@@ -6,12 +6,7 @@ import {
   CoinInfo,
   IBData,
 } from "@loopring-web/common-resources";
-import {
-  AmmChgData,
-  AmmDepositBaseProps,
-  AmmWithdrawBaseProps,
-  AmmWithdrawChgData,
-} from "../components";
+import { AmmDepositBaseProps, AmmWithdrawBaseProps } from "../components";
 
 export enum AmmPanelType {
   Join = 0,
@@ -48,14 +43,16 @@ export type AmmProps<
 > = AmmPanelBaseProps<T, TW, I, ACD, C> & {
   handleAmmAddChangeEvent: (data: T, focusOn: "coinA" | "coinB") => void;
   handleAmmRemoveChangeEvent: (data: TW) => void;
-  onAmmAddChangeEvent?: (data: AmmChgData<T>) => AmmChgData<T>;
-  onRemoveChangeEvent?: (
-    data: AmmWithdrawChgData<TW>
-  ) => AmmWithdrawChgData<TW>;
+  // onAmmAddChangeEvent?: (data: AmmChgData<T>) => AmmChgData<T>;
+  // onRemoveChangeEvent?: (
+  //   data: AmmWithdrawChgData<TW>
+  // ) => AmmWithdrawChgData<TW>;
   refreshRef: React.Ref<any>;
   onRefreshData?: () => void;
   accStatus?: AccountStatus;
   coinAPrecision?: number;
   coinBPrecision?: number;
+  ammType: AmmPanelType;
+  handleTabChange: (index: AmmPanelType) => void;
 } & AmmWithdrawBaseProps<TW, I> &
   AmmDepositBaseProps<T, I>;

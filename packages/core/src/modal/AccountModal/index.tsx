@@ -5,6 +5,7 @@ import {
   ModalPanel,
   ModalQRCode,
   Toast,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { useSystem } from "@loopring-web/core";
@@ -30,18 +31,12 @@ export const ModalAccountInfo = withTranslation("common")(
     isLayer1Only?: boolean;
     account: Account;
     depositProps: DepositProps<any, any>;
-    // onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
-    // const { isMobile } = useSettings();
     const { baseURL } = useSystem();
     const {
-      modals: {
-        // isShowNFTDetail,
-        isShowAccount,
-      },
-      // setShowNFTDetail,
+      modals: { isShowAccount },
       setShowAccount,
       setShowDeposit,
       setShowTransfer,
@@ -60,8 +55,6 @@ export const ModalAccountInfo = withTranslation("common")(
       nftTransferProps,
       nftWithdrawProps,
       nftDeployProps,
-      // nftMintAdvanceProps,
-      // checkActiveStatusProps,
       resetProps,
       claimProps,
       activeAccountProps,
@@ -84,10 +77,7 @@ export const ModalAccountInfo = withTranslation("common")(
       isLayer1Only,
       ...rest,
     });
-    // myLog(
-    //   "resetProps.chargeFeeTokenList",
-    //   activeAccountProps.chargeFeeTokenList
-    // );
+
     return (
       <>
         <Toast
@@ -103,11 +93,11 @@ export const ModalAccountInfo = withTranslation("common")(
           onClose={() => {
             setExportAccountToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
@@ -135,7 +125,7 @@ export const ModalAccountInfo = withTranslation("common")(
                 setShowWithdraw({ isShow: false });
                 onBackSend();
               }
-            }
+            },
           }}
           depositProps={{
             ...depositProps,
@@ -153,9 +143,6 @@ export const ModalAccountInfo = withTranslation("common")(
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
           claimProps={claimProps as any}
-          // dualTradeProps={dualTradeProps as any}
-          // nftMintAdvanceProps={nftMintAdvanceProps as any}
-          // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps as any}
           exportAccountProps={exportAccountProps}
@@ -173,7 +160,7 @@ export const ModalAccountInfo = withTranslation("common")(
           onClose={() => {
             setCopyToastOpen(false);
           }}
-          severity={"success"}
+          severity={ToastType.success}
         />
         <ModalQRCode
           open={openQRCode}

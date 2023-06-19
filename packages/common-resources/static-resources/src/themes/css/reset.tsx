@@ -191,17 +191,21 @@ export default css`
     overscroll-behavior-y: none;
     text-underline-offset: 3px;
   }
+
   iframe {
     display: none;
   }
+
   #iubenda-pp,
   #iframeBanxaTarget {
     iframe {
-      display: initial;csss
+      display: initial;
     }
   }
+
   #iframeBanxaTarget {
     z-index: 9999;
+
     #iframeBanxaClose {
       transform: scale(2);
       position: absolute;

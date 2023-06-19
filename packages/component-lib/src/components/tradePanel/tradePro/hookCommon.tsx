@@ -1,14 +1,11 @@
 import React from "react";
-import {
-  TradeBaseType,
-  TradeCommonProps,
-  TradeProBaseEventProps,
-  TradeProType,
-} from "./Interface";
+import { TradeCommonProps, TradeProBaseEventProps } from "./Interface";
 import {
   IBData,
   myLog,
+  TradeBaseType,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import { LimitTradeData, MarketTradeData } from "../Interface";

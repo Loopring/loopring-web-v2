@@ -116,7 +116,6 @@ export const ModalGroup = withTranslation("common")(
             isLayer1Only,
           }}
         />
-        {/*<ModalCoinPairPanel />*/}
         <ModalSettingFee
           open={isShowFeeSetting.isShow}
           onClose={() => setShowFeeSetting({ isShow: false })}

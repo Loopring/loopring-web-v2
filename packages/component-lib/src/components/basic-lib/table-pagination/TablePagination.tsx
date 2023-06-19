@@ -33,7 +33,7 @@ export const TablePagination = ({
   alignItems = "center",
   pageSize,
   total,
-  size
+  size,
 }: PaginationProps) => {
   const getCount = React.useCallback(() => {
     if (!total) return 0;

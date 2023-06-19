@@ -7,6 +7,7 @@ import {
 } from "@loopring-web/common-resources";
 import {
   CollectionAdvanceProps,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -95,7 +96,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
           myLog("error", error);
           setCollectionToastOpen({
             open: true,
-            type: "error",
+            type: ToastType.error,
             content:
               t("labelCreateCollectionFailed") +
               `: ${

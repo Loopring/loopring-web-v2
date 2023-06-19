@@ -45,11 +45,11 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmDualInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedDualInvest = true;
     },
-    confirmedBtradeSwap(state: Confirmation, _action: PayloadAction<string>) {
-      state.confirmedBtradeSwap = true;
-    },
     confirmDualInvestV2(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedDualInvestV2 = true;
+    },
+    confirmedBtradeSwap(state: Confirmation, _action: PayloadAction<string>) {
+      state.confirmedBtradeSwap = true;
     },
     showDualBeginnerHelp(state: Confirmation, _action: PayloadAction<string>) {
       state.showDualBeginnerHelp = true;
@@ -67,8 +67,8 @@ export const {
   confirmedWSETHDefiInvest,
   confirmedLRCStakeInvest,
   confirmDualInvest,
-  confirmedBtradeSwap,
   confirmDualInvestV2,
+  confirmedBtradeSwap,
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
 } = confirmationSlice.actions;

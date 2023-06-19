@@ -239,6 +239,11 @@ export const AddAssetList = {
     svgIcon: "ExchangeAIcon",
     enableKey: null,
   },
+  FromAnotherNet: {
+    key: "FromAnotherNet",
+    svgIcon: "AnotherIcon",
+    enableKey: null,
+  },
 };
 
 export const SendAssetList = {
@@ -255,6 +260,11 @@ export const SendAssetList = {
   SendAssetToOtherL1: {
     key: "SendToOtherL1",
     svgIcon: "L1l2Icon",
+    enableKey: "withdraw",
+  },
+  SendAssetToAnotherNet: {
+    key: "SendAssetToAnotherNet",
+    svgIcon: "AnotherIcon",
     enableKey: "withdraw",
   },
 };
@@ -440,7 +450,7 @@ export const useAddressTypeLists = <
 };
 
 export const defaultSlipage = 0.1;
-export const defaultBlockTradeSlipage = 0.2;
+export const defaultBlockTradeSlipage = 0.1;
 
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number };
 
@@ -758,4 +768,25 @@ export interface SnackbarMessage {
   key: number | string;
   svgIcon?: string;
 }
+
 export const BTRDE_PRE = "BTRADE-";
+
+export enum TradeProType {
+  sell = "sell",
+  buy = "buy",
+}
+
+export enum TradeBaseType {
+  price = "price",
+  quote = "quote",
+  base = "base",
+  tab = "tab",
+  slippage = "slippage",
+  stopPrice = "stopPrice",
+  checkMarketPrice = "checkMarketPrice",
+}
+
+export type AmmHistoryItem = {
+  close: number;
+  timeStamp: number;
+};

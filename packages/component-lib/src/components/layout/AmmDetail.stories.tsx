@@ -31,7 +31,6 @@ import {
 
 import { account, ammCalcData, coinMap, tradeCalcData } from "../../static";
 import { withTranslation } from "react-i18next";
-// import { PoolDetailTitle } from '../block/PoolDetailTitle';
 import { useSettings } from "../../stores";
 import moment from "moment";
 import { TradeTitle } from "../block";
@@ -45,9 +44,6 @@ const tradeData: any = {
   coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
   coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
 };
-// let btnShowTradeStatus: keyof typeof TradeBtnStatus = TradeBtnStatus.AVAILABLE;
-// const onShowTrade = () => {
-// };
 
 const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
   // tradeCalcData:,
@@ -69,16 +65,18 @@ const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
   tradeFloat: {
     change: 1000,
     timeUnit: "24h",
-    priceDollar: 1.23123,
+    priceU: 1.23123,
     floatTag: FloatTag.increase,
     // tagNew: false,
   },
-  amountDollar: 197764.89,
+  amountU: 197764.89,
   totalLPToken: 12132131,
   totalA: 0.002,
   totalB: 12344,
+  totalAU: 0.002,
+  totalBU: 12344,
   rewardToken: "LRC",
-  rewardValue: 13,
+  rewardA: 13,
   feeA: 121,
   feeB: 1232,
   isNew: true,
@@ -88,12 +86,12 @@ const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
 const myAmm: MyAmmLP<any> = {
   feeA: 122,
   feeB: 21,
-  feeDollar: 0.0012,
+  feeU: 0.0012,
   reward: 123,
   rewardToken: coinMap.DPR as CoinInfo<any>,
   balanceA: 12131,
   balanceB: 0.0012,
-  balanceDollar: 232,
+  balanceU: 232,
 };
 const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
   const ammProps: AmmProps<any, any, any, any> = {
@@ -119,14 +117,10 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
 
   const WrapAmmPanel = (rest: any) => {
     return (
-      <>
-        <AmmPanel
-          {...{ ...ammProps, tabSelected: AmmPanelType.Join }}
-          {...rest}
-        >
-          {" "}
-        </AmmPanel>
-      </>
+      <AmmPanel
+        {...{ ...ammProps, tabSelected: AmmPanelType.Join }}
+        {...rest}
+      />
     );
   };
 
@@ -211,7 +205,7 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                 tReady: rest.ready,
                 tradeCalcData,
                 tradeFloat: {
-                  priceDollar: +123,
+                  priceU: +123,
                   change: "+15%",
                   timeUnit: "24h",
                 },
@@ -282,10 +276,10 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                     <>
                       <Typography component={"span"}>
                         {" "}
-                        {typeof titleInfo.amountDollar === "undefined"
+                        {typeof titleInfo.amountU === "undefined"
                           ? EmptyValueTag
                           : currency === Currency.usd
-                          ? PriceTag.Dollar + titleInfo.amountDollar
+                          ? PriceTag.Dollar + titleInfo.amountU
                           : 0}
                       </Typography>
                       <Typography component={"span"}>
@@ -379,7 +373,7 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                       variant={"h5"}
                       color={"textPrimary"}
                     >
-                      {PriceTag.Dollar + titleInfo.tradeFloat.priceDollar}
+                      {PriceTag.Dollar + titleInfo.tradeFloat.priceU}
                     </Typography>
                     <Typography
                       noWrap

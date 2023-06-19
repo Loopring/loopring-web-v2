@@ -85,8 +85,8 @@ const WrongStatus = ({
 
 const SectionStyled = styled(Box)<{ isMobile?: boolean }>`
   padding: ${({ theme }) => theme.unit * 4}px;
-  padding-top: auto;
-  padding-bottom: auto;
+  padding-top: initial;
+  padding-bottom: initial;
   background: ${({ theme }) => theme.colorBase.box};
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
   width: ${({ theme, isMobile }) =>
@@ -311,7 +311,6 @@ export const GuardianPage = withTranslation(["common"])(
           }
           body={
             <QRCodePanel
-              fgColor={theme.colorBase.dark}
               description={
                 <Button
                   onClick={() =>

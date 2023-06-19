@@ -1,18 +1,27 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { BtnPercentage, InputCoin, InputSize } from "../../basic-lib";
 import { LimitTradeData, TradeLimitProps } from "../Interface";
 import {
+  CheckBoxIcon,
+  CheckedIcon,
   CoinInfo,
   CoinKey,
   CoinMap,
   CurrencyToTag,
   IBData,
   PriceTag,
+  TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
-import { Box, Tab } from "@mui/material";
-import { TradeProType } from "./Interface";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  Tab,
+  Typography,
+} from "@mui/material";
 import { TabsStyle } from "../components/Styled";
 import { useCommon } from "./hookCommon";
 import { Button } from "./../../index";
@@ -81,11 +90,6 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
         t,
       };
     }, [tradeType, TradeProType, tokenPriceProps, handleCountChange]);
-
-    // const fee =
-    //   tradeCalcProData && tradeCalcProData.fee
-    //     ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"
-    //     : EmptyValueTag;
 
     return (
       <Box
@@ -161,8 +165,6 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               }}
             />
           </Box>
-          {/*</Grid>*/}
-          {/*<Grid item>*/}
           <Box alignSelf={"center"} paddingTop={4} paddingX={1}>
             <BtnPercentage
               step={1}
@@ -215,12 +217,53 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               }}
             />
           </Box>
-          {/*</Grid>*/}
-          {/*<Grid item>*/}
-
-          {/*< label={tradeCalcProData.baseToken} coinMap={tradeCalcProData.coinMap} />*/}
         </Box>
         <Box className={"info-panel"} paddingX={2} paddingTop={2}></Box>
+        {tradeCalcProData.isNotMatchMarketPrice && (
+          <Box paddingX={2} paddingTop={2}>
+            <MuiFormControlLabel
+              sx={{ alignItems: "flex-start" }}
+              control={
+                <Checkbox
+                  checked={tradeCalcProData?.isChecked ? true : false}
+                  onChange={() => {
+                    onChangeEvent(
+                      {
+                        ...tradeData,
+                        isChecked: !tradeCalcProData?.isChecked,
+                      },
+                      TradeBaseType.checkMarketPrice
+                    );
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={
+                <Typography variant={"body2"}>
+                  <Trans
+                    i18nKey={"labelExpectSettlementLimitPrice"}
+                    interpolation={{ escapeValue: false }}
+                    tOptions={{
+                      symbolBase: tradeCalcProData.coinBase,
+                      symbolQuote: tradeCalcProData.coinQuote,
+                      price: tradeData.price.tradeValue,
+                      marketPrice: tradeCalcProData.marketPrice,
+                      marketRatePrice: tradeCalcProData.marketRatePrice,
+                    }}
+                  >
+                    The expected settlement price from this order is symbol =
+                    xxxx, while the current market price from a trusted oracle
+                    is symbol = xxx. There is a 10.45% variance observed. To
+                    proceed, tap here to confirm you understand and acknowledge
+                    the risk.
+                  </Trans>
+                </Typography>
+              }
+            />
+          </Box>
+        )}
         <Box paddingX={2} paddingTop={2}>
           {/*{getDisabled()} {tradeBtnBaseStatus}*/}
           <Button

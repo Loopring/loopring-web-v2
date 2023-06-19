@@ -6,7 +6,7 @@ import { RedPacketMarketPanel } from "./RedPacketMarketPanel";
 import { CreateRedPacketUIPanel } from "./CreateRedPacketPanel";
 import { MyRedPacketPanel } from "./MyRedPacketPanel";
 import { TOAST_TIME } from "@loopring-web/common-resources";
-import { Toast, useSettings } from "@loopring-web/component-lib";
+import { Toast, ToastType, useSettings } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 
 export const RedPacketPage = () => {
@@ -33,7 +33,7 @@ export const RedPacketPage = () => {
       <>
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}

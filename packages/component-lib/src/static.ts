@@ -201,6 +201,7 @@ export const ammCalcData: AmmInData<CoinType> = {
   coinInfoMap: coinMap,
   slippage: 0.5,
   fee: "0.01",
+  fees: {},
   percentage: "0.01",
 };
 

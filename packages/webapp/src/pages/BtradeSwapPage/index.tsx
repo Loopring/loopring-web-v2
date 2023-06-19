@@ -9,6 +9,7 @@ import {
   LoadingBlock,
   SwapPanel,
   Toast,
+  ToastType,
   useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -22,6 +23,7 @@ import {
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "@emotion/styled";
+
 const BoxStyle = styled(Box)`
   &.btradePage {
     .input-wrap {
@@ -84,7 +86,7 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
       />
       <Toast
         alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? "success"}
+        severity={toastOpen?.type ?? ToastType.success}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
@@ -129,7 +131,8 @@ export const BtradeSwapPage = withTranslation("common")(
           handleClose={(_e, isAgree) => {
             setConfirmedBtradeSwap(false);
             if (!isAgree) {
-              history.goBack();
+              history.replace("/markets");
+              // history.goBack();
             } else {
               confirmedBtradeSwapFunc();
             }

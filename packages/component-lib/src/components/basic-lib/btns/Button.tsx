@@ -286,7 +286,7 @@ export const ModalCloseButtonPosition = ({
   closeIcon = <CloseIcon />,
   t,
   right,
-  top
+  top,
 }: {
   className?: string;
   closeIcon?: JSX.Element;
@@ -362,9 +362,9 @@ const QRStyle = styled(Box)`
     //z-index: -1;
     background-image: ${({ theme }) => {
       if (theme.mode === "dark") {
-        return `url('https://static.loopring.io/assets/images/qr_code_dark.png')`;
+        return `url('${SoursURL}images/qr_code_dark.png')`;
       } else {
-        return `url('https://static.loopring.io/assets/images/qr_code_light.png')`;
+        return `url('${SoursURL}images/qr_code_light.png')`;
       }
     }};
   }

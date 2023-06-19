@@ -1,7 +1,6 @@
 import React from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
-import { toBig } from "@loopring-web/loopring-sdk";
 
 import {
   AccountStatus,
@@ -19,6 +18,7 @@ import {
   useAccount,
   useAmmMap,
   useSystem,
+  useTicker,
   useTokenMap,
 } from "../../index";
 import * as _ from "lodash";
@@ -32,7 +32,7 @@ export enum PriceLevel {
   Lv2,
 }
 
-export interface ReqParams {
+export type ReqParams = {
   isBuy?: boolean;
 
   price?: number;
@@ -59,7 +59,7 @@ export interface ReqParams {
   ammPoolSnapshot?: sdk.AmmPoolSnapshot;
   depth?: sdk.DepthData;
   slippage?: string;
-}
+};
 
 export function makeMarketReq({
   isBuy,
@@ -135,18 +135,6 @@ export function makeMarketReq({
   const isAtoB =
     (isBuy && amountQuote !== undefined) ||
     (!isBuy && amountBase !== undefined);
-
-  // const sellUserOrderInfo =
-  //   tokenAmtMap && tokenAmtMap[sell]
-  //     ? tokenAmtMap[sell].userOrderInfo
-  //     : undefined;
-  //
-  // const buyUserOrderInfo =
-  //   tokenAmtMap && tokenAmtMap[buy]
-  //     ? tokenAmtMap[buy].userOrderInfo
-  //     : undefined;
-
-  // const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0;
 
   const calcTradeParams = sdk.getOutputAmount({
     input,
@@ -239,14 +227,17 @@ export function makeMarketReq({
       "calcForPriceImpact input:",
       sellMinAmtInput,
       ", calcForPriceImpact basePrice: ",
-      toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber()
+      sdk.toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber()
     );
-    const basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
-    const tradePrice = toBig(
-      calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0
-    ).div(isAtoB ? input.toString() : calcTradeParams?.output);
-    const priceImpact = toBig(1)
-      .minus(toBig(tradePrice).div(basePrice ?? 1))
+    const basePrice = sdk
+      .toBig(calcForPriceImpact?.output)
+      .div(sellMinAmtInput);
+    const tradePrice = sdk
+      .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+      .div(isAtoB ? input.toString() : calcTradeParams?.output);
+    const priceImpact = sdk
+      .toBig(1)
+      .minus(sdk.toBig(tradePrice).div(basePrice ?? 1))
       .minus(0.001);
     if (calcTradeParams && priceImpact.gte(0)) {
       calcTradeParams.priceImpact = priceImpact.toFixed(4, 1);
@@ -257,7 +248,8 @@ export function makeMarketReq({
       "calcTradeParams input:",
       input.toString(),
       ", calcTradeParams Price: ",
-      toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+      sdk
+        .toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
         .div(input.toString())
         .toNumber(),
       `isBuy:${isAtoB}, ${
@@ -267,7 +259,8 @@ export function makeMarketReq({
       "basePrice: ",
       basePrice?.toString(),
       "toBig(tradePrice).div(basePrice)",
-      toBig(tradePrice)
+      sdk
+        .toBig(tradePrice)
         .div(basePrice ?? 1)
         .toNumber(),
       "priceImpact (1-tradePrice/basePrice) - 0.001",
@@ -464,7 +457,6 @@ export function makeMarketReq({
 
 export function makeLimitReq({
   isBuy,
-
   depth,
   price,
   amountBase,
@@ -579,10 +571,6 @@ export function makeLimitReq({
 
   if (sellUserOrderInfo && buyUserOrderInfo) {
     if (!isBuy) {
-      // sell eth -> usdt, price = 100 usdt / eth  quantity = 1 eth, calc
-
-      // 0.032 eth 100 usdt
-
       minOrderInfo = _.cloneDeep(buyUserOrderInfo);
       const minAmount = sdk
         .toBig(minOrderInfo.minAmount)
@@ -636,7 +624,6 @@ export function makeLimitReq({
   };
 
   // myLog('limitRequest:', limitRequest)
-
   let priceImpact = 0;
 
   const ask1 = depth.asks_prices[0];
@@ -669,22 +656,11 @@ export function makeLimitReq({
   };
 }
 
-//price = USDTVol / ETHVol
-
-//buy eth(base). ETH-USDT reversed. sell:usdt buy:eth   calc: usdt<-eth/isAtoB=false
-// fee(buyToken) -> eth(base)
-// percentage -> change quote vol
-export function makeMarketBuyReq() {}
-
-//sell eth(base). ETH-USDT. sell:eth buy:usdt   calc: eth->usdt/isAtoB=true
-// fee(buytoken) -> usdt(quote)
-// percentage -> change base vol
-export function makeMarketSellReq() {}
-
 export function usePlaceOrder() {
   const { account } = useAccount();
 
   const { tokenMap, marketArray } = useTokenMap();
+  const { tickerMap } = useTicker();
   const { ammMap } = useAmmMap();
 
   const { exchangeInfo } = useSystem();
@@ -806,9 +782,78 @@ export function usePlaceOrder() {
     [getTokenAmtMap, exchangeInfo, account.accountId, tokenMap]
   );
 
+  const makeStopLimitReqInHook = React.useCallback(
+    <T extends ReqParams & { stopLimitPrice?: string | number }>(params: T) => {
+      const { tokenAmtMap, feeBips } = getTokenAmtMap(params);
+      const { tickerMap } = store.getState().tickerMap;
+      myLog("makeLimitReqInHook tokenAmtMap:", tokenAmtMap, feeBips);
+      let sellUserOrderInfo = undefined,
+        buyUserOrderInfo = undefined,
+        minOrderInfo = undefined,
+        calcTradeParams = undefined,
+        stopLimitRequest = undefined,
+        stopSide = undefined;
+
+      if (exchangeInfo && params?.depth?.symbol && params.quote && tickerMap) {
+        const ticker = tickerMap[params.depth.symbol];
+
+        let midStopPrice = ticker?.close;
+        if (params.stopLimitPrice == undefined) {
+          params.stopLimitPrice = 0;
+        }
+
+        stopSide = midStopPrice
+          ? sdk.toBig(params.stopLimitPrice).lte(midStopPrice)
+            ? sdk.STOP_SIDE.LESS_THAN_AND_EQUAL
+            : sdk.STOP_SIDE.GREAT_THAN_AND_EQUAL
+          : undefined;
+        myLog(
+          "stopSide",
+          stopSide,
+          "stopLimitPrice",
+          midStopPrice,
+          "stopLimitPrice",
+          params.stopLimitPrice
+        );
+
+        const fullParams: T = {
+          ...params,
+          exchangeAddress: exchangeInfo.exchangeAddress,
+          accountId: account.accountId,
+          tokenMap,
+          feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+          tokenAmtMap: tokenAmtMap,
+        };
+        const result = makeLimitReq(fullParams);
+        sellUserOrderInfo = result.sellUserOrderInfo;
+        buyUserOrderInfo = result.buyUserOrderInfo;
+        minOrderInfo = result.minOrderInfo;
+        calcTradeParams = result.calcTradeParams;
+        stopLimitRequest = {
+          ...result.limitRequest,
+          stopPrice: params.stopLimitPrice,
+          stopSide,
+          extraOrderType: sdk.EXTRAORDER_TYPE.STOP_LIMIT,
+        };
+      } else {
+        myLog("makeLimitReqInHook error no tokenAmtMap", tokenAmtMap);
+      }
+      return {
+        // stopRange,
+        sellUserOrderInfo,
+        buyUserOrderInfo,
+        minOrderInfo,
+        calcTradeParams,
+        stopLimitRequest,
+      };
+    },
+    [getTokenAmtMap, exchangeInfo, account.accountId, tokenMap, tickerMap]
+  );
+
   return {
     makeMarketReqInHook,
     makeLimitReqInHook,
+    makeStopLimitReqInHook,
   };
 }
 

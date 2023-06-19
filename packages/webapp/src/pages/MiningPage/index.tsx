@@ -69,7 +69,7 @@ const AmmCardWrap = React.memo(
         },
       ref
     ) => {
-      const pair = `${props.coinAInfo?.simpleName}-${props.coinBInfo?.simpleName}`;
+      // const pair = `${props.coinAInfo?.simpleName}-${props.coinBInfo?.simpleName}`;
       const { ruleType } = props.activity;
       const { account } = useAccount();
       const type =
@@ -78,7 +78,7 @@ const AmmCardWrap = React.memo(
           : MiningJumpType.amm;
       const popoverIdx = props.popoverIdx;
       const { setShowRewardDetail, setChosenCardInfo, getMyAmmShare } = props;
-      const ammInfo = getMyAmmShare(`LP-${pair}`);
+      const ammInfo = getMyAmmShare(`LP-${props.market}`);
       return props ? (
         <AmmCard
           ref={ref}
@@ -91,7 +91,7 @@ const AmmCardWrap = React.memo(
             ammInfo,
           }}
           account={account}
-          handleClick={() => props.handleClick(pair, type)}
+          handleClick={() => props.handleClick(props.market, type)}
         />
       ) : (
         <></>

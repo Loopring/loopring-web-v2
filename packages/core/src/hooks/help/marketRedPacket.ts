@@ -46,7 +46,9 @@ export const getUserReceiveList = (
         : ""
       ).toString(),
       createdAt: item.createdAt,
-      isMax: champion?.accountId === item.claimer.accountId && champion.amount === item.amount,
+      isMax:
+        champion?.accountId === item.claimer.accountId &&
+        champion.amount === item.amount,
       rawData: item,
     };
     return [...prev, redPacketDetailItem];
@@ -66,10 +68,12 @@ export const getUserNFTReceiveList = (
 ): { list: RawDataRedPacketDetailItem[] } => {
   const { accountId } = store.getState().account;
   const list: RawDataRedPacketDetailItem[] = claimList.reduce((prev, item) => {
-    const amountStr =  "x " + getValuePrecisionThousand(item.amount, 0, 0, undefined, false, {
+    const amountStr =
+      "x " +
+      getValuePrecisionThousand(item.amount, 0, 0, undefined, false, {
         floor: false,
-      })
-    
+      });
+
     const redPacketDetailItem: RawDataRedPacketDetailItem = {
       accountStr: item.claimer?.ens
         ? item.claimer.ens

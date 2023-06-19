@@ -3,12 +3,12 @@ import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
 import { AddressType } from "@loopring-web/loopring-sdk";
 
 export type DisplayContact = {
-  name: string
-  address: string
-  avatarURL: string
-  editing: boolean
-  addressType: AddressType
-}
+  name: string;
+  address: string;
+  avatarURL: string;
+  editing: boolean;
+  addressType: AddressType;
+};
 
 export type ContactsState = {
   contacts: DisplayContact[] | undefined;

@@ -67,7 +67,7 @@ const TradeTitleWrap = withTranslation("common")((rest) => {
             ...rest,
             ...props,
             tradeFloat: {
-              priceDollar: +123,
+              priceU: +123,
               timeUnit: "24h",
               change: 100,
               close: 121,
@@ -81,7 +81,7 @@ const TradeTitleWrap = withTranslation("common")((rest) => {
             ...rest,
             ...props,
             tradeFloat: {
-              priceDollar: -123,
+              priceU: -123,
               timeUnit: "24h",
               change: 100,
               close: 121,
@@ -113,18 +113,20 @@ const AmmCardWrap = () => {
     },
     APR: 56,
     tradeFloat: {
-      priceDollar: 123,
+      priceU: 123,
       change: "0%",
       timeUnit: "24h",
       volume: Number("112312312"),
       floatTag: FloatTag.none,
     },
-    amountDollar: 197764.89,
+    amountU: 197764.89,
     totalLPToken: 12132131,
     totalA: 0.002,
     totalB: 12344,
+    totalAU: 0.002,
+    totalBU: 12344,
     rewardToken: "LRC",
-    rewardValue: 13,
+    rewardA: 13,
     feeA: 121,
     feeB: 1232,
     isNew: true,
@@ -141,7 +143,7 @@ const MarketWrap = withTranslation("common")((rest) => {
     coinAInfo: coinMap.ETH,
     coinBInfo: coinMap.LRC,
     tradeFloat: {
-      priceDollar: +123,
+      priceU: +123,
       change: "+15%",
       timeUnit: "24h",
       volume: "112312312 USBD",
@@ -164,7 +166,7 @@ const MarketWrap = withTranslation("common")((rest) => {
             {...{
               ...props,
               tradeFloat: {
-                priceDollar: 123,
+                priceU: 123,
                 change: "0%",
                 timeUnit: "24h",
                 volume: "112312312 USBD",
@@ -178,7 +180,7 @@ const MarketWrap = withTranslation("common")((rest) => {
             {...{
               ...props,
               tradeFloat: {
-                priceDollar: 123,
+                priceU: 123,
                 change: "-15%",
                 timeUnit: "24h",
                 volume: "112312312 USBD",

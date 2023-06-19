@@ -18,6 +18,7 @@ import {
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
   RedPacketViewStep,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { url } from "inspector";
@@ -76,7 +77,7 @@ export const useMyRedPacketRecordTransaction = <
             if (setToastOpen) {
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content:
                   "error : " + errorItem
                     ? t(errorItem.messageKey)
@@ -157,11 +158,21 @@ export const useMyRedPacketRecordTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
   const onItemClick = async (item: sdk.LuckyTokenItemForReceive) => {
-    const resposne = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
-      hash: item.hash,
-    }, apiKey)
-    if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && (resposne?.raw_data as any).blindBoxStatus === "") {
+    const resposne = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail(
+      {
+        hash: item.hash,
+      },
+      apiKey
+    );
+    if (
+      resposne?.detail.luckyToken.type.mode ===
+      sdk.LuckyTokenClaimType.BLIND_BOX
+    ) {
+      if (
+        resposne?.detail.luckyToken.status ===
+          sdk.LuckyTokenItemStatus.PENDING &&
+        (resposne?.raw_data as any).blindBoxStatus === ""
+      ) {
         setShowRedPacket({
           isShow: true,
           info: {
@@ -181,7 +192,11 @@ export const useMyRedPacketRecordTransaction = <
         });
       }
     } else {
-      if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING && !resposne?.detail.claimStatus) {
+      if (
+        resposne?.detail.luckyToken.status ===
+          sdk.LuckyTokenItemStatus.PENDING &&
+        !resposne?.detail.claimStatus
+      ) {
         setShowRedPacket({
           isShow: true,
           info: {
@@ -190,7 +205,6 @@ export const useMyRedPacketRecordTransaction = <
           },
           step: RedPacketViewStep.OpenPanel,
         });
-
       } else {
         setShowRedPacket({
           isShow: true,
@@ -235,7 +249,7 @@ export const useMyRedPacketRecordTransaction = <
     //     });
 
     //   }
-      
+
     // }
   };
 
@@ -255,8 +269,8 @@ export const useMyRedPacketReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem
 >({
   setToastOpen,
-  // showActionableRecords
-}: // tabType,
+}: // showActionableRecords
+// tabType,
 {
   setToastOpen: (props: any) => void;
   // showActionableRecords: boolean
@@ -303,7 +317,7 @@ export const useMyRedPacketReceiveTransaction = <
             if (setToastOpen) {
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content:
                   "error : " + errorItem
                     ? t(errorItem.messageKey)
@@ -373,7 +387,10 @@ export const useMyRedPacketReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  const onItemClick = (item: sdk.LuckTokenHistory, refreshCallback?: () => void) => {
+  const onItemClick = (
+    item: sdk.LuckTokenHistory,
+    refreshCallback?: () => void
+  ) => {
     if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
       setShowRedPacket({
         isShow: true,
@@ -389,30 +406,33 @@ export const useMyRedPacketReceiveTransaction = <
         step: RedPacketViewStep.DetailPanel,
         info: {
           ...item.luckyToken,
-          refreshCallback
+          refreshCallback,
         },
       });
     }
-    
   };
-  const onClaimItem = async (item: sdk.LuckTokenHistory, successCallback: () => void) => {
-    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances({
-      accountId: accountId,
-      isNft: item.luckyToken.isNft,
-      tokens: [item.luckyToken.tokenId],
-    }, apiKey)
+  const onClaimItem = async (
+    item: sdk.LuckTokenHistory,
+    successCallback: () => void
+  ) => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
+      {
+        accountId: accountId,
+        isNft: item.luckyToken.isNft,
+        tokens: [item.luckyToken.tokenId],
+      },
+      apiKey
+    );
     if (
       (response as sdk.RESULT_INFO).code ||
       (response as sdk.RESULT_INFO).message
     ) {
       const errorItem =
-        SDK_ERROR_MAP_TO_UI[
-          (response as sdk.RESULT_INFO)?.code ?? 700001
-        ];
+        SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
       if (setToastOpen) {
         setToastOpen({
           open: true,
-          type: "error",
+          type: ToastType.error,
           content:
             "error : " + errorItem
               ? t(errorItem.messageKey)
@@ -429,10 +449,10 @@ export const useMyRedPacketReceiveTransaction = <
           pending: response!.tokenBalance[0].pending,
           nftTokenInfo: item.luckyToken.nftTokenInfo,
           isNft: item.luckyToken.isNft,
-          luckyTokenHash: item.luckyToken.hash
+          luckyTokenHash: item.luckyToken.hash,
         },
         claimType: CLAIM_TYPE.redPacket,
-        successCallback: successCallback
+        successCallback: successCallback,
       });
     }
   };
@@ -442,7 +462,7 @@ export const useMyRedPacketReceiveTransaction = <
     showLoading,
     getRedPacketReceiveList,
     redPacketReceiveTotal,
-    onClaimItem
+    onClaimItem,
   };
 };
 
@@ -450,8 +470,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
   R extends RawDataRedPacketReceivesItem
 >({
   setToastOpen,
-  // showActionableRecords
-}: 
+}: // showActionableRecords
 {
   setToastOpen: (props: any) => void;
   // showActionableRecords: boolean
@@ -476,10 +495,10 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
     async ({ offset, limit, filter }: any) => {
       const _filer = {
         ...filter,
-        // statuses: showActionableRecords 
+        // statuses: showActionableRecords
         //   ? [sdk.BlindBoxStatus.NOT_OPENED]
         //   : undefined
-      }
+      };
       setShowLoading(true);
       if (LoopringAPI.luckTokenAPI && accountId) {
         if (apiKey) {
@@ -504,7 +523,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
             if (setToastOpen) {
               setToastOpen({
                 open: true,
-                type: "error",
+                type: ToastType.error,
                 content:
                   "error : " + errorItem
                     ? t(errorItem.messageKey)
@@ -513,16 +532,13 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
             }
           } else {
             setRedPacketReceiveTotal((response as any)?.totalNum);
-            // @ts-ignore
-            // debugger
-
             let result = (response as any)?.list.map(
               (item: sdk.LuckyTokenBlindBoxItemReceive) => {
                 // @ts-ignore
                 const { luckyToken, claim: myClaim } = item;
-                
+
                 return {
-                  type: luckyToken.type, 
+                  type: luckyToken.type,
                   status: luckyToken.status,
                   claimAt: myClaim?.createdAt,
                   sender: luckyToken?.sender?.ens
@@ -542,16 +558,19 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
 
-  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive, pageInfo?: {offset: number, limit: number, filter: any}) => {
+  const onItemClick = async (
+    item: sdk.LuckyTokenBlindBoxItemReceive,
+    pageInfo?: { offset: number; limit: number; filter: any }
+  ) => {
     const refreshCallback = () => {
-      getRedPacketReceiveList(pageInfo)
-    }
+      getRedPacketReceiveList(pageInfo);
+    };
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
         ...item.luckyToken,
-        refreshCallback
+        refreshCallback,
       },
     });
   };

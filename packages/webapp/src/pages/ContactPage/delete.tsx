@@ -1,40 +1,46 @@
 // import { Dialog } from "@mui/material";
 
-import React from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, IconButton } from '@mui/material';
-import { Contact } from './hooks';
-import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources';
-import { TextField } from '@loopring-web/component-lib';
-import { useTheme } from '@emotion/react';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Box,
+  IconButton,
+} from "@mui/material";
+import { Contact } from "./hooks";
+import { CloseIcon, LoadingIcon } from "@loopring-web/common-resources";
+import { TextField } from "@loopring-web/component-lib";
+import { useTheme } from "@emotion/react";
+import { useTranslation } from "react-i18next";
 
 interface DeleteDialogProps {
   deleteInfo: {
-    open: boolean
-    selected: Contact | undefined
-  }
+    open: boolean;
+    selected: Contact | undefined;
+  };
   onCloseDelete: () => void;
-  submitDeleteContact: (address: string, name: string) => void
-  loading: boolean
+  submitDeleteContact: (address: string, name: string) => void;
+  loading: boolean;
 }
 
 export const Delete: React.FC<DeleteDialogProps> = (props) => {
-  const {
-    deleteInfo,
-    onCloseDelete,
-    submitDeleteContact,
-    loading,
-  } = props;
+  const { deleteInfo, onCloseDelete, submitDeleteContact, loading } = props;
 
-  
-  const theme = useTheme()
-  const {t} = useTranslation()
+  const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <div>
-      <Dialog open={deleteInfo.open} onClose={() => {
-        onCloseDelete()
-      }}>
+      <Dialog
+        open={deleteInfo.open}
+        onClose={() => {
+          onCloseDelete();
+        }}
+      >
         <DialogTitle>
           <Typography variant={"h3"} textAlign={"center"}>
             {t("labelContactsDeleteContact")}
@@ -48,7 +54,7 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
             }}
             color={"inherit"}
             onClick={() => {
-              onCloseDelete()
+              onCloseDelete();
             }}
           >
             <CloseIcon />
@@ -59,7 +65,7 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
             <TextField
               label={t("labelDeleteContactInfo")}
               style={{
-                backgroundColor: "var(--box-card-decorate)"
+                backgroundColor: "var(--box-card-decorate)",
               }}
               color={"primary"}
               InputProps={{
@@ -78,26 +84,29 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
             <Button
               variant="contained"
               onClick={() => {
-                submitDeleteContact!(deleteInfo.selected!.address, deleteInfo.selected!.name)
-
+                submitDeleteContact!(
+                  deleteInfo.selected!.address,
+                  deleteInfo.selected!.name
+                );
               }}
               fullWidth
             >
-              {loading ? <LoadingIcon></LoadingIcon> : t("labelContactsDeleteContactBtn")}
+              {loading ? (
+                <LoadingIcon></LoadingIcon>
+              ) : (
+                t("labelContactsDeleteContactBtn")
+              )}
             </Button>
-            <Box>
-
-            </Box>
+            <Box></Box>
             <Button
               variant={"outlined"}
               style={{
                 border: "none",
-                marginTop: `${theme.unit}px`
+                marginTop: `${theme.unit}px`,
               }}
               color={"info"}
-              
               onClick={() => {
-                onCloseDelete()
+                onCloseDelete();
               }}
             >
               {t("labelCancel")}

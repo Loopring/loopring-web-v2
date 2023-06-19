@@ -183,6 +183,8 @@ export enum AccountStep {
   BtradeSwap_Delivering,
   BtradeSwap_Settled,
   BtradeSwap_Failed,
+
+  AMM_Pending,
 }
 
 /**

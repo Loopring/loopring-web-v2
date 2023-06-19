@@ -1,6 +1,7 @@
 import React from "react";
 import {
   DeFiWrapProps,
+  ToastType,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -63,7 +64,7 @@ export const useDefiTrade = <
   setToastOpen: (props: {
     open: boolean;
     content: JSX.Element | string;
-    type: "success" | "error" | "warning" | "info";
+    type: ToastType;
   }) => void;
 }) => {
   const { t } = useTranslation(["common"]);
@@ -615,7 +616,7 @@ export const useDefiTrade = <
         } else {
           setToastOpen({
             open: true,
-            type: "success",
+            type: ToastType.success,
             content: t("labelInvestSuccess", {
               type: isJoin
                 ? t("labelInvestDefDeposit")
@@ -630,7 +631,7 @@ export const useDefiTrade = <
     } catch (reason) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content:
           t("labelInvestFailed") +
             (reason as CustomErrorWithCode)?.messageKey ??

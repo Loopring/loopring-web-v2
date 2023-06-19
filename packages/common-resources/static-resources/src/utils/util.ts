@@ -5,7 +5,7 @@ export const DOT = ".";
 export function abbreviateNumber(value: number, precision?: number) {
   let newValue = value,
     result: string;
-  const suffixes = ["", "K", "M", "B", "T"];
+  const suffixes = ["", "K", "M", "B", "T", "Qa", "Qi"];
   let suffixNum = 0;
   while (newValue >= 1000) {
     newValue /= 1000;

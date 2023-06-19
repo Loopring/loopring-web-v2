@@ -1,13 +1,5 @@
-import { PanelContent, SwipeableViewsStyled } from "../../basic-lib";
-import {
-  AmmChgData,
-  AmmDepositWrap,
-  AmmWithdrawChgData,
-  AmmWithdrawWrap,
-} from "../components";
-import { Box, BoxProps, Grid, Tab, Tabs, Toolbar } from "@mui/material";
-import { useLocation } from "react-router-dom";
-import qs from "query-string";
+import { AmmChgData, AmmDepositWrap, AmmWithdrawWrap } from "../components";
+import { Box, BoxProps, Tab, Tabs, Toolbar } from "@mui/material";
 import {
   AmmExitData,
   AmmInData,
@@ -16,21 +8,12 @@ import {
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
-import { useDeepCompareEffect } from "react-use";
-import { useTheme } from "@emotion/react";
 import { CountDownIcon } from "../components/tool/Refresh";
 import styled from "@emotion/styled";
 import { boxLiner, toolBarPanel } from "../../styled";
 import { AmmPanelType, AmmProps } from "./Interface";
 import { useSettings } from "../../../stores";
 
-// ${
-//         typeof _height === "string"
-//           ? _height
-//           : typeof _height === "number"
-//           ? _height + "px"
-//           : `var(--swap-box-height)`
-//       };
 const WrapStyle = styled(Box)<
   BoxProps & {
     _height?: number | string;
@@ -108,198 +91,97 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
     refreshRef,
     onAmmAddClick,
     onAmmRemoveClick,
-    onAmmAddChangeEvent,
-    onRemoveChangeEvent,
+    // onAmmAddChangeEvent,
+    // onRemoveChangeEvent,
     handleError,
     height,
     width,
     anchors,
-    accStatus,
-    coinAPrecision,
-    coinBPrecision,
+    propsLPExtends,
+    propsAExtends,
+    propsBExtends,
+    ammType,
+    handleTabChange,
+    // coinAPrecision,
+    // coinBPrecision,
     ...rest
   }: AmmProps<T, TW, I, ACD, C> & WithTranslation) => {
-    const [index, setIndex] = React.useState(tabSelected);
-    const [ammChgDepositData, setAmmChgDepositData] = React.useState<
-      AmmChgData<T>
-    >({
-      tradeData: ammDepositData,
-      type: "coinA",
-    });
-
-    const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<
-      AmmWithdrawChgData<TW>
-    >({
-      tradeData: ammWithdrawData,
-      type: "lp",
-    });
-    let routerLocation = useLocation();
-
-    React.useEffect(() => {
-      if (routerLocation) {
-        const search = routerLocation?.search;
-        const customType = qs.parse(search)?.type;
-        const index =
-          customType === "remove" ? AmmPanelType.Exit : AmmPanelType.Join;
-        setIndex(index);
-      }
-    }, [routerLocation]);
-    React.useEffect(() => {
-      setIndex(tabSelected);
-    }, [tabSelected]);
-    //
-    useDeepCompareEffect(() => {
-      if (ammDepositData !== ammChgDepositData.tradeData) {
-        setAmmChgDepositData({
-          ...ammChgDepositData,
-          tradeData: ammDepositData,
-        });
-      }
-      if (ammWithdrawData !== ammChgWithdrawData.tradeData) {
-        setAmmChgWithdrawData({
-          ...ammChgWithdrawData,
-          tradeData: ammWithdrawData,
-        });
-      }
-    }, [ammDepositData, ammWithdrawData]);
-
     const _onChangeAddEvent = React.useCallback(
       async ({ tradeData, type }: AmmChgData<T>) => {
-        await handleAmmAddChangeEvent(tradeData, type);
-        if (typeof onAmmAddChangeEvent == "function") {
-          setAmmChgDepositData(
-            onAmmAddChangeEvent({ tradeData, type } as AmmChgData<T>)
-          );
-        } else {
-          setAmmChgDepositData({ tradeData, type });
-        }
+        handleAmmAddChangeEvent(tradeData, type);
+        // if (typeof onAmmAddChangeEvent == "function") {
+        //   onAmmAddChangeEvent({ tradeData, type } as AmmChgData<T>);
+        // }
       },
-      [handleAmmAddChangeEvent, onAmmAddChangeEvent]
+      [handleAmmAddChangeEvent]
     );
 
     const _onChangeRemoveEvent = React.useCallback(
       async ({
         tradeData,
-        type,
-      }: // percentage
+      }: // type,
+      // percentage
       { tradeData: TW } & { type: "lp"; percentage?: number }) => {
-        await handleAmmRemoveChangeEvent(tradeData);
-        if (typeof onRemoveChangeEvent == "function") {
-          setAmmChgWithdrawData(
-            onRemoveChangeEvent({
-              tradeData,
-              type: "lp",
-            } as AmmWithdrawChgData<TW>)
-          );
-        } else {
-          setAmmChgWithdrawData({ tradeData, type });
-        }
+        handleAmmRemoveChangeEvent(tradeData);
+        // if (typeof onRemoveChangeEvent == "function") {
+        //   onRemoveChangeEvent({ tradeData, type } as AmmWithdrawChgData<TW>);
+        // }
       },
-      [handleAmmRemoveChangeEvent, onRemoveChangeEvent]
+      [handleAmmRemoveChangeEvent]
     );
 
-    const handleTabChange = React.useCallback(
-      (_event: any, newValue: any) => {
-        if (index !== newValue) {
-          setIndex(newValue);
-        }
-      },
-      [index]
-    );
-
-    const panelList: Pick<
-      PanelContent<"ammJoin" | "ammExit">,
-      "key" | "element"
-    >[] = [
-      {
-        key: "ammJoin",
-        element: React.useMemo(
-          () => (
-            <AmmDepositWrap<T, I, ACD, C>
-              key={"ammJoin"}
-              {...{
-                t,
-                ...rest,
-                anchors,
-                disableDeposit,
-                ammDepositBtnStatus,
-                ammDepositBtnI18nKey,
-                ammCalcData: ammCalcDataDeposit,
-                onAmmAddClick,
-                handleError,
-                onAddChangeEvent: _onChangeAddEvent,
-                ammData: ammDepositData,
-                tokenAProps: { ...tokenDepositAProps },
-                tokenBProps: { ...tokenDepositBProps },
-                accStatus,
-                coinAPrecision,
-                coinBPrecision,
-              }}
-            />
-          ),
-          [
-            t,
-            rest,
-            anchors,
-            disableDeposit,
-            ammDepositBtnStatus,
-            ammDepositBtnI18nKey,
-            ammCalcDataDeposit,
-            onAmmAddClick,
-            handleError,
-            _onChangeAddEvent,
-            ammDepositData,
-            tokenDepositAProps,
-            tokenDepositBProps,
-            accStatus,
-            coinAPrecision,
-            coinBPrecision,
-          ]
-        ),
-      },
-      {
-        key: "ammExit",
-        element: React.useMemo(
-          () => (
-            <AmmWithdrawWrap<TW, I, ACD, C>
-              key={"ammExit"}
-              {...{
-                t,
-                ...rest,
-                anchors,
-                disableWithdraw,
-                ammWithdrawBtnStatus,
-                ammWithdrawBtnI18nKey,
-                ammCalcData: ammCalcDataWithDraw,
-                onAmmRemoveClick,
-                handleError,
-                selectedPercentage: -1,
-                onRemoveChangeEvent: _onChangeRemoveEvent,
-                ammData: ammWithdrawData,
-                tokenAProps: { ...tokenWithDrawAProps },
-                tokenBProps: { ...tokenWithDrawBProps },
-              }}
-            />
-          ),
-          [
-            t,
-            rest,
-            anchors,
-            disableWithdraw,
-            ammWithdrawBtnStatus,
-            ammWithdrawBtnI18nKey,
-            ammCalcDataWithDraw,
-            onAmmRemoveClick,
-            handleError,
-            _onChangeRemoveEvent,
-            ammWithdrawData,
-            tokenWithDrawAProps,
-            tokenWithDrawBProps,
-          ]
-        ),
-      },
-    ];
-    const theme = useTheme();
+    // const panelList: Pick<
+    //   PanelContent<"ammJoin" | "ammExit">,
+    //   "key" | "element"
+    // >[] = [
+    //   {
+    //     key: "ammJoin",
+    //     element: React.useMemo(
+    //       () => (
+    //
+    //       ),
+    //       [
+    //         t,
+    //         rest,
+    //         anchors,
+    //         disableDeposit,
+    //         ammDepositBtnStatus,
+    //         ammDepositBtnI18nKey,
+    //         ammCalcDataDeposit,
+    //         // onAmmAddClick,
+    //         handleError,
+    //         // _onChangeAddEvent,
+    //         ammDepositData,
+    //         tokenDepositAProps,
+    //         tokenDepositBProps,
+    //       ]
+    //     ),
+    //   },
+    //   {
+    //     key: "ammExit",
+    //     element: React.useMemo(
+    //       () => (
+    //
+    //       ),
+    //       [
+    //         t,
+    //         rest,
+    //         anchors,
+    //         disableWithdraw,
+    //         ammWithdrawBtnStatus,
+    //         ammWithdrawBtnI18nKey,
+    //         ammCalcDataWithDraw,
+    //         // onAmmRemoveClick,
+    //         // handleError,
+    //         // _onChangeRemoveEvent,
+    //         ammWithdrawData,
+    //         tokenWithDrawAProps,
+    //         tokenWithDrawBProps,
+    //       ]
+    //     ),
+    //   },
+    // ];
+    // const theme = useTheme();
     const { isMobile } = useSettings();
 
     return (
@@ -320,7 +202,12 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
             marginLeft={-2}
           >
             <TabPanelBtn
-              {...{ t, value: index, handleChange: handleTabChange, ...rest }}
+              {...{
+                t,
+                value: ammType,
+                handleChange: (_e: any, value: any) => handleTabChange(value),
+                ...rest,
+              }}
             />
           </Box>
           <Box alignSelf={"center"}>
@@ -329,28 +216,90 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
         </Toolbar>
 
         <Box flex={1} className={"trade-panel"}>
-          <SwipeableViewsStyled
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={index}
-            {...{
-              _height: "auto",
-              _width: "auto",
-            }}
-          >
-            {panelList.map((panel, index) => {
-              return (
-                <Grid
-                  item
-                  justifyContent={"space-evenly"}
-                  alignItems={"stretch"}
-                  height={"100%"}
-                  key={index}
-                >
-                  {panel.element}
-                </Grid>
-              );
-            })}
-          </SwipeableViewsStyled>
+          {ammType === AmmPanelType.Join && (
+            <Box
+              display={"flex"}
+              justifyContent={"space-evenly"}
+              alignItems={"stretch"}
+              height={"100%"}
+              padding={5 / 2}
+              // key={panelList[0].key}
+            >
+              <AmmDepositWrap<T, I, ACD, C>
+                key={"ammJoin"}
+                {...{
+                  t,
+                  ...rest,
+                  anchors,
+                  disableDeposit,
+                  ammDepositBtnStatus,
+                  ammDepositBtnI18nKey,
+                  ammCalcData: ammCalcDataDeposit,
+                  onAmmAddClick,
+                  onAddChangeEvent: _onChangeAddEvent,
+                  ammData: ammDepositData,
+                  tokenAProps: { ...tokenDepositAProps },
+                  tokenBProps: { ...tokenDepositBProps },
+                  propsAExtends,
+                  propsBExtends,
+                }}
+              />
+              {/*{panelList[0].element}*/}
+            </Box>
+          )}
+          {ammType === AmmPanelType.Exit && (
+            <Box
+              display={"flex"}
+              justifyContent={"space-evenly"}
+              alignItems={"stretch"}
+              height={"100%"}
+              padding={5 / 2}
+            >
+              <AmmWithdrawWrap<TW, I, ACD, C>
+                key={"ammExit"}
+                {...{
+                  t,
+                  ...rest,
+                  anchors,
+                  disableWithdraw,
+                  ammWithdrawBtnStatus,
+                  ammWithdrawBtnI18nKey,
+                  ammCalcData: ammCalcDataWithDraw,
+                  onAmmRemoveClick,
+                  handleError,
+                  propsLPExtends,
+                  selectedPercentage: -1,
+                  onRemoveChangeEvent: _onChangeRemoveEvent,
+                  ammData: ammWithdrawData,
+                  tokenAProps: { ...tokenWithDrawAProps },
+                  tokenBProps: { ...tokenWithDrawBProps },
+                }}
+              />
+            </Box>
+          )}
+
+          {/*<SwipeableViewsStyled*/}
+          {/*  axis={theme.direction === "rtl" ? "x-reverse" : "x"}*/}
+          {/*  index={ammType}*/}
+          {/*  {...{*/}
+          {/*    _height: "auto",*/}
+          {/*    _width: "auto",*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  {panelList.map((panel, index) => {*/}
+          {/*    return (*/}
+          {/*      <Grid*/}
+          {/*        item*/}
+          {/*        justifyContent={"space-evenly"}*/}
+          {/*        alignItems={"stretch"}*/}
+          {/*        height={"100%"}*/}
+          {/*        key={index}*/}
+          {/*      >*/}
+          {/*        {panel.element}*/}
+          {/*      </Grid>*/}
+          {/*    );*/}
+          {/*  })}*/}
+          {/*</SwipeableViewsStyled>*/}
         </Box>
       </WrapStyle>
     );

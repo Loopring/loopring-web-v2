@@ -25,6 +25,13 @@ const initialState: ToggleState = {
   LRCStackInvest: { enable: true },
   BTradeInvest: { enable: true },
   StopLimit: { enable: true },
+  send: {
+    orbiter: ["ETH"],
+  },
+  receive: {
+    layerSwap: ["ETH", "LRC", "USDC"],
+    orbiter: ["ETH"],
+  },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
@@ -58,6 +65,8 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
         LRCStackInvest,
         BTradeInvest,
         StopLimit,
+        send,
+        receive,
       } = action.payload;
       if (order !== undefined) {
         state.order = order;
@@ -127,6 +136,12 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
 
       if (BTradeInvest !== undefined) {
         state.BTradeInvest = BTradeInvest;
+      }
+      if (send !== undefined) {
+        state.send = send;
+      }
+      if (receive !== undefined) {
+        state.receive = receive;
       }
     },
   },

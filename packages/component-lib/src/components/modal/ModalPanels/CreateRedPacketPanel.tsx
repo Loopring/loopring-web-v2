@@ -89,13 +89,13 @@ export const CreateRedPacketPanel = <
           belong: undefined,
           tokenAddress: undefined,
           image: undefined,
-        } as any)
+        } as any);
         setPanelIndex(1);
         break;
       case RedPacketStep.Main:
         handleOnDataChange({
           validSince: Date.now(),
-        } as any)
+        } as any);
         setPanelIndex(2);
         break;
       case RedPacketStep.NFTList:
@@ -126,9 +126,9 @@ export const CreateRedPacketPanel = <
   }, [walletMap]);
 
   const [selectedType, setSelectType] = React.useState(
-    tradeData.tradeType === TRADE_TYPE.NFT 
-      ? LuckyRedPacketList.find(x=>x.defaultForNFT)
-      : LuckyRedPacketList.find(x=>x.defaultForERC20)
+    tradeData.tradeType === TRADE_TYPE.NFT
+      ? LuckyRedPacketList.find((x) => x.defaultForNFT)
+      : LuckyRedPacketList.find((x) => x.defaultForERC20)
   );
   React.useEffect(() => {
     setSelectType(() => {
@@ -154,15 +154,12 @@ export const CreateRedPacketPanel = <
 
   // tradeData.tradeType === TRADE_TYPE.NFT
   React.useEffect(() => {
-    const found = tradeData.tradeType === TRADE_TYPE.NFT 
-      ? LuckyRedPacketList.find(x=>x.defaultForNFT)
-      : LuckyRedPacketList.find(x=>x.defaultForERC20)
-    // const found =
-    //   LuckyRedPacketList.find((x) =>
-    //     tradeData.tradeType === TRADE_TYPE.NFT ? x.showInNFTS : x.showInERC20
-    //   ) ?? LuckyRedPacketList[2];
+    const found =
+      tradeData.tradeType === TRADE_TYPE.NFT
+        ? LuckyRedPacketList.find((x) => x.defaultForNFT)
+        : LuckyRedPacketList.find((x) => x.defaultForERC20);
+
     setSelectType(found);
-    // debugger
     handleOnDataChange({
       type: {
         ...tradeData?.type,

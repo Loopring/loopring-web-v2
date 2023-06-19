@@ -2,6 +2,7 @@ import React from "react";
 import {
   AccountStep,
   DeFiSideWrapProps,
+  ToastType,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -54,7 +55,7 @@ export const useStakeTradeJOIN = <
   setToastOpen: (props: {
     open: boolean;
     content: JSX.Element | string;
-    type: "success" | "error" | "warning" | "info";
+    type: ToastType;
   }) => void;
 }) => {
   const { t } = useTranslation(["common"]);
@@ -183,7 +184,7 @@ export const useStakeTradeJOIN = <
       } catch (error) {
         setToastOpen({
           open: true,
-          type: "error",
+          type: ToastType.error,
           content: t(
             SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO).code ?? 700001]
               ?.messageKey ?? (error as sdk.RESULT_INFO).message
@@ -311,6 +312,7 @@ export const useStakeTradeJOIN = <
             },
           });
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          walletLayer2Service.sendUserUpdate();
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==
@@ -325,7 +327,7 @@ export const useStakeTradeJOIN = <
     } catch (reason) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content:
           t("labelInvestFailed") +
             " " +
@@ -372,7 +374,6 @@ export const useStakeTradeJOIN = <
     setToastOpen,
     t,
   ]);
-  // const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
     label: string;

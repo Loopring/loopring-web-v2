@@ -1,4 +1,10 @@
-import { BtradeBase, DualBase, IconType, PanelProps } from "./BasicPanel";
+import {
+  AmmBase,
+  BtradeBase,
+  DualBase,
+  IconType,
+  PanelProps,
+} from "./BasicPanel";
 import { Box, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import {
@@ -427,7 +433,6 @@ export const BtradeDetail = (props: any) => {
             {info?.convertStr}
           </Typography>
         </Typography>
-
         <Typography
           display={"inline-flex"}
           justifyContent={"space-between"}
@@ -506,6 +511,39 @@ export const BtradeDetail = (props: any) => {
             </Typography>
           </Typography>
         </Typography>
+        {props.isDelivering && (
+          <Typography
+            component={"span"}
+            display={"inline-flex"}
+            justifyContent={"space-between"}
+            marginTop={2}
+          >
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-secondary)"}
+            >
+              {props.t("labelBtradeSettled")}
+            </Typography>
+            <Typography
+              variant={"body1"}
+              component={"span"}
+              color={"var(--color-text-primary)"}
+              display={"inline-flex"}
+              alignItems={"center"}
+            >
+              <Typography
+                variant={"inherit"}
+                marginLeft={1 / 2}
+                component={"span"}
+              >
+                {info?.settledToAmount
+                  ? info?.settledToAmount + " " + info?.buyToken.symbol
+                  : EmptyValueTag}
+              </Typography>
+            </Typography>
+          </Typography>
+        )}
         <Typography
           component={"span"}
           display={"inline-flex"}
@@ -583,6 +621,8 @@ export const BtradeSwap_Delivering = (props: PanelProps) => {
           color={"var(--color-text-secondary)"}
           marginTop={2}
           component={"span"}
+          whiteSpace={"pre-line"}
+          sx={{ wordBreak: "break-word" }}
         >
           {t("labelBtradeSwapDeliverDes")}
         </Typography>
@@ -644,4 +684,20 @@ export const BtradeSwap_Failed = (props: PanelProps) => {
     describe2: <BtradeDetail {...props} />,
   };
   return <BtradeBase {...propsPatch} {...props} />;
+};
+
+export const AMM_Pending = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.PendingIcon,
+    // describe1: (
+    //   <Typography
+    //     color={"var(--color-text-primary)"}
+    //     variant={"h5"}
+    //     component={"span"}
+    //   >
+    //     {t("labelAMMPending")}
+    //   </Typography>
+    // ),
+  };
+  return <AmmBase {...{ ...props, ...propsPatch }} />;
 };

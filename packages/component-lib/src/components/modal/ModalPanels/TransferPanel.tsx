@@ -77,7 +77,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
           {...rest}
         />
       ),
-    }
+    };
     const tradePanel = {
       key: "trade",
       element: React.useMemo(
@@ -104,9 +104,9 @@ export const TransferPanel = withTranslation(["common", "error"], {
               isFromContact,
               contact,
               onClickContact: () => {
-                setPanelIndex(3); // todo handle tradeMenuList 
+                setPanelIndex(3); // todo handle tradeMenuList
                 // rest.handleOnAddressChange(address)
-              }
+              },
             }}
           />
         ),
@@ -143,7 +143,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
         ),
         [onBack]
       ),
-    }
+    };
     const tokenSelectionPanel = {
       key: "tradeMenuList",
       element: React.useMemo(
@@ -166,8 +166,8 @@ export const TransferPanel = withTranslation(["common", "error"], {
       ),
       // toolBarItem: undefined,
       toolBarItem: undefined,
-    }
-    const contactSelectionPanel =  {
+    };
+    const contactSelectionPanel = {
       key: "contactSelection",
       element: React.useMemo(
         () => (
@@ -176,11 +176,9 @@ export const TransferPanel = withTranslation(["common", "error"], {
             contacts={contacts}
             onSelect={(address) => {
               setPanelIndex(1);
-              rest.handleOnAddressChange(address, true)
-              
+              rest.handleOnAddressChange(address, true);
             }}
             scrollHeight={"380px"}
-
           />
         ),
         [contacts]
@@ -206,9 +204,8 @@ export const TransferPanel = withTranslation(["common", "error"], {
         tradePanel,
         tokenSelectionPanel,
         contactSelectionPanel,
-      ]
-    }
-
+      ],
+    };
 
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }

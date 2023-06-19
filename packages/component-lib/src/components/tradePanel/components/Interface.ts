@@ -91,7 +91,10 @@ export type TransferExtendProps<T, I, C> = {
   addrStatus: AddressError;
   onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>;
   handleFeeChange: (value: C) => void;
-  handleOnAddressChange: (value: string | undefined | I, isContactSelection? : boolean) => void;
+  handleOnAddressChange: (
+    value: string | undefined | I,
+    isContactSelection?: boolean
+  ) => void;
   isActiveAccount?: boolean;
   feeWithActive?: boolean;
   handleOnFeeWithActive: (value: boolean) => void;
@@ -228,7 +231,10 @@ export type WithdrawExtendProps<T, I, C> = {
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
   handleFeeChange: (value: C) => void;
   handleWithdrawTypeChange: (value: WithdrawType) => void;
-  handleOnAddressChange: (value: string | undefined | I, isContactSelection?: boolean) => void;
+  handleOnAddressChange: (
+    value: string | undefined | I,
+    isContactSelection?: boolean
+  ) => void;
   wait?: number;
   onBack?: () => void;
   isToMyself?: boolean;

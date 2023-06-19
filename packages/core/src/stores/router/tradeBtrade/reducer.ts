@@ -41,6 +41,7 @@ const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
         sellMaxAmtInfo,
         // btradeMarket,
         maxFeeBips,
+        btradeType,
         ...rest
       } = action.payload;
       if (market !== state.tradeBtrade.market && market && tradePair) {
@@ -66,6 +67,7 @@ const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
           sellMaxAmtInfo,
           lastStepAt: undefined,
           // btradeMarket,
+          btradeType,
           maxFeeBips,
           ...rest,
         };
@@ -73,6 +75,10 @@ const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
         if (lastStepAt) {
           state.tradeBtrade.lastStepAt = lastStepAt;
         }
+        if (btradeType) {
+          state.tradeBtrade.btradeType = btradeType;
+        }
+
         if (tradePair && tradePair) {
           const [_, sellToken, buyToken] = tradePair.match(/(\w+)-(\w+)/i);
           state.tradeBtrade.tradePair = tradePair;

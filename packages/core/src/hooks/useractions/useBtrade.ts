@@ -27,6 +27,7 @@ import {
 import {
   AccountStatus,
   BtradeTradeCalcData,
+  BtradeType,
   CoinMap,
   CustomErrorWithCode,
   defaultBlockTradeSlipage,
@@ -48,6 +49,7 @@ import {
   SwapData,
   SwapTradeData,
   SwapType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -63,24 +65,35 @@ const useBtradeSocket = () => {
   const { account } = useAccount();
   const { tradeBtrade } = useTradeBtrade();
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade.info) {
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      tradeBtrade?.depth?.symbol
+    ) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
-        // @ts-ignore
-        [sdk.WsTopicType.btradeOrderBook]: {
-          showOverlap: false,
-          markets: [tradeBtrade.info.btradeMarket],
-          level: 0,
-          snapshot: true,
-        },
+        // TODO: btrade Socket
+        // [sdk.WsTopicType.btradedepth]: {
+        //   showOverlap: false,
+        //   markets: [tradeBtrade?.depth?.symbol],
+        //   level: 0,
+        //   snapshot: true,
+        // },
       });
-    } else {
-      socketEnd();
+    } else if (tradeBtrade?.depth?.symbol) {
+      // TODO: btrade Socket
+      // sendSocketTopic({
+      //   [sdk.WsTopicType.btradedepth]: {
+      //     showOverlap: false,
+      //     markets: [tradeBtrade?.depth?.symbol],
+      //     level: 0,
+      //     snapshot: true,
+      //   },
+      // });
     }
     return () => {
       socketEnd();
     };
-  }, [account.readyState]);
+  }, [account.readyState, tradeBtrade?.depth?.symbol]);
 };
 
 export const useBtradeSwap = <
@@ -150,12 +163,14 @@ export const useBtradeSwap = <
 
   const clearData = () => {
     let _tradeCalcData: any = {};
+    let btradeType: any;
     setTradeData((state) => {
+      btradeType = state?.btradeType ? state.btradeType : BtradeType.Quantity;
       return {
         ...state,
+        btradeType: state?.btradeType ? state.btradeType : BtradeType.Quantity,
         sell: { ...state?.sell, tradeValue: undefined },
         buy: { ...state?.buy, tradeValue: undefined },
-        isChecked: undefined,
       } as T;
     });
 
@@ -164,15 +179,16 @@ export const useBtradeSwap = <
         ...(state ?? {}),
         maxFeeBips: undefined,
         lockedNotification: true,
-        isLockedNotificationChecked: false,
         volumeSell: undefined,
         volumeBuy: undefined,
+        btradeType,
       };
       return _tradeCalcData;
     });
     updateTradeBtrade({
       market,
       maxFeeBips: 0,
+      btradeType,
       tradeCalcData: {
         ..._tradeCalcData,
       },
@@ -255,7 +271,11 @@ export const useBtradeSwap = <
           };
         } else if (!validAmt) {
           const sellSymbol = tradeData?.sell.belong;
-          if (sellMinAmtInfo === undefined || !sellSymbol) {
+          if (
+            sellMinAmtInfo === undefined ||
+            !sellSymbol ||
+            sellMinAmtInfo === "NaN"
+          ) {
             return {
               label: "labelEnterAmount",
               tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -282,11 +302,6 @@ export const useBtradeSwap = <
               };
             }
           }
-        } else if (!tradeCalcData?.isLockedNotificationChecked) {
-          return {
-            label: `labelBtradeConfirm`,
-            tradeBtnStatus: TradeBtnStatus.DISABLED,
-          };
         } else {
           return {
             label: undefined,
@@ -305,7 +320,6 @@ export const useBtradeSwap = <
     tokenMap,
     tradeData?.sell.belong,
     tradeData?.buy.belong,
-    tradeCalcData?.isLockedNotificationChecked,
     tradeBtrade.maxFeeBips,
     tradeData?.sell.tradeValue,
     tradeData?.buy.tradeValue,
@@ -364,6 +378,8 @@ export const useBtradeSwap = <
           eddsaSignature: "",
           clientOrderId: "",
           orderType: sdk.OrderTypeResp.TakerOnly,
+          fastMode:
+            tradeCalcData.btradeType === BtradeType.Speed ? true : false,
         };
         myLog("useBtradeSwap: submitOrder request", request);
         const response: { hash: string } | any =
@@ -441,7 +457,7 @@ export const useBtradeSwap = <
           (orderConfirm as sdk.RESULT_INFO).message
         ) {
         } else if (["failed", "cancelled"].includes(orderConfirm.status)) {
-          throw "orderConfirm   failed";
+          throw "orderConfirm failed";
         } else if (store.getState().modals.isShowAccount.isShow) {
           setShowAccount({
             isShow: true,
@@ -460,7 +476,6 @@ export const useBtradeSwap = <
         throw new Error("api not ready");
       }
     } catch (error: any) {
-      console.log(error, error?.message, error?.stack);
       let content: string = "";
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
         content =
@@ -483,7 +498,7 @@ export const useBtradeSwap = <
       });
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content,
       });
     }
@@ -556,6 +571,9 @@ export const useBtradeSwap = <
       setTradeData((tradeData) => {
         return {
           ...tradeData,
+          btradeType: tradeData?.btradeType
+            ? tradeData.btradeType
+            : BtradeType.Quantity,
           sell: {
             belong: tradeCalcData.coinSell,
             balance: walletMap
@@ -578,6 +596,9 @@ export const useBtradeSwap = <
         setTradeData((state) => {
           return {
             ...state,
+            btradeType: state?.btradeType
+              ? state.btradeType
+              : BtradeType.Quantity,
             sell: { belong: tradeCalcData.coinSell },
             buy: { belong: tradeCalcData.coinBuy },
           } as T;
@@ -601,7 +622,32 @@ export const useBtradeSwap = <
       });
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState]);
-
+  // TODO: btrade Socket
+  // const subject = React.useMemo(() => btradeOrderbookService.onSocket(), []);
+  // React.useEffect(() => {
+  //   // const tradeBtrade = store.getState()._router_tradeBtrade
+  //   const subscription = subject.subscribe(({ btradeOrderbookMap }) => {
+  //     const { depth } = store.getState()._router_tradeBtrade.tradeBtrade;
+  //     if (
+  //       depth?.symbol &&
+  //       btradeOrderbookMap &&
+  //       btradeOrderbookMap[depth?.symbol]
+  //     ) {
+  //       updateTradeBtrade({
+  //         depth: {
+  //           ...depth,
+  //           ...btradeOrderbookMap[depth.symbol],
+  //           timestamp: Date.now(),
+  //         },
+  //       });
+  //     }
+  //
+  //     // const walletLayer2Status = store.getState().walletLayer2.status;
+  //     // const walletLayer1Status = store.getState().walletLayer1.status;
+  //     // _socketUpdate({ walletLayer2Status, walletLayer1Status });
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [subject]);
   useBtradeSocket();
   useWalletLayer2Socket({ walletLayer2Callback });
 
@@ -681,19 +727,22 @@ export const useBtradeSwap = <
           },
         };
 
-        const sellCoinInfoMap = tradeMap[coinB].tradePairs?.reduce(
+        const sellCoinInfoMap = tradeMap[coinB]?.tradePairs?.reduce(
           (prev: any, item: string | number) => {
             return { ...prev, [item]: coinMap[item] };
           },
           {} as CoinMap<C>
         );
 
-        const buyCoinInfoMap = tradeMap[coinA].tradePairs?.reduce(
+        const buyCoinInfoMap = tradeMap[coinA]?.tradePairs?.reduce(
           (prev: any, item: string | number) => {
             return { ...prev, [item]: coinMap[item] };
           },
           {} as CoinMap<C>
         );
+        const btradeType = _tradeData?.btradeType
+          ? _tradeData.btradeType
+          : BtradeType.Quantity;
         let _tradeCalcData = {};
         setTradeCalcData((state) => {
           _tradeCalcData = {
@@ -701,8 +750,8 @@ export const useBtradeSwap = <
             walletMap,
             coinSell: coinA,
             coinBuy: coinB,
-            sellPrecision: tokenMap[coinA as string].precision,
-            buyPrecision: tokenMap[coinB as string].precision,
+            sellPrecision: tokenMap[coinA as string]?.precision,
+            buyPrecision: tokenMap[coinB as string]?.precision,
             sellCoinInfoMap,
             buyCoinInfoMap,
             StoB: undefined,
@@ -710,7 +759,6 @@ export const useBtradeSwap = <
             fee: undefined,
             tradeCost: undefined,
             lockedNotification: true,
-            isLockedNotificationChecked: false,
             volumeSell: undefined,
             volumeBuy: undefined,
             sellMinAmtStr: undefined,
@@ -719,16 +767,26 @@ export const useBtradeSwap = <
             totalQuota: undefined,
             l1Pool: undefined,
             l2Pool: undefined,
+            btradeType,
           };
           return _tradeCalcData;
         });
         setTradeData((state) => {
-          return { ...state, ...tradeDataTmp };
+          return {
+            ...state,
+            btradeType,
+            ...tradeDataTmp,
+          };
         });
         let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
         setMarket(market);
         history.push("/trade/btrade/" + _market);
-        updateTradeBtrade({ market, tradePair, tradeCalcData: _tradeCalcData });
+        updateTradeBtrade({
+          market,
+          tradePair,
+          btradeType,
+          tradeCalcData: _tradeCalcData,
+        });
       }
     },
     [
@@ -770,7 +828,7 @@ export const useBtradeSwap = <
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const {
-        tradeBtrade: { depth, tradePair },
+        tradeBtrade: { depth, tradePair, btradeType: _btradeType },
       } = store.getState()._router_tradeBtrade;
 
       const walletMap = tradeCalcData?.walletMap as WalletMap<any>;
@@ -782,6 +840,9 @@ export const useBtradeSwap = <
         type
       );
       if (depth && market && _tradePair === tradePair && _tradeData?.sell) {
+        const btradeType = _tradeData.btradeType
+          ? _tradeData.btradeType
+          : _btradeType;
         const coinA = _tradeData?.sell.belong;
         const coinB = _tradeData?.buy.belong;
         const sellToken = tokenMap[coinA as string];
@@ -856,25 +917,67 @@ export const useBtradeSwap = <
               .times(0.99)
               .toString() ?? "0";
 
-          sellMaxAmtInfo = poolToVol
-            ? BigNumber.min(sellDeepStr, poolToVol)
-            : sellDeepStr;
-          totalQuote = poolToVol
-            ? getValuePrecisionThousand(
-                BigNumber.min(sellDeepStr, poolToVol),
-                sellToken.decimals,
-                sellToken.decimals,
-                undefined,
-                false,
-                { isAbbreviate: true }
+          if (btradeType === BtradeType.Speed) {
+            const calcDexL2Output = sdk.calcDex({
+              info,
+              input: (sellBuyStr == market
+                ? sdk.toBig(l2Amount.quote ?? 0)
+                : sdk.toBig(l2Amount.base ?? 0)
               )
-            : (
-                sellBuyStr == market
-                  ? btradeAmount.base == "0"
-                  : btradeAmount.quote == "0"
-              )
-            ? t("labelBtradeInsufficient")
-            : EmptyValueTag;
+                .div("1e" + buyToken.decimals)
+                .toString(), //input.toString(),
+              sell: sellToken.symbol,
+              buy: buyToken.symbol,
+              isAtoB: false,
+              marketArr: marketArray,
+              tokenMap,
+              marketMap,
+              depth,
+              feeBips: maxFeeBips.toString(),
+              slipBips: slippage,
+            });
+            totalQuote = poolToVol
+              ? getValuePrecisionThousand(
+                  BigNumber.min(
+                    sellDeepStr,
+                    poolToVol,
+                    calcDexL2Output?.amountS ?? 0
+                  ),
+                  sellToken.precision,
+                  sellToken.precision,
+                  undefined,
+                  false,
+                  { isAbbreviate: true }
+                )
+              : EmptyValueTag;
+            sellMaxAmtInfo = poolToVol
+              ? BigNumber.min(
+                  sellDeepStr,
+                  poolToVol,
+                  calcDexL2Output?.amountS ?? 0
+                )
+              : sellDeepStr;
+          } else {
+            sellMaxAmtInfo = poolToVol
+              ? BigNumber.min(sellDeepStr, poolToVol)
+              : sellDeepStr;
+            totalQuote = poolToVol
+              ? getValuePrecisionThousand(
+                  BigNumber.min(sellDeepStr, poolToVol),
+                  sellToken.precision,
+                  sellToken.precision,
+                  undefined,
+                  false,
+                  { isAbbreviate: true }
+                )
+              : (
+                  sellBuyStr == market
+                    ? btradeAmount.base == "0"
+                    : btradeAmount.quote == "0"
+                )
+              ? t("labelBtradeInsufficient")
+              : EmptyValueTag;
+          }
           sellMinAmtInfo = BigNumber.max(
             sellToken.orderAmounts.dust,
             sellBuyStr == market ? minAmount.base : minAmount.quote
@@ -882,6 +985,7 @@ export const useBtradeSwap = <
             .div("1e" + sellToken.decimals)
             .toString();
         }
+
         if (calcDexOutput) {
           totalFeeRaw = sdk
             .toBig(calcDexOutput?.amountBSlipped?.minReceived ?? 0)
@@ -938,6 +1042,7 @@ export const useBtradeSwap = <
         let _tradeCalcData: any = {
           minimumReceived,
           maxFeeBips,
+          btradeType,
           volumeSell: calcDexOutput?.sellVol as any,
           volumeBuy: calcDexOutput?.amountBSlipped?.minReceived,
           fee: totalFee,
@@ -984,10 +1089,7 @@ export const useBtradeSwap = <
             false
           ),
         };
-        if (_tradeData?.isChecked !== undefined) {
-          myLog("tradeCalcData?.isChecked", _tradeData);
-          _tradeCalcData.isLockedNotificationChecked = _tradeData.isChecked;
-        }
+
         setTradeCalcData((state) => {
           const [mid_price, _mid_price_convert] = calcDexOutput
             ? [
@@ -1058,6 +1160,7 @@ export const useBtradeSwap = <
           sellMaxAmtInfo: sellMaxAmtInfo as any,
           tradeCalcData: _tradeCalcData,
           maxFeeBips,
+          btradeType,
         });
       }
     },
@@ -1073,16 +1176,15 @@ export const useBtradeSwap = <
   );
   const refreshWhenDepthUp = React.useCallback(() => {
     const { depth, lastStepAt, tradePair, market } = tradeBtrade;
-    if (depth && depth.symbol === market) {
-      reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
-    }
+
     if (
-      tradeData &&
-      lastStepAt &&
-      tradeCalcData.coinSell === tradeData["sell"].belong &&
-      tradeCalcData.coinBuy === tradeData["buy"].belong &&
-      tradeData[lastStepAt].tradeValue &&
-      tradeData[lastStepAt].tradeValue !== 0
+      (depth && depth.symbol === market) ||
+      (tradeData &&
+        lastStepAt &&
+        tradeCalcData.coinSell === tradeData["sell"].belong &&
+        tradeCalcData.coinBuy === tradeData["buy"].belong &&
+        tradeData[lastStepAt].tradeValue &&
+        tradeData[lastStepAt].tradeValue !== 0)
     ) {
       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
     } else if (
@@ -1209,7 +1311,6 @@ export const useBtradeSwap = <
           tokenMap[tradeCalcData.coinSell as string].precision;
         const _tradeCalcData = {
           ...tradeCalcData,
-          isLockedNotificationChecked: false,
           coinSell: tradeCalcData.coinBuy,
           coinBuy: tradeCalcData.coinSell,
           sellPrecision,
@@ -1265,7 +1366,6 @@ export const useBtradeSwap = <
                 ? walletMap[_tradeCalcData.coinBuy as string]?.count
                 : 0,
             },
-            isChecked: undefined,
           };
         });
         break;

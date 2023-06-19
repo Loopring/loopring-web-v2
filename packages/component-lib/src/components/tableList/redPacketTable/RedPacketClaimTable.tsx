@@ -178,7 +178,11 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           sortable: true,
           name: t("labelAmount"),
           formatter: ({ row }: FormatterProps<R>) => {
-            return <Box display={"flex"}>{hideAssets ? HiddenTag : row.amountStr}</Box>;
+            return (
+              <Box display={"flex"}>
+                {hideAssets ? HiddenTag : row.amountStr}
+              </Box>
+            );
           },
         },
         {
@@ -189,16 +193,17 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
             return (
               <Box display="flex">
                 {row.volume !== undefined
-                  ? (hideAssets
+                  ? hideAssets
                     ? HiddenTag
-                    : PriceTag[CurrencyToTag[currency]] + getValuePrecisionThousand(
-                      (row.volume || 0) * (forexMap[currency] ?? 0),
-                      2,
-                      2,
-                      2,
-                      true,
-                      { isFait: true }
-                    ))
+                    : PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        (row.volume || 0) * (forexMap[currency] ?? 0),
+                        2,
+                        2,
+                        2,
+                        true,
+                        { isFait: true }
+                      )
                   : EmptyValueTag}
               </Box>
             );

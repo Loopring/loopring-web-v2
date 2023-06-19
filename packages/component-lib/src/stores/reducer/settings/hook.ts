@@ -17,6 +17,7 @@ import {
   setSwapSecondConfirmation,
   setTheme,
   setUpColor,
+  setStopLimitLayouts,
 } from "./reducer";
 import { PlatFormType, SettingsState } from "./interface";
 import {
@@ -43,6 +44,7 @@ export function useSettings(): SettingsState & {
   setHideLpToken(value: boolean): void;
   setHideSmallBalances(value: boolean): void;
   setLayouts(value: Layouts): void;
+  setStopLimitLayouts(value: Layouts): void;
   setFeeChargeOrder(value: string[]): void;
   setIsMobile(value: boolean): void;
   setSwapSecondConfirmation(value: boolean): void;
@@ -107,6 +109,10 @@ export function useSettings(): SettingsState & {
     ),
     setLayouts: React.useCallback(
       (value: Layouts) => dispatch(setLayouts(value)),
+      [dispatch]
+    ),
+    setStopLimitLayouts: React.useCallback(
+      (value: Layouts) => dispatch(setStopLimitLayouts(value)),
       [dispatch]
     ),
     setFeeChargeOrder: React.useCallback(

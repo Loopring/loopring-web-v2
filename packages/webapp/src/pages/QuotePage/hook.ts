@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { QuoteTableRawDataItem } from "@loopring-web/component-lib";
 import { WsTopicType } from "@loopring-web/loopring-sdk";
 
-import { RowConfig, SagaStatus } from "@loopring-web/common-resources";
+import { myLog, RowConfig, SagaStatus } from "@loopring-web/common-resources";
 import _ from "lodash";
 import {
   favoriteMarket as favoriteMarketReducer,
@@ -19,6 +19,7 @@ import {
   useTokenPrices,
 } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
+import { useMarket } from "../ProTradePage/panel/spot/hookMarket";
 
 export function useTickList<C extends { [key: string]: string }>() {
   const [tickList, setTickList] = React.useState<any>([]);
@@ -41,19 +42,17 @@ export function useTickList<C extends { [key: string]: string }>() {
         ? Reflect.ownKeys(tickerMap).reduce((prev, key) => {
             // @ts-ignore
             const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
-            const ticker = tickerMap[key as string];
-            const coinAPriceDollar =
-              ticker.close * (tokenPrices[coinB] ?? 0) ??
-              tokenPrices[coinB] ??
-              0;
-            let _item: QuoteTableRawDataItem = {
-              ...ticker,
-              pair: {
-                coinA,
-                coinB,
-              },
-              coinAPriceDollar,
-            } as QuoteTableRawDataItem;
+          const ticker = tickerMap[key as string];
+          const coinApriceU =
+            ticker.close * (tokenPrices[coinB] ?? 0) ?? tokenPrices[coinB] ?? 0;
+          let _item: QuoteTableRawDataItem = {
+            ...ticker,
+            pair: {
+              coinA,
+              coinB,
+            },
+            coinApriceU,
+          } as QuoteTableRawDataItem;
 
             if (marketArray && marketArray.findIndex((m) => m === key) !== -1) {
               defaultRecommendationsFloat.push(_.cloneDeep(_item));
@@ -106,14 +105,11 @@ export function useTickList<C extends { [key: string]: string }>() {
 export function useQuote<C extends { [key: string]: string }>() {
   const { sendSocketTopic, socketEnd } = useSocket();
   const { marketArray } = store.getState().tokenMap;
-  const { tickList, tickerMap } = useTickList();
+  const { tickList } = useTickList();
   const subject = React.useMemo(() => tickerService.onSocket(), []);
 
-  const socketCallback = React.useCallback(() => {}, [tickerMap]);
   React.useEffect(() => {
-    const subscription = subject.subscribe(({ tickerMap }) => {
-      socketCallback();
-    });
+    const subscription = subject.subscribe(({ tickerMap }) => {});
     return () => subscription.unsubscribe();
   }, [subject]);
 
@@ -136,11 +132,11 @@ export function useQuote<C extends { [key: string]: string }>() {
 export enum TableFilterParams {
   all = "all",
   favourite = "favourite",
-  // ranking = "ranking",
 }
 
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   const { status: tickerStatus } = useTicker();
+  const { marketMap } = useTokenMap();
   const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);
   const [tableTabValue, setTableTabValue] = React.useState(
     TableFilterParams.all
@@ -155,20 +151,6 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
 
   const { favoriteMarket, removeMarket, addMarket } =
     favoriteMarketReducer.useFavoriteMarket();
-
-  // const getSwapRankingList = React.useCallback(async () => {
-  //   if (LoopringAPI.ammpoolAPI) {
-  //     const res = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules();
-  //     if (
-  //       res &&
-  //       res.groupByRuleType &&
-  //       res.groupByRuleType.SWAP_VOLUME_RANKING &&
-  //       !!res.groupByRuleType.SWAP_VOLUME_RANKING.length
-  //     ) {
-  //       setSwapRankingList(res.groupByRuleType.SWAP_VOLUME_RANKING);
-  //     }
-  //   }
-  // }, []);
 
   const { tickList } = useQuote();
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
@@ -206,18 +188,6 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     };
   }, [currentScroll]);
 
-  // React.useEffect(() => {
-  //   const list = recommendations.map((item) => {
-  //     return `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`;
-  //   });
-  //   if (!!list.length) {
-  //     getMixCandlestick(list[0]);
-  //     getMixCandlestick(list[1]);
-  //     getMixCandlestick(list[2]);
-  //     getMixCandlestick(list[3]);
-  //   }
-  // }, [recommendations]);
-
   const getAmmPoolBalances = React.useCallback(async () => {
     if (LoopringAPI.ammpoolAPI) {
       const ammRes = await LoopringAPI.ammpoolAPI?.getAmmPoolBalances<any[]>();
@@ -233,32 +203,29 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     getAmmPoolBalances();
   }, []);
 
-  // React.useEffect(() => {
-  //   getSwapRankingList();
-  // }, []);
-
   let history = useHistory();
 
   // prevent amm risky pair
   const getFilteredTickList = React.useCallback(() => {
-    if (!!ammPoolBalances.length && tickList && !!tickList.length) {
+    if (tickList && !!tickList.length) {
       return tickList.filter((o: any) => {
         const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-        if (ammPoolBalances.find((o) => o.poolName === pair)) {
+        const status = ("00" + marketMap[pair]?.status?.toString(2)).split("");
+        if (status[status.length - 2] === "1") {
+          return true;
+        } else if (
+          status[status.length - 1] === "1" &&
+          ammPoolBalances.find((o) => o.poolName === pair)
+        ) {
           return !ammPoolBalances.find((o) => o.poolName === pair).risky;
         }
-        return true;
       });
     }
     return [];
-  }, [tickList, ammPoolBalances]);
+  }, [tickList, ammPoolBalances, marketMap]);
 
   React.useEffect(() => {
-    if (
-      tickerStatus === SagaStatus.UNSET &&
-      ammPoolBalances.length &&
-      tickList.length
-    ) {
+    if (tickerStatus === SagaStatus.UNSET && tickList.length) {
       // const data = getFilteredTickList();
       handleTableFilterChange({});
     }
@@ -273,18 +240,13 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       keyword?: string;
     }) => {
       let data = _.cloneDeep(tickList);
+      // myLog("tickList", data);
       if (type === TableFilterParams.favourite) {
         data = data.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`;
           return favoriteMarket?.includes(pair);
         });
       }
-      // if (type === TableFilterParams.ranking) {
-      //   data = data.filter((o: any) => {
-      //     const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-      //     return swapRankingList.find((o) => o.market === pair);
-      //   });
-      // }
       data = data.filter((o: any) => {
         const formattedKeyword = keyword?.toLocaleLowerCase();
         const coinA = o.pair.coinA.toLowerCase();

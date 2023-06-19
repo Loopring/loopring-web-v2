@@ -9,6 +9,8 @@ import { Box, IconButton } from "@mui/material";
 import {
   BreakPoint,
   DragIcon,
+  LayoutConfig,
+  LayoutConfigInfo,
   layoutConfigs,
   myLog,
   ResizeIcon,
@@ -28,7 +30,6 @@ import { boxLiner, useSettings } from "@loopring-web/component-lib";
 import styled from "@emotion/styled/";
 import { usePageTradePro } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
-import { useGetAssets } from "../AssetPage/AssetPanel/hook";
 
 const MARKET_ROW_LENGTH: number = 8;
 // const MARKET_ROW_LENGTH_LG: number = 11;
@@ -62,12 +63,6 @@ const BoxStyle = styled(Box)`
 `;
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-type Config = {
-  currentBreakpoint: BreakPoint;
-  mounted: boolean;
-  layouts: Layouts;
-  compactType: "vertical" | "horizontal" | null | undefined;
-};
 const initBreakPoint = (): BreakPoint => {
   if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xlg]) {
     return BreakPoint.xlg;
@@ -87,12 +82,14 @@ const initBreakPoint = (): BreakPoint => {
     return BreakPoint.md;
   }
 };
-export const OrderbookPage = withTranslation("common")(() => {
+export const OrderbookPage = withTranslation("common")(<
+  Config extends LayoutConfigInfo
+>() => {
   const {
     pageTradePro: { depthLevel, depthForCalc },
   } = usePageTradePro();
   const { market, handleOnMarketChange, assetBtnStatus, resetTradeCalcData } =
-    usePro();
+    usePro({});
   const { unit } = useTheme();
   const { proLayout, setLayouts, isMobile } = useSettings();
 
@@ -108,6 +105,7 @@ export const OrderbookPage = withTranslation("common")(() => {
   });
 
   const [configLayout, setConfigLayout] = React.useState<Config>({
+    // @ts-ignore
     compactType: "vertical",
     currentBreakpoint: initBreakPoint(),
     mounted: false,
@@ -181,7 +179,7 @@ export const OrderbookPage = withTranslation("common")(() => {
 
   const onBreakpointChange = React.useCallback(
     (breakpoint: BreakPoint) => {
-      setConfigLayout((state: Config) => {
+      setConfigLayout((state) => {
         return {
           ...state,
           currentBreakpoint: breakpoint,

@@ -20,6 +20,7 @@ import { Box, Breadcrumbs, Link, Tab, Tabs, Typography } from "@mui/material";
 import {
   Button,
   Toast,
+  ToastType,
   ToggleState,
   useOpenModals,
   useSettings,
@@ -246,7 +247,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
 
       <Toast
         alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? "success"}
+        severity={toastOpen?.type ?? ToastType.success}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}

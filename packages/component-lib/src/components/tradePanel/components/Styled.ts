@@ -208,10 +208,12 @@ export const TabsStyle = styled(Tabs)`
     height: 28px;
     border-radius: ${({ theme }) => theme.unit / 2}px;
     margin-top: ${({ theme }) => theme.unit * 2}px;
+
     .MuiTab-fullWidth.MuiTab-root {
       min-height: 28px;
       height: 28px;
       line-height: 28px;
+      padding: 0;
       font-size: ${({ theme }) => theme.fontDefault.h6};
       &:focus-visible,
       &:active:after {
@@ -221,13 +223,24 @@ export const TabsStyle = styled(Tabs)`
         overflow: unset;
         border-radius: ${({ theme }) => theme.unit / 2}px;
         color: var(--color-text-button);
+        min-height: 28px;
+        height: 28px;
+
         &.trade-tab-buy {
           background: var(--color-success);
         }
+
         &.trade-tab-sell {
           background: var(--color-error);
         }
-        &.trade-tab-sell:after {
+
+        &.trade-tab-quantity,
+        &.trade-tab-speed {
+          background: var(--color-primary);
+        }
+
+        &.trade-tab-sell:after,
+        &.trade-tab-speed:after {
           background-color: var(--color-error);
           mask-size: cover;
           //<svg width="17" height="28" viewBox="0 0 17 28" fill="none" >
@@ -244,7 +257,9 @@ export const TabsStyle = styled(Tabs)`
           width: 17px;
           transform: rotate(180deg);
         }
-        &.trade-tab-buy:after {
+
+        &.trade-tab-buy:after,
+        &.trade-tab-quantity:after {
           background-color: var(--color-success);
           mask-size: cover;
           mask-image: url('data:image/svg+xml,\
@@ -256,6 +271,12 @@ export const TabsStyle = styled(Tabs)`
           height: 28px;
           right: -8px;
           width: 17px;
+        }
+
+        &.trade-tab-quantity:after,
+        &.trade-tab-speed:after {
+          background-color: var(--color-primary);
+          margin: 0;
         }
       }
     }

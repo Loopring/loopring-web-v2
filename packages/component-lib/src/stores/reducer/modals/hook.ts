@@ -10,6 +10,7 @@ import {
   setShowAccount,
   setShowActiveAccount,
   setShowAmm,
+  setShowAnotherNetworkNotice,
   setShowClaimWithdraw,
   setShowCollectionAdvance,
   setShowConnect,
@@ -239,7 +240,7 @@ export const useOpenModals = () => {
         state: ModalStatePlayLoad & {
           claimToken?: ClaimToken;
           claimType?: CLAIM_TYPE;
-          successCallback?: () => void
+          successCallback?: () => void;
         }
       ) => {
         if (toggle.claim.enable) {
@@ -270,6 +271,11 @@ export const useOpenModals = () => {
     ),
     setShowLayerSwapNotice: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowLayerSwapNotice(state)),
+      [dispatch]
+    ),
+    setShowAnotherNetworkNotice: React.useCallback(
+      (state: ModalStatePlayLoad) =>
+        dispatch(setShowAnotherNetworkNotice(state)),
       [dispatch]
     ),
     setShowTradeIsFrozen: React.useCallback(

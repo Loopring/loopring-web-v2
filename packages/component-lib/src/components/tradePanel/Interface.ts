@@ -1,4 +1,5 @@
 import {
+  BtradeType,
   CAMPAIGNTAGCONFIG,
   CoinKey,
   FeeInfo,
@@ -6,7 +7,9 @@ import {
   MarketType,
   NFTWholeINFO,
   SCENARIO,
+  TradeBaseType,
   TradeCalcProData,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import {
   BasicACoinTradeHookProps,
@@ -34,16 +37,13 @@ import {
   SwapTradeBaseProps,
 } from "./components";
 import {
-  TradeBaseType,
+  StopTradeLimitInfoProps,
   TradeLimitInfoProps,
   TradeMarketInfoProps,
   TradeProBaseEventProps,
-  TradeProType,
 } from "./tradePro/Interface";
 import React from "react";
-import { TOASTOPEN } from "../../components/toast";
-
-export { TradeProType, TradeBaseType };
+import { TOASTOPEN } from "../toast";
 
 export type SwapTradeData<T> = {
   sell: T;
@@ -53,6 +53,7 @@ export type SwapTradeData<T> = {
   __cache__?: {
     [key: string]: any;
   };
+  btradeType?: BtradeType;
 };
 
 export type LimitTradeData<T> = {
@@ -60,10 +61,15 @@ export type LimitTradeData<T> = {
   base: T;
   quote: T;
   type: TradeProType;
-  // slippage: number | string,
-  // __cache__?: {
-  //     [ key: string ]: any
-  // }
+  isChecked?: boolean;
+};
+
+export type StopLimitTradeData<T> = {
+  price: T;
+  stopPrice: T;
+  base: T;
+  quote: T;
+  type: TradeProType;
 };
 export type MarketTradeData<T> = {
   // price: T,
@@ -182,16 +188,18 @@ export type SwapProps<T, I, TCD> = {
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>;
 
-export type TradeLimitProps<
-  L extends LimitTradeData<T>,
-  T extends IBData<I>,
-  TCD extends TradeCalcProData<I>,
-  I = CoinKey<any>
-> = {
+export type TradeLimitProps<L, T, TCD extends TradeCalcProData<I>, I> = {
   tradeData: L | undefined;
   handleSubmitEvent: (data: L) => Promise<void>;
   onChangeEvent: (data: L, formType: TradeBaseType) => L;
 } & TradeLimitInfoProps<T, TCD, I> &
+  TradeProBaseEventProps<L, T, I>;
+
+export type TradeStopLimitProps<L, T, TCD extends TradeCalcProData<I>, I> = {
+  tradeData: L;
+  handleSubmitEvent: (data: L) => Promise<void>;
+  onChangeEvent: (data: L, formType: TradeBaseType) => L;
+} & StopTradeLimitInfoProps<T, TCD, I> &
   TradeProBaseEventProps<L, T, I>;
 
 export type TradeMarketProps<

@@ -11,6 +11,7 @@ import {
   useWalletL2Collection,
   redPacketHistory,
   offFaitService,
+  store,
 } from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {

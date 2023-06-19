@@ -81,6 +81,7 @@ export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
   name?: string;
   coinLabelStyle?: React.CSSProperties;
   coinPrecision?: number;
+  className?: string;
   // inputError?: { error: boolean; message?: string };
 } & XOR<
     { isShowCoinInfo: true } & XOR<

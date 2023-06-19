@@ -12,7 +12,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from "@loopring-web/common-resources";
-import { AddressType, RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
@@ -22,7 +22,7 @@ const initialState: ModalState = {
   isShowOtherExchange: { isShow: false },
   isWrongNetworkGuide: { isShow: false },
   isShowTransfer: { isShow: false, symbol: undefined },
-  isShowWithdraw: { isShow: false, symbol: undefined,  },
+  isShowWithdraw: { isShow: false, symbol: undefined },
   isShowDeposit: { isShow: false, symbol: undefined },
   isShowResetAccount: { isShow: false },
   isShowActiveAccount: { isShow: false },
@@ -32,6 +32,7 @@ const initialState: ModalState = {
   isShowConnect: { isShow: false, step: 0 },
   isShowAccount: { isShow: false, step: 0 },
   isShowLayerSwapNotice: { isShow: false },
+  isShowAnotherNetwork: { isShow: false },
   isShowFeeSetting: { isShow: false },
   isShowTradeIsFrozen: { isShow: false, type: "" },
   isShowIFrame: { isShow: false, url: "" },
@@ -229,28 +230,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info, name, address, addressType } = action.payload;
+      const { isShow, symbol, info, name, address, addressType } =
+        action.payload;
       state.isShowTransfer = {
         isShow,
         symbol,
         info,
-        name, 
-        address, 
-        addressType
+        name,
+        address,
+        addressType,
       };
     },
     setShowWithdraw(
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
     ) {
-      const { isShow, symbol, info, name, address, addressType} = action.payload;
+      const { isShow, symbol, info, name, address, addressType } =
+        action.payload;
       state.isShowWithdraw = {
         isShow,
         symbol,
         info,
-        name, 
-        address, 
-        addressType
+        name,
+        address,
+        addressType,
       };
     },
     setShowDeposit(
@@ -339,6 +342,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
       };
     },
+    setShowAnotherNetworkNotice(
+      state,
+      action: PayloadAction<{ isShow: boolean }>
+    ) {
+      const { isShow } = action.payload;
+      state.isShowAnotherNetwork = {
+        isShow,
+      };
+    },
     setShowTradeIsFrozen(
       state,
       action: PayloadAction<{
@@ -357,7 +369,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowClaimWithdraw(
       state,
       action: PayloadAction<
-        ModalStatePlayLoad & { claimToken: ClaimToken; claimType: CLAIM_TYPE, successCallback?: () => void }
+        ModalStatePlayLoad & {
+          claimToken: ClaimToken;
+          claimType: CLAIM_TYPE;
+          successCallback?: () => void;
+        }
       >
     ) {
       const { isShow, claimToken, claimType, successCallback } = action.payload;
@@ -365,7 +381,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
         claimToken,
         claimType,
-        successCallback
+        successCallback,
       };
     },
     setShowSideStakingRedeem(
@@ -410,4 +426,5 @@ export const {
   setShowRedPacket,
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
+  setShowAnotherNetworkNotice,
 } = modalsSlice.actions;

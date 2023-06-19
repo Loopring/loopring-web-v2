@@ -402,6 +402,7 @@ export default {
   labelNFTMinter: "Minter:",
   labelNFTMetadata: "Metadata:",
   labelNFTMint: "Create NFT",
+  labelNFTCreateCollection: "+ Create Collection",
   labelNFTTitleMyNFT: "My NFTs",
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
@@ -574,8 +575,6 @@ export default {
   labelL2toL1Fast: "Fast",
   labelL2toL1Standard: "Standard",
   labelL2toL1LinkRecent: "Recent withdrawal history",
-  labelL2toL2ExchangeError: "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
-  labelL2toL2SmartWalletError: "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
   labelL2toL2Title: "Send to Another Loopring L2",
   labelL2toL2EnterToken: "Select Token",
   transferDescription:
@@ -590,6 +589,10 @@ export default {
   labelL2toL2FeeNotEnough: "Insufficient balance",
   labelL2toL2FeeFastNotAllowEnough: "Please choose Standard!",
   labelL2toL2LinkRecent: "Recent send history",
+  labelL2toL2ExchangeError:
+    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelL2toL2SmartWalletError:
+    "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
   labelActiveLayer2: "Activate Loopring L2",
   labelAddAsset: "Receive",
   labelAddAssetBtn: "Receive",
@@ -795,14 +798,14 @@ export default {
   labelExchangeHuobi: "Huobi",
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
-  labelExchangeOthers: "Others",
+  labelExchangeOthers: "Other Exchanges",
   labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
-  labelConfirmBtrade: "Confirm Btrade Support",
+  labelConfirmBtrade: "Confirm Block Trade Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please confirm with your Btrade support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The Btrade depositing address may not be able to automatically acknowledge the deposit.</1>" +
-    "<2>If the deposit does not appear at the Btrade address within 24 hours, please contact your Btrade support and ask they manually acknowledge the transaction.</2>",
+    "<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>",
   labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
@@ -835,7 +838,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Btrade address using Loopring L2. Since the Btrade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Block Trade address using Loopring L2. Since the Block Trade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -1029,7 +1032,7 @@ export default {
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
   labelDualCurrentPriceTip:
     "Current Price is based on USDT derived from some leading exchanges.",
-  labelDualCurrentPrice: "{{symbol}} Current Price: <1>{{price}}</1>  USDT",
+  labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
   labelDualSuccess: "Subscription {{symbol}} Successfully",
   labelDualProcessing: "Waiting for completion",
   labelDualProcessingDes:
@@ -1488,11 +1491,11 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelRedPacketTabReceived: "Received",
   labelRedPacketTabSent: "Sent",
   labelRedPacketTabNFTs: "NFTs",
   labelRedPacketTabBlindBox: "Blind Box",
-  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1581,7 +1584,13 @@ export default {
   labelRedPacketMe: "Me",
   labelClaimlrcStaking: "My LRC Staking",
   labelExpectSettlementPrice:
-    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}} = {{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}} = {{marketPrice}}. There is {{marketRatePrice}}% variance observed. Please acknowledge the risk if you still want to continue.",
+    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
+  labelStakingSuccess: "{{symbol}} Staking Successful",
+  labelStakingFailed: "{{symbol}} Staking failed",
+  labelStakingRedeemFailed: "Redeem {{symbol}} failed",
+  labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
+  labelStakingRedeemRemaining: "Remaining Amount",
+  labelStakingRedeemDate: "Redeem Time",
 
   labelContactsAddContact: "Add Contact",
   labelContactsAddressTitle: "Address",
@@ -1593,33 +1602,33 @@ export default {
   labelContactsDeleteContact: "Delete Contact",
   labelDeleteContactInfo: "Contact",
   labelContactsDeleteContactBtn: "Delete",
-  labelContactsAddSuccess:  'Add Contact Succeed',
-  labelContactsDeleteSuccess:  'Delete Contact Succeed',
-  labelContactsEditSuccess:  'Edit Contact Succeed',
-  labelContactsSendSuccess:  'Send Succeed',
-  labelContactsCopySuccess:  'Copied to Clipboard',
-  labelContactsAddFailed:  'Add Contact Failed',
-  labelContactsDeleteFailed:  'Delete Contact Failed',
-  labelContactsEditFailed:  'Edit Contact Failed',
-  labelContactsSendFailed:  'Send Failed',
-  labelContacts: 'Contacts',
-  labelContactsSend: 'Send',
-  labelContactsTransactions: 'Transactions',
-  labelContactsNetworkChoose: 'Choose L2 or L1 Account',
-  labelContactsNext: 'Next',
-  labelContactsContactExisted: 'Contact Already Existed',
-  labelContactsNoContact: 'No Contact',
-  labelContactsSelectReciepient: 'Select the Recipient',
-  labelContactsBinanceNotSupportted: 'Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
-  labelContactsHuobiNotSupportted: 'Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.',
-  labelContactsOtherExchangesNotSupportted: 'The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.',
-    "The expected settlement price from this order is {{symbolSell}}/{{symbolBuy}}={{stob}}, while the current market price from a trusted oracle is {{symbolSell}}/{{symbolBuy}}={{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
-  labelStakingSuccess: "{{symbol}} Staking Successful",
-  labelStakingFailed: "{{symbol}} Staking failed",
-  labelStakingRedeemFailed: "Redeem {{symbol}} failed",
-  labelStakingRedeemSuccess: "Redeem {{symbol}} Successful",
-  labelStakingRedeemRemaining: "Remaining Amount",
-  labelStakingRedeemDate: "Redeem Time",
+  labelContactsAddSuccess: "Add Contact Succeed",
+  labelContactsDeleteSuccess: "Delete Contact Succeed",
+  labelContactsEditSuccess: "Edit Contact Succeed",
+  labelContactsSendSuccess: "Send Succeed",
+  labelContactsCopySuccess: "Copied to Clipboard",
+  labelContactsAddFailed: "Add Contact Failed",
+  labelContactsDeleteFailed: "Delete Contact Failed",
+  labelContactsEditFailed: "Edit Contact Failed",
+  labelContactsSendFailed: "Send Failed",
+  labelContacts: "Contacts",
+  labelContactsSend: "Send",
+  labelContactsTransactions: "Transactions",
+  labelContactsNetworkChoose: "Choose L2 or L1 Account",
+  labelContactsNext: "Next",
+  labelContactsContactExisted: "Contact Already Existed",
+  labelNotExchangeEOA:
+    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+  labelNotOtherSmartWallet:
+    "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
+  labelContactsNoContact: "No Contact",
+  labelContactsSelectReciepient: "Select the Recipient",
+  labelContactsBinanceNotSupportted:
+    "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+  labelContactsHuobiNotSupportted:
+    "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
+  labelContactsOtherExchangesNotSupportted:
+    "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
   labelBtradeSwapTitle: "Block Trade",
   labelBtradeSwapType: "Type",
   labelBtradeSwapFilled: "Filled",
@@ -1629,17 +1638,18 @@ export default {
   labelBtradeSwapSettled: "Settled",
   labelBtradeSwapDelivering: "Delivering",
   labelBtradeSwapPanelDes:
-    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
+    "The Loopring pool is currently unable to swap the full requested amount. The tokens that were successfully swapped will be transferred to your account now. The unswapped tokens will be locked until they can be swapped. \n We’ll rebalance the pool shortly and swap the remaining portion.",
   labelBtradeSwapDeliverDes:
-    "It is not possible for the Loopring pool to fulfil your complete request at the moment. The Loopring pool will rebalance soon, your token you sold will be locked up until you convert your token successfully.",
+    "The Loopring pool is currently unable to swap the full requested amount. The tokens that were successfully swapped will be transferred to your account now. The unswapped tokens will be locked until they can be swapped. \n We’ll rebalance the pool shortly and swap the remaining portion.",
   labelGoBtradeSwap:
-    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade/link> option to help minimize potential losses.",
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade</link> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
-  labelBtradeSwapFailed: "Block Trade failed!",
+  labelBtrade: "Block Trade",
+  labelBtradeSwapFailed: "Failed!",
   labelBtradeSwapTitleDes: "What is Block Trade?",
   labelBtradeSwapContentDes:
     "<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>" +
-    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.<p>",
+    "<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.</p>",
   labelRefereeRewards: "Referee Rewards",
   labelReferralRewards: "Referral Rewards",
   labelRewardLRC: "Rewards LRC",
@@ -1656,7 +1666,7 @@ export default {
   labelBtradePoolDes: "Loopring Pool:",
   labelBtradePool: "Loopring Pool",
   labelBtradeToleranceTooltips:
-    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade. Here is fixed at 0.1%.",
+    "Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.",
   labelBtradeFeeTooltips: "The trading fee is fixed at 0.3%.",
   labelBtradeMinReceiveTooltips:
     "The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
@@ -1664,12 +1674,97 @@ export default {
   labelBtradeTime: "Time",
   labelStopLimit: "Stop-Limit {{tradeType}} {{symbol1}}",
   labelStopLimitDes:
-    "If the last price goes up to or above {{value2}} {{symbol2}}, and order to {{tradeType} {{value1}} {symbol1}} at a price of {{price}} {{symbol2}} will be placed.",
-  labelStopLimitType: "Stop Limit / {{tradeType}}",
+    "<p>If the last price {{from}} to or {{behavior}} {{stopPrice}} {{symbol2}}, and order to {{tradeType}} {{value1}} {{symbol1}} at a price of {{limitPrice}} {{symbol2}} will be placed.</p>",
+  labelStopLimitFromGoesUp: "goes up",
+  labelStopLimitFromDropsDown: "drops down",
+  labelStopLimitBehaviorAbove: "above",
+  labelStopLimitBehaviorBelow: "below",
+
+  labelStopLimitType: "Stop-Limit / {{tradeType}}",
   labelStopLimitStopPrice: "Stop Price",
   labelStopLimitPriceLimitPrice: "Limit Price",
-  labelStopLimitAmount: "labelStopLimit",
+  labelStopLimitAmount: "Amount",
   labelStopLimitCancel: "Cancel",
   labelStopLimitConfirm: "Confirm",
   labelBtradeSwapPending: "Pending",
+  labelStopLimitTitle: "Stop-Limit",
+  labelStopPrice: "Limit Price",
+  labelStopStopPrice: "Stop Price",
+  labelStopLimitWhatIs: "What's Stop-Limit?",
+  labelStopLimitMinMax: "Min {{minValue}} - Max {{maxValue}}",
+  labelLimitStopPriceMinMax: "Stop Price Range {{arg}}",
+  labelLimitMainContent:
+    "A Stop-Limit order is a limit order with a limit price and a stop price. When the stop price is reached, the limit order will be placed on the order book. Once the limit price is reached, the limit order will be executed.",
+  labelLimitStopPriceLabel: "Stop Price",
+  labelLimitStopPriceContent:
+    "When the current asset price reaches the given stop price, the Stop-Limit order is executed to buy or sell the asset at the given limit price or better.",
+  labelLimitLimitPriceLabel: "Limit Price",
+  labelLimitLimitPriceContent:
+    "The selected (or potentially better) price that the Stop-Limit order is executed at.",
+  labelLimitAmountLabel: "Amount",
+  labelLimitAmountContent:
+    "The quantity of assets to buy or sell in the Stop-Limit order.",
+  labelLimitDes:
+    "You can set the stop price and limit price at the same price. However, it’s recommended that the stop price for sell orders should be slightly higher than the limit price. This price difference will allow for a safety gap in price between the time the order is triggered and when it is fulfilled. You can set the stop price slightly lower than the limit price for buy orders. This will also reduce the risk of your order not being fulfilled.\n" +
+    "Please note that your order will be executed as a limit order after the market price reaches your limit price. If you set the stop-loss limit too high or the take-profit limit too low, your order may never be filled because the market price can’t reach the set limit price.",
+  labelLimitDemoTitle: "How does a Stop-Limit order work?",
+  labelLimitDemoDes:
+    "The current price is 2,400 (A). You can set the stop price above the current price, such as 3,000 (B), or below the current price, such as 1,500 (C). Once the price goes up to 3,000 (B) or drops to 1,500 (C), the Stop-Limit order will be triggered, and the limit order will be automatically placed on the order book.\n Note: <ol>" +
+    "<li>Limit price can be set above or below the stop price for both buy and sell orders. For example, stop price B can be placed along with a lower limit price B1 or a higher limit price B2.\n</li>" +
+    "<li>A limit order is invalid before the stop price is triggered, including when the limit price is reached ahead of the stop price.</li>" +
+    "<li>When the stop price is reached, it only indicates that a limit order is activated and will be submitted to the order book rather than the limit order being filled immediately. The limit order will be executed according to its own rules.</li></ol>",
+  labelLimitFailed: "Submitted failed",
+  labelLimitMarket: "Market data has issue",
+  labelStopLimitOrderGroup: "Stop-Limit Records",
+  labelStoplimit: "Stop-Limit",
+  labelStopLimitProduct: "Product",
+  labelStopLimitLabelType: "Type",
+  labelStopLimitNotSupport:
+    "Sorry, there is currently insufficient liquidity in this token pair to execute Stop-Limit orders. Please try again later or consider using a market / limit order instead.",
+  labelStopLimitTriggered:
+    "Triggered: The limit order has been submitted to the order book.\n Time: {{time}}",
+  labelStopLimitWaitingTrigger:
+    "The limit order is not placed until the stop price has been triggered.",
+  labelStopLimitCurrentlyInsufficient: "Currently insufficient",
+  labelDUAL_CURRENCY: "DUAL CURRENCY",
+  labelDUAL_BASE: "DUAL BASE",
+  labelBTRADE: "Block Trade",
+  labelL2STAKING: "Staking",
+  labelSTOP_LIMIT: "Stop-Limit",
+  labelAMMPending: "Pending",
+  labelAMMTitle: "AMM Investment",
+  labelAMMChartFailed: "Failed load data",
+  labelExpectSettlementLimitPrice:
+    "The expected settlement price from this order is {{symbolBase}}/{{symbolQuote}} = {{price}}, while the current market price from a trusted oracle is {{symbolBase}}/{{symbolQuote}} = {{marketPrice}}. There is a {{marketRatePrice}}% variance observed. To proceed, tap here to confirm you understand and acknowledge the risk.",
+  labelAMMNoEnough: "Insufficient {{arg}} balance",
+  labelAMMMax: "Max {{arg}} ",
+  labelAMMMaxAND: "{{coinA}} and {{coinB}}",
+  labelDepositTo: "Deposit to",
+  labelReferTitle: "Invite friends to join in \nLoopring and receive rewards",
+  labelReferTitleDes:
+    "As referrer: will receive a one-year commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.",
+  labelCopy: "Copy",
+  labelReferralRules: "Reward rules",
+  labelReferralMethod1: "Method 1",
+  labelReferralMethod2: "Method 2",
+  labelReferralMethod1Step1: "Download the Loopring Wallet App",
+  labelReferralMethod1Step2: "Sign up with referral code: 0****4",
+  labelReferralMethod1Step3: "Activate Loopring L2 Account",
+  labelReferralMethod1Step4: "Both of us receive rewards",
+  labelReferralMyReferrals: "My Referrals",
+  labelReferralReferralsRefunds: "Referee Refunds",
+  labelBtradeQuantity: "Prioritize Quantity",
+  labelBtradeSpeed: "Prioritize Speed",
+  labelBtradeSettled: "Settled",
+  labelOrderCancelConfirm: "Confirm to cancel this order?",
+  labelOrderCancelOrder: "Cancel",
+  labelLocketInfo: "{{symbol}} Locked Detail",
+  labelSendAssetToAnotherNet: "To another network",
+  labelFromAnotherNet: "From another network",
+  labelAddAssetTitleAnotherNetDes:
+    "If you have transferred tokens from another network, please wait. ",
+  labelAddAssetTitleAnotherNetDesActive:
+    "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelAnotherNetworkDes: "XXXXXXXXXXXXX <1>TOS</1>.",
+  labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
 };

@@ -664,7 +664,6 @@ const Template: Story<any> = () => {
                     setShowAmm({
                       isShow: true,
                       type: AmmPanelType.Exit,
-                      // props: { tabSelected: AmmPanelType.Exit },
                     })
                   )
                 }

@@ -17,11 +17,7 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
-import {
-  getAmmMap,
-  initAmmMap,
-  updateRealTimeAmmMap,
-} from "../Amm/AmmMap/reducer";
+import { getAmmMap, initAmmMap } from "../Amm/AmmMap/reducer";
 import { getTickers } from "../ticker/reducer";
 import { getAmmActivityMap } from "../Amm/AmmActivityMap/reducer";
 import { updateWalletLayer1 } from "../walletLayer1/reducer";
@@ -36,7 +32,7 @@ import { getStakingMap } from "../invest/StakingMap/reducer";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { getRedPacketConfigs } from "../redPacket/reducer";
 import { AvaiableNetwork } from "@loopring-web/web3-provider";
-import { getBtradeMap } from "../invest/BtradeMap/reducer";
+import { getBtradeMap, getBtradeMapStatus } from "../invest/BtradeMap/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: sdk.ChainId | "unknown"
@@ -51,6 +47,9 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   const _markets = JSON.parse(window.localStorage.getItem("markets") ?? "{}")[
     chainId
   ];
+  const _btradeMarkets = JSON.parse(
+    window.localStorage.getItem("btradeMarkets") ?? "{}"
+  )[chainId];
 
   const _disableWithdrawTokenList = JSON.parse(
     window.localStorage.getItem("disableWithdrawTokenList") ?? "{}"
@@ -87,6 +86,8 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     marketArr = resultMarket.marketArr;
     tokenArr = resultMarket.tokenArr;
     ammpools = sdk.makeAmmPool(_ammpools)?.ammpools;
+
+    // const _btradeMarkets = sdk.makeMarkets(_btradeMarkets);
     // const { markets, pairs, marketArr, tokenArr } = sdk.makeMarkets(_disableWithdrawTokenList);
     store.dispatch(
       getTokenMap({
@@ -103,12 +104,42 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       })
     );
     store.dispatch(initAmmMap({ ammpools, chainId }));
+
+    (function (btradeMarkets) {
+      if (btradeMarkets) {
+        const {
+          markets: marketMap,
+          pairs,
+          marketArr: marketArray,
+          tokenArr: marketCoins,
+        } = sdk.makeMarkets({ markets: btradeMarkets });
+        const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
+          const tradePairs = pairs[key as string]?.tokenList?.sort();
+          prev[key] = {
+            ...pairs[key as string],
+            tradePairs,
+          };
+          return prev;
+        }, {});
+
+        store.dispatch(
+          getBtradeMapStatus({
+            marketArray,
+            marketCoins,
+            marketMap,
+            tradeMap,
+          })
+        );
+      }
+    })(_btradeMarkets);
+
     yield delay(1);
     store.dispatch(getTokenPrices(undefined));
     if (!Object.keys(store.getState().tokenPrices).length) {
       yield take("tokenPrices/getTokenPricesStatus");
     }
     store.dispatch(getTickers({ tickerKeys: marketArr }));
+    yield take("tickerMap/getTickerStatus");
     store.dispatch(getAmmMap({ ammpools }));
     yield take("ammMap/getAmmMapStatus");
     store.dispatch(getAmmActivityMap({ ammpools }));
@@ -225,12 +256,13 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         marketRaw,
       })
     );
-    store.dispatch(initAmmMap({ ammpools, ammpoolsRaw, chainId }));
+    store.dispatch(initAmmMap({ ammpools }));
     yield take("tokenMap/getTokenMapStatus");
     store.dispatch(getTokenPrices(undefined));
     yield take("tokenPrices/getTokenPricesStatus");
     store.dispatch(getTickers({ tickerKeys: marketArr }));
-    store.dispatch(getAmmMap({ ammpools }));
+    yield take("tickerMap/getTickerStatus");
+    store.dispatch(getAmmMap({ ammpools, ammpoolsRaw, chainId }));
     yield take("ammMap/getAmmMapStatus");
     store.dispatch(getAmmActivityMap({ ammpools }));
     if (store.getState().tokenMap.status === "ERROR") {
@@ -322,12 +354,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
   chainId = AvaiableNetwork.includes(chainId.toString())
     ? chainId
     : NETWORKEXTEND.NONETWORK;
-  // chainId =
-  //   ChainId.GOERLI === chainId
-  //     ? ChainId.GOERLI
-  //     : ChainId.MAINNET === chainId
-  //     ? ChainId.MAINNET
-  //     : NETWORKEXTEND.NONETWORK;
+
   if (chainId === NETWORKEXTEND.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
@@ -449,7 +476,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
             const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(
               chainId
             );
-            store.dispatch(updateRealTimeAmmMap(undefined));
             store.dispatch(updateRealTimeObj({ forexMap, gasPrice }));
           }
         }, 300000); //
@@ -510,3 +536,64 @@ function* systemSaga() {
 }
 
 export const systemForks = [fork(systemSaga)];
+
+//
+// [
+//   {
+//     "market": "BTRADE-LRC-USDC",
+//     "baseTokenId": 1,
+//     "quoteTokenId": 6,
+//     "precisionForPrice": 4,
+//     "orderbookAggLevels": 5,
+//     "precisionForAmount": 5,
+//     "precisionForTotal": 6,
+//     "enabled": true,
+//
+//   },
+//   {
+//     "market": "BTRADE-ETH-USDC",
+//     "baseTokenId": 0,
+//     "quoteTokenId": 6,
+//     "precisionForPrice": 2,
+//     "orderbookAggLevels": 2,
+//     "precisionForAmount": 2,
+//     "precisionForTotal": 4,
+//     "enabled": true,
+//     "feeBips": 30,
+//     "minAmount": {
+//       "base": "100000000000000000",
+//       "quote": "200000000"
+//     },
+//     "btradeAmount": {
+//       "base": "97184863600000000000",
+//       "quote": "285207590343"
+//     },
+//     "l2Amount": {
+//       "base": "40270278404913949145",
+//       "quote": "67990957000"
+//     }
+//   },
+//   {
+//     "market": "BTRADE-WBTC-USDC",
+//     "baseTokenId": 4,
+//     "quoteTokenId": 6,
+//     "precisionForPrice": 2,
+//     "orderbookAggLevels": 2,
+//     "precisionForAmount": 6,
+//     "precisionForTotal": 2,
+//     "enabled": true,
+//     "feeBips": 30,
+//     "minAmount": {
+//       "base": "800000",
+//       "quote": "200000000"
+//     },
+//     "btradeAmount": {
+//       "base": "400100548",
+//       "quote": "285207590343"
+//     },
+//     "l2Amount": {
+//       "base": "109222480",
+//       "quote": "67990957000"
+//     }
+//   }
+// ]

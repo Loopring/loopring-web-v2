@@ -9,8 +9,6 @@ const {
 } = require("customize-cra");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
-
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')
@@ -104,6 +102,10 @@ module.exports = override(
           ? [
               // path.resolve(__dirname, "../../node_modules/@web3modal"),
               // path.resolve(__dirname, "../../node_modules/@walletconnect"),
+              // path.resolve(
+              //   __dirname,
+              //   "../../node_modules/@walletconnect/ethereum-provider/"
+              // ),
             ]
           : []),
       ];
@@ -121,6 +123,7 @@ module.exports = override(
       "@material-ui/core": "@mui/material",
       "@material-ui/core/Popover": "@mui/material/Popover",
     };
+
     return config;
   }
 );

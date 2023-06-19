@@ -16,6 +16,7 @@ import {
   AccountStep,
   DeFiStakeRedeemWrapProps,
   RawDataDefiSideStakingItem,
+  ToastType,
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
@@ -34,6 +35,7 @@ import { LoopringAPI } from "../../api_wrapper";
 import { useSubmitBtn } from "../common";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
+import { walletLayer2Service } from "../../services";
 
 export const useStakeRedeemClick = () => {
   const { tokenMap, idIndex } = useTokenMap();
@@ -72,7 +74,7 @@ export const useStakeTradeExit = <
   setToastOpen: (props: {
     open: boolean;
     content: JSX.Element | string;
-    type: "success" | "error" | "warning" | "info";
+    type: ToastType;
   }) => void;
 }) => {
   const { t } = useTranslation();
@@ -276,6 +278,7 @@ export const useStakeTradeExit = <
             },
           });
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          walletLayer2Service.sendUserUpdate();
           if (
             store.getState().modals.isShowAccount.isShow &&
             store.getState().modals.isShowAccount.step ==
@@ -290,7 +293,7 @@ export const useStakeTradeExit = <
     } catch (reason) {
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content:
           t("labelInvestFailed") +
             (reason as CustomErrorWithCode)?.messageKey ??

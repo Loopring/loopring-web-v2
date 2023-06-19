@@ -1,5 +1,4 @@
-import { useCallback, useState } from "react";
-import { useDeepCompareEffect } from "react-use";
+import React, { useCallback, useState } from "react";
 import {
   Area,
   ComposedChart,
@@ -43,7 +42,7 @@ const TrendChart = ({
   handleMove,
   showTooltip = true,
   showArea = true,
-  extraInfo,
+  quoteSymbol,
   showXAxis = false,
   isHeadTailCompare = false,
   isDailyTrend = false,
@@ -147,12 +146,12 @@ const TrendChart = ({
       } else {
         return (
           <TooltipStyled>
-            {extraInfo && (
+            {quoteSymbol && (
               <Box display={"flex"} alignItems={"center"}>
                 <Typography
                   component={"div"}
                   fontSize={16}
-                >{`${close} ${extraInfo}`}</Typography>
+                >{`${close} ${quoteSymbol}`}</Typography>
                 <Typography
                   fontSize={16}
                   color={
@@ -176,7 +175,7 @@ const TrendChart = ({
         );
       }
     },
-    [hasData, isDailyTrend, data, upColor, extraInfo]
+    [hasData, isDailyTrend, data, upColor, quoteSymbol]
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -188,8 +187,8 @@ const TrendChart = ({
     );
   }, [renderData, handleMoveOut]);
 
-  useDeepCompareEffect(() => {
-    if (!isHeadTailCompare && renderData && !!renderData.length) {
+  React.useEffect(() => {
+    if (!!renderData.length) {
       setPriceTrend(
         renderData[renderData.length - 1].sign === 1 ? "up" : "down"
       );
@@ -200,7 +199,7 @@ const TrendChart = ({
         (renderData[renderData.length - 1]?.close || 0);
       setPriceTrend(isUp ? "up" : "down");
     }
-  }, [renderData]);
+  }, [renderData[0]?.close]);
 
   const customTick = ({ x, y, payload }: any) => {
     if (!renderData || !renderData.length) {

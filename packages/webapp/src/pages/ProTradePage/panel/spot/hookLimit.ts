@@ -21,13 +21,14 @@ import {
   IBData,
   MarketType,
   myLog,
+  TradeBaseType,
   TradeBtnStatus,
+  TradeProType,
 } from "@loopring-web/common-resources";
 import {
   DepthType,
   LimitTradeData,
-  TradeBaseType,
-  TradeProType,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -35,6 +36,7 @@ import {
 import { useTranslation } from "react-i18next";
 import * as sdk from "@loopring-web/loopring-sdk";
 import * as _ from "lodash";
+import BigNumber from "bignumber.js";
 
 export const useLimit = <C extends { [key: string]: any }>({
   market,
@@ -95,6 +97,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       balance,
     } as IBData<any>,
     type: pageTradePro.tradeType ?? TradeProType.buy,
+    isChecked: undefined,
   });
   const [isLimitLoading, setIsLimitLoading] = React.useState(false);
 
@@ -158,14 +161,6 @@ export const useLimit = <C extends { [key: string]: any }>({
           },
           TradeBaseType.price
         );
-        // if(account.readyState === 'ACTIVATED'){
-        //
-        // }else{
-        //
-        //
-        //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
-        //
-        // }
       } else {
         onChangeLimitEvent(
           {
@@ -247,6 +242,10 @@ export const useLimit = <C extends { [key: string]: any }>({
           minimumReceived: undefined,
           priceImpact: undefined,
           priceImpactColor: "inherit",
+          isNotMatchMarketPrice: false,
+          marketPrice: undefined,
+          marketRatePrice: undefined,
+          isChecked: undefined,
         },
       });
     },
@@ -304,8 +303,8 @@ export const useLimit = <C extends { [key: string]: any }>({
           ) {
             setToastOpen({
               open: true,
-              type: "error",
-              content: t("labelSwapFailed") + " : " + response.message,
+              type: ToastType.error,
+              content: t("labelLimitFailed") + " : " + response.message,
             });
           } else {
             await sdk.sleep(__SUBMIT_LOCK_TIMER__);
@@ -351,13 +350,13 @@ export const useLimit = <C extends { [key: string]: any }>({
                   if (percentage1 === 0 || percentage2 === 0) {
                     setToastOpen({
                       open: true,
-                      type: "warning",
+                      type: ToastType.warning,
                       content: t("labelSwapCancelled"),
                     });
                   } else {
                     setToastOpen({
                       open: true,
-                      type: "success",
+                      type: ToastType.success,
                       content: t("labelSwapSuccess"),
                     });
                   }
@@ -365,22 +364,22 @@ export const useLimit = <C extends { [key: string]: any }>({
                 case sdk.OrderStatus.processed:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelSwapSuccess"),
                   });
                   break;
                 case sdk.OrderStatus.processing:
                   setToastOpen({
                     open: true,
-                    type: "success",
+                    type: ToastType.success,
                     content: t("labelOrderProcessing"),
                   });
                   break;
                 default:
                   setToastOpen({
                     open: true,
-                    type: "error",
-                    content: t("labelSwapFailed"),
+                    type: ToastType.error,
+                    content: t("labelLimitFailed"),
                   });
               }
             }
@@ -393,8 +392,8 @@ export const useLimit = <C extends { [key: string]: any }>({
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
-            type: "error",
-            content: t("labelSwapFailed"),
+            type: ToastType.error,
+            content: t("labelLimitFailed"),
           });
         }
         setIsLimitLoading(false);
@@ -421,8 +420,12 @@ export const useLimit = <C extends { [key: string]: any }>({
           formType === TradeBaseType.quote
             ? tradeData.quote.tradeValue
             : undefined;
+        let dustCalcTradeParams: any;
 
-        if (formType === TradeBaseType.price) {
+        if (
+          formType === TradeBaseType.price ||
+          formType === TradeBaseType.checkMarketPrice
+        ) {
           amountBase =
             tradeData.base.tradeValue !== undefined
               ? tradeData.base.tradeValue
@@ -453,11 +456,76 @@ export const useLimit = <C extends { [key: string]: any }>({
           amountQuote,
         });
 
+        let isNotMatchMarketPrice, marketPrice, marketRatePrice;
+        if (
+          tokenPrices &&
+          tradeData?.price?.tradeValue &&
+          // @ts-ignore
+          sdk.toBig(tradeData.price.tradeValue).gt(0)
+        ) {
+          marketPrice = sdk
+            .toBig(tokenPrices[tradeData.base.belong])
+            .div(tokenPrices[tradeData.quote.belong]);
+          marketRatePrice =
+            tradeData.type === "sell"
+              ? marketPrice.div(tradeData?.price?.tradeValue)
+              : sdk
+                  .toBig(1)
+                  .div(marketPrice)
+                  .div(1 / tradeData?.price?.tradeValue);
+
+          isNotMatchMarketPrice = marketRatePrice.gt(1.05);
+          marketPrice = getValuePrecisionThousand(
+            marketPrice.toString(),
+            tokenMap[tradeData.quote.belong].precision,
+            tokenMap[tradeData.quote.belong].precision,
+            tokenMap[tradeData.quote.belong].precision
+          );
+          marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2);
+          dustCalcTradeParams = makeLimitReqInHook({
+            isBuy: tradeData.type === "buy",
+            base: tradeData.base.belong,
+            quote: tradeData.quote.belong,
+            price: tradeData.price.tradeValue as number,
+            depth: pageTradePro.depthForCalc,
+            // @ts-ignore
+            amountBase:
+              tradeData.type === "buy"
+                ? undefined
+                : sdk
+                    .toBig(tokenMap[baseSymbol]?.orderAmounts.dust)
+                    .div("1e" + tokenMap[tradeData.base.belong].decimals)
+                    .toString(),
+            // @ts-ignore
+            amountQuote:
+              tradeData.type === "buy"
+                ? sdk
+                    .toBig(tokenMap[quoteSymbol]?.orderAmounts.dust)
+                    .div("1e" + tokenMap[tradeData.quote.belong].decimals)
+                    .toString()
+                : undefined,
+          }).calcTradeParams;
+        }
+        const minAmount = BigNumber.max(
+          minOrderInfo?.minAmount ?? 0,
+          dustCalcTradeParams?.baseVol ?? 0
+        ).toString();
+        const minAmtShow = sdk
+          .toBig(minAmount)
+          .div("1e" + tokenMap[minOrderInfo?.symbol ?? baseSymbol].decimals)
+          .toNumber();
         updatePageTradePro({
           market,
           sellUserOrderInfo,
           buyUserOrderInfo,
-          minOrderInfo,
+          minOrderInfo: {
+            ...minOrderInfo,
+            minAmount,
+            minAmtShow,
+            minAmtCheck: sdk
+              .toBig(calcTradeParams?.baseVol ?? 0)
+              .gte(minAmount),
+          },
           request: limitRequest as sdk.SubmitOrderRequestV3,
           limitCalcTradeParams: calcTradeParams,
           tradeCalcProData: {
@@ -466,6 +534,10 @@ export const useLimit = <C extends { [key: string]: any }>({
               calcTradeParams && calcTradeParams.maxFeeBips
                 ? calcTradeParams.maxFeeBips?.toString()
                 : undefined,
+            isNotMatchMarketPrice,
+            marketPrice,
+            marketRatePrice,
+            isChecked: tradeData.isChecked !== undefined && tradeData.isChecked,
           },
         });
         setLimitTradeData((state) => {
@@ -493,6 +565,7 @@ export const useLimit = <C extends { [key: string]: any }>({
               ...state.quote,
               tradeValue: calcTradeParams?.quoteVolShow as number,
             },
+            isChecked: tradeData.isChecked !== undefined && tradeData.isChecked,
           };
         });
       }
@@ -582,8 +655,10 @@ export const useLimit = <C extends { [key: string]: any }>({
       if (
         limitTradeData?.base.tradeValue === undefined ||
         limitTradeData?.quote.tradeValue === undefined ||
+        limitTradeData?.price.tradeValue === undefined ||
         limitTradeData?.base.tradeValue === 0 ||
-        limitTradeData?.quote.tradeValue === 0
+        limitTradeData?.quote.tradeValue === 0 ||
+        limitTradeData?.price.tradeValue === 0
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -622,11 +697,24 @@ export const useLimit = <C extends { [key: string]: any }>({
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: "" };
       } else {
-        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        if (
+          pageTradePro?.tradeCalcProData.isNotMatchMarketPrice &&
+          !pageTradePro.tradeCalcProData.isChecked
+        ) {
+          return {
+            label: "",
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+          };
+        } else {
+          return {
+            label: "",
+            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+          };
+        }
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [limitTradeData, tokenMap]);
+  }, [limitTradeData, tokenMap, pageTradePro.tradeCalcProData?.isChecked]);
 
   const {
     btnStatus: tradeLimitBtnStatus,

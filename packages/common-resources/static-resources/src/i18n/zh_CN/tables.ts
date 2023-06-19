@@ -314,9 +314,19 @@ export default {
   labelBtradeSettled: "Settled",
   labelBtradeDelivering: "Delivering",
   labelBtradeDeliveringDes:
-    "You can trade as much as possible at the desired price, potentially waiting for Loopring pool to rebalance before receiving all tokens. while once the offer is confirmed, you won't be able to cancel it.",
+    "The Loopring pool is currently unable to swap the full requested amount. The tokens that were successfully swapped will be transferred to your account now. The unswapped tokens will be locked until they can be swapped. \n We’ll rebalance the pool shortly and swap the remaining portion.",
   labelBtradeFailed: "Failed",
   labelBtradeCancelled: "Cancelled",
   labelBtradePending: "Pending",
   labelBtradeSwapFailed: "Filled",
+  labelStopLimitStopPrice: "Trigger Condition",
+  labelDUAL_CURRENCY: "DUAL CURRENCY",
+  labelDUAL_BASE: "DUAL BASE",
+  labelBTRADE: "Block Trade",
+  labelL2STAKING: "Staking",
+  labelSTOP_LIMIT: "Stop-Limit",
+  labelStopLimitTriggered:
+    "Triggered: The limit order has been submitted to the order book.\n Time:{time}}",
+  labelStopLimitWaitingTrigger:
+    "The limit order is not placed until the stop price has been triggered.",
 };

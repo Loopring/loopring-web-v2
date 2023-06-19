@@ -15,6 +15,7 @@ import {
   FeeTokenItemWrapper,
   RampViewProps,
   Toast,
+  ToastType,
 } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -230,7 +231,7 @@ export const RampConfirm = <
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

@@ -3,6 +3,7 @@ import {
   Button,
   CreateCollectionWrap,
   Toast,
+  ToastType,
 } from "@loopring-web/component-lib";
 import { Box } from "@mui/material";
 import React from "react";
@@ -57,7 +58,7 @@ export const EditCollectionPanel = ({
       </StyledPaper>
       <Toast
         alertText={collectionToastOpen?.content ?? ""}
-        severity={collectionToastOpen?.type ?? "success"}
+        severity={collectionToastOpen?.type ?? ToastType.success}
         open={collectionToastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={collectionToastClose}

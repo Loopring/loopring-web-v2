@@ -9,8 +9,6 @@ const {
 } = require("customize-cra");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin"); //installed via npm
-
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 // const rewireLess = require('react-app-rewire-less')
@@ -97,13 +95,20 @@ module.exports = override(
     const setConfig = (index) => {
       console.log("-----> enter setConfig!!!!!!! index:", index);
       let babelLoader = config.module.rules[1].oneOf[index];
-      babelLoader.include = babelLoader.include.replace("/webapp/src", "");
+      babelLoader.include = babelLoader.include.replace(
+        "/web-guardian/src",
+        ""
+      );
       babelLoader.include = [
         babelLoader.include,
         ...(process.env.NODE_ENV === "development"
           ? [
-              path.resolve(__dirname, "../../node_modules/@web3modal"),
-              path.resolve(__dirname, "../../node_modules/@walletconnect"),
+              // path.resolve(__dirname, "../../node_modules/@web3modal"),
+              // path.resolve(__dirname, "../../node_modules/@walletconnect"),
+              // path.resolve(
+              //   __dirname,
+              //   "../../node_modules/@walletconnect/ethereum-provider/"
+              // ),
             ]
           : []),
       ];

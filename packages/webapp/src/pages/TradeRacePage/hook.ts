@@ -1,13 +1,13 @@
 import React from "react";
-import { languageMap, myLog } from "@loopring-web/common-resources";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import {
-  Config_INFO_URL,
-  EventData,
+  languageMap,
+  myLog,
   url_path,
   url_test_path,
-} from "./interface";
+} from "@loopring-web/common-resources";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Config_INFO_URL, EventData } from "./interface";
 import { setInterval } from "timers";
 import { useSystem } from "@loopring-web/core";
 import moment from "moment";

@@ -397,7 +397,7 @@ export const RedPacketQRCodeSvg = React.memo(
         }
       }, [textContent]);
 
-      const station = imageEleUrl ? [36, 68, 86, 208] : [56, 88, 106, 186];
+      const station = imageEleUrl ? [36, 68, 86, 188] : [56, 88, 106, 186];
       // const qrcodeRef = React.createRef();
       return (
         <>
@@ -500,7 +500,7 @@ export const RedPacketQRCodeSvg = React.memo(
             </defs>
             <g
               ref={qrcodeRef}
-              transform={"translate(87 236)"}
+              transform={"translate(67 210)"}
               width="160"
               height="160"
               dangerouslySetInnerHTML={{ __html: qrCodeG ?? "" }}
@@ -510,7 +510,7 @@ export const RedPacketQRCodeSvg = React.memo(
             </g>
             {imageEleUrl && (
               <image
-                transform={"translate(128 110)"}
+                transform={"translate(128 90)"}
                 href={imageBase64}
                 height="80"
                 width="80"
@@ -561,7 +561,15 @@ export const RedPacketQRCodeSvg = React.memo(
                   textAnchor: "middle",
                   fontSize: "14px",
                 }}
-                dangerouslySetInnerHTML={{ __html: textContent2 && sanitize(textContent2.length > 12 ? (textContent2.slice(0, 12) + "...") : textContent2 ) }}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    textContent2 &&
+                    sanitize(
+                      textContent2.length > 12
+                        ? textContent2.slice(0, 12) + "..."
+                        : textContent2
+                    ),
+                }}
               />
             </g>
             <g transform={`translate(167 ${station[3]})`}>
@@ -609,7 +617,10 @@ export const RedPacketQRCodeSvg = React.memo(
                   fontSize: "12px",
                 }}
               >
-                {textDes.split(" ").slice(0, Math.ceil(textDes.split(" ").length / 2)).join(" ")}
+                {textDes
+                  .split(" ")
+                  .slice(0, Math.ceil(textDes.split(" ").length / 2))
+                  .join(" ")}
               </text>
             </g>
             <g transform={"translate(167 452)"}>
@@ -625,7 +636,10 @@ export const RedPacketQRCodeSvg = React.memo(
                   fontSize: "12px",
                 }}
               >
-                {textDes.split(" ").slice(Math.ceil(textDes.split(" ").length / 2)).join(" ")}
+                {textDes
+                  .split(" ")
+                  .slice(Math.ceil(textDes.split(" ").length / 2))
+                  .join(" ")}
               </text>
             </g>
             <g transform={"translate(167 470)"}>

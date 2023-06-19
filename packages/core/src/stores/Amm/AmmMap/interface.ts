@@ -1,25 +1,9 @@
-import {
-  AmmDetailBase,
-  CoinKey,
-  StateBase,
-  TradeFloat,
-} from "@loopring-web/common-resources";
+import { AmmDetail, StateBase } from "@loopring-web/common-resources";
 import { AmmPoolInfoV3, LoopringMap } from "@loopring-web/loopring-sdk";
 
 export type GetAmmMapParams = { ammpools: LoopringMap<AmmPoolInfoV3> };
 
-export type AmmDetailStore<T> = AmmDetailBase<T> & {
-  exitDisable: boolean;
-  joinDisable: boolean;
-  swapDisable: boolean;
-  showDisable: boolean;
-  isRiskyMarket: boolean;
-  coinA: CoinKey<T> | undefined;
-  coinB: CoinKey<T> | undefined;
-  address: string;
-  tradeFloat: Partial<TradeFloat>;
-  __rawConfig__: AmmPoolInfoV3;
-} & AmmPoolInfoV3;
+export type AmmDetailStore<T> = AmmDetail<T>;
 export type AmmMap<
   R extends { [key: string]: any },
   I extends { [key: string]: any }
@@ -30,6 +14,7 @@ export type AmmMapStates<
   R extends { [key: string]: any },
   I extends { [key: string]: any }
 > = {
-  ammMap: AmmMap<R, I> | undefined;
+  ammMap: AmmMap<R, I>;
+  ammArrayEnable: AmmDetailStore<I>[];
   __timer__?: number;
 } & StateBase;

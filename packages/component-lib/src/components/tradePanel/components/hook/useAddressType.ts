@@ -72,19 +72,19 @@ export const useAddressTypeLists = <
         label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
-        description: t('labelContactsBinanceNotSupportted'),
+        description: t("labelContactsBinanceNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
-        description: t('labelContactsHuobiNotSupportted')
+        description: t("labelContactsHuobiNotSupportted"),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
-        description: t('labelContactsOtherExchangesNotSupportted')
+        description: t("labelContactsOtherExchangesNotSupportted"),
       },
     ];
   };

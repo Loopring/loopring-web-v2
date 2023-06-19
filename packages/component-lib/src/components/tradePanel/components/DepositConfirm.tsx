@@ -6,7 +6,13 @@ import {
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
-import { Button, DepositTitle, Toast, useSettings } from "../../../index";
+import {
+  Button,
+  DepositTitle,
+  Toast,
+  ToastType,
+  useSettings,
+} from "../../../index";
 import { DepositViewProps } from "./Interface";
 
 export const DepositConfirm = <
@@ -116,7 +122,7 @@ DepositViewProps<T, I> & {
         onClose={() => {
           setOpen(false);
         }}
-        severity={"error"}
+        severity={ToastType.error}
       />
     </Grid>
   );

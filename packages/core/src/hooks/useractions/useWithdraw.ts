@@ -55,20 +55,23 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
+import { AddressType } from "@loopring-web/loopring-sdk";
+import { useDispatch, useSelector } from "react-redux";
+import { updateContacts } from "../../stores/contacts/reducer";
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from "@loopring-web/core";
-import { useTheme } from "@emotion/react";
 import { useContacts } from "../../stores/contacts/hooks";
+import { useTheme } from "@emotion/react";
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
-      isShowWithdraw: { 
-        symbol, 
-        isShow, 
-        info, 
-        address: contactAddress, 
-        name: contactName, 
-        addressType: contactAddressType 
+      isShowWithdraw: {
+        symbol,
+        isShow,
+        info,
+        address: contactAddress,
+        name: contactName,
+        addressType: contactAddressType,
       },
     },
     setShowAccount,
@@ -84,11 +87,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const [walletMap2, setWalletMap2] = React.useState(
     makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>)
   );
-  
 
   const [sureIsAllowAddress, setSureIsAllowAddress] =
     React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined);
-  
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] =
     React.useState<boolean>(false);
@@ -371,7 +372,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setAddress(account.accAddress);
     } else if (contactAddress) {
       setAddress(contactAddress)
-      // setIsContactSelection(true)
     } else {
       setAddress("");
     }
@@ -386,7 +386,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     feeInfo,
     withdrawValue.belong,
     info?.isRetry,
-    contactAddress
+    contactAddress,
   ]);
 
   React.useEffect(() => {
@@ -465,7 +465,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           ) {
             throw response;
           }
-          info?.onCloseCallBack && info?.onCloseCallBack()
+          info?.onCloseCallBack && info?.onCloseCallBack();
           setShowWithdraw({ isShow: false, info });
           setShowAccount({
             isShow: true,
@@ -672,14 +672,16 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { isHebao } = useIsHebao()
   const {contacts,currentAccountId: cachedForAccountId, updateContacts, updateAccountId} = useContacts() 
   React.useEffect(() => {
-    const addressType = contacts?.find(x => x.address === realAddr)?.addressType
+    const addressType = contacts?.find(
+      (x) => x.address === realAddr
+    )?.addressType;
     if (isShow === false) {
-      setSureIsAllowAddress(undefined)
+      setSureIsAllowAddress(undefined);
     } else if (addressType !== undefined) {
-      const found = addressType 
-      ? addressToExWalletMapFn(addressType)
-      : undefined
-      setSureIsAllowAddress(found)
+      const found = addressType
+        ? addressToExWalletMapFn(addressType)
+        : undefined;
+      setSureIsAllowAddress(found);
     }
   }, [realAddr, isShow, contacts])
   
@@ -726,9 +728,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       store.getState().modals.isShowAccount.info?.lastFailed ===
       LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
-      const found = exWalletToAddressMapFn(value)
+      const found = exWalletToAddressMapFn(value);
       // const found = map.find(x => x[0] === value)![1]
-      const contact = contacts?.find(x => x.address === realAddr)
+      const contact = contacts?.find((x) => x.address === realAddr);
       if (isHebao !== undefined && contact) {
         LoopringAPI.contactAPI?.updateContact({
           contactAddress: realAddr,
@@ -798,13 +800,16 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     chargeFeeTokenList,
     isFeeNotEnough,
-    handleOnAddressChange: (value: any, isContactSelection? : boolean) => {
-      // setIsContactSelection(isContactSelection ? true : false)
+    handleOnAddressChange: (value: any) => {
       setAddress(value);
     },
     isFromContact: contactAddress ? true : false,
-    contact: contactAddress 
-      ? {address: contactAddress, name: contactName!, addressType: contactAddressType!}
+    contact: contactAddress
+      ? {
+          address: contactAddress,
+          name: contactName!,
+          addressType: contactAddressType!,
+        }
       : undefined,
     loopringSmartWalletVersion,
     contacts,

@@ -101,8 +101,8 @@ export type NOTIFICATION = {
   redPacket: {
     timeRangeMaxInSecondsToken: number;
     timeRangeMaxInSecondsNFT: number;
-    showNFT: boolean
-  }
+    showNFT: boolean;
+  };
 };
 
 export type Notify = Omit<NOTIFICATION, "prev">;

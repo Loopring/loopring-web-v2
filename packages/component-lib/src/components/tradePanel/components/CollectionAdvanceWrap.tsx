@@ -15,7 +15,7 @@ import { Button, PopoverPure, TextareaAutosizeStyled } from "../../basic-lib";
 import { CollectionAdvanceProps } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
-import { Toast } from "../../toast";
+import { Toast, ToastType } from "../../toast";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -190,8 +190,8 @@ export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>({
         onClose={() => {
           setCopyToastOpen({ isShow: false, type: "" });
         }}
-        severity={"success"}
-      />
+        severity={ToastType.success}
+      ></Toast>
     </GridStyle>
   );
 };

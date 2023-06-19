@@ -44,7 +44,5 @@ export type API_DATA<R extends object> = {
   data: R[];
 };
 
-export const url_path = "https://static.loopring.io/events";
-export const url_test_path = "https://static.loopring.io/events/testEvents";
 export const Config_INFO_URL = "api/v3/activity/getFilterInfo";
 export const Activity_URL = "/api/v3/activity/getActivityList";

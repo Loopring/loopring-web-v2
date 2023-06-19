@@ -3,28 +3,29 @@ import {
   AmmPanel,
   AmmPanelType,
   ConfirmAmmExitMiniOrder,
-  LoadingBlock,
-  Toast,
+  TOASTOPEN,
 } from "@loopring-web/component-lib";
+
+import { Grid } from "@mui/material";
 import {
-  CoinInfo,
-  WalletMap,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
+  useAccount,
+  useAmmMap,
+  usePageAmmPool,
+  walletLayer2Service,
+} from "../../../index";
+import styled from "@emotion/styled";
 import { useAmmJoin } from "../../../hooks/useractions/hookAmmJoin";
 import { useAmmExit } from "../../../hooks/useractions/hookAmmExit";
-import { useAmmCommon } from "./hookAmmCommon";
-import { Grid } from "@mui/material";
-import { AmmPoolSnapshot, TickerData } from "@loopring-web/loopring-sdk";
-import { initSlippage, store } from "../../../index";
-import styled from "@emotion/styled";
+import { SagaStatus } from "@loopring-web/common-resources";
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
+
   .divider-item {
     border-right: 0;
   }
+
   @media only screen and (min-width: 900px) {
     .divider-item {
       height: 0;
@@ -36,45 +37,48 @@ export const BoxWrapperStyled = styled(Grid)`
 ` as typeof Grid;
 
 export const AmmPanelView = ({
-  pair,
-  walletMap,
-  btos,
-  stob,
+  market,
   ammType,
-  snapShotData,
   getRecentAmmPoolTxs,
+  updateAmmPoolSnapshot,
+  refreshRef,
+  setToastOpen,
+  // getFee,
+  updateExitFee,
+  updateJoinFee,
+  // ammExit,
+  // ammJoin,
   ...rest
 }: {
-  pair: {
-    coinAInfo: CoinInfo<string> | undefined;
-    coinBInfo: CoinInfo<string> | undefined;
-  };
-  btos: string | undefined;
-  stob: string | undefined;
-  snapShotData:
-    | {
-        tickerData: TickerData | undefined;
-        ammPoolSnapshot: AmmPoolSnapshot | undefined;
-      }
-    | undefined;
-  walletMap: WalletMap<string>;
+  market: string;
+  refreshRef: React.Ref<any>;
+  updateAmmPoolSnapshot: () => void;
+  setToastOpen: (state: TOASTOPEN) => void;
+  // getFee: () => void;
   ammType?: keyof typeof AmmPanelType;
   getRecentAmmPoolTxs?: (props: { limit?: number; offset?: number }) => void;
+  updateExitFee: () => Promise<void>;
+  updateJoinFee: () => Promise<void>;
+  // ammExit: any;
+  // ammJoin: any;
 } & any) => {
   const [confirmExitSmallOrder, setConfirmExitSmallOrder] = React.useState<{
     open: boolean;
     type: "Disabled" | "Mini";
   }>({ open: false, type: "Disabled" });
-  const {
-    accountStatus,
-    toastOpen,
-    setToastOpen,
-    closeToast,
-    refreshRef,
-    updateAmmPoolSnapshot,
-    getFee,
-  } = useAmmCommon({ pair });
+  const { ammMap } = useAmmMap();
 
+  const [index, setIndex] = React.useState(
+    ammType == 1 ? AmmPanelType.Exit : AmmPanelType.Join
+  );
+  const handleTabChange = React.useCallback(
+    (newValue: any) => {
+      if (index !== newValue) {
+        setIndex(newValue);
+      }
+    },
+    [index]
+  );
   const {
     ammCalcData: ammCalcDataDeposit,
     ammData: ammJoinData,
@@ -82,14 +86,13 @@ export const AmmPanelView = ({
     onAmmClick: onAmmAddClick,
     btnStatus: addBtnStatus,
     btnI18nKey: ammDepositBtnI18nKey,
-    updatePageAmmJoin,
+    propsAExtends,
+    propsBExtends,
   } = useAmmJoin({
-    getFee,
+    updateJoinFee,
     setToastOpen,
-    pair,
-    snapShotData,
-    btos,
-    stob,
+    market,
+    refreshRef,
   });
   const {
     ammCalcData: ammCalcDataWithdraw,
@@ -99,53 +102,36 @@ export const AmmPanelView = ({
     btnStatus: removeBtnStatus,
     btnI18nKey: ammWithdrawBtnI18nKey,
     exitSmallOrderCloseClick,
+    propsLPExtends,
   } = useAmmExit({
-    getFee,
+    updateExitFee,
     setToastOpen,
-    pair,
-    snapShotData,
-    btos,
-    stob,
+    market,
+    refreshRef,
+    // ammCalcDefault: ammExit.ammCalcData,
+    // ammDataDefault: ammExit.ammData,
     setConfirmExitSmallOrder,
   });
+  const { resetAmmPool } = usePageAmmPool();
+  const { status: accountStatus } = useAccount();
 
   React.useEffect(() => {
-    if (pair && !pair.coinAInfo && !pair.coinBInfo) {
-      const newAmmData = {
-        coinA: { belong: "" as any, tradeValue: undefined, balance: 0 },
-        coinB: { belong: "" as any, tradeValue: undefined, balance: 0 },
-        slippage: initSlippage,
-      };
-      updatePageAmmJoin({
-        ammData: newAmmData,
-      });
+    if (refreshRef.current) {
+      // @ts-ignore
+      refreshRef.current.firstElementChild.click();
     }
-  }, [pair, ammJoinData.coinB.belong, ammJoinData.coinB.belong]);
-
-  const { tokenMap } = store.getState().tokenMap;
-
-  const getTokenPrecision = React.useCallback(
-    (token: string) => {
-      if (tokenMap && token) {
-        return tokenMap[token]?.precision;
-      }
-      return undefined;
-    },
-    [tokenMap]
-  );
-
-  const coinAPrecision = getTokenPrecision(pair?.coinAInfo?.simpleName);
-  const coinBPrecision = getTokenPrecision(pair?.coinBInfo?.simpleName);
+    return () => {
+      resetAmmPool();
+    };
+  }, []);
+  React.useEffect(() => {
+    if (accountStatus === SagaStatus.UNSET) {
+      walletLayer2Service.sendUserUpdate();
+    }
+  }, [accountStatus]);
 
   return (
     <>
-      <Toast
-        alertText={toastOpen?.content ?? ""}
-        severity={toastOpen?.type ?? "success"}
-        open={toastOpen?.open ?? false}
-        autoHideDuration={TOAST_TIME}
-        onClose={closeToast}
-      />
       <ConfirmAmmExitMiniOrder
         type={confirmExitSmallOrder.type}
         handleClose={(_e: any, isAgree = false) => {
@@ -154,39 +140,32 @@ export const AmmPanelView = ({
         }}
         open={confirmExitSmallOrder.open}
       />
-      {pair ? (
-        <>
-          <AmmPanel
-            {...{ ...rest }}
-            accStatus={accountStatus}
-            getRecentAmmPoolTxs={getRecentAmmPoolTxs}
-            onRefreshData={() => {
-              updateAmmPoolSnapshot();
-              if (getRecentAmmPoolTxs) {
-                getRecentAmmPoolTxs({});
-              }
-            }}
-            refreshRef={refreshRef}
-            ammDepositData={ammJoinData}
-            ammCalcDataDeposit={ammCalcDataDeposit}
-            handleAmmAddChangeEvent={handleJoinAmmPoolEvent}
-            onAmmAddClick={onAmmAddClick}
-            tabSelected={ammType ? ammType : AmmPanelType.Join}
-            ammDepositBtnI18nKey={ammDepositBtnI18nKey}
-            ammDepositBtnStatus={addBtnStatus}
-            ammWithdrawData={ammExitData}
-            ammCalcDataWithDraw={ammCalcDataWithdraw}
-            handleAmmRemoveChangeEvent={handleExitAmmPoolEvent}
-            onAmmRemoveClick={onAmmRemoveClick}
-            ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
-            ammWithdrawBtnStatus={removeBtnStatus}
-            coinAPrecision={coinAPrecision}
-            coinBPrecision={coinBPrecision}
-          />
-        </>
-      ) : (
-        <LoadingBlock />
-      )}
+      <AmmPanel
+        {...{ ...rest }}
+        onRefreshData={() => {
+          updateAmmPoolSnapshot();
+        }}
+        tabSelected={ammType ? ammType : AmmPanelType.Join}
+        ammInfo={ammMap["AMM-" + market]}
+        refreshRef={refreshRef}
+        ammType={index}
+        handleTabChange={handleTabChange}
+        ammDepositData={ammJoinData}
+        ammCalcDataDeposit={ammCalcDataDeposit}
+        handleAmmAddChangeEvent={handleJoinAmmPoolEvent}
+        onAmmAddClick={onAmmAddClick}
+        ammDepositBtnI18nKey={ammDepositBtnI18nKey}
+        ammDepositBtnStatus={addBtnStatus}
+        propsAExtends={propsAExtends}
+        propsBExtends={propsBExtends}
+        ammWithdrawData={ammExitData}
+        ammCalcDataWithDraw={ammCalcDataWithdraw}
+        handleAmmRemoveChangeEvent={handleExitAmmPoolEvent}
+        onAmmRemoveClick={onAmmRemoveClick}
+        ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
+        ammWithdrawBtnStatus={removeBtnStatus}
+        propsLPExtends={propsLPExtends}
+      />
     </>
   );
 };

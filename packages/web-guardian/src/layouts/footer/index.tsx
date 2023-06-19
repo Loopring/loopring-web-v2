@@ -11,6 +11,7 @@ export const Footer = () => {
       isLandingPage={false}
       linkListMap={linkListMap}
       mediaList={mediaList}
+      isBeta={false}
     />
   );
 };

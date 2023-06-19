@@ -20,7 +20,6 @@ const getRedPacketConfigsApi = async (): Promise<{
         store.dispatch(getRedPacketConfigs({}));
       }, 1000 * 60 * 30);
     })(__timer__);
-    myLog("loop get getMixTicker");
     const [resLuckTokenAgents, resLuckTokenAgentsAuth] = await Promise.all([
       LoopringAPI.luckTokenAPI.getLuckTokenAgents(),
       LoopringAPI.luckTokenAPI.getLuckTokenAuthorizedSigners(),

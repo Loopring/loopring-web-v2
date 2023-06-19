@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { MemoryRouter } from "react-router-dom";
-import { PoolsRow, PoolsTable } from "./index";
+import { PoolRow, PoolsTable } from "./index";
 import { coinMap } from "../../../static";
 import { CoinInfo, FloatTag } from "@loopring-web/common-resources";
 
@@ -11,18 +11,22 @@ const Style = styled.div`
   flex: 1;
 `;
 
-const rawData: PoolsRow<any>[] = [
+const rawData: PoolRow<any>[] = [
   {
+    coinA: "ETH",
+    coinB: "LRC",
+    address: "",
+    market: "ETH-LRC",
     coinAInfo: coinMap["ETH"] as CoinInfo<any>,
     coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    amountDollar: 12,
+    amountU: 12,
     totalLPToken: 12132131,
     totalA: 0.002,
     totalB: 12344,
     tradeFloat: {
       change: 1000,
       timeUnit: "24h",
-      priceDollar: 1.23123,
+      priceU: 1.23123,
       floatTag: FloatTag.increase,
       reward: 12312,
     },
@@ -31,396 +35,24 @@ const rawData: PoolsRow<any>[] = [
     isActivity: false,
   },
   {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["USDC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-    amountDollar: 17764.89,
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-    amountDollar: 19774.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["DPR"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-    amountDollar: 497764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
+    coinA: "ETH",
+    coinB: "LRC",
+    address: "",
+    market: "ETH-LRC",
     coinAInfo: coinMap["ETH"] as CoinInfo<any>,
     coinBInfo: coinMap["LRC"] as CoinInfo<any>,
+    amountU: 12,
+    totalLPToken: 12132131,
+    totalA: 0.002,
+    totalB: 12344,
     tradeFloat: {
       change: 1000,
       timeUnit: "24h",
-      priceDollar: 1.23123,
+      priceU: 1.23123,
       floatTag: FloatTag.increase,
       reward: 12312,
     },
     APR: 56,
-    amountDollar: 196764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["USDC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["DPR"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["ETH"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["USDC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["DPR"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["ETH"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["USDC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["DPR"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["ETH"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["USDC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["USDT"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
-    isNew: true,
-    isActivity: false,
-  },
-  {
-    coinAInfo: coinMap["DPR"] as CoinInfo<any>,
-    coinBInfo: coinMap["LRC"] as CoinInfo<any>,
-    tradeFloat: {
-      change: 1000,
-      timeUnit: "24h",
-      priceDollar: 1.23123,
-      floatTag: FloatTag.increase,
-      reward: 12312,
-    },
-    APR: 56,
-
-    amountDollar: 197764.89,
-
-    totalLPToken: 12132131,
-    totalA: 0.002,
-    totalB: 12344,
-
     isNew: true,
     isActivity: false,
   },

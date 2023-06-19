@@ -3,6 +3,7 @@ import {
   CollectionDetailView,
   StyledPaperBg,
   Toast,
+  ToastType,
   useOpenModals,
   useSettings,
   useToggle,
@@ -68,7 +69,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
     toggle: { deployNFT },
   } = useToggle();
   const { setShowNFTDeploy, setShowTradeIsFrozen } = useOpenModals();
-  const { updateNFTDeployData } = useModalData();
+  const { updateNFTDeployData, updateNFTMintData, nftMintValue } = useModalData();
   const { search, ...rest } = useLocation();
   const searchParams = new URLSearchParams(search);
   const nftPublicProps = usePublicNFTs({
@@ -152,6 +153,11 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               }}
               setShowMintNFT={(item) => {
                 setCreateOpen(true);
+                updateNFTMintData({
+                  nftMETA: nftMintValue.mintData,
+                  mintData: nftMintValue.nftMETA,
+                  collection: undefined
+                });
                 history.push(`/nft/mintNFT/${item.contractAddress}`);
               }}
               setShowTradeIsFrozen={(item, typeKey) => {
@@ -251,7 +257,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         onClose={() => {
           collectionListProps.setCopyToastOpen({ isShow: false, type: "" });
         }}
-        severity={"success"}
+        severity={ToastType.success}
       />
     </Box>
   );

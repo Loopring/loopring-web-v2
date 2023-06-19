@@ -4,6 +4,7 @@ import React from "react";
 import {
   AccountStatus,
   ChainIdExtends,
+  ChainTests,
   CircleIcon,
   gatewayList,
   getShortAddr,
@@ -433,14 +434,20 @@ export const WalletConnectL1Btn = ({
                 // <CircleIcon fontSize={"large"} ChainIdhtmlColor={"var(--color-success)"} />
               );
               break;
-            case sdk.ChainId.GOERLI:
-            case ChainIdExtends.TAIKO_A2:
-              setIcon(
-                <Typography paddingRight={1} color={"var(--color-text-third)"}>
-                  Test
-                </Typography>
-                // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
-              );
+            // case sdk.ChainId.GOERLI:
+            // case ChainIdExtends[]:
+            default:
+              if (ChainTests.includes(Number(chainId))) {
+                setIcon(
+                  <Typography
+                    paddingRight={1}
+                    color={"var(--color-text-third)"}
+                  >
+                    Test
+                  </Typography>
+                  // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
+                );
+              }
               break;
             // setIcon(
             //   <Typography color={'--color-text-third'>{ChainIdExtends[account._chainId]}</Typography>
@@ -460,7 +467,7 @@ export const WalletConnectL1Btn = ({
         setNetworkLabel(isMobile ? "G ö" : "Görli");
       } else if (
         account &&
-        (account._chainId as any) == ChainIdExtends.TAIKO_A2
+        (account._chainId as any) == ChainIdExtends["TAIKO"]
       ) {
         setNetworkLabel(isMobile ? "Taiko" : "Taiko");
       } else {

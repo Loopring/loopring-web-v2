@@ -39,7 +39,7 @@ export interface ModalState {
   isShowClaimWithdraw: ModalStatePlayLoad & {
     claimToken: ClaimToken | undefined;
     claimType: CLAIM_TYPE | undefined;
-    successCallback?: () => void
+    successCallback?: () => void;
   };
   isShowTransfer: ModalStatePlayLoad & Transaction & Contact;
   isShowWithdraw: ModalStatePlayLoad & Transaction & Contact;
@@ -56,6 +56,7 @@ export interface ModalState {
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;
   isShowLayerSwapNotice: ModalStatePlayLoad;
+  isShowAnotherNetwork: ModalStatePlayLoad;
   isShowSwap: ModalStatePlayLoad;
   isShowAmm: ModalStatePlayLoad & Transaction & { type?: AmmPanelType };
   isShowTradeIsFrozen: ModalStatePlayLoad & {

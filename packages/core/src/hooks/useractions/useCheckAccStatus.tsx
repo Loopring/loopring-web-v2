@@ -16,6 +16,7 @@ import {
   AccountStep,
   CheckActiveStatusProps,
   TOASTOPEN,
+  ToastType,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -131,7 +132,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
       console.log("Web3 error", error);
       setToastOpen({
         open: true,
-        type: "error",
+        type: ToastType.error,
         content: <TransErrorHelp error={{ code: UIERROR_CODE.TIME_OUT }} />,
       });
     }

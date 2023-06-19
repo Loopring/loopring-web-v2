@@ -7,6 +7,7 @@ import {
   SwapPanel,
   SwapSecondConfirmation,
   Toast,
+  ToastType,
 } from "@loopring-web/component-lib";
 import { useSwap } from "./hookSwap";
 import {
@@ -130,7 +131,7 @@ export const SwapPage = withTranslation("common")(
         </Box>
         <Toast
           alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
+          severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}

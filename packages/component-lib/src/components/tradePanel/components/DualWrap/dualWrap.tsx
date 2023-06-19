@@ -162,7 +162,10 @@ export const DualDetail = ({
   );
 
   const targetView = React.useMemo(
-    () => Number(dualViewInfo?.strike).toLocaleString("en-US") ? Number(dualViewInfo?.strike).toLocaleString("en-US") + ' USDT' : EmptyValueTag,
+    () =>
+      Number(dualViewInfo?.strike).toLocaleString("en-US")
+        ? Number(dualViewInfo?.strike).toLocaleString("en-US") + " USDT"
+        : EmptyValueTag,
     [dualViewInfo?.strike]
   );
 
@@ -484,7 +487,7 @@ export const DualDetail = ({
               variant={"inherit"}
               color={"textPrimary"}
             >
-              {targetView} 
+              {targetView}
             </Typography>
           </Typography>
           {isOrder && dualViewInfo.enterTime && (

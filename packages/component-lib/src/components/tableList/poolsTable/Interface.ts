@@ -2,33 +2,28 @@ import {
   Account,
   AmmDetail,
   CAMPAIGNTAGCONFIG,
-  ForexMap,
+  // ForexMap,
   RowConfig,
-  TradeFloat,
 } from "@loopring-web/common-resources";
-import { Currency } from "@loopring-web/loopring-sdk";
+// import { Currency } from "@loopring-web/loopring-sdk";
 
-export type Row<T> = AmmDetail<T> & {
-  tradeFloat?: TradeFloat;
+export type PoolRow<T> = AmmDetail<T>;
+type FilterExtend = {
+  showFilter?: boolean;
+  filterValue: string;
+  getFilteredData: (filterValue: string) => void;
 };
-export type PoolTableProps<T, R = Row<T>> = {
+export type PoolTableProps<R extends PoolRow<T>, T = any> = {
   rawData: R[];
   handleWithdraw: (row: R) => void;
   handleDeposit: (row: R) => void;
   campaignTagConfig?: CAMPAIGNTAGCONFIG;
-  showFilter?: boolean;
   wait?: number;
   tableHeight?: number;
-  coinJson: any;
-  account: Account;
-  tokenPrices: any;
-  allowTrade?: { [key: string]: { enable: boolean; reason?: string } };
   showLoading?: boolean;
-  tokenMap: { [key: string]: any };
-  forexMap: ForexMap<Currency>;
-  sortMethod: (sortedRows: any[], sortColumn: string) => any[];
   rowConfig?: typeof RowConfig;
-};
+  forexValue?: number;
+} & FilterExtend;
 
 export type IconColumnProps<R> = {
   row: R;

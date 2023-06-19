@@ -596,16 +596,16 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       activeAccountFeeList[0].feeRaw
     ) {
       const feeInfo: FeeInfo = activeAccountFeeList[0];
-      const feeDollar: any =
+      const feeU: any =
         volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
           tokenPrices[feeInfo.belong]
         ) ?? undefined;
-      return feeDollar && currency && forexMap[currency]
+      return feeU && currency && forexMap[currency]
         ? "～" +
             PriceTag[CurrencyToTag[currency]] +
             getValuePrecisionThousand(
               // @ts-ignore
-              feeDollar * forexMap[currency],
+              feeU * forexMap[currency],
               2,
               2,
               2,

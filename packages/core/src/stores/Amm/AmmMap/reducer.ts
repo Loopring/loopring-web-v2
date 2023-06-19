@@ -6,14 +6,17 @@ import {
   ChainId,
   LoopringMap,
 } from "@loopring-web/loopring-sdk";
+import { AmmPoolStat } from "@loopring-web/loopring-sdk/dist/defs";
 
-const initialState: Required<AmmMapStates<object, object>> = {
-  ammMap: undefined,
+const initialState: Required<AmmMapStates<any, any>> = {
+  ammMap: {},
+  ammArrayEnable: [],
   __timer__: -1,
   status: SagaStatus.PENDING,
   errorMessage: null,
 };
-const ammMapSlice: Slice = createSlice({
+// @ts-ignore
+const ammMapSlice: Slice<AmmMapStates<any, any>> = createSlice({
   name: "ammMap",
   initialState,
   reducers: {
@@ -26,9 +29,7 @@ const ammMapSlice: Slice = createSlice({
       }>
     ) {
       const ammpools = action.payload.ammpools;
-      const ammMap: { [key: string]: string } = Reflect.ownKeys(
-        ammpools
-      ).reduce((prev, key) => {
+      const ammMap = Reflect.ownKeys(ammpools).reduce((prev, key) => {
         let status: any = ammpools[key.toString()].status ?? 0;
         status = ("00000" + status.toString(2)).split("");
         let exitDisable = status[status.length - 1] === "0";
@@ -46,6 +47,7 @@ const ammMapSlice: Slice = createSlice({
             showDisable,
             isRiskyMarket,
             __rawConfig__: ammpools[key as string],
+            market: key.toString().replace("AMM-", ""),
           },
         };
       }, {});
@@ -66,9 +68,13 @@ const ammMapSlice: Slice = createSlice({
         // @ts-ignore
         state.errorMessage = action.error;
       } else {
-        const { ammMap, __timer__ } = action.payload;
+        const { ammMap, ammArrayEnable, __timer__ } = action.payload;
         if (ammMap) {
+          // myLog(ammMap["AMM-LRC-USDT"].tokens, "ammMap");
           state.ammMap = ammMap;
+        }
+        if (ammArrayEnable) {
+          state.ammArrayEnable = ammArrayEnable;
         }
         if (__timer__) {
           state.__timer__ = __timer__;
@@ -76,7 +82,10 @@ const ammMapSlice: Slice = createSlice({
         state.status = SagaStatus.DONE;
       }
     },
-    updateRealTimeAmmMap(state, _action: PayloadAction<undefined>) {
+    updateRealTimeAmmMap(
+      state,
+      _action: PayloadAction<{ ammPoolStats?: LoopringMap<AmmPoolStat> }>
+    ) {
       state.status = SagaStatus.PENDING;
     },
     statusUnset: (state) => {

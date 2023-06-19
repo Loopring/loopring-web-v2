@@ -18,10 +18,16 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import React from "react";
 import { VendorIconItem } from "../tradePanel";
 
+export enum ToastType {
+  success = "success",
+  error = "error",
+  warning = "warning",
+  info = "info",
+}
 export type TOASTOPEN = {
   open: boolean;
   content: JSX.Element | string;
-  type: "success" | "error" | "warning" | "info";
+  type: ToastType;
 };
 export type TOSTOBJECT = {
   toastOpen: TOASTOPEN;
@@ -31,7 +37,7 @@ export type TOSTOBJECT = {
 
 export interface ToastProps {
   open: boolean;
-  severity?: "success" | "error" | "warning" | "info";
+  severity?: ToastType;
   alertText: string | JSX.Element;
   autoHideDuration?: number;
   onClose: () => void;
@@ -50,7 +56,7 @@ export const Toast = withTranslation("common")(
   ({
     t,
     open,
-    severity = "success",
+    severity = ToastType.success,
     alertText,
     autoHideDuration = 2000,
     onClose,

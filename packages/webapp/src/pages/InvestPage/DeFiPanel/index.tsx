@@ -23,6 +23,7 @@ import {
   useSettings,
   LoadingBlock,
   ConfirmInvestDefiRisk,
+  ToastType,
 } from "@loopring-web/component-lib";
 import {
   confirmation,
@@ -371,7 +372,7 @@ export const DeFiPanel: any = withTranslation("common")(
           )}
           <Toast
             alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? "success"}
+            severity={toastOpen?.type ?? ToastType.success}
             open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}

@@ -1,6 +1,7 @@
 import { SwapTradeData } from "../../Interface";
 import {
   BtradeTradeCalcData,
+  BtradeType,
   CheckBoxIcon,
   CheckedIcon,
   CoinInfo,
@@ -26,12 +27,13 @@ import {
   Tooltip,
   Typography,
   Link,
+  Tab,
 } from "@mui/material";
 import { InputButton } from "../../../basic-lib";
 
 import { SwapTradeProps } from "./Interface";
 import { useSettings } from "../../../../stores";
-import { ButtonStyle, IconButtonStyled } from "../Styled";
+import { ButtonStyle, IconButtonStyled, TabsStyle } from "../Styled";
 import { useHistory } from "react-router-dom";
 
 export const SwapTradeWrap = <
@@ -235,9 +237,46 @@ export const SwapTradeWrap = <
       flex={isMobile ? "1" : "initial"}
       height={"100%"}
     >
+      {tradeCalcData.isBtrade && (
+        <Box
+          className={"tool-bar"}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <Box component={"header"} width={"100%"}>
+            <TabsStyle
+              className={"trade-tabs swap"}
+              variant={"fullWidth"}
+              value={tradeData.btradeType}
+              onChange={(_e, value) =>
+                onChangeEvent(0, {
+                  tradeData: {
+                    ...swapData.tradeData,
+                    btradeType: value,
+                  } as SwapTradeData<T>,
+                  type: (tradeCalcData as unknown as SCD)?.lastStepAt ?? "sell",
+                  to: "button",
+                })
+              }
+            >
+              <Tab
+                className={"trade-tab-quantity"}
+                value={BtradeType.Quantity}
+                label={t("labelBtrade" + BtradeType.Quantity)}
+              />
+              <Tab
+                className={"trade-tab-speed"}
+                value={BtradeType.Speed}
+                label={t("labelBtrade" + BtradeType.Speed)}
+              />
+            </TabsStyle>
+          </Box>
+        </Box>
+      )}
       <Grid
         item
-        marginTop={3}
+        marginTop={tradeCalcData.isBtrade ? 1 : 3}
         display={"flex"}
         alignSelf={"stretch"}
         justifyContent={"flex-start"}
@@ -287,8 +326,7 @@ export const SwapTradeWrap = <
             />
           </IconButtonStyled>
         </Box>
-        {/*</Grid>*/}
-        {/*<Grid item>*/}
+
         <InputButton<any, I, CoinInfo<I>>
           ref={buyRef}
           disabled={getDisabled()}
@@ -334,55 +372,15 @@ export const SwapTradeWrap = <
               variant={"inherit"}
               color={"textPrimary"}
             >
-              {tradeCalcData?.totalQuota ?? EmptyValueTag}
+              {tradeCalcData?.totalQuota
+                ? tradeCalcData?.totalQuota + " " + tradeData?.sell?.belong
+                : EmptyValueTag}
             </Typography>
           </Typography>
         ) : (
           <></>
         )}
       </Grid>
-      {!tradeCalcData.isBtrade && tradeCalcData.showLargeVolumeSwapInfo && (
-        <Grid
-          item
-          marginTop={3}
-          display={"flex"}
-          alignSelf={"stretch"}
-          justifyContent={"flex-start"}
-          alignItems={"stretch"}
-          flexDirection={"column"}
-          flexBasis={"initial"}
-        >
-          <Typography
-            variant={"body2"}
-            color={"textSecondary"}
-            border={"1px solid var(--color-warning)"}
-            borderRadius={1}
-            paddingY={2}
-            paddingX={1}
-          >
-            <Trans
-              i18nKey={"labelGoBtradeSwap"}
-              components={{
-                link: (
-                  <Link
-                    onClick={() => {
-                      history.push("/trade/btrade");
-                    }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant={"inherit"}
-                    color={"textPrimary"}
-                  />
-                ),
-              }}
-            >
-              Swapping on the DEX will result in a large Price Impact (loss of
-              assets). We recommend using the <Link>Btrade Swap</Link> option to
-              help minimize potential losses.
-            </Trans>
-          </Typography>
-        </Grid>
-      )}
 
       <Grid
         item
@@ -558,7 +556,7 @@ export const SwapTradeWrap = <
             </Grid>
           </Grid>
           {(tradeCalcData as SCD).isNotMatchMarketPrice && (
-            <Grid item>
+            <Grid item marginBottom={1}>
               <MuiFormControlLabel
                 sx={{ alignItems: "flex-start" }}
                 control={
@@ -714,58 +712,6 @@ export const SwapTradeWrap = <
               </Typography>
             </Grid>
           </Grid>
-          <Grid item marginBottom={2} alignSelf={"stretch"}>
-            <Grid
-              container
-              direction={"column"}
-              spacing={1}
-              alignItems={"stretch"}
-            >
-              {(tradeCalcData as TCD).lockedNotification && (
-                <Grid item>
-                  <MuiFormControlLabel
-                    sx={{ alignItems: "flex-start" }}
-                    control={
-                      <Checkbox
-                        checked={
-                          (tradeCalcData as TCD)?.isLockedNotificationChecked
-                            ? true
-                            : false
-                        }
-                        onChange={() => {
-                          onChangeEvent(0, {
-                            tradeData: {
-                              ...swapData.tradeData,
-                              isChecked: !(tradeCalcData as TCD)
-                                ?.isLockedNotificationChecked,
-                            } as SwapTradeData<T>,
-                            type: tradeCalcData?.lastStepAt ?? "sell",
-                            to: "button",
-                          });
-                        }}
-                        checkedIcon={<CheckedIcon />}
-                        icon={<CheckBoxIcon />}
-                        color="default"
-                      />
-                    }
-                    label={
-                      <Typography variant={"body2"}>
-                        <Trans
-                          i18nKey={"labelBtradeSwapPanelDes"}
-                          interpolation={{ escapeValue: false }}
-                        >
-                          You can trade as much as possible at the desired
-                          price, potentially waiting for Loopring pool to
-                          rebalance before receiving all tokens. while once the
-                          offer is confirmed, you won't be able to cancel it.
-                        </Trans>
-                      </Typography>
-                    }
-                  />
-                </Grid>
-              )}
-            </Grid>
-          </Grid>
         </>
       )}
 
@@ -794,6 +740,52 @@ export const SwapTradeWrap = <
           </ButtonStyle>
         </Grid>
       </Grid>
+      {!tradeCalcData.isBtrade && tradeCalcData.isShowBtradeAllow && (
+        <Grid
+          item
+          marginTop={3}
+          display={"flex"}
+          alignSelf={"stretch"}
+          justifyContent={"flex-start"}
+          alignItems={"stretch"}
+          flexDirection={"column"}
+          flexBasis={"initial"}
+        >
+          <Typography
+            variant={"body2"}
+            color={"textSecondary"}
+            borderRadius={1}
+            paddingY={2}
+            paddingX={1}
+          >
+            <Trans
+              i18nKey={"labelGoBtradeSwap"}
+              components={{
+                a: (
+                  <Link
+                    onClick={() => {
+                      history.push(
+                        "/trade/btrade/" +
+                          tradeData.sell?.belong +
+                          "-" +
+                          tradeData.buy?.belong
+                      );
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant={"inherit"}
+                    color={"primary"}
+                  />
+                ),
+              }}
+            >
+              Swapping on the DEX will result in a large Price Impact (loss of
+              assets). We recommend using the <a>Block Trade</a> option to help
+              minimize potential losses.
+            </Trans>
+          </Typography>
+        </Grid>
+      )}
     </Grid>
   );
 };
