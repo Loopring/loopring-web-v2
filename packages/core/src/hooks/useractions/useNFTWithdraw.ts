@@ -627,6 +627,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     chargeFeeTokenList,
     isFeeNotEnough,
     isLoopringAddress: true,
+    contacts
   } as WithdrawProps<any, any>;
 
   return {

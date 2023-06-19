@@ -789,6 +789,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         }
       : undefined,
     loopringSmartWalletVersion,
+    contacts
   };
   // const cancelNFTTransfer = () => {
   //   resetDefault();
