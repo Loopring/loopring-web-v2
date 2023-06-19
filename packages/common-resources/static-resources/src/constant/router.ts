@@ -6,7 +6,6 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
-  RewardIcon,
   // RewardIcon,
   SecurityIcon,
   VipIcon,
@@ -75,16 +74,16 @@ export const profile = {
       },
     },
   ],
-  referralrewards: [
-    {
-      icon: RewardIcon,
-      router: { path: "/referralrewards" },
-      label: {
-        id: "referralrewards",
-        i18nKey: "labelReferralReward",
-      },
-    },
-  ],
+  // referralrewards: [
+  //   {
+  //     icon: RewardIcon,
+  //     router: { path: "/referralrewards" },
+  //     label: {
+  //       id: "referralrewards",
+  //       i18nKey: "labelReferralReward",
+  //     },
+  //   },
+  // ],
 };
 
 export enum ButtonComponentsMap {

@@ -60,12 +60,11 @@ import {
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import Web3 from "web3";
 import { useHistory, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "../../stores/contacts/reducer";
 import {
   addressToExWalletMapFn,
   exWalletToAddressMapFn,
 } from "@loopring-web/core";
+import { useContacts } from "../../stores/contacts/hooks";
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
@@ -668,8 +667,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     [lastRequest, processRequest, setShowAccount]
   );
   const { isHebao } = useIsHebao();
-  const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const dispatch = useDispatch();
+  const { contacts, updateContacts } = useContacts();
   React.useEffect(() => {
     const addressType = contacts?.find(
       (x) => x.address === realAddr
@@ -708,17 +706,15 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             account.apiKey
           )
           .then(() => {
-            dispatch(
-              updateContacts(
-                contacts?.map((x) => {
-                  if (x.address === realAddr) {
-                    return { ...x, addressType: found };
-                  } else {
-                    return x;
-                  }
-                })
-              )
-            );
+            updateContacts(
+              contacts?.map((x) => {
+                if (x.address === realAddr) {
+                  return { ...x, addressType: found };
+                } else {
+                  return x;
+                }
+              })
+            )
           });
       }
       setSureItsLayer2(sure);
@@ -793,6 +789,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         }
       : undefined,
     loopringSmartWalletVersion,
+    contacts
   };
   // const cancelNFTTransfer = () => {
   //   resetDefault();

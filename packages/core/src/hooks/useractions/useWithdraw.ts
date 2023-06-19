@@ -9,22 +9,22 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
-  CoinMap,
-  Explorer,
-  IBData,
-  myLog,
-  SagaStatus,
-  UIERROR_CODE,
-  WalletMap,
-  WithdrawTypes,
   AddressError,
+  CoinMap,
   EXCHANGE_TYPE,
-  LIVE_FEE_TIMES,
+  Explorer,
   getValuePrecisionThousand,
   globalSetup,
+  IBData,
+  LIVE_FEE_TIMES,
+  myLog,
+  SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
+  UIERROR_CODE,
   WALLET_TYPE,
+  WalletMap,
+  WithdrawTypes,
 } from "@loopring-web/common-resources";
 import Web3 from "web3";
 
@@ -33,32 +33,32 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import {
   BIGO,
   DAYS,
+  getAllContacts,
   getTimestampDaysLater,
+  isAccActivated,
+  LAST_STEP,
   LoopringAPI,
   makeWalletLayer2,
-  useAddressCheck,
-  useBtnStatus,
-  useTokenMap,
+  store,
   useAccount,
+  useAddressCheckWithContacts,
+  useBtnStatus,
   useChargeFees,
+  useIsHebao,
+  useModalData,
+  useSystem,
+  useTokenMap,
   useWalletLayer2Socket,
   walletLayer2Service,
-  useSystem,
-  useModalData,
-  isAccActivated,
-  store,
-  LAST_STEP,
-  useIsHebao,
-  RootState,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import _ from "lodash";
-import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "../../stores/contacts/reducer";
 import {
   addressToExWalletMapFn,
   exWalletToAddressMapFn,
 } from "@loopring-web/core";
+import { useContacts } from "../../stores/contacts/hooks";
+import { useTheme } from "@emotion/react";
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
@@ -154,7 +154,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isLoopringAddress,
     isAddressCheckLoading,
     loopringSmartWalletVersion,
-  } = useAddressCheck();
+  } = useAddressCheckWithContacts(false);
 
   React.useEffect(() => {
     // setSureIsAllowAddress(undefined);
@@ -668,9 +668,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     [lastRequest, processRequest, setShowAccount]
   );
   const { isHebao } = useIsHebao();
-
-  const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const dispatch = useDispatch();
+  const {
+    contacts,
+    currentAccountId: cachedForAccountId,
+    updateContacts,
+    updateAccountId,
+  } = useContacts();
   React.useEffect(() => {
     const addressType = contacts?.find(
       (x) => x.address === realAddr
@@ -684,6 +687,31 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setSureIsAllowAddress(found);
     }
   }, [realAddr, isShow, contacts]);
+
+  const {
+    account: { accountId, apiKey, accAddress },
+  } = useAccount();
+  const theme = useTheme();
+  const loadContacts = React.useCallback(async () => {
+    if (accountId === cachedForAccountId) return;
+    updateContacts(undefined);
+    try {
+      const allContacts = await getAllContacts(
+        0,
+        accountId,
+        apiKey,
+        accAddress,
+        theme.colorBase.warning
+      );
+      updateContacts(allContacts);
+      updateAccountId(accountId);
+    } catch (e) {
+      updateContacts([]);
+    }
+  }, [cachedForAccountId, apiKey, accountId, accAddress]);
+  React.useEffect(() => {
+    loadContacts();
+  }, [apiKey]);
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
@@ -725,16 +753,14 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             account.apiKey
           )
           .then(() => {
-            dispatch(
-              updateContacts(
-                contacts?.map((x) => {
-                  if (x.address === realAddr) {
-                    return { ...x, addressType: found };
-                  } else {
-                    return x;
-                  }
-                })
-              )
+            updateContacts(
+              contacts?.map((x) => {
+                if (x.address === realAddr && found) {
+                  return { ...x, addressType: found };
+                } else {
+                  return x;
+                }
+              })
             );
           });
       }
@@ -802,6 +828,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         }
       : undefined,
     loopringSmartWalletVersion,
+    contacts,
   };
 
   return {

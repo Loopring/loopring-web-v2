@@ -154,11 +154,22 @@ export const TransferWrap = <
     return !!(sureItsLayer2 && sureItsLayer2 in EXCHANGE_TYPE);
   }, [sureItsLayer2, sureItsLayer2]);
 
-  const isExchangeEOA = detectedWalletType === WALLET_TYPE.EOA && isExchange;
   const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart;
   myLog("transferWrap", realAddr);
   const view = React.useMemo(() => {
-    if (isInvalidAddressOrENS) {
+    if (isOtherSmartWallet) {
+      return (
+        <Typography
+          color={"var(--color-error)"}
+          variant={"body2"}
+          marginTop={1 / 4}
+          alignSelf={"stretch"}
+          position={"relative"}
+        >
+          {t("labelNotOtherSmartWallet")}
+        </Typography>
+      );
+    } else if (isInvalidAddressOrENS) {
       return (
         <Typography
           color={"var(--color-error)"}
@@ -170,7 +181,7 @@ export const TransferWrap = <
           {t(`labelL2toL2${addrStatus}`)}
         </Typography>
       );
-    } else if (isExchangeEOA) {
+    } else if (isExchange) {
       return (
         <Typography
           color={"var(--color-error)"}
@@ -180,18 +191,6 @@ export const TransferWrap = <
           position={"relative"}
         >
           {t("labelNotExchangeEOA")}
-        </Typography>
-      );
-    } else if (isOtherSmartWallet) {
-      return (
-        <Typography
-          color={"var(--color-error)"}
-          variant={"body2"}
-          marginTop={1 / 4}
-          alignSelf={"stretch"}
-          position={"relative"}
-        >
-          {t("labelNotOtherSmartWallet")}
         </Typography>
       );
     } else if (isSameAddress) {
@@ -291,15 +290,18 @@ export const TransferWrap = <
   }, [
     addressDefault,
     isActiveAccount,
+    isActiveAccountFee,
     feeWithActive,
     addrStatus,
     realAddr,
     isAddressCheckLoading,
     activeAccountPrice,
     isInvalidAddressOrENS,
-    isExchangeEOA,
+    isExchange,
     isOtherSmartWallet,
     isSameAddress,
+    isLoopringAddress,
+    isAddressCheckLoading
   ]);
 
   return (
@@ -587,7 +589,7 @@ export const TransferWrap = <
           disabled={
             getDisabled ||
             transferBtnStatus === TradeBtnStatus.LOADING ||
-            isExchangeEOA ||
+            isExchange ||
             isOtherSmartWallet
           }
         >

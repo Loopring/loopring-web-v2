@@ -344,7 +344,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             </Box>
           )}
         </Route>
-        <Route exact path={[RouterPath.fiat, RouterPath.fiat + "/fiat/*"]}>
+        <Route exact path={[RouterPath.fiat, RouterPath.fiat + "/*"]}>
           <ContentWrap state={state}>
             <FiatPage />
           </ContentWrap>

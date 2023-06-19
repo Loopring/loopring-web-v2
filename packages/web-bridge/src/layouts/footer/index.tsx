@@ -8,6 +8,7 @@ const mediaList = _.cloneDeep(MEDIA_LIST);
 export const Footer = () => {
   return (
     <FooterUI
+      isBeta={false}
       isLandingPage={false}
       linkListMap={linkListMap}
       mediaList={mediaList}
