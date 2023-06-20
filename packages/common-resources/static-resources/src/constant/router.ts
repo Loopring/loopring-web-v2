@@ -18,7 +18,7 @@ import {
   HeaderMenuTabStatus,
   InvestAdvice,
 } from "../loopring-interface";
-import { InvestMapType } from "./trade";
+import { AddAssetList, InvestMapType, SendAssetList } from "./trade";
 import { Exchange, WalletSite } from "./setting";
 
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
@@ -669,4 +669,53 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
       ],
     },
   ],
+};
+
+export const AddAssetListMap = {
+  TAIKO: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromExchange.key,
+  ],
+  ETHEREUM: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+  ],
+  GOERLI: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+  ],
+};
+export const SendAssetListMap = {
+  TAIKO: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+  ],
+  ETHEREUM: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+    SendAssetList.SendAssetToAnotherNet.key,
+  ],
+  GOERLI: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+    SendAssetList.SendAssetToAnotherNet.key,
+  ],
+};
+
+export const AssetL2TabIndex = {
+  TAIKO: ["Tokens"],
+  ETHEREUM: ["Tokens", "Invests", "RedPacket"],
+  GOERLI: ["Tokens", "Invests", "RedPacket"],
 };

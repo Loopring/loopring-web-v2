@@ -748,7 +748,6 @@ export function useAccountModalForUI({
         ),
         height: "auto",
       },
-
       [AccountStep.CheckingActive]: {
         view: (
           <CheckActiveStatus

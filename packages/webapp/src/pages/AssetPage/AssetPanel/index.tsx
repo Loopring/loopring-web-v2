@@ -15,7 +15,11 @@ import React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
 import { RedPacketClaimPanel } from "../../RedPacketPage/RedPacketClaimPanel";
-import { TradeBtnStatus } from "@loopring-web/common-resources";
+import {
+  AssetL2TabIndex,
+  MapChainId,
+  TradeBtnStatus,
+} from "@loopring-web/common-resources";
 
 enum TabIndex {
   Tokens = "Tokens",
@@ -55,9 +59,9 @@ export const AssetPanel = withTranslation("common")(
     const container = React.useRef(null);
     const { disableWithdrawList } = useTokenMap();
     const { forexMap } = useSystem();
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
     const match: any = useRouteMatch("/l2assets/:assets?/:item?");
-
+    // const TabIndex = ;
     const [currentTab, setCurrentTab] = React.useState<TabIndex>(
       TabIndex.Tokens
     );
@@ -109,10 +113,27 @@ export const AssetPanel = withTranslation("common")(
           aria-label="l2-history-tabs"
           variant="scrollable"
         >
-          <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
-          <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
-          {!isMobile && (
-            <Tab label={t("labelAssetRedPackets")} value={TabIndex.RedPacket} />
+          {AssetL2TabIndex[MapChainId[defaultNetwork]] ? (
+            AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
+              return (
+                <Tab
+                  key={item.toString()}
+                  label={t(`labelAsset${item}`)}
+                  value={item}
+                />
+              );
+            })
+          ) : (
+            <>
+              <Tab label={t("labelAssetTokens")} value={TabIndex.Tokens} />
+              <Tab label={t("labelAssetMyInvest")} value={TabIndex.Invests} />
+              {!isMobile && (
+                <Tab
+                  label={t("labelAssetRedPackets")}
+                  value={TabIndex.RedPacket}
+                />
+              )}
+            </>
           )}
         </Tabs>
         {currentTab === TabIndex.Tokens && (
