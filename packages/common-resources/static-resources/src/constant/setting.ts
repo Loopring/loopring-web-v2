@@ -120,22 +120,18 @@ const _NetworkMap = new Map([
 (function (): void {
   process.env.REACT_APP_RPC_OTHERS?.split(",").forEach(
     (item: string, index: number) => {
-      let [name, isTest] = process.env[
+      let [_name, isTest] = process.env[
         `REACT_APP_RPC_CHAINNAME_${item}`
-      ]?.split("|") ?? [""];
-      if (name) {
-        ChainIdExtends[name] = Number(item);
-        MapChainIdMap.set(Number(item), name);
-        myLog("MapChainIdMap", item, MapChainIdMap);
-        if (isTest) {
-          ChainTests.push(item);
-        }
-      } else {
-        ChainIdExtends["unknown" + index] = item;
-        MapChainIdMap.set(Number(item), "unknown");
+      ]?.split("|") ?? [`unknown${item}`];
+      const name = _name.toUpperCase();
+      ChainIdExtends[name] = Number(item);
+      MapChainIdMap.set(Number(item), name);
+      myLog("MapChainIdMap", item, MapChainIdMap);
+      if (isTest) {
+        ChainTests.push(item);
       }
       _NetworkMap.set(Number(item), {
-        label: name,
+        label: _name,
         chainId: index.toString(),
         // RPC: process.env[`REACT_APP_RPC_URL_${item}`] ?? "",
         isTest: isTest ? true : false,

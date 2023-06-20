@@ -93,6 +93,7 @@ export type ActiveAccountData = {
     isOnLoading: boolean;
   };
   walletLayer2: WalletLayer2Map<any> | undefined;
+  referral: string | number | undefined;
 };
 export type NFT_MINT_VALUE<I> = {
   mintData: Partial<MintTradeNFT<I>>;

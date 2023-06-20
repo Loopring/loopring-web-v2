@@ -69,7 +69,7 @@ export const profile = {
   contact: [
     {
       icon: ContactIcon,
-      router: { path: "/contact" },
+      router: { path: "/layer2/contact" },
       label: {
         id: "contact",
         i18nKey: "labelContactsPanel",
@@ -79,7 +79,7 @@ export const profile = {
   referralrewards: [
     {
       icon: RewardIcon,
-      router: { path: "/referralrewards" },
+      router: { path: "/layer2/referralrewards" },
       label: {
         id: "referralrewards",
         i18nKey: "labelReferralReward",
@@ -176,7 +176,30 @@ export enum RouterPath {
   stoplimit = "/trade/stoplimit",
   btrade = "/trade/btrade",
   fiat = "/trade/fiat",
+  markets = "/markets",
+  mining = "/mining",
+  redPacket = "/redPacket",
+  l2assets = "/l2assets",
+  layer2 = "/layer2",
+  nft = "/nft",
+  invest = "/invest",
 }
+
+export enum RouterMainKey {
+  lite = "lite",
+  pro = "pro",
+  stoplimit = "stoplimit",
+  btrade = "btrade",
+  fiat = "fiat",
+  markets = "markets",
+  mining = "mining",
+  redPacket = "redPacket",
+  l2assets = "l2assets",
+  layer2 = "layer2",
+  nft = "nft",
+  invest = "invest",
+}
+
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -675,7 +698,7 @@ export const AddAssetListMap = {
   TAIKO: [
     AddAssetList.FromMyL1.key,
     AddAssetList.FromOtherL2.key,
-    AddAssetList.FromExchange.key,
+    // AddAssetList.FromExchange.key,
   ],
   ETHEREUM: [
     AddAssetList.FromMyL1.key,
@@ -714,8 +737,86 @@ export const SendAssetListMap = {
   ],
 };
 
+export enum AssetTabIndex {
+  Tokens = "Tokens",
+  Invests = "Invests",
+  RedPacket = "RedPacket",
+}
+
 export const AssetL2TabIndex = {
-  TAIKO: ["Tokens"],
-  ETHEREUM: ["Tokens", "Invests", "RedPacket"],
-  GOERLI: ["Tokens", "Invests", "RedPacket"],
+  TAIKO: [AssetTabIndex.Tokens],
+  ETHEREUM: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+  ],
+  GOERLI: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+  ],
+};
+
+export enum Layer2L2Router {
+  forcewithdraw = "forcewithdraw",
+  security = "security",
+  vip = "vip",
+  contact = "contact",
+  referralrewards = "referralrewards",
+}
+
+export const Layer2L2RouterIndex = {
+  TAIKO: [Layer2L2Router.vip, , Layer2L2Router.referralrewards],
+  ETHEREUM: [
+    Layer2L2Router.forcewithdraw,
+    Layer2L2Router.security,
+    Layer2L2Router.vip,
+    Layer2L2Router.contact,
+    Layer2L2Router.referralrewards,
+  ],
+  GOERLI: [
+    Layer2L2Router.forcewithdraw,
+    Layer2L2Router.security,
+    Layer2L2Router.vip,
+    Layer2L2Router.contact,
+    Layer2L2Router.referralrewards,
+  ],
+};
+
+export const RouterAllowIndex = {
+  TAIKO: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.markets,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+  ],
+  ETHEREUM: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
+    RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
+  GOERLI: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
+    RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
 };

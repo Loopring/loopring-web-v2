@@ -78,7 +78,7 @@ export const AddAsset = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={3}
+        paddingX={isMobile ? 7 : 10}
         paddingBottom={4}
       >
         <Typography

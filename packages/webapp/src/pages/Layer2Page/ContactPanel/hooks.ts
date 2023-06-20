@@ -4,12 +4,14 @@ import {
   RootState,
   store,
   useAccount,
+  useContacts,
   volumeToCount,
   volumeToCountAsBigNumber,
 } from "@loopring-web/core";
 import { utils } from "ethers";
 import {
   RawDataTransactionItem,
+  ToastType,
   TransactionStatus,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -23,7 +25,7 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { debounce, uniqBy } from "lodash";
 import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
-import { useContacts } from "@loopring-web/core/src/stores/contacts/hooks";
+import { useLocation } from "react-router-dom";
 
 export type Contact = {
   name: string;
@@ -215,15 +217,15 @@ export const useContact = () => {
   const onInputBlue = React.useCallback(
     async (address: string) => {
       updateContacts(
-        contacts!.map((x) => {
+        contacts?.map((item) => {
           return {
-            ...x,
+            ...item,
             editing: false,
           };
         })
       );
       const isHebao = await checkIsHebao(accAddress);
-      const found = contacts!.find((x) => x.address === address)!;
+      const found = contacts!.find((item) => item.address === address)!;
 
       LoopringAPI.contactAPI!.updateContact(
         {
@@ -500,10 +502,6 @@ export const useContactAdd = () => {
     "Succuss" as "Succuss" | "Error" | "Init"
   );
 
-  const {
-    account: { accountId, apiKey },
-  } = useAccount();
-
   const onChangeName = React.useCallback((input: string) => {
     if (new TextEncoder().encode(input).length <= 48) {
       setAddName(input);
@@ -607,7 +605,7 @@ type TxsFilterProps = {
   types?: sdk.UserTxTypes[] | string;
 };
 
-export function useTransactions() {
+export function useContractRecord(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount();
@@ -616,7 +614,8 @@ export function useTransactions() {
   const [txs, setTxs] = useState<RawDataTransactionItem[]>([]);
   const [txsTotal, setTxsTotal] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
-  const routeMatch = useRouteMatch();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const getTxnStatus = (status: string) => {
     return status === ""
@@ -631,23 +630,16 @@ export function useTransactions() {
   };
 
   const getUserTxnList = useCallback(
-    async ({
-      tokenSymbol,
-      start,
-      end,
-      limit,
-      offset,
-      types,
-    }: TxsFilterProps) => {
-      const address = routeMatch.params[0];
+    async ({ tokenSymbol, start, end, limit, offset }: TxsFilterProps) => {
+      // const address = routeMatch.params[0];
       const tokenId = tokenSymbol ? tokenMap[tokenSymbol!].tokenId : undefined;
       const response = await LoopringAPI.userAPI!.getUserBills(
         {
           accountId,
           tokenSymbol,
           tokenId,
-          fromAddress: address,
-          transferAddress: address,
+          fromAddress: searchParams?.get("contactAddress") ?? "",
+          transferAddress: searchParams?.get("contactAddress") ?? "",
           start,
           end,
           limit,
@@ -663,14 +655,14 @@ export function useTransactions() {
       ) {
         const errorItem =
           SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-        // setToastOpen({
-        //   open: true,
-        //    type: ToastType.error,
-        //   content:
-        //     "error : " + errorItem
-        //       ? t(errorItem.messageKey)
-        //       : (response as sdk.RESULT_INFO).message,
-        // });
+        setToastOpen({
+          open: true,
+          type: ToastType.error,
+          content:
+            "error : " + errorItem
+              ? t(errorItem.messageKey)
+              : (response as sdk.RESULT_INFO).message,
+        });
       } else {
         const formattedList: RawDataTransactionItem[] = (
           response as any

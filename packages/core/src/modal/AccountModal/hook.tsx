@@ -121,6 +121,7 @@ import {
   BtradeSwap_Failed,
   BtradeSwap_Pending,
   AMM_Pending,
+  useSettings,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -133,12 +134,15 @@ import {
   Account,
   AccountStatus,
   AddAssetList,
+  AddAssetListMap,
   AssetsRawDataItem,
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  MapChainId,
   NFTWholeINFO,
   SendAssetList,
+  SendAssetListMap,
   SendNFTAssetList,
   TradeTypes,
   VendorProviders,
@@ -231,7 +235,8 @@ export function useAccountModalForUI({
   } = useModalData();
 
   const { chainId, allowTrade } = useSystem();
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { account, addressShort, shouldShow, setShouldShow } = useAccount();
   const redPacketScanQrcodeSuccessProps = useRedPacketScanQrcodeSuccess();
 
@@ -454,120 +459,141 @@ export function useAccountModalForUI({
     useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
-    () => [
-      {
-        ...AddAssetList.BuyWithCard,
-        handleSelect: (_e) => {
-          setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
-        },
-      },
-      {
-        ...AddAssetList.FromMyL1,
-        handleSelect: () => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowDeposit({ isShow: true, symbol: isShowAccount?.info?.symbol });
-        },
-      },
-      {
-        ...AddAssetList.FromOtherL1,
-        handleSelect: () => {
-          let dex = "labelAddAssetTitleBridgeDes";
-          if (
-            account.readyState &&
-            [
-              AccountStatus.DEPOSITING,
-              AccountStatus.NOT_ACTIVE,
-              AccountStatus.NO_ACCOUNT,
-            ].includes(
-              // @ts-ignore
-              account?.readyState
-            )
-          ) {
-            dex = "labelAddAssetTitleBridgeDesActive";
-          }
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.ThirdPanelReturn,
-            info: { title: t("labelAddAssetTitleBridge"), description: t(dex) },
-          });
+    () =>
+      AddAssetListMap[network].map((item: string) => {
+        switch (item) {
+          case AddAssetList.BuyWithCard.key:
+            return {
+              ...AddAssetList.BuyWithCard,
+              handleSelect: () => {
+                setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
+              },
+            };
+          case AddAssetList.FromMyL1.key:
+            return {
+              ...AddAssetList.FromMyL1,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                });
+                setShowDeposit({
+                  isShow: true,
+                  symbol: isShowAccount?.info?.symbol,
+                });
+              },
+            };
+          case AddAssetList.FromOtherL1.key:
+            return {
+              ...AddAssetList.FromOtherL1,
+              handleSelect: () => {
+                let dex = "labelAddAssetTitleBridgeDes";
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState
+                  )
+                ) {
+                  dex = "labelAddAssetTitleBridgeDesActive";
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t("labelAddAssetTitleBridge"),
+                    description: t(dex),
+                  },
+                });
 
-          window.open(
-            Bridge +
-              `?l2account=${account.accAddress}&token=${
-                isShowAccount?.info?.symbol ?? ""
-              }&__trace_isSharedBy=loopringExchange`
-          );
-          window.opener = null;
-        },
-      },
-      {
-        ...AddAssetList.FromOtherL2,
-        handleSelect: () => {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.QRCode,
-            info: { backTo: AccountStep.AddAssetGateway },
-          });
-        },
-      },
-      {
-        ...AddAssetList.FromExchange,
-        handleSelect: () => {
-          let dex = "labelAddAssetTitleExchangeDes";
-          if (
-            account.readyState &&
-            [
-              AccountStatus.DEPOSITING,
-              AccountStatus.NOT_ACTIVE,
-              AccountStatus.NO_ACCOUNT,
-            ].includes(
-              // @ts-ignore
-              account?.readyState
-            )
-          ) {
-            dex = "labelAddAssetTitleExchangeDesActive";
-          }
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.ThirdPanelReturn,
-            info: {
-              title: t("labelAddAssetTitleExchange"),
-              description: t(dex),
-            },
-          });
-          setShowLayerSwapNotice({ isShow: true });
-        },
-      },
-      {
-        ...AddAssetList.FromAnotherNet,
-        handleSelect: () => {
-          let dex = "labelAddAssetTitleAnotherNetDes";
-          if (
-            account.readyState &&
-            [
-              AccountStatus.DEPOSITING,
-              AccountStatus.NOT_ACTIVE,
-              AccountStatus.NO_ACCOUNT,
-            ].includes(
-              // @ts-ignore
-              account?.readyState
-            )
-          ) {
-            dex = "labelAddAssetTitleAnotherNetDesActive";
-          }
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.ThirdPanelReturn,
-            info: {
-              title: t("labelFromAnotherNet"),
-              description: t(dex),
-            },
-          });
-          setShowAnotherNetworkNotice({ isShow: true });
-        },
-      },
-    ],
+                window.open(
+                  Bridge +
+                    `?l2account=${account.accAddress}&token=${
+                      isShowAccount?.info?.symbol ?? ""
+                    }&__trace_isSharedBy=loopringExchange`
+                );
+                window.opener = null;
+              },
+            };
+          case AddAssetList.FromOtherL2.key:
+            return {
+              ...AddAssetList.FromOtherL2,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.QRCode,
+                  info: { backTo: AccountStep.AddAssetGateway },
+                });
+              },
+            };
+          case AddAssetList.FromExchange.key:
+            return {
+              ...AddAssetList.FromExchange,
+              handleSelect: () => {
+                let dex = "labelAddAssetTitleExchangeDes";
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState
+                  )
+                ) {
+                  dex = "labelAddAssetTitleExchangeDesActive";
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t("labelAddAssetTitleExchange"),
+                    description: t(dex),
+                  },
+                });
+                setShowLayerSwapNotice({ isShow: true });
+              },
+            };
+          case AddAssetList.FromAnotherNet.key:
+            return {
+              ...AddAssetList.FromAnotherNet,
+              handleSelect: () => {
+                let dex = "labelAddAssetTitleAnotherNetDes";
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState
+                  )
+                ) {
+                  dex = "labelAddAssetTitleAnotherNetDesActive";
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t("labelFromAnotherNet"),
+                    description: t(dex),
+                  },
+                });
+                setShowAnotherNetworkNotice({ isShow: true });
+              },
+            };
+        }
+
+        // .
+      }),
     [
+      network,
       account.accAddress,
       isShowAccount?.info?.symbol,
       setShowAccount,
@@ -576,53 +602,70 @@ export function useAccountModalForUI({
     ]
   );
   const sendAssetList: SendAssetItem[] = React.useMemo(
-    () => [
-      {
-        ...SendAssetList.SendAssetToL2,
-        handleSelect: (_e) => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowTransfer({
-            isShow: true,
-            symbol: isShowAccount?.info?.symbol,
-          });
-        },
-      },
-      {
-        ...SendAssetList.SendAssetToMyL1,
-        handleSelect: () => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowWithdraw({
-            isShow: true,
-            info: { isToMyself: true },
-            symbol: isShowAccount?.info?.symbol,
-          });
-        },
-      },
-      {
-        ...SendAssetList.SendAssetToOtherL1,
-        handleSelect: () => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowWithdraw({
-            isShow: true,
-            info: { isToMyself: false },
-            symbol: isShowAccount?.info?.symbol,
-          });
-        },
-      },
-      {
-        ...SendAssetList.SendAssetToAnotherNet,
-        handleSelect: () => {
-          setShowAccount({
-            isShow: false,
-          });
-          window.open(
-            "https://www.orbiter.finance/?source=Loopring&dest=Ethereum"
-          );
-          window.opener = null;
-        },
-      },
-    ],
+    () =>
+      SendAssetListMap[network].map((item: string) => {
+        switch (item) {
+          case SendAssetList.SendAssetToL2.key:
+            return {
+              ...SendAssetList.SendAssetToL2,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                });
+                setShowTransfer({
+                  isShow: true,
+                  symbol: isShowAccount?.info?.symbol,
+                });
+              },
+            };
+          case SendAssetList.SendAssetToMyL1.key:
+            return {
+              ...SendAssetList.SendAssetToMyL1,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                });
+                setShowWithdraw({
+                  isShow: true,
+                  info: { isToMyself: true },
+                  symbol: isShowAccount?.info?.symbol,
+                });
+              },
+            };
+          case SendAssetList.SendAssetToOtherL1.key:
+            return {
+              ...SendAssetList.SendAssetToOtherL1,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                });
+                setShowWithdraw({
+                  isShow: true,
+                  info: { isToMyself: false },
+                  symbol: isShowAccount?.info?.symbol,
+                });
+              },
+            };
+          case SendAssetList.SendAssetToAnotherNet.key:
+            return {
+              ...SendAssetList.SendAssetToAnotherNet,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                });
+                window.open(
+                  "https://www.orbiter.finance/?source=Loopring&dest=Ethereum"
+                );
+                window.opener = null;
+              },
+            };
+        }
+      }),
     [
+      network,
       isShowAccount?.info?.symbol,
       setShowAccount,
       setShowTransfer,
