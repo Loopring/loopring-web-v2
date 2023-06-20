@@ -688,7 +688,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     desKey: "",
     showInBlindbox: true,
     defaultForBlindbox: true,
-    icon: 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=',
+    icon: sdk.SoursURL + '/images/blindboxSelectToken.png',
     value: {
       value: 4,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -699,7 +699,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     labelKey: "NFTs-tot",
     desKey: "",
     showInBlindbox: true,
-    icon: 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=',
+    icon: sdk.SoursURL + '/images/blindboxSelectNFT.png',
     isBlindboxNFT: true,
     value: {
       value: 5,

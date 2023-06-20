@@ -29,6 +29,8 @@ import _ from "lodash";
 import moment from "moment";
 import { ColumnCoinDeep } from "../assetsTable";
 import * as sdk from "@loopring-web/loopring-sdk";
+import TextTooltip from "../../../components/text-tooltip";
+import { useTheme } from "@emotion/react";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -38,12 +40,14 @@ const TableWrapperStyled = styled(Box)`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `;
-const TableStyled = styled(Table)<{ isNFT: boolean }>`
+const TableStyled = styled(Table)<{ isUnClaimedNFT: boolean, isNFT: boolean }>`
   &.rdg {
-    --template-columns: ${({ isNFT }) =>
-      isNFT
-        ? "20% 7% auto 12% 10% 15% 10% !important"
-        : "20% 20% 30% auto auto !important"};
+    --template-columns: ${({ isUnClaimedNFT, isNFT }) =>
+      isUnClaimedNFT 
+        ? "25% 25% 25% 25% !important"
+        : isNFT
+          ? "20% 7% auto 12% 10% 15% 10% !important"
+          : "20% 20% 30% auto auto !important"};
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -89,6 +93,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       onItemClick,
       onClaimItem,
       showActionableRecords,
+      isUncliamedNFT
     } = props;
     // const { isMobile, upColor } = useSettings();
     const history = useHistory();
@@ -126,6 +131,138 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         updateData.cancel();
       };
     }, [tokenType, showActionableRecords]);
+    const theme = useTheme()
+    const fromBlindboxTag = <img 
+      width={24} 
+      height={24} 
+      style={{marginLeft: `${theme.unit}px`}}
+      src={
+      theme.mode === 'dark'
+        ? sdk.SoursURL + "/images/from_blindbox_dark.png"
+        : sdk.SoursURL + "/images/from_blindbox_light.png"
+      }
+    />
+    const getColumnModeTransactionUnclaimedNFT = React.useCallback(
+      (): Column<R, unknown>[] => [
+        {
+          key: "Token",
+          cellClass: "textAlignLeft",
+          headerCellClass: "textAlignLeft",
+          name: t("labelToken"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const { token } = row;
+            const { metadata } = token as sdk.UserNFTBalanceInfo;
+            return (
+              <Box
+                className="rdg-cell-value"
+                height={"100%"}
+                display={"flex"}
+                alignItems={"center"}
+              >
+                {metadata?.imageSize ? (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                    padding={1 / 4}
+                    style={{ background: "var(--field-opacity)" }}
+                  >
+                    {metadata?.imageSize && (
+                      <NftImage
+                        alt={metadata?.base?.name}
+                        onError={() => undefined}
+                        src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                      />
+                    )}
+                  </Box>
+                ) : (
+                  <BoxNFT
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                  />
+                )}
+                <Typography
+                  color={"inherit"}
+                  display={"inline-block"}
+                  alignItems={"center"}
+                  paddingLeft={1}
+                  overflow={"hidden"}
+                  textOverflow={"ellipsis"}
+                  component={"span"}
+                >
+                  {metadata?.base?.name ?? "NFT"}
+                </Typography>
+                {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && fromBlindboxTag}
+              </Box>
+            );
+          }
+        },
+        {
+          key: "Amount",
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          name: t("labelAmount"),
+          formatter: ({ row }: FormatterProps<R>) => {
+            return <>{`${row.amount}`}</>;
+          },
+        },
+        {
+          key: "ExpiredTime",
+          name: <TextTooltip text={t("ExpiredTime tot")} tooltipTitle={"After expiration, all unclaimed NFTs will be returned to the Sender. tot"}/> ,
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            TextTooltip
+            return (
+              <>
+                {moment(new Date(row.rawData.claim.expireTime)).format(
+                  YEAR_DAY_MINUTE_FORMAT
+                )}
+              </>
+            );
+          },
+        },
+        {
+          key: "Action",
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
+          name: "Action",
+          formatter: ({ row }: FormatterProps<R>) => {
+            if (
+              row.rawData.claim.status ===
+              sdk.ClaimRecordStatus.WAITING_CLAIM
+            ) {
+              return (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClaimItem(row.rawData, () => {
+                      handlePageChange({ page });
+                    });
+                  }}
+                >
+                  {t("labelBlindBoxCalim")}
+                </Button>
+              );
+            } else if (
+              row.rawData.claim.status === sdk.ClaimRecordStatus.EXPIRED
+            ) {
+              return <Box>{t("labelBlindBoxExpired")}</Box>;
+            } else if (
+              row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED
+            ) {
+              return <Box>{t("labelBlindBoxClaimed")}</Box>;
+            } else {
+              return <></>;
+            }
+          },
+        },
+      ],
+      [history, t, tokenType]
+    );
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -133,16 +270,20 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
-          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const { token } = row
             if (token.type === TokenType.single) {
               const _token = token as CoinInfo<any> & { type: TokenType };
               return (
+                <Box height={"100%"} display={"flex"} alignItems={"center"}>
                 <ColumnCoinDeep
                   token={{
                     ..._token,
                     name: "", // for not displaying name here
                   }}
                 />
+                {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && fromBlindboxTag}
+                </Box>
               );
             } else {
               const { metadata } = token as sdk.UserNFTBalanceInfo;
@@ -182,7 +323,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                   )}
                   <Typography
                     color={"inherit"}
-                    flex={1}
                     display={"inline-block"}
                     alignItems={"center"}
                     paddingLeft={1}
@@ -192,6 +332,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                   >
                     {metadata?.base?.name ?? "NFT"}
                   </Typography>
+                  {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && fromBlindboxTag}
                 </Box>
               );
             }
@@ -306,8 +447,11 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       ],
       [history, t, tokenType]
     );
+
     const defaultArgs: any = {
-      columnMode: getColumnModeTransaction(),
+      columnMode: isUncliamedNFT 
+        ? getColumnModeTransactionUnclaimedNFT() 
+        : getColumnModeTransaction(),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
@@ -316,6 +460,7 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
     return (
       <TableWrapperStyled>
         <TableStyled
+          isUnClaimedNFT={isUncliamedNFT ? true : false}
           isNFT={tokenType === TokenType.nft}
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight

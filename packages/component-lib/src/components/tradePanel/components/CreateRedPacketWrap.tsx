@@ -1000,6 +1000,7 @@ export const CreateRedPacketStepType = withTranslation()(
                         type: {
                           ...tradeData?.type,
                           // scope: value,
+                          scope: item.isBlindboxNFT ? 1 : tradeData.type?.scope,
                           partition: item.value.partition,
                           mode: item.value.mode,
                         },
@@ -1099,7 +1100,7 @@ export const CreateRedPacketStepType = withTranslation()(
             </Typography>
           </>
         ) : (
-          <Box marginBottom={2} display={"flex"} alignItems={"stretch"}>
+          <Box marginBottom={4} display={"flex"} alignItems={"stretch"}>
             <RadioGroup
               aria-label="withdraw"
               name="withdraw"
@@ -1113,7 +1114,7 @@ export const CreateRedPacketStepType = withTranslation()(
                 } as any);
               }}
             >
-              {[1, 0].map((key) => {
+              {(tradeData.isNFT ? [1] : [1, 0]).map((key) => {
                 return (
                   <FormControlLabel
                     key={key}
@@ -1213,7 +1214,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
         justifyContent={"space-evenly"}
       >
         <Grid container spacing={2}>
-          <Grid item xs={6} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={"flex"} marginBottom={2}>
             <CardStyleItem
               className={
                 tradeType === RedPacketOrderType.TOKEN
@@ -1244,7 +1245,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               </CardContent>
             </CardStyleItem>
           </Grid>
-          <Grid item xs={6} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={"flex"} marginBottom={2}>
             {showNFT && (
               <CardStyleItem
                 className={
@@ -1278,7 +1279,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               </CardStyleItem>
             )}
           </Grid>
-          <Grid item xs={6} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={"flex"} marginBottom={2}>
             {showNFT && (
               <CardStyleItem
                 className={
@@ -1306,7 +1307,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                     </Typography>
                   </Typography>
                   <Typography component={"span"} variant={"h5"} marginTop={2}>
-                    Blindbox[to translate]
+                    Blindbox tot
                   </Typography>
                 </CardContent>
               </CardStyleItem>

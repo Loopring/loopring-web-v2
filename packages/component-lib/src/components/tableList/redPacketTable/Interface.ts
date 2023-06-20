@@ -117,6 +117,7 @@ export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
   ) => void;
   getRedPacketReceiveList: (props: any) => void;
   showActionableRecords: boolean;
+  isUncliamedNFT?: boolean
 }
 
 export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
@@ -134,6 +135,7 @@ export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
   ) => any;
   getRedPacketReceiveList: (props: any) => void;
   showActionableRecords: boolean;
+  isUnclaimed?: boolean;
 }
 
 export enum LuckyTokenItemStatusMap {

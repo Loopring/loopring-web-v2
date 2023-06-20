@@ -73,6 +73,7 @@ export function useRedPacketModal() {
     React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
   const [blinBoxDetail, setBlindBoxDetail] =
     React.useState<undefined | any>(undefined);
+  console.log('blinBoxDetail', blinBoxDetail)
   const [qrcode, setQrcode] =
     React.useState<undefined | sdk.LuckyTokenItemForReceive>(undefined);
   const ImageEle = React.useMemo(() => {
@@ -643,9 +644,10 @@ export function useRedPacketModal() {
               setBlindBoxType("Not Started");
             } else if (
               now >= response.detail.luckyToken.validSince &&
-              now < response.detail.luckyToken.validUntil &&
-              response.detail.luckyToken.status !==
-                sdk.LuckyTokenItemStatus.COMPLETED
+              now < response.detail.luckyToken.validUntil 
+              // &&
+              // response.detail.luckyToken.status !==
+              //   sdk.LuckyTokenItemStatus.COMPLETED
             ) {
               setBlindBoxType("Blind Box Started");
             } else if (
@@ -654,8 +656,8 @@ export function useRedPacketModal() {
                 sdk.LuckyTokenItemStatus.COMPLETED
             ) {
               if (
-                (response2.raw_data as any).blindBoxStatus ===
-                sdk.BlindBoxStatus.NOT_OPENED
+                (response2.raw_data as any).blindBoxStatus === sdk.BlindBoxStatus.NOT_OPENED &&
+                Date.now() > (response2.raw_data as any).luckyToken.validUntil
               ) {
                 const claimLuckyTokenResponse =
                   await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
@@ -690,13 +692,14 @@ export function useRedPacketModal() {
                     // tokenMap[]
                     const token = tokenMap[idIndex[response.detail.tokenId]];
                     const coin = coinMap[idIndex[response.detail.tokenId]];
-                    const tokenIcon = coinJson[coin?.simpleName!]
-        // ? [coinJson[head], undefined]
-        // : [undefined, undefined];
-                    // token.symbol
+        //             const tokenIcon = coinJson[coin?.simpleName!]
+        // // ? [coinJson[head], undefined]
+        // // : [undefined, undefined];
+        //             // token.symbol
 
                     const amount = getValuePrecisionThousand(
-                      volumeToCountAsBigNumber(token.symbol, response.detail.claimAmount as any),
+                      sdk.toBig(response.detail.claimAmount)
+                        .div("1e" + token.decimals),
                       token.precision,
                       token.precision,
                       undefined,
@@ -1058,6 +1061,7 @@ export function useRedPacketModal() {
     step,
   ]);
   const { setShowClaimWithdraw } = useOpenModals();
+  // const { idIndex, tokenMap} = useTokenMap()
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
@@ -1099,6 +1103,37 @@ export function useRedPacketModal() {
             ? "expired"
             : "hidden"
           : "hidden";
+      
+      //     const temp = {
+      //   participated: blinBoxDetail.blindBoxStatus !== "",
+      //   won: detail.claimAmount && toBig(detail.claimAmount).isGreaterThan(0),
+      //   amout: 'detail.claimAmount',
+      //   total: 'todo',
+      //   symbol: 'todo',
+      //   isNFT: false
+      // } 
+      // debugger
+      
+      const tokenInfo = !detail.luckyToken.isNft 
+        ? tokenMap[idIndex[1]] 
+        : undefined
+        console.log('asdhasjkdh',blinBoxDetail)
+        const a = sdk
+        .toBig(blinBoxDetail.claimAmount)
+        .div(tokenInfo!.decimals)
+        // debugger
+        console.log('asdhasjkdh',sdk
+        .toBig(blinBoxDetail.claimAmount)
+        .div(tokenInfo!.decimals))
+        console.log('asdhasjkdh',getValuePrecisionThousand(
+          sdk
+            .toBig(blinBoxDetail.claimAmount)
+            .div("1e" + tokenInfo!.decimals),
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          true
+        ))
 
       return {
         sender: _info.sender?.ens
@@ -1113,10 +1148,8 @@ export function useRedPacketModal() {
           .getTime(),
         opendBlindBoxAmount: detail!.luckyToken.tokenAmount.claimedBoxCount,
         totalBlindBoxAmount: detail!.luckyToken.tokenAmount.totalCount,
-        deliverdGiftsAmount:
-          Number(detail!.luckyToken.tokenAmount.totalAmount) -
-          Number(detail!.luckyToken.tokenAmount.remainAmount),
-        totalGiftsAmount: Number(detail!.luckyToken.tokenAmount.totalAmount),
+        deliverdGiftsAmount: (detail as any).totalNum,
+        totalGiftsAmount: Number(detail!.luckyToken.tokenAmount.giftCount),
         // imageEle?: JSX.Element | undefined;
         onShared: () => {
           setShowRedPacket({
@@ -1134,17 +1167,26 @@ export function useRedPacketModal() {
             setBlindBoxType("BlindBox Claime Detail");
           });
         },
-        NFTClaimList: detail!.claims.map((x) => {
+        NFTClaimList: detail!.claims.map((claim) => {
           return {
-            isMe: x.claimer.accountId === account.accountId,
-            who: x.claimer?.ens
-              ? x.claimer?.ens
-              : getShortAddr(x.claimer?.address),
-            when: x.createdAt,
-            amount: x.amount,
+            isMe: claim.claimer.accountId === account.accountId,
+            who: claim.claimer?.ens
+              ? claim.claimer?.ens
+              : getShortAddr(claim.claimer?.address),
+            when: claim.createdAt,
+            amount: detail.luckyToken.isNft 
+              ? claim.amount
+              : getValuePrecisionThousand(
+                sdk.toBig(claim.amount)
+                .div("1e" + tokenInfo!.decimals),
+                tokenInfo!.precision,
+                tokenInfo!.precision,
+                tokenInfo!.precision
+              ) + " " + tokenInfo!.symbol,
+            showMultiplier: detail.luckyToken.isNft,
             showLuckiest:
               detail.luckyToken.tokenAmount.remainAmount == "0" &&
-              detail.champion?.accountId === x.claimer.accountId,
+              detail.champion?.accountId === claim.claimer.accountId,
           };
         }),
         // to change
@@ -1251,11 +1293,38 @@ export function useRedPacketModal() {
         claimButton,
         shareButton,
         didClaimABlindBox: blinBoxDetail.blindBoxStatus !== "",
-        wonInfo: {
-          participated: blinBoxDetail.blindBoxStatus !== "",
-          won: detail.claimAmount && toBig(detail.claimAmount).isGreaterThan(0),
-          amount: detail.claimAmount,
-        },
+        wonInfo: blinBoxDetail!.luckyToken.isNft 
+          ? {
+            participated: blinBoxDetail.blindBoxStatus !== "",
+            won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
+            amount: detail.claimAmount,
+            isNFT: true
+          } 
+          : {
+            participated: blinBoxDetail.blindBoxStatus !== "",
+            won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
+            amount: getValuePrecisionThousand(
+              sdk
+                .toBig(blinBoxDetail.claimAmount)
+                .div("1e" + tokenInfo!.decimals),
+              tokenInfo!.precision,
+              tokenInfo!.precision,
+              tokenInfo!.precision,
+              true
+            ),
+            total: getValuePrecisionThousand(
+              sdk
+                .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
+                .div("1e" + tokenInfo!.decimals),
+              tokenInfo!.precision,
+              tokenInfo!.precision,
+              tokenInfo!.precision,
+              true
+            ),
+            symbol: tokenInfo!.symbol,
+            isNFT: false
+          } 
+        ,
         handlePageChange: (page: number = 1) => {
           setPage(page);
           // redPacketBlindBoxDetailCall({ offset: (detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit) * (page - 1) });
@@ -1296,6 +1365,8 @@ export function useRedPacketModal() {
           });
         },
         expired: Date.now() > detail!.luckyToken.nftExpireTime,
+        isTokenBlindbox: detail!.luckyToken.isNft ? false : true,
+        remainGiftsAmount: Number(detail!.luckyToken.tokenAmount.giftCount) - (detail as any).totalNum,
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;

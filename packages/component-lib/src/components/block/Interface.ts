@@ -156,6 +156,7 @@ export type RedPacketBlindBoxDetailProps = {
     when: number;
     amount: number;
     showLuckiest?: boolean;
+    showMultiplier: boolean;
   }[];
   BlindBoxClaimList?: {
     who: string;
@@ -185,6 +186,14 @@ export type RedPacketBlindBoxDetailProps = {
     participated: boolean;
     won: boolean;
     amount: number;
+    isNFT: true
+  } | {
+    participated: boolean;
+    won: boolean;
+    amount: string;
+    total: string;
+    symbol: string;
+    isNFT: false
   };
   page: number;
   totalCount: number;
@@ -197,6 +206,8 @@ export type RedPacketBlindBoxDetailProps = {
   // didClaimABlindBox: boolean;
   onClickClaimPopViewDetail: () => void;
   expired: boolean;
+  isTokenBlindbox: boolean;
+  remainGiftsAmount: number;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

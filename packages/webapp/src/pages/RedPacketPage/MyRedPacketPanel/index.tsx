@@ -310,6 +310,7 @@ export const MyRedPacketPanel = ({
                   total: redPacketReceiveTotal,
                 },
                 showActionableRecords,
+                isUncliamedNFT: currentTab === TabIndex.NFTsUnClaimed
               }}
             />
           </Box>
@@ -334,6 +335,7 @@ export const MyRedPacketPanel = ({
                 total: redPacketReceiveTotal_BlindBox,
               }}
               showActionableRecords={showActionableRecords}
+              isUnclaimed={currentTab === TabIndex.BlindBoxUnClaimed}
             />
           </Box>
         )}

@@ -1305,6 +1305,7 @@ export default {
     "{{remainingGiftsAmount}} gifts available for grabbing.",
   labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
   labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
+  labelBlindBoxTokenHint: "Unopen tokens will be returned back to sender after: {{time}}",
   labelBlindBoxClaimStarted:
     "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
   labelBlindBoxRecievedNFT:
