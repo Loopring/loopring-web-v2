@@ -94,6 +94,8 @@ export async function activateAccount({
       validUntil: getTimestampDaysLater(DAYS),
       keySeed,
       nonce: accInfo.nonce as number,
+      // @ts-ignore
+      recommenderAccountId: "" as any,
     };
 
     myLog("updateAccountFromServer req:", request);

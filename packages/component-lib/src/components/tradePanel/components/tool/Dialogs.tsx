@@ -210,7 +210,7 @@ export const CancelOneOrdersAlert = withTranslation("common", {
             variant={"contained"}
             size={"small"}
             onClick={async (e) => {
-              handleCancelOne();
+              await handleCancelOne();
               handleClose(e as any, true);
             }}
             color={"primary"}
@@ -1213,6 +1213,86 @@ export const LayerswapNotice = withTranslation("common", {
               );
               window.opener = null;
               setShowLayerSwapNotice({ isShow: false });
+            }}
+            color={"primary"}
+          >
+            {t("labelIUnderStand")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
+export const AnotherNetworkNotice = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    account,
+  }: WithTranslation & {
+    open: boolean;
+    account: Account;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
+    const { setShowAnotherNetworkNotice } = useOpenModals();
+    return (
+      <DialogStyle
+        open={open}
+        onClose={() => setShowAnotherNetworkNotice({ isShow: false })}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans i18nKey={"labelAnotherNetworkDes"}>
+              LayerSwap is a 3rd party App service provider to help move tokens
+              from exchange to Loopring L2 directly. If you have any concerns
+              regarding their service, please check out their
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={
+                  "https://get.orbiter.finance/Orbiter_Finance_Terms_of_Use.pdf"
+                }
+              >
+                TOS
+              </Link>
+              .
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelAnotherNetworkUnderstand")}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={() => {
+              window.open(
+                `https://www.orbiter.finance/?source=Ethereum&dest=Loopring`
+              );
+              window.opener = null;
+              setShowAnotherNetworkNotice({ isShow: false });
             }}
             color={"primary"}
           >

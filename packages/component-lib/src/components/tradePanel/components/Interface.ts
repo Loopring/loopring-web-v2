@@ -102,13 +102,11 @@ export type TransferExtendProps<T, I, C> = {
   onBack?: () => void;
   memo: string;
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  contact?: { address: string; name: string; addressType: sdk.AddressType };
-  isFromContact?: boolean;
-  onClickContact?: () => void;
-  loopringSmartWalletVersion?: {
-    isLoopringSmartWallet: boolean;
-    version?: string;
-  };
+  contact?: {address: string, name: string, addressType: sdk.AddressType}
+  isFromContact?: boolean
+  onClickContact?: () => void
+  loopringSmartWalletVersion?: {isLoopringSmartWallet: boolean, version?: string}
+  contacts?: {address: string, name: string, addressType: sdk.AddressType}[]
 } & TransferInfoProps<C>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
@@ -242,13 +240,11 @@ export type WithdrawExtendProps<T, I, C> = {
   isToMyself?: boolean;
   sureIsAllowAddress: WALLET_TYPE | EXCHANGE_TYPE | undefined;
   handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => void;
-  contact?: { address: string; name: string; addressType?: sdk.AddressType };
-  isFromContact?: boolean;
-  onClickContact?: () => void;
-  loopringSmartWalletVersion?: {
-    isLoopringSmartWallet: boolean;
-    version?: string;
-  };
+  contact?: {address: string, name: string, addressType?: sdk.AddressType}
+  isFromContact?: boolean
+  onClickContact?: () => void
+  loopringSmartWalletVersion?: {isLoopringSmartWallet: boolean, version?: string}
+  contacts?: {address: string, name: string, addressType: sdk.AddressType}[]
 } & WithdrawInfoProps<C>;
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =

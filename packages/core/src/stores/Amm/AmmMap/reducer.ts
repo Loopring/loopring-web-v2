@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { AmmMapStates, GetAmmMapParams } from "./interface";
-import { myLog, SagaStatus } from "@loopring-web/common-resources";
+import { SagaStatus } from "@loopring-web/common-resources";
 import {
   AmmPoolInfoV3,
   ChainId,

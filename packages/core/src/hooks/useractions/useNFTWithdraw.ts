@@ -48,12 +48,11 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useHistory, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import {
   addressToExWalletMapFn,
   exWalletToAddressMapFn,
 } from "@loopring-web/core";
-import { updateContacts } from "../../stores/contacts/reducer";
+import { useContacts } from "../../stores/contacts/hooks";
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
@@ -521,8 +520,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     [lastRequest, processRequest, setShowAccount]
   );
   const { isHebao } = useIsHebao();
-  const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  const dispatch = useDispatch();
+  const { updateContacts, contacts } = useContacts()
   React.useEffect(() => {
     const addressType = contacts?.find(
       (x) => x.address === realAddr
@@ -557,17 +555,16 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
             account.apiKey
           )
           .then(() => {
-            dispatch(
-              updateContacts(
-                contacts?.map((x) => {
-                  if (x.address === realAddr) {
-                    return { ...x, addressType: found };
-                  } else {
-                    return x;
-                  }
-                })
-              )
-            );
+            updateContacts(
+              contacts?.map((x) => {
+                if (x.address === realAddr && found) {
+                  return { ...x, addressType: found };
+                } else {
+                  return x;
+                }
+              })
+            )
+
           });
       }
       setSureIsAllowAddress(value);
@@ -630,6 +627,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     chargeFeeTokenList,
     isFeeNotEnough,
     isLoopringAddress: true,
+    contacts
   } as WithdrawProps<any, any>;
 
   return {

@@ -123,7 +123,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         key: "Token",
         name: t("labelToken"),
         formatter: ({ row }: FormatterProps<R>) => {
-          const metadata = row.rawData.luckyToken.nftTokenInfo.metadata;
+          const metadata = row.rawData.luckyToken.nftTokenInfo?.metadata;
           return (
             <Box
               className="rdg-cell-value"

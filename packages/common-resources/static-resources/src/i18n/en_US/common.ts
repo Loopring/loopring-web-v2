@@ -1504,11 +1504,11 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
+  labelRedPacketStartWithTime: "{{time}} Start",
   labelRedPacketTabReceived: "Received",
   labelRedPacketTabSent: "Sent",
   labelRedPacketTabNFTs: "NFTs",
   labelRedPacketTabBlindBox: "Blind Box",
-  labelRedPacketStartWithTime: "{{time}} Start",
   labelOrderOpen: "Continue",
   labelOrderCancel: "Cancel",
   labelOrderBanxaIsReadyToPay:
@@ -1655,7 +1655,7 @@ export default {
   labelBtradeSwapDeliverDes:
     "The Loopring pool is currently unable to swap the full requested amount. The tokens that were successfully swapped will be transferred to your account now. The unswapped tokens will be locked until they can be swapped. \n We’ll rebalance the pool shortly and swap the remaining portion.",
   labelGoBtradeSwap:
-    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <link>Block Trade</link> option to help minimize potential losses.",
+    "Swapping on the DEX will result in a large Price Impact (loss of assets). We recommend using the <a>Block Trade</a> option to help minimize potential losses.",
   labelBtradeSwap: "Block Trade",
   labelBtrade: "Block Trade",
   labelBtradeSwapFailed: "Failed!",
@@ -1780,4 +1780,14 @@ export default {
   labelBtradeSettled: "Settled",
   labelOrderCancelConfirm: "Confirm to cancel this order?",
   labelOrderCancelOrder: "Cancel",
+  labelLocketInfo: "{{symbol}} Locked Detail",
+  labelSendAssetToAnotherNet: "To another network",
+  labelFromAnotherNet: "From another network",
+  labelAddAssetTitleAnotherNetDes:
+    "If you have transferred tokens from another network, please wait. ",
+  labelAddAssetTitleAnotherNetDesActive:
+    "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
+  labelAnotherNetworkDes:
+    "Orbiter.finance is a 3rd party service provider to help move tokens between various Ethereum L1 and L2 networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
+  labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
 };

@@ -56,6 +56,7 @@ import { ContactPage } from "pages/ContactPage";
 import { ContactTransactionsPage } from "pages/ContactPage/transactions";
 import { BtradeSwapPage } from "../pages/BtradeSwapPage";
 import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
+import { ReferralRewardsPanel } from "../pages/Layer2Page/ReferralRewardsPanel";
 
 const ContentWrap = ({
   children,
@@ -295,7 +296,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <TradeRacePage />
         </Route>
 
-        <Route path="/trade/pro">
+        <Route path={RouterPath.pro}>
           {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
@@ -310,12 +311,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             </Box>
           )}
         </Route>
-        <Route path="/trade/lite">
+        <Route path={RouterPath.lite}>
           <ContentWrap state={state}>
             <SwapPage />
           </ContentWrap>
         </Route>
-        <Route path="/trade/btrade">
+        <Route path={RouterPath.btrade}>
           <ContentWrap state={state}>
             {!BTradeInvest.enable && BTradeInvest.reason === "no view" ? (
               <ComingSoonPanel />
@@ -324,7 +325,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             )}
           </ContentWrap>
         </Route>
-        <Route path="/trade/stopLimit">
+        <Route path={RouterPath.stoplimit}>
           {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
@@ -343,7 +344,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             </Box>
           )}
         </Route>
-        <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
+        <Route exact path={[RouterPath.fiat, RouterPath.fiat + "/*"]}>
           <ContentWrap state={state}>
             <FiatPage />
           </ContentWrap>
@@ -372,6 +373,20 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <ContentWrap state={state}>
             <Layer2Page />
           </ContentWrap>
+        </Route>
+        <Route exact path={"/referralrewards"}>
+          {searchParams && searchParams.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} isWrap={true} />
+          )}
+          {state === "PENDING" ? (
+            <LoadingBlock />
+          ) : (
+            <Box display={"flex"} flexDirection={"column"} flex={1}>
+              <ReferralRewardsPanel />
+            </Box>
+          )}
         </Route>
         <Route exact path={["/nft", "/nft/*"]}>
           <ContentWrap state={state}>

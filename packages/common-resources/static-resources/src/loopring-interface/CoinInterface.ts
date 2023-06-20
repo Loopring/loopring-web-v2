@@ -103,13 +103,15 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   priceImpactColor: string;
   feeTakerRate?: number;
   tradeCost?: string;
-  showLargeVolumeSwapInfo?: boolean;
   isBtrade: undefined | false;
+  isShowBtradeAllow?: boolean;
 };
+
 export enum BtradeType {
   Quantity = "Quantity",
   Speed = "Speed",
 }
+
 export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true;
   maxFeeBips: number;

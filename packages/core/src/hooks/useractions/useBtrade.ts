@@ -476,7 +476,6 @@ export const useBtradeSwap = <
         throw new Error("api not ready");
       }
     } catch (error: any) {
-      console.log(error, error?.message, error?.stack);
       let content: string = "";
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
         content =
@@ -728,14 +727,14 @@ export const useBtradeSwap = <
           },
         };
 
-        const sellCoinInfoMap = tradeMap[coinB].tradePairs?.reduce(
+        const sellCoinInfoMap = tradeMap[coinB]?.tradePairs?.reduce(
           (prev: any, item: string | number) => {
             return { ...prev, [item]: coinMap[item] };
           },
           {} as CoinMap<C>
         );
 
-        const buyCoinInfoMap = tradeMap[coinA].tradePairs?.reduce(
+        const buyCoinInfoMap = tradeMap[coinA]?.tradePairs?.reduce(
           (prev: any, item: string | number) => {
             return { ...prev, [item]: coinMap[item] };
           },
@@ -751,8 +750,8 @@ export const useBtradeSwap = <
             walletMap,
             coinSell: coinA,
             coinBuy: coinB,
-            sellPrecision: tokenMap[coinA as string].precision,
-            buyPrecision: tokenMap[coinB as string].precision,
+            sellPrecision: tokenMap[coinA as string]?.precision,
+            buyPrecision: tokenMap[coinB as string]?.precision,
             sellCoinInfoMap,
             buyCoinInfoMap,
             StoB: undefined,
