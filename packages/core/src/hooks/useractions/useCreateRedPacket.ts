@@ -52,7 +52,7 @@ import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redPacket";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -927,6 +927,72 @@ export const useCreateRedPacket = <
     },
     [processRequest, setShowAccount]
   );
+  const location = useLocation()
+  // const { account } = useAccount()
+  // console.log('setSelectNFT', selectNFT)
+  React.useEffect(() => {
+    (async () => {
+      updateRedPacketOrder({
+        ...redPacketOrder,
+        tradeType: RedPacketOrderType.FromNFT,
+        isNFT: true,
+      })
+      
+      const nftDatas = new URLSearchParams(location.search).get('nftDatas')
+      if (nftDatas) {
+        const info = await LoopringAPI.nftAPI?.getInfoForNFTTokens({
+          nftDatas: [nftDatas]
+        })
+        if (info && info[nftDatas]) {
+          // LoopringAPI.nftAPI?.getCollectionWholeNFTs({
+
+
+          // }, account.apiKey)
+          const balance = await LoopringAPI.userAPI?.getUserNFTBalances({
+            accountId: account.accountId,
+            nftDatas: nftDatas,
+            metadata: true
+          }, account.apiKey)
+          const balanceInfo = balance!.userNFTBalances[0]
+
+          // const info = await LoopringAPI.userAPI?.getUserNFTBalancesByCollection({
+          //   // web3,
+          //   tokenAddress: balanceInfo.collectionInfo.contractAddress,
+          //   accountId: account.accountId,
+          //   collectionId: Number(balanceInfo.collectionInfo.id),
+          //   limit: 100
+          //   // nftId: balanceInfo.nftId,
+          //   // id: Number(balanceInfo.collectionInfo.id),
+          //   // limit: 100
+          // }, account.apiKey)
+          // LoopringAPI.userAPI?.getUserNFTBalancesByCollection({
+
+          // })
+          // setSelectNFT({
+          //   ...balanceInfo,
+          // });
+          // debugger
+          
+
+          handleOnDataChange({
+            collectionInfo: balanceInfo.collectionInfo,
+            tokenId: balanceInfo.tokenId,
+            tradeValue: undefined,
+            balance: balanceInfo.total,
+            nftData: balanceInfo.nftData,
+            belong: balanceInfo.metadata?.base.name,
+            tokenAddress: balanceInfo.tokenAddress,
+            image: balanceInfo?.metadata?.imageSize
+              && balanceInfo?.metadata?.imageSize["240-240"],
+            
+            // : balanceInfo.image,
+          } as T);
+          // }
+          // debugger
+        }
+      } 
+    })()
+  }, [location.search])
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
@@ -964,6 +1030,7 @@ export const useCreateRedPacket = <
         } as T);
       }
     },
+    selectNFTDisabled: redPacketOrder.tradeType === RedPacketOrderType.FromNFT
   } as unknown as CreateRedPacketProps<T, I, F, NFT>;
 
   return { createRedPacketProps, retryBtn };

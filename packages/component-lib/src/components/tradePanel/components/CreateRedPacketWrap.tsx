@@ -118,6 +118,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType,
     minimum,
     maximum,
+    selectNFTDisabled,
     ...rest
   }: CreateRedPacketViewProps<T, I, F> & {
     selectedType: LuckyRedPacketItem;
@@ -514,6 +515,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   { to, tradeData: newTradeData }: SwitchData<T>
                 ) => {
                   if (_index === 1) {
+                    if (selectNFTDisabled) return
                     handleOnDataChange({
                       collectionInfo: undefined,
                       tokenId: undefined,
@@ -556,7 +558,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
             })}
           </Typography>
         </Box>
-        {tradeType === RedPacketOrderType.BlindBox && (
+
+        {tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
             <Box
               marginY={1}
               display={"flex"}
@@ -980,7 +983,9 @@ export const CreateRedPacketStepType = withTranslation()(
               ? item.showInNFTS
               : tradeType == RedPacketOrderType.BlindBox
                 ? item.showInBlindbox
-                : item.showInERC20
+                : tradeType == RedPacketOrderType.FromNFT
+                  ? item.showInFromNFT
+                  : item.showInERC20
           ).map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
@@ -1149,7 +1154,7 @@ export const CreateRedPacketStepType = withTranslation()(
           flexDirection={"row"}
           justifyContent={"space-between"}
         >
-          <Box width={"48%"}>
+          {tradeType !== RedPacketOrderType.FromNFT && <Box width={"48%"}>
             <Button
               variant={"outlined"}
               size={"medium"}
@@ -1164,8 +1169,8 @@ export const CreateRedPacketStepType = withTranslation()(
             >
               {t(`labelMintBack`)}
             </Button>
-          </Box>
-          <Box width={"48%"}>
+          </Box>}
+          <Box width={tradeType === RedPacketOrderType.FromNFT ? "100%" : "48%"}>
             <BtnMain
               {...{
                 defaultLabel: "labelContinue",

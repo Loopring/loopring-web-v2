@@ -648,17 +648,6 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       mode: sdk.LuckyTokenClaimType.RELAY,
     },
   },
-  // {
-  //   labelKey: "labelLuckyBlindBox",
-  //   desKey: "labelLuckyBlindBoxDes",
-  //   defaultForNFT: true,
-  //   showInNFTS: true,
-  //   value: {
-  //     value: 3,
-  //     partition: sdk.LuckyTokenAmountType.RANDOM,
-  //     mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-  //   },
-  // },
   {
     labelKey: "labelLuckyRandomToken",
     desKey: "labelRedPacketsSplitLuckyDetail",
@@ -705,6 +694,37 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       value: 5,
       partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
+    labelKey: "Blind Box-tot",
+    desKey: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time. tot",
+    defaultForFromNFT: true,
+    showInFromNFT: true,
+    value: {
+      value: 6,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
+    labelKey: "Lucky Red Packet-tot",
+    desKey: "Each recipient will get a random amount of the total Red Packet shared. tot",
+    showInFromNFT: true,
+    value: {
+      value: 7,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
+  {
+    labelKey: "Normal Red Packet tot",
+    desKey: "Each recipient will receive a pre-set split of the total Red Packet shared.",
+    showInFromNFT: true,
+    value: {
+      value: 8,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.COMMON,
     },
   },
 ];
@@ -765,6 +785,7 @@ export enum RedPacketOrderType {
   TOKEN = "TOKEN",
   NFT = "NFT",
   BlindBox = "BlindBox",
+  FromNFT = "FromNFT",
 }
 
 export type RedPacketOrderData<I> =
