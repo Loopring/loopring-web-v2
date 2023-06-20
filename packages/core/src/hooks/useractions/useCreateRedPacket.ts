@@ -932,14 +932,13 @@ export const useCreateRedPacket = <
   // console.log('setSelectNFT', selectNFT)
   React.useEffect(() => {
     (async () => {
-      updateRedPacketOrder({
-        ...redPacketOrder,
-        tradeType: RedPacketOrderType.FromNFT,
-        isNFT: true,
-      })
-      
       const nftDatas = new URLSearchParams(location.search).get('nftDatas')
       if (nftDatas) {
+        updateRedPacketOrder({
+          ...redPacketOrder,
+          tradeType: RedPacketOrderType.FromNFT,
+          isNFT: true,
+        })
         const info = await LoopringAPI.nftAPI?.getInfoForNFTTokens({
           nftDatas: [nftDatas]
         })

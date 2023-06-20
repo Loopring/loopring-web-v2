@@ -66,6 +66,7 @@ export const CreateRedPacketPanel = <
       ? RedPacketStep.ChooseType
       : RedPacketStep.TradeType
   );
+  
   const steps = tradeType === RedPacketOrderType.FromNFT
     ? [
       "labelRedPacketChoose", //Prepare NFT metadata
@@ -76,6 +77,8 @@ export const CreateRedPacketPanel = <
       "labelRedPacketChoose", //Prepare NFT metadata
       "labelRedPacketMain", //labelADMint2
     ];
+  console.log('tradeTypetradeType', tradeType)
+  console.log('tradeTypetradeType', steps)
 
   React.useEffect(() => {
     // isToken
