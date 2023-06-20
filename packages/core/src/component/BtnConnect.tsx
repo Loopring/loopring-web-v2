@@ -1,18 +1,14 @@
 import { withTranslation } from "react-i18next";
 import {
-  // accountReducer,
-  useAccount,
-  store,
   accountStaticCallBack,
   btnClickMap,
   btnLabel,
+  store,
+  useAccount,
 } from "../index";
 import {
-  // AccountStep,
   Button,
-  // setShowAccount,
   setShowConnect,
-  // WalletConnectUI,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -26,6 +22,7 @@ import {
   SagaStatus,
 } from "@loopring-web/common-resources";
 import { changeShowModel } from "../stores/account/reducer";
+
 export const WalletConnectL2Btn = withTranslation(["common"], {
   withRef: true,
 })(({ t }: any) => {

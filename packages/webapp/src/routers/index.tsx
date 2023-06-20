@@ -151,8 +151,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const { tickerMap } = useTicker();
-  const {marketArray} = useTokenMap();
-  const {setTheme, defaultNetwork} = useSettings();
+  const { marketArray } = useTokenMap();
+  const { setTheme, defaultNetwork } = useSettings();
   const {
     toggle: { BTradeInvest, StopLimit },
   } = useToggle();

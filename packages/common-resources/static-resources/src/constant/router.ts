@@ -45,7 +45,7 @@ export enum Layer2RouterID {
   referralrewards = "referralrewards",
   forcewithdraw = "forcewithdraw",
 }
-export const profile = {
+export const Profile = {
   security: [
     {
       icon: SecurityIcon,
@@ -87,6 +87,13 @@ export const profile = {
     },
   ],
 };
+
+export enum ProfileKey {
+  security = "security",
+  vip = "vip",
+  contact = "contact",
+  referralrewards = "referralrewards",
+}
 
 export enum ButtonComponentsMap {
   Download,
@@ -152,7 +159,6 @@ export let headerToolBarData: Array<{
   {
     buttonComponent: ButtonComponentsMap.ProfileMenu,
     i18nDescription: "labelProfile",
-    subMenu: profile,
     readyState: undefined,
   },
   {
@@ -818,5 +824,21 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
+  ],
+};
+
+export const ProfileIndex = {
+  TAIKO: [ProfileKey.vip, ProfileKey.referralrewards],
+  ETHEREUM: [
+    ProfileKey.security,
+    ProfileKey.vip,
+    ProfileKey.contact,
+    ProfileKey.referralrewards,
+  ],
+  GOERLI: [
+    ProfileKey.security,
+    ProfileKey.vip,
+    ProfileKey.contact,
+    ProfileKey.referralrewards,
   ],
 };

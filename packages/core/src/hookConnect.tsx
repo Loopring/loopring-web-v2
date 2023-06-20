@@ -24,7 +24,7 @@ import {
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import { accountReducer, useAccount } from "./stores/account";
+import { useAccount } from "./stores/account";
 import { useModalData, useSystem } from "./stores";
 import {
   checkAccount,
@@ -274,15 +274,22 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   );
 
   const handleProcessing = React.useCallback(
-    ({ opts }: { type: ProcessingType; opts: any }) => {
-      const { qrCodeUrl } = opts;
-      if (qrCodeUrl) {
-        store.dispatch(accountReducer.updateAccountStatus({ qrCodeUrl }));
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.WalletConnectQRCode,
-        });
+    ({ opts, type }: { type: ProcessingType; opts: any }) => {
+      if (opts == ProcessingType.nextStep) {
+        if (opts.step !== undefined && opts.step == 0) {
+          setShowConnect({
+            isShow: false,
+          });
+        }
       }
+      // const { qrCodeUrl } = opts;
+      // if (qrCodeUrl) {
+      //   store.dispatch(accountReducer.updateAccountStatus({ qrCodeUrl }));
+      //   setShowConnect({
+      //     isShow: true,
+      //     step: WalletConnectStep.WalletConnectQRCode,
+      //   });
+      // }
     },
     [setShowConnect]
   );

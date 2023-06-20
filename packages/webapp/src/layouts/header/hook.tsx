@@ -8,6 +8,8 @@ import {
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
   MapChainId,
+  Profile,
+  ProfileIndex,
   SagaStatus,
 } from "@loopring-web/common-resources";
 
@@ -35,9 +37,8 @@ export const useHeader = () => {
   const { defaultNetwork } = useSettings();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { setShowAccount } = useOpenModals();
-  // const accountState = React.useMemo(() => {
-  //   return { account };
-  // }, [account]);
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const profile = ProfileIndex[network];
 
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [
@@ -100,6 +101,7 @@ export const useHeader = () => {
         };
         headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
           ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
+          subMenu: profile.map((item: string) => Profile[item]),
           readyState: account.readyState,
         };
         return headerToolBarData;
@@ -112,7 +114,7 @@ export const useHeader = () => {
     headerToolBarData,
     headerMenuData: [1, 5].includes(Number(defaultNetwork))
       ? headerMenuData
-      : headerMenuDataMap[MapChainId[defaultNetwork] ?? 1],
+      : headerMenuDataMap[network],
     headerMenuLandingData,
     account,
     notifyMap,
