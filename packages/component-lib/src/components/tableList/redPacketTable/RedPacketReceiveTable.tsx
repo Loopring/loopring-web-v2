@@ -46,8 +46,8 @@ const TableStyled = styled(Table)<{ isUnClaimedNFT: boolean, isNFT: boolean }>`
       isUnClaimedNFT 
         ? "25% 25% 25% 25% !important"
         : isNFT
-          ? "20% 7% auto 12% 10% 15% 10% !important"
-          : "20% 20% 30% auto auto !important"};
+          ? "25% 25% 25% 25% !important"
+          : "33% 33% 33% !important"};
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -347,71 +347,59 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             return <>{`${row.amount}`}</>;
           },
         },
-        {
-          key: "Type",
-          name: t("labelType"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>
-                {t(
-                  row.type.mode === sdk.LuckyTokenClaimType.RELAY
-                    ? "labelLuckyRelayToken"
-                    : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? "labelLuckyBlindBox"
-                    : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
-                    ? "labelRedPacketSendCommonTitle"
-                    : "labelRedPacketSenRandomTitle",
-                  { ns: "common" }
-                ) +
-                  " — " +
-                  t(`labelRedPacketViewType${row?.type?.scope ?? 0}`, {
-                    ns: "common",
-                  })}
-              </>
-            );
-          },
-        },
-        {
-          key: "Address",
-          name: t("labelAddress"),
-          formatter: ({ row }: FormatterProps<R>) => {
-            return <>{row.sender}</>;
-          },
-        },
-        {
-          key: "Time",
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelReceiveTime"),
-          formatter: ({ row }: FormatterProps<R>) => {
-            return (
-              <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>
-            );
-          },
-        },
-        // ...[tokenType === TokenType.nft?]
+        // {
+        //   key: "Type",
+        //   name: t("labelType"),
+        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
+        //     return (
+        //       <>
+        //         {t(
+        //           row.type.mode === sdk.LuckyTokenClaimType.RELAY
+        //             ? "labelLuckyRelayToken"
+        //             : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+        //             ? "labelLuckyBlindBox"
+        //             : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
+        //             ? "labelRedPacketSendCommonTitle"
+        //             : "labelRedPacketSenRandomTitle",
+        //           { ns: "common" }
+        //         ) +
+        //           " — " +
+        //           t(`labelRedPacketViewType${row?.type?.scope ?? 0}`, {
+        //             ns: "common",
+        //           })}
+        //       </>
+        //     );
+        //   },
+        // },
+        // {
+        //   key: "Address",
+        //   name: t("labelAddress"),
+        //   formatter: ({ row }: FormatterProps<R>) => {
+        //     return <>{row.sender}</>;
+        //   },
+        // },
         ...(tokenType === TokenType.nft
           ? [
-              {
-                key: "End Time",
-                cellClass: "textAlignRight",
-                headerCellClass: "textAlignRight",
-                name: t("labelBlindBoxEndTime"),
-                formatter: ({ row }: FormatterProps<R>) => {
-                  return (
-                    <>
-                      {moment(
-                        new Date(row.rawData.luckyToken.validUntil)
-                      ).format(YEAR_DAY_MINUTE_FORMAT)}
-                    </>
-                  );
-                },
-              },
+              // {
+              //   key: "End Time",
+              //   cellClass: "textAlignRight",
+              //   headerCellClass: "textAlignRight",
+              //   name: t("labelBlindBoxEndTime"),
+              //   formatter: ({ row }: FormatterProps<R>) => {
+              //     return (
+              //       <>
+              //         {moment(
+              //           new Date(row.rawData.luckyToken.validUntil)
+              //         ).format(YEAR_DAY_MINUTE_FORMAT)}
+              //       </>
+              //     );
+              //   },
+              // },
               {
                 key: "Action",
                 cellClass: "textAlignRight",
                 headerCellClass: "textAlignRight",
-                name: "Action",
+                name: t("labelRecordStatus"),
                 formatter: ({ row }: FormatterProps<R>) => {
                   if (
                     row.rawData.claim.status ===
@@ -444,6 +432,19 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
               },
             ]
           : []),
+        {
+          key: "Time",
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignRight",
+          name: t("labelReceiveTime"),
+          formatter: ({ row }: FormatterProps<R>) => {
+            return (
+              <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>
+            );
+          },
+        },
+        // ...[tokenType === TokenType.nft?]
+        
       ],
       [history, t, tokenType]
     );

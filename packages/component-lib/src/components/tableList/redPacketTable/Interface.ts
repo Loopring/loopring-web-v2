@@ -95,6 +95,7 @@ export interface RedPacketRecordsTableProps<R, C = sdk.Currency> {
     total: number;
   };
   getMyRedPacketRecordTxList: (props: any) => void;
+  tableType: 'token' | 'NFT' | 'blindbox'
 }
 
 export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {

@@ -38,9 +38,9 @@ const TableWrapperStyled = styled(Box)`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `;
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table)<{isBlindbox: boolean}>`
   &.rdg {
-    --template-columns: 16% 16% 26% auto auto auto !important;
+    --template-columns: ${({isBlindbox}) => isBlindbox ? '16% 16% 26% auto auto !important' : '16% 16% 26% auto auto auto !important'}; 
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -84,6 +84,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       showloading,
       onItemClick,
       tokenType,
+      tableType,
       t,
     } = props;
     const history = useHistory();
@@ -103,7 +104,16 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         myLog("AmmTable page,", page);
         updateData({
           page,
-          filter: { isNft: tokenType === TokenType.nft ? true : false },
+          filter: { 
+            isNft: tableType === 'NFT' 
+              ? true 
+              : tableType === 'token' 
+                ? false
+                : undefined,
+            modes: tableType === 'blindbox' 
+              ? 2
+              : [0,1,2]
+          },
         });
       },
       [updateData, tokenType]
@@ -186,7 +196,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return <>{`${row.totalAmount}`}</>;
           },
         },
-        {
+        ...(tableType !== 'blindbox' ? [{
           key: "Type",
           name: t("labelRecordType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
@@ -210,7 +220,8 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
               </>
             );
           },
-        },
+        }] : []),
+        
         {
           key: "Status",
           name: t("labelRecordStatus"),
@@ -229,18 +240,18 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return <>{found ? found[1] : ""}</>;
           },
         },
-        // {
-        //   key: "Number",
-        //   sortable: true,
-        //   cellClass: "textAlignCenter",
-        //   headerCellClass: "textAlignCenter",
-        //   name: t("labelRecordNumber"),
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     return (
-        //       <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
-        //     );
-        //   },
-        // },
+        {
+          key: "Number",
+          sortable: true,
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          name: t("labelRecordNumber"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
+            );
+          },
+        },
         {
           key: "Time",
           cellClass: "textAlignRight",
@@ -272,8 +283,9 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
     };
 
     return (
-      <TableWrapperStyled>
+      <TableWrapperStyled >
         <TableStyled
+          isBlindbox={tableType === 'blindbox'}
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }
@@ -328,6 +340,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             rawData,
             showloading,
           }}
+          
         />
         {!!(pagination && pagination.total) && (
           <TablePagination

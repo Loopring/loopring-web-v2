@@ -42,9 +42,7 @@ const TableWrapperStyled = styled(Box)`
 `;
 const TableStyled = styled(Table)<{isUnclaimed: boolean}>`
   &.rdg {
-    --template-columns: ${({isUnclaimed}) => isUnclaimed 
-      ? '25% 25% 25% 25% !important'
-      : '20% 20% 15% 15% 30% !important'};
+    --template-columns: 25% 25% 25% 25% !important;
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -195,13 +193,13 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           }
         },
       },
-      {
-        key: "Address",
-        name: t("labelRedPacketSenderAddress"),
-        formatter: ({ row }: FormatterProps<R>) => {
-          return <>{row.sender}</>;
-        },
-      },
+      // {
+      //   key: "Address",
+      //   name: t("labelRedPacketSenderAddress"),
+      //   formatter: ({ row }: FormatterProps<R>) => {
+      //     return <>{row.sender}</>;
+      //   },
+      // },
       {
         key: "Amount",
         name: t("labelAmount"),
@@ -278,6 +276,159 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         },
       },
     ] as Column<R, unknown>[];
+    // const columnModeTransactionSend = [
+    //   {
+    //     key: "Token",
+    //     name: t("labelToken"),
+    //     formatter: ({ row }: FormatterProps<R>) => {
+    //       if ( row.rawData.luckyToken.isNft){
+    //         const metadata = row.rawData.luckyToken.nftTokenInfo?.metadata;
+    //         return (
+    //           <Box
+    //             className="rdg-cell-value"
+    //             height={"100%"}
+    //             display={"flex"}
+    //             alignItems={"center"}
+    //           >
+    //             {metadata?.imageSize ? (
+    //               <Box
+    //                 display={"flex"}
+    //                 alignItems={"center"}
+    //                 justifyContent={"center"}
+    //                 height={RowConfig.rowHeight + "px"}
+    //                 width={RowConfig.rowHeight + "px"}
+    //                 padding={1 / 4}
+    //                 style={{ background: "var(--field-opacity)" }}
+    //               >
+    //                 {metadata?.imageSize && (
+    //                   <NftImage
+    //                     alt={metadata?.base?.name}
+    //                     onError={() => undefined}
+    //                     src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+    //                   />
+    //                 )}
+    //               </Box>
+    //             ) : (
+    //               <BoxNFT
+    //                 display={"flex"}
+    //                 alignItems={"center"}
+    //                 justifyContent={"center"}
+    //                 height={RowConfig.rowHeight + "px"}
+    //                 width={RowConfig.rowHeight + "px"}
+    //               />
+    //             )}
+    //             <Typography
+    //               color={"inherit"}
+    //               flex={1}
+    //               display={"inline-block"}
+    //               alignItems={"center"}
+    //               paddingLeft={1}
+    //               overflow={"hidden"}
+    //               textOverflow={"ellipsis"}
+    //               component={"span"}
+    //             >
+    //               {metadata?.base?.name ?? "NFT"}
+    //             </Typography>
+    //           </Box>
+    //         );
+    //       } else {
+    //         const _token = row.token as CoinInfo<any> & { type: TokenType };
+    //         return (
+    //           <ColumnCoinDeep
+    //             token={{
+    //               ..._token,
+    //               name: "", // for not displaying name here
+    //             }}
+    //           />
+    //         );
+            
+    //       }
+    //     },
+    //   },
+    //   // {
+    //   //   key: "Address",
+    //   //   name: t("labelRedPacketSenderAddress"),
+    //   //   formatter: ({ row }: FormatterProps<R>) => {
+    //   //     return <>{row.sender}</>;
+    //   //   },
+    //   // },
+    //   {
+    //     key: "Amount",
+    //     name: t("labelAmount"),
+    //     formatter: ({ row }: FormatterProps<R>) => {
+    //       return (
+    //         <>
+    //           {row.rawData.claim.amount
+    //             ? row.rawData.claim.amount
+    //             : EmptyValueTag}
+    //         </>
+    //       );
+    //     },
+    //   },
+      
+    //   {
+    //     key: "Status",
+    //     cellClass: "textAlignRight",
+    //     headerCellClass: "textAlignRight",
+    //     name: t("labelRecordStatus"),
+    //     formatter: ({ row }: FormatterProps<R>) => {
+    //       if (
+    //         row.rawData.luckyToken.validUntil > Date.now() &&
+    //         row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
+    //       ) {
+    //         return (
+    //           <>
+    //             {t("labelBlindBoxStartTime", {
+    //               time: moment(row.rawData.luckyToken.validUntil).format(
+    //                 YEAR_DAY_MINUTE_FORMAT
+    //               ),
+    //               interpolation: {
+    //                 escapeValue: false,
+    //               },
+    //             })}
+    //           </>
+    //         );
+    //       } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
+    //         return <>{t("labelBlindBoxOpend")}</>;
+    //         // return <Box height={"100%"} display={"flex"} flexDirection={"column"} alignItems={"end"} justifyContent={"center"}>
+    //         //   <Typography>{t("labelBlindBoxOpend")}</Typography>
+    //         //   {/* <Typography>x {row.rawData.claim.amount}</Typography> */}
+    //         // </Box>
+    //       } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) {
+    //         return <>{t("labelBlindBoxExpired")}</>;
+    //       } else if (
+    //         row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED
+    //       ) {
+    //         return (
+    //           <Box display={"flex"} flexDirection={"column"} alignItems={"end"}>
+    //             <Button size={"small"} onClick={(_e) => {}} variant={"text"}>
+    //               {t("labelRedPacketOpen", { ns: "common" })}
+    //             </Button>
+    //             <Typography>
+    //               {t("labelBlindBoxExpiredTime", {
+    //                 time: moment(row.rawData.luckyToken.nftExpireTime).format(
+    //                   YEAR_DAY_MINUTE_FORMAT
+    //                 ),
+    //                 interpolation: {
+    //                   escapeValue: false,
+    //                 },
+    //               })}
+    //             </Typography>
+    //           </Box>
+    //         );
+    //       }
+    //     },
+    //   },
+    //   {
+    //     key: "Receive Time",
+    //     cellClass: "textAlignRight",
+    //     headerCellClass: "textAlignRight",
+    //     name: t("labelReceiveTime"),
+    //     formatter: ({ row }: FormatterProps<R>) => {
+    //       return <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>;
+    //     },
+    //   },
+    // ] as Column<R, unknown>[];
     const columnModeTransactionUnClaimed = [
       {
         key: "Token",
@@ -358,16 +509,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         },
       },
       {
-        key: "Expired Time",
-        cellClass: "textAlignRight",
-        headerCellClass: "textAlignRight",
-        name: <TextTooltip text={t("Expired Time tot")} tooltipTitle={"After expiration, all unclaimed NFTs will be returned to the Sender."}/> ,
-        formatter: ({ row }: FormatterProps<R>) => {
-
-          return <>{moment(new Date(row.rawData.claim.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}</>;
-        },
-      },
-      {
         key: "Status",
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
@@ -416,6 +557,17 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           }
         },
       },
+      {
+        key: "Expired Time",
+        cellClass: "textAlignRight",
+        headerCellClass: "textAlignRight",
+        name: <TextTooltip text={t("Expired Time tot")} tooltipTitle={"After expiration, all unclaimed NFTs will be returned to the Sender."}/> ,
+        formatter: ({ row }: FormatterProps<R>) => {
+
+          return <>{moment(new Date(row.rawData.claim.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}</>;
+        },
+      },
+      
     ] as Column<R, unknown>[];
     const defaultArgs: any = {
       columnMode: isUnclaimed ? columnModeTransactionUnClaimed : columnModeTransaction,
