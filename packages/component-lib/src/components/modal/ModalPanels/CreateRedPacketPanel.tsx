@@ -26,7 +26,6 @@ import {
 import { Box, styled } from "@mui/material";
 import { LuckyTokenClaimType } from "@loopring-web/loopring-sdk";
 
-
 const BoxStyle = styled(Box)`
   &.createRedPacket {
     .container {
@@ -77,8 +76,6 @@ export const CreateRedPacketPanel = <
       "labelRedPacketChoose", //Prepare NFT metadata
       "labelRedPacketMain", //labelADMint2
     ];
-  console.log('tradeTypetradeType', tradeType)
-  console.log('tradeTypetradeType', steps)
 
   React.useEffect(() => {
     // isToken
@@ -92,7 +89,6 @@ export const CreateRedPacketPanel = <
   }, [tradeData?.nftData, panelIndex, tradeType]);
 
   const setActiveStep = React.useCallback((index: RedPacketStep) => {
-
     switch (index) {
       case RedPacketStep.TradeType:
         setPanelIndex(0);
@@ -157,7 +153,6 @@ export const CreateRedPacketPanel = <
   React.useEffect(() => {
     setSelectType(() => {
       if (tradeData && tradeData.type) {
-        // if (tradeData.)
         let found: LuckyRedPacketItem | undefined
         if (tradeType === RedPacketOrderType.FromNFT) {
           found = LuckyRedPacketList.find(
@@ -167,7 +162,6 @@ export const CreateRedPacketPanel = <
               config.value.partition === tradeData.type?.partition 
           )
         } else if (tradeData.type?.mode === LuckyTokenClaimType.BLIND_BOX) {
-          // debugger
           found = LuckyRedPacketList.find(
             (config) =>
               config.value.mode === LuckyTokenClaimType.BLIND_BOX &&
@@ -181,14 +175,6 @@ export const CreateRedPacketPanel = <
               
           );
         }
-        // const found = LuckyRedPacketList.find(
-        //   (config) =>
-        //     tradeData.type?.partition == config.value.partition &&
-        //     tradeData.type?.mode == config.value.mode && 
-        //     (tradeData.type?.mode === LuckyTokenClaimType.BLIND_BOX && tradeData.isNFT === config.isBlindboxNFT)
-        //     // tradeData nftData == config.value.mode &&
-        // );
-        // found?.value.mode ===
         return found ?? LuckyRedPacketList[2];
       } else {
         return LuckyRedPacketList[2];

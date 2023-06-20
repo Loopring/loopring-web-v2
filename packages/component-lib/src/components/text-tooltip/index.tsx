@@ -1,5 +1,3 @@
-// import { Tooltip } from "@loopring-web/recharts"
-
 import { Tooltip } from "@mui/material"
 
 type TextTooltipProps = {

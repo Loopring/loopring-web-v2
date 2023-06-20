@@ -413,7 +413,6 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const endMaxDateTime = startDateTime
       ? startDateTime.clone().add(timeRangeMaxInSeconds, "seconds")
       : undefined;
-    
     // @ts-ignore
     return (
       <RedPacketBoxStyle className={"redPacket"} justifyContent={"center"}>
@@ -1204,7 +1203,6 @@ export const CreateRedPacketStepTokenType = withTranslation()(
       return disabled;
     }, [disabled]);
     const showNFT = useNotify().notifyMap?.redPacket.showNFT;
-    console.log('tradeTypetradeTypetradeType', tradeType) 
     return (
       <RedPacketBoxStyle
         display={"flex"}
@@ -1312,7 +1310,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                     </Typography>
                   </Typography>
                   <Typography component={"span"} variant={"h5"} marginTop={2}>
-                    Blindbox tot
+                    {t("labelRedpacketBlindBox")}
                   </Typography>
                 </CardContent>
               </CardStyleItem>

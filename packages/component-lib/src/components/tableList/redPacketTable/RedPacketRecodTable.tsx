@@ -340,7 +340,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             rawData,
             showloading,
           }}
-          
         />
         {!!(pagination && pagination.total) && (
           <TablePagination

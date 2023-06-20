@@ -320,7 +320,6 @@ export const MyRedPacketPanel = ({
         {([
           TabIndex.BlindBoxReceived, 
           TabIndex.BlindBoxUnClaimed, 
-          // TabIndex.BlindBoxSend
         ].includes(currentTab)) && (
           <Box
             className="tableWrapper table-divide-short"

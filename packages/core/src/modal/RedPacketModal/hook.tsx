@@ -73,7 +73,6 @@ export function useRedPacketModal() {
     React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
   const [blinBoxDetail, setBlindBoxDetail] =
     React.useState<undefined | any>(undefined);
-  console.log('blinBoxDetail', blinBoxDetail)
   const [qrcode, setQrcode] =
     React.useState<undefined | sdk.LuckyTokenItemForReceive>(undefined);
   const ImageEle = React.useMemo(() => {
@@ -547,7 +546,6 @@ export function useRedPacketModal() {
       isNFT: false;
     } | undefined
   );
-  const { coinJson } = useSettings();
   const redPacketBlindBoxDetailCall = React.useCallback(
     async ({
       limit = RedPacketBlindBoxLimit,
@@ -645,9 +643,6 @@ export function useRedPacketModal() {
             } else if (
               now >= response.detail.luckyToken.validSince &&
               now < response.detail.luckyToken.validUntil 
-              // &&
-              // response.detail.luckyToken.status !==
-              //   sdk.LuckyTokenItemStatus.COMPLETED
             ) {
               setBlindBoxType("Blind Box Started");
             } else if (
@@ -688,15 +683,8 @@ export function useRedPacketModal() {
                       isNFT: true
                     });
                   } else {
-                    
-                    // tokenMap[]
                     const token = tokenMap[idIndex[response.detail.tokenId]];
                     const coin = coinMap[idIndex[response.detail.tokenId]];
-        //             const tokenIcon = coinJson[coin?.simpleName!]
-        // // ? [coinJson[head], undefined]
-        // // : [undefined, undefined];
-        //             // token.symbol
-
                     const amount = getValuePrecisionThousand(
                       sdk.toBig(response.detail.claimAmount)
                         .div("1e" + token.decimals),
@@ -706,10 +694,8 @@ export function useRedPacketModal() {
                       false,
                       {
                         floor: false,
-                        // isTrade: true,
                       }
                     );
-
                     setWonPrizeInfo({
                       tokenURL: 'tokenIcon',
                       tokenName: coin?.simpleName ?? "",
@@ -1061,7 +1047,6 @@ export function useRedPacketModal() {
     step,
   ]);
   const { setShowClaimWithdraw } = useOpenModals();
-  // const { idIndex, tokenMap} = useTokenMap()
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string;
@@ -1104,37 +1089,9 @@ export function useRedPacketModal() {
             : "hidden"
           : "hidden";
       
-      //     const temp = {
-      //   participated: blinBoxDetail.blindBoxStatus !== "",
-      //   won: detail.claimAmount && toBig(detail.claimAmount).isGreaterThan(0),
-      //   amout: 'detail.claimAmount',
-      //   total: 'todo',
-      //   symbol: 'todo',
-      //   isNFT: false
-      // } 
-      // debugger
-      
       const tokenInfo = !detail.luckyToken.isNft 
         ? tokenMap[idIndex[1]] 
         : undefined
-        console.log('asdhasjkdh',blinBoxDetail)
-        const a = sdk
-        .toBig(blinBoxDetail.claimAmount)
-        .div(tokenInfo!.decimals)
-        // debugger
-        console.log('asdhasjkdh',sdk
-        .toBig(blinBoxDetail.claimAmount)
-        .div(tokenInfo!.decimals))
-        console.log('asdhasjkdh',getValuePrecisionThousand(
-          sdk
-            .toBig(blinBoxDetail.claimAmount)
-            .div("1e" + tokenInfo!.decimals),
-          tokenInfo!.precision,
-          tokenInfo!.precision,
-          tokenInfo!.precision,
-          true
-        ))
-
       return {
         sender: _info.sender?.ens
           ? _info.sender?.ens

@@ -125,8 +125,6 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
           formatter: ({ row: { token } }: FormatterProps<R>) => {
-            // if (token.)
-            // debugger
             if (token.type !== TokenType.nft) {
               if (token.icon && token.simpleName === "NFTs" || token.simpleName === "Blind Box") {
                 return (
@@ -245,7 +243,6 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       ];
     }, [history, t, hideAssets]);
     const theme = useTheme()
-    
     const NFTrow = {
       token: {
         icon: theme.mode === 'dark' 
@@ -332,9 +329,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
-            
-            const isNFTsOrBlindbox =
-              row.token.type === TokenType.single && 
+            const isNFTsOrBlindbox = row.token.type === TokenType.single && 
               (row.token.name === "NFTs" || row.token.name === "Blind Box");
             if (!isNFTsOrBlindbox) {
               onItemClick(row.rawData);

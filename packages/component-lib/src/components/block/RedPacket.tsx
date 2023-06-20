@@ -1658,11 +1658,6 @@ export const RedPacketBlindBoxDetail = ({
       size={"small"}
     />
   );
-  // wonPrizeInfo = {
-  //   isNFT: false,
-  //   amountStr: '1000000000000.000000000000 LRC',
-  //   tokenName: 'USDC'
-  // }
   const LooteryModal = (
     <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
       <>
@@ -1724,15 +1719,6 @@ export const RedPacketBlindBoxDetail = ({
                 </>
               )
             }
-
-            {/* <Typography variant={"h5"}>
-              {wonPrizeInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
-            </Typography>
-            {wonNFTInfo ? (
-              <img width={"40%"} alt={""} src={wonNFTInfo.url} />
-            ) : (
-              <img src={emptyImg} alt={""} />
-            )} */}
             <Link
               marginBottom={3}
               onClick={onClickClaimPopViewDetail}
@@ -1762,8 +1748,6 @@ export const RedPacketBlindBoxDetail = ({
   ) {
     return LooteryModal;
   }
-  // const temp = totalGiftsAmount - deliverdGiftsAmount
-  // debugger
 
   return (
     <BlindBoxDetailBoxStyle
@@ -1953,7 +1937,7 @@ export const RedPacketBlindBoxDetail = ({
                         : "--"
                       } 
                     </Typography>
-                    <Typography variant={"h4"} color={theme.colorBase.redPacketText1}>Total tot {wonInfo.total} {wonInfo.symbol}</Typography>
+                    <Typography variant={"h4"} color={theme.colorBase.redPacketText1}>{t("labelRedpacketTotalReward", {amount: `${wonInfo.total} ${wonInfo.symbol}`})} </Typography>
                   </>
                 )
               )}

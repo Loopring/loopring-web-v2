@@ -130,7 +130,6 @@ export const useCreateRedPacket = <
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-    
     if (
       RedPacketOrderType.TOKEN === redPacketOrder.tradeType &&
       !redPacketOrder.belong &&
@@ -359,8 +358,6 @@ export const useCreateRedPacket = <
           )
           .gt(REDPACKET_ORDER_NFT_LIMIT);
       }
-      // const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
-      //   (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
 
       if (
         tradeValue &&
@@ -928,8 +925,6 @@ export const useCreateRedPacket = <
     [processRequest, setShowAccount]
   );
   const location = useLocation()
-  // const { account } = useAccount()
-  // console.log('setSelectNFT', selectNFT)
   React.useEffect(() => {
     (async () => {
       const nftDatas = new URLSearchParams(location.search).get('nftDatas')
@@ -943,36 +938,12 @@ export const useCreateRedPacket = <
           nftDatas: [nftDatas]
         })
         if (info && info[nftDatas]) {
-          // LoopringAPI.nftAPI?.getCollectionWholeNFTs({
-
-
-          // }, account.apiKey)
           const balance = await LoopringAPI.userAPI?.getUserNFTBalances({
             accountId: account.accountId,
             nftDatas: nftDatas,
             metadata: true
           }, account.apiKey)
           const balanceInfo = balance!.userNFTBalances[0]
-
-          // const info = await LoopringAPI.userAPI?.getUserNFTBalancesByCollection({
-          //   // web3,
-          //   tokenAddress: balanceInfo.collectionInfo.contractAddress,
-          //   accountId: account.accountId,
-          //   collectionId: Number(balanceInfo.collectionInfo.id),
-          //   limit: 100
-          //   // nftId: balanceInfo.nftId,
-          //   // id: Number(balanceInfo.collectionInfo.id),
-          //   // limit: 100
-          // }, account.apiKey)
-          // LoopringAPI.userAPI?.getUserNFTBalancesByCollection({
-
-          // })
-          // setSelectNFT({
-          //   ...balanceInfo,
-          // });
-          // debugger
-          
-
           handleOnDataChange({
             collectionInfo: balanceInfo.collectionInfo,
             tokenId: balanceInfo.tokenId,
@@ -983,11 +954,7 @@ export const useCreateRedPacket = <
             tokenAddress: balanceInfo.tokenAddress,
             image: balanceInfo?.metadata?.imageSize
               && balanceInfo?.metadata?.imageSize["240-240"],
-            
-            // : balanceInfo.image,
           } as T);
-          // }
-          // debugger
         }
       } 
     })()

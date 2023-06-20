@@ -1781,4 +1781,6 @@ export default {
   labelBtradeSettled: "Settled",
   labelOrderCancelConfirm: "Confirm to cancel this order?",
   labelOrderCancelOrder: "Cancel",
+  
+  labelRedpacketTotalReward: "Total {{amount}}",
 };

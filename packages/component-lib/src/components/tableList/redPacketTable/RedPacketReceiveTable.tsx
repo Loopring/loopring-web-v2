@@ -213,9 +213,8 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
         },
         {
           key: "ExpiredTime",
-          name: <TextTooltip text={t("ExpiredTime tot")} tooltipTitle={"After expiration, all unclaimed NFTs will be returned to the Sender. tot"}/> ,
+          name: <TextTooltip text={t("labelExpiredTime")} tooltipTitle={t("labelExpiredTimeTooltip")}/> ,
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            TextTooltip
             return (
               <>
                 {moment(new Date(row.rawData.claim.expireTime)).format(
@@ -347,54 +346,8 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             return <>{`${row.amount}`}</>;
           },
         },
-        // {
-        //   key: "Type",
-        //   name: t("labelType"),
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     return (
-        //       <>
-        //         {t(
-        //           row.type.mode === sdk.LuckyTokenClaimType.RELAY
-        //             ? "labelLuckyRelayToken"
-        //             : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-        //             ? "labelLuckyBlindBox"
-        //             : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
-        //             ? "labelRedPacketSendCommonTitle"
-        //             : "labelRedPacketSenRandomTitle",
-        //           { ns: "common" }
-        //         ) +
-        //           " — " +
-        //           t(`labelRedPacketViewType${row?.type?.scope ?? 0}`, {
-        //             ns: "common",
-        //           })}
-        //       </>
-        //     );
-        //   },
-        // },
-        // {
-        //   key: "Address",
-        //   name: t("labelAddress"),
-        //   formatter: ({ row }: FormatterProps<R>) => {
-        //     return <>{row.sender}</>;
-        //   },
-        // },
         ...(tokenType === TokenType.nft
           ? [
-              // {
-              //   key: "End Time",
-              //   cellClass: "textAlignRight",
-              //   headerCellClass: "textAlignRight",
-              //   name: t("labelBlindBoxEndTime"),
-              //   formatter: ({ row }: FormatterProps<R>) => {
-              //     return (
-              //       <>
-              //         {moment(
-              //           new Date(row.rawData.luckyToken.validUntil)
-              //         ).format(YEAR_DAY_MINUTE_FORMAT)}
-              //       </>
-              //     );
-              //   },
-              // },
               {
                 key: "Action",
                 cellClass: "textAlignRight",
@@ -443,8 +396,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
             );
           },
         },
-        // ...[tokenType === TokenType.nft?]
-        
       ],
       [history, t, tokenType]
     );

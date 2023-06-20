@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
 import { XOR } from "@loopring-web/loopring-sdk";
 import { VendorProviders } from "./vendor";
-import { type } from "os";
 
 export enum DeFiChgType {
   coinSell = "coinSell",
@@ -673,7 +672,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: "Tokens-tot",
+    labelKey: "labelAssetTokens",
     desKey: "",
     showInBlindbox: true,
     defaultForBlindbox: true,
@@ -685,7 +684,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: "NFTs-tot",
+    labelKey: "labelRedpacketNFTS",
     desKey: "",
     showInBlindbox: true,
     icon: sdk.SoursURL + '/images/blindboxSelectNFT.png',
@@ -697,8 +696,8 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: "Blind Box-tot",
-    desKey: "Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time. tot",
+    labelKey: "labelRedpacketBlindBox",
+    desKey: "labelLuckyBlindBoxDes",
     defaultForFromNFT: true,
     showInFromNFT: true,
     value: {
@@ -708,8 +707,8 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: "Lucky Red Packet-tot",
-    desKey: "Each recipient will get a random amount of the total Red Packet shared. tot",
+    labelKey: "labelLuckyRandomToken",
+    desKey: "labelLuckyRandomTokenDes",
     showInFromNFT: true,
     value: {
       value: 7,
@@ -718,8 +717,8 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: "Normal Red Packet tot",
-    desKey: "Each recipient will receive a pre-set split of the total Red Packet shared.",
+    labelKey: "labelLuckyCommonToken",
+    desKey: "labelLuckyCommonTokenDes",
     showInFromNFT: true,
     value: {
       value: 8,
