@@ -33,23 +33,23 @@ export default {
   resetTitle: "Reset {{layer2}} Keypair",
   restLabelEnterToken: "Select Reset cause token",
   labelResetDescription:
-    "Each account on {{loopringL2}} needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests. You can reset the EdDSA keypair at any time.",
+    "Each account on {{loopringL2}} needs an EdDSA private key (the account key) to sign off-chain (aka {{layer2}}) requests. You can reset the EdDSA keypair at any time.",
   resetFee: "Fee {{count}} GAS ≈ ${{price}}",
   resetLabelBtn: "Reset",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
-    "You have enough balance to pay for Layer 2 creation as below.",
+    "You have enough balance to pay for {{layer2}} creation as below.",
   labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
   labelActiveAccountBtn: "Activate Account",
   depositLabelEnterToken: "Select Layer 1 Token",
-  depositDescription:
-    "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
+  labelDepositDescription:
+    "Once your deposit is confirmed on {{l1ChainName}}, \n it will be added to your balance within 2 minutes.",
   labelDepositAndActiveDescription:
-    "Make a deposit to activate your {{loopringL2}} account. Once your deposit is <1>confirmed on Ethereum</1>, it will be added to your balance within <3>2 minutes</3>.",
+    "Make a deposit to activate your {{loopringL2}} account. Once your deposit is <1>confirmed on {{l1ChainName}}</1>, it will be added to your balance within <3>2 minutes</3>.",
   depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
   depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
-    "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
+    "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the {{l1ChainName}} gas price exceeds 500 GWei.）",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
   withdrawTypeLabelStandard: "Standard (about 25 minutes)",
   labelConnectWallet: "Connect wallet",
@@ -70,7 +70,7 @@ export default {
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "{{loopringL2}}Total Assets",
-  labelAssetMobileTitle: "L2 Assets",
+  labelAssetMobileTitle: "{{l2Symbol}} Assets",
   labelShowAccount: "Show or Hide Assets",
   labelLevel: "VIP Level",
   labelOrderbook: "Order book",
@@ -170,7 +170,7 @@ export default {
   labelConnectBy: "Connected with <1>{{connectBy}}</1>",
   labelWrongNetwork: "Wrong network",
   labelActivatedAccountDeposit:
-    "Please deposit to activate your Layer 2 account",
+    "Please deposit to activate your {{layer2}} account",
   labelActivatedAccountNotSupport:
     "Your wallet does not support {{loopringL2}}",
   labelActivatedAccountNotSupportDes:
@@ -191,7 +191,7 @@ export default {
   labelRejectOrError:
     "Request was rejected or some unknown error occurred, please retry",
   labelWalletConnectProcessDescribe2: "Please click ‘Approve’ on your device.",
-  labelUnlockProcessing: "Unlocking Layer 2...",
+  labelUnlockProcessing: "Unlocking {{layer2}}...",
   labelFailedConnect: "Connection Failed",
   // labelTokenAccess:'Waiting to approve {{symbol}} access!',
   labelTokenAccess: "Waiting for approval",
@@ -213,21 +213,21 @@ export default {
   labelUpdateAccSigWarning:
     "Your Wallet does not support current sig function, it will try another one.",
   labelUpdateAccUserDenied: "Signature request was rejected!",
-  labelCreateLayer2Title: "Create Layer 2 Account",
-  labelCreateAccount: "Create Layer 2 Account",
-  labelUpdateAccount: "Update Layer 2 Account",
+  labelCreateLayer2Title: "Create {{layer2}} Account",
+  labelCreateAccount: "Create {{layer2}} Account",
+  labelUpdateAccount: "Update {{layer2}} Account",
   labelTryAnother: "Try Another Sig Method",
   labelCancel: "Cancel",
   describeTitleNoAccount:
-    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
+    "As {{l1ChainName}}'s first ever zkRollup, Loopring {{layer2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeTitleOpenAccounting:
-    "Your deposit has been submitted to Ethereum.\n Please wait...",
+    "Your deposit has been submitted to {{l1ChainName}}.\n Please wait...",
   describeTitleOnErrorNetwork:
     "Your current network is not supported by Loopring!\n Please change network via {{connectName}}.",
   describeTitleNotActive:
-    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
+    "As {{l1ChainName}}'s first ever zkRollup, Loopring {{layer2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeTitleConnectToWallet:
-    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
+    "As {{l1ChainName}}'s first ever zkRollup, Loopring {{layer2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeWhatIsGuardian: "What is a Loopring guardian",
   describeTitleConnectToWalletAsGuardian:
     "Connect a wallet to assign it as a guardian!",
@@ -262,7 +262,7 @@ export default {
   labelDTxnDetailHeader: "Deposit Record",
   labelWTxnDetailHeader: "Withdraw Record",
   labelTTxnDetailHeader: "Transfer Record",
-  labelTxnDetailHash: "Layer 2 Hash",
+  labelTxnDetailHash: "{{layer2}} Hash",
   labelTxnDetailHashLv1: "Eth Hash",
   labelTxnDetailStatus: "Status",
   labelTxnDetailTime: "Time",
@@ -304,7 +304,7 @@ export default {
   labelNotAllowTrade:
     "Unfortunately we are unable to provide Order and AMM Deposit services due to your IP address as per our Terms of Use.",
   labelKnown: "OK",
-  labelResetAccount: "Reset Layer 2 Account",
+  labelResetAccount: "Reset {{layer2}} Account",
   labelExportAccount: "Export Account",
   labelExportAccountNoPhotos: "No Photos",
   labelExportAccountDescription: "Please keep your API key secure.",
@@ -529,7 +529,7 @@ export default {
   labelApproveFailed: "Approve Signature Failed",
   labelRejectSuccess: "Reject Signature Success",
   labelRejectFailed: "Reject Signature Failed",
-  labelYourBalance: "Your Layer 2 have: {{balance}}",
+  labelYourBalance: "Your {{layer2}} have: {{balance}}",
   labelTxGuardianADD_GUARDIAN: "ADD GUARDIAN",
   labelTxGuardianGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
   labelTxGuardianGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
@@ -581,7 +581,7 @@ export default {
   labelSendL1DeployBtn: "Deploy & Send",
   labelL2toL1BtnExceed: "Exceed Max Fast Withdraw amount: {{arg}}!",
   labelL2toL1BtnExceedWithFee: "Insufficient balance (with fee)",
-  labelL2toL1Address: "Ethereum Address",
+  labelL2toL1Address: "{{l1ChainName}} Address",
   labelL2toL1MyAddress: "To my {{l1Symbol}}",
   labelL2toL1AddressInput: "Please input the address",
   labelL2toL1Fee: "Select payment token",
@@ -591,7 +591,7 @@ export default {
   labelL2toL2Title: "Send to Another {{loopringL2}}",
   labelL2toL2EnterToken: "Select Token",
   transferDescription:
-    "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n {{loopringL2}} payments before you proceed.",
+    "Send assets to any valid {{l1ChainName}} address instantly.\n Please make sure the recipient address accepts \n {{loopringL2}} payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
   labelL2toL2AddressInput: "Please input address / ENS / Account ID",
@@ -639,10 +639,10 @@ export default {
     "My {{l1Symbol}} \u2192 {{loopringL2}} transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
   labelNFTSendL2Btn: "To Another {{loopringL2}}",
-  labelNFTSendMyL1Btn: "To My L1",
-  labelNFTSendOtherL1Btn: "To Other L1",
-  labelNFTDeploySendMyL1: "To My L1 & Deploy Contract",
-  labelNFTDeploySendAnotherL1: "To another L1 & Deploy Contract",
+  labelNFTSendMyL1Btn: "To My {{l1Symbol}}",
+  labelNFTSendOtherL1Btn: "To Other {{l1Symbol}}",
+  labelNFTDeploySendMyL1: "To My {{l1Symbol}} & Deploy Contract",
+  labelNFTDeploySendAnotherL1: "To another {{l1Symbol}} & Deploy Contract",
   labelGuid: "Go to Guide",
   labelOK: "Ok",
   labelL2toL2InvalidAddr: "Invalid address or ENS",
@@ -659,14 +659,14 @@ export default {
 
   labelL1toL2ThirdPart: "{{type}} Crypto with",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
-  labelNFTTransferTX: "L2 \u2192 L2",
-  labelNFTWithdrawTX: "L2 \u2192 L1",
-  labelNFTDepositTX: "L1 \u2192 L2",
+  labelNFTTransferTX: "{{l2Symbol}} \u2192 {{l2Symbol}}",
+  labelNFTWithdrawTX: "{{l2Symbol}} \u2192 {{l1Symbol}}",
+  labelNFTDepositTX: "{{l1Symbol}} \u2192 {{l2Symbol}}",
   labelNFTDeposit: "Receive {{loopringL2}} NFT",
   labelNFTDepositNeedApprove:
     "Allow Loopring to spend {{symbol}} and deposit it?",
   labelNFTDepositBtn: "Receive NFT",
-  nftDepositTitle: "Receive NFT from my L1",
+  labelNFTDepositTitle: "Receive NFT from my {{l1Symbol}}",
   labelNFTContractAddress: "Contract:",
   labelNFTAmount: "Amount:",
   labelNFTTokenDepositWaitForAuth:
@@ -733,8 +733,8 @@ export default {
   labelSendAssetTitle: "Send {{loopringL2}} {{symbol}} assets",
   labelAddAssetHowto: "How would you like to add {{loopringL2}} assets?",
   labelAddAssetTitleActive: "Add assets & Activate",
-  labelFromMyL1: "From my L1 account",
-  labelFromOtherL1: "From another L1 account",
+  labelFromMyL1: "From my {{l1Symbol}} account",
+  labelFromOtherL1: "From another {{l1Symbol}} account",
   labelBuyWithCard: "Buy with Card",
   labelFromOtherL2: "From another {{loopringL2}} account",
   labelFromExchange: "From an exchange",
@@ -747,13 +747,13 @@ export default {
   labelActiveL2Btn: "Activate {{loopringL2}}",
   labelWrongNetworkGuideTitle: "Wrong Network",
   labelWrongNetworkGuide:
-    "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
+    "Your chosen network is not currently supported on Loopring. Please choose {{l1ChainName}} main Network or test Network Goerli",
   labelSenAssetTitle: "Send {{symbol}} from {{loopringL2}}",
   labelSendTOL2: "To another {{loopringL2}} account",
-  labelSendToMyL1: "To my L1 account",
-  labelSendToOtherL1: "To another L1 account \n(incl. exchange)",
+  labelSendToMyL1: "To my {{l1Symbol}} account",
+  labelSendToOtherL1: "To another {{l1Symbol}} account \n(incl. exchange)",
   labelSendAssetHowto: "Where would you like to send your crypto to",
-  labelL1toL2: "Add {{loopringL2}} assets From My L1",
+  labelL1toL2: "Add {{loopringL2}} assets From My {{l1Symbol}}",
   labelActivatedAccountChargeFeeList:
     "Please make sure one of the below tokens with the minimum quantity in your {{loopringL2}} account to proceed",
   labelReceiveAddress: "Receive Address",
@@ -761,15 +761,15 @@ export default {
   labelReceiveAddressGuide:
     "Please use a {{loopringL2}} account when transferring to avoid loss of assets ({{symbol}}).",
   labelL2toL2: "Send to another {{loopringL2}}",
-  labelL2toL1: "Send to L1",
+  labelL2toL1: "Send to {{l1Symbol}}",
   labelBenefitL2:
-    "As Ethereum's first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. ",
+    "As {{l1ChainName}}'s first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. ",
   labelNotBalancePayForActive:
     "Insufficient balance in your {{loopringL2}} account",
   labelEnoughBalancePayForActive:
     "You have enough balance to pay for {{loopringL2}} creation.",
   labelHaveInProcessingL1toL2:
-    "If you have already started the deposit, please be patient and recheck as transactions on Ethereum can take up to 30 minutes.",
+    "If you have already started the deposit, please be patient and recheck as transactions on {{l1ChainName}} can take up to 30 minutes.",
   labelWaitingL1toL2: "Please wait",
   labelAddAssetGateBtn: "Add assets",
   labelActiveLayer2Btn: "Activate {{loopringL2}}",
@@ -800,9 +800,9 @@ export default {
   labelLoopringDes:
     "This wallet is created using Loopring Wallet mobile app and binds with Loopring smart contract.",
   labelOtherSmartDes:
-    "This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the L1 account. ",
+    "This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the {{l1Symbol}} account. ",
   labelExchangeDes:
-    "The following trading platforms currently do not support {{loopringL2}} transfers (Binance, Coinbase, etc...). You will need to send funds to the L1 account. ",
+    "The following trading platforms currently do not support {{loopringL2}} transfers (Binance, Coinbase, etc...). You will need to send funds to the {{l1Symbol}} account. ",
   labelExchangeTypeDes: "Please select the address source:",
   labelNonExchangeTypeDes:
     "eg: Loopring Wallet, Metamask, Coinbase Wallet, imtoken, Ledger, Trezor... EOA wallet",
@@ -819,7 +819,7 @@ export default {
   labelConfirmBtrade: "Confirm Block Trade Support",
   labelConfirmDetail:
     "<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>" +
     "<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>",
   labelBtradeUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Create Fee",
@@ -853,11 +853,11 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to Ethereum {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
-    "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
+    "This feature allows a user to move their {{l2Symbol}} tokens to the {{l1Symbol}} address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
-    "This operation usually requires more than 30 minutes to take effect, as it needs to interact with Ethereum Mainnet. Please be patient.",
+    "This operation usually requires more than 30 minutes to take effect, as it needs to interact with {{l1ChainName}} Mainnet. Please be patient.",
   labelNFTSendBtn: "Send",
   labelNFTProperties: "Properties",
   labelNFTDescription2: "Description",
@@ -912,17 +912,17 @@ export default {
   labelRETHDefiRiskTitle: "What is ETH Staking via Rocket Pool?",
   labelWSETHDefiRisk:
     "<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>" +
-    "<p>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>" +
+    "<p>When using Lido to stake your ETH on the {{l1ChainName}} beacon chain, users will receive a token (stETH), which represents their ETH on the {{l1ChainName}} beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>" +
     "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
   labelRETHDefiRisk:
-    "<p>Rocket Pool is the first truly decentralized Ethereum staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the Ethereum validator operations with smart contracts on the Execution layer.</p>" +
+    "<p>Rocket Pool is the first truly decentralized {{l1ChainName}} staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the {{l1ChainName}} validator operations with smart contracts on the Execution layer.</p>" +
     "<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>" +
     "<p></p>",
   labelWSETHDefiRisk2:
-    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
-    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>",
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of {{l1ChainName}} 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
+    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on {{layer2}}. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on {{layer2}}, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>",
   labelRETHDefiRisk2:
-    "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
+    "<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on {{layer2}}. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on {{layer2}}, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>" +
     "<1></1>",
   labelDefiAgree: "I have read and understand the risk warning.",
 
@@ -1007,7 +1007,7 @@ export default {
   labelNFTCollection: "Collection",
   labelNFTCollectionName: "Collection Name:",
   labelMyCollection: "My Collections",
-  labelCounterFactualNFT: "L2 NFT:",
+  labelCounterFactualNFT: "{{l2Symbol}} NFT:",
   labelCopyUrlClip: "URL Copied to Clipboard!",
   labelCollectionMetaData: "Collection MetaData",
   labelViewEtherscan: "Etherscan",
@@ -1210,18 +1210,18 @@ export default {
   labelCheckImportCollectionDes:
     "As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet.",
   labelL2toL1NFTFailed:
-    "Sent {{value}} <span>{{symbol}}</span> to L1 has failed!",
+    "Sent {{value}} <span>{{symbol}}</span> to {{l1Symbol}} has failed!",
   labelL2toL1NFTSuccess:
-    "Sent {{value}} <span>{{symbol}}</span> to L1 was successful!",
+    "Sent {{value}} <span>{{symbol}}</span> to {{l1Symbol}} was successful!",
   labelL2toL2NFTFailed:
     "Sent {{value}} <span>{{symbol}}</span> from my {{loopringL2}} to another {{loopringL2}} failed!",
   labelL2toL2NFTSuccess:
     "Sent {{value}} <span>{{symbol}}</span> was successful!",
   labelDoAgain: "{{method}} Again",
-  labelDepositL1: "Receive from L1",
-  labelDepositNFTL1: "Receive NFT from L1",
-  labelL2ToL1Method: "Send {{symbol}} to L1",
-  labelL2ToL2Method: "Send {{symbol}} to L2",
+  labelDepositL1: "Receive from {{l1Symbol}}",
+  labelDepositNFTL1: "Receive NFT from {{l1Symbol}}",
+  labelL2ToL1Method: "Send {{symbol}} to {{l1Symbol}}",
+  labelL2ToL2Method: "Send {{symbol}} to {{l2Symbol}}",
   labelConfirmAgainByFailed:
     "You had a failed order, please confirm information again...",
   labelConfirmAgainByFailedWithBalance:
@@ -1258,7 +1258,7 @@ export default {
   labelIKnow2: "I know",
   labelAddAssetTitleBridge: "Add Asset From Another L1",
   labelAddAssetTitleBridgeDesActive:
-    "If you have transferred tokens from another {{ethereumL1}} Symbol account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the L2 account.",
+    "If you have transferred tokens from another {{ethereumL1}} Symbol account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the {{l2Symbol}} account.",
   labelAddAssetTitleBridgeDes:
     "If you have transferred tokens from another {{ethereumL1}} account, it may take some time for this transaction to execute on-chain.",
   labelAddAssetTitleExchange: "Add Asset From An Exchange",
@@ -1525,10 +1525,11 @@ export default {
     "Token has been sent to Banxa wallet. You can save/click below link to check the payment status anytime.",
   labelInvestStakeLRC: "LRC STAKING",
   labelInvestStakeLRCDES: "Earn LRC staking rewards",
-  labelFriendsPayActivation: "Your friend has paid for your L2 activation fee.",
+  labelFriendsPayActivation:
+    "Your friend has paid for your {{l2Symbol}} activation fee.",
   labelLRCStakingTitle: "What's LRC Staking",
   labelLRCStakingRisk:
-    "<p>LRC staking is incentivized through an allocated portion of the Loopring protocol fee; the exact percentage is determined by the Loopring DAO. The APY is updated daily based on the allocated amount from previous day’s fee. Any LRC holder can participate in LRC staking via L2 to accumulate daily rewards. The assets must be staked for a minimum of 90 days to receive rewards.</p>",
+    "<p>LRC staking is incentivized through an allocated portion of the Loopring protocol fee; the exact percentage is determined by the Loopring DAO. The APY is updated daily based on the allocated amount from previous day’s fee. Any LRC holder can participate in LRC staking via {{l2Symbol}} to accumulate daily rewards. The assets must be staked for a minimum of 90 days to receive rewards.</p>",
   labelLRCStakingAgree: "I have read and understand the risk warning.",
   labelLRCStakingRisk2:
     "<0>The staked LRC will be locked in {{loopringL2}}, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.</0>",
@@ -1594,7 +1595,7 @@ export default {
   labelNFTRedPackAskClaim:
     "Note: After expiration, all the unclaimed NFTs will be returned back to sender. Please claim as soon as possible if you want to hold them.",
   labelTransferDelayConfirm:
-    "Your claim request has been received. Loopring will transfer the token into your L2 account soon. Please verify it.",
+    "Your claim request has been received. Loopring will transfer the token into your {{l2Symbol}} account soon. Please verify it.",
   labelClaimredPacket: "My Red Packet",
   labelRedPacketMe: "Me",
   labelClaimlrcStaking: "My LRC Staking",
@@ -1629,11 +1630,11 @@ export default {
   labelContacts: "Contacts",
   labelContactsSend: "Send",
   labelContactsTransactions: "Transactions",
-  labelContactsNetworkChoose: "Choose L2 or L1 Account",
+  labelContactsNetworkChoose: "Choose {{l2Symbol}} or {{l1Symbol}} Account",
   labelContactsNext: "Next",
   labelContactsContactExisted: "Contact Already Existed",
   labelNotExchangeEOA:
-    "Sending to an Exchange Address {{l2Symbol}} account is not supported. {{loopringL2}} accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+    "Sending to an Exchange Address {{l2Symbol}} account is not supported. {{loopringL2}} accounts cannot be activated on Exchange wallet addresses. Instead, please send to the {{l1Symbol}} account associated with this address.",
   labelNotOtherSmartWallet:
     "This wallet binds with smart contract that does not support {{loopringL2}}. You will need to send funds to the {{l1Symbol}} account.",
   labelContactsNoContact: "No Contact",
@@ -1788,9 +1789,9 @@ export default {
   labelAddAssetTitleAnotherNetDes:
     "If you have transferred tokens from another network, please wait. ",
   labelAddAssetTitleAnotherNetDesActive:
-    "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
+    "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the {{l2Symbol}} account.",
   labelAnotherNetworkDes:
-    "Orbiter.finance is a 3rd party service provider to help move tokens between various Ethereum L1 and L2 networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
+    "Orbiter.finance is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
   labelReferralImageDes: "Scan QR code xxxx",
   labelReferralImageCode: "Code: {{code}}",

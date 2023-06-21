@@ -57,6 +57,10 @@ export const NFTMint_Failed = (props: PanelProps & Partial<NFTWholeINFO>) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelMintFailed", {
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
       symbol: props.symbol ?? "NFT",
       value: props.value,
     }),

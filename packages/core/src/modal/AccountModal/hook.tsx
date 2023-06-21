@@ -1077,7 +1077,14 @@ export function useAccountModalForUI({
           <Deposit_Submit
             btnInfo={{
               btnTxt: "labelDoAgain",
-              param: { method: t("labelDepositL1") },
+              param: {
+                method: t("labelDepositL1", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                }),
+              },
               callback: () => {
                 setShowAccount({ isShow: false });
                 setShowDeposit({
@@ -1207,7 +1214,14 @@ export function useAccountModalForUI({
           <NFTDeposit_Submit
             btnInfo={{
               btnTxt: "labelDoAgain",
-              param: { method: t("labelDepositNFTL1") },
+              param: {
+                method: t("labelDepositNFTL1", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                }),
+              },
               callback: () => {
                 setShowAccount({ isShow: false });
                 history.push("/nft/depositNFT");
@@ -2291,6 +2305,10 @@ export function useAccountModalForUI({
               param: {
                 method: t("labelL2ToL1Method", {
                   symbol: isShowAccount?.info?.symbol,
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
                 }),
               },
               callback: () => {

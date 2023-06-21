@@ -72,7 +72,7 @@ export const DepositNFTPanel = () => {
           <Typography variant={"inherit"} component={"span"}>
             {nftDepositProps.title
               ? nftDepositProps.title
-              : t("nftDepositTitle")}
+              : t("labelNFTDepositTitle", { l1Symbol: "L1" })}
           </Typography>
           <Info2Icon
             {...bindHover(popupState)}

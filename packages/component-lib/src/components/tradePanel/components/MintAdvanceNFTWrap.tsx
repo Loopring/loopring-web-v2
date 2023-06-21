@@ -898,7 +898,12 @@ export const MintAdvanceNFTWrap = <
                           tradeData?.collectionMeta?.contractAddress
                         }
                       >
-                        {t("labelCounterFactualNFT") +
+                        {t("labelCounterFactualNFT", {
+                          loopringL2: "Loopring L2",
+                          l2Symbol: "L2",
+                          l1Symbol: "L1",
+                          ethereumL1: "Ethereum L1",
+                        }) +
                           getShortAddr(
                             tradeData?.collectionMeta?.contractAddress ?? ""
                           )}

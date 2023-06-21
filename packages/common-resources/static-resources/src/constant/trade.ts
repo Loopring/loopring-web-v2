@@ -334,31 +334,70 @@ export const useAddressTypeLists = <
   const walletList: AddressItemType<T>[] = [
     {
       label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.EOA}`),
+        type: t(`labelWalletType${WALLET_TYPE.EOA}`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       }),
       value: WALLET_TYPE.EOA as T,
-      description: t(`label${WALLET_TYPE.EOA}Des`),
+      description: t(`label${WALLET_TYPE.EOA}Des`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
     },
     {
       label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
+        type: t(`labelWalletType${WALLET_TYPE.Loopring}`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       }),
       value: WALLET_TYPE.Loopring as T,
-      description: t(`label${WALLET_TYPE.Loopring}Des`),
+      description: t(`label${WALLET_TYPE.Loopring}Des`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
     },
     {
       label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+        type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       }),
       disabled: true,
       value: WALLET_TYPE.OtherSmart as T,
-      description: t(`label${WALLET_TYPE.OtherSmart}Des`),
+      description: t(`label${WALLET_TYPE.OtherSmart}Des`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
     },
     {
       label: t(WALLET_TYPE.Exchange),
       value: WALLET_TYPE.Exchange as T,
       disabled: true,
-      description: t(`label${WALLET_TYPE.Exchange}Des`),
+      description: t(`label${WALLET_TYPE.Exchange}Des`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
     },
   ];
   const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
@@ -368,30 +407,77 @@ export const useAddressTypeLists = <
     return [
       {
         label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.EOA}`),
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+          type: t(`labelWalletType${WALLET_TYPE.EOA}`, {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          }),
         }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: WALLET_TYPE.EOA as T,
-        description: t(`label${WALLET_TYPE.EOA}Des`),
+        description: t(`label${WALLET_TYPE.EOA}Des`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       },
       {
         label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+          type: t(`labelWalletType${WALLET_TYPE.Loopring}`, {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          }),
         }),
         disabled: type === WALLET_TYPE.Loopring ? false : true,
         value: WALLET_TYPE.Loopring as T,
-        description: t(`label${WALLET_TYPE.Loopring}Des`),
+        description: t(`label${WALLET_TYPE.Loopring}Des`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       },
       {
         label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+          type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`, {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          }),
         }),
         disabled: type === WALLET_TYPE.OtherSmart ? false : true,
         value: WALLET_TYPE.OtherSmart as T,
-        description: t(`label${WALLET_TYPE.OtherSmart}Des`),
+        description: t(`label${WALLET_TYPE.OtherSmart}Des`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       },
       {
-        label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
+        label: t(`labelExchange${EXCHANGE_TYPE.Binance}`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
         description: t("labelContactsBinanceNotSupportted", {
@@ -402,7 +488,12 @@ export const useAddressTypeLists = <
         }),
       },
       {
-        label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
+        label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
         description: t("labelContactsHuobiNotSupportted", {
@@ -413,7 +504,12 @@ export const useAddressTypeLists = <
         }),
       },
       {
-        label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
+        label: t(`labelExchange${EXCHANGE_TYPE.Others}`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
         description: t("labelContactsOtherExchangesNotSupportted"),
@@ -422,32 +518,72 @@ export const useAddressTypeLists = <
   };
   const nonExchangeList: AddressItemType<T>[] = [
     {
-      label: t(`labelNonExchangeType`),
+      label: t(`labelNonExchangeType`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
       value: EXCHANGE_TYPE.NonExchange as T,
       disabled: false,
-      description: t(`labelNonExchangeTypeDes`),
+      description: t(`labelNonExchangeTypeDes`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
     },
   ];
   const exchangeList: AddressItemType<T>[] = [
     {
-      label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
+      label: t(`labelExchange${EXCHANGE_TYPE.Binance}`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
       value: EXCHANGE_TYPE.Binance as T,
       disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`),
+      description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
       maxWidth: "initial",
     },
     {
-      label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
+      label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
       value: EXCHANGE_TYPE.Huobi as T,
       disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`),
+      description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
       maxWidth: "initial",
     },
     {
-      label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
+      label: t(`labelExchange${EXCHANGE_TYPE.Others}`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
       value: EXCHANGE_TYPE.Others as T,
       disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`),
+      description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      }),
       maxWidth: "initial",
     },
   ];

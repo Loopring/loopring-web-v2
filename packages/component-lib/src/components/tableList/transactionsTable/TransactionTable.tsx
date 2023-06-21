@@ -13,6 +13,8 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   globalSetup,
+  L1L2_DEFINED,
+  MapChainId,
   RedPacketIcon,
   TableType,
   TransferIcon,
@@ -156,7 +158,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       accountId,
       t,
     } = props;
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);
     const [page, setPage] = React.useState(1);
@@ -392,10 +395,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
+                      layer2: L1L2_DEFINED[network].layer2,
+                      l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_DEFINED[network].ethereumL1,
                     }),
                     "",
                   ]
@@ -668,10 +673,11 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
+                      l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_DEFINED[network].ethereumL1,
                     }),
                     "",
                   ]

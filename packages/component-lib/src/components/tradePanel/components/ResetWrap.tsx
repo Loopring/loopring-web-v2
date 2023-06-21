@@ -68,8 +68,8 @@ export const ResetWrap = <T extends FeeInfo>({
           color={"var(--color-text-secondary)"}
         >
           {isNewAccount
-            ? t("labelActiveAccountDescription")
-            : t("resetDescription")}
+            ? t("labelActiveAccountDescription", { layer2: "Layer 2" })
+            : t("resetDescription", { layer2: "Layer 2" })}
         </Typography>
       </Grid>
 
@@ -145,7 +145,12 @@ export const ResetWrap = <T extends FeeInfo>({
                 marginLeft={1}
                 component={"span"}
               >
-                {t("labelFriendsPayActivation")}
+                {t("labelFriendsPayActivation", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                })}
               </Typography>
             ) : (
               ""
@@ -161,6 +166,12 @@ export const ResetWrap = <T extends FeeInfo>({
                 marginBottom={1}
               >
                 {t("labelYourBalance", {
+                  layer2: "Layer 2",
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                  loopringLayer2: "Loopring Layer 2",
                   balance:
                     walletMap &&
                     feeInfo &&

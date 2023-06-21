@@ -153,6 +153,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const { tickerMap } = useTicker();
   const { marketArray } = useTokenMap();
   const { setTheme, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   const {
     toggle: { BTradeInvest, StopLimit },
   } = useToggle();
@@ -281,17 +283,10 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
 
           {state === "PENDING" && tickerMap ? (
             <LoadingBlock />
+          ) : RouterAllowIndex[network]?.includes(RouterPath.pro) ? (
+            <OrderbookPage />
           ) : (
-            <ContentWrap
-              state={state}
-              noContainer={true}
-              value={RouterMainKey.pro}
-            >
-              <OrderbookPage />
-            </ContentWrap>
-            // <Box display={"flex"} flexDirection={"column"} flex={1}>
-            //   <OrderbookPage />
-            // </Box>
+            <ErrorPage {...ErrorMap.TRADE_404} />
           )}
         </Route>
         <Route path={RouterPath.lite}>

@@ -72,7 +72,7 @@ export const NoAccount = withTranslation("common")(
               alignItems={"center"}
             >
               <Typography variant={"body2"}>
-                {t("labelActivatedAccountDeposit")}
+                {t("labelActivatedAccountDeposit", { layer2: "Layer 2" })}
               </Typography>
               <AnimationArrow className={"arrowCta"} />
               <Button

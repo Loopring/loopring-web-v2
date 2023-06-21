@@ -17,6 +17,8 @@ import {
 import {
   AccountStatus,
   DropDownIcon,
+  L1L2_DEFINED,
+  MapChainId,
   myLog,
   NetworkMap,
   SagaStatus,
@@ -345,7 +347,8 @@ export const ViewAccountTemplate = React.memo(
   ({ activeViewTemplate }: { activeViewTemplate: JSX.Element }) => {
     const { account } = useAccount();
     const { t } = useTranslation(["common", "layout"]);
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
@@ -363,7 +366,10 @@ export const ViewAccountTemplate = React.memo(
                 variant={isMobile ? "h4" : "h1"}
                 textAlign={"center"}
               >
-                {t("describeTitleConnectToWallet")}
+                {t("describeTitleConnectToWallet", {
+                  layer2: "Layer 2",
+                  l1ChainName: "Ethereum",
+                })}
               </Typography>
               <WalletConnectL2Btn />
             </Box>
@@ -404,7 +410,10 @@ export const ViewAccountTemplate = React.memo(
                 whiteSpace={"pre-line"}
                 textAlign={"center"}
               >
-                {t("describeTitleNoAccount")}
+                {t("describeTitleNoAccount", {
+                  layer2: L1L2_DEFINED[network].layer2,
+                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                })}
               </Typography>
               <WalletConnectL2Btn />
             </Box>
@@ -424,7 +433,10 @@ export const ViewAccountTemplate = React.memo(
                 variant={isMobile ? "h4" : "h1"}
                 textAlign={"center"}
               >
-                {t("describeTitleNotActive")}
+                {t("describeTitleNotActive", {
+                  layer2: "Layer 2",
+                  l1ChainName: "Ethereum",
+                })}
               </Typography>
               <WalletConnectL2Btn />
             </Box>
@@ -450,7 +462,9 @@ export const ViewAccountTemplate = React.memo(
                 variant={isMobile ? "h4" : "h1"}
                 textAlign={"center"}
               >
-                {t("describeTitleOpenAccounting")}
+                {t("describeTitleOpenAccounting", {
+                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                })}
               </Typography>
             </Box>
           );

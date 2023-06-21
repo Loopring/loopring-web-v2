@@ -15,6 +15,10 @@ export const NFTDeposit_Approve_WaitForAuth = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTAccess", {
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
       symbol: props?.symbol ?? "NFT",
     }),
   };
@@ -27,6 +31,10 @@ export const NFTDeposit_Approve_Denied = (
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelNFTTokenFailedAccess", {
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
       symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
@@ -41,9 +49,9 @@ export const NFTDeposit_WaitForAuth = (
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTTokenDepositWaitForAuth", {
       loopringL2: "Loopring L2",
-      // l2Symbol: "L2",
-      // l1Symbol: "L1",
-      // ethereumL1:"Ethereum L1",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
       symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
@@ -59,6 +67,10 @@ export const NFTDeposit_Denied = (
     describe1: props.t("labelL1toL2Denied", {
       symbol: props?.symbol ?? "NFT",
       value: props.value,
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
     }),
   };
   return <DepositBase {...propsPatch} {...props} />;
@@ -70,6 +82,10 @@ export const NFTDeposit_Failed = (
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL1toL2Failed", {
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
       symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
     }),
@@ -99,6 +115,10 @@ export const NFTDeposit_Submit = (
         <Trans
           i18nKey={"labelL1toL2Submit"}
           tOptions={{
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
             symbol: sanitize(props.symbol ?? "NFT").toString(),
             value: props.value,
           }}
@@ -132,7 +152,12 @@ export const NFTDeposit_Submit = (
             variant={"body1"}
             color={"var(--color-text-secondary)"}
           >
-            {props.t("labelL1toL2NFTAmount")}
+            {props.t("labelL1toL2NFTAmount", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
           </Typography>
           <Typography
             variant={"body1"}
@@ -155,7 +180,12 @@ export const NFTDeposit_Submit = (
             variant={"body1"}
             color={"var(--color-text-secondary)"}
           >
-            {props.t("labelL1toL2From")}
+            {props.t("labelL1toL2From", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
           </Typography>
           <Typography
             component={"span"}

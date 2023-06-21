@@ -36,6 +36,8 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
   Info2Icon,
+  L1L2_DEFINED,
+  MapChainId,
   SoursURL,
   TradeDefi,
   TradeProType,
@@ -529,7 +531,8 @@ export const SwapSecondConfirmation = withTranslation("common")(
     minimumReceived: string;
     slippage: string;
   }) => {
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
     return (
       <Modal
@@ -776,6 +779,8 @@ export const WrongNetworkGuide = withTranslation("common", {
     open: boolean;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <DialogStyle
         open={open}
@@ -783,11 +788,17 @@ export const WrongNetworkGuide = withTranslation("common", {
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("labelWrongNetworkGuideTitle")}</DialogTitle>
+        <DialogTitle>
+          {t("labelWrongNetworkGuideTitle", {
+            l1ChainName: L1L2_DEFINED[network].l1ChainName,
+          })}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             <Typography component={"span"} variant={"body1"} color={"inherit"}>
-              {t("labelWrongNetworkGuide")}
+              {t("labelWrongNetworkGuide", {
+                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+              })}
             </Typography>
           </DialogContentText>
         </DialogContent>
@@ -1198,13 +1209,13 @@ export const AnotherNetworkNotice = withTranslation("common", {
   ({
     t,
     open,
-    account,
   }: WithTranslation & {
     open: boolean;
     account: Account;
   }) => {
     const [agree, setAgree] = React.useState(false);
-
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     React.useEffect(() => {
       if (!open) {
         setAgree(false);
@@ -1220,7 +1231,17 @@ export const AnotherNetworkNotice = withTranslation("common", {
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelAnotherNetworkDes"}>
+            <Trans
+              i18nKey={"labelAnotherNetworkDes"}
+              tOptions={{
+                layer2: L1L2_DEFINED[network].layer2,
+                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_DEFINED[network].ethereumL1,
+              }}
+            >
               LayerSwap is a 3rd party App service provider to help move tokens
               from exchange to Loopring L2 directly. If you have any concerns
               regarding their service, please check out their
@@ -1300,7 +1321,15 @@ export const OtherExchangeDialog = withTranslation("common", {
       >
         <DialogTitle> {t("labelConfirmBtrade")}</DialogTitle>
         <DialogContent>
-          <Trans i18nKey={"labelConfirmDetail"}>
+          <Trans
+            i18nKey={"labelConfirmDetail"}
+            tOptions={{
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }}
+          >
             <Typography
               marginBottom={2}
               variant={"body1"}
@@ -1738,6 +1767,8 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     React.useEffect(() => {
       if (!open) {
         setAgree(false);
@@ -1755,6 +1786,14 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
           <DialogContentText id="alert-dialog-slide-description">
             <Trans
               i18nKey={`label${type}DefiRisk`}
+              tOptions={{
+                layer2: L1L2_DEFINED[network].layer2,
+                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_DEFINED[network].ethereumL1,
+              }}
               components={{
                 p: (
                   <Typography
@@ -1825,7 +1864,17 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
-            <Trans i18nKey={`label${type}DefiRisk2`}>
+            <Trans
+              i18nKey={`label${type}DefiRisk2`}
+              tOptions={{
+                layer2: L1L2_DEFINED[network].layer2,
+                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_DEFINED[network].ethereumL1,
+              }}
+            >
               <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}
@@ -1904,7 +1953,17 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
         {USDCOnly ? (
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-              <Trans i18nKey={"labelInvestDualTutorialCheck4"}>
+              <Trans
+                i18nKey={"labelInvestDualTutorialCheck4"}
+                tOptions={{
+                  layer2: "Layer 2",
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                  loopringLayer2: "Loopring Layer 2",
+                }}
+              >
                 <Typography
                   whiteSpace={"pre-line"}
                   component={"span"}
@@ -1946,7 +2005,17 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
         ) : (
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-              <Trans i18nKey={"labelInvestDualTutorialContent"}>
+              <Trans
+                i18nKey={"labelInvestDualTutorialContent"}
+                tOptions={{
+                  layer2: "Layer 2",
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                  loopringLayer2: "Loopring Layer 2",
+                }}
+              >
                 <Typography
                   whiteSpace={"pre-line"}
                   component={"span"}
@@ -2105,6 +2174,12 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
           <DialogContentText id="alert-dialog-slide-description">
             <Trans
               i18nKey={`labelLRCStakingRisk`}
+              tOptions={{
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }}
               components={{
                 p: (
                   <Typography

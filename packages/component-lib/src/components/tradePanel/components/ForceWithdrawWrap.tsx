@@ -19,7 +19,9 @@ import {
   globalSetup,
   IBData,
   Info2Icon,
+  L1L2_DEFINED,
   LoadingIcon,
+  MapChainId,
   TRADE_TYPE,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -101,7 +103,8 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
     assetsData: AssetsRawDataItem[];
     // handleConfirm: (index: number) => void;
   }) => {
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const popupState = usePopupState({
@@ -185,10 +188,11 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             <Trans
               i18nKey="labelForceWithdrawDes"
               tOptions={{
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_DEFINED[network].ethereumL1,
               }}
             >
               If the receipt account doesn't activate the Loopring L2 account,
@@ -210,7 +214,9 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
               <ListItemText>{t("labelForceWithdrawConfirm")}</ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemText>{t("labelForceWithdrawConfirm1")}</ListItemText>
+              <ListItemText>
+                {t("labelForceWithdrawConfirm1", { l1ChainName: "Ethereum" })}
+              </ListItemText>
             </ListItem>
           </ListStyle>
         </Typography>
@@ -401,7 +407,12 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             textAlign={"center"}
             color={"var(--color-warning)"}
           >
-            {t("labelConfirmAgainByFailed")}
+            {t("labelConfirmAgainByFailed", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
           </Typography>
         )}
         <Button

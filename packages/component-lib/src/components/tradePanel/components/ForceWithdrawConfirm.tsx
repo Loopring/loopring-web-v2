@@ -1,7 +1,13 @@
 import { WithTranslation } from "react-i18next";
 import { Box, Grid, ListItem, ListItemText, Typography } from "@mui/material";
-import { FeeInfo, IBData, TOAST_TIME } from "@loopring-web/common-resources";
-import { Button, ForceWithdrawViewProps, Toast } from "../../index";
+import {
+  FeeInfo,
+  IBData,
+  L1L2_DEFINED,
+  MapChainId,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
+import { Button, ForceWithdrawViewProps, Toast, ToastType } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
 import { ListStyle } from "./ForceWithdrawWrap";
@@ -20,7 +26,8 @@ export const ForceWithdrawConfirm = <
 }: Partial<ForceWithdrawViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [open, setOpen] = React.useState(false);
   return (
     <Grid
@@ -88,10 +95,25 @@ export const ForceWithdrawConfirm = <
           {/*</Typography>*/}
           <ListStyle>
             <ListItem>
-              <ListItemText>{t("labelForceWithdrawConfirm")}</ListItemText>
+              <ListItemText>
+                {t("labelForceWithdrawConfirm", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                })}
+              </ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemText>{t("labelForceWithdrawConfirm1")}</ListItemText>
+              <ListItemText>
+                {t("labelForceWithdrawConfirm1", {
+                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                })}
+              </ListItemText>
             </ListItem>
           </ListStyle>
         </Typography>

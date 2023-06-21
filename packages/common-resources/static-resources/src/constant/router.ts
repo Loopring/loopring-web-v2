@@ -817,3 +817,30 @@ export const ProfileIndex = {
     ProfileKey.referralrewards,
   ],
 };
+
+export const L1L2_DEFINED = {
+  TAIKO: {
+    layer2: "Layer 3",
+    l1ChainName: "TAIKO",
+    loopringL2: "Loopring L3",
+    l2Symbol: "L3",
+    l1Symbol: "TAIKO",
+    ethereumL1: "TAIKO",
+  },
+  ETHEREUM: {
+    layer2: "Layer 2",
+    l1ChainName: "Ethereum",
+    loopringL2: "Loopring L2",
+    l2Symbol: "L2",
+    l1Symbol: "L1",
+    ethereumL1: "Ethereum L1",
+  },
+  GOERLI: {
+    layer2: "Layer 2",
+    l1ChainName: "Ethereum",
+    loopringL2: "Loopring L2",
+    l2Symbol: "L2",
+    l1Symbol: "L1",
+    ethereumL1: "Ethereum L1",
+  },
+};

@@ -90,7 +90,12 @@ export const ClaimWithdraw_Submit = (
         color={"var(--color-text-third)"}
         marginBottom={2}
       >
-        {props.t("labelTransferDelayConfirm")}
+        {props.t("labelTransferDelayConfirm", {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        })}
       </Typography>
     ),
   };

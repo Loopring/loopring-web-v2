@@ -218,6 +218,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           whiteSpace={"pre"}
         >
           {t(title as string, {
+            layer2: "Layer 2",
             loopringL2: "Loopring L2",
             l2Symbol: "L2",
             l1Symbol: "L1",

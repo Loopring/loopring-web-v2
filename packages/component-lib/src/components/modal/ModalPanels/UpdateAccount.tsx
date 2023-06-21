@@ -41,7 +41,7 @@ export const UpdateAccount = ({
         alignItems={"center"}
       >
         <Typography variant={"body2"}>
-          {t("labelActivatedAccountDeposit")}
+          {t("labelActivatedAccountDeposit", { layer2: "Layer 2" })}
         </Typography>
         <AnimationArrow className={"arrowCta"} />
         <Button
@@ -76,7 +76,14 @@ export const UpdateAccount = ({
 export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelWaitForAuth"),
+    describe1: props.t("labelWaitForAuth", {
+      layer2: "Layer 2",
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
+      loopringLayer2: "Loopring Layer 2",
+    }),
   };
   return <UpdateAccountBase {...props} {...propsPatch} />;
 };
@@ -84,7 +91,14 @@ export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps) => {
 export const UpdateAccount_First_Method_Denied = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
-    describe1: props.t("labelFirstSignDenied"),
+    describe1: props.t("labelFirstSignDenied", {
+      layer2: "Layer 2",
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
+      loopringLayer2: "Loopring Layer 2",
+    }),
   };
   return <UpdateAccountBase {...propsPatch} {...props} />;
 };
@@ -102,7 +116,15 @@ export const UpdateAccount_Success = (props: PanelProps) => {
   const describe1 = props.t(
     props.patch?.isReset
       ? "labelResetAccountSuccess"
-      : "labelUpdateAccountSuccess"
+      : "labelUpdateAccountSuccess",
+    {
+      layer2: "Layer 2",
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
+      loopringLayer2: "Loopring Layer 2",
+    }
   );
   const describe2 = (
     <Box display={"flex"} marginTop={0} alignItems={"flex-center"}>

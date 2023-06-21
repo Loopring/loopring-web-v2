@@ -44,6 +44,7 @@ export const CreateAccount_Denied = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelCreateAccountDepositDenied", {
+      layer2: "Layer 2",
       symbol: props.symbol,
     }),
   };
@@ -55,6 +56,7 @@ export const CreateAccount_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelCreateAccountFailed", {
+      layer2: "Layer 2",
       loopringL2: "Loopring L2",
       value: props.value,
       symbol: props.symbol,
@@ -68,6 +70,7 @@ export const CreateAccount_Submit = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelCreateAccountSubmit", {
+      layer2: "Layer 2",
       loopringL2: "Loopring L2",
       value: props.value,
       symbol: props.symbol,

@@ -190,7 +190,12 @@ export const AssetTitleMobile = ({
           alignItems={"center"}
           marginBottom={1}
         >
-          {t("labelAssetMobileTitle")}
+          {t("labelAssetMobileTitle", {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })}
           {` (UID: ${accountId})`}
           <IconButton
             size={"small"}

@@ -59,6 +59,10 @@ export const ForceWithdraw_Failed = (
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelForceWithdrawFailed", {
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
       symbol: props.symbol,
       value: props.value,
     }),

@@ -368,7 +368,14 @@ export function useAccountModalForL1UI({
           <Deposit_Submit
             btnInfo={{
               btnTxt: "labelDoAgain",
-              param: { method: t("labelDepositL1") },
+              param: {
+                method: t("labelDepositL1", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                }),
+              },
               callback: () => {
                 setShowAccount({ isShow: false });
                 setShowDeposit({

@@ -1,5 +1,9 @@
 import { Tab, Tabs, Typography } from "@mui/material";
-import { Info2Icon } from "@loopring-web/common-resources";
+import {
+  Info2Icon,
+  L1L2_DEFINED,
+  MapChainId,
+} from "@loopring-web/common-resources";
 import React from "react";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state";
@@ -14,7 +18,9 @@ export const DepositTitle = ({
   isHideDes = false,
 }: any) => {
   const { t } = useTranslation();
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-deposit`,
@@ -55,7 +61,12 @@ export const DepositTitle = ({
               variant={"body2"}
               whiteSpace={"pre-line"}
             >
-              <Trans i18nKey={description ? description : "depositDescription"}>
+              <Trans
+                i18nKey={description ? description : "labelDepositDescription"}
+                tOptions={{
+                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                }}
+              >
                 Once your deposit is confirmed on Ethereum, it will be added to
                 your balance within 2 minutes.
               </Trans>

@@ -127,13 +127,15 @@ export const TxnDetailPanel = withTranslation("common", { withRef: true })(
           </HeaderStyled>
           <GridContainerStyled container flexDirection={"column"}>
             <GridItemStyled item>
-              <TypographyStyled>{t("labelTxnDetailHash")}</TypographyStyled>
+              <TypographyStyled>
+                {t("labelTxnDetailHash", { layer2: "Layer 2" })}
+              </TypographyStyled>
               <InfoValueStyled>{hash}</InfoValueStyled>
             </GridItemStyled>
             {txHash && (
               <GridItemStyled item>
                 <TypographyStyled>
-                  {t("labelTxnDetailHashLv1")}
+                  {t("labelTxnDetailHashLv1", { layer2: "Layer 2" })}
                 </TypographyStyled>
                 <InfoValueStyled>
                   <EthHshStyled

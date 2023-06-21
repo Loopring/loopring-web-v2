@@ -10,6 +10,7 @@ import {
   ProfileIndex,
   MapChainId,
   ProfileKey,
+  L1L2_DEFINED,
 } from "@loopring-web/common-resources";
 
 const StyledPaper = styled(Grid)`
@@ -33,7 +34,6 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
     const history = useHistory();
     const { setShowAccount } = useOpenModals();
     const { defaultNetwork } = useSettings();
-
     const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
     return (
@@ -88,7 +88,10 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                   >
                     <Trans
                       i18nKey="labelResetDescription"
-                      tOptions={{ loopringL2: "Loopring L2" }}
+                      tOptions={{
+                        loopringL2: "Loopring L2",
+                        layer2: "Layer 2",
+                      }}
                     >
                       Create a new signing key for layer-2 authentication (no
                       backup needed). This will
@@ -259,10 +262,12 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                       component={"p"}
                     >
                       {t("labelForceWithdrawDes", {
-                        loopringL2: "Loopring L2",
-                        l2Symbol: "L2",
-                        l1Symbol: "L1",
-                        ethereumL1: "Ethereum L1",
+                        layer2: L1L2_DEFINED[network].layer2,
+                        l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_DEFINED[network].ethereumL1,
                       })}
                     </Typography>
                   </Grid>
