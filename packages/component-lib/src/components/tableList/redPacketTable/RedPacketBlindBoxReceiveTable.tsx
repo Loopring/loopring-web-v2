@@ -12,6 +12,7 @@ import {
 import {
   CoinInfo,
   EmptyValueTag,
+  getValuePrecisionThousand,
   globalSetup,
   myLog,
   RowConfig,
@@ -195,13 +196,33 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         key: "Amount",
         name: t("labelAmount"),
         formatter: ({ row }: FormatterProps<R>) => {
-          return (
-            <>
-              {row.rawData.claim.amount
-                ? row.rawData.claim.amount
-                : EmptyValueTag}
-            </>
-          );
+          const { token } = row
+          if (token && token.type === TokenType.single) {
+            const { decimals, precision} = token as unknown as { decimals: number, precision: number }
+            return (
+              <>
+                {row.rawData.claim.amount
+                  ? getValuePrecisionThousand(
+                    sdk.toBig(row.rawData.claim.amount)
+                      .div('1e' + decimals),
+                    precision,
+                    precision,
+                    precision,
+                    false
+                  )
+                  : EmptyValueTag}
+              </>
+            );
+
+          } else {
+            return (
+              <>
+                {row.rawData.claim.amount
+                  ? row.rawData.claim.amount
+                  : EmptyValueTag}
+              </>
+            );
+          }
         },
       },
       {

@@ -543,9 +543,10 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
                     ...coinMap[token.symbol ?? ""],
                     name: token.name,
                     type: TokenType.single,
+                    decimals: token.decimals,
+                    precision: token.precision,
                   };
                 }
-                
                 return {
                   type: luckyToken.type,
                   status: luckyToken.status,
