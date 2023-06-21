@@ -6,7 +6,7 @@ import {
   headerGuardianToolBarData,
   headerMenuLandingData,
   myLog,
-  ChainIdExtends,
+  NetworkMap,
 } from "@loopring-web/common-resources";
 
 import {
@@ -31,7 +31,7 @@ export const useHeader = () => {
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { chainId, updateSystem } = useSystem();
-  const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
+  // const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
 
   const { setShowAccount } = useOpenModals();
   const accountState = React.useMemo(() => {

@@ -462,7 +462,6 @@ export const WalletConnectL1Btn = ({
           break;
         default:
       }
-
       if (account && account._chainId === sdk.ChainId.GOERLI) {
         setNetworkLabel(isMobile ? "G ö" : "Görli");
       } else if (
