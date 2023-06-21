@@ -283,7 +283,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
 
           {state === "PENDING" && tickerMap ? (
             <LoadingBlock />
-          ) : RouterAllowIndex[network]?.includes(RouterPath.pro) ? (
+          ) : RouterAllowIndex[network]?.includes(RouterMainKey.pro) ? (
             <OrderbookPage />
           ) : (
             <ErrorPage {...ErrorMap.TRADE_404} />
