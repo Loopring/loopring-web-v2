@@ -10,6 +10,7 @@ import {
 } from "../../basic-lib";
 import {
   CoinInfo,
+  getValuePrecisionThousand,
   globalSetup,
   myLog,
   RowConfig,
@@ -193,7 +194,13 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           key: "Amount",
           name: t("labelRecordAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{`${row.totalAmount}`}</>;
+            if (row.rawData.isNft) {
+              return <>{`${row.totalAmount}`}</>;
+            } else {
+              return getValuePrecisionThousand(
+                sdk.toBig(row.totalAmount)
+              )
+            }
           },
         },
         ...(tableType !== 'blindbox' ? [{
