@@ -93,3 +93,17 @@ export const walletConnectCallback = async () => {
   });
   providerCallback();
 };
+
+export const walletConnectV1Callback = async () => {
+  const { defaultNetwork, themeMode } = store.getState().settings;
+  store.dispatch(
+    accountReducer.updateAccountStatus({
+      connectName: ConnectProviders.WalletConnectV1,
+    })
+  );
+  await connectProvides.WalletConnectV1({
+    darkMode: themeMode === ThemeType.dark,
+    // chainId: defaultNetwork,
+  });
+  providerCallback();
+};

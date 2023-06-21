@@ -45,6 +45,7 @@ import {
   useAccount,
   useSelectNetwork,
   walletConnectCallback,
+  walletConnectV1Callback,
 } from "@loopring-web/core";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -128,23 +129,43 @@ export const useGatewayList = ({
                   isShow: true,
                   step: WalletConnectStep.CommonProcessing,
                 });
-                setProcessingCallback({ callback: walletConnectCallback });
+                setProcessingCallback({callback: walletConnectCallback});
                 setStateCheck(true);
               }
             },
             [account.connectName, setShowConnect]
           ),
         },
-        {
-          ...DefaultGatewayList[2],
-          // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
-          handleSelect: React.useCallback(
-            async (event, flag?) => {
+      {
+        ...DefaultGatewayList[ 4 ],
+        handleSelect: React.useCallback(
+          async (event, flag?) => {
+            if (!flag && account.connectName === DefaultGatewayList[ 4 ].key) {
+              setShowConnect({isShow: false});
+            } else {
               walletServices.sendDisconnect("", "should new provider");
+              setConnectProvider(DefaultGatewayList[ 4 ].key);
               setShowConnect({
                 isShow: true,
                 step: WalletConnectStep.CommonProcessing,
               });
+              setProcessingCallback({callback: walletConnectV1Callback});
+              setStateCheck(true);
+            }
+          },
+          [account.connectName, setShowConnect]
+        ),
+      },
+      {
+        ...DefaultGatewayList[ 2 ],
+        // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
+        handleSelect: React.useCallback(
+          async (event, flag?) => {
+            walletServices.sendDisconnect("", "should new provider");
+            setShowConnect({
+              isShow: true,
+              step: WalletConnectStep.CommonProcessing,
+            });
               setConnectProvider(DefaultGatewayList[2].key);
               setProcessingCallback({ callback: gameStopCallback });
               setStateCheck(true);

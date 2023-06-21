@@ -7,6 +7,7 @@ export enum GatewaySort {
   WalletConnect,
   GameStop,
   Coinbase,
+  WalletConnectV1,
 }
 
 const gatewayMap = new Map<GatewaySort, GatewayItem>(); // = [
@@ -31,6 +32,12 @@ gatewayMap.set(GatewaySort.Coinbase, {
   keyi18n: ConnectProviders.Coinbase,
   imgSrc: SoursURL + "svg/coinbase-wallet.svg",
 });
+gatewayMap.set(GatewaySort.WalletConnectV1, {
+  key: (ConnectProviders.WalletConnectV1 + "V1") as ConnectProviders,
+  keyi18n: ConnectProviders.WalletConnectV1 + "V1",
+  imgSrc: SoursURL + "svg/wallet-connect.svg",
+});
+
 export const gatewayList: GatewayItem[] = [...gatewayMap.keys()].reduce(
   (prev, key) => {
     // @ts-ignore
