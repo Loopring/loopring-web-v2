@@ -10,7 +10,6 @@ import {
   getShortAddr,
   LoadingIcon,
   LockIcon,
-  MapChainId,
   myLog,
   SagaStatus,
   UnConnectIcon,
