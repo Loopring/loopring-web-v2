@@ -428,17 +428,17 @@ export const DeFiSideWrap = <
     } else {
       return isJoin
         ? t(`labelInvestBtn`, {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
-        })
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })
         : t(`labelRedeemBtn`, {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
-        });
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          });
     }
   }, [isJoin, t, btnInfo]);
 

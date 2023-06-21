@@ -202,17 +202,17 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     } else {
       return isJoin
         ? t(`labelInvestBtn`, {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
-        })
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })
         : t(`labelRedeemBtn`, {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
-        });
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          });
     }
   }, [isJoin, t, btnInfo]);
 

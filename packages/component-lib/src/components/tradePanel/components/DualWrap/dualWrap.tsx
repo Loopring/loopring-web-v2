@@ -717,17 +717,17 @@ export const DualWrap = <
     } else {
       return displayMode === DisplayMode.beginnerModeStep1
         ? t("labelContinue", {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
-        })
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })
         : t(`labelInvestBtn`, {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
-        });
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          });
     }
   }, [t, btnInfo]);
   const lessEarnView = React.useMemo(
