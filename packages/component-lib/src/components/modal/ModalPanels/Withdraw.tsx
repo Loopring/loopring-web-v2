@@ -54,6 +54,7 @@ export const Withdraw_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL1Failed", {
+      l1Symbol: "L1",
       symbol: props.symbol,
       value: props.value,
     }),
@@ -108,6 +109,7 @@ export const NFTWithdraw_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL1Failed", {
+      l1Symbol: "L1",
       symbol: sanitize(props.symbol ?? "NFT"),
       value: props.value,
     }),

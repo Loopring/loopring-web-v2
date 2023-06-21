@@ -567,12 +567,11 @@ export default {
   labelswap: "Swap",
   labelamm: "Amm",
   labelActiveAccountTitle: "Activate {{loopringL2}} Account",
-  labelDepositTitle: "Add Assets from my L1",
-  labelDepositTitleAndActive: "Add Asset from My L1 & Activate",
+  labelDepositTitle: "Add Assets from My {{l1Symbol}}",
+  labelDepositTitleAndActive: "Add Asset from My {{l1Symbol}} & Activate",
   labelDepositAndActiveBtn: "Activate {{loopringL2}}",
   labelDepositTitleActive: "Activate {{loopringL2}}",
   depositLabelBtn: "Receive",
-  depositLabelLinkRecent: "Recent receive history from L1",
   labelL2ToL1Title: "Send to {{l1Symbol}}",
   labelL2ToMyL1Title: "Send to My {{l1Symbol}}",
   labelL2ToOtherL1Title: "Send to Another {{l1Symbol}}",
@@ -604,7 +603,7 @@ export default {
   labelL2toL2FeeFastNotAllowEnough: "Please choose Standard!",
   labelL2toL2LinkRecent: "Recent send history",
   labelL2toL2ExchangeError:
-    "Sending to an Exchange Address {{l2symbol}} account is not supported. {{loopringL2}} accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+    "Sending to an Exchange Address {{l2symbol}} account is not supported. {{loopringL2}} accounts cannot be activated on Exchange wallet addresses. Instead, please send to the {{l1Symbol}} account associated with this address.",
   labelL2toL2SmartWalletError:
     "This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the {{l1Symbol}} account. ",
   labelActiveLayer2: "Activate {{loopringL2}}",
@@ -622,8 +621,9 @@ export default {
   labelL1toL2Submit: "Add asset request has been submitted. <1></1>",
   labelL1toL2NeedApprove: "Allow Loopring Exchange to spend {{symbol}}",
   labelL2toL1InProgress: "Processing...",
-  labelL2toL1Failed: "Sent {{value}} {{symbol}} to L1 has failed!",
-  labelL2toL1Success: "Sent {{value}} {{symbol}} to L1 was successful!",
+  labelL2toL1Failed: "Sent {{value}} {{symbol}} to {{l1Symbol}} has failed!",
+  labelL2toL1Success:
+    "Sent {{value}} {{symbol}} to {{l1Symbol}} was successful!",
   labelL2toL2InProgress: "Processing...",
   labelL2toL2Failed:
     "Sent {{value}} {{symbol}} from my {{loopringL2}} to another {{loopringL2}} failed!",
@@ -633,7 +633,8 @@ export default {
     "Activation of {{loopringL2}} with deposit of {{value}} {{symbol}} has been submitted! \n Approximately {{count}} minutes remaining...',",
   labelCreateAccountFailed:
     "Activation of {{loopringL2}} with deposit of {{value}} {{symbol}} has failed!",
-  labelL1toL2Hash: "Recent transactions (From my L1 to my L2)",
+  labelL1toL2Hash:
+    "Recent transactions (From my {{l1Symbol}} to my {{l2Symbol}})",
   labelL1toL2HashEmpty:
     "My {{l1Symbol}} \u2192 {{loopringL2}} transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",

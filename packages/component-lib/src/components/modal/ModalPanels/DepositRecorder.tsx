@@ -72,7 +72,7 @@ export const DepositRecorder = ({
                 color={"text.primary"}
                 paddingBottom={1}
               >
-                {t("labelL1toL2Hash")}
+                {t("labelL1toL2Hash", { l1Symbol: "L1", l2Symbol: "L2" })}
               </Typography>
               {clear && (
                 <Link
