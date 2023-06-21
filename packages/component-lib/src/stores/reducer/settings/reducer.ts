@@ -32,7 +32,7 @@ const initialState: SettingsState = {
   proLayout: layoutConfigs[0].layouts,
   stopLimitLayout: stopLimitLayoutConfigs[0].layouts,
   swapSecondConfirmation: true,
-  isTaikoTest: false,
+  // isTaikoTest: false,
   isShowTestToggle: false,
 };
 
@@ -40,9 +40,9 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    setIsTaikoTest(state, action: PayloadAction<boolean>) {
-      state.isTaikoTest = action.payload;
-    },
+    // setIsTaikoTest(state, action: PayloadAction<boolean>) {
+    //   state.isTaikoTest = action.payload;
+    // },
     setIsShowTestToggle(state, action: PayloadAction<boolean>) {
       state.isShowTestToggle = action.payload;
     },
@@ -189,7 +189,7 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
 export const {
   setLayouts,
   setStopLimitLayouts,
-  setIsTaikoTest,
+  // setIsTaikoTest,
   setTheme,
   setLanguage,
   setPlatform,

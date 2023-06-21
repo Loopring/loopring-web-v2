@@ -339,23 +339,25 @@ const should15MinutesUpdateDataGroup = async (
 };
 
 const getSystemsApi = async <_R extends { [key: string]: any }>(
-  chainId: any
+  _chainId: any
 ) => {
   const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
     (item) => ![1, 5].includes(Number(item))
   );
+  // chainId =
 
   const env =
     window.location.hostname === "localhost"
       ? ENV.DEV
-      : sdk.ChainId.GOERLI === chainId
+      : sdk.ChainId.GOERLI === Number(_chainId)
       ? ENV.UAT
       : ENV.PROD;
-  chainId = AvaiableNetwork.includes(chainId.toString())
-    ? chainId
-    : NETWORKEXTEND.NONETWORK;
-
-  if (chainId === NETWORKEXTEND.NONETWORK) {
+  const chainId: sdk.ChainId = (
+    AvaiableNetwork.includes(_chainId.toString())
+      ? Number(_chainId)
+      : NETWORKEXTEND.NONETWORK
+  ) as sdk.ChainId;
+  if (_chainId === NETWORKEXTEND.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
     LoopringAPI.InitApi(chainId as sdk.ChainId);
@@ -363,25 +365,25 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
     if (LoopringAPI.exchangeAPI) {
       let baseURL, socketURL, etherscanBaseUrl;
       if (extendsChain.includes(chainId.toString())) {
-        const { isTaikoTest } = store.getState().settings;
-        baseURL = !isTaikoTest
-          ? `https://${process.env.REACT_APP_API_URL}`
-          : `https://${process.env.REACT_APP_API_URL_UAT}`;
-        socketURL = !isTaikoTest
-          ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
-          : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
-        etherscanBaseUrl = !isTaikoTest
-          ? `https://etherscan.io/`
-          : `https://goerli.etherscan.io/`;
+        baseURL = `https://${
+          process.env["REACT_APP_API_URL_" + chainId.toString()]
+        }`;
+        socketURL = `wss://ws.${
+          process.env["REACT_APP_API_URL_" + chainId.toString()]
+        }/v3/ws`;
+        etherscanBaseUrl =
+          chainId == 5
+            ? `https://goerli.etherscan.io/`
+            : `https://etherscan.io/`;
       } else {
         baseURL =
           sdk.ChainId.MAINNET === chainId
-            ? `https://${process.env.REACT_APP_API_URL}`
-            : `https://${process.env.REACT_APP_API_URL_UAT}`;
+            ? `https://${process.env.REACT_APP_API_URL_1}`
+            : `https://${process.env.REACT_APP_API_URL_5}`;
         socketURL =
           sdk.ChainId.MAINNET === chainId
-            ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
-            : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
+            ? `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
+            : `wss://ws.${process.env.REACT_APP_API_URL_5}/v3/ws`;
         etherscanBaseUrl =
           sdk.ChainId.MAINNET === chainId
             ? `https://etherscan.io/`

@@ -43,6 +43,6 @@ export interface SettingsState {
   stopLimitLayout: Layouts;
   feeChargeOrder: string[];
   swapSecondConfirmation: boolean | undefined;
-  isTaikoTest?: boolean | undefined;
+  // isTaikoTest?: boolean | undefined;
   isShowTestToggle?: boolean | undefined;
 }
