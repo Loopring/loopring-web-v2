@@ -6,11 +6,14 @@ import {
   AccountHashInfo,
   CompleteIcon,
   getFormattedHash,
+  L1L2_NAME_DEFINED,
   LinkIcon,
+  MapChainId,
   WaitingIcon,
   WarningIcon,
 } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
+import { useSettings } from "../../../stores";
 
 const BoxStyled = styled(Box)`
   background: var(--color-global-bg);
@@ -52,6 +55,8 @@ export const DepositRecorder = ({
   // updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
 }) => {
   const theme = useTheme();
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const depositView = React.useMemo(() => {
     return (
       <>
@@ -72,7 +77,12 @@ export const DepositRecorder = ({
                 color={"text.primary"}
                 paddingBottom={1}
               >
-                {t("labelL1toL2Hash", { l1Symbol: "L1", l2Symbol: "L2" })}
+                {t("labelL1toL2Hash", {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                })}
               </Typography>
               {clear && (
                 <Link
@@ -146,17 +156,17 @@ export const DepositRecorder = ({
               color={"text.secondary"}
             >
               {t("labelL1toL2HashEmpty", {
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               })}
             </Typography>
           </Typography>
         )}
       </>
     );
-  }, [chainInfos?.depositHashes[accAddress]]);
+  }, [network, chainInfos?.depositHashes[accAddress]]);
 
   return (
     <BoxStyled

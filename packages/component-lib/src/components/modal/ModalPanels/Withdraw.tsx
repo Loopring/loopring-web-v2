@@ -1,5 +1,7 @@
 import { IconType, PanelProps, WithdrawBase } from "./BasicPanel";
 import { sanitize } from "dompurify";
+import { useSettings } from "../../../stores";
+import { L1L2_NAME_DEFINED, MapChainId } from "@loopring-web/common-resources";
 
 // value symbol
 export const Withdraw_WaitForAuth = (props: PanelProps) => {
@@ -51,15 +53,19 @@ export const Withdraw_Success = (props: PanelProps) => {
 
 // value symbol
 export const Withdraw_Failed = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL1Failed", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: props.symbol,
       value: props.value,
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <WithdrawBase {...propsPatch} {...props} />;
@@ -109,15 +115,19 @@ export const NFTWithdraw_Success = (props: PanelProps) => {
 };
 
 export const NFTWithdraw_Failed = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL1Failed", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: sanitize(props.symbol ?? "NFT"),
       value: props.value,
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <WithdrawBase {...propsPatch} {...props} />;

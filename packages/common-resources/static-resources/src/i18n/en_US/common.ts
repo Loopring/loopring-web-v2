@@ -69,7 +69,7 @@ export default {
   labelViewEth: "View on Etherscan",
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
-  labelAssetTitle: "{{loopringL2}}Total Assets",
+  labelAssetTitle: "{{loopringL2}} Total Assets",
   labelAssetMobileTitle: "{{l2Symbol}} Assets",
   labelShowAccount: "Show or Hide Assets",
   labelLevel: "VIP Level",

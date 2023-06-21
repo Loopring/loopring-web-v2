@@ -6,11 +6,17 @@ import {
   DepositNFTWrap,
   PopoverPure,
   useOpenModals,
+  useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
 
 import { useNFTDeposit } from "@loopring-web/core";
-import { BackIcon, Info2Icon } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  Info2Icon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+} from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { Trans, useTranslation } from "react-i18next";
@@ -26,7 +32,8 @@ export const DepositNFTPanel = () => {
   const { t } = useTranslation(["common"]);
   const history = useHistory();
   const { setShowTradeIsFrozen } = useOpenModals();
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftDeposit`,
@@ -105,8 +112,8 @@ export const DepositNFTPanel = () => {
                     : "nftDepositDescription"
                 }
                 tOptions={{
-                  ethereumL1: "Ethereum L1",
-                  loopringL2: "Loopring L2",
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                 }}
               >
                 Creates a smart contract on Ethereum L1, which requires a gas

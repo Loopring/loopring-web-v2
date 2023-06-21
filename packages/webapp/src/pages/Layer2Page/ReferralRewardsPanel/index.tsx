@@ -85,9 +85,9 @@ const ReferHeader = ({
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common", "layout"]);
-  const { isMobile, defaultNetwork } = useSettings();
+  const { defaultNetwork } = useSettings();
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
-  const [image, setImage] = React.useState<any[]>([]);
+  // const [image, setImage] = React.useState<any[]>([]);
   const [imageList, setImageList] = React.useState<{
     referralBanners: { en: string[] };
     lng: string[];
@@ -104,7 +104,7 @@ const ReferHeader = ({
       code: { default: [48, 30, 230, 64, "#000000", 630, 880] },
     },
   });
-  const [images, setImages] = React.useState<JSX.Element[]>([]);
+  // const [images, setImages] = React.useState<JSX.Element[]>([]);
   React.useEffect(() => {
     fetch(`${url_path}/referral/information.json`)
       .then((response) => response.json())
@@ -114,39 +114,39 @@ const ReferHeader = ({
         }
       });
   }, []);
-  const renderImage = React.useCallback(() => {
-    const images = imageList?.referralBanners?.en.map((item, index) => {
-      const ref = React.createRef<SVGSVGElement>();
-      let _default = undefined;
-      if (imageList?.position?.code[index]) {
-        _default = imageList?.position?.code[index];
-      } else {
-        _default = imageList?.position?.code?.default;
-      }
-      let [left, bottom, , , color, width, height] = _default ?? [
-        48,
-        30,
-        230,
-        64,
-        "#000000",
-        630,
-        880,
-      ];
-      return (
-        <ReferralImage
-          ref={ref}
-          src={item}
-          code={account?.accountId?.toString()}
-          height={height}
-          width={width}
-          bottom={bottom}
-          left={left}
-          fontColor={color ?? "#000000"}
-        />
-      );
-    });
-    setImages(images);
-  }, [imageList, account]);
+  // const renderImage = React.useCallback(() => {
+  //   const images = imageList?.referralBanners?.en.map((item, index) => {
+  //     const ref = React.createRef<SVGSVGElement>();
+  //     let _default = undefined;
+  //     if (imageList?.position?.code[index]) {
+  //       _default = imageList?.position?.code[index];
+  //     } else {
+  //       _default = imageList?.position?.code?.default;
+  //     }
+  //     let [left, bottom, , , color, width, height] = _default ?? [
+  //       48,
+  //       30,
+  //       230,
+  //       64,
+  //       "#000000",
+  //       630,
+  //       880,
+  //     ];
+  //     return (
+  //       <ReferralImage
+  //         ref={ref}
+  //         src={item}
+  //         code={account?.accountId?.toString()}
+  //         height={height}
+  //         width={width}
+  //         bottom={bottom}
+  //         left={left}
+  //         fontColor={color ?? "#000000"}
+  //       />
+  //     );
+  //   });
+  //   setImages(images);
+  // }, [imageList, account]);
 
   const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
@@ -353,9 +353,9 @@ const ReferHeader = ({
               >
                 {label}
               </Button>
-              {image.map((item, index) => (
-                <React.Fragment key={index}>{item}</React.Fragment>
-              ))}
+              {/*{image.map((item, index) => (*/}
+              {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
+              {/*))}*/}
               <Box
                 sx={{ display: "block" }}
                 height={0}
@@ -363,9 +363,9 @@ const ReferHeader = ({
                 overflow={"hidden"}
               >
                 <canvas className={"canvas"} />
-                {images.map((item, index) => (
-                  <React.Fragment key={index}>{item}</React.Fragment>
-                ))}
+                {/*{images.map((item, index) => (*/}
+                {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
+                {/*))}*/}
               </Box>
             </Box>
           </Box>
@@ -378,6 +378,8 @@ const ReferHeader = ({
 const ReferView = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const link = `${WalletSite}?referralcode=${account.accountId}`;
@@ -431,10 +433,11 @@ const ReferView = () => {
                 <li>{t("labelReferralMethod1Step2")}</li>
                 <li>
                   {t("labelReferralMethod1Step3", {
-                    loopringL2: "Loopring L2",
-                    l2Symbol: "L2",
-                    l1Symbol: "L1",
-                    ethereumL1: "Ethereum L1",
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                    loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                   })}
                 </li>
                 <li>{t("labelReferralMethod1Step4")}</li>

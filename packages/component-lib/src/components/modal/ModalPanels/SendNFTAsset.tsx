@@ -8,8 +8,10 @@ import {
   BackIcon,
   ExchangeAIcon,
   IncomingIcon,
+  L1L2_NAME_DEFINED,
   L1l2Icon,
   L2l2Icon,
+  MapChainId,
   OutputIcon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
@@ -39,8 +41,8 @@ export const SendNFTAsset = ({
   isNotAllowToL1 = false,
 }: SendNFTAssetProps) => {
   const { t } = useTranslation("common");
-  const { isMobile } = useSettings();
-
+  const { defaultNetwork, isMobile } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   return (
     <BoxStyled
       flex={1}
@@ -112,11 +114,11 @@ export const SendNFTAsset = ({
                 >
                   <>{IconItem({ svgIcon: item.svgIcon })}</>
                   {t("label" + item.key, {
-                    loopringL2: "Loopring L2",
-                    l2Symbol: "L2",
-                    l1Symbol: "L1",
-                    ethereumL1: "Ethereum L1",
-                    loopringLayer2: "Loopring Layer 2",
+                    loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                   })}
                 </Typography>
               </MenuBtnStyled>

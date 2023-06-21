@@ -145,10 +145,10 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
             color={"var(--color-text-primary)"}
           >
             {t("labelToMyL2", {
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             })}
           </Typography>
         </Grid>

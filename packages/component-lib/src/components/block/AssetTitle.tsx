@@ -42,6 +42,9 @@ export const AssetTitle = withTranslation("common")(
     assetBtnStatus,
   }: AssetTitleProps & WithTranslation) => {
     const history = useHistory();
+    const { defaultNetwork } = useSettings();
+    debugger;
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <Grid
         container
@@ -63,7 +66,9 @@ export const AssetTitle = withTranslation("common")(
               paddingRight={3}
               color={"textSecondary"}
             >
-              {t("labelAssetTitle", { loopringL2: "Loopring L2" })}
+              {t("labelAssetTitle", {
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              })}
               {` (UID: ${accountId})`}
               <IconButton
                 size={"small"}
@@ -184,6 +189,7 @@ export const AssetTitleMobile = ({
           {t(label ?? "labelAssets", {
             ns: "layout",
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           })}
         </Typography>
         <Typography

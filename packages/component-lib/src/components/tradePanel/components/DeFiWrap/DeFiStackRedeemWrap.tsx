@@ -5,6 +5,8 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -21,6 +23,7 @@ import { InputCoin } from "../../../basic-lib";
 import { ButtonStyle } from "../Styled";
 import * as sdk from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
+import { useSettings } from "../../../../stores";
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -65,7 +68,8 @@ export const DeFiStackRedeemWrap = <
 }: DeFiStakeRedeemWrapProps<T, I, ACD>) => {
   // @ts-ignore
   const coinSellRef = React.useRef();
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { t } = useTranslation();
   const [agree, setAgree] = React.useState(
     !isJoin && !isFullTime ? false : true
@@ -141,27 +145,27 @@ export const DeFiStackRedeemWrap = <
         key && key[1]
           ? {
               arg: key[1],
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             }
           : {
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             }
       );
     } else {
       return t(`labelRedeemBtn`, {
-        loopringL2: "Loopring L2",
-        l2Symbol: "L2",
-        l1Symbol: "L1",
-        ethereumL1: "Ethereum L1",
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       });
     }
-  }, [t, btnInfo]);
+  }, [t, btnInfo, network]);
 
   const {
     currentTotalEarnings,

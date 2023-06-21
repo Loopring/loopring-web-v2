@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
-  ChainIdExtends,
   ChainTests,
   CircleIcon,
   gatewayList,
@@ -11,7 +10,6 @@ import {
   LoadingIcon,
   LockIcon,
   myLog,
-  SagaStatus,
   UnConnectIcon,
 } from "@loopring-web/common-resources";
 import { Typography, Box } from "@mui/material";
@@ -209,9 +207,10 @@ export const WalletConnectL1Btn = ({
   accountState,
   handleClick,
   NetWorkItems,
+  isShowOnUnConnect,
 }: // isShowOnUnConnect,
 WalletConnectBtnProps) => {
-  const { t, i18n } = useTranslation(["layout", "common"]);
+  const { t } = useTranslation(["layout", "common"]);
   // const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
 
@@ -293,7 +292,7 @@ WalletConnectBtnProps) => {
     } else {
       setLabel("labelConnectWallet");
     }
-  }, [accountState?.account?.readyState, i18n]);
+  }, [accountState?.account?.readyState]);
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)
@@ -309,42 +308,45 @@ WalletConnectBtnProps) => {
   return (
     <>
       {NetWorkItems}
-      <WalletConnectBtnStyled
-        variant={
-          ["un-connect", "wrong-network"].findIndex(
-            (ele) => btnClassname === ele
-          ) !== -1
-            ? "contained"
-            : "outlined"
-        }
-        size={
-          ["un-connect", "wrong-network"].findIndex(
-            (ele) => btnClassname === ele
-          ) !== -1
-            ? "small"
-            : "medium"
-        }
-        color={"primary"}
-        className={`wallet-btn ${btnClassname}`}
-        onClick={_handleClick}
-        {...bindHover(popupState)}
-      >
-        {icon ? (
-          <Typography component={"i"} marginLeft={-1}>
-            {icon}
-          </Typography>
-        ) : (
-          <></>
-        )}
-        <Typography
-          component={"span"}
-          variant={"body1"}
-          lineHeight={1}
-          color={"inherit"}
+      {(!isShowOnUnConnect ||
+        accountState?.account?.readyState !== AccountStatus.UN_CONNECT) && (
+        <WalletConnectBtnStyled
+          variant={
+            ["un-connect", "wrong-network"].findIndex(
+              (ele) => btnClassname === ele
+            ) !== -1
+              ? "contained"
+              : "outlined"
+          }
+          size={
+            ["un-connect", "wrong-network"].findIndex(
+              (ele) => btnClassname === ele
+            ) !== -1
+              ? "small"
+              : "medium"
+          }
+          color={"primary"}
+          className={`wallet-btn ${btnClassname}`}
+          onClick={_handleClick}
+          {...bindHover(popupState)}
         >
-          {t(label)}
-        </Typography>
-      </WalletConnectBtnStyled>
+          {icon ? (
+            <Typography component={"i"} marginLeft={-1}>
+              {icon}
+            </Typography>
+          ) : (
+            <></>
+          )}
+          <Typography
+            component={"span"}
+            variant={"body1"}
+            lineHeight={1}
+            color={"inherit"}
+          >
+            {t(label)}
+          </Typography>
+        </WalletConnectBtnStyled>
+      )}
     </>
   );
 };

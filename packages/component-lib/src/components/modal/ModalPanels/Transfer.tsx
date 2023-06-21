@@ -1,5 +1,7 @@
 import { IconType, PanelProps, TransferBase } from "./BasicPanel";
 import { sanitize } from "dompurify";
+import { useSettings } from "../../../stores";
+import { L1L2_NAME_DEFINED, MapChainId } from "@loopring-web/common-resources";
 
 // value symbol
 export const Transfer_WaitForAuth = (props: PanelProps) => {
@@ -59,15 +61,17 @@ export const Transfer_banxa_confirm = (props: PanelProps) => {
 
 // value symbol
 export const Transfer_Failed = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL2Failed", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: props.symbol,
       value: props.value,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <TransferBase {...propsPatch} {...props} />;
@@ -117,15 +121,17 @@ export const NFTTransfer_Success = (props: PanelProps) => {
 };
 
 export const NFTTransfer_Failed = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL2Failed", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <TransferBase {...propsPatch} {...props} />;

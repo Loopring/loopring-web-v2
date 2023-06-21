@@ -139,6 +139,7 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  L1L2_NAME_DEFINED,
   MapChainId,
   NFTWholeINFO,
   SendAssetList,
@@ -506,18 +507,18 @@ export function useAccountModalForUI({
                   step: AccountStep.ThirdPanelReturn,
                   info: {
                     title: t("labelAddAssetTitleBridge", {
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
-                      loopringLayer2: "Loopring Layer 2",
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                     }),
                     description: t(dex, {
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
-                      loopringLayer2: "Loopring Layer 2",
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                     }),
                   },
                 });
@@ -566,10 +567,11 @@ export function useAccountModalForUI({
                   info: {
                     title: t("labelAddAssetTitleExchange"),
                     description: t(dex, {
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                     }),
                   },
                 });
@@ -600,11 +602,11 @@ export function useAccountModalForUI({
                   info: {
                     title: t("labelFromAnotherNet"),
                     description: t(dex, {
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
-                      loopringLayer2: "Loopring Layer 2",
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                     }),
                   },
                 });
@@ -1079,10 +1081,11 @@ export function useAccountModalForUI({
               btnTxt: "labelDoAgain",
               param: {
                 method: t("labelDepositL1", {
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                 }),
               },
               callback: () => {
@@ -1216,10 +1219,11 @@ export function useAccountModalForUI({
               btnTxt: "labelDoAgain",
               param: {
                 method: t("labelDepositNFTL1", {
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                 }),
               },
               callback: () => {
@@ -2305,10 +2309,11 @@ export function useAccountModalForUI({
               param: {
                 method: t("labelL2ToL1Method", {
                   symbol: isShowAccount?.info?.symbol,
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                 }),
               },
               callback: () => {

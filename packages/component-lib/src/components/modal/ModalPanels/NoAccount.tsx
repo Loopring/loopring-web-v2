@@ -96,7 +96,7 @@ export const NoAccount = withTranslation("common")(
                   }}
                 >
                   {t("labelActiveL2Btn", {
-                    loopringL2: "Loopring L2",
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   })}
                 </Button>
               </Box>

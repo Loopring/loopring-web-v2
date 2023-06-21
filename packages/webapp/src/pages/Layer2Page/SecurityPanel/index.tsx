@@ -78,7 +78,7 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                     marginBottom={1}
                   >
                     {t("labelTitleResetL2Keypair", {
-                      loopringL2: "Loopring L2",
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                     })}
                   </Typography>
                   <Typography

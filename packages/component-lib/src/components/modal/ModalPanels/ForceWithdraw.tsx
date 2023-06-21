@@ -1,5 +1,10 @@
 import { ForceWithdrawBase, IconType, PanelProps } from "./BasicPanel";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
+import {
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
 
 export const ForceWithdraw_WaitForAuth = (
   props: PanelProps & Partial<NFTWholeINFO>
@@ -56,15 +61,17 @@ export const ForceWithdraw_In_Progress = (
 export const ForceWithdraw_Failed = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelForceWithdrawFailed", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: props.symbol,
       value: props.value,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <ForceWithdrawBase {...propsPatch} {...props} />;

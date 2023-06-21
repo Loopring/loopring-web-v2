@@ -259,7 +259,7 @@ export const CheckActiveStatus = ({
                   marginBottom={1}
                 >
                   {t("labelActivatedAccountChargeFeeList", {
-                    loopringL2: "Loopring L2",
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   })}
                 </Typography>
                 <Box marginTop={1}>

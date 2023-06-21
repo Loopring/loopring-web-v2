@@ -14,6 +14,7 @@ import {
   NoAccount,
   QRAddressPanel,
   useOpenModals,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { ConnectProviders, walletServices } from "@loopring-web/web3-provider";
 
@@ -23,6 +24,8 @@ import {
   AccountStatus,
   AssetsRawDataItem,
   copyToClipBoard,
+  L1L2_NAME_DEFINED,
+  MapChainId,
 } from "@loopring-web/common-resources";
 import {
   depositServices,
@@ -52,7 +55,8 @@ export function useAccountModalForL1UI({
   // onClose?: any;
 }) {
   const { chainInfos, updateDepositHash } = onchainHashInfo.useOnChainInfo();
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { processRequestRampTransfer } = useRampTransPost();
   const { campaignTagConfig } = useNotify().notifyMap ?? {};
   const {
@@ -370,10 +374,10 @@ export function useAccountModalForL1UI({
               btnTxt: "labelDoAgain",
               param: {
                 method: t("labelDepositL1", {
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                 }),
               },
               callback: () => {
@@ -397,6 +401,7 @@ export function useAccountModalForL1UI({
       },
     });
   }, [
+    network,
     account,
     isShowAccount.info,
     isShowAccount.error,

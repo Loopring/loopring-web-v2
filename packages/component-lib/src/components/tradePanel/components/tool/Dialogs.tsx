@@ -531,8 +531,8 @@ export const SwapSecondConfirmation = withTranslation("common")(
     minimumReceived: string;
     slippage: string;
   }) => {
-    const { isMobile, defaultNetwork } = useSettings();
-    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+    const { isMobile } = useSettings();
+    // const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
     return (
       <Modal
@@ -1128,7 +1128,8 @@ export const LayerswapNotice = withTranslation("common", {
     account: Account;
   }) => {
     const [agree, setAgree] = React.useState(false);
-
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     React.useEffect(() => {
       if (!open) {
         setAgree(false);
@@ -1147,11 +1148,11 @@ export const LayerswapNotice = withTranslation("common", {
             <Trans
               i18nKey={"labelLayerSwapUnderstandDes"}
               tOptions={{
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
-                loopringLayer2: "Loopring Layer 2",
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
               LayerSwap is a 3rd party App service provider to help move tokens
@@ -1306,7 +1307,8 @@ export const OtherExchangeDialog = withTranslation("common", {
     handleClose: (event: MouseEvent, notShow?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
-
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     React.useEffect(() => {
       if (!open) {
         setAgree(false);
@@ -1324,10 +1326,11 @@ export const OtherExchangeDialog = withTranslation("common", {
           <Trans
             i18nKey={"labelConfirmDetail"}
             tOptions={{
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             }}
           >
             <Typography
@@ -1410,6 +1413,8 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
     defiData: TradeDefi<any>;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const maxValue =
       defiData.buyToken?.symbol &&
       `${getValuePrecisionThousand(
@@ -1448,10 +1453,11 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
                 i18nKey={"labelDefiMaxBalance1"}
                 tOptions={{
                   type,
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                 }}
               >
                 or you can
@@ -1627,6 +1633,8 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
   }) => {
     // @ts-ignore
     const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i);
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <DialogStyle
         open={open}
@@ -1670,10 +1678,11 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
                     tOptions={{
                       symbol: baseSymbol,
                       type,
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                     }}
                   >
                     <ListItem style={{ marginBottom: 0 }}>
@@ -1932,6 +1941,8 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
     USDCOnly: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const [{ agree1, agree2, agree3, agree4, agree5 }, setAgree] =
       React.useState({
         agree1: false,
@@ -2009,12 +2020,12 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
               <Trans
                 i18nKey={"labelInvestDualTutorialContent"}
                 tOptions={{
-                  layer2: "Layer 2",
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
-                  loopringLayer2: "Loopring Layer 2",
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                 }}
               >
                 <Typography
@@ -2157,6 +2168,8 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
     open: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const [agree, setAgree] = React.useState(false);
     React.useEffect(() => {
       if (!open) {
@@ -2176,10 +2189,12 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
             <Trans
               i18nKey={`labelLRCStakingRisk`}
               tOptions={{
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
               components={{
                 p: (
@@ -2231,10 +2246,12 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
             <Trans
               i18nKey={`labelLRCStakingRisk2`}
               tOptions={{
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
               <Typography

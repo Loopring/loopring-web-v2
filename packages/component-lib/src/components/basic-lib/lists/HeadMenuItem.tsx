@@ -334,8 +334,8 @@ export const HeaderMenuSub = React.memo(
                   color={"inherit"}
                 >
                   {t(label.i18nKey, {
-                    loopringL2: "Loopring L2",
-                    l2Symbol: "L2",
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
                   })}
                 </Typography>
                 <ListItemAvatar

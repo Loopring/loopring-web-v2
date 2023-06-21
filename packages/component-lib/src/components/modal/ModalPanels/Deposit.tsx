@@ -74,7 +74,7 @@ export const Deposit_Failed = (props: PanelProps) => {
 };
 
 export const Deposit_Submit = (props: PanelProps) => {
-  const { defaultNetwork } = useSettings();
+  const { defaultNetwork, isMobile } = useSettings();
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { t } = useTranslation();
   const propsPatch = {

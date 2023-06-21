@@ -1,14 +1,19 @@
 import {
   AddressItemType,
   EXCHANGE_TYPE,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
+import { useSettings } from "../../../../stores";
 
 export const useAddressTypeLists = <
   T extends WALLET_TYPE | EXCHANGE_TYPE
 >() => {
   const { t } = useTranslation("common");
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const walletList: AddressItemType<T>[] = [
     {
       label: t("labelWalletTypeOptions", {
@@ -73,10 +78,12 @@ export const useAddressTypeLists = <
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
         description: t("labelContactsBinanceNotSupportted", {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
+          layer2: L1L2_NAME_DEFINED[network].layer2,
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
         }),
       },
       {
@@ -84,10 +91,12 @@ export const useAddressTypeLists = <
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
         description: t("labelContactsHuobiNotSupportted", {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
+          layer2: L1L2_NAME_DEFINED[network].layer2,
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
         }),
       },
       {
@@ -95,10 +104,12 @@ export const useAddressTypeLists = <
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
         description: t("labelContactsOtherExchangesNotSupportted", {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
+          layer2: L1L2_NAME_DEFINED[network].layer2,
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
         }),
       },
     ];

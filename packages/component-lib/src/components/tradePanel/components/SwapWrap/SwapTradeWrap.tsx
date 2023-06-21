@@ -12,6 +12,8 @@ import {
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   ReverseIcon,
   SwapTradeCalcData,
@@ -61,7 +63,8 @@ export const SwapTradeWrap = <
   const buyRef = React.useRef();
   const history = useHistory();
   let tradeData = swapData.tradeData;
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true
   );
@@ -174,35 +177,43 @@ export const SwapTradeWrap = <
           key && key[1]
             ? {
                 arg: key[1],
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }
             : {
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }
         );
       } else {
         return t(swapBtnI18nKey, {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
+          layer2: L1L2_NAME_DEFINED[network].layer2,
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
         });
       }
     } else {
       return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`, {
-        loopringL2: "Loopring L2",
-        l2Symbol: "L2",
-        l1Symbol: "L1",
-        ethereumL1: "Ethereum L1",
+        layer2: L1L2_NAME_DEFINED[network].layer2,
+        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       });
     }
-  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade]);
+  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade, network]);
   const showVal =
     tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB;
 

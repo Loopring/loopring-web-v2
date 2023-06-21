@@ -9,6 +9,7 @@ import {
 import {
   Button,
   setShowConnect,
+  useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -17,7 +18,9 @@ import _ from "lodash";
 import {
   fnType,
   i18n,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
@@ -82,7 +85,8 @@ export const BtnConnectL1 = withTranslation(["common", "layout"], {
   } = useAccount();
   const [label, setLabel] = React.useState("labelConnectWallet");
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {
       myLog("readyState", readyState);
@@ -108,10 +112,10 @@ export const BtnConnectL1 = withTranslation(["common", "layout"], {
       >
         {label !== "" ? (
           t(label, {
-            loopringL2: "Loopring L2",
-            l2Symbol: "L2",
-            l1Symbol: "L1",
-            ethereumL1: "Ethereum L1",
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
           })
         ) : (
           <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />

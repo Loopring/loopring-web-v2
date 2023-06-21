@@ -4,7 +4,9 @@ import {
   AccountStatus,
   Exchange,
   fnType,
+  L1L2_NAME_DEFINED,
   LoopringIcon,
+  MapChainId,
   SagaStatus,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -15,12 +17,12 @@ import {
   DepositProps,
   SwitchPanelStyled,
   useSettings,
+  WalletConnectL1Btn,
 } from "@loopring-web/component-lib";
 import {
   accountStaticCallBack,
   btnClickMap,
   useAccount,
-  WalletConnectL1Btn,
 } from "@loopring-web/core";
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
@@ -55,7 +57,8 @@ export const DepositToPage = withTranslation(["common"])(
     depositProps,
   }: { depositProps: DepositProps<any, any> } & WithTranslation) => {
     const { isMobile } = useSettings();
-
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const [_depositBtnI18nKey, setDepositBtnI18nKey] =
       React.useState<BtnInfo | undefined>(undefined);
     const [_depositBtnStatus, setDepositBtnStatus] = React.useState(
@@ -170,10 +173,11 @@ export const DepositToPage = withTranslation(["common"])(
                   ? "labelL1toL2TitleBridgeNoConnect"
                   : "labelL1toL2TitleBridge",
                 {
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                 }
               )}
               accountReady={account?.readyState as any}
