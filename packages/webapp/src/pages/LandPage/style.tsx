@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
-import { Box, Container, Typography, TypographyProps } from "@mui/material";
-import { ThemeType } from "@loopring-web/common-resources";
-import { ContainerProps } from "@mui/material/Container/Container";
-import { LAYOUT } from "@loopring-web/core";
+import styled from '@emotion/styled'
+import { Box, Container, Typography, TypographyProps } from '@mui/material'
+import { SoursURL, ThemeType } from '@loopring-web/common-resources'
+import { ContainerProps } from '@mui/material/Container/Container'
+import { LAYOUT } from '@loopring-web/core'
 
 export const ContainerStyle = styled(Box)`
   .MuiContainer-root {
@@ -14,14 +14,14 @@ export const ContainerStyle = styled(Box)`
 
   ${({ theme }) => {
     let result = `
-       --img-banner-url: url("https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png");
-      `;
+       --img-banner-url: url("${SoursURL}landPage/img_home_banner_${theme.mode}@2x.png");
+      `
     if (theme.mode === ThemeType.dark) {
       result += `
-            --main-page-bg: #060D42;
+            --main-page-bg: var(--color-global-bg);
             --color-primary: #4169FF;
             --layer-2: #1A32A2;
-            --second-bg: #0D1655;
+            --second-bg: var(--color-box);
             --box-card-decorate:rgba(255, 255, 255, 0.1);
             --box-card-background: #283485;
             --box-card-background-hover:#4169FF;
@@ -32,7 +32,7 @@ export const ContainerStyle = styled(Box)`
             --text-highlight:#4169FF;
             --text-third:#ffffff;
             --bg-bottom: #1A32A1;
-        `;
+        `
     } else {
       result += `
             --main-page-bg: #ffffff;
@@ -49,21 +49,19 @@ export const ContainerStyle = styled(Box)`
             --text-highlight:#4169FF;
             --text-third:#ffffff;
             --bg-bottom: #4169FF;
-        `;
+        `
     }
-    return result;
+    return result
   }};
   background: var(--main-page-bg);
 
   body {
     background: var(--main-page-bg);
   }
-` as typeof Box;
-export const TitleTypography = styled(Typography)<
-  TypographyProps & { isMobile?: boolean }
->`
+` as typeof Box
+export const TitleTypography = styled(Typography)<TypographyProps & { isMobile?: boolean }>`
   text-transform: uppercase;
-  font-size: ${({ isMobile }) => (isMobile ? "2rem" : "4rem")};
+  font-size: ${({ isMobile }) => (isMobile ? '2rem' : '4rem')};
   font-weight: 700;
   white-space: pre-line;
   line-height: 5.6rem;
@@ -76,23 +74,21 @@ export const TitleTypography = styled(Typography)<
   }
   justify-content: space-between;
   align-self: flex-start;
-  height: ${({ isMobile }) => (isMobile ? "auto" : "calc(80px + 24px)")};
+  height: ${({ isMobile }) => (isMobile ? 'auto' : 'calc(80px + 24px)')};
   width: 100%;
   &:before {
     margin-top: 24px;
-    content: "";
-    // top: ${({ isMobile }) => (isMobile ? "-16px" : "-30px")};
+    content: '';
+    // top: ${({ isMobile }) => (isMobile ? '-16px' : '-30px')};
     // left: 0;
     height: 6px;
     width: 96px;
     display: block;
     background: var(--color-primary);
   }
-` as (props: TypographyProps & { isMobile?: boolean }) => JSX.Element;
+` as (props: TypographyProps & { isMobile?: boolean }) => JSX.Element
 
-export const ContainerStyled = styled(Container)<
-  ContainerProps & { isMobile?: boolean }
->`
+export const ContainerStyled = styled(Container)<ContainerProps & { isMobile?: boolean }>`
   padding: 0 !important;
   & > .MuiGrid-item {
     display: flex;
@@ -100,9 +96,7 @@ export const ContainerStyled = styled(Container)<
     align-items: center;
     flex-direction: column;
     ${({ isMobile }) => `
-      min-height: ${
-        isMobile ? `calc(100vh - ${LAYOUT.HEADER_HEIGHT}px)` : "734px"
-      };
+      min-height: ${isMobile ? `calc(100vh - ${LAYOUT.HEADER_HEIGHT}px)` : '734px'};
       &.wallet-grid{
         justify-content: space-around;
         .wallet-content {
@@ -136,7 +130,7 @@ export const ContainerStyled = styled(Container)<
       }
 
       :before {
-        content: "";
+        content: '';
         position: absolute;
         right: 0;
         top: 0;
@@ -193,4 +187,4 @@ export const ContainerStyled = styled(Container)<
       `}
     }
   }
-` as (props: ContainerProps & { isMobile?: boolean }) => JSX.Element;
+` as (props: ContainerProps & { isMobile?: boolean }) => JSX.Element

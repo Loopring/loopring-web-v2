@@ -1,23 +1,23 @@
-import { Subject } from "rxjs";
-import { DepthData, getMidPrice } from "@loopring-web/loopring-sdk";
+import { Subject } from 'rxjs'
+import { DepthData, getMidPrice } from '@loopring-web/loopring-sdk'
 
 const subject = new Subject<{
-  orderbookMap: OrderbookMap<{ [key: string]: any }>;
-}>();
+  orderbookMap: OrderbookMap<{ [key: string]: any }>
+}>()
 
 export type OrderbookMap<R> = {
-  [key in keyof R]: DepthData;
-};
+  [key in keyof R]: DepthData
+}
 // <R extends {[key:string]:any}>
 
 export const orderbookService = {
   sendOrderbook: (orderbookMap: OrderbookMap<{ [key: string]: any }>) => {
     const _orderbookMap = Reflect.ownKeys(orderbookMap).reduce((pre, key) => {
-      const data = orderbookMap[key as string];
+      const data = orderbookMap[key as string]
       const { bids, asks, mid_price } = getMidPrice({
-        _asks: data["asks"],
-        _bids: data["bids"],
-      });
+        _asks: data['asks'],
+        _bids: data['bids'],
+      })
 
       return {
         ...pre,
@@ -37,11 +37,11 @@ export const orderbookService = {
           asks_amtTotal: asks.amtTotal.toString(),
           asks_volTotal: asks.volTotal.toString(),
         },
-      };
-    }, {});
+      }
+    }, {})
 
-    subject.next({ orderbookMap: _orderbookMap });
+    subject.next({ orderbookMap: _orderbookMap })
   },
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),
-};
+}

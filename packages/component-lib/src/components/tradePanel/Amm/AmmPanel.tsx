@@ -1,24 +1,19 @@
-import { AmmChgData, AmmDepositWrap, AmmWithdrawWrap } from "../components";
-import { Box, BoxProps, Tab, Tabs, Toolbar } from "@mui/material";
-import {
-  AmmExitData,
-  AmmInData,
-  AmmJoinData,
-  IBData,
-} from "@loopring-web/common-resources";
-import { WithTranslation, withTranslation } from "react-i18next";
-import React from "react";
-import { CountDownIcon } from "../components/tool/Refresh";
-import styled from "@emotion/styled";
-import { boxLiner, toolBarPanel } from "../../styled";
-import { AmmPanelType, AmmProps } from "./Interface";
-import { useSettings } from "../../../stores";
+import { AmmChgData, AmmDepositWrap, AmmWithdrawWrap } from '../components'
+import { Box, BoxProps, Tab, Tabs, Toolbar } from '@mui/material'
+import { AmmExitData, AmmInData, AmmJoinData, IBData } from '@loopring-web/common-resources'
+import { WithTranslation, withTranslation } from 'react-i18next'
+import React from 'react'
+import { CountDownIcon } from '../components/tool/Refresh'
+import styled from '@emotion/styled'
+import { boxLiner, toolBarPanel } from '../../styled'
+import { AmmPanelType, AmmProps } from './Interface'
+import { useSettings } from '../../../stores'
 
 const WrapStyle = styled(Box)<
   BoxProps & {
-    _height?: number | string;
-    _width?: number | string;
-    isMobile: boolean;
+    _height?: number | string
+    _width?: number | string
+    isMobile: boolean
   }
 >`
   ${({ _width, isMobile }) =>
@@ -26,10 +21,10 @@ const WrapStyle = styled(Box)<
       ? `width:100%;height:auto;`
       : `       
       width: ${
-        typeof _width === "string"
+        typeof _width === 'string'
           ? _width
-          : typeof _width === "number"
-          ? _width + "px"
+          : typeof _width === 'number'
+          ? _width + 'px'
           : `var(--swap-box-width)`
       };
       height: auto;`}
@@ -46,28 +41,28 @@ const WrapStyle = styled(Box)<
   }
 ` as (
   props: BoxProps & {
-    _height?: number | string;
-    _width?: number | string;
-    isMobile: boolean;
-  }
-) => JSX.Element;
+    _height?: number | string
+    _width?: number | string
+    isMobile: boolean
+  },
+) => JSX.Element
 
 const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
   return (
-    <Tabs value={value} onChange={handleChange} aria-label="Amm Method Tab">
-      <Tab label={t("labelLiquidityDeposit")} value={0} />
-      <Tab label={t("labelLiquidityWithdraw")} value={1} />
+    <Tabs value={value} onChange={handleChange} aria-label='Amm Method Tab'>
+      <Tab label={t('labelLiquidityDeposit')} value={0} />
+      <Tab label={t('labelLiquidityWithdraw')} value={1} />
     </Tabs>
-  );
-};
+  )
+}
 
-export const AmmPanel = withTranslation("common", { withRef: true })(
+export const AmmPanel = withTranslation('common', { withRef: true })(
   <
     T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
     TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
-    C = IBData<I>
+    C = IBData<I>,
   >({
     t,
     tabSelected = AmmPanelType.Join,
@@ -108,27 +103,27 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
   }: AmmProps<T, TW, I, ACD, C> & WithTranslation) => {
     const _onChangeAddEvent = React.useCallback(
       async ({ tradeData, type }: AmmChgData<T>) => {
-        handleAmmAddChangeEvent(tradeData, type);
+        handleAmmAddChangeEvent(tradeData, type)
         // if (typeof onAmmAddChangeEvent == "function") {
         //   onAmmAddChangeEvent({ tradeData, type } as AmmChgData<T>);
         // }
       },
-      [handleAmmAddChangeEvent]
-    );
+      [handleAmmAddChangeEvent],
+    )
 
     const _onChangeRemoveEvent = React.useCallback(
       async ({
         tradeData,
       }: // type,
       // percentage
-      { tradeData: TW } & { type: "lp"; percentage?: number }) => {
-        handleAmmRemoveChangeEvent(tradeData);
+      { tradeData: TW } & { type: 'lp'; percentage?: number }) => {
+        handleAmmRemoveChangeEvent(tradeData)
         // if (typeof onRemoveChangeEvent == "function") {
         //   onRemoveChangeEvent({ tradeData, type } as AmmWithdrawChgData<TW>);
         // }
       },
-      [handleAmmRemoveChangeEvent]
-    );
+      [handleAmmRemoveChangeEvent],
+    )
 
     // const panelList: Pick<
     //   PanelContent<"ammJoin" | "ammExit">,
@@ -182,25 +177,20 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
     //   },
     // ];
     // const theme = useTheme();
-    const { isMobile } = useSettings();
+    const { isMobile } = useSettings()
 
     return (
       <WrapStyle
-        display={"flex"}
-        className={"trade-panel container"}
+        display={'flex'}
+        className={'trade-panel container'}
         isMobile={isMobile}
-        paddingTop={"var(--toolbar-row-padding)"}
+        paddingTop={'var(--toolbar-row-padding)'}
         paddingBottom={3}
-        flexDirection={"column"}
-        flexWrap={"nowrap"}
+        flexDirection={'column'}
+        flexWrap={'nowrap'}
       >
-        <Toolbar className={"large"} variant={"regular"}>
-          <Box
-            alignSelf={"center"}
-            justifyContent={"flex-start"}
-            display={"flex"}
-            marginLeft={-2}
-          >
+        <Toolbar className={'large'} variant={'regular'}>
+          <Box alignSelf={'center'} justifyContent={'flex-start'} display={'flex'} marginLeft={-2}>
             <TabPanelBtn
               {...{
                 t,
@@ -210,23 +200,23 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
               }}
             />
           </Box>
-          <Box alignSelf={"center"}>
+          <Box alignSelf={'center'}>
             <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
           </Box>
         </Toolbar>
 
-        <Box flex={1} className={"trade-panel"}>
+        <Box flex={1} className={'trade-panel'}>
           {ammType === AmmPanelType.Join && (
             <Box
-              display={"flex"}
-              justifyContent={"space-evenly"}
-              alignItems={"stretch"}
-              height={"100%"}
+              display={'flex'}
+              justifyContent={'space-evenly'}
+              alignItems={'stretch'}
+              height={'100%'}
               padding={5 / 2}
               // key={panelList[0].key}
             >
               <AmmDepositWrap<T, I, ACD, C>
-                key={"ammJoin"}
+                key={'ammJoin'}
                 {...{
                   t,
                   ...rest,
@@ -249,14 +239,14 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
           )}
           {ammType === AmmPanelType.Exit && (
             <Box
-              display={"flex"}
-              justifyContent={"space-evenly"}
-              alignItems={"stretch"}
-              height={"100%"}
+              display={'flex'}
+              justifyContent={'space-evenly'}
+              alignItems={'stretch'}
+              height={'100%'}
               padding={5 / 2}
             >
               <AmmWithdrawWrap<TW, I, ACD, C>
-                key={"ammExit"}
+                key={'ammExit'}
                 {...{
                   t,
                   ...rest,
@@ -302,14 +292,14 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
           {/*</SwipeableViewsStyled>*/}
         </Box>
       </WrapStyle>
-    );
-  }
+    )
+  },
 ) as <
   T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
   TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
   I,
   ACD extends AmmInData<I>,
-  C = IBData<I>
+  C = IBData<I>,
 >(
-  props: AmmProps<T, TW, I, ACD, C> & React.RefAttributes<any>
-) => JSX.Element;
+  props: AmmProps<T, TW, I, ACD, C> & React.RefAttributes<any>,
+) => JSX.Element

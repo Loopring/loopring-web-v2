@@ -1,12 +1,11 @@
-import { Box, Grid, Link, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import styled from "@emotion/styled/";
-import { LandPageHeightConfig, SoursURL } from "@loopring-web/common-resources";
-import { withTranslation } from "react-i18next";
-import { ContainerStyle, ContainerStyled, TitleTypography } from "./style";
-import { useSettings } from "@loopring-web/component-lib";
-import { useTheme } from "@emotion/react";
-import { useHistory } from "react-router";
+import { Box, Grid, Link, Typography } from '@mui/material'
+import React, { useEffect } from 'react'
+import styled from '@emotion/styled'
+import { LandPageHeightConfig, SoursURL } from '@loopring-web/common-resources'
+import { withTranslation } from 'react-i18next'
+import { ContainerStyle, ContainerStyled, TitleTypography } from './style'
+import { useSettings } from '@loopring-web/component-lib'
+import { useTheme } from '@emotion/react'
 
 // const LinkStyle = styled(Link)`
 //   color: var(--color-button-select);
@@ -45,10 +44,8 @@ import { useHistory } from "react-router";
 //   background: var(--layer-2);
 // ` as typeof Box;
 
-export const WalletPage = withTranslation(["landPage", "common"])(
-  ({ t }: any) => {
-    const { isMobile } = useSettings();
-    const { mode } = useTheme();
-    return <></>;
-  }
-);
+export const WalletPage = withTranslation(['landPage', 'common'])(({ t }: any) => {
+  const { isMobile } = useSettings()
+  const { mode } = useTheme()
+  return <></>
+})

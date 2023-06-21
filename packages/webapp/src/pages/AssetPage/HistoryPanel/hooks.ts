@@ -1,21 +1,23 @@
-import React, { useCallback, useState } from "react";
+import React from 'react'
 import {
   LoopringAPI,
   makeDualOrderedItem,
   store,
   tradeItemToTableDataItem,
   useAccount,
+  useDefiMap,
   useDualMap,
   useTokenMap,
   useWalletLayer2,
   volumeToCount,
   volumeToCountAsBigNumber,
-} from "@loopring-web/core";
+} from '@loopring-web/core'
 import {
   AccountStep,
   AmmSideTypes,
   BtradeSwapsType,
   OrderHistoryRawDataItem,
+  OrderHistoryTableDetailItem,
   RawDataAmmItem,
   RawDataBtradeSwapsItem,
   RawDataDualAssetItem,
@@ -25,66 +27,67 @@ import {
   ToastType,
   TransactionStatus,
   useOpenModals,
-} from "@loopring-web/component-lib";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE, GetOrdersRequest, Side } from "@loopring-web/loopring-sdk";
+  useSettings,
+} from '@loopring-web/component-lib'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE, GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import {
+  AccountStatus,
   BTRDE_PRE,
+  DEFI_CONFIG,
   getValuePrecisionThousand,
+  LEVERAGE_ETH_CONFIG,
+  MapChainId,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
-} from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
-import BigNumber from "bignumber.js";
+} from '@loopring-web/common-resources'
+import { TFunction, useTranslation } from 'react-i18next'
+import BigNumber from 'bignumber.js'
+import { useLocation } from 'react-router-dom'
 
 export type TxsFilterProps = {
   // accountId: number;
-  tokenSymbol?: string;
-  start?: number;
-  end?: number;
-  offset?: number;
-  limit?: number;
-  types?: sdk.UserTxTypes[] | string;
-};
+  tokenSymbol?: string
+  start?: number
+  end?: number
+  offset?: number
+  limit?: number
+  types?: sdk.UserTxTypes[] | string
+}
 
 enum TxTypeAMM {
-  Add = "join_pool",
-  Remove = "exit_pool",
+  Add = 'join_pool',
+  Remove = 'exit_pool',
 }
 
 export function useGetTxs(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
-  } = useAccount();
-  const { tokenMap } = store.getState().tokenMap;
-  const { t } = useTranslation(["error"]);
-  const [txs, setTxs] = useState<RawDataTransactionItem[]>([]);
-  const [txsTotal, setTxsTotal] = useState(0);
-  const [showLoading, setShowLoading] = useState(false);
+  } = useAccount()
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const { tokenMap } = store.getState().tokenMap
+  const { t } = useTranslation(['error'])
+  const [txs, setTxs] = React.useState<RawDataTransactionItem[]>([])
+  const [txsTotal, setTxsTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
 
   const getTxnStatus = (status: string) =>
-    status === ""
+    status === ''
       ? TransactionStatus.processing
-      : status === "processed"
+      : status === 'processed'
       ? TransactionStatus.processed
-      : status === "processing"
+      : status === 'processing'
       ? TransactionStatus.processing
-      : status === "received"
+      : status === 'received'
       ? TransactionStatus.received
-      : TransactionStatus.failed;
+      : TransactionStatus.failed
 
-  const getUserTxnList = useCallback(
-    async ({
-      tokenSymbol,
-      start,
-      end,
-      limit,
-      offset,
-      types,
-    }: TxsFilterProps) => {
+  const getUserTxnList = React.useCallback(
+    async ({ tokenSymbol, start, end, limit, offset, types }: TxsFilterProps) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
-        setShowLoading(true);
+        setShowLoading(true)
         const response = await LoopringAPI.userAPI.getUserTxs(
           {
             accountId,
@@ -95,80 +98,68 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
             offset,
             types,
           },
-          apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           setToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              "error : " + errorItem
+              'error : ' + errorItem
                 ? t(errorItem.messageKey)
                 : (response as sdk.RESULT_INFO).message,
-          });
+          })
         } else {
-          const formattedList: RawDataTransactionItem[] = response.userTxs.map(
-            (order) => {
-              const feePrecision = tokenMap
-                ? tokenMap[order.feeTokenSymbol].precision
-                : undefined;
-              return {
-                ...order,
-                side: order.txType as any,
-                amount: {
-                  unit: order.symbol || "",
-                  value: Number(volumeToCount(order.symbol, order.amount)),
-                },
-                fee: {
-                  unit: order.feeTokenSymbol || "",
-                  value: Number(
-                    volumeToCountAsBigNumber(
-                      order.feeTokenSymbol,
-                      order.feeAmount || 0
-                    )
-                  ),
-                },
-                memo: order.memo || "",
-                time: order.timestamp,
-                txnHash: order.hash,
-                status: getTxnStatus(order.status),
-                feePrecision: feePrecision,
-              } as RawDataTransactionItem;
-            }
-          );
-          setTxs(formattedList);
-          setTxsTotal(response.totalNum);
-          setShowLoading(false);
+          const formattedList: RawDataTransactionItem[] = response.userTxs.map((order) => {
+            const feePrecision = tokenMap ? tokenMap[order.feeTokenSymbol].precision : undefined
+            return {
+              ...order,
+              side: order.txType as any,
+              amount: {
+                unit: order.symbol || '',
+                value: Number(volumeToCount(order.symbol, order.amount)),
+              },
+              fee: {
+                unit: order.feeTokenSymbol || '',
+                value: Number(volumeToCountAsBigNumber(order.feeTokenSymbol, order.feeAmount || 0)),
+              },
+              memo: order.memo || '',
+              time: order.timestamp,
+              txnHash: order.hash,
+              status: getTxnStatus(order.status),
+              feePrecision: feePrecision,
+            } as RawDataTransactionItem
+          })
+          setTxs(formattedList)
+          setTxsTotal(response.totalNum)
+          setShowLoading(false)
         }
       }
     },
-    [accountId, apiKey, setToastOpen, t, tokenMap]
-  );
+    [accountId, apiKey, setToastOpen, t, tokenMap],
+  )
 
   return {
     txs,
     txsTotal,
+    searchValue: searchParams?.get('searchValue'),
     showLoading,
     getUserTxnList,
-  };
+  }
 }
 
 export function useGetTrades(setToastOpen: (state: any) => void) {
-  const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([]);
-  const [userTradesTotal, setUserTradesTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
-  const [page, setPage] = React.useState(1);
+  const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([])
+  const [userTradesTotal, setUserTradesTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
+  const [page, setPage] = React.useState(1)
   const {
     account: { accountId, apiKey },
-  } = useAccount();
+  } = useAccount()
 
-  const tokenMap = store.getState().tokenMap.tokenMap;
-  const { t } = useTranslation(["error"]);
+  const tokenMap = store.getState().tokenMap.tokenMap
+  const { t } = useTranslation(['error'])
 
   const getUserTradeList = React.useCallback(
     async ({
@@ -179,25 +170,19 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
       fromId,
       fillTypes,
     }: {
-      market?: string;
-      page?: number;
-      total?: number;
-      pageSize: number;
+      market?: string
+      page?: number
+      total?: number
+      pageSize: number
       // offset: (page - 1) * pageSize,
       // limit: pageSize,
-      fromId?: any;
-      orderHash?: any;
-      fillTypes?: any;
+      fromId?: any
+      orderHash?: any
+      fillTypes?: any
     }) => {
-      if (
-        LoopringAPI &&
-        LoopringAPI.userAPI &&
-        accountId &&
-        apiKey &&
-        tokenMap
-      ) {
-        setShowLoading(true);
-        setPage(page);
+      if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey && tokenMap) {
+        setShowLoading(true)
+        setPage(page)
         const response = await LoopringAPI.userAPI.getUserTrades(
           {
             accountId,
@@ -208,35 +193,31 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
             fromId,
             fillTypes,
           },
-          apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           setToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              "error : " + errorItem
+              'error : ' + errorItem
                 ? t(errorItem.messageKey)
                 : (response as sdk.RESULT_INFO).message,
-          });
+          })
         } else {
           setUserTrades(
             response.userTrades.map((o) => {
-              return tradeItemToTableDataItem(o) as RawDataTradeItem;
-            })
-          );
-          setUserTradesTotal(response.totalNum);
+              return tradeItemToTableDataItem(o) as RawDataTradeItem
+            }),
+          )
+          setUserTradesTotal(response.totalNum)
         }
-        setShowLoading(false);
+        setShowLoading(false)
       }
     },
-    [accountId, apiKey, setToastOpen, t, tokenMap]
-  );
+    [accountId, apiKey, setToastOpen, t, tokenMap],
+  )
 
   return {
     userTrades,
@@ -244,80 +225,71 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
     getUserTradeList,
     showLoading,
     page,
-  };
+  }
 }
 
 export function useGetAmmRecord(setToastOpen: (props: any) => void) {
-  const [ammRecordList, setAmmRecordList] = React.useState<RawDataAmmItem[]>(
-    []
-  );
-  const { t } = useTranslation(["error"]);
-  const [ammRecordTotal, setAmmRecordTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
-  const { accountId, apiKey } = store.getState().account;
-  const { tokenMap } = useTokenMap();
+  const [ammRecordList, setAmmRecordList] = React.useState<RawDataAmmItem[]>([])
+  const { t } = useTranslation(['error'])
+  const [ammRecordTotal, setAmmRecordTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
+  const { accountId, apiKey } = store.getState().account
+  const { tokenMap } = useTokenMap()
 
   const getTokenName = React.useCallback(
     (tokenId?: number) => {
       if (tokenMap) {
-        const keys = Object.keys(tokenMap);
-        const values = Object.values(tokenMap);
-        const index = values.findIndex((token) => token.tokenId === tokenId);
+        const keys = Object.keys(tokenMap)
+        const values = Object.values(tokenMap)
+        const index = values.findIndex((token) => token.tokenId === tokenId)
         if (index > -1) {
-          return keys[index];
+          return keys[index]
         }
-        return "";
+        return ''
       }
-      return "";
+      return ''
     },
-    [tokenMap]
-  );
+    [tokenMap],
+  )
 
   const getAmmpoolList = React.useCallback(
     async ({ tokenSymbol, start, end, txTypes, offset, limit }: any) => {
-      const ammPoolAddress = tokenMap[tokenSymbol]?.address;
-      setShowLoading(true);
+      const ammPoolAddress = tokenMap[tokenSymbol]?.address
+      setShowLoading(true)
       if (LoopringAPI.ammpoolAPI && accountId && apiKey) {
         const response = await LoopringAPI.ammpoolAPI.getUserAmmPoolTxs(
           {
             accountId,
-            txTypes: txTypes ? TxTypeAMM[txTypes] : "",
+            txTypes: txTypes ? TxTypeAMM[txTypes] : '',
             offset,
             start,
             end,
             limit,
             ammPoolAddress,
           },
-          apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           setToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              "error : " + errorItem
+              'error : ' + errorItem
                 ? t(errorItem.messageKey)
                 : (response as sdk.RESULT_INFO).message,
-          });
+          })
         } else {
           const result = response.userAmmPoolTxs.map((order) => ({
-            side:
-              order.txType === sdk.AmmTxType.JOIN
-                ? AmmSideTypes.Join
-                : AmmSideTypes.Exit,
+            side: order.txType === sdk.AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
             amount: {
               from: {
                 key: getTokenName(order.poolTokens[0]?.tokenId),
                 value: String(
                   volumeToCount(
                     getTokenName(order.poolTokens[0]?.tokenId),
-                    order.poolTokens[0]?.actualAmount
-                  )
+                    order.poolTokens[0]?.actualAmount,
+                  ),
                 ),
               },
               to: {
@@ -325,56 +297,56 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
                 value: String(
                   volumeToCount(
                     getTokenName(order.poolTokens[1]?.tokenId),
-                    order.poolTokens[1]?.actualAmount
-                  )
+                    order.poolTokens[1]?.actualAmount,
+                  ),
                 ),
               },
             },
             lpTokenAmount: String(
-              volumeToCount(
-                getTokenName(order.lpToken?.tokenId),
-                order.lpToken?.actualAmount
-              )
+              volumeToCount(getTokenName(order.lpToken?.tokenId), order.lpToken?.actualAmount),
             ),
             fee: {
               key: getTokenName(order.poolTokens[1]?.tokenId),
               value: volumeToCount(
                 getTokenName(order.poolTokens[1]?.tokenId),
-                order.poolTokens[1]?.feeAmount
+                order.poolTokens[1]?.feeAmount,
               )?.toFixed(6),
             },
             time: order.updatedAt,
-          }));
-          setAmmRecordList(result);
-          setShowLoading(false);
-          setAmmRecordTotal(response.totalNum);
+          }))
+          setAmmRecordList(result)
+          setShowLoading(false)
+          setAmmRecordTotal(response.totalNum)
         }
       }
-      setShowLoading(false);
+      setShowLoading(false)
     },
-    [accountId, apiKey, getTokenName, setToastOpen, t, tokenMap]
-  );
+    [accountId, apiKey, getTokenName, setToastOpen, t, tokenMap],
+  )
 
   return {
     ammRecordList,
     showLoading,
     getAmmpoolList,
     ammRecordTotal,
-  };
+  }
 }
 
 export function useGetDefiRecord(setToastOpen: (props: any) => void) {
-  const { t } = useTranslation(["error"]);
-  const [defiList, setDefiRecordList] = React.useState<
-    sdk.UserDefiTxsHistory[]
-  >([]);
-  const [defiTotal, setDefiTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
-  const { accountId, apiKey } = store.getState().account;
+  const { t } = useTranslation(['error'])
+  const [defiList, setDefiRecordList] = React.useState<sdk.UserDefiTxsHistory[]>([])
+  const [defiTotal, setDefiTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
+  const { accountId, apiKey } = store.getState().account
+
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
   const getDefiTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
-      setShowLoading(true);
+      setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const markets = DEFI_CONFIG.MARKETS[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -382,218 +354,199 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
+            markets: markets.join(','),
           } as any,
-          apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           setToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              "error : " + errorItem
+              'error : ' + errorItem
                 ? t(errorItem.messageKey)
                 : (response as sdk.RESULT_INFO).message,
-          });
+          })
         } else {
           // @ts-ignore
-          const result = (response as any).userDefiTxs;
-          setDefiRecordList(result);
-          setShowLoading(false);
-          setDefiTotal((response as any).totalNum);
+          const result = (response as any).userDefiTxs
+          setDefiRecordList(result)
+          setShowLoading(false)
+          setDefiTotal((response as any).totalNum)
         }
       }
-      setShowLoading(false);
+      setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t]
-  );
+    [accountId, apiKey, setToastOpen, t],
+  )
 
   return {
     defiList,
     showLoading,
     getDefiTxList,
     defiTotal,
-  };
+  }
 }
 
 export function useDefiSideRecord(setToastOpen: (props: any) => void) {
-  const { t } = useTranslation(["error"]);
-  const { tokenMap } = useTokenMap();
-  const [sideStakingList, setSideStakingRecordList] = React.useState<
-    sdk.STACKING_TRANSACTIONS[]
-  >([]);
-  const [sideStakingTotal, setSideStakingTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
-  const { accountId, apiKey } = store.getState().account;
+  const { t } = useTranslation(['error'])
+  const { tokenMap } = useTokenMap()
+  const [sideStakingList, setSideStakingRecordList] = React.useState<sdk.STACKING_TRANSACTIONS[]>(
+    [],
+  )
+  const [sideStakingTotal, setSideStakingTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
+  const { accountId, apiKey } = store.getState().account
   const getSideStakingTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
-      setShowLoading(true);
+      setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
         const response = await LoopringAPI.defiAPI.getStakeTransactions(
           {
             accountId,
-            tokenId: tokenMap["LRC"].tokenId,
+            tokenId: tokenMap['LRC'].tokenId,
             start,
             end,
             limit,
             offset,
           } as any,
-          apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           setToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              "error : " + errorItem
+              'error : ' + errorItem
                 ? t(errorItem.messageKey)
                 : (response as sdk.RESULT_INFO).message,
-          });
+          })
         } else {
-          const result = response.list;
-          setSideStakingRecordList(result);
-          setShowLoading(false);
-          setSideStakingTotal(response.totalNum);
+          const result = response.list
+          setSideStakingRecordList(result)
+          setShowLoading(false)
+          setSideStakingTotal(response.totalNum)
           // }
         }
       }
-      setShowLoading(false);
+      setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t]
-  );
+    [accountId, apiKey, setToastOpen, t],
+  )
 
   return {
     sideStakingList,
     showLoading,
     getSideStakingTxList,
     sideStakingTotal,
-  };
+  }
 }
 
-export const useOrderList = (setToastOpen?: (props: any) => void) => {
-  const { t } = useTranslation(["error"]);
-
-  const [orderOriginalData, setOrderOriginalData] = React.useState<
-    OrderHistoryRawDataItem[]
-  >([]);
-  const [totalNum, setTotalNum] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(false);
+export const useOrderList = ({
+  setToastOpen,
+  isStopLimit = false,
+  isOrderBookScroll = false,
+}: {
+  isStopLimit?: boolean
+  setToastOpen?: (props: any) => void
+  isOrderBookScroll?: boolean
+}) => {
+  const { t } = useTranslation(['error'])
+  const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
+  const [orderDetailList, setOrderDetailList] = React.useState<OrderHistoryTableDetailItem[]>([])
+  const [totalNum, setTotalNum] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
+  const [showDetailLoading, setShowDetailLoading] = React.useState(false)
   const {
-    account: { accountId, apiKey },
-  } = useAccount();
+    account: { accountId, apiKey, readyState },
+  } = useAccount()
   const {
     tokenMap: { marketArray, tokenMap, marketMap },
-  } = store.getState();
+  } = store.getState()
   const {
     ammMap: { ammMap },
-  } = store.getState().amm;
-  const { sk: privateKey } = store.getState().account.eddsaKey;
-  const { updateWalletLayer2 } = useWalletLayer2();
+  } = store.getState().amm
+  const { sk: privateKey } = store.getState().account.eddsaKey
 
-  // const ammPairList = ammMap ? Object.keys(ammMap) : [];
+  const { status, updateWalletLayer2 } = useWalletLayer2()
 
-  const jointPairs = marketArray || []; //.concat([...ammPairList]); //
+  const ammPairList = ammMap ? Object.keys(ammMap) : []
+  const jointPairs = (marketArray || []).concat(ammPairList)
 
   const getOrderList = React.useCallback(
-    async (props: Omit<GetOrdersRequest, "accountId">) => {
+    async ({
+      isScroll,
+      ...props
+    }: Omit<GetOrdersRequest, 'accountId'> & { isScroll?: boolean; extraOrderTypes?: string }) => {
+      setShowLoading(true)
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
-        setShowLoading(true);
         const userOrders = await LoopringAPI.userAPI.getOrders(
           {
             ...props,
             accountId,
+            extraOrderTypes: isStopLimit ? 'STOP_LIMIT' : 'TRADITIONAL_ORDER',
           },
-          apiKey
-        );
-        if (
-          (userOrders as sdk.RESULT_INFO).code ||
-          (userOrders as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[
-              (userOrders as sdk.RESULT_INFO)?.code ?? 700001
-            ];
+          apiKey,
+        )
+        if ((userOrders as sdk.RESULT_INFO).code || (userOrders as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(userOrders as sdk.RESULT_INFO)?.code ?? 700001]
           if (setToastOpen) {
             setToastOpen({
               open: true,
               type: ToastType.error,
               content:
-                "error : " + errorItem
+                'error : ' + errorItem
                   ? t(errorItem.messageKey)
                   : (userOrders as sdk.RESULT_INFO).message,
-            });
+            })
           }
         } else {
           if (userOrders && Array.isArray(userOrders.orders)) {
-            setTotalNum(userOrders.totalNum);
+            setTotalNum(userOrders.totalNum)
             const data = userOrders.orders.map((order) => {
-              const { baseAmount, quoteAmount, baseFilled, quoteFilled } =
-                order.volumes;
-
-              const marketList = order.market.split("-");
+              const { baseAmount, quoteAmount, baseFilled, quoteFilled } = order.volumes
+              const marketList = order.market.split('-')
               if (marketList.length === 3) {
-                marketList.shift();
+                marketList.shift()
               }
-              const side =
-                order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
-              const isBuy = side === TradeTypes.Buy;
-              const [tokenFirst, tokenLast] = marketList;
-              const baseToken = isBuy ? tokenLast : tokenFirst;
-              const quoteToken = isBuy ? tokenFirst : tokenLast;
-              const actualBaseFilled = (
-                isBuy ? quoteFilled : baseFilled
-              ) as any;
-              const actualQuoteFilled = (
-                isBuy ? baseFilled : quoteFilled
-              ) as any;
+              // due to AMM case, we cannot use first index
+              const side = order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+              const isBuy = side === TradeTypes.Buy
+              const [tokenFirst, tokenLast] = marketList
+              const baseToken = isBuy ? tokenLast : tokenFirst
+              const quoteToken = isBuy ? tokenFirst : tokenLast
+              const actualBaseFilled = (isBuy ? quoteFilled : baseFilled) as any
+              const actualQuoteFilled = (isBuy ? baseFilled : quoteFilled) as any
               const baseValue = isBuy
                 ? volumeToCount(baseToken, quoteAmount)
-                : volumeToCount(baseToken, baseAmount);
+                : volumeToCount(baseToken, baseAmount)
               const quoteValue = isBuy
                 ? volumeToCount(quoteToken, baseAmount)
-                : (volumeToCount(baseToken, baseAmount) || 0) *
-                  Number(order.price || 0);
-              const baseVolume = volumeToCountAsBigNumber(
-                baseToken,
-                actualBaseFilled
-              );
-              const quoteVolume = volumeToCountAsBigNumber(
-                quoteToken,
-                actualQuoteFilled
-              );
-              const quoteFilledValue = volumeToCount(
-                quoteToken,
-                actualQuoteFilled
-              );
+                : (volumeToCount(baseToken, baseAmount) || 0) * Number(order.price || 0)
+              const baseVolume = volumeToCountAsBigNumber(baseToken, actualBaseFilled)
+              const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
+              const quotefilledValue = volumeToCount(quoteToken, actualQuoteFilled)
 
               const average = isBuy
-                ? baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() ||
-                  0
-                : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() ||
-                  0;
-              const completion = (quoteFilledValue || 0) / (quoteValue || 1);
+                ? baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+                : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() || 0
+              const completion = (quotefilledValue || 0) / (quoteValue || 1)
 
               const precisionFrom = tokenMap
                 ? (tokenMap as any)[baseToken]?.precisionForOrder
-                : undefined;
+                : undefined
               const precisionTo = tokenMap
                 ? (tokenMap as any)[quoteToken]?.precisionForOrder
-                : undefined;
+                : undefined
               const precisionMarket = marketMap
                 ? marketMap[order.market]?.precisionForPrice
-                : undefined;
+                : undefined
+
               return {
                 market: order.market,
-                side: order.side === "BUY" ? TradeTypes.Buy : TradeTypes.Sell,
+                side: order.side === 'BUY' ? TradeTypes.Buy : TradeTypes.Sell,
                 orderType: order.orderType,
                 amount: {
                   from: {
@@ -608,7 +561,6 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
                   },
                 },
                 average: average,
-
                 price: {
                   key: quoteToken,
                   value: Number(order.price),
@@ -623,28 +575,63 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
                 // @ts-ignore
                 extraOrderInfo: order.extraOrderInfo,
                 __raw__: order,
-              };
-            });
-
-            setOrderOriginalData(data);
+              }
+            })
+            if (isScroll) {
+              setOrderOriginalData((_data) => {
+                return [..._data, ...data]
+              })
+            } else {
+              setOrderOriginalData(data)
+            }
           }
         }
-        setShowLoading(false);
       }
+      setShowLoading(false)
     },
-    [accountId, apiKey, marketMap, setToastOpen, t, tokenMap]
-  );
+    [accountId, apiKey, marketMap, tokenMap, isStopLimit],
+  )
+
+  React.useEffect(() => {
+    ;(async () => {
+      if (status === 'UNSET' && isOrderBookScroll === true) {
+        getOrderList({
+          limit: 50,
+          status: ['processing'],
+        })
+      }
+    })()
+  }, [isOrderBookScroll, getOrderList, status])
+
+  const clearOrderDetail = React.useCallback(() => {
+    setOrderDetailList([])
+  }, [])
+
+  const isAtBottom = React.useCallback(
+    ({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean => {
+      return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight
+    },
+    [],
+  )
+
+  const handleScroll = React.useCallback(
+    async (event: React.UIEvent<HTMLDivElement>, isOpen: boolean = false) => {
+      if (!isAtBottom(event) || (event.target as any)?.scrollTop === 0) return
+      getOrderList({
+        isScroll: true,
+        offset: orderOriginalData.length,
+        status: isOpen
+          ? ['processing']
+          : ['processed', 'failed', 'cancelled', 'cancelling', 'expired'],
+        extraOrderTypes: isStopLimit ? 'STOP_LIMIT' : 'TRADITIONAL_ORDER',
+      })
+    },
+    [getOrderList, isAtBottom, orderOriginalData, isStopLimit],
+  )
 
   const cancelOrder = React.useCallback(
-    async ({ orderHash, clientOrderId }) => {
-      if (
-        LoopringAPI &&
-        LoopringAPI.userAPI &&
-        accountId &&
-        privateKey &&
-        apiKey
-      ) {
-        setShowLoading(true);
+    async ({ orderHash, clientOrderId }: any) => {
+      if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
         await LoopringAPI.userAPI.cancelOrder(
           {
             accountId,
@@ -652,47 +639,157 @@ export const useOrderList = (setToastOpen?: (props: any) => void) => {
             clientOrderId,
           },
           privateKey,
-          apiKey
-        );
-        setTimeout(() => {
-          getOrderList({
-            status: ["processing"],
-          });
-        }, 100);
-        updateWalletLayer2();
+          apiKey,
+        )
+        updateWalletLayer2()
       }
     },
-    [accountId, apiKey, getOrderList, privateKey, updateWalletLayer2]
-  );
+    [accountId, apiKey, privateKey, updateWalletLayer2],
+  )
+
+  const cancelOrderByHashList = React.useCallback(
+    async (orderHashList: string) => {
+      if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
+        await LoopringAPI.userAPI.cancelMultiOrdersByHash(
+          {
+            accountId,
+            orderHash: orderHashList,
+          },
+          privateKey,
+          apiKey,
+        )
+        updateWalletLayer2()
+      }
+    },
+    [accountId, apiKey, privateKey, updateWalletLayer2],
+  )
+
+  const getOrderDetail = React.useCallback(
+    async (orderHash: string, t: TFunction) => {
+      if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
+        setShowDetailLoading(true)
+        const response = await LoopringAPI.userAPI.getOrderDetails(
+          {
+            accountId,
+            orderHash,
+          },
+          apiKey,
+        )
+        const formattedData = [response.orderDetail].map((order: any) => {
+          const { baseAmount, quoteAmount, baseFilled, quoteFilled, fee } = order.volumes
+          const marketList = order.market.split('-')
+          if (marketList.length === 3) {
+            marketList.shift()
+          }
+          // due to AMM case, we cannot use first index
+          const side = order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+          const isBuy = side === TradeTypes.Buy
+          const role = isBuy ? t('labelOrderDetailMaker') : t('labelOrderDetailTaker')
+          const [tokenFirst, tokenLast] = marketList
+          const baseToken = isBuy ? tokenLast : tokenFirst
+          const quoteToken = isBuy ? tokenFirst : tokenLast
+          const baseValue = isBuy
+            ? volumeToCount(baseToken, quoteAmount)
+            : volumeToCount(baseToken, baseAmount)
+          const quoteValue = isBuy
+            ? volumeToCount(quoteToken, baseAmount)
+            : (volumeToCount(baseToken, baseAmount) || 0) * Number(order.price || 0)
+          const actualBaseFilled = isBuy ? quoteFilled : baseFilled
+          const actualQuoteFilled = isBuy ? baseFilled : quoteFilled
+          const baseVolume = volumeToCountAsBigNumber(baseToken, actualBaseFilled)
+          const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
+          const filledPrice = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+          const feeValue = volumeToCountAsBigNumber(quoteToken, fee)?.toNumber() || 0
+
+          const precisionFrom = tokenMap
+            ? (tokenMap as any)[baseToken]?.precisionForOrder
+            : undefined
+          const precisionTo = tokenMap
+            ? (tokenMap as any)[quoteToken]?.precisionForOrder
+            : undefined
+          const precisionMarket = marketMap ? marketMap[order.market]?.precisionForPrice : undefined
+          const precisionFee = tokenMap
+            ? (tokenMap as any)[quoteToken]?.precisionForOrder
+            : undefined
+
+          return {
+            amount: {
+              from: {
+                key: baseToken,
+                value: baseValue as any,
+                precision: precisionFrom,
+              },
+              to: {
+                key: quoteToken,
+                value: quoteValue as any,
+                precision: precisionTo,
+              },
+            },
+            filledPrice: {
+              value: filledPrice,
+              precision: precisionMarket,
+            },
+            fee: {
+              key: quoteToken,
+              value: feeValue,
+              precision: precisionFee,
+            },
+            role: role,
+            time: order.validity.start * 1000,
+            volume: quoteVolume?.toNumber(),
+            orderId: order.clientOrderId,
+            extraOrderInfo: order.extraOrderInfo,
+            __raw__: order,
+          }
+        })
+        setOrderDetailList(formattedData)
+        setShowDetailLoading(false)
+      }
+    },
+    [accountId, apiKey, marketMap, tokenMap],
+  )
 
   const clearData = React.useCallback(() => {
-    setOrderOriginalData([]);
-  }, []);
+    setOrderOriginalData([])
+  }, [])
+
+  React.useEffect(() => {
+    if (readyState !== AccountStatus.ACTIVATED) {
+      clearData()
+    }
+  }, [status, readyState, clearData])
 
   return {
     marketArray: jointPairs,
     getOrderList,
+    setOrderOriginalData,
     rawData: orderOriginalData,
     clearRawData: clearData,
     totalNum,
     showLoading,
+    showDetailLoading,
+    getOrderDetail,
+    orderDetailList,
     cancelOrder,
-  };
-};
+    handleScroll,
+    clearOrderDetail,
+    cancelOrderByHashList,
+  }
+}
 
 export const useDualTransaction = <R extends RawDataDualTxsItem>(
-  setToastOpen: (props: any) => void
+  setToastOpen: (props: any) => void,
 ) => {
-  const { t } = useTranslation(["error"]);
+  const { t } = useTranslation(['error'])
 
   const {
     account: { accountId, apiKey },
-  } = useAccount();
+  } = useAccount()
 
-  const [dualList, setDualList] = React.useState<R[]>([]);
-  const { idIndex } = useTokenMap();
-  const [dualTotal, setDualTotal] = React.useState(0);
-  const { marketMap: dualMarketMap } = useDualMap();
+  const [dualList, setDualList] = React.useState<R[]>([])
+  const { idIndex } = useTokenMap()
+  const [dualTotal, setDualTotal] = React.useState(0)
+  const { marketMap: dualMarketMap } = useDualMap()
   // const [pagination, setDualPagination] = React.useState<{
   //   pageSize: number;
   //   total: number;
@@ -700,19 +797,11 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
   //   pageSize: Limit,
   //   total: 0,
   // });
-  const [showLoading, setShowLoading] = React.useState(true);
+  const [showLoading, setShowLoading] = React.useState(true)
 
   const getDualTxList = React.useCallback(
-    async ({
-      start,
-      end,
-      offset,
-      settlementStatus,
-      investmentStatus,
-      dualTypes,
-      limit,
-    }: any) => {
-      setShowLoading(true);
+    async ({ start, end, offset, settlementStatus, investmentStatus, dualTypes, limit }: any) => {
+      setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
         const response = await LoopringAPI.defiAPI.getDualTransactions(
           {
@@ -725,32 +814,26 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
             start,
             end,
           } as any,
-          apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           if (setToastOpen) {
             setToastOpen({
               open: true,
               type: ToastType.error,
               content:
-                "error : " + errorItem
+                'error : ' + errorItem
                   ? t(errorItem.messageKey)
                   : (response as sdk.RESULT_INFO).message,
-            });
+            })
           }
         } else {
           // @ts-ignore
           let result = (response as any)?.userDualTxs.reduce(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
               const [, , coinA, coinB] =
-                (item.tokenInfoOrigin.market ?? "dual-").match(
-                  /(dual-)?(\w+)-(\w+)/i
-                ) ?? [];
+                (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
                 item.dualType == DUAL_TYPE.DUAL_BASE
@@ -761,35 +844,35 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                   : [
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
-                    ];
+                    ]
               prev.push({
                 ...makeDualOrderedItem(
                   item,
                   sellTokenSymbol,
                   buyTokenSymbol,
                   0,
-                  dualMarketMap[item.tokenInfoOrigin.market]
+                  dualMarketMap[item.tokenInfoOrigin.market],
                 ),
                 amount: item.tokenInfoOrigin.amountIn,
-              });
-              return prev;
+              })
+              return prev
             },
-            [] as RawDataDualAssetItem[]
-          );
+            [] as RawDataDualAssetItem[],
+          )
 
-          setDualList(result);
-          setShowLoading(false);
-          setDualTotal((response as any).totalNum);
+          setDualList(result)
+          setShowLoading(false)
+          setDualTotal((response as any).totalNum)
           // setDualPagination({
           //   pageSize: limit,
           //   total: (response as any).totalNum,
           // });
         }
       }
-      setShowLoading(false);
+      setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t, idIndex, dualMarketMap]
-  );
+    [accountId, apiKey, setToastOpen, t, idIndex, dualMarketMap],
+  )
 
   return {
     // page,
@@ -798,75 +881,60 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
     getDualTxList,
     dualTotal,
     dualMarketMap,
-    // pagination,
-    // updateTickersUI,
-  };
-};
+  }
+}
 
 export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
-  setToastOpen: (props: any) => void
+  setToastOpen: (props: any) => void,
 ) => {
-  const { t } = useTranslation(["error"]);
-
-  const [btradeOrderData, setBtradeOrderData] = React.useState<R[]>([]);
-  const [totalNum, setTotalNum] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(false);
+  const { t } = useTranslation(['error'])
+  const [btradeOrderData, setBtradeOrderData] = React.useState<R[]>([])
+  const [totalNum, setTotalNum] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
   const {
     account: { accountId, apiKey },
-  } = useAccount();
-  const { tokenMap } = useTokenMap();
-  const { setShowAccount } = useOpenModals();
+  } = useAccount()
+  const { tokenMap } = useTokenMap()
+  const { setShowAccount } = useOpenModals()
   const getBtradeOrderList = React.useCallback(
-    async (props: Omit<GetOrdersRequest, "accountId">) => {
+    async (props: Omit<GetOrdersRequest, 'accountId'>) => {
       if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
-        setShowLoading(true);
+        setShowLoading(true)
         const userOrders = await LoopringAPI.defiAPI.getBtradeOrders({
           request: { accountId, limit: props.limit, offset: props.offset },
           apiKey,
-        });
-        if (
-          (userOrders as sdk.RESULT_INFO).code ||
-          (userOrders as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[
-              (userOrders as sdk.RESULT_INFO)?.code ?? 700001
-            ];
+        })
+        if ((userOrders as sdk.RESULT_INFO).code || (userOrders as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(userOrders as sdk.RESULT_INFO)?.code ?? 700001]
           if (setToastOpen) {
             setToastOpen({
               open: true,
               type: ToastType.error,
               content:
-                "error : " + errorItem
+                'error : ' + errorItem
                   ? t(errorItem.messageKey)
                   : (userOrders as sdk.RESULT_INFO).message,
-            });
+            })
           }
         } else {
           if (userOrders && Array.isArray(userOrders.list)) {
-            setTotalNum(userOrders.totalNum);
+            setTotalNum(userOrders.totalNum)
             const data = userOrders.list.map((item: any) => {
               const {
                 status,
                 market,
                 price,
                 // btradeExtraInfo: tokenInfos,
-                volumes: {
-                  fee,
-                  baseAmount,
-                  baseFilled,
-                  quoteAmount,
-                  quoteFilled,
-                },
+                volumes: { fee, baseAmount, baseFilled, quoteAmount, quoteFilled },
                 validity: { start },
                 side,
                 baseSettled,
                 quoteSettled,
-              } = item;
+              } = item
               //@ts-ignore
               const [, baseTokenSymbol, quoteTokenSymbol] = market
-                .replace(BTRDE_PRE, "")
-                .match(/(\w+)-(\w+)/i);
+                .replace(BTRDE_PRE, '')
+                .match(/(\w+)-(\w+)/i)
               let amountIn,
                 amountOut,
                 fromSymbol,
@@ -875,17 +943,17 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 _price,
                 amountFIn,
                 settledIn,
-                settledOut;
+                settledOut
 
               if (side === sdk.Side.Sell) {
-                fromSymbol = baseTokenSymbol;
-                toSymbol = quoteTokenSymbol;
-                amountFIn = baseFilled;
-                amountFOut = quoteFilled;
-                amountIn = baseAmount;
-                amountOut = quoteAmount;
-                settledIn = baseSettled;
-                settledOut = quoteSettled;
+                fromSymbol = baseTokenSymbol
+                toSymbol = quoteTokenSymbol
+                amountFIn = baseFilled
+                amountFOut = quoteFilled
+                amountIn = baseAmount
+                amountOut = quoteAmount
+                settledIn = baseSettled
+                settledOut = quoteSettled
                 _price = {
                   from: baseTokenSymbol,
                   key: quoteTokenSymbol,
@@ -893,18 +961,18 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                     price,
                     tokenMap[quoteTokenSymbol].precision,
                     tokenMap[quoteTokenSymbol].precision,
-                    undefined
+                    undefined,
                   ),
-                };
+                }
               } else {
-                toSymbol = baseTokenSymbol;
-                fromSymbol = quoteTokenSymbol;
-                amountFOut = baseFilled;
-                amountFIn = quoteFilled;
-                amountOut = baseAmount;
-                amountIn = quoteAmount;
-                settledOut = baseSettled;
-                settledIn = quoteSettled;
+                toSymbol = baseTokenSymbol
+                fromSymbol = quoteTokenSymbol
+                amountFOut = baseFilled
+                amountFIn = quoteFilled
+                amountOut = baseAmount
+                amountIn = quoteAmount
+                settledOut = baseSettled
+                settledIn = quoteSettled
                 _price = {
                   from: baseTokenSymbol,
                   key: quoteTokenSymbol,
@@ -912,80 +980,80 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                     price,
                     tokenMap[quoteTokenSymbol].precision,
                     tokenMap[quoteTokenSymbol].precision,
-                    undefined
+                    undefined,
                   ),
-                };
+                }
               }
 
-              const fromToken = tokenMap[fromSymbol];
-              const toToken = tokenMap[toSymbol];
+              const fromToken = tokenMap[fromSymbol]
+              const toToken = tokenMap[toSymbol]
 
               const fromAmount = getValuePrecisionThousand(
-                sdk.toBig(amountIn).div("1e" + fromToken.decimals),
+                sdk.toBig(amountIn).div('1e' + fromToken.decimals),
                 fromToken.precision,
                 fromToken.precision,
-                undefined
-              );
+                undefined,
+              )
               const fromFAmount = getValuePrecisionThousand(
-                sdk.toBig(amountFIn).div("1e" + fromToken.decimals),
+                sdk.toBig(amountFIn).div('1e' + fromToken.decimals),
                 fromToken.precision,
                 fromToken.precision,
-                undefined
-              );
+                undefined,
+              )
               const settledFromAmount = getValuePrecisionThousand(
-                sdk.toBig(settledIn).div("1e" + fromToken.decimals),
+                sdk.toBig(settledIn).div('1e' + fromToken.decimals),
                 fromToken.precision,
                 fromToken.precision,
-                undefined
-              );
+                undefined,
+              )
 
               const toAmount = getValuePrecisionThousand(
-                sdk.toBig(amountOut).div("1e" + toToken.decimals),
+                sdk.toBig(amountOut).div('1e' + toToken.decimals),
                 toToken.precision,
                 toToken.precision,
-                undefined
-              );
+                undefined,
+              )
 
               const toFAmount = getValuePrecisionThousand(
-                sdk.toBig(amountFOut).div("1e" + toToken.decimals),
+                sdk.toBig(amountFOut).div('1e' + toToken.decimals),
                 toToken.precision,
                 toToken.precision,
-                undefined
-              );
+                undefined,
+              )
               const settledToAmount = getValuePrecisionThousand(
-                sdk.toBig(settledOut).div("1e" + toToken.decimals),
+                sdk.toBig(settledOut).div('1e' + toToken.decimals),
                 toToken.precision,
                 toToken.precision,
-                undefined
-              );
+                undefined,
+              )
 
               const feeAmount =
                 fee && fee != 0
                   ? getValuePrecisionThousand(
-                      sdk.toBig(fee ?? 0).div("1e" + toToken.decimals),
+                      sdk.toBig(fee ?? 0).div('1e' + toToken.decimals),
                       toToken.precision,
                       toToken.precision,
-                      undefined
+                      undefined,
                     )
-                  : undefined;
-              const feeSymbol = toSymbol;
+                  : undefined
+              const feeSymbol = toSymbol
 
-              let type;
+              let type
               switch (status) {
-                case "processed":
-                  type = BtradeSwapsType.Settled;
-                  break;
-                case "failed":
-                case "cancelled":
-                  type = BtradeSwapsType.Failed;
-                  break;
-                case "filled":
-                  type = BtradeSwapsType.Delivering;
-                  break;
-                case "processing":
+                case 'processed':
+                  type = BtradeSwapsType.Settled
+                  break
+                case 'failed':
+                case 'cancelled':
+                  type = BtradeSwapsType.Failed
+                  break
+                case 'filled':
+                  type = BtradeSwapsType.Delivering
+                  break
+                case 'processing':
                 default:
-                  type = BtradeSwapsType.Pending;
-                  break;
+                  type = BtradeSwapsType.Pending
+                  break
               }
               return {
                 type,
@@ -998,25 +1066,21 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 settledFromAmount,
                 settledToAmount,
                 toSymbol,
-                time: Number(start + "000"),
+                time: Number(start + '000'),
                 rawData: item,
                 feeSymbol,
                 feeAmount,
-                filledPercent: sdk
-                  .toBig(amountFIn)
-                  .div(amountIn)
-                  .times(100)
-                  .toFormat(2),
-              };
-            }, []);
-            setBtradeOrderData(data);
+                filledPercent: sdk.toBig(amountFIn).div(amountIn).times(100).toFormat(2),
+              }
+            }, [])
+            setBtradeOrderData(data)
           }
         }
-        setShowLoading(false);
+        setShowLoading(false)
       }
     },
-    [accountId, apiKey, setToastOpen, t, tokenMap]
-  );
+    [accountId, apiKey, setToastOpen, t, tokenMap],
+  )
 
   return {
     getBtradeOrderList,
@@ -1025,13 +1089,9 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
       const info = {
         sellToken: tokenMap[item.fromSymbol],
         buyToken: tokenMap[item.toSymbol],
-        sellFStr:
-          item.fromFAmount && item.fromFAmount !== "0"
-            ? item.fromFAmount
-            : undefined,
+        sellFStr: item.fromFAmount && item.fromFAmount !== '0' ? item.fromFAmount : undefined,
         sellStr: item.fromAmount,
-        buyFStr:
-          item.toFAmount && item.toFAmount !== "0" ? item.toFAmount : undefined,
+        buyFStr: item.toFAmount && item.toFAmount !== '0' ? item.toFAmount : undefined,
         buyStr: item.toAmount,
         convertStr: `1${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
         // @ts-ignore
@@ -1039,7 +1099,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         settledToAmount: item.settledToAmount,
         settledFromAmount: item.settledFromAmount,
         time: item?.time ?? undefined,
-      };
+      }
       switch (item.type) {
         case BtradeSwapsType.Delivering:
           setShowAccount({
@@ -1049,35 +1109,91 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               ...info,
               isDelivering: true,
             },
-          });
-          break;
+          })
+          break
 
         case BtradeSwapsType.Settled:
           setShowAccount({
             isShow: true,
             step: AccountStep.BtradeSwap_Settled,
             info,
-          });
-          break;
+          })
+          break
         case BtradeSwapsType.Cancelled:
         case BtradeSwapsType.Failed:
           setShowAccount({
             isShow: true,
             step: AccountStep.BtradeSwap_Failed,
             info,
-          });
-          break;
+          })
+          break
         case BtradeSwapsType.Pending:
         default:
           setShowAccount({
             isShow: true,
             step: AccountStep.BtradeSwap_Pending,
             info,
-          });
-          break;
+          })
+          break
       }
     },
     totalNum,
     showLoading,
-  };
-};
+  }
+}
+
+export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
+  const { t } = useTranslation(['error'])
+  const [leverageETHList, setLeverageETHRecordList] = React.useState<sdk.UserDefiTxsHistory[]>([])
+  const [leverageETHTotal, setLeverageETHTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
+  const { marketLeverageArray } = useDefiMap()
+  const { accountId, apiKey } = store.getState().account
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const getLeverageETHTxList = React.useCallback(
+    async ({ start, end, offset, limit }: any) => {
+      setShowLoading(true)
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const types = LEVERAGE_ETH_CONFIG.types[network]
+        const response = await LoopringAPI.defiAPI.getDefiTransaction(
+          {
+            accountId,
+            offset,
+            start,
+            end,
+            limit,
+            types: types.join(','),
+          } as any,
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+          setToastOpen({
+            open: true,
+            type: ToastType.error,
+            content:
+              'error : ' + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
+          })
+        } else {
+          // @ts-ignore
+          const result = (response as any).userDefiTxs
+          setLeverageETHRecordList(result)
+          setShowLoading(false)
+          setLeverageETHTotal((response as any).totalNum)
+        }
+      }
+      setShowLoading(false)
+    },
+    [accountId, apiKey, setToastOpen, t],
+  )
+
+  return {
+    leverageETHList,
+    showLoading,
+    getLeverageETHTxList,
+    leverageETHTotal,
+  }
+}

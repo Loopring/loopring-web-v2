@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   layer1Store,
   useAccount,
@@ -6,18 +6,18 @@ import {
   useSystem,
   useTokenMap,
   useTokenPrices,
-} from "@loopring-web/core";
-import { ChainId } from "@loopring-web/loopring-sdk";
-import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
+} from '@loopring-web/core'
+import { ChainId } from '@loopring-web/loopring-sdk'
+import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
 import {
   ConnectProviders,
   ConnectProvides,
   connectProvides,
   walletServices,
-} from "@loopring-web/web3-provider";
-import { useAccountInit } from "./hookAccountInit";
-import { useSettings } from "@loopring-web/component-lib";
-import { useTheme } from "@emotion/react";
+} from '@loopring-web/web3-provider'
+import { useAccountInit } from './hookAccountInit'
+import { useSettings } from '@loopring-web/component-lib'
+import { useTheme } from '@emotion/react'
 
 /**
  * @description
@@ -29,20 +29,20 @@ import { useTheme } from "@emotion/react";
  */
 
 export function useInit() {
-  const [, search] = window.location?.hash.split("?") ?? [];
-  const query = new URLSearchParams(search);
-  const [, pathname1] = window.location.hash.match(/#\/([\w\d\-]+)\??/) ?? [];
+  const [, search] = window.location?.hash.split('?') ?? []
+  const query = new URLSearchParams(search)
+  const [, pathname1] = window.location.hash.match(/#\/([\w\d\-]+)\??/) ?? []
   const isNoServer: boolean =
-    query.has("noheader") && ["notification", "document"].includes(pathname1);
+    query.has('noheader') && ['notification', 'document'].includes(pathname1)
   const [state, setState] = React.useState<keyof typeof SagaStatus>(() => {
     if (isNoServer) {
-      return SagaStatus.DONE;
+      return SagaStatus.DONE
     } else {
-      return SagaStatus.PENDING;
+      return SagaStatus.PENDING
     }
-  });
-  const { isMobile } = useSettings();
-  const theme = useTheme();
+  })
+  const { isMobile } = useSettings()
+  const theme = useTheme()
 
   const {
     account,
@@ -50,157 +50,142 @@ export function useInit() {
     resetAccount,
     status: accountStatus,
     statusUnset: accountStatusUnset,
-  } = useAccount();
-  const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
-    useTokenMap();
-  const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } =
-    useTokenPrices();
+  } = useAccount()
+  const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } = useTokenMap()
+  const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } = useTokenPrices()
 
-  const {
-    updateSystem,
-    status: systemStatus,
-    statusUnset: systemStatusUnset,
-  } = useSystem();
+  const { updateSystem, status: systemStatus, statusUnset: systemStatusUnset } = useSystem()
 
-  const { status: socketStatus, statusUnset: socketUnset } = useSocket();
-  const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store();
+  const { status: socketStatus, statusUnset: socketUnset } = useSocket()
+  const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store()
 
   React.useEffect(() => {
-    (async (account) => {
+    ;(async (account) => {
       if (
-        account.accAddress !== "" &&
+        account.accAddress !== '' &&
         account.connectName &&
         account.connectName !== ConnectProviders.Unknown
       ) {
         try {
-          ConnectProvides.IsMobile = isMobile;
+          ConnectProvides.IsMobile = isMobile
           await connectProvides[account.connectName]({
             account: account.accAddress,
             darkMode: theme.mode === ThemeType.dark,
-          });
-          updateAccount({});
+            chainId: defaultNetwork.toString(),
+          })
+          updateAccount({})
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
             let chainId =
               // @ts-ignore
               Number(connectProvides.usedProvide?.connection?.chainId) ??
-              Number(await connectProvides.usedWeb3.eth.getChainId());
+              Number(await connectProvides.usedWeb3.eth.getChainId())
             if (ChainId[chainId] === undefined) {
               chainId =
-                account._chainId && account._chainId !== "unknown"
+                account._chainId && account._chainId !== 'unknown'
                   ? account._chainId
-                  : ChainId.MAINNET;
+                  : ChainId.MAINNET
             }
-            circleUpdateLayer1ActionHistory({ chainId });
+            circleUpdateLayer1ActionHistory({ chainId })
 
             if (!isNoServer) {
-              updateSystem({ chainId: chainId as any });
+              updateSystem({ chainId: chainId as any })
             }
-            return;
+            return
           }
         } catch (error: any) {
-          walletServices.sendDisconnect(
-            "",
-            `error at init loading  ${error}, disconnect`
-          );
+          walletServices.sendDisconnect('', `error at init loading  ${error}, disconnect`)
           const chainId =
-            account._chainId && account._chainId !== "unknown"
-              ? account._chainId
-              : ChainId.MAINNET;
+            account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
           if (!isNoServer) {
-            updateSystem({ chainId });
+            updateSystem({ chainId })
           }
         }
       } else {
-        if (
-          account.accAddress === "" ||
-          account.connectName === ConnectProviders.Unknown
-        ) {
-          resetAccount();
+        if (account.accAddress === '' || account.connectName === ConnectProviders.Unknown) {
+          resetAccount()
         }
         const chainId =
-          account._chainId && account._chainId !== "unknown"
-            ? account._chainId
-            : ChainId.MAINNET;
+          account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
         if (!isNoServer) {
-          updateSystem({ chainId });
+          updateSystem({ chainId })
         }
       }
-    })(account);
-  }, []);
+    })(account)
+  }, [])
   React.useEffect(() => {
     switch (accountStatus) {
       case SagaStatus.ERROR:
-        accountStatusUnset();
-        setState("ERROR");
-        break;
+        accountStatusUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        accountStatusUnset();
-        break;
+        accountStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [accountStatus]);
+  }, [accountStatus])
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:
-        if (!query.has("noheader") && state !== SagaStatus.PENDING) {
-          setState(SagaStatus.PENDING);
+        if (!query.has('noheader') && state !== SagaStatus.PENDING) {
+          setState(SagaStatus.PENDING)
         }
-        break;
+        break
       case SagaStatus.ERROR:
-        systemStatusUnset();
-        setState("ERROR");
-        break;
+        systemStatusUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        systemStatusUnset();
-        break;
+        systemStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [systemStatus]);
+  }, [systemStatus])
 
   React.useEffect(() => {
     switch (tokenMapStatus) {
       case SagaStatus.ERROR:
-        tokenMapStatusUnset();
-        setState("ERROR");
-        break;
+        tokenMapStatusUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        tokenMapStatusUnset();
-        break;
+        tokenMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [tokenMapStatus]);
+  }, [tokenMapStatus])
 
   React.useEffect(() => {
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:
-        tokenPricesUnset();
-        setState("ERROR");
-        break;
+        tokenPricesUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        tokenPricesUnset();
-        break;
+        tokenPricesUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [tokenPricesStatus]);
+  }, [tokenPricesStatus])
   React.useEffect(() => {
     switch (socketStatus) {
-      case "ERROR":
-        socketUnset();
-        break;
-      case "DONE":
-        socketUnset();
-        break;
+      case 'ERROR':
+        socketUnset()
+        break
+      case 'DONE':
+        socketUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [socketStatus]);
+  }, [socketStatus])
 
-  useAccountInit({ state });
+  useAccountInit({ state })
   return {
     state,
-  };
+  }
 }

@@ -1,27 +1,28 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 import {
   Box,
+  Grid,
   IconButton,
   IconProps,
   LinearProgress,
   linearProgressClasses,
   Tabs,
-} from "@mui/material";
-import { css } from "@emotion/react";
-import { Button } from "../../basic-lib";
-import { DropDownIcon } from "@loopring-web/common-resources";
+} from '@mui/material'
+import { css } from '@emotion/react'
+import { Button } from '../../basic-lib'
+import { DropDownIcon } from '@loopring-web/common-resources'
 
 export const FeeTokenItemWrapper = styled(Box)`
   background-color: var(--color-global-bg);
-` as typeof Box;
+` as typeof Box
 
 export const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
   transform: rotate(
     ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
+      return status === 'down' ? '0deg' : '180deg'
     }}
   );
-` as unknown as (props: IconProps & { status: string }) => JSX.Element;
+` as unknown as (props: IconProps & { status: string }) => JSX.Element
 
 export const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -33,12 +34,12 @@ export const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     borderRadius: 5,
     backgroundColor: theme.colorBase.primary,
   },
-}));
+}))
 export const IconClearStyled = styled(IconButton)`
   position: absolute;
   top: 20px;
   right: 4px;
-` as typeof IconButton;
+` as typeof IconButton
 
 export const IconButtonStyled = styled(IconButton)`
   .MuiToolbar-root &.MuiButtonBase-root {
@@ -51,14 +52,14 @@ export const IconButtonStyled = styled(IconButton)`
     &.outlined {
       background-color: var(--color-box);
       margin: 0 ${({ theme }) => theme.unit / 2}px;
-      ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
+      ${({ theme }) => theme.border.defaultFrame({ c_key: 'transparent' })};
 
       &:last-child {
         margin-right: 0;
       }
     }
   }
-` as typeof IconButton;
+` as typeof IconButton
 
 const cssAutoRefresh = (_props: any) => css`
   @keyframes rotate {
@@ -114,7 +115,7 @@ const cssAutoRefresh = (_props: any) => css`
       width: 1em;
     }
   }
-`;
+`
 export const CountDownStyled = styled(Box)`
   ${({ theme }) => cssAutoRefresh({ theme })}
   width: var(--btn-icon-size);
@@ -127,7 +128,7 @@ export const CountDownStyled = styled(Box)`
   &.outlined {
     background-color: var(--field-opacity);
     margin: 0 ${({ theme }) => theme.unit / 2}px;
-    ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
+    ${({ theme }) => theme.border.defaultFrame({ c_key: 'transparent' })};
     text-align: center;
     line-height: var(--btn-icon-size);
 
@@ -139,7 +140,7 @@ export const CountDownStyled = styled(Box)`
   &.logo {
     background-image: ${({ color }) =>
       `url("data:image/svg+xml,%3Csvg width='34' height='27' viewBox='0 0 34 27' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fillRule='evenodd' clipRule='evenodd' d='M19.354 12.7874H33.4527V12.8709L11.4393 26.1381L22.351 17.5019L19.354 12.7874ZM11.1439 0V26.3259L0 17.5228L11.1439 0Z' fill='${encodeURIComponent(
-        color ? (color as string) : "var(--auto-refresh-color)"
+        color ? (color as string) : 'var(--auto-refresh-color)',
       )}'/%3E%3C/svg%3E%0A")`};
   }
 
@@ -180,7 +181,7 @@ export const CountDownStyled = styled(Box)`
         border-color: ${({ color }) =>
           color
             ? `transparent transparent ${color} ${color}`
-            : "transparent transparent var(--auto-refresh-color) var(--auto-refresh-color)"};
+            : 'transparent transparent var(--auto-refresh-color) var(--auto-refresh-color)'};
         animation-name: rotate, hide1;
         left: 0;
       }
@@ -189,17 +190,17 @@ export const CountDownStyled = styled(Box)`
         border-color: ${({ color }) =>
           color
             ? `${color} ${color} transparent transparent`
-            : "var(--auto-refresh-color) var(--auto-refresh-color) transparent transparent"};
+            : 'var(--auto-refresh-color) var(--auto-refresh-color) transparent transparent'};
         animation-delay: var(--delay), var(--delay);
         animation-name: rotate, hide2;
         right: 0;
       }
     }
-` as typeof Box;
+` as typeof Box
 
 export const ButtonStyle = styled(Button)`
   font-size: 1.6rem;
-` as typeof Button;
+` as typeof Button
 
 export const TabsStyle = styled(Tabs)`
   &&.trade-tabs {
@@ -281,4 +282,24 @@ export const TabsStyle = styled(Tabs)`
       }
     }
   }
-` as typeof Tabs;
+` as typeof Tabs
+
+const loadingGif = './static/loading-1.gif'
+export const GridWrapStyle = styled(Grid)`
+  &.loading {
+    position: relative;
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      //background-color:  var(--field-opacity);
+      background: url(${loadingGif}) no-repeat 50% 50%;
+      background-size: 80px;
+    }
+  }
+` as typeof Grid

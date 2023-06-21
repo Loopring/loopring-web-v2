@@ -5,12 +5,12 @@
 <h1 align="center">Loopring Application</h1>
 <div align="center">
 <h2>Ethereum’s First zkRollup Layer2</h2>
-<p>Secure, Fast, and Cheap</p>
+<p>Fast, Secure, and 100x Lower Fees</p>
 
 [![license](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Loopring/loopring-web-v2/master/LICENSE)
 
 [![type-badge](https://img.shields.io/npm/types/react-data-grid)](https://www.npmjs.com/package/react-data-grid)
- 
+
 <!-- [![Materi-UI](https://img.shields.io/npm/types/react-data-grid)](https://www.npmjs.com/package/react-data-grid) -->
 
 </div>
@@ -25,11 +25,11 @@ cd ./packages/webapp
 npm run dev
 
 
-``` 
+```
 
 ## 📚 Loopring UI component [StoryBook](https://static.loopring.io/storybook-static/)
 
-```bash 
+```bash
 
 cd ./packages/component-lib
 npm run storybook
@@ -42,13 +42,13 @@ npm run storybook
 ## 👉 [What is Loopring?](https://loopring.org/#/)
 
 ## 🫂 Community
+
 - [Loopring Website](https://loopring.org/)
 - [Loopring Exchange](https://loopring.io/#/layer2)
 - [Loopring Reddit](https://www.reddit.com/r/loopringorg/)
 - [Loopring Medium](https://medium.com/loopring-protocol)
 - [Loopring Twitter](https://twitter.com/loopringorg)
 - [Loopring Telegram](https://t.me/loopring_en)
-
 
 ## 👺 For Developer
 
@@ -60,11 +60,11 @@ npm run storybook
 - Feel free to leave suggestions or ideas.
 
 ### 📒 API & Dependency
+
 - [Web3-Provider](https://www.npmjs.com/package/@loopring-web/web3-provider)
 - [Loopring-sdk](https://www.npmjs.com/package/@loopring-web/loopring-sdk)
 - [Python](https://github.com/Loopring/hello_loopring)
 - [APIs](https://docs.loopring.io/en/)
-
 
 ## 🙋 Protocol & Architecture
 
@@ -79,7 +79,5 @@ npm run storybook
 - [Protocol Audit](https://loopring.org/resources/loopring1.0_audit.pdf)
 
 ## Release Process
+
 alpha.loopring.io, beta.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.
-
-
-

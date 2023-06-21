@@ -1,1 +1,1 @@
-export * from "./DoughnutChart";
+export * from './DoughnutChart'

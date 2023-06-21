@@ -1,1 +1,1 @@
-export type FavoriteMarketStates = string[];
+export type FavoriteMarketStates = string[]

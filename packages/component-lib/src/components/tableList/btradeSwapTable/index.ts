@@ -1,2 +1,2 @@
-export * from "./BtradeSwapTable";
-export * from "./Interface";
+export * from './BtradeSwapTable'
+export * from './Interface'

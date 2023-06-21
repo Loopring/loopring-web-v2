@@ -1,2 +1,2 @@
-export * from "./LandPage";
-export * from "./WalletPage";
+export * from './LandPage'
+export * from './WalletPage'

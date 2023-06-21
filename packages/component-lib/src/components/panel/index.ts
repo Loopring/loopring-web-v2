@@ -1,1 +1,1 @@
-export * from "./FilterMarketsPanel";
+export * from './FilterMarketsPanel'

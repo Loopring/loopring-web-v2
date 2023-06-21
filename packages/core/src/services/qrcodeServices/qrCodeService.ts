@@ -1,15 +1,7 @@
-import { Subject } from "rxjs";
-import {
-  Html5QrcodeScanner,
-  Html5QrcodeScanType,
-  Html5QrcodeSupportedFormats,
-} from "html5-qrcode";
+import { Subject } from 'rxjs'
+import { Html5QrcodeScanner, Html5QrcodeScanType, Html5QrcodeSupportedFormats } from 'html5-qrcode'
 
-import {
-  CustomError,
-  ErrorMap,
-  QRCODE_REGION_ID,
-} from "@loopring-web/common-resources";
+import { CustomError, ErrorMap, QRCODE_REGION_ID } from '@loopring-web/common-resources'
 
 function onScanSuccess(decodedText: any, decodedResult: any) {
   // handle the scanned code as you like, for example:
@@ -19,26 +11,26 @@ function onScanSuccess(decodedText: any, decodedResult: any) {
       decodedText,
       decodedResult,
     },
-  });
+  })
 }
 
 function onScanFailure(error: any) {
   // handle scan failure, usually better to ignore and keep scanning.
   // for example:
   // console.warn(`Code scan error = ${error}`);
-  h5QrcodeScannerService.sendError({ ...error });
+  h5QrcodeScannerService.sendError({ ...error })
 }
 
 export class Html5QrcodeScannerProvides {
-  private _h5QrcodeScanner: Html5QrcodeScanner | undefined = undefined;
+  private _h5QrcodeScanner: Html5QrcodeScanner | undefined = undefined
 
   get h5QrcodeScanner(): Html5QrcodeScanner | undefined {
-    return this._h5QrcodeScanner;
+    return this._h5QrcodeScanner
   }
 
   constructor() {
-    this.init();
-    this.clear();
+    this.init()
+    this.clear()
   }
 
   async init() {
@@ -54,23 +46,21 @@ export class Html5QrcodeScannerProvides {
             Html5QrcodeScanType.SCAN_TYPE_FILE,
           ],
         },
-        true
-      );
+        true,
+      )
     } catch (error) {
-      console.error("IPFSHTTPClient ERROR ON INIT::", error);
-      h5QrcodeScannerService.sendError(
-        new CustomError(ErrorMap.CREATE_IPFS_ERROR)
-      );
+      console.error('IPFSHTTPClient ERROR ON INIT::', error)
+      h5QrcodeScannerService.sendError(new CustomError(ErrorMap.CREATE_IPFS_ERROR))
     }
-    return this._h5QrcodeScanner;
+    return this._h5QrcodeScanner
   }
 
   clear() {
     if (this._h5QrcodeScanner) {
       try {
-        this._h5QrcodeScanner.clear();
+        this._h5QrcodeScanner.clear()
       } catch (err) {
-        console.error("IPFSHTTPClient ERROR ON STOP::", err as any);
+        console.error('IPFSHTTPClient ERROR ON STOP::', err as any)
       }
     }
   }
@@ -78,10 +68,10 @@ export class Html5QrcodeScannerProvides {
   stop() {
     if (this._h5QrcodeScanner) {
       try {
-        this._h5QrcodeScanner.clear();
-        this._h5QrcodeScanner = undefined;
+        this._h5QrcodeScanner.clear()
+        this._h5QrcodeScanner = undefined
       } catch (err) {
-        console.error("IPFSHTTPClient ERROR ON STOP::", err as any);
+        console.error('IPFSHTTPClient ERROR ON STOP::', err as any)
       }
     }
   }
@@ -89,7 +79,7 @@ export class Html5QrcodeScannerProvides {
   render() {
     if (this._h5QrcodeScanner) {
       try {
-        this._h5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        this._h5QrcodeScanner.render(onScanSuccess, onScanFailure)
         // this._h5QrcodeScanner = undefined;
       } catch (err) {
         // console.error("IPFSHTTPClient ERROR ON STOP::", err as any);
@@ -99,17 +89,17 @@ export class Html5QrcodeScannerProvides {
 }
 
 export enum H5QrcodeScannerCommands {
-  ErrorHtml5QrcodeScanner = "ErrorHtml5QrcodeScanner",
-  SuccessH5QrcodeScanner = "SuccessH5QrcodeScanner",
+  ErrorHtml5QrcodeScanner = 'ErrorHtml5QrcodeScanner',
+  SuccessH5QrcodeScanner = 'SuccessH5QrcodeScanner',
 }
 
 const subject = new Subject<{
-  status: H5QrcodeScannerCommands;
+  status: H5QrcodeScannerCommands
   data?: {
-    uniqueId?: string;
-    [key: string]: any;
-  };
-}>();
+    uniqueId?: string
+    [key: string]: any
+  }
+}>()
 
 export const h5QrcodeScannerService = {
   sendError: (error: CustomError) => {
@@ -118,7 +108,7 @@ export const h5QrcodeScannerService = {
       data: {
         error: error,
       },
-    });
+    })
   },
   // cleanQRScanner: () => {
   //   h5QrcodeScannerProvides.clear();
@@ -130,7 +120,7 @@ export const h5QrcodeScannerService = {
     subject.next({
       status: H5QrcodeScannerCommands.SuccessH5QrcodeScanner,
       data,
-    });
+    })
   },
   // addJSONStringify: async ({
   //   ipfs,
@@ -263,4 +253,4 @@ export const h5QrcodeScannerService = {
 
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),
-};
+}

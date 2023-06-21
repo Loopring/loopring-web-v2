@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react'
 import {
   AccountStatus,
   SagaStatus,
   AmmDetail,
   myLog,
   ErrorMap,
-} from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 import {
   LoopringAPI,
   useTokenMap,
@@ -23,52 +23,52 @@ import {
   initSlippage,
   useWalletLayer2Socket,
   useUserRewards,
-} from "../../index";
-import { ToastType, useOpenModals } from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
+} from '../../index'
+import { ToastType, useOpenModals } from '@loopring-web/component-lib'
+import { useTranslation } from 'react-i18next'
 
 const useAmmSocket = ({ market }: { market: string }) => {
-  const { sendSocketTopic, socketEnd } = useSocket();
-  const { account } = useAccount();
+  const { sendSocketTopic, socketEnd } = useSocket()
+  const { account } = useAccount()
 
   React.useEffect(() => {
-    const { ammMap } = store.getState().amm.ammMap;
-    const ammInfo: AmmDetail<any> = ammMap["AMM-" + market];
+    const { ammMap } = store.getState().amm.ammMap
+    const ammInfo: AmmDetail<any> = ammMap['AMM-' + market]
     if (account.readyState === AccountStatus.ACTIVATED && ammInfo?.address) {
       sendSocketTopic({
         [sdk.WsTopicType.account]: true,
         [sdk.WsTopicType.ammpool]: ammInfo?.address ? [ammInfo.address] : [],
         [sdk.WsTopicType.ticker]: [`${ammInfo.market}`],
-      });
+      })
     } else if (ammInfo?.address) {
       sendSocketTopic({
         [sdk.WsTopicType.ammpool]: ammInfo?.address ? [ammInfo.address] : [],
         [sdk.WsTopicType.ticker]: [`${ammInfo.market}`],
-      });
+      })
     } else {
-      socketEnd();
+      socketEnd()
     }
     return () => {
-      socketEnd();
-    };
-  }, [account.readyState]);
-};
+      socketEnd()
+    }
+  }, [account.readyState])
+}
 
 export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
-  const { tickerMap } = useTicker();
-  const { coinMap, tokenMap } = useTokenMap();
+  const { tickerMap } = useTicker()
+  const { coinMap, tokenMap } = useTokenMap()
   const [pairInit] = React.useState(() => {
     let coinACount = 0,
       coinBCount = 0,
-      percentage = 0;
-    const coinLp = "LP-" + ammInfo.market;
+      percentage = 0
+    const coinLp = 'LP-' + ammInfo.market
 
-    const { walletMap } = makeWalletLayer2(false);
+    const { walletMap } = makeWalletLayer2({ needFilterZero: false })
     let ammCalcData: any = {
       coinInfoMap: coinMap,
-    };
-    const lpToken = tokenMap["LP-" + ammInfo.market];
-    const { totalLPToken, totalA, totalB } = ammInfo;
+    }
+    const lpToken = tokenMap['LP-' + ammInfo.market]
+    const { totalLPToken, totalA, totalB } = ammInfo
 
     const {
       close: _close,
@@ -100,14 +100,14 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
         ticker: tickerMap[ammInfo?.market],
         depth: undefined,
       },
-    });
+    })
     ammCalcData = {
       ...ammCalcData,
       AtoB: stob,
       BtoA: btos,
       myCoinA: {
         belong: ammInfo.coinA,
-        balance: walletMap ? walletMap[ammInfo?.coinA ?? ""]?.count : undefined,
+        balance: walletMap ? walletMap[ammInfo?.coinA ?? '']?.count : undefined,
         tradeValue: undefined,
       },
       myCoinB: {
@@ -115,18 +115,18 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
         balance: walletMap ? walletMap[ammInfo?.coinB ?? 0]?.count : undefined,
         tradeValue: undefined,
       },
-    };
+    }
 
-    const lpBalance = walletMap ? walletMap[coinLp ?? ""]?.count : 0;
+    const lpBalance = walletMap ? walletMap[coinLp ?? '']?.count : 0
     if (totalA && totalLPToken && totalB) {
       percentage = totalLPToken
         ? sdk
             .toBig(lpBalance ?? 0)
             .div(totalLPToken)
             .toNumber()
-        : 0;
-      coinACount = totalA * percentage;
-      coinBCount = totalB * percentage;
+        : 0
+      coinACount = totalA * percentage
+      coinBCount = totalB * percentage
     }
     ammCalcData = {
       ...ammCalcData,
@@ -140,7 +140,7 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
         balance: coinBCount,
       },
       percentage,
-    };
+    }
 
     return {
       ammJoin: {
@@ -162,30 +162,30 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
         ammCalcData,
         // ...feePatch,
       },
-    };
-  });
-  return { ...pairInit };
+    }
+  })
+  return { ...pairInit }
 }
 
 export const useAmmCommon = ({ market }: { market: string }) => {
-  const { t } = useTranslation();
-  const { getUserRewards } = useUserRewards();
+  const { t } = useTranslation()
+  const { getUserRewards } = useUserRewards()
 
-  const { toastOpen, setToastOpen, closeToast } = useToast();
-  const { updateRealTimeAmmMap, ammMap } = useAmmMap();
-  const { marketArray, tokenMap } = useTokenMap();
-  const { setShowAccount } = useOpenModals();
+  const { toastOpen, setToastOpen, closeToast } = useToast()
+  const { updateRealTimeAmmMap, ammMap } = useAmmMap()
+  const { marketArray, tokenMap } = useTokenMap()
+  const { setShowAccount } = useOpenModals()
 
-  const { updatePageAmmExit, updatePageAmmJoin } = usePageAmmPool();
-  const ammInfo = ammMap["AMM-" + market];
+  const { updatePageAmmExit, updatePageAmmJoin } = usePageAmmPool()
+  const ammInfo = ammMap['AMM-' + market]
   const { ammExit, ammJoin } = usePairInit({
     ammInfo,
-  });
+  })
   const updateAmmPoolSnapshot = React.useCallback(async () => {
-    const { ammMap } = store.getState().amm.ammMap;
-    myLog("ammCommon", "market", market);
+    const { ammMap } = store.getState().amm.ammMap
+    myLog('ammCommon', 'market', market)
     if (market && market && LoopringAPI.ammpoolAPI) {
-      const ammInfo: any = ammMap["AMM-" + market];
+      const ammInfo: any = ammMap['AMM-' + market]
       LoopringAPI.ammpoolAPI
         .getAmmPoolSnapshot({
           poolAddress: ammInfo.address,
@@ -196,35 +196,30 @@ export const useAmmCommon = ({ market }: { market: string }) => {
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
-            throw (response as sdk.RESULT_INFO).message;
+            throw (response as sdk.RESULT_INFO).message
           }
-          const { ammPoolSnapshot } = response;
+          const { ammPoolSnapshot } = response
           updateRealTimeAmmMap({
             ammPoolStats: {
-              ["AMM-" + market]: {
-                ...ammMap["AMM-" + market].__rawConfig__,
-                liquidity: [
-                  ammPoolSnapshot.pooled[0].volume,
-                  ammPoolSnapshot.pooled[1].volume,
-                ],
+              ['AMM-' + market]: {
+                ...ammMap['AMM-' + market].__rawConfig__,
+                liquidity: [ammPoolSnapshot.pooled[0].volume, ammPoolSnapshot.pooled[1].volume],
                 lpLiquidity: ammPoolSnapshot.lp.volume,
               },
             } as any,
-          });
-        });
+          })
+        })
     }
-    await Promise.race([updateExitFee, updateJoinFee]);
-    setShowAccount({ isShow: false });
-  }, [marketArray, market]);
-  const refreshRef = React.createRef();
+    await Promise.race([updateExitFee, updateJoinFee])
+    setShowAccount({ isShow: false })
+  }, [marketArray, market])
+  const refreshRef = React.createRef()
   const getFee = async (
-    requestType:
-      | sdk.OffchainFeeReqType.AMM_EXIT
-      | sdk.OffchainFeeReqType.AMM_JOIN
+    requestType: sdk.OffchainFeeReqType.AMM_EXIT | sdk.OffchainFeeReqType.AMM_JOIN,
   ) => {
-    const account = store.getState().account;
-    const { ammMap } = store.getState().amm.ammMap;
-    const ammInfo = ammMap["AMM-" + market];
+    const account = store.getState().account
+    const { ammMap } = store.getState().amm.ammMap
+    const ammInfo = ammMap['AMM-' + market]
     if (
       ammInfo?.coinB &&
       LoopringAPI.userAPI &&
@@ -232,57 +227,52 @@ export const useAmmCommon = ({ market }: { market: string }) => {
       account.readyState == AccountStatus.ACTIVATED &&
       tokenMap
     ) {
-      const feeToken: sdk.TokenInfo = tokenMap[ammInfo.coinB ?? ""];
+      const feeToken: sdk.TokenInfo = tokenMap[ammInfo.coinB ?? '']
       const request: sdk.GetOffchainFeeAmtRequest = {
         accountId: account.accountId,
         requestType,
         tokenSymbol: ammInfo?.coinB,
-      };
+      }
 
-      const { fees } = await LoopringAPI.userAPI?.getOffchainFeeAmt(
-        request,
-        account.apiKey
-      );
+      const { fees } = await LoopringAPI.userAPI?.getOffchainFeeAmt(request, account.apiKey)
 
-      const feeRaw = fees[ammInfo.coinB] ? fees[ammInfo.coinB].fee : 0;
+      const feeRaw = fees[ammInfo.coinB] ? fees[ammInfo.coinB].fee : 0
       const fee = sdk
         .toBig(feeRaw)
-        .div("1e" + feeToken.decimals)
-        .toNumber();
+        .div('1e' + feeToken.decimals)
+        .toNumber()
 
       // myLog("new fee:", fee.toString());
       return {
         fee,
         feeRaw,
         fees,
-      };
+      }
     } else {
-      throw "not ready";
+      throw 'not ready'
     }
-  };
+  }
 
   const updateExitFee = React.useCallback(async () => {
-    const account = store.getState().account;
+    const account = store.getState().account
     if (account.readyState === AccountStatus.ACTIVATED && ammInfo?.coinB) {
       try {
-        const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
-        const { walletMap } = makeWalletLayer2(false);
-        const { ammExit: _ammExit } = store.getState()._router_pageAmmPool;
-        let { ammCalcData, ammData } = _ammExit;
-        const lpBalance = walletMap
-          ? walletMap["LP-" + ammInfo.market]?.count
-          : 0;
-        let percentage, coinACount, coinBCount;
+        const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT)
+        const { walletMap } = makeWalletLayer2({ needFilterZero: false })
+        const { ammExit: _ammExit } = store.getState()._router_pageAmmPool
+        let { ammCalcData, ammData } = _ammExit
+        const lpBalance = walletMap ? walletMap['LP-' + ammInfo.market]?.count : 0
+        let percentage, coinACount, coinBCount
         if (ammInfo.totalA && ammInfo.totalLPToken && ammInfo.totalB) {
           percentage = sdk
             .toBig(lpBalance ?? 0)
-            .div(ammInfo?.totalLPToken ? ammInfo?.totalLPToken : 1); //totalLPToken ? lpBalance / totalLPToken : 0;
-          coinACount = sdk.toBig(ammInfo.totalA).times(percentage);
-          coinBCount = sdk.toBig(ammInfo.totalB).times(percentage);
+            .div(ammInfo?.totalLPToken ? ammInfo?.totalLPToken : 1) //totalLPToken ? lpBalance / totalLPToken : 0;
+          coinACount = sdk.toBig(ammInfo.totalA).times(percentage)
+          coinBCount = sdk.toBig(ammInfo.totalB).times(percentage)
         }
         if (!ammCalcData) {
-          ammCalcData = ammExit.ammCalcData;
-          ammData = ammExit.ammData;
+          ammCalcData = ammExit.ammCalcData
+          ammData = ammExit.ammData
         }
         updatePageAmmExit({
           ammData: {
@@ -312,21 +302,21 @@ export const useAmmCommon = ({ market }: { market: string }) => {
           } as any,
           fee: feeInfo?.fee,
           fees: feeInfo?.fees,
-        });
+        })
       } catch (error) {
-        console.log(error);
+        console.log(error)
         setToastOpen({
           open: true,
           type: ToastType.error,
           content: t(ErrorMap.NO_NETWORK_ERROR.messageKey, {
             ns: ToastType.error,
           }),
-        });
+        })
       }
     } else {
       const {
         ammExit: { ammCalcData },
-      } = store.getState()._router_pageAmmPool;
+      } = store.getState()._router_pageAmmPool
       if (!ammCalcData) {
         updatePageAmmExit({
           ammData: {
@@ -356,30 +346,30 @@ export const useAmmCommon = ({ market }: { market: string }) => {
           } as any,
           fee: undefined,
           fees: undefined,
-        });
+        })
       }
     }
-  }, [ammExit]);
+  }, [ammExit])
   const updateJoinFee = React.useCallback(async () => {
-    const account = store.getState().account;
+    const account = store.getState().account
 
     if (ammInfo?.market && account.readyState === AccountStatus.ACTIVATED) {
-      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_JOIN);
-      const { walletMap } = makeWalletLayer2(false);
-      const { ammJoin: _ammJoin } = store.getState()._router_pageAmmPool;
-      let { ammCalcData, ammData } = _ammJoin;
+      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_JOIN)
+      const { walletMap } = makeWalletLayer2({ needFilterZero: false })
+      const { ammJoin: _ammJoin } = store.getState()._router_pageAmmPool
+      let { ammCalcData, ammData } = _ammJoin
       if (!ammCalcData) {
-        ammCalcData = ammJoin.ammCalcData;
-        ammData = ammJoin.ammData;
+        ammCalcData = ammJoin.ammCalcData
+        ammData = ammJoin.ammData
       }
       const coinA = {
         ...ammData?.coinA,
         balance: walletMap ? walletMap[ammInfo.coinA]?.count : undefined,
-      } as any;
+      } as any
       const coinB = {
         ...ammData?.coinB,
         balance: walletMap ? walletMap[ammInfo.coinB]?.count : undefined,
-      } as any;
+      } as any
       updatePageAmmJoin({
         ammData: {
           ...ammData,
@@ -395,11 +385,11 @@ export const useAmmCommon = ({ market }: { market: string }) => {
         } as any,
         fee: feeInfo?.fee,
         fees: feeInfo?.fees,
-      });
+      })
     } else {
       const {
         ammJoin: { ammCalcData },
-      } = store.getState()._router_pageAmmPool;
+      } = store.getState()._router_pageAmmPool
       if (!ammCalcData) {
         updatePageAmmJoin({
           ammData: {
@@ -428,17 +418,17 @@ export const useAmmCommon = ({ market }: { market: string }) => {
           } as any,
           fee: 0,
           fees: undefined,
-        });
+        })
       }
     }
-  }, [ammJoin]);
+  }, [ammJoin])
 
   const walletLayer2Callback = React.useCallback(async () => {
-    getUserRewards();
-  }, []);
+    getUserRewards()
+  }, [])
 
-  useWalletLayer2Socket({ walletLayer2Callback });
-  useAmmSocket({ market });
+  useWalletLayer2Socket({ walletLayer2Callback })
+  useAmmSocket({ market })
 
   return {
     toastOpen,
@@ -451,5 +441,5 @@ export const useAmmCommon = ({ market }: { market: string }) => {
     ammJoin,
     updateExitFee,
     updateJoinFee,
-  };
-};
+  }
+}

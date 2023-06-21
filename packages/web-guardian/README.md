@@ -5,7 +5,7 @@
 <h1 align="center">Loopring Application</h1>
 <div align="center">
 <h2>Ethereum’s First zkRollup Layer2</h2>
-<p>Secure, Fast, and Cheap</p>
+<p>Fast, Secure, and 100x Lower Fees</p>
 
 [![license](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Loopring/loopring-web-v2/master/LICENSE)
 
@@ -25,11 +25,11 @@ cd ./packages/webapp
 npm run dev
 
 
-``` 
+```
 
 ## 📚 Loopring UI component StoryBook
 
-```bash 
+```bash
 
 cd ./packages/component-lib
 npm run storybook

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 import {
   Box,
   BoxProps,
@@ -7,28 +7,40 @@ import {
   RadioGroup,
   TextareaAutosize,
   TextField as MuiTextField,
+  OutlinedInput as MuiOutlinedInput,
   TextFieldProps,
-} from "@mui/material";
-import CurrencyInput from "react-currency-input-field";
+  OutlinedInputProps,
+} from '@mui/material'
+import CurrencyInput from 'react-currency-input-field'
 
-import { InputSize } from "./Interface";
+import { InputSize } from './Interface'
+import { css } from '@emotion/react'
+
+export const inputHeightLarge = () => css`
+  height: var(--input-height-large);
+  font-size: 1.5rem;
+
+  .MuiInputAdornment-root {
+    svg {
+      height: var(--btn-icon-size-large);
+      width: var(--btn-icon-size-large);
+    }
+  }
+`
+export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
+  ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+`
 
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
-    ${({ size }) =>
-      size == "large"
-        ? `
-      height:var(--input-height-large);
-      font-size:2rem;
-      .MuiInputAdornment-root{
-       svg{
-        height:var(--btn-icon-size);
-        width: var(--btn-icon-size);
-       }
-       
-      }
-    `
-        : ``};
+    ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+    background-color: transparent;
+  }
+  background-color: transparent;
+
+  input::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
   }
 
   .MuiInputAdornment-root {
@@ -43,8 +55,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   && {
     .MuiSelect-nativeInput + svg {
       position: absolute;
-      right: 0.4rem;
-      top: ${({ theme }) => theme.unit}px;
+      right: ${({ size }) => (size === 'large' ? 1 : 0.4)}rem;
+      top: ${({ theme, size }) => (size === 'large' ? 2 * theme.unit : theme.unit)}px;
       color: var(--color-text-secondary);
     }
 
@@ -56,19 +68,19 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   &:focus {
-    ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
+    ${({ theme }) => theme.border.defaultFrame({ c_key: 'focus', d_R: 0.5 })};
     outline: transparent;
   }
-`;
+`
 // export MuiTextField = styled(MuTextField)<>``;
 export const IWrap = styled(Box)<
   BoxProps & {
-    size: "middle" | "small";
-    isMobile?: boolean;
-    fullWidth?: boolean;
+    size: 'middle' | 'small'
+    isMobile?: boolean
+    fullWidth?: boolean
   }
 >`
-  ${({ theme }) => theme.border.defaultFrame({ c_key: "var(--opacity)" })};
+  ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--opacity)' })};
   ${({ fullWidth }) => fullWidth && `width:100%`};
 
   .label-wrap {
@@ -112,13 +124,12 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    background: var(--color-box);
-    border-radius: ${({ theme }) => theme.unit / 2}px;
+    border-radius: ${({ theme }) => theme.unit}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
 
     ::before {
-      content: "";
+      content: '';
       display: block;
       width: 100%;
       height: 100%;
@@ -157,17 +168,13 @@ export const IWrap = styled(Box)<
     if (size === InputSize.small) {
       return `
           .input-wrap,.icon-wrap{
-            font-size: ${
-              isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1
-            };
+            font-size: ${isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1};
           }
           .label-wrap, .main-label{
             font-size: ${theme.fontDefault.body2};
           }
           .coinInput-wrap, .btnInput-wrap {
-            font-size: ${
-              isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1
-            };
+            font-size: ${isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1};
             height: var(--btn-Input-small-height);
             &.text-small{
               font-size: ${theme.fontDefault.body2};
@@ -180,7 +187,7 @@ export const IWrap = styled(Box)<
             }
           }
          
-      `;
+      `
     } else {
       return `
           .input-wrap,.icon-wrap{
@@ -200,16 +207,16 @@ export const IWrap = styled(Box)<
               }
           }
          
-      `;
+      `
     }
   }};
 ` as (
   props: BoxProps & {
-    size: "middle" | "small";
-    isMobile?: boolean;
-    fullWidth?: boolean;
-  }
-) => JSX.Element;
+    size: 'middle' | 'small'
+    isMobile?: boolean
+    fullWidth?: boolean
+  },
+) => JSX.Element
 export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
   & {
     border-top-right-radius: 0;
@@ -236,7 +243,7 @@ export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
     padding-right: ${({ theme }) => (theme.unit / 2) * 3}px;
     align-items: center;
   }
-` as (props: BoxProps & { logoColor?: any }) => JSX.Element;
+` as (props: BoxProps & { logoColor?: any }) => JSX.Element
 export const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
   && {
     width: 100%;
@@ -263,18 +270,22 @@ export const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
     color: var(--color-text-primary);
     background: var(--color-box-hover);
   }
-` as (props: ButtonProps & { logoColor?: any }) => JSX.Element;
+` as (props: ButtonProps & { logoColor?: any }) => JSX.Element
 
 export const IInput = styled(CurrencyInput)`
   text-align: right;
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-text-secondary);;
+    color: var(--color-placeholder);;
   }
 
   :disabled {
     color: var(--color-text-disable);
+  }
+
+  .loading:disabled {
+    color: var(--color-text-primary);
   }
 
   width: 100%;
@@ -310,7 +321,7 @@ export const IInput = styled(CurrencyInput)`
       bottom: 0;
       ${({ theme }) =>
         `${theme.border.defaultFrame({
-          c_key: "var(--color-border-hover)",
+          c_key: 'var(--color-border-hover)',
           d_R: 0.5,
         })};`};
     }
@@ -318,8 +329,7 @@ export const IInput = styled(CurrencyInput)`
 
   .error &:focus {
     & + label::before {
-      ${({ theme }) =>
-        `${theme.border.defaultFrame({ c_key: "var(--opacity)", d_R: 0.5 })};`}
+      ${({ theme }) => `${theme.border.defaultFrame({ c_key: 'var(--opacity)', d_R: 0.5 })};`}
     }
   }
 
@@ -344,7 +354,7 @@ export const IInput = styled(CurrencyInput)`
 
     }
   }
-}` as typeof CurrencyInput;
+}` as typeof CurrencyInput
 
 export const TextareaAutosizeStyled = styled(TextareaAutosize)`
   label + & {
@@ -363,7 +373,7 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
     })};
 
   &:focus {
-    ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
+    ${({ theme }) => theme.border.defaultFrame({ c_key: 'focus', d_R: 0.5 })};
     outline: transparent;
   }
 
@@ -380,15 +390,14 @@ export const TextareaAutosizeStyled = styled(TextareaAutosize)`
   }
 
   &.error {
-    ${({ theme }) =>
-      theme.border.defaultFrame({ c_key: "var(--color-error)", d_R: 0.5 })};
+    ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--color-error)', d_R: 0.5 })};
   }
-` as typeof TextareaAutosize;
+` as typeof TextareaAutosize
 
 export const InputSearchWrapperStyled = styled(Box)`
   padding: ${({ theme }) => theme.unit * 2}px;
   padding-bottom: 0;
-` as typeof Box;
+` as typeof Box
 
 export const RadioGroupStyle = styled(RadioGroup)`
   margin: 0;
@@ -404,4 +413,4 @@ export const RadioGroupStyle = styled(RadioGroup)`
   .MuiFormControlLabel-label {
     line-height: var(--svg-size-cover);
   }
-` as typeof RadioGroup;
+` as typeof RadioGroup

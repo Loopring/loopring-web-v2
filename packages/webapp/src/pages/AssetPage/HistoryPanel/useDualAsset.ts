@@ -1,58 +1,56 @@
 import {
   LoopringAPI,
   makeDualOrderedItem,
+  makeDualViewItem,
+  store,
   useAccount,
+  useDualEdit,
   useDualMap,
   useTokenMap,
-} from "@loopring-web/core";
-import React from "react";
+  useTradeDual,
+} from '@loopring-web/core'
+import React from 'react'
 import {
+  DualViewInfo,
   EmptyValueTag,
   getValuePrecisionThousand,
+  myLog,
   SDK_ERROR_MAP_TO_UI,
-} from "@loopring-web/common-resources";
-import {
-  DualDetailType,
-  RawDataDualAssetItem,
-  ToastType,
-} from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
-import BigNumber from "bignumber.js";
-import _ from "lodash";
+} from '@loopring-web/common-resources'
+import { DualDetailType, RawDataDualAssetItem, ToastType } from '@loopring-web/component-lib'
+import { useTranslation } from 'react-i18next'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
+import BigNumber from 'bignumber.js'
+import _ from 'lodash'
 
-export const Limit = 15;
+export const Limit = 15
 
 export const useDualAsset = <R extends RawDataDualAssetItem>(
-  setToastOpen?: (props: any) => void
+  setToastOpen?: (props: any) => void,
 ) => {
-  const { t } = useTranslation(["error"]);
+  const { t } = useTranslation(['error'])
 
   const {
     account: { accountId, apiKey },
-  } = useAccount();
-  const { tokenMap, idIndex } = useTokenMap();
-  const { marketMap: dualMarketMap, marketArray } = useDualMap();
-  const [dualList, setDualList] = React.useState<R[]>([]);
-  const [dualOnInvestAsset, setDualOnInvestAsset] =
-    React.useState<any>(undefined);
+  } = useAccount()
+  const { updateEditDual } = useTradeDual()
+  const { tokenMap, idIndex } = useTokenMap()
+  const { marketMap: dualMarketMap } = useDualMap()
+  const [dualList, setDualList] = React.useState<R[]>([])
+  const [dualOnInvestAsset, setDualOnInvestAsset] = React.useState<any>(undefined)
   const [pagination, setDualPagination] = React.useState<{
-    pageSize: number;
-    total: number;
+    pageSize: number
+    total: number
   }>({
     pageSize: Limit,
     total: 0,
-  });
-  const [showLoading, setShowLoading] = React.useState(true);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [detail, setDetail] =
-    React.useState<DualDetailType | undefined>(undefined);
-  const [showRefreshError, setShowRefreshError] =
-    React.useState<boolean>(false);
-  const [refreshErrorInfo, setRefreshErrorInfo] = React.useState<
-    [string, string]
-  >(["", ""]);
+  })
+  const [showLoading, setShowLoading] = React.useState(true)
+  const [open, setOpen] = React.useState<boolean>(false)
+  const [detail, setDetail] = React.useState<DualDetailType | undefined>(undefined)
+  const [showRefreshError, setShowRefreshError] = React.useState<boolean>(false)
+  const [refreshErrorInfo, setRefreshErrorInfo] = React.useState<[string, string]>(['', ''])
 
   const getDetail = (item: R, index?: number) => {
     const {
@@ -63,26 +61,21 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       __raw__: {
         order: {
           dualType,
-          tokenInfoOrigin: { base, currency: quote, amountIn, market },
+          tokenInfoOrigin: { amountIn },
           // timeOrigin: { settlementTime },
         },
       },
-    } = item;
-    const currentPrice = _.cloneDeep(item.currentPrice);
+    } = item
+    const currentPrice = _.cloneDeep(item.currentPrice)
     if (index) {
-      currentPrice.currentPrice = index;
+      currentPrice.currentPrice = index
     }
-    let lessEarnTokenSymbol,
-      greaterEarnTokenSymbol,
-      lessEarnVol,
-      greaterEarnVol;
-    const sellAmount = sdk
-      .toBig(amountIn ? amountIn : 0)
-      .div("1e" + tokenMap[sellSymbol].decimals);
+    let lessEarnTokenSymbol, greaterEarnTokenSymbol, lessEarnVol, greaterEarnVol
+    const sellAmount = sdk.toBig(amountIn ? amountIn : 0).div('1e' + tokenMap[sellSymbol].decimals)
     if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
-      lessEarnTokenSymbol = sellSymbol;
-      greaterEarnTokenSymbol = buySymbol;
-      lessEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn); //dualViewInfo.strike);
+      lessEarnTokenSymbol = sellSymbol
+      greaterEarnTokenSymbol = buySymbol
+      lessEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn) //dualViewInfo.strike);
       greaterEarnVol = sdk
         .toBig(
           sdk
@@ -90,12 +83,12 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             .plus(1)
             .times(sellAmount ? sellAmount : 0)
             .times(strike)
-            .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL)
+            .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL),
         )
-        .times("1e" + tokenMap[buySymbol].decimals);
+        .times('1e' + tokenMap[buySymbol].decimals)
     } else {
-      lessEarnTokenSymbol = buySymbol;
-      greaterEarnTokenSymbol = sellSymbol;
+      lessEarnTokenSymbol = buySymbol
+      greaterEarnTokenSymbol = sellSymbol
       lessEarnVol = sdk
         .toBig(
           sdk
@@ -104,80 +97,63 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             .times(sellAmount ? sellAmount : 0)
             // .times(1 + info.ratio)
             .div(strike)
-            .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL)
+            .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL),
         )
-        .times("1e" + tokenMap[buySymbol].decimals);
+        .times('1e' + tokenMap[buySymbol].decimals)
 
       // sellVol.times(1 + info.ratio).div(dualViewInfo.strike); //.times(1 + dualViewInfo.settleRatio);
-      greaterEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn);
+      greaterEarnVol = sdk.toBig(settleRatio).plus(1).times(amountIn)
     }
     const lessEarnView = amountIn
       ? getValuePrecisionThousand(
-          sdk
-            .toBig(lessEarnVol)
-            .div("1e" + tokenMap[lessEarnTokenSymbol].decimals),
+          sdk.toBig(lessEarnVol).div('1e' + tokenMap[lessEarnTokenSymbol].decimals),
           tokenMap[lessEarnTokenSymbol].precision,
           tokenMap[lessEarnTokenSymbol].precision,
           tokenMap[lessEarnTokenSymbol].precision,
           false,
-          { floor: true }
+          { floor: true },
         )
-      : EmptyValueTag;
+      : EmptyValueTag
     const greaterEarnView = amountIn
       ? getValuePrecisionThousand(
-          sdk
-            .toBig(greaterEarnVol)
-            .div("1e" + tokenMap[greaterEarnTokenSymbol].decimals),
+          sdk.toBig(greaterEarnVol).div('1e' + tokenMap[greaterEarnTokenSymbol].decimals),
           tokenMap[greaterEarnTokenSymbol].precision,
           tokenMap[greaterEarnTokenSymbol].precision,
           tokenMap[greaterEarnTokenSymbol].precision,
           false,
-          { floor: true }
+          { floor: true },
         )
-      : EmptyValueTag;
+      : EmptyValueTag
 
     const amount = getValuePrecisionThousand(
       sellAmount,
       tokenMap[sellSymbol].precision,
       tokenMap[sellSymbol].precision,
       tokenMap[sellSymbol].precision,
-      false
-    );
+      false,
+    )
     return {
       dualViewInfo: {
+        ...item?.__raw__?.order,
         ...item,
-        amount: amount + " " + sellSymbol,
+        quote: item?.__raw__?.order?.tokenInfoOrigin?.quote,
+        amount: amount + ' ' + sellSymbol,
         currentPrice,
+        __raw__: item.__raw__,
       },
       lessEarnTokenSymbol,
       greaterEarnTokenSymbol,
       lessEarnView,
       greaterEarnView,
       currentPrice,
-    } as DualDetailType;
-  };
-  const showDetail = async (item: R) => {
-    const {
-      __raw__: {
-        order: {
-          tokenInfoOrigin: { base, market },
-        },
-      },
-    } = item;
-    const {
-      dualPrice: { index },
-    } = await LoopringAPI.defiAPI?.getDualIndex({
-      baseSymbol: base,
-      quoteSymbol: dualMarketMap[market].quoteAlias,
-    });
-    if (index) {
-      setDetail(getDetail(item, index));
-      setOpen(true);
-    }
-  };
+      __raw__: item.__raw__,
+    } as DualDetailType
+  }
+
   const refresh = async (item: R) => {
-    const hash = item.__raw__.order.hash;
-    setShowLoading(true);
+    const hash = item.__raw__.order.hash
+    setShowLoading(true)
+    const { marketArray, marketMap: dualMarketMap } = store.getState().invest.dualMap
     if (LoopringAPI.defiAPI && accountId && apiKey && marketArray?.length) {
       const [response, responseTotal] = await Promise.all([
         LoopringAPI.defiAPI.getDualTransactions(
@@ -185,52 +161,43 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             accountId,
             hashes: hash,
           } as any,
-          apiKey
+          apiKey,
         ),
         LoopringAPI.defiAPI.getDualUserLocked(
           {
             accountId: accountId,
             lockTag: [DUAL_TYPE.DUAL_BASE, DUAL_TYPE.DUAL_CURRENCY],
             //@ts-ignore
-            status: "LOCKED",
+            status: 'LOCKED',
           },
-          apiKey
+          apiKey,
         ),
-      ]);
-      if (
-        (responseTotal as sdk.RESULT_INFO).code ||
-        (responseTotal as sdk.RESULT_INFO).message
-      ) {
-        setDualOnInvestAsset(undefined);
+      ])
+      if ((responseTotal as sdk.RESULT_INFO).code || (responseTotal as sdk.RESULT_INFO).message) {
+        setDualOnInvestAsset(undefined)
       } else {
-        setDualOnInvestAsset(responseTotal.lockRecord);
+        setDualOnInvestAsset(responseTotal.lockRecord)
       }
-      if (
-        (response as sdk.RESULT_INFO).code ||
-        (response as sdk.RESULT_INFO).message
-      ) {
-        const errorItem =
-          SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
         if (setToastOpen) {
           setToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              "error : " + errorItem
+              'error : ' + errorItem
                 ? t(errorItem.messageKey)
                 : (response as sdk.RESULT_INFO).message,
-          });
+          })
         }
       } else {
         // @ts-ignore
-        let item = (response as any)?.userDualTxs[0] as sdk.UserDualTxsHistory;
+        let item = (response as any)?.userDualTxs[0] as sdk.UserDualTxsHistory
         const [, , coinA, coinB] =
-          (item.tokenInfoOrigin.market ?? "dual-").match(
-            /(dual-)?(\w+)-(\w+)/i
-          ) ?? [];
+          (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
         let [sellTokenSymbol, buyTokenSymbol] =
-          item.dualType == DUAL_TYPE.DUAL_BASE
+          item.dualType === DUAL_TYPE.DUAL_BASE
             ? [
                 coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                 coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -238,64 +205,107 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             : [
                 coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
                 coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
-              ];
+              ]
         const format = makeDualOrderedItem(
           item,
           sellTokenSymbol,
           buyTokenSymbol,
           0,
-          dualMarketMap[item.tokenInfoOrigin.market]
-        );
+          dualMarketMap[item.tokenInfoOrigin.market],
+        )
 
         const amount = getValuePrecisionThousand(
-          sdk
-            .toBig(item.tokenInfoOrigin.amountIn)
-            .div("1e" + tokenMap[sellTokenSymbol].decimals),
+          sdk.toBig(item.tokenInfoOrigin.amountIn).div('1e' + tokenMap[sellTokenSymbol].decimals),
           tokenMap[sellTokenSymbol].precision,
           tokenMap[sellTokenSymbol].precision,
           tokenMap[sellTokenSymbol].precision,
-          true
-        );
+          true,
+        )
         const refreshedRecord = {
           ...format,
           amount,
-        } as R;
+        } as R
         if (
-          refreshedRecord.__raw__.order.investmentStatus ===
-          sdk.LABEL_INVESTMENT_STATUS.CANCELLED
+          refreshedRecord.__raw__.order.investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
         ) {
-          const newDualList = dualList.filter((x) => {
-            return x.__raw__.order.id !== refreshedRecord.__raw__.order.id;
-          });
-          // newDualList
-          setDualList(newDualList);
-          setRefreshErrorInfo([
-            refreshedRecord.buySymbol,
-            refreshedRecord.sellSymbol,
-          ]);
-          setShowRefreshError(true);
-          setShowLoading(false);
+          setDualList((state) => {
+            return state?.filter((x) => {
+              return x.__raw__.order.id !== refreshedRecord.__raw__.order.id
+            })
+          })
+          setRefreshErrorInfo([refreshedRecord.buySymbol, refreshedRecord.sellSymbol])
+          setShowRefreshError(true)
+          setShowLoading(false)
         } else {
-          const newDualList = dualList.map((x) => {
-            return x.__raw__.order.id === refreshedRecord.__raw__.order.id
-              ? refreshedRecord
-              : x;
-          });
-          setDualList(newDualList);
-          setShowLoading(false);
+          setDualList((state) => {
+            return state.map((x) => {
+              return x.__raw__.order.id === refreshedRecord.__raw__.order.id
+                ? {
+                    ...refreshedRecord,
+                    __raw__: {
+                      ...x.__raw__,
+                      ...refreshedRecord.__raw__,
+                    },
+                  }
+                : x
+            })
+          })
+          setShowLoading(false)
         }
       }
     }
-    setShowLoading(false);
-  };
+    setShowLoading(false)
+  }
+
+  const {
+    editDualTrade,
+    editDualBtnInfo,
+    editDualBtnStatus,
+    dualToastOpen,
+    closeDualToast,
+    // setDualTradeData,
+    handleOnchange,
+    onEditDualClick,
+  } = useDualEdit({
+    refresh: (item) => {
+      refresh(item as any)
+      setOpen(false)
+    },
+  })
+  const showDetail = async (item: R) => {
+    const {
+      __raw__: { index },
+    } = item
+    if (index) {
+      const _item = getDetail(item, index?.index)
+      setDetail(_item)
+      const tradeData = {
+        isRenew: _item?.__raw__?.order?.dualReinvestInfo?.isRecursive,
+        renewDuration: _item?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+        renewTargetPrice: _item?.__raw__?.order.dualReinvestInfo.newStrike,
+      }
+      updateEditDual({
+        ...(_item as any),
+        tradeData,
+      })
+      if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
+        getProduct(_item)
+        handleOnchange({
+          tradeData,
+        })
+      }
+      setOpen(true)
+    }
+  }
+
   const getDualTxList = React.useCallback(
     async ({ start, end, offset, limit = Limit }: any) => {
-      setShowLoading(true);
+      setShowLoading(true)
+      const { marketArray, marketMap: dualMarketMap } = store.getState().invest.dualMap
       if (LoopringAPI.defiAPI && accountId && apiKey && marketArray?.length) {
         const [response, responseTotal] = await Promise.all([
           LoopringAPI.defiAPI.getDualTransactions(
             {
-              // dualTypes: sdk.DUAL_TYPE,
               accountId,
               settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
               offset,
@@ -303,58 +313,52 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               start,
               end,
               investmentStatuses: [
-                sdk.LABEL_INVESTMENT_STATUS.FAILED,
+                // sdk.LABEL_INVESTMENT_STATUS.FAILED,
+                sdk.LABEL_INVESTMENT_STATUS.CANCELLED,
+                sdk.LABEL_INVESTMENT_STATUS.SUCCESS,
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
-              ].join(","),
+              ].join(','),
+              retryStatuses: [sdk.DUAL_RETRY_STATUS.RETRYING],
             } as any,
-            apiKey
+            apiKey,
           ),
           LoopringAPI.defiAPI.getDualUserLocked(
             {
               accountId: accountId,
               lockTag: [DUAL_TYPE.DUAL_BASE, DUAL_TYPE.DUAL_CURRENCY],
               //@ts-ignore
-              status: "LOCKED",
+              status: 'LOCKED',
             },
-            apiKey
+            apiKey,
           ),
-        ]);
-        if (
-          (responseTotal as sdk.RESULT_INFO).code ||
-          (responseTotal as sdk.RESULT_INFO).message
-        ) {
-          setDualOnInvestAsset(undefined);
+        ])
+        if ((responseTotal as sdk.RESULT_INFO).code || (responseTotal as sdk.RESULT_INFO).message) {
+          setDualOnInvestAsset(undefined)
         } else {
-          setDualOnInvestAsset(responseTotal.lockRecord);
+          setDualOnInvestAsset(responseTotal.lockRecord)
         }
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           if (setToastOpen) {
             setToastOpen({
               open: true,
               type: ToastType.error,
               content:
-                "error : " + errorItem
+                'error : ' + errorItem
                   ? t(errorItem.messageKey)
                   : (response as sdk.RESULT_INFO).message,
-            });
+            })
           }
         } else {
-          // @ts-ignore
+          const indexes = response.indexes
           let result = (response as any)?.userDualTxs.reduce(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
               const [, , coinA, coinB] =
-                (item.tokenInfoOrigin.market ?? "dual-").match(
-                  /(dual-)?(\w+)-(\w+)/i
-                ) ?? [];
+                (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
-                item.dualType == DUAL_TYPE.DUAL_BASE
+                item.dualType === DUAL_TYPE.DUAL_BASE
                   ? [
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -362,53 +366,119 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                   : [
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
-                    ];
+                    ]
               const format = makeDualOrderedItem(
                 item,
                 sellTokenSymbol,
                 buyTokenSymbol,
                 0,
-                dualMarketMap[item.tokenInfoOrigin.market]
-              );
+                dualMarketMap[item.tokenInfoOrigin.market],
+              )
 
               const amount = getValuePrecisionThousand(
                 sdk
                   .toBig(item.tokenInfoOrigin.amountIn)
-                  .div("1e" + tokenMap[sellTokenSymbol].decimals),
+                  .div('1e' + tokenMap[sellTokenSymbol].decimals),
                 tokenMap[sellTokenSymbol].precision,
                 tokenMap[sellTokenSymbol].precision,
                 tokenMap[sellTokenSymbol].precision,
-                true
-              );
+                true,
+              )
+              const findIndex = indexes?.find((_item) => {
+                return (
+                  _item.base === item.tokenInfoOrigin.base &&
+                  _item.quote === item.tokenInfoOrigin.quote
+                )
+              })
+              const currentPrice = {
+                base: item.tokenInfoOrigin.base,
+                quote: item.tokenInfoOrigin.quote,
+                currentPrice: findIndex?.index,
+                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market].precisionForPrice,
+              }
               prev.push({
                 ...format,
                 amount,
-              });
-              return prev;
+                currentPrice,
+                __raw__: {
+                  ...format.__raw__,
+                  currentPrice,
+                  index: findIndex,
+                },
+              })
+              return prev
             },
-            [] as RawDataDualAssetItem[]
-          );
+            [] as RawDataDualAssetItem[],
+          )
           const filteredResult = (result as R[]).filter(
-            (x) =>
-              x.__raw__.order.investmentStatus !==
-              sdk.LABEL_INVESTMENT_STATUS.CANCELLED
-          );
-
-          setDualList(filteredResult);
-          setShowLoading(false);
+            (x) => x.__raw__.order.investmentStatus !== sdk.LABEL_INVESTMENT_STATUS.CANCELLED,
+          )
+          setDualList(filteredResult)
+          setShowLoading(false)
           setDualPagination({
             pageSize: limit,
             total: (response as any).totalNum,
-          });
+          })
         }
       }
-      setShowLoading(false);
+      setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t, dualMarketMap]
-  );
+    [accountId, apiKey, setToastOpen, t, dualMarketMap, idIndex, tokenMap],
+  )
+  const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([])
+  // TODO:
+  const getProduct = async (detail) => {
+    if (detail && detail.dualViewInfo) {
+      const market =
+        detail.dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE
+          ? detail.dualViewInfo.sellSymbol + '-' + detail.dualViewInfo.buySymbol
+          : detail.dualViewInfo.buySymbol + '-' + detail.dualViewInfo.sellSymbol
+      const dualMarket = dualMarketMap[`DUAL-${market}`]
+      const { dualType } = detail.dualViewInfo
+      const currency = dualMarket.currency
+      const baseSymbol = idIndex[dualMarket.baseTokenId]
+      const quoteSymbol = dualMarket.quoteAlias ?? idIndex[dualMarket.quoteTokenId]
+      const response = await LoopringAPI.defiAPI?.getDualInfos({
+        baseSymbol,
+        quoteSymbol,
+        currency: currency ?? '',
+        dualType,
+        startTime: Date.now() + 1000 * 60 * 60,
+        timeSpan: 1000 * 60 * 60 * 24 * 9,
+        limit: 50,
+      })
 
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        setDualProducts([])
+      } else {
+        const {
+          dualInfo: { infos, index },
+          raw_data: { rules },
+        } = response as any
+        const rule = rules[0]
+        const rawData = infos.map((item: sdk.DualProductAndPrice) => {
+          return makeDualViewItem(item, index, rule, baseSymbol, quoteSymbol, dualMarket)
+        })
+        myLog('setDualProducts', rawData)
+        setDualProducts(rawData)
+      }
+    } else {
+      setDualProducts([])
+    }
+  }
+  const cancelReInvest = React.useCallback((item) => {
+    updateEditDual({
+      ...item,
+      dualViewInfo: item,
+      tradeData: {
+        isRenew: false,
+      },
+    })
+    sdk.sleep(0).then(() => {
+      onEditDualClick()
+    })
+  }, [])
   return {
-    // page,
     getDetail,
     showDetail,
     dualList,
@@ -423,6 +493,16 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     setShowRefreshError,
     showRefreshError,
     refreshErrorInfo,
-    // updateTickersUI,
-  };
-};
+    cancelReInvest,
+    dualProducts,
+    getProduct,
+    // onEdit,
+    dualToastOpen,
+    closeDualToast,
+    editDualTrade,
+    editDualBtnInfo,
+    editDualBtnStatus,
+    handleOnchange,
+    onEditDualClick,
+  }
+}

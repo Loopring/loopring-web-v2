@@ -1,10 +1,10 @@
-import styled from "@emotion/styled";
-import { useFocusRef } from "../../hook";
+import styled from '@emotion/styled'
+import { useFocusRef } from '../../hook'
 
 const ChildRowActionCrossClassname = styled.div`
   &::before,
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     background: grey;
   }
@@ -25,7 +25,7 @@ const ChildRowActionCrossClassname = styled.div`
   &:hover {
     background: red;
   }
-`;
+`
 
 const ChildRowButtonClassname = styled.div`
   cursor: pointer;
@@ -33,12 +33,12 @@ const ChildRowButtonClassname = styled.div`
   left: 21px;
   transform: translateX(-50%);
   filter: grayscale(1);
-`;
+`
 
 interface ChildRowDeleteButtonProps {
-  isCellSelected: boolean;
-  isDeleteSubRowEnabled: boolean;
-  onDeleteSubRow: () => void;
+  isCellSelected: boolean
+  isDeleteSubRowEnabled: boolean
+  onDeleteSubRow: () => void
 }
 
 export function ChildRowDeleteButton({
@@ -46,12 +46,12 @@ export function ChildRowDeleteButton({
   onDeleteSubRow,
   isDeleteSubRowEnabled,
 }: ChildRowDeleteButtonProps) {
-  const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected)
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      onDeleteSubRow();
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      onDeleteSubRow()
     }
   }
 
@@ -66,5 +66,5 @@ export function ChildRowDeleteButton({
         </ChildRowButtonClassname>
       )}
     </>
-  );
+  )
 }

@@ -1,30 +1,26 @@
-import React from "react";
-import styled from "@emotion/styled";
-import {
-  Popover as MuiPopover,
-  PopoverOrigin,
-  PopoverProps,
-} from "@mui/material";
-import { PopoverWrapProps } from "./Interface";
+import React from 'react'
+import styled from '@emotion/styled'
+import { Popover as MuiPopover, PopoverOrigin, PopoverProps } from '@mui/material'
+import { PopoverWrapProps } from './Interface'
 import {
   bindHover,
   bindMenu,
   bindPopover,
   bindTrigger,
   usePopupState,
-} from "material-ui-popup-state/hooks";
-import HoverMenu from "material-ui-popup-state/HoverMenu";
-import HoverPopover from "material-ui-popup-state/HoverPopover";
+} from 'material-ui-popup-state/hooks'
+import HoverMenu from 'material-ui-popup-state/HoverMenu'
+import HoverPopover from 'material-ui-popup-state/HoverPopover'
 
 const DEFAULT_ANCHOR_ORIGIN: PopoverOrigin = {
-  vertical: "bottom",
-  horizontal: "left",
-};
+  vertical: 'bottom',
+  horizontal: 'left',
+}
 
 const DEFAULT_TRANSFORM_ORIGIN: PopoverOrigin = {
-  vertical: "top",
-  horizontal: "left",
-};
+  vertical: 'top',
+  horizontal: 'left',
+}
 // const POPOVER_TOP = 8;
 
 export const Popover: React.FC<PopoverWrapProps> = ({
@@ -37,19 +33,19 @@ export const Popover: React.FC<PopoverWrapProps> = ({
   transformOrigin = DEFAULT_TRANSFORM_ORIGIN,
   handleStateChange,
 }) => {
-  const popupState = usePopupState({ variant: "popover", popupId });
-  const { isOpen } = popupState;
+  const popupState = usePopupState({ variant: 'popover', popupId })
+  const { isOpen } = popupState
 
   React.useEffect(() => {
     if (handleStateChange) {
-      handleStateChange(isOpen);
+      handleStateChange(isOpen)
     }
-  }, [handleStateChange, isOpen]);
+  }, [handleStateChange, isOpen])
 
-  const isHover = type === "hover";
-  const bindAction = isHover ? bindHover(popupState) : bindTrigger(popupState);
-  const bindContent = isHover ? bindMenu(popupState) : bindPopover(popupState);
-  const CustomPopover = isHover ? HoverMenu : MuiPopover;
+  const isHover = type === 'hover'
+  const bindAction = isHover ? bindHover(popupState) : bindTrigger(popupState)
+  const bindContent = isHover ? bindMenu(popupState) : bindPopover(popupState)
+  const CustomPopover = isHover ? HoverMenu : MuiPopover
 
   const PopoverStyled = styled(CustomPopover)<PopoverProps>`
     &.MuiModal-root {
@@ -70,13 +66,12 @@ export const Popover: React.FC<PopoverWrapProps> = ({
           &:before {
             position: absolute;
             top: ${({ theme }) => theme.unit * -2}px;
-            content: "";
+            content: '';
             display: block;
             width: 0;
             height: 0;
             border: ${({ theme }) => theme.unit}px solid transparent;
-            border-bottom: ${({ theme }) => theme.unit}px solid
-              var(--color-pop-bg);
+            border-bottom: ${({ theme }) => theme.unit}px solid var(--color-pop-bg);
           }
         }
       }
@@ -116,7 +111,7 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         }
       }
     }
-  ` as (props: PopoverProps) => JSX.Element;
+  ` as (props: PopoverProps) => JSX.Element
 
   const getRenderChild = React.useCallback(
     (popoverChildren: React.ReactNode) => {
@@ -124,20 +119,20 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         return React.Children.map(popoverChildren, (child) =>
           React.cloneElement(child, {
             ...bindAction,
-          })
-        );
+          }),
+        )
       }
-      throw new Error("Invalid popover element!");
+      throw new Error('Invalid popover element!')
     },
-    [bindAction]
-  );
+    [bindAction],
+  )
 
   return (
     <>
       {getRenderChild(children)}
       <PopoverStyled
         {...bindContent}
-        anchorReference="anchorEl"
+        anchorReference='anchorEl'
         anchorOrigin={anchorOrigin}
         transformOrigin={transformOrigin}
         className={className}
@@ -145,8 +140,8 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         {popoverContent}
       </PopoverStyled>
     </>
-  );
-};
+  )
+}
 
 export const PopoverPure = styled(HoverPopover)<PopoverProps>`
   &.MuiModal-root {
@@ -168,16 +163,15 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         &:before {
           position: absolute;
           top: ${({ theme }) => theme.unit * -2}px;
-          content: "";
+          content: '';
           display: block;
           width: 0;
           height: 0;
           border: ${({ theme }) => theme.unit}px solid transparent;
-          border-bottom: ${({ theme }) => theme.unit}px solid
-            var(--color-pop-bg);
+          border-bottom: ${({ theme }) => theme.unit}px solid var(--color-pop-bg);
         }
         &:after {
-          content: "";
+          content: '';
           position: absolute;
           top: ${({ theme }) => -theme.unit}px;
           width: 100%;
@@ -223,7 +217,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         top: initial;
       }
       &:after {
-        content: "";
+        content: '';
         position: absolute;
         top: 100%;
         width: 100%;
@@ -240,7 +234,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         top: initial;
       }
       &:after {
-        content: "";
+        content: '';
         position: absolute;
         top: 100%;
         width: 100%;
@@ -249,4 +243,4 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
       }
     }
   }
-` as (props: PopoverProps) => JSX.Element;
+` as (props: PopoverProps) => JSX.Element

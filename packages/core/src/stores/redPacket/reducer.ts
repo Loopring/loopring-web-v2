@@ -1,44 +1,41 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { RedPacketConfigStates } from "./interface";
-import { CoinKey, SagaStatus } from "@loopring-web/common-resources";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { RedPacketConfigStates } from './interface'
+import { CoinKey, SagaStatus } from '@loopring-web/common-resources'
 
 const initialState: Required<RedPacketConfigStates> = {
   redPacketConfigs: {},
   __timer__: -1,
-  status: "PENDING",
+  status: SagaStatus.PENDING,
   errorMessage: null,
-};
+}
 const redPacketConfigsSlice: Slice = createSlice({
-  name: "redPacketConfigs",
+  name: 'redPacketConfigs',
   initialState,
   reducers: {
     getRedPacketConfigs(state, _action: PayloadAction<Array<CoinKey<any>>>) {
-      state.status = SagaStatus.PENDING;
+      state.status = SagaStatus.PENDING
     },
-    getRedPacketConfigsStatus(
-      state,
-      action: PayloadAction<RedPacketConfigStates>
-    ) {
+    getRedPacketConfigsStatus(state, action: PayloadAction<RedPacketConfigStates>) {
       // @ts-ignore
       if (action.error) {
-        state.status = SagaStatus.ERROR;
+        state.status = SagaStatus.ERROR
         // @ts-ignore
-        state.errorMessage = action.error;
+        state.errorMessage = action.error
       }
-      const { redPacketConfigs, __timer__ } = action.payload;
+      const { redPacketConfigs, __timer__ } = action.payload
       if (redPacketConfigs) {
-        state.redPacketConfigs = redPacketConfigs;
+        state.redPacketConfigs = redPacketConfigs
       }
       if (__timer__) {
-        state.__timer__ = __timer__;
+        state.__timer__ = __timer__
       }
-      state.status = SagaStatus.DONE;
+      state.status = SagaStatus.DONE
     },
     statusUnset: (state) => {
-      state.status = SagaStatus.UNSET;
+      state.status = SagaStatus.UNSET
     },
   },
-});
-export { redPacketConfigsSlice };
+})
+export { redPacketConfigsSlice }
 export const { getRedPacketConfigs, getRedPacketConfigsStatus, statusUnset } =
-  redPacketConfigsSlice.actions;
+  redPacketConfigsSlice.actions

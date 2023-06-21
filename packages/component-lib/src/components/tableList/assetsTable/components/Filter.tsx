@@ -1,34 +1,30 @@
-import { Checkbox, Grid } from "@mui/material";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { FormControlLabel, InputSearch } from "../../../";
-import {
-  CheckBoxIcon,
-  CheckedIcon,
-  TokenType,
-} from "@loopring-web/common-resources";
+import { Checkbox, Grid } from '@mui/material'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { FormControlLabel, InputSearch } from '../../../'
+import { CheckBoxIcon, CheckedIcon, TokenType } from '@loopring-web/common-resources'
 
 export type TokenTypeCol = {
-  type: TokenType;
-  value: string;
-};
+  type: TokenType
+  value: string
+}
 
 export interface FilterProps {
-  hideInvestToken?: boolean;
-  hideSmallBalances?: boolean;
-  setHideLpToken?: (value: boolean) => void;
-  setHideSmallBalances?: (value: boolean) => void;
+  hideInvestToken?: boolean
+  hideSmallBalances?: boolean
+  setHideLpToken?: (value: boolean) => void
+  setHideSmallBalances?: (value: boolean) => void
   filter: {
-    searchValue: string;
-  };
-  handleFilterChange: (props: { searchValue: string }) => void;
+    searchValue: string
+  }
+  handleFilterChange: (props: { searchValue: string }) => void
 }
 
 export enum CheckboxType {
-  smallBalance = "smallBalance",
-  invest = "invest",
+  smallBalance = 'smallBalance',
+  invest = 'invest',
 }
 
-export const Filter = withTranslation("tables", { withRef: true })(
+export const Filter = withTranslation('tables', { withRef: true })(
   ({
     t,
     handleFilterChange,
@@ -39,12 +35,12 @@ export const Filter = withTranslation("tables", { withRef: true })(
     setHideSmallBalances,
   }: FilterProps & WithTranslation) => {
     return (
-      <Grid container spacing={4} justifyContent={"space-between"}>
+      <Grid container spacing={4} justifyContent={'space-between'}>
         <Grid item>
           <InputSearch
             value={filter.searchValue}
             onChange={(value: any) => {
-              handleFilterChange({ searchValue: value });
+              handleFilterChange({ searchValue: value })
             }}
           />
         </Grid>
@@ -56,15 +52,15 @@ export const Filter = withTranslation("tables", { withRef: true })(
                 checked={hideInvestToken}
                 checkedIcon={<CheckedIcon />}
                 icon={<CheckBoxIcon />}
-                color="default"
+                color='default'
                 onChange={(event) => {
                   if (setHideLpToken) {
-                    setHideLpToken(event.target.checked);
+                    setHideLpToken(event.target.checked)
                   }
                 }}
               />
             }
-            label={t("labelHideInvestToken")}
+            label={t('labelHideInvestToken')}
           />
           <FormControlLabel
             style={{ marginRight: 0, paddingRight: 0 }}
@@ -73,18 +69,18 @@ export const Filter = withTranslation("tables", { withRef: true })(
                 checked={hideSmallBalances}
                 checkedIcon={<CheckedIcon />}
                 icon={<CheckBoxIcon />}
-                color="default"
+                color='default'
                 onChange={(event) => {
                   if (setHideSmallBalances) {
-                    setHideSmallBalances(event.target.checked);
+                    setHideSmallBalances(event.target.checked)
                   }
                 }}
               />
             }
-            label={t("labelHideSmallBalances")}
+            label={t('labelHideSmallBalances')}
           />
         </Grid>
       </Grid>
-    );
-  }
-);
+    )
+  },
+)

@@ -1,2 +1,2 @@
-export * from "./SettingFee";
-export * from "./Interface";
+export * from './SettingFee'
+export * from './Interface'

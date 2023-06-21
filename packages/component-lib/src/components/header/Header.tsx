@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 import {
   AppBar,
   Box,
@@ -10,14 +10,9 @@ import {
   Toolbar,
   Typography,
   useScrollTrigger,
-} from "@mui/material";
-import {
-  Link as RouterLink,
-  useHistory,
-  useLocation,
-  useRouteMatch,
-} from "react-router-dom";
-import { WithTranslation, withTranslation } from "react-i18next";
+} from '@mui/material'
+import { Link as RouterLink, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   Button,
   HeaderMenuSub,
@@ -25,41 +20,44 @@ import {
   Layer2Item,
   PopoverPure,
   TabItemPlus,
-} from "../basic-lib";
-import { HeaderProps, HeaderToolBarInterface } from "./Interface";
+} from '../basic-lib'
+import { HeaderProps, HeaderToolBarInterface } from './Interface'
 import {
   ButtonComponentsMap,
   HeaderMenuItemInterface,
   headerMenuLandingData,
   HeaderMenuTabStatus,
+  L1L2_NAME_DEFINED,
   LoopringLogoIcon,
+  MapChainId,
   MenuIcon,
+  RouterMainKey,
   SoursURL,
   subMenuLayer2,
   toolBarAvailableItem as _toolBarAvailableItem,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   BtnDownload,
-  BtnNetworkSwitch,
   BtnNotification,
   BtnSetting,
   ProfileMenu,
   WalletConnectBtn,
   WalletConnectL1Btn,
-} from "./toolbar";
-import React from "react";
-import { bindPopper } from "material-ui-popup-state/es";
-import { bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
-import { useTheme } from "@emotion/react";
-import _ from "lodash";
+} from './toolbar'
+import React from 'react'
+import { bindPopper } from 'material-ui-popup-state/es'
+import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
+import { useTheme } from '@emotion/react'
+import _ from 'lodash'
+import { useSettings } from '../../stores'
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
   padding-left: ${({ theme }) => 3 * theme.unit}px;
   padding-right: ${({ theme }) => 3 * theme.unit}px;
-`;
+`
 
-const logoSVG = SoursURL + "svg/logo.svg";
+const logoSVG = SoursURL + 'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
   && {
     display: flex;
@@ -67,22 +65,23 @@ const ToolBarStyled = styled(Toolbar)`
     align-items: stretch;
     padding: 0;
   }
-`;
+`
 const HeaderStyled = styled(AppBar)`
   && {
     z-index: 400;
-    box-shadow: var(--shadow-header);
+    box-shadow: none;
     height: var(--header-height);
     margin: 0 auto;
     background-color: var(--color-box);
     backdrop-filter: blur(4px);
     box-sizing: border-box;
-    ${({ theme }) => theme.border.borderConfig({ d_W: 1, c_key: "blur" })};
+    ${({ theme }) => theme.border.borderConfig({ d_W: 1, c_key: 'blur' })};
     border-radius: 0;
+    border:0;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
     }
   }
-`;
+`
 
 const LogoStyle = styled(Typography)`
   display: flex;
@@ -90,7 +89,7 @@ const LogoStyle = styled(Typography)`
   position: relative;
 
   &:after {
-    content: "beta";
+    content: 'beta';
     position: absolute;
     color: var(--color-logo);
     display: block;
@@ -125,26 +124,25 @@ const LogoStyle = styled(Typography)`
       background: var(--color-logo);
     }
   }
-` as typeof Typography;
+` as typeof Typography
 
 export const LoopringLogo = React.memo(() => {
   return (
-    <LogoStyle variant="h6" component="h1" marginRight={4}>
+    <LogoStyle variant='h6' component='h1' marginRight={4}>
       <IconButton
-        edge="start"
-        aria-label="menu"
+        edge='start'
+        aria-label='menu'
         component={RouterLink}
-        to={"/"}
+        to={'/'}
         // href={"https://loopring.io/#"}
         replace={true}
-        color={"inherit"}
+        color={'inherit'}
       >
-        Loopring 路印 loopring protocol 3.6 The first Layer2 Decentralized
-        trading Platform
+        Loopring 路印 loopring protocol 3.6 The first Layer2 Decentralized trading Platform
       </IconButton>
     </LogoStyle>
-  );
-});
+  )
+})
 
 const ToolBarItem = ({
   buttonComponent,
@@ -155,17 +153,12 @@ const ToolBarItem = ({
   ButtonComponentsMap,
   ...props
 }: any) => {
-  const match = useRouteMatch("/:l1/:l2?");
+  const match = useRouteMatch('/:l1/:l2?')
   const render = React.useMemo(() => {
     switch (buttonComponent) {
       case ButtonComponentsMap.ProfileMenu:
         // @ts-ignore
-        return (
-          <ProfileMenu
-            rounter={match?.params[LAYERMAP["2"]] as any}
-            {...props}
-          />
-        );
+        return <ProfileMenu rounter={match?.params[LAYERMAP['2']] as any} {...props} />
       case ButtonComponentsMap.Notification:
         return (
           <BtnNotification
@@ -174,79 +167,64 @@ const ToolBarItem = ({
             account={account}
             chainId={chainId}
           />
-        );
+        )
       case ButtonComponentsMap.Setting:
-        return <BtnSetting {...props} />;
+        return <BtnSetting {...props} />
       case ButtonComponentsMap.Download:
-        return <BtnDownload {...props} />;
-      case ButtonComponentsMap.TestNet:
-        return <BtnNetworkSwitch {...props} />;
+        return <BtnDownload {...props} />
+
       case ButtonComponentsMap.WalletConnect:
-        return isLayer1Only ? (
-          <WalletConnectL1Btn {...props} />
-        ) : (
-          <WalletConnectBtn {...props} />
-        );
+        return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} />
       default:
-        return undefined;
+        return undefined
     }
-  }, [buttonComponent, match?.params, props, notification, account]);
-  return <TabItemPlus>{render}</TabItemPlus>;
-};
+  }, [buttonComponent, match?.params, props, notification, account])
+  return <TabItemPlus>{render}</TabItemPlus>
+}
 
-export const HideOnScroll = React.forwardRef(
-  ({ children, window, ...rest }: any, ref) => {
-    const trigger = useScrollTrigger({
-      target: window ? window() : undefined,
-    });
+export const HideOnScroll = React.forwardRef(({ children, window, ...rest }: any, ref) => {
+  const trigger = useScrollTrigger({
+    target: window ? window() : undefined,
+  })
 
-    return (
-      <Slide
-        {...rest}
-        appear={false}
-        adirection="down"
-        forwardedRef={ref}
-        in={!trigger}
-      >
-        {children}
-      </Slide>
-    );
-  }
-);
+  return (
+    <Slide {...rest} appear={false} adirection='down' forwardedRef={ref} in={!trigger}>
+      {children}
+    </Slide>
+  )
+})
 
 const NodeMenuItem = React.memo(
-  ({
-    label,
-    router,
-    layer,
-    child,
-    handleListKeyDown,
-    ...rest
-  }: HeaderMenuItemInterface & any) => {
+  ({ label, router, layer, child, handleListKeyDown, ...rest }: HeaderMenuItemInterface & any) => {
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     return (
       <>
         {layer >= 1 ? (
           <Layer2Item {...{ ...rest, label, router, child, layer }} />
         ) : (
           <Typography
-            variant={"body1"}
+            variant={'body1'}
             key={label.id}
-            color={"inherit"}
+            color={'inherit'}
             onClick={handleListKeyDown}
           >
-            {rest.t(label.i18nKey)}
+            {rest.t(label.i18nKey, {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            })}
           </Typography>
         )}
       </>
-    );
-  }
-);
+    )
+  },
+)
 export const LAYERMAP = {
-  "1": "l1",
-  "2": "l2",
-};
+  '1': 'l1',
+  '2': 'l2',
+}
 
-export const Header = withTranslation(["layout", "common"], { withRef: true })(
+export const Header = withTranslation(['layout', 'common'], { withRef: true })(
   React.forwardRef(
     <R extends HeaderToolBarInterface>(
       {
@@ -266,29 +244,27 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         t,
         ...rest
       }: HeaderProps<R> & WithTranslation,
-      ref: React.ForwardedRef<any>
+      ref: React.ForwardedRef<any>,
     ) => {
-      const history = useHistory();
-      const theme = useTheme();
-      const location = useLocation();
-      const match = useRouteMatch("/:l1/:l2?/:pair?");
+      const history = useHistory()
+      const theme = useTheme()
+      const location = useLocation()
+      const match = useRouteMatch('/:l1/:l2?/:pair?')
+
       const _headerToolBarData = isLandPage
         ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
-            if (
-              (key as unknown as ButtonComponentsMap) !==
-              ButtonComponentsMap.WalletConnect
-            ) {
-              return (prev[key] = headerToolBarData[key]);
+            if ((key as unknown as ButtonComponentsMap) !== ButtonComponentsMap.WalletConnect) {
+              return (prev[key] = headerToolBarData[key])
             }
-            return prev;
+            return prev
           }, {} as { [key: number]: R })
-        : headerToolBarData;
+        : headerToolBarData
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
           ...rest
         }: {
-          toolbarList: { [key: number]: R };
+          toolbarList: { [key: number]: R }
         } & WithTranslation) => {
           return toolBarAvailableItem.map((index: number) => {
             return (
@@ -303,11 +279,11 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                 }}
                 key={index}
               />
-            );
-          });
+            )
+          })
         },
-        [account, isMobile, notification]
-      );
+        [account, isMobile, notification],
+      )
 
       const getDrawerChoices: any = React.useCallback(
         ({
@@ -317,39 +293,31 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           handleListKeyDown,
           ...rest
         }: {
-          menuList: HeaderMenuItemInterface[];
-          layer?: number;
+          menuList: HeaderMenuItemInterface[]
+          layer?: number
           // onClose?: () => void;
-          handleListKeyDown?: any;
+          handleListKeyDown?: any
         } & WithTranslation) => {
-          let _obj = {};
+          let _obj = {}
           if (menuList instanceof Array) {
-            _obj[0] = menuList;
+            _obj[0] = menuList
           } else {
-            _obj = menuList;
+            _obj = menuList
           }
           return Reflect.ownKeys(_obj).map((key, index) => {
             return (
               <Box
-                key={key.toString() + "-" + index}
-                display={"flex"}
-                flexDirection={isMobile || layer > 0 ? "column" : "row"}
+                key={key.toString() + '-' + index}
+                display={'flex'}
+                flexDirection={isMobile || layer > 0 ? 'column' : 'row'}
               >
                 {!!_obj[key].length &&
                   _obj[key].reduce(
-                    (
-                      prev: JSX.Element[],
-                      props: HeaderMenuItemInterface,
-                      l2Index: number
-                    ) => {
-                      const { label, child, status } = props;
-                      // const selectedFlag = new RegExp(label.id, "ig").test(
-                      //   selected.split("/")[1]
-                      //     ? selected.split("/")[1]
-                      //     : selected
-                      // );
+                    (prev: JSX.Element[], props: HeaderMenuItemInterface, l2Index: number) => {
+                      const { label, child, status } = props
+
                       if (status === HeaderMenuTabStatus.hidden) {
-                        return prev;
+                        return prev
                       } else {
                         if (child) {
                           return [
@@ -361,21 +329,14 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                               handleListKeyDown,
                               ...rest,
                             }),
-                          ];
+                          ]
                         }
 
                         const selectFlag =
                           match?.params[LAYERMAP[layer + 1]] &&
-                          new RegExp(label.id?.toLowerCase(), "ig").test(
-                            match?.params[LAYERMAP[layer + 1]]
-                          );
-                        // myLog(
-                        //   "match?.params[LAYERMAP[layer + 1]]",
-                        //   match?.params[LAYERMAP[layer + 1]],
-                        //   layer,
-                        //   label.id,
-                        //   selectFlag
-                        // );
+                          new RegExp(label.id?.toLowerCase(), 'ig').test(
+                            match?.params[LAYERMAP[layer + 1]],
+                          )
                         return [
                           ...prev,
                           <HeadMenuItem
@@ -395,26 +356,23 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                                   }}
                                 />
                               ),
-                              style: { textDecoration: "none" },
-                              key: key.toString() + "-" + layer + l2Index,
+                              style: { textDecoration: 'none' },
+                              key: key.toString() + '-' + layer + l2Index,
                             }}
-                            // onClick={handleListKeyDown ? handleListKeyDown : ""}
                           />,
-                        ];
+                        ]
                       }
                     },
-                    [] as JSX.Element[]
+                    [] as JSX.Element[],
                   )}
 
-                <Box marginX={3}>
-                  {Reflect.ownKeys(_obj).length !== index + 1 && <Divider />}
-                </Box>
+                <Box marginX={3}>{Reflect.ownKeys(_obj).length !== index + 1 && <Divider />}</Box>
               </Box>
-            );
-          });
+            )
+          })
         },
-        [isMobile, selected, account?.readyState, allowTrade]
-      );
+        [isMobile, selected, account?.readyState, allowTrade],
+      )
 
       const memoized: any = React.useCallback(
         ({
@@ -427,7 +385,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           ...rest
         }: any) => (
           <HeaderMenuSub
-            key={layer + "_" + label.id}
+            key={layer + '_' + label.id}
             {...{
               ...rest,
               label,
@@ -437,59 +395,54 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               layer,
               anchorOrigin: isMobile
                 ? {
-                    vertical: "right",
-                    horizontal: "right",
+                    vertical: 'right',
+                    horizontal: 'right',
                   }
-                : { vertical: "bottom", horizontal: "left" },
+                : { vertical: 'bottom', horizontal: 'left' },
               selected:
                 match?.params[LAYERMAP[layer + 1]] &&
-                new RegExp(`^${label.id?.toLowerCase()}`, "ig").test(
-                  match?.params[LAYERMAP[layer + 1]]
+                new RegExp(`^${label.id?.toLowerCase()}`, 'ig').test(
+                  match?.params[LAYERMAP[layer + 1]],
                 ),
               //match?.params.item,
               //   new RegExp(label.id, "ig").test(
               //   selected.split("/")[1] ? selected.split("/")[1] : selected
               // ),
-              renderList: ({
-                handleListKeyDown,
-              }: {
-                handleListKeyDown: ({ ...rest }) => any;
-              }) => {
+              renderList: ({ handleListKeyDown }: { handleListKeyDown: ({ ...rest }) => any }) => {
                 return getDrawerChoices({
                   menuList: child,
                   layer: layer + 1,
                   handleListKeyDown: () => {
                     if (_handleListKeyDown) {
-                      _handleListKeyDown();
+                      _handleListKeyDown()
                     }
                     if (handleListKeyDown) {
-                      handleListKeyDown({ ...rest });
+                      handleListKeyDown({ ...rest })
                     }
                   },
                   ...rest,
-                });
+                })
               },
             }}
           />
         ),
-        [allowTrade, getDrawerChoices, isMobile, match?.params]
-      );
+        [allowTrade, getDrawerChoices, isMobile, match?.params],
+      )
 
       // const handleThemeClick = React.useCallback(() => {
       //   setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       // }, [themeMode, setTheme]);
 
-      const isMaintaining = false;
-
+      const isMaintaining = false
       const displayDesktop = React.useMemo(() => {
         return (
           <ToolBarStyled>
             <Box
-              display="flex"
-              alignContent="center"
-              justifyContent={"flex-start"}
-              alignItems={"stretch"}
-              flexDirection={"row"} //!isMobile ? "row" : "column"}
+              display='flex'
+              alignContent='center'
+              justifyContent={'flex-start'}
+              alignItems={'stretch'}
+              flexDirection={'row'} //!isMobile ? "row" : "column"}
             >
               <LoopringLogo />
               {!isLandPage
@@ -507,11 +460,11 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                   })}
             </Box>
             <Box
-              component={"ul"}
-              display="flex"
-              alignItems="center"
-              justifyContent={"flex-end"}
-              color={"textColorSecondary"}
+              component={'ul'}
+              display='flex'
+              alignItems='center'
+              justifyContent={'flex-end'}
+              color={'textColorSecondary'}
             >
               {getMenuButtons({
                 toolbarList: _headerToolBarData,
@@ -521,17 +474,17 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               })}
               {!!isLandPage && (
                 <ButtonStyled
-                  size={"small"}
+                  size={'small'}
                   disabled={isMaintaining}
-                  variant={"contained"}
-                  onClick={() => history.push("/trade/lite/LRC-ETH")}
+                  variant={'contained'}
+                  onClick={() => history.push('/trade/lite/LRC-ETH')}
                 >
-                  {t("labelLaunchApp")}
+                  {t('labelLaunchApp')}
                 </ButtonStyled>
               )}
             </Box>
           </ToolBarStyled>
-        );
+        )
       }, [
         isLandPage,
         getDrawerChoices,
@@ -543,63 +496,52 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         _headerToolBarData,
         isMaintaining,
         history,
-      ]);
+      ])
       const popupState = usePopupState({
-        variant: "popover",
-        popupId: "mobile",
-      });
+        variant: 'popover',
+        popupId: 'mobile',
+      })
       const displayMobile = React.useMemo(() => {
-        const _headerMenuData: HeaderMenuItemInterface[] =
-          headerMenuData.reduce((prev, _item) => {
-            const item = _.cloneDeep(_item);
-            if (item.label.id === "L2Assets") {
-              item.child = { ...subMenuLayer2 };
+        const _headerMenuData: HeaderMenuItemInterface[] = (headerMenuData ?? []).reduce(
+          (prev, _item) => {
+            const item = _.cloneDeep(_item)
+            if (item.label.id === RouterMainKey.l2assets) {
+              item.child = { ...subMenuLayer2 }
             }
-            return [...prev, item];
-          }, [] as HeaderMenuItemInterface[]);
+            return [...prev, item]
+          },
+          [] as HeaderMenuItemInterface[],
+        )
         // @ts-ignore
-        const pair = match?.params?.pair ?? "LRC-ETH";
+        const pair = match?.params?.pair ?? 'LRC-ETH'
         return (
           <ToolBarStyled>
             <Box
-              display="flex"
-              alignContent="center"
-              justifyContent={"flex-start"}
-              alignItems={"stretch"}
-              flexDirection={"row"} //!isMobile ? "row" : "column"}
+              display='flex'
+              alignContent='center'
+              justifyContent={'flex-start'}
+              alignItems={'stretch'}
+              flexDirection={'row'} //!isMobile ? "row" : "column"}
             >
-              <Typography display={"inline-flex"} alignItems={"center"}>
+              <Typography display={'inline-flex'} alignItems={'center'}>
                 <LoopringLogoIcon
-                  fontSize={"large"}
+                  fontSize={'large'}
                   style={{ height: 28, width: 28 }}
-                  color={"primary"}
+                  color={'primary'}
                 />
               </Typography>
             </Box>
-            <Box display={"flex"} alignItems={"center"}>
-              {isLandPage ? (
+            <Box display={'flex'} alignItems={'center'}>
+              {isLandPage && headerMenuLandingData[0] ? (
                 <>
-                  {location.pathname === "/wallet" ? (
+                  {
                     <NodeMenuItem
                       {...{ ...headerMenuLandingData[0], ...rest, t }}
-                      handleListKeyDown={() =>
-                        history.push(
-                          headerMenuLandingData[0].router?.pathName?.replace(
-                            "${pair}",
-                            pair
-                          ) ?? ""
-                        )
-                      }
-                    />
-                  ) : (
-                    <NodeMenuItem
-                      {...{ ...headerMenuLandingData[1], ...rest, t }}
                       handleListKeyDown={() => {
-                        window.location.href =
-                          headerMenuLandingData[1].router!.path;
+                        window.location.href = headerMenuLandingData[0].router!.path
                       }}
                     />
-                  )}
+                  }
 
                   {getMenuButtons({
                     toolbarList: _headerToolBarData,
@@ -608,22 +550,22 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     ...rest,
                   })}
                   <ButtonStyled
-                    size={"small"}
+                    size={'small'}
                     disabled={isMaintaining}
-                    variant={"contained"}
-                    onClick={() => history.push("/trade/lite/LRC-ETH")}
+                    variant={'contained'}
+                    onClick={() => history.push('/trade/lite/LRC-ETH')}
                   >
-                    {t("labelLaunchMobileApp", "")}
+                    {t('labelLaunchMobileApp', '')}
                   </ButtonStyled>
                 </>
               ) : (
                 <>
                   <Box
-                    component={"ul"}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent={"flex-end"}
-                    color={"textColorSecondary"}
+                    component={'ul'}
+                    display='flex'
+                    alignItems='center'
+                    justifyContent={'flex-end'}
+                    color={'textColorSecondary'}
                     marginRight={1}
                   >
                     {getMenuButtons({
@@ -635,19 +577,19 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                   </Box>
                   <ClickAwayListener
                     onClickAway={() => {
-                      popupState.close();
+                      popupState.close()
                     }}
                   >
                     <Box
-                      display="flex"
-                      alignContent="center"
-                      justifyContent={"flex-start"}
-                      alignItems={"stretch"}
-                      flexDirection={"row"} //!isMobile ? "row" : "column"}
+                      display='flex'
+                      alignContent='center'
+                      justifyContent={'flex-start'}
+                      alignItems={'stretch'}
+                      flexDirection={'row'} //!isMobile ? "row" : "column"}
                     >
                       <Typography
-                        display={"inline-flex"}
-                        alignItems={"center"}
+                        display={'inline-flex'}
+                        alignItems={'center'}
                         {...bindTrigger(popupState)}
                       >
                         <MenuIcon
@@ -660,19 +602,19 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       <PopoverPure
                         {...bindPopper(popupState)}
                         anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "center",
+                          vertical: 'bottom',
+                          horizontal: 'center',
                         }}
                         transformOrigin={{
-                          vertical: "top",
-                          horizontal: "center",
+                          vertical: 'top',
+                          horizontal: 'center',
                         }}
                       >
                         <Box
-                          className={"mobile"}
-                          display={"flex"}
-                          alignItems={"stretch"}
-                          flexDirection={"column"}
+                          className={'mobile'}
+                          display={'flex'}
+                          alignItems={'stretch'}
+                          flexDirection={'column'}
                         >
                           {getDrawerChoices({
                             menuList: _headerMenuData,
@@ -689,7 +631,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               )}
             </Box>
           </ToolBarStyled>
-        );
+        )
       }, [
         headerMenuData,
         match?.params,
@@ -704,26 +646,26 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         popupState,
         getDrawerChoices,
         history,
-      ]);
+      ])
 
       const paddingStyle = {
         paddingTop: 0,
         paddingRight: isLandPage ? theme.unit : theme.unit * 3,
         paddingBottom: 0,
         paddingLeft: isLandPage ? theme.unit : theme.unit * 3,
-      };
+      }
 
       return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
           {isWrap ? (
-            <Container style={paddingStyle} className={"wrap"} maxWidth="lg">
+            <Container style={paddingStyle} className={'wrap'} maxWidth='lg'>
               {isMobile ? displayMobile : displayDesktop}
             </Container>
           ) : (
             <Box marginX={2}>{isMobile ? displayMobile : displayDesktop}</Box>
           )}
         </HeaderStyled>
-      );
-    }
-  )
-);
+      )
+    },
+  ),
+)

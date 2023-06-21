@@ -1,13 +1,13 @@
-import { AccountBasePanel } from "./AccountBase";
-import { AccountBaseProps } from "./Interface";
-import { Box, Typography } from "@mui/material";
-import { AnimationArrow, Button } from "../../../index";
-import { WithTranslation, withTranslation } from "react-i18next";
-import { AccountHashInfo } from "@loopring-web/common-resources";
-import { DepositRecorder } from "./DepositRecorder";
-import { useTheme } from "@emotion/react";
+import { AccountBasePanel } from './AccountBase'
+import { AccountBaseProps } from './Interface'
+import { Box, Typography } from '@mui/material'
+import { AnimationArrow, Button, useSettings } from '../../../index'
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { AccountHashInfo, L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
+import { DepositRecorder } from './DepositRecorder'
+import { useTheme } from '@emotion/react'
 
-export const NoAccount = withTranslation("common")(
+export const NoAccount = withTranslation('common')(
   ({
     goActiveAccount,
     className,
@@ -17,44 +17,46 @@ export const NoAccount = withTranslation("common")(
     ...props
   }: WithTranslation &
     AccountBaseProps & {
-      noButton?: boolean;
-      className?: string;
-      goActiveAccount: () => void;
-      onClose: (e?: any) => void;
-      chainInfos: AccountHashInfo;
-      clearDepositHash: () => void;
+      noButton?: boolean
+      className?: string
+      goActiveAccount: () => void
+      onClose: (e?: any) => void
+      chainInfos: AccountHashInfo
+      clearDepositHash: () => void
     }) => {
-    const theme = useTheme();
+    const theme = useTheme()
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     return (
       <Box
         flex={1}
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
         className={className}
         // style={{ transform: "translateY(-40px)" }}
       >
         <Box
-          display={"flex"}
+          display={'flex'}
           flex={1}
           marginBottom={5}
-          justifyContent={"center"}
-          alignItems={"center"}
+          justifyContent={'center'}
+          alignItems={'center'}
         >
           <AccountBasePanel {...props} t={t} />
         </Box>
         {noButton ? (
           <Box
-            display={"flex"}
+            display={'flex'}
             marginX={0}
             marginTop={3}
             marginBottom={0}
-            alignSelf={"stretch"}
+            alignSelf={'stretch'}
             paddingX={5}
             padding={0}
             sx={{
-              overflow: "hidden",
+              overflow: 'hidden',
               borderBottomLeftRadius: theme.unit,
               borderBottomRightRadius: theme.unit,
             }}
@@ -64,45 +66,45 @@ export const NoAccount = withTranslation("common")(
         ) : (
           <>
             <Box
-              display={"flex"}
+              display={'flex'}
               marginTop={2}
-              alignSelf={"stretch"}
+              alignSelf={'stretch'}
               paddingX={5}
-              flexDirection={"column"}
-              alignItems={"center"}
+              flexDirection={'column'}
+              alignItems={'center'}
             >
-              <Typography variant={"body2"}>
-                {t("labelActivatedAccountDeposit")}
+              <Typography variant={'body2'}>
+                {t('labelActivatedAccountDeposit', {
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                })}
               </Typography>
-              <AnimationArrow className={"arrowCta"} />
+              <AnimationArrow className={'arrowCta'} />
               <Button
-                variant={"contained"}
+                variant={'contained'}
                 fullWidth
-                size={"medium"}
+                size={'medium'}
                 onClick={() => {
-                  goActiveAccount();
+                  goActiveAccount()
                 }}
               >
-                {t("labelActiveL2Btn")}
+                {t('labelActiveL2Btn', {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                })}
               </Button>
             </Box>
             <Box
-              display={"flex"}
+              display={'flex'}
               marginX={0}
               marginTop={3}
-              alignSelf={"stretch"}
+              alignSelf={'stretch'}
               paddingX={5}
               padding={0}
             >
-              <DepositRecorder
-                {...props}
-                clear={props.clearDepositHash}
-                t={t}
-              />
+              <DepositRecorder {...props} clear={props.clearDepositHash} t={t} />
             </Box>
           </>
         )}
       </Box>
-    );
-  }
-);
+    )
+  },
+)

@@ -1,21 +1,23 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import {
-  Contact,
-  ModalState,
-  ModalStatePlayLoad,
-  Transaction,
-} from "./interface";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { Contact, ModalState, ModalStatePlayLoad, Transaction } from './interface'
 import {
   CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
-} from "@loopring-web/common-resources";
-import { RESULT_INFO } from "@loopring-web/loopring-sdk";
-import { AmmPanelType } from "../../../components";
+} from '@loopring-web/common-resources'
+import { RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { AmmPanelType, ToastType } from '../../../components'
 
 const initialState: ModalState = {
+  isShowGlobalToast: {
+    isShow: false,
+    info: {
+      content: '',
+      type: ToastType.info,
+    },
+  },
   isShowNFTMetaNotReady: { isShow: false },
   isShowRedPacket: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },
@@ -34,8 +36,8 @@ const initialState: ModalState = {
   isShowLayerSwapNotice: { isShow: false },
   isShowAnotherNetwork: { isShow: false },
   isShowFeeSetting: { isShow: false },
-  isShowTradeIsFrozen: { isShow: false, type: "" },
-  isShowIFrame: { isShow: false, url: "" },
+  isShowTradeIsFrozen: { isShow: false, type: '' },
+  isShowIFrame: { isShow: false, url: '' },
   isShowNFTTransfer: { isShow: false },
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
@@ -50,109 +52,114 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
-};
+}
 
 export const modalsSlice: Slice<ModalState> = createSlice({
-  name: "modals",
+  name: 'modals',
   initialState,
   reducers: {
+    setShowGlobalToast(
+      state,
+      action: PayloadAction<{
+        isShow: boolean
+        info: {
+          content: string
+          messageKey: string
+          type: ToastType
+        }
+      }>,
+    ) {
+      const { isShow, info } = action.payload
+      state.isShowGlobalToast = {
+        isShow,
+        info,
+      }
+    },
     setNFTMetaNotReady(
       state,
       action: PayloadAction<{
-        isShow: boolean;
-        step?: number;
-        info?: { [key: string]: any };
-      }>
+        isShow: boolean
+        step?: number
+        info?: { [key: string]: any }
+      }>,
     ) {
-      const { isShow, info } = action.payload;
+      const { isShow, info } = action.payload
       state.isShowNFTMetaNotReady = {
         isShow,
         info,
-      };
+      }
     },
     setShowRedPacket(
       state,
       action: PayloadAction<{
-        isShow: boolean;
-        step?: number;
-        info?: { [key: string]: any };
-      }>
+        isShow: boolean
+        step?: number
+        info?: { [key: string]: any }
+      }>,
     ) {
-      const { isShow, step, info } = action.payload;
+      const { isShow, step, info } = action.payload
       state.isShowRedPacket = {
         isShow,
         step: step ? step : 0,
         info,
-      };
+      }
     },
-    setShowIFrame(
-      state,
-      action: PayloadAction<{ isShow: boolean; url: string }>
-    ) {
-      const { isShow, url } = action.payload;
+    setShowIFrame(state, action: PayloadAction<{ isShow: boolean; url: string }>) {
+      const { isShow, url } = action.payload
       state.isShowIFrame = {
         isShow,
         url,
-      };
+      }
     },
     setShowSupport(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isShowSupport.isShow = isShow;
+      const { isShow } = action.payload
+      state.isShowSupport.isShow = isShow
     },
     setShowOtherExchange(
       state,
       action: PayloadAction<
         ModalStatePlayLoad & {
-          agree?: boolean;
+          agree?: boolean
         }
-      >
+      >,
     ) {
-      const { isShow, agree, ...rest } = action.payload;
+      const { isShow, agree, ...rest } = action.payload
       state.isShowOtherExchange = {
         isShow,
         agree: isShow ? false : agree,
         ...rest,
-      };
+      }
     },
     setShowWrongNetworkGuide(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isWrongNetworkGuide.isShow = isShow;
+      const { isShow } = action.payload
+      state.isWrongNetworkGuide.isShow = isShow
     },
     setShowAmm(
       state,
-      action: PayloadAction<
-        ModalStatePlayLoad & Transaction & { type: AmmPanelType }
-      >
+      action: PayloadAction<ModalStatePlayLoad & Transaction & { type: AmmPanelType }>,
     ) {
-      const { isShow, symbol, info, type } = action.payload;
+      const { isShow, symbol, info, type } = action.payload
       state.isShowAmm = {
         isShow,
         symbol,
         info,
         type,
-      };
+      }
     },
     setShowSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isShowSwap.isShow = isShow;
+      const { isShow } = action.payload
+      state.isShowSwap.isShow = isShow
     },
-    setShowNFTDetail(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & Partial<NFTWholeINFO>>
-    ) {
-      const { isShow, ...rest } = action.payload;
+    setShowNFTDetail(state, action: PayloadAction<ModalStatePlayLoad & Partial<NFTWholeINFO>>) {
+      const { isShow, ...rest } = action.payload
       state.isShowNFTDetail = {
         isShow,
 
         ...rest,
-      };
+      }
     },
-    setShowNFTTransfer(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
-    ) {
-      const { isShow, nftData, nftType, total, locked, info, ...rest } =
-        action.payload;
+    setShowNFTTransfer(state, action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>) {
+      const { isShow, nftData, nftType, total, locked, info, ...rest } = action.payload
       state.isShowNFTTransfer = {
         isShow,
         nftData,
@@ -160,14 +167,10 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         info,
         ...rest,
         balance: total ? Number(total) - Number(locked ?? 0) : 0,
-      };
+      }
     },
-    setShowNFTDeploy(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
-    ) {
-      const { isShow, nftData, nftType, total, locked, info, ...rest } =
-        action.payload;
+    setShowNFTDeploy(state, action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>) {
+      const { isShow, nftData, nftType, total, locked, info, ...rest } = action.payload
       state.isShowNFTDeploy = {
         isShow,
         nftData,
@@ -175,48 +178,35 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         info,
         ...rest,
         balance: total ? Number(total) - Number(locked ?? 0) : 0,
-      };
+      }
     },
 
-    setShowNFTDeposit(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>
-    ) {
-      const { isShow, nftData, nftType, ...rest } = action.payload;
+    setShowNFTDeposit(state, action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>) {
+      const { isShow, nftData, nftType, ...rest } = action.payload
       state.isShowNFTDeposit = {
         isShow,
         nftType,
         ...rest,
-      };
+      }
     },
-    setShowCollectionAdvance(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & any>
-    ) {
-      const { isShow, info } = action.payload;
+    setShowCollectionAdvance(state, action: PayloadAction<ModalStatePlayLoad & any>) {
+      const { isShow, info } = action.payload
       state.isShowCollectionAdvance = {
         isShow,
         info,
-      };
+      }
     },
-    setShowNFTMintAdvance(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>
-    ) {
-      const { isShow, nftData, nftType, ...rest } = action.payload;
+    setShowNFTMintAdvance(state, action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>) {
+      const { isShow, nftData, nftType, ...rest } = action.payload
       state.isShowNFTMintAdvance = {
         isShow,
         nftData,
         nftType,
         ...rest,
-      };
+      }
     },
-    setShowNFTWithdraw(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
-    ) {
-      const { isShow, nftData, nftType, total, locked, info, ...rest } =
-        action.payload;
+    setShowNFTWithdraw(state, action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>) {
+      const { isShow, nftData, nftType, total, locked, info, ...rest } = action.payload
       state.isShowNFTWithdraw = {
         isShow,
         nftData,
@@ -224,14 +214,10 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         info,
         ...rest,
         balance: total ? Number(total) - Number(locked ?? 0) : 0,
-      };
+      }
     },
-    setShowTransfer(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
-    ) {
-      const { isShow, symbol, info, name, address, addressType } =
-        action.payload;
+    setShowTransfer(state, action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>) {
+      const { isShow, symbol, info, name, address, addressType } = action.payload
       state.isShowTransfer = {
         isShow,
         symbol,
@@ -239,14 +225,10 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         name,
         address,
         addressType,
-      };
+      }
     },
-    setShowWithdraw(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>
-    ) {
-      const { isShow, symbol, info, name, address, addressType } =
-        action.payload;
+    setShowWithdraw(state, action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>) {
+      const { isShow, symbol, info, name, address, addressType } = action.payload
       state.isShowWithdraw = {
         isShow,
         symbol,
@@ -254,148 +236,143 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         name,
         address,
         addressType,
-      };
+      }
     },
     setShowDeposit(
       state,
-      action: PayloadAction<
-        ModalStatePlayLoad & Transaction & { partner: boolean }
-      >
+      action: PayloadAction<ModalStatePlayLoad & Transaction & { partner: boolean }>,
     ) {
-      const { isShow, symbol, partner } = action.payload;
+      const { isShow, symbol, partner } = action.payload
       state.isShowDeposit = {
         isShow,
         symbol,
         partner,
-      };
+      }
     },
     setShowResetAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isShowResetAccount.isShow = isShow;
+      const { isShow } = action.payload
+      state.isShowResetAccount.isShow = isShow
     },
     setShowActiveAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isShowActiveAccount.isShow = isShow;
+      const { isShow, info } = action.payload
+      state.isShowActiveAccount.isShow = isShow
+      state.isShowActiveAccount.info = info
     },
     setShowExportAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isShowExportAccount.isShow = isShow;
+      const { isShow } = action.payload
+      state.isShowExportAccount.isShow = isShow
     },
     setShowDual(
       state,
-      action: PayloadAction<
-        ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }
-      >
+      action: PayloadAction<ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }>,
     ) {
-      const { isShow, dualInfo } = action.payload;
+      const { isShow, dualInfo } = action.payload
       if (dualInfo) {
         state.isShowDual = {
           isShow,
           dualInfo,
-        };
+        }
       } else {
-        state.isShowDual.isShow = false;
-        state.isShowDual.dualInfo = undefined;
+        state.isShowDual.isShow = false
+        state.isShowDual.dualInfo = undefined
       }
     },
     setShowConnect(
       state,
       action: PayloadAction<{
-        isShow: boolean;
-        step?: number;
-        error?: RESULT_INFO;
-      }>
+        isShow: boolean
+        step?: number
+        error?: RESULT_INFO
+        info?: { [key: string]: any }
+      }>,
     ) {
-      const { isShow, step, error } = action.payload;
+      const { isShow, step, error, info } = action.payload
       state.isShowConnect = {
         isShow,
         step: step ? step : 0,
         error: error ?? undefined,
-      };
+        info: info ?? undefined,
+      }
     },
     setShowAccount(
       state,
       action: PayloadAction<{
-        isShow: boolean;
-        step?: number;
-        error?: RESULT_INFO;
-        info?: { [key: string]: any };
-      }>
+        isShow: boolean
+        step?: number
+        error?: RESULT_INFO
+        info?: { [key: string]: any }
+      }>,
     ) {
-      const { isShow, step, error, info } = action.payload;
+      const { isShow, step, error, info } = action.payload
       state.isShowAccount = {
         isShow,
         step: step ? step : 0,
         error: error ?? undefined,
         info: info ?? undefined,
-      };
+      }
     },
     setShowFeeSetting(state, action: PayloadAction<{ isShow: boolean }>) {
-      const { isShow } = action.payload;
+      const { isShow } = action.payload
       state.isShowFeeSetting = {
         isShow,
-      };
+      }
     },
     setShowLayerSwapNotice(state, action: PayloadAction<{ isShow: boolean }>) {
-      const { isShow } = action.payload;
+      const { isShow } = action.payload
       state.isShowLayerSwapNotice = {
         isShow,
-      };
+      }
     },
-    setShowAnotherNetworkNotice(
-      state,
-      action: PayloadAction<{ isShow: boolean }>
-    ) {
-      const { isShow } = action.payload;
+    setShowAnotherNetworkNotice(state, action: PayloadAction<{ isShow: boolean; info: any }>) {
+      const { isShow, info } = action.payload
       state.isShowAnotherNetwork = {
         isShow,
-      };
+        info,
+      }
     },
     setShowTradeIsFrozen(
       state,
       action: PayloadAction<{
-        isShow: boolean;
-        type: string;
-        messageKey?: string;
-      }>
+        isShow: boolean
+        type: string
+        messageKey?: string
+      }>,
     ) {
-      const { isShow, type, messageKey } = action.payload;
+      const { isShow, type, messageKey } = action.payload
       state.isShowTradeIsFrozen = {
         isShow,
         type,
         messageKey,
-      };
+      }
     },
     setShowClaimWithdraw(
       state,
       action: PayloadAction<
         ModalStatePlayLoad & {
-          claimToken: ClaimToken;
-          claimType: CLAIM_TYPE;
-          successCallback?: () => void;
+          claimToken: ClaimToken
+          claimType: CLAIM_TYPE
         }
-      >
+      >,
     ) {
-      const { isShow, claimToken, claimType, successCallback } = action.payload;
+      const { isShow, claimToken, claimType } = action.payload
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
         claimType,
-        successCallback,
-      };
+      }
     },
     setShowSideStakingRedeem(
       state,
-      action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>
+      action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>,
     ) {
-      const { isShow, symbol } = action.payload;
+      const { isShow, symbol } = action.payload
       state.isShowSideStakingRedeem = {
         isShow,
         symbol,
-      };
+      }
     },
   },
-});
+})
 export const {
   setShowNFTDeploy,
   setShowNFTDetail,
@@ -427,4 +404,5 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
-} = modalsSlice.actions;
+  setShowGlobalToast,
+} = modalsSlice.actions

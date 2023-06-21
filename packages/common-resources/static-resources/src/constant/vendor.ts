@@ -1,6 +1,6 @@
 export enum VendorProviders {
-  Ramp = "Ramp",
-  Banxa = "Banxa",
+  Ramp = 'Ramp',
+  Banxa = 'Banxa',
 }
 
 // export const vendorList: VendorItem[] = [
@@ -24,18 +24,18 @@ export enum VendorProviders {
 export const VendorList = {
   Ramp: {
     key: VendorProviders.Ramp,
-    svgIcon: "RampIcon",
+    svgIcon: 'RampIcon',
     // handleSelect: () => {},
   },
   Banxa: {
     key: VendorProviders.Banxa,
-    svgIcon: "BanxaIcon",
+    svgIcon: 'BanxaIcon',
     flag: {
       startDate: 1649635200000,
       endDate: 1650844800000,
-      tag: "🔥",
-      highLight: "labelBanxaFeeFree",
+      tag: '🔥',
+      highLight: 'labelBanxaFeeFree',
     },
     // handleSelect: () => {},
   },
-};
+}

@@ -2,75 +2,61 @@ import {
   GuardianToolBarAvailableItem,
   GuardianToolBarComponentsMap,
   headerRoot,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 
-import { Toolbar } from "@mui/material";
+import { Toolbar } from '@mui/material'
 
-import { useHeader } from "./hook";
-import { confirmation, useAccount, useSystem } from "@loopring-web/core";
-import { withTranslation } from "react-i18next";
+import { useHeader } from './hook'
+import { confirmation, useAccount, useSystem } from '@loopring-web/core'
+import { withTranslation } from 'react-i18next'
 
 import {
   BottomRule,
   Header as HeaderUI,
   HideOnScroll,
   useSettings,
-} from "@loopring-web/component-lib";
-import { withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router";
-import React from "react";
+} from '@loopring-web/component-lib'
+import { withRouter } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router'
+import React from 'react'
 
-const Header = withTranslation("common")(
-  withRouter(
-    ({
-      t,
-      location,
-      isLandPage = false,
-      ...rest
-    }: any & RouteComponentProps) => {
-      const {
-        headerToolBarData,
-        notifyMap,
-        headerMenuLandingData,
-        onkeypress,
-      } = useHeader();
-      const { isMobile } = useSettings();
-      const { confirmWrapper } = confirmation.useConfirmation();
-      const { allowTrade, chainId } = useSystem();
-      const { account } = useAccount();
-      return (
-        <>
-          <HideOnScroll window={undefined} onkeypress={onkeypress}>
-            <HeaderUI
-              {...rest}
-              account={account}
-              allowTrade={allowTrade}
-              isMobile={isMobile}
-              chainId={chainId}
-              // isLandPage={true}
-              // isWrap={false}
-              toolBarMap={GuardianToolBarComponentsMap}
-              toolBarAvailableItem={GuardianToolBarAvailableItem}
-              headerMenuData={headerMenuLandingData}
-              headerToolBarData={headerToolBarData}
-              notification={notifyMap}
-              selected={
-                location.pathname === "/" ? headerRoot : location.pathname
-              }
-            />
-          </HideOnScroll>
-          <Toolbar id="back-to-top-anchor" />
-          {/* <BottomRule isShow={!confirmation?.confirmed} */}
-          <BottomRule
-            isShow={false}
-            content={t("labelAgreeLoopringTxt")}
-            btnTxt={t("labelCookiesAgree")}
-            clickToConfirm={() => confirmWrapper()}
+const Header = withTranslation('common')(
+  withRouter(({ t, location, isLandPage = false, ...rest }: any & RouteComponentProps) => {
+    const { headerToolBarData, notifyMap, headerMenuLandingData, onkeypress } = useHeader()
+    const { isMobile } = useSettings()
+    const { confirmWrapper } = confirmation.useConfirmation()
+    const { allowTrade, chainId } = useSystem()
+    const { account } = useAccount()
+    return (
+      <>
+        <HideOnScroll window={undefined} onkeypress={onkeypress}>
+          <HeaderUI
+            {...rest}
+            account={account}
+            allowTrade={allowTrade}
+            isMobile={isMobile}
+            chainId={chainId}
+            // isLandPage={true}
+            // isWrap={false}
+            toolBarMap={GuardianToolBarComponentsMap}
+            toolBarAvailableItem={GuardianToolBarAvailableItem}
+            headerMenuData={headerMenuLandingData}
+            headerToolBarData={headerToolBarData}
+            notification={notifyMap}
+            selected={location.pathname === '/' ? headerRoot : location.pathname}
           />
-        </>
-      );
-    }
-  )
-);
+        </HideOnScroll>
+        <Toolbar id='back-to-top-anchor' />
+        {/* <BottomRule isShow={!confirmation?.confirmed} */}
+        <BottomRule
+          isShow={false}
+          content={t('labelAgreeLoopringTxt')}
+          btnTxt={t('labelCookiesAgree')}
+          clickToConfirm={() => confirmWrapper()}
+        />
+      </>
+    )
+  }),
+)
 
-export default Header;
+export default Header

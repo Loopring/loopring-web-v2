@@ -1,2 +1,2 @@
-export * from "./nftImage";
-export * from "./Interface";
+export * from './nftImage'
+export * from './Interface'

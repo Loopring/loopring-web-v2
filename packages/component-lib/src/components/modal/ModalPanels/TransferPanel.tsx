@@ -1,21 +1,14 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import {
-  ModalBackButton,
-  SwitchPanel,
-  SwitchPanelProps,
-} from "../../basic-lib";
-import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
-import React from "react";
-import { TransferProps } from "../../tradePanel";
-import {
-  TradeMenuList,
-  TransferWrap,
-  useBasicTrade,
-} from "../../tradePanel/components";
-import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
-import { ContactSelection } from "../../tradePanel/components/ContactSelection";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { ModalBackButton, SwitchPanel, SwitchPanelProps } from '../../basic-lib'
+import { IBData, SoursURL, TRADE_TYPE } from '@loopring-web/common-resources'
+import React from 'react'
+import { TransferProps } from '../../tradePanel'
+import { TradeMenuList, TransferWrap, useBasicTrade } from '../../tradePanel/components'
+import { TransferConfirm } from '../../tradePanel/components/TransferConfirm'
+import { ContactSelection } from '../../tradePanel/components/ContactSelection'
+import { Box } from '@mui/material';
 
-export const TransferPanel = withTranslation(["common", "error"], {
+export const TransferPanel = withTranslation(['common', 'error'], {
   withRef: true,
 })(
   <T extends IBData<I>, I>({
@@ -40,18 +33,18 @@ export const TransferPanel = withTranslation(["common", "error"], {
       walletMap,
       coinMap,
       type,
-    });
-    const [panelIndex, setPanelIndex] = React.useState(index + 1);
+    })
+    const [panelIndex, setPanelIndex] = React.useState(index + 1)
     const handleConfirm = (index: number) => {
-      setPanelIndex(index);
-    };
+      setPanelIndex(index)
+    }
     // const hanleConfirm = () => {};
     React.useEffect(() => {
-      setPanelIndex(index + 1);
-    }, [index]);
-    
+      setPanelIndex(index + 1)
+    }, [index])
+
     const confirmPanel = {
-      key: "confirm",
+      key: 'confirm',
       element: React.useMemo(
         () => (
           <TransferConfirm
@@ -65,26 +58,26 @@ export const TransferPanel = withTranslation(["common", "error"], {
             }}
           />
         ),
-        [rest, onTransferClick, type, switchData.tradeData, isThumb]
+        [rest, onTransferClick, type, switchData.tradeData, isThumb],
       ),
       toolBarItem: (
         <ModalBackButton
           marginTop={0}
           marginLeft={-2}
           onBack={() => {
-            setPanelIndex(1);
+            setPanelIndex(1)
           }}
           {...rest}
         />
       ),
-    };
+    }
     const tradePanel = {
-      key: "trade",
+      key: 'trade',
       element: React.useMemo(
         () => (
           // @ts-ignore
           <TransferWrap
-            key={"trade"}
+            key={'trade'}
             {...{
               ...rest,
               type,
@@ -104,8 +97,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
               isFromContact,
               contact,
               onClickContact: () => {
-                setPanelIndex(3); // todo handle tradeMenuList
-                // rest.handleOnAddressChange(address)
+                setPanelIndex(3)
               },
             }}
           />
@@ -122,7 +114,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
           assetsData,
           addrStatus,
           isAddressCheckLoading,
-        ]
+        ],
       ),
       toolBarItem: React.useMemo(
         () => (
@@ -132,7 +124,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
                 marginTop={0}
                 marginLeft={-2}
                 onBack={() => {
-                  onBack();
+                  onBack()
                 }}
                 {...rest}
               />
@@ -141,11 +133,11 @@ export const TransferPanel = withTranslation(["common", "error"], {
             )}
           </>
         ),
-        [onBack]
+        [onBack],
       ),
-    };
+    }
     const tokenSelectionPanel = {
-      key: "tradeMenuList",
+      key: 'tradeMenuList',
       element: React.useMemo(
         () => (
           <TradeMenuList
@@ -162,26 +154,26 @@ export const TransferPanel = withTranslation(["common", "error"], {
             }}
           />
         ),
-        [switchData, rest, onChangeEvent]
+        [switchData, rest, onChangeEvent],
       ),
       // toolBarItem: undefined,
       toolBarItem: undefined,
-    };
+    }
     const contactSelectionPanel = {
-      key: "contactSelection",
+      key: 'contactSelection',
       element: React.useMemo(
         () => (
           <ContactSelection
-            key={"contactSelection"}
+            key={'contactSelection'}
             contacts={contacts}
             onSelect={(address) => {
-              setPanelIndex(1);
-              rest.handleOnAddressChange(address, true);
+              setPanelIndex(1)
+              rest.handleOnAddressChange(address, true)
             }}
-            scrollHeight={"380px"}
+            scrollHeight={'380px'}
           />
         ),
-        [contacts]
+        [contacts],
       ),
       toolBarItem: React.useMemo(
         () => (
@@ -189,26 +181,33 @@ export const TransferPanel = withTranslation(["common", "error"], {
             marginTop={0}
             marginLeft={-2}
             onBack={() => {
-              setPanelIndex(1);
+              setPanelIndex(1)
             }}
             {...rest}
           />
         ),
-        [onBack]
+        [onBack],
       ),
-    };
+    }
     const props: SwitchPanelProps<string> = {
       index: panelIndex,
-      panelList: [
-        confirmPanel,
-        tradePanel,
-        tokenSelectionPanel,
-        contactSelectionPanel,
-      ],
-    };
+      panelList: [confirmPanel, tradePanel, tokenSelectionPanel, contactSelectionPanel],
+    }
 
-    return <SwitchPanel {...{ ...rest, ...props }} />;
-  }
-) as <T, I>(
-  props: TransferProps<T, I> & React.RefAttributes<any>
-) => JSX.Element;
+      return (type == TRADE_TYPE.TOKEN && !switchData.tradeData?.belong) ? <Box
+          flex={1}
+          height={"var(--min-height)"}
+          width={"var(--modal-min-width)"}
+          justifyContent={'center'}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'center'}
+      >
+          <img
+              className='loading-gif'
+              alt={'loading'}
+              width='60'
+              src={`${SoursURL}images/loading-line.gif`}
+          /></Box> : <SwitchPanel {...{...rest, ...props}} />
+  },
+) as <T, I>(props: TransferProps<T, I> & React.RefAttributes<any>) => JSX.Element

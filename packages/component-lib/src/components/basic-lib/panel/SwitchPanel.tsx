@@ -1,40 +1,42 @@
-import { WithTranslation } from "react-i18next";
-import SwipeableViews, { SwipeableViewsProps } from "react-swipeable-views";
+import { WithTranslation } from 'react-i18next'
+import SwipeableViews, { SwipeableViewsProps } from 'react-swipeable-views'
 
-import React, { RefAttributes } from "react";
-import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
-import { Box, Toolbar } from "@mui/material";
-import { boxLiner, toolBarPanel } from "../../styled";
-import { useSettings } from "../../../stores";
-import { PanelContent, SwitchPanelProps } from "./Interface";
+import React, { RefAttributes } from 'react'
+import { useTheme } from '@emotion/react'
+import styled from '@emotion/styled'
+import { Box, Toolbar } from '@mui/material'
+import { boxLiner, toolBarPanel } from '../../styled'
+import { useSettings } from '../../../stores'
+import { PanelContent, SwitchPanelProps } from './Interface'
 
 export const SwipeableViewsStyled = styled(SwipeableViews)<
   SwipeableViewsProps & {
-    _height?: number | string;
-    _width?: number | string;
-    ismobile?: "true" | "false";
+    _height?: number | string
+    _width?: number | string
+    ismobile?: 'true' | 'false'
+    scroolDisabled?: boolean
   }
 >`
+  overflow: ${({ scroolDisabled }) =>  scroolDisabled ? 'hidden' : 'scroll'};
   position: relative;
   flex: 1;
   ${({ _height, _width, ismobile }) => ` 
     height: ${
-      typeof _height === "string"
+      typeof _height === 'string'
         ? _height
-        : typeof _height === "number"
-        ? _height + "px"
+        : typeof _height === 'number'
+        ? _height + 'px'
         : `var(--swap-box-height)`
     };     
     ${
-      ismobile === "true"
+      ismobile === 'true'
         ? ``
         : `   
       width: ${
-        typeof _width === "string"
+        typeof _width === 'string'
           ? _width
-          : typeof _width === "number"
-          ? _width + "px"
+          : typeof _width === 'number'
+          ? _width + 'px'
           : `var(--swap-box-width)`
       };`
     }  
@@ -43,7 +45,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   .createRedPacket & {
     width: 100%;
 
-    ${({ ismobile }) => `${ismobile === "true" ? "width:380px;" : ""}`}
+    ${({ ismobile }) => `${ismobile === 'true' ? 'width:380px;' : ''}`}
     .container {
       & > div {
         width: 100%;
@@ -57,9 +59,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
 
         .menu-panel {
           max-width: 760px;
-          padding: 0
-            ${({ theme, ismobile }) =>
-              (ismobile === "true" ? 2 : 10) * theme.unit}px;
+          padding: 0 ${({ theme, ismobile }) => (ismobile === 'true' ? 2 : 10) * theme.unit}px;
           padding-top: ${({ theme }) => 2 * theme.unit}px;
         }
       }
@@ -117,11 +117,12 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   }
 ` as (
   props: SwipeableViewsProps & {
-    _height?: number | string;
-    _width?: number | string;
-    ismobile?: boolean | undefined | string;
-  }
-) => JSX.Element;
+    _height?: number | string
+    _width?: number | string
+    ismobile?: boolean | undefined | string
+    scroolDisabled?: boolean
+  },
+) => JSX.Element
 
 function _SwitchPanel<T extends string>(
   {
@@ -131,41 +132,46 @@ function _SwitchPanel<T extends string>(
     // _height,
     // _width,
     size,
+    scrollDisabled,
     ...rest
   }: SwitchPanelProps<T> & WithTranslation,
-  _ref: React.ForwardedRef<any>
+  _ref: React.ForwardedRef<any>,
 ) {
   //   {/*{...{ _height, _width }}*/}
-  const { isMobile } = useSettings();
-  const theme = useTheme();
-  const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined);
+  const { isMobile } = useSettings()
+  const theme = useTheme()
+  const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined)
+  const ref = React.useRef<any>(null)
+  React.useEffect(() => {
+    ref.current && ref.current.rootNode.scrollTo(0,0)
+  }, [index])
   return (
     <SwipeableViewsStyled
       className={
-        hasToolBar
-          ? `${className ? className : ""}`
-          : `noToolBar ${className ? className : ""}`
+        hasToolBar ? `${className ? className : ''}` : `noToolBar ${className ? className : ''}`
       }
-      axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+      ref={ref}
+      axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
       index={index}
       _height={rest._height}
       _width={rest._width}
-      ismobile={isMobile ? "true" : "false"}
+      ismobile={isMobile ? 'true' : 'false'}
+      scroolDisabled={scrollDisabled}
     >
       {panelList.map((panel: PanelContent<T>, _index) => {
         return (
           <Box
-            display={"flex"}
-            className={"container"}
-            flexDirection={"column"}
+            display={'flex'}
+            className={'container'}
+            flexDirection={'column'}
             key={panel.key}
-            justifyContent={"space-between"}
-            flexWrap={"nowrap"}
-            paddingTop={hasToolBar && "var(--toolbar-row-padding)"}
+            justifyContent={'space-between'}
+            flexWrap={'nowrap'}
+            paddingTop={hasToolBar && 'var(--toolbar-row-padding)'}
             paddingBottom={3}
           >
             {panel.toolBarItem ? (
-              <Toolbar className={size} variant={"dense"}>
+              <Toolbar className={size} variant={'dense'}>
                 {panel.toolBarItem}
               </Toolbar>
             ) : (
@@ -173,14 +179,12 @@ function _SwitchPanel<T extends string>(
             )}
             <Box flex={1}>{panel.element}</Box>
           </Box>
-        );
+        )
       })}
     </SwipeableViewsStyled>
-  );
+  )
 }
 
-export const SwitchPanel = React.memo(React.forwardRef(_SwitchPanel)) as <
-  T extends string
->(
-  props: SwitchPanelProps<T> & WithTranslation & RefAttributes<any>
-) => JSX.Element;
+export const SwitchPanel = React.memo(React.forwardRef(_SwitchPanel)) as <T extends string>(
+  props: SwitchPanelProps<T> & WithTranslation & RefAttributes<any>,
+) => JSX.Element

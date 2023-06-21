@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 import {
   useTokenPrices,
@@ -7,152 +7,124 @@ import {
   makeMyAmmMarketArray,
   volumeToCount,
   getUserAmmTransaction,
-} from "../../index";
+} from '../../index'
 
 // import _ from "lodash";
 import {
   AmmRecordRow,
   // useOpenModals
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 // import * as sdk from "@loopring-web/loopring-sdk";
 // import { useAmmCommon } from "../../hooks/useractions/hookAmmCommon";
-import { AmmPoolTx, UserAmmPoolTx } from "@loopring-web/loopring-sdk";
-import { RowConfig } from "@loopring-web/common-resources";
+import { AmmPoolTx, UserAmmPoolTx } from '@loopring-web/loopring-sdk'
+import { RowConfig } from '@loopring-web/common-resources'
 // import moment from "moment";
 
 export type AwardItme = {
-  start: string;
-  end: string;
-  market: string;
-  accountId: number;
+  start: string
+  end: string
+  market: string
+  accountId: number
   awardList: {
-    token?: string;
-    volume?: number;
-  }[];
-};
+    token?: string
+    volume?: number
+  }[]
+}
 
-export const useAmmRecord = <R extends { [key: string]: any }>({
-  market,
-}: {
-  market: string;
-}) => {
-  const { ammMap } = useAmmMap();
-  const container = React.useRef(null);
+export const useAmmRecord = <R extends { [key: string]: any }>({ market }: { market: string }) => {
+  const { ammMap } = useAmmMap()
+  const container = React.useRef(null)
 
-  const [isMyAmmLoading, setIsMyAmmLoading] = React.useState(false);
-  const [isRecentLoading, setIsRecentLoading] = React.useState(false);
-  const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<R>[]>(
-    []
-  );
-  const [ammTotal, setAmmTotal] = React.useState(0);
-  const [ammUserTotal, setAmmUserTotal] = React.useState(0);
-  const [pageSize, setPageSize] = React.useState(14);
-  const { tokenPrices } = useTokenPrices();
-  const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<
-    AmmRecordRow<R>[]
-  >([]);
+  const [isMyAmmLoading, setIsMyAmmLoading] = React.useState(false)
+  const [isRecentLoading, setIsRecentLoading] = React.useState(false)
+  const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([])
+  const [ammTotal, setAmmTotal] = React.useState(0)
+  const [ammUserTotal, setAmmUserTotal] = React.useState(0)
+  const [pageSize, setPageSize] = React.useState(14)
+  const { tokenPrices } = useTokenPrices()
+  const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([])
   React.useEffect(() => {
     // @ts-ignore
-    let height = container?.current?.offsetHeight;
+    let height = container?.current?.offsetHeight
     if (height) {
       // const pageSize =
-      setPageSize(
-        Math.floor((height - RowConfig.rowHeight * 2) / RowConfig.rowHeight) - 1
-      );
+      setPageSize(Math.floor((height - RowConfig.rowHeight * 2) / RowConfig.rowHeight) - 1)
       // getUserAmmPoolTxs()
     }
-  }, [container]);
+  }, [container])
   const getUserAmmPoolTxs = React.useCallback(
     ({ limit = pageSize, offset = 0 }) => {
       // limit = pageSize;
       if (ammMap) {
-        const addr = ammMap["AMM-" + market]?.address;
+        const addr = ammMap['AMM-' + market]?.address
         if (addr) {
-          setIsMyAmmLoading(true);
+          setIsMyAmmLoading(true)
           getUserAmmTransaction({
             address: addr,
             limit: limit,
             offset,
-            txStatus: "processed",
+            txStatus: 'processed',
           })?.then(
-            (res: {
-              userAmmPoolTxs: UserAmmPoolTx[];
-              totalNum: React.SetStateAction<number>;
-            }) => {
-              let _myTradeArray = makeMyAmmMarketArray(
-                market,
-                res.userAmmPoolTxs
-              );
+            (res: { userAmmPoolTxs: UserAmmPoolTx[]; totalNum: React.SetStateAction<number> }) => {
+              let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
 
               const formattedArray = _myTradeArray.map((o: any) => {
-                const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`;
-                const formattedBalance = Number(
-                  volumeToCount(market, o.totalBalance)
-                );
-                const price = tokenPrices && tokenPrices[market];
-                const totalDollar = ((formattedBalance || 0) *
-                  (price || 0)) as any;
+                const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+                const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+                const price = tokenPrices && tokenPrices[market]
+                const totalDollar = ((formattedBalance || 0) * (price || 0)) as any
                 return {
                   ...o,
                   totalDollar: totalDollar,
-                };
-              });
-              setMyAmmMarketArray(formattedArray || []);
-              setAmmUserTotal(res.totalNum);
-              setIsMyAmmLoading(false);
-            }
-          );
+                }
+              })
+              setMyAmmMarketArray(formattedArray || [])
+              setAmmUserTotal(res.totalNum)
+              setIsMyAmmLoading(false)
+            },
+          )
         }
       }
     },
-    [ammMap, market, tokenPrices, pageSize]
-  );
+    [ammMap, market, tokenPrices, pageSize],
+  )
 
   const getRecentAmmPoolTxs = React.useCallback(
     ({ limit = 15, offset = 0 }) => {
       if (ammMap) {
         // const market = list[list.length - 1];
-        const addr = ammMap["AMM-" + market]?.address;
+        const addr = ammMap['AMM-' + market]?.address
 
         if (addr) {
-          setIsRecentLoading(true);
+          setIsRecentLoading(true)
           getRecentAmmTransaction({
             address: addr,
             limit: limit,
             offset,
           })?.then(
-            ({
-              ammPoolTrades,
-              totalNum,
-            }: {
-              ammPoolTrades: AmmPoolTx[];
-              totalNum: number;
-            }) => {
-              let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades);
+            ({ ammPoolTrades, totalNum }: { ammPoolTrades: AmmPoolTx[]; totalNum: number }) => {
+              let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades)
 
               const formattedArray = _tradeArray.map((o: any) => {
-                const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`;
-                const formattedBalance = Number(
-                  volumeToCount(market, o.totalBalance)
-                );
-                const price = tokenPrices && tokenPrices[market];
-                const totalDollar = ((formattedBalance || 0) *
-                  (price || 0)) as any;
+                const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+                const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+                const price = tokenPrices && tokenPrices[market]
+                const totalDollar = ((formattedBalance || 0) * (price || 0)) as any
                 return {
                   ...o,
                   totalDollar: totalDollar,
-                };
-              });
-              setAmmMarketArray(formattedArray || []);
-              setAmmTotal(totalNum);
-              setIsRecentLoading(false);
-            }
-          );
+                }
+              })
+              setAmmMarketArray(formattedArray || [])
+              setAmmTotal(totalNum)
+              setIsRecentLoading(false)
+            },
+          )
         }
       }
     },
-    [ammMap, market, tokenPrices]
-  );
+    [ammMap, market, tokenPrices],
+  )
   return {
     container,
     isMyAmmLoading,
@@ -165,5 +137,5 @@ export const useAmmRecord = <R extends { [key: string]: any }>({
     getRecentAmmPoolTxs,
     pageSize,
     setPageSize,
-  };
-};
+  }
+}

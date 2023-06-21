@@ -1,15 +1,18 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import { Box } from "@mui/material";
-import styled from "@emotion/styled";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { Box, Typography } from '@mui/material'
+import styled from '@emotion/styled'
 
-import React from "react";
-import { useAmmMapUI } from "./hook";
+import React from 'react'
+import { useAmmMapUI } from './hook'
 
-import { Button, PoolsTable, useSettings } from "@loopring-web/component-lib";
+import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
 
-import { useNotify, useSystem } from "@loopring-web/core";
-import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
-import { useHistory } from "react-router-dom";
+import { useNotify, useSystem } from '@loopring-web/core'
+import { AmmLogo, BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
+import { useHistory } from 'react-router-dom'
+import { MaxWidthContainer, containerColors } from '..'
+import { useTheme } from '@emotion/react'
+import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -17,7 +20,7 @@ const WrapperStyled = styled(Box)`
   flex-direction: column;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-`;
+`
 
 const StylePaper = styled(Box)`
   width: 100%;
@@ -28,63 +31,49 @@ const StylePaper = styled(Box)`
   .rdg {
     flex: 1;
   }
-` as typeof Box;
+` as typeof Box
 
-export const PoolsPanel = withTranslation("common")(
+export const PoolsPanel = withTranslation('common')(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
   }: WithTranslation & {}) => {
-    const container = React.useRef(null);
-    const history = useHistory();
-    const { forexMap } = useSystem();
-    const { currency } = useSettings();
-    const poolTableProps = useAmmMapUI();
-    const { campaignTagConfig } = useNotify().notifyMap ?? {};
+    const container = React.useRef(null)
+    const history = useHistory()
+    const { forexMap } = useSystem()
+    const { currency, isMobile } = useSettings()
+    const poolTableProps = useAmmMapUI()
+    const { campaignTagConfig } = useNotify().notifyMap ?? {}
+    const theme = useTheme()
     return (
-      <Box display={"flex"} flexDirection={"column"} flex={1}>
-        <Box
-          marginBottom={2}
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
+      <Box display={'flex'} flexDirection={'column'} flex={1}>
+        <MaxWidthContainer
+          display={'flex'}
+          justifyContent={'space-between'}
+          background={containerColors[0]}
+          height={isMobile ? 50 * theme.unit : 30 * theme.unit}
+          alignItems={'center'}
         >
-          <Button
-            startIcon={<BackIcon fontSize={"small"} />}
-            variant={"text"}
-            size={"medium"}
-            sx={{ color: "var(--color-text-secondary)" }}
-            color={"inherit"}
-            onClick={history.goBack}
-          >
-            {t("labelLiquidityPageTitle")}
-            {/*<Typography color={"textPrimary"}></Typography>*/}
-          </Button>
-          <Button
-            variant={"outlined"}
-            sx={{ marginLeft: 2 }}
-            onClick={() => history.push("/invest/balance/amm")}
-          >
-            {t("labelInvestMyAmm")}
-          </Button>
-        </Box>
-        <WrapperStyled flex={1} marginBottom={3}>
-          <StylePaper
-            display={"flex"}
-            flexDirection={"column"}
-            ref={container}
-            className={"table-divide"}
-          >
-            <PoolsTable
-              {...{
-                ...poolTableProps,
-                campaignTagConfig,
-                rowConfig: RowInvestConfig,
-                forexValue: forexMap[currency],
-              }}
-            />
-          </StylePaper>
-        </WrapperStyled>
+          <Box paddingY={7}>
+            <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
+              {t("labelLiquidityPageTitle")}
+            </Typography>
+            <Button onClick={() => history.push('/invest/balance')} sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }} variant={'contained'}>
+              {t("labelInvestMyAmm")}
+            </Button>
+          </Box>
+          {!isMobile && <AmmLogo />}
+        </MaxWidthContainer>
+        <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]}>
+          <PoolsTable
+            {...{
+              ...poolTableProps,
+              campaignTagConfig,
+              rowConfig: RowInvestConfig,
+              forexValue: forexMap[currency],
+            }}
+          />
+        </MaxWidthContainer>
       </Box>
-    );
-  }
-);
+    )
+  },
+)

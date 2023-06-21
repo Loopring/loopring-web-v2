@@ -7,7 +7,7 @@ import {
   Popover,
   Radio,
   Typography,
-} from "@mui/material";
+} from '@mui/material'
 import {
   Account,
   CollectionMeta,
@@ -19,30 +19,17 @@ import {
   sizeNFTConfig,
   SoursURL,
   ViewMoreIcon,
-} from "@loopring-web/common-resources";
-import {
-  AccountStep,
-  CardStyleItem,
-  EmptyDefault,
-  NFTMedia,
-} from "../../index";
-import {
-  useTranslation,
-  WithTranslation,
-  withTranslation,
-} from "react-i18next";
-import { sanitize } from "dompurify";
-import { IconButtonStyle } from "../../../";
-import { ToggleState, useSettings } from "../../../stores";
-import { XOR } from "../../../types/lib";
-import React from "react";
-import {
-  bindMenu,
-  bindTrigger,
-  usePopupState,
-} from "material-ui-popup-state/hooks";
-import styled from "@emotion/styled";
-import { DEPLOYMENT_STATUS } from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { AccountStep, CardStyleItem, EmptyDefault, NFTMedia } from '../../index'
+import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
+import { sanitize } from 'dompurify'
+import { IconButtonStyle } from '../../../'
+import { ToggleState, useSettings } from '../../../stores'
+import { XOR } from '../../../types/lib'
+import React from 'react'
+import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
+import styled from '@emotion/styled'
+import { DEPLOYMENT_STATUS } from '@loopring-web/loopring-sdk'
 
 const BoxBtnGroup = styled(Box)`
   position: absolute;
@@ -52,19 +39,19 @@ const BoxBtnGroup = styled(Box)`
   //flex-direction: row-reverse;
   &.mobile {
   }
-` as typeof Box;
+` as typeof Box
 
 export type NFTItemBasicProps = {
-  toggle?: ToggleState;
-  setNFTMetaNotReady: (props: any) => void;
-  setShowNFTDeploy: (props: any) => void;
-  setShowNFTDetail: (props: any) => void;
-  setShowNFTTransfer: (props: any) => void;
-  setShowNFTWithdraw: (props: any) => void;
-  setShowTradeIsFrozen: (props: any) => void;
-  setShowRedPacket: (props: any) => void;
-  setShowAccount: (props: any) => void;
-};
+  toggle?: ToggleState
+  setNFTMetaNotReady: (props: any) => void
+  setShowNFTDeploy: (props: any) => void
+  setShowNFTDetail: (props: any) => void
+  setShowNFTTransfer: (props: any) => void
+  setShowNFTWithdraw: (props: any) => void
+  setShowTradeIsFrozen: (props: any) => void
+  setShowRedPacket: (props: any) => void
+  setShowAccount: (props: any) => void
+}
 
 const ActionMemo = React.memo(
   <NFT extends NFTWholeINFO>({
@@ -80,41 +67,41 @@ const ActionMemo = React.memo(
     setShowRedPacket,
     item,
   }: NFTItemBasicProps & { item: NFT; account?: Account }) => {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation('common')
 
     const popupState = usePopupState({
-      variant: "popover",
-      popupId: "collection-action",
-    });
-    const bindContent = bindMenu(popupState);
-    const bindAction = bindTrigger(popupState);
+      variant: 'popover',
+      popupId: 'collection-action',
+    })
+    const bindContent = bindMenu(popupState)
+    const bindAction = bindTrigger(popupState)
     const [isKnowNFTNoMeta, setIsKnowNFTNoMeta] = React.useState<boolean>(
-      !!(item?.name !== "" && item.image && item.image !== "")
-    );
+      !!(item?.name !== '' && item.image && item.image !== ''),
+    )
     React.useEffect(() => {
       setIsKnowNFTNoMeta((_state) => {
-        return !!(item.name !== "" && item.image && item.image !== "");
-      });
-    }, [item.name, item.image]);
+        return !!(item.name !== '' && item.image && item.image !== '')
+      })
+    }, [item.name, item.image])
 
     return (
       <Grid item marginTop={1}>
-        <IconButtonStyle size={"large"} edge={"end"} {...{ ...bindAction }}>
+        <IconButtonStyle size={'large'} edge={'end'} {...{ ...bindAction }}>
           <ViewMoreIcon />
         </IconButtonStyle>
         <Popover
           {...bindContent}
-          anchorReference="anchorEl"
+          anchorReference='anchorEl'
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
+            vertical: 'bottom',
+            horizontal: 'right',
           }}
           transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
+            vertical: 'top',
+            horizontal: 'right',
           }}
         >
-          <Box borderRadius={"inherit"} minWidth={110}>
+          <Box borderRadius={'inherit'} minWidth={110}>
             {!!(
               item.isCounterFactualNFT &&
               item.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
@@ -128,17 +115,17 @@ const ActionMemo = React.memo(
                       })
                     : setShowTradeIsFrozen({
                         isShow: true,
-                        type: t("nftDeployDescription"),
+                        type: t('nftDeployDescription'),
                       })
                 }
               >
-                {t("labelNFTDeployContract")}
+                {t('labelNFTDeployContract')}
               </MenuItem>
             )}
             <MenuItem
               onClick={() => {
-                setShowNFTTransfer({ ...item });
-                setShowNFTWithdraw({ ...item });
+                setShowNFTTransfer({ ...item })
+                setShowNFTWithdraw({ ...item })
                 isKnowNFTNoMeta
                   ? setShowAccount({
                       isShow: true,
@@ -147,11 +134,11 @@ const ActionMemo = React.memo(
                     })
                   : setNFTMetaNotReady({
                       isShow: false,
-                      info: { method: "Send" },
-                    });
+                      info: { method: 'Send' },
+                    })
               }}
             >
-              {t("labelNFTSendBtn")}
+              {t('labelNFTSendBtn')}
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -159,25 +146,25 @@ const ActionMemo = React.memo(
                   ? setShowRedPacket({ ...item })
                   : setNFTMetaNotReady({
                       isShow: false,
-                      info: { method: "Send" },
-                    });
+                      info: { method: 'Send' },
+                    })
               }}
             >
-              {t("labelNFTRedpacketBtn")}
+              {t('labelNFTRedpacketBtn')}
             </MenuItem>
           </Box>
         </Popover>
       </Grid>
-    );
-  }
-);
+    )
+  },
+)
 
-export const NFTList = withTranslation("common")(
+export const NFTList = withTranslation('common')(
   <NFT extends NFTWholeINFO, Co = CollectionMeta>({
     baseURL,
     nftList,
     getIPFSString,
-    size = "large",
+    size = 'large',
     total,
     page,
     isLoading,
@@ -191,59 +178,59 @@ export const NFTList = withTranslation("common")(
     t,
     ...props
   }: {
-    getIPFSString: GET_IPFS_STRING;
-    baseURL: string;
-    isManage?: boolean;
-    nftList: Partial<NFT>[];
-    etherscanBaseUrl?: string;
-    size?: "large" | "medium" | "small";
-    onClick?: (item: Partial<NFT>) => Promise<void>;
-    onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>;
-    total: number;
-    page: number;
-    isLoading: boolean;
-    selected?: Partial<NFT>[];
-    onPageChange?: (page: number) => void;
-    setNFTMetaNotReady: (props: any) => void;
-    account?: Account;
-    toggle?: any;
-    collectionMeta?: Co;
+    getIPFSString: GET_IPFS_STRING
+    baseURL: string
+    isManage?: boolean
+    nftList: Partial<NFT>[]
+    etherscanBaseUrl?: string
+    size?: 'large' | 'medium' | 'small'
+    onClick?: (item: Partial<NFT>) => Promise<void>
+    onNFTReload?: (item: Partial<NFT>, index: number) => Promise<void>
+    total: number
+    page: number
+    isLoading: boolean
+    selected?: Partial<NFT>[]
+    onPageChange?: (page: number) => void
+    setNFTMetaNotReady: (props: any) => void
+    account?: Account
+    toggle?: any
+    collectionMeta?: Co
     // onSelected: (item: Partial<NFT>) => void;
   } & ((NFTItemBasicProps & { isEdit: true }) | { isEdit?: false }) &
     XOR<
       { isSelectOnly: true; isMultipleSelect: true; selected: Partial<NFT>[] },
       | { isSelectOnly: true; isMultipleSelect?: false; selected: NFT }
       | {
-          isSelectOnly?: false;
-          isMultipleSelect?: false;
+          isSelectOnly?: false
+          isMultipleSelect?: false
         }
     > &
     WithTranslation) => {
-    const sizeConfig = sizeNFTConfig(size);
-    const { isMobile } = useSettings();
+    const sizeConfig = sizeNFTConfig(size)
+    const { isMobile } = useSettings()
     return (
       <Box
         flex={1}
         // className={"MuiPaper-elevation2"}
         marginTop={2}
         marginBottom={2}
-        className={"nft-list-wrap"}
+        className={'nft-list-wrap'}
         paddingX={isMobile ? 0 : 2}
-        display={"flex"}
-        flexDirection={"column"}
+        display={'flex'}
+        flexDirection={'column'}
       >
         {isLoading ? (
           <Box
             flex={1}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            height={"90%"}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            height={'90%'}
           >
             <img
-              className="loading-gif"
-              alt={"loading"}
-              width="36"
+              className='loading-gif'
+              alt={'loading'}
+              width='36'
               src={`${SoursURL}images/loading-line.gif`}
             />
           </Box>
@@ -255,17 +242,21 @@ export const NFTList = withTranslation("common")(
                   xs={sizeConfig.wrap_xs}
                   md={sizeConfig.wrap_md}
                   lg={sizeConfig.wrap_lg}
-                  key={(item?.nftId ?? "") + index.toString()}
+                  key={(item?.nftId ?? '') + index.toString()}
                   item
-                  flex={"1 1 120%"}
+                  flex={'1 1 120%'}
                 >
                   <CardStyleItem
                     size={size}
                     contentheight={sizeConfig.contentHeight}
-                    className={"nft-item"}
+                    className={'nft-item'}
+                    style={{
+                      backgroundColor: 'var(--color-box-secondary)',
+                      border: 'none'
+                    }}
                   >
                     {isEdit && (
-                      <BoxBtnGroup className={"btn-group"}>
+                      <BoxBtnGroup className={'btn-group'}>
                         <ActionMemo
                           {...{ ...(props as any) }}
                           item={item as any}
@@ -274,15 +265,15 @@ export const NFTList = withTranslation("common")(
                       </BoxBtnGroup>
                     )}
                     <Box
-                      position={"absolute"}
-                      width={"100%"}
-                      height={"100%"}
-                      display={"flex"}
-                      flexDirection={"column"}
-                      justifyContent={"space-between"}
+                      position={'absolute'}
+                      width={'100%'}
+                      height={'100%'}
+                      display={'flex'}
+                      flexDirection={'column'}
+                      justifyContent={'space-between'}
                       onClick={(e) => {
-                        e.isPropagationStopped();
-                        onClick && onClick(item);
+                        e.isPropagationStopped()
+                        onClick && onClick(item)
                       }}
                     >
                       <NFTMedia
@@ -298,93 +289,80 @@ export const NFTList = withTranslation("common")(
                       {isSelectOnly &&
                         (isMultipleSelect ? (
                           <Checkbox
-                            size={"medium"}
+                            size={'medium'}
                             checked={
                               !!selected?.find((_item) => {
-                                return item.nftData === _item.nftData;
+                                return item.nftData === _item.nftData
                               })
                             }
                             // color={"default"}
                             value={item.nftData}
-                            name="radio-nft"
-                            inputProps={{ "aria-label": "selectNFT" }}
+                            name='radio-nft'
+                            inputProps={{ 'aria-label': 'selectNFT' }}
                           />
                         ) : (
                           <Radio
-                            size={"medium"}
+                            size={'medium'}
                             // @ts-ignore
                             checked={selected?.nftData === item.nftData}
                             value={item.nftData}
-                            name="radio-nft"
-                            inputProps={{ "aria-label": "selectNFT" }}
+                            name='radio-nft'
+                            inputProps={{ 'aria-label': 'selectNFT' }}
                           />
                         ))}
                       <Box
                         padding={2}
-                        className={"boxLabel"}
+                        className={'boxLabel'}
                         height={sizeConfig.contentHeight}
-                        display={"flex"}
-                        flexDirection={"row"}
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                        sx={{ background: "var(--color-box-nft-label)" }}
+                        display={'flex'}
+                        flexDirection={'row'}
+                        alignItems={'center'}
+                        justifyContent={'space-between'}
                       >
-                        <Box
-                          display={"flex"}
-                          flexDirection={"column"}
-                          width={"60%"}
-                        >
+                        <Box display={'flex'} flexDirection={'column'} width={'60%'}>
                           <Typography
-                            color={"text.primary"}
-                            component={"h6"}
-                            whiteSpace={"pre"}
-                            overflow={"hidden"}
-                            textOverflow={"ellipsis"}
+                            color={'text.primary'}
+                            component={'h6'}
+                            whiteSpace={'pre'}
+                            overflow={'hidden'}
+                            textOverflow={'ellipsis'}
                             dangerouslySetInnerHTML={{
-                              __html:
-                                sanitize(item?.name ?? EmptyValueTag) ?? "",
+                              __html: sanitize(item?.name ?? EmptyValueTag) ?? '',
                             }}
                           />
                           <Typography
-                            color={"textSecondary"}
-                            component={"p"}
+                            color={'textSecondary'}
+                            component={'p'}
                             paddingTop={1}
-                            variant={size == "small" ? "body2" : "body1"}
+                            variant={size == 'small' ? 'body2' : 'body1'}
                             minWidth={164}
-                            textOverflow={"ellipsis"}
+                            textOverflow={'ellipsis'}
                             title={item?.nftId?.toString()}
                           >
-                            {t("labelNFTTokenID")} #
-                            {" " + getShortAddr(item?.nftId ?? "")}
+                            {t('labelNFTTokenID')} #{' ' + getShortAddr(item?.nftId ?? '')}
                           </Typography>
                         </Box>
 
-                        <Box
-                          display={"flex"}
-                          flexDirection={"column"}
-                          alignItems={"flex-end"}
-                        >
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'}>
                           <Typography
-                            color={"textSecondary"}
-                            component={"span"}
-                            whiteSpace={"pre"}
-                            overflow={"hidden"}
-                            textOverflow={"ellipsis"}
+                            color={'textSecondary'}
+                            component={'span'}
+                            whiteSpace={'pre'}
+                            overflow={'hidden'}
+                            textOverflow={'ellipsis'}
                           >
                             {t(
-                              size == "small"
-                                ? "labelNFTAmountSimpleValue"
-                                : "labelNFTAmountValue",
-                              { value: item.total }
+                              size == 'small' ? 'labelNFTAmountSimpleValue' : 'labelNFTAmountValue',
+                              { value: item.total },
                             )}
                           </Typography>
                           <Typography
-                            color={"--color-text-primary"}
-                            component={"p"}
+                            color={'--color-text-primary'}
+                            component={'p'}
                             paddingTop={1}
-                            whiteSpace={"pre-line"}
+                            whiteSpace={'pre-line'}
                             minWidth={1}
-                            textOverflow={"ellipsis"}
+                            textOverflow={'ellipsis'}
                             title={item?.nftId?.toString()}
                           />
                         </Box>
@@ -396,37 +374,29 @@ export const NFTList = withTranslation("common")(
             </Grid>
             {total > NFTLimit && onPageChange && (
               <Box
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"right"}
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'right'}
                 marginRight={3}
                 marginTop={1}
                 marginBottom={2}
               >
                 <Pagination
-                  color={"primary"}
-                  count={
-                    parseInt(String(total / NFTLimit)) +
-                    (total % NFTLimit > 0 ? 1 : 0)
-                  }
+                  color={'primary'}
+                  count={parseInt(String(total / NFTLimit)) + (total % NFTLimit > 0 ? 1 : 0)}
                   page={page}
                   onChange={(_event, value) => {
-                    onPageChange(Number(value));
+                    onPageChange(Number(value))
                   }}
                 />
               </Box>
             )}
           </>
         ) : (
-          <Box flex={1} alignItems={"center"}>
+          <Box flex={1} alignItems={'center'}>
             <EmptyDefault
               message={() => (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                >
+                <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                   No NFT
                 </Box>
               )}
@@ -434,6 +404,6 @@ export const NFTList = withTranslation("common")(
           </Box>
         )}
       </Box>
-    );
-  }
-);
+    )
+  },
+)

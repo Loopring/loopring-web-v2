@@ -1,24 +1,24 @@
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Meta, Story } from "@storybook/react/types-6-0";
-import { ScaleAreaChart } from "../ScaleAreaChart";
-import { ChartType } from "../../index";
-import { withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { testKlineData } from "./data_min";
-import { MainIndicator, SubIndicator } from ".";
-import { TradingInterval } from "@loopring-web/loopring-sdk";
+import { Meta, Story } from '@storybook/react/types-6-0'
+import { ScaleAreaChart } from '../ScaleAreaChart'
+import { ChartType } from '../../index'
+import { withTranslation } from 'react-i18next'
+import styled from '@emotion/styled'
+import { testKlineData } from './data_min'
+import { MainIndicator, SubIndicator } from '.'
+import { TradingInterval } from '@loopring-web/loopring-sdk'
 
 const Styled = styled.div`
   flex: 1;
 
   width: 100%;
   height: 100%;
-`;
+`
 
 const formatDateData = testKlineData.map((d) => ({
   ...d,
   date: new Date(d.date),
-}));
+}))
 
 export const Kline = withTranslation()(() => {
   return (
@@ -50,11 +50,11 @@ export const Kline = withTranslation()(() => {
         />
       </Styled>
     </>
-  );
-}) as Story;
+  )
+}) as Story
 
 export default {
-  title: "Charts/KineMin",
+  title: 'Charts/KineMin',
   component: Kline,
   argTypes: {},
-} as Meta;
+} as Meta

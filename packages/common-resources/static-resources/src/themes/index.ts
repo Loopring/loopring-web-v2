@@ -1,25 +1,25 @@
-import styled from "@emotion/styled";
-import { Avatar, Grid } from "@mui/material";
-import { AvatarCoinProps, ThemeType } from "./interface";
-import { hr } from "./overrides/overrides-mui";
-import { css } from "@emotion/react";
+import styled from '@emotion/styled'
+import { Avatar, Grid } from '@mui/material'
+import { AvatarCoinProps, ThemeType } from './interface'
+import { hr } from './overrides/overrides-mui'
+import { css } from '@emotion/react'
 //@ts-ignore
-import cssStyle from "github-markdown-css/github-markdown.css";
+import cssStyle from 'github-markdown-css/github-markdown.css'
 
-export * from "./overrides/muTheme";
-export * from "./css/global";
+export * from './overrides/muTheme'
+export * from './css/global'
 // export * from "./css/color-lib"
-export * from "./interface";
-export * from "./globalSetup";
-export { hexToRGB } from "./css/color-lib";
+export * from './interface'
+export * from './globalSetup'
+export { hexToRGB } from './css/color-lib'
 //transform-origin: top left;
-export { hr };
+export { hr }
 //https://static.loopring.io/assets/images/coin/loopring.png
 export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
   &.MuiAvatar-root {
     height: 72px;
     width: 72px;
-    background-image: url("./static/coin/loopring.png");
+    background-image: url('./static/coin/loopring.png');
     ${({
       imgx,
       imgy,
@@ -33,15 +33,15 @@ export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
              height: ${imgheight}px ;
              width: ${imgwidth}px ;
              transform-origin: center;
-        `;
+        `
     }}
     background-size: auto;
   }
-` as (props: AvatarCoinProps) => JSX.Element;
+` as (props: AvatarCoinProps) => JSX.Element
 
 const style = css`
   ${cssStyle}
-`;
+`
 export const MarkdownStyle = styled(Grid)`
   ${({ theme }) => ` 
       .markdown-body{
@@ -145,4 +145,4 @@ export const MarkdownStyle = styled(Grid)`
     box-shadow: initial;
     padding: 0;
   }
-` as typeof Grid;
+` as typeof Grid

@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   Approve_Failed,
   Approve_Success,
@@ -14,11 +14,11 @@ import {
   Reject_Success,
   Reject_User_Denied,
   Reject_WaitForAuth,
-} from "@loopring-web/component-lib";
-import React from "react";
-import { useSystem } from "@loopring-web/core";
+} from '@loopring-web/component-lib'
+import React from 'react'
+import { useSystem } from '@loopring-web/core'
 
-export const ModalLock = withTranslation("common")(
+export const ModalLock = withTranslation('common')(
   ({
     onClose,
     onBack,
@@ -27,68 +27,70 @@ export const ModalLock = withTranslation("common")(
     t,
     options,
     handleOpenModal,
+    setOpenHebao,
     ...rest
   }: {
-    open: boolean;
-    step: GuardianStep;
-    handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
-    onBack?: () => void;
-    options: any;
+    open: boolean
+    step: GuardianStep
+    handleOpenModal: (props: { step: GuardianStep; options?: any }) => void
+    onBack?: () => void
+    options: any
+    setOpenHebao: (state: any) => void
     onClose: {
-      bivarianceHack(
-        event: {},
-        reason: "backdropClick" | "escapeKeyDown"
-      ): void;
-    }["bivarianceHack"];
+      bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void
+    }['bivarianceHack']
   } & WithTranslation) => {
-    const { etherscanBaseUrl } = useSystem();
+    const { etherscanBaseUrl } = useSystem()
     const backToLockAccountBtnInfo = React.useMemo(() => {
-      const _options = options;
       return {
-        btnTxt: "labelRetry",
+        btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.LockAccount_WaitForAuth });
-          if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams);
-          }
+          setOpenHebao(({ options, ...rest }) => {
+            if (options && options.lockRetry && options.lockRetryParams) {
+              options.lockRetry(options.lockRetryParams)
+            }
+            return { ...rest, step: GuardianStep.LockAccount_WaitForAuth, options }
+          })
         },
-      };
-    }, [handleOpenModal, options]);
+      }
+    }, [])
     const backToRejectBtnInfo = React.useMemo(() => {
-      const _options = options;
       return {
-        btnTxt: "labelRetry",
+        btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.Reject_WaitForAuth });
-          if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams);
-          }
+          setOpenHebao(({ options, ...rest }) => {
+            if (options && options.lockRetry && options.lockRetryParams) {
+              options.lockRetry(options.lockRetryParams)
+            }
+            return { ...rest, step: GuardianStep.Reject_WaitForAuth, options }
+          })
         },
-      };
-    }, [handleOpenModal, options]);
+      }
+    }, [])
     const backToApproveBtnInfo = React.useMemo(() => {
-      const _options = options;
       return {
-        btnTxt: "labelRetry",
+        btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.Approve_WaitForAuth });
-          if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams);
-          }
+          setOpenHebao(({ options, ...rest }) => {
+            if (options && options.lockRetry && options.lockRetryParams) {
+              options.lockRetry(options.lockRetryParams)
+            }
+            return { ...rest, step: GuardianStep.Approve_WaitForAuth, isShow: true, options }
+          })
         },
-      };
-    }, [handleOpenModal, options]);
+      }
+    }, [])
 
     const closeBtnInfo = React.useMemo(() => {
       return {
-        btnTxt: "labelClose",
+        btnTxt: 'labelClose',
         callback: (e: any) => {
           if (onClose) {
-            onClose(e, "escapeKeyDown");
+            onClose(e, 'escapeKeyDown')
           }
         },
-      };
-    }, [onClose]);
+      }
+    }, [onClose])
 
     const accountList = React.useMemo(() => {
       return Object.values({
@@ -105,7 +107,7 @@ export const ModalLock = withTranslation("common")(
         [GuardianStep.LockAccount_User_Denied]: {
           view: (
             <LockAccount_User_Denied
-              btnInfo={backToLockAccountBtnInfo}
+              btnInfo={backToLockAccountBtnInfo as any}
               {...{
                 ...rest,
                 t,
@@ -149,7 +151,7 @@ export const ModalLock = withTranslation("common")(
         [GuardianStep.Approve_User_Denied]: {
           view: (
             <Approve_User_Denied
-              btnInfo={backToApproveBtnInfo}
+              btnInfo={backToApproveBtnInfo as any}
               {...{
                 ...rest,
                 t,
@@ -194,7 +196,7 @@ export const ModalLock = withTranslation("common")(
         [GuardianStep.Reject_User_Denied]: {
           view: (
             <Reject_User_Denied
-              btnInfo={backToRejectBtnInfo}
+              btnInfo={backToRejectBtnInfo as any}
               {...{
                 ...rest,
                 t,
@@ -225,8 +227,8 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-      });
-    }, []);
+      })
+    }, [])
 
     return (
       <>
@@ -239,6 +241,6 @@ export const ModalLock = withTranslation("common")(
           etherscanBaseUrl={etherscanBaseUrl}
         />
       </>
-    );
-  }
-);
+    )
+  },
+)

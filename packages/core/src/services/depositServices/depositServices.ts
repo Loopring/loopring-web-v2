@@ -1,4 +1,4 @@
-import { Subject } from "rxjs";
+import { Subject } from 'rxjs'
 
 export enum DepositCommands {
   DepsitERC20 = 0,
@@ -6,12 +6,12 @@ export enum DepositCommands {
 }
 
 const subject = new Subject<{
-  status: DepositCommands;
+  status: DepositCommands
   data?: {
-    uniqueId?: string;
-    [key: string]: any;
-  };
-}>();
+    uniqueId?: string
+    [key: string]: any
+  }
+}>()
 export const depositServices = {
   depositERC20: () => {
     subject.next({
@@ -19,7 +19,7 @@ export const depositServices = {
       data: {
         emptyData: false,
       },
-    });
+    })
   },
   depositNFT: () => {
     subject.next({
@@ -27,7 +27,7 @@ export const depositServices = {
       data: {
         emptyData: false,
       },
-    });
+    })
   },
   onSocket: () => subject.asObservable(),
-};
+}

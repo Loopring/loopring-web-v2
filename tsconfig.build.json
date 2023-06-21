@@ -1,20 +1,24 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "ES2020",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext",
       "es2016",
-      "es2017"
+      "es2017",
+      "es2020"
     ],
-    "module": "es6",
+    "files": [
+      "./node_modules/@types/node/index.d.ts"
+    ],
+    "module": "commonjs",
     "jsx": "react-jsx",
     "sourceMap": true,
     "allowJs": true,
     "composite": true,
     "keyofStringsOnly": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -33,4 +37,3 @@
     "dist"
   ]
 }
-  
