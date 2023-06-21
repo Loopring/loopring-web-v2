@@ -85,6 +85,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       isNFT = false,
       totalLuckyTokenNFTBalance,
       hideAssets,
+      blindBoxBalance,
       t,
     } = props;
     const history = useHistory();
@@ -270,8 +271,8 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         company: "",
         type: TokenType.single,
       },
-      amountStr: totalLuckyTokenNFTBalance
-        ? totalLuckyTokenNFTBalance.toString()
+      amountStr: blindBoxBalance
+        ? blindBoxBalance.toString()
         : EmptyValueTag,
       volume: undefined,
     };

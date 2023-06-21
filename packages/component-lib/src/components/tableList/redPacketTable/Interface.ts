@@ -72,6 +72,7 @@ export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   getClaimRedPacket: (props: any) => void;
   totalLuckyTokenNFTBalance?: number;
   hideAssets?: boolean;
+  blindBoxBalance?: number;
 } & XOR<
   {
     pagination?: {
