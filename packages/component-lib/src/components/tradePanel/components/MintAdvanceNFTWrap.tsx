@@ -19,7 +19,9 @@ import {
   FeeInfo,
   getShortAddr,
   Info2Icon,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   myLog,
   RefreshIcon,
   SoursURL,
@@ -125,7 +127,8 @@ export const MintAdvanceNFTWrap = <
   etherscanBaseUrl,
 }: NFTMintAdvanceViewProps<T, Co, I, C>) => {
   const { t } = useTranslation(["common"]);
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
   const [address, setAddress] = React.useState(tradeData?.tokenAddress);
   const [cid, setCid] = React.useState(tradeData?.nftIdView);
@@ -218,13 +221,6 @@ export const MintAdvanceNFTWrap = <
     [handleFeeChange]
   );
 
-  // const _handleOnNFTDataChange = (_tradeData: Partial<T>) => {
-  //   if (handleOnNFTDataChange) {
-  //     handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-  //   }
-  // };
-
-  // const tradeData
   myLog("mint tradeData", tradeData);
   const methodLabel = React.useCallback(
     ({ key }: { key: string }) => {
@@ -899,10 +895,11 @@ export const MintAdvanceNFTWrap = <
                         }
                       >
                         {t("labelCounterFactualNFT", {
-                          loopringL2: "Loopring L2",
-                          l2Symbol: "L2",
-                          l1Symbol: "L1",
-                          ethereumL1: "Ethereum L1",
+                          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                         }) +
                           getShortAddr(
                             tradeData?.collectionMeta?.contractAddress ?? ""

@@ -89,8 +89,8 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                     <Trans
                       i18nKey="labelResetDescription"
                       tOptions={{
-                        loopringL2: "Loopring L2",
-                        layer2: "Layer 2",
+                        layer2: L1L2_NAME_DEFINED[network].layer2,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                       }}
                     >
                       Create a new signing key for layer-2 authentication (no

@@ -1,5 +1,9 @@
 import { ClaimWithdrawBase, IconType, PanelProps } from "./BasicPanel";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
+import {
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
 import { Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 
@@ -71,7 +75,8 @@ export const ClaimWithdraw_Failed = (
 export const ClaimWithdraw_Submit = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelClaimWithdrawSubmit", {
@@ -91,10 +96,11 @@ export const ClaimWithdraw_Submit = (
         marginBottom={2}
       >
         {props.t("labelTransferDelayConfirm", {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
         })}
       </Typography>
     ),

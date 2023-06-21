@@ -24,11 +24,14 @@ import clsx from "clsx";
 import {
   ammDisableList,
   DropDownIcon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   orderDisableList,
 } from "@loopring-web/common-resources";
 import Menu from "material-ui-popup-state/HoverMenu";
 import React, { ForwardedRef, RefAttributes } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { useSettings } from "../../../stores";
 
 export const HeaderMenu = styled(Container)`
   display: flex;
@@ -239,6 +242,8 @@ Layer2Item = React.memo(
     t,
     label,
   }: MenuItemProps<I> & WithTranslation) => {
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <StyledLayer2Item className={"layer-sub"} key={label.id}>
         {/*<Box className={'dot'} paddingTop={0}>&#x25CF;</Box>*/}
@@ -249,7 +254,10 @@ Layer2Item = React.memo(
           variant={"body1"}
           color={"text.primary"}
         >
-          {t(label.i18nKey, { loopringL2: "Loopring L2", l2Symbol: "L2" })}
+          {t(label.i18nKey, {
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          })}
         </Typography>
         <Typography
           lineHeight={"20px"}
@@ -284,6 +292,8 @@ export const HeaderMenuSub = React.memo(
       }: HeadMenuType<I> & WithTranslation,
       ref: ForwardedRef<any>
     ) => {
+      const { isMobile, defaultNetwork } = useSettings();
+      const network = MapChainId[defaultNetwork] ?? MapChainId[1];
       const popupState = usePopupState({
         variant: "popover",
         popupId: `tradeHeaderSubMenu${label.id}`,
@@ -304,8 +314,8 @@ export const HeaderMenuSub = React.memo(
                 color={"inherit"}
               >
                 {t(label.i18nKey, {
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
                 })}
               </Typography>
             </StyledTabBtn>

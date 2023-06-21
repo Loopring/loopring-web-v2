@@ -826,6 +826,7 @@ export const L1L2_NAME_DEFINED = {
     l2Symbol: "L3",
     l1Symbol: "TAIKO",
     ethereumL1: "TAIKO",
+    loopringLayer2: "Loopring Layer 3",
   },
   ETHEREUM: {
     layer2: "Layer 2",
@@ -834,6 +835,7 @@ export const L1L2_NAME_DEFINED = {
     l2Symbol: "L2",
     l1Symbol: "L1",
     ethereumL1: "Ethereum L1",
+    loopringLayer2: "Loopring Layer 2",
   },
   GOERLI: {
     layer2: "Layer 2",
@@ -842,5 +844,6 @@ export const L1L2_NAME_DEFINED = {
     l2Symbol: "L2",
     l1Symbol: "L1",
     ethereumL1: "Ethereum L1",
+    loopringLayer2: "Loopring Layer 2",
   },
 };

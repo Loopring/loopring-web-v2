@@ -5,7 +5,9 @@ import {
   CloseIcon,
   globalSetup,
   IBData,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   SoursURL,
   TRADE_TYPE,
   TradeBtnStatus,
@@ -72,7 +74,8 @@ export const DepositWrap = <
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
   const inputBtnRef = React.useRef();
-  let { feeChargeOrder, isMobile } = useSettings();
+  let { feeChargeOrder, isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [minFee, setMinFee] =
     React.useState<{ minFee: string } | undefined>(undefined);
   const [_toAddress, setToAddress] = React.useState(tradeData.toAddress);
@@ -99,10 +102,11 @@ export const DepositWrap = <
             marginBottom={1}
           >
             {t("labelIsNotFeeToken", {
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               symbol: chargeFeeTokenList.map((item) => item.belong ?? ""),
             })}
           </Typography>
@@ -150,10 +154,10 @@ export const DepositWrap = <
           marginBottom={1}
         >
           {t("labelIsNotFeeToken", {
-            loopringL2: "Loopring L2",
-            l2Symbol: "L2",
-            l1Symbol: "L1",
-            ethereumL1: "Ethereum L1",
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             symbol:
               chargeFeeTokenList?.map((item) => item.belong ?? "") ??
               feeChargeOrder,

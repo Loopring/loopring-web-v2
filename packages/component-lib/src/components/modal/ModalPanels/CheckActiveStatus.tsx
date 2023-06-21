@@ -61,7 +61,9 @@ export const CheckActiveStatus = ({
             marginBottom={3}
             marginTop={-1}
           >
-            {t("labelActiveAccountTitle", { loopringL2: "Loopring L2" })}
+            {t("labelActiveAccountTitle", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            })}
           </Typography>
           <Box
             display={"flex"}
@@ -109,10 +111,11 @@ export const CheckActiveStatus = ({
                           ? "labelAddAssetGateBtn"
                           : "labelActiveLayer2Btn",
                         {
-                          loopringL2: "Loopring L2",
-                          l2Symbol: "L2",
-                          l1Symbol: "L1",
-                          ethereumL1: "Ethereum L1",
+                          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                         }
                       )}
                     </Button>
@@ -157,7 +160,9 @@ export const CheckActiveStatus = ({
             whiteSpace={"pre"}
             marginTop={-1}
           >
-            {t("labelActiveAccountTitle", { loopringL2: "Loopring L2" })}
+            {t("labelActiveAccountTitle", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            })}
           </Typography>
           <Box
             display={"flex"}
@@ -179,10 +184,11 @@ export const CheckActiveStatus = ({
                   textAlign={"center"}
                 >
                   {t("labelActivatedAccountNotSupport", {
-                    loopringL2: "Loopring L2",
-                    l2Symbol: "L2",
-                    l1Symbol: "L1",
-                    ethereumL1: "Ethereum L1",
+                    l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                   })}
                 </Typography>
                 <Typography
@@ -193,10 +199,10 @@ export const CheckActiveStatus = ({
                   marginBottom={2}
                 >
                   {t("labelActivatedAccountNotSupportDes", {
-                    loopringL2: "Loopring L2",
-                    l2Symbol: "L2",
-                    l1Symbol: "L1",
-                    ethereumL1: "Ethereum L1",
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                   })}
                 </Typography>
                 <Button
@@ -237,10 +243,11 @@ export const CheckActiveStatus = ({
                     marginTop={2}
                   >
                     {t("labelEnoughBalancePayForActive", {
-                      loopringL2: "Loopring L2",
-                      l2Symbol: "L2",
-                      l1Symbol: "L1",
-                      ethereumL1: "Ethereum L1",
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                     })}
                   </Typography>
                 )}

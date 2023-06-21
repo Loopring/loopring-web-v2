@@ -158,8 +158,8 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               textAlign={"center"}
             >
               {t("describeTitleNoAccount", {
-                layer2: "Layer 2",
-                l1ChainName: "Ethereum",
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               })}
             </Typography>
             {BtnConnect}

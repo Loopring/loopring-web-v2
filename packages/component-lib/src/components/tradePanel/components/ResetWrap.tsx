@@ -4,6 +4,8 @@ import { Box, Grid, Link, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { Button } from "../../basic-lib";
@@ -27,7 +29,8 @@ export const ResetWrap = <T extends FeeInfo>({
 }: ResetViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const getDisabled = React.useMemo(() => {
     return disabled || resetBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, resetBtnStatus]);
@@ -59,8 +62,10 @@ export const ResetWrap = <T extends FeeInfo>({
           marginBottom={2}
         >
           {isNewAccount
-            ? t("labelActiveAccountTitle", { loopringL2: "Loopring L2" })
-            : t("resetTitle", { layer2: "Layer 2" })}
+            ? t("labelActiveAccountTitle", {
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              })
+            : t("resetTitle", { layer2: L1L2_NAME_DEFINED[network].layer2 })}
         </Typography>
         <Typography
           component={"p"}
@@ -146,10 +151,11 @@ export const ResetWrap = <T extends FeeInfo>({
                 component={"span"}
               >
                 {t("labelFriendsPayActivation", {
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                 })}
               </Typography>
             ) : (
@@ -166,12 +172,6 @@ export const ResetWrap = <T extends FeeInfo>({
                 marginBottom={1}
               >
                 {t("labelYourBalance", {
-                  layer2: "Layer 2",
-                  loopringL2: "Loopring L2",
-                  l2Symbol: "L2",
-                  l1Symbol: "L1",
-                  ethereumL1: "Ethereum L1",
-                  loopringLayer2: "Loopring Layer 2",
                   balance:
                     walletMap &&
                     feeInfo &&
@@ -179,6 +179,12 @@ export const ResetWrap = <T extends FeeInfo>({
                     walletMap[feeInfo.belong]
                       ? walletMap[feeInfo.belong]?.count + " " + feeInfo.belong
                       : EmptyValueTag + " " + (feeInfo && feeInfo?.belong),
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                 })}
               </Typography>
             )}

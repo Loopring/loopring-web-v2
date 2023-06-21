@@ -1,7 +1,9 @@
 import { DepositBase, IconType, PanelProps } from "./BasicPanel";
 import {
   getShortAddr,
+  L1L2_NAME_DEFINED,
   LinkIcon,
+  MapChainId,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import { sanitize } from "dompurify";
@@ -12,14 +14,17 @@ import { useSettings } from "../../../stores";
 export const NFTDeposit_Approve_WaitForAuth = (
   props: PanelProps & Partial<NFTWholeINFO> & Partial<NFTWholeINFO>
 ) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTAccess", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: props?.symbol ?? "NFT",
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <DepositBase {...props} {...propsPatch} />;
@@ -28,15 +33,18 @@ export const NFTDeposit_Approve_WaitForAuth = (
 export const NFTDeposit_Approve_Denied = (
   props: PanelProps & Partial<NFTWholeINFO> & Partial<NFTWholeINFO>
 ) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelNFTTokenFailedAccess", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: props?.symbol ?? "NFT",
       value: props.value,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <DepositBase {...propsPatch} {...props} />;
@@ -45,13 +53,16 @@ export const NFTDeposit_Approve_Denied = (
 export const NFTDeposit_WaitForAuth = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTTokenDepositWaitForAuth", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
@@ -79,15 +90,18 @@ export const NFTDeposit_Denied = (
 export const NFTDeposit_Failed = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL1toL2Failed", {
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
       symbol: sanitize(props.symbol ?? "NFT").toString(),
       value: props.value,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <DepositBase {...propsPatch} {...props} />;
@@ -96,7 +110,8 @@ export const NFTDeposit_Failed = (
 export const NFTDeposit_Submit = (
   props: PanelProps & Partial<NFTWholeINFO>
 ) => {
-  const { isMobile } = useSettings();
+  const { defaultNetwork, isMobile } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { t } = useTranslation();
 
   const propsPatch = {
@@ -153,10 +168,11 @@ export const NFTDeposit_Submit = (
             color={"var(--color-text-secondary)"}
           >
             {props.t("labelL1toL2NFTAmount", {
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             })}
           </Typography>
           <Typography
@@ -207,10 +223,11 @@ export const NFTDeposit_Submit = (
             color={"var(--color-text-secondary)"}
           >
             {props.t("labelL1toL2TO", {
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             })}
           </Typography>
           <Typography

@@ -4,8 +4,10 @@ import {
   Account,
   DoneIcon,
   FailedIcon,
+  L1L2_NAME_DEFINED,
   LinkIcon,
   LoadingIcon,
+  MapChainId,
   RefuseIcon,
   SoursURL,
   SubmitIcon,
@@ -200,7 +202,8 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     }, [providerName]);
     const [dropdownStatus, setDropdownStatus] =
       React.useState<"up" | "down">("down");
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
     return (
       <BoxStyle
@@ -218,12 +221,12 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           whiteSpace={"pre"}
         >
           {t(title as string, {
-            layer2: "Layer 2",
-            loopringL2: "Loopring L2",
-            l2Symbol: "L2",
-            l1Symbol: "L1",
-            ethereumL1: "Ethereum L1",
-            loopringLayer2: "Loopring Layer 2",
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
           })}
         </Typography>
         <Box

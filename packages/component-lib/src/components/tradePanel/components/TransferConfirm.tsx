@@ -5,6 +5,8 @@ import {
   FeeInfo,
   getShortAddr,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
@@ -33,7 +35,8 @@ export const TransferConfirm = <
 }: Partial<TransferViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { walletList } = useAddressTypeLists();
   const [open, setOpen] = React.useState(false);
   return (
@@ -64,7 +67,7 @@ export const TransferConfirm = <
             whiteSpace={"pre"}
           >
             {t("labelL2toL2Title", {
-              loopringL2: "Loopring L2",
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             })}
           </Typography>
         </Box>

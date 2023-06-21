@@ -1,10 +1,14 @@
 import { TFunction } from "react-i18next";
 import { IconType, PanelProps, UpdateAccountBase } from "./BasicPanel";
 import { Box, Typography } from "@mui/material";
-import { AnimationArrow, Button } from "../../../index";
+import { AnimationArrow, Button, useSettings } from "../../../index";
 import { AccountBasePanel, AccountBaseProps } from "./index";
 import { DepositRecorder } from "./DepositRecorder";
-import { AccountHashInfo } from "@loopring-web/common-resources";
+import {
+  AccountHashInfo,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+} from "@loopring-web/common-resources";
 
 export const UpdateAccount = ({
   t,
@@ -15,89 +19,96 @@ export const UpdateAccount = ({
     clearDepositHash: () => void;
     chainInfos: AccountHashInfo;
   }) => {
-  return (
-    <Box
-      flex={1}
-      display={"flex"}
-      flexDirection={"column"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-    >
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+    return (
       <Box
-        display={"flex"}
         flex={1}
-        marginBottom={5}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <AccountBasePanel {...props} t={t} />
-      </Box>
-      <Box
         display={"flex"}
-        marginTop={2}
-        alignSelf={"stretch"}
-        paddingX={5}
         flexDirection={"column"}
+        justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Typography variant={"body2"}>
-          {t("labelActivatedAccountDeposit", { layer2: "Layer 2" })}
-        </Typography>
-        <AnimationArrow className={"arrowCta"} />
-        <Button
-          variant={"contained"}
-          fullWidth
-          size={"medium"}
-          onClick={() => {
-            if (goUpdateAccount) {
-              goUpdateAccount();
-            }
-          }}
+        <Box
+          display={"flex"}
+          flex={1}
+          marginBottom={5}
+          justifyContent={"center"}
+          alignItems={"center"}
         >
-          {t("labelActivateAccount")}
-        </Button>
+          <AccountBasePanel {...props} t={t} />
+        </Box>
+        <Box
+          display={"flex"}
+          marginTop={2}
+          alignSelf={"stretch"}
+          paddingX={5}
+          flexDirection={"column"}
+          alignItems={"center"}
+        >
+          <Typography variant={"body2"}>
+            {t("labelActivatedAccountDeposit", {
+              layer2: L1L2_NAME_DEFINED[network].layer2,
+            })}
+          </Typography>
+          <AnimationArrow className={"arrowCta"} />
+          <Button
+            variant={"contained"}
+            fullWidth
+            size={"medium"}
+            onClick={() => {
+              if (goUpdateAccount) {
+                goUpdateAccount();
+              }
+            }}
+          >
+            {t("labelActivateAccount")}
+          </Button>
+        </Box>
+        <Box
+          display={"flex"}
+          marginX={0}
+          marginTop={3}
+          marginBottom={0}
+          alignSelf={"stretch"}
+          paddingX={5}
+          padding={0}
+        >
+          <DepositRecorder {...props} clear={props.clearDepositHash} t={t} />
+        </Box>
       </Box>
-      <Box
-        display={"flex"}
-        marginX={0}
-        marginTop={3}
-        marginBottom={0}
-        alignSelf={"stretch"}
-        paddingX={5}
-        padding={0}
-      >
-        <DepositRecorder {...props} clear={props.clearDepositHash} t={t} />
-      </Box>
-    </Box>
-  );
-};
+    );
+  };
 
 // symbol
 export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelWaitForAuth", {
-      layer2: "Layer 2",
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
-      loopringLayer2: "Loopring Layer 2",
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <UpdateAccountBase {...props} {...propsPatch} />;
 };
 
 export const UpdateAccount_First_Method_Denied = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelFirstSignDenied", {
-      layer2: "Layer 2",
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
-      loopringLayer2: "Loopring Layer 2",
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <UpdateAccountBase {...propsPatch} {...props} />;
@@ -113,17 +124,19 @@ export const UpdateAccount_User_Denied = (props: PanelProps) => {
 
 // symbol
 export const UpdateAccount_Success = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const describe1 = props.t(
     props.patch?.isReset
       ? "labelResetAccountSuccess"
       : "labelUpdateAccountSuccess",
     {
-      layer2: "Layer 2",
-      loopringL2: "Loopring L2",
-      l2Symbol: "L2",
-      l1Symbol: "L1",
-      ethereumL1: "Ethereum L1",
-      loopringLayer2: "Loopring Layer 2",
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }
   );
   const describe2 = (

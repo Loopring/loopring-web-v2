@@ -367,8 +367,8 @@ export const ViewAccountTemplate = React.memo(
                 textAlign={"center"}
               >
                 {t("describeTitleConnectToWallet", {
-                  layer2: "Layer 2",
-                  l1ChainName: "Ethereum",
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
               <WalletConnectL2Btn />

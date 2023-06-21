@@ -171,10 +171,11 @@ export const TransferWrap = <
           position={"relative"}
         >
           {t("labelNotOtherSmartWallet", {
-            loopringL2: "Loopring L2",
-            l2Symbol: "L2",
-            l1Symbol: "L1",
-            ethereumL1: "Ethereum L1",
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
           })}
         </Typography>
       );
@@ -200,10 +201,12 @@ export const TransferWrap = <
           position={"relative"}
         >
           {t("labelNotExchangeEOA", {
-            loopringL2: "Loopring L2",
-            l2Symbol: "L2",
-            l1Symbol: "L1",
-            ethereumL1: "Ethereum L1",
+            layer2: L1L2_NAME_DEFINED[network].layer2,
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
           })}
         </Typography>
       );
@@ -252,10 +255,11 @@ export const TransferWrap = <
                     <Trans
                       i18nKey={"labelL2toL2AddressNotLoopring"}
                       tOptions={{
-                        loopringL2: "Loopring L2",
-                        l2Symbol: "L2",
-                        l1Symbol: "L1",
-                        ethereumL1: "Ethereum L1",
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                       }}
                     >
                       <AlertIcon
@@ -359,7 +363,7 @@ export const TransferWrap = <
             marginRight={1}
           >
             {t("labelL2toL2Title", {
-              loopringL2: "Loopring L2",
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             })}
           </Typography>
           <Info2Icon

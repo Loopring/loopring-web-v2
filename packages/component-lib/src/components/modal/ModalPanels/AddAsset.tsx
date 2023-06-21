@@ -9,8 +9,10 @@ import {
   CardIcon,
   ExchangeAIcon,
   IncomingIcon,
+  L1L2_NAME_DEFINED,
   L1l2Icon,
   L2l2Icon,
+  MapChainId,
   OutputIcon,
 } from "@loopring-web/common-resources";
 import { useSettings, useToggle } from "../../../stores";
@@ -40,7 +42,8 @@ export const AddAsset = ({
   isNewAccount = false,
 }: AddAssetProps) => {
   const { t } = useTranslation("common");
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const {
     toggle: { receive },
   } = useToggle();
@@ -68,17 +71,19 @@ export const AddAsset = ({
       >
         {isNewAccount
           ? t("labelAddAssetTitleActive", {
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             })
           : t("labelAddAssetTitle", {
               symbol,
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
-              l1Symbol: "L1",
-              ethereumL1: "Ethereum L1",
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             })}
       </Typography>
       <Box
@@ -99,10 +104,10 @@ export const AddAsset = ({
           marginBottom={1}
         >
           {t("labelAddAssetHowto", {
-            loopringL2: "Loopring L2",
-            l2Symbol: "L2",
-            l1Symbol: "L1",
-            ethereumL1: "Ethereum L1",
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
           })}
         </Typography>
         <Box flex={1} flexDirection={"column"}>
@@ -148,10 +153,11 @@ export const AddAsset = ({
                     >
                       <>{IconItem({ svgIcon: item.svgIcon })}</>
                       {t("label" + item.key, {
-                        loopringL2: "Loopring L2",
-                        l2Symbol: "L2",
-                        l1Symbol: "L1",
-                        ethereumL1: "Ethereum L1",
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                       })}
                     </Typography>
                   </MenuBtnStyled>

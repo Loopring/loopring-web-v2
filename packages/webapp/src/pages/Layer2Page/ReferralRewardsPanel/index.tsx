@@ -15,7 +15,9 @@ import { useAccount, useSubmitBtn } from "@loopring-web/core";
 import {
   AccountStatus,
   copyToClipBoard,
+  L1L2_NAME_DEFINED,
   LinkSharedIcon,
+  MapChainId,
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
@@ -83,7 +85,8 @@ const ReferHeader = ({
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common", "layout"]);
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [image, setImage] = React.useState<any[]>([]);
   const [imageList, setImageList] = React.useState<{
     referralBanners: { en: string[] };
@@ -144,23 +147,7 @@ const ReferHeader = ({
     });
     setImages(images);
   }, [imageList, account]);
-  // React.useEffect(() => {
-  //   if (imageList?.referralBanners?.en) {
-  //     renderImage();
-  //   }
-  // }, [imageList?.referralBanners?.en]);
 
-  // const makeImage = () => {
-  //   try {
-  //     // debugger;
-  //     // @ts-ignore-start
-  //     // if (svg && svg.outerHTML) {
-  //     //
-  //     //   svg.setAttribute("base64doc", "data:image/svg+xml;base64," + base64doc);
-  //     // }
-  //     // @ts-ignore-end
-  //   } catch (error) {}
-  // };
   const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
@@ -238,24 +225,27 @@ const ReferHeader = ({
           key && key[1]
             ? {
                 arg: key[1],
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }
             : {
-                loopringL2: "Loopring L2",
-                l2Symbol: "L2",
-                l1Symbol: "L1",
-                ethereumL1: "Ethereum L1",
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }
         );
       } else {
         return t(btnLabel, {
-          loopringL2: "Loopring L2",
-          l2Symbol: "L2",
-          l1Symbol: "L1",
-          ethereumL1: "Ethereum L1",
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
         });
       }
     } else {

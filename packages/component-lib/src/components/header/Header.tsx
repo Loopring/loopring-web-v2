@@ -32,7 +32,9 @@ import {
   HeaderMenuItemInterface,
   headerMenuLandingData,
   HeaderMenuTabStatus,
+  L1L2_NAME_DEFINED,
   LoopringLogoIcon,
+  MapChainId,
   MenuIcon,
   SoursURL,
   subMenuLayer2,
@@ -52,6 +54,7 @@ import { bindPopper } from "material-ui-popup-state/es";
 import { bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
 import { useTheme } from "@emotion/react";
 import _ from "lodash";
+import { useSettings } from "../../stores";
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
@@ -223,6 +226,8 @@ const NodeMenuItem = React.memo(
     handleListKeyDown,
     ...rest
   }: HeaderMenuItemInterface & any) => {
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <>
         {layer >= 1 ? (
@@ -235,8 +240,8 @@ const NodeMenuItem = React.memo(
             onClick={handleListKeyDown}
           >
             {rest.t(label.i18nKey, {
-              loopringL2: "Loopring L2",
-              l2Symbol: "L2",
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
             })}
           </Typography>
         )}
