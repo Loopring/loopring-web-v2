@@ -129,14 +129,24 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
 
         <Grid item xs={12}>
           <Typography color={"var(--color-text-third)"} variant={"body1"}>
-            {t("labelRedPacketTo")}
+            {t("labelRedPacketTo", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
           </Typography>
           <Typography
             component={"span"}
             variant={"body1"}
             color={"var(--color-text-primary)"}
           >
-            {t("labelToMyL2")}
+            {t("labelToMyL2", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
           </Typography>
         </Grid>
         <Grid item xs={12} alignSelf={"stretch"} position={"relative"}>

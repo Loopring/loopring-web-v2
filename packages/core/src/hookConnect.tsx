@@ -12,6 +12,7 @@ import {
   connectProvides,
   ErrorType,
   ProcessingType,
+  ProcessingStep,
 } from "@loopring-web/web3-provider";
 import {
   AccountStatus,
@@ -275,8 +276,8 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const handleProcessing = React.useCallback(
     ({ opts, type }: { type: ProcessingType; opts: any }) => {
-      if (opts == ProcessingType.nextStep) {
-        if (opts.step !== undefined && opts.step == 0) {
+      if (type == ProcessingType.nextStep) {
+        if (opts.step !== undefined && opts.step == ProcessingStep.showQrcode) {
           setShowConnect({
             isShow: false,
           });

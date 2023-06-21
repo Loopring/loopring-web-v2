@@ -55,7 +55,7 @@ export const CheckActiveStatus = ({
             marginBottom={3}
             marginTop={-1}
           >
-            {t("labelActiveAccountTitle")}
+            {t("labelActiveAccountTitle", { loopringL2: "Loopring L2" })}
           </Typography>
           <Box
             display={"flex"}
@@ -101,7 +101,13 @@ export const CheckActiveStatus = ({
                       {t(
                         isFeeNotEnough.isFeeNotEnough
                           ? "labelAddAssetGateBtn"
-                          : "labelActiveLayer2Btn"
+                          : "labelActiveLayer2Btn",
+                        {
+                          loopringL2: "Loopring L2",
+                          l2Symbol: "L2",
+                          l1Symbol: "L1",
+                          ethereumL1: "Ethereum L1",
+                        }
                       )}
                     </Button>
                   </Box>
@@ -113,7 +119,12 @@ export const CheckActiveStatus = ({
                     color={"textSecondary"}
                     whiteSpace={"pre-line"}
                   >
-                    {t("labelBenefitL2")}
+                    {t("labelBenefitL2", {
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                    })}
                   </Typography>
                   <Box marginTop={3}>
                     <Button
@@ -139,7 +150,7 @@ export const CheckActiveStatus = ({
             whiteSpace={"pre"}
             marginTop={-1}
           >
-            {t("labelActiveAccountTitle")}
+            {t("labelActiveAccountTitle", { loopringL2: "Loopring L2" })}
           </Typography>
           <Box
             display={"flex"}
@@ -160,7 +171,12 @@ export const CheckActiveStatus = ({
                   marginTop={1}
                   textAlign={"center"}
                 >
-                  {t("labelActivatedAccountNotSupport")}
+                  {t("labelActivatedAccountNotSupport", {
+                    loopringL2: "Loopring L2",
+                    l2Symbol: "L2",
+                    l1Symbol: "L1",
+                    ethereumL1: "Ethereum L1",
+                  })}
                 </Typography>
                 <Typography
                   component={"p"}
@@ -169,7 +185,12 @@ export const CheckActiveStatus = ({
                   marginTop={1}
                   marginBottom={2}
                 >
-                  {t("labelActivatedAccountNotSupportDes")}
+                  {t("labelActivatedAccountNotSupportDes", {
+                    loopringL2: "Loopring L2",
+                    l2Symbol: "L2",
+                    l1Symbol: "L1",
+                    ethereumL1: "Ethereum L1",
+                  })}
                 </Typography>
                 <Button
                   size={"large"}
@@ -208,7 +229,12 @@ export const CheckActiveStatus = ({
                     variant={"body1"}
                     marginTop={2}
                   >
-                    {t("labelEnoughBalancePayForActive")}
+                    {t("labelEnoughBalancePayForActive", {
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                    })}
                   </Typography>
                 )}
                 <Typography
@@ -218,7 +244,9 @@ export const CheckActiveStatus = ({
                   marginTop={2}
                   marginBottom={1}
                 >
-                  {t("labelActivatedAccountChargeFeeList")}
+                  {t("labelActivatedAccountChargeFeeList", {
+                    loopringL2: "Loopring L2",
+                  })}
                 </Typography>
                 <Box marginTop={1}>
                   <Typography

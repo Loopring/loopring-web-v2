@@ -57,7 +57,13 @@ export const SendAsset = ({
         marginBottom={3}
         marginTop={-1}
       >
-        {t("labelSendAssetTitle", { symbol })}
+        {t("labelSendAssetTitle", {
+          symbol,
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        })}
       </Typography>
       <Box
         display={"flex"}
@@ -118,7 +124,12 @@ export const SendAsset = ({
                       }}
                     >
                       <>{IconItem({ svgIcon: item.svgIcon })}</>
-                      {t("label" + item.key)}
+                      {t("label" + item.key, {
+                        loopringL2: "Loopring L2",
+                        l2Symbol: "L2",
+                        l1Symbol: "L1",
+                        ethereumL1: "Ethereum L1",
+                      })}
                     </Typography>
                   </MenuBtnStyled>
                 </Box>

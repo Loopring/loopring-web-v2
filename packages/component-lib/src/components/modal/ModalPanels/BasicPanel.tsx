@@ -217,7 +217,13 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           variant={isMobile ? "h4" : "h3"}
           whiteSpace={"pre"}
         >
-          {t(title as string)}
+          {t(title as string, {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+            loopringLayer2: "Loopring Layer 2",
+          })}
         </Typography>
         <Box
           flex={1}

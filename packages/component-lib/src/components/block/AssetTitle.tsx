@@ -61,7 +61,7 @@ export const AssetTitle = withTranslation("common")(
               paddingRight={3}
               color={"textSecondary"}
             >
-              {t("labelAssetTitle")}
+              {t("labelAssetTitle", { loopringL2: "Loopring L2" })}
               {` (UID: ${accountId})`}
               <IconButton
                 size={"small"}
@@ -178,7 +178,10 @@ export const AssetTitleMobile = ({
           left={2}
           top={2}
         >
-          {t(label ?? "labelAssets", { ns: "layout" })}
+          {t(label ?? "labelAssets", {
+            ns: "layout",
+            loopringL2: "Loopring L2",
+          })}
         </Typography>
         <Typography
           component={"span"}

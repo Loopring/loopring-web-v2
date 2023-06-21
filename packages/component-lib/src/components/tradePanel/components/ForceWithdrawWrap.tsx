@@ -182,7 +182,15 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             variant={"body2"}
             whiteSpace={"pre-line"}
           >
-            <Trans i18nKey="labelForceWithdrawDes">
+            <Trans
+              i18nKey="labelForceWithdrawDes"
+              tOptions={{
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }}
+            >
               If the receipt account doesn't activate the Loopring L2 account,
               you will be able to withdraw the token from L2 to Ethereum L1.
               Usually only when you sent the token to the L2 account of a wrong
@@ -265,7 +273,12 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
                 alignSelf={"stretch"}
                 position={"relative"}
               >
-                {t("labelForceWithdrawNotAvailable")}
+                {t("labelForceWithdrawNotAvailable", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                })}
               </Typography>
             ) : (
               <Typography

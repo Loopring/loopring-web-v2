@@ -394,13 +394,23 @@ export const useAddressTypeLists = <
         label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
-        description: t("labelContactsBinanceNotSupportted"),
+        description: t("labelContactsBinanceNotSupportted", {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
-        description: t("labelContactsHuobiNotSupportted"),
+        description: t("labelContactsHuobiNotSupportted", {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }),
       },
       {
         label: t(`labelExchange${EXCHANGE_TYPE.Others}`),

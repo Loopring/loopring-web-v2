@@ -234,7 +234,10 @@ const NodeMenuItem = React.memo(
             color={"inherit"}
             onClick={handleListKeyDown}
           >
-            {rest.t(label.i18nKey)}
+            {rest.t(label.i18nKey, {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+            })}
           </Typography>
         )}
       </>

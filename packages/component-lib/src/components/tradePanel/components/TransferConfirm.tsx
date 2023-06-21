@@ -63,7 +63,9 @@ export const TransferConfirm = <
             variant={isMobile ? "h4" : "h3"}
             whiteSpace={"pre"}
           >
-            {t("labelL2toL2Title")}
+            {t("labelL2toL2Title", {
+              loopringL2: "Loopring L2",
+            })}
           </Typography>
         </Box>
       </Grid>

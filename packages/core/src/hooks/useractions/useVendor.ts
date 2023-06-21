@@ -121,7 +121,13 @@ export const useVendor = () => {
                   step: AccountStep.ThirdPanelReturn,
                   info: {
                     title: t("labelAddAssetTitleCard"),
-                    description: t(dex),
+                    description: t(dex, {
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                      loopringLayer2: "Loopring Layer 2",
+                    }),
                   },
                 });
               });
@@ -150,7 +156,13 @@ export const useVendor = () => {
               step: AccountStep.ThirdPanelReturn,
               info: {
                 title: t("labelAddAssetTitleCard"),
-                description: t(dex),
+                description: t(dex, {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                  loopringLayer2: "Loopring Layer 2",
+                }),
               },
             });
             if (legalEnable) {

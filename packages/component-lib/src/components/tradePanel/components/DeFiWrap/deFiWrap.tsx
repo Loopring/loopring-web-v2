@@ -182,9 +182,37 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+          : {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+      );
     } else {
-      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+      return isJoin
+        ? t(`labelInvestBtn`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        })
+        : t(`labelRedeemBtn`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        });
     }
   }, [isJoin, t, btnInfo]);
 
@@ -419,7 +447,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                       <Trans
                         i18nKey={"labelDefiMaxBalance1"}
                         components={{ li: <li /> }}
-                        tOptions={{ symbol: baseSymbol, type }}
+                        tOptions={{
+                          symbol: baseSymbol,
+                          type,
+                          loopringL2: "Loopring L2",
+                          l2Symbol: "L2",
+                          l1Symbol: "L1",
+                          ethereumL1: "Ethereum L1",
+                        }}
                       >
                         <li>
                           Withdraw wstETH to L1 and trade through CRV or LIDO

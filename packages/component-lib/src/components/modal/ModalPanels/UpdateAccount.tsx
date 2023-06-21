@@ -120,7 +120,13 @@ export const UpdateAccount_Success = (props: PanelProps) => {
         {props.t(
           props.patch?.isReset
             ? "labelResetAccountSuccess2"
-            : "labelUpdateAccountSuccess2"
+            : "labelUpdateAccountSuccess2",
+          {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          }
         )}
       </Typography>
     </Box>
@@ -137,7 +143,9 @@ export const UpdateAccount_Success = (props: PanelProps) => {
 export const UpdateAccount_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t("labelUpdateAccountFailed"),
+    describe1: props.t("labelUpdateAccountFailed", {
+      loopringL2: "Loopring L2",
+    }),
   };
   return <UpdateAccountBase {...propsPatch} {...props} />;
 };

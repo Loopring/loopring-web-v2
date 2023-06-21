@@ -40,6 +40,10 @@ export const NFTDeposit_WaitForAuth = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTTokenDepositWaitForAuth", {
+      loopringL2: "Loopring L2",
+      // l2Symbol: "L2",
+      // l1Symbol: "L1",
+      // ethereumL1:"Ethereum L1",
       symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
@@ -172,14 +176,26 @@ export const NFTDeposit_Submit = (
             variant={"body1"}
             color={"var(--color-text-secondary)"}
           >
-            {props.t("labelL1toL2TO")}
+            {props.t("labelL1toL2TO", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
           </Typography>
           <Typography
             component={"span"}
             variant={"body1"}
             color={"var(--color-text-primary)"}
           >
-            {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
+            {props.to
+              ? "L2: " + getShortAddr(props.to)
+              : t("labelToMyL2", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                })}
           </Typography>
         </Typography>
       </Box>

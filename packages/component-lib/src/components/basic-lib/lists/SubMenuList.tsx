@@ -101,7 +101,10 @@ export const SubMenuList = withTranslation(["layout", "common"], {
                         component="span"
                         variant="body1"
                       >
-                        {t(item.label.i18nKey)}
+                        {t(item.label.i18nKey, {
+                          loopringL2: "Loopring L2",
+                          l2Symbol: "L2",
+                        })}
                       </Typography>
                     }
                     secondary={
@@ -123,7 +126,10 @@ export const SubMenuList = withTranslation(["layout", "common"], {
                         component="span"
                         variant="body1"
                       >
-                        {t(item.label.i18nKey)}
+                        {t(item.label.i18nKey, {
+                          loopringL2: "Loopring L2",
+                          l2Symbol: "L2",
+                        })}
                       </Typography>
                     }
                   />

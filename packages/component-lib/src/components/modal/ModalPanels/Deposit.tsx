@@ -35,6 +35,7 @@ export const Deposit_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelL1toL2WaitForAuth", {
+      loopringL2: "Loopring L2",
       symbol: props.symbol,
       value: props.value,
       to: props.to ?? "",
@@ -159,14 +160,26 @@ export const Deposit_Submit = (props: PanelProps) => {
             variant={"body1"}
             color={"var(--color-text-secondary)"}
           >
-            {props.t("labelL1toL2TO")}
+            {props.t("labelL1toL2TO", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
           </Typography>
           <Typography
             component={"span"}
             variant={"body1"}
             color={"var(--color-text-primary)"}
           >
-            {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
+            {props.to
+              ? "L2: " + getShortAddr(props.to)
+              : t("labelToMyL2", {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                })}
           </Typography>
         </Typography>
       </Box>

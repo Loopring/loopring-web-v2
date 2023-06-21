@@ -249,7 +249,7 @@ Layer2Item = React.memo(
           variant={"body1"}
           color={"text.primary"}
         >
-          {t(label.i18nKey)}
+          {t(label.i18nKey, { loopringL2: "Loopring L2", l2Symbol: "L2" })}
         </Typography>
         <Typography
           lineHeight={"20px"}
@@ -303,7 +303,10 @@ export const HeaderMenuSub = React.memo(
                 paddingRight={1}
                 color={"inherit"}
               >
-                {t(label.i18nKey)}
+                {t(label.i18nKey, {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                })}
               </Typography>
             </StyledTabBtn>
           ) : (
@@ -320,7 +323,10 @@ export const HeaderMenuSub = React.memo(
                   paddingRight={1}
                   color={"inherit"}
                 >
-                  {t(label.i18nKey)}
+                  {t(label.i18nKey, {
+                    loopringL2: "Loopring L2",
+                    l2Symbol: "L2",
+                  })}
                 </Typography>
                 <ListItemAvatar
                   color={"inherit"}

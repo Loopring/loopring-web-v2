@@ -107,7 +107,12 @@ export const BtnConnectL1 = withTranslation(["common", "layout"], {
         }}
       >
         {label !== "" ? (
-          t(label)
+          t(label, {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })
         ) : (
           <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
         )}

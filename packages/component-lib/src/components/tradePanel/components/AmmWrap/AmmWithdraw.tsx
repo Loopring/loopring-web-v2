@@ -81,9 +81,30 @@ export const AmmWithdrawWrap = <
   const label = React.useMemo(() => {
     if (ammWithdrawBtnI18nKey) {
       const key = ammWithdrawBtnI18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1].toString(),
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+          : {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+      );
     } else {
-      return t(`labelRemoveLiquidityBtn`);
+      return t(`labelRemoveLiquidityBtn`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      });
     }
   }, [ammWithdrawBtnI18nKey]);
 

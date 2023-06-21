@@ -761,8 +761,8 @@ export const useDeposit = <
 
   const title =
     account.readyState === AccountStatus.NO_ACCOUNT
-      ? t("depositTitleAndActive")
-      : t("depositTitle");
+      ? t("labelDepositTitleAndActive")
+      : t("labelDepositTitle");
   const depositProps: DepositProps<T, I> = {
     btnInfo,
     isNewAccount,

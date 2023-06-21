@@ -697,11 +697,37 @@ export const DualWrap = <
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+          : {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+      );
     } else {
       return displayMode === DisplayMode.beginnerModeStep1
-        ? t("labelContinue")
-        : t(`labelInvestBtn`);
+        ? t("labelContinue", {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        })
+        : t(`labelInvestBtn`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        });
     }
   }, [t, btnInfo]);
   const lessEarnView = React.useMemo(

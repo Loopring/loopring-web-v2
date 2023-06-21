@@ -165,9 +165,30 @@ export const AmmDepositWrap = <
   const label = React.useMemo(() => {
     if (ammDepositBtnI18nKey) {
       const key = ammDepositBtnI18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1].toString(),
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+          : {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+      );
     } else {
-      return t(`labelAddLiquidityBtn`);
+      return t(`labelAddLiquidityBtn`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      });
     }
   }, [ammDepositBtnI18nKey]);
 

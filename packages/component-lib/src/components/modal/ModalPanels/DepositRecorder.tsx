@@ -145,7 +145,12 @@ export const DepositRecorder = ({
               variant={"body1"}
               color={"text.secondary"}
             >
-              {t("labelL1toL2HashEmpty")}
+              {t("labelL1toL2HashEmpty", {
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              })}
             </Typography>
           </Typography>
         )}

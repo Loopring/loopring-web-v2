@@ -152,13 +152,35 @@ export const WithdrawWrap = <
   const label = React.useMemo(() => {
     if (withdrawI18nKey) {
       const key = withdrawI18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+          : {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+      );
     } else {
       return t(
         (tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
           (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
           ? `labelSendL1DeployBtn`
-          : `labelSendL1Btn`
+          : `labelSendL1Btn`,
+        {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        }
       );
     }
   }, [t, tradeData, withdrawI18nKey]);
@@ -198,10 +220,10 @@ export const WithdrawWrap = <
           >
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
-              ? t("labelL2ToL1DeployTitle")
+              ? t("labelL2ToL1DeployTitle", { l1Symbol: "L1" })
               : isToMyself
-              ? t("labelL2ToMyL1Title")
-              : t("labelL2ToOtherL1Title")}
+              ? t("labelL2ToMyL1Title", { l1Symbol: "L1" })
+              : t("labelL2ToOtherL1Title", { l1Symbol: "L1" })}
           </Typography>
           <Info2Icon
             {...bindHover(popupState)}
@@ -333,7 +355,7 @@ export const WithdrawWrap = <
             lineHeight={"20px"}
             color={"var(--color-text-third)"}
           >
-            {t("labelL2toL1MyAddress")}
+            {t("labelL2toL1MyAddress", { l1Symbol: "L1" })}
 
             {!!isAddressCheckLoading && (
               <LoadingIcon

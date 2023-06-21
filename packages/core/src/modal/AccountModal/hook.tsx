@@ -505,8 +505,20 @@ export function useAccountModalForUI({
                   isShow: true,
                   step: AccountStep.ThirdPanelReturn,
                   info: {
-                    title: t("labelAddAssetTitleBridge"),
-                    description: t(dex),
+                    title: t("labelAddAssetTitleBridge", {
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                      loopringLayer2: "Loopring Layer 2",
+                    }),
+                    description: t(dex, {
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                      loopringLayer2: "Loopring Layer 2",
+                    }),
                   },
                 });
 
@@ -553,7 +565,12 @@ export function useAccountModalForUI({
                   step: AccountStep.ThirdPanelReturn,
                   info: {
                     title: t("labelAddAssetTitleExchange"),
-                    description: t(dex),
+                    description: t(dex, {
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                    }),
                   },
                 });
                 setShowLayerSwapNotice({ isShow: true });
@@ -582,7 +599,13 @@ export function useAccountModalForUI({
                   step: AccountStep.ThirdPanelReturn,
                   info: {
                     title: t("labelFromAnotherNet"),
-                    description: t(dex),
+                    description: t(dex, {
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                      loopringLayer2: "Loopring Layer 2",
+                    }),
                   },
                 });
                 setShowAnotherNetworkNotice({ isShow: true });

@@ -31,7 +31,10 @@ export const CreateAccount_Approve_Submit = (props: PanelProps) => {
 export const CreateAccount_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelL1toL2WaitForAuth", { symbol: props.symbol }),
+    describe1: props.t("labelL1toL2WaitForAuth", {
+      symbol: props.symbol,
+      loopringL2: "Loopring L2",
+    }),
   };
   return <CreateAccountBase {...propsPatch} {...props} />;
 };
@@ -52,6 +55,7 @@ export const CreateAccount_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelCreateAccountFailed", {
+      loopringL2: "Loopring L2",
       value: props.value,
       symbol: props.symbol,
     }),
@@ -64,6 +68,7 @@ export const CreateAccount_Submit = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelCreateAccountSubmit", {
+      loopringL2: "Loopring L2",
       value: props.value,
       symbol: props.symbol,
       count: 30,

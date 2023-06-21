@@ -168,7 +168,13 @@ export const DepositToPage = withTranslation(["common"])(
               title={t(
                 account.readyState === AccountStatus.UN_CONNECT
                   ? "labelL1toL2TitleBridgeNoConnect"
-                  : "labelL1toL2TitleBridge"
+                  : "labelL1toL2TitleBridge",
+                {
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                }
               )}
               accountReady={account?.readyState as any}
               btnInfo={_depositBtnI18nKey}

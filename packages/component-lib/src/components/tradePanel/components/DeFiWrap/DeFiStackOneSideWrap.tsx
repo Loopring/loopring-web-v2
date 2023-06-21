@@ -408,9 +408,37 @@ export const DeFiSideWrap = <
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+          : {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            }
+      );
     } else {
-      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+      return isJoin
+        ? t(`labelInvestBtn`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        })
+        : t(`labelRedeemBtn`, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        });
     }
   }, [isJoin, t, btnInfo]);
 
@@ -613,7 +641,15 @@ export const DeFiSideWrap = <
             display={"inline-flex"}
             alignItems={"center"}
           >
-            <Trans i18nKey={"labelLRCStakeRiskDes"}>
+            <Trans
+              i18nKey={"labelLRCStakeRiskDes"}
+              tOptions={{
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }}
+            >
               The staked LRC is locked in Loopring L2 and won't be able to used
               for other purpose although it can be redeemed any time; while if
               the staking is redeemed before 90 days, the accumulated reward

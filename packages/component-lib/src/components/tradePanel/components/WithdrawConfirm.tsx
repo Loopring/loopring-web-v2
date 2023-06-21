@@ -64,10 +64,10 @@ export const WithdrawConfirm = <
           >
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
-              ? t("labelL2ToL1DeployTitle")
+              ? t("labelL2ToL1DeployTitle", { l1Symbol: "L1" })
               : isToMyself
-              ? t("labelL2ToMyL1Title")
-              : t("labelL2ToOtherL1Title")}
+              ? t("labelL2ToMyL1Title", { l1Symbol: "L1" })
+              : t("labelL2ToOtherL1Title", { l1Symbol: "L1" })}
           </Typography>
           {/*<Typography*/}
           {/*  component={"h6"}*/}

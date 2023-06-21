@@ -156,6 +156,10 @@ export const useCommon = <
       tradeType:
         tradeType === TradeProType.sell ? t("labelProSell") : t("labelProBuy"),
       symbol: tradeCalcProData.coinBase,
+      loopringL2: "Loopring L2",
+      l2Symbol: "L2",
+      l1Symbol: "L1",
+      ethereumL1: "Ethereum L1",
     });
   }, [inputError, t, i18nKey, tradeType, tradeCalcProData]);
 

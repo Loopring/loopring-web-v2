@@ -31,7 +31,7 @@ const activeBtnLabelFn = function () {
   // myLog("goActiveAccount");
   // const is_Contract = await isContract(connectProvides.usedWeb3, accAddress);
   // is_Contract ? "labelNotAllowActive" :
-  return `depositAndActiveBtn`;
+  return `labelDepositAndActiveBtn`;
 };
 
 export const btnLabel = {

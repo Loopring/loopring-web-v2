@@ -10,8 +10,8 @@ import { ForcewithdrawPanel } from "./ForcewithdrawPanel";
 import { ReferralRewardsPanel } from "./ReferralRewardsPanel";
 import { ContactPage } from "./ContactPanel";
 import {
-  Layer2L2Router,
-  Layer2L2RouterIndex,
+  ProfileKey,
+  ProfileIndex,
   MapChainId,
 } from "@loopring-web/common-resources";
 import { useSettings } from "@loopring-web/component-lib";
@@ -23,27 +23,27 @@ export const Layer2Page = () => {
 
   const layer2Router = React.useMemo(() => {
     let _selected;
-
-    if (Layer2L2RouterIndex[MapChainId[defaultNetwork]]?.includes(selected)) {
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+    if (ProfileIndex[network]?.includes(selected)) {
       _selected = selected;
     } else {
       _selected = "";
     }
     switch (_selected) {
-      case Layer2L2Router.forcewithdraw:
+      case ProfileKey.forcewithdraw:
         return <ForcewithdrawPanel />;
-      case Layer2L2Router.security:
+      case ProfileKey.security:
         return <SecurityPanel />;
-      case Layer2L2Router.vip:
+      case ProfileKey.vip:
         return <VipPanel />;
-      case Layer2L2Router.contact:
+      case ProfileKey.contact:
         return <ContactPage />;
       default:
-        return <VipPanel />;
+        return <SecurityPanel />;
     }
   }, [selected]);
 
-  return selected === Layer2L2Router.referralrewards ? (
+  return selected === ProfileKey.referralrewards ? (
     <Box flex={1} display={"flex"} flexDirection={"column"}>
       <ReferralRewardsPanel />
     </Box>

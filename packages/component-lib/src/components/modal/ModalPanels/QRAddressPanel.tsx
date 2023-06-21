@@ -64,9 +64,13 @@ export const QRAddressPanel = withTranslation("common")(
             >
               {isNewAccount
                 ? t("labelReceiveAddressGuide", {
+                    loopringL2: "Loopring L2",
                     symbol: feeChargeOrder?.join(", "),
                   })
-                : t("labelReceiveAddressGuide", { symbol: t("labelAssets") })}
+                : t("labelReceiveAddressGuide", {
+                    loopringL2: "Loopring L2",
+                    symbol: t("labelAssets", { loopringL2: "Loopring L2" }),
+                  })}
             </Typography>
           </BoxStyle>
         )}
@@ -100,7 +104,14 @@ export const QRAddressPanel = withTranslation("common")(
           {t(
             isNewAccount
               ? "labelReceiveAddressDesActive"
-              : "labelReceiveAddressDes"
+              : "labelReceiveAddressDes",
+            {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+              loopringLayer2: "Loopring Layer 2",
+            }
           )}
         </Typography>
         <Box alignSelf={"stretch"} paddingX={5}>

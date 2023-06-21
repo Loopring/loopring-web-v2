@@ -83,7 +83,9 @@ export const NoAccount = withTranslation("common")(
                   goActiveAccount();
                 }}
               >
-                {t("labelActiveL2Btn")}
+                {t("labelActiveL2Btn", {
+                  loopringL2: "Loopring L2",
+                })}
               </Button>
             </Box>
             <Box

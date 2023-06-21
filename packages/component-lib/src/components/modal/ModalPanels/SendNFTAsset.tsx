@@ -111,7 +111,13 @@ export const SendNFTAsset = ({
                   }}
                 >
                   <>{IconItem({ svgIcon: item.svgIcon })}</>
-                  {t("label" + item.key)}
+                  {t("label" + item.key, {
+                    loopringL2: "Loopring L2",
+                    l2Symbol: "L2",
+                    l1Symbol: "L1",
+                    ethereumL1: "Ethereum L1",
+                    loopringLayer2: "Loopring Layer 2",
+                  })}
                 </Typography>
               </MenuBtnStyled>
             </Box>

@@ -3,9 +3,14 @@ import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useExportAccountInfo, useResetAccount } from "./hook";
-import { useOpenModals } from "@loopring-web/component-lib";
+import { useOpenModals, useSettings } from "@loopring-web/component-lib";
 import { useAccount } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
+import {
+  ProfileIndex,
+  MapChainId,
+  ProfileKey,
+} from "@loopring-web/common-resources";
 
 const StyledPaper = styled(Grid)`
   width: 100%;
@@ -27,6 +32,10 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
     const { exportAccount } = useExportAccountInfo();
     const history = useHistory();
     const { setShowAccount } = useOpenModals();
+    const { defaultNetwork } = useSettings();
+
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
     return (
       <StyledPaper container className={"MuiPaper-elevation2"} marginBottom={2}>
         <Grid
@@ -68,14 +77,19 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                     component={"h4"}
                     marginBottom={1}
                   >
-                    {t("labelTitleResetL2Keypair")}
+                    {t("labelTitleResetL2Keypair", {
+                      loopringL2: "Loopring L2",
+                    })}
                   </Typography>
                   <Typography
                     variant={"body1"}
                     color={"text.secondary"}
                     component={"p"}
                   >
-                    <Trans i18nKey="resetDescription">
+                    <Trans
+                      i18nKey="labelResetDescription"
+                      tOptions={{ loopringL2: "Loopring L2" }}
+                    >
                       Create a new signing key for layer-2 authentication (no
                       backup needed). This will
                       <Typography component={"span"}>
@@ -214,67 +228,76 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
               </Grid>
             </Grid>
           </Box>
-          <StyledDivider />
-          <Box
-            component={"section"}
-            display={"flex"}
-            flexDirection={"column"}
-            padding={5 / 2}
-          >
-            <Grid
-              container
-              display={"flex"}
-              flexDirection={"row"}
-              justifyContent={"stretch"}
-              alignItems={"flex-start"}
-            >
-              <Grid item xs={7} display={"flex"} flexDirection={"column"}>
-                <Typography
-                  variant={"h4"}
-                  color={"text.primary"}
-                  component={"h4"}
-                  marginBottom={1}
-                >
-                  {t("labelForceWithdrawTitle")}
-                </Typography>
-                <Typography
-                  variant={"body1"}
-                  color={"text.secondary"}
-                  component={"p"}
-                >
-                  {t("labelForceWithdrawDes")}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={5}
+          {ProfileIndex[network]?.includes(ProfileKey.forcewithdraw) && (
+            <>
+              <StyledDivider />
+              <Box
+                component={"section"}
                 display={"flex"}
                 flexDirection={"column"}
-                justifyContent={"flex-start"}
-                alignItems={"flex-end"}
-                alignSelf={"stretch"}
+                padding={5 / 2}
               >
-                <Grid item>
-                  <Button
-                    onClick={() => {
-                      // exportAccInfo()
-                      setShowAccount({
-                        isShow: false,
-                        info: { lastFailed: undefined },
-                      });
-                      history.push(`/layer2/forcewithdraw`);
-                    }}
-                    variant={"outlined"}
-                    size={"medium"}
-                    color={"primary"}
-                    disabled={false}
+                <Grid
+                  container
+                  display={"flex"}
+                  flexDirection={"row"}
+                  justifyContent={"stretch"}
+                  alignItems={"flex-start"}
+                >
+                  <Grid item xs={7} display={"flex"} flexDirection={"column"}>
+                    <Typography
+                      variant={"h4"}
+                      color={"text.primary"}
+                      component={"h4"}
+                      marginBottom={1}
+                    >
+                      {t("labelForceWithdrawTitle")}
+                    </Typography>
+                    <Typography
+                      variant={"body1"}
+                      color={"text.secondary"}
+                      component={"p"}
+                    >
+                      {t("labelForceWithdrawDes", {
+                        loopringL2: "Loopring L2",
+                        l2Symbol: "L2",
+                        l1Symbol: "L1",
+                        ethereumL1: "Ethereum L1",
+                      })}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={5}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    justifyContent={"flex-start"}
+                    alignItems={"flex-end"}
+                    alignSelf={"stretch"}
                   >
-                    {t("labelForceWithdrawBtn")}
-                  </Button>
+                    <Grid item>
+                      <Button
+                        onClick={() => {
+                          // exportAccInfo()
+                          setShowAccount({
+                            isShow: false,
+                            info: { lastFailed: undefined },
+                          });
+                          history.push(`/layer2/forcewithdraw`);
+                        }}
+                        variant={"outlined"}
+                        size={"medium"}
+                        color={"primary"}
+                        disabled={false}
+                      >
+                        {t("labelForceWithdrawBtn")}
+                      </Button>
+                    </Grid>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Grid>
-          </Box>
+              </Box>
+            </>
+          )}
         </Grid>
       </StyledPaper>
     );

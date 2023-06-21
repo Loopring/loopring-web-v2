@@ -169,12 +169,38 @@ export const SwapTradeWrap = <
     if (swapBtnI18nKey) {
       const key = swapBtnI18nKey.split("|");
       if (key) {
-        return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+        return t(
+          key[0],
+          key && key[1]
+            ? {
+                arg: key[1],
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }
+            : {
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }
+        );
       } else {
-        return t(swapBtnI18nKey);
+        return t(swapBtnI18nKey, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        });
       }
     } else {
-      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`);
+      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`, {
+        loopringL2: "Loopring L2",
+        l2Symbol: "L2",
+        l1Symbol: "L1",
+        ethereumL1: "Ethereum L1",
+      });
     }
   }, [t, swapBtnI18nKey, tradeCalcData.isBtrade]);
   const showVal =

@@ -392,6 +392,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
                     }),
                     "",
                   ]
@@ -664,6 +668,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
                     }),
                     "",
                   ]

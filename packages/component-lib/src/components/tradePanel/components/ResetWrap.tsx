@@ -58,7 +58,9 @@ export const ResetWrap = <T extends FeeInfo>({
           whiteSpace={"pre"}
           marginBottom={2}
         >
-          {isNewAccount ? t("labelActiveAccountTitle") : t("resetTitle")}
+          {isNewAccount
+            ? t("labelActiveAccountTitle", { loopringL2: "Loopring L2" })
+            : t("resetTitle", { layer2: "Layer 2" })}
         </Typography>
         <Typography
           component={"p"}

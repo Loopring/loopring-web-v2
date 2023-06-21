@@ -166,7 +166,12 @@ export const TransferWrap = <
           alignSelf={"stretch"}
           position={"relative"}
         >
-          {t("labelNotOtherSmartWallet")}
+          {t("labelNotOtherSmartWallet", {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })}
         </Typography>
       );
     } else if (isInvalidAddressOrENS) {
@@ -190,7 +195,12 @@ export const TransferWrap = <
           alignSelf={"stretch"}
           position={"relative"}
         >
-          {t("labelNotExchangeEOA")}
+          {t("labelNotExchangeEOA", {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })}
         </Typography>
       );
     } else if (isSameAddress) {
@@ -235,7 +245,15 @@ export const TransferWrap = <
                     marginLeft={"-2px"}
                     display={"inline-flex"}
                   >
-                    <Trans i18nKey={"labelL2toL2AddressNotLoopring"}>
+                    <Trans
+                      i18nKey={"labelL2toL2AddressNotLoopring"}
+                      tOptions={{
+                        loopringL2: "Loopring L2",
+                        l2Symbol: "L2",
+                        l1Symbol: "L1",
+                        ethereumL1: "Ethereum L1",
+                      }}
+                    >
                       <AlertIcon
                         color={"inherit"}
                         fontSize={"medium"}
@@ -275,6 +293,10 @@ export const TransferWrap = <
                       >
                         {t("labelL2toL2AddressFeeActiveFee", {
                           value: activeAccountPrice,
+                          loopringL2: "Loopring L2",
+                          l2Symbol: "L2",
+                          l1Symbol: "L1",
+                          ethereumL1: "Ethereum L1",
                         })}
                       </Typography>
                     }
@@ -301,7 +323,7 @@ export const TransferWrap = <
     isOtherSmartWallet,
     isSameAddress,
     isLoopringAddress,
-    isAddressCheckLoading
+    isAddressCheckLoading,
   ]);
 
   return (
@@ -332,7 +354,9 @@ export const TransferWrap = <
             whiteSpace={"pre"}
             marginRight={1}
           >
-            {t("labelL2toL2Title")}
+            {t("labelL2toL2Title", {
+              loopringL2: "Loopring L2",
+            })}
           </Typography>
           <Info2Icon
             {...bindHover(popupState)}

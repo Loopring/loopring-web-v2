@@ -67,8 +67,19 @@ export const AddAsset = ({
         marginTop={-1}
       >
         {isNewAccount
-          ? t("labelAddAssetTitleActive")
-          : t("labelAddAssetTitle", { symbol })}
+          ? t("labelAddAssetTitleActive", {
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })
+          : t("labelAddAssetTitle", {
+              symbol,
+              loopringL2: "Loopring L2",
+              l2Symbol: "L2",
+              l1Symbol: "L1",
+              ethereumL1: "Ethereum L1",
+            })}
       </Typography>
       <Box
         display={"flex"}
@@ -87,7 +98,12 @@ export const AddAsset = ({
           color={"textSecondary"}
           marginBottom={1}
         >
-          {t("labelAddAssetHowto")}
+          {t("labelAddAssetHowto", {
+            loopringL2: "Loopring L2",
+            l2Symbol: "L2",
+            l1Symbol: "L1",
+            ethereumL1: "Ethereum L1",
+          })}
         </Typography>
         <Box flex={1} flexDirection={"column"}>
           {addAssetList.reduce((prev, item) => {
@@ -131,7 +147,12 @@ export const AddAsset = ({
                       }}
                     >
                       <>{IconItem({ svgIcon: item.svgIcon })}</>
-                      {t("label" + item.key)}
+                      {t("label" + item.key, {
+                        loopringL2: "Loopring L2",
+                        l2Symbol: "L2",
+                        l1Symbol: "L1",
+                        ethereumL1: "Ethereum L1",
+                      })}
                     </Typography>
                   </MenuBtnStyled>
                 </Box>

@@ -62,6 +62,7 @@ export const Transfer_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL2toL2Failed", {
+      loopringL2: "Loopring L2",
       symbol: props.symbol,
       value: props.value,
     }),

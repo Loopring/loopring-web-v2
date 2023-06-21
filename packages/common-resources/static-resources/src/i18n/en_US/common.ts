@@ -30,10 +30,10 @@ export default {
     "The trading fee is determined by your VIP level and the size of your trade. Small trades (below ~$100) incur a higher fee. Please review the fee before confirming.",
   swapBtn: "swap",
   goBack: "go back",
-  resetTitle: "Reset Layer 2 Keypair",
+  resetTitle: "Reset {{layer2}} Keypair",
   restLabelEnterToken: "Select Reset cause token",
-  resetDescription:
-    "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests. You can reset the EdDSA keypair at any time.",
+  labelResetDescription:
+    "Each account on {{loopringL2}} needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests. You can reset the EdDSA keypair at any time.",
   resetFee: "Fee {{count}} GAS ≈ ${{price}}",
   resetLabelBtn: "Reset",
   labelActiveEnterToken: "Select payment token",
@@ -44,8 +44,8 @@ export default {
   depositLabelEnterToken: "Select Layer 1 Token",
   depositDescription:
     "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
-  depositAndActiveDescription:
-    "Make a deposit to activate your Loopring L2 account. Once your deposit is <1>confirmed on Ethereum</1>, it will be added to your balance within <3>2 minutes</3>.",
+  labelDepositAndActiveDescription:
+    "Make a deposit to activate your {{loopringL2}} account. Once your deposit is <1>confirmed on Ethereum</1>, it will be added to your balance within <3>2 minutes</3>.",
   depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
   depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
@@ -69,21 +69,21 @@ export default {
   labelViewEth: "View on Etherscan",
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
-  labelAssetTitle: "Loopring L2 Total Assets",
+  labelAssetTitle: "{{loopringL2}}Total Assets",
   labelAssetMobileTitle: "L2 Assets",
   labelShowAccount: "Show or Hide Assets",
   labelLevel: "VIP Level",
   labelOrderbook: "Order book",
   labelSetPublicKey: "Set EdDSA Public Key",
   labelTitleSecurity: "Security",
-  labelTitleResetL2Keypair: "Reset Loopring L2 Keypair",
+  labelTitleResetL2Keypair: "Reset {{loopringL2}} Keypair",
   labelBtnReset: "Reset",
   labelHadChangPassword: "You changed your keypair {{passDay}} ago.",
   labelTitleForceWithdraw: "Force Withdraw",
   labelBtnForceWithdraw: "Force Withdraw",
   labelTitleExportAccount: "Export Account",
-  descriptionExportAccount:
-    "In order to access the Loopring L2 APIs, you will need to export a security key.",
+  labelDescriptionExportAccount:
+    "In order to access the {{loopringL2}} APIs, you will need to export a security key.",
   labelBtnExportAccount: "Export Account",
   labelDownloadViewMore: "View More",
   labelTitlePreferences: "Preferences",
@@ -171,7 +171,8 @@ export default {
   labelWrongNetwork: "Wrong network",
   labelActivatedAccountDeposit:
     "Please deposit to activate your Layer 2 account",
-  labelActivatedAccountNotSupport: "Your wallet does not support Loopring L2",
+  labelActivatedAccountNotSupport:
+    "Your wallet does not support {{loopringL2}}",
   labelActivatedAccountNotSupportDes:
     "Please connect with a different wallet or download the Loopring Wallet mobile app.",
   labelNotAllowForSmartWalletTitle: "Apologize",
@@ -292,10 +293,10 @@ export default {
   labelFirstSignDenied: "Your wallet doesn't support this signature method",
   labelUpdateAccountSuccess: "Congratulations!",
   labelUpdateAccountSuccess2:
-    "You have successfully activated your Loopring L2 account!",
+    "You have successfully activated your {{loopringL2}} account!",
   labelResetAccountSuccess: "Congratulations!",
   labelResetAccountSuccess2:
-    "You have successfully reset your Loopring L2 account keypair!",
+    "You have successfully reset your {{loopringL2}} account keypair!",
   labelUpdateAccountSubmit: "Activating Tx submitted.",
   labelUnlockAccountSuccess: "Unlock successful!",
   labelUnlockAccountFailed: "Unlock failed!",
@@ -384,8 +385,8 @@ export default {
     "Change the token priority order to adjust which tokens will be used for fees first.",
   labelBtnEdit: "Edit",
   labelSettingChargeFeeOrder: "Token Order for Fees",
-  desSettingChargeFeeOrder:
-    "Loopring L2 will use this token order when processing fees.",
+  _desSettingChargeFeeOrder:
+    "{{loopringL2}} will use this token order when processing fees.",
   labelReset: "Reset",
   labelQueryFeeOK: "Save",
   depositLimit:
@@ -437,7 +438,7 @@ export default {
   labelInvalidisContractAddress:
     "{{way}} of {{token}} to Contract wallet is not available",
   labelInvalidisLoopringAddress:
-    "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
+    "This address does not yet have an active {{loopringL2}}, {{way}} of {{token}} is disabled!",
   labelInvalidisSameAddress: "Cannot {{way}} to your own address.",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourRanking: "Your ranking",
@@ -452,7 +453,7 @@ export default {
   labelHours: "Hours",
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
-  labelIsNotFeeToken: "Please deposit {{symbol}} to activate Loopring L2.",
+  labelIsNotFeeToken: "Please deposit {{symbol}} to activate {{loopringL2}}.",
   labelIsETHDepositAlert:
     "Please reserve enough ETH in Layer 1 account to pay for gas!",
   labelIsNotEnoughFeeToken:
@@ -462,7 +463,7 @@ export default {
     "(CIDv0 or dag-pb CIDv1) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
   depositNFTIdLabelPlaceholder: "please input NFT id...",
   nftDepositDescription:
-    "Creates a smart contract on Ethereum L1, \n which requires a gas fee. NFTs minted \nhere remain on Loopring L2 until deployed.",
+    "Creates a smart contract on {{EthereumL1}}, \n which requires a gas fee. NFTs minted \nhere remain on {{loopringL2}} until deployed.",
   labelNFTDescribe: "Description:",
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "Amount:",
@@ -565,33 +566,33 @@ export default {
   labelmarket: "Market",
   labelswap: "Swap",
   labelamm: "Amm",
-  labelActiveAccountTitle: "Activate Loopring L2 Account",
-  depositTitle: "Add Assets from my L1",
-  depositTitleAndActive: "Add Asset from My L1 & Activate",
-  depositAndActiveBtn: "Activate Loopring L2",
-  depositTitleActive: "Activate Loopring L2",
+  labelActiveAccountTitle: "Activate {{loopringL2}} Account",
+  labelDepositTitle: "Add Assets from my L1",
+  labelDepositTitleAndActive: "Add Asset from My L1 & Activate",
+  labelDepositAndActiveBtn: "Activate {{loopringL2}}",
+  labelDepositTitleActive: "Activate {{loopringL2}}",
   depositLabelBtn: "Receive",
   depositLabelLinkRecent: "Recent receive history from L1",
-  labelL2ToL1Title: "Send to L1",
-  labelL2ToMyL1Title: "Send to My L1",
-  labelL2ToOtherL1Title: "Send to Another L1",
-  labelL2ToL1DeployTitle: "Deploy & Send to L1",
+  labelL2ToL1Title: "Send to {{l1Symbol}}",
+  labelL2ToMyL1Title: "Send to My {{l1Symbol}}",
+  labelL2ToOtherL1Title: "Send to Another {{l1Symbol}}",
+  labelL2ToL1DeployTitle: "Deploy & Send to {{l1Symbol}}",
   labelL2toL1EnterToken: "Select Token",
   labelSendL1Btn: "Send",
   labelSendL1DeployBtn: "Deploy & Send",
   labelL2toL1BtnExceed: "Exceed Max Fast Withdraw amount: {{arg}}!",
   labelL2toL1BtnExceedWithFee: "Insufficient balance (with fee)",
   labelL2toL1Address: "Ethereum Address",
-  labelL2toL1MyAddress: "To my L1",
+  labelL2toL1MyAddress: "To my {{l1Symbol}}",
   labelL2toL1AddressInput: "Please input the address",
   labelL2toL1Fee: "Select payment token",
   labelL2toL1Fast: "Fast",
   labelL2toL1Standard: "Standard",
   labelL2toL1LinkRecent: "Recent withdrawal history",
-  labelL2toL2Title: "Send to Another Loopring L2",
+  labelL2toL2Title: "Send to Another {{loopringL2}}",
   labelL2toL2EnterToken: "Select Token",
   transferDescription:
-    "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n Loopring L2 payments before you proceed.",
+    "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n {{loopringL2}} payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
   labelL2toL2AddressInput: "Please input address / ENS / Account ID",
@@ -603,10 +604,10 @@ export default {
   labelL2toL2FeeFastNotAllowEnough: "Please choose Standard!",
   labelL2toL2LinkRecent: "Recent send history",
   labelL2toL2ExchangeError:
-    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+    "Sending to an Exchange Address {{l2symbol}} account is not supported. {{loopringL2}} accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
   labelL2toL2SmartWalletError:
-    "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
-  labelActiveLayer2: "Activate Loopring L2",
+    "This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the {{l1Symbol}} account. ",
+  labelActiveLayer2: "Activate {{loopringL2}}",
   labelAddAsset: "Receive",
   labelAddAssetBtn: "Receive",
   labelSendAsset: "Send",
@@ -615,7 +616,7 @@ export default {
   labelReceive: "Receive",
   labelWaitingRefer: "Waiting for approval",
   labelL1toL2WaitForAuth:
-    "Please confirm to receive {{value}} {{symbol}} to {{to}} Loopring L2.",
+    "Please confirm to receive {{value}} {{symbol}} to {{to}} {{loopringL2}}.",
   labelL1toL2Denied: "You rejected to receive {{value}} {{symbol}}.",
   labelL1toL2Failed: "Add asset request of {{value}} {{symbol}} failed!",
   labelL1toL2Submit: "Add asset request has been submitted. <1></1>",
@@ -625,18 +626,18 @@ export default {
   labelL2toL1Success: "Sent {{value}} {{symbol}} to L1 was successful!",
   labelL2toL2InProgress: "Processing...",
   labelL2toL2Failed:
-    "Sent {{value}} {{symbol}} from my Loopring L2 to another Loopring L2 failed!",
+    "Sent {{value}} {{symbol}} from my {{loopringL2}} to another {{loopringL2}} failed!",
   labelL2toL2Success: "Sent {{value}} {{symbol}} was successful!",
-  labelUpdateAccountFailed: "Activate Loopring L2 has failed!",
+  labelUpdateAccountFailed: "Activate {{loopringL2}} has failed!",
   labelCreateAccountSubmit:
-    "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has been submitted! \n Approximately {{count}} minutes remaining...',",
+    "Activation of {{loopringL2}} with deposit of {{value}} {{symbol}} has been submitted! \n Approximately {{count}} minutes remaining...',",
   labelCreateAccountFailed:
-    "Activation of Loopring L2 with deposit of {{value}} {{symbol}} has failed!",
+    "Activation of {{loopringL2}} with deposit of {{value}} {{symbol}} has failed!",
   labelL1toL2Hash: "Recent transactions (From my L1 to my L2)",
   labelL1toL2HashEmpty:
-    "My L1 \u2192 Loopring L2 transactions will show up here.",
+    "My {{l1Symbol}} \u2192 {{loopringL2}} transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
-  labelNFTSendL2Btn: "To Another Loopring L2",
+  labelNFTSendL2Btn: "To Another {{loopringL2}}",
   labelNFTSendMyL1Btn: "To My L1",
   labelNFTSendOtherL1Btn: "To Other L1",
   labelNFTDeploySendMyL1: "To My L1 & Deploy Contract",
@@ -646,10 +647,10 @@ export default {
   labelL2toL2InvalidAddr: "Invalid address or ENS",
   labelL2toL2IsNotLoopringContract: "Is not Loopring Contract wallet address",
   labelL2toL2AddressNotLoopring:
-    "<0></0> This address does not have an activated Loopring L2. Please ensure  the recipient can access Loopring L2 before sending.",
+    "<0></0> This address does not have an activated {{loopringL2}}. Please ensure  the recipient can access {{loopringL2}} before sending.",
   labelL2toL2AddressType: "Address Type",
   labelL2toL2OriginDesc:
-    "Please select the address source. Note: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex…)",
+    "Please select the address source. Note: the following trading platforms currently do not support {{loopringL2}}  transfers (Binance, Huobi, Okex…)",
   labelL2toL2OriginBtnExchange: "Exchange",
   labelL2toL2OriginBtnWallet: "Wallet",
   labelL2toL2Confirm: "Confirm",
@@ -660,7 +661,7 @@ export default {
   labelNFTTransferTX: "L2 \u2192 L2",
   labelNFTWithdrawTX: "L2 \u2192 L1",
   labelNFTDepositTX: "L1 \u2192 L2",
-  labelNFTDeposit: "Receive Loopring L2 NFT",
+  labelNFTDeposit: "Receive {{loopringL2}} NFT",
   labelNFTDepositNeedApprove:
     "Allow Loopring to spend {{symbol}} and deposit it?",
   labelNFTDepositBtn: "Receive NFT",
@@ -668,14 +669,14 @@ export default {
   labelNFTContractAddress: "Contract:",
   labelNFTAmount: "Amount:",
   labelNFTTokenDepositWaitForAuth:
-    "Please confirm to send Loopring L2 {{symbol}}",
+    "Please confirm to send {{loopringL2}} {{symbol}}",
   nftMintDescription:
     "Paste in the CID that you obtained from uploading \n the metadata.json file (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder will populate the Name\n and Image below.",
   labelNFTMintInputTitle: "Amount <1>\uFE61</1>",
   labelL1toL2Vendor:
     "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   depositLabelTo: "To address, Account ID or ENS.",
-  labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
+  labelAddressNotLoopring: "Account doesn't have an active {{loopringL2}}",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle:
     "Preview Image (Dimensions: 1:1) <1>\uFE61</1><2>\u2139</2>",
@@ -720,21 +721,21 @@ export default {
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
-  labelL1toL2TitleBridge: "Add Loopring L2 Assets",
+  labelL1toL2TitleBridge: "Add {{loopringL2}} Assets",
   labelL1toL2TitleBridgeNoConnect:
-    "Connect your Ethereum L1 Wallet to transfer assets to any Loopring L2 account",
+    "Connect your {{ethereumL1}} Wallet to transfer assets to any {{loopringL2}} account",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
-  labelL1toL2TO: "To Loopring L2",
-  labelAddAssetTitle: "Add Loopring L2 {{symbol}} assets",
-  labelSendAssetTitle: "Send Loopring L2 {{symbol}} assets",
-  labelAddAssetHowto: "How would you like to add Loopring L2 assets?",
+  labelL1toL2TO: "To {{loopringL2}}",
+  labelAddAssetTitle: "Add {{loopringL2}} {{symbol}} assets",
+  labelSendAssetTitle: "Send {{loopringL2}} {{symbol}} assets",
+  labelAddAssetHowto: "How would you like to add {{loopringL2}} assets?",
   labelAddAssetTitleActive: "Add assets & Activate",
   labelFromMyL1: "From my L1 account",
   labelFromOtherL1: "From another L1 account",
   labelBuyWithCard: "Buy with Card",
-  labelFromOtherL2: "From another Loopring L2 account",
+  labelFromOtherL2: "From another {{loopringL2}} account",
   labelFromExchange: "From an exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",
   labelConnectWithDapp: "Connect with Dapp",
@@ -742,39 +743,39 @@ export default {
   labelOpenInWalletDetail: `URL for adding funds has been copied. You can choose either way to continue:`,
   labelOpenInWalletDetailLi1: `Open your wallet app and paste the URL into its internal Dapp browser`,
   labelOpenInWalletDetailLi2: `Open your desktop Chrome browser and paste the URL in Chrome`,
-  labelActiveL2Btn: "Activate Loopring L2",
+  labelActiveL2Btn: "Activate {{loopringL2}}",
   labelWrongNetworkGuideTitle: "Wrong Network",
   labelWrongNetworkGuide:
     "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
-  labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
-  labelSendTOL2: "To another Loopring L2 account",
+  labelSenAssetTitle: "Send {{symbol}} from {{loopringL2}}",
+  labelSendTOL2: "To another {{loopringL2}} account",
   labelSendToMyL1: "To my L1 account",
   labelSendToOtherL1: "To another L1 account \n(incl. exchange)",
   labelSendAssetHowto: "Where would you like to send your crypto to",
-  labelL1toL2: "Add Loopring L2 assets From My L1",
+  labelL1toL2: "Add {{loopringL2}} assets From My L1",
   labelActivatedAccountChargeFeeList:
-    "Please make sure one of the below tokens with the minimum quantity in your Loopring L2 account to proceed",
+    "Please make sure one of the below tokens with the minimum quantity in your {{loopringL2}} account to proceed",
   labelReceiveAddress: "Receive Address",
-  labelAssets: "Loopring L2 Assets",
+  labelAssets: "{{loopringL2}} Assets",
   labelReceiveAddressGuide:
-    "Please use a Loopring L2 account when transferring to avoid loss of assets ({{symbol}}).",
-  labelL2toL2: "Send to another Loopring L2",
+    "Please use a {{loopringL2}} account when transferring to avoid loss of assets ({{symbol}}).",
+  labelL2toL2: "Send to another {{loopringL2}}",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
-    "As Ethereum's first ever zkRollup, Loopring L2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your Loopring L2 account requires a small payment fee. ",
+    "As Ethereum's first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. ",
   labelNotBalancePayForActive:
-    "Insufficient balance in your Loopring L2 account",
+    "Insufficient balance in your {{loopringL2}} account",
   labelEnoughBalancePayForActive:
-    "You have enough balance to pay for Loopring L2 creation.",
+    "You have enough balance to pay for {{loopringL2}} creation.",
   labelHaveInProcessingL1toL2:
     "If you have already started the deposit, please be patient and recheck as transactions on Ethereum can take up to 30 minutes.",
   labelWaitingL1toL2: "Please wait",
   labelAddAssetGateBtn: "Add assets",
-  labelActiveLayer2Btn: "Activate Loopring L2",
+  labelActiveLayer2Btn: "Activate {{loopringL2}}",
   labelActiveLayer2PayBtn: "Pay Activation Fee",
   labelBalanceActiveAccountFee:
-    "{{symbol}}: <2>Fee {{fee}};</2><3>My Loopring L2 balance: {{count}}</3>",
-  labelToAddressShouldLoopring: "To address is no Loopring L2",
+    "{{symbol}}: <2>Fee {{fee}};</2><3>My {{loopringL2}} balance: {{count}}</3>",
+  labelToAddressShouldLoopring: "To address is no {{loopringL2}}",
   labelBridgeSendTo: "Send to (address, Account ID or ENS)",
   labelInvalidAddressClick:
     "Invalid Wallet Address, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
@@ -798,9 +799,9 @@ export default {
   labelLoopringDes:
     "This wallet is created using Loopring Wallet mobile app and binds with Loopring smart contract.",
   labelOtherSmartDes:
-    "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
+    "This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the L1 account. ",
   labelExchangeDes:
-    "The following trading platforms currently do not support Loopring L2 transfers (Binance, Coinbase, etc...). You will need to send funds to the L1 account. ",
+    "The following trading platforms currently do not support {{loopringL2}} transfers (Binance, Coinbase, etc...). You will need to send funds to the L1 account. ",
   labelExchangeTypeDes: "Please select the address source:",
   labelNonExchangeTypeDes:
     "eg: Loopring Wallet, Metamask, Coinbase Wallet, imtoken, Ledger, Trezor... EOA wallet",
@@ -826,7 +827,7 @@ export default {
   labelLayerSwapUnderstand: "Acknowledge and understand the risk",
   labelIUnderStand: "I Understand",
   labelLayerSwapUnderstandDes:
-    "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
+    "LayerSwap is a 3rd party App service provider to help move tokens from exchange to {{loopringL2}} directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelInvestAmmTitle: "AMM Pools",
   labelInvestBalanceTitle: "My Investments",
   labelInvestDualRefreshErrorTitle: "Subscription Failed",
@@ -851,7 +852,7 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a Block Trade address using Loopring L2. Since the Block Trade does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to Ethereum {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
   labelForceWithdrawConfirm1:
@@ -860,7 +861,7 @@ export default {
   labelNFTProperties: "Properties",
   labelNFTDescription2: "Description",
   labelForceWithdrawNotAvailable:
-    "Loopring L2 account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its L2 to L1 anymore",
+    "{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{symbolL2}} to {{symbolL1}} anymore",
   labelForceWithdrawNoToken:
     "No token is detected from this address to operate",
   labelForceWithdrawBtn: "Force Withdraw",
@@ -875,13 +876,13 @@ export default {
     "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
     "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
-    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>" +
     "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiNoBalance:
     "<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>" +
     "<span>You can choose one of the following approaches for the remaining amount:</span>",
   labelDefiNoBalanceList:
-    "<li>Withdraw {{symbol}} to L1 and trade through 1Inch or {{type}}, etc...</li>" +
+    "<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>" +
     "<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>",
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
@@ -1212,7 +1213,7 @@ export default {
   labelL2toL1NFTSuccess:
     "Sent {{value}} <span>{{symbol}}</span> to L1 was successful!",
   labelL2toL2NFTFailed:
-    "Sent {{value}} <span>{{symbol}}</span> from my Loopring L2 to another Loopring L2 failed!",
+    "Sent {{value}} <span>{{symbol}}</span> from my {{loopringL2}} to another {{loopringL2}} failed!",
   labelL2toL2NFTSuccess:
     "Sent {{value}} <span>{{symbol}}</span> was successful!",
   labelDoAgain: "{{method}} Again",
@@ -1256,24 +1257,24 @@ export default {
   labelIKnow2: "I know",
   labelAddAssetTitleBridge: "Add Asset From Another L1",
   labelAddAssetTitleBridgeDesActive:
-    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the L2 account.",
+    "If you have transferred tokens from another {{ethereumL1}} Symbol account, it may take some time for this transaction to execute on-chain. Once you receive the assets, you can manually activate the L2 account.",
   labelAddAssetTitleBridgeDes:
-    "If you have transferred tokens from another Ethereum L1 account, it may take some time for this transaction to execute on-chain.",
+    "If you have transferred tokens from another {{ethereumL1}} account, it may take some time for this transaction to execute on-chain.",
   labelAddAssetTitleExchange: "Add Asset From An Exchange",
   labelAddAssetTitleExchangeDes:
     "If you have transferred tokens from an Exchange, please wait. ",
   labelAddAssetTitleExchangeDesActive:
-    "If you have transferred tokens from an Exchange, please wait. Once you receive the assets, you can manually activate the L2 account.",
+    "If you have transferred tokens from an Exchange, please wait. Once you receive the assets, you can manually activate the {{l2Symbol}} account.",
   labelAddAssetTitleCard: "Add Asset With a Card",
   labelAddAssetTitleCardDes:
     "If you have purchased crypto with a card, please wait for it to arrive in your account.",
   labelAddAssetTitleCardDesActive:
-    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, L2 will be activated manually.",
+    "If you have purchased crypto with a card, please wait for it to arrive in your account. Upon arrival, {{l2Symbol}} will be activated manually.",
   labelMinFeeForActive: "Min {{fee}}",
   labelReceiveAddressDes:
-    "If you have transferred tokens from another Loopring L2 account, please wait.",
+    "If you have transferred tokens from another {{loopringL2}} account, please wait.",
   labelReceiveAddressDesActive:
-    "If you have transferred tokens from other Loopring L2 accounts, please close this window and try to activate your L2 account again.",
+    "If you have transferred tokens from other {{loopringL2}} accounts, please close this window and try to activate your {{l2Symbol}} account again.",
   labelDepositWaiting:
     "It make take some time for this transaction to execute on-chain.",
   labelFrom: "From",
@@ -1282,14 +1283,14 @@ export default {
   labelwithdraw: "Withdrawal",
   labelDeposit: "Deposit",
   labelFiatAmount: "Fiat Amount",
-  labelToMyL2: "My Loopring L2",
+  labelToMyL2: "My {{loopringL2}}",
   labelBanxaNotReady:
     "Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us",
   labelBanxaFailedForAPI:
     "Please waiting a while, Banxa service is not available currently.",
   labelL2toL2AddressFeePaid: "Active account fee had paid",
   labelL2toL2AddressFeeActiveFee:
-    "Pay recipient's L2 activation fee: {{value}}",
+    "Pay recipient's {{l2Symbol}} activation fee: {{value}}",
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
   labelRedPacketOpen: "Open",
   labelAssetRedPackets: "Red Packets",
@@ -1381,7 +1382,7 @@ export default {
   labelCreateRedPacketTitle: "Send Red Packet",
   labelClaimWithdrawFee: "Fee",
   labelClaimWithdrawNotEnough: "Insufficient balance",
-  labelClaimWithdrawTitle: "Claim to Loopring L2",
+  labelClaimWithdrawTitle: "Claim to {{loopringL2}}",
   labelClaimWithdrawWaitForAuth: "Please confirm to claim {{symbol}}",
   labelClaimWithdrawDenied: "You rejected to claim {{symbol}}.",
   labelClaimWithdrawInProgress: "Processing...",
@@ -1464,7 +1465,7 @@ export default {
   labelRedPacketEnded: "Ended",
   labelLuckDraw: "Luckiest Draw",
   labelMyLuckReward: "(My reward)",
-  labelRedPacketClaimTitle: "Claim to Loopring L2",
+  labelRedPacketClaimTitle: "Claim to {{loopringL2}}",
   labelClaimNoBalance: "Insufficient {{belong}} balance",
   labelShareQRCode: "Generate QR Code for share",
   labelSeal: "Seal",
@@ -1482,7 +1483,7 @@ export default {
   labelRedpacketHavePeopleHelp:
     "<1>{{number}}</1> friends relayed this red packet, you extend reward: <3>{{amount}}</3>.",
   labelRedPacketFrom: "From",
-  labelRedPacketTo: "To Loopring L2",
+  labelRedPacketTo: "To {{loopringL2}}",
   labelRedPacketMy: "My Red packet",
   labelRedpacketNotActive: "Hide received Red Packets",
   labelRedpacketTokens: "ERC20 Tokens",
@@ -1529,7 +1530,7 @@ export default {
     "<p>LRC staking is incentivized through an allocated portion of the Loopring protocol fee; the exact percentage is determined by the Loopring DAO. The APY is updated daily based on the allocated amount from previous day’s fee. Any LRC holder can participate in LRC staking via L2 to accumulate daily rewards. The assets must be staked for a minimum of 90 days to receive rewards.</p>",
   labelLRCStakingAgree: "I have read and understand the risk warning.",
   labelLRCStakingRisk2:
-    "<0>The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.</0>",
+    "<0>The staked LRC will be locked in {{loopringL2}}, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.</0>",
   labelInvestLRCStakingTitle: "LRC Staking",
   labelMyInvestLRCStaking: "My Investment",
   labelInvestLRCStakingLockAlert:
@@ -1546,7 +1547,7 @@ export default {
   labelLRCStakeDuration: "Lock duration to claim reward<1></1>",
   labelInvestLRCTitle: "LRC Staking",
   labelLRCStakeRiskDes:
-    "The staked LRC will be locked in Loopring L2, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
+    "The staked LRC will be locked in {{loopringL2}}, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.",
   labelAgreeRedeem: "Redeem",
   labelStackingAgreeRedeemTitle: "Redeem In Advance",
   labelStackingAgreeRedeem:
@@ -1631,17 +1632,17 @@ export default {
   labelContactsNext: "Next",
   labelContactsContactExisted: "Contact Already Existed",
   labelNotExchangeEOA:
-    "Sending to an Exchange Address L2 account is not supported. Loopring L2 accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
+    "Sending to an Exchange Address {{l2Symbol}} account is not supported. {{loopringL2}} accounts cannot be activated on Exchange wallet addresses. Instead, please send to the L1 account associated with this address.",
   labelNotOtherSmartWallet:
-    "This wallet binds with smart contract that does not support Loopring L2. You will need to send funds to the L1 account.",
+    "This wallet binds with smart contract that does not support {{loopringL2}}. You will need to send funds to the {{l1Symbol}} account.",
   labelContactsNoContact: "No Contact",
   labelContactsSelectReciepient: "Select the Recipient",
   labelContactsBinanceNotSupportted:
-    "Binance currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+    "Binance currently do not support {{loopringL2}} transfers. You will need to send funds to the {{l1Symbol}} account.",
   labelContactsHuobiNotSupportted:
-    "Huobi currently do not support Loopring L2 transfers. You will need to send funds to the L1 account. Transactions need to wait for 24 hours.",
+    "Huobi currently do not support {{loopringL2}} transfers. You will need to send funds to the {{l1Symbol}} account. Transactions need to wait for 24 hours.",
   labelContactsOtherExchangesNotSupportted:
-    "The trading platforms currently do not support Loopring L2 transfers. You will need to send funds to the L1 account.",
+    "The trading platforms currently do not support {{loopringL2}} transfers. You will need to send funds to the {{l1Symbol}} account.",
   labelBtradeSwapTitle: "Block Trade",
   labelBtradeSwapType: "Type",
   labelBtradeSwapFilled: "Filled",
@@ -1771,7 +1772,7 @@ export default {
   labelReferralMethod2: "Method 2",
   labelReferralMethod1Step1: "Download the Loopring Wallet App",
   labelReferralMethod1Step2: "Sign up with referral code: 0****4",
-  labelReferralMethod1Step3: "Activate Loopring L2 Account",
+  labelReferralMethod1Step3: "Activate {{loopringL2}} Account",
   labelReferralMethod1Step4: "Both of us receive rewards",
   labelReferralMyReferrals: "My Referrals",
   labelReferralReferralsRefunds: "Referee Refunds",

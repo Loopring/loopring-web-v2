@@ -104,6 +104,10 @@ export const DepositNFTPanel = () => {
                     ? nftDepositProps.description
                     : "nftDepositDescription"
                 }
+                tOptions={{
+                  ethereumL1: "Ethereum L1",
+                  loopringL2: "Loopring L2",
+                }}
               >
                 Creates a smart contract on Ethereum L1, which requires a gas
                 fee. NFTs minted here are on L2 only until deployed.

@@ -765,46 +765,6 @@ export const SwapSecondConfirmation = withTranslation("common")(
     );
   }
 );
-// export const NotAllowForSmartWallet = withTranslation("common", {
-//   withRef: true,
-// })(
-//   ({
-//     t,
-//     open,
-//     handleClose,
-//   }: WithTranslation & {
-//     open: boolean;
-//     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
-//   }) => {
-//     return (
-//       <DialogStyle
-//         open={open}
-//         keepMounted
-//         onClose={(e: MouseEvent) => handleClose(e)}
-//         aria-describedby="alert-dialog-slide-description"
-//       >
-//         <DialogTitle> {t("labelNotAllowForSmartWalletTitle")}</DialogTitle>
-//         <DialogContent>
-//           <DialogContentText>
-//             <Typography component={"span"} variant={"body1"} color={"inherit"}>
-//               {t("labelActivatedAccountNotSupport")}
-//             </Typography>
-//           </DialogContentText>
-//         </DialogContent>
-//         <DialogActions>
-//           <Button
-//             variant={"outlined"}
-//             size={"medium"}
-//             onClick={(e) => handleClose(e as any)}
-//           >
-//             {t("labelOK")}
-//           </Button>
-//         </DialogActions>
-//       </DialogStyle>
-//     );
-//   }
-// );
-
 export const WrongNetworkGuide = withTranslation("common", {
   withRef: true,
 })(
@@ -1173,7 +1133,16 @@ export const LayerswapNotice = withTranslation("common", {
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelLayerSwapUnderstandDes"}>
+            <Trans
+              i18nKey={"labelLayerSwapUnderstandDes"}
+              tOptions={{
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+                loopringLayer2: "Loopring Layer 2",
+              }}
+            >
               LayerSwap is a 3rd party App service provider to help move tokens
               from exchange to Loopring L2 directly. If you have any concerns
               regarding their service, please check out their
@@ -1446,7 +1415,16 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
               </Typography>
             )}
             <Typography>
-              <Trans i18nKey={"labelDefiMaxBalance1"} tOptions={{ type }}>
+              <Trans
+                i18nKey={"labelDefiMaxBalance1"}
+                tOptions={{
+                  type,
+                  loopringL2: "Loopring L2",
+                  l2Symbol: "L2",
+                  l1Symbol: "L1",
+                  ethereumL1: "Ethereum L1",
+                }}
+              >
                 or you can
                 <List sx={{ marginTop: 2 }}>
                   <ListItem>
@@ -1660,7 +1638,14 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
                   <Trans
                     i18nKey={"labelDefiNoBalanceList"}
                     components={{ li: <li /> }}
-                    tOptions={{ symbol: baseSymbol, type }}
+                    tOptions={{
+                      symbol: baseSymbol,
+                      type,
+                      loopringL2: "Loopring L2",
+                      l2Symbol: "L2",
+                      l1Symbol: "L1",
+                      ethereumL1: "Ethereum L1",
+                    }}
                   >
                     <ListItem style={{ marginBottom: 0 }}>
                       Withdraw WSTETH to L1 and trade through CRV or LIDO
@@ -2167,7 +2152,15 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
-            <Trans i18nKey={`labelLRCStakingRisk2`}>
+            <Trans
+              i18nKey={`labelLRCStakingRisk2`}
+              tOptions={{
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }}
+            >
               <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}

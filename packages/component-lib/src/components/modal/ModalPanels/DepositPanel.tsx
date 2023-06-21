@@ -98,7 +98,12 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                   t,
                   realToAddress: rest.isAllowInputToAddress
                     ? rest.realToAddress
-                    : t("labelToMyL2"),
+                    : t("labelToMyL2", {
+                        loopringL2: "Loopring L2",
+                        l2Symbol: "L2",
+                        l1Symbol: "L1",
+                        ethereumL1: "Ethereum L1",
+                      }),
                   tradeData: switchData.tradeData,
                   onDepositClick,
                   handleConfirm,

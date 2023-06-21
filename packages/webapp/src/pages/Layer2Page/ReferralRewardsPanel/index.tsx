@@ -233,9 +233,30 @@ const ReferHeader = ({
     if (btnLabel) {
       const key = btnLabel.split("|");
       if (key) {
-        return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+        return t(
+          key[0],
+          key && key[1]
+            ? {
+                arg: key[1],
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }
+            : {
+                loopringL2: "Loopring L2",
+                l2Symbol: "L2",
+                l1Symbol: "L1",
+                ethereumL1: "Ethereum L1",
+              }
+        );
       } else {
-        return t(btnLabel);
+        return t(btnLabel, {
+          loopringL2: "Loopring L2",
+          l2Symbol: "L2",
+          l1Symbol: "L1",
+          ethereumL1: "Ethereum L1",
+        });
       }
     } else {
       return t(`labelInvite`);
@@ -418,7 +439,14 @@ const ReferView = () => {
               <ol>
                 <li>{t("labelReferralMethod1Step1")}</li>
                 <li>{t("labelReferralMethod1Step2")}</li>
-                <li>{t("labelReferralMethod1Step3")}</li>
+                <li>
+                  {t("labelReferralMethod1Step3", {
+                    loopringL2: "Loopring L2",
+                    l2Symbol: "L2",
+                    l1Symbol: "L1",
+                    ethereumL1: "Ethereum L1",
+                  })}
+                </li>
                 <li>{t("labelReferralMethod1Step4")}</li>
               </ol>
             )}

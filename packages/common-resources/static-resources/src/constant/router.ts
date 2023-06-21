@@ -93,6 +93,7 @@ export enum ProfileKey {
   vip = "vip",
   contact = "contact",
   referralrewards = "referralrewards",
+  forcewithdraw = "forcewithdraw",
 }
 
 export enum ButtonComponentsMap {
@@ -763,32 +764,6 @@ export const AssetL2TabIndex = {
   ],
 };
 
-export enum Layer2L2Router {
-  forcewithdraw = "forcewithdraw",
-  security = "security",
-  vip = "vip",
-  contact = "contact",
-  referralrewards = "referralrewards",
-}
-
-export const Layer2L2RouterIndex = {
-  TAIKO: [Layer2L2Router.vip, , Layer2L2Router.referralrewards],
-  ETHEREUM: [
-    Layer2L2Router.forcewithdraw,
-    Layer2L2Router.security,
-    Layer2L2Router.vip,
-    Layer2L2Router.contact,
-    Layer2L2Router.referralrewards,
-  ],
-  GOERLI: [
-    Layer2L2Router.forcewithdraw,
-    Layer2L2Router.security,
-    Layer2L2Router.vip,
-    Layer2L2Router.contact,
-    Layer2L2Router.referralrewards,
-  ],
-};
-
 export const RouterAllowIndex = {
   TAIKO: [
     RouterMainKey.lite,
@@ -828,7 +803,7 @@ export const RouterAllowIndex = {
 };
 
 export const ProfileIndex = {
-  TAIKO: [ProfileKey.vip, ProfileKey.referralrewards],
+  TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
   ETHEREUM: [
     ProfileKey.security,
     ProfileKey.vip,
