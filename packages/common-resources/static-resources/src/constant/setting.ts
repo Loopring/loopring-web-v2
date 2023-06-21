@@ -115,7 +115,7 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
     return { NetworkMap, ChainTests, MapChainId, ChainIdExtends };
   },
   {
-    MapChainId: {},
+    MapChainId: { 1: "ETHEREUM", 5: "GOERLI" },
     NetworkMap: {
       1: {
         label: "Ethereum",
