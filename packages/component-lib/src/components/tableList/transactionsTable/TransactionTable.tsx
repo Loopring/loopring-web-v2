@@ -13,7 +13,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   globalSetup,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   MapChainId,
   RedPacketIcon,
   TableType,
@@ -395,12 +395,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
-                      layer2: L1L2_DEFINED[network].layer2,
-                      l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                      loopringL2: L1L2_DEFINED[network].loopringL2,
-                      l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                      l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                      ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                      layer2: L1L2_NAME_DEFINED[network].layer2,
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                     }),
                     "",
                   ]
@@ -673,11 +673,11 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
-                      l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                      loopringL2: L1L2_DEFINED[network].loopringL2,
-                      l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                      l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                      ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                     }),
                     "",
                   ]

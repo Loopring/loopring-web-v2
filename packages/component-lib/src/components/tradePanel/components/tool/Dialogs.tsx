@@ -36,7 +36,7 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
   Info2Icon,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   MapChainId,
   SoursURL,
   TradeDefi,
@@ -790,14 +790,14 @@ export const WrongNetworkGuide = withTranslation("common", {
       >
         <DialogTitle>
           {t("labelWrongNetworkGuideTitle", {
-            l1ChainName: L1L2_DEFINED[network].l1ChainName,
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
           })}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             <Typography component={"span"} variant={"body1"} color={"inherit"}>
               {t("labelWrongNetworkGuide", {
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               })}
             </Typography>
           </DialogContentText>
@@ -1234,12 +1234,12 @@ export const AnotherNetworkNotice = withTranslation("common", {
             <Trans
               i18nKey={"labelAnotherNetworkDes"}
               tOptions={{
-                layer2: L1L2_DEFINED[network].layer2,
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
               LayerSwap is a 3rd party App service provider to help move tokens
@@ -1787,12 +1787,12 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
             <Trans
               i18nKey={`label${type}DefiRisk`}
               tOptions={{
-                layer2: L1L2_DEFINED[network].layer2,
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
               components={{
                 p: (
@@ -1867,12 +1867,12 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
             <Trans
               i18nKey={`label${type}DefiRisk2`}
               tOptions={{
-                layer2: L1L2_DEFINED[network].layer2,
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
               <Typography

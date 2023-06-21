@@ -19,7 +19,7 @@ import {
   globalSetup,
   IBData,
   Info2Icon,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
   MapChainId,
   TRADE_TYPE,
@@ -188,11 +188,11 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             <Trans
               i18nKey="labelForceWithdrawDes"
               tOptions={{
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
               If the receipt account doesn't activate the Loopring L2 account,

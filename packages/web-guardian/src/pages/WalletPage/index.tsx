@@ -13,7 +13,7 @@ import {
   ExitIcon,
   FailedIcon,
   HelpIcon,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   LockGuardianIcon,
   LOOPRING_DOCUMENT,
   MapChainId,
@@ -232,8 +232,8 @@ export const GuardianPage = withTranslation(["common"])(
               textAlign={"center"}
             >
               {t("describeTitleConnectToWalletAsGuardian", {
-                layer2: L1L2_DEFINED[network].layer2,
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               })}
             </Typography>
             <Link

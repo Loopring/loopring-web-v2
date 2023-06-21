@@ -818,7 +818,7 @@ export const ProfileIndex = {
   ],
 };
 
-export const L1L2_DEFINED = {
+export const L1L2_NAME_DEFINED = {
   TAIKO: {
     layer2: "Layer 3",
     l1ChainName: "TAIKO",

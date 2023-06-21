@@ -1,7 +1,7 @@
 import { Tab, Tabs, Typography } from "@mui/material";
 import {
   Info2Icon,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   MapChainId,
 } from "@loopring-web/common-resources";
 import React from "react";
@@ -64,7 +64,7 @@ export const DepositTitle = ({
               <Trans
                 i18nKey={description ? description : "labelDepositDescription"}
                 tOptions={{
-                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 }}
               >
                 Once your deposit is confirmed on Ethereum, it will be added to

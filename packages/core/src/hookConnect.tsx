@@ -17,7 +17,7 @@ import {
 import {
   AccountStatus,
   DropDownIcon,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
   NetworkMap,
@@ -411,8 +411,8 @@ export const ViewAccountTemplate = React.memo(
                 textAlign={"center"}
               >
                 {t("describeTitleNoAccount", {
-                  layer2: L1L2_DEFINED[network].layer2,
-                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
               <WalletConnectL2Btn />
@@ -463,7 +463,7 @@ export const ViewAccountTemplate = React.memo(
                 textAlign={"center"}
               >
                 {t("describeTitleOpenAccounting", {
-                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
             </Box>

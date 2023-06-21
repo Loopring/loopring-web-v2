@@ -24,7 +24,7 @@ import {
   globalSetup,
   IBData,
   Info2Icon,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
   MapChainId,
   NFTWholeINFO,
@@ -256,7 +256,7 @@ export const WithdrawWrap = <
             <Trans
               i18nKey="withdrawDescription"
               tOptions={{
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               }}
             >
               Your withdrawal will be processed in the next batch, which usually
@@ -313,7 +313,7 @@ export const WithdrawWrap = <
               placeholder={t("labelPleaseInputWalletAddress")}
               onChange={(event) => handleOnAddressChange(event?.target?.value)}
               label={t("labelL2toL1Address", {
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               })}
               SelectProps={{ IconComponent: DropDownIcon }}
               fullWidth={true}

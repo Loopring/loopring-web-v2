@@ -7,7 +7,7 @@ import {
   fnType,
   getValuePrecisionThousand,
   i18n,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   LockIcon,
   MapChainId,
   MarketType,
@@ -104,8 +104,8 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               sx={{ wordBreak: "break-word", lineClamp: 4 }}
             >
               {t("describeTitleConnectToWallet", {
-                layer2: L1L2_DEFINED[network].layer2,
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               })}
             </Typography>
             {BtnConnect}
@@ -186,8 +186,8 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               textAlign={"center"}
             >
               {t("describeTitleNotActive", {
-                layer2: L1L2_DEFINED[network].layer2,
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               })}
             </Typography>
             {BtnConnect}
@@ -214,8 +214,8 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               textAlign={"center"}
             >
               {t("describeTitleOpenAccounting", {
-                layer2: L1L2_DEFINED[network].layer2,
-                l1ChainName: L1L2_DEFINED[network].l1ChainName,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
               })}
             </Typography>
             {BtnConnect}

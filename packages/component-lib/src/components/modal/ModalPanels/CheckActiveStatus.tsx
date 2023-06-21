@@ -1,6 +1,6 @@
 import {
   EmptyValueTag,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   MapChainId,
   RowConfig,
 } from "@loopring-web/common-resources";
@@ -126,11 +126,11 @@ export const CheckActiveStatus = ({
                     whiteSpace={"pre-line"}
                   >
                     {t("labelBenefitL2", {
-                      l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                      loopringL2: L1L2_DEFINED[network].loopringL2,
-                      l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                      l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                      ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                     })}
                   </Typography>
                   <Box marginTop={3}>
@@ -339,11 +339,11 @@ export const CheckActiveStatus = ({
                       marginTop={2}
                     >
                       {t("labelHaveInProcessingL1toL2", {
-                        l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                        loopringL2: L1L2_DEFINED[network].loopringL2,
-                        l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                        l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                        ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                       })}
                     </Typography>
                   )

@@ -10,7 +10,7 @@ import {
   ProfileIndex,
   MapChainId,
   ProfileKey,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
 } from "@loopring-web/common-resources";
 
 const StyledPaper = styled(Grid)`
@@ -262,12 +262,12 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                       component={"p"}
                     >
                       {t("labelForceWithdrawDes", {
-                        layer2: L1L2_DEFINED[network].layer2,
-                        l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                        loopringL2: L1L2_DEFINED[network].loopringL2,
-                        l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                        l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                        ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                        layer2: L1L2_NAME_DEFINED[network].layer2,
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                       })}
                     </Typography>
                   </Grid>

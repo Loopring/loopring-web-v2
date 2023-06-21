@@ -3,7 +3,7 @@ import { Box, Grid, ListItem, ListItemText, Typography } from "@mui/material";
 import {
   FeeInfo,
   IBData,
-  L1L2_DEFINED,
+  L1L2_NAME_DEFINED,
   MapChainId,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
@@ -107,11 +107,11 @@ export const ForceWithdrawConfirm = <
             <ListItem>
               <ListItemText>
                 {t("labelForceWithdrawConfirm1", {
-                  l1ChainName: L1L2_DEFINED[network].l1ChainName,
-                  loopringL2: L1L2_DEFINED[network].loopringL2,
-                  l2Symbol: L1L2_DEFINED[network].l2Symbol,
-                  l1Symbol: L1L2_DEFINED[network].l1Symbol,
-                  ethereumL1: L1L2_DEFINED[network].ethereumL1,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                 })}
               </ListItemText>
             </ListItem>
