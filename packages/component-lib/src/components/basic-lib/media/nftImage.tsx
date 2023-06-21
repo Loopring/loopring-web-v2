@@ -1,25 +1,36 @@
-import { NftImageProps } from "./Interface";
-import { css, Theme } from "@emotion/react";
-import styled from "@emotion/styled";
-import { Box } from "@mui/material";
-import { SoursURL } from "@loopring-web/loopring-sdk";
+import { NftImageProps } from './Interface'
+import { css, Theme } from '@emotion/react'
+import styled from '@emotion/styled'
+import { Box } from '@mui/material'
+import { SoursURL } from '@loopring-web/loopring-sdk'
 
 export const NftImage = (props: NftImageProps & any) => {
   return (
     <img
       // contentEditable={true}
-      referrerPolicy={"unsafe-url"}
+      referrerPolicy={'unsafe-url'}
       // loading={"lazy"}
       // crossOrigin={"anonymous"}
-      style={{ objectFit: "contain" }}
+      style={{ objectFit: 'contain' }}
       onError={props.onError}
-      alt={props.name ?? "NFT"}
-      width={props.width ?? "100%"}
-      height={props.height ?? "100%"}
-      src={props.src?.replace(/(javascript:)|(data:)/gi, "")}
+      alt={props.name ?? 'NFT'}
+      width={props.width ?? '100%'}
+      height={props.height ?? '100%'}
+      src={props.src?.replace(/(javascript:)|(data:)/gi, '')}
     />
-  );
-};
+  )
+}
+
+export const NftImageStyle = (props: { src: string | undefined; style?: React.CSSProperties }) => {
+  return (
+    <img
+      referrerPolicy={'unsafe-url'}
+      style={{ objectFit: 'contain', ...props.style }}
+      alt={'NFT'}
+      src={props.src?.replace(/(javascript:)|(data:)/gi, '')}
+    />
+  )
+}
 
 export const cssBackground = (_props: { theme: Theme }) => {
   // const fillColor = theme.colorBase.textDisable.replace("#", "%23");
@@ -40,13 +51,13 @@ export const cssBackground = (_props: { theme: Theme }) => {
     background-size: contain;
     background-position: 50% 50%;
     align-self: stretch;
-  `;
-};
+  `
+}
 
 export const BoxNFT = styled(Box)`
   background: no-repeat 50% 50%;
   background-color: var(--opacity);
-  background-image: url(${SoursURL + "svg/loopring.svg"});
+  background-image: url(${SoursURL + 'svg/loopring.svg'});
 
   &.redPacketNFT {
     //height: var(--nft-large-avatar);
@@ -59,4 +70,4 @@ export const BoxNFT = styled(Box)`
     overflow: hidden;
     border-radius: ${({ theme }) => theme.unit}px;
   }
-` as typeof Box;
+` as typeof Box

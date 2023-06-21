@@ -1,6 +1,6 @@
-import { all, call, put, takeLatest } from "redux-saga/effects";
-import { getAmmActivityMap, getAmmActivityMapStatus } from "./reducer";
-import { LoopringAPI } from "../../../api_wrapper";
+import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { getAmmActivityMap, getAmmActivityMapStatus } from './reducer'
+import { LoopringAPI } from '../../../api_wrapper'
 
 const getAmmActivityMapApi = async () => {
   if (LoopringAPI.ammpoolAPI) {
@@ -10,7 +10,7 @@ const getAmmActivityMapApi = async () => {
       groupByRuleType,
       groupByActivityStatus,
       groupByRuleTypeAndStatus,
-    } = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules();
+    } = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules()
     return {
       data: {
         activityInProgressRules,
@@ -19,21 +19,21 @@ const getAmmActivityMapApi = async () => {
         groupByActivityStatus,
         groupByRuleTypeAndStatus,
       },
-    };
+    }
   } else {
-    return { data: undefined };
+    return { data: undefined }
   }
-};
+}
 
 export function* getPostsSaga() {
   try {
-    const { data } = yield call(getAmmActivityMapApi);
-    yield put(getAmmActivityMapStatus({ ...data }));
+    const { data } = yield call(getAmmActivityMapApi)
+    yield put(getAmmActivityMapStatus({ ...data }))
   } catch (err) {
-    yield put(getAmmActivityMapStatus({ error: err }));
+    yield put(getAmmActivityMapStatus({ error: err }))
   }
 }
 
 export default function* ammActivityMapSaga() {
-  yield all([takeLatest(getAmmActivityMap, getPostsSaga)]);
+  yield all([takeLatest(getAmmActivityMap, getPostsSaga)])
 }

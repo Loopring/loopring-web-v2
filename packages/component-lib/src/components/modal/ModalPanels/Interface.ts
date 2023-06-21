@@ -1,4 +1,4 @@
-import { ButtonProps } from "../../basic-lib";
+import { ButtonProps } from '../../basic-lib'
 import {
   Account,
   AccountHashInfo,
@@ -9,18 +9,18 @@ import {
   VendorItem,
   VendorProviders,
   WalletMap,
-} from "@loopring-web/common-resources";
-import React from "react";
+} from '@loopring-web/common-resources'
+import React from 'react'
 
 export type AccountBaseProps = {
-  level?: string;
-  mainBtn?: ((props: ButtonProps) => JSX.Element) | JSX.Element;
-  etherscanUrl: string;
-  onDisconnect?: any;
-  onSwitch?: any;
-  onCopy?: any;
-  onViewQRCode?: any;
-} & Account;
+  level?: string
+  mainBtn?: ((props: ButtonProps) => JSX.Element) | JSX.Element
+  etherscanUrl: string
+  onDisconnect?: any
+  onSwitch?: any
+  onCopy?: any
+  onViewQRCode?: any
+} & Account
 
 export enum AccountStep {
   //l1 should be at top
@@ -192,20 +192,20 @@ export enum AccountStep {
  */
 export interface VendorMenuProps {
   // termUrl: string;
-  type?: TradeTypes;
-  banxaRef?: React.Ref<any>;
-  vendorList: VendorItem[];
-  handleSelect?: (event: React.MouseEvent, key: string) => void;
-  vendorForce: VendorProviders | undefined;
-  campaignTagConfig?: CAMPAIGNTAGCONFIG;
-  callback?: () => void;
+  type?: TradeTypes
+  banxaRef?: React.Ref<any>
+  vendorList: VendorItem[]
+  handleSelect?: (event: React.MouseEvent, key: string) => void
+  vendorForce: VendorProviders | undefined
+  campaignTagConfig?: CAMPAIGNTAGCONFIG
+  callback?: () => void
 }
 
 interface InferfaceAssetItem {
-  key: string;
-  svgIcon: string;
-  enableKey?: string | null;
-  handleSelect: (event?: React.MouseEvent) => void;
+  key: string
+  svgIcon: string
+  enableKey?: string | null
+  handleSelect: (event?: React.MouseEvent) => void
 }
 
 export interface AddAssetItem extends InferfaceAssetItem {}
@@ -213,57 +213,58 @@ export interface AddAssetItem extends InferfaceAssetItem {}
 export interface SendAssetItem extends InferfaceAssetItem {}
 
 export interface AddAssetProps {
-  symbol?: string;
-  addAssetList: AddAssetItem[];
-  isNewAccount?: boolean;
+  symbol?: string
+  addAssetList: AddAssetItem[]
+  isNewAccount?: boolean
   allowTrade: {
-    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
-  };
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean }
+  }
+  disbaleList?: string[]
 }
 
 export interface SendAssetProps {
-  isToL1?: boolean;
-  symbol?: string;
-  sendAssetList: AddAssetItem[];
+  isToL1?: boolean
+  symbol?: string
+  sendAssetList: AddAssetItem[]
   allowTrade: {
-    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
-  };
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean }
+  }
 }
 
 export interface SendNFTAssetProps {
-  nftData: Partial<NFTWholeINFO>;
-  sendAssetList: AddAssetItem[];
-  isNotAllowToL1?: boolean;
+  nftData: Partial<NFTWholeINFO>
+  sendAssetList: AddAssetItem[]
+  isNotAllowToL1?: boolean
   allowTrade: {
-    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
-  };
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean }
+  }
 }
 
 export interface CheckActiveStatusProps<C = FeeInfo> {
-  account: Account & { isContract: boolean | undefined };
-  chargeFeeTokenList: C[];
-  goDisconnect: () => void;
-  goSend: () => void;
-  isDepositing: boolean;
-  walletMap?: WalletMap<any, any>;
+  account: Account & { isContract: boolean | undefined }
+  chargeFeeTokenList: C[]
+  goDisconnect: () => void
+  goSend: () => void
+  isDepositing: boolean
+  walletMap?: WalletMap<any, any>
   isFeeNotEnough: {
-    isFeeNotEnough: boolean;
-    isOnLoading: boolean;
-  };
-  onIKnowClick: () => void;
-  knowDisable: boolean;
-  know: boolean;
-  clearDepositHash?: () => void;
-  chainInfos?: AccountHashInfo;
-  accAddress?: string;
+    isFeeNotEnough: boolean
+    isOnLoading: boolean
+  }
+  onIKnowClick: () => void
+  knowDisable: boolean
+  know: boolean
+  clearDepositHash?: () => void
+  chainInfos?: AccountHashInfo
+  accAddress?: string
 }
 
 export interface CheckImportCollectionProps {
-  account: Account;
-  value: string;
-  onChange: (item: string) => void;
-  contractList: string[];
-  disabled?: boolean;
-  loading?: boolean;
-  onClick: (item: string) => void;
+  account: Account
+  value: string
+  onChange: (item: string) => void
+  contractList: string[]
+  disabled?: boolean
+  loading?: boolean
+  onClick: (item: string) => void
 }

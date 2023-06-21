@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
-import styled from "@emotion/styled";
-import { QRCODE_REGION_ID } from "@loopring-web/common-resources";
-import React from "react";
+import { Box } from '@mui/material'
+import styled from '@emotion/styled'
+import { QRCODE_REGION_ID } from '@loopring-web/common-resources'
+import React from 'react'
 
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
@@ -94,7 +94,7 @@ const BoxStyle = styled(Box)`
   &:hover {
     opacity: 0.95;
   }
-` as typeof Box;
+` as typeof Box
 // const LinkStyle = styled(Link)`
 //   ${({ theme }) =>
 //     theme.border.defaultFrame({
@@ -104,15 +104,6 @@ const BoxStyle = styled(Box)`
 //     })};
 // ` as typeof Link;
 
-export const QRCodeUpload = React.forwardRef(
-  ({}: any, _ref: React.ForwardedRef<any>) => {
-    return (
-      <BoxStyle
-        ref={_ref}
-        display={"flex"}
-        flexDirection={"column"}
-        id={QRCODE_REGION_ID}
-      />
-    );
-  }
-);
+export const QRCodeUpload = React.forwardRef(({}: any, _ref: React.ForwardedRef<any>) => {
+  return <BoxStyle ref={_ref} display={'flex'} flexDirection={'column'} id={QRCODE_REGION_ID} />
+})

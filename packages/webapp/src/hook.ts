@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   useSystem,
   useAmmMap,
@@ -15,21 +15,20 @@ import {
   useInvestTokenTypeMap,
   useDualMap,
   useStakingMap,
-  useBtradeSwap,
   useBtradeMap,
-} from "@loopring-web/core";
-import { ChainId } from "@loopring-web/loopring-sdk";
-import { myLog, SagaStatus, ThemeType } from "@loopring-web/common-resources";
+} from '@loopring-web/core'
+import { ChainId } from '@loopring-web/loopring-sdk'
+import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
 import {
   AvaiableNetwork,
   ConnectProviders,
   ConnectProvides,
   connectProvides,
   walletServices,
-} from "@loopring-web/web3-provider";
-import { useAccountInit } from "./hookAccountInit";
-import { useSettings } from "@loopring-web/component-lib";
-import { useTheme } from "@emotion/react";
+} from '@loopring-web/web3-provider'
+import { useAccountInit } from './hookAccountInit'
+import { useSettings } from '@loopring-web/component-lib'
+import { useTheme } from '@emotion/react'
 
 /**
  * @description
@@ -40,21 +39,20 @@ import { useTheme } from "@emotion/react";
  * @step5 launch the page
  */
 export function useInit() {
-  const [, search] = window.location?.hash.split("?") ?? [];
-  const searchParams = new URLSearchParams(search);
-  const [, pathname1] = window.location.hash.match(/#\/([\w\d\-]+)\??/) ?? [];
+  const [, search] = window.location?.hash.split('?') ?? []
+  const searchParams = new URLSearchParams(search)
+  const [, pathname1] = window.location.hash.match(/#\/([\w\d\-]+)\??/) ?? []
   const isNoServer: boolean =
-    searchParams.has("noheader") &&
-    ["notification", "document"].includes(pathname1);
+    searchParams.has('noheader') && ['notification', 'document'].includes(pathname1)
   const [state, setState] = React.useState<keyof typeof SagaStatus>(() => {
     if (isNoServer) {
-      return SagaStatus.DONE;
+      return SagaStatus.DONE
     } else {
-      return SagaStatus.PENDING;
+      return SagaStatus.PENDING
     }
-  });
-  const { isMobile } = useSettings();
-  const theme = useTheme();
+  })
+  const { isMobile, defaultNetwork } = useSettings()
+  const theme = useTheme()
 
   const {
     account,
@@ -62,319 +60,296 @@ export function useInit() {
     resetAccount,
     status: accountStatus,
     statusUnset: accountStatusUnset,
-  } = useAccount();
-  const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
-    useTokenMap();
-  const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap();
-  const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } =
-    useTokenPrices();
-  const { status: defiMapStatus, statusUnset: defiMapStatusUnset } =
-    useDefiMap();
-  const { status: dualMapStatus, statusUnset: dualMapStatusUnset } =
-    useDualMap();
-  const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } =
-    useStakingMap();
-  const { status: btradeMapStatus, statusUnset: btradeMapStatusUnset } =
-    useBtradeMap();
+  } = useAccount()
+  const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } = useTokenMap()
+  const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap()
+  const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } = useTokenPrices()
+  const { status: defiMapStatus, statusUnset: defiMapStatusUnset } = useDefiMap()
+  const { status: dualMapStatus, statusUnset: dualMapStatusUnset } = useDualMap()
+  const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } = useStakingMap()
+  const { status: btradeMapStatus, statusUnset: btradeMapStatusUnset } = useBtradeMap()
+  const { status: investTokenTypeMapStatus, statusUnset: investTokenTypeMapStatusUnset } =
+    useInvestTokenTypeMap()
 
-  const {
-    status: investTokenTypeMapStatus,
-    statusUnset: investTokenTypeMapStatusUnset,
-  } = useInvestTokenTypeMap();
-
-  const {
-    updateSystem,
-    status: systemStatus,
-    statusUnset: systemStatusUnset,
-  } = useSystem();
-  const {
-    status: ammActivityMapStatus,
-    statusUnset: ammActivityMapStatusUnset,
-  } = useAmmActivityMap();
-  const { status: tickerStatus, statusUnset: tickerStatusUnset } = useTicker();
-  const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount();
-  const { status: socketStatus, statusUnset: socketUnset } = useSocket();
-  const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store();
-  const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify();
+  const { updateSystem, status: systemStatus, statusUnset: systemStatusUnset } = useSystem()
+  const { status: ammActivityMapStatus, statusUnset: ammActivityMapStatusUnset } =
+    useAmmActivityMap()
+  const { status: tickerStatus, statusUnset: tickerStatusUnset } = useTicker()
+  const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount()
+  const { status: socketStatus, statusUnset: socketUnset } = useSocket()
+  const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store()
+  const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify()
 
   React.useEffect(() => {
-    (async (account) => {
+    ;(async (account) => {
       if (
-        account.accAddress !== "" &&
+        account.accAddress !== '' &&
         account.connectName &&
         account.connectName !== ConnectProviders.Unknown
       ) {
         try {
-          ConnectProvides.IsMobile = isMobile;
+          ConnectProvides.IsMobile = isMobile
           await connectProvides[account.connectName]({
+            // @ts-ignore
             account: account.accAddress,
+            chainId: defaultNetwork.toString(),
             darkMode: theme.mode === ThemeType.dark,
-          });
-          updateAccount({});
+          })
+          updateAccount({})
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
             let chainId = Number(
               // @ts-ignore
               connectProvides.usedProvide?.connection?.chainId ??
-                (await connectProvides.usedWeb3.eth.getChainId())
-            );
-            myLog("AvaiableNetwork", AvaiableNetwork);
+                (await connectProvides.usedWeb3.eth.getChainId()),
+            )
+            myLog('AvaiableNetwork', AvaiableNetwork)
             if (!AvaiableNetwork.includes(chainId.toString())) {
               chainId =
-                account._chainId && account._chainId !== "unknown"
+                account._chainId && account._chainId !== 'unknown'
                   ? account._chainId
-                  : ChainId.MAINNET;
+                  : ChainId.MAINNET
             }
-            circleUpdateLayer1ActionHistory({ chainId });
+            circleUpdateLayer1ActionHistory({ chainId })
 
             if (!isNoServer) {
-              updateSystem({ chainId: chainId as any });
+              updateSystem({ chainId: chainId as any })
             }
-            return;
+            return
           }
         } catch (error: any) {
-          walletServices.sendDisconnect(
-            "",
-            `error at init loading  ${error}, disconnect`
-          );
+          walletServices.sendDisconnect('', `error at init loading  ${error}, disconnect`)
           const chainId =
-            account._chainId && account._chainId !== "unknown"
-              ? account._chainId
-              : ChainId.MAINNET;
+            account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
           if (!isNoServer) {
-            updateSystem({ chainId });
+            updateSystem({ chainId })
           }
         }
       } else {
-        if (
-          account.accAddress === "" ||
-          account.connectName === ConnectProviders.Unknown
-        ) {
-          resetAccount();
+        if (account.accAddress === '' || account.connectName === ConnectProviders.Unknown) {
+          resetAccount()
         }
         const chainId =
-          account._chainId && account._chainId !== "unknown"
-            ? account._chainId
-            : ChainId.MAINNET;
+          account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
         if (!isNoServer) {
-          updateSystem({ chainId });
+          updateSystem({ chainId })
         }
       }
-    })(account);
-  }, []);
+    })(account)
+  }, [])
   React.useEffect(() => {
     switch (accountStatus) {
       case SagaStatus.ERROR:
-        accountStatusUnset();
-        setState("ERROR");
-        break;
+        accountStatusUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        accountStatusUnset();
-        break;
+        accountStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [accountStatus]);
+  }, [accountStatus])
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:
-        if (!searchParams.has("noheader") && state !== SagaStatus.PENDING) {
-          setState(SagaStatus.PENDING);
+        if (!searchParams.has('noheader') && state !== SagaStatus.PENDING) {
+          setState(SagaStatus.PENDING)
         }
-        break;
+        break
       case SagaStatus.ERROR:
-        systemStatusUnset();
-        setState("ERROR");
-        break;
+        systemStatusUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        systemStatusUnset();
-        break;
+        systemStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [systemStatus]);
+  }, [systemStatus])
   React.useEffect(() => {
     if (
       tokenMapStatus === SagaStatus.UNSET &&
       ammMapStatus === SagaStatus.UNSET &&
       tokenPricesStatus === SagaStatus.UNSET
     ) {
-      setState("DONE");
+      setState('DONE')
     }
-  }, [tokenMapStatus, ammMapStatus, tokenPricesStatus]);
+  }, [tokenMapStatus, ammMapStatus, tokenPricesStatus])
   React.useEffect(() => {
     switch (tokenMapStatus) {
       case SagaStatus.ERROR:
-        tokenMapStatusUnset();
-        setState("ERROR");
-        break;
+        tokenMapStatusUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        tokenMapStatusUnset();
-        break;
+        tokenMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [tokenMapStatus]);
+  }, [tokenMapStatus])
   React.useEffect(() => {
     switch (ammMapStatus) {
       case SagaStatus.ERROR:
-        ammMapStatusUnset();
-        setState("ERROR");
-        break;
+        ammMapStatusUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        ammMapStatusUnset();
-        break;
+        ammMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [ammMapStatus]);
+  }, [ammMapStatus])
 
   React.useEffect(() => {
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:
-        tokenPricesUnset();
-        setState("ERROR");
-        break;
+        tokenPricesUnset()
+        setState('ERROR')
+        break
       case SagaStatus.DONE:
-        tokenPricesUnset();
-        break;
+        tokenPricesUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [tokenPricesStatus]);
+  }, [tokenPricesStatus])
   React.useEffect(() => {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:
-        console.log("Network ERROR::", "getAmmPoolActivityRules");
-        ammActivityMapStatusUnset();
-        break;
+        console.log('Network ERROR::', 'getAmmPoolActivityRules')
+        ammActivityMapStatusUnset()
+        break
       case SagaStatus.DONE:
-        ammActivityMapStatusUnset();
-        break;
+        ammActivityMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [ammActivityMapStatus]);
+  }, [ammActivityMapStatus])
   React.useEffect(() => {
     switch (tickerStatus) {
-      case "ERROR":
-        console.log("Network ERROR::", "getMixTicker");
-        tickerStatusUnset();
-        break;
-      case "DONE":
-        tickerStatusUnset();
-        break;
+      case SagaStatus.ERROR:
+        console.log('Network ERROR::', 'getMixTicker')
+        tickerStatusUnset()
+        break
+      case SagaStatus.DONE:
+        tickerStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [tickerStatus]);
+  }, [tickerStatus])
   React.useEffect(() => {
     switch (amountStatus) {
       case SagaStatus.ERROR:
-        console.log("Network ERROR::", "userAPI getMinimumTokenAmt");
-        amountStatusUnset();
-        break;
+        console.log('Network ERROR::', 'userAPI getMinimumTokenAmt')
+        amountStatusUnset()
+        break
       case SagaStatus.DONE:
-        amountStatusUnset();
-        break;
+        amountStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [amountStatus]);
+  }, [amountStatus])
   React.useEffect(() => {
     switch (socketStatus) {
-      case "ERROR":
-        socketUnset();
-        break;
-      case "DONE":
-        socketUnset();
-        break;
+      case SagaStatus.ERROR:
+        socketUnset()
+        break
+      case SagaStatus.DONE:
+        socketUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [socketStatus]);
+  }, [socketStatus])
   React.useEffect(() => {
     switch (notifyStatus) {
-      case "ERROR":
-        notifyStatusUnset();
-        break;
-      case "DONE":
-        notifyStatusUnset();
-        break;
+      case SagaStatus.ERROR:
+        notifyStatusUnset()
+        break
+      case SagaStatus.DONE:
+        notifyStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [notifyStatus]);
+  }, [notifyStatus])
 
   React.useEffect(() => {
     switch (defiMapStatus) {
       case SagaStatus.ERROR:
-        defiMapStatusUnset();
+        defiMapStatusUnset()
         // setState("ERROR");
-        break;
+        break
       case SagaStatus.DONE:
-        defiMapStatusUnset();
-        break;
+        defiMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [defiMapStatus]);
+  }, [defiMapStatus])
 
   React.useEffect(() => {
     switch (dualMapStatus) {
       case SagaStatus.ERROR:
-        dualMapStatusUnset();
+        dualMapStatusUnset()
         // setState("ERROR");
-        break;
+        break
       case SagaStatus.DONE:
-        dualMapStatusUnset();
-        break;
+        dualMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [dualMapStatus]);
+  }, [dualMapStatus])
   React.useEffect(() => {
     switch (stakingMapStatus) {
       case SagaStatus.ERROR:
-        stakingMapStatusUnset();
+        stakingMapStatusUnset()
         // setState("ERROR");
-        break;
+        break
       case SagaStatus.DONE:
-        stakingMapStatusUnset();
-        break;
+        stakingMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [stakingMapStatus]);
+  }, [stakingMapStatus])
   React.useEffect(() => {
     switch (btradeMapStatus) {
       case SagaStatus.ERROR:
-        btradeMapStatusUnset();
+        btradeMapStatusUnset()
         // setState("ERROR");
-        break;
+        break
       case SagaStatus.DONE:
-        btradeMapStatusUnset();
-        break;
+        btradeMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [btradeMapStatus]);
+  }, [btradeMapStatus])
 
   React.useEffect(() => {
     switch (investTokenTypeMapStatus) {
       case SagaStatus.ERROR:
-        investTokenTypeMapStatusUnset();
+        investTokenTypeMapStatusUnset()
         // setState("ERROR");
-        break;
+        break
       case SagaStatus.DONE:
-        investTokenTypeMapStatusUnset();
-        break;
+        investTokenTypeMapStatusUnset()
+        break
       default:
-        break;
+        break
     }
-  }, [investTokenTypeMapStatus]);
+  }, [investTokenTypeMapStatus])
 
-  useAccountInit({ state });
+  useAccountInit({ state })
   return {
     state,
-  };
+  }
 }

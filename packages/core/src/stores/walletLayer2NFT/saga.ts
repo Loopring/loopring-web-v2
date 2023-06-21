@@ -1,13 +1,8 @@
-import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { getWalletLayer2NFTStatus, updateWalletLayer2NFT } from "./reducer";
-import { store, LoopringAPI } from "../../index";
-import {
-  CustomError,
-  ErrorMap,
-  MyNFTFilter,
-  NFTLimit,
-} from "@loopring-web/common-resources";
-import { PayloadAction } from "@reduxjs/toolkit";
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
+import { getWalletLayer2NFTStatus, updateWalletLayer2NFT } from './reducer'
+import { store, LoopringAPI } from '../../index'
+import { CustomError, ErrorMap, MyNFTFilter, NFTLimit } from '@loopring-web/common-resources'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   page,
@@ -16,18 +11,18 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   collectionContractAddress,
   filter,
 }: {
-  page: number;
-  nftDatas?: string;
-  collectionId: string | undefined;
-  collectionContractAddress: string | undefined;
-  filter?: MyNFTFilter | undefined;
+  page: number
+  nftDatas?: string
+  collectionId: string | undefined
+  collectionContractAddress: string | undefined
+  filter?: MyNFTFilter | undefined
 }) => {
-  const offset = (page - 1) * NFTLimit;
-  const { accountId, apiKey } = store.getState().account;
+  const offset = (page - 1) * NFTLimit
+  const { accountId, apiKey } = store.getState().account
   if (apiKey && accountId && LoopringAPI.userAPI) {
-    let userNFTBalances, totalNum;
+    let userNFTBalances, totalNum
     if (collectionId) {
-      ({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
+      ;({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
         .getUserNFTBalancesByCollection(
           {
             accountId,
@@ -40,13 +35,13 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
             ...(nftDatas ? { nftDatas } : {}),
             ...(filter ?? {}),
           },
-          apiKey
+          apiKey,
         )
         .catch((_error) => {
-          throw new CustomError(ErrorMap.TIME_OUT);
-        }));
+          throw new CustomError(ErrorMap.TIME_OUT)
+        }))
     } else {
-      ({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
+      ;({ userNFTBalances, totalNum } = await LoopringAPI.userAPI
         .getUserNFTBalances(
           {
             accountId,
@@ -59,11 +54,11 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
             ...(nftDatas ? { nftDatas } : {}),
             ...(filter ?? {}),
           },
-          apiKey
+          apiKey,
         )
         .catch((_error) => {
-          throw new CustomError(ErrorMap.TIME_OUT);
-        }));
+          throw new CustomError(ErrorMap.TIME_OUT)
+        }))
     }
 
     return {
@@ -75,26 +70,20 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
       },
       filter,
       page,
-    };
+    }
   }
-  return {};
-};
+  return {}
+}
 
 export function* getPostsSaga({
-  payload: {
-    page = 1,
-    collectionId,
-    collectionContractAddress,
-    nftDatas,
-    filter,
-  },
+  payload: { page = 1, collectionId, collectionContractAddress, nftDatas, filter },
 }: PayloadAction<{
-  page?: number;
-  nftDatas?: string;
+  page?: number
+  nftDatas?: string
   // collection: CollectionMeta | undefined;
-  collectionId: string | undefined;
-  collectionContractAddress: string | undefined;
-  filter?: MyNFTFilter | undefined;
+  collectionId: string | undefined
+  collectionContractAddress: string | undefined
+  filter?: MyNFTFilter | undefined
 }>) {
   try {
     // @ts-ignore
@@ -104,15 +93,16 @@ export function* getPostsSaga({
       collectionId,
       collectionContractAddress,
       filter,
-    });
-    yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }));
+    })
+    yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }))
   } catch (err) {
-    yield put(getWalletLayer2NFTStatus(err));
+    yield put(getWalletLayer2NFTStatus({ error: err }))
   }
 }
 
 export function* walletLayer2NFTSaga() {
-  yield all([takeLatest(updateWalletLayer2NFT, getPostsSaga)]);
+  // @ts-ignore
+  yield all([takeLatest(updateWalletLayer2NFT, getPostsSaga)])
 }
 
-export const walletLayer2NFTFork = [fork(walletLayer2NFTSaga)];
+export const walletLayer2NFTFork = [fork(walletLayer2NFTSaga)]

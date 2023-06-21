@@ -1,132 +1,118 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next'
 import {
   amountStrCallback,
   amountStrNFTCallback,
   LoopringAPI,
   useAccount,
   useTokenMap,
-} from "@loopring-web/core";
-import React, { useEffect } from "react";
-import * as sdk from "@loopring-web/loopring-sdk";
+} from '@loopring-web/core'
+import React from 'react'
+import * as sdk from '@loopring-web/loopring-sdk'
 import {
   CLAIM_TYPE,
   getShortAddr,
+  myLog,
   SDK_ERROR_MAP_TO_UI,
   TokenType,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
   RedPacketViewStep,
   ToastType,
   useOpenModals,
-} from "@loopring-web/component-lib";
-import { url } from "inspector";
+} from '@loopring-web/component-lib'
 
-export const useMyRedPacketRecordTransaction = <
-  R extends RawDataRedPacketRecordsItem
->({
+export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecordsItem>({
   setToastOpen,
 }: // tabType,
 {
-  setToastOpen: (props: any) => void;
+  setToastOpen: (props: any) => void
   // tabType: TabTokenTypeIndex;
 }) => {
-  const { t } = useTranslation(["error"]);
+  const { t } = useTranslation(['error'])
 
   const {
     account: { accountId, apiKey },
-  } = useAccount();
+  } = useAccount()
 
-  const [myRedPacketRecordList, setMyRedPacketRecordList] = React.useState<R[]>(
-    []
-  );
-  const { setShowRedPacket } = useOpenModals();
-  const { idIndex, coinMap, tokenMap } = useTokenMap();
-  const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
+  const [myRedPacketRecordList, setMyRedPacketRecordList] = React.useState<R[]>([])
+  const { setShowRedPacket } = useOpenModals()
+  const { idIndex, coinMap, tokenMap } = useTokenMap()
+  const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
   // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
   const getMyRedPacketRecordTxList = React.useCallback(
     async ({ offset, limit, filter }: any) => {
-      setShowLoading(true);
+      setShowLoading(true)
       if (LoopringAPI.luckTokenAPI && accountId) {
         if (apiKey) {
-          const response =
-            await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
-              {
-                senderId: accountId,
-                scopes: "0,1",
-                modes: "0,1,2",
-                partitions: "0,1",
-                statuses: "1,2,3,4",
-                official: false,
-                offset,
-                limit,
-                ...filter,
-              } as any,
-              apiKey
-            );
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
+          myLog('filterfilterfilterfilterfilter', filter)
+          const response = await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
+            {
+              senderId: accountId,
+              scopes: '0,1,2',
+              partitions: '0,1',
+              statuses: '1,2,3,4',
+              official: false,
+              offset,
+              limit,
+              ...filter,
+            } as any,
+            apiKey,
+          )
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
             if (setToastOpen) {
               setToastOpen({
                 open: true,
                 type: ToastType.error,
                 content:
-                  "error : " + errorItem
+                  'error : ' + errorItem
                     ? t(errorItem.messageKey)
                     : (response as sdk.RESULT_INFO).message,
-              });
+              })
             }
           } else {
-            setMyRedPacketRecordTotal((response as any)?.totalNum);
+            setMyRedPacketRecordTotal((response as any)?.totalNum)
             // @ts-ignore
             let result = (response as any)?.list.reduce(
-              (
-                prev: RawDataRedPacketRecordsItem[],
-                item: sdk.LuckyTokenItemForReceive
-              ) => {
+              (prev: RawDataRedPacketRecordsItem[], item: sdk.LuckyTokenItemForReceive) => {
                 // const type = coinMap[idIndex[item.tokenId] ?? ""];
-                let remainAmount, totalAmount, tokenInfo;
+                let remainAmount, totalAmount, tokenInfo
                 if (item.isNft) {
                   tokenInfo = {
                     ...item.nftTokenInfo,
                     type: TokenType.nft,
                     // icon:
-                  };
+                  }
                   totalAmount = amountStrNFTCallback(
                     item.nftTokenInfo as any,
-                    item.tokenAmount.totalAmount ?? 0
-                  ).amount;
+                    item.tokenAmount.totalAmount ?? 0,
+                  ).amount
                   remainAmount = amountStrNFTCallback(
                     item.nftTokenInfo as any,
-                    item.tokenAmount.remainAmount ?? 0
-                  ).amount;
+                    item.tokenAmount.remainAmount ?? 0,
+                  ).amount
                 } else {
-                  const token = tokenMap[idIndex[item.tokenId]];
+                  const token = tokenMap[idIndex[item.tokenId]]
                   tokenInfo = {
-                    ...coinMap[token.symbol ?? ""],
+                    ...coinMap[token.symbol ?? ''],
                     name: token?.name,
                     type: TokenType.single,
-                  };
+                  }
                   totalAmount = amountStrCallback(
                     tokenMap,
                     idIndex,
                     item.tokenId,
-                    item.tokenAmount.totalAmount ?? 0
-                  ).amount;
+                    item.tokenAmount.totalAmount ?? 0,
+                  ).amount
                   remainAmount = amountStrCallback(
                     tokenMap,
                     idIndex,
                     item.tokenId,
-                    item.tokenAmount.remainAmount ?? 0
-                  ).amount;
+                    item.tokenAmount.remainAmount ?? 0,
+                  ).amount
                 }
 
                 prev.push({
@@ -143,35 +129,31 @@ export const useMyRedPacketRecordTransaction = <
                   remainAmount,
                   createdAt: item.createdAt,
                   rawData: item,
-                });
-                return prev;
+                })
+                return prev
               },
-              [] as RawDataRedPacketRecordsItem[]
-            );
+              [] as RawDataRedPacketRecordsItem[],
+            )
 
-            setMyRedPacketRecordList(result);
+            setMyRedPacketRecordList(result)
           }
         }
       }
-      setShowLoading(false);
+      setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t, idIndex]
-  );
+    [accountId, apiKey, setToastOpen, t, idIndex],
+  )
   const onItemClick = async (item: sdk.LuckyTokenItemForReceive) => {
     const resposne = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail(
       {
         hash: item.hash,
       },
-      apiKey
-    );
-    if (
-      resposne?.detail.luckyToken.type.mode ===
-      sdk.LuckyTokenClaimType.BLIND_BOX
-    ) {
+      apiKey,
+    )
+    if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
       if (
-        resposne?.detail.luckyToken.status ===
-          sdk.LuckyTokenItemStatus.PENDING &&
-        (resposne?.raw_data as any).blindBoxStatus === ""
+        resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING &&
+        (resposne?.raw_data as any).blindBoxStatus === ''
       ) {
         setShowRedPacket({
           isShow: true,
@@ -180,7 +162,7 @@ export const useMyRedPacketRecordTransaction = <
             hash: item.hash,
           },
           step: RedPacketViewStep.OpenPanel,
-        });
+        })
       } else {
         setShowRedPacket({
           isShow: true,
@@ -189,12 +171,11 @@ export const useMyRedPacketRecordTransaction = <
             hash: item.hash,
           },
           step: RedPacketViewStep.BlindBoxDetail,
-        });
+        })
       }
     } else {
       if (
-        resposne?.detail.luckyToken.status ===
-          sdk.LuckyTokenItemStatus.PENDING &&
+        resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING &&
         !resposne?.detail.claimStatus
       ) {
         setShowRedPacket({
@@ -204,7 +185,7 @@ export const useMyRedPacketRecordTransaction = <
             hash: item.hash,
           },
           step: RedPacketViewStep.OpenPanel,
-        });
+        })
       } else {
         setShowRedPacket({
           isShow: true,
@@ -213,45 +194,10 @@ export const useMyRedPacketRecordTransaction = <
             hash: item.hash,
           },
           step: RedPacketViewStep.DetailPanel,
-        });
+        })
       }
     }
-    // if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING) {
-
-    // }
-    // if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
-    //   setShowRedPacket({
-    //     isShow: true,
-    //     info: {
-    //       ...item,
-    //       hash: item.hash,
-    //     },
-    //     step: RedPacketViewStep.OpenPanel,
-    //   });
-    // } else {
-    //   if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-    //     setShowRedPacket({
-    //       isShow: true,
-    //       info: {
-    //         ...item,
-    //         hash: item.hash,
-    //       },
-    //       step: RedPacketViewStep.BlindBoxDetail,
-    //     });
-    //   } else {
-    //     setShowRedPacket({
-    //       isShow: true,
-    //       info: {
-    //         ...item,
-    //         hash: item.hash,
-    //       },
-    //       step: RedPacketViewStep.DetailPanel,
-    //     });
-
-    //   }
-
-    // }
-  };
+  }
 
   return {
     // page,
@@ -260,184 +206,158 @@ export const useMyRedPacketRecordTransaction = <
     showLoading,
     getMyRedPacketRecordTxList,
     myRedPacketRecordTotal,
-    // pagination,
-    // updateTickersUI,
-  };
-};
+  }
+}
 
-export const useMyRedPacketReceiveTransaction = <
-  R extends RawDataRedPacketReceivesItem
->({
+export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketReceivesItem>({
   setToastOpen,
-}: // showActionableRecords
-// tabType,
-{
-  setToastOpen: (props: any) => void;
-  // showActionableRecords: boolean
-  // tabType: TabTokenTypeIndex;
+}: {
+  setToastOpen: (props: any) => void
 }) => {
-  const { t } = useTranslation(["error"]);
+  const { t } = useTranslation(['error'])
 
   const {
     account: { accountId, apiKey, accAddress },
-  } = useAccount();
+  } = useAccount()
 
-  const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
-    []
-  );
-  const { setShowRedPacket, setShowClaimWithdraw } = useOpenModals();
+  const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>([])
+  const { setShowRedPacket, setShowClaimWithdraw } = useOpenModals()
 
-  const { idIndex, coinMap, tokenMap } = useTokenMap();
-  const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
+  const { idIndex, coinMap, tokenMap } = useTokenMap()
+  const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
   // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const getRedPacketReceiveList = React.useCallback(
     async ({ offset, limit, filter }: any) => {
-      setShowLoading(true);
-      if (LoopringAPI.luckTokenAPI && accountId) {
-        if (apiKey) {
-          const response =
-            await LoopringAPI.luckTokenAPI.getLuckTokenClaimHistory(
+      setShowLoading(true)
+      try {
+        if (LoopringAPI.luckTokenAPI && accountId) {
+          if (apiKey) {
+            const response = await LoopringAPI.luckTokenAPI.getLuckTokenClaimHistory(
               {
                 offset,
                 limit,
                 ...filter,
               } as any,
-              apiKey
-            );
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
-            if (setToastOpen) {
-              setToastOpen({
-                open: true,
-                type: ToastType.error,
-                content:
-                  "error : " + errorItem
-                    ? t(errorItem.messageKey)
-                    : (response as sdk.RESULT_INFO).message,
-              });
+              apiKey,
+            )
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+              const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+              if (setToastOpen) {
+                setToastOpen({
+                  open: true,
+                  type: ToastType.error,
+                  content:
+                    'error : ' + errorItem
+                      ? t(errorItem.messageKey)
+                      : (response as sdk.RESULT_INFO).message,
+                })
+              }
+            } else {
+              setRedPacketReceiveTotal((response as any)?.totalNum)
+              // @ts-ignore
+              let result = (response as any)?.list.reduce(
+                (prev: R[], item: sdk.LuckTokenHistory) => {
+                  // @ts-ignore
+                  const { luckyToken, claim: myClaim } = item
+
+                  let amount, tokenInfo
+                  if (luckyToken.isNft) {
+                    amount = amountStrNFTCallback(
+                      luckyToken.nftTokenInfo as any,
+                      myClaim?.amount?.toString() ?? 0,
+                    ).amount
+                    tokenInfo = {
+                      ...luckyToken.nftTokenInfo,
+                      type: TokenType.nft,
+                    }
+                  } else {
+                    const token = tokenMap[idIndex[luckyToken.tokenId]]
+                    tokenInfo = {
+                      ...coinMap[token.symbol ?? ''],
+                      name: token.name,
+                      type: TokenType.single,
+                    }
+                    amount = amountStrCallback(
+                      tokenMap,
+                      idIndex,
+                      luckyToken.tokenId,
+                      myClaim?.amount?.toString() ?? 0,
+                    ).amount
+                  }
+
+                  prev.push()
+                  return [
+                    ...prev,
+                    {
+                      token: {
+                        ...tokenInfo,
+                      } as any,
+                      amount,
+                      type: luckyToken.type, //sdk.LuckyTokenItemStatus
+                      status: luckyToken.status,
+                      claimAt: myClaim?.createdAt,
+                      sender: luckyToken?.sender?.ens
+                        ? luckyToken?.sender?.ens
+                        : getShortAddr(luckyToken?.sender?.address),
+                      rawData: item,
+                    },
+                  ]
+                },
+                [] as R[],
+              )
+
+              setRedPacketReceiveList(result)
             }
-          } else {
-            setRedPacketReceiveTotal((response as any)?.totalNum);
-            // @ts-ignore
-            let result = (response as any)?.list.reduce(
-              (prev: R[], item: sdk.LuckTokenHistory) => {
-                // @ts-ignore
-                const { luckyToken, claim: myClaim } = item;
-
-                let amount, tokenInfo;
-                if (luckyToken.isNft) {
-                  amount = amountStrNFTCallback(
-                    luckyToken.nftTokenInfo as any,
-                    myClaim?.amount?.toString() ?? 0
-                  ).amount;
-                  tokenInfo = {
-                    ...luckyToken.nftTokenInfo,
-                    type: TokenType.nft,
-                  };
-                } else {
-                  const token = tokenMap[idIndex[luckyToken.tokenId]];
-                  tokenInfo = {
-                    ...coinMap[token.symbol ?? ""],
-                    name: token.name,
-                    type: TokenType.single,
-                  };
-                  amount = amountStrCallback(
-                    tokenMap,
-                    idIndex,
-                    luckyToken.tokenId,
-                    myClaim?.amount?.toString() ?? 0
-                  ).amount;
-                }
-
-                prev.push();
-                return [
-                  ...prev,
-                  {
-                    token: {
-                      ...tokenInfo,
-                    } as any,
-                    amount,
-                    type: luckyToken.type, //sdk.LuckyTokenItemStatus
-                    status: luckyToken.status,
-                    claimAt: myClaim?.createdAt,
-                    sender: luckyToken?.sender?.ens
-                      ? luckyToken?.sender?.ens
-                      : getShortAddr(luckyToken?.sender?.address),
-                    rawData: item,
-                  },
-                ];
-              },
-              [] as R[]
-            );
-
-            setRedPacketReceiveList(result);
           }
         }
+      } finally {
+        setShowLoading(false)
       }
-      setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t, idIndex]
-  );
+    [accountId, apiKey, setToastOpen, t, idIndex],
+  )
 
-  const onItemClick = (
-    item: sdk.LuckTokenHistory,
-    refreshCallback?: () => void
-  ) => {
+  const onItemClick = (item: sdk.LuckTokenHistory) => {
     if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
       setShowRedPacket({
         isShow: true,
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
-          refreshCallback,
         },
-      });
+      })
     } else {
       setShowRedPacket({
         isShow: true,
         step: RedPacketViewStep.DetailPanel,
         info: {
           ...item.luckyToken,
-          refreshCallback,
         },
-      });
+      })
     }
-  };
-  const onClaimItem = async (
-    item: sdk.LuckTokenHistory,
-    successCallback: () => void
-  ) => {
+  }
+  const onClaimItem = async (item: sdk.LuckTokenHistory) => {
     const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
       {
         accountId: accountId,
         isNft: item.luckyToken.isNft,
         tokens: [item.luckyToken.tokenId],
       },
-      apiKey
-    );
-    if (
-      (response as sdk.RESULT_INFO).code ||
-      (response as sdk.RESULT_INFO).message
-    ) {
-      const errorItem =
-        SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+      apiKey,
+    )
+    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+      const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
       if (setToastOpen) {
         setToastOpen({
           open: true,
           type: ToastType.error,
           content:
-            "error : " + errorItem
+            'error : ' + errorItem
               ? t(errorItem.messageKey)
               : (response as sdk.RESULT_INFO).message,
-        });
+        })
       }
     } else {
       setShowClaimWithdraw({
@@ -452,10 +372,9 @@ export const useMyRedPacketReceiveTransaction = <
           luckyTokenHash: item.luckyToken.hash,
         },
         claimType: CLAIM_TYPE.redPacket,
-        successCallback: successCallback,
-      });
+      })
     }
-  };
+  }
   return {
     onItemClick,
     redPacketReceiveList,
@@ -463,32 +382,28 @@ export const useMyRedPacketReceiveTransaction = <
     getRedPacketReceiveList,
     redPacketReceiveTotal,
     onClaimItem,
-  };
-};
+  }
+}
 
-export const useMyRedPacketBlindBoxReceiveTransaction = <
-  R extends RawDataRedPacketReceivesItem
->({
+export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPacketReceivesItem>({
   setToastOpen,
 }: // showActionableRecords
 {
-  setToastOpen: (props: any) => void;
+  setToastOpen: (props: any) => void
   // showActionableRecords: boolean
 }) => {
-  const { t } = useTranslation(["error"]);
+  const { t } = useTranslation(['error'])
 
   const {
-    account: { accountId, apiKey, accAddress, eddsaKey },
-  } = useAccount();
+    account: { accountId, apiKey },
+  } = useAccount()
 
-  const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>(
-    []
-  );
-  const { setShowRedPacket } = useOpenModals();
+  const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>([])
+  const { setShowRedPacket } = useOpenModals()
 
-  const { idIndex, coinMap, tokenMap } = useTokenMap();
-  const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
+  const { idIndex, coinMap, tokenMap } = useTokenMap()
+  const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
   // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const getRedPacketReceiveList = React.useCallback(
@@ -498,87 +413,87 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
         // statuses: showActionableRecords
         //   ? [sdk.BlindBoxStatus.NOT_OPENED]
         //   : undefined
-      };
-      setShowLoading(true);
-      if (LoopringAPI.luckTokenAPI && accountId) {
-        if (apiKey) {
-          const response =
-            await LoopringAPI.luckTokenAPI.getLuckTokenClaimedBlindBox(
+      }
+      setShowLoading(true)
+      try {
+        if (LoopringAPI.luckTokenAPI && accountId) {
+          if (apiKey) {
+            const response = await LoopringAPI.luckTokenAPI.getLuckTokenClaimedBlindBox(
               {
                 offset,
                 limit,
                 isNft: true,
                 ..._filer,
               } as any,
-              apiKey
-            );
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
-            if (setToastOpen) {
-              setToastOpen({
-                open: true,
-                type: ToastType.error,
-                content:
-                  "error : " + errorItem
-                    ? t(errorItem.messageKey)
-                    : (response as sdk.RESULT_INFO).message,
-              });
-            }
-          } else {
-            setRedPacketReceiveTotal((response as any)?.totalNum);
-            let result = (response as any)?.list.map(
-              (item: sdk.LuckyTokenBlindBoxItemReceive) => {
-                // @ts-ignore
-                const { luckyToken, claim: myClaim } = item;
-
-                return {
-                  type: luckyToken.type,
-                  status: luckyToken.status,
-                  claimAt: myClaim?.createdAt,
-                  sender: luckyToken?.sender?.ens
-                    ? luckyToken?.sender?.ens
-                    : getShortAddr(luckyToken?.sender?.address),
-                  rawData: item,
-                };
+              apiKey,
+            )
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+              const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+              if (setToastOpen) {
+                setToastOpen({
+                  open: true,
+                  type: ToastType.error,
+                  content:
+                    'error : ' + errorItem
+                      ? t(errorItem.messageKey)
+                      : (response as sdk.RESULT_INFO).message,
+                })
               }
-            );
+            } else {
+              setRedPacketReceiveTotal((response as any)?.totalNum)
+              let result = (response as any)?.list.map(
+                (item: sdk.LuckyTokenBlindBoxItemReceive) => {
+                  // @ts-ignore
+                  const { luckyToken, claim: myClaim } = item
+                  let tokenInfo
+                  if (!luckyToken.isNft) {
+                    const token = tokenMap[idIndex[luckyToken.tokenId]]
+                    tokenInfo = {
+                      ...coinMap[token.symbol ?? ''],
+                      name: token.name,
+                      type: TokenType.single,
+                      decimals: token.decimals,
+                      precision: token.precision,
+                    }
+                  }
+                  return {
+                    type: luckyToken.type,
+                    status: luckyToken.status,
+                    claimAt: myClaim?.createdAt,
+                    sender: luckyToken?.sender?.ens
+                      ? luckyToken?.sender?.ens
+                      : getShortAddr(luckyToken?.sender?.address),
+                    rawData: item,
+                    token: tokenInfo,
+                  }
+                },
+              )
 
-            setRedPacketReceiveList(result);
+              setRedPacketReceiveList(result)
+            }
           }
         }
+      } finally {
+        setShowLoading(false)
       }
-      setShowLoading(false);
     },
-    [accountId, apiKey, setToastOpen, t, idIndex]
-  );
+    [accountId, apiKey, setToastOpen, t, idIndex],
+  )
 
-  const onItemClick = async (
-    item: sdk.LuckyTokenBlindBoxItemReceive,
-    pageInfo?: { offset: number; limit: number; filter: any }
-  ) => {
-    const refreshCallback = () => {
-      getRedPacketReceiveList(pageInfo);
-    };
+  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
         ...item.luckyToken,
-        refreshCallback,
       },
-    });
-  };
+    })
+  }
   return {
     onItemClick,
     redPacketReceiveList,
     showLoading,
     getRedPacketReceiveList,
     redPacketReceiveTotal,
-  };
-};
+  }
+}

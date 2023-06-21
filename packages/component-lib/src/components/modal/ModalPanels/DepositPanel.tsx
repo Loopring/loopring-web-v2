@@ -1,33 +1,29 @@
-import { DepositProps } from "../../tradePanel/Interface";
-import { withTranslation, WithTranslation } from "react-i18next";
+import { DepositProps } from '../../tradePanel/Interface'
+import { Trans, withTranslation, WithTranslation } from 'react-i18next'
 import {
   CoinInfo,
   CoinMap,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  SoursURL,
   TRADE_TYPE,
-} from "@loopring-web/common-resources";
-import {
-  ModalBackButton,
-  SwitchPanel,
-  SwitchPanelProps,
-} from "../../basic-lib";
-import {
-  DepositWrap,
-  TradeMenuList,
-  useBasicTrade,
-} from "../../tradePanel/components";
-import React from "react";
-import { cloneDeep } from "lodash";
-import { DepositConfirm } from "../../tradePanel/components/DepositConfirm";
+} from '@loopring-web/common-resources'
+import { ModalBackButton, SwitchPanel, SwitchPanelProps } from '../../basic-lib'
+import { DepositWrap, TradeMenuList, useBasicTrade } from '../../tradePanel/components'
+import React from 'react'
+import { cloneDeep } from 'lodash'
+import { DepositConfirm } from '../../tradePanel/components/DepositConfirm'
+import { useSettings } from '../../../stores'
+import { Box, Typography } from '@mui/material'
 
-export const DepositPanel = withTranslation("common", { withRef: true })(
+export const DepositPanel = withTranslation('common', { withRef: true })(
   <
     T extends {
-      referAddress?: string;
-      toAddress?: string;
-      addressError?: { error: boolean; message: string };
+      toAddress?: string
+      addressError?: { error: boolean; message: string }
     } & IBData<I>,
-    I
+    I,
   >({
     type = TRADE_TYPE.TOKEN,
     onDepositClick,
@@ -41,54 +37,55 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     t,
     ...rest
   }: DepositProps<T, I> & WithTranslation) => {
-    // const { theme } = useSettings();
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
       type,
       walletMap,
       coinMap,
-    } as any);
-    const [panelIndex, setPanelIndex] = React.useState(index + 1);
+    } as any)
+    const [panelIndex, setPanelIndex] = React.useState(index + 1)
     const handleConfirm = (index: number) => {
-      setPanelIndex(index);
-    };
+      setPanelIndex(index)
+    }
     // const hanleConfirm = () => {};
     React.useEffect(() => {
-      setPanelIndex(index + 1);
-    }, [index]);
+      setPanelIndex(index + 1)
+    }, [index])
 
     const getFilteredWalletMap = React.useCallback(() => {
       if (walletMap) {
-        const clonedWalletMap = cloneDeep(walletMap);
+        const clonedWalletMap = cloneDeep(walletMap)
         Object.values(clonedWalletMap).forEach((o: any) => {
           if (o.belong && o.count && Number(o.count) === 0) {
-            delete clonedWalletMap[o.belong];
+            delete clonedWalletMap[o.belong]
           }
-        });
-        return clonedWalletMap;
+        })
+        return clonedWalletMap
       }
-      return {};
-    }, [walletMap]);
+      return {}
+    }, [walletMap])
 
     const getFilteredCoinMap: any = React.useCallback(() => {
       if (coinMap && getFilteredWalletMap()) {
-        const clonedCoinMap = cloneDeep(coinMap);
-        const remainList = {};
+        const clonedCoinMap = cloneDeep(coinMap)
+        const remainList = {}
         Object.keys(getFilteredWalletMap()).forEach((token) => {
           if (clonedCoinMap[token]) {
-            remainList[token] = clonedCoinMap[token];
+            remainList[token] = clonedCoinMap[token]
           }
-        });
-        return remainList;
+        })
+        return remainList
       }
-      return {};
-    }, [coinMap, getFilteredWalletMap]);
+      return {}
+    }, [coinMap, getFilteredWalletMap])
 
-    const props: SwitchPanelProps<"tradeMenuList" | "trade" | "confirm"> = {
+    const props: SwitchPanelProps<'tradeMenuList' | 'trade' | 'confirm'> = {
       index: panelIndex, // show default show
       panelList: [
         {
-          key: "confirm",
+          key: 'confirm',
           element: React.useMemo(
             () => (
               // @ts-ignore
@@ -96,36 +93,68 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                 {...{
                   ...rest,
                   t,
-                  realToAddress: rest.isAllowInputToAddress
-                    ? rest.realToAddress
-                    : t("labelToMyL2"),
+                  realToAddress: rest.isAllowInputToAddress ? (
+                    rest.realToAddress
+                  ) : (
+                    <Trans
+                      i18nKey={'labelToMyL2WidthAddress'}
+                      tOptions={{
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                        address: rest.realToAddress,
+                      }}
+                    >
+                      <Typography
+                        color={'inherit'}
+                        variant={'body1'}
+                        display={'flex'}
+                        component={'span'}
+                        sx={{ opacity: 1 }}
+                        paddingLeft={1 / 2}
+                      >
+                        My L2
+                      </Typography>
+                      <Typography
+                        color={'var(--color-text-third)'}
+                        variant={'body2'}
+                        display={'flex'}
+                        component={'span'}
+                        sx={{ opacity: 1 }}
+                        paddingLeft={1 / 2}
+                      >
+                        (address)
+                      </Typography>
+                    </Trans>
+                  ),
                   tradeData: switchData.tradeData,
                   onDepositClick,
                   handleConfirm,
                 }}
               />
             ),
-            [rest, handleConfirm, onDepositClick, type, switchData.tradeData]
+            [rest, handleConfirm, onDepositClick, type, switchData.tradeData],
           ),
           toolBarItem: (
             <ModalBackButton
               marginTop={0}
               marginLeft={-2}
               onBack={() => {
-                setPanelIndex(1);
+                setPanelIndex(1)
               }}
               {...rest}
             />
           ),
         },
         {
-          key: "trade",
+          key: 'trade',
           // onBack,
           element: React.useMemo(
             () => (
               // @ts-ignore
               <DepositWrap<T, I>
-                key={"trade"}
+                key={'trade'}
                 {...{
                   ...rest,
                   t,
@@ -154,7 +183,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
               coinMap,
               addressDefault,
               allowTrade,
-            ]
+            ],
           ),
           toolBarItem: React.useMemo(
             () => (
@@ -164,7 +193,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                     marginTop={0}
                     marginLeft={-2}
                     onBack={() => {
-                      onBack();
+                      onBack()
                     }}
                     {...rest}
                   />
@@ -173,11 +202,11 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                 )}
               </>
             ),
-            [onBack]
+            [onBack],
           ),
         },
         {
-          key: "tradeMenuList",
+          key: 'tradeMenuList',
           element: React.useMemo(
             () => (
               // @ts-ignore
@@ -197,23 +226,34 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                 }}
               />
             ),
-            [
-              rest,
-              onChangeEvent,
-              switchData.tradeData,
-              getFilteredWalletMap,
-              getFilteredCoinMap,
-            ]
+            [rest, onChangeEvent, switchData.tradeData, getFilteredWalletMap, getFilteredCoinMap],
           ),
           toolBarItem: undefined,
           // toolBarItem: toolBarItemBack
         },
       ],
-    };
-    return <SwitchPanel {...{ ...rest, t, ...props }} />;
-  }
-) as <T, I>(
-  props: DepositProps<T, I> & React.RefAttributes<any>
-) => JSX.Element;
+    }
+    return !switchData.tradeData?.belong ? (
+      <Box
+        height={'var(--min-height)'}
+        width={'var(--modal-width)'}
+        display={'flex'}
+        flex={1}
+        justifyContent={'center'}
+        flexDirection={'column'}
+        alignItems={'center'}
+      >
+        <img
+          className='loading-gif'
+          alt={'loading'}
+          width='60'
+          src={`${SoursURL}images/loading-line.gif`}
+        />
+      </Box>
+    ) : (
+      <SwitchPanel {...{ ...rest, t, ...props }} />
+    )
+  },
+) as <T, I>(props: DepositProps<T, I> & React.RefAttributes<any>) => JSX.Element
 
 // export const TransferModal = withTranslation()

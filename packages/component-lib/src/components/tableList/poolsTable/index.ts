@@ -1,2 +1,2 @@
-export * from "./PoolsTable";
-export * from "./Interface";
+export * from './PoolsTable'
+export * from './Interface'

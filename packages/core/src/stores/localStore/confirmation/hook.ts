@@ -1,7 +1,7 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../index";
-import { Confirmation } from "./interface";
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../index'
+import { Confirmation } from './interface'
 
 import {
   confirm,
@@ -12,45 +12,69 @@ import {
   confirmedLRCStakeInvest,
   confirmedBtradeSwap,
   confirmDualInvestV2,
-} from "./reducer";
+  confirmDualAutoInvest,
+  confirmedLeverageETHInvest,
+  confirmDualDipInvest,
+  confirmDualGainInvest,
+} from './reducer'
+import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
 export const useConfirmation = (): {
-  confirmation: Confirmation;
-  confirmWrapper: () => void;
-  confirmedRETHDefiInvest: () => void;
-  confirmedWSETHDefiInvest: () => void;
-  confirmedLRCStakeInvest: () => void;
-  confirmDualInvest: () => void;
-  confirmedBtradeSwap: () => void;
+  confirmation: Confirmation
+  confirmWrapper: () => void
+  confirmedRETHDefiInvest: () => void
+  confirmedWSETHDefiInvest: () => void
+  confirmedLRCStakeInvest: () => void
+  confirmDualInvest: (level: DualInvestConfirmType | undefined) => void
+  confirmDualAutoInvest: () => void
+  confirmedBtradeSwap: () => void
+  confirmedLeverageETHInvest: () => void
+  confirmDualDipInvest: () => void
+  confirmDualGainInvest: () => void
 } => {
   const confirmation: Confirmation = useSelector(
-    (state: RootState) => state.localStore.confirmation
-  );
-  const dispatch = useDispatch();
+    (state: RootState) => state.localStore.confirmation,
+  )
+  const dispatch = useDispatch()
 
   return {
     confirmation,
     confirmWrapper: React.useCallback(() => {
-      dispatch(confirm(undefined));
+      dispatch(confirm(undefined))
     }, [dispatch]),
-    confirmDualInvest: React.useCallback(() => {
-      dispatch(confirmDualInvestV2(undefined));
-      dispatch(showDualBeginnerHelp(undefined));
-      setTimeout(() => {
-        dispatch(hidDualBeginnerHelp(undefined));
-      }, 5 * 1000);
-    }, [dispatch]),
+    confirmDualInvest: React.useCallback(
+      (level: DualInvestConfirmType | undefined) => {
+        dispatch(confirmDualInvestV2({ level }))
+        dispatch(showDualBeginnerHelp(undefined))
+        setTimeout(() => {
+          dispatch(hidDualBeginnerHelp(undefined))
+        }, 5 * 1000)
+      },
+      [dispatch],
+    ),
     confirmedRETHDefiInvest: React.useCallback(() => {
-      dispatch(confirmedRETHDefiInvest(undefined));
+      dispatch(confirmedRETHDefiInvest(undefined))
     }, [dispatch]),
     confirmedWSETHDefiInvest: React.useCallback(() => {
-      dispatch(confirmedWSETHDefiInvest(undefined));
+      dispatch(confirmedWSETHDefiInvest(undefined))
     }, [dispatch]),
     confirmedLRCStakeInvest: React.useCallback(() => {
-      dispatch(confirmedLRCStakeInvest(undefined));
+      dispatch(confirmedLRCStakeInvest(undefined))
     }, [dispatch]),
     confirmedBtradeSwap: React.useCallback(() => {
-      dispatch(confirmedBtradeSwap(undefined));
+      dispatch(confirmedBtradeSwap(undefined))
     }, [dispatch]),
-  };
-};
+    confirmedLeverageETHInvest: React.useCallback(() => {
+      dispatch(confirmedLeverageETHInvest(undefined))
+    }, [dispatch]),
+    confirmDualAutoInvest: React.useCallback(() => {
+      dispatch(confirmDualAutoInvest(undefined))
+    }, [dispatch]),
+    confirmDualDipInvest: React.useCallback(() => {
+      dispatch(confirmDualDipInvest(undefined))
+    }, [dispatch]),
+    confirmDualGainInvest: React.useCallback(() => {
+      dispatch(confirmDualGainInvest(undefined))
+    }, [dispatch]),
+  }
+}

@@ -8,20 +8,17 @@ import {
   OtherExchangeDialog,
   SwitchPanelStyled,
   useOpenModals,
-} from "@loopring-web/component-lib";
-import { ModalWalletConnectPanel } from "./WalletModal";
-import { ModalAccountInfo } from "./AccountModal";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { useSystem, useAccountModal, useAccount } from "@loopring-web/core";
-import React from "react";
-import {
-  AccountStatus,
-  AssetsRawDataItem,
-} from "@loopring-web/common-resources";
-import { Box, Modal as MuiModal } from "@mui/material";
-import { ModalAccountL1Info } from "./AccountL1Modal";
+} from '@loopring-web/component-lib'
+import { ModalWalletConnectPanel } from './WalletModal'
+import { ModalAccountInfo } from './AccountModal'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { useSystem, useAccountModal, useAccount } from '@loopring-web/core'
+import React from 'react'
+import { AccountStatus, AssetsRawDataItem } from '@loopring-web/common-resources'
+import { Box, Modal as MuiModal } from '@mui/material'
+import { ModalAccountL1Info } from './AccountL1Modal'
 
-export const ModalGroup = withTranslation("common")(
+export const ModalGroup = withTranslation('common')(
   ({
     isLayer1Only,
     onWalletConnectPanelClose,
@@ -29,19 +26,19 @@ export const ModalGroup = withTranslation("common")(
     assetsRawData,
     ...rest
   }: WithTranslation & {
-    isLayer1Only?: boolean;
-    depositProps: DepositProps<any, any>;
-    assetsRawData: AssetsRawDataItem[];
-    onWalletConnectPanelClose?: (event: MouseEvent) => void;
+    isLayer1Only?: boolean
+    depositProps: DepositProps<any, any>
+    assetsRawData: AssetsRawDataItem[]
+    onWalletConnectPanelClose?: (event: MouseEvent) => void
   }) => {
-    const { etherscanBaseUrl } = useSystem();
+    const { etherscanBaseUrl } = useSystem()
     const {
       modals: { isShowFeeSetting, isShowIFrame },
       setShowFeeSetting,
       setShowIFrame,
       setShowOtherExchange,
-    } = useOpenModals();
-    useAccountModal();
+    } = useOpenModals()
+    useAccountModal()
 
     const {
       modals: {
@@ -58,24 +55,24 @@ export const ModalGroup = withTranslation("common")(
       setShowWithdraw,
       setShowResetAccount,
       setNFTMetaNotReady,
-    } = useOpenModals();
-    const { account } = useAccount();
+    } = useOpenModals()
+    const { account } = useAccount()
 
     React.useEffect(() => {
       if (account.readyState !== AccountStatus.ACTIVATED) {
-        setShowDeposit({ isShow: false });
-        setShowTransfer({ isShow: false });
-        setShowWithdraw({ isShow: false });
-        setShowResetAccount({ isShow: false });
+        setShowDeposit({ isShow: false })
+        setShowTransfer({ isShow: false })
+        setShowWithdraw({ isShow: false })
+        setShowResetAccount({ isShow: false })
       }
-    }, [account.readyState]);
+    }, [account.readyState])
 
     return (
       <>
         <AlertNotSupport
           open={isShowSupport.isShow}
           handleClose={() => {
-            setShowSupport({ isShow: false });
+            setShowSupport({ isShow: false })
           }}
         />
         {/*<ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />*/}
@@ -89,19 +86,19 @@ export const ModalGroup = withTranslation("common")(
         <OtherExchangeDialog
           open={isShowOtherExchange.isShow}
           handleClose={(_e, agree) => {
-            setShowOtherExchange({ isShow: false, agree });
+            setShowOtherExchange({ isShow: false, agree })
           }}
         />
         <InformationForNoMetaNFT
           open={!!isShowNFTMetaNotReady.isShow}
           method={isShowNFTMetaNotReady?.info?.method}
           handleClose={(_e, isAgree) => {
-            setNFTMetaNotReady({ isShow: false });
+            setNFTMetaNotReady({ isShow: false })
             if (isAgree) {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.SendNFTGateway,
-              });
+              })
             }
           }}
         />
@@ -122,18 +119,14 @@ export const ModalGroup = withTranslation("common")(
         />
         <MuiModal
           open={isShowIFrame.isShow}
-          onClose={() => setShowIFrame({ isShow: false, url: "" })}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+          onClose={() => setShowIFrame({ isShow: false, url: '' })}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
         >
-          <SwitchPanelStyled
-            width={"80%"}
-            position={"relative"}
-            style={{ alignItems: "stretch" }}
-          >
-            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+          <SwitchPanelStyled width={'80%'} position={'relative'} style={{ alignItems: 'stretch' }}>
+            <Box display={'flex'} width={'100%'} flexDirection={'column'}>
               <ModalCloseButton
-                onClose={() => setShowIFrame({ isShow: false, url: "" })}
+                onClose={() => setShowIFrame({ isShow: false, url: '' })}
                 {...rest}
               />
               {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
@@ -142,36 +135,36 @@ export const ModalGroup = withTranslation("common")(
           </SwitchPanelStyled>
         </MuiModal>
       </>
-    );
-  }
-);
-export const ModalGroupL1 = withTranslation("common")(
+    )
+  },
+)
+export const ModalGroupL1 = withTranslation('common')(
   ({
     onWalletConnectPanelClose,
     depositProps,
     assetsRawData,
     ...rest
   }: WithTranslation & {
-    depositProps: DepositProps<any, any>;
-    assetsRawData: AssetsRawDataItem[];
-    onWalletConnectPanelClose?: (event: MouseEvent) => void;
+    depositProps: DepositProps<any, any>
+    assetsRawData: AssetsRawDataItem[]
+    onWalletConnectPanelClose?: (event: MouseEvent) => void
   }) => {
-    const { etherscanBaseUrl } = useSystem();
+    const { etherscanBaseUrl } = useSystem()
 
-    useAccountModal();
+    useAccountModal()
 
     const {
       modals: { isShowAccount, isShowConnect, isShowSupport },
       setShowSupport,
-    } = useOpenModals();
-    const { account } = useAccount();
+    } = useOpenModals()
+    const { account } = useAccount()
 
     return (
       <>
         <AlertNotSupport
           open={isShowSupport.isShow}
           handleClose={() => {
-            setShowSupport({ isShow: false });
+            setShowSupport({ isShow: false })
           }}
         />
         {/*<ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />*/}
@@ -194,10 +187,10 @@ export const ModalGroupL1 = withTranslation("common")(
           }}
         />
       </>
-    );
-  }
-);
-export * from "./AmmPoolModal";
-export * from "./RedPacketModal";
-export * from "./DualModal";
-export * from "./AccountModal/components/NFTDetail";
+    )
+  },
+)
+export * from './AmmPoolModal'
+export * from './RedPacketModal'
+export * from './DualModal'
+export * from './AccountModal/components/NFTDetail'

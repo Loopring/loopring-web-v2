@@ -1,10 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  Contact,
-  ModalState,
-  ModalStatePlayLoad,
-  Transaction,
-} from "./interface";
+import { useDispatch, useSelector } from 'react-redux'
+import { Contact, ModalState, ModalStatePlayLoad, Transaction } from './interface'
 import {
   setNFTMetaNotReady,
   setShowAccount,
@@ -18,6 +13,7 @@ import {
   setShowDual,
   setShowExportAccount,
   setShowFeeSetting,
+  setShowGlobalToast,
   setShowIFrame,
   setShowLayerSwapNotice,
   setShowNFTDeploy,
@@ -36,257 +32,262 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
-} from "./reducer";
+} from './reducer'
 
-import React from "react";
+import React from 'react'
 import {
   CLAIM_TYPE,
   ClaimToken,
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
-} from "@loopring-web/common-resources";
-import { RESULT_INFO } from "@loopring-web/loopring-sdk";
-import { ToggleState } from "../toggle";
-import { AmmPanelType } from "../../../components";
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { ToggleState } from '../toggle'
+import { AmmPanelType, ToastType } from '../../../components'
 
 export const useOpenModals = () => {
-  const dispatch = useDispatch();
-  const toggle = useSelector((state: any) => state.toggle) as ToggleState;
+  const dispatch = useDispatch()
+  const toggle = useSelector((state: any) => state.toggle) as ToggleState
   return {
     modals: useSelector((state: any) => state.modals) as ModalState,
     setShowRedPacket: React.useCallback(
       (
         state: ModalStatePlayLoad & {
-          step?: number;
-          info?: { [key: string]: any };
-        }
+          step?: number
+          info?: { [key: string]: any }
+        },
       ) => dispatch(setShowRedPacket(state)),
-      [dispatch]
+      [dispatch],
     ),
     setNFTMetaNotReady: React.useCallback(
       (
         state: ModalStatePlayLoad & {
-          step?: number;
-          info?: { [key: string]: any };
-        }
+          step?: number
+          info?: { [key: string]: any }
+        },
       ) => dispatch(setNFTMetaNotReady(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowSupport: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) =>
-        dispatch(setShowSupport(state)),
-      [dispatch]
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowSupport(state)),
+      [dispatch],
     ),
     setShowOtherExchange: React.useCallback(
       (
         state: ModalStatePlayLoad & {
-          agree?: boolean;
-        } & Transaction
+          agree?: boolean
+        } & Transaction,
       ) => dispatch(setShowOtherExchange(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowWrongNetworkGuide: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) =>
-        dispatch(setShowWrongNetworkGuide(state)),
-      [dispatch]
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowWrongNetworkGuide(state)),
+      [dispatch],
     ),
 
     setShowTransfer: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.transfer.enable) {
-          dispatch(setShowTransfer(state));
+          dispatch(setShowTransfer(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Transfer" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowNFTDeploy: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) => {
-        dispatch(setShowNFTDeploy(state));
+        dispatch(setShowNFTDeploy(state))
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowDeposit: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & { partner?: boolean }) => {
         if (toggle.deposit.enable) {
-          dispatch(setShowDeposit(state));
+          dispatch(setShowDeposit(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Deposit" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Deposit' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowWithdraw: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & Contact) => {
         if (toggle.withdraw.enable) {
-          dispatch(setShowWithdraw(state));
+          dispatch(setShowWithdraw(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Withdraw" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Withdraw' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowNFTDetail: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
-        dispatch(setShowNFTDetail(state));
+        dispatch(setShowNFTDetail(state))
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowNFTTransfer: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
         if (toggle.transferNFT.enable) {
-          dispatch(setShowNFTTransfer(state));
+          dispatch(setShowNFTTransfer(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Transfer" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowNFTDeposit: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
         if (toggle.depositNFT.enable) {
-          dispatch(setShowNFTDeposit(state));
+          dispatch(setShowNFTDeposit(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Deposit" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Deposit' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowCollectionAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
         if (toggle.collectionNFT.enable) {
-          dispatch(setShowCollectionAdvance(state));
+          dispatch(setShowCollectionAdvance(state))
         } else {
-          dispatch(
-            setShowCollectionAdvance({ isShow: true, type: "Collection" })
-          );
+          dispatch(setShowCollectionAdvance({ isShow: true, type: 'Collection' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowNFTMintAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
         if (toggle.mintNFT.enable) {
-          dispatch(setShowNFTMintAdvance(state));
+          dispatch(setShowNFTMintAdvance(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Mint" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Mint' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowNFTWithdraw: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
         if (toggle.withdrawNFT.enable) {
-          dispatch(setShowNFTWithdraw(state));
+          dispatch(setShowNFTWithdraw(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Withdraw" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Withdraw' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
 
     setShowResetAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
         if (toggle.updateAccount.enable) {
-          dispatch(setShowResetAccount(state));
+          dispatch(setShowResetAccount(state))
         } else {
-          dispatch(
-            setShowTradeIsFrozen({ isShow: true, type: "reset-account" })
-          );
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'reset-account' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowActiveAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
         if (toggle.updateAccount.enable) {
-          dispatch(setShowActiveAccount(state));
+          dispatch(setShowActiveAccount(state))
         } else {
-          dispatch(
-            setShowTradeIsFrozen({ isShow: true, type: "active-account" })
-          );
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'active-account' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowAmm: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & { type?: AmmPanelType }) =>
         dispatch(setShowAmm(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowSwap: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowSwap(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowAccount: React.useCallback(
       (
         state: ModalStatePlayLoad & {
-          step?: number;
-          error?: RESULT_INFO;
-          info?: { [key: string]: any };
-        }
+          step?: number
+          error?: sdk.RESULT_INFO
+          info?: { [key: string]: any }
+        },
       ) => dispatch(setShowAccount(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowDual: React.useCallback(
       (state: ModalStatePlayLoad & { dualInfo: DualViewInfo | undefined }) =>
         dispatch(setShowDual(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowClaimWithdraw: React.useCallback(
       (
         state: ModalStatePlayLoad & {
-          claimToken?: ClaimToken;
-          claimType?: CLAIM_TYPE;
-          successCallback?: () => void;
-        }
+          claimToken?: ClaimToken
+          claimType?: CLAIM_TYPE
+        },
       ) => {
         if (toggle.claim.enable) {
-          dispatch(setShowClaimWithdraw(state));
+          dispatch(setShowClaimWithdraw(state))
         } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Claim" }));
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Claim' }))
         }
       },
-      [dispatch]
+      [dispatch],
     ),
     setShowConnect: React.useCallback(
-      (state: ModalStatePlayLoad & { step?: number; error?: RESULT_INFO }) =>
-        dispatch(setShowConnect(state)),
-      [dispatch]
+      (
+        state: ModalStatePlayLoad & {
+          step?: number
+          error?: sdk.RESULT_INFO
+          info?: { [key: string]: any }
+        },
+      ) => dispatch(setShowConnect(state)),
+      [dispatch],
     ),
     setShowIFrame: React.useCallback(
-      (state: ModalStatePlayLoad & { url: string }) =>
-        dispatch(setShowIFrame(state)),
-      [dispatch]
+      (state: ModalStatePlayLoad & { url: string }) => dispatch(setShowIFrame(state)),
+      [dispatch],
     ),
     setShowExportAccount: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowExportAccount(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowFeeSetting: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowFeeSetting(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowLayerSwapNotice: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowLayerSwapNotice(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowAnotherNetworkNotice: React.useCallback(
-      (state: ModalStatePlayLoad) =>
-        dispatch(setShowAnotherNetworkNotice(state)),
-      [dispatch]
+      (state: ModalStatePlayLoad) => dispatch(setShowAnotherNetworkNotice(state)),
+      [dispatch],
     ),
     setShowTradeIsFrozen: React.useCallback(
       (state: ModalStatePlayLoad & { type?: string; messageKey?: string }) =>
         dispatch(setShowTradeIsFrozen(state)),
-      [dispatch]
+      [dispatch],
     ),
     setShowSideStakingRedeem: React.useCallback(
       (state: ModalStatePlayLoad & { symbol?: string }) =>
         dispatch(setShowSideStakingRedeem(state)),
-      [dispatch]
+      [dispatch],
     ),
-  };
-};
+    setShowGlobalToast: React.useCallback(
+      (state: {
+        isShow: boolean
+        info: {
+          content?: string
+          type: ToastType
+          messageKey?: string
+        }
+      }) => dispatch(setShowGlobalToast(state)),
+      [dispatch],
+    ),
+  }
+}

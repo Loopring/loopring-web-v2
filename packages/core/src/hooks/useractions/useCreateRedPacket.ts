@@ -12,94 +12,112 @@ import {
   RedPacketOrderData,
   SUBMIT_PANEL_AUTO_CLOSE,
   TOAST_TIME,
-  TRADE_TYPE,
   UIERROR_CODE,
   WalletMap,
   BLINDBOX_REDPACKET_LIMIT,
-} from "@loopring-web/common-resources";
-import {
-  store,
-  useAccount,
-  useModalData,
-  useSystem,
-  useTokenMap,
-} from "../../stores";
+  RedPacketOrderType,
+  EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST,
+  EXCLUSIVE_REDPACKET_ORDER_LIMIT,
+  MapChainId,
+  isAddress,
+} from '@loopring-web/common-resources'
+import { store, useAccount, useModalData, useNotify, useSystem, useTokenMap } from '../../stores'
 import {
   AccountStep,
   CreateRedPacketProps,
   RedPacketViewStep,
   SwitchData,
   useOpenModals,
-} from "@loopring-web/component-lib";
-import React, { useCallback } from "react";
-import { makeWalletLayer2 } from "../help";
-import {
-  useChargeFees,
-  useWalletLayer2Socket,
-  walletLayer2Service,
-} from "../../services";
-import { useBtnStatus } from "../common";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "../../api_wrapper";
-import {
-  ConnectProvidersSignMap,
-  connectProvides,
-} from "@loopring-web/web3-provider";
-import { getTimestampDaysLater } from "../../utils";
-import { DAYS } from "../../defs";
-import Web3 from "web3";
-import { isAccActivated } from "./useCheckAccStatus";
-import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useRedPacketConfig } from "../../stores/redPacket";
-import { useHistory } from "react-router-dom";
-
+  useSettings,
+  useToggle,
+} from '@loopring-web/component-lib'
+import React, { useCallback } from 'react'
+import { makeWalletLayer2 } from '../help'
+import { useChargeFees, useWalletLayer2Socket, walletLayer2Service } from '../../services'
+import { useBtnStatus } from '../common'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { LoopringAPI } from '../../api_wrapper'
+import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
+import { getTimestampDaysLater } from '../../utils'
+import { DAYS } from '../../defs'
+import Web3 from 'web3'
+import { isAccActivated } from './useCheckAccStatus'
+import { useWalletInfo } from '../../stores/localStore/walletInfo'
+import { useRedPacketConfig } from '../../stores/redPacket'
+import { useHistory, useLocation } from 'react-router-dom'
+import moment from 'moment'
+const checkPermission = (
+  dexToggle: any,
+  info: { network: string; functionName: string; accAddress: string },
+) => {
+  const whiteList = dexToggle.whiteList
+  const { functionName, network, accAddress } = info
+  const toogle = dexToggle[functionName]
+  if (toogle.enable) {
+    return true
+  } else if (!toogle.enable && toogle.reason === 'no view') {
+    const found =
+      whiteList &&
+      whiteList[network].find((item: any) => item.superUserFunction.includes('redpacket_exclusive'))
+    return (
+      found &&
+      found.superUserAddress.find(
+        (addr) => addr.toLocaleLowerCase() === accAddress.toLocaleLowerCase(),
+      )
+    )
+  } else {
+    return false
+  }
+}
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
   I,
   F = FeeInfo,
-  NFT = NFTWholeINFO
+  NFT = NFTWholeINFO,
 >({
   assetsRawData,
   isShow = false,
 }: {
-  assetsRawData: AssetsRawDataItem[];
-  isShow?: boolean;
+  assetsRawData: AssetsRawDataItem[]
+  isShow?: boolean
 }): {
-  createRedPacketProps: CreateRedPacketProps<T, I, F, NFT>;
-  retryBtn: (isHardware?: boolean) => void;
+  createRedPacketProps: CreateRedPacketProps<T, I, F, NFT>
+  retryBtn: (isHardware?: boolean) => void
 } => {
-  const { exchangeInfo, chainId } = useSystem();
-  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { exchangeInfo, chainId } = useSystem()
+  const { tokenMap, totalCoinMap, idIndex } = useTokenMap()
+  const { notifyMap } = useNotify()
   // const tradeType
   const {
     allowTrade: { transfer: transferEnabale },
-  } = useSystem();
+  } = useSystem()
   const {
     setShowAccount,
     setShowRedPacket,
     modals: {
       isShowAccount: { info },
     },
-  } = useOpenModals();
-  const [selectNFT, setSelectNFT] = React.useState<NFT | undefined>(undefined);
+  } = useOpenModals()
+  const [selectNFT, setSelectNFT] = React.useState<NFT | undefined>(undefined)
 
-  const { redPacketConfigs } = useRedPacketConfig();
-  const { redPacketOrder, updateRedPacketOrder, resetRedPacketOrder } =
-    useModalData();
-  const { account, status: accountStatus } = useAccount();
-  const { checkHWAddr, updateHW } = useWalletInfo();
-  const feeProps =
-    redPacketOrder.tradeType === "TOKEN"
-      ? {
-          requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
-          extraType: 1,
-        }
-      : {
-          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
-          tokenAddress: redPacketOrder?.tokenAddress,
-          extraType: 1,
-          isNFT: true,
-        };
+  const { redPacketConfigs } = useRedPacketConfig()
+  const { redPacketOrder, updateRedPacketOrder } = useModalData()
+  const { account, status: accountStatus } = useAccount()
+  const { checkHWAddr, updateHW } = useWalletInfo()
+  const isToken =
+    redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+    (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+  const feeProps = isToken
+    ? {
+        requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+        extraType: 1,
+      }
+    : {
+        requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+        tokenAddress: redPacketOrder?.tokenAddress,
+        extraType: 1,
+        isNFT: true,
+      }
 
   const {
     chargeFeeTokenList,
@@ -112,96 +130,109 @@ export const useCreateRedPacket = <
     ...feeProps,
     intervalTime: undefined,
     updateData: ({ fee }) => {
-      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (
-        (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) ||
-        (redPacketOrder.tradeType === TRADE_TYPE.NFT && feeProps.isNFT)
-      ) {
-        updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee });
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder
+      updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee })
+      const isToken =
+        redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+      if ((isToken && !feeProps.isNFT) || (!isToken && feeProps.isNFT)) {
+        updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee })
       }
     },
-  });
+  })
 
   const [walletMap, setWalletMap] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
-  );
+    makeWalletLayer2({ needFilterZero: true }).walletMap ?? ({} as WalletMap<T>),
+  )
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? {};
-    setWalletMap(walletMap);
-    const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
+    setWalletMap(walletMap)
+    const redPacketOrder = store.getState()._router_modalData.redPacketOrder
     if (
-      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
+      RedPacketOrderType.TOKEN === redPacketOrder.tradeType &&
       !redPacketOrder.belong &&
       walletMap
     ) {
-      resetDefault(TRADE_TYPE.TOKEN);
+      resetDefault(RedPacketOrderType.TOKEN)
     } else if (
-      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
+      RedPacketOrderType.TOKEN === redPacketOrder.tradeType &&
       walletMap &&
+      redPacketOrder.belong &&
       walletMap[redPacketOrder.belong]
     ) {
       handleOnDataChange({
         balance: walletMap[redPacketOrder.belong]?.count,
-      } as T);
+      } as T)
     }
-  }, [redPacketOrder, accountStatus]);
+  }, [redPacketOrder, accountStatus])
   const handleOnDataChange = React.useCallback(
     (tradeData: Partial<T>) => {
-      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (tradeData.tradeType) {
-        resetDefault(tradeData.tradeType);
-      } else {
-        updateRedPacketOrder({ ...redPacketOrder, ...tradeData });
-      }
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder
+      updateRedPacketOrder({ ...redPacketOrder, ...tradeData })
     },
-    [updateRedPacketOrder]
-  );
+    [updateRedPacketOrder],
+  )
   const resetDefault = React.useCallback(
-    (value: TRADE_TYPE) => {
+    (value: RedPacketOrderType) => {
       if (info?.isRetry) {
-        checkFeeIsEnough();
-        return;
+        checkFeeIsEnough()
+        return
       }
-      const walletMap = makeWalletLayer2(true).walletMap ?? {};
-      if (TRADE_TYPE.TOKEN === value && !redPacketOrder.belong && walletMap) {
-        const keys = Reflect.ownKeys(walletMap);
+      const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
+      const isToken =
+        value === RedPacketOrderType.TOKEN ||
+        (value === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
+      if (isToken && !redPacketOrder.belong && walletMap) {
+        const keys = Reflect.ownKeys(walletMap)
         for (let key in keys) {
-          const keyVal = keys[key];
-          const walletInfo = walletMap[keyVal.toString()];
-          if (sdk.toBig(walletInfo?.count ?? "0").gt(0)) {
+          const keyVal = keys[key]
+          const walletInfo = walletMap[keyVal.toString()]
+          if (sdk.toBig(walletInfo?.count ?? '0').gt(0)) {
             updateRedPacketOrder({
               belong: keyVal as any,
               tradeValue: undefined,
               fee: feeInfo,
               balance: walletInfo?.count,
-              memo: "",
+              memo: '',
               numbers: undefined,
-              validUntil: undefined,
+              giftNumbers: undefined,
+              validUntil: moment().add('days', 1).toDate().getTime(),
               validSince: Date.now(),
               tradeType: value,
-            } as unknown as T);
-            break;
+              isNFT: false,
+            } as unknown as T)
+            break
           }
         }
-      } else if (
-        TRADE_TYPE.TOKEN === value &&
-        redPacketOrder.belong &&
-        walletMap
-      ) {
-        const walletInfo = walletMap[redPacketOrder.belong];
+      } else if (isToken && redPacketOrder.belong && walletMap) {
+        const walletInfo = walletMap[redPacketOrder.belong]
         updateRedPacketOrder({
           fee: feeInfo,
           belong: redPacketOrder.belong as any,
           tradeValue: undefined as any,
           balance: walletInfo?.count,
-          memo: "",
+          memo: '',
+          numbers: undefined,
+          giftNumbers: undefined,
+          validSince: Date.now(),
+          validUntil: moment().add('days', 1).toDate().getTime(),
+          tradeType: value,
+          isNFT: false,
+        } as unknown as T)
+      } else if (!isToken) {
+        updateRedPacketOrder({
+          fee: feeInfo,
+          belong: undefined,
+          tradeValue: undefined,
+          balance: undefined,
+          giftNumbers: undefined,
+          memo: '',
           numbers: undefined,
           validSince: Date.now(),
-          validUntil: undefined,
+          validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: value,
-        } as unknown as T);
-      } else if (TRADE_TYPE.NFT === value) {
-        resetRedPacketOrder(value);
+          isNFT: true,
+        } as unknown as T)
       } else {
         updateRedPacketOrder({
           fee: feeInfo,
@@ -209,12 +240,13 @@ export const useCreateRedPacket = <
           tradeValue: undefined,
           balance: undefined,
           giftNumbers: undefined,
-          memo: "",
+          memo: '',
           numbers: undefined,
           validSince: Date.now(),
-          validUntil: undefined,
-          tradeType: "TOKEN",
-        } as unknown as T);
+          validUntil: moment().add('days', 1).toDate().getTime(),
+          tradeType: 'TOKEN',
+          isNFT: false,
+        } as unknown as T)
       }
     },
     [
@@ -224,47 +256,36 @@ export const useCreateRedPacket = <
       feeInfo,
       redPacketOrder.belong,
       info?.isRetry,
-    ]
-  );
-  useWalletLayer2Socket({ walletLayer2Callback });
+    ],
+  )
+  useWalletLayer2Socket({ walletLayer2Callback })
 
-  const {
-    btnStatus,
-    enableBtn,
-    disableBtn,
-    setLabelAndParams,
-    resetBtnInfo,
-    btnInfo,
-  } = useBtnStatus();
+  const { btnStatus, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo, btnInfo } =
+    useBtnStatus()
 
   const calcNumberAndAmount = React.useCallback(() => {
-    const redPacketOrder = store.getState()._router_modalData
-      .redPacketOrder as T;
+    const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
     if (redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.RANDOM) {
-      const eachValue = sdk
-        .toBig(redPacketOrder?.tradeValue ?? 0)
-        .div(redPacketOrder.numbers ?? 1);
+      const eachValue = sdk.toBig(redPacketOrder?.tradeValue ?? 0).div(redPacketOrder.numbers ?? 1)
+      const isToken =
+        redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
       return {
         tradeValue: redPacketOrder?.tradeValue,
-        eachValue:
-          redPacketOrder.tradeType === TRADE_TYPE.TOKEN
-            ? eachValue.toString()
-            : eachValue.toFixed(),
-      };
+        eachValue: isToken ? eachValue.toString() : eachValue.toFixed(),
+      }
     } else {
       return {
-        tradeValue: sdk
-          .toBig(redPacketOrder?.tradeValue ?? 0)
-          .times(redPacketOrder.numbers ?? 1),
+        tradeValue: sdk.toBig(redPacketOrder?.tradeValue ?? 0).times(redPacketOrder.numbers ?? 1),
         eachValue: redPacketOrder?.tradeValue,
-      };
+      }
     }
-  }, []);
-  const history = useHistory();
+  }, [])
+  const history = useHistory()
 
   const checkBtnStatus = React.useCallback(() => {
-    const _tradeData = calcNumberAndAmount();
-    resetBtnInfo();
+    const _tradeData = calcNumberAndAmount()
+    resetBtnInfo()
     if (
       tokenMap &&
       chargeFeeTokenList.length &&
@@ -274,7 +295,7 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
-      redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
+      // redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue
       // &&
       // redPacketOrder.memo &&
@@ -285,72 +306,56 @@ export const useCreateRedPacket = <
         tradeValue,
         isExceedBalance,
         tooSmall,
-        tooLarge;
-      const feeToken = tokenMap[redPacketOrder.fee.belong];
-      const feeRaw =
-        redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
-      const fee = sdk.toBig(feeRaw);
+        tooLarge
+      const feeToken = tokenMap[redPacketOrder.fee.belong]
+      const feeRaw = redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0
+      const fee = sdk.toBig(feeRaw)
+      const blindBoxGiftsEqualsZero =
+        redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+        sdk.toBig(redPacketOrder.giftNumbers ?? '0').isZero()
       const blindBoxGiftsLargerThanPackets =
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
-        sdk
-          .toBig(redPacketOrder.giftNumbers ?? "0")
-          .isGreaterThan(redPacketOrder.numbers);
+        sdk.toBig(redPacketOrder.giftNumbers ?? '0').isGreaterThan(redPacketOrder.numbers)
       const blindBoxPacketsNumberTooLarge =
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
-        sdk
-          .toBig(redPacketOrder.numbers)
-          .isGreaterThan(BLINDBOX_REDPACKET_LIMIT);
-      if (
-        (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
-        redPacketOrder.belong &&
-        tokenMap[(redPacketOrder as T).belong as any]
-      ) {
-        tradeToken = tokenMap[(redPacketOrder as T).belong as any];
-        balance = sdk
-          .toBig((redPacketOrder as T).balance ?? 0)
-          .times("1e" + tradeToken.decimals);
-        tradeValue = sdk
-          .toBig(_tradeData.tradeValue ?? 0)
-          .times("1e" + tradeToken.decimals);
+        sdk.toBig(redPacketOrder.numbers).isGreaterThan(BLINDBOX_REDPACKET_LIMIT)
+      // @ts-ignore
+      const isToken =
+        redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+      if (isToken && redPacketOrder.belong && tokenMap[(redPacketOrder as T).belong as any]) {
+        tradeToken = tokenMap[(redPacketOrder as T).belong as any]
+        balance = sdk.toBig((redPacketOrder as T).balance ?? 0).times('1e' + tradeToken.decimals)
+        tradeValue = sdk.toBig(_tradeData.tradeValue ?? 0).times('1e' + tradeToken.decimals)
         isExceedBalance = tradeValue
-          .plus(feeToken.tokenId === tradeToken.tokenId ? fee : "0")
-          .gt(balance);
-        const eachValue = sdk
-          .toBig(_tradeData.eachValue ?? 0)
-          .times("1e" + tradeToken.decimals);
-        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum);
-        tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum);
+          .plus(feeToken.tokenId === tradeToken.tokenId ? fee : '0')
+          .gt(balance)
+        const eachValue = sdk.toBig(_tradeData.eachValue ?? 0).times('1e' + tradeToken.decimals)
+        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts?.minimum ?? 0)
+        tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum)
       } else {
-        balance = redPacketOrder.balance ?? 0;
-        tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0);
-        if (
-          redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
-        ) {
+        balance = redPacketOrder.balance ?? 0
+        tradeValue = sdk.toBig(redPacketOrder.tradeValue ?? 0)
+        if (redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE) {
           // console.log('isExceedBalance = tradeValue.times(redPacketOrder.giftNumbers ?? 1).gt(balance)', redPacketOrder.numbers, balance, tradeValue.toString())
-          isExceedBalance = tradeValue
-            .times(redPacketOrder.numbers ?? 1)
-            .gt(balance);
+          isExceedBalance = tradeValue.times(redPacketOrder.numbers ?? 1).gt(balance)
         } else {
-          isExceedBalance = tradeValue.gt(balance);
+          isExceedBalance = tradeValue.gt(balance)
         }
         const eachValue =
           redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-            ? sdk
-                .toBig(redPacketOrder.tradeValue ?? 0)
-                .div(redPacketOrder.giftNumbers ?? 1)
-            : sdk.toBig(_tradeData.eachValue ?? 0);
-        tooSmall = eachValue.lt(1);
+            ? sdk.toBig(redPacketOrder.tradeValue ?? 0).div(redPacketOrder.giftNumbers ?? 1)
+            : sdk.toBig(_tradeData.eachValue ?? 0)
+        tooSmall = eachValue.lt(1)
         tooLarge = tradeValue
           .div(
             redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
               ? 1
               : redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
               ? redPacketOrder.giftNumbers ?? 1
-              : redPacketOrder.numbers ?? 1
+              : redPacketOrder.numbers ?? 1,
           )
-          .gt(REDPACKET_ORDER_NFT_LIMIT);
+          .gt(REDPACKET_ORDER_NFT_LIMIT)
       }
 
       if (
@@ -358,96 +363,83 @@ export const useCreateRedPacket = <
         !isExceedBalance &&
         !tooSmall &&
         !tooLarge &&
-        ((redPacketOrder.tradeType === TRADE_TYPE.NFT &&
-          redPacketOrder.nftData) ||
+        ((!isToken && redPacketOrder.nftData) ||
           // @ts-ignore
-          redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
+          isToken) &&
         redPacketConfigs?.luckTokenAgents &&
+        !blindBoxGiftsEqualsZero &&
         !blindBoxGiftsLargerThanPackets &&
-        !blindBoxPacketsNumberTooLarge
+        !blindBoxPacketsNumberTooLarge &&
+        redPacketOrder.numbers <= redpacketNumberLimit
       ) {
-        enableBtn();
-        return;
+        enableBtn()
+        return
       } else {
-        disableBtn();
-        if (!redPacketConfigs?.luckTokenAgents) {
-          setLabelAndParams("labelRedPacketWaitingBlock", {});
+        disableBtn()
+        if (blindBoxGiftsEqualsZero) {
+          setLabelAndParams('labelRedPacketsGiftsEqualsZero', {})
+        } else if (!redPacketConfigs?.luckTokenAgents) {
+          setLabelAndParams('labelRedPacketWaitingBlock', {})
         } else if (isExceedBalance) {
-          setLabelAndParams("labelRedPacketsInsufficient", {
-            symbol:
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
-                ? (tradeToken.symbol as string)
-                : "NFT",
-          });
+          setLabelAndParams('labelRedPacketsInsufficient', {
+            symbol: isToken ? (tradeToken.symbol as string) : 'NFT',
+          })
         } else if (
           isExceedBalance &&
-          (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
+          (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN &&
           feeToken.tokenId === tradeToken.tokenId
         ) {
-          setLabelAndParams("labelReserveFee", {
+          setLabelAndParams('labelReserveFee', {
             symbol: tradeToken.symbol as string,
-          });
+          })
         } else if (isFeeNotEnough.isFeeNotEnough) {
-          setLabelAndParams("labelRedPacketFee", {});
-        } else if (tooSmall || redPacketOrder.numbers > REDPACKET_ORDER_LIMIT) {
-          if (tooSmall) {
-            setLabelAndParams(
-              "labelRedPacketsMin",
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
-                ? {
+          setLabelAndParams('labelRedPacketFee', {})
+        } else if (tooSmall) {
+          setLabelAndParams(
+            'labelRedPacketsMin',
+            isToken
+              ? tradeToken &&
+                  tradeToken.decimals && {
                     value: getValuePrecisionThousand(
                       sdk
-                        .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
-                        .div("1e" + tradeToken.decimals),
+                        .toBig(tradeToken.luckyTokenAmounts?.minimum ?? '0')
+                        .div('1e' + tradeToken.decimals),
                       tradeToken.precision,
                       tradeToken.precision,
                       tradeToken.precision,
                       false,
-                      { floor: false, isAbbreviate: true }
+                      { floor: false, isAbbreviate: true },
                     ),
                     symbol: tradeToken.symbol,
                   }
-                : {
-                    value:
-                      redPacketOrder.type?.mode ===
-                      sdk.LuckyTokenClaimType.BLIND_BOX
-                        ? redPacketOrder.giftNumbers
-                        : redPacketOrder.type?.partition ===
-                          sdk.LuckyTokenAmountType.AVERAGE
-                        ? 1
-                        : redPacketOrder.numbers,
-                    symbol: "NFT",
-                  }
-            );
-          } else {
-            let value =
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
-                ? tradeValue
-                    .div(tradeToken.luckyTokenAmounts.minimum)
-                    .toFixed(0, 1)
-                : tradeValue;
-            const limit =
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
-                ? REDPACKET_ORDER_LIMIT
-                : REDPACKET_ORDER_NFT_LIMIT;
-            setLabelAndParams("labelRedPacketsSplitNumber", {
-              value: (Number(value) <= limit ? balance : limit).toString(),
-            });
-          }
+              : {
+                  value:
+                    redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? redPacketOrder.giftNumbers
+                      : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
+                      ? 1
+                      : redPacketOrder.numbers,
+                  symbol: 'NFT',
+                },
+          )
+        } else if (redPacketOrder.numbers > redpacketNumberLimit) {
+          setLabelAndParams('labelRedPacketsSplitNumber', {
+            value: redpacketNumberLimit.toString(),
+          })
         } else if (tooLarge) {
           setLabelAndParams(
-            "labelRedPacketsMax",
-            (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+            'labelRedPacketsMax',
+            (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
               ? {
                   value: getValuePrecisionThousand(
                     sdk
                       .toBig(tradeToken.luckyTokenAmounts.maximu ?? 0)
-                      .div("1e" + tradeToken.decimals),
+                      .div('1e' + tradeToken.decimals),
                     tradeToken.precision,
                     tradeToken.precision,
                     tradeToken.precision,
                     false,
-                    { floor: true, isAbbreviate: true }
+                    { floor: true, isAbbreviate: true },
                   ),
                   symbol: tradeToken.symbol,
                 }
@@ -455,25 +447,23 @@ export const useCreateRedPacket = <
                   value: sdk
                     .toBig(REDPACKET_ORDER_NFT_LIMIT)
                     .times(
-                      redPacketOrder.type?.mode ===
-                        sdk.LuckyTokenClaimType.BLIND_BOX
+                      redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
                         ? redPacketOrder.giftNumbers ?? 1
-                        : redPacketOrder.type?.partition ===
-                          sdk.LuckyTokenAmountType.AVERAGE
+                        : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
                         ? 1
-                        : redPacketOrder.numbers ?? 1
+                        : redPacketOrder.numbers ?? 1,
                     ),
-                  symbol: "NFT",
-                }
-          );
+                  symbol: 'NFT',
+                },
+          )
         } else if (blindBoxGiftsLargerThanPackets) {
-          setLabelAndParams("labelRedPacketsGiftsLargerThanPackets", {});
+          setLabelAndParams('labelRedPacketsGiftsLargerThanPackets', {})
         } else if (blindBoxPacketsNumberTooLarge) {
-          setLabelAndParams("labelBlindBoxNumberOverMaximun", {});
+          setLabelAndParams('labelBlindBoxNumberOverMaximun', {})
         }
       }
     }
-    disableBtn();
+    disableBtn()
   }, [
     chargeFeeTokenList.length,
     disableBtn,
@@ -490,10 +480,10 @@ export const useCreateRedPacket = <
     redPacketOrder.giftNumbers,
     redPacketOrder.validSince,
     redPacketOrder.validUntil,
-  ]);
+  ])
 
   React.useEffect(() => {
-    checkBtnStatus();
+    checkBtnStatus()
   }, [
     chargeFeeTokenList,
     isFeeNotEnough.isFeeNotEnough,
@@ -507,36 +497,28 @@ export const useCreateRedPacket = <
     redPacketOrder.validSince,
     redPacketOrder.validUntil,
     redPacketOrder?.giftNumbers,
-  ]);
+  ])
   const processRequest = React.useCallback(
-    async (
-      request: sdk.LuckyTokenItemForSendV3,
-      isNotHardwareWallet: boolean
-    ) => {
-      const { apiKey, connectName, eddsaKey } = account;
-      const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
+    async (request: sdk.LuckyTokenItemForSendV3, isNotHardwareWallet: boolean) => {
+      const { apiKey, connectName, eddsaKey } = account
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder
 
       try {
-        if (
-          connectProvides.usedWeb3 &&
-          LoopringAPI.luckTokenAPI &&
-          isAccActivated()
-        ) {
-          let isHWAddr = checkHWAddr(account.accAddress);
+        if (connectProvides.usedWeb3 && LoopringAPI.luckTokenAPI && isAccActivated()) {
+          let isHWAddr = checkHWAddr(account.accAddress)
           if (!isHWAddr && !isNotHardwareWallet) {
-            isHWAddr = true;
+            isHWAddr = true
           }
           updateRedPacketOrder({
             ...redPacketOrder,
             __request__: request,
-          } as any);
+          } as any)
 
           const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSend(
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId:
-                chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
+              chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
@@ -546,120 +528,119 @@ export const useCreateRedPacket = <
             {
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
-            }
-          );
+            },
+          )
 
-          myLog("submit sendLuckTokenSend:", response);
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            throw response;
+          myLog('submit sendLuckTokenSend:', response)
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response
           }
           // setIsConfirmTransfer(false);
           setShowAccount({
             isShow: true,
             step: AccountStep.RedPacketSend_In_Progress,
-          });
-          await sdk.sleep(TOAST_TIME);
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.RedPacketSend_Success,
-            info: {
-              scope: request.type.scope,
-              hash:
-                Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-              shared:
-                request.type.scope == sdk.LuckyTokenViewType.PUBLIC
-                  ? () => {
-                      LoopringAPI.luckTokenAPI
-                        ?.getLuckTokenDetail(
-                          {
-                            hash: (response as sdk.TX_HASH_API).hash!,
-                          },
-                          apiKey
-                        )
-                        .then((response) => {
-                          setShowAccount({ isShow: false });
-                          setShowRedPacket({
-                            isShow: true,
-                            info: {
-                              ...response.detail.luckyToken,
-                              // sender: account,
-                              // hash: (response as sdk.TX_HASH_API).hash,
+          })
+          await sdk.sleep(TOAST_TIME)
+          if (redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET) {
+            setShowAccount({
+              isShow: false,
+            })
+            handleOnDataChange({
+              target: {
+                redpacketHash: (response as sdk.TX_HASH_API)?.hash,
+                maxSendCount: request.numbers,
+              },
+            } as any)
+            getTargetRedpackets()
+          } else {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.RedPacketSend_Success,
+              info: {
+                scope: request.type.scope,
+                hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+                shared:
+                  request.type.scope == sdk.LuckyTokenViewType.PUBLIC
+                    ? () => {
+                        LoopringAPI.luckTokenAPI
+                          ?.getLuckTokenDetail(
+                            {
+                              hash: (response as sdk.TX_HASH_API).hash!,
                             },
-                            step: RedPacketViewStep.QRCodePanel,
-                          });
-                        });
-                    }
-                  : undefined,
-            },
-          });
+                            apiKey,
+                          )
+                          .then((response) => {
+                            setShowAccount({ isShow: false })
+                            setShowRedPacket({
+                              isShow: true,
+                              info: {
+                                ...response.detail.luckyToken,
+                              },
+                              step: RedPacketViewStep.QRCodePanel,
+                            })
+                          })
+                      }
+                    : undefined,
+              },
+            })
 
-          if (isHWAddr) {
-            myLog("......try to set isHWAddr", isHWAddr);
-            updateHW({ wallet: account.accAddress, isHWAddr });
-          }
-          walletLayer2Service.sendUserUpdate();
-          history.push(
-            `/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`
-          );
-          resetDefault(TRADE_TYPE.TOKEN);
-          if (
-            request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
-            (response as sdk.TX_HASH_API)?.hash
-          ) {
-            setShowAccount({ isShow: false });
-            const blindBoxRepspnse =
-              (await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
+            if (isHWAddr) {
+              myLog('......try to set isHWAddr', isHWAddr)
+              updateHW({ wallet: account.accAddress, isHWAddr })
+            }
+            walletLayer2Service.sendUserUpdate()
+            history.push(`/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`)
+            resetDefault(RedPacketOrderType.TOKEN)
+            if (
+              request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
+              (response as sdk.TX_HASH_API)?.hash
+            ) {
+              setShowAccount({ isShow: false })
+              const blindBoxRepspnse = (await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
                 {
                   hash: (response as sdk.TX_HASH_API).hash!,
                   showHelper: false,
                 },
-                apiKey
-              )) as any;
-            setShowRedPacket({
-              isShow: true,
-              info: {
-                ...blindBoxRepspnse.raw_data.luckyToken,
-                hash: (response as sdk.TX_HASH_API).hash,
-              },
-              step: RedPacketViewStep.QRCodePanel,
-            });
-          } else {
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
-            if (
-              store.getState().modals.isShowAccount.isShow &&
-              store.getState().modals.isShowAccount.step ==
-                AccountStep.RedPacketSend_Success
-            ) {
-              setShowAccount({ isShow: false });
+                apiKey,
+              )) as any
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...blindBoxRepspnse.raw_data.luckyToken,
+                  hash: (response as sdk.TX_HASH_API).hash,
+                },
+                step: RedPacketViewStep.QRCodePanel,
+              })
+            } else {
+              await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+              if (
+                store.getState().modals.isShowAccount.isShow &&
+                store.getState().modals.isShowAccount.step == AccountStep.RedPacketSend_Success
+              ) {
+                setShowAccount({ isShow: false })
+              }
             }
           }
         }
       } catch (e: any) {
-        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet)
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
               isShow: true,
               step: AccountStep.RedPacketSend_First_Method_Denied,
-            });
-            break;
+            })
+            break
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
             setShowAccount({
               isShow: true,
               step: AccountStep.RedPacketSend_User_Denied,
-            });
-            break;
+            })
+            break
           default:
-            if (
-              [102024, 102025, 114001, 114002].includes(
-                (e as sdk.RESULT_INFO)?.code || 0
-              )
-            ) {
-              checkFeeIsEnough({ isRequiredAPI: true });
+            if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
+              checkFeeIsEnough({ isRequiredAPI: true })
             }
             setShowAccount({
               isShow: true,
@@ -674,9 +655,9 @@ export const useCreateRedPacket = <
                     }
                   : e ?? {}),
               },
-            });
+            })
 
-            break;
+            break
         }
       }
     },
@@ -689,31 +670,52 @@ export const useCreateRedPacket = <
       checkFeeIsEnough,
       resetDefault,
       updateHW,
-    ]
-  );
+    ],
+  )
   React.useEffect(() => {
     if (isShow) {
-      resetDefault(TRADE_TYPE.TOKEN);
-      walletLayer2Service.sendUserUpdate();
+      resetDefault(RedPacketOrderType.BlindBox)
+      walletLayer2Service.sendUserUpdate()
     }
-  }, [isShow]);
+  }, [isShow])
+  React.useEffect(() => {
+    ;(async () => {
+      if (redPacketOrder.target?.redpacketHash) {
+        const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail(
+          {
+            hash: redPacketOrder.target?.redpacketHash,
+          },
+          account.apiKey,
+        )
+        const targets = (response?.detail as any).targets as string[]
+        handleOnDataChange({
+          target: {
+            ...redPacketOrder.target,
+            sentAddresses: targets,
+          },
+        } as any)
+      }
+    })()
+  }, [redPacketOrder.target?.redpacketHash])
   React.useEffect(() => {
     if (isShow) {
-      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     } else {
-      resetIntervalTime();
+      resetIntervalTime()
     }
     return () => {
-      resetIntervalTime();
-    };
-  }, [isShow, redPacketOrder.tradeType]);
+      resetIntervalTime()
+    }
+  }, [isShow, redPacketOrder.tradeType])
 
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isHardwareRetry: boolean = false) => {
-      const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-      const redPacketOrder = store.getState()._router_modalData
-        .redPacketOrder as T;
-      const _tradeData = calcNumberAndAmount();
+      const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
+      const _tradeData = calcNumberAndAmount()
+      const isToken =
+        redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
 
       if (
         readyState === AccountStatus.ACTIVATED &&
@@ -723,9 +725,7 @@ export const useCreateRedPacket = <
         chargeFeeTokenList.length &&
         !isFeeNotEnough.isFeeNotEnough &&
         redPacketOrder.belong &&
-        (redPacketOrder.tradeType === TRADE_TYPE.NFT
-          ? redPacketOrder.nftData
-          : tokenMap[redPacketOrder.belong]) &&
+        (!isToken ? redPacketOrder.nftData : tokenMap[redPacketOrder.belong]) &&
         redPacketOrder.fee &&
         redPacketOrder.fee.belong &&
         redPacketOrder.fee?.__raw__ &&
@@ -743,75 +743,60 @@ export const useCreateRedPacket = <
           setShowAccount({
             isShow: true,
             step: AccountStep.RedPacketSend_WaitForAuth,
-          });
-          let tradeToken, tradeValue;
-          if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+          })
+          let tradeToken, tradeValue
+          if (!isToken) {
             tradeToken = {
               tokenId: redPacketOrder.tokenId,
               nftDta: redPacketOrder.nftData,
-            };
-            tradeValue = sdk.toBig(_tradeData.tradeValue);
+            }
+            tradeValue = sdk.toBig(_tradeData.tradeValue)
           } else {
             //@ts-ignore
-            tradeToken = tokenMap[redPacketOrder.belong.toString()];
-            tradeValue = sdk
-              .toBig(_tradeData.tradeValue ?? 0)
-              .times("1e" + tradeToken.decimals);
+            tradeToken = tokenMap[redPacketOrder.belong.toString()]
+            tradeValue = sdk.toBig(_tradeData.tradeValue ?? 0).times('1e' + tradeToken.decimals)
           }
-          const feeToken = tokenMap[redPacketOrder.fee.belong];
-          const feeRaw =
-            redPacketOrder.fee.feeRaw ??
-            redPacketOrder.fee.__raw__?.feeRaw ??
-            0;
-          const fee = sdk.toBig(feeRaw);
+          const feeToken = tokenMap[redPacketOrder.fee.belong]
+          const feeRaw = redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0
+          const fee = sdk.toBig(feeRaw)
 
           const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId,
               sellTokenId: Number(tradeToken.tokenId),
             },
-            apiKey
-          );
+            apiKey,
+          )
           // const { broker } = await LoopringAPI.userAPI.getAvailableBroker({
           //   type: 1,
           // });
-          myLog("memo", redPacketOrder.memo);
+          myLog('memo', redPacketOrder.memo)
 
           const req: sdk.LuckyTokenItemForSendV3 = {
             type: {
               ...redPacketOrder.type,
               mode:
-                redPacketOrder.tradeType === TRADE_TYPE.NFT
-                  ? redPacketOrder.type.mode ===
-                    sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? sdk.LuckyTokenClaimType.BLIND_BOX
-                    : sdk.LuckyTokenClaimType.COMMON
+                redPacketOrder.tradeType === RedPacketOrderType.BlindBox
+                  ? sdk.LuckyTokenClaimType.BLIND_BOX
+                  : redPacketOrder.tradeType === RedPacketOrderType.NFT
+                  ? sdk.LuckyTokenClaimType.COMMON
                   : // @ts-ignore
                     redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON,
             },
             numbers: redPacketOrder.numbers,
             giftNumbers: redPacketOrder.giftNumbers!,
-            memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
+            memo: redPacketOrder.memo ? redPacketOrder.memo : 'Best wishes',
             signerFlag: false as any,
-            nftData:
-              redPacketOrder.tradeType === TRADE_TYPE.NFT
-                ? redPacketOrder.nftData
-                : undefined,
+            nftData: isToken ? undefined : redPacketOrder.nftData,
             // @ts-ignore
             templateId: 0,
-            validSince: Math.round(
-              (redPacketOrder.validSince ?? Date.now()) / 1000
-            ),
-            validUntil: Math.round(
-              (redPacketOrder.validUntil ?? Date.now()) / 1000
-            ),
+            validSince: Math.round((redPacketOrder.validSince ?? Date.now()) / 1000),
+            validUntil: Math.round((redPacketOrder.validUntil ?? Date.now()) / 1000),
             luckyToken: {
               exchange: exchangeInfo.exchangeAddress,
               payerAddr: accAddress,
               payerId: accountId,
-              payeeAddr: Reflect.ownKeys(
-                redPacketConfigs.luckTokenAgents ?? {}
-              )[0],
+              payeeAddr: Reflect.ownKeys(redPacketConfigs.luckTokenAgents ?? {})[0],
               storageId: storageId?.offchainId,
               token: tradeToken.tokenId,
               amount: tradeValue.toFixed(),
@@ -819,11 +804,11 @@ export const useCreateRedPacket = <
               maxFeeAmount: fee.toFixed(),
               validUntil: getTimestampDaysLater(DAYS - 1),
             } as any,
-          };
+          }
 
-          myLog("transfer req:", req);
+          myLog('transfer req:', req)
 
-          processRequest(req, !isHardwareRetry);
+          processRequest(req, !isHardwareRetry)
         } catch (e: any) {
           // transfer failed
           setShowAccount({
@@ -833,10 +818,10 @@ export const useCreateRedPacket = <
               code: UIERROR_CODE.UNKNOWN,
               message: e.message,
             } as sdk.RESULT_INFO,
-          });
+          })
         }
       } else {
-        return;
+        return
       }
     },
     [
@@ -846,79 +831,271 @@ export const useCreateRedPacket = <
       setShowAccount,
       processRequest,
       redPacketConfigs?.luckTokenAgents,
-    ]
-  );
+    ],
+  )
+  const onSendTargetRedpacketClick = React.useCallback(async () => {
+    const { readyState } = account
+    const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
+
+    const getValidAddresses = (input: string) => {
+      return input
+        .split(';')
+        .map((str) => str.trim())
+        .filter((str) => {
+          return isAddress(str.trim())
+        })
+    }
+
+    if (
+      readyState === AccountStatus.ACTIVATED &&
+      LoopringAPI.luckTokenAPI &&
+      redPacketOrder.target?.redpacketHash &&
+      getValidAddresses(redPacketOrder.target?.addressListString).length > 0 &&
+      redPacketOrder.target?.addressListString
+    ) {
+      try {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketSend_WaitForAuth,
+        })
+        const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget(
+          {
+            claimer: getValidAddresses(redPacketOrder.target?.addressListString),
+            hash: redPacketOrder.target?.redpacketHash,
+            notifyType: isWhiteListed
+              ? redPacketOrder.target?.popupChecked === undefined ||
+                redPacketOrder.target?.popupChecked
+                ? 1
+                : 0
+              : 0,
+          },
+          account.eddsaKey.sk,
+          account.apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          throw response
+        }
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketSend_Success,
+          info: {
+            scope: sdk.LuckyTokenViewType.TARGET,
+          },
+        })
+        getTargetRedpackets()
+      } catch (e: any) {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketSend_Failed,
+          error: {
+            code: UIERROR_CODE.UNKNOWN,
+            message: e.message,
+          } as sdk.RESULT_INFO,
+        })
+      }
+    } else {
+      return
+    }
+  }, [
+    account.readyState,
+    redPacketOrder.target?.redpacketHash,
+    redPacketOrder.target?.addressListString,
+  ])
 
   const handlePanelEvent = useCallback(
     async (data: SwitchData<Partial<T>>) => {
       return new Promise<void>((res: any) => {
-        if (data.to === "button") {
+        if (data.to === 'button') {
           if (walletMap && data?.tradeData?.belong) {
-            const walletInfo = walletMap[data?.tradeData?.belong as string];
+            const walletInfo = walletMap[data?.tradeData?.belong as string]
             handleOnDataChange({
               belong: data.tradeData?.belong,
               tradeValue: data.tradeData?.tradeValue,
               balance: walletInfo ? walletInfo.count : 0,
-            } as T);
+            } as T)
           } else {
             handleOnDataChange({
               belong: undefined,
               tradeValue: undefined,
               balance: undefined,
-            } as unknown as T);
+            } as unknown as T)
           }
         }
-        res();
-      });
+        res()
+      })
     },
-    [walletMap]
-  );
+    [walletMap],
+  )
+  const [isWhiteListed, setIsWhiteListed] = React.useState(undefined as undefined | boolean)
+  const redpacketNumberLimit =
+    redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET
+      ? isWhiteListed
+        ? EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST
+        : EXCLUSIVE_REDPACKET_ORDER_LIMIT
+      : isToken
+      ? REDPACKET_ORDER_LIMIT
+      : REDPACKET_ORDER_NFT_LIMIT
+
   const [minimum, maximum] = React.useMemo(() => {
-    if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+    if (redPacketOrder.tradeType === RedPacketOrderType.NFT) {
       const minimum = sdk
         .toBig(redPacketOrder?.tradeValue ?? 0)
         .div(REDPACKET_ORDER_NFT_LIMIT)
-        .toFixed(0, 1);
+        .toFixed(0, 1)
 
       const maximum =
         redPacketOrder?.balance &&
         // @ts-ignore
-        sdk.toBig(redPacketOrder.balance ?? 0).lt(REDPACKET_ORDER_LIMIT)
+        sdk.toBig(redPacketOrder.balance ?? 0).lt(redpacketNumberLimit)
           ? // @ts-ignore
             redPacketOrder?.tradeValue ?? redPacketOrder.balance
-          : REDPACKET_ORDER_LIMIT;
-      return [minimum ? 1 : minimum, maximum];
+          : redpacketNumberLimit
+      return [minimum ? 1 : minimum, maximum]
     } else {
       if (redPacketOrder.belong && tokenMap[redPacketOrder.belong]) {
-        const { minimum, maximum } =
-          tokenMap[redPacketOrder.belong].luckyTokenAmounts;
-        const decimals = tokenMap[redPacketOrder.belong].decimals;
+        const { minimum, maximum } = tokenMap[redPacketOrder.belong].luckyTokenAmounts
+        const decimals = tokenMap[redPacketOrder.belong].decimals
         return [
           sdk
             .toBig(minimum ?? 0)
-            .div("1e" + decimals)
+            .div('1e' + decimals)
             .toString(),
           sdk
             .toBig(maximum ?? 0)
-            .div("1e" + decimals)
+            .div('1e' + decimals)
             .toString(),
-        ];
+        ]
       } else {
-        return [undefined, undefined];
+        return [undefined, undefined]
       }
     }
-  }, [redPacketOrder?.belong, tokenMap, redPacketOrder.tradeType]);
+  }, [redPacketOrder?.belong, tokenMap, redPacketOrder.tradeType])
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
       setShowAccount({
         isShow: true,
         step: AccountStep.RedPacketSend_WaitForAuth,
-      });
-      onCreateRedPacketClick({}, isHardwareRetry);
+      })
+      onCreateRedPacketClick({}, isHardwareRetry)
     },
-    [processRequest, setShowAccount]
-  );
+    [processRequest, setShowAccount],
+  )
+  const location = useLocation()
+  myLog('redPacketOrder', redPacketOrder)
+  React.useEffect(() => {
+    ;(async () => {
+      const nftDatas = new URLSearchParams(location.search).get('nftDatas')
+      if (nftDatas) {
+        updateRedPacketOrder({
+          ...redPacketOrder,
+          tradeType: RedPacketOrderType.FromNFT,
+          isNFT: true,
+        })
+        const info = await LoopringAPI.nftAPI?.getInfoForNFTTokens({
+          nftDatas: [nftDatas],
+        })
+        if (info && info[nftDatas]) {
+          const balance = await LoopringAPI.userAPI?.getUserNFTBalances(
+            {
+              accountId: account.accountId,
+              nftDatas: nftDatas,
+              metadata: true,
+            },
+            account.apiKey,
+          )
+          const balanceInfo = balance!.userNFTBalances[0]
+          handleOnDataChange({
+            collectionInfo: balanceInfo.collectionInfo,
+            tokenId: balanceInfo.tokenId,
+            tradeValue: undefined,
+            balance: balanceInfo.total,
+            nftData: balanceInfo.nftData,
+            belong: balanceInfo.metadata?.base.name,
+            tokenAddress: balanceInfo.tokenAddress,
+            image: balanceInfo?.metadata?.imageSize && balanceInfo?.metadata?.imageSize['240-240'],
+          } as T)
+        }
+      }
+    })()
+  }, [location.search])
+
+  const [targetRedPackets, setTargetRedPackets] = React.useState(
+    [] as sdk.LuckyTokenItemForReceive[],
+  )
+  const [popRedPacket, setPopRedPacket] = React.useState(
+    undefined as sdk.LuckTokenClaimDetail | undefined,
+  )
+  const tokenInfo = popRedPacket && tokenMap[idIndex[popRedPacket.luckyToken.tokenId]]
+
+  const popRedPacketAmountStr = popRedPacket
+    ? popRedPacket.luckyToken.isNft
+      ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
+      : tokenInfo &&
+        getValuePrecisionThousand(
+          sdk
+            .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
+            .div('1e' + tokenInfo!.decimals),
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          false,
+        ) +
+          ' ' +
+          tokenInfo?.symbol
+    : undefined
+
+  const getTargetRedpackets = async () => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+      {
+        senderId: account.accountId,
+        scopes: '2',
+        modes: '0,1,2',
+        partitions: '0,1',
+        statuses: '2',
+        official: false,
+        offset: 0,
+        limit: 100,
+        isEnough: true,
+      } as any,
+      account.apiKey,
+    )
+    setTargetRedPackets(response?.list ?? [])
+  }
+  React.useEffect(() => {
+    getTargetRedpackets()
+    ;(async () => {
+      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
+      const found = (response?.raw_data as any).find(
+        (item) => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase(),
+      )
+      setIsWhiteListed(found ? true : false)
+    })()
+  }, [])
+
+  const onClickViewTargetDetail = React.useCallback(async (hash: string) => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail(
+      {
+        hash: hash,
+      },
+      account.apiKey,
+    )
+    setPopRedPacket(response?.detail)
+  }, [])
+  const onCloseRedpacketPop = React.useCallback(async () => {
+    setPopRedPacket(undefined)
+  }, [])
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { toggle } = useToggle()
+
+  const showExclusiveOption = checkPermission(toggle, {
+    accAddress: account.accAddress,
+    network,
+    functionName: 'redpacket_exclusive',
+  })
+
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
+    redPacketConfig: notifyMap?.redPacket ?? {},
     tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
     onCreateRedPacketClick,
@@ -929,6 +1106,7 @@ export const useCreateRedPacket = <
     walletMap,
     coinMap: totalCoinMap,
     tokenMap,
+    idIndex,
     minimum,
     maximum,
     feeInfo: redPacketOrder.fee ?? feeInfo,
@@ -938,9 +1116,9 @@ export const useCreateRedPacket = <
     handlePanelEvent,
     selectNFT,
     handleOnChoose: (_value: NFT) => {
-      setSelectNFT(_value as NFT);
+      setSelectNFT(_value as NFT)
       if (_value) {
-        const value = _value as any;
+        const value = _value as any
         handleOnDataChange({
           collectionInfo: value.collectionInfo,
           tokenId: value.tokenId,
@@ -949,13 +1127,20 @@ export const useCreateRedPacket = <
           nftData: value.nftData,
           belong: value.name,
           tokenAddress: value.tokenAddress,
-          image: value?.metadata?.imageSize
-            ? value?.metadata?.imageSize["240-240"]
-            : value.image,
-        } as T);
+          image: value?.metadata?.imageSize ? value?.metadata?.imageSize['240-240'] : value.image,
+        } as T)
       }
     },
-  } as unknown as CreateRedPacketProps<T, I, F, NFT>;
+    selectNFTDisabled: redPacketOrder.tradeType === RedPacketOrderType.FromNFT,
+    onSendTargetRedpacketClick,
+    targetRedPackets,
+    popRedPacket,
+    popRedPacketAmountStr,
+    onClickViewTargetDetail,
+    onCloseRedpacketPop,
+    isWhiteListed,
+    showExclusiveOption,
+  } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
-  return { createRedPacketProps, retryBtn };
-};
+  return { createRedPacketProps, retryBtn }
+}

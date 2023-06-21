@@ -1,5 +1,5 @@
-import { DepositProps } from "../Interface";
-import { VendorMenuProps } from "../../modal";
+import { DepositProps } from '../Interface'
+import { VendorMenuProps } from '../../modal'
 
 export enum DepositPanelType {
   Deposit = 0,
@@ -7,8 +7,8 @@ export enum DepositPanelType {
 }
 
 export type DepositGroupProps<T, I> = {
-  depositProps: DepositProps<T, I>;
-  vendorMenuProps: VendorMenuProps;
-  tabIndex?: DepositPanelType;
+  depositProps: DepositProps<T, I>
+  vendorMenuProps: VendorMenuProps
+  tabIndex?: DepositPanelType
   // onTabChange: (value: DepositPanelType) => void;
-};
+}

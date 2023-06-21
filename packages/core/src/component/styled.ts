@@ -1,14 +1,14 @@
-import styled from "@emotion/styled";
-import { Box, Grid } from "@mui/material";
-import { TablePaddingX } from "@loopring-web/component-lib";
-import { LAYOUT } from "../defs";
+import styled from '@emotion/styled'
+import { Box, Grid } from '@mui/material'
+import { TablePaddingX } from '@loopring-web/component-lib'
+import { LAYOUT } from '../defs'
 
 export const StylePaper = styled(Box)`
   display: flex;
   flex-direction: column;
   width: 100%;
   flex: 1;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
   // padding: ${({ theme }) => 3 * theme.unit}px  0;
   margin-bottom: ${({ theme }) => 2 * theme.unit}px;
@@ -34,19 +34,17 @@ export const StylePaper = styled(Box)`
       background-color: inherit !important;
     }
   }
-` as typeof Box;
+` as typeof Box
 
 export const TableWrapStyled = styled(Box)`
   & {
     .toolbar {
       padding: 0;
     }
-    background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit}px;
     .rdg {
       .rdg-header-row {
-        border-radius: ${({ theme }) => theme.unit}px
-          ${({ theme }) => theme.unit}px 0 0;
+        border-radius: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit}px 0 0;
       }
     }
   }
@@ -59,8 +57,7 @@ export const TableWrapStyled = styled(Box)`
     min-height: initial;
   }
 
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })};
+  ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })};
   &.fixed {
     position: relative;
     .toolbar {
@@ -74,7 +71,7 @@ export const TableWrapStyled = styled(Box)`
       background: var(--color-box);
     }
   }
-` as typeof Grid;
+` as typeof Grid
 
 export const TableProWrapStyled = styled(Box)`
   & {
@@ -85,8 +82,7 @@ export const TableProWrapStyled = styled(Box)`
     border-radius: ${({ theme }) => theme.unit}px;
     .rdg {
       .rdg-header-row {
-        border-radius: ${({ theme }) => theme.unit}px
-          ${({ theme }) => theme.unit}px 0 0;
+        border-radius: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit}px 0 0;
         background: var(--color-pop-bg) !important;
 
         // .rdg-cell:last-of-type {
@@ -98,8 +94,7 @@ export const TableProWrapStyled = styled(Box)`
     //   padding-right: 0 !important;
     // }
   }
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })};
+  ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })};
   &.fixed {
     position: relative;
     .toolbar {
@@ -114,10 +109,10 @@ export const TableProWrapStyled = styled(Box)`
       background: var(--color-box);
     }
   }
-` as typeof Grid;
+` as typeof Grid
 export const FixedStyle = styled(Box)`
   @media only screen and (min-height: 784px) and (min-width: 1024px) {
     position: fixed;
   }
-` as typeof Box;
+` as typeof Box
 //    ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};

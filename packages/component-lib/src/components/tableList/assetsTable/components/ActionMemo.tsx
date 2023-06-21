@@ -1,44 +1,39 @@
-import React from "react";
-import { Box, Grid, ListItemText, MenuItem, Typography } from "@mui/material";
-import styled from "@emotion/styled";
-import {
-  Button,
-  Popover,
-  PopoverType,
-  PopoverWrapProps,
-} from "../../../basic-lib";
+import React from 'react'
+import { Box, Grid, ListItemText, MenuItem, Typography } from '@mui/material'
+import styled from '@emotion/styled'
+import { Button, Popover, PopoverType, PopoverWrapProps } from '../../../basic-lib'
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
   HiddenTag,
+  MapChainId,
   MoreIcon,
-} from "@loopring-web/common-resources";
-import { useHistory } from "react-router-dom";
-import { TFunction } from "i18next";
-import { useOpenModals, useSettings, useToggle } from "../../../../stores";
-import { AmmPanelType } from "../../../tradePanel";
-import { RawDataAssetsItem } from "../AssetsTable";
+  LEVERAGE_ETH_CONFIG,
+} from '@loopring-web/common-resources'
+import { useHistory } from 'react-router-dom'
+import { useOpenModals, useSettings, useToggle } from '../../../../stores'
+import { AmmPanelType } from '../../../tradePanel'
+import { RawDataAssetsItem } from '../AssetsTable'
+import { useTranslation } from 'react-i18next'
 
 const GridStyled = styled(Grid)`
   .MuiGrid-item {
     padding: ${({ theme }) => theme.unit / 4}px 0 0;
   }
-`;
+`
 export type ActionProps = {
-  tokenValue: any;
-  allowTrade?: any;
-  market: `${string}-${string}`;
-  isLp: boolean;
-  isDefi: boolean;
-  isInvest: boolean;
-  onSend: (token: string, isToL1: boolean) => void;
-  onReceive: (token: string) => void;
-  // onShowDeposit: (token: string) => void;
-  // onShowTransfer: (token: string) => void;
-  // onShowWithdraw: (token: string) => void;
-  getMarketArrayListCallback: (token: string) => string[];
-  t: TFunction;
-};
+  tokenValue: any
+  allowTrade?: any
+  market: `${string}-${string}`
+  isLp: boolean
+  isDefi: boolean
+  isInvest: boolean
+  onSend: (token: string, isToL1: boolean) => void
+  onReceive: (token: string) => void
+
+  getMarketArrayListCallback: (token: string) => string[]
+  isLeverageETH: boolean
+}
 const ActionPopContent = React.memo(
   ({
     market,
@@ -53,23 +48,24 @@ const ActionPopContent = React.memo(
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
-    t,
+    isLeverageETH,
   }: ActionProps) => {
-    const history = useHistory();
-    const { setShowAmm } = useOpenModals();
-    const { toggle } = useToggle();
+    const history = useHistory()
+    const { t } = useTranslation(['tables', 'common'])
+    const { setShowAmm } = useOpenModals()
+    const { toggle } = useToggle()
     const _allowTrade = {
       ...toggle,
       allowTrade,
-    };
-    const { isMobile } = useSettings();
+    }
+    const { isMobile } = useSettings()
     const tradeList = [
       ...[
-        <MenuItem key={"token-Receive"} onClick={() => onReceive(tokenValue)}>
-          <ListItemText>{t("labelReceive")}</ListItemText>
+        <MenuItem key={'token-Receive'} onClick={() => onReceive(tokenValue)}>
+          <ListItemText>{t('labelReceive')}</ListItemText>
         </MenuItem>,
-        <MenuItem key={"token-Send"} onClick={() => onSend(tokenValue, isLp)}>
-          <ListItemText>{t("labelSend")}</ListItemText>
+        <MenuItem key={'token-Send'} onClick={() => onSend(tokenValue, isLp)}>
+          <ListItemText>{t('labelSend')}</ListItemText>
         </MenuItem>,
       ],
       // ...(isToL1
@@ -79,19 +75,21 @@ const ActionPopContent = React.memo(
       //       </MenuItem>,
       //     ]
       //   : []),
-    ];
+    ]
     const marketList = isLp
       ? []
       : getMarketArrayListCallback(market).filter((pair) => {
-          const [first, last] = pair.split("-");
-          if (first === "USDT" || last === "USDT") {
-            return true;
+          const [first, last] = pair.split('-')
+          if (first === 'USDT' || last === 'USDT') {
+            return true
           }
-          return first === market;
-        });
-
+          return first === market
+        })
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const coins = LEVERAGE_ETH_CONFIG.coins[network]
     return (
-      <Box borderRadius={"inherit"} minWidth={110}>
+      <Box borderRadius={'inherit'} minWidth={110}>
         {isMobile && tradeList.map((item) => <>{item}</>)}
         {isLp ? (
           <>
@@ -102,10 +100,10 @@ const ActionPopContent = React.memo(
                   isShow: true,
                   type: AmmPanelType.Join,
                   symbol: market,
-                });
+                })
               }}
             >
-              <ListItemText>{t("labelPoolTableAddLiquidity")}</ListItemText>
+              <ListItemText>{t('labelPoolTableAddLiquidity')}</ListItemText>
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -113,13 +111,13 @@ const ActionPopContent = React.memo(
                   isShow: true,
                   type: AmmPanelType.Exit,
                   symbol: market,
-                });
+                })
               }}
             >
-              <ListItemText>{t("labelPoolTableRemoveLiquidity")}</ListItemText>
+              <ListItemText>{t('labelPoolTableRemoveLiquidity')}</ListItemText>
             </MenuItem>
           </>
-        ) : isDefi ? (
+        ) : isDefi || isLeverageETH ? (
           isInvest && !isMobile ? (
             <>
               {tradeList.map((item) => (
@@ -131,24 +129,32 @@ const ActionPopContent = React.memo(
               <MenuItem
                 disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
-                  history.push(`/invest/defi/${tokenValue}-null/invest`);
+                  if (coins.includes(tokenValue)) {
+                    history.push('/invest/leverageETH')
+                  } else {
+                    history.push(`/invest/defi/${tokenValue}-null/invest`)
+                  }
                 }}
               >
-                <ListItemText>{t("labelDefiInvest")}</ListItemText>
+                <ListItemText>{t('labelDefiInvest')}</ListItemText>
               </MenuItem>
               <MenuItem
                 disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
-                  history.push(`/invest/defi/${tokenValue}-null/redeem`);
+                  if (coins.includes(tokenValue)) {
+                    history.push('/invest/leverageETH/redeem')
+                  } else {
+                    history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                  }
                 }}
               >
-                <ListItemText>{t("labelDefiRedeem")}</ListItemText>
+                <ListItemText>{t('labelDefiRedeem')}</ListItemText>
               </MenuItem>
             </>
           )
         ) : (
           marketList.map((pair) => {
-            const formattedPair = pair.replace("-", " / ");
+            const formattedPair = pair.replace('-', ' / ')
             return (
               <MenuItem
                 key={pair}
@@ -160,19 +166,19 @@ const ActionPopContent = React.memo(
               >
                 <ListItemText>{formattedPair}</ListItemText>
               </MenuItem>
-            );
+            )
           })
         )}
       </Box>
-    );
-  }
-);
+    )
+  },
+)
 
 const ActionMemo = React.memo((props: ActionProps) => {
-  const { isMobile } = useSettings();
-  const history = useHistory();
+  const { isMobile } = useSettings()
+  const history = useHistory()
+  const { t } = useTranslation('tables')
   const {
-    t,
     allowTrade,
     tokenValue,
     onSend,
@@ -183,33 +189,31 @@ const ActionMemo = React.memo((props: ActionProps) => {
     // onShowDeposit,
     // onShowTransfer,
     // onShowWithdraw,
-  } = props;
+    isLeverageETH,
+  } = props
   const popoverProps: PopoverWrapProps = {
     type: PopoverType.click,
-    popupId: "testPopup",
-    className: "arrow-none",
-    children: <MoreIcon cursor={"pointer"} />,
+    popupId: 'testPopup',
+    className: 'arrow-none',
+    children: <MoreIcon cursor={'pointer'} />,
     popoverContent: <ActionPopContent {...props} />,
     anchorOrigin: {
-      vertical: "bottom",
-      horizontal: "right",
+      vertical: 'bottom',
+      horizontal: 'right',
     },
     transformOrigin: {
-      vertical: "top",
-      horizontal: "right",
+      vertical: 'top',
+      horizontal: 'right',
     },
-  } as PopoverWrapProps;
-
+  } as PopoverWrapProps
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const coins = LEVERAGE_ETH_CONFIG.coins[network]
   return (
-    <GridStyled
-      container
-      spacing={1}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-    >
+    <GridStyled container spacing={1} justifyContent={'space-between'} alignItems={'center'}>
       {isMobile ? (
         <>
-          {((!isLp && allowTrade?.order?.enable) || isLp || isDefi) && (
+          {((!isLp && allowTrade?.order?.enable) || isLp || isDefi || isLeverageETH) && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>
@@ -217,31 +221,66 @@ const ActionMemo = React.memo((props: ActionProps) => {
         </>
       ) : (
         <>
-          <Box display={"flex"}>
-            {isInvest ? (
+          <Box display={'flex'}>
+            {isLeverageETH ? (
               <>
                 <Grid item>
                   <Button
-                    variant={"text"}
-                    size={"small"}
-                    color={"primary"}
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
                     onClick={() => {
-                      history.push(`/invest/defi/${tokenValue}-null/invest`);
+                      history.push(`/invest/leverageETH`)
                     }}
                   >
-                    {t("labelDefiInvest")}
+                    {t('labelDefiInvest')}
                   </Button>
                 </Grid>
                 <Grid item>
                   <Button
-                    variant={"text"}
-                    size={"small"}
-                    color={"primary"}
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
                     onClick={() => {
-                      history.push(`/invest/defi/${tokenValue}-null/redeem`);
+                      history.push(`/invest/leverageETH/redeem`)
                     }}
                   >
-                    {t("labelDefiRedeem")}
+                    {t('labelDefiRedeem')}
+                  </Button>
+                </Grid>
+              </>
+            ) : isInvest ? (
+              <>
+                <Grid item>
+                  <Button
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
+                    onClick={() => {
+                      if (coins.includes(tokenValue)) {
+                        history.push('/invest/leverageETH')
+                      } else {
+                        history.push(`/invest/defi/${tokenValue}-null/invest`)
+                      }
+                    }}
+                  >
+                    {t('labelDefiInvest')}
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
+                    onClick={() => {
+                      if (coins.includes(tokenValue)) {
+                        history.push('/invest/leverageETH/redeem')
+                      } else {
+                        history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                      }
+                    }}
+                  >
+                    {t('labelDefiRedeem')}
                   </Button>
                 </Grid>
               </>
@@ -249,22 +288,22 @@ const ActionMemo = React.memo((props: ActionProps) => {
               <>
                 <Grid item>
                   <Button
-                    variant={"text"}
-                    size={"small"}
-                    color={"primary"}
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
                     onClick={() => onReceive(tokenValue)}
                   >
-                    {t("labelReceive")}
+                    {t('labelReceive')}
                   </Button>
                 </Grid>
                 <Grid item>
                   <Button
-                    variant={"text"}
-                    size={"small"}
-                    color={"primary"}
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
                     onClick={() => onSend(tokenValue, isLp)}
                   >
-                    {t("labelSend")}
+                    {t('labelSend')}
                   </Button>
                 </Grid>
               </>
@@ -275,7 +314,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
               <Popover {...{ ...popoverProps }} />
             </Grid>
           )}
-          {(isLp || isInvest) && (
+          {(isLp || isInvest || isLeverageETH) && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>
@@ -283,60 +322,55 @@ const ActionMemo = React.memo((props: ActionProps) => {
         </>
       )}
     </GridStyled>
-  );
-});
-export default ActionMemo;
+  )
+})
+export default ActionMemo
 
 export const LockedMemo = React.memo(
   (
-    props: RawDataAssetsItem & {
-      hideAssets?: boolean;
-      onTokenLockHold?: (item: any) => void;
+    props: Omit<RawDataAssetsItem, 'smallBalance' | 'tokenValueDollar'> & {
+      hideAssets?: boolean
+      onTokenLockHold?: (item: any) => void
       tokenLockDetail?:
         | undefined
         | {
-            list: any[];
-            row: any;
-          };
-    }
+            list: any[]
+            row: any
+          }
+    },
   ) => {
-    const { onTokenLockHold, tokenLockDetail, ...row } = props;
-    const value = row["locked"];
-    const precision = row["precision"];
+    const { onTokenLockHold, tokenLockDetail, ...row } = props
+    const value = row['locked']
+    const precision = row['precision']
     // myLog(tokenLockDetail);
     if (!Number(value)) {
-      return <Box className={"textAlignRight"}>{EmptyValueTag}</Box>;
+      return <Box className={'textAlignRight'}>{EmptyValueTag}</Box>
     } else {
       return (
-        <Box className={"textAlignRight"}>
+        <Box className={'textAlignRight'}>
           <Typography
-            display={"inline-flex"}
-            alignItems={"center"}
-            component={"span"}
+            display={'inline-flex'}
+            alignItems={'center'}
+            component={'span'}
             sx={{
-              textDecoration: onTokenLockHold ? "underline dotted" : "",
-              cursor: "pointer",
+              textDecoration: onTokenLockHold ? 'underline dotted' : '',
+              cursor: 'pointer',
             }}
             // @ts-ignore
             onClick={(e) => {
               if (onTokenLockHold) {
-                onTokenLockHold(row);
+                onTokenLockHold(row)
               }
             }}
           >
             {props.hideAssets
               ? HiddenTag
-              : getValuePrecisionThousand(
-                  value,
-                  precision,
-                  precision,
-                  undefined,
-                  false,
-                  { floor: true }
-                )}
+              : getValuePrecisionThousand(value, precision, precision, undefined, false, {
+                  floor: true,
+                })}
           </Typography>
         </Box>
-      );
+      )
     }
-  }
-);
+  },
+)

@@ -1,5 +1,5 @@
-import { Subject } from "rxjs";
-import { resetCollectionData, store } from "../../index";
+import { Subject } from 'rxjs'
+import { resetCollectionData, store } from '../../index'
 
 export enum ContractCommands {
   CreateTokenAddress,
@@ -10,18 +10,18 @@ export enum ContractCommands {
 }
 
 const subject = new Subject<{
-  status: ContractCommands;
+  status: ContractCommands
   data?: {
-    uniqueId?: string;
-    [key: string]: any;
-  };
-}>();
+    uniqueId?: string
+    [key: string]: any
+  }
+}>()
 
 // const socket =  ipfsService.onSocket();
 
 export const collectionService = {
   emptyData: async () => {
-    store.dispatch(resetCollectionData({}));
+    store.dispatch(resetCollectionData({}))
     // const {
     //   account,
     //   // system: { chainId },
@@ -214,4 +214,4 @@ export const collectionService = {
   //   // });
   // },
   onSocket: () => subject.asObservable(),
-};
+}

@@ -1,27 +1,42 @@
-import { css } from "@emotion/react";
-import reset from "./reset";
+import { css } from '@emotion/react'
+import reset from './reset'
 // @ts-ignore
-import InterMedium from "../fonts/english/Inter-Medium.ttf";
-// @ts-ignore
-// import GilroyMedium from '../fonts/english/DINCondensed.ttf';
-import DINCondensed from "../fonts/english/DINCondensed/363123_0_0.ttf";
+import InterMedium from '../fonts/english/Inter-Medium.ttf'
 
-import { ColorDarkDefault, ColorLightDefault, hexToRGB } from "./color-lib";
+import {
+  ColorDarkDefault,
+  ColorLightDefault,
+  GrayBlack,
+  GrayLight,
+  hexToRGB,
+  SystemColor,
+} from './color-lib'
+import { ThemeType } from '../interface'
 
 export const fontDefault = {
-  h1: "3.8rem",
-  h2: "3.0rem",
-  h3: "2.4rem",
-  h4: "2.0rem",
-  h5: "1.6rem",
-  h6: "1.4rem",
-  body1: "1.4rem",
-  body2: "1.2rem",
-};
+  h1: '3.8rem',
+  h2: '3.0rem',
+  h3: '2.4rem',
+  h4: '2.0rem',
+  h5: '1.6rem',
+  h6: '1.4rem',
+  body1: '1.4rem',
+  body2: '1.2rem',
+}
 
-export const refreshTime = 15;
+export const refreshTime = 15
 export const colorBase = ({ theme }: any) => css`
   html {
+    --gray100: ${theme.mode == ThemeType.dark ? GrayBlack.gray100 : GrayLight.gray100};
+    --gray200: ${theme.mode == ThemeType.dark ? GrayBlack.gray200 : GrayLight.gray200};
+    --gray300: ${theme.mode == ThemeType.dark ? GrayBlack.gray300 : GrayLight.gray300};
+    --gray400: ${theme.mode == ThemeType.dark ? GrayBlack.gray400 : GrayLight.gray400};
+    --gray500: ${theme.mode == ThemeType.dark ? GrayBlack.gray500 : GrayLight.gray500};
+    --gray600: ${theme.mode == ThemeType.dark ? GrayBlack.gray600 : GrayLight.gray600};
+    --gray700: ${theme.mode == ThemeType.dark ? GrayBlack.gray700 : GrayLight.gray700};
+    --gray800: ${theme.mode == ThemeType.dark ? GrayBlack.gray800 : GrayLight.gray800};
+    --gray900: ${theme.mode == ThemeType.dark ? GrayBlack.gray900 : GrayLight.gray900};
+
     --color-primary: ${theme.colorBase.primary};
     --color-primary-hover: ${theme.colorBase.primaryHover};
     --color-primary-pressed: ${theme.colorBase.primaryPressed};
@@ -37,10 +52,12 @@ export const colorBase = ({ theme }: any) => css`
     --color-text-third: ${theme.colorBase.textThird};
     --color-text-button: ${theme.colorBase.textButton};
     --color-text-button-select: ${theme.colorBase.textButtonSelect};
+    --color-text-button-disabled: ${theme.colorBase.textButtonDisabled};
     --color-text-disable: ${theme.colorBase.textDisable};
     --color-border: ${theme.colorBase.border};
     --color-border-hover: ${theme.colorBase.borderHover};
     --color-border-dark: ${theme.colorBase.borderDark};
+    --color-placeholder: ${theme.colorBase.placeholder};
     --color-border-select: ${theme.colorBase.borderSelect};
     --color-border-disable: ${theme.colorBase.borderDisable};
     --color-border-disable2: ${theme.colorBase.borderDisable2};
@@ -58,7 +75,9 @@ export const colorBase = ({ theme }: any) => css`
     --field-opacity: ${theme.colorBase.fieldOpacity};
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
+    --color-box-third: ${theme.colorBase.boxThird};
     --color-mask: ${theme.colorBase.mask};
+    --color-box-enhance: ${theme.colorBase.boxEnhance};
     --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};
     --color-logo: ${theme.colorBase.logo};
@@ -66,6 +85,9 @@ export const colorBase = ({ theme }: any) => css`
     /********************Case for shadow*******************/
     --color-button-pot: ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
+    --color-button-inactive: ${theme.colorBase.buttonInactive};
+    --color-button-disabled: ${theme.colorBase.buttonDisabled};
+    --color-button-outlined: ${theme.colorBase.buttonOutlined};
 
     /********************CSS shadow *******************/
     --shadow: ${theme.colorBase.shadow};
@@ -78,9 +100,9 @@ export const colorBase = ({ theme }: any) => css`
     --provider-btn: ${theme.colorBase.providerBtn};
     --provider-hover: ${theme.colorBase.providerBtnHover};
     --provider-agree: ${theme.colorBase.providerApprove};
-    --vip-bg: ${hexToRGB(theme.colorBase.warning, "0.2")};
+    --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --vip-text: ${theme.colorBase.warning};
-    --network-bg: ${hexToRGB(theme.colorBase.warning, "0.2")};
+    --network-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --network-text: ${theme.colorBase.warning};
     --auto-refresh-color: ${theme.colorBase.primary};
     --opacity: ${theme.colorBase.opacity};
@@ -94,7 +116,7 @@ export const colorBase = ({ theme }: any) => css`
     --color-redPacket-text1: ${theme.colorBase.redPacketText1};
     --color-redPacket-Border: ${theme.colorBase.redPacketBorder};
   }
-`;
+`
 export const scrollbarDefault = ({ theme }: any) => css`
   html {
     scrollbar-face-color: ${theme.colorBase.box};
@@ -106,15 +128,17 @@ export const scrollbarDefault = ({ theme }: any) => css`
     scrollbar-shadow-color: ${theme.colorBase.box};
     scrollbar-dark-shadow-color: ${theme.colorBase.box};
   }
+
   .MuiPaper-elevation2 {
     box-shadow: var(--shadow);
   }
+
   .MuiPaper-elevation4 {
     box-shadow: var(--shadow-header);
   }
+
   //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
-  // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase
-    .textHint};}
+  // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase.textHint};}
   ::-webkit-scrollbar-track {
     background-color: ${theme.colorBase.box};
     border-radius: 3px;
@@ -138,10 +162,11 @@ export const scrollbarDefault = ({ theme }: any) => css`
   ::-webkit-resizer {
     background-color: ${theme.colorBase.box};
   }
-`;
+`
 export const globalCss = ({ theme }: any) => css`
   ${colorBase({ theme })}
   ${scrollbarDefault({ theme })};
+
   ${reset}
   #root {
     display: flex;
@@ -158,8 +183,8 @@ export const globalCss = ({ theme }: any) => css`
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei",
-      "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    font-family: Roboto, Helvetica, Arial, '华文细黑', 'Microsoft YaHei', '微软雅黑', SimSun, '宋体',
+      Heiti, '黑体', sans-serif;
     //font-family: Roboto;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
   }
@@ -172,7 +197,7 @@ export const globalCss = ({ theme }: any) => css`
     flex-direction: column;
 
     &:before {
-      content: "";
+      content: '';
       position: fixed;
       z-index: -1;
       top: 0;
@@ -217,7 +242,6 @@ export const globalCss = ({ theme }: any) => css`
     --header-submenu-item-width: 250px;
     --desktop-max-width: 1200px;
     --desktop-min-width: 1024px;
-    --input-height-large: 48px;
     --btn-Input-small-height: 32px;
     --btn-medium-height: 40px;
     //--btn-max-width: 160px;
@@ -273,11 +297,33 @@ export const globalCss = ({ theme }: any) => css`
     --nft-small-avatar: 80px;
     --redPacket-avatar: 72px;
     --notification-activited-heigth: 80px;
+    --modal-min-width: 340px;
+    --carousel-dot-size: 14px;
+    --earning-banner-width: 320px;
+    --provider-btn-height: 56px;
+    --input-height-large: 48px;
+    --input-height-huge: 56px;
+    --dual-type-width: 320px;
+    --min-height: 350px;
+
     @media only screen and (max-width: 768px) {
-      //--modal-width: 320px;
+      --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
+      --dual-type-width: 240px;
     }
+    --color-EOA-Text: #fba95c;
+    --color-Loopring-Text: #4169ff;
+    --color-OtherSmart-Text: #979797;
+    --color-Binance-Text: #a25402;
+    --color-Huobi-Text: #199e5e;
+    --color-OtherExchange-Text: #a0635a;
+    --color-EOA-Bg: #fffedc;
+    --color-Loopring-Bg: #c9dbef;
+    --color-OtherSmart-Bg: #d9d9d9;
+    --color-Binance-Bg: #fde3c8;
+    --color-Huobi-Bg: #b1f4dd;
+    --color-OtherExchange-Bg: #c1a6a2;
   }
 
   select {
@@ -293,5 +339,5 @@ export const globalCss = ({ theme }: any) => css`
   .rdg.rdg {
     --background-color: inherit;
   }
-`;
-export { ColorDarkDefault, ColorLightDefault };
+`
+export { ColorDarkDefault, ColorLightDefault, SystemColor }

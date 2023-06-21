@@ -1,3 +1,3 @@
-import { DualViewInfo } from "@loopring-web/common-resources";
+import { DualViewInfo } from '@loopring-web/common-resources'
 
-export type RawDataDualsItem = DualViewInfo;
+export type RawDataDualsItem = DualViewInfo

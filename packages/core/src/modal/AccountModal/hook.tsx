@@ -121,28 +121,31 @@ import {
   BtradeSwap_Failed,
   BtradeSwap_Pending,
   AMM_Pending,
-} from "@loopring-web/component-lib";
-import {
-  ConnectProviders,
-  connectProvides,
-  walletServices,
-} from "@loopring-web/web3-provider";
+  useSettings,
+  TOASTOPEN,
+  setShowGlobalToast,
+} from '@loopring-web/component-lib'
+import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   Account,
   AccountStatus,
   AddAssetList,
+  AddAssetListMap,
   AssetsRawDataItem,
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   NFTWholeINFO,
   SendAssetList,
+  SendAssetListMap,
   SendNFTAssetList,
   TradeTypes,
   VendorProviders,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   banxaService,
   depositServices,
@@ -173,16 +176,15 @@ import {
   useReset,
   useStakeTradeExit,
   useSystem,
-  useToast,
   useTransfer,
   useVendor,
   useWalletLayer2,
   useWithdraw,
-} from "@loopring-web/core";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory } from "react-router-dom";
-import { ImportRedPacket } from "./components/QRCodeScanner";
-import { useClaimConfirm } from "../../hooks/useractions/useClaimConfirm";
+} from '@loopring-web/core'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { useHistory } from 'react-router-dom'
+import { ImportRedPacket } from './components/QRCodeScanner'
+import { useClaimConfirm } from '../../hooks/useractions/useClaimConfirm'
 
 export function useAccountModalForUI({
   t,
@@ -191,21 +193,20 @@ export function useAccountModalForUI({
   depositProps,
   ...rest
 }: {
-  t: any;
-  etherscanBaseUrl: string;
-  isLayer1Only?: boolean;
-  depositProps: DepositProps<any, any>;
-  account: Account;
-  assetsRawData: AssetsRawDataItem[];
+  t: any
+  etherscanBaseUrl: string
+  isLayer1Only?: boolean
+  depositProps: DepositProps<any, any>
+  account: Account
+  assetsRawData: AssetsRawDataItem[]
   // onClose?: any;
 }) {
-  const { chainInfos, updateDepositHash, clearDepositHash } =
-    onchainHashInfo.useOnChainInfo();
+  const { chainInfos, updateDepositHash, clearDepositHash } = onchainHashInfo.useOnChainInfo()
 
-  const { updateWalletLayer2 } = useWalletLayer2();
-  const { processRequestRampTransfer } = useRampTransPost();
-  const { campaignTagConfig } = useNotify().notifyMap ?? {};
-  const history = useHistory();
+  const { updateWalletLayer2 } = useWalletLayer2()
+  const { processRequestRampTransfer } = useRampTransPost()
+  const { campaignTagConfig } = useNotify().notifyMap ?? {}
+  const history = useHistory()
   const {
     modals: { isShowAccount },
     setShowConnect,
@@ -217,8 +218,8 @@ export function useAccountModalForUI({
     setShowActiveAccount,
     setShowNFTTransfer,
     setShowNFTWithdraw,
-  } = useOpenModals();
-  rest = { ...rest, ...isShowAccount.info };
+  } = useOpenModals()
+  rest = { ...rest, ...isShowAccount.info }
   const {
     nftDepositValue,
     nftTransferValue,
@@ -226,428 +227,489 @@ export function useAccountModalForUI({
     nftDeployValue,
     transferValue,
     withdrawValue,
+    resetTransferData,
+    resetWithdrawData,
+    resetDepositData,
     forceWithdrawValue,
     claimValue,
-  } = useModalData();
+  } = useModalData()
 
-  const { chainId, allowTrade } = useSystem();
+  const { chainId, allowTrade } = useSystem()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { account, addressShort, shouldShow, setShouldShow } = useAccount()
+  const redPacketScanQrcodeSuccessProps = useRedPacketScanQrcodeSuccess()
 
-  const { account, addressShort, shouldShow, setShouldShow } = useAccount();
-  const redPacketScanQrcodeSuccessProps = useRedPacketScanQrcodeSuccess();
+  const { exportAccountAlertText, exportAccountToastOpen, setExportAccountToastOpen } =
+    useExportAccount()
 
-  const {
-    exportAccountAlertText,
-    exportAccountToastOpen,
-    setExportAccountToastOpen,
-  } = useExportAccount();
-  const { toastOpen, setToastOpen, closeToast } = useToast();
-
-  const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
+  const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance()
   const { retryBtn: creatRedPacketRetryBtn } = useCreateRedPacket({
     assetsRawData,
     isShow: false,
-  });
+  })
+  // const [toastOpen, setToastOpen] = React.useState<TOASTOPEN>({
+  //   open: false,
+  //   content: '',
+  //   type: ToastType.info,
+  // })
 
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
-    setCollectionToastOpen: setToastOpen,
-  });
-  const { vendorListBuy, banxaRef } = useVendor();
+    setCollectionToastOpen: (info: TOASTOPEN) => {
+      setShowGlobalToast({ isShow: info.open, info: { ...info } })
+    },
+  })
+  const { vendorListBuy, banxaRef } = useVendor()
   // const { nftMintProps } = useNFTMint();
-  const { withdrawProps } = useWithdraw();
-  const { transferProps } = useTransfer();
-  const { nftWithdrawProps } = useNFTWithdraw();
-  const { nftTransferProps } = useNFTTransfer();
-  const { nftDeployProps } = useNFTDeploy();
+  const { withdrawProps } = useWithdraw()
+  const { transferProps } = useTransfer()
+  const { nftWithdrawProps } = useNFTWithdraw()
+  const { nftTransferProps } = useNFTTransfer()
+  const { nftDeployProps } = useNFTDeploy()
   const { stakeWrapProps } = useStakeTradeExit({
-    setToastOpen,
-  });
-  const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
-  const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm();
-  const { resetProps } = useReset();
-  const { activeAccountProps, activeAccountCheckFeeIsEnough } =
-    useActiveAccount();
-  const [tryCheckL2BalanceTimes, setTryCheckL2BalanceTimes] = React.useState(5);
+    setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
+  })
+  const { retryBtn: forceWithdrawRetry } = useForceWithdraw()
+  const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm()
+  const { resetProps } = useReset()
+  const { activeAccountProps, activeAccountCheckFeeIsEnough } = useActiveAccount()
+  const [tryCheckL2BalanceTimes, setTryCheckL2BalanceTimes] = React.useState(5)
 
   // const { nftDepositProps } = useNFTDeposit();
-  const { exportAccountProps } = useExportAccount();
+  const { exportAccountProps } = useExportAccount()
 
-  const [openQRCode, setOpenQRCode] = useState(false);
+  const [openQRCode, setOpenQRCode] = useState(false)
 
-  const [copyToastOpen, setCopyToastOpen] = useState(false);
+  const [copyToastOpen, setCopyToastOpen] = useState(false)
 
   const onSwitch = React.useCallback(() => {
-    setShowAccount({ isShow: false });
-    setShouldShow(true);
-    setShowConnect({ isShow: shouldShow ?? false });
-  }, [setShowAccount, setShouldShow, setShowConnect, shouldShow]);
+    setShowAccount({ isShow: false })
+    setShouldShow(true)
+    setShowConnect({ isShow: shouldShow ?? false })
+  }, [setShowAccount, setShouldShow, setShowConnect, shouldShow])
 
   const onCopy = React.useCallback(async () => {
-    copyToClipBoard(account.accAddress);
-    setCopyToastOpen(true);
-  }, [account, setCopyToastOpen]);
+    copyToClipBoard(account.accAddress)
+    setCopyToastOpen(true)
+  }, [account, setCopyToastOpen])
 
   const onViewQRCode = React.useCallback(() => {
-    setOpenQRCode(true);
-  }, [setOpenQRCode]);
+    setOpenQRCode(true)
+  }, [setOpenQRCode])
 
   const onDisconnect = React.useCallback(async () => {
-    walletServices.sendDisconnect("", "customer click disconnect");
-    setShowAccount({ isShow: false });
-  }, [setShowAccount]);
+    walletServices.sendDisconnect('', 'customer click disconnect')
+    setShowAccount({ isShow: false })
+  }, [setShowAccount])
 
   const onQRClick = React.useCallback(() => {
-    setShowAccount({ isShow: true, step: AccountStep.QRCode });
-  }, [setShowAccount]);
+    setShowAccount({ isShow: true, step: AccountStep.QRCode })
+  }, [setShowAccount])
 
   const unlockBtn = React.useMemo(() => {
     return (
       <Button
-        variant={"contained"}
+        variant={'contained'}
         fullWidth
-        size={"medium"}
+        size={'medium'}
         onClick={() => {
-          setShouldShow(true);
-          unlockAccount();
+          setShouldShow(true)
+          unlockAccount()
         }}
       >
-        {t("labelUnLockLayer2")}
+        {t('labelUnLockLayer2')}
       </Button>
-    );
-  }, [t, setShouldShow]);
+    )
+  }, [t, setShouldShow])
 
   const lockBtn = React.useMemo(() => {
     return (
       <Button
-        variant={"contained"}
+        variant={'contained'}
         fullWidth
-        size={"medium"}
+        size={'medium'}
         onClick={() => {
-          lockAccount();
+          lockAccount()
         }}
       >
-        {t("labelLockLayer2")}
+        {t('labelLockLayer2')}
       </Button>
-    );
-  }, [t]);
+    )
+  }, [t])
 
   const onQRBack = React.useCallback(() => {
     if (Number.isInteger(isShowAccount.info?.backTo)) {
-      setShowAccount({ isShow: true, step: isShowAccount.info?.backTo });
+      setShowAccount({ isShow: true, step: isShowAccount.info?.backTo })
     } else {
       switch (account.readyState) {
         case AccountStatus.NO_ACCOUNT:
         case AccountStatus.DEPOSITING:
-          setShowAccount({ isShow: true, step: AccountStep.NoAccount });
-          break;
+          setShowAccount({ isShow: true, step: AccountStep.NoAccount })
+          break
         case AccountStatus.LOCKED:
         case AccountStatus.ACTIVATED:
-          setShowAccount({ isShow: true, step: AccountStep.HadAccount });
-          break;
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
+          break
         default:
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
       }
     }
-  }, [account.readyState, isShowAccount, setShowAccount]);
+  }, [account.readyState, isShowAccount, setShowAccount])
 
   const closeBtnInfo = React.useCallback(
     (props?: { closeExtend?: (e?: any) => void }) => {
       return {
-        btnTxt: "labelClose",
+        btnTxt: 'labelClose',
         callback: (e: any) => {
-          setShouldShow(false);
-          setShowAccount({ isShow: false });
+          setShouldShow(false)
+          setShowAccount({ isShow: false })
           if (props?.closeExtend) {
-            props?.closeExtend(e);
+            props?.closeExtend(e)
           }
           // if (onClose) {
           //   onClose(e);
           // }
         },
-      };
+      }
     },
-    [setShouldShow, setShowAccount]
-  );
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+    [setShouldShow, setShowAccount],
+  )
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const clearDeposit = React.useCallback(() => {
-    clearDepositHash(account.accAddress);
-  }, [clearDepositHash, account]);
+    clearDepositHash(account.accAddress)
+  }, [clearDepositHash, account])
 
   const updateDepositStatus = React.useCallback(async () => {
-    const chainInfos = store.getState().localStore.chainHashInfos[chainId];
-    const { accAddress } = account;
-    clearTimeout(nodeTimer.current as NodeJS.Timeout);
+    const chainInfos = store.getState().localStore.chainHashInfos[chainId]
+    const { accAddress } = account
+    clearTimeout(nodeTimer.current as NodeJS.Timeout)
     if (
       chainInfos &&
       chainInfos.depositHashes &&
       chainInfos.depositHashes[accAddress] &&
       connectProvides
     ) {
-      const depositList = chainInfos.depositHashes[accAddress];
-      let flag = false;
+      const depositList = chainInfos.depositHashes[accAddress]
+      let flag = false
       depositList.forEach((txInfo) => {
-        if (
-          txInfo.status === "pending" &&
-          connectProvides?.usedWeb3?.eth?.getTransactionReceipt
-        ) {
-          connectProvides.usedWeb3.eth
-            .getTransactionReceipt(txInfo.hash)
-            .then((result) => {
-              if (result) {
-                updateDepositHash(
-                  txInfo.hash,
-                  accAddress,
-                  result.status ? "success" : "failed"
-                );
-              }
-            });
-          flag = true;
+        if (txInfo.status === 'pending' && connectProvides?.usedWeb3?.eth?.getTransactionReceipt) {
+          connectProvides.usedWeb3.eth.getTransactionReceipt(txInfo.hash).then((result) => {
+            if (result) {
+              updateDepositHash(txInfo.hash, accAddress, result.status ? 'success' : 'failed')
+            }
+          })
+          flag = true
         }
-      });
+      })
       if (flag) {
-        setTryCheckL2BalanceTimes(20);
-        let wait = 60000;
+        setTryCheckL2BalanceTimes(20)
+        let wait = 60000
         if (
           account.readyState &&
           [AccountStatus.DEPOSITING, AccountStatus.NOT_ACTIVE].includes(
             // @ts-ignore
-            account?.readyState
+            account?.readyState,
           )
         ) {
-          wait = 30000;
+          wait = 30000
         }
         nodeTimer.current = setTimeout(() => {
-          updateDepositStatus();
-        }, wait);
-        updateWalletLayer2();
+          updateDepositStatus()
+        }, wait)
+        updateWalletLayer2()
       } else {
         setTryCheckL2BalanceTimes((state) => {
           if (state > 0) {
-            updateWalletLayer2();
+            updateWalletLayer2()
             nodeTimer.current = setTimeout(() => {
-              updateDepositStatus();
-            }, 10000);
+              updateDepositStatus()
+            }, 10000)
           }
-          return state - 1;
-        });
+          return state - 1
+        })
       }
     }
-  }, [
-    account,
-    chainId,
-    updateDepositHash,
-    updateWalletLayer2,
-    nodeTimer,
-    tryCheckL2BalanceTimes,
-  ]);
+  }, [account, chainId, updateDepositHash, updateWalletLayer2, nodeTimer, tryCheckL2BalanceTimes])
   React.useEffect(() => {
-    if (
-      chainInfos?.depositHashes &&
-      chainInfos?.depositHashes[account.accAddress]
-    ) {
-      updateDepositStatus();
+    if (chainInfos?.depositHashes && chainInfos?.depositHashes[account.accAddress]) {
+      updateDepositStatus()
     }
     return () => {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout);
-    };
-  }, [account.accAddress, chainInfos?.depositHashes]);
-  const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } =
-    useOpenModals();
+      clearTimeout(nodeTimer.current as NodeJS.Timeout)
+    }
+  }, [account.accAddress, chainInfos?.depositHashes])
+  const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } = useOpenModals()
+
+  const disbaleList = account.isInCounterFactualStatus ? [AddAssetList.FromMyL1.key] : undefined
 
   const addAssetList: AddAssetItem[] = React.useMemo(
-    () => [
-      {
-        ...AddAssetList.BuyWithCard,
-        handleSelect: (_e: any) => {
-          setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
-        },
-      },
-      {
-        ...AddAssetList.FromMyL1,
-        handleSelect: () => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowDeposit({ isShow: true, symbol: isShowAccount?.info?.symbol });
-        },
-      },
-      {
-        ...AddAssetList.FromOtherL1,
-        handleSelect: () => {
-          let dex = "labelAddAssetTitleBridgeDes";
-          if (
-            account.readyState &&
-            [
-              AccountStatus.DEPOSITING,
-              AccountStatus.NOT_ACTIVE,
-              AccountStatus.NO_ACCOUNT,
-            ].includes(
-              // @ts-ignore
-              account?.readyState
-            )
-          ) {
-            dex = "labelAddAssetTitleBridgeDesActive";
-          }
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.ThirdPanelReturn,
-            info: { title: t("labelAddAssetTitleBridge"), description: t(dex) },
-          });
+    () =>
+      AddAssetListMap[network].map((item: string) => {
+        switch (item) {
+          case AddAssetList.BuyWithCard.key:
+            return {
+              ...AddAssetList.BuyWithCard,
+              handleSelect: () => {
+                setShowAccount({ isShow: true, step: AccountStep.PayWithCard })
+              },
+            }
+          case AddAssetList.FromMyL1.key:
+            return {
+              ...AddAssetList.FromMyL1,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                })
+                if (isShowAccount?.info?.symbol) {
+                  resetDepositData()
+                }
+                setShowDeposit({
+                  isShow: true,
+                  symbol: isShowAccount?.info?.symbol,
+                })
+              },
+            }
+          case AddAssetList.FromOtherL1.key:
+            return {
+              ...AddAssetList.FromOtherL1,
+              handleSelect: () => {
+                let dex = 'labelAddAssetTitleBridgeDes'
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState,
+                  )
+                ) {
+                  dex = 'labelAddAssetTitleBridgeDesActive'
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t('labelAddAssetTitleBridge', {
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    }),
+                    description: t(dex, {
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    }),
+                  },
+                })
 
-          window.open(
-            Bridge +
-              `?l2account=${account.accAddress}&token=${
-                isShowAccount?.info?.symbol ?? ""
-              }&__trace_isSharedBy=loopringExchange`
-          );
-          window.opener = null;
-        },
-      },
-      {
-        ...AddAssetList.FromOtherL2,
-        handleSelect: () => {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.QRCode,
-            info: { backTo: AccountStep.AddAssetGateway },
-          });
-        },
-      },
-      {
-        ...AddAssetList.FromExchange,
-        handleSelect: () => {
-          let dex = "labelAddAssetTitleExchangeDes";
-          if (
-            account.readyState &&
-            [
-              AccountStatus.DEPOSITING,
-              AccountStatus.NOT_ACTIVE,
-              AccountStatus.NO_ACCOUNT,
-            ].includes(
-              // @ts-ignore
-              account?.readyState
-            )
-          ) {
-            dex = "labelAddAssetTitleExchangeDesActive";
-          }
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.ThirdPanelReturn,
-            info: {
-              title: t("labelAddAssetTitleExchange"),
-              description: t(dex),
-            },
-          });
-          setShowLayerSwapNotice({ isShow: true });
-        },
-      },
-      // {
-      //   ...AddAssetList.FromAnotherNet,
-      //   handleSelect: () => {
-      //     let dex = "labelAddAssetTitleAnotherNetDes";
-      //     if (
-      //       account.readyState &&
-      //       [
-      //         AccountStatus.DEPOSITING,
-      //         AccountStatus.NOT_ACTIVE,
-      //         AccountStatus.NO_ACCOUNT,
-      //       ].includes(
-      //         // @ts-ignore
-      //         account?.readyState
-      //       )
-      //     ) {
-      //       dex = "labelAddAssetTitleAnotherNetDesActive";
-      //     }
-      //     setShowAccount({
-      //       isShow: true,
-      //       step: AccountStep.ThirdPanelReturn,
-      //       info: {
-      //         title: t("labelFromAnotherNet"),
-      //         description: t(dex),
-      //       },
-      //     });
-      //     setShowAnotherNetworkNotice({ isShow: true });
-      //   },
-      // },
-    ],
+                window.open(
+                  Bridge +
+                    `?l2account=${account.accAddress}&token=${
+                      isShowAccount?.info?.symbol ?? ''
+                    }&__trace_isSharedBy=loopringExchange`,
+                )
+                window.opener = null
+              },
+            }
+          case AddAssetList.FromOtherL2.key:
+            return {
+              ...AddAssetList.FromOtherL2,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.QRCode,
+                  info: { backTo: AccountStep.AddAssetGateway },
+                })
+              },
+            }
+          case AddAssetList.FromExchange.key:
+            return {
+              ...AddAssetList.FromExchange,
+              handleSelect: () => {
+                let dex = 'labelAddAssetTitleExchangeDes'
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState,
+                  )
+                ) {
+                  dex = 'labelAddAssetTitleExchangeDesActive'
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t('labelAddAssetTitleExchange'),
+                    description: t(dex, {
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    }),
+                  },
+                })
+                setShowLayerSwapNotice({ isShow: true })
+              },
+            }
+          case AddAssetList.FromAnotherNet.key:
+            return {
+              ...AddAssetList.FromAnotherNet,
+              handleSelect: () => {
+                let dex = 'labelAddAssetTitleAnotherNetDes'
+                if (
+                  account.readyState &&
+                  [
+                    AccountStatus.DEPOSITING,
+                    AccountStatus.NOT_ACTIVE,
+                    AccountStatus.NO_ACCOUNT,
+                  ].includes(
+                    // @ts-ignore
+                    account?.readyState,
+                  )
+                ) {
+                  dex = 'labelAddAssetTitleAnotherNetDesActive'
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.ThirdPanelReturn,
+                  info: {
+                    title: t('labelFromAnotherNet'),
+                    description: t(dex, {
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    }),
+                  },
+                })
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Ethereum&dest=Loopring' },
+                })
+              },
+            }
+        }
+
+        // .
+      }),
     [
+      network,
       account.accAddress,
       isShowAccount?.info?.symbol,
       setShowAccount,
       setShowDeposit,
       setShowLayerSwapNotice,
-    ]
-  );
-  const sendAssetList: SendAssetItem[] = React.useMemo(
-    () => [
-      {
-        ...SendAssetList.SendAssetToL2,
-        handleSelect: (_e: any) => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowTransfer({
-            isShow: true,
-            symbol: isShowAccount?.info?.symbol,
-          });
-        },
-      },
-      {
-        ...SendAssetList.SendAssetToMyL1,
-        handleSelect: () => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowWithdraw({
-            isShow: true,
-            info: { isToMyself: true },
-            symbol: isShowAccount?.info?.symbol,
-          });
-        },
-      },
-      {
-        ...SendAssetList.SendAssetToOtherL1,
-        handleSelect: () => {
-          setShowAccount({ isShow: false, info: { lastFailed: undefined } });
-          setShowWithdraw({
-            isShow: true,
-            info: { isToMyself: false },
-            symbol: isShowAccount?.info?.symbol,
-          });
-        },
-      },
-      // {
-      //   ...SendAssetList.SendAssetToAnotherNet,
-      //   handleSelect: () => {
-      //     setShowAccount({
-      //       isShow: false,
-      //     });
-      //     window.open(
-      //       "https://www.orbiter.finance/?source=Loopring&dest=Ethereum"
-      //     );
-      //     window.opener = null;
-      //   },
-      // },
     ],
-    [
-      isShowAccount?.info?.symbol,
-      setShowAccount,
-      setShowTransfer,
-      setShowWithdraw,
-    ]
-  );
+  )
+  const sendAssetList: SendAssetItem[] = React.useMemo(
+    () =>
+      SendAssetListMap[network].map((item: string) => {
+        switch (item) {
+          case SendAssetList.SendAssetToL2.key:
+            return {
+              ...SendAssetList.SendAssetToL2,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                })
+                if (isShowAccount?.info?.symbol) {
+                  resetTransferData()
+                }
+                setShowTransfer({
+                  isShow: true,
+                  symbol: isShowAccount?.info?.symbol,
+                })
+              },
+            }
+          case SendAssetList.SendAssetToMyL1.key:
+            return {
+              ...SendAssetList.SendAssetToMyL1,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                })
+                if (isShowAccount?.info?.symbol) {
+                  resetWithdrawData()
+                }
+                setShowWithdraw({
+                  isShow: true,
+                  info: { isToMyself: true },
+                  symbol: isShowAccount?.info?.symbol,
+                })
+              },
+            }
+          case SendAssetList.SendAssetToOtherL1.key:
+            return {
+              ...SendAssetList.SendAssetToOtherL1,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                })
+                if (isShowAccount?.info?.symbol) {
+                  resetWithdrawData()
+                }
+                setShowWithdraw({
+                  isShow: true,
+                  info: { isToMyself: false },
+                  symbol: isShowAccount?.info?.symbol,
+                })
+              },
+            }
+          case SendAssetList.SendAssetToAnotherNet.key:
+            return {
+              ...SendAssetList.SendAssetToAnotherNet,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                })
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Loopring&dest=Ethereum' },
+                })
+                // window.open('https://www.orbiter.finance/?source=Loopring&dest=Ethereum')
+                // window.opener = null
+              },
+            }
+        }
+      }),
+    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw],
+  )
   const sendNFTAssetList: SendAssetItem[] = React.useMemo(
     () => [
       {
         ...SendNFTAssetList.SendAssetToL2,
         handleSelect: (_e) => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
           setShowNFTTransfer({
             isShow: true,
-          });
+          })
         },
       },
       {
         ...SendNFTAssetList.SendAssetToMyL1,
         handleSelect: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
           setShowNFTWithdraw({
             isShow: true,
             info: { isToMyself: true, lastFailed: undefined },
-          });
+          })
         },
       },
       {
@@ -655,39 +717,39 @@ export function useAccountModalForUI({
         handleSelect: () => {
           setShowAccount({
             isShow: false,
-          });
+          })
           setShowNFTWithdraw({
             isShow: true,
             info: { isToMyself: false, lastFailed: undefined },
-          });
+          })
         },
       },
     ],
-    [setShowAccount, setShowNFTTransfer, setShowNFTWithdraw]
-  );
+    [setShowAccount, setShowNFTTransfer, setShowNFTWithdraw],
+  )
   const onBackReceive = React.useCallback(() => {
     setShowAccount({
       isShow: true,
       step: AccountStep.AddAssetGateway,
       info: { ...isShowAccount?.info },
-    });
-  }, [isShowAccount?.info, setShowAccount]);
+    })
+  }, [isShowAccount?.info, setShowAccount])
   const onBackSend = React.useCallback(() => {
     setShowAccount({
       isShow: true,
       step: AccountStep.SendAssetGateway,
       info: { ...isShowAccount?.info },
-    });
-  }, [isShowAccount?.info, setShowAccount]);
+    })
+  }, [isShowAccount?.info, setShowAccount])
 
   const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
-    setToastOpen,
+    setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
     onDisconnect,
     isDepositing: !!chainInfos?.depositHashes[account?.accAddress]?.length,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
     checkFeeIsEnough: activeAccountCheckFeeIsEnough,
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
-  });
+  })
 
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
@@ -695,60 +757,59 @@ export function useAccountModalForUI({
       [AccountStep.ContinuousBanxaOrder]: {
         view: (
           <ContinuousBanxaOrder
-            title={t("labelBanxaTitleCreateAgain")}
+            title={t('labelBanxaTitleCreateAgain')}
             btnInfo={{
               isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
               callback: () => {
-                setShouldShow(false);
-                setShowAccount({ isShow: false });
+                setShouldShow(false)
+                setShowAccount({ isShow: false })
 
                 // if (props?.closeExtend) {
                 //   props?.closeExtend(e);
                 // }
                 // banxaService.openOldOne();
               },
-              btnTxt: t("labelBanxaContinuous"),
+              btnTxt: t('labelBanxaContinuous'),
             }}
             orderId={isShowAccount?.info?.orderId}
             chainId={chainId as any}
             btnInfo2={{
               isLoading: isShowAccount?.info?.isBanxaLaunchLoading,
               callback: () => {
-                setShowAccount({ isShow: false });
+                setShowAccount({ isShow: false })
                 offFaitService.offRampCancel({
                   data: {
                     product: VendorProviders.Banxa,
                     orderId: isShowAccount?.info?.orderId,
                   },
-                });
-                banxaService.banxaStart(true);
+                })
+                banxaService.banxaStart(true)
               },
-              btnTxt: t("labelBanxaCreate"),
+              btnTxt: t('labelBanxaCreate'),
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
         onClose: () => {
           banxaService.banxaEnd({
             reason: OrderENDReason.UserCancel,
-            data: { resource: "on close" },
-          });
+            data: { resource: 'on close' },
+          })
         },
       },
       [AccountStep.ThirdPanelReturn]: {
         view: (
           <ThirdPanelReturn
-            title={isShowAccount?.info?.title ?? ""}
+            title={isShowAccount?.info?.title ?? ''}
             description={isShowAccount?.info?.description}
             btnInfo={{
               ...closeBtnInfo(),
-              btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIKnow2"),
+              btnTxt: isShowAccount?.info?.btnTxt ?? t('labelIKnow2'),
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
       },
-
       [AccountStep.CheckingActive]: {
         view: (
           <CheckActiveStatus
@@ -762,16 +823,17 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.AddAssetGateway]: {
-        height: "auto",
+        height: 'auto',
         view: (
           <AddAsset
             symbol={isShowAccount?.info?.symbol}
             addAssetList={addAssetList}
             allowTrade={allowTrade}
             isNewAccount={depositProps.isNewAccount}
+            disbaleList={disbaleList}
           />
         ),
       },
@@ -816,8 +878,8 @@ export function useAccountModalForUI({
               // isSupport,
               noButton: isLayer1Only,
               onClose: (_e: any) => {
-                setShouldShow(false);
-                setShowAccount({ isShow: false });
+                setShouldShow(false)
+                setShowAccount({ isShow: false })
               },
               updateDepositHash,
               clearDepositHash: clearDeposit,
@@ -832,7 +894,7 @@ export function useAccountModalForUI({
           />
         ),
         onQRClick,
-        height: isLayer1Only ? "auto" : null,
+        height: isLayer1Only ? 'auto' : null,
       },
       [AccountStep.HadAccount]: {
         view: (
@@ -845,31 +907,27 @@ export function useAccountModalForUI({
               onSwitch,
               onCopy,
               onClose: (_e: any) => {
-                setShouldShow(false);
-                setShowAccount({ isShow: false });
+                setShouldShow(false)
+                setShowAccount({ isShow: false })
               },
               etherscanUrl: rest.etherscanBaseUrl,
               onViewQRCode,
               onDisconnect,
               addressShort,
-              etherscanLink:
-                rest.etherscanBaseUrl + "address/" + account.accAddress,
-              mainBtn:
-                account.readyState === AccountStatus.ACTIVATED
-                  ? lockBtn
-                  : unlockBtn,
+              etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
+              mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
             }}
           />
         ),
         onQRClick,
-        height: isLayer1Only ? "auto" : null,
+        height: isLayer1Only ? 'auto' : null,
       },
       [AccountStep.QRCodeScanner]: {
         view: <ImportRedPacket {...redPacketScanQrcodeSuccessProps} />,
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.QRCode]: {
         view: (
@@ -879,12 +937,11 @@ export function useAccountModalForUI({
               account,
               btnInfo: {
                 ...closeBtnInfo(),
-                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIKnow2"),
+                btnTxt: isShowAccount?.info?.btnTxt ?? t('labelIKnow2'),
               } as any,
               ...account,
               isNewAccount: depositProps.isNewAccount,
-              isForL2Send:
-                isShowAccount.info?.backTo === AccountStep.AddAssetGateway,
+              isForL2Send: isShowAccount.info?.backTo === AccountStep.AddAssetGateway,
               etherscanUrl: rest.etherscanBaseUrl,
               t,
             }}
@@ -892,7 +949,7 @@ export function useAccountModalForUI({
         ),
         onBack: onQRBack,
         noClose: true,
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.Deposit_Sign_WaitForRefer]: {
         view: (
@@ -922,9 +979,9 @@ export function useAccountModalForUI({
         view: (
           <Deposit_Approve_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                depositServices.depositERC20();
+                depositServices.depositERC20()
               },
             }}
             {...{
@@ -935,7 +992,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.Deposit_WaitForAuth]: {
@@ -954,16 +1011,16 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.Deposit_Denied]: {
         view: (
           <Deposit_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                depositServices.depositERC20();
+                depositServices.depositERC20()
               },
             }}
             {...{
@@ -974,7 +1031,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.Deposit_Failed]: {
@@ -989,7 +1046,7 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.deposit,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -1002,8 +1059,8 @@ export function useAccountModalForUI({
         ),
         onBack: !depositProps.isAllowInputToAddress
           ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
+              setShowAccount({ isShow: false })
+              setShowDeposit({ isShow: true })
             }
           : undefined,
       },
@@ -1011,17 +1068,22 @@ export function useAccountModalForUI({
         view: (
           <Deposit_Submit
             btnInfo={{
-              btnTxt: "labelDoAgain",
-              param: { method: t("labelDepositL1") },
+              btnTxt: 'labelDoAgain',
+              param: {
+                method: t('labelDepositL1', {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                }),
+              },
               callback: () => {
-                setShowAccount({ isShow: false });
+                setShowAccount({ isShow: false })
                 setShowDeposit({
                   isShow: true,
-                  symbol:
-                    (rest as any)?.symbol ??
-                    isShowAccount?.info?.symbol ??
-                    "LRC",
-                });
+                  symbol: (rest as any)?.symbol ?? isShowAccount?.info?.symbol ?? 'LRC',
+                })
               },
             }}
             {...{
@@ -1049,9 +1111,9 @@ export function useAccountModalForUI({
         view: (
           <NFTDeposit_Approve_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                depositServices.depositNFT();
+                depositServices.depositNFT()
                 // setShowAccount({ isShow: false });
               },
             }}
@@ -1064,7 +1126,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1085,16 +1147,16 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTDeposit_Denied]: {
         view: (
           <NFTDeposit_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                depositServices.depositNFT();
+                depositServices.depositNFT()
               },
             }}
             {...{
@@ -1106,7 +1168,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTDeposit_Failed]: {
@@ -1121,7 +1183,7 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.nftDeposit,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -1134,18 +1196,26 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTDeposit_Submit]: {
         view: (
           <NFTDeposit_Submit
             btnInfo={{
-              btnTxt: "labelDoAgain",
-              param: { method: t("labelDepositNFTL1") },
+              btnTxt: 'labelDoAgain',
+              param: {
+                method: t('labelDepositNFTL1', {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                }),
+              },
               callback: () => {
-                setShowAccount({ isShow: false });
-                history.push("/nft/depositNFT");
+                setShowAccount({ isShow: false })
+                history.push('/nft/depositNFT')
               },
             }}
             {...{
@@ -1173,7 +1243,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTMint_Denied]: {
@@ -1182,12 +1252,12 @@ export function useAccountModalForUI({
             symbol={isShowAccount.info?.name}
             value={isShowAccount.info?.value}
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
                 if (isShowAccount.info?.isAdvanceMint) {
-                  nftMintAdvanceRetryBtn();
+                  nftMintAdvanceRetryBtn()
                 } else {
-                  mintService.goMintConfirm();
+                  mintService.goMintConfirm()
                 }
               },
             }}
@@ -1199,19 +1269,19 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTMint_First_Method_Denied]: {
         view: (
           <NFTMint_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
                 if (isShowAccount.info?.isAdvanceMint) {
-                  nftMintAdvanceRetryBtn(true);
+                  nftMintAdvanceRetryBtn(true)
                 } else {
-                  mintService.goMintConfirm(true);
+                  mintService.goMintConfirm(true)
                 }
               },
             }}
@@ -1253,7 +1323,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTMint_Success]: {
@@ -1261,16 +1331,14 @@ export function useAccountModalForUI({
           <NFTMint_Success
             // btnInfo={closeBtnInfo}
             btnInfo={{
-              btnTxt: "labelDoAgain",
-              param: { method: t("labelMintNFT") },
+              btnTxt: 'labelDoAgain',
+              param: { method: t('labelMintNFT') },
               callback: () => {
-                setShowAccount({ isShow: false });
+                setShowAccount({ isShow: false })
                 if (isShowAccount.info?.lastStep === LAST_STEP.nftMint) {
-                  history.push(
-                    `/nft/mintNFT/${isShowAccount.info?.collection?.contractAddress}`
-                  );
+                  history.push(`/nft/mintNFT/${isShowAccount.info?.collection?.contractAddress}`)
                 } else {
-                  history.push("/nft/mintNFTAdvance");
+                  history.push('/nft/mintNFTAdvance')
                 }
               },
             }}
@@ -1282,7 +1350,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -1303,7 +1371,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1311,9 +1379,9 @@ export function useAccountModalForUI({
         view: (
           <RedPacketSend_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                creatRedPacketRetryBtn(true);
+                creatRedPacketRetryBtn(true)
               },
             }}
             {...{
@@ -1325,7 +1393,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1345,9 +1413,9 @@ export function useAccountModalForUI({
         view: (
           <RedPacketSend_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                creatRedPacketRetryBtn();
+                creatRedPacketRetryBtn()
               },
             }}
             {...{
@@ -1376,7 +1444,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1402,7 +1470,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1432,7 +1500,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1448,7 +1516,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1465,7 +1533,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.RedPacketOpen_Claim_Failed]: {
@@ -1481,7 +1549,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1502,16 +1570,16 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTDeploy_Denied]: {
         view: (
           <NFTDeploy_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                nftDeployProps.onNFTDeployClick(nftDeployValue as any);
+                nftDeployProps.onNFTDeployClick(nftDeployValue as any)
               },
             }}
             {...{
@@ -1523,16 +1591,16 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTDeploy_First_Method_Denied]: {
         view: (
           <NFTDeploy_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                nftDeployProps.onNFTDeployClick(nftDeployValue as any, false);
+                nftDeployProps.onNFTDeployClick(nftDeployValue as any, false)
               },
             }}
             {...{
@@ -1570,7 +1638,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.NFTDeploy_Submit]: {
@@ -1586,7 +1654,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
 
@@ -1614,9 +1682,9 @@ export function useAccountModalForUI({
         view: (
           <ForceWithdraw_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                forceWithdrawRetry();
+                forceWithdrawRetry()
               },
             }}
             {...{
@@ -1635,10 +1703,10 @@ export function useAccountModalForUI({
         view: (
           <ForceWithdraw_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
                 // setShowAccount({ isShow: false });
-                forceWithdrawRetry(true);
+                forceWithdrawRetry(true)
               },
             }}
             {...{
@@ -1674,7 +1742,7 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.forceWithdraw,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -1729,9 +1797,9 @@ export function useAccountModalForUI({
         view: (
           <ClaimWithdraw_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                claimRetryBtn();
+                claimRetryBtn()
               },
             }}
             {...{
@@ -1747,9 +1815,9 @@ export function useAccountModalForUI({
         view: (
           <ClaimWithdraw_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                claimRetryBtn(true);
+                claimRetryBtn(true)
               },
             }}
             {...{
@@ -1785,7 +1853,7 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.claim,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -1829,9 +1897,9 @@ export function useAccountModalForUI({
         view: (
           <Transfer_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                transferProps.onTransferClick(transferValue as any, false);
+                transferProps.onTransferClick(transferValue as any, false)
               },
             }}
             {...{
@@ -1846,9 +1914,9 @@ export function useAccountModalForUI({
         view: (
           <Transfer_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                transferProps.onTransferClick(transferValue as any);
+                transferProps.onTransferClick(transferValue as any)
               },
             }}
             {...{
@@ -1874,18 +1942,21 @@ export function useAccountModalForUI({
         view: (
           <Transfer_Success
             btnInfo={{
-              btnTxt: "labelDoAgain",
+              btnTxt: 'labelDoAgain',
               param: {
-                method: t("labelL2ToL2Method", {
+                method: t('labelL2ToL2Method', {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
                   symbol: isShowAccount?.info?.symbol,
                 }),
               },
               callback: () => {
-                setShowAccount({ isShow: false });
+                setShowAccount({ isShow: false })
                 setShowTransfer({
                   isShow: true,
                   symbol: isShowAccount?.info?.symbol,
-                });
+                })
               },
             }}
             {...{
@@ -1893,7 +1964,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -1914,7 +1985,7 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.transfer,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -1942,17 +2013,16 @@ export function useAccountModalForUI({
         view: (
           <Transfer_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                const { __request__ } =
-                  store.getState()._router_modalData.transferRampValue;
+                const { __request__ } = store.getState()._router_modalData.transferRampValue
                 if (__request__) {
-                  processRequestRampTransfer(__request__, false);
+                  processRequestRampTransfer(__request__, false)
                 } else {
                   setShowAccount({
                     isShow: true,
                     step: AccountStep.Transfer_RAMP_Failed,
-                  });
+                  })
                 }
               },
             }}
@@ -1968,17 +2038,16 @@ export function useAccountModalForUI({
         view: (
           <Transfer_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                const { __request__ } =
-                  store.getState()._router_modalData.transferRampValue;
+                const { __request__ } = store.getState()._router_modalData.transferRampValue
                 if (__request__) {
-                  processRequestRampTransfer(__request__, true);
+                  processRequestRampTransfer(__request__, true)
                 } else {
                   setShowAccount({
                     isShow: true,
                     step: AccountStep.Transfer_RAMP_Failed,
-                  });
+                  })
                 }
               },
             }}
@@ -2010,7 +2079,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2050,17 +2119,16 @@ export function useAccountModalForUI({
         view: (
           <Transfer_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                const { __request__ } =
-                  store.getState()._router_modalData.transferBanxaValue;
+                const { __request__ } = store.getState()._router_modalData.transferBanxaValue
                 if (__request__) {
-                  processRequestRampTransfer(__request__, false);
+                  processRequestRampTransfer(__request__, false)
                 } else {
                   setShowAccount({
                     isShow: true,
                     step: AccountStep.Transfer_RAMP_Failed,
-                  });
+                  })
                 }
               },
             }}
@@ -2076,17 +2144,16 @@ export function useAccountModalForUI({
         view: (
           <Transfer_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                const { __request__ } =
-                  store.getState()._router_modalData.transferBanxaValue;
+                const { __request__ } = store.getState()._router_modalData.transferBanxaValue
                 if (__request__) {
-                  processRequestRampTransfer(__request__, true);
+                  processRequestRampTransfer(__request__, true)
                 } else {
                   setShowAccount({
                     isShow: true,
                     step: AccountStep.Transfer_RAMP_Failed,
-                  });
+                  })
                 }
               },
             }}
@@ -2118,7 +2185,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2137,7 +2204,7 @@ export function useAccountModalForUI({
               info: { ...isShowAccount?.info },
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Banxa Status",
+                    name: 'Banxa Status',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2177,9 +2244,9 @@ export function useAccountModalForUI({
         view: (
           <Withdraw_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                withdrawProps.onWithdrawClick(withdrawValue as any, false);
+                withdrawProps.onWithdrawClick(withdrawValue as any, false)
               },
             }}
             {...{
@@ -2194,9 +2261,9 @@ export function useAccountModalForUI({
         view: (
           <Withdraw_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                withdrawProps.onWithdrawClick(withdrawValue as any);
+                withdrawProps.onWithdrawClick(withdrawValue as any)
               },
             }}
             {...{
@@ -2222,29 +2289,37 @@ export function useAccountModalForUI({
         view: (
           <Withdraw_Success
             btnInfo={{
-              btnTxt: "labelDoAgain",
+              btnTxt: 'labelDoAgain',
               param: {
-                method: t("labelL2ToL1Method", {
+                method: t('labelL2ToL1Method', {
                   symbol: isShowAccount?.info?.symbol,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
                 }),
               },
               callback: () => {
-                setShowAccount({ isShow: false });
+                setShowAccount({ isShow: false })
                 setShowWithdraw({
                   isShow: true,
                   info: {
                     isToMyself: isShowAccount?.info?.isToMyself ?? false,
+                    symbol: isShowAccount?.info?.symbol,
                   },
                   symbol: isShowAccount?.info?.symbol,
-                });
+                })
               },
             }}
             {...{
               ...rest,
               account,
+              symbol: isShowAccount?.info?.symbol,
+              // value:isShowAccount?.info?.value,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2265,11 +2340,13 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.withdraw,
                   },
-                });
+                })
               },
             })}
             {...{
               ...rest,
+              symbol: isShowAccount?.info?.symbol,
+              // value:isShowAccount?.info?.value,
               account,
               error: isShowAccount.error,
               t,
@@ -2295,12 +2372,9 @@ export function useAccountModalForUI({
         view: (
           <NFTTransfer_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                nftTransferProps.onTransferClick(
-                  nftTransferValue as any,
-                  false
-                );
+                nftTransferProps.onTransferClick(nftTransferValue as any, false)
               },
             }}
             {...{
@@ -2315,9 +2389,9 @@ export function useAccountModalForUI({
         view: (
           <NFTTransfer_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                nftTransferProps.onTransferClick(nftTransferValue as any);
+                nftTransferProps.onTransferClick(nftTransferValue as any)
               },
             }}
             {...{
@@ -2348,7 +2422,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2369,7 +2443,7 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.nftTransfer,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -2399,12 +2473,9 @@ export function useAccountModalForUI({
         view: (
           <NFTWithdraw_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelTryAnother",
+              btnTxt: 'labelTryAnother',
               callback: () => {
-                nftWithdrawProps.onWithdrawClick(
-                  nftWithdrawValue as any,
-                  false
-                );
+                nftWithdrawProps.onWithdrawClick(nftWithdrawValue as any, false)
               },
             }}
             {...{
@@ -2419,9 +2490,9 @@ export function useAccountModalForUI({
         view: (
           <NFTWithdraw_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                nftWithdrawProps.onWithdrawClick(nftWithdrawValue as any);
+                nftWithdrawProps.onWithdrawClick(nftWithdrawValue as any)
               },
             }}
             {...{
@@ -2452,7 +2523,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2473,7 +2544,7 @@ export function useAccountModalForUI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.nftWithdraw,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -2589,13 +2660,13 @@ export function useAccountModalForUI({
         view: (
           <UnlockAccount_User_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                unlockAccount();
+                unlockAccount()
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.UnlockAccount_WaitForAuth,
-                });
+                })
               },
             }}
             {...{
@@ -2625,17 +2696,13 @@ export function useAccountModalForUI({
             resetAccount={() => {
               if (walletServices)
                 if (isShowAccount.info && isShowAccount.info.walletType) {
-                  const walletType = isShowAccount.info
-                    .walletType as sdk.WalletType;
-                  if (
-                    walletType.isContract ||
-                    walletType.isInCounterFactualStatus
-                  ) {
-                    return;
+                  const walletType = isShowAccount.info.walletType as sdk.WalletType
+                  if (walletType.isContract || walletType.isInCounterFactualStatus) {
+                    return
                   }
                 }
-              setShowAccount({ isShow: false });
-              setShowActiveAccount({ isShow: true });
+              setShowAccount({ isShow: false })
+              setShowActiveAccount({ isShow: true, info: { isReset: true } })
             }}
             {...{
               ...rest,
@@ -2666,12 +2733,12 @@ export function useAccountModalForUI({
           <UpdateAccount_First_Method_Denied
             patch={{ isReset: true }}
             btnInfo={{
-              btnTxt: t("labelTryAnother"),
+              btnTxt: t('labelTryAnother'),
               callback: (_e?: any) => {
                 activeAccountProps.onResetClick({
                   isReset: true,
-                  isFirstTime: false,
-                });
+                  isNotFirstTime: false,
+                })
               },
             }}
             {...{
@@ -2682,8 +2749,8 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowResetAccount({ isShow: true });
+          setShowAccount({ isShow: false })
+          setShowResetAccount({ isShow: true })
         },
       },
       [AccountStep.ResetAccount_User_Denied]: {
@@ -2691,11 +2758,11 @@ export function useAccountModalForUI({
           <UpdateAccount_User_Denied
             patch={{ isReset: true }}
             btnInfo={{
-              btnTxt: t("labelRetry"),
+              btnTxt: t('labelRetry'),
               callback: (_e?: any) => {
                 activeAccountProps.onResetClick({
                   isReset: true,
-                });
+                })
               },
             }}
             {...{
@@ -2716,7 +2783,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2756,8 +2823,8 @@ export function useAccountModalForUI({
               addressShort,
             }}
             goUpdateAccount={() => {
-              setShowAccount({ isShow: false });
-              setShowActiveAccount({ isShow: true });
+              setShowAccount({ isShow: false })
+              setShowActiveAccount({ isShow: true })
               // goUpdateAccount({});
             }}
             {...{ ...rest, account, t }}
@@ -2781,9 +2848,9 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_First_Method_Denied
             btnInfo={{
-              btnTxt: t("labelTryAnother"),
+              btnTxt: t('labelTryAnother'),
               callback: (_e?: any) => {
-                activeAccountProps.onResetClick({ isFirstTime: false });
+                activeAccountProps.onResetClick({ isNotFirstTime: true })
                 // goUpdateAccount({ isFirstTime: false });
               },
             }}
@@ -2795,7 +2862,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
+          setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
           // backToUpdateAccountBtnInfo.callback();
         },
       },
@@ -2803,9 +2870,9 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_User_Denied
             btnInfo={{
-              btnTxt: t("labelRetry"),
+              btnTxt: t('labelRetry'),
               callback: (_e?: any) => {
-                activeAccountProps.onResetClick({});
+                activeAccountProps.onResetClick({})
               },
             }}
             {...{
@@ -2825,7 +2892,7 @@ export function useAccountModalForUI({
               account,
               link: isShowAccount?.info?.hash
                 ? {
-                    name: "Txn Hash",
+                    name: 'Txn Hash',
                     url: isShowAccount?.info?.hash,
                   }
                 : undefined,
@@ -2838,10 +2905,10 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Failed
             btnInfo={{
-              btnTxt: "labelClose",
+              btnTxt: 'labelClose',
               callback: () => {
-                setShouldShow(false);
-                setShowActiveAccount({ isShow: true });
+                setShouldShow(false)
+                setShowActiveAccount({ isShow: true })
               },
             }}
             {...{
@@ -2910,10 +2977,10 @@ export function useAccountModalForUI({
         view: (
           <Dual_Success
             btnInfo={{
-              btnTxt: "labelDualPanelClose",
+              btnTxt: 'labelDualPanelClose',
               callback: (_e: any) => {
-                setShowAccount({ isShow: false });
-                history.push("/invest/balance");
+                setShowAccount({ isShow: false })
+                history.push('/invest/balance')
               },
             }}
             {...{
@@ -3004,7 +3071,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.BtradeSwap_Pending]: {
         view: (
@@ -3019,7 +3086,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
       },
 
       [AccountStep.BtradeSwap_Settled]: {
@@ -3035,7 +3102,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.BtradeSwap_Failed]: {
         view: (
@@ -3050,7 +3117,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.AMM_Pending]: {
         view: (
@@ -3062,9 +3129,9 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        height: "auto",
+        height: 'auto',
       },
-    });
+    })
   }, [
     activeAccountProps,
     resetProps,
@@ -3117,9 +3184,10 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     nftWithdrawValue,
     setShowActiveAccount,
-  ]);
+    disbaleList,
+  ])
 
-  const currentModal = accountList[isShowAccount.step];
+  const currentModal = accountList[isShowAccount.step]
 
   return {
     nftDeployProps,
@@ -3139,7 +3207,6 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
-    setToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,
@@ -3149,9 +3216,7 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    toastOpen,
-    closeToast,
     // checkActiveStatusProps,
     // dualToastOpen,
-  };
+  }
 }

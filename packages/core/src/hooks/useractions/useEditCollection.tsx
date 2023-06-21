@@ -5,10 +5,10 @@ import {
   myLog,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 
-import { BigNumber } from "bignumber.js";
-import React from "react";
+import { BigNumber } from 'bignumber.js'
+import React from 'react'
 import {
   getIPFSString,
   ipfsService,
@@ -21,50 +21,49 @@ import {
   useSystem,
   useToast,
   useWalletL2Collection,
-} from "../../index";
-import { IpfsFile, ToastType, useToggle } from "@loopring-web/component-lib";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { AddResult } from "ipfs-core-types/src/root";
-import { useTranslation } from "react-i18next";
+} from '../../index'
+import { IpfsFile, ToastType, useToggle } from '@loopring-web/component-lib'
+import { useHistory, useRouteMatch } from 'react-router-dom'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { AddResult } from 'ipfs-core-types/src/root'
+import { useTranslation } from 'react-i18next'
 
 // const enum MINT_VIEW_STEP {
 //   METADATA,
 //   MINT_CONFIRM,
 // }
 
-BigNumber.config({ EXPONENTIAL_AT: 100 });
+BigNumber.config({ EXPONENTIAL_AT: 100 })
 export const useEditCollection = <T extends CollectionMeta>({
   isEdit = false,
   type,
 }: {
-  isEdit?: boolean;
-  type: "addCollection" | "editCollection" | "addLegacyCollection";
+  isEdit?: boolean
+  type: 'addCollection' | 'editCollection' | 'addLegacyCollection'
 }) => {
   const {
     toggle: { collectionNFT },
-  } = useToggle();
+  } = useToggle()
   const {
     toastOpen: collectionToastOpen,
     setToastOpen: setCollectionToastOpen,
     closeToast: collectionToastClose,
-  } = useToast();
-  let match: any = useRouteMatch("/nft/:type?/:tokenAddress?");
-  const { t } = useTranslation("common");
-  const [disabled, _setDisabled] = React.useState(!collectionNFT.enable);
-  const { collectionValue, updateCollectionData, resetCollectionData } =
-    useModalData();
+  } = useToast()
+  let match: any = useRouteMatch('/nft/:type?/:tokenAddress?')
+  const { t } = useTranslation('common')
+  const [disabled, _setDisabled] = React.useState(!collectionNFT.enable)
+  const { collectionValue, updateCollectionData, resetCollectionData } = useModalData()
   const [collectionOldValue] = React.useState<T | undefined>(
     isEdit
       ? ({
           ...collectionValue,
         } as T)
-      : undefined
-  );
+      : undefined,
+  )
 
-  const { baseURL, chainId } = useSystem();
-  const { updateWalletL2Collection } = useWalletL2Collection();
-  const history = useHistory();
+  const { baseURL, chainId } = useSystem()
+  const { updateWalletL2Collection } = useWalletL2Collection()
+  const history = useHistory()
   const keysEditInit = (collection: Partial<CollectionMeta> = {}) => {
     // const req = Promise.all([
     //   fetch(getIPFSString(collection.banner, baseURL), {
@@ -85,45 +84,45 @@ export const useEditCollection = <T extends CollectionMeta>({
         ? ({
             error: undefined,
             file: {
-              type: "image/*",
+              type: 'image/*',
             },
             fullSrc: getIPFSString(collection.banner, baseURL),
             localSrc: getIPFSString(collection.banner, baseURL),
             isProcessing: false,
             isUpdateIPFS: false,
-            uniqueId: "",
+            uniqueId: '',
           } as unknown as IpfsFile)
         : undefined,
       tileUri: collection.tileUri
         ? ({
             error: undefined,
             file: {
-              type: "image/*",
+              type: 'image/*',
             },
             fullSrc: getIPFSString(collection.tileUri, baseURL),
             localSrc: getIPFSString(collection.tileUri, baseURL),
             isProcessing: false,
             isUpdateIPFS: false,
-            uniqueId: "",
+            uniqueId: '',
           } as unknown as IpfsFile)
         : undefined,
       avatar: collection.avatar
         ? ({
             error: undefined,
             file: {
-              type: "image/*",
+              type: 'image/*',
             },
             fullSrc: getIPFSString(collection.avatar, baseURL),
             localSrc: getIPFSString(collection.avatar, baseURL),
             isProcessing: false,
             isUpdateIPFS: false,
-            uniqueId: "",
+            uniqueId: '',
           } as unknown as IpfsFile)
         : undefined,
-    };
-  };
+    }
+  }
   const [keys, setKeys] = React.useState<{
-    [key: string]: undefined | IpfsFile;
+    [key: string]: undefined | IpfsFile
   }>(() => {
     return isEdit
       ? keysEditInit(collectionOldValue)
@@ -133,10 +132,10 @@ export const useEditCollection = <T extends CollectionMeta>({
           tileUri: undefined,
           avatar: undefined,
           // thumbnail: undefined,
-        };
-  });
+        }
+  })
 
-  const { account } = useAccount();
+  const { account } = useAccount()
 
   const {
     btnStatus,
@@ -146,14 +145,14 @@ export const useEditCollection = <T extends CollectionMeta>({
     setLabelAndParams,
     resetBtnInfo,
     setLoadingBtn,
-  } = useBtnStatus();
+  } = useBtnStatus()
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
-      resetBtnInfo();
+      resetBtnInfo()
 
       const ipfsProcessing = Reflect.ownKeys(keys).find(
-        (key) => keys[key as string]?.isProcessing === true
-      );
+        (key) => keys[key as string]?.isProcessing === true,
+      )
 
       if (
         !error &&
@@ -162,118 +161,97 @@ export const useEditCollection = <T extends CollectionMeta>({
         collectionValue.tileUri &&
         ipfsProcessing === undefined
       ) {
-        enableBtn();
-        return;
+        enableBtn()
+        return
       }
       if (!collectionValue?.name) {
-        setLabelAndParams("labelCollectionRequiredName", {});
+        setLabelAndParams('labelCollectionRequiredName', {})
       }
       if (!collectionValue?.tileUri) {
-        setLabelAndParams("labelCollectionRequiredTileUri", {});
+        setLabelAndParams('labelCollectionRequiredTileUri', {})
       }
 
       if (ipfsProcessing) {
-        setLoadingBtn();
-        return;
+        setLoadingBtn()
+        return
       }
 
-      disableBtn();
-      myLog("try to disable nftMint btn!");
+      disableBtn()
+      myLog('try to disable nftMint btn!')
     },
-    [
-      resetBtnInfo,
-      keys,
-      collectionValue,
-      disableBtn,
-      enableBtn,
-      setLabelAndParams,
-      setLoadingBtn,
-    ]
-  );
+    [resetBtnInfo, keys, collectionValue, disableBtn, enableBtn, setLabelAndParams, setLoadingBtn],
+  )
 
   React.useEffect(() => {
-    updateBtnStatus();
-  }, [collectionValue, updateBtnStatus, keys]);
+    updateBtnStatus()
+  }, [collectionValue, updateBtnStatus, keys])
   React.useEffect(() => {
     return () => {
-      resetCollectionData();
-    };
-  }, []);
+      resetCollectionData()
+    }
+  }, [])
   const onSubmitClick = React.useCallback(async () => {
-    if (
-      collectionValue.name?.trim() &&
-      collectionValue.tileUri?.trim() &&
-      LoopringAPI.userAPI
-    ) {
-      setLoadingBtn();
-      if (isEdit && type === "editCollection" && collectionOldValue?.id) {
+    if (collectionValue.name?.trim() && collectionValue.tileUri?.trim() && LoopringAPI.userAPI) {
+      setLoadingBtn()
+      if (isEdit && type === 'editCollection' && collectionOldValue?.id) {
         try {
           const response = await LoopringAPI.userAPI.submitEditNFTCollection(
             {
               name: collectionValue.name?.trim(),
               tileUri: collectionValue.tileUri?.trim(),
               accountId: account.accountId,
-              banner: collectionValue.banner?.trim() ?? "",
-              avatar: collectionValue.avatar?.trim() ?? "",
-              description: collectionValue.description?.trim() ?? "",
-              collectionId: collectionOldValue.id ?? "",
+              banner: collectionValue.banner?.trim() ?? '',
+              avatar: collectionValue.avatar?.trim() ?? '',
+              description: collectionValue.description?.trim() ?? '',
+              collectionId: collectionOldValue.id ?? '',
               // @ts-ignore
-              thumbnail: "",
+              thumbnail: '',
             },
             chainId as any,
             account.apiKey,
-            account.eddsaKey.sk
-          );
+            account.eddsaKey.sk,
+          )
           if (
             response &&
-            ((response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message)
+            ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
           ) {
-            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO
             throw new Error(
               t(
                 _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
                   ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
                   : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
-                { ns: "error", name: collectionValue.name?.trim() }
-              )
-            );
+                { ns: 'error', name: collectionValue.name?.trim() },
+              ),
+            )
           } else {
             setCollectionToastOpen({
               open: true,
               type: ToastType.success,
-              content: t("labelEditCollectionSuccess"),
-            });
-            updateWalletL2Collection({ page: 1 });
-            history.push("/nft/myCollection");
+              content: t('labelEditCollectionSuccess'),
+            })
+            updateWalletL2Collection({ page: 1 })
+            history.push('/nft/myCollection')
           }
-          updateCollectionData({ ...collectionOldValue });
+          updateCollectionData({ ...collectionOldValue })
           setKeys({
             banner: undefined,
             name: undefined,
             tileUri: undefined,
             avatar: undefined,
             thumbnail: undefined,
-          });
+          })
         } catch (error) {
           setCollectionToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              t("labelEditCollectionFailed") +
-              `: ${
-                (error as any)?.message
-                  ? (error as any).message
-                  : t("errorUnknown")
-              }`,
-          });
-          resetBtnInfo();
+              t('labelEditCollectionFailed') +
+              `: ${(error as any)?.message ? (error as any).message : t('errorUnknown')}`,
+          })
+          resetBtnInfo()
         }
-      } else if (
-        type === "addLegacyCollection" &&
-        account.accountId &&
-        match.params.tokenAddress
-      ) {
+      } else if (type === 'addLegacyCollection' && account.accountId && match.params.tokenAddress) {
         try {
           const response = await LoopringAPI.userAPI.submitNFTLegacyCollection(
             {
@@ -285,54 +263,47 @@ export const useEditCollection = <T extends CollectionMeta>({
             },
             chainId as any,
             account.apiKey,
-            account.eddsaKey.sk
-          );
+            account.eddsaKey.sk,
+          )
           if (
             response &&
-            ((response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message)
+            ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
           ) {
-            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO
             throw new Error(
               t(
                 _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
                   ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
                   : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
-                { ns: "error", name: collectionValue.name?.trim() }
-              )
-            );
+                { ns: 'error', name: collectionValue.name?.trim() },
+              ),
+            )
           } else {
             setCollectionToastOpen({
               open: true,
               type: ToastType.success,
-              content: t("labelCreateCollectionSuccess"),
-            });
-            updateWalletL2Collection({ page: 1 });
-            history.push(
-              `/nft/importLegacyCollection/${match.params.tokenAddress}`
-            );
+              content: t('labelCreateCollectionSuccess'),
+            })
+            updateWalletL2Collection({ page: 1 })
+            history.push(`/nft/importLegacyCollection/${match.params.tokenAddress}`)
           }
-          updateCollectionData({});
+          updateCollectionData({})
           setKeys({
             banner: undefined,
             name: undefined,
             tileUri: undefined,
             avatar: undefined,
             thumbnail: undefined,
-          });
+          })
         } catch (error) {
           setCollectionToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              t("labelCreateCollectionFailed") +
-              `: ${
-                (error as any)?.message
-                  ? (error as any).message
-                  : t("errorUnknown")
-              }`,
-          });
-          resetBtnInfo();
+              t('labelCreateCollectionFailed') +
+              `: ${(error as any)?.message ? (error as any).message : t('errorUnknown')}`,
+          })
+          resetBtnInfo()
         }
       } else {
         try {
@@ -346,52 +317,47 @@ export const useEditCollection = <T extends CollectionMeta>({
             } as sdk.CollectionMeta,
             chainId as any,
             account.apiKey,
-            account.eddsaKey.sk
-          );
+            account.eddsaKey.sk,
+          )
           if (
             response &&
-            ((response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message)
+            ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
           ) {
-            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO
             throw new Error(
               t(
                 _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
                   ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
                   : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
-                { ns: "error", name: collectionValue.name?.trim() }
-              )
-            );
+                { ns: 'error', name: collectionValue.name?.trim() },
+              ),
+            )
           } else {
             setCollectionToastOpen({
               open: true,
               type: ToastType.success,
-              content: t("labelCreateCollectionSuccess"),
-            });
-            updateWalletL2Collection({ page: 1 });
-            history.push("/nft/myCollection");
+              content: t('labelCreateCollectionSuccess'),
+            })
+            updateWalletL2Collection({ page: 1 })
+            history.push('/nft/myCollection')
           }
-          updateCollectionData({});
+          updateCollectionData({})
           setKeys({
             banner: undefined,
             name: undefined,
             tileUri: undefined,
             avatar: undefined,
             thumbnail: undefined,
-          });
+          })
         } catch (error) {
           setCollectionToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              t("labelCreateCollectionFailed") +
-              `: ${
-                (error as any)?.message
-                  ? (error as any).message
-                  : t("errorUnknown")
-              }`,
-          });
-          resetBtnInfo();
+              t('labelCreateCollectionFailed') +
+              `: ${(error as any)?.message ? (error as any).message : t('errorUnknown')}`,
+          })
+          resetBtnInfo()
         }
       }
     }
@@ -409,17 +375,16 @@ export const useEditCollection = <T extends CollectionMeta>({
     updateCollectionData,
     updateWalletL2Collection,
     match.params.tokenAddress,
-  ]);
+  ])
 
   const handleOnDataChange = React.useCallback(
     (key: string, value: any) => {
-      const collectionValue =
-        store.getState()._router_modalData.collectionValue;
-      myLog("collectionValue", collectionValue);
-      updateCollectionData({ ...collectionValue, [key]: value });
+      const collectionValue = store.getState()._router_modalData.collectionValue
+      myLog('collectionValue', collectionValue)
+      updateCollectionData({ ...collectionValue, [key]: value })
     },
-    [updateCollectionData]
-  );
+    [updateCollectionData],
+  )
 
   const onDelete = React.useCallback(
     (key: string) => {
@@ -427,21 +392,21 @@ export const useEditCollection = <T extends CollectionMeta>({
         return {
           ...state,
           [key]: undefined,
-        };
-      });
-      handleOnDataChange(key, undefined);
+        }
+      })
+      handleOnDataChange(key, undefined)
     },
-    [handleOnDataChange]
-  );
+    [handleOnDataChange],
+  )
 
   const handleFailedUpload = React.useCallback(
     (data: { uniqueId: string; error: sdk.RESULT_INFO }) => {
       setKeys((state) => {
         const key: string = Reflect.ownKeys(state).find((key) => {
-          return state[key as any]?.uniqueId === data.uniqueId;
-        }) as string;
+          return state[key as any]?.uniqueId === data.uniqueId
+        }) as string
         if (key) {
-          handleOnDataChange(key, undefined);
+          handleOnDataChange(key, undefined)
           return {
             ...state,
             [key]: {
@@ -456,23 +421,23 @@ export const useEditCollection = <T extends CollectionMeta>({
                     },
               },
             } as IpfsFile,
-          };
+          }
         } else {
-          return state;
+          return state
         }
-      });
+      })
     },
-    [handleOnDataChange]
-  );
+    [handleOnDataChange],
+  )
   const handleSuccessUpload = React.useCallback(
     (data: AddResult & { uniqueId: string }) => {
       setKeys((state) => {
         const key: string = Reflect.ownKeys(state).find((key) => {
-          return state[key as any]?.uniqueId === data.uniqueId;
-        }) as string;
+          return state[key as any]?.uniqueId === data.uniqueId
+        }) as string
         if (key) {
-          const cid = data.cid.toString();
-          handleOnDataChange(key, `${IPFS_HEAD_URL}${data.path}`);
+          const cid = data.cid.toString()
+          handleOnDataChange(key, `${IPFS_HEAD_URL}${data.path}`)
           return {
             ...state,
             [key as any]: {
@@ -483,29 +448,29 @@ export const useEditCollection = <T extends CollectionMeta>({
                 isProcessing: false,
               },
             },
-          };
+          }
         } else {
-          return state;
+          return state
         }
-      });
+      })
     },
-    [baseURL, handleOnDataChange]
-  );
+    [baseURL, handleOnDataChange],
+  )
 
   const { ipfsProvides } = useIPFS({
     handleSuccessUpload,
     handleFailedUpload,
-  });
+  })
 
   const onFilesLoad = React.useCallback(
     (key: string, value: IpfsFile) => {
-      let uniqueId = key + "|" + Date.now();
-      value.isUpdateIPFS = true;
+      let uniqueId = key + '|' + Date.now()
+      value.isUpdateIPFS = true
       ipfsService.addFile({
         ipfs: ipfsProvides.ipfs,
         file: value.file,
         uniqueId: uniqueId,
-      });
+      })
       setKeys((state) => {
         return {
           ...state,
@@ -513,13 +478,13 @@ export const useEditCollection = <T extends CollectionMeta>({
             ...value,
             file: value.file,
             uniqueId: uniqueId,
-            cid: "",
+            cid: '',
           },
-        };
-      });
+        }
+      })
     },
-    [ipfsProvides.ipfs]
-  );
+    [ipfsProvides.ipfs],
+  )
 
   return {
     keys,
@@ -535,10 +500,10 @@ export const useEditCollection = <T extends CollectionMeta>({
     collectionValue,
     resetEdit: isEdit
       ? () => {
-          updateCollectionData({ ...collectionOldValue });
-          setKeys(keysEditInit(collectionOldValue));
+          updateCollectionData({ ...collectionOldValue })
+          setKeys(keysEditInit(collectionOldValue))
         }
       : undefined,
     onSubmitClick,
-  };
-};
+  }
+}

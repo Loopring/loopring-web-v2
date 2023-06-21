@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react'
 
 export default css`
   html,
@@ -154,14 +154,14 @@ export default css`
   blockquote {
     &:before,
     &:after {
-      content: "";
+      content: '';
       content: none;
     }
   }
   q {
     &:before,
     &:after {
-      content: "";
+      content: '';
       content: none;
     }
   }
@@ -256,4 +256,4 @@ export default css`
     justify-content: center;
     background-color: rgba(166, 174, 185, 0.7);
   }
-`;
+`

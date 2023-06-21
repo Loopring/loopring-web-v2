@@ -1,18 +1,23 @@
-import { createTheme } from "@mui/material";
-import { ColorDarkDefault, ColorLightDefault } from "../css/color-lib";
-import { borderFunc, unit } from "./utils";
+import { createTheme } from '@mui/material'
+import { ColorDarkDefault, ColorLightDefault } from '../css/color-lib'
+import { borderFunc, unit } from './utils'
 import {
+  MuiAlert,
+  MuiBreadcrumbs,
   MuiButton,
   MuiButtonBase,
   MuiCard,
-  MuiTooltip,
-  MuiCardContent,
   MuiCardActions,
+  MuiCardContent,
   MuiCheckbox,
+  MuiDialog,
+  MuiDialogTitle,
   MuiDivider,
+  MuiFormLabel,
   MuiIconButton,
   MuiInputBase,
   MuiInputLabel,
+  MuiLinearProgress,
   MuiLink,
   MuiList,
   MuiListItem,
@@ -24,37 +29,26 @@ import {
   MuiPaper,
   MuiPopover,
   MuiRadio,
+  MuiSnackbar,
   MuiSvgIcon,
   MuiSwitch,
   MuiTab,
   MuiTabs,
   MuiTextField,
   MuiToggleButton,
-  // MuiToggleButtonGroup,
   MuiToolbar,
-  MuiAlert,
-  MuiSnackbar,
+  MuiTooltip,
   radius,
-  MuiFormLabel,
-  MuiBreadcrumbs,
-  MuiDialogTitle,
-  MuiDialog,
-  MuiLinearProgress,
-} from "./overrides-mui";
-import { MuPickDate } from "./overrides-date-pick";
-import { fontDefault } from "../css/global";
-import { LoopringTheme, ThemeKeys } from "../interface";
+} from './overrides-mui'
+import { MuPickDate } from './overrides-date-pick'
+import { fontDefault } from '../css/global'
+import { LoopringTheme, ThemeKeys } from '../interface'
 
-export { unit };
-export const getTheme = (
-  themeMode: ThemeKeys,
-  _isMobile = false
-): LoopringTheme => {
-  const colorBase: typeof ColorDarkDefault =
-    themeMode === "dark" ? ColorDarkDefault : ColorLightDefault;
-  // let _shadows =_.cloneDeep(shadows);
-  // _shadows[1] = colorBase.shadow;
-  // _shadows[2] = colorBase.shadowHeader;
+export { unit }
+export const getTheme = (themeMode: ThemeKeys, _isMobile = false): LoopringTheme => {
+  const colorBase: typeof ColorDarkDefault = (
+    themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault
+  ) as typeof ColorDarkDefault
   const theme = createTheme({
     spacing: unit,
     palette: {
@@ -63,13 +57,13 @@ export const getTheme = (
         light: colorBase.primary,
         main: colorBase.primary,
         dark: colorBase.primary,
-        contrastText: themeMode === "dark" ? "#fff" : "#000",
+        contrastText: themeMode === 'dark' ? '#fff' : '#000',
       },
       secondary: {
         light: colorBase.secondary,
         main: colorBase.secondary,
         dark: colorBase.secondary,
-        contrastText: themeMode === "dark" ? "#fff" : "#000",
+        contrastText: themeMode === 'dark' ? '#fff' : '#000',
         // light:
       },
       contrastThreshold: 3,
@@ -85,7 +79,7 @@ export const getTheme = (
         //hint: colorBase.textHint,
       },
       // divider: "rgba(0, 0, 0, 0.12)",
-      common: { black: "#000", white: "#fff" },
+      common: { black: '#000', white: '#fff' },
       action: {
         hoverOpacity: 0.05,
         hover: colorBase.secondaryHover,
@@ -103,36 +97,36 @@ export const getTheme = (
       error: {
         main: colorBase.error,
         dark: colorBase.error,
-        contrastText: themeMode === "dark" ? "#fff" : "#000",
+        contrastText: themeMode === 'dark' ? '#fff' : '#000',
       },
     },
     typography: {
       // fontFamily: `DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif`,
-      fontFamily: "Roboto",
+      fontFamily: 'Roboto',
       fontSize: 14,
       h1: {
         fontSize: fontDefault.h1,
-        lineHeight: "4.6rem",
+        lineHeight: '4.6rem',
         fontWeight: 500,
       },
       h2: {
         fontSize: fontDefault.h2,
-        lineHeight: "3.8rem",
+        lineHeight: '3.8rem',
         fontWeight: 500,
       },
       h3: {
         fontSize: fontDefault.h3,
-        lineHeight: "3.2rem",
+        lineHeight: '3.2rem',
         fontWeight: 500,
       },
       h4: {
         fontSize: fontDefault.h4,
-        lineHeight: "2.8rem",
+        lineHeight: '2.8rem',
         fontWeight: 400,
       },
       h5: {
         fontSize: fontDefault.h5,
-        lineHeight: "2.4rem",
+        lineHeight: '2.4rem',
         fontWeight: 400,
         margin: 0,
       },
@@ -142,7 +136,7 @@ export const getTheme = (
       },
       subtitle1: {
         fontSize: 16,
-        lineHeight: "2.4rem",
+        lineHeight: '2.4rem',
         fontWeight: 500,
       },
       button: {
@@ -204,7 +198,7 @@ export const getTheme = (
       ...MuPickDate({ colorBase, themeMode }),
     },
     shape: { borderRadius: radius },
-  });
+  })
   return {
     ...theme,
     ...{
@@ -212,7 +206,7 @@ export const getTheme = (
       mode: themeMode,
       border: borderFunc(themeMode),
       fontDefault,
-      colorBase: themeMode === "dark" ? ColorDarkDefault : ColorLightDefault,
+      colorBase: themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault,
     },
-  };
-};
+  } as LoopringTheme
+}

@@ -5,7 +5,7 @@ import {
   CollectionMedia,
   EmptyDefault,
   IconButtonStyle,
-} from "../../../index";
+} from '../../../index'
 import {
   Avatar,
   Box,
@@ -16,7 +16,7 @@ import {
   Popover,
   Radio,
   Typography,
-} from "@mui/material";
+} from '@mui/material'
 import {
   CollectionLimit,
   CollectionMeta,
@@ -29,17 +29,13 @@ import {
   sizeNFTConfig,
   SoursURL,
   ViewMoreIcon,
-} from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import {
-  bindMenu,
-  bindTrigger,
-  usePopupState,
-} from "material-ui-popup-state/hooks";
-import { sanitize } from "dompurify";
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import styled from '@emotion/styled'
+import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
+import { sanitize } from 'dompurify'
 
 const BoxStyle = styled(Box)`
   .MuiRadio-root {
@@ -59,12 +55,12 @@ const BoxStyle = styled(Box)`
       width: initial;
     }
   }
-` as typeof Box;
+` as typeof Box
 const BoxLabel = styled(Box)`
-  background: var(--color-box-nft-label);
+  background: var(--color-box-third);
   color: var(--color-text-button);
   border-radius: ${({ theme }) => theme.unit}px;
-` as typeof Box;
+` as typeof Box
 const BoxBtnGroup = styled(Box)`
   position: absolute;
   right: ${({ theme }) => 2 * theme.unit}px;
@@ -73,7 +69,7 @@ const BoxBtnGroup = styled(Box)`
   //flex-direction: row-reverse;
   &.mobile {
   }
-` as typeof Box;
+` as typeof Box
 
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
@@ -84,81 +80,79 @@ const ActionMemo = React.memo(
     account,
     setShowMintNFT,
   }: CollectionItemProps<Co>) => {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation('common')
 
     const popupState = usePopupState({
-      variant: "popover",
-      popupId: "collection-action",
-    });
-    const bindContent = bindMenu(popupState);
-    const bindAction = bindTrigger(popupState);
+      variant: 'popover',
+      popupId: 'collection-action',
+    })
+    const bindContent = bindMenu(popupState)
+    const bindAction = bindTrigger(popupState)
 
     return (
       <Grid item marginTop={1}>
-        <IconButtonStyle size={"large"} edge={"end"} {...{ ...bindAction }}>
+        <IconButtonStyle size={'large'} edge={'end'} {...{ ...bindAction }}>
           <ViewMoreIcon />
         </IconButtonStyle>
         <Popover
           {...bindContent}
-          anchorReference="anchorEl"
+          anchorReference='anchorEl'
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
+            vertical: 'bottom',
+            horizontal: 'right',
           }}
           transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
+            vertical: 'top',
+            horizontal: 'right',
           }}
         >
-          <Box borderRadius={"inherit"} minWidth={110}>
+          <Box borderRadius={'inherit'} minWidth={110}>
             {!!(
               item.extra?.properties?.isCounterFactualNFT &&
               item.extra?.properties?.isEditable &&
-              item.owner?.toLowerCase() ===
-                account?.accAddress?.toLowerCase() &&
+              item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
             ) && (
               <MenuItem
                 onClick={() => {
                   if (setShowEdit) {
-                    setShowEdit(item);
-                    popupState.close();
+                    setShowEdit(item)
+                    popupState.close()
                   }
                 }}
               >
-                {t("labelCollectionEditBtn")}
+                {t('labelCollectionEditBtn')}
               </MenuItem>
             )}
             {!!(
               item.extra?.properties?.isCounterFactualNFT &&
               item.extra?.properties?.isEditable &&
               item.extra?.properties?.isLegacy &&
-              item.owner?.toLowerCase() ===
-                account?.accAddress?.toLowerCase() &&
+              item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
             ) && (
               <MenuItem
                 onClick={() => {
                   if (setShowManageLegacy) {
-                    setShowManageLegacy(item);
-                    popupState.close();
+                    setShowManageLegacy(item)
+                    popupState.close()
                   }
                 }}
               >
-                {t("labelCollectionImportNFTBtn")}
+                {t('labelCollectionImportNFTBtn')}
               </MenuItem>
             )}
             {item.extra?.properties?.isCounterFactualNFT &&
-            item.baseUri !== "" &&
+            item.baseUri !== '' &&
             item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
             item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() ? (
               <MenuItem
                 onClick={(_e) => {
-                  setShowDeploy && setShowDeploy(item);
-                  popupState.close();
+                  setShowDeploy && setShowDeploy(item)
+                  popupState.close()
                 }}
               >
-                {t("labelNFTDeployContract")}
+                {t('labelNFTDeployContract')}
               </MenuItem>
             ) : (
               <></>
@@ -185,34 +179,30 @@ const ActionMemo = React.memo(
             {!!(
               item.extra?.properties?.isCounterFactualNFT &&
               item.extra?.properties?.isMintable &&
-              item.owner?.toLowerCase() ===
-                account?.accAddress?.toLowerCase() &&
+              item.owner?.toLowerCase() === account?.accAddress?.toLowerCase() &&
               item?.nftType !== NFT_TYPE_STRING.ERC721
             ) && (
               <MenuItem
                 onClick={() => {
                   if (setShowMintNFT) {
-                    setShowMintNFT(item);
-                    popupState.close();
+                    setShowMintNFT(item)
+                    popupState.close()
                   }
                 }}
               >
-                {t("labelNFTMintSimpleBtn")}
+                {t('labelNFTMintSimpleBtn')}
               </MenuItem>
             )}
           </Box>
         </Popover>
       </Grid>
-    );
-  }
-);
+    )
+  },
+)
 
 export const CollectionItem = React.memo(
   React.forwardRef(
-    <Co extends CollectionMeta>(
-      props: CollectionItemProps<Co>,
-      _ref: React.Ref<any>
-    ) => {
+    <Co extends CollectionMeta>(props: CollectionItemProps<Co>, _ref: React.Ref<any>) => {
       const {
         item,
         index,
@@ -224,24 +214,24 @@ export const CollectionItem = React.memo(
         getIPFSString,
         baseURL,
         size,
-      } = props;
-      const { t } = useTranslation("common");
-      const sizeConfig = sizeNFTConfig(size ?? "large");
+      } = props
+      const { t } = useTranslation('common')
+      const sizeConfig = sizeNFTConfig(size ?? 'large')
 
       return (
         <CardStyleItem
           ref={_ref}
-          className={"collection"}
+          className={'collection'}
           size={size as any}
           contentheight={sizeConfig.contentHeight}
         >
           <Box
-            position={"absolute"}
-            width={"100%"}
-            height={"100%"}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
+            position={'absolute'}
+            width={'100%'}
+            height={'100%'}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'space-between'}
           >
             <CollectionMedia
               item={item}
@@ -251,162 +241,157 @@ export const CollectionItem = React.memo(
               // onNFTReload={onNFTReload}
               onRenderError={() => undefined}
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation()
                 if (onItemClick) {
-                  onItemClick(item);
+                  onItemClick(item)
                 }
               }}
             />
             {isSelectOnly && (
               <Radio
-                size={"medium"}
+                size={'medium'}
                 checked={
                   selectCollection?.contractAddress?.toLowerCase() ===
-                    item?.contractAddress?.toLowerCase() &&
-                  selectCollection?.id === item.id
+                    item?.contractAddress?.toLowerCase() && selectCollection?.id === item.id
                 }
                 value={item.contractAddress}
-                name="radio-collection"
-                inputProps={{ "aria-label": "selectCollection" }}
+                name='radio-collection'
+                inputProps={{ 'aria-label': 'selectCollection' }}
               />
             )}
             {!isSelectOnly && !noEdit && (
-              <BoxBtnGroup className={"btn-group"}>
+              <BoxBtnGroup className={'btn-group'}>
                 <ActionMemo {...{ ...(props as any) }} />
               </BoxBtnGroup>
             )}
             <BoxLabel
-              className={"boxLabel"}
-              display={"flex"}
+              className={'boxLabel'}
+              display={'flex'}
               height={sizeConfig.contentHeight}
-              flexDirection={"row"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              position={"absolute"}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              position={'absolute'}
               bottom={0}
               left={0}
               right={0}
             >
-              {(
-                item?.cached?.avatar ??
-                getIPFSString(item?.avatar ?? "", baseURL)
-              ).startsWith("http") ? (
+              {(item?.cached?.avatar ?? getIPFSString(item?.avatar ?? '', baseURL)).startsWith(
+                'http',
+              ) ? (
                 <Avatar
                   sx={{
-                    bgcolor: "var(--color-border-disable2)",
+                    bgcolor: 'var(--color-border-disable2)',
                     width: sizeConfig.avatar,
                     height: sizeConfig.avatar,
-                    ...(size === "small" ? { display: "none" } : {}),
+                    ...(size === 'small' ? { display: 'none' } : {}),
                   }}
-                  variant={"circular"}
-                  src={
-                    item?.cached?.avatar ??
-                    getIPFSString(item?.avatar ?? "", baseURL)
-                  }
+                  variant={'circular'}
+                  src={item?.cached?.avatar ?? getIPFSString(item?.avatar ?? '', baseURL)}
                 />
               ) : (
                 <Avatar
                   sx={{
-                    bgcolor: "var(--color-border-disable2)",
+                    bgcolor: 'var(--color-border-disable2)',
                     width: sizeConfig.avatar,
                     height: sizeConfig.avatar,
-                    ...(size === "small" ? { display: "none" } : {}),
+                    ...(size === 'small' ? { display: 'none' } : {}),
                   }}
-                  variant={"circular"}
+                  variant={'circular'}
                 >
                   <ImageIcon />
                 </Avatar>
               )}
 
               <Typography
-                className={"content"}
-                component={"span"}
-                marginLeft={size === "small" ? 0 : 1}
-                color={"var(--color-text-button)"}
-                whiteSpace={"pre"}
-                overflow={"hidden"}
-                display={"flex"}
-                flexDirection={"column"}
-                textOverflow={"ellipsis"}
-                variant={"h5"}
-                alignItems={"flex-start"}
-                justifyContent={"space-evenly"}
-                alignSelf={"stretch"}
+                className={'content'}
+                component={'span'}
+                marginLeft={size === 'small' ? 0 : 1}
+                color={'var(--color-text-button)'}
+                whiteSpace={'pre'}
+                overflow={'hidden'}
+                display={'flex'}
+                flexDirection={'column'}
+                textOverflow={'ellipsis'}
+                variant={'h5'}
+                alignItems={'flex-start'}
+                justifyContent={'space-evenly'}
+                alignSelf={'stretch'}
               >
                 <Typography
-                  color={"textPrimary"}
-                  overflow={"hidden"}
-                  textOverflow={"ellipsis"}
-                  variant={size == "small" ? "body2" : "body1"}
-                  component={"span"}
-                  paddingRight={size === "small" ? 1 / 2 : 1}
-                  width={"100%"}
+                  color={'textPrimary'}
+                  overflow={'hidden'}
+                  textOverflow={'ellipsis'}
+                  variant={size == 'small' ? 'body2' : 'body1'}
+                  component={'span'}
+                  paddingRight={size === 'small' ? 1 / 2 : 1}
+                  width={'100%'}
                   dangerouslySetInnerHTML={{
                     __html:
                       sanitize(
                         item?.name
                           ? item.name
-                          : t("labelUnknown") +
-                              "-" +
-                              getShortAddr(item?.contractAddress ?? "", true)
-                      ) ?? "",
+                          : t('labelUnknown') +
+                              '-' +
+                              getShortAddr(item?.contractAddress ?? '', true),
+                      ) ?? '',
                   }}
                 />
                 <Link
-                  variant={"body2"}
-                  display={"inline-flex"}
-                  style={{ color: "var(--color-text-primary)" }}
-                  alignItems={"center"}
+                  variant={'body2'}
+                  display={'inline-flex'}
+                  style={{ color: 'var(--color-text-primary)' }}
+                  alignItems={'center'}
                   paddingTop={1}
                   onClick={(e) => {
-                    e.stopPropagation();
-                    copyToClipBoard(item?.contractAddress ?? "");
-                    setCopyToastOpen({ isShow: true, type: "address" });
+                    e.stopPropagation()
+                    copyToClipBoard(item?.contractAddress ?? '')
+                    setCopyToastOpen({ isShow: true, type: 'address' })
                   }}
                 >
-                  {getShortAddr(item?.contractAddress ?? "")}
-                  <CopyIcon color={"inherit"} />
+                  {getShortAddr(item?.contractAddress ?? '')}
+                  <CopyIcon color={'inherit'} />
                 </Link>
               </Typography>
               <Typography
-                component={"span"}
-                whiteSpace={"pre"}
-                overflow={"hidden"}
-                display={"flex"}
+                component={'span'}
+                whiteSpace={'pre'}
+                overflow={'hidden'}
+                display={'flex'}
                 paddingLeft={1}
-                flexDirection={"column"}
-                alignItems={"center"}
-                textOverflow={"ellipsis"}
-                justifyContent={"space-evenly"}
+                flexDirection={'column'}
+                alignItems={'center'}
+                textOverflow={'ellipsis'}
+                justifyContent={'space-evenly'}
               >
                 {item?.extends?.count && (
                   <Typography
-                    color={"textPrimary"}
-                    component={"span"}
-                    whiteSpace={"pre"}
-                    overflow={"hidden"}
-                    textOverflow={"ellipsis"}
-                    width={"fit-content"}
-                    minWidth={"36px"}
+                    color={'textPrimary'}
+                    component={'span'}
+                    whiteSpace={'pre'}
+                    overflow={'hidden'}
+                    textOverflow={'ellipsis'}
+                    width={'fit-content'}
+                    minWidth={'36px'}
                   >
                     {t(
-                      size == "small"
-                        ? "labelCollectionItemSimpleValue"
-                        : "labelCollectionItemValue",
+                      size == 'small'
+                        ? 'labelCollectionItemSimpleValue'
+                        : 'labelCollectionItemValue',
                       {
                         value:
                           item?.extends?.count?.toString()?.length > 2
-                            ? "99+"
+                            ? '99+'
                             : item?.extends?.count,
-                      }
+                      },
                     )}
                   </Typography>
                 )}
                 <Typography
-                  component={"span"}
-                  color={"textPrimary"}
+                  component={'span'}
+                  color={'textPrimary'}
                   title={item?.nftType}
-                  sx={size === "small" ? { display: "none" } : {}}
+                  sx={size === 'small' ? { display: 'none' } : {}}
                 >
                   {item?.nftType}
                 </Typography>
@@ -414,10 +399,10 @@ export const CollectionItem = React.memo(
             </BoxLabel>
           </Box>
         </CardStyleItem>
-      );
-    }
-  )
-);
+      )
+    },
+  ),
+)
 
 export const CollectionCardList = <Co extends CollectionMeta>({
   collectionList,
@@ -440,55 +425,45 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   isLoading,
   noEdit = false,
   filter,
-  size = "large",
+  size = 'large',
   ...rest
 }: CollectionListProps<Co> &
   Partial<CollectionItemProps<Co>> & { onSelectItem?: (item: Co) => void }) => {
-  const { t } = useTranslation("common");
-  const sizeConfig = sizeNFTConfig(size);
+  const { t } = useTranslation('common')
+  const sizeConfig = sizeNFTConfig(size)
 
   return (
     <BoxStyle
       flex={1}
-      display={"flex"}
-      flexDirection={"column"}
-      justifyContent={"stretch"}
+      display={'flex'}
+      flexDirection={'column'}
+      justifyContent={'stretch'}
       marginTop={2}
-      width={"100%"}
+      width={'100%'}
     >
       {isLoading ? (
         <Box
           flex={1}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          height={"90%"}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          height={'90%'}
         >
           <img
-            className="loading-gif"
-            alt={"loading"}
-            width="36"
+            className='loading-gif'
+            alt={'loading'}
+            width='36'
             src={`${SoursURL}images/loading-line.gif`}
           />
         </Box>
       ) : !collectionList?.length ? (
-        <Box
-          flex={1}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-        >
+        <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
           <EmptyDefault
             style={{ flex: 1 }}
-            height={"100%"}
+            height={'100%'}
             message={() => (
-              <Box
-                flex={1}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"center"}
-              >
-                {t("labelNoContent")}
+              <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                {t('labelNoContent')}
               </Box>
             )}
           />
@@ -502,13 +477,13 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                   xs={sizeConfig.wrap_xs}
                   md={sizeConfig.wrap_md}
                   lg={sizeConfig.wrap_lg}
-                  key={index.toString() + (item?.name ?? "")}
+                  key={index.toString() + (item?.name ?? '')}
                   item
-                  flex={"1 1 120%"}
+                  flex={'1 1 120%'}
                   onClick={(e) => {
-                    e.stopPropagation();
+                    e.stopPropagation()
                     if (onSelectItem) {
-                      onSelectItem(item);
+                      onSelectItem(item)
                     }
                   }}
                 >
@@ -532,29 +507,23 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                     index={index}
                   />
                 </Grid>
-              );
+              )
             })}
           </Grid>
           {total > CollectionLimit && (
             <Box
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"right"}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'right'}
               marginRight={3}
               marginBottom={2}
             >
               <Pagination
-                color={"primary"}
-                count={
-                  parseInt(String(total / NFTLimit)) +
-                  (total % NFTLimit > 0 ? 1 : 0)
-                }
+                color={'primary'}
+                count={parseInt(String(total / NFTLimit)) + (total % NFTLimit > 0 ? 1 : 0)}
                 page={page}
                 onChange={(_event, value) => {
-                  onPageChange(
-                    Number(value),
-                    filter ? { ...filter } : undefined
-                  );
+                  onPageChange(Number(value), filter ? { ...filter } : undefined)
                 }}
               />
             </Box>
@@ -562,5 +531,5 @@ export const CollectionCardList = <Co extends CollectionMeta>({
         </>
       )}
     </BoxStyle>
-  );
-};
+  )
+}

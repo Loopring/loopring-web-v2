@@ -1,43 +1,42 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import { useSettings } from "../../../stores";
-import React from "react";
-import { Button, Column, Table } from "../../basic-lib";
-import { Box, Typography } from "@mui/material";
-import { TablePaddingX } from "../../styled";
-import styled from "@emotion/styled";
-import { FormatterProps } from "react-data-grid";
-import { RawDataDualsItem } from "./Interface";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { useSettings } from '../../../stores'
+import React from 'react'
+import { Button, Column, Table } from '../../basic-lib'
+import { Box, Typography } from '@mui/material'
+import { TablePaddingX } from '../../styled'
+import styled from '@emotion/styled'
+import { FormatterProps } from 'react-data-grid'
+import { RawDataDualsItem } from './Interface'
 import {
   EmptyValueTag,
   ForexMap,
   getValuePrecisionThousand,
-  RowInvestConfig,
+  RowDualInvestConfig,
   UpColor,
   UpIcon,
   YEAR_DAY_FORMAT,
-} from "@loopring-web/common-resources";
-import { useHistory } from "react-router-dom";
-import moment from "moment/moment";
-import * as sdk from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { useHistory } from 'react-router-dom'
+import moment from 'moment/moment'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
   height: 100%;
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-`;
+  ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+`
 const TableStyled = styled(Table)`
   &.rdg {
     height: ${(props: any) => {
-      if (props.ispro === "pro") {
-        return "620px";
+      if (props.ispro === 'pro') {
+        return '620px'
       }
-      if (props.currentheight && props.currentheight > 350) {
-        return props.currentheight + "px";
+      if (props.currentheight) {
+        return props.currentheight + 'px'
       } else {
-        return "100%";
+        return '100%'
       }
     }};
 
@@ -57,61 +56,67 @@ const TableStyled = styled(Table)`
   .textAlignCenter {
     text-align: center;
   }
-` as any;
+` as any
 
 export interface DualsTableProps<R, C = sdk.Currency> {
-  rawData: R[];
-  showloading: boolean;
-  forexMap: ForexMap<C>;
-  onItemClick: (item: R) => void;
+  rawData: R[]
+  showloading: boolean
+  forexMap: ForexMap<C>
+  onItemClick: (item: R) => void
 }
 
-export const DualTable = withTranslation(["tables", "common"])(
+const ButtonStyled = styled(Button)`
+  & {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-size: 16px;
+    height: ${({theme}) => 5 * theme.unit}px;
+    padding-left: ${({theme}) => 2.5 * theme.unit}px;
+    padding-right: ${({theme}) => 2.5 * theme.unit}px;
+  }
+`
+
+export const DualTable = withTranslation(['tables', 'common'])(
   <R extends RawDataDualsItem>(props: DualsTableProps<R> & WithTranslation) => {
-    const { rawData, showloading, onItemClick, t } = props;
-    const { isMobile, upColor } = useSettings();
-    const history = useHistory();
+    const { rawData, showloading, onItemClick, t } = props
+    const { isMobile, upColor } = useSettings()
+    const history = useHistory()
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "Apy",
+          key: 'Apy',
           sortable: true,
-          cellClass: "textAlignLeft",
-          headerCellClass: "textAlignLeft",
-          name: t("labelDualApy"),
+          cellClass: 'textAlignLeft',
+          headerCellClass: 'textAlignLeft',
+          name: t('labelDualApy'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display={"flex"}>{row?.apy ?? EmptyValueTag}</Box>;
+            return <Box display={'flex'}>{row?.apy ?? EmptyValueTag}</Box>
           },
         },
         {
-          key: "targetPrice",
+          key: 'targetPrice',
           sortable: true,
-          name: t("labelDualPrice"),
+          name: t('labelDualPrice'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const [_upColor, _downColor] =
               upColor == UpColor.green
-                ? ["var(--color-success)", "var(--color-error)"]
-                : ["var(--color-error)", "var(--color-success)"];
+                ? ['var(--color-success)', 'var(--color-error)']
+                : ['var(--color-error)', 'var(--color-success)']
             return (
-              <Box
-                display="flex"
-                justifyContent={"stretch"}
-                height={"100%"}
-                alignItems={"center"}
-              >
-                <Typography component={"span"}> {row.strike}</Typography>
+              <Box display='flex' justifyContent={'stretch'} height={'100%'} alignItems={'center'}>
+                <Typography component={'span'}> {row.strike}</Typography>
                 <Typography
-                  component={"span"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  color={"textSecondary"}
-                  variant={"body2"}
+                  component={'span'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                  color={'textSecondary'}
+                  variant={'body2'}
                 >
                   <UpIcon
-                    fontSize={"small"}
+                    fontSize={'small'}
                     // htmlColor={row.isUp ? _upColor : _downColor}
                     style={{
-                      transform: row.isUp ? "" : "rotate(-180deg)",
+                      transform: row.isUp ? '' : 'rotate(-180deg)',
                     }}
                   />
                   {row.settleRatio
@@ -125,109 +130,101 @@ export const DualTable = withTranslation(["tables", "common"])(
                         2,
                         2,
                         2,
-                        true
-                      ) + "%"
+                        true,
+                      ) + '%'
                     : EmptyValueTag}
                 </Typography>
               </Box>
-            );
+            )
           },
         },
         {
-          key: "Term",
+          key: 'Term',
           sortable: true,
-          name: t("labelDualTerm"),
+          name: t('labelDualTerm'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display="flex">{row.term}</Box>;
+            return <Box display='flex'>{row.term}</Box>
           },
         },
         {
-          key: "Settlement",
+          key: 'Settlement',
           sortable: true,
-          name: t("labelDualSettlement"),
+          name: t('labelDualSettlement'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
-              <Box display="flex">
-                {moment(new Date(row.expireTime)).format(YEAR_DAY_FORMAT)}
-              </Box>
-            );
+              <Box display='flex'>{moment(new Date(row.expireTime)).format(YEAR_DAY_FORMAT)}</Box>
+            )
           },
         },
         {
-          key: "Action",
+          key: 'Action',
           sortable: false,
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualAction"),
+          cellClass: 'textAlignRight',
+          headerCellClass: 'textAlignRight',
+          name: t('labelDualAction'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Typography
-                variant={"inherit"}
-                color={"textPrimary"}
-                display={"inline-flex"}
-                flexDirection={"column"}
-                className={"textAlignRight"}
-                component={"span"}
+                variant={'inherit'}
+                color={'textPrimary'}
+                display={'inline-flex'}
+                flexDirection={'column'}
+                className={'textAlignRight'}
+                component={'span'}
               >
-                <Button
-                  variant={"contained"}
-                  color={"primary"}
-                  size={"small"}
+                <ButtonStyled
+                  variant={'outlined'}
+                  size={'medium'}
                   onClick={(_e) => {
-                    onItemClick(row);
+                    onItemClick(row)
                   }}
                 >
-                  {t("labelInvestBtn", { ns: "common" })}
-                </Button>
+                  {t('labelInvestBtn', { ns: 'common' })}
+                </ButtonStyled>
               </Typography>
-            );
+            )
           },
         },
       ],
-      [history, upColor, t]
-    );
+      [history, upColor, t],
+    )
 
     const getColumnMobileTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "Apy",
+          key: 'Apy',
           sortable: true,
-          cellClass: "textAlignLeft",
-          headerCellClass: "textAlignLeft",
-          name: t("labelDualApy"),
+          cellClass: 'textAlignLeft',
+          headerCellClass: 'textAlignLeft',
+          name: t('labelDualApy'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <Box display={"flex"}>{row?.apy ?? EmptyValueTag}</Box>;
+            return <Box display={'flex'}>{row?.apy ?? EmptyValueTag}</Box>
           },
         },
         {
-          key: "targetPrice",
+          key: 'targetPrice',
           sortable: true,
-          name: t("labelDualPrice"),
+          name: t('labelDualPrice'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const [_upColor, _downColor] =
               upColor == UpColor.green
-                ? ["var(--color-success)", "var(--color-error)"]
-                : ["var(--color-error)", "var(--color-success)"];
+                ? ['var(--color-success)', 'var(--color-error)']
+                : ['var(--color-error)', 'var(--color-success)']
             return (
-              <Box
-                display="flex"
-                justifyContent={"stretch"}
-                height={"100%"}
-                alignItems={"center"}
-              >
-                <Typography component={"span"}> {row.strike}</Typography>
+              <Box display='flex' justifyContent={'stretch'} height={'100%'} alignItems={'center'}>
+                <Typography component={'span'}> {row.strike}</Typography>
                 <Typography
-                  component={"span"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  color={"textSecondary"}
-                  variant={"body2"}
+                  component={'span'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                  color={'textSecondary'}
+                  variant={'body2'}
                 >
                   <UpIcon
-                    fontSize={"small"}
+                    fontSize={'small'}
                     // htmlColor={row.isUp ? _upColor : _downColor}
                     style={{
-                      transform: row.isUp ? "" : "rotate(-180deg)",
+                      transform: row.isUp ? '' : 'rotate(-180deg)',
                     }}
                   />
                   {row.settleRatio
@@ -241,87 +238,83 @@ export const DualTable = withTranslation(["tables", "common"])(
                         2,
                         2,
                         2,
-                        true
-                      ) + "%"
+                        true,
+                      ) + '%'
                     : EmptyValueTag}
                 </Typography>
               </Box>
-            );
+            )
           },
         },
         {
-          key: "Settlement",
+          key: 'Settlement',
           sortable: true,
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualSettlement"),
+          cellClass: 'textAlignRight',
+          headerCellClass: 'textAlignRight',
+          name: t('labelDualSettlement'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>{moment(new Date(row.expireTime)).format(YEAR_DAY_FORMAT)}</>
-            );
+            return <>{moment(new Date(row.expireTime)).format(YEAR_DAY_FORMAT)}</>
           },
         },
       ],
-      [t]
-    );
+      [t],
+    )
 
     const defaultArgs: any = {
-      columnMode: isMobile
-        ? getColumnMobileTransaction()
-        : getColumnModeTransaction(),
+      columnMode: isMobile ? getColumnMobileTransaction() : getColumnModeTransaction(),
       generateRows: (rawData: any) => rawData,
-      generateColumns: ({ columnsRaw }: any) =>
-        columnsRaw as Column<any, unknown>[],
-    };
+      generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
+    }
 
     const sortMethod = React.useCallback(
       (_sortedRows, sortColumn) => {
-        let _rawData: R[] = [];
+        let _rawData: R[] = []
         switch (sortColumn) {
-          case "Apy":
+          case 'Apy':
             _rawData = rawData.sort((a, b) => {
-              const replaced = new RegExp(`[\\${sdk.SEP},%]`, "ig");
-              const valueA = a.apy?.replace(replaced, "") ?? 0;
-              const valueB = b.apy?.replace(replaced, "") ?? 0;
-              return Number(valueB) - Number(valueA); //.localeCompare(valueA);
-            });
+              const replaced = new RegExp(`[\\${sdk.SEP},%]`, 'ig')
+              const valueA = a.apy?.replace(replaced, '') ?? 0
+              const valueB = b.apy?.replace(replaced, '') ?? 0
+              return Number(valueB) - Number(valueA) //.localeCompare(valueA);
+            })
             // default;
-            break;
-          case "targetPrice":
+            break
+          case 'targetPrice':
             _rawData = rawData.sort((a, b) => {
-              const replaced = new RegExp(`\\${sdk.SEP}`, "ig");
-              const valueA = a.strike?.replace(replaced, "") ?? 0;
-              const valueB = b.strike?.replace(replaced, "") ?? 0;
-              return Number(valueB) - Number(valueA); //.loc
-            });
-            break;
-          case "Settlement":
-          case "Term":
+              const replaced = new RegExp(`\\${sdk.SEP}`, 'ig')
+              const valueA = a.strike?.replace(replaced, '') ?? 0
+              const valueB = b.strike?.replace(replaced, '') ?? 0
+              return Number(valueB) - Number(valueA) //.loc
+            })
+            break
+          case 'Settlement':
+          case 'Term':
             _rawData = rawData.sort((a, b) => {
-              return b.expireTime - a.expireTime;
-            });
-            break;
+              return b.expireTime - a.expireTime
+            })
+            break
           default:
-            _rawData = rawData;
+            _rawData = rawData
         }
 
         // resetTableData(_rawData)
-        return _rawData;
+        return _rawData
       },
-      [rawData]
-    );
+      [rawData],
+    )
 
     return (
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowInvestConfig.rowHeaderHeight +
-            rawData.length * RowInvestConfig.rowHeight
+            rawData.length > 0
+              ? RowDualInvestConfig.rowHeaderHeight + rawData.length * RowDualInvestConfig.rowHeight
+              : RowDualInvestConfig.minHeight
           }
-          rowHeight={RowInvestConfig.rowHeight}
-          headerRowHeight={RowInvestConfig.rowHeaderHeight}
+          rowHeight={RowDualInvestConfig.rowHeight}
+          headerRowHeight={RowDualInvestConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
-            onItemClick(row);
+            onItemClick(row)
           }}
           sortMethod={sortMethod}
           {...{
@@ -334,6 +327,6 @@ export const DualTable = withTranslation(["tables", "common"])(
           }}
         />
       </TableWrapperStyled>
-    );
-  }
-);
+    )
+  },
+)

@@ -3,8 +3,7 @@
     "react-hooks"
   ],
   "extends": [
-    "react-app",
-    "react-app/jest"
+    "react-app"
   ],
   "overrides": [
     {

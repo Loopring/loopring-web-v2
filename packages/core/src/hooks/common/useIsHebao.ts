@@ -1,24 +1,23 @@
-import React from "react";
-import { LoopringAPI, useAccount } from "../../index";
+import React from 'react'
+import { LoopringAPI, useAccount } from '../../index'
 
 export const useIsHebao = () => {
-  const [isHebao, setIsHebao] = React.useState<boolean | undefined>(undefined);
+  const [isHebao, setIsHebao] = React.useState<boolean | undefined>(undefined)
   const {
     account: { accAddress },
-  } = useAccount();
+  } = useAccount()
   React.useEffect(() => {
-    setIsHebao(undefined);
+    setIsHebao(undefined)
     LoopringAPI.walletAPI
       ?.getWalletType({
         wallet: accAddress,
       })
       .then((walletType) => {
-        const isHebao =
-          walletType?.walletType?.loopringWalletContractVersion !== "";
-        setIsHebao(isHebao);
-      });
-  }, [accAddress]);
+        const isHebao = walletType?.walletType?.loopringWalletContractVersion !== ''
+        setIsHebao(isHebao)
+      })
+  }, [accAddress])
   return {
     isHebao,
-  };
-};
+  }
+}

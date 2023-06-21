@@ -1,8 +1,10 @@
-import { useTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
-import { useSettings } from "../../../../stores";
-import { LoadingBlock } from "../../../block";
+import { useTranslation } from 'react-i18next'
+import styled from '@emotion/styled'
+import { Box, Link, Typography } from '@mui/material'
+import { useSettings } from '../../../../stores'
+import { LoadingBlock } from '../../../block'
+import { CoinIcons } from './CoinIcons'
+import { L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
 
 const ContentWrapperStyled = styled(Box)`
   position: absolute;
@@ -12,11 +14,11 @@ const ContentWrapperStyled = styled(Box)`
   // min-width: ${({ theme }) => theme.unit * 87.5}px;
   // height: 60%;
   background-color: var(--color-pop-bg);
-  box-shadow: 0px ${({ theme }) => theme.unit / 2}px
-    ${({ theme }) => theme.unit / 2}px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit / 2}px
+    rgba(0, 0, 0, 0.25);
   padding: 0 ${({ theme }) => theme.unit * 1}px;
   border-radius: ${({ theme }) => theme.unit / 2}px;
-`;
+`
 
 const HeaderStyled = styled(Box)`
   display: flex;
@@ -25,7 +27,7 @@ const HeaderStyled = styled(Box)`
   margin-top: ${({ theme }) => theme.unit * 2}px;
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
   padding: 0 ${({ theme }) => theme.unit * 3}px;
-`;
+`
 
 export const LockDetailPanel = ({
   tokenLockDetail,
@@ -33,57 +35,106 @@ export const LockDetailPanel = ({
   tokenLockDetail?:
     | undefined
     | {
-        list: any[];
-        row: any;
-      };
+        list: any[]
+        row: any
+      }
 }) => {
-  const { t } = useTranslation();
-  const { isMobile } = useSettings();
+  const { t } = useTranslation()
+  const { isMobile, coinJson, defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const token = tokenLockDetail?.row?.token
+
+  let tokenIcon: [any, any] = [undefined, undefined]
+  if (token) {
+    const [head, middle, tail] = token?.value?.split('-')
+    if (token.type === 'lp' && middle && tail) {
+      tokenIcon =
+        coinJson[middle] && coinJson[tail]
+          ? [coinJson[middle], coinJson[tail]]
+          : [undefined, undefined]
+    }
+    if (token.type !== 'lp' && head && head !== 'lp') {
+      tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
+    }
+  }
+
   return (
-    <ContentWrapperStyled width={"var(--mobile-full-panel-width)"}>
+    <ContentWrapperStyled width={'var(--mobile-full-panel-width)'}>
       <HeaderStyled
-        flexDirection={isMobile ? "column" : "row"}
-        alignItems={"flex-start"}
-        justifyContent={"center"}
+        flexDirection={isMobile ? 'column' : 'row'}
+        alignItems={'flex-start'}
+        justifyContent={'center'}
       >
-        <Typography variant={"h4"} display={"flex"} justifyContent={"center"}>
-          {t("labelLocketInfo", { symbol: tokenLockDetail?.row?.token?.value })}
+        <Typography variant={'h4'} display={'flex'} justifyContent={'center'}>
+          {token && <CoinIcons type={token.type} tokenIcon={tokenIcon} size={28} />}
+          <Typography
+            variant={'inherit'}
+            color={'textPrimary'}
+            display={'flex'}
+            flexDirection={'column'}
+            marginLeft={2}
+            component={'span'}
+            paddingRight={1}
+          >
+            <Typography variant={'inherit'} component={'span'} className={'next-coin'}>
+              {t('labelLocketInfo', {
+                symbol: token?.value,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              })}
+            </Typography>
+          </Typography>
         </Typography>
       </HeaderStyled>
-      <Box borderRadius={"inherit"} minWidth={110} paddingBottom={2}>
+      <Box borderRadius={'inherit'} minWidth={110} paddingBottom={2}>
         {tokenLockDetail && tokenLockDetail.list?.length ? (
           tokenLockDetail.list.map((item) => {
             return (
               <Box
-                display={"flex"}
+                display={'flex'}
                 key={item.key}
-                flexDirection={"row"}
-                justifyContent={"space-between"}
+                flexDirection={'row'}
+                justifyContent={'space-between'}
                 padding={1}
               >
                 <Typography
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  component={"span"}
-                  color={"textSecondary"}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                  component={'span'}
+                  color={'textSecondary'}
                 >
-                  {t(item.key)}
+                  {t(item.key, {
+                    l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  })}
                 </Typography>
-                <Typography
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                  component={"span"}
-                  color={"textPrimary"}
+
+                <Link
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                  color={'inherit'}
+                  variant={'body1'}
+                  style={{
+                    textDecoration: 'underline dotted',
+                    // color: 'var(--color-text-secondary)',
+                  }}
+                  href={item.link}
                 >
                   {item.value}
-                </Typography>
+                </Link>
               </Box>
-            );
+            )
           })
         ) : (
           <LoadingBlock />
         )}
       </Box>
     </ContentWrapperStyled>
-  );
-};
+  )
+}

@@ -1,1 +1,1 @@
-export * from "./hook/useImage";
+export * from './hook/useImage'

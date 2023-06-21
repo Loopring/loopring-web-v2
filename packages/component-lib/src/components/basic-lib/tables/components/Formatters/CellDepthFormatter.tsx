@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import styled from "@emotion/styled";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { CellRendererProps } from "react-data-grid";
+import clsx from 'clsx'
+import styled from '@emotion/styled'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { CellRendererProps } from 'react-data-grid'
 
 const StyleDepth = styled.div`
   position: absolute;
@@ -16,14 +16,12 @@ const StyleDepth = styled.div`
 
     &.rgb-depth-red {
       background: var(--color-error);
-      //background: ${({ theme, style }) =>
-        theme.colorBase[style === "good" ? "success" : "error"]};;
     }
   }
-`;
+`
 
 interface IDepthRendererProps<R, SR> extends CellRendererProps<R, SR> {
-  depthKey: string;
+  depthKey: string
 }
 
 export const CellDepthFormatter = <R, SR>({
@@ -34,12 +32,12 @@ export const CellDepthFormatter = <R, SR>({
   depthKey,
   ...props
 }: WithTranslation & IDepthRendererProps<R, SR>) => {
-  className = clsx(className, { "rgb-depth-cell": true });
-  const style = { width: `${Number((row as any)[depthKey]) * 100}%` };
+  className = clsx(className, { 'rgb-depth-cell': true })
+  const style = { width: `${Number((row as any)[depthKey]) * 100}%` }
   return (
     <StyleDepth {...props}>
       <div className={className} style={style}></div>
     </StyleDepth>
-  );
-};
-export default withTranslation()(CellDepthFormatter);
+  )
+}
+export default withTranslation()(CellDepthFormatter)

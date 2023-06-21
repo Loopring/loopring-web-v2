@@ -1,7 +1,7 @@
-import { NFTWholeINFO } from "@loopring-web/common-resources";
-import { ReactEventHandler } from "react";
+import { NFTWholeINFO } from '@loopring-web/common-resources'
+import { ReactEventHandler } from 'react'
 
 export type NftImageProps = {
-  onError: ReactEventHandler<any>;
+  onError: ReactEventHandler<any>
 } & Partial<HTMLImageElement> &
-  Partial<NFTWholeINFO>;
+  Partial<NFTWholeINFO>

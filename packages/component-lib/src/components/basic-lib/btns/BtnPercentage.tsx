@@ -1,11 +1,11 @@
 /* Rectangle 340 */
-import styled from "@emotion/styled";
-import { BtnPercentageProps } from "./Interface";
-import { Box, Slider } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
-import React from "react";
-import { Mark } from "@mui/base/SliderUnstyled/SliderUnstyledProps";
-import { myLog } from "@loopring-web/common-resources";
+import styled from '@emotion/styled'
+import { BtnPercentageProps } from './Interface'
+import { Box, Slider } from '@mui/material'
+import { WithTranslation, withTranslation } from 'react-i18next'
+import React from 'react'
+import { Mark } from '@mui/base/SliderUnstyled/SliderUnstyledProps'
+import { myLog } from '@loopring-web/common-resources'
 
 const StyledSlider = styled(Slider)`
   && {
@@ -26,7 +26,7 @@ const StyledSlider = styled(Slider)`
       z-index: 25;
 
       :after {
-        content: "";
+        content: '';
         width: 8px;
         height: 8px;
         background: var(--color-box);
@@ -34,7 +34,7 @@ const StyledSlider = styled(Slider)`
           theme.border.defaultFrame({
             d_W: 1,
             d_R: 2,
-            c_key: "var(--color-secondary)",
+            c_key: 'var(--color-secondary)',
           })};
       }
     }
@@ -73,7 +73,7 @@ const StyledSlider = styled(Slider)`
         theme.border.defaultFrame({
           d_W: 2,
           d_R: 12,
-          c_key: "var(--color-secondary)",
+          c_key: 'var(--color-secondary)',
         })};
       box-shadow: initial;
 
@@ -88,88 +88,84 @@ const StyledSlider = styled(Slider)`
       }
     }
   }
-` as typeof Slider;
+` as typeof Slider
 
-export const BtnPercentage = withTranslation("common")(
+export const BtnPercentage = withTranslation('common')(
   ({
     selected = -1,
     handleChanged,
     anchors,
-    valueLabelDisplay = "off",
+    valueLabelDisplay = 'off',
     valuetext,
     step = 1,
     t,
     tReady,
     ...rest
   }: BtnPercentageProps & WithTranslation) => {
-    const [value, setValue] = React.useState<number>(selected);
+    const [value, setValue] = React.useState<number>(selected)
 
     React.useEffect(() => {
-      myLog("selected", selected);
+      myLog('selected', selected)
       if (selected >= 0 && selected <= 100) {
-        setValue(Math.floor(selected));
+        setValue(Math.floor(selected))
       } else {
-        setValue(0);
+        setValue(0)
       }
-    }, [selected]);
+    }, [selected])
     const _anchors: Mark[] =
       anchors && anchors.length
         ? anchors
         : [
             {
               value: 0,
-              label: "0",
+              label: '0',
             },
             {
               value: 25,
-              label: "",
+              label: '',
             },
             {
               value: 50,
-              label: "",
+              label: '',
             },
             {
               value: 75,
-              label: "",
+              label: '',
             },
             {
               value: 100,
-              label: t("labelMax:") + "100%",
+              label: t('labelMax:') + '100%',
             },
-          ];
-    const _handleChanged = (
-      _event: Event,
-      value: number | number[],
-      _activeThumb: number
-    ) => {
-      setValue(value as number);
-      handleChanged(value);
-    };
+          ]
+    const _handleChanged = (_event: Event, value: number | number[], _activeThumb: number) => {
+      setValue(value as number)
+      handleChanged(value)
+    }
     const _valuetext = (value: number): string | number => {
       if (valuetext) {
-        return valuetext(value);
+        return valuetext(value)
       } else {
-        return value;
+        return value
       }
-    };
+    }
     // function valuetext(value: number) {
     //     return `${value}°C`;
     // }
     return (
-      <Box width={"100%"} display={"flex"}>
+      <Box width={'100%'} display={'flex'}>
         <StyledSlider
           {...rest}
-          aria-label="Always visible"
+          aria-label='Always visible'
           value={value}
           getAriaValueText={_valuetext as any}
           valueLabelDisplay={valueLabelDisplay}
           onChange={(_event, value, _activeThumb) => {
-            _handleChanged(_event, value, _activeThumb);
+            _handleChanged(_event, value, _activeThumb)
           }}
           step={step}
           marks={_anchors}
         />
       </Box>
-    );
-  }
-);
+    )
+  },
+)
