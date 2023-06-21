@@ -1,5 +1,4 @@
-import { IsMobile, myLog } from "../utils";
-import { NetworkItemInfo } from "../loopring-interface";
+import { IsMobile } from "../utils";
 
 export enum UpColor {
   green = "green",
@@ -91,66 +90,30 @@ const MapChainIdMap = new Map([
   [1, "ETHEREUM"],
   [5, "GOERLI"],
 ]);
-export const ChainIdExtends: any = {
-  NONETWORK: "unknown",
-};
+export const ChainIdExtends = {};
 
 export const ChainTests: any[] = [5];
 export const MapChainId = {};
-export const NetworkMap: { [key: number]: NetworkItemInfo } = {};
-const _NetworkMap = new Map([
-  [
-    1,
-    {
-      label: "Ethereum",
-      chainId: "1",
-      isTest: false,
-    },
-  ],
-  [
-    5,
-    {
-      label: "Görli",
-      chainId: "",
-      isTest: true,
-    },
-  ],
-]);
 
-(function (): void {
-  process.env.REACT_APP_RPC_OTHERS?.split(",").forEach(
-    (item: string, index: number) => {
-      let [_name, isTest] = process.env[
-        `REACT_APP_RPC_CHAINNAME_${item}`
-      ]?.split("|") ?? [`unknown${item}`];
-      const name = _name.toUpperCase();
+(function () {
+  process.env.REACT_APP_RPC_URL_OTHERS?.split(",").forEach((item, index) => {
+    let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
+      "|"
+    ) ?? [""];
+    if (name) {
       ChainIdExtends[name] = Number(item);
       MapChainIdMap.set(Number(item), name);
-      myLog("MapChainIdMap", item, MapChainIdMap);
       if (isTest) {
         ChainTests.push(item);
       }
-      _NetworkMap.set(Number(item), {
-        label: _name,
-        chainId: index.toString(),
-        // RPC: process.env[`REACT_APP_RPC_URL_${item}`] ?? "",
-        isTest: isTest ? true : false,
-      });
+    } else {
+      ChainIdExtends["unknown" + index] = item;
+      MapChainIdMap.set(Number(item), "unknown");
     }
-  );
-  [..._NetworkMap.entries()].reduce((prev, [key, value]) => {
-    prev[key] = value;
-    return prev;
-  }, NetworkMap);
-  myLog("NetworkMap", NetworkMap);
+  });
+
   [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
     prev[key] = value;
     return prev;
   }, MapChainId);
-  if (window) {
-    // @ts-ignore
-    window.__ChainIdExtends = ChainIdExtends;
-    // @ts-ignore
-    window.__MapChainId = MapChainId;
-  }
 })();
