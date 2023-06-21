@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton, Switch } from "@mui/material";
+import { Badge, Box, IconButton } from "@mui/material";
 import {
   Account,
   AccountStatus,
@@ -18,7 +18,6 @@ import { NotificationPanel } from "../../block/NotificationPanel";
 import React from "react";
 import { DownloadPanel } from "../../block/DownloadPanel";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useSettings } from "../../../stores";
 
 export const BtnDownload = ({
   t,
@@ -63,32 +62,31 @@ export const BtnDownload = ({
     </Box>
   );
 };
-export const BtnNetworkSwitch = ({
-  onTestOpen,
-  isShow = false,
-}: {
-  isShow: boolean;
-  onTestOpen: (boolean: boolean) => void;
-} & WithTranslation) => {
-  const { setIsTaikoTest, isTaikoTest } = useSettings();
-  // const [open, setOpen] = React.useState(isTaikoTest);
-  return isShow ? (
-    <Box>
-      Debug:
-      <Switch
-        checked={isTaikoTest}
-        color="default"
-        onChange={(e: any) => {
-          // setOpen(e?.target?.checked ? true : false);
-          setIsTaikoTest(e?.target?.checked ? true : false);
-          onTestOpen(e?.target?.checked ? true : false);
-        }}
-      />
-    </Box>
-  ) : (
-    <></>
-  );
-};
+// export const BtnNetworkSwitch = ({
+//   onTestOpen,
+//   isShow = false,
+// }: {
+//   isShow: boolean;
+//   onTestOpen: (boolean: boolean) => void;
+// } & WithTranslation) => {
+//   // const [open, setOpen] = React.useState(isTaikoTest);
+//   return isShow ? (
+//     <Box>
+//       Debug:
+//       <Switch
+//         checked={isTaikoTest}
+//         color="default"
+//         onChange={(e: any) => {
+//           // setOpen(e?.target?.checked ? true : false);
+//           setIsTaikoTest(e?.target?.checked ? true : false);
+//           onTestOpen(e?.target?.checked ? true : false);
+//         }}
+//       />
+//     </Box>
+//   ) : (
+//     <></>
+//   );
+// };
 
 export const BtnNotification = ({
   notification,

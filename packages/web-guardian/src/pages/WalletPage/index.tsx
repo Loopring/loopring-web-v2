@@ -322,7 +322,6 @@ export const GuardianPage = withTranslation(["common"])(
           }
           body={
             <QRCodePanel
-              fgColor={theme.colorBase.dark}
               description={
                 <Button
                   onClick={() =>

@@ -9,7 +9,7 @@ import {
   setHideSmallBalances,
   setIsMobile,
   setIsShowTestToggle,
-  setIsTaikoTest,
+  // setIsTaikoTest,
   setLanguage,
   setLayouts,
   setPlatform,

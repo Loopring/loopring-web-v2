@@ -17,6 +17,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import { GuardianStep } from "@loopring-web/component-lib";
+import { AvaiableNetwork } from "@loopring-web/web3-provider";
 
 export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,

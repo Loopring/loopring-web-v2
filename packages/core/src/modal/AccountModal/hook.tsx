@@ -450,14 +450,13 @@ export function useAccountModalForUI({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
-  const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } =
-    useOpenModals();
+  const { setShowLayerSwapNotice } = useOpenModals();
 
   const addAssetList: AddAssetItem[] = React.useMemo(
     () => [
       {
         ...AddAssetList.BuyWithCard,
-        handleSelect: (_e: any) => {
+        handleSelect: () => {
           setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
         },
       },
@@ -579,7 +578,7 @@ export function useAccountModalForUI({
     () => [
       {
         ...SendAssetList.SendAssetToL2,
-        handleSelect: (_e: any) => {
+        handleSelect: () => {
           setShowAccount({ isShow: false, info: { lastFailed: undefined } });
           setShowTransfer({
             isShow: true,
