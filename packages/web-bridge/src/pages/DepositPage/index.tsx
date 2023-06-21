@@ -23,6 +23,7 @@ import {
   accountStaticCallBack,
   btnClickMap,
   useAccount,
+  useSelectNetwork,
 } from "@loopring-web/core";
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
@@ -56,8 +57,9 @@ export const DepositToPage = withTranslation(["common"])(
     t,
     depositProps,
   }: { depositProps: DepositProps<any, any> } & WithTranslation) => {
-    const { isMobile } = useSettings();
-    const { defaultNetwork } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const { NetWorkItems } = useSelectNetwork({ className: "walletModal" });
+
     const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const [_depositBtnI18nKey, setDepositBtnI18nKey] =
       React.useState<BtnInfo | undefined>(undefined);
@@ -148,7 +150,12 @@ export const DepositToPage = withTranslation(["common"])(
               </Typography>
             )}
             <Box display={"flex"} alignItems={"center"}>
-              <WalletConnectL1Btn isShowOnUnConnect={false} />
+              <WalletConnectL1Btn
+                NetWorkItems={NetWorkItems}
+                accountState={account}
+                handleClick={_onDepositClick}
+                isShowOnUnConnect={false}
+              />
             </Box>
           </Box>
         </Box>

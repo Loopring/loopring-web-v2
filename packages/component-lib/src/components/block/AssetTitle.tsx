@@ -43,7 +43,6 @@ export const AssetTitle = withTranslation("common")(
   }: AssetTitleProps & WithTranslation) => {
     const history = useHistory();
     const { defaultNetwork } = useSettings();
-    debugger;
     const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <Grid
