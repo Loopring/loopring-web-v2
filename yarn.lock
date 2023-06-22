@@ -4400,10 +4400,10 @@
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-"@loopring-web/web3-provider@^1.3.31":
-  version "1.3.31"
-  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.3.31.tgz#1a21acdf20670b73d9c564c7631b14a595de0e49"
-  integrity sha512-bAaAyKgQeb6tYRIbWYoo19j5WFt2ieeYVcmo0HM1b1+rEH6eveQj9eSVa5VqI+LGkJMh+ZFCGmCZEyucxYLg1Q==
+"@loopring-web/web3-provider@^1.3.33":
+  version "1.3.33"
+  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.3.33.tgz#e03c428de78791032337d0a82d15531f8c15c770"
+  integrity sha512-R4VHtz7Rfkb+DZ1g64PT0vMIZcE41u/f2u8ZYPKbEkc7n3G4N3EKYwhQzlmd5b7O48jyAS3qzgwM/l9CsrCm0g==
   dependencies:
     "@coinbase/wallet-sdk" "^3.7.1"
     "@metamask/detect-provider" "^2.0.0"
