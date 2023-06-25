@@ -3,6 +3,8 @@ import {
   AvaiableNetwork,
   ConnectProviders,
   connectProvides,
+  ErrorType,
+  walletServices,
 } from "@loopring-web/web3-provider";
 import { myLog, ThemeType } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -87,10 +89,22 @@ export const walletConnectCallback = async () => {
       connectName: ConnectProviders.WalletConnect,
     })
   );
-  await connectProvides.WalletConnect({
-    darkMode: themeMode === ThemeType.dark,
-    chainId: defaultNetwork,
-  });
+  try {
+    await connectProvides
+      .WalletConnect({
+        darkMode: themeMode === ThemeType.dark,
+        chainId: defaultNetwork,
+      })
+      .catch((error) => {
+        throw error;
+      });
+  } catch (error) {
+    walletServices.sendError(ErrorType.FailedConnect, {
+      connectName: ConnectProviders.WalletConnect,
+      error: (error as any)?.message ?? error,
+    });
+  }
+
   providerCallback();
 };
 
