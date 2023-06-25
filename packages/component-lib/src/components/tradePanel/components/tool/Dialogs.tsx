@@ -212,7 +212,7 @@ export const CancelOneOrdersAlert = withTranslation("common", {
             variant={"contained"}
             size={"small"}
             onClick={async (e) => {
-              handleCancelOne();
+              await handleCancelOne();
               handleClose(e as any, true);
             }}
             color={"primary"}

@@ -42,7 +42,6 @@ import {
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
-  BtnNetworkSwitch,
   BtnNotification,
   BtnSetting,
   ProfileMenu,
@@ -182,8 +181,8 @@ const ToolBarItem = ({
         return <BtnSetting {...props} />;
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />;
-      case ButtonComponentsMap.TestNet:
-        return <BtnNetworkSwitch {...props} />;
+      // case ButtonComponentsMap.TestNet:
+      //   return <BtnNetworkSwitch {...props} />;
       case ButtonComponentsMap.WalletConnect:
         return isLayer1Only ? (
           <WalletConnectL1Btn {...props} />

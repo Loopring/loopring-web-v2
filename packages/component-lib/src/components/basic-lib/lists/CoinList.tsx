@@ -110,8 +110,6 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
     },
     [handleSelect]
   );
-  // myLog("CoinMenu", list, coinMap, filterString);
-
   return (
     <>
       {list.length ? (

@@ -10,7 +10,7 @@ import {
   setHideSmallBalances,
   setIsMobile,
   setIsShowTestToggle,
-  setIsTaikoTest,
+  // setIsTaikoTest,
   setLanguage,
   setLayouts,
   setPlatform,
@@ -51,7 +51,7 @@ export function useSettings(): SettingsState & {
   setFeeChargeOrder(value: string[]): void;
   setIsMobile(value: boolean): void;
   setSwapSecondConfirmation(value: boolean): void;
-  setIsTaikoTest(value: boolean): void;
+  // setIsTaikoTest(value: boolean): void;
   setIsShowTestToggle(value: boolean): void;
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings);
@@ -66,10 +66,10 @@ export function useSettings(): SettingsState & {
       (value: boolean) => dispatch(setIsShowTestToggle(value)),
       [dispatch]
     ),
-    setIsTaikoTest: React.useCallback(
-      (value: boolean) => dispatch(setIsTaikoTest(value)),
-      [dispatch]
-    ),
+    // setIsTaikoTest: React.useCallback(
+    //   (value: boolean) => dispatch(setIsTaikoTest(value)),
+    //   [dispatch]
+    // ),
     setTheme: React.useCallback(
       (value: keyof typeof ThemeType) => dispatch(setTheme(value)),
       [dispatch]
