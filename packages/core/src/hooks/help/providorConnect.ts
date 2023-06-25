@@ -109,7 +109,7 @@ export const walletConnectCallback = async () => {
 };
 
 export const walletConnectV1Callback = async () => {
-  const { defaultNetwork, themeMode } = store.getState().settings;
+  const { themeMode } = store.getState().settings;
   store.dispatch(
     accountReducer.updateAccountStatus({
       connectName: ConnectProviders.WalletConnectV1,
