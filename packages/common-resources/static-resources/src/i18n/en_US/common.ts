@@ -1043,6 +1043,8 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
+  labelDualInvestDesInsufficient:
+    "Insufficient quota",
   labelDualCurrentPriceTip:
     "Current Price is based on USDT derived from some leading exchanges.",
   labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
