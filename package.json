@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.4.0-alpha",
+    "@loopring-web/loopring-sdk": "3.4.0-alpha-4",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.4.1",
     "@mui/lab": "^5.0.0-alpha.45",
@@ -35,7 +35,7 @@
     "github-markdown-css": "^5.2.0",
     "html5-qrcode": "2.3.4",
     "i18next": "^23.2.3",
-    "ipfs-http-client": "^60.0.1",
+    "ipfs-http-client": "^56.0.2",
     "jsqr": "^1.4.0",
     "lottie-react": "^2.1.0",
     "material-ui-popup-state": "^1.9.3",

@@ -9,6 +9,7 @@ import {
   CommonConnectInProgress,
   ConfirmLinkCopy,
   ConnectFailed,
+  ConnectReject,
   ConnectSuccess,
   InformationForCoinBase,
   ModalWalletConnect,
@@ -440,7 +441,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         },
         [WalletConnectStep.RejectConnect]: {
           view: (
-            <RejectConnect
+            <ConnectReject
               {...{
                 t,
                 // error: isShowConnect.error,

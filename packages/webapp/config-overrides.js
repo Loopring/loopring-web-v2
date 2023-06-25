@@ -107,6 +107,8 @@ module.exports = override(
               path.resolve(__dirname, "../../node_modules/@noble"),
               path.resolve(__dirname, "../../node_modules/@ethereumjs"),
               path.resolve(__dirname, "../../node_modules/micro-ftch"),
+              path.resolve(__dirname, "../../node_modules/react-spring"),
+              path.resolve(__dirname, "../../node_modules/@react-spring"),
             ]
           : []),
       ];
