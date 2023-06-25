@@ -7,7 +7,6 @@ import {
   IPFS_LOOPRING_URL,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { AddResult } from "ipfs-core-types/types/src/root";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum IPFSCommands {
@@ -114,11 +113,9 @@ export const ipfsService = {
   }) => {
     if (ipfs) {
       try {
-        const data: AddResult = await ipfs
-          .add({ content: file.stream() })
-          .catch((e) => {
-            throw e;
-          });
+        const data = await ipfs.add({ content: file.stream() }).catch((e) => {
+          throw e;
+        });
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId, file },
@@ -159,7 +156,7 @@ export const ipfsService = {
   }) => {
     if (ipfs) {
       try {
-        const data: AddResult = await ipfs.add(json); //callIpfs({ ipfs, cmd, opts });
+        const data = await ipfs.add(json); //callIpfs({ ipfs, cmd, opts });
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId },

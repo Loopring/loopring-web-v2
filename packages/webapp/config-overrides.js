@@ -103,6 +103,10 @@ module.exports = override(
               path.resolve(__dirname, "../../node_modules/@web3modal"),
               path.resolve(__dirname, "../../node_modules/@walletconnect"),
               path.resolve(__dirname, "../../node_modules/@metamask"),
+              path.resolve(__dirname, "../../node_modules/@scure"),
+              path.resolve(__dirname, "../../node_modules/@noble"),
+              path.resolve(__dirname, "../../node_modules/@ethereumjs"),
+              path.resolve(__dirname, "../../node_modules/micro-ftch"),
             ]
           : []),
       ];

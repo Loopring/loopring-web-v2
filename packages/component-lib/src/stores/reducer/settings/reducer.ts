@@ -33,7 +33,6 @@ const initialState: SettingsState = {
   proLayout: layoutConfigs[0].layouts,
   stopLimitLayout: stopLimitLayoutConfigs[0].layouts,
   swapSecondConfirmation: true,
-  isTaikoTest: false,
   isShowTestToggle: false,
   defaultNetwork: ChainId.MAINNET,
 };
@@ -45,9 +44,7 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
     setDefaultNetwork(state, action: PayloadAction<sdk.ChainId>) {
       state.defaultNetwork = action.payload;
     },
-    setIsTaikoTest(state, action: PayloadAction<boolean>) {
-      state.isTaikoTest = action.payload;
-    },
+
     setIsShowTestToggle(state, action: PayloadAction<boolean>) {
       state.isShowTestToggle = action.payload;
     },

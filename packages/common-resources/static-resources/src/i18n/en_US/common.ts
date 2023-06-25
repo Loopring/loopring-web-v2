@@ -193,6 +193,7 @@ export default {
   labelWalletConnectProcessDescribe2: "Please click ‘Approve’ on your device.",
   labelUnlockProcessing: "Unlocking {{layer2}}...",
   labelFailedConnect: "Connection Failed",
+  labelRejectConnect: "Connection request was rejected",
   // labelTokenAccess:'Waiting to approve {{symbol}} access!',
   labelTokenAccess: "Waiting for approval",
   labelFailedTokenAccess: "Failed to approve {{symbol}} access!",

@@ -9,10 +9,11 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AvaiableNetwork,
+  ConnectProviders,
   connectProvides,
   ErrorType,
-  ProcessingType,
   ProcessingStep,
+  ProcessingType,
 } from "@loopring-web/web3-provider";
 import {
   AccountStatus,
@@ -311,18 +312,25 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       }
 
       statusAccountUnset();
-
       setShowAccount({ isShow: false });
-      setShowConnect({
-        isShow: true,
-        step: WalletConnectStep.FailedConnect,
-        error: {
-          ...props.opts.error,
-          // code: UIERROR_CODE.PROVIDER_ERROR,
-          // message: props.opts.error,
-          // ...props.errorObj,
-        } as sdk.RESULT_INFO,
-      });
+      if (
+        props?.opts?.connectName === ConnectProviders.WalletConnect &&
+        props?.opts?.error &&
+        /Connection request reset. Please try again/.test(props.opts.error)
+      ) {
+        setShowConnect({
+          isShow: true,
+          step: WalletConnectStep.RejectConnect,
+        });
+      } else {
+        setShowConnect({
+          isShow: true,
+          step: WalletConnectStep.FailedConnect,
+          error: {
+            ...props.opts.error,
+          } as sdk.RESULT_INFO,
+        });
+      }
     },
     [
       account._chainId,

@@ -18,4 +18,5 @@ export enum WalletConnectStep {
   WalletConnectQRCode,
   SuccessConnect,
   FailedConnect,
+  RejectConnect,
 }

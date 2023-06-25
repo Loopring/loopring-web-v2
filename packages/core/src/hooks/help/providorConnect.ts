@@ -104,7 +104,6 @@ export const walletConnectCallback = async () => {
       error: (error as any)?.message ?? error,
     });
   }
-
   providerCallback();
 };
 

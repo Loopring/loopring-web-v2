@@ -1,5 +1,5 @@
-import { BigNumber } from "bignumber.js";
 import { toBig } from "@loopring-web/loopring-sdk";
+import BigNumber from "bignumber.js";
 export const DOT = ".";
 
 export function abbreviateNumber(value: number, precision?: number) {
@@ -122,7 +122,7 @@ const addZeroAfterDot = (value: string) => {
  * @param option { floor?: boolean, isFait?: boolean, isTrade?: boolean }
  */
 export const getValuePrecisionThousand = (
-  value: number | string | BigNumber | undefined,
+  value: number | string | BigNumber | undefined | BigNumber,
   minDigit = 6,
   precision = 2,
   fixed?: number,

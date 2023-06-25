@@ -438,6 +438,24 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             />
           ),
         },
+        [WalletConnectStep.RejectConnect]: {
+          view: (
+            <RejectConnect
+              {...{
+                t,
+                // error: isShowConnect.error,
+                // errorOptions: { name: connectProvider },
+                ...rest,
+              }}
+              NetWorkItems={NetWorkItems}
+              btnInfo={{ btnTxt: "labelRetry", callback: onRetry }}
+            />
+          ),
+          onBack: () => {
+            walletServices.sendDisconnect("", "should new provider");
+            setShowConnect({ isShow: true, step: WalletConnectStep.Provider });
+          },
+        },
         [WalletConnectStep.FailedConnect]: {
           view: (
             <ConnectFailed
