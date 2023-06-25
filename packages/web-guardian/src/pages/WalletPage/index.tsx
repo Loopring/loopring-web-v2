@@ -352,7 +352,9 @@ export const GuardianPage = withTranslation(["common"])(
                 </Button>
               }
               size={260}
-              url={`${network}:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+              url={`${network?.toLowerCase()}:${account?.accAddress}?type=${
+                account?.connectName
+              }&action=HebaoAddGuardian`}
             />
           }
         />
