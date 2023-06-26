@@ -102,11 +102,10 @@
   },
   "browserslist": {
     "production": [
-      "chrome >= 67",
-      "edge >= 79",
-      "firefox >= 68",
-      "opera >= 54",
-      "safari >= 14"
+      "chrome >= 80+",
+      "edge >= 72+",
+      "firefox >= 72+",
+      "opera >= 99+"
     ],
     "development": [
       ">0.2%",
