@@ -1,6 +1,5 @@
 {
   "presets": [
-     ["es2020"],
     [
       "@babel/preset-env",
       {
