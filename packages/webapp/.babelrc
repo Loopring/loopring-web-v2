@@ -3,7 +3,7 @@
     [
       "@babel/preset-env",
       {
-        "targets": "es2020",
+        "targets": "ES2020",
         "loose": true
       }
     ],
