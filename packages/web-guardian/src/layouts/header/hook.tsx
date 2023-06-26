@@ -6,7 +6,6 @@ import {
   headerGuardianToolBarData,
   headerMenuLandingData,
   myLog,
-  ChainIdExtends,
   NetworkMap,
 } from "@loopring-web/common-resources";
 
@@ -112,17 +111,16 @@ export const useHeader = () => {
     };
     return headerGuardianToolBarData;
   });
-  // React.useEffect(() => {
-  //
-  //   setHeaderToolBarData((headerToolBarData) => {
-  //     // myLog("isTestNet", isTaikoTest, chainId);
-  //     headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
-  //       ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
-  //       // isShow: (chainId as any) == ChainIdExtends["TAIKO"],
-  //     };
-  //     return headerToolBarData;
-  //   });
-  // }, [chainId]);
+  React.useEffect(() => {
+    setHeaderToolBarData((headerToolBarData) => {
+      // myLog("isTestNet", isTaikoTest, chainId);
+      // headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
+      //   ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
+      //   // isShow: (chainId as any) == ChainIdExtends["TAIKO"],
+      // };
+      return headerToolBarData;
+    });
+  }, [chainId]);
 
   React.useEffect(() => {
     if (accountStatus && accountStatus === "UNSET") {

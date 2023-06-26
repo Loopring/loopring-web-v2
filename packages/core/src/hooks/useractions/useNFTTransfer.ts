@@ -40,7 +40,6 @@ import {
   isAccActivated,
   LAST_STEP,
   LoopringAPI,
-  RootState,
   store,
   useAccount,
   useAddressCheck,
@@ -714,7 +713,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
                   return x;
                 }
               })
-            )
+            );
           });
       }
       setSureItsLayer2(sure);
@@ -789,7 +788,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         }
       : undefined,
     loopringSmartWalletVersion,
-    contacts
+    contacts,
   };
   // const cancelNFTTransfer = () => {
   //   resetDefault();

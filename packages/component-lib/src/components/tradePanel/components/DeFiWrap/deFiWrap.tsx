@@ -5,6 +5,8 @@ import {
   ExchangeIcon,
   getValuePrecisionThousand,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   OrderListIcon,
   ReverseIcon,
@@ -20,6 +22,7 @@ import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
 import BigNumber from "bignumber.js";
 import styled from "@emotion/styled";
+import { useSettings } from "../../../../stores";
 
 const GridStyle = styled(Grid)`
   ul {
@@ -60,6 +63,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinSellRef = React.useRef();
   const coinBuyRef = React.useRef();
   const { t } = useTranslation();
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const history = useHistory();
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
@@ -182,9 +187,37 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+          : {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+      );
     } else {
-      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+      return isJoin
+        ? t(`labelInvestBtn`, {
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })
+        : t(`labelRedeemBtn`, {
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          });
     }
   }, [isJoin, t, btnInfo]);
 
@@ -419,7 +452,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                       <Trans
                         i18nKey={"labelDefiMaxBalance1"}
                         components={{ li: <li /> }}
-                        tOptions={{ symbol: baseSymbol, type }}
+                        tOptions={{
+                          symbol: baseSymbol,
+                          type,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                        }}
                       >
                         <li>
                           Withdraw wstETH to L1 and trade through CRV or LIDO

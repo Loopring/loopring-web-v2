@@ -7,7 +7,9 @@ import {
   fnType,
   getValuePrecisionThousand,
   i18n,
+  L1L2_NAME_DEFINED,
   LockIcon,
+  MapChainId,
   MarketType,
   myLog,
   SagaStatus,
@@ -40,6 +42,8 @@ import * as sdk from "@loopring-web/loopring-sdk";
 const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
   const { status: accountStatus, account } = useAccount();
   const [label, setLabel] = React.useState("");
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
     [fnType.NO_ACCOUNT]: [
       function () {
@@ -99,7 +103,10 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               display={"flex"}
               sx={{ wordBreak: "break-word", lineClamp: 4 }}
             >
-              {t("describeTitleConnectToWallet")}
+              {t("describeTitleConnectToWallet", {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              })}
             </Typography>
             {BtnConnect}
           </Box>
@@ -150,7 +157,10 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               whiteSpace={"pre-line"}
               textAlign={"center"}
             >
-              {t("describeTitleNoAccount")}
+              {t("describeTitleNoAccount", {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              })}
             </Typography>
             {BtnConnect}
           </Box>
@@ -175,7 +185,10 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               whiteSpace={"pre-line"}
               textAlign={"center"}
             >
-              {t("describeTitleNotActive")}
+              {t("describeTitleNotActive", {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              })}
             </Typography>
             {BtnConnect}
           </Box>
@@ -200,7 +213,10 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
               whiteSpace={"pre-line"}
               textAlign={"center"}
             >
-              {t("describeTitleOpenAccounting")}
+              {t("describeTitleOpenAccounting", {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              })}
             </Typography>
             {BtnConnect}
           </Box>

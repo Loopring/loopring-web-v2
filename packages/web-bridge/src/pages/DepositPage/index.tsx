@@ -4,7 +4,9 @@ import {
   AccountStatus,
   Exchange,
   fnType,
+  L1L2_NAME_DEFINED,
   LoopringIcon,
+  MapChainId,
   SagaStatus,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -15,12 +17,13 @@ import {
   DepositProps,
   SwitchPanelStyled,
   useSettings,
+  WalletConnectL1Btn,
 } from "@loopring-web/component-lib";
 import {
   accountStaticCallBack,
   btnClickMap,
   useAccount,
-  WalletConnectL1Btn,
+  useSelectNetwork,
 } from "@loopring-web/core";
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
@@ -54,8 +57,10 @@ export const DepositToPage = withTranslation(["common"])(
     t,
     depositProps,
   }: { depositProps: DepositProps<any, any> } & WithTranslation) => {
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const { NetWorkItems } = useSelectNetwork({ className: "walletModal" });
 
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const [_depositBtnI18nKey, setDepositBtnI18nKey] =
       React.useState<BtnInfo | undefined>(undefined);
     const [_depositBtnStatus, setDepositBtnStatus] = React.useState(
@@ -145,7 +150,12 @@ export const DepositToPage = withTranslation(["common"])(
               </Typography>
             )}
             <Box display={"flex"} alignItems={"center"}>
-              <WalletConnectL1Btn isShowOnUnConnect={false} />
+              <WalletConnectL1Btn
+                NetWorkItems={NetWorkItems}
+                accountState={account}
+                handleClick={_onDepositClick}
+                isShowOnUnConnect={false}
+              />
             </Box>
           </Box>
         </Box>
@@ -168,7 +178,14 @@ export const DepositToPage = withTranslation(["common"])(
               title={t(
                 account.readyState === AccountStatus.UN_CONNECT
                   ? "labelL1toL2TitleBridgeNoConnect"
-                  : "labelL1toL2TitleBridge"
+                  : "labelL1toL2TitleBridge",
+                {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                }
               )}
               accountReady={account?.readyState as any}
               btnInfo={_depositBtnI18nKey}

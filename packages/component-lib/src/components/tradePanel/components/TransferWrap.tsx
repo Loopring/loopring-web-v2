@@ -26,7 +26,9 @@ import {
   globalSetup,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   myLog,
   NFTWholeINFO,
   TOAST_TIME,
@@ -103,7 +105,9 @@ export const TransferWrap = <
   }) => {
   contact;
   const inputBtnRef = React.useRef();
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   // addressType
 
   const inputButtonDefaultProps = {
@@ -166,7 +170,13 @@ export const TransferWrap = <
           alignSelf={"stretch"}
           position={"relative"}
         >
-          {t("labelNotOtherSmartWallet")}
+          {t("labelNotOtherSmartWallet", {
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })}
         </Typography>
       );
     } else if (isInvalidAddressOrENS) {
@@ -190,7 +200,14 @@ export const TransferWrap = <
           alignSelf={"stretch"}
           position={"relative"}
         >
-          {t("labelNotExchangeEOA")}
+          {t("labelNotExchangeEOA", {
+            layer2: L1L2_NAME_DEFINED[network].layer2,
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })}
         </Typography>
       );
     } else if (isSameAddress) {
@@ -235,7 +252,16 @@ export const TransferWrap = <
                     marginLeft={"-2px"}
                     display={"inline-flex"}
                   >
-                    <Trans i18nKey={"labelL2toL2AddressNotLoopring"}>
+                    <Trans
+                      i18nKey={"labelL2toL2AddressNotLoopring"}
+                      tOptions={{
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      }}
+                    >
                       <AlertIcon
                         color={"inherit"}
                         fontSize={"medium"}
@@ -275,6 +301,12 @@ export const TransferWrap = <
                       >
                         {t("labelL2toL2AddressFeeActiveFee", {
                           value: activeAccountPrice,
+                          layer2: L1L2_NAME_DEFINED[network].layer2,
+                          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                         })}
                       </Typography>
                     }
@@ -301,7 +333,7 @@ export const TransferWrap = <
     isOtherSmartWallet,
     isSameAddress,
     isLoopringAddress,
-    isAddressCheckLoading
+    isAddressCheckLoading,
   ]);
 
   return (
@@ -332,7 +364,9 @@ export const TransferWrap = <
             whiteSpace={"pre"}
             marginRight={1}
           >
-            {t("labelL2toL2Title")}
+            {t("labelL2toL2Title", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            })}
           </Typography>
           <Info2Icon
             {...bindHover(popupState)}
@@ -358,7 +392,12 @@ export const TransferWrap = <
             variant={"body1"}
             whiteSpace={"pre-line"}
           >
-            <Trans i18nKey="transferDescription">
+            <Trans
+              i18nKey="transferDescription"
+              tOptions={{
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              }}
+            >
               Transfer to any valid Ethereum addresses instantly. Please make
               sure the recipient address accepts Loopring layer-2 payments
               before you proceed.

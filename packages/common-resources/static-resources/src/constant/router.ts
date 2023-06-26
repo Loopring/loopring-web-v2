@@ -6,6 +6,7 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
+  RewardIcon,
   // RewardIcon,
   SecurityIcon,
   VipIcon,
@@ -17,7 +18,8 @@ import {
   HeaderMenuTabStatus,
   InvestAdvice,
 } from "../loopring-interface";
-import { InvestMapType } from "./trade";
+import { AddAssetList, InvestMapType, SendAssetList } from "./trade";
+import { Exchange, WalletSite } from "./setting";
 
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const headerRoot = "Landing-page";
@@ -43,7 +45,8 @@ export enum Layer2RouterID {
   referralrewards = "referralrewards",
   forcewithdraw = "forcewithdraw",
 }
-export const profile = {
+
+export const Profile = {
   security: [
     {
       icon: SecurityIcon,
@@ -67,24 +70,32 @@ export const profile = {
   contact: [
     {
       icon: ContactIcon,
-      router: { path: "/contact" },
+      router: { path: "/layer2/contact" },
       label: {
         id: "contact",
         i18nKey: "labelContactsPanel",
       },
     },
   ],
-  // referralrewards: [
-  //   {
-  //     icon: RewardIcon,
-  //     router: { path: "/referralrewards" },
-  //     label: {
-  //       id: "referralrewards",
-  //       i18nKey: "labelReferralReward",
-  //     },
-  //   },
-  // ],
+  referralrewards: [
+    {
+      icon: RewardIcon,
+      router: { path: "/layer2/referralrewards" },
+      label: {
+        id: "referralrewards",
+        i18nKey: "labelReferralReward",
+      },
+    },
+  ],
 };
+
+export enum ProfileKey {
+  security = "security",
+  vip = "vip",
+  contact = "contact",
+  referralrewards = "referralrewards",
+  forcewithdraw = "forcewithdraw",
+}
 
 export enum ButtonComponentsMap {
   Download,
@@ -140,7 +151,7 @@ export let headerToolBarData: Array<{
 }> = [
   {
     buttonComponent: ButtonComponentsMap.Download,
-    url: "https://wallet.loopring.io",
+    url: WalletSite,
   },
   {
     buttonComponent: ButtonComponentsMap.Notification,
@@ -150,7 +161,6 @@ export let headerToolBarData: Array<{
   {
     buttonComponent: ButtonComponentsMap.ProfileMenu,
     i18nDescription: "labelProfile",
-    subMenu: profile,
     readyState: undefined,
   },
   {
@@ -174,7 +184,30 @@ export enum RouterPath {
   stoplimit = "/trade/stoplimit",
   btrade = "/trade/btrade",
   fiat = "/trade/fiat",
+  markets = "/markets",
+  mining = "/mining",
+  redPacket = "/redPacket",
+  l2assets = "/l2assets",
+  layer2 = "/layer2",
+  nft = "/nft",
+  invest = "/invest",
 }
+
+export enum RouterMainKey {
+  lite = "lite",
+  pro = "pro",
+  stoplimit = "stoplimit",
+  btrade = "btrade",
+  fiat = "fiat",
+  markets = "markets",
+  mining = "mining",
+  redPacket = "redPacket",
+  l2assets = "l2assets",
+  layer2 = "layer2",
+  nft = "nft",
+  invest = "invest",
+}
+
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -228,14 +261,14 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
-    router: { path: "https://loopring.io/#/" },
+    router: { path: Exchange },
   },
   {
     label: {
       id: "wallet",
       i18nKey: "labelWallet",
     },
-    router: { path: "https://wallet.loopring.io" },
+    router: { path: WalletSite },
   },
   // {
   //   label: {
@@ -622,3 +655,196 @@ export enum RecordTabIndex {
   btradeSwapRecords = "BtradeSwap",
   stopLimitRecords = "stopLimitRecords",
 }
+
+export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
+  TAIKO: [
+    {
+      label: {
+        id: "L2Assets",
+        i18nKey: "labelAssets",
+      },
+      router: { path: "/l2assets" },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: "Markets",
+        i18nKey: "labelMarkets",
+      },
+      router: { path: "/markets" },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: "Trade",
+        i18nKey: "labelTrade",
+      },
+      status: HeaderMenuTabStatus.default,
+      child: [
+        {
+          label: {
+            id: "lite",
+            i18nKey: "labelClassic",
+            description: "labelClassicDescription",
+          },
+          router: { path: RouterPath.lite + "/${pair}" },
+        },
+        {
+          label: {
+            id: "pro",
+            i18nKey: "labelAdvanced",
+            description: "labelAdvancedDescription",
+          },
+          router: { path: RouterPath.pro + "/${pair}" },
+        },
+      ],
+    },
+  ],
+};
+
+export const AddAssetListMap = {
+  TAIKO: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.FromOtherL2.key,
+    // AddAssetList.FromExchange.key,
+  ],
+  ETHEREUM: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+  ],
+  GOERLI: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+  ],
+};
+export const SendAssetListMap = {
+  TAIKO: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+  ],
+  ETHEREUM: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+    SendAssetList.SendAssetToAnotherNet.key,
+  ],
+  GOERLI: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+    SendAssetList.SendAssetToAnotherNet.key,
+  ],
+};
+
+export enum AssetTabIndex {
+  Tokens = "Tokens",
+  Invests = "Invests",
+  RedPacket = "RedPacket",
+}
+
+export const AssetL2TabIndex = {
+  TAIKO: [AssetTabIndex.Tokens],
+  ETHEREUM: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+  ],
+  GOERLI: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+  ],
+};
+
+export const RouterAllowIndex = {
+  TAIKO: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.markets,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+  ],
+  ETHEREUM: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
+    RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
+  GOERLI: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
+    RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
+};
+
+export const ProfileIndex = {
+  TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
+  ETHEREUM: [
+    ProfileKey.security,
+    ProfileKey.vip,
+    ProfileKey.contact,
+    ProfileKey.referralrewards,
+  ],
+  GOERLI: [
+    ProfileKey.security,
+    ProfileKey.vip,
+    ProfileKey.contact,
+    ProfileKey.referralrewards,
+  ],
+};
+
+export const L1L2_NAME_DEFINED = {
+  TAIKO: {
+    layer2: "Layer 3",
+    l1ChainName: "TAIKO",
+    loopringL2: "Loopring L3",
+    l2Symbol: "L3",
+    l1Symbol: "TAIKO",
+    ethereumL1: "TAIKO",
+    loopringLayer2: "Loopring Layer 3",
+  },
+  ETHEREUM: {
+    layer2: "Layer 2",
+    l1ChainName: "Ethereum",
+    loopringL2: "Loopring L2",
+    l2Symbol: "L2",
+    l1Symbol: "L1",
+    ethereumL1: "Ethereum L1",
+    loopringLayer2: "Loopring Layer 2",
+  },
+  GOERLI: {
+    layer2: "Layer 2",
+    l1ChainName: "Ethereum",
+    loopringL2: "Loopring L2",
+    l2Symbol: "L2",
+    l1Symbol: "L1",
+    ethereumL1: "Ethereum L1",
+    loopringLayer2: "Loopring Layer 2",
+  },
+};

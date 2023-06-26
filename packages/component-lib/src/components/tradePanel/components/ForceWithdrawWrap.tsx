@@ -19,7 +19,9 @@ import {
   globalSetup,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   TRADE_TYPE,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -101,7 +103,8 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
     assetsData: AssetsRawDataItem[];
     // handleConfirm: (index: number) => void;
   }) => {
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const popupState = usePopupState({
@@ -182,7 +185,16 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             variant={"body2"}
             whiteSpace={"pre-line"}
           >
-            <Trans i18nKey="labelForceWithdrawDes">
+            <Trans
+              i18nKey="labelForceWithdrawDes"
+              tOptions={{
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+            >
               If the receipt account doesn't activate the Loopring L2 account,
               you will be able to withdraw the token from L2 to Ethereum L1.
               Usually only when you sent the token to the L2 account of a wrong
@@ -202,7 +214,9 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
               <ListItemText>{t("labelForceWithdrawConfirm")}</ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemText>{t("labelForceWithdrawConfirm1")}</ListItemText>
+              <ListItemText>
+                {t("labelForceWithdrawConfirm1", { l1ChainName: "Ethereum" })}
+              </ListItemText>
             </ListItem>
           </ListStyle>
         </Typography>
@@ -265,7 +279,13 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
                 alignSelf={"stretch"}
                 position={"relative"}
               >
-                {t("labelForceWithdrawNotAvailable")}
+                {t("labelForceWithdrawNotAvailable", {
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                })}
               </Typography>
             ) : (
               <Typography
@@ -388,7 +408,12 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             textAlign={"center"}
             color={"var(--color-warning)"}
           >
-            {t("labelConfirmAgainByFailed")}
+            {t("labelConfirmAgainByFailed", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            })}
           </Typography>
         )}
         <Button

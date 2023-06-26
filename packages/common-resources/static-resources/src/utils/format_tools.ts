@@ -1,7 +1,6 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import BigNumber from "bignumber.js";
 import { getValuePrecisionThousand } from "./util";
-import { ABInfo } from "@loopring-web/loopring-sdk";
 import { myError } from "./log_tools";
 
 export function getShowStr(
@@ -69,6 +68,7 @@ function genABViewDataAccumulated({
   return amtTotalSlice.reduce((prv, value: string, ind: number) => {
     if (amtSlice[ind] && amtSlice[ind].amt) {
       const amt = amtSlice[ind].amt;
+      // @ts-ignore
       const amtForShow = getValuePrecisionThousand(
         sdk.toBig(amt).div("1e" + baseDecimal),
         undefined,
@@ -225,7 +225,7 @@ function genABViewData({
   abInfoSlice = abInfoSlice.reverse();
   priceSlice = priceSlice.reverse();
 
-  return abInfoSlice.reduce((prv, value: ABInfo, ind: number) => {
+  return abInfoSlice.reduce((prv, value: sdk.ABInfo, ind: number) => {
     if (amtSlice[ind] && amtSlice[ind].amt) {
       const amt = amtSlice[ind].amt;
       const amtForShow = getValuePrecisionThousand(

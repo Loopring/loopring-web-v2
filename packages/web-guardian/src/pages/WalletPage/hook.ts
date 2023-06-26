@@ -76,11 +76,14 @@ export const useHebaoMain = <
   const { clearOneItem } = layer1Store.useLayer1Store();
   const { chainId } = useSystem();
   const [isLoading, setIsLoading] = React.useState(false);
+  myLog(
+    MapChainId[AvaiableNetwork.includes(chainId.toString()) ? chainId : 1],
+    MapChainId
+  );
   const network =
     sdk.NetworkWallet[
-      MapChainId[[1, 5].includes(Number(chainId) ?? 1) ? 1 : chainId]
+      MapChainId[AvaiableNetwork.includes(chainId.toString()) ? chainId : 1]
     ];
-
   const loadData = React.useCallback(async () => {
     const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
     if (LoopringAPI.walletAPI && account.accAddress) {

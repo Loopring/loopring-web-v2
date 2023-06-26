@@ -4,8 +4,10 @@ import {
   Account,
   DoneIcon,
   FailedIcon,
+  L1L2_NAME_DEFINED,
   LinkIcon,
   LoadingIcon,
+  MapChainId,
   RefuseIcon,
   SoursURL,
   SubmitIcon,
@@ -63,6 +65,8 @@ export interface PanelProps {
   errorOptions?: any;
   updateDepositHash?: any;
   className?: string;
+
+  [key: string]: any;
 }
 
 const BoxStyle = styled(Box)`
@@ -198,7 +202,8 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     }, [providerName]);
     const [dropdownStatus, setDropdownStatus] =
       React.useState<"up" | "down">("down");
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
     return (
       <BoxStyle
@@ -215,7 +220,14 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           variant={isMobile ? "h4" : "h3"}
           whiteSpace={"pre"}
         >
-          {t(title as string)}
+          {t(title as string, {
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+          })}
         </Typography>
         <Box
           flex={1}

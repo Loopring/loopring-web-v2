@@ -100,12 +100,15 @@ module.exports = override(
         babelLoader.include,
         ...(process.env.NODE_ENV === "development"
           ? [
-              // path.resolve(__dirname, "../../node_modules/@web3modal"),
-              // path.resolve(__dirname, "../../node_modules/@walletconnect"),
-              // path.resolve(
-              //   __dirname,
-              //   "../../node_modules/@walletconnect/ethereum-provider/"
-              // ),
+              path.resolve(__dirname, "../../node_modules/@web3modal"),
+              path.resolve(__dirname, "../../node_modules/@walletconnect"),
+              path.resolve(__dirname, "../../node_modules/@metamask"),
+              path.resolve(__dirname, "../../node_modules/@scure"),
+              path.resolve(__dirname, "../../node_modules/@noble"),
+              path.resolve(__dirname, "../../node_modules/@ethereumjs"),
+              path.resolve(__dirname, "../../node_modules/micro-ftch"),
+              path.resolve(__dirname, "../../node_modules/react-spring"),
+              path.resolve(__dirname, "../../node_modules/@react-spring"),
             ]
           : []),
       ];

@@ -271,7 +271,7 @@ export function* updateRealTimeSaga({ payload }: any) {
       ammMap = Reflect.ownKeys(ammPoolStats).reduce((_ammMap, key) => {
         const market = (key as string).replace("AMM-", "");
         const ammMarket = "AMM-" + market;
-        myLog("ammPoolStats[ammMarket]", ammPoolStats[ammMarket]);
+        // myLog("ammPoolStats[ammMarket]", ammPoolStats[ammMarket]);
         const result = setAmmState({
           ammPoolState: {
             ..._ammMap[ammMarket]?.__ammPoolState__,

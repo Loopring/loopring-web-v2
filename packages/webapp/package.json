@@ -45,9 +45,9 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version"
     ],
     "development": [
       "last 1 chrome version",
@@ -64,7 +64,6 @@
     "@types/lodash": "^4.14.168",
     "@types/ms.macro": "^2.0.0",
     "@types/node": "^12.0.0",
-    "@types/qrcode.react": "^1.0.1",
     "@types/redux-logger": "^3.0.8",
     "@types/styled-react-modal": "^1.2.0",
     "@types/voca": "^1.4.0",

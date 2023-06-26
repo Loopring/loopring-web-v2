@@ -14,11 +14,15 @@ export const checkAccount = (
     account.accAddress === "" ||
     account.accAddress.toLowerCase() !== newAccAddress.toLowerCase()
   ) {
-    myLog("After connect >>,account part: diff account, clean layer2");
+    myLog("After connect >>,account part: diff account, clean layer2", account);
     store.dispatch(cleanAccountStatus(undefined));
     accountServices.sendCheckAccount(newAccAddress, chainId);
   } else if (newAccAddress && newAccAddress !== "") {
-    myLog("After connect >>,checkAccount: step1 address", newAccAddress);
+    myLog(
+      "After connect >>,checkAccount: step1 address",
+      newAccAddress,
+      account
+    );
     if (account && account.accountId === -1) {
       myLog("After connect >>,checkAccount: step1 no account Id");
       accountServices.sendCheckAccount(newAccAddress);

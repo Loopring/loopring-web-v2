@@ -4,8 +4,12 @@ import {
   ButtonComponentsMap,
   fnType,
   headerMenuData,
+  headerMenuDataMap,
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
+  MapChainId,
+  Profile,
+  ProfileIndex,
   SagaStatus,
 } from "@loopring-web/common-resources";
 
@@ -16,20 +20,25 @@ import {
   useNotify,
   accountStaticCallBack,
   btnClickMap,
+  useSelectNetwork,
 } from "@loopring-web/core";
 
-import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
+import {
+  AccountStep,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { myLog } from "@loopring-web/common-resources";
 
 import _ from "lodash";
 
 export const useHeader = () => {
   const accountTotal = useAccount();
+  const { defaultNetwork } = useSettings();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { setShowAccount } = useOpenModals();
-  // const accountState = React.useMemo(() => {
-  //   return { account };
-  // }, [account]);
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const profile = ProfileIndex[network];
 
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [
@@ -74,6 +83,8 @@ export const useHeader = () => {
     accountStaticCallBack(_btnClickMap, []);
   }, [account, setShouldShow, _btnClickMap]);
 
+  const { NetWorkItems } = useSelectNetwork({ className: "header" });
+
   const [headerToolBarData, setHeaderToolBarData] = React.useState<
     typeof _initHeaderToolBarData
   >({ ..._initHeaderToolBarData });
@@ -85,10 +96,12 @@ export const useHeader = () => {
         headerToolBarData[ButtonComponentsMap.WalletConnect] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
           handleClick: onWalletBtnConnect,
+          NetWorkItems,
           accountState: { account },
         };
         headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
           ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
+          subMenu: profile.map((item: string) => Profile[item]),
           readyState: account.readyState,
         };
         return headerToolBarData;
@@ -99,7 +112,9 @@ export const useHeader = () => {
   const { notifyMap } = useNotify();
   return {
     headerToolBarData,
-    headerMenuData,
+    headerMenuData: [1, 5].includes(Number(defaultNetwork))
+      ? headerMenuData
+      : headerMenuDataMap[network],
     headerMenuLandingData,
     account,
     notifyMap,

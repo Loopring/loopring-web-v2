@@ -1,5 +1,7 @@
 import {
   AccountStatus,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   TradeBtnStatus,
   VendorItem,
@@ -10,7 +12,11 @@ import {
   RampInstantEventTypes,
   RampInstantSDK,
 } from "@ramp-network/ramp-instant-sdk";
-import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
+import {
+  AccountStep,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { BanxaCheck, banxaService, OrderENDReason } from "../../services";
@@ -29,7 +35,8 @@ export const useVendor = () => {
   const { t } = useTranslation();
   const { setShowTradeIsFrozen } = useOpenModals();
   const match: any = useRouteMatch("/trade/fiat/:tab?");
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const banxaRef = React.useRef();
   const subject = React.useMemo(() => banxaService.onSocket(), []);
 
@@ -121,7 +128,13 @@ export const useVendor = () => {
                   step: AccountStep.ThirdPanelReturn,
                   info: {
                     title: t("labelAddAssetTitleCard"),
-                    description: t(dex),
+                    description: t(dex, {
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    }),
                   },
                 });
               });
@@ -150,7 +163,13 @@ export const useVendor = () => {
               step: AccountStep.ThirdPanelReturn,
               info: {
                 title: t("labelAddAssetTitleCard"),
-                description: t(dex),
+                description: t(dex, {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                }),
               },
             });
             if (legalEnable) {

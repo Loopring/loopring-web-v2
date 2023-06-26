@@ -14,7 +14,6 @@ import {
   LuckyRedPacketItem,
 } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
 import { XOR } from "@loopring-web/loopring-sdk";
 import { VendorProviders } from "./vendor";
@@ -24,6 +23,7 @@ export enum DeFiChgType {
   coinBuy = "coinBuy",
   exchange = "exchange",
 }
+
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
   | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -239,11 +239,11 @@ export const AddAssetList = {
     svgIcon: "ExchangeAIcon",
     enableKey: null,
   },
-  // FromAnotherNet: {
-  //   key: "FromAnotherNet",
-  //   svgIcon: "AnotherIcon",
-  //   enableKey: null,
-  // },
+  FromAnotherNet: {
+    key: "FromAnotherNet",
+    svgIcon: "AnotherIcon",
+    enableKey: null,
+  },
 };
 
 export const SendAssetList = {
@@ -262,11 +262,11 @@ export const SendAssetList = {
     svgIcon: "L1l2Icon",
     enableKey: "withdraw",
   },
-  // SendAssetToAnotherNet: {
-  //   key: "SendAssetToAnotherNet",
-  //   svgIcon: "AnotherIcon",
-  //   enableKey: "withdraw",
-  // },
+  SendAssetToAnotherNet: {
+    key: "SendAssetToAnotherNet",
+    svgIcon: "AnotherIcon",
+    enableKey: "withdraw",
+  },
 };
 
 export const SendNFTAssetList = {
@@ -326,128 +326,6 @@ export type AddressItemType<T> = {
 //   disabled?: boolean;
 //   maxWidth?: string | number;
 // };
-
-export const useAddressTypeLists = <
-  T extends WALLET_TYPE | EXCHANGE_TYPE
->() => {
-  const { t } = useTranslation("common");
-  const walletList: AddressItemType<T>[] = [
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.EOA}`),
-      }),
-      value: WALLET_TYPE.EOA as T,
-      description: t(`label${WALLET_TYPE.EOA}Des`),
-    },
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
-      }),
-      value: WALLET_TYPE.Loopring as T,
-      description: t(`label${WALLET_TYPE.Loopring}Des`),
-    },
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
-      }),
-      disabled: true,
-      value: WALLET_TYPE.OtherSmart as T,
-      description: t(`label${WALLET_TYPE.OtherSmart}Des`),
-    },
-    {
-      label: t(WALLET_TYPE.Exchange),
-      value: WALLET_TYPE.Exchange as T,
-      disabled: true,
-      description: t(`label${WALLET_TYPE.Exchange}Des`),
-    },
-  ];
-  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
-    type: WALLET_TYPE
-  ) => {
-    if (type === WALLET_TYPE.Exchange) throw "wrong type";
-    return [
-      {
-        label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.EOA}`),
-        }),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: WALLET_TYPE.EOA as T,
-        description: t(`label${WALLET_TYPE.EOA}Des`),
-      },
-      {
-        label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
-        }),
-        disabled: type === WALLET_TYPE.Loopring ? false : true,
-        value: WALLET_TYPE.Loopring as T,
-        description: t(`label${WALLET_TYPE.Loopring}Des`),
-      },
-      {
-        label: t("labelWalletTypeOptions", {
-          type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
-        }),
-        disabled: type === WALLET_TYPE.OtherSmart ? false : true,
-        value: WALLET_TYPE.OtherSmart as T,
-        description: t(`label${WALLET_TYPE.OtherSmart}Des`),
-      },
-      {
-        label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: EXCHANGE_TYPE.Binance as T,
-        description: t("labelContactsBinanceNotSupportted"),
-      },
-      {
-        label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: EXCHANGE_TYPE.Huobi as T,
-        description: t("labelContactsHuobiNotSupportted"),
-      },
-      {
-        label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
-        disabled: type === WALLET_TYPE.EOA ? false : true,
-        value: EXCHANGE_TYPE.Others as T,
-        description: t("labelContactsOtherExchangesNotSupportted"),
-      },
-    ];
-  };
-  const nonExchangeList: AddressItemType<T>[] = [
-    {
-      label: t(`labelNonExchangeType`),
-      value: EXCHANGE_TYPE.NonExchange as T,
-      disabled: false,
-      description: t(`labelNonExchangeTypeDes`),
-    },
-  ];
-  const exchangeList: AddressItemType<T>[] = [
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
-      value: EXCHANGE_TYPE.Binance as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`),
-      maxWidth: "initial",
-    },
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
-      value: EXCHANGE_TYPE.Huobi as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`),
-      maxWidth: "initial",
-    },
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
-      value: EXCHANGE_TYPE.Others as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`),
-      maxWidth: "initial",
-    },
-  ];
-  return {
-    walletList,
-    walletListFn,
-    nonExchangeList,
-    exchangeList,
-  };
-};
 
 export const defaultSlipage = 0.1;
 export const defaultBlockTradeSlipage = 0.1;

@@ -5,6 +5,7 @@ import { GatewayItem } from "@loopring-web/common-resources";
  */
 export interface ProviderMenuProps {
   termUrl: string;
+  NetWorkItems: JSX.Element;
   gatewayList: GatewayItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   providerName?: string;
@@ -17,4 +18,5 @@ export enum WalletConnectStep {
   WalletConnectQRCode,
   SuccessConnect,
   FailedConnect,
+  RejectConnect,
 }

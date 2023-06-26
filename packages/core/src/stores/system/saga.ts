@@ -8,9 +8,10 @@ import {
   delay,
 } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
-import { ENV, NETWORKEXTEND } from "./interface";
+import { ENV } from "./interface";
 import { store, LoopringSocket, LoopringAPI, toggleCheck } from "../../index";
 import {
+  ChainIdExtends,
   CustomError,
   ErrorMap,
   ForexMap,
@@ -339,7 +340,7 @@ const should15MinutesUpdateDataGroup = async (
 };
 
 const getSystemsApi = async <_R extends { [key: string]: any }>(
-  chainId: any
+  _chainId: any
 ) => {
   const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
     (item) => ![1, 5].includes(Number(item))
@@ -349,14 +350,15 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
   const env =
     window.location.hostname === "localhost"
       ? ENV.DEV
-      : sdk.ChainId.GOERLI === chainId
+      : sdk.ChainId.GOERLI === Number(_chainId)
       ? ENV.UAT
       : ENV.PROD;
-  chainId = AvaiableNetwork.includes(chainId.toString())
-    ? chainId
-    : NETWORKEXTEND.NONETWORK;
-
-  if (chainId === NETWORKEXTEND.NONETWORK) {
+  const chainId: sdk.ChainId = (
+    AvaiableNetwork.includes(_chainId.toString())
+      ? Number(_chainId)
+      : ChainIdExtends.NONETWORK
+  ) as sdk.ChainId;
+  if (_chainId === ChainIdExtends.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
     LoopringAPI.InitApi(chainId as sdk.ChainId);
@@ -364,16 +366,32 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
     if (LoopringAPI.exchangeAPI) {
       let baseURL, socketURL, etherscanBaseUrl;
       if (extendsChain.includes(chainId.toString())) {
-        baseURL = `https://${
-          process.env["REACT_APP_API_URL_" + chainId.toString()]
-        }`;
-        socketURL = `wss://ws.${
-          process.env["REACT_APP_API_URL_" + chainId.toString()]
-        }/v3/ws`;
+        const { isTaikoTest } = store.getState().settings;
+        if (isTaikoTest) {
+          baseURL = `https://${process.env["REACT_APP_API_URL_" + 5]}`;
+          socketURL = `wss://ws.${process.env["REACT_APP_API_URL_" + 5]}/v3/ws`;
+        } else {
+          baseURL = `https://${
+            process.env["REACT_APP_API_URL_" + chainId.toString()]
+          }`;
+          socketURL = `wss://ws.${
+            process.env["REACT_APP_API_URL_" + chainId.toString()]
+          }/v3/ws`;
+        }
         etherscanBaseUrl =
           chainId == 5
             ? `https://goerli.etherscan.io/`
             : `https://etherscan.io/`;
+
+        // baseURL = !isTaikoTest
+        //   ? `https://${process.env.REACT_APP_API_URL}`
+        //   : `https://${process.env.REACT_APP_API_URL_UAT}`;
+        // socketURL = !isTaikoTest
+        //   ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
+        //   : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
+        // etherscanBaseUrl = !isTaikoTest
+        //   ? `https://etherscan.io/`
+        //   : `https://goerli.etherscan.io/`;
       } else {
         baseURL =
           sdk.ChainId.MAINNET === chainId
@@ -537,64 +555,3 @@ function* systemSaga() {
 }
 
 export const systemForks = [fork(systemSaga)];
-
-//
-// [
-//   {
-//     "market": "BTRADE-LRC-USDC",
-//     "baseTokenId": 1,
-//     "quoteTokenId": 6,
-//     "precisionForPrice": 4,
-//     "orderbookAggLevels": 5,
-//     "precisionForAmount": 5,
-//     "precisionForTotal": 6,
-//     "enabled": true,
-//
-//   },
-//   {
-//     "market": "BTRADE-ETH-USDC",
-//     "baseTokenId": 0,
-//     "quoteTokenId": 6,
-//     "precisionForPrice": 2,
-//     "orderbookAggLevels": 2,
-//     "precisionForAmount": 2,
-//     "precisionForTotal": 4,
-//     "enabled": true,
-//     "feeBips": 30,
-//     "minAmount": {
-//       "base": "100000000000000000",
-//       "quote": "200000000"
-//     },
-//     "btradeAmount": {
-//       "base": "97184863600000000000",
-//       "quote": "285207590343"
-//     },
-//     "l2Amount": {
-//       "base": "40270278404913949145",
-//       "quote": "67990957000"
-//     }
-//   },
-//   {
-//     "market": "BTRADE-WBTC-USDC",
-//     "baseTokenId": 4,
-//     "quoteTokenId": 6,
-//     "precisionForPrice": 2,
-//     "orderbookAggLevels": 2,
-//     "precisionForAmount": 6,
-//     "precisionForTotal": 2,
-//     "enabled": true,
-//     "feeBips": 30,
-//     "minAmount": {
-//       "base": "800000",
-//       "quote": "200000000"
-//     },
-//     "btradeAmount": {
-//       "base": "400100548",
-//       "quote": "285207590343"
-//     },
-//     "l2Amount": {
-//       "base": "109222480",
-//       "quote": "67990957000"
-//     }
-//   }
-// ]

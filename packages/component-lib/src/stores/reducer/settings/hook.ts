@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setCoinJson,
   setCurrency,
+  setDefaultNetwork,
   setFeeChargeOrder,
   setHideL2Action,
   setHideL2Assets,
@@ -14,10 +15,10 @@ import {
   setLayouts,
   setPlatform,
   setSlippage,
+  setStopLimitLayouts,
   setSwapSecondConfirmation,
   setTheme,
   setUpColor,
-  setStopLimitLayouts,
 } from "./reducer";
 import { PlatFormType, SettingsState } from "./interface";
 import {
@@ -28,12 +29,14 @@ import {
   UpColor,
 } from "@loopring-web/common-resources";
 import React from "react";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Layouts } from "react-grid-layout";
 
 export function useSettings(): SettingsState & {
   setPlatform(value: keyof typeof PlatFormType): void;
   setTheme(value: ThemeKeys): void;
+  setDefaultNetwork(value: sdk.ChainId): void;
   setUpColor(value: keyof typeof UpColor): void;
   setCurrency(value: Currency): void;
   setLanguage(value: LanguageKeys): void;
@@ -48,21 +51,20 @@ export function useSettings(): SettingsState & {
   setFeeChargeOrder(value: string[]): void;
   setIsMobile(value: boolean): void;
   setSwapSecondConfirmation(value: boolean): void;
-  // setIsTaikoTest(value: boolean): void;
   setIsShowTestToggle(value: boolean): void;
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings);
   const dispatch = useDispatch();
   return {
     ...settings,
+    setDefaultNetwork: React.useCallback(
+      (value: number) => dispatch(setDefaultNetwork(value)),
+      [dispatch]
+    ),
     setIsShowTestToggle: React.useCallback(
       (value: boolean) => dispatch(setIsShowTestToggle(value)),
       [dispatch]
     ),
-    // setIsTaikoTest: React.useCallback(
-    //   (value: boolean) => dispatch(setIsTaikoTest(value)),
-    //   [dispatch]
-    // ),
     setTheme: React.useCallback(
       (value: keyof typeof ThemeType) => dispatch(setTheme(value)),
       [dispatch]
