@@ -93,8 +93,14 @@ module.exports = override(
     console.log("-----> enter config!!!!!!!", process.env.NODE_ENV);
 
     const setConfig = (index) => {
-      console.log("-----> enter setConfig!!!!!!! index:", index);
       let babelLoader = config.module.rules[1].oneOf[index];
+      console.log(
+        "-----> enter setConfig!!!!!!! index:",
+        index,
+        babelLoader.options.presets,
+        babelLoader.options.plugins
+      );
+
       babelLoader.include = babelLoader.include.replace("/webapp/src", "");
       babelLoader.include = [
         babelLoader.include,
