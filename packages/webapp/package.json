@@ -45,10 +45,9 @@
   },
   "browserslist": {
     "production": [
-      "chrome >= 80+",
-      "edge >= 72+",
-      "firefox >= 72+",
-      "opera >= 99"
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version"
     ],
     "development": [
       "last 1 chrome version",
