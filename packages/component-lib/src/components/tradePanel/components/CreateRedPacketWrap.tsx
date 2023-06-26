@@ -932,7 +932,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         </Box>
       </RedPacketBoxStyle>
     );
-  };
+  }
 ) as <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>(
   props: CreateRedPacketViewProps<T, I, F> & {
     selectedType: LuckyRedPacketItem;

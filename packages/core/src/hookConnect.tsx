@@ -243,7 +243,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       });
       await sdk.sleep(REFRESH_RATE);
       setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect });
-    };,
+    },
     [
       resetWithdrawData,
       resetTransferData,
@@ -353,10 +353,10 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
 export const ViewAccountTemplate = React.memo(
   ({ activeViewTemplate }: { activeViewTemplate: JSX.Element }) => {
-    const {account} = useAccount();
-    const {t} = useTranslation(["common", "layout"]);
-    const {isMobile, defaultNetwork} = useSettings();
-    const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ];
+    const { account } = useAccount();
+    const { t } = useTranslation(["common", "layout"]);
+    const { isMobile, defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
@@ -375,11 +375,11 @@ export const ViewAccountTemplate = React.memo(
                 textAlign={"center"}
               >
                 {t("describeTitleConnectToWallet", {
-                  layer2: L1L2_NAME_DEFINED[ network ].layer2,
-                  l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
-              <WalletConnectL2Btn/>
+              <WalletConnectL2Btn />
             </Box>
           );
           break;
@@ -419,11 +419,11 @@ export const ViewAccountTemplate = React.memo(
                 textAlign={"center"}
               >
                 {t("describeTitleNoAccount", {
-                  layer2: L1L2_NAME_DEFINED[ network ].layer2,
-                  l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
-              <WalletConnectL2Btn/>
+              <WalletConnectL2Btn />
             </Box>
           );
           break;
@@ -446,7 +446,7 @@ export const ViewAccountTemplate = React.memo(
                   l1ChainName: "Ethereum",
                 })}
               </Typography>
-              <WalletConnectL2Btn/>
+              <WalletConnectL2Btn />
             </Box>
           );
           break;
@@ -471,7 +471,7 @@ export const ViewAccountTemplate = React.memo(
                 textAlign={"center"}
               >
                 {t("describeTitleOpenAccounting", {
-                  l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
             </Box>
