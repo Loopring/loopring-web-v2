@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.3.31",
+    "@loopring-web/loopring-sdk": "3.3.41",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.4.1",
     "@mui/lab": "^5.0.0-alpha.45",
@@ -126,6 +126,7 @@
     "@babel/eslint-parser": "^7.13.14",
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/plugin-syntax-bigint": "^7.8.3",
+    "@babel/plugin-transform-exponentiation-operator": "^7.22.5",
     "@babel/plugin-transform-typescript": "^7.12.1",
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-react": "^7.13.13",
