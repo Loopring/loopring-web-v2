@@ -33,7 +33,7 @@ export const getAbbreviateNumber = (value: number | string) => {
     for (let precision = 3; precision >= 1; precision--) {
       shortValue = parseFloat(
         (suffixNum !== 0
-          ? formattedValue / Math.pow(1000, suffixNum)
+          ? formattedValue / 1000 ** suffixNum //(Math.pow(1000, suffixNum))
           : formattedValue
         ).toPrecision(precision)
       );
@@ -81,8 +81,8 @@ const getFloatFloor = (
   ) {
     return "0.00";
   }
-  const result = Math.floor(Number(value) * Math.pow(10, precision));
-  return result / Math.pow(10, precision);
+  const result = Math.floor(Number(value) * 10 ** precision); // Math.pow(10, precision));
+  return result / 10 ** precision; //Math.pow(10, precision);
 };
 
 const getFloatCeil = (
@@ -95,8 +95,8 @@ const getFloatCeil = (
   ) {
     return "0.00";
   }
-  let result = Math.ceil(Number(value) * Math.pow(10, precision));
-  return result / Math.pow(10, precision);
+  let result = Math.ceil(Number(value) * 10 ** precision); //  Math.pow(10, precision)
+  return result / 10 ** precision; //Math.pow(10, precision);
 };
 
 const addZeroAfterDot = (value: string) => {
