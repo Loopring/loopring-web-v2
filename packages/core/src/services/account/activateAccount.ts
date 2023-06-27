@@ -17,16 +17,19 @@ import Web3 from "web3";
 
 export async function activateAccount({
   isHWAddr,
+  referral,
   feeInfo = {} as FeeInfo,
 }: {
   isHWAddr: boolean;
   feeInfo?: FeeInfo;
   isReset?: boolean;
+  referral?: string | null;
 }): Promise<EddsaKey> {
   // let result: ActionResult =;
   const system = store.getState().system;
   let eddsaKey = undefined; //isReset ?  //: account.eddsaKey;
   const { tokenMap } = store.getState().tokenMap;
+  // const {} = store.getState().account;
   const {
     accAddress,
     connectName,
@@ -83,7 +86,6 @@ export async function activateAccount({
     }
     myLog("generateKeyPair done");
 
-    // @ts-ignore
     const request: sdk.UpdateAccountRequestV3 = {
       // // @ts-ignore
       // recommenderAccountId: "" as any,
@@ -98,10 +100,8 @@ export async function activateAccount({
       validUntil: getTimestampDaysLater(DAYS),
       keySeed,
       // @ts-ignore
-      recommenderAccountId: "" as any,
+      recommenderAccountId: referral ? referral : undefined,
       nonce: accInfo.nonce as number,
-      // @ts-ignore
-      recommenderAccountId: "" as any,
     };
 
     myLog("updateAccountFromServer req:", request);

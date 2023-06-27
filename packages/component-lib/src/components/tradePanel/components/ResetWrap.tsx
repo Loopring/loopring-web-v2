@@ -63,7 +63,8 @@ export const ResetWrap = <T extends FeeInfo>({
     const regex = /^[0-9\b]+$/;
     if (e?.target?.value === "" || regex.test(e?.target.value)) {
       setValue(e.target.value);
-      history.replace({ search: e.target.value });
+      searchParams.set("referralcode", e.target.value);
+      history.replace({ search: searchParams.toString() });
     }
   };
 
