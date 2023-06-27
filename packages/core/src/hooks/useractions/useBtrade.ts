@@ -227,12 +227,13 @@ export const useBtradeSwap = <
         .toBig(tradeCalcData?.volumeSell)
         .gte(sdk.toBig(sellMinAmtInfo).times("1e" + sellToken.decimals))
     );
-    const sellExceed = sellMaxAmtInfo
-      ? sdk
-          .toBig(sellMaxAmtInfo)
-          .times("1e" + sellToken.decimals)
-          .lt(tradeCalcData.volumeSell ?? 0)
-      : false;
+    const sellExceed =
+      sellMaxAmtInfo && sellMaxAmtInfo !== ""
+        ? sdk
+            .toBig(sellMaxAmtInfo)
+            .times("1e" + sellToken.decimals)
+            .lt(tradeCalcData.volumeSell ?? 0)
+        : false;
 
     if (sellExceed) {
       validAmt = false;
@@ -896,10 +897,9 @@ export const useBtradeSwap = <
             ? btradeAmount.base !== "0"
             : btradeAmount.quote !== "0")
         ) {
-          if (
-            (sellBuyStr == market ? btradeAmount.quote : btradeAmount.base) !==
-            ""
-          ) {
+          const l1Vol =
+            sellBuyStr == market ? btradeAmount.quote : btradeAmount.base;
+          if (l1Vol && l1Vol !== "") {
             poolToVol =
               sdk
                 .toBig(
