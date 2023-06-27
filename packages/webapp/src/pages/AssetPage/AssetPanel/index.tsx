@@ -122,14 +122,14 @@ export const AssetPanel = withTranslation("common")(
             })
           ) : (
             <>
-              <Tab label={t("labelAssetTokens")} value={AssetTabIndex.Tokens} />
+              <Tab label={t("labelAssetToken")} value={AssetTabIndex.Tokens} />
               <Tab
-                label={t("labelAssetMyInvest")}
+                label={t("labelAssetInvests")}
                 value={AssetTabIndex.Invests}
               />
               {!isMobile && (
                 <Tab
-                  label={t("labelAssetRedPackets")}
+                  label={t("labelAssetRedPacket")}
                   value={AssetTabIndex.RedPacket}
                 />
               )}
