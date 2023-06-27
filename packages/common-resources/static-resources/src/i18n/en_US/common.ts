@@ -1803,4 +1803,7 @@ export default {
   labelReferralsTotalRefund: "Total Refunds",
   labelReferralsClaimRefund: "Claim Refunds",
   labelReferralsTotalVolume: "Total Volume",
+  labelReferralCode: "Referral Code (Optional) <1>\uFE61</1>",
+  labelReferralToolTip:
+    "Enter referral code to enjoy a three-month discount on transfer fees.",
 };

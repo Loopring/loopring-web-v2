@@ -420,6 +420,7 @@ export const ViewAccountTemplate = React.memo(
               >
                 {t("describeTitleNoAccount", {
                   layer2: L1L2_NAME_DEFINED[network].layer2,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
@@ -443,6 +444,7 @@ export const ViewAccountTemplate = React.memo(
               >
                 {t("describeTitleNotActive", {
                   layer2: "Layer 2",
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   l1ChainName: "Ethereum",
                 })}
               </Typography>

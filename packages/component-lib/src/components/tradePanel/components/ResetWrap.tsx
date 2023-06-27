@@ -1,9 +1,18 @@
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Link, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  InputAdornment,
+  Link,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   TradeBtnStatus,
@@ -13,6 +22,8 @@ import { ResetViewProps } from "./Interface";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
+import { useLocation } from "react-use";
+import { useHistory } from "react-router-dom";
 
 export const ResetWrap = <T extends FeeInfo>({
   t,
@@ -29,7 +40,15 @@ export const ResetWrap = <T extends FeeInfo>({
 }: ResetViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
+  const { search } = useLocation();
+  const history = useHistory();
+  const searchParams = new URLSearchParams(search);
+  const [value, setValue] = React.useState(
+    searchParams.get("referralcode") ?? ""
+  );
+  // const { isMobile, defaultNetwork } = useSettings();
   const { isMobile, defaultNetwork } = useSettings();
+
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const getDisabled = React.useMemo(() => {
     return disabled || resetBtnStatus === TradeBtnStatus.DISABLED;
@@ -38,6 +57,13 @@ export const ResetWrap = <T extends FeeInfo>({
   const handleToggleChange = (value: T) => {
     if (handleFeeChange) {
       handleFeeChange(value);
+    }
+  };
+  const onRefChange = (e: any) => {
+    const regex = /^[0-9\b]+$/;
+    if (e?.target?.value === "" || regex.test(e?.target.value)) {
+      setValue(e.target.value);
+      history.replace({ search: e.target.value });
     }
   };
 
@@ -210,6 +236,56 @@ export const ResetWrap = <T extends FeeInfo>({
           </>
         )}
       </Grid>
+      {isNewAccount && (
+        <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
+          <Tooltip title={t("labelReferralToolTip").toString()}>
+            <Typography
+              component={"span"}
+              variant={"body1"}
+              color={"textSecondary"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              marginBottom={1}
+            >
+              <Trans i18nKey={"labelReferralCode"}>
+                Referral Code (Optional)
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+              </Trans>
+            </Typography>
+          </Tooltip>
+          <TextField
+            value={value}
+            fullWidth
+            variant={"outlined"}
+            inputProps={{ maxLength: 10 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    variant={"body1"}
+                    component={"span"}
+                    paddingX={1 / 2}
+                  >
+                    #
+                  </Typography>
+                </InputAdornment>
+              ),
+            }}
+            type={"text"}
+            onChange={onRefChange}
+
+            // onChange={(event) =>
+            //   handleOnMetaChange({ name: event.target.value } as Partial<T>)
+            // }
+          />
+        </Grid>
+      )}
+
       <Grid item marginTop={4} alignSelf={"stretch"}>
         <Button
           fullWidth
