@@ -10,6 +10,7 @@ export type ShareReferralSvgProps = {
   bottom?: number;
   left?: number;
   fontColor?: string;
+  name?: string;
 };
 export const ShareReferralSvg = withTranslation("common", { withRef: true })(
   React.memo(
@@ -24,6 +25,7 @@ export const ShareReferralSvg = withTranslation("common", { withRef: true })(
           src,
           bottom = 30,
           left = 48,
+          name,
           fontColor = "#000000",
         }: ShareReferralSvgProps & WithTranslation,
         ref: React.ForwardedRef<any>
@@ -38,6 +40,7 @@ export const ShareReferralSvg = withTranslation("common", { withRef: true })(
           <>
             <svg
               ref={ref}
+              name={name}
               width={width}
               height={height}
               viewBox={`0 0 ${width} ${height}`}

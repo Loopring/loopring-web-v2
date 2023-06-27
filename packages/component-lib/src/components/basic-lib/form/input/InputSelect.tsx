@@ -21,7 +21,7 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
   }: InputSelectProps<C, I> & WithTranslation,
   _ref: React.ForwardedRef<C>
 ) {
-  const [value, setValue] = React.useState<{
+  const [_value, setValue] = React.useState<{
     selected: string | undefined;
     focusOnInput: boolean;
   }>({
@@ -37,13 +37,13 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
     []
   );
   const _handleContentChange = (value: any) => {
-    setValue({ ...value, selected: value });
+    setValue({ ..._value, selected: value });
     debounceContentChange({ value });
   };
 
   const inputEle = useFocusRef({
-    shouldFocusOn: value.focusOnInput,
-    value: value.selected,
+    shouldFocusOn: _value.focusOnInput,
+    value: _value.selected,
   });
   // let height = '100%';
   // let width = '100%';
@@ -54,11 +54,14 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
     // }
   });
 
-  // const handleClear = React.useCallback(() => {
-  //   // @ts-ignore
-  //   // addressInput?.current?.value = "";
-  //   setValue({ ...value, selected: "" });
-  // }, []);
+  React.useEffect(() => {
+    () => {
+      setValue({
+        selected: "",
+        focusOnInput: false,
+      });
+    };
+  }, [selected]);
   return (
     <>
       <Box
@@ -76,14 +79,14 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
           {...inputProps}
           aria-label={t(placeholder)}
           placeholder={t(selected ? selected : placeholder)}
-          value={value?.selected}
+          value={_value?.selected}
           className={"search-wrap"}
           onChange={_handleContentChange}
         />
         {backElement ? <Box marginLeft={2}>{backElement}</Box> : <></>}
       </Box>
       <Box flex={1} ref={panelRef}>
-        {panelRender({ selected, value: value.selected })}
+        {panelRender({ selected, value: _value.selected })}
       </Box>
     </>
   );

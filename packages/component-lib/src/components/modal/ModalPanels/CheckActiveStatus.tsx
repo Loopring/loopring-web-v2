@@ -1,4 +1,9 @@
-import { EmptyValueTag, RowConfig } from "@loopring-web/common-resources";
+import {
+  EmptyValueTag,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  RowConfig,
+} from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
@@ -34,7 +39,8 @@ export const CheckActiveStatus = ({
 }: CheckActiveStatusProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
 
   return (
     <BoxStyle
@@ -55,7 +61,9 @@ export const CheckActiveStatus = ({
             marginBottom={3}
             marginTop={-1}
           >
-            {t("labelActiveAccountTitle")}
+            {t("labelActiveAccountTitle", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            })}
           </Typography>
           <Box
             display={"flex"}
@@ -101,7 +109,14 @@ export const CheckActiveStatus = ({
                       {t(
                         isFeeNotEnough.isFeeNotEnough
                           ? "labelAddAssetGateBtn"
-                          : "labelActiveLayer2Btn"
+                          : "labelActiveLayer2Btn",
+                        {
+                          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                        }
                       )}
                     </Button>
                   </Box>
@@ -113,7 +128,13 @@ export const CheckActiveStatus = ({
                     color={"textSecondary"}
                     whiteSpace={"pre-line"}
                   >
-                    {t("labelBenefitL2")}
+                    {t("labelBenefitL2", {
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                    })}
                   </Typography>
                   <Box marginTop={3}>
                     <Button
@@ -139,7 +160,9 @@ export const CheckActiveStatus = ({
             whiteSpace={"pre"}
             marginTop={-1}
           >
-            {t("labelActiveAccountTitle")}
+            {t("labelActiveAccountTitle", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            })}
           </Typography>
           <Box
             display={"flex"}
@@ -160,7 +183,13 @@ export const CheckActiveStatus = ({
                   marginTop={1}
                   textAlign={"center"}
                 >
-                  {t("labelActivatedAccountNotSupport")}
+                  {t("labelActivatedAccountNotSupport", {
+                    l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  })}
                 </Typography>
                 <Typography
                   component={"p"}
@@ -169,7 +198,12 @@ export const CheckActiveStatus = ({
                   marginTop={1}
                   marginBottom={2}
                 >
-                  {t("labelActivatedAccountNotSupportDes")}
+                  {t("labelActivatedAccountNotSupportDes", {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  })}
                 </Typography>
                 <Button
                   size={"large"}
@@ -208,7 +242,13 @@ export const CheckActiveStatus = ({
                     variant={"body1"}
                     marginTop={2}
                   >
-                    {t("labelEnoughBalancePayForActive")}
+                    {t("labelEnoughBalancePayForActive", {
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                    })}
                   </Typography>
                 )}
                 <Typography
@@ -218,7 +258,9 @@ export const CheckActiveStatus = ({
                   marginTop={2}
                   marginBottom={1}
                 >
-                  {t("labelActivatedAccountChargeFeeList")}
+                  {t("labelActivatedAccountChargeFeeList", {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  })}
                 </Typography>
                 <Box marginTop={1}>
                   <Typography
@@ -303,7 +345,13 @@ export const CheckActiveStatus = ({
                       variant={"body2"}
                       marginTop={2}
                     >
-                      {t("labelHaveInProcessingL1toL2")}
+                      {t("labelHaveInProcessingL1toL2", {
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      })}
                     </Typography>
                   )
                 )}

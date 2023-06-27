@@ -9,6 +9,22 @@ export const hexToRGB = (hex: string, alpha?: string | number) => {
     return "rgb(" + r + ", " + g + ", " + b + ")";
   }
 };
+export const ColorBlack = {
+  dark: "#000000",
+  dark900: "#141414",
+  dark800: "#1F1F1F",
+  dark700: "#262626",
+  dark600: "#434343",
+  dark500: "#595959",
+  dark400: "#8C8C8C",
+  light400: "#BFBFBF",
+  light500: "#D9D9D9",
+  light600: "#EBEBEB",
+  light700: "#F0F0F0",
+  light800: "#F5F5F5",
+  light900: "#FAFAFA",
+  light: "#FFFFFF",
+};
 
 export const ColorDarkDefault = Object.freeze({
   primary: "#4169FF",

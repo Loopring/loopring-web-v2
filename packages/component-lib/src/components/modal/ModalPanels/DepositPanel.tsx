@@ -4,6 +4,8 @@ import {
   CoinInfo,
   CoinMap,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   TRADE_TYPE,
 } from "@loopring-web/common-resources";
 import {
@@ -19,6 +21,7 @@ import {
 import React from "react";
 import { cloneDeep } from "lodash";
 import { DepositConfirm } from "../../tradePanel/components/DepositConfirm";
+import { useSettings } from "../../../stores";
 
 export const DepositPanel = withTranslation("common", { withRef: true })(
   <
@@ -41,7 +44,8 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     t,
     ...rest
   }: DepositProps<T, I> & WithTranslation) => {
-    // const { theme } = useSettings();
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
       type,
@@ -98,7 +102,12 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                   t,
                   realToAddress: rest.isAllowInputToAddress
                     ? rest.realToAddress
-                    : t("labelToMyL2"),
+                    : t("labelToMyL2", {
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      }),
                   tradeData: switchData.tradeData,
                   onDepositClick,
                   handleConfirm,

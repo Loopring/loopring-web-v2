@@ -15,11 +15,7 @@ import React from "react";
 import { cloneDeep } from "lodash";
 import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { RootState, useAccount } from "@loopring-web/core";
-import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
-import { getAllContacts } from "./TransferPanel";
-import { useTheme } from "@emotion/react";
+// import { getAllContacts } from "./TransferPanel";
 
 export const WithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -35,6 +31,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
     onBack,
     isFromContact,
     contact,
+    contacts,
     ...rest
   }: WithdrawProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
@@ -65,37 +62,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       });
       return clonedWalletMap;
     }, [walletMap]);
-    type DisplayContact = {
-      name: string;
-      address: string;
-      avatarURL: string;
-      editing: boolean;
-    };
-    // const [contacts, setContacts] = React.useState([] as DisplayContact[]);
-    const dispatch = useDispatch();
-    const contacts = useSelector((state: RootState) => state.contacts.contacts);
-    const {
-      account: { accountId, apiKey, accAddress },
-    } = useAccount();
-    const theme = useTheme();
-    const loadContacts = async () => {
-      dispatch(updateContacts(undefined));
-      try {
-        const allContacts = await getAllContacts(
-          0,
-          accountId,
-          apiKey,
-          accAddress,
-          theme.colorBase.warning
-        );
-        dispatch(updateContacts(allContacts));
-      } catch (e) {
-        dispatch(updateContacts([]));
-      }
-    };
-    React.useEffect(() => {
-      loadContacts();
-    }, [accountId]);
+    
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(

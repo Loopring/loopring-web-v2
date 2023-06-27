@@ -1,5 +1,10 @@
 import { IconType, MintBase, PanelProps } from "./BasicPanel";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
+import {
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
 
 export const NFTMint_WaitForAuth = (
   props: PanelProps & Partial<NFTWholeINFO>
@@ -54,11 +59,17 @@ export const NFTMint_In_Progress = (
 };
 
 export const NFTMint_Failed = (props: PanelProps & Partial<NFTWholeINFO>) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelMintFailed", {
       symbol: props.symbol ?? "NFT",
       value: props.value,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   };
   return <MintBase {...propsPatch} {...props} />;

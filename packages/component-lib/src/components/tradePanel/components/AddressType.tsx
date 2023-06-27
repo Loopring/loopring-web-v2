@@ -5,11 +5,11 @@ import React, { ForwardedRef } from "react";
 import {
   AddressItemType,
   EXCHANGE_TYPE,
-  useAddressTypeLists,
   WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import { MenuItemProps, TextField } from "../../basic-lib";
 import { useOpenModals } from "../../../stores";
+import { useAddressTypeLists } from "./hook/useAddressType";
 
 const MenuItemStyle = styled(MenuItem)<
   MenuItemProps<any> & { maxWidth?: string | number }

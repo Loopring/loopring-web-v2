@@ -13,66 +13,7 @@ import {
   useBasicTrade,
 } from "../../tradePanel/components";
 import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
-import { LoopringAPI, RootState, useAccount } from "@loopring-web/core";
 import { ContactSelection } from "../../tradePanel/components/ContactSelection";
-import { createImageFromInitials } from "@loopring-web/core";
-import { useDispatch, useSelector } from "react-redux";
-import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
-import { AddressType } from "@loopring-web/loopring-sdk";
-import { useTheme } from "@emotion/react";
-
-const checkIsHebao = (accountAddress: string) =>
-  LoopringAPI.walletAPI!.getWalletType({
-    wallet: accountAddress,
-  }).then((walletType) => {
-    return walletType?.walletType?.loopringWalletContractVersion !== "";
-  });
-type DisplayContact = {
-  name: string;
-  address: string;
-  avatarURL: string;
-  editing: boolean;
-  addressType: AddressType;
-};
-export const getAllContacts = async (
-  offset: number,
-  accountId: number,
-  apiKey: string,
-  accountAddress: string,
-  color: string
-) => {
-  const limit = 100;
-  const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
-    const isHebao = await checkIsHebao(accountAddress);
-    const response = await LoopringAPI.contactAPI!.getContacts(
-      {
-        isHebao,
-        accountId,
-        limit,
-        offset,
-      },
-      apiKey
-    );
-    const displayContacts = response.contacts
-      .filter((contact) => contact.addressType !== AddressType.OFFICIAL)
-      .map((contact) => {
-        return {
-          name: contact.contactName,
-          address: contact.contactAddress,
-          avatarURL: createImageFromInitials(32, contact.contactName, color),
-          editing: false,
-          addressType: contact.addressType,
-        } as DisplayContact;
-      });
-    if (response.total > offset + limit) {
-      const rest = await recursiveLoad(offset + limit);
-      return displayContacts.concat(rest);
-    } else {
-      return displayContacts;
-    }
-  };
-  return recursiveLoad(offset);
-};
 
 export const TransferPanel = withTranslation(["common", "error"], {
   withRef: true,
@@ -91,6 +32,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
     onBack,
     isFromContact,
     contact,
+    contacts,
     ...rest
   }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
@@ -107,30 +49,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
     React.useEffect(() => {
       setPanelIndex(index + 1);
     }, [index]);
-    const contacts = useSelector((state: RootState) => state.contacts.contacts);
-    const dispatch = useDispatch();
-    const {
-      account: { accountId, apiKey, accAddress },
-    } = useAccount();
-    const theme = useTheme();
-    const loadContacts = async () => {
-      dispatch(updateContacts(undefined));
-      try {
-        const allContacts = await getAllContacts(
-          0,
-          accountId,
-          apiKey,
-          accAddress,
-          theme.colorBase.warning
-        );
-        dispatch(updateContacts(allContacts));
-      } catch (e) {
-        dispatch(updateContacts([]));
-      }
-    };
-    React.useEffect(() => {
-      loadContacts();
-    }, [accountId]);
+    
     const confirmPanel = {
       key: "confirm",
       element: React.useMemo(

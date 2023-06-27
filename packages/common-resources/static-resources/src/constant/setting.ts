@@ -1,4 +1,5 @@
 import { IsMobile } from "../utils";
+import { NetworkItemInfo } from "../loopring-interface";
 
 export enum UpColor {
   green = "green",
@@ -86,34 +87,71 @@ export enum TradeBtnStatus {
   LOADING = "LOADING",
 }
 
-const MapChainIdMap = new Map([
-  [1, "ETHEREUM"],
-  [5, "GOERLI"],
-]);
-export const ChainIdExtends = {};
-
-export const ChainTests: any[] = [5];
-export const MapChainId = {};
-
-(function () {
-  process.env.REACT_APP_RPC_URL_OTHERS?.split(",").forEach((item, index) => {
-    let [name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
+export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
+  process.env.REACT_APP_RPC_OTHERS?.split(",") ?? []
+).reduce(
+  (
+    { NetworkMap, ChainTests, MapChainId, ChainIdExtends },
+    item: string,
+    index: number
+  ) => {
+    let [_name, isTest] = process.env[`REACT_APP_RPC_CHAINNAME_${item}`]?.split(
       "|"
-    ) ?? [""];
-    if (name) {
-      ChainIdExtends[name] = Number(item);
-      MapChainIdMap.set(Number(item), name);
-      if (isTest) {
-        ChainTests.push(item);
-      }
-    } else {
-      ChainIdExtends["unknown" + index] = item;
-      MapChainIdMap.set(Number(item), "unknown");
+    ) ?? [`unknown${item}`];
+    const name = _name.toUpperCase();
+    ChainIdExtends[name] = Number(item);
+    MapChainId[item] = name;
+    // MapChainIdMap.set(Number(item), name);
+    // myLog("MapChainIdMap", item, MapChainIdMap);
+    if (isTest) {
+      ChainTests.push(Number(item));
     }
-  });
+    NetworkMap[Number(item)] = {
+      label: _name,
+      chainId: index.toString(),
+      // RPC: process.env[`REACT_APP_RPC_URL_${item}`] ?? "",
+      isTest: isTest ? true : false,
+    };
+    return { NetworkMap, ChainTests, MapChainId, ChainIdExtends };
+  },
+  {
+    MapChainId: { 1: "ETHEREUM", 5: "GOERLI" },
+    NetworkMap: {
+      1: {
+        label: "Ethereum",
+        chainId: "1",
+        isTest: false,
+      },
+      5: {
+        label: "Görli",
+        chainId: "",
+        isTest: true,
+      },
+    },
+    ChainTests: [5],
+    ChainIdExtends: {
+      NONETWORK: "unknown",
+    },
+  } as {
+    ChainTests: number[];
+    MapChainId: { [key: string]: string };
+    NetworkMap: { [key: number]: NetworkItemInfo };
+    ChainIdExtends: { [key: string]: number | string };
+  }
+);
 
-  [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
-    prev[key] = value;
-    return prev;
-  }, MapChainId);
-})();
+// [..._NetworkMap.entries()].reduce((prev, [key, value]) => {
+//   prev[key] = value;
+//   return prev;
+// }, NetworkMap);
+// myLog("NetworkMap", NetworkMap);
+// [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
+//   prev[key] = value;
+//   return prev;
+// }, MapChainId);
+if (window) {
+  // @ts-ignore
+  window.__ChainIdExtends = ChainIdExtends;
+  // @ts-ignore
+  window.__MapChainId = MapChainId;
+}

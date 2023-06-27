@@ -33,7 +33,6 @@ export function usePairMatch({
 
   // const [pair, setPair] = useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({ coinAInfo: undefined, coinBInfo: undefined})
   // const [realMarket, setRealMarket] = useState('')
-
   // React.useEffect(()=>{
 
   if (!coinMap || !tokenMap || !marketArray) {
@@ -69,10 +68,22 @@ export function usePairMatch({
       coinAInfo = coinMap[coinA];
       coinBInfo = coinMap[coinB];
     } else {
-      coinAInfo = coinMap[coinA];
-      coinB = tokenMap[coinA].tradePairs[0];
-      coinBInfo = coinMap[coinB];
-      realMarket = `${coinA}-${coinB}`;
+      if (tokenMap[coinA]) {
+        coinAInfo = coinMap[coinA];
+        coinB = tokenMap[coinA]?.tradePairs[0];
+        coinBInfo = coinMap[coinB];
+        realMarket = `${coinA}-${coinB}`;
+      } else {
+        // @ts-ignore
+        [_, coinA, coinB] = marketArray[0]?.match(/(\w+)-(\w+)/i) ?? [
+          "",
+          "LRC",
+          "ETH",
+        ];
+        coinAInfo = coinMap[coinA];
+        coinBInfo = coinMap[coinB];
+        realMarket = `${coinA}-${coinB}`;
+      }
     }
   }
 

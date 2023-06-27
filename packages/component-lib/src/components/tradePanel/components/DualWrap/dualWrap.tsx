@@ -9,6 +9,8 @@ import {
   hexToRGB,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   TradeBtnStatus,
   UpColor,
@@ -640,6 +642,8 @@ export const DualWrap = <
 }: DualWrapProps<T, I, DUAL> & { isBeginnerMode: boolean }) => {
   const coinSellRef = React.useRef();
   const { t } = useTranslation();
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const priceSymbol = dualCalcData?.dualViewInfo?.currentPrice?.quote;
   const [displayMode, setDisplayMode] = React.useState<DisplayMode>(
     isBeginnerMode ? DisplayMode.beginnerModeStep1 : DisplayMode.nonBeginnerMode
@@ -697,11 +701,37 @@ export const DualWrap = <
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+          : {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+      );
     } else {
       return displayMode === DisplayMode.beginnerModeStep1
-        ? t("labelContinue")
-        : t(`labelInvestBtn`);
+        ? t("labelContinue", {
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })
+        : t(`labelInvestBtn`, {
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          });
     }
   }, [t, btnInfo]);
   const lessEarnView = React.useMemo(

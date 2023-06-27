@@ -15,7 +15,9 @@ import { useAccount, useSubmitBtn } from "@loopring-web/core";
 import {
   AccountStatus,
   copyToClipBoard,
+  L1L2_NAME_DEFINED,
   LinkSharedIcon,
+  MapChainId,
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
@@ -25,6 +27,7 @@ import {
 import {
   Button,
   ReferralImage,
+  ReferralsTable,
   Toast,
   ToastType,
   useSettings,
@@ -82,7 +85,9 @@ const ReferHeader = ({
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common", "layout"]);
-  const { isMobile } = useSettings();
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  // const [image, setImage] = React.useState<any[]>([]);
   const [imageList, setImageList] = React.useState<{
     referralBanners: { en: string[] };
     lng: string[];
@@ -99,7 +104,7 @@ const ReferHeader = ({
       code: { default: [48, 30, 230, 64, "#000000", 630, 880] },
     },
   });
-  const [images, setImages] = React.useState<JSX.Element[]>([]);
+  // const [images, setImages] = React.useState<JSX.Element[]>([]);
   React.useEffect(() => {
     fetch(`${url_path}/referral/information.json`)
       .then((response) => response.json())
@@ -109,98 +114,104 @@ const ReferHeader = ({
         }
       });
   }, []);
-  const renderImage = React.useCallback(() => {
-    const images = imageList?.referralBanners?.en.map((item, index) => {
-      const ref = React.createRef<SVGSVGElement>();
-      let _default = undefined;
-      if (imageList?.position?.code[index]) {
-        _default = imageList?.position?.code[index];
-      } else {
-        _default = imageList?.position?.code?.default;
-      }
-      let [left, bottom, , , color, width, height] = _default ?? [
-        48,
-        30,
-        230,
-        64,
-        "#000000",
-        630,
-        880,
-      ];
-      return (
-        <ReferralImage
-          ref={ref}
-          src={item}
-          code={account?.accountId?.toString()}
-          height={height}
-          width={width}
-          bottom={bottom}
-          left={left}
-          fontColor={color ?? "#000000"}
-        />
-      );
-    });
-    setImages(images);
-  }, [imageList, account]);
-  React.useEffect(() => {
-    if (imageList?.referralBanners?.en) {
-      renderImage();
-    }
-  }, [imageList?.referralBanners?.en]);
+  // const renderImage = React.useCallback(() => {
+  //   const images = imageList?.referralBanners?.en.map((item, index) => {
+  //     const ref = React.createRef<SVGSVGElement>();
+  //     let _default = undefined;
+  //     if (imageList?.position?.code[index]) {
+  //       _default = imageList?.position?.code[index];
+  //     } else {
+  //       _default = imageList?.position?.code?.default;
+  //     }
+  //     let [left, bottom, , , color, width, height] = _default ?? [
+  //       48,
+  //       30,
+  //       230,
+  //       64,
+  //       "#000000",
+  //       630,
+  //       880,
+  //     ];
+  //     return (
+  //       <ReferralImage
+  //         ref={ref}
+  //         src={item}
+  //         code={account?.accountId?.toString()}
+  //         height={height}
+  //         width={width}
+  //         bottom={bottom}
+  //         left={left}
+  //         fontColor={color ?? "#000000"}
+  //       />
+  //     );
+  //   });
+  //   setImages(images);
+  // }, [imageList, account]);
 
   const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
     },
     isLoading: false,
-    submitCallback: () => {
-      images?.map((item) => {
-        // @ts-ignore
-        if (item && item.ref?.current) {
-          const a = document.createElement("a");
-          const my_evt = new MouseEvent("click");
-          // @ts-ignore
-          const svg = item.ref?.current;
-          const w = Number(
-            svg.getAttribute("width") ?? imageList?.position?.code[5]
-          );
-          const h = Number(
-            svg.getAttribute("height") ?? imageList?.position?.code[5]
-          );
-          const canvas = document.createElement("canvas");
-
-          const img_to_download = document.createElement("img");
-
-          img_to_download.onload = function () {
-            canvas.setAttribute("width", w.toString());
-            canvas.setAttribute("height", h.toString());
-            // @ts-ignore
-            const context: CanvasRenderingContext2D = canvas.getContext("2d");
-            context.drawImage(img_to_download, 0, 0, w, h);
-            const dataURL = canvas.toDataURL("image/png");
-            const name = svg.getAttribute("name");
-            // @ts-ignore
-            if (window.navigator.msSaveBlob) {
-              // @ts-ignore
-              window.navigator.msSaveBlob(
-                // @ts-ignore
-                canvas.msToBlob(),
-                name
-              );
-              // e.preventDefault();
-            } else {
-              const a = document.createElement("a");
-              const my_evt = new MouseEvent("click");
-              a.download = name;
-              a.href = dataURL;
-              a.dispatchEvent(my_evt);
-            }
-          };
-          img_to_download.src = svg.getAttribute("base64doc");
-
-          // @ts-ignore
-          img_to_download?.onload();
+    submitCallback: async () => {
+      const images = imageList?.referralBanners?.en.map((item, index) => {
+        const canvas: HTMLCanvasElement = document.createElement("canvas");
+        let _default = undefined;
+        if (imageList?.position?.code[index]) {
+          _default = imageList?.position?.code[index];
+        } else {
+          _default = imageList?.position?.code?.default;
         }
+        let [left, bottom, , , color, width, height] = _default ?? [
+          48,
+          30,
+          230,
+          64,
+          "#000000",
+          630,
+          880,
+        ];
+        const lebelY = height - bottom - 100 + 20;
+        const lebelX = left;
+        const lebelCodeY = lebelY + 64;
+        const lebelCodeX = left;
+        const labelCode = t("labelReferralImageCode", {
+          code: account.accountId,
+        });
+        const label = t("labelReferralImageDes");
+
+        canvas.width = width;
+        canvas.height = height;
+        // @ts-ignore
+        const context: CanvasRenderingContext2D = canvas.getContext("2d");
+        const image = new Image();
+        image.crossOrigin = "true";
+        image.src = item;
+        // const download = () => {
+        //
+        // };
+        image.onload = function () {
+          context.clearRect(0, 0, width, width);
+          context.drawImage(image, 0, 0, width, height);
+          context.font = "28px Roboto";
+          context.fillStyle = color;
+          context.textAlign = "left";
+          context.fillText(label, lebelX, lebelY);
+          context.font = "44px Roboto";
+          context.fillText(labelCode, lebelCodeX, lebelCodeY);
+
+          canvas.toBlob((blob) => {
+            const a = document.createElement("a");
+            // @ts-ignore
+            a.download = (item ?? "/").split("/")?.pop();
+            a.style.display = "none";
+            // @ts-ignore
+            a.href = URL.createObjectURL(blob);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }, "image/jpeg");
+        };
       });
     },
   });
@@ -209,9 +220,33 @@ const ReferHeader = ({
     if (btnLabel) {
       const key = btnLabel.split("|");
       if (key) {
-        return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+        return t(
+          key[0],
+          key && key[1]
+            ? {
+                arg: key[1],
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }
+            : {
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }
+        );
       } else {
-        return t(btnLabel);
+        return t(btnLabel, {
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        });
       }
     } else {
       return t(`labelInvite`);
@@ -318,15 +353,19 @@ const ReferHeader = ({
               >
                 {label}
               </Button>
+              {/*{image.map((item, index) => (*/}
+              {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
+              {/*))}*/}
               <Box
                 sx={{ display: "block" }}
-                // height={0}
-                // width={0}
+                height={0}
+                width={0}
                 overflow={"hidden"}
               >
-                {images.map((item, index) => (
-                  <React.Fragment key={index}>{item}</React.Fragment>
-                ))}
+                <canvas className={"canvas"} />
+                {/*{images.map((item, index) => (*/}
+                {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
+                {/*))}*/}
               </Box>
             </Box>
           </Box>
@@ -339,6 +378,8 @@ const ReferHeader = ({
 const ReferView = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const link = `${WalletSite}?referralcode=${account.accountId}`;
@@ -354,6 +395,7 @@ const ReferView = () => {
     setCopyToastOpen(true);
   };
 
+  const total = 11;
   return (
     <>
       <Toast
@@ -389,12 +431,21 @@ const ReferView = () => {
               <ol>
                 <li>{t("labelReferralMethod1Step1")}</li>
                 <li>{t("labelReferralMethod1Step2")}</li>
-                <li>{t("labelReferralMethod1Step3")}</li>
+                <li>
+                  {t("labelReferralMethod1Step3", {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                    loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  })}
+                </li>
                 <li>{t("labelReferralMethod1Step4")}</li>
               </ol>
             )}
             {currentTab === ReferStep.method2 && <></>}
           </Box>
+
           {account.readyState === AccountStatus.ACTIVATED && (
             <>
               <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
@@ -402,13 +453,120 @@ const ReferView = () => {
                   {t("labelReferralMyReferrals")}
                 </Typography>
 
-                <Box></Box>
+                <Box display={"flex"} flexDirection={"column"}>
+                  <Box display={"flex"} flexDirection={"row"}>
+                    <Typography
+                      component={"span"}
+                      color={"textThird"}
+                      variant={"body1"}
+                      paddingRight={2}
+                    >
+                      {t("labelReferralsTotalEarning")}
+                      <Typography
+                        variant={"inherit"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      ></Typography>
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"textThird"}
+                      variant={"body1"}
+                      paddingRight={2}
+                    >
+                      {t("labelReferralsClaimEarning")}
+                      <Typography
+                        variant={"inherit"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      ></Typography>
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"textThird"}
+                      variant={"body1"}
+                      paddingRight={2}
+                    >
+                      {t("labelReferralsTotalReferrals")}
+                      <Typography
+                        variant={"inherit"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      ></Typography>
+                    </Typography>
+                  </Box>
+
+                  <ReferralsTable
+                    {...{
+                      rawData: [],
+                      pagination: {
+                        pageSize: 8,
+                        total,
+                      },
+                      getList: (props: { limit: number; offset: number }) => {},
+                      showloading: false,
+                    }}
+                  />
+                </Box>
               </BoxStyled>
               <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
                 <Typography component={"h3"} variant={"h4"} marginY={1}>
                   {t("labelReferralReferralsRefunds")}
                 </Typography>
-                <Box></Box>
+                <Box display={"flex"} flexDirection={"column"}>
+                  <Box display={"flex"} flexDirection={"row"}>
+                    <Typography
+                      component={"span"}
+                      color={"textThird"}
+                      variant={"body1"}
+                      paddingRight={2}
+                    >
+                      {t("labelReferralsTotalRefund")}
+                      <Typography
+                        variant={"inherit"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      ></Typography>
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"textThird"}
+                      variant={"body1"}
+                      paddingRight={2}
+                    >
+                      {t("labelReferralsClaimRefund")}
+                      <Typography
+                        variant={"inherit"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      ></Typography>
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"textThird"}
+                      variant={"body1"}
+                      paddingRight={2}
+                    >
+                      {t("labelReferralsTotalVolume")}
+                      <Typography
+                        variant={"inherit"}
+                        component={"span"}
+                        color={"textPrimary"}
+                      ></Typography>
+                    </Typography>
+                  </Box>
+                  <ReferralsTable
+                    {...{
+                      rawData: [],
+                      pagination: {
+                        pageSize: 8,
+                        total,
+                      },
+                      getList: (props: { limit: number; offset: number }) => {},
+                      showloading: false,
+                    }}
+                  />
+                </Box>
               </BoxStyled>
             </>
           )}

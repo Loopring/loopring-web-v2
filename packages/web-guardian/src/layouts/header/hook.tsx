@@ -6,7 +6,7 @@ import {
   headerGuardianToolBarData,
   headerMenuLandingData,
   myLog,
-  ChainIdExtends,
+  NetworkMap,
 } from "@loopring-web/common-resources";
 
 import {
@@ -31,7 +31,7 @@ export const useHeader = () => {
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { chainId, updateSystem } = useSystem();
-  const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
+  // const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
 
   const { setShowAccount } = useOpenModals();
   const accountState = React.useMemo(() => {
@@ -95,14 +95,14 @@ export const useHeader = () => {
     headerGuardianToolBarData[GuardianToolBarComponentsMap.Notification] = {
       ...headerGuardianToolBarData[GuardianToolBarComponentsMap.Notification],
     };
-    headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
-      ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
-      onTestOpen: (isTestNet: boolean) => {
-        const chainId = store.getState().system.chainId;
-        updateSystem({ chainId });
-      },
-      isShow: (chainId as any) === ChainIdExtends["TAIKO"],
-    };
+    // headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
+    //   ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
+    //   onTestOpen: (isTestNet: boolean) => {
+    //     const chainId = store.getState().system.chainId;
+    //     updateSystem({ chainId });
+    //   },
+    //   isShow: (chainId as any) === ChainIdExtends["TAIKO"],
+    // };
     headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
       ...headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect],
       accountState,
@@ -113,11 +113,11 @@ export const useHeader = () => {
   });
   React.useEffect(() => {
     setHeaderToolBarData((headerToolBarData) => {
-      myLog("isTestNet", isTaikoTest, chainId);
-      headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
-        ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
-        isShow: (chainId as any) == ChainIdExtends["TAIKO"],
-      };
+      // myLog("isTestNet", isTaikoTest, chainId);
+      // headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
+      //   ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
+      //   // isShow: (chainId as any) == ChainIdExtends["TAIKO"],
+      // };
       return headerToolBarData;
     });
   }, [chainId]);

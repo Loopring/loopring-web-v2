@@ -569,7 +569,7 @@ export default {
   labelL2toL1BtnExceed: "Exceed Max Fast Withdraw amount: {{arg}}!",
   labelL2toL1BtnExceedWithFee: "Insufficient balance (with fee)",
   labelL2toL1Address: "Ethereum Address",
-  labelL2toL1MyAddress: "To my L1",
+  labelL2toL1MyAddress: "To my {{l1Symbol}}",
   labelL2toL1AddressInput: "Please input the address",
   labelL2toL1Fee: "Select payment token",
   labelL2toL1Fast: "Fast",
@@ -623,7 +623,6 @@ export default {
   labelL1toL2HashEmpty:
     "My L1 \u2192 Loopring L2 transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
-  labelNFTSendL2Btn: "To Another Loopring L2",
   labelNFTSendMyL1Btn: "To My L1",
   labelNFTSendOtherL1Btn: "To Other L1",
   labelNFTDeploySendMyL1: "To My L1 & Deploy Contract",
@@ -662,7 +661,6 @@ export default {
   labelL1toL2Vendor:
     "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   depositLabelTo: "To address, Account ID or ENS.",
-  labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle:
     "Preview Image (Dimensions: 1:1) <1>\uFE61</1><2>\u2139</2>",
@@ -1156,7 +1154,7 @@ export default {
   labelImportCollectionallDes: "all items under this contract",
   labelImportCollectionTitle: "Import Collection for Legacy NFT",
   labelAssetTokens: "Tokens",
-  labelAssetMyInvest: "My Investments",
+  labelAssetInvest: "My Investments",
   labelORCreateCollection: "Or <1>Create Collection</1>",
   labelCreateLegacyCollection: "Create Legacy Collection",
   labelNoLegacyCollection: "You have no Legacy Collection, please",
@@ -1279,7 +1277,7 @@ export default {
     "Pay recipient's L2 activation fee: {{value}}",
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
   labelRedPacketOpen: "Open",
-  labelAssetRedPackets: "Red Packets",
+  labelAssetRedPacket: "Red Packets",
   labelRedPacketTitle: "Red Packets",
   labelRedPacketTypeTokens: "Choose Tokens / NFTs",
   labelRedPacketChoose: "Choose Red Packet Type",

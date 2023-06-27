@@ -4,7 +4,9 @@ import {
   defaultSlipage,
   EmptyValueTag,
   IBData,
+  L1L2_NAME_DEFINED,
   LinkedIcon,
+  MapChainId,
   ReverseIcon,
   SlippageTolerance,
   TradeBtnStatus,
@@ -47,7 +49,8 @@ export const AmmDepositWrap = <
 }: AmmDepositWrapProps<T, I, ACD, C> & WithTranslation) => {
   const coinARef = React.useRef();
   const coinBRef = React.useRef();
-  const { slippage } = useSettings();
+  const { slippage, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const slippageArray: Array<number | string> = SlippageTolerance.concat(
     `slippage:${slippage}`
   ) as Array<number | string>;
@@ -165,9 +168,33 @@ export const AmmDepositWrap = <
   const label = React.useMemo(() => {
     if (ammDepositBtnI18nKey) {
       const key = ammDepositBtnI18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1].toString(),
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+          : {
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+      );
     } else {
-      return t(`labelAddLiquidityBtn`);
+      return t(`labelAddLiquidityBtn`, {
+        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+      });
     }
   }, [ammDepositBtnI18nKey]);
 

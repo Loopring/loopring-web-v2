@@ -1,9 +1,20 @@
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Link, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  InputAdornment,
+  Link,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
+  Info2Icon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import { Button } from "../../basic-lib";
@@ -11,6 +22,8 @@ import { ResetViewProps } from "./Interface";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
+import { useLocation } from "react-use";
+import { useHistory } from "react-router-dom";
 
 export const ResetWrap = <T extends FeeInfo>({
   t,
@@ -27,7 +40,16 @@ export const ResetWrap = <T extends FeeInfo>({
 }: ResetViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-  const { isMobile } = useSettings();
+  const { search } = useLocation();
+  const history = useHistory();
+  const searchParams = new URLSearchParams(search);
+  const [value, setValue] = React.useState(
+    searchParams.get("referralcode") ?? ""
+  );
+  // const { isMobile, defaultNetwork } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const getDisabled = React.useMemo(() => {
     return disabled || resetBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, resetBtnStatus]);
@@ -35,6 +57,14 @@ export const ResetWrap = <T extends FeeInfo>({
   const handleToggleChange = (value: T) => {
     if (handleFeeChange) {
       handleFeeChange(value);
+    }
+  };
+  const onRefChange = (e: any) => {
+    const regex = /^[0-9\b]+$/;
+    if (e?.target?.value === "" || regex.test(e?.target.value)) {
+      setValue(e.target.value);
+      searchParams.set("referralcode", e.target.value);
+      history.replace({ search: searchParams.toString() });
     }
   };
 
@@ -58,7 +88,11 @@ export const ResetWrap = <T extends FeeInfo>({
           whiteSpace={"pre"}
           marginBottom={2}
         >
-          {isNewAccount ? t("labelActiveAccountTitle") : t("resetTitle")}
+          {isNewAccount
+            ? t("labelActiveAccountTitle", {
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              })
+            : t("resetTitle", { layer2: L1L2_NAME_DEFINED[network].layer2 })}
         </Typography>
         <Typography
           component={"p"}
@@ -66,8 +100,8 @@ export const ResetWrap = <T extends FeeInfo>({
           color={"var(--color-text-secondary)"}
         >
           {isNewAccount
-            ? t("labelActiveAccountDescription")
-            : t("resetDescription")}
+            ? t("labelActiveAccountDescription", { layer2: "Layer 2" })
+            : t("resetDescription", { layer2: "Layer 2" })}
         </Typography>
       </Grid>
 
@@ -143,7 +177,13 @@ export const ResetWrap = <T extends FeeInfo>({
                 marginLeft={1}
                 component={"span"}
               >
-                {t("labelFriendsPayActivation")}
+                {t("labelFriendsPayActivation", {
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                })}
               </Typography>
             ) : (
               ""
@@ -166,6 +206,12 @@ export const ResetWrap = <T extends FeeInfo>({
                     walletMap[feeInfo.belong]
                       ? walletMap[feeInfo.belong]?.count + " " + feeInfo.belong
                       : EmptyValueTag + " " + (feeInfo && feeInfo?.belong),
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                 })}
               </Typography>
             )}
@@ -191,6 +237,56 @@ export const ResetWrap = <T extends FeeInfo>({
           </>
         )}
       </Grid>
+      {isNewAccount && (
+        <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
+          <Tooltip title={t("labelReferralToolTip").toString()}>
+            <Typography
+              component={"span"}
+              variant={"body1"}
+              color={"textSecondary"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              marginBottom={1}
+            >
+              <Trans i18nKey={"labelReferralCode"}>
+                Referral Code (Optional)
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+              </Trans>
+            </Typography>
+          </Tooltip>
+          <TextField
+            value={value}
+            fullWidth
+            variant={"outlined"}
+            inputProps={{ maxLength: 10 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    variant={"body1"}
+                    component={"span"}
+                    paddingX={1 / 2}
+                  >
+                    #
+                  </Typography>
+                </InputAdornment>
+              ),
+            }}
+            type={"text"}
+            onChange={onRefChange}
+
+            // onChange={(event) =>
+            //   handleOnMetaChange({ name: event.target.value } as Partial<T>)
+            // }
+          />
+        </Grid>
+      )}
+
       <Grid item marginTop={4} alignSelf={"stretch"}>
         <Button
           fullWidth

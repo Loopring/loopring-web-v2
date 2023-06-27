@@ -24,7 +24,9 @@ import {
   globalSetup,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   NFTWholeINFO,
   TOAST_TIME,
   TradeBtnStatus,
@@ -96,7 +98,9 @@ export const WithdrawWrap = <
     assetsData: AssetsRawDataItem[];
     handleConfirm: (index: number) => void;
   }) => {
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const popupState = usePopupState({
@@ -152,13 +156,39 @@ export const WithdrawWrap = <
   const label = React.useMemo(() => {
     if (withdrawI18nKey) {
       const key = withdrawI18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+          : {
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+      );
     } else {
       return t(
         (tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
           (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
           ? `labelSendL1DeployBtn`
-          : `labelSendL1Btn`
+          : `labelSendL1Btn`,
+        {
+          layer2: L1L2_NAME_DEFINED[network].layer2,
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        }
       );
     }
   }, [t, tradeData, withdrawI18nKey]);
@@ -198,10 +228,10 @@ export const WithdrawWrap = <
           >
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
-              ? t("labelL2ToL1DeployTitle")
+              ? t("labelL2ToL1DeployTitle", { l1Symbol: "L1" })
               : isToMyself
-              ? t("labelL2ToMyL1Title")
-              : t("labelL2ToOtherL1Title")}
+              ? t("labelL2ToMyL1Title", { l1Symbol: "L1" })
+              : t("labelL2ToOtherL1Title", { l1Symbol: "L1" })}
           </Typography>
           <Info2Icon
             {...bindHover(popupState)}
@@ -227,7 +257,12 @@ export const WithdrawWrap = <
             variant={"body2"}
             whiteSpace={"pre-line"}
           >
-            <Trans i18nKey="withdrawDescription">
+            <Trans
+              i18nKey="withdrawDescription"
+              tOptions={{
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              }}
+            >
               Your withdrawal will be processed in the next batch, which usually
               takes 30 minutes to 2 hours. (There will be a large delay if the
               Ethereum gas price exceeds 500 GWei.）
@@ -281,7 +316,9 @@ export const WithdrawWrap = <
               error={!!(isNotAvailableAddress || isInvalidAddressOrENS)}
               placeholder={t("labelPleaseInputWalletAddress")}
               onChange={(event) => handleOnAddressChange(event?.target?.value)}
-              label={t("labelL2toL1Address")}
+              label={t("labelL2toL1Address", {
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              })}
               SelectProps={{ IconComponent: DropDownIcon }}
               fullWidth={true}
               InputProps={{
@@ -333,7 +370,7 @@ export const WithdrawWrap = <
             lineHeight={"20px"}
             color={"var(--color-text-third)"}
           >
-            {t("labelL2toL1MyAddress")}
+            {t("labelL2toL1MyAddress", { l1Symbol: "L1" })}
 
             {!!isAddressCheckLoading && (
               <LoadingIcon

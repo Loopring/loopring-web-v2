@@ -315,8 +315,8 @@ const WrapDepositPanel = (rest: any) => {
             ...rest,
             ...depositProps,
 
-            title: t("depositTitleAndActive"),
-            description: "depositAndActiveDescription",
+            title: t("labelDepositTitleAndActive"),
+            description: "labelDepositAndActiveDescription",
           }}
         />
       </Grid>

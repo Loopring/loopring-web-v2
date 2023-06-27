@@ -12,6 +12,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { SubMenuListProps } from "./Interface";
 
 import { Link as RouterLink } from "react-router-dom";
+import { L1L2_NAME_DEFINED, MapChainId } from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
 
 export const SubMenuItem = styled<any>(ListItem)`
   border-left: 2px solid transparent;
@@ -73,6 +75,8 @@ export const SubMenuList = withTranslation(["layout", "common"], {
     selected,
     subMenu,
   }: SubMenuListProps<I> & WithTranslation<"layout">) => {
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <>
         {Object.keys(subMenu).map((list: any, index) => {
@@ -101,7 +105,10 @@ export const SubMenuList = withTranslation(["layout", "common"], {
                         component="span"
                         variant="body1"
                       >
-                        {t(item.label.i18nKey)}
+                        {t(item.label.i18nKey, {
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        })}
                       </Typography>
                     }
                     secondary={
@@ -123,7 +130,10 @@ export const SubMenuList = withTranslation(["layout", "common"], {
                         component="span"
                         variant="body1"
                       >
-                        {t(item.label.i18nKey)}
+                        {t(item.label.i18nKey, {
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        })}
                       </Typography>
                     }
                   />

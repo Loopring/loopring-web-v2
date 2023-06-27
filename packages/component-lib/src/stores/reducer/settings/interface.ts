@@ -3,8 +3,8 @@ import {
   ThemeKeys,
   UpColor,
 } from "@loopring-web/common-resources";
-import { Currency } from "@loopring-web/loopring-sdk";
 import { Layouts } from "react-grid-layout";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum PlatFormType {
   mobile = "mobile",
@@ -28,7 +28,7 @@ export interface SettingsState {
   themeMode: ThemeKeys;
   language: LanguageKeys;
   platform: PlatFormKeys;
-  currency: Currency;
+  currency: sdk.Currency;
   upColor: keyof typeof UpColor;
   slippage: number | "N";
   coinJson: {
@@ -43,6 +43,7 @@ export interface SettingsState {
   stopLimitLayout: Layouts;
   feeChargeOrder: string[];
   swapSecondConfirmation: boolean | undefined;
-  isTaikoTest?: boolean | undefined;
+  // isTaikoTest?: boolean | undefined;
   isShowTestToggle?: boolean | undefined;
+  defaultNetwork: sdk.ChainId;
 }

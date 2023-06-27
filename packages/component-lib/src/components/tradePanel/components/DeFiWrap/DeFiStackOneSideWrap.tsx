@@ -4,6 +4,8 @@ import {
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   TradeBtnStatus,
   YEAR_DAY_MINUTE_FORMAT,
@@ -17,6 +19,7 @@ import { ButtonStyle } from "../Styled";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment from "moment";
 import styled from "@emotion/styled";
+import { useSettings } from "../../../../stores";
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -337,7 +340,8 @@ export const DeFiSideWrap = <
 }: DeFiSideWrapProps<T, I, ACD>) => {
   // @ts-ignore
   const coinSellRef = React.useRef();
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { t } = useTranslation();
   const getDisabled = React.useMemo(() => {
     return disabled || deFiSideCalcData === undefined;
@@ -408,9 +412,45 @@ export const DeFiSideWrap = <
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1],
+              layer2: L1L2_NAME_DEFINED[network].layer2,
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+          : {
+              layer2: L1L2_NAME_DEFINED[network].layer2,
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+      );
     } else {
-      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+      return isJoin
+        ? t(`labelInvestBtn`, {
+            layer2: L1L2_NAME_DEFINED[network].layer2,
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })
+        : t(`labelRedeemBtn`, {
+            layer2: L1L2_NAME_DEFINED[network].layer2,
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          });
     }
   }, [isJoin, t, btnInfo]);
 
@@ -613,7 +653,15 @@ export const DeFiSideWrap = <
             display={"inline-flex"}
             alignItems={"center"}
           >
-            <Trans i18nKey={"labelLRCStakeRiskDes"}>
+            <Trans
+              i18nKey={"labelLRCStakeRiskDes"}
+              tOptions={{
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+            >
               The staked LRC is locked in Loopring L2 and won't be able to used
               for other purpose although it can be redeemed any time; while if
               the staking is redeemed before 90 days, the accumulated reward

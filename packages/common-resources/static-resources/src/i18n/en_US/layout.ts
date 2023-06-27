@@ -30,7 +30,7 @@ export default {
   labelMyTrades: "My Trades",
   labelRecentTrades: "Recent Trades",
   // layer2 submenu
-  labelAssets: "L2 Assets",
+  labelAssets: "{{l2Symbol}} Assets",
   labelTransactions: "Deposit/Withdraw",
   labelTrades: "Trade History",
   labelHistory: "Transactions",

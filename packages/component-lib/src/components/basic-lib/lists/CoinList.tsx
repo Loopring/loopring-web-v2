@@ -9,7 +9,12 @@ import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
 import styled from "@emotion/styled";
 import { CoinItemProps, CoinMenuProps } from "./Interface";
-import { CoinInfo, CoinKey, WalletCoin } from "@loopring-web/common-resources";
+import {
+  CoinInfo,
+  CoinKey,
+  myLog,
+  WalletCoin,
+} from "@loopring-web/common-resources";
 import { Virtuoso } from "react-virtuoso";
 import { CoinIcon } from "../form";
 import { EmptyDefault } from "../empty";
@@ -38,6 +43,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
   const [select, setSelect] = React.useState<CoinKey<C> | null>(
     selected as CoinKey<C>
   );
+  const [list, setList] = React.useState<any[]>([]);
   const virtuoso = React.useRef(null);
   let rowIndex = 0;
   React.useEffect(() => {
@@ -52,40 +58,50 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
   if (sorted === undefined) {
     sorted = true;
   }
-
-  const list = Object.keys(coinMap).reduce(
-    (list: Array<{ walletCoin: WalletCoin<C>; key: string }>, key) => {
-      if (filterBy(coinMap[key], filterString)) {
-        const walletCoin: WalletCoin<C> = walletMap[key]
-          ? walletMap[key]
-          : { belong: key, count: 0 };
-        if (
-          (nonZero && walletMap[key] && walletMap[key].count > 0) ||
-          !nonZero
-        ) {
-          list.push({ walletCoin, key: key });
-          if (select === key) {
-            rowIndex = list.length - 1;
-          }
-        }
-      }
-      return list;
-    },
-    []
-  );
-
-  if (sorted) {
-    list.sort(function (a, b) {
-      if (a.walletCoin.count && b.walletCoin.count) {
-        return b.walletCoin.count - a.walletCoin.count;
-      } else if (a.walletCoin.count && !b.walletCoin.count) {
-        return -1;
-      } else if (!a.walletCoin.count && b.walletCoin.count) {
-        return 1;
-      }
-      return a.walletCoin.belong.localeCompare(b.walletCoin.belong);
-    });
-  }
+  const update = React.useCallback(() => {
+    if (coinMap) {
+      setList(
+        Object.keys(coinMap)
+          .reduce(
+            (list: Array<{ walletCoin: WalletCoin<C>; key: string }>, key) => {
+              const filter = filterBy(coinMap[key], filterString);
+              if (filter) {
+                const walletCoin: WalletCoin<C> = walletMap[key]
+                  ? walletMap[key]
+                  : { belong: key, count: 0 };
+                if (
+                  (nonZero && walletMap[key] && walletMap[key].count > 0) ||
+                  !nonZero
+                ) {
+                  list.push({ walletCoin, key: key });
+                  if (select === key) {
+                    rowIndex = list.length - 1;
+                  }
+                }
+              }
+              return list;
+            },
+            []
+          )
+          .sort(function (a, b) {
+            if (sorted) {
+              if (a.walletCoin.count && b.walletCoin.count) {
+                return b.walletCoin.count - a.walletCoin.count;
+              } else if (a.walletCoin.count && !b.walletCoin.count) {
+                return -1;
+              } else if (!a.walletCoin.count && b.walletCoin.count) {
+                return 1;
+              }
+              return a.walletCoin.belong.localeCompare(b.walletCoin.belong);
+            }
+            return 1;
+          })
+      );
+    }
+  }, [coinMap, filterString, sorted, walletMap, nonZero]);
+  React.useEffect(() => {
+    update();
+  }, [coinMap, filterString, sorted]);
 
   const handleListItemClick = React.useCallback(
     (_event: React.MouseEvent, select: CoinKey<C>) => {
@@ -109,7 +125,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
               <CoinItem<C>
                 key={index}
                 {...{
-                  coinInfo: coinMap[key] as CoinInfo<C>,
+                  coinInfo: coinMap[key] ?? ({} as CoinInfo<C>),
                   walletCoin,
                   select: select,
                   handleListItemClick,

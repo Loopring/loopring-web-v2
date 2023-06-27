@@ -12,6 +12,8 @@ import {
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   ReverseIcon,
   SwapTradeCalcData,
@@ -61,7 +63,8 @@ export const SwapTradeWrap = <
   const buyRef = React.useRef();
   const history = useHistory();
   let tradeData = swapData.tradeData;
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [_isStoB, setIsStoB] = React.useState(
     typeof isStob !== "undefined" ? isStob : true
   );
@@ -169,14 +172,48 @@ export const SwapTradeWrap = <
     if (swapBtnI18nKey) {
       const key = swapBtnI18nKey.split("|");
       if (key) {
-        return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+        return t(
+          key[0],
+          key && key[1]
+            ? {
+                arg: key[1],
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }
+            : {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }
+        );
       } else {
-        return t(swapBtnI18nKey);
+        return t(swapBtnI18nKey, {
+          layer2: L1L2_NAME_DEFINED[network].layer2,
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        });
       }
     } else {
-      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`);
+      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`, {
+        layer2: L1L2_NAME_DEFINED[network].layer2,
+        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+      });
     }
-  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade]);
+  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade, network]);
   const showVal =
     tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB;
 
@@ -306,7 +343,7 @@ export const SwapTradeWrap = <
           top={60}
           sx={{
             boxSizing: "border-box",
-            border: "3px solid var(--color-pop-bg)",
+            border: "3px solid var(--color-box)",
             background: "var(--color-box-secondary)",
             borderRadius: "50%",
           }}
@@ -381,48 +418,6 @@ export const SwapTradeWrap = <
           <></>
         )}
       </Grid>
-      {!tradeCalcData.isBtrade && tradeCalcData.showLargeVolumeSwapInfo && (
-        <Grid
-          item
-          marginTop={3}
-          display={"flex"}
-          alignSelf={"stretch"}
-          justifyContent={"flex-start"}
-          alignItems={"stretch"}
-          flexDirection={"column"}
-          flexBasis={"initial"}
-        >
-          <Typography
-            variant={"body2"}
-            color={"textSecondary"}
-            border={"1px solid var(--color-warning)"}
-            borderRadius={1}
-            paddingY={2}
-            paddingX={1}
-          >
-            <Trans
-              i18nKey={"labelGoBtradeSwap"}
-              components={{
-                link: (
-                  <Link
-                    onClick={() => {
-                      history.push("/trade/btrade");
-                    }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant={"inherit"}
-                    color={"textPrimary"}
-                  />
-                ),
-              }}
-            >
-              Swapping on the DEX will result in a large Price Impact (loss of
-              assets). We recommend using the <Link>Btrade Swap</Link> option to
-              help minimize potential losses.
-            </Trans>
-          </Typography>
-        </Grid>
-      )}
 
       <Grid
         item
@@ -598,7 +593,7 @@ export const SwapTradeWrap = <
             </Grid>
           </Grid>
           {(tradeCalcData as SCD).isNotMatchMarketPrice && (
-            <Grid item>
+            <Grid item marginBottom={1}>
               <MuiFormControlLabel
                 sx={{ alignItems: "flex-start" }}
                 control={
@@ -782,6 +777,52 @@ export const SwapTradeWrap = <
           </ButtonStyle>
         </Grid>
       </Grid>
+      {!tradeCalcData.isBtrade && tradeCalcData.isShowBtradeAllow && (
+        <Grid
+          item
+          marginTop={3}
+          display={"flex"}
+          alignSelf={"stretch"}
+          justifyContent={"flex-start"}
+          alignItems={"stretch"}
+          flexDirection={"column"}
+          flexBasis={"initial"}
+        >
+          <Typography
+            variant={"body2"}
+            color={"textSecondary"}
+            borderRadius={1}
+            paddingY={2}
+            paddingX={1}
+          >
+            <Trans
+              i18nKey={"labelGoBtradeSwap"}
+              components={{
+                a: (
+                  <Link
+                    onClick={() => {
+                      history.push(
+                        "/trade/btrade/" +
+                          tradeData.sell?.belong +
+                          "-" +
+                          tradeData.buy?.belong
+                      );
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant={"inherit"}
+                    color={"primary"}
+                  />
+                ),
+              }}
+            >
+              Swapping on the DEX will result in a large Price Impact (loss of
+              assets). We recommend using the <a>Block Trade</a> option to help
+              minimize potential losses.
+            </Trans>
+          </Typography>
+        </Grid>
+      )}
     </Grid>
   );
 };

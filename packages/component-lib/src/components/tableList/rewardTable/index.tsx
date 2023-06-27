@@ -90,3 +90,4 @@ export const RewardTable = withTranslation("tables")(
     );
   }
 );
+export * from "./ReferralsTable";

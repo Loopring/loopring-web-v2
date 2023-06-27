@@ -11,8 +11,13 @@ import {
   Box,
 } from "@mui/material";
 import { Contact, useContactSend } from "./hooks";
-import { CheckIcon, CloseIcon } from "@loopring-web/common-resources";
-import { CoinIcon, TextField } from "@loopring-web/component-lib";
+import {
+  CheckIcon,
+  CloseIcon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+} from "@loopring-web/common-resources";
+import { CoinIcon, TextField, useSettings } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
@@ -91,7 +96,8 @@ const CloseIconStyled = styled(CloseIcon)`
 export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
   const { submitSendingContact, sendNetwork, setSendNetwork } =
     useContactSend();
-
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const theme = useTheme();
   const { t } = useTranslation();
   return (
@@ -114,7 +120,13 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
         />
         <DialogTitle>
           <Typography marginTop={3} variant={"h3"} textAlign={"center"}>
-            {t("labelContactsNetworkChoose")}
+            {t("labelContactsNetworkChoose", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+            })}
           </Typography>
         </DialogTitle>
         <DialogContent

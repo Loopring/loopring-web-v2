@@ -4,6 +4,8 @@ import {
   EmptyValueTag,
   FeeInfo,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   TOAST_TIME,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
@@ -38,7 +40,8 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
     isNFT,
     nftIMGURL,
   }: ClaimProps<T, I, Fee> & WithTranslation & { assetsData: any[] }) => {
-    const { isMobile } = useSettings();
+    const { isMobile, defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     const [open, setOpen] = React.useState(false);
     const [dropdownStatus, setDropdownStatus] =
       React.useState<"up" | "down">("down");
@@ -129,14 +132,24 @@ export const ClaimWithdrawPanel = withTranslation(["common", "error"], {
 
         <Grid item xs={12}>
           <Typography color={"var(--color-text-third)"} variant={"body1"}>
-            {t("labelRedPacketTo")}
+            {t("labelRedPacketTo", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            })}
           </Typography>
           <Typography
             component={"span"}
             variant={"body1"}
             color={"var(--color-text-primary)"}
           >
-            {t("labelToMyL2")}
+            {t("labelToMyL2", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            })}
           </Typography>
         </Grid>
         <Grid item xs={12} alignSelf={"stretch"} position={"relative"}>

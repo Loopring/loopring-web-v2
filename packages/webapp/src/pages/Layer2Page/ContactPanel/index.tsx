@@ -9,8 +9,8 @@ import {
 import styled from "@emotion/styled";
 import {
   InputSearch,
-  Toast,
   TablePagination,
+  Toast,
   ToastType,
 } from "@loopring-web/component-lib";
 import {
@@ -22,17 +22,13 @@ import {
 import { Add } from "./add";
 import { Delete } from "./delete";
 import { Send } from "./send";
-import {
-  useContact,
-  useContactAdd,
-  viewHeightOffset,
-  viewHeightRatio,
-} from "./hooks";
+import { useContact, viewHeightOffset, viewHeightRatio } from "./hooks";
 import { useHistory } from "react-router";
-import { ViewAccountTemplate, WalletConnectL2Btn } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
 import { AddressType } from "@loopring-web/loopring-sdk";
 import React from "react";
+import { useRouteMatch } from "react-router-dom";
+import { ContactTransactionsPage } from "./history";
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
@@ -52,7 +48,24 @@ const Line = styled("div")`
   background: var(--color-divide);
 `;
 
+export enum ContactL3Router {
+  list = "list",
+  transactions = "transactions",
+}
+
 export const ContactPage = () => {
+  let match: any = useRouteMatch("/layer2/contact/:item");
+  const view = React.useMemo(() => {
+    return match?.params?.item == "transactions" ? (
+      <ContactTransactionsPage />
+    ) : (
+      <ContractPanel />
+    );
+  }, [match?.params?.item]);
+  return <>{view}</>;
+};
+
+export const ContractPanel = () => {
   const {
     setAddOpen,
     addOpen,
@@ -87,6 +100,7 @@ export const ContactPage = () => {
     // onScroll
   } = useContact();
   const { t } = useTranslation();
+
   let totastText = "";
   if (toastInfo.customerText) {
     totastText = toastInfo.customerText;
@@ -226,7 +240,10 @@ export const ContactPage = () => {
                       variant={"outlined"}
                       size={"medium"}
                       onClick={() => {
-                        history.push("/contact/transactions/" + address);
+                        history.push(
+                          "/layer2/contact/transactions?contactAddress=" +
+                            address
+                        );
                       }}
                     >
                       {t("labelContactsTransactions")}
@@ -257,7 +274,7 @@ export const ContactPage = () => {
     </>
   );
 
-  const activeView = (
+  return (
     <ContactPageStyle
       className={"MuiPaper-elevation2"}
       paddingX={4}
@@ -319,5 +336,4 @@ export const ContactPage = () => {
       </Box>
     </ContactPageStyle>
   );
-  return <ViewAccountTemplate activeViewTemplate={activeView} />;
 };

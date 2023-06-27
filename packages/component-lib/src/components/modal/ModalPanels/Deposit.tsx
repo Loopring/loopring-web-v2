@@ -1,7 +1,12 @@
 import { Trans, useTranslation } from "react-i18next";
 import { DepositBase, IconType, PanelProps } from "./BasicPanel";
 import { Box, Link, Typography } from "@mui/material";
-import { getShortAddr, LinkIcon } from "@loopring-web/common-resources";
+import {
+  getShortAddr,
+  L1L2_NAME_DEFINED,
+  LinkIcon,
+  MapChainId,
+} from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 
 export const Deposit_Sign_WaitForRefer = (props: PanelProps) => {
@@ -32,9 +37,12 @@ export const Deposit_Approve_Denied = (props: PanelProps) => {
 };
 
 export const Deposit_WaitForAuth = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelL1toL2WaitForAuth", {
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
       symbol: props.symbol,
       value: props.value,
       to: props.to ?? "",
@@ -66,7 +74,8 @@ export const Deposit_Failed = (props: PanelProps) => {
 };
 
 export const Deposit_Submit = (props: PanelProps) => {
-  const { isMobile } = useSettings();
+  const { defaultNetwork, isMobile } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { t } = useTranslation();
   const propsPatch = {
     iconType: IconType.SubmitIcon,
@@ -159,14 +168,28 @@ export const Deposit_Submit = (props: PanelProps) => {
             variant={"body1"}
             color={"var(--color-text-secondary)"}
           >
-            {props.t("labelL1toL2TO")}
+            {props.t("labelL1toL2TO", {
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            })}
           </Typography>
           <Typography
             component={"span"}
             variant={"body1"}
             color={"var(--color-text-primary)"}
           >
-            {props.to ? "L2: " + getShortAddr(props.to) : t("labelToMyL2")}
+            {props.to
+              ? "L2: " + getShortAddr(props.to)
+              : t("labelToMyL2", {
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                })}
           </Typography>
         </Typography>
       </Box>

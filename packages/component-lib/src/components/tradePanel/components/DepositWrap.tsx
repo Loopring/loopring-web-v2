@@ -5,7 +5,9 @@ import {
   CloseIcon,
   globalSetup,
   IBData,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   SoursURL,
   TRADE_TYPE,
   TradeBtnStatus,
@@ -72,7 +74,8 @@ export const DepositWrap = <
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
   const inputBtnRef = React.useRef();
-  let { feeChargeOrder, isMobile } = useSettings();
+  let { feeChargeOrder, isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [minFee, setMinFee] =
     React.useState<{ minFee: string } | undefined>(undefined);
   const [_toAddress, setToAddress] = React.useState(tradeData.toAddress);
@@ -99,6 +102,11 @@ export const DepositWrap = <
             marginBottom={1}
           >
             {t("labelIsNotFeeToken", {
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               symbol: chargeFeeTokenList.map((item) => item.belong ?? ""),
             })}
           </Typography>
@@ -146,6 +154,10 @@ export const DepositWrap = <
           marginBottom={1}
         >
           {t("labelIsNotFeeToken", {
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             symbol:
               chargeFeeTokenList?.map((item) => item.belong ?? "") ??
               feeChargeOrder,
@@ -193,78 +205,6 @@ export const DepositWrap = <
         />
         {isNewAccount && <>{isNewAlert}</>}
       </Grid>
-      {/*{!isAllowInputToAddress && isNewAccount ? (*/}
-      {/*  <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>*/}
-      {/*    <TextField*/}
-      {/*      className={"text-address"}*/}
-      {/*      value={tradeData.referAddress ? tradeData.referAddress : ""}*/}
-      {/*      error={*/}
-      {/*        (!!tradeData.referAddress &&*/}
-      {/*          referStatus !== AddressError.NoError) ||*/}
-      {/*        !referIsLoopringAddress*/}
-      {/*      }*/}
-      {/*      label={t("depositLabelRefer")}*/}
-      {/*      placeholder={t("depositLabelPlaceholder")}*/}
-      {/*      onChange={(event) => {*/}
-      {/*        const referAddress = event.target.value;*/}
-      {/*        //...tradeData,*/}
-      {/*        onChangeEvent(0, {*/}
-      {/*          tradeData: { referAddress } as T,*/}
-      {/*          to: "button",*/}
-      {/*        });*/}
-      {/*      }}*/}
-      {/*      fullWidth={true}*/}
-      {/*    />*/}
-      {/*    {tradeData.referAddress !== "" ? (*/}
-      {/*      referIsAddressCheckLoading ? (*/}
-      {/*        <LoadingIcon*/}
-      {/*          width={24}*/}
-      {/*          style={{ top: "32px", right: "8px", position: "absolute" }}*/}
-      {/*        />*/}
-      {/*      ) : (*/}
-      {/*        <IconClearStyled*/}
-      {/*          color={"inherit"}*/}
-      {/*          size={"small"}*/}
-      {/*          style={{ top: "30px" }}*/}
-      {/*          aria-label="Clear"*/}
-      {/*          onClick={handleClear}*/}
-      {/*        >*/}
-      {/*          <CloseIcon />*/}
-      {/*        </IconClearStyled>*/}
-      {/*      )*/}
-      {/*    ) : (*/}
-      {/*      ""*/}
-      {/*    )}*/}
-      {/*    <Box marginLeft={1 / 2}>*/}
-      {/*      {referStatus !== AddressError.NoError || !referIsLoopringAddress ? (*/}
-      {/*        <Typography*/}
-      {/*          color={"var(--color-error)"}*/}
-      {/*          variant={"body2"}*/}
-      {/*          marginTop={1 / 2}*/}
-      {/*          alignSelf={"stretch"}*/}
-      {/*          position={"relative"}*/}
-      {/*        >*/}
-      {/*          {t("labelAddressNotLoopring")}*/}
-      {/*        </Typography>*/}
-      {/*      ) : tradeData.referAddress &&*/}
-      {/*        realReferAddress &&*/}
-      {/*        !referIsAddressCheckLoading ? (*/}
-      {/*        <Typography*/}
-      {/*          color={"var(--color-text-primary)"}*/}
-      {/*          variant={"body2"}*/}
-      {/*          marginTop={1 / 2}*/}
-      {/*          style={{ wordBreak: "break-all" }}*/}
-      {/*        >*/}
-      {/*          {realReferAddress}*/}
-      {/*        </Typography>*/}
-      {/*      ) : (*/}
-      {/*        <></>*/}
-      {/*      )}*/}
-      {/*    </Box>*/}
-      {/*  </Grid>*/}
-      {/*) : (*/}
-      {/*  <></>*/}
-      {/*)}*/}
       {isAllowInputToAddress ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           <Box display={isToAddressEditable ? "inherit" : "none"}>

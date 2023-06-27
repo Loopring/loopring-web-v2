@@ -26,7 +26,9 @@ import {
   globalSetup,
   IBData,
   Info2Icon,
+  L1L2_NAME_DEFINED,
   LoadingIcon,
+  MapChainId,
   myLog,
   NFTWholeINFO,
   TOAST_TIME,
@@ -103,7 +105,9 @@ export const TransferWrap = <
   }) => {
   contact;
   const inputBtnRef = React.useRef();
-  const { isMobile } = useSettings();
+  const { isMobile, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   // addressType
 
   const inputButtonDefaultProps = {
@@ -154,11 +158,28 @@ export const TransferWrap = <
     return !!(sureItsLayer2 && sureItsLayer2 in EXCHANGE_TYPE);
   }, [sureItsLayer2, sureItsLayer2]);
 
-  const isExchangeEOA = detectedWalletType === WALLET_TYPE.EOA && isExchange;
   const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart;
   myLog("transferWrap", realAddr);
   const view = React.useMemo(() => {
-    if (isInvalidAddressOrENS) {
+    if (isOtherSmartWallet) {
+      return (
+        <Typography
+          color={"var(--color-error)"}
+          variant={"body2"}
+          marginTop={1 / 4}
+          alignSelf={"stretch"}
+          position={"relative"}
+        >
+          {t("labelNotOtherSmartWallet", {
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })}
+        </Typography>
+      );
+    } else if (isInvalidAddressOrENS) {
       return (
         <Typography
           color={"var(--color-error)"}
@@ -170,7 +191,7 @@ export const TransferWrap = <
           {t(`labelL2toL2${addrStatus}`)}
         </Typography>
       );
-    } else if (isExchangeEOA) {
+    } else if (isExchange) {
       return (
         <Typography
           color={"var(--color-error)"}
@@ -179,19 +200,14 @@ export const TransferWrap = <
           alignSelf={"stretch"}
           position={"relative"}
         >
-          {t("labelNotExchangeEOA")}
-        </Typography>
-      );
-    } else if (isOtherSmartWallet) {
-      return (
-        <Typography
-          color={"var(--color-error)"}
-          variant={"body2"}
-          marginTop={1 / 4}
-          alignSelf={"stretch"}
-          position={"relative"}
-        >
-          {t("labelNotOtherSmartWallet")}
+          {t("labelNotExchangeEOA", {
+            layer2: L1L2_NAME_DEFINED[network].layer2,
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })}
         </Typography>
       );
     } else if (isSameAddress) {
@@ -236,7 +252,16 @@ export const TransferWrap = <
                     marginLeft={"-2px"}
                     display={"inline-flex"}
                   >
-                    <Trans i18nKey={"labelL2toL2AddressNotLoopring"}>
+                    <Trans
+                      i18nKey={"labelL2toL2AddressNotLoopring"}
+                      tOptions={{
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      }}
+                    >
                       <AlertIcon
                         color={"inherit"}
                         fontSize={"medium"}
@@ -276,6 +301,12 @@ export const TransferWrap = <
                       >
                         {t("labelL2toL2AddressFeeActiveFee", {
                           value: activeAccountPrice,
+                          layer2: L1L2_NAME_DEFINED[network].layer2,
+                          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                         })}
                       </Typography>
                     }
@@ -291,15 +322,18 @@ export const TransferWrap = <
   }, [
     addressDefault,
     isActiveAccount,
+    isActiveAccountFee,
     feeWithActive,
     addrStatus,
     realAddr,
     isAddressCheckLoading,
     activeAccountPrice,
     isInvalidAddressOrENS,
-    isExchangeEOA,
+    isExchange,
     isOtherSmartWallet,
     isSameAddress,
+    isLoopringAddress,
+    isAddressCheckLoading,
   ]);
 
   return (
@@ -330,7 +364,9 @@ export const TransferWrap = <
             whiteSpace={"pre"}
             marginRight={1}
           >
-            {t("labelL2toL2Title")}
+            {t("labelL2toL2Title", {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            })}
           </Typography>
           <Info2Icon
             {...bindHover(popupState)}
@@ -356,7 +392,12 @@ export const TransferWrap = <
             variant={"body1"}
             whiteSpace={"pre-line"}
           >
-            <Trans i18nKey="transferDescription">
+            <Trans
+              i18nKey="transferDescription"
+              tOptions={{
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              }}
+            >
               Transfer to any valid Ethereum addresses instantly. Please make
               sure the recipient address accepts Loopring layer-2 payments
               before you proceed.
@@ -587,7 +628,7 @@ export const TransferWrap = <
           disabled={
             getDisabled ||
             transferBtnStatus === TradeBtnStatus.LOADING ||
-            isExchangeEOA ||
+            isExchange ||
             isOtherSmartWallet
           }
         >

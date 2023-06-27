@@ -12,6 +12,8 @@ declare global {
     loopringSocket: InstanceType<LoopringSocket>;
     __renderReportCall__: () => void;
     rampInstance: RampInstantSDK | undefined;
+    __ChainIdExtends: any;
+    __MapChainId: any;
   }
 
   namespace JSX {

@@ -9,27 +9,8 @@ export const ReferralImage = React.forwardRef(
     { src, width, height, ...props }: ShareReferralSvgProps,
     ref: React.ForwardedRef<SVGSVGElement>
   ) => {
-    const makeImage = React.useCallback(() => {
-      try {
-        let name: any = (src ?? "/").split("/");
-        name = name[name.length - 1];
-        // debugger;
-        // @ts-ignore-start
-        const svg: SVGElement = ref.current as SVGElement;
-
-        svg.setAttribute("name", name);
-
-        if (svg && svg.outerHTML) {
-          const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
-          svg.setAttribute(
-            "base64doc",
-            "data:image/svg+xml;base64," + base64doc
-          );
-        }
-        // @ts-ignore-end
-      } catch (error) {}
-    }, [ref]);
-
+    // let name: any = ;
+    // name = name[name.length - 1];
     const [base64, setBase64] = React.useState("");
     const convertImageToBase64 = (
       imgUrl: string,
@@ -51,7 +32,6 @@ export const ReferralImage = React.forwardRef(
     };
     convertImageToBase64(src, (dataUrl) => {
       setBase64(dataUrl);
-      makeImage();
     });
 
     return (
@@ -60,6 +40,7 @@ export const ReferralImage = React.forwardRef(
           <ShareReferralSvg
             ref={ref}
             src={base64}
+            name={(src ?? "/").split("/")?.pop()}
             width={width}
             height={height}
             {...{ ...props }}

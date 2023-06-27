@@ -1,37 +1,31 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   LoopringAPI,
   RootState,
   store,
   useAccount,
-  useAppDispatch,
-  useIsHebao,
+  useContacts,
   volumeToCount,
   volumeToCountAsBigNumber,
 } from "@loopring-web/core";
-import { ethers, utils } from "ethers";
+import { utils } from "ethers";
 import {
   RawDataTransactionItem,
+  ToastType,
   TransactionStatus,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import { createImageFromInitials } from "./genAvatar";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { AddressType, RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { useRouteMatch } from "react-router";
 import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
 import { connectProvides } from "@loopring-web/web3-provider";
-import { useDebounce } from "react-use";
-import { debounce, throttle } from "lodash";
-import { updateContacts } from "@loopring-web/core/src/stores/contacts/reducer";
-import {
-  DefaultRootState,
-  RootStateOrAny,
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import { debounce, uniqBy } from "lodash";
+import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
+import { useLocation } from "react-router-dom";
 
 export type Contact = {
   name: string;
@@ -110,16 +104,19 @@ export const useContact = () => {
   const {
     account: { accountId, apiKey, accAddress },
   } = useAccount();
-  const dispatch = useDispatch();
-  const contacts = useSelector((state: RootState) => state.contacts.contacts);
+  const cachedForAccountId = useSelector(
+    (state: RootState) => state.contacts.currentAccountId
+  );
   const { t } = useTranslation();
   const [tableHeight] = useState(
     window.innerHeight * viewHeightRatio - viewHeightOffset
   );
-  const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(undefined as number | undefined);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = Math.floor(tableHeight / RowHeight);
+  const theme = useTheme();
+  const { contacts, updateAccountId, updateContacts } = useContacts();
+  const total = contacts?.length;
   const pagination = total
     ? {
         page,
@@ -127,32 +124,30 @@ export const useContact = () => {
         total,
       }
     : undefined;
-  const theme = useTheme();
-  const loadContacts = async (offset: number) => {
-    if (!apiKey || accountId == -1) {
-      return;
-    }
-    dispatch(updateContacts(undefined));
+  const getContacts = useCallback(async () => {
+    if (cachedForAccountId === accountId) return;
+    if (!apiKey || accountId == -1) return;
+    // if (contacts && contacts.length > 0) return // Not refetch contacts if contacts were fetched and 'useCache' is true
+    updateContacts(undefined);
     setLoading(true);
-
     try {
       const allContacts = await getAllContacts(
-        offset,
+        0,
         accountId,
         apiKey,
         accAddress,
         theme.colorBase.warning
       );
-      dispatch(contacts ? updateContacts(allContacts) : updateContacts([]));
-      setTotal(allContacts.length);
+      allContacts ? updateContacts(allContacts) : updateContacts([]);
+      updateAccountId(accountId);
     } catch {
-      dispatch(updateContacts([]));
+      updateContacts([]);
     }
     setLoading(false);
-  };
+  }, [accountId, apiKey, contacts, cachedForAccountId]);
   useEffect(() => {
-    loadContacts(0);
-  }, [accountId, apiKey]);
+    getContacts();
+  }, [apiKey]);
 
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input);
@@ -162,15 +157,13 @@ export const useContact = () => {
   }, []);
   const onClickEditing = React.useCallback(
     (address: string) => {
-      dispatch(
-        updateContacts(
-          contacts!.map((x) => {
-            return {
-              ...x,
-              editing: x.address === address,
-            };
-          })
-        )
+      updateContacts(
+        contacts!.map((x) => {
+          return {
+            ...x,
+            editing: x.address === address,
+          };
+        })
       );
     },
     [contacts]
@@ -223,18 +216,16 @@ export const useContact = () => {
 
   const onInputBlue = React.useCallback(
     async (address: string) => {
-      dispatch(
-        updateContacts(
-          contacts!.map((x) => {
-            return {
-              ...x,
-              editing: false,
-            };
-          })
-        )
+      updateContacts(
+        contacts?.map((item) => {
+          return {
+            ...item,
+            editing: false,
+          };
+        })
       );
       const isHebao = await checkIsHebao(accAddress);
-      const found = contacts!.find((x) => x.address === address)!;
+      const found = contacts!.find((item) => item.address === address)!;
 
       LoopringAPI.contactAPI!.updateContact(
         {
@@ -268,16 +259,13 @@ export const useContact = () => {
   );
   const onChangeInput = React.useCallback(
     (address: string, inputValue) => {
-      // updateContacts
-      dispatch(
-        updateContacts(
-          contacts!.map((x) => {
-            return {
-              ...x,
-              name: x.address === address ? inputValue : x.name,
-            };
-          })
-        )
+      updateContacts(
+        contacts!.map((x) => {
+          return {
+            ...x,
+            name: x.address === address ? inputValue : x.name,
+          };
+        })
       );
     },
     [contacts]
@@ -305,8 +293,9 @@ export const useContact = () => {
       )
         .then((response) => {
           if (response === true) {
-            loadContacts(0);
-            // loadContacts()
+            updateContacts(
+              contacts!.filter((contact) => contact.address !== address)
+            );
             setToastInfo({
               open: true,
               isSuccess: true,
@@ -331,7 +320,7 @@ export const useContact = () => {
           setDeleteLoading(false);
         });
     },
-    [apiKey]
+    [apiKey, contacts]
   );
   const [addLoading, setAddLoading] = React.useState(false);
   const submitAddContact = React.useCallback(
@@ -387,22 +376,32 @@ export const useContact = () => {
                     apiKey
                   )
                   .then((x) => {
-                    dispatch(
-                      updateContacts(
-                        contacts?.map((x) => {
-                          if (x.address === address) {
-                            return { ...x, addressType };
-                          } else {
-                            return x;
-                          }
-                        })
-                      )
+                    updateContacts(
+                      contacts?.map((contact) => {
+                        if (contact.address === address) {
+                          return { ...contact, addressType: addressType! };
+                        } else {
+                          return contact;
+                        }
+                      })
                     );
                   });
               }
             });
           if (response === true) {
-            loadContacts(total ?? 0);
+            setLoading(true);
+            try {
+              const newContacts = await getAllContacts(
+                (total ?? 0) + 1,
+                accountId,
+                apiKey,
+                accAddress,
+                theme.colorBase.warning
+              );
+              const all = contacts ? contacts.concat(newContacts) : newContacts;
+              updateContacts(uniqBy(all, (contact) => contact.address));
+            } catch {}
+            setLoading(false);
             setToastInfo({
               open: true,
               isSuccess: true,
@@ -436,7 +435,7 @@ export const useContact = () => {
           setAddLoading(false);
         });
     },
-    [apiKey]
+    [apiKey, contacts, total]
   );
 
   const onPageChange = React.useCallback((page: number) => {
@@ -455,13 +454,13 @@ export const useContact = () => {
               ? contacts.length
               : page * pageSize
           )
-        : contacts.filter((x) => {
+        : contacts.filter((contact) => {
             return (
-              x.address.toLowerCase().includes(searchValue.toLowerCase()) ||
-              x.name.toLowerCase().includes(searchValue.toLowerCase())
+              contact.address
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              contact.name.toLowerCase().includes(searchValue.toLowerCase())
             );
-            // ? x.address.toLowerCase().includes(searchValue.toLowerCase()) || x.name.toLowerCase().includes(searchValue.toLowerCase())
-            // : true
           })),
     onClickEditing,
     onChangeInput,
@@ -502,10 +501,6 @@ export const useContactAdd = () => {
   const [toastStatus, setToastStatus] = React.useState(
     "Succuss" as "Succuss" | "Error" | "Init"
   );
-
-  const {
-    account: { accountId, apiKey },
-  } = useAccount();
 
   const onChangeName = React.useCallback((input: string) => {
     if (new TextEncoder().encode(input).length <= 48) {
@@ -610,7 +605,7 @@ type TxsFilterProps = {
   types?: sdk.UserTxTypes[] | string;
 };
 
-export function useTransactions() {
+export function useContractRecord(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount();
@@ -619,9 +614,8 @@ export function useTransactions() {
   const [txs, setTxs] = useState<RawDataTransactionItem[]>([]);
   const [txsTotal, setTxsTotal] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
-  // const [showLoading, setShowLoading] = user(false);
-  const routeMatch = useRouteMatch();
-  // routeMatch.params[0]
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const getTxnStatus = (status: string) => {
     return status === ""
@@ -636,23 +630,16 @@ export function useTransactions() {
   };
 
   const getUserTxnList = useCallback(
-    async ({
-      tokenSymbol,
-      start,
-      end,
-      limit,
-      offset,
-      types,
-    }: TxsFilterProps) => {
-      const address = routeMatch.params[0];
+    async ({ tokenSymbol, start, end, limit, offset }: TxsFilterProps) => {
+      // const address = routeMatch.params[0];
       const tokenId = tokenSymbol ? tokenMap[tokenSymbol!].tokenId : undefined;
       const response = await LoopringAPI.userAPI!.getUserBills(
         {
           accountId,
           tokenSymbol,
           tokenId,
-          fromAddress: address,
-          transferAddress: address,
+          fromAddress: searchParams?.get("contactAddress") ?? "",
+          transferAddress: searchParams?.get("contactAddress") ?? "",
           start,
           end,
           limit,
@@ -668,14 +655,14 @@ export function useTransactions() {
       ) {
         const errorItem =
           SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-        // setToastOpen({
-        //   open: true,
-        //    type: ToastType.error,
-        //   content:
-        //     "error : " + errorItem
-        //       ? t(errorItem.messageKey)
-        //       : (response as sdk.RESULT_INFO).message,
-        // });
+        setToastOpen({
+          open: true,
+          type: ToastType.error,
+          content:
+            "error : " + errorItem
+              ? t(errorItem.messageKey)
+              : (response as sdk.RESULT_INFO).message,
+        });
       } else {
         const formattedList: RawDataTransactionItem[] = (
           response as any
@@ -709,74 +696,6 @@ export function useTransactions() {
         setTxsTotal(response.totalNum);
         setShowLoading(false);
       }
-      // .then(x => {
-
-      //   debugger
-      // })
-      // .catch(x => {
-      //   debugger
-      // })
-
-      // if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
-      //   setShowLoading(true);
-      //   const response = await LoopringAPI.userAPI.getUserTxs(
-      //     {
-      //       accountId,
-      //       limit,
-      //       tokenSymbol,
-      //       start,
-      //       end,
-      //       offset,
-      //       types,
-      //     },
-      //     apiKey
-      //   );
-      //   if (
-      //     (response as sdk.RESULT_INFO).code ||
-      //     (response as sdk.RESULT_INFO).message
-      //   ) {
-      //     const errorItem =
-      //       SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-      //     setToastOpen({
-      //       open: true,
-      //        type: ToastType.error,
-      //       content:
-      //         "error : " + errorItem
-      //           ? t(errorItem.messageKey)
-      //           : (response as sdk.RESULT_INFO).message,
-      //     });
-      //   } else {
-      //     const formattedList: RawDataTransactionItem[] = response.userTxs.map(
-      //       (o) => {
-      //         const feePrecision = tokenMap
-      //           ? tokenMap[o.feeTokenSymbol].precision
-      //           : undefined;
-      //         return {
-      //           ...o,
-      //           side: o.txType as any,
-      //           amount: {
-      //             unit: o.symbol || "",
-      //             value: Number(volumeToCount(o.symbol, o.amount)),
-      //           },
-      //           fee: {
-      //             unit: o.feeTokenSymbol || "",
-      //             value: Number(
-      //               volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
-      //             ),
-      //           },
-      //           memo: o.memo || "",
-      //           time: o.timestamp,
-      //           txnHash: o.hash,
-      //           status: getTxnStatus(o.status),
-      //           feePrecision: feePrecision,
-      //         } as RawDataTransactionItem;
-      //       }
-      //     );
-      //     setTxs(formattedList);
-      //     setTxsTotal(response.totalNum);
-      //     setShowLoading(false);
-      //   }
-      // }
     },
     [accountId, apiKey, t, tokenMap]
   );
