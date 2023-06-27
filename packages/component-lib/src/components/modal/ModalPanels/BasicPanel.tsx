@@ -221,6 +221,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           whiteSpace={"pre"}
         >
           {t(title as string, {
+            layer2: L1L2_NAME_DEFINED[network].layer2,
             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
