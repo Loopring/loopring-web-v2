@@ -97,7 +97,6 @@ export const RedPacketBg = styled(Box)<
       }
 
       .open.openUnready {
-        /*ts-ignore*/
         background: url("${SoursURL}/images/redpacketLock.webp") center
           no-repeat;
         color: ${({ type }) =>
