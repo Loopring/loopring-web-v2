@@ -116,7 +116,7 @@ export const ReferralsTable = withTranslation(["tables", "common"])(
         },
         {
           key: "referee",
-          name: t("labelReferralsTableTime"),
+          name: t("labelReferralsTableReferee"),
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row, column }) => {
@@ -136,7 +136,6 @@ export const ReferralsTable = withTranslation(["tables", "common"])(
           name: t("labelReferralsTableAmount"),
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
-
           formatter: ({ row, column }) => {
             const value = row[column.key];
             const renderValue = `${value} LRC`;
