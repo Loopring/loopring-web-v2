@@ -233,12 +233,12 @@ export const getValuePrecisionThousand = (
     } else {
       result = fixed
         ? result.toFixed(fixed)
-        : toBig(result).toPrecision(precision);
+        : toBig(0).toPrecision(precision);
     }
   }
 
   if (result && !notRemoveEndZero) {
-    result = addZeroAfterDot(result);
+    result = addZeroAfterDot('0');
   }
 
   return result;
