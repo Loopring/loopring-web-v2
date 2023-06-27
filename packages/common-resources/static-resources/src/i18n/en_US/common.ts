@@ -1172,7 +1172,8 @@ export default {
   labelImportCollectionallDes: "all items under this contract",
   labelImportCollectionTitle: "Import Collection for Legacy NFT",
   labelAssetTokens: "Tokens",
-  labelAssetMyInvest: "My Investments",
+  labelAssetInvests: "My Investments",
+  labelAssetRedPacket: "Red Packets",
   labelORCreateCollection: "Or <1>Create Collection</1>",
   labelCreateLegacyCollection: "Create Legacy Collection",
   labelNoLegacyCollection: "You have no Legacy Collection, please",
@@ -1295,7 +1296,6 @@ export default {
     "Pay recipient's {{l2Symbol}} activation fee: {{value}}",
   labelL2toL2FeeWithActive: "Fee (including activation fee)",
   labelRedPacketOpen: "Open",
-  labelAssetRedPackets: "Red Packets",
   labelRedPacketTitle: "Red Packets",
   labelRedPacketTypeTokens: "Choose Tokens / NFTs",
   labelRedPacketChoose: "Choose Red Packet Type",
@@ -1803,4 +1803,7 @@ export default {
   labelReferralsTotalRefund: "Total Refunds",
   labelReferralsClaimRefund: "Claim Refunds",
   labelReferralsTotalVolume: "Total Volume",
+  labelReferralCode: "Referral Code (Optional) <1>\uFE61</1>",
+  labelReferralToolTip:
+    "Enter referral code to enjoy a three-month discount on transfer fees.",
 };

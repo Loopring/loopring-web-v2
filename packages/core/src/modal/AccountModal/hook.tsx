@@ -1960,6 +1960,9 @@ export function useAccountModalForUI({
               btnTxt: "labelDoAgain",
               param: {
                 method: t("labelL2ToL2Method", {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
                   symbol: isShowAccount?.info?.symbol,
                 }),
               },

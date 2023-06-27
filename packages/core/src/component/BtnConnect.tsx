@@ -30,6 +30,10 @@ export const WalletConnectL2Btn = withTranslation(["common"], {
   withRef: true,
 })(({ t }: any) => {
   const { status: accountStatus, account } = useAccount();
+  const { defaultNetwork } = useSettings();
+
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   // const { setShowAccount } = useOpenModals();
 
   // const {setShowAccount} = useOpenModals();
@@ -68,7 +72,12 @@ export const WalletConnectL2Btn = withTranslation(["common"], {
       }}
     >
       {label !== "" ? (
-        t(label)
+        t(label, {
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        })
       ) : (
         <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
       )}

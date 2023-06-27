@@ -394,7 +394,9 @@ export const TransferWrap = <
           >
             <Trans
               i18nKey="transferDescription"
-              tOptions={{ l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName }}
+              tOptions={{
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              }}
             >
               Transfer to any valid Ethereum addresses instantly. Please make
               sure the recipient address accepts Loopring layer-2 payments

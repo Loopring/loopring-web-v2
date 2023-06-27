@@ -12,13 +12,14 @@ import {
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import { useLocation } from "react-use";
 
 export function useUpdateAccount() {
   const { updateHW, checkHWAddr } = useWalletInfo();
-
   const { setShowAccount } = useOpenModals();
-  // const { t } = useTranslation("error");
   const { account } = useAccount();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
   const goUpdateAccount = React.useCallback(
     async ({
@@ -53,6 +54,7 @@ export function useUpdateAccount() {
           isHWAddr,
           feeInfo,
           isReset,
+          referral: searchParams?.get("referralcode"),
         });
         if (!isFirstTime && isHWAddr) {
           updateHW({ wallet: account.accAddress, isHWAddr });
