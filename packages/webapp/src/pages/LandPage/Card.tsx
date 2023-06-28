@@ -98,18 +98,22 @@ export const Card = withTranslation(["landPage", "common"], { withRef: true })(
         //     background: "var(--box-card-background)",
         //   });
         // }}
-        style={
-          {
-            // transform: "perspective(600px)",
-            // height: 480,
-            // width: isMobile ? "var(--mobile-full-panel-width)" : 400,
-            // zIndex: to([styles.zIndex], (zIndex) => zIndex),
-            // background: to([styles.background], (background) => background),
-            // boxShadow: to([styles.boxShadow], (boxShadow) => boxShadow),
-            // border: to([styles.border], (border) => border),
-            // scale: to([styles.scale, styles.zoom], (s, z) => s * z),
-          }
-        }
+        style={{
+          scale: 1,
+          zoom: 1,
+          zIndex: 10,
+          border: `1px solid ${theme.colorBase.border}`, //"var(--border-card)",
+          boxShadow: "var(--shadow3)", //theme.colorBase.boxShadow, //"var(--box-card-shadow)",
+          background: theme.mode === ThemeType.dark ? "#283485" : "#fff", //"var(--box-card-background)",
+          // transform: "perspective(600px)",
+          // height: 480,
+          // width: isMobile ? "var(--mobile-full-panel-width)" : 400,
+          // zIndex: to([styles.zIndex], (zIndex) => zIndex),
+          // background: to([styles.background], (background) => background),
+          // boxShadow: to([styles.boxShadow], (boxShadow) => boxShadow),
+          // border: to([styles.border], (border) => border),
+          // scale: to([styles.scale, styles.zoom], (s, z) => s * z),
+        }}
       >
         <Box marginTop={4}>{icon}</Box>
         <Box
