@@ -4381,10 +4381,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@loopring-web/loopring-sdk@3.4.13":
-  version "3.4.13"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.4.13.tgz#fa26dbf53a50f9ff2d7ab288f42321df71bed19c"
-  integrity sha512-mTQNuP+OlsI+Hp8xm3vcvoO9VwQ6xPw/Ba51B68u/VooWfb46x75TZv20HprY18ylxvkGOStPhSZNP0MXKpkuQ==
+"@loopring-web/loopring-sdk@3.4.14":
+  version "3.4.14"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.4.14.tgz#1969edfb9002f5f1bef84d23f8bdde867c0e7210"
+  integrity sha512-iwcPmjYykoqlBZi5ysPgpcPWgvocLryWUcZAD6mOSKqFjQzUyM0zJm+mrdBGsUGqx4mw9d/Zx2V04cxeelnRYQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -7309,6 +7309,13 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/qrcode-svg/-/qrcode-svg-1.1.1.tgz#86c1b5d0e50d9e4eecd2d75632eb46b311a116e8"
   integrity sha512-uTuEgFXMknpun//Jj6b1R8T8LiMi9fNpH+cnhZr4b7col2HHTMmjYfm/WOZ7nzjuGpk+oTrpHhePe1qlWtHWTA==
+
+"@types/qrcode.react@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/qrcode.react/-/qrcode.react-1.0.2.tgz#f892432cc41b5dac52e3ca8873b717c8bfea6002"
+  integrity sha512-I9Oq5Cjlkgy3Tw7krCnCXLw2/zMhizkTere49OOcta23tkvH0xBTP0yInimTh0gstLRtb8Ki9NZVujE5UI6ffQ==
+  dependencies:
+    "@types/react" "*"
 
 "@types/qs@^6.9.5":
   version "6.9.7"
@@ -12045,6 +12052,11 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
+copy-text-to-clipboard@^3.0.1:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/copy-text-to-clipboard/-/copy-text-to-clipboard-3.1.0.tgz#6bf40deef0a51ac6858efb0d76ded2c6d6a15059"
+  integrity sha512-PFM6BnjLnOON/lB3ta/Jg7Ywsv+l9kQGD4TWDCSlRBGmqnnTM5MrDkhAFgw+8HZt0wW6Q2BBE4cmy9sq+s9Qng==
+
 copy-to-clipboard@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/copy-to-clipboard/-/copy-to-clipboard-3.3.1.tgz#115aa1a9998ffab6196f93076ad6da3b913662ae"
@@ -12101,6 +12113,11 @@ core-js@^3.0.4, core-js@^3.5.0, core-js@^3.6.5, core-js@^3.8.2:
   version "3.21.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.21.1.tgz#f2e0ddc1fc43da6f904706e8e955bc19d06a0d94"
   integrity sha512-FRq5b/VMrWlrmCzwRrpDYNxyHP9BcAZC+xHJaqTgIE5091ZV1NTmyh0sGOg5XqpnHvR0svdy0sv1gWA1zmhxig==
+
+core-js@^3.11.0:
+  version "3.31.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.31.0.tgz#4471dd33e366c79d8c0977ed2d940821719db344"
+  integrity sha512-NIp2TQSGfR6ba5aalZD+ZQ1fSxGhDo/s1w0nx3RYzf2pnJxt7YynxFlFScP6eV7+GZsKO95NSjGxyJsU3DZgeQ==
 
 core-util-is@1.0.2:
   version "1.0.2"
@@ -21505,6 +21522,11 @@ multipipe@^1.0.2:
     duplexer2 "^0.1.2"
     object-assign "^4.1.0"
 
+mutation-observer@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/mutation-observer/-/mutation-observer-1.0.3.tgz#42e9222b101bca82e5ba9d5a7acf4a14c0f263d0"
+  integrity sha512-M/O/4rF2h776hV7qGMZUH3utZLO/jK7p8rnNgGkjKUw8zCGjRQPxB8z6+5l8+VjRUQ3dNYu4vjqXYLr+U8ZVNA==
+
 mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
@@ -29084,6 +29106,16 @@ vary@^1, vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+
+vconsole@^3.15.1:
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/vconsole/-/vconsole-3.15.1.tgz#569a8ab15f353259527bbcf004f02946b4482cff"
+  integrity sha512-KH8XLdrq9T5YHJO/ixrjivHfmF2PC2CdVoK6RWZB4yftMykYIaXY1mxZYAic70vADM54kpMQF+dYmvl5NRNy1g==
+  dependencies:
+    "@babel/runtime" "^7.17.2"
+    copy-text-to-clipboard "^3.0.1"
+    core-js "^3.11.0"
+    mutation-observer "^1.0.3"
 
 vendors@^1.0.0:
   version "1.0.4"
