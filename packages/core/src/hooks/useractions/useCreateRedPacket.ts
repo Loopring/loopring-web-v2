@@ -89,18 +89,19 @@ export const useCreateRedPacket = <
     useModalData();
   const { account, status: accountStatus } = useAccount();
   const { checkHWAddr, updateHW } = useWalletInfo();
-  const feeProps =
-    redPacketOrder.tradeType === "TOKEN"
-      ? {
-          requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
-          extraType: 1,
-        }
-      : {
-          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
-          tokenAddress: redPacketOrder?.tokenAddress,
-          extraType: 1,
-          isNFT: true,
-        };
+  const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+  const feeProps = isToken
+    ? {
+        requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+        extraType: 1,
+      }
+    : {
+        requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+        tokenAddress: redPacketOrder?.tokenAddress,
+        extraType: 1,
+        isNFT: true,
+      };
 
   const {
     chargeFeeTokenList,
@@ -165,8 +166,8 @@ export const useCreateRedPacket = <
         return;
       }
       const walletMap = makeWalletLayer2(true).walletMap ?? {};
-      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
-        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+      const isToken = value === RedPacketOrderType.TOKEN || 
+        (value === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
       if (isToken && !redPacketOrder.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap);
         for (let key in keys) {
@@ -553,7 +554,9 @@ export const useCreateRedPacket = <
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
             }
-          );
+          ).catch(e => {
+            debugger
+          })
 
           myLog("submit sendLuckTokenSend:", response);
           if (
@@ -716,6 +719,7 @@ export const useCreateRedPacket = <
 
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isHardwareRetry: boolean = false) => {
+      debugger
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const redPacketOrder = store.getState()._router_modalData
         .redPacketOrder as T;

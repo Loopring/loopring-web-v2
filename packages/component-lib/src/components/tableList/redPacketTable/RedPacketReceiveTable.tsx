@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import {
   BoxNFT,
   Button,
   Column,
   NftImage,
+  NftImageStyle,
   Table,
   TablePagination,
 } from "../../basic-lib";
@@ -79,6 +80,8 @@ const TableStyled = styled(Table)<{ isUnClaimedNFT: boolean, isNFT: boolean }>`
     text-align: center;
   }
 ` as any;
+
+
 export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
   <R extends RawDataRedPacketReceivesItem>(
     props: RedPacketReceiveTableProps<R> & WithTranslation
@@ -132,16 +135,19 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
       };
     }, [tokenType, showActionableRecords]);
     const theme = useTheme()
-    const fromBlindboxTag = <img 
-      width={24} 
-      height={24} 
-      style={{marginLeft: `${theme.unit}px`}}
-      src={
-      theme.mode === 'dark'
-        ? sdk.SoursURL + "/images/from_blindbox_dark.png"
-        : sdk.SoursURL + "/images/from_blindbox_light.png"
-      }
-    />
+    
+    const fromBlindboxTag = <Tooltip title={<>{t("labelRedpacketFromBlindbox")}</>}>
+      <img
+        width={24}
+        height={24}
+        style={{ marginLeft: `${theme.unit}px` }}
+        src={
+          theme.mode === 'dark'
+            ? sdk.SoursURL + "/images/from_blindbox_dark.png"
+            : sdk.SoursURL + "/images/from_blindbox_light.png"
+        }
+      />
+    </Tooltip>
     const getColumnModeTransactionUnclaimedNFT = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -167,13 +173,15 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                     height={RowConfig.rowHeight + "px"}
                     width={RowConfig.rowHeight + "px"}
                     padding={1 / 4}
-                    style={{ background: "var(--field-opacity)" }}
                   >
                     {metadata?.imageSize && (
-                      <NftImage
-                        alt={metadata?.base?.name}
-                        onError={() => undefined}
+                      <NftImageStyle
                         src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                        style={{
+                          width: `${theme.unit * 3}px`,
+                          height: `${theme.unit * 3}px`,
+                          borderRadius: "4px"
+                        }}
                       />
                     )}
                   </Box>
@@ -301,13 +309,15 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                       height={RowConfig.rowHeight + "px"}
                       width={RowConfig.rowHeight + "px"}
                       padding={1 / 4}
-                      style={{ background: "var(--field-opacity)" }}
                     >
                       {metadata?.imageSize && (
-                        <NftImage
-                          alt={metadata?.base?.name}
-                          onError={() => undefined}
+                        <NftImageStyle
                           src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                          style={{
+                            width: `${theme.unit * 3}px`,
+                            height: `${theme.unit * 3}px`,
+                            borderRadius: "4px"
+                          }}
                         />
                       )}
                     </Box>

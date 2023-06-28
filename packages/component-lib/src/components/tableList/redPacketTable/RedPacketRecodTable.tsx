@@ -5,6 +5,7 @@ import {
   BoxNFT,
   Column,
   NftImage,
+  NftImageStyle,
   Table,
   TablePagination,
 } from "../../basic-lib";
@@ -30,6 +31,7 @@ import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
 import moment from "moment";
 import { ColumnCoinDeep } from "../assetsTable";
+import { useTheme } from "@emotion/react";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -119,6 +121,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       },
       [updateData, tokenType]
     );
+    const theme = useTheme()
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -154,13 +157,15 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
                       height={RowConfig.rowHeight + "px"}
                       width={RowConfig.rowHeight + "px"}
                       padding={1 / 4}
-                      style={{ background: "var(--field-opacity)" }}
                     >
                       {metadata?.imageSize && (
-                        <NftImage
-                          alt={metadata?.base?.name}
-                          onError={() => undefined}
+                        <NftImageStyle
                           src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                          style={{
+                            width: `${theme.unit * 3}px`,
+                            height: `${theme.unit * 3}px`,
+                            borderRadius: "4px"
+                          }}
                         />
                       )}
                     </Box>
@@ -194,13 +199,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           key: "Amount",
           name: t("labelRecordAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            if (row.rawData.isNft) {
-              return <>{`${row.totalAmount}`}</>;
-            } else {
-              return getValuePrecisionThousand(
-                sdk.toBig(row.totalAmount)
-              )
-            }
+            return <>{row.totalAmount}</>
           },
         },
         ...(tableType !== 'blindbox' ? [{

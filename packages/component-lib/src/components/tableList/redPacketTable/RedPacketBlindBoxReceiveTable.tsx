@@ -6,6 +6,7 @@ import {
   Button,
   Column,
   NftImage,
+  NftImageStyle,
   Table,
   TablePagination,
 } from "../../basic-lib";
@@ -31,6 +32,7 @@ import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ColumnCoinDeep } from "../assetsTable";
 import TextTooltip from "../../text-tooltip";
+import { useTheme } from "@emotion/react";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -105,6 +107,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         },
       });
     }, globalSetup.wait);
+    const theme = useTheme()
 
     const handlePageChange = React.useCallback(
       ({ page = 1 }: any) => {
@@ -145,13 +148,15 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                     height={RowConfig.rowHeight + "px"}
                     width={RowConfig.rowHeight + "px"}
                     padding={1 / 4}
-                    style={{ background: "var(--field-opacity)" }}
                   >
                     {metadata?.imageSize && (
-                      <NftImage
-                        alt={metadata?.base?.name}
-                        onError={() => undefined}
-                        src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                      <NftImageStyle
+                        src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}  
+                        style={{
+                          width: `${theme.unit * 3}px`,
+                          height: `${theme.unit * 3}px`,
+                          borderRadius: "4px"
+                        }}
                       />
                     )}
                   </Box>
@@ -310,13 +315,15 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                     height={RowConfig.rowHeight + "px"}
                     width={RowConfig.rowHeight + "px"}
                     padding={1 / 4}
-                    style={{ background: "var(--field-opacity)" }}
                   >
                     {metadata?.imageSize && (
-                      <NftImage
-                        alt={metadata?.base?.name}
-                        onError={() => undefined}
+                      <NftImageStyle
                         src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                        style={{
+                          width: `${theme.unit * 3}px`,
+                          height: `${theme.unit * 3}px`,
+                          borderRadius: "4px"
+                        }}
                       />
                     )}
                   </Box>

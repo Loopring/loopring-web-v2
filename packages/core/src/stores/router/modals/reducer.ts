@@ -63,7 +63,7 @@ const initialRedPacketState: RedPacketOrderData<any> = {
     mode: sdk.LuckyTokenClaimType.COMMON,
     scope: sdk.LuckyTokenViewType.PRIVATE,
   },
-  tradeType: RedPacketOrderType.TOKEN,
+  tradeType: RedPacketOrderType.BlindBox,
   __request__: undefined,
   isNFT: false,
 };
