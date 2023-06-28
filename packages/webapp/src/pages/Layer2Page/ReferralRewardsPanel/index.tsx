@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useAccount, useSubmitBtn } from "@loopring-web/core";
+import { useAccount, useSubmitBtn, useToast } from "@loopring-web/core";
 import {
   AccountStatus,
   copyToClipBoard,
@@ -382,9 +382,10 @@ const ReferView = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
   const { defaultNetwork } = useSettings();
+  const { toastOpen, setToastOpen, closeToast } = useToast();
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
-  const refundData = useRefundTable();
-  const referralsData = useReferralsTable();
+  const refundData = useRefundTable(setToastOpen);
+  const referralsData = useReferralsTable(setToastOpen);
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const link = `${WalletSite}?referralcode=${account.accountId}`;
@@ -410,6 +411,12 @@ const ReferView = () => {
           setCopyToastOpen(false);
         }}
         severity={ToastType.success}
+      />
+      <Toast
+        alertText={toastOpen?.content ?? ""}
+        open={toastOpen?.open ?? false}
+        autoHideDuration={TOAST_TIME}
+        onClose={closeToast}
       />
       <ReferHeader handleCopy={handleCopy} link={link} />
       <Container>
@@ -470,7 +477,9 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {referralsData.summary?.totalValue}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -483,7 +492,10 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {" "}
+                        {referralsData.summary?.claimableValue}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -496,7 +508,9 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {referralsData.summary?.downsidesNum}
+                      </Typography>
                     </Typography>
                   </Box>
 
@@ -530,7 +544,9 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {refundData.summary?.totalValue}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -543,7 +559,9 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {refundData.summary?.claimableValue}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -556,7 +574,9 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {refundData.summary?.tradeNum}
+                      </Typography>
                     </Typography>
                   </Box>
                   <RefundTable
