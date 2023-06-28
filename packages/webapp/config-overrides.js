@@ -155,26 +155,21 @@ module.exports = override(
             `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
             `node_modules/micro-ftch`
           ),
-          // path.resolve(
-          //   __dirname,
-          //   `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-          //   `node_modules/react-spring`
-          // ),
-          // path.resolve(
-          //   __dirname,
-          //   `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-          //   `node_modules/@react-spring`
-          // ),
+          path.resolve(
+            __dirname,
+            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+            `node_modules/react-spring`
+          ),
+          path.resolve(
+            __dirname,
+            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+            `node_modules/@react-spring`
+          ),
           path.resolve(
             __dirname,
             `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
             `node_modules/@loopring-web/loopring-sdk`
           ),
-          // path.resolve(
-          //   __dirname,
-          //   `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-          //   `node_modules/@react-spring/core`
-          // ),
         ],
       ];
       console.log(
