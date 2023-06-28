@@ -171,5 +171,5 @@ export const RefundTable = withTranslation(["tables", "common"])(
         )}
       </TableWrapperStyled>
     );
-  };
+  }
 );
