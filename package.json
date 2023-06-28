@@ -123,6 +123,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
+    "@babel/helper-builder-react-jsx": "^7.10.4",
+    "@babel/helper-builder-react-jsx-experimental": "^7.12.11",
+    "@babel/preset-env": "^7.14.7",
     "@babel/eslint-parser": "^7.13.14",
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/plugin-syntax-bigint": "^7.8.3",

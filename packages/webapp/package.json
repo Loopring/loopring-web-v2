@@ -56,9 +56,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/helper-builder-react-jsx": "^7.10.4",
-    "@babel/helper-builder-react-jsx-experimental": "^7.12.11",
-    "@babel/preset-env": "^7.14.7",
     "@types/classnames": "^2.2.11",
     "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.168",
