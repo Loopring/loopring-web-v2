@@ -104,58 +104,72 @@ module.exports = override(
       babelLoader.include = babelLoader.include.replace("/webapp/src", "");
       babelLoader.include = [
         babelLoader.include,
-        ...[
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@web3modal`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@walletconnect`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@metamask`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@scure`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@noble`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@ethereumjs`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/micro-ftch`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/react-spring`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@react-spring`
-          ),
-          path.resolve(
-            __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
-            `node_modules/@loopring-web/loopring-sdk`
-          ),
-        ],
+        ...(process.env.NODE_ENV === "development"
+          ? [
+              "../../" + `node_modules/@web3modal`,
+              "../../" + `node_modules/@walletconnect`,
+              "../../" + `node_modules/@metamask`,
+              "../../" + `node_modules/@scure`,
+              "../../" + `node_modules/@noble`,
+              "../../" + `node_modules/@ethereumjs`,
+              "../../" + `node_modules/micro-ftch`,
+              "../../" + `node_modules/react-spring`,
+              "../../" + `node_modules/@react-spring`,
+              "../../" + `node_modules/@loopring-web/loopring-sdk`,
+            ]
+          : []),
+        // ...[
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@web3modal`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@walletconnect`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@metamask`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@scure`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@noble`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@ethereumjs`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/micro-ftch`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/react-spring`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@react-spring`
+        //   ),
+        //   path.resolve(
+        //     __dirname,
+        //     `${process.env.NODE_ENV === "development" ? "../../" : "./"}`,
+        //     `node_modules/@loopring-web/loopring-sdk`
+        //   ),
+        // ],
       ];
       console.log(
         "-----> enter setConfig!!!!!!! include:",

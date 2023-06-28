@@ -52,7 +52,7 @@
     "react-redux-firebase": "^3.11.0",
     "react-resizable": "^3.0.5",
     "react-scripts": "4.0.3",
-    "react-spring": "^9.7.1",
+    "react-spring": "^9.4.4",
     "react-swipeable-views": "^0.13.9",
     "react-use": "^17.4.0",
     "react-virtualized": "^9.22.5",
@@ -67,7 +67,7 @@
     "three": "^0.149.0",
     "vconsole": "^3.15.1",
     "voca": "^1.4.1",
-    "web3": "^4.0.1"
+    "web3": "^1.8.0"
   },
   "build": {
     "files": [
