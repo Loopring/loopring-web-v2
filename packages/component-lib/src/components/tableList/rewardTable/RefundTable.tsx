@@ -106,9 +106,8 @@ export const RefundTable = withTranslation(["tables", "common"])(
           name: t("labelRefundTableTime"),
           headerCellClass: "textAlignLeft",
           cellClass: "textAlignLeft",
-          formatter: ({ row, column }) => {
-            const value = row[column.key];
-            const renderValue = Number.isFinite(value)
+          formatter: ({ row }) => {
+            const renderValue = Number.isFinite(row.startAt)
               ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
               : EmptyValueTag;
             return (
@@ -123,9 +122,9 @@ export const RefundTable = withTranslation(["tables", "common"])(
           name: t("labelRefundTableAmount"),
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
-          formatter: ({ row, column }) => {
-            const value = row[column.key];
-            const renderValue = `${value} LRC`;
+          formatter: ({ row }) => {
+            // const value = row[column.key];
+            const renderValue = `${row.amount} LRC`;
             // const renderValue = `${getValuePrecisionThousand(valueFrom, undefined, undefined, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo, precisionTo)} ${keyTo}`
             return <div className="rdg-cell-value">{renderValue}</div>;
           },

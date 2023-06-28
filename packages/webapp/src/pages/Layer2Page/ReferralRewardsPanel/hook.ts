@@ -254,8 +254,8 @@ export function useReferralsTable<R = ReferralsRow>(
           ) {
             const errorItem =
               SDK_ERROR_MAP_TO_UI[
-              (response as sdk.RESULT_INFO)?.code ?? 700001
-                ];
+                (response as sdk.RESULT_INFO)?.code ?? 700001
+              ];
             setToastOpen({
               open: true,
               type: ToastType.error,
@@ -272,16 +272,16 @@ export function useReferralsTable<R = ReferralsRow>(
               ...response,
               totalValue: getValuePrecisionThousand(
                 response.totalProfit,
-                tokenMap[ "LRC" ].precision,
-                tokenMap[ "LRC" ].precision,
-                tokenMap[ "LRC" ].precision,
+                tokenMap["LRC"].precision,
+                tokenMap["LRC"].precision,
+                tokenMap["LRC"].precision,
                 false
               ),
               claimableValue: getValuePrecisionThousand(
                 response.claimableProfit,
-                tokenMap[ "LRC" ].precision,
-                tokenMap[ "LRC" ].precision,
-                tokenMap[ "LRC" ].precision,
+                tokenMap["LRC"].precision,
+                tokenMap["LRC"].precision,
+                tokenMap["LRC"].precision,
                 false
               ),
             });

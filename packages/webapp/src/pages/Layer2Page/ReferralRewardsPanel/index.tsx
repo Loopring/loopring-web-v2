@@ -478,7 +478,7 @@ const ReferView = () => {
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {referralsData.summary?.totalValue}
+                        {referralsData.summary?.totalValue + " LRC"}
                       </Typography>
                     </Typography>
                     <Typography
@@ -494,7 +494,7 @@ const ReferView = () => {
                         color={"textPrimary"}
                       >
                         {" "}
-                        {referralsData.summary?.claimableValue}
+                        {referralsData.summary?.claimableValue + " LRC"}
                       </Typography>
                     </Typography>
                     <Typography
@@ -539,13 +539,13 @@ const ReferView = () => {
                       variant={"body1"}
                       paddingRight={2}
                     >
-                      {t("labelReferralsTotalRefund")}
+                      {t("labelReferralsTotalRefund" + " LRC")}
                       <Typography
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {refundData.summary?.totalValue}
+                        {refundData.summary?.totalValue + " LRC"}
                       </Typography>
                     </Typography>
                     <Typography
@@ -560,7 +560,7 @@ const ReferView = () => {
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {refundData.summary?.claimableValue}
+                        {refundData.summary?.claimableValue + " LRC"}
                       </Typography>
                     </Typography>
                     <Typography
