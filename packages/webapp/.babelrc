@@ -1,19 +1,10 @@
 {
   "presets": [
     [
-      "@babel/env",
-      {
-        "targets": [
-          "last 2 versions"
-        ]
-      }
-    ],
-    [
-      "@babel/preset-react",
+      "@babel/react",
       {
         "runtime": "automatic"
       }
     ]
-  ],
-  "plugins": ["@babel/plugin-transform-typescript"]
+  ]
 }

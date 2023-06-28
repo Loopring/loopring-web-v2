@@ -12,7 +12,11 @@ import moment from "moment";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import _ from "lodash";
+import * as sdk from "@loopring-web/loopring-sdk";
 
+export type RefundRow = sdk.ReferSelf & {
+  amount: { unit: string; value: string };
+};
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   display: flex;
   flex-direction: column;
@@ -53,7 +57,7 @@ const TableStyled = styled(Table)`
 ` as any;
 
 export const RefundTable = withTranslation(["tables", "common"])(
-  <R extends any>(
+  <R extends RefundRow>(
     props: {
       rawData: R[];
       pagination: {
@@ -167,5 +171,5 @@ export const RefundTable = withTranslation(["tables", "common"])(
         )}
       </TableWrapperStyled>
     );
-  }
+  };
 );

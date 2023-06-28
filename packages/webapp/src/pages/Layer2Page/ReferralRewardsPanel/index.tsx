@@ -26,12 +26,14 @@ import {
 } from "@loopring-web/common-resources";
 import {
   Button,
+  RefundTable,
   ReferralImage,
   ReferralsTable,
   Toast,
   ToastType,
   useSettings,
 } from "@loopring-web/component-lib";
+import { useReferralsTable, useRefundTable } from "./hook";
 
 const BoxStyled = styled(Box)`
   ol {
@@ -87,6 +89,7 @@ const ReferHeader = ({
   const { t } = useTranslation(["common", "layout"]);
   const { defaultNetwork } = useSettings();
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   // const [image, setImage] = React.useState<any[]>([]);
   const [imageList, setImageList] = React.useState<{
     referralBanners: { en: string[] };
@@ -380,6 +383,8 @@ const ReferView = () => {
   const { t } = useTranslation();
   const { defaultNetwork } = useSettings();
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const refundData = useRefundTable();
+  const referralsData = useReferralsTable();
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const link = `${WalletSite}?referralcode=${account.accountId}`;
@@ -395,7 +400,6 @@ const ReferView = () => {
     setCopyToastOpen(true);
   };
 
-  const total = 11;
   return (
     <>
       <Toast
@@ -498,13 +502,13 @@ const ReferView = () => {
 
                   <ReferralsTable
                     {...{
-                      rawData: [],
+                      rawData: referralsData.record,
                       pagination: {
                         pageSize: 8,
-                        total,
+                        total: referralsData.recordTotal,
                       },
-                      getList: (props: { limit: number; offset: number }) => {},
-                      showloading: false,
+                      getList: referralsData.getReferralsTableList,
+                      showloading: referralsData.showLoading,
                     }}
                   />
                 </Box>
@@ -555,15 +559,15 @@ const ReferView = () => {
                       ></Typography>
                     </Typography>
                   </Box>
-                  <ReferralsTable
+                  <RefundTable
                     {...{
-                      rawData: [],
+                      rawData: refundData.record,
                       pagination: {
                         pageSize: 8,
-                        total,
+                        total: refundData.recordTotal,
                       },
-                      getList: (props: { limit: number; offset: number }) => {},
-                      showloading: false,
+                      getList: refundData.getRefundTableList,
+                      showloading: refundData.showLoading,
                     }}
                   />
                 </Box>

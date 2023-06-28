@@ -12,7 +12,11 @@ import moment from "moment";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import _ from "lodash";
+import * as sdk from "@loopring-web/loopring-sdk";
 
+export type ReferralsRow = sdk.ReferStatistic & {
+  amount: { unit: string; value: string };
+};
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   display: flex;
   flex-direction: column;
