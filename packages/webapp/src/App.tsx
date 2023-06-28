@@ -50,19 +50,19 @@ const App = () => {
     <>
       <GlobalStyles
         styles={css`
-      ${globalCss({ theme })};
+          ${globalCss({ theme })};
 
-      body {
-        ${
-          theme.mode === "dark"
-            ? `
+          body {
+            ${
+              theme.mode === "dark"
+                ? `
             color: ${theme.colorBase.textPrimary};
           `
-            : ``
-        }
+                : ``
+            }
 
 
-      }
+          }
 
           body:before {
             ${
@@ -72,8 +72,8 @@ const App = () => {
        `
                 : ""
             }
-      }
-    }`}
+          }
+        }`}
       />
 
       <Router>
