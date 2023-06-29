@@ -122,6 +122,15 @@
       "**/babel-eslint"
     ]
   },
+  "prettier": {
+    "semi": false,
+    "tabWidth": 2,
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "jsxSingleQuote": true,
+    "bracketSpacing": true
+  },
   "devDependencies": {
     "@babel/core": "^7.13.14",
     "@babel/eslint-parser": "^7.13.14",
@@ -160,6 +169,7 @@
     "csp-html-webpack-plugin": "^5.1.0",
     "csv-parse": "^5.1.0",
     "eslint": "^7.23.0",
+    "prettier": "2.8.8",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-flowtype": "^5.4.0",
     "eslint-plugin-import": "^2.22.1",

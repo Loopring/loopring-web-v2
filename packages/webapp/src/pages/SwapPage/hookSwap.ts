@@ -870,13 +870,6 @@ export const useSwap = <
             }`,
             "sell"
           );
-          // resetTradeCalcData(
-          //   _tradeData,
-          //   `${_tradeData?.sell?.belong ?? `#null`}-${
-          //     _tradeData?.buy?.belong ?? `#null`
-          //   }`,
-          //   "sell"
-          // );
         } else {
           reCalculateDataWhenValueChange(
             _tradeData,
@@ -895,13 +888,6 @@ export const useSwap = <
             }`,
             "buy"
           );
-          // resetTradeCalcData(
-          //   _tradeData,
-          //   `${_tradeData?.sell?.belong ?? `#null`}-${
-          //     _tradeData?.buy?.belong ?? `#null`
-          //   }`,
-          //   "buy"
-          // );
         } else {
           reCalculateDataWhenValueChange(
             _tradeData,
