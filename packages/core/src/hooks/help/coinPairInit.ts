@@ -30,8 +30,8 @@ export function coinPairInit({
     _tradeCalcData.coinBuy === "undefined"
   ) {
     // @ts-ignore
-    if (tokenMap && tokenMap[_tradeCalcData.coinSell].tradePairs) {
-      _tradeCalcData.coinBuy = tokenMap[_tradeCalcData.coinSell].tradePairs[0];
+    if (tokenMap && tokenMap[_tradeCalcData.coinSell]?.tradePairs) {
+      _tradeCalcData.coinBuy = tokenMap[_tradeCalcData.coinSell]?.tradePairs[0];
     } else {
       _tradeCalcData.coinSell = "LRC";
       _tradeCalcData.coinBuy = "ETH";

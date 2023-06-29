@@ -266,17 +266,18 @@ export const RedPacketQRCode = ({
     image: `${SoursURL + "svg/loopring.svg"}`,
     dotsOptions: {
       gradient: {
-        type: 'linear',
+        type: "linear",
         rotation: 45,
-        colorStops: [{
-          offset: 0,
-          color: '#4169FF' // hardcode for export png
-        },
-        {
-          offset: 1,
-          color: '#000'
-        }
-      ]
+        colorStops: [
+          {
+            offset: 0,
+            color: "#4169FF", // hardcode for export png
+          },
+          {
+            offset: 1,
+            color: "#000",
+          },
+        ],
       },
       type: "dots",
     },
@@ -288,11 +289,11 @@ export const RedPacketQRCode = ({
       margin: 4,
     },
     cornersSquareOptions: {
-      type: 'extra-rounded'
+      type: "extra-rounded",
     },
     cornersDotOptions: {
-      type: 'square'
-    }
+      type: "square",
+    },
   });
   const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
 

@@ -36,6 +36,13 @@ export const LOOPRING_DOCUMENT = "https://loopring.io/#/document/";
 
 //
 //
+export enum Layer2RouterID {
+  security = "security",
+  vip = "vip",
+  contact = "contact",
+  referralrewards = "referralrewards",
+  forcewithdraw = "forcewithdraw",
+}
 export const profile = {
   security: [
     {
@@ -47,16 +54,6 @@ export const profile = {
       },
     },
   ],
-  // reward: [
-  //   {
-  //     icon: RewardIcon,
-  //     router: { path: "/layer2/rewards" },
-  //     label: {
-  //       id: "rewards",
-  //       i18nKey: "labelReward",
-  //     },
-  //   },
-  // ],
   vip: [
     {
       icon: VipIcon,
@@ -77,6 +74,16 @@ export const profile = {
       },
     },
   ],
+  // referralrewards: [
+  //   {
+  //     icon: RewardIcon,
+  //     router: { path: "/referralrewards" },
+  //     label: {
+  //       id: "referralrewards",
+  //       i18nKey: "labelReferralReward",
+  //     },
+  //   },
+  // ],
 };
 
 export enum ButtonComponentsMap {

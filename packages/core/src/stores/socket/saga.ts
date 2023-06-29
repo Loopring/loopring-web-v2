@@ -29,7 +29,7 @@ const getSocket = async ({
   socket: any;
   apiKey: string;
 }) => {
-  await (window as any).loopringSocket.socketSendMessage({ socket, apiKey });
+  await(window as any).loopringSocket.socketSendMessage({ socket, apiKey });
   myLog("socketStatus get", socket);
   return;
 };
