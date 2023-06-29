@@ -119,7 +119,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           },
         });
       },
-      [updateData, tokenType]
+      [updateData, tableType]
     );
     const theme = useTheme()
     const getColumnModeTransaction = React.useCallback(
@@ -279,7 +279,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [tokenType]);
+    }, [tokenType, tableType]);
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),

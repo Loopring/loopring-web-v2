@@ -711,19 +711,25 @@ export const CreateRedPacketStepWrap = withTranslation()(
               endMinDateTime={endMinDateTime}
               endMaxDateTime={endMaxDateTime}
               onEndChange={(m) => {
-                const maximunTimestamp = startDateTime
-                  ? moment(startDateTime)
+                if (startDateTime && m && startDateTime?.toDate().getTime() > m?.toDate().getTime()) {
+                  handleOnDataChange({
+                    validUntil: endDateTime,
+                  } as unknown as Partial<T>);
+                } else {
+                  const maximunTimestamp = startDateTime
+                    ? moment(startDateTime)
                       .add(timeRangeMaxInSeconds, "seconds")
                       .toDate()
                       .getTime()
-                  : 0;
-                handleOnDataChange({
-                  validUntil: m
-                    ? m.toDate().getTime() > maximunTimestamp
-                      ? maximunTimestamp
-                      : m.toDate().getTime()
-                    : undefined,
-                } as unknown as Partial<T>);
+                    : 0;
+                  handleOnDataChange({
+                    validUntil: m
+                      ? m.toDate().getTime() > maximunTimestamp
+                        ? maximunTimestamp
+                        : m.toDate().getTime()
+                      : undefined,
+                  } as unknown as Partial<T>);
+                }
               }}
               customeEndInputPlaceHolder={
                 tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX

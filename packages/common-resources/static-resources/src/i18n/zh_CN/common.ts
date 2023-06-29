@@ -1761,4 +1761,5 @@ export default {
   labelOrderCancelOrder: "Cancel",
   
   labelRedpacketTotalReward: "Total {{amount}}",
+  labelRedpacketCantOpen: "Now is not the time to open",
 };

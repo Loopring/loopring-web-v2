@@ -1931,13 +1931,13 @@ export const RedPacketBlindBoxDetail = ({
                     </Typography>
                 ) : (
                   <>
-                    <Typography marginTop={3} variant={"h2"} color={theme.colorBase.redPacketText1}>
+                    <Typography marginTop={3} variant={"h2"} color={RedPacketColorConfig.default.colorTop}>
                       {wonInfo.won 
                         ? `${wonInfo.amount} ${wonInfo.symbol}`
                         : "--"
                       } 
                     </Typography>
-                    <Typography variant={"h4"} color={theme.colorBase.redPacketText1}>{t("labelRedpacketTotalReward", {amount: `${wonInfo.total} ${wonInfo.symbol}`})} </Typography>
+                    <Typography variant={"h4"} color={RedPacketColorConfig.default.colorTop}>{t("labelRedpacketTotalReward", {amount: `${wonInfo.total} ${wonInfo.symbol}`})} </Typography>
                   </>
                 )
               )}

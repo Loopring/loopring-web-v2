@@ -24,6 +24,7 @@ import {
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";
+import moment from "moment";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined as any,
@@ -58,6 +59,7 @@ const initialRedPacketState: RedPacketOrderData<any> = {
   balance: 0,
   fee: undefined,
   validSince: Date.now(),
+  validUntil: moment().add('days', 1).toDate().getTime(),
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.COMMON,
@@ -72,6 +74,7 @@ const initialRedPacketNFTState: RedPacketOrderData<any> = {
   tradeValue: 0,
   fee: undefined,
   validSince: Date.now(),
+  validUntil: moment().add('days', 1).toDate().getTime(),
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.RELAY,
@@ -86,6 +89,7 @@ const initialBlindBoxState: RedPacketOrderData<any> = {
   tradeValue: 0,
   fee: undefined,
   validSince: Date.now(),
+  validUntil: moment().add('days', 1).toDate().getTime(),
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.BLIND_BOX,

@@ -53,6 +53,7 @@ import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redPacket";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import moment from "moment";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -181,7 +182,7 @@ export const useCreateRedPacket = <
               balance: walletInfo?.count,
               memo: "",
               numbers: undefined,
-              validUntil: undefined,
+              validUntil: moment().add('days', 1).toDate().getTime(),
               validSince: Date.now(),
               tradeType: value,
             } as unknown as T);
@@ -202,7 +203,7 @@ export const useCreateRedPacket = <
           memo: "",
           numbers: undefined,
           validSince: Date.now(),
-          validUntil: undefined,
+          validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: value,
         } as unknown as T);
       } else if (!isToken) {
@@ -217,7 +218,7 @@ export const useCreateRedPacket = <
           memo: "",
           numbers: undefined,
           validSince: Date.now(),
-          validUntil: undefined,
+          validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: "TOKEN",
         } as unknown as T);
       }

@@ -24,6 +24,7 @@ import React, { useState } from "react";
 import {
   CLAIM_TYPE,
   CustomError,
+  EmptyValueTag,
   ErrorMap,
   Exchange,
   getShortAddr,
@@ -50,6 +51,7 @@ import { useRedPacketHistory } from "../../stores/localStore/redPacket";
 import { Box } from "@mui/material";
 import { getIPFSString } from "../../utils";
 import { NFT_IMAGE_SIZES, toBig } from "@loopring-web/loopring-sdk";
+import { useHistory } from "react-router";
 
 export function useRedPacketModal() {
   const ref = React.createRef();
@@ -799,6 +801,7 @@ export function useRedPacketModal() {
   }, [isShow, step, info]);
   const [page, setPage] = useState(1);
   const [pageForBlindbox, setPageForBlindbox] = useState(1);
+  const history = useHistory()
   React.useEffect(() => {
     if (isShow) {
       const info = store.getState().modals.isShowRedPacket.info;
@@ -875,8 +878,9 @@ export function useRedPacketModal() {
         symbol = detail.claimAmount == 1 ? "NFT" : "NFTs";
         // @ts-ignore
         // const symbol = _info.nftTokenInfo?.metadata?.base?.name ?? "NFT";
-        myAmountStr =
-          getValuePrecisionThousand(
+        myAmountStr = sdk.toBig(detail.claimAmount).isZero() 
+          ? EmptyValueTag
+          : getValuePrecisionThousand(
             detail.claimAmount,
             0,
             0,
@@ -886,9 +890,7 @@ export function useRedPacketModal() {
               floor: false,
               // isTrade: true,
             }
-          ) +
-          " " +
-          symbol;
+          ) + " " + symbol;
         relyAmount = getValuePrecisionThousand(value, 0, 0, undefined, false, {
           floor: false,
           // isTrade: true,
@@ -901,8 +903,9 @@ export function useRedPacketModal() {
       } else {
         let tokenInfo = tokenMap[idIndex[_info?.tokenId] ?? ""];
         symbol = tokenInfo.symbol;
-        myAmountStr =
-          getValuePrecisionThousand(
+        myAmountStr = myAmountStr = sdk.toBig(detail.claimAmount).isZero() 
+          ? EmptyValueTag
+          : getValuePrecisionThousand(
             volumeToCountAsBigNumber(symbol, detail.claimAmount as any),
             tokenInfo.precision,
             tokenInfo.precision,
@@ -1168,6 +1171,13 @@ export function useRedPacketModal() {
           setBlindBoxType(viewDetailFrom);
         },
         onClickClaim: async () => {
+          if (!detail.luckyToken.isNft) {
+            setShowRedPacket({
+              isShow: false
+            })
+            history.push('/l2assets/assets/RedPacket')
+            return
+          }
           const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
             {
               accountId: account.accountId,
@@ -1202,6 +1212,13 @@ export function useRedPacketModal() {
           }
         },
         onClickClaim2: async () => {
+          if (!detail.luckyToken.isNft) {
+            setShowRedPacket({
+              isShow: false
+            })
+            history.push('/l2assets/assets/RedPacket')
+            return
+          }
           const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
             {
               accountId: account.accountId,

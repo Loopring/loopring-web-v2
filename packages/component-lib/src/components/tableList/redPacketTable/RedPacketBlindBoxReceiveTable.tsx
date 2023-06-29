@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { TablePaddingX } from "../../styled";
 import {
   BoxNFT,
@@ -27,7 +27,7 @@ import {
 } from "./Interface";
 import React from "react";
 import { FormatterProps } from "react-data-grid";
-import _ from "lodash";
+import _, { random } from "lodash";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ColumnCoinDeep } from "../assetsTable";
@@ -250,23 +250,14 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
             row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
           ) {
             return (
-              <>
-                {t("labelBlindBoxStartTime", {
-                  time: moment(row.rawData.luckyToken.validUntil).format(
-                    YEAR_DAY_MINUTE_FORMAT
-                  ),
-                  interpolation: {
-                    escapeValue: false,
-                  },
-                })}
-              </>
+              <Tooltip title={<>{t("labelRedpacketCantOpen")}</>}>
+                <span style={{borderBottom: "1px dotted", marginRight: `${theme.unit * 2}px`}}>
+                  {t("labelRedPacketOpen", { ns: "common" })}
+                </span>
+              </Tooltip>
             );
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
             return <>{t("labelBlindBoxOpend")}</>;
-            // return <Box height={"100%"} display={"flex"} flexDirection={"column"} alignItems={"end"} justifyContent={"center"}>
-            //   <Typography>{t("labelBlindBoxOpend")}</Typography>
-            //   {/* <Typography>x {row.rawData.claim.amount}</Typography> */}
-            // </Box>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) {
             return <>{t("labelBlindBoxExpired")}</>;
           } else if (
@@ -384,9 +375,11 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
             row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
           ) {
             return (
-              <span style={{borderBottom: "1px dotted"}}>
-                {t("labelRedPacketOpen", { ns: "common" })}
-              </span>
+              <Tooltip title={<>{t("labelRedpacketCantOpen")}</>}>
+                <span style={{borderBottom: "1px dotted", marginRight: `${theme.unit * 2}px`}}>
+                  {t("labelRedPacketOpen", { ns: "common" })}
+                </span>
+              </Tooltip>
             );
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
             return <>{t("labelBlindBoxOpend")}</>;
