@@ -113,6 +113,7 @@ export const useSwap = <
   const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { status: walletLayer2Status } = useWalletLayer2();
 
+  // const [isMarketInit,setIsMarketInit] =  React.useState<boolean>(true);
   const [sellMinAmt, setSellMinAmt] = React.useState<string>();
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined);
   const [tradeCalcData, setTradeCalcData] = React.useState<
@@ -133,9 +134,7 @@ export const useSwap = <
   } = usePageTradeLite();
   /*** api prepare ***/
   // const [pair, setPair] = React.useState(realPair);
-  const [market, setMarket] = React.useState<MarketType>(
-    realMarket as MarketType
-  );
+
   const [isSwapLoading, setIsSwapLoading] = React.useState(false);
 
   /***confirm  ***/
@@ -156,6 +155,98 @@ export const useSwap = <
     tradeData && tradeData.buy.tradeValue
       ? tokenPrices[tradeData.buy.belong] * tradeData.buy.tradeValue < 100
       : false;
+  const resetMarket = (_market: MarketType, type: "sell" | "buy") => {
+    const { tradePair } = marketInitCheck({ market: _market, type });
+    const [_, sellToken, buyToken] = (tradePair ?? "").match(/(\w+)-(\w+)/i);
+    let { market } = sdk.getExistedMarket(marketArray, sellToken, buyToken);
+    setIsMarketStatus((state) => {
+      return {
+        tradePair,
+        market,
+        isMarketInit: state.market !== market,
+      };
+    });
+    if (coinMap && tokenMap && marketMap && marketArray) {
+      // const { tradePair } = marketInitCheck({ market: _market, type });
+      // @ts-ignore
+      const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
+      let walletMap: WalletMap<any> | undefined;
+      if (
+        account.readyState === AccountStatus.ACTIVATED &&
+        walletLayer2Status === SagaStatus.UNSET
+      ) {
+        if (!Object.keys(tradeCalcData.walletMap ?? {}).length) {
+          walletMap = makeWalletLayer2(true).walletMap as WalletMap<any>;
+        }
+        walletMap = tradeCalcData.walletMap as WalletMap<any>;
+      }
+      const tradeDataTmp: any = {
+        sell: {
+          belong: coinA,
+          tradeValue: 0,
+          balance: walletMap ? walletMap[coinA]?.count : 0,
+        },
+        buy: {
+          belong: coinB,
+          tradeValue: 0,
+          balance: walletMap ? walletMap[coinB]?.count : 0,
+        },
+      };
+
+      const sellCoinInfoMap = tokenMap[coinB].tradePairs?.reduce(
+        (prev: any, item: string | number) => {
+          return { ...prev, [item]: coinMap[item] };
+        },
+        {} as CoinMap<C>
+      );
+
+      const buyCoinInfoMap = tokenMap[coinA].tradePairs?.reduce(
+        (prev: any, item: string | number) => {
+          return { ...prev, [item]: coinMap[item] };
+        },
+        {} as CoinMap<C>
+      );
+
+      setTradeCalcData((state) => {
+        return {
+          ...state,
+          walletMap,
+          coinSell: coinA,
+          coinBuy: coinB,
+          sellPrecision: tokenMap[coinA as string]?.precision,
+          buyPrecision: tokenMap[coinB as string]?.precision,
+          sellCoinInfoMap,
+          buyCoinInfoMap,
+          priceImpact: "",
+          priceImpactColor: "inherit",
+          minimumReceived: undefined,
+          StoB: undefined,
+          BtoS: undefined,
+          fee: undefined,
+          feeTakerRate: undefined,
+          tradeCost: undefined,
+          isShowBtradeAllow: false,
+        };
+      });
+      setTradeData({ ...tradeDataTmp });
+      history.push("/trade/lite/" + _market);
+      updatePageTradeLite({ market, tradePair });
+
+      myLog("Market change getAmount", market);
+      if (account.readyState === AccountStatus.ACTIVATED) {
+        getAmount({ market });
+      }
+    }
+  };
+  const [{ market, tradePair, isMarketInit }, setIsMarketStatus] =
+    React.useState<{
+      market: MarketType;
+      tradePair?: MarketType;
+      isMarketInit?: boolean;
+    }>({} as any);
+  React.useEffect(() => {
+    resetMarket(realMarket ?? "#null-#null", "sell");
+  }, []);
 
   const clearData = (
     calcTradeParams: Partial<MarketCalcParams> | null | undefined
@@ -254,7 +345,7 @@ export const useSwap = <
       .toBig(buyToken?.orderAmounts?.maximum)
       .div("1e" + buyToken.decimals);
 
-    if (isSwapLoading) {
+    if (isSwapLoading || isMarketInit) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.LOADING,
@@ -357,6 +448,7 @@ export const useSwap = <
     tradeData?.buy.belong,
     pageTradeLite,
     sellMinAmt,
+    isMarketInit,
     isSwapLoading,
   ]);
   /*** Btn related function ***/
@@ -631,7 +723,7 @@ export const useSwap = <
     // btnStyle: tradeLimitBtnStyle,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: isSwapLoading,
+    isLoading: isSwapLoading || (isMarketInit ?? false),
     submitCallback: swapCalculatorCallback,
   });
 
@@ -643,7 +735,6 @@ export const useSwap = <
   }, [market]);
 
   const should15sRefresh = React.useCallback(() => {
-    myLog("should15sRefresh", market);
     if (market) {
       // updateDepth()
       callPairDetailInfoAPIs();
@@ -755,20 +846,150 @@ export const useSwap = <
   useSwapSocket();
   useWalletLayer2Socket({ walletLayer2Callback });
 
+  // let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
+  // setMarket(market);
+
   /*** user Action function ***/
   //High: effect by wallet state update
   const handleSwapPanelEvent = async (
     swapData: SwapData<SwapTradeData<IBData<C>>>,
     swapType: any
   ): Promise<void> => {
-    const { tradeData } = swapData;
-    resetSwap(swapType, tradeData);
+    const { tradeData: _tradeData } = swapData;
+    myLog("hookSwap: handleSwapPanelEvent", swapType, _tradeData);
+    switch (swapType) {
+      case SwapType.SEll_CLICK:
+      case SwapType.BUY_CLICK:
+        return;
+      case SwapType.SELL_SELECTED:
+        myLog(_tradeData);
+        if (_tradeData?.sell.belong !== tradeData?.sell.belong) {
+          resetMarket(
+            `${_tradeData?.sell?.belong ?? `#null`}-${
+              _tradeData?.buy?.belong ?? `#null`
+            }`,
+            "sell"
+          );
+          // resetTradeCalcData(
+          //   _tradeData,
+          //   `${_tradeData?.sell?.belong ?? `#null`}-${
+          //     _tradeData?.buy?.belong ?? `#null`
+          //   }`,
+          //   "sell"
+          // );
+        } else {
+          reCalculateDataWhenValueChange(
+            _tradeData,
+            `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`,
+            "sell"
+          );
+        }
+        // throttleSetValue('sell', _tradeData)
+        break;
+      case SwapType.BUY_SELECTED:
+        //type = 'buy'
+        if (_tradeData?.buy.belong !== tradeData?.buy.belong) {
+          resetMarket(
+            `${_tradeData?.sell?.belong ?? `#null`}-${
+              _tradeData?.buy?.belong ?? `#null`
+            }`,
+            "buy"
+          );
+          // resetTradeCalcData(
+          //   _tradeData,
+          //   `${_tradeData?.sell?.belong ?? `#null`}-${
+          //     _tradeData?.buy?.belong ?? `#null`
+          //   }`,
+          //   "buy"
+          // );
+        } else {
+          reCalculateDataWhenValueChange(
+            _tradeData,
+            `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`,
+            "buy"
+          );
+        }
+        break;
+      case SwapType.EXCHANGE_CLICK:
+        const { close } = pageTradeLite;
+        let btos: string = "0";
+        if (close) {
+          // @ts-ignore
+          const [, _coinA] = market.match(/(\w+)-(\w+)/i);
+          btos = getValuePrecisionThousand(
+            1 / Number(close.replaceAll(sdk.SEP, "")),
+            tokenMap[_coinA].precision,
+            tokenMap[_coinA].precision,
+            tokenMap[_coinA].precision,
+            true
+          ); // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+        }
+        const _tradeCalcData = {
+          ...tradeCalcData,
+          coinSell: tradeCalcData.coinBuy,
+          sellPrecision: tokenMap[tradeCalcData.coinBuy as string].precision,
+          coinBuy: tradeCalcData.coinSell,
+          buyPrecision: tokenMap[tradeCalcData.coinSell as string].precision,
+          sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
+          buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
+          StoB:
+            market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
+              ? close
+              : btos,
+          BtoS:
+            market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
+              ? btos
+              : close,
+          isShowBtradeAllow: false,
+          priceImpact: undefined,
+          priceImpactColor: "inherit",
+          minimumReceived: undefined,
+          fee: undefined,
+          feeTakerRate: undefined,
+          tradeCost: undefined,
+          isNotMatchMarketPrice: undefined,
+          marketPrice: undefined,
+          marketRatePrice: undefined,
+          isChecked: undefined,
+        };
+
+        myLog(
+          "hookSwap:Exchange,tradeCalcData,_tradeCalcData",
+          tradeCalcData,
+          _tradeCalcData
+        );
+        callPairDetailInfoAPIs();
+        updatePageTradeLite({
+          market,
+          tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
+          calcTradeParams: {
+            ...pageTradeLite.calcTradeParams,
+            isReverse: !pageTradeLite.calcTradeParams,
+            amountS: undefined,
+            output: undefined,
+          },
+        });
+        setSellMinAmt(undefined);
+        setTradeCalcData(_tradeCalcData);
+        break;
+      default:
+        // myLog("hookSwap:resetSwap default");
+        // resetTradeCalcData(undefined, market);
+        // should15sRefresh();
+        break;
+    }
   };
 
   React.useEffect(() => {
-    if (pageTradeLite.depth) {
+    myLog("pageTradeLite.deep", pageTradeLite?.depth?.symbol, market);
+    if (pageTradeLite.depth && pageTradeLite.depth.symbol === market) {
       refreshAmmPoolSnapshot();
-      setIsSwapLoading(false);
+      setIsMarketStatus((state) => {
+        return {
+          ...state,
+          isMarketInit: false,
+        };
+      });
     }
   }, [
     pageTradeLite.depth,
@@ -782,14 +1003,10 @@ export const useSwap = <
     if (market) {
       //@ts-ignore
       if (refreshRef.current) {
+        myLog("pageTradeLite, click", market);
         // @ts-ignore
         refreshRef.current.firstElementChild.click();
-      }
-      if (
-        (tradeData && tradeData.sell.belong == undefined) ||
-        tradeData === undefined
-      ) {
-        resetSwap(undefined, undefined);
+        should15sRefresh();
       }
     }
   }, [market]);
@@ -832,105 +1049,12 @@ export const useSwap = <
     }
   }, [market, pageTradeLite, tradeData, tradeCalcData, setTradeCalcData]);
 
-  const resetTradeCalcData = React.useCallback(
-    (_tradeData, _market?, type?: "sell" | "buy") => {
-      myLog("hookSwap: resetTradeCalcData", type, _tradeData);
-
-      if (coinMap && tokenMap && marketMap && marketArray) {
-        const { tradePair } = marketInitCheck({ market: _market, type });
-        // @ts-ignore
-        const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
-        let walletMap: WalletMap<any> | undefined;
-        if (
-          account.readyState === AccountStatus.ACTIVATED &&
-          walletLayer2Status === SagaStatus.UNSET
-        ) {
-          if (!Object.keys(tradeCalcData.walletMap ?? {}).length) {
-            walletMap = makeWalletLayer2(true).walletMap as WalletMap<any>;
-          }
-          walletMap = tradeCalcData.walletMap as WalletMap<any>;
-        }
-        const tradeDataTmp: any = {
-          sell: {
-            belong: coinA,
-            tradeValue: _tradeData?.tradeValue ?? 0,
-            balance: walletMap ? walletMap[coinA]?.count : 0,
-          },
-          buy: {
-            belong: coinB,
-            tradeValue: _tradeData?.tradeValue ?? 0,
-            balance: walletMap ? walletMap[coinB]?.count : 0,
-          },
-        };
-
-        const sellCoinInfoMap = tokenMap[coinB].tradePairs?.reduce(
-          (prev: any, item: string | number) => {
-            return { ...prev, [item]: coinMap[item] };
-          },
-          {} as CoinMap<C>
-        );
-
-        const buyCoinInfoMap = tokenMap[coinA].tradePairs?.reduce(
-          (prev: any, item: string | number) => {
-            return { ...prev, [item]: coinMap[item] };
-          },
-          {} as CoinMap<C>
-        );
-
-        setTradeCalcData((state) => {
-          return {
-            ...state,
-            walletMap,
-            coinSell: coinA,
-            coinBuy: coinB,
-            sellPrecision: tokenMap[coinA as string]?.precision,
-            buyPrecision: tokenMap[coinB as string]?.precision,
-            sellCoinInfoMap,
-            buyCoinInfoMap,
-            priceImpact: "",
-            priceImpactColor: "inherit",
-            minimumReceived: undefined,
-            StoB: undefined,
-            BtoS: undefined,
-            fee: undefined,
-            feeTakerRate: undefined,
-            tradeCost: undefined,
-            isShowBtradeAllow: false,
-          };
-        });
-        setTradeData({ ...tradeDataTmp });
-        let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
-        setMarket(market);
-        history.push("/trade/lite/" + _market);
-        updatePageTradeLite({ market, tradePair });
-
-        myLog("Market change getAmount", market);
-        if (account.readyState === AccountStatus.ACTIVATED) {
-          getAmount({ market });
-        }
-        setIsSwapLoading(true);
-      }
-    },
-    [
-      tradeCalcData,
-      tradeData,
-      coinMap,
-      tokenMap,
-      marketMap,
-      marketArray,
-      setTradeCalcData,
-      setTradeData,
-      setMarket,
-      realMarket,
-    ]
-  );
-
   const callPairDetailInfoAPIs = React.useCallback(async () => {
     if (market && ammMap && LoopringAPI.exchangeAPI) {
       try {
         const { depth, ammPoolSnapshot } = await swapDependAsync(market);
         const { tickerMap } = store.getState().tickerMap;
-        // myLog('store.getState().tickerMap',tickerMap[market]);
+        myLog("pageTradeLite", "depth");
         updatePageTradeLite({
           market,
           depth,
@@ -939,7 +1063,15 @@ export const useSwap = <
         });
       } catch (error: any) {
         myLog("hookSwap:", error, "go to LRC-ETH");
-        resetTradeCalcData(undefined, market);
+        setToastOpen({
+          open: true,
+          content: "error: resetMarket",
+          type: ToastType.error,
+        });
+        resetMarket(market, "sell");
+        // `${_tradeData?.sell?.belong ?? `#null`}-${_tradeData?.buy?.belong ?? `#null`}`,
+
+        // resetTradeCalcData(undefined, market);
       }
     }
   }, [market, ammMap, tickerMap]);
@@ -1425,126 +1557,8 @@ export const useSwap = <
     ]
   );
 
-  const resetSwap = (
-    swapType: SwapType | undefined,
-    _tradeData: SwapTradeData<IBData<C>> | undefined
-  ) => {
-    myLog("hookSwap: resetSwap", swapType, _tradeData);
-    switch (swapType) {
-      case SwapType.SEll_CLICK:
-      case SwapType.BUY_CLICK:
-        return;
-      case SwapType.SELL_SELECTED:
-        myLog(_tradeData);
-        if (_tradeData?.sell.belong !== tradeData?.sell.belong) {
-          resetTradeCalcData(
-            _tradeData,
-            `${_tradeData?.sell?.belong ?? `#null`}-${
-              _tradeData?.buy?.belong ?? `#null`
-            }`,
-            "sell"
-          );
-        } else {
-          reCalculateDataWhenValueChange(
-            _tradeData,
-            `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`,
-            "sell"
-          );
-        }
-        // throttleSetValue('sell', _tradeData)
-        break;
-      case SwapType.BUY_SELECTED:
-        //type = 'buy'
-        if (_tradeData?.buy.belong !== tradeData?.buy.belong) {
-          resetTradeCalcData(
-            _tradeData,
-            `${_tradeData?.sell?.belong ?? `#null`}-${
-              _tradeData?.buy?.belong ?? `#null`
-            }`,
-            "buy"
-          );
-        } else {
-          reCalculateDataWhenValueChange(
-            _tradeData,
-            `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`,
-            "buy"
-          );
-        }
-        break;
-      case SwapType.EXCHANGE_CLICK:
-        const { close } = pageTradeLite;
-        let btos: string = "0";
-        if (close) {
-          // @ts-ignore
-          const [, _coinA] = market.match(/(\w+)-(\w+)/i);
-          btos = getValuePrecisionThousand(
-            1 / Number(close.replaceAll(sdk.SEP, "")),
-            tokenMap[_coinA].precision,
-            tokenMap[_coinA].precision,
-            tokenMap[_coinA].precision,
-            true
-          ); // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
-        }
-        const _tradeCalcData = {
-          ...tradeCalcData,
-          coinSell: tradeCalcData.coinBuy,
-          sellPrecision: tokenMap[tradeCalcData.coinBuy as string].precision,
-          coinBuy: tradeCalcData.coinSell,
-          buyPrecision: tokenMap[tradeCalcData.coinSell as string].precision,
-          sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
-          buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
-          StoB:
-            market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
-              ? close
-              : btos,
-          BtoS:
-            market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`
-              ? btos
-              : close,
-          isShowBtradeAllow: false,
-          priceImpact: undefined,
-          priceImpactColor: "inherit",
-          minimumReceived: undefined,
-          fee: undefined,
-          feeTakerRate: undefined,
-          tradeCost: undefined,
-          isNotMatchMarketPrice: undefined,
-          marketPrice: undefined,
-          marketRatePrice: undefined,
-          isChecked: undefined,
-        };
-
-        myLog(
-          "hookSwap:Exchange,tradeCalcData,_tradeCalcData",
-          tradeCalcData,
-          _tradeCalcData
-        );
-        callPairDetailInfoAPIs();
-        updatePageTradeLite({
-          market,
-          tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
-          calcTradeParams: {
-            ...pageTradeLite.calcTradeParams,
-            isReverse: !pageTradeLite.calcTradeParams,
-            amountS: undefined,
-            output: undefined,
-          },
-        });
-        setSellMinAmt(undefined);
-        setTradeCalcData(_tradeCalcData);
-        break;
-      default:
-        myLog("hookSwap:resetSwap default");
-        resetTradeCalcData(undefined, market);
-        // should15sRefresh();
-        break;
-    }
-
-    // if(isChecked)
-  };
-  // myLog("hookSwap: tradeData", tradeData);
-
   return {
+    isMarketInit,
     toastOpen,
     closeToast,
     tradeCalcData,

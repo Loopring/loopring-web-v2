@@ -186,5 +186,5 @@ export const ReferralsTable = withTranslation(["tables", "common"])(
         )}
       </TableWrapperStyled>
     );
-  };
+  }
 );

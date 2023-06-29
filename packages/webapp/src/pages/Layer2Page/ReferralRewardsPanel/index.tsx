@@ -15,6 +15,7 @@ import { useAccount, useSubmitBtn, useToast } from "@loopring-web/core";
 import {
   AccountStatus,
   copyToClipBoard,
+  EmptyValueTag,
   L1L2_NAME_DEFINED,
   LinkSharedIcon,
   MapChainId,
@@ -454,7 +455,22 @@ const ReferView = () => {
                 <li>{t("labelReferralMethod1Step4")}</li>
               </ol>
             )}
-            {currentTab === ReferStep.method2 && <></>}
+            {currentTab === ReferStep.method2 && (
+              <ol>
+                <li>{t("labelReferralMethod2Step1")}</li>
+                <li>{t("labelReferralMethod2Step2")}</li>
+                <li>
+                  {t("labelReferralMethod2Step3", {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                    loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  })}
+                </li>
+                <li>{t("labelReferralMethod2Step4")}</li>
+              </ol>
+            )}
           </Box>
 
           {account.readyState === AccountStatus.ACTIVATED && (
@@ -478,7 +494,9 @@ const ReferView = () => {
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {referralsData.summary?.totalValue + " LRC"}
+                        {referralsData.summary?.totalValue
+                          ? referralsData.summary?.totalValue + " LRC"
+                          : EmptyValueTag}
                       </Typography>
                     </Typography>
                     <Typography
@@ -493,8 +511,9 @@ const ReferView = () => {
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {" "}
-                        {referralsData.summary?.claimableValue + " LRC"}
+                        {referralsData.summary?.claimableValue
+                          ? referralsData.summary?.claimableValue + " LRC"
+                          : EmptyValueTag}
                       </Typography>
                     </Typography>
                     <Typography
@@ -509,7 +528,9 @@ const ReferView = () => {
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {referralsData.summary?.downsidesNum}
+                        {referralsData.summary?.downsidesNum
+                          ? referralsData.summary?.downsidesNum
+                          : EmptyValueTag}
                       </Typography>
                     </Typography>
                   </Box>
@@ -539,13 +560,15 @@ const ReferView = () => {
                       variant={"body1"}
                       paddingRight={2}
                     >
-                      {t("labelReferralsTotalRefund" + " LRC")}
+                      {t("labelReferralsTotalRefund")}
                       <Typography
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {refundData.summary?.totalValue + " LRC"}
+                        {refundData.summary?.totalValue
+                          ? refundData.summary?.totalValue + " LRC"
+                          : EmptyValueTag}
                       </Typography>
                     </Typography>
                     <Typography
@@ -560,7 +583,9 @@ const ReferView = () => {
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {refundData.summary?.claimableValue + " LRC"}
+                        {refundData.summary?.claimableValue
+                          ? refundData.summary?.claimableValue + " LRC"
+                          : EmptyValueTag}
                       </Typography>
                     </Typography>
                     <Typography
@@ -575,7 +600,9 @@ const ReferView = () => {
                         component={"span"}
                         color={"textPrimary"}
                       >
-                        {refundData.summary?.tradeNum}
+                        {refundData.summary?.tradeNum
+                          ? refundData.summary?.tradeNum
+                          : EmptyValueTag}
                       </Typography>
                     </Typography>
                   </Box>

@@ -11,7 +11,6 @@ import {
   Toast,
   ToastType,
   useSettings,
-  useToggle,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/common-resources";
 import {

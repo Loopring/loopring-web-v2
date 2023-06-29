@@ -74,8 +74,8 @@ export function useRefundTable<R = RefundRow>(
           });
           setRecord(list);
           setRecordTotal(response.totalNum);
-          setShowLoading(false);
         }
+        setShowLoading(false);
       }
     },
     [accountId, apiKey, setToastOpen, t, tokenMap]
@@ -227,8 +227,8 @@ export function useReferralsTable<R = ReferralsRow>(
           });
           setRecord(list);
           setRecordTotal(response.totalNum);
-          setShowLoading(false);
         }
+        setShowLoading(false);
       }
     },
     [accountId, apiKey, setToastOpen, t, tokenMap]
