@@ -1,12 +1,12 @@
-import { Route, Switch, useLocation } from "react-router-dom";
-import React from "react";
-import { Box, Container } from "@mui/material";
-import Header from "layouts/header";
-import { QuotePage } from "pages/QuotePage";
-import { SwapPage } from "pages/SwapPage";
-import { Layer2Page } from "pages/Layer2Page";
-import { MiningPage } from "pages/MiningPage";
-import { OrderbookPage } from "pages/ProTradePage";
+import { Route, Switch, useLocation } from 'react-router-dom'
+import React from 'react'
+import { Box, Container } from '@mui/material'
+import Header from 'layouts/header'
+import { QuotePage } from 'pages/QuotePage'
+import { SwapPage } from 'pages/SwapPage'
+import { Layer2Page } from 'pages/Layer2Page'
+import { MiningPage } from 'pages/MiningPage'
+import { OrderbookPage } from 'pages/ProTradePage'
 import {
   ModalCoinPairPanel,
   ModalGroup,
@@ -16,9 +16,9 @@ import {
   useSystem,
   useTicker,
   useTokenMap,
-} from "@loopring-web/core";
-import { LoadingPage } from "../pages/LoadingPage";
-import { LandPage } from "../pages/LandPage";
+} from '@loopring-web/core'
+import { LoadingPage } from '../pages/LoadingPage'
+import { LandPage } from '../pages/LandPage'
 import {
   ErrorMap,
   MapChainId,
@@ -30,8 +30,8 @@ import {
   ThemeType,
   VendorProviders,
   WalletSite,
-} from "@loopring-web/common-resources";
-import { ErrorPage } from "../pages/ErrorPage";
+} from '@loopring-web/common-resources'
+import { ErrorPage } from '../pages/ErrorPage'
 import {
   ComingSoonPanel,
   LoadingBlock,
@@ -39,24 +39,20 @@ import {
   NoticeSnack,
   useSettings,
   useToggle,
-} from "@loopring-web/component-lib";
-import {
-  InvestMarkdownPage,
-  MarkdownPage,
-  NotifyMarkdownPage,
-} from "../pages/MarkdownPage";
-import { TradeRacePage } from "../pages/TradeRacePage";
-import { NFTPage } from "../pages/NFTPage";
-import { useGetAssets } from "../pages/AssetPage/AssetPanel/hook";
-import { Footer } from "../layouts/footer";
-import { InvestPage } from "../pages/InvestPage";
-import { getAnalytics, logEvent } from "firebase/analytics";
-import { AssetPage } from "../pages/AssetPage";
-import { FiatPage } from "../pages/FiatPage";
-import { RedPacketPage } from "../pages/RedPacketPage";
-import { useTranslation } from "react-i18next";
-import { BtradeSwapPage } from "../pages/BtradeSwapPage";
-import { StopLimitPage } from "../pages/ProTradePage/stopLimtPage";
+} from '@loopring-web/component-lib'
+import { InvestMarkdownPage, MarkdownPage, NotifyMarkdownPage } from '../pages/MarkdownPage'
+import { TradeRacePage } from '../pages/TradeRacePage'
+import { NFTPage } from '../pages/NFTPage'
+import { useGetAssets } from '../pages/AssetPage/AssetPanel/hook'
+import { Footer } from '../layouts/footer'
+import { InvestPage } from '../pages/InvestPage'
+import { getAnalytics, logEvent } from 'firebase/analytics'
+import { AssetPage } from '../pages/AssetPage'
+import { FiatPage } from '../pages/FiatPage'
+import { RedPacketPage } from '../pages/RedPacketPage'
+import { useTranslation } from 'react-i18next'
+import { BtradeSwapPage } from '../pages/BtradeSwapPage'
+import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
 
 const ContentWrap = ({
   children,
@@ -64,18 +60,18 @@ const ContentWrap = ({
   noContainer = false,
   value,
 }: React.PropsWithChildren<any> & {
-  state: keyof typeof SagaStatus;
-  noContainer: boolean;
-  value: string;
+  state: keyof typeof SagaStatus
+  noContainer: boolean
+  value: string
 }) => {
-  const { defaultNetwork } = useSettings();
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   return (
     <>
       <Header isHideOnScroll={false} />
-      {state === "PENDING" ? (
+      {state === 'PENDING' ? (
         <LoadingBlock />
-      ) : state === "ERROR" || !RouterAllowIndex[network]?.includes(value) ? (
+      ) : state === 'ERROR' || !RouterAllowIndex[network]?.includes(value) ? (
         <ErrorPage
           {...(!RouterAllowIndex[network]?.includes(value)
             ? ErrorMap.TRADE_404
@@ -85,35 +81,29 @@ const ContentWrap = ({
         <>{children}</>
       ) : (
         <Container
-          maxWidth="lg"
+          maxWidth='lg'
           style={{
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
             flex: 1,
           }}
         >
-          <Box
-            display={"flex"}
-            flex={1}
-            alignItems={"stretch"}
-            flexDirection={"row"}
-            marginTop={3}
-          >
+          <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
             {children}
           </Box>
         </Container>
       )}
     </>
-  );
-};
+  )
+}
 
 const WrapModal = () => {
-  const { depositProps } = useDeposit(false);
-  const { assetsRawData } = useGetAssets();
-  const location = useLocation();
-  const { etherscanBaseUrl } = useSystem();
-  const { t } = useTranslation();
-  const { open, actionEle, handleClose } = useOffFaitModal();
+  const { depositProps } = useDeposit(false)
+  const { assetsRawData } = useGetAssets()
+  const location = useLocation()
+  const { etherscanBaseUrl } = useSystem()
+  const { t } = useTranslation()
+  const { open, actionEle, handleClose } = useOffFaitModal()
 
   const noticeSnacksElEs = React.useMemo(() => {
     return [
@@ -122,13 +112,13 @@ const WrapModal = () => {
         open={open}
         handleClose={handleClose}
         messageInfo={{
-          svgIcon: "BanxaIcon",
+          svgIcon: 'BanxaIcon',
           key: VendorProviders.Banxa,
-          message: t("labelOrderBanxaIsReadyToPay"),
+          message: t('labelOrderBanxaIsReadyToPay'),
         }}
       />,
-    ] as any;
-  }, [open, actionEle]);
+    ] as any
+  }, [open, actionEle])
   return (
     <>
       <ModalCoinPairPanel />
@@ -136,59 +126,53 @@ const WrapModal = () => {
       <ModalGroup
         assetsRawData={assetsRawData}
         depositProps={depositProps}
-        isLayer1Only={
-          /(guardian)|(depositto)/gi.test(location.pathname ?? "")
-            ? true
-            : false
-        }
+        isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '') ? true : false}
       />
       <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
     </>
-  );
-};
+  )
+}
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const { tickerMap } = useTicker();
-  const { marketArray } = useTokenMap();
-  const { setTheme, defaultNetwork } = useSettings();
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const { tickerMap } = useTicker()
+  const { marketArray } = useTokenMap()
+  const { setTheme, defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const {
     toggle: { BTradeInvest, StopLimit },
-  } = useToggle();
+  } = useToggle()
 
   React.useEffect(() => {
-    if (searchParams.has("theme")) {
-      searchParams.get("theme") === ThemeType.dark
-        ? setTheme("dark")
-        : setTheme("light");
+    if (searchParams.has('theme')) {
+      searchParams.get('theme') === ThemeType.dark ? setTheme('dark') : setTheme('light')
     }
-  }, [location.search]);
+  }, [location.search])
 
   React.useEffect(() => {
     if (state === SagaStatus.ERROR) {
-      window.location.replace(`${window.location.origin}/error`);
+      window.location.replace(`${window.location.origin}/error`)
     }
-  }, [state]);
-  if (searchParams.has("___OhTrustDebugger___")) {
+  }, [state])
+  if (searchParams.has('___OhTrustDebugger___')) {
     // @ts-ignore
-    setMyLog(true);
+    setMyLog(true)
   }
-  const analytics = getAnalytics();
+  const analytics = getAnalytics()
 
-  logEvent(analytics, "Route", {
+  logEvent(analytics, 'Route', {
     protocol: window.location.protocol,
     pathname: window.location.pathname,
     query: searchParams,
-  });
+  })
   React.useEffect(() => {
     if (/^\/?wallet/.test(location.pathname)) {
-      window.open(WalletSite, "_self");
-      window.opener = null;
+      window.open(WalletSite, '_self')
+      window.opener = null
     }
-  }, [location.pathname]);
+  }, [location.pathname])
   return (
     <>
       <Switch>
@@ -366,6 +350,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
       {searchParams && searchParams.has('nofooter') ? <></> : <Footer />}
     </>
   )
-};
+}
 
-export default RouterView;
+export default RouterView

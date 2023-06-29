@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "@emotion/styled";
+import React from 'react'
+import styled from '@emotion/styled'
 import {
   Box,
   Card,
@@ -14,9 +14,9 @@ import {
   TooltipProps,
   tooltipClasses,
   IconButton,
-} from "@mui/material";
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { useDualHook } from "./hook";
+} from '@mui/material'
+import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { useDualHook } from './hook'
 import {
   Button,
   CardStyleItem,
@@ -33,8 +33,8 @@ import {
   useDualTrade,
   useSystem,
   useTokenMap,
-} from "@loopring-web/core";
-import { useHistory } from "react-router-dom";
+} from '@loopring-web/core'
+import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
   CloseIcon,
@@ -44,54 +44,54 @@ import {
   LOOPRING_DOCUMENT,
   SoursURL,
   TokenType,
-} from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
-import { useTheme } from "@emotion/react";
-import { BeginnerMode } from "./BeginnerMode";
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
+import { useTheme } from '@emotion/react'
+import { BeginnerMode } from './BeginnerMode'
 
 const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))({
   [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: "none",
+    maxWidth: 'none',
   },
-});
+})
 
 const StyleDual = styled(Box)`
   position: relative;
-` as typeof Box;
+` as typeof Box
 const WrapperStyled = styled(Box)`
   flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-`;
+`
 
 const TopRightButton = styled(IconButton)`
   position: absolute;
   top: ${({ theme }) => theme.unit * 0.5}px;
   right: ${({ theme }) => theme.unit * 0.5}px;
-`;
+`
 
-export const DualListPanel: any = withTranslation("common")(
+export const DualListPanel: any = withTranslation('common')(
   ({
     t,
     setConfirmDualInvest,
     showBeginnerModeHelp,
     onShowBeginnerModeHelp,
   }: WithTranslation & {
-    setConfirmDualInvest: (state: any) => void;
-    showBeginnerModeHelp: boolean;
-    onShowBeginnerModeHelp: (show: boolean) => void;
+    setConfirmDualInvest: (state: any) => void
+    showBeginnerModeHelp: boolean
+    onShowBeginnerModeHelp: (show: boolean) => void
   }) => {
-    const { coinJson } = useSettings();
-    const { forexMap } = useSystem();
-    const theme = useTheme();
-    const { tradeMap, marketArray, status, getDualMap } = useDualMap();
-    const { tokenMap } = useTokenMap();
-    const { setShowDual } = useOpenModals();
+    const { coinJson } = useSettings()
+    const { forexMap } = useSystem()
+    const theme = useTheme()
+    const { tradeMap, marketArray, status, getDualMap } = useDualMap()
+    const { tokenMap } = useTokenMap()
+    const { setShowDual } = useOpenModals()
     const {
       pairASymbol,
       pairBSymbol,
@@ -103,17 +103,17 @@ export const DualListPanel: any = withTranslation("common")(
       beginnerMode,
       handleOnPairChange,
       onToggleBeginnerMode,
-      isDualBalanceSufficient
-    } = useDualHook({ setConfirmDualInvest });
+      isDualBalanceSufficient,
+    } = useDualHook({ setConfirmDualInvest })
 
-    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
-    const { isMobile } = useSettings();
-    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
-    const history = useHistory();
-    const dualType = new RegExp(pair).test(market ?? "")
+    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade()
+    const { isMobile } = useSettings()
+    const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+    const history = useHistory()
+    const dualType = new RegExp(pair).test(market ?? '')
       ? sdk.DUAL_TYPE.DUAL_BASE
-      : sdk.DUAL_TYPE.DUAL_CURRENCY;
-    const marketsIsLoading = status === "PENDING";
+      : sdk.DUAL_TYPE.DUAL_CURRENCY
+    const marketsIsLoading = status === 'PENDING'
 
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
@@ -513,5 +513,5 @@ export const DualListPanel: any = withTranslation("common")(
         />
       </Box>
     )
-  }
-);
+  },
+)

@@ -1,14 +1,7 @@
-import styled from "@emotion/styled";
-import { Box, Tooltip, Typography } from "@mui/material";
-import { TablePaddingX } from "../../styled";
-import {
-  BoxNFT,
-  Button,
-  Column,
-  NftImageStyle,
-  Table,
-  TablePagination,
-} from "../../basic-lib";
+import styled from '@emotion/styled'
+import { Box, Tooltip, Typography } from '@mui/material'
+import { TablePaddingX } from '../../styled'
+import { BoxNFT, Button, Column, NftImageStyle, Table, TablePagination } from '../../basic-lib'
 import {
   CoinInfo,
   EmptyValueTag,
@@ -18,20 +11,20 @@ import {
   RowConfig,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
-} from "@loopring-web/common-resources";
-import { WithTranslation, withTranslation } from "react-i18next";
+} from '@loopring-web/common-resources'
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   RawDataRedPacketBlindBoxReceivesItem,
   RedPacketBlindBoxReceiveTableProps,
-} from "./Interface";
-import React from "react";
+} from './Interface'
+import React from 'react'
 import { FormatterProps } from 'react-data-grid'
 import _ from 'lodash'
 import moment from 'moment'
-import * as sdk from "@loopring-web/loopring-sdk";
-import { ColumnCoinDeep } from "../assetsTable";
-import TextTooltip from "../../text-tooltip";
-import { useTheme } from "@emotion/react";
+import * as sdk from '@loopring-web/loopring-sdk'
+import { ColumnCoinDeep } from '../assetsTable'
+import TextTooltip from '../../text-tooltip'
+import { useTheme } from '@emotion/react'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -74,13 +67,10 @@ const TableStyled = styled(Table)<{ isUnclaimed: boolean }>`
     text-align: center;
   }
 ` as any
-const RowHeight = 55;
-export const RedPacketBlindBoxReceiveTable = withTranslation([
-  "tables",
-  "common",
-])(
+const RowHeight = 55
+export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'])(
   <R extends RawDataRedPacketBlindBoxReceivesItem>(
-    props: RedPacketBlindBoxReceiveTableProps<R> & WithTranslation
+    props: RedPacketBlindBoxReceiveTableProps<R> & WithTranslation,
   ) => {
     const {
       getRedPacketReceiveList,
@@ -92,7 +82,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
       showActionableRecords,
       isUnclaimed,
     } = props
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(1)
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
@@ -109,25 +99,25 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
 
     const handlePageChange = React.useCallback(
       ({ page = 1 }: any) => {
-        setPage(page);
-        myLog("RedPacket Receive page,", page);
+        setPage(page)
+        myLog('RedPacket Receive page,', page)
         updateData({
           page,
-        });
+        })
       },
-      [updateData]
-    );
+      [updateData],
+    )
     React.useEffect(() => {
-      updateData.cancel();
-      handlePageChange({ page: 1 });
+      updateData.cancel()
+      handlePageChange({ page: 1 })
       return () => {
-        updateData.cancel();
-      };
-    }, [showActionableRecords]);
+        updateData.cancel()
+      }
+    }, [showActionableRecords])
     const columnModeTransaction = [
       {
-        key: "Token",
-        name: t("labelToken"),
+        key: 'Token',
+        name: t('labelToken'),
         formatter: ({ row }: FormatterProps<R>) => {
           if (row.rawData.luckyToken.isNft) {
             const metadata = row.rawData.luckyToken.nftTokenInfo?.metadata
@@ -195,8 +185,8 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         },
       },
       {
-        key: "Amount",
-        name: t("labelAmount"),
+        key: 'Amount',
+        name: t('labelAmount'),
         formatter: ({ row }: FormatterProps<R>) => {
           const { token } = row
           if (token && token.type === TokenType.single) {
@@ -218,30 +208,24 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
               </>
             )
           } else {
-            return (
-              <>
-                {row.rawData.claim.amount
-                  ? row.rawData.claim.amount
-                  : EmptyValueTag}
-              </>
-            );
+            return <>{row.rawData.claim.amount ? row.rawData.claim.amount : EmptyValueTag}</>
           }
         },
       },
       {
-        key: "Receive Time",
-        cellClass: "textAlignRight",
-        headerCellClass: "textAlignRight",
-        name: t("labelReceiveTime"),
+        key: 'Receive Time',
+        cellClass: 'textAlignRight',
+        headerCellClass: 'textAlignRight',
+        name: t('labelReceiveTime'),
         formatter: ({ row }: FormatterProps<R>) => {
-          return <>{moment(new Date(row.claimAt), "YYYYMMDDHHMM").fromNow()}</>;
+          return <>{moment(new Date(row.claimAt), 'YYYYMMDDHHMM').fromNow()}</>
         },
       },
       {
-        key: "Status",
-        cellClass: "textAlignRight",
-        headerCellClass: "textAlignRight",
-        name: t("labelRecordStatus"),
+        key: 'Status',
+        cellClass: 'textAlignRight',
+        headerCellClass: 'textAlignRight',
+        name: t('labelRecordStatus'),
         formatter: ({ row }: FormatterProps<R>) => {
           if (
             row.rawData.luckyToken.validUntil > Date.now() &&
@@ -260,21 +244,19 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
               </Tooltip>
             )
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.OPENED) {
-            return <>{t("labelBlindBoxOpend")}</>;
+            return <>{t('labelBlindBoxOpend')}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.EXPIRED) {
-            return <>{t("labelBlindBoxExpired")}</>;
-          } else if (
-            row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED
-          ) {
+            return <>{t('labelBlindBoxExpired')}</>
+          } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
             return (
-              <Box display={"flex"} flexDirection={"column"} alignItems={"end"}>
-                <Button size={"small"} onClick={(_e) => {}} variant={"text"}>
-                  {t("labelRedPacketOpen", { ns: "common" })}
+              <Box display={'flex'} flexDirection={'column'} alignItems={'end'}>
+                <Button size={'small'} onClick={(_e) => {}} variant={'text'}>
+                  {t('labelRedPacketOpen', { ns: 'common' })}
                 </Button>
                 <Typography>
-                  {t("labelBlindBoxExpiredTime", {
+                  {t('labelBlindBoxExpiredTime', {
                     time: moment(row.rawData.luckyToken.nftExpireTime).format(
-                      YEAR_DAY_MINUTE_FORMAT
+                      YEAR_DAY_MINUTE_FORMAT,
                     ),
                     interpolation: {
                       escapeValue: false,
@@ -282,11 +264,11 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                   })}
                 </Typography>
               </Box>
-            );
+            )
           }
         },
       },
-    ] as Column<R, unknown>[];
+    ] as Column<R, unknown>[]
     const columnModeTransactionUnClaimed = [
       {
         key: 'Token',
@@ -497,5 +479,5 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         )}
       </TableWrapperStyled>
     )
-  }
-);
+  },
+)

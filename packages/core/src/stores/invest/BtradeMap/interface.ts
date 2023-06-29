@@ -1,5 +1,5 @@
-import { StateBase } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
+import { StateBase } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export type BradeUIMap = { enabled: boolean | 'isFormLocal' } & Omit<sdk.BTRADE_MARKET, 'enabled'>
 export type BtradeMap = {
@@ -10,5 +10,5 @@ export type BtradeMap = {
 }
 
 export type BtradeMapStates = BtradeMap & {
-  __timer__?: number;
-} & StateBase;
+  __timer__?: number
+} & StateBase
