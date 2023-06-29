@@ -66,6 +66,7 @@ export const BeginnerMode: any = withTranslation("common")(
       onSelectStep1Token,
       onSelectStep2BuyOrSell,
       onSelectStep3Token,
+      isDualBalanceSufficient
     } = useDualHook({ setConfirmDualInvest });
     const { isMobile } = useSettings();
 
@@ -376,17 +377,40 @@ export const BeginnerMode: any = withTranslation("common")(
                         }
                       )}
                     </Typography>
-                    <Typography
-                      component={"span"}
-                      display={"inline-flex"}
-                      color={"textSecondary"}
-                      variant={"body2"}
-                    >
-                      {t("labelDualInvestDes", {
-                        symbolA: pairASymbol,
-                        symbolB: pairBSymbol,
-                      })}
-                    </Typography>
+                    {isDualBalanceSufficient === undefined
+                      ? <Typography
+                        component={"span"}
+                        display={"inline-flex"}
+                        color={"textSecondary"}
+                        variant={"body2"}
+                      >
+                        &nbsp;
+                      </Typography>
+                      : isDualBalanceSufficient === true
+                        ? (
+                          <Typography
+                            component={"span"}
+                            display={"inline-flex"}
+                            color={"textSecondary"}
+                            variant={"body2"}
+                          >
+                            {t("labelDualInvestDes", {
+                              symbolA: pairASymbol,
+                              symbolB: pairBSymbol,
+                            })}
+                          </Typography>
+                        )
+                        : (
+                          <Typography
+                            component={"span"}
+                            display={"inline-flex"}
+                            color={"var(--color-warning)"}
+                            variant={"body2"}
+                          >
+                            {t("labelDualInvestDesInsufficient")}
+                          </Typography>
+                        )
+                    }
                   </Typography>
                 </Box>
                 <Typography

@@ -113,15 +113,19 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   };
   const [showNFTsPanel, setShowNFTsPanel] = React.useState(false);
   const history = useHistory();
-  const onViewMoreNFTsClick = () => {
-    history.push("/redPacket/records/NFTsUnClaimed");
+  const onViewMoreClick = (type: 'NFTs' | 'blindbox') => {
+    if (type === 'NFTs') {
+      history.push("/redPacket/records/NFTsUnClaimed");
+    } else {
+      history.push("/redPacket/records/BlindBoxUnClaimed");
+    }
   };
   const onCloseNFts = () => {
     setShowNFTsPanel(false);
   };
 
   return {
-    onViewMoreNFTsClick,
+    onViewMoreClick,
     onItemClick,
     redPacketClaimList,
     showLoading,

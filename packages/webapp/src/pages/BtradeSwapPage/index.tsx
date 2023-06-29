@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Icon, Typography } from "@mui/material";
 import {
   useTranslation,
   WithTranslation,
@@ -12,7 +12,7 @@ import {
   ToastType,
   useSettings,
 } from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/common-resources";
+import { HelpIcon, LOOPRING_DOCUMENT, TOAST_TIME } from "@loopring-web/common-resources";
 import {
   confirmation,
   useBtradeMap,
@@ -51,7 +51,28 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
     should15sRefresh,
   } = useBtradeSwap({ path: "/trade/btrade" });
   return (
-    <>
+    <Box>
+      <Box display={"flex"} justifyContent={"right"} marginBottom={1}>
+        <Box
+          onClick={() => {
+            window.open(
+              `${LOOPRING_DOCUMENT}Block_Trade_tutorial_en.md`,
+              "_blank"
+            );
+            window.opener = null;
+          }}
+          sx={{ cursor: "pointer" }}
+          display={"flex"}
+          color={"var(--color-text-secondary)"}
+          alignItems={"center"}>
+          <HelpIcon
+            fontSize={"large"}
+            color={"inherit"}
+            sx={{ marginRight: 1 / 2 }}
+          />
+          <Typography variant={"h5"}>{t("labelTutorial")}</Typography>
+        </Box>
+      </Box>
       <SwapPanel
         titleI8nKey={"labelBtradeSwapTitle"}
         tokenBuyProps={{
@@ -90,7 +111,7 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
       />
-    </>
+    </Box>
   );
 });
 export const BtradeSwapPage = withTranslation("common")(

@@ -1046,6 +1046,8 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
+  labelDualInvestDesInsufficient:
+    "Insufficient quota",
   labelDualCurrentPriceTip:
     "Current Price is based on USDT derived from some leading exchanges.",
   labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
@@ -1321,6 +1323,7 @@ export default {
     "{{remainingGiftsAmount}} gifts available for grabbing.",
   labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
   labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
+  labelBlindBoxTokenHint: "Unopen tokens will be returned back to sender after: {{time}}",
   labelBlindBoxClaimStarted:
     "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
   labelBlindBoxRecievedNFT:
@@ -1789,6 +1792,9 @@ export default {
   labelBtradeSettled: "Settled",
   labelOrderCancelConfirm: "Confirm to cancel this order?",
   labelOrderCancelOrder: "Cancel",
+
+  labelRedpacketTotalReward: "Total {{amount}}",
+  labelRedpacketCantOpen: "Now is not the time to open",
   labelLocketInfo: "{{symbol}} Locked Detail",
   labelSendAssetToAnotherNet: "To another network",
   labelFromAnotherNet: "From another network",
@@ -1799,6 +1805,8 @@ export default {
   labelAnotherNetworkDes:
     "Orbiter.finance is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
+  labelExplorer: "Explorer",
+  labelTutorial: "Tutorial",
   labelReferralImageDes: "Scan QR code xxxx",
   labelReferralImageCode: "Code: {{code}}",
   labelInvite: "Invite Friends",

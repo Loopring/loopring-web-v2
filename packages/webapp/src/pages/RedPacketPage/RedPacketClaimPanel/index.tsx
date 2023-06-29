@@ -53,7 +53,7 @@ export const RedPacketClaimPanel = ({
     showLoading,
     getClaimRedPacket,
     onItemClick,
-    onViewMoreNFTsClick,
+    onViewMoreClick,
     onCloseNFts,
   } = useClaimRedPacket(setToastOpen);
   const {
@@ -84,13 +84,33 @@ export const RedPacketClaimPanel = ({
   const { account } = useAccount();
   const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] =
     React.useState(undefined as number | undefined);
+  const [blindboxBalance, setBlindboxBalance] =
+    React.useState(undefined as number | undefined);
   React.useEffect(() => {
-    (async () => {
-      const response: any = await LoopringAPI.luckTokenAPI?.getLuckTokenUnclaimNFTBlindboxCnt({
-        accountId: account.accountId,
-      }, account.apiKey)
-      setTotalLuckyTokenNFTBalance(response.count)
-    })()
+    LoopringAPI.luckTokenAPI
+      ?.getLuckTokenClaimHistory(
+        {
+          isNft: true,
+          // @ts-ignore
+          statuses: "0"
+        },
+        account.apiKey
+      )
+      .then((response) => {
+        setTotalLuckyTokenNFTBalance(response.totalNum);
+      });
+    LoopringAPI.luckTokenAPI
+      ?.getLuckTokenClaimedBlindBox(
+        {
+          isNft: true,
+          statuses: [0],
+          fromId: 0
+        },
+        account.apiKey
+      )
+      .then((response) => {
+        setBlindboxBalance(response.totalNum);
+      });
   }, []);
   return (
     <Box
@@ -145,10 +165,11 @@ export const RedPacketClaimPanel = ({
               onItemClick,
               etherscanBaseUrl,
               getClaimRedPacket,
-              onViewMoreNFTsClick,
+              onViewMoreClick,
               hideAssets,
             }}
             totalLuckyTokenNFTBalance={totalLuckyTokenNFTBalance}
+            blindBoxBalance={blindboxBalance}
           />
         </Box>
         <Dialog

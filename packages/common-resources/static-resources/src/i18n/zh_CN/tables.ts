@@ -329,4 +329,9 @@ export default {
     "Triggered: The limit order has been submitted to the order book.\n Time:{time}}",
   labelStopLimitWaitingTrigger:
     "The limit order is not placed until the stop price has been triggered.",
+  labelRevealTime: "Reveal Time",
+  labelRevealTimeTooltip: "The Reveal time is when the Red Packet ends， and recipients can open it to see if they have received",
+  labelExpiredTime: "Expired Time",
+  labelExpiredTimeTooltip: "After expiration, all unclaimed NFTs will be returned to the Sender.",
+  labelRedpacketFromBlindbox: "From Blind Box",
 };
