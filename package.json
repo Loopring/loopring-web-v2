@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.3.38",
+    "@loopring-web/loopring-sdk": "3.3.29",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.2.4",
     "@mui/lab": "^5.0.0-alpha.45",
