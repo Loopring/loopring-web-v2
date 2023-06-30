@@ -13,7 +13,7 @@ import {
   useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
-import { HelpIcon, LOOPRING_DOCUMENT, TOAST_TIME } from "@loopring-web/common-resources";
+import { HelpIcon, TOAST_TIME } from "@loopring-web/common-resources";
 import {
   confirmation,
   useBtradeMap,
@@ -57,10 +57,9 @@ const Content = withTranslation("common")(({ ...rest }: WithTranslation) => {
         <Box
           onClick={() => {
             window.open(
-              `${LOOPRING_DOCUMENT}Block_Trade_tutorial_en.md`,
+              "https://github.com/Loopring/static/blob/main/documents/markdown/Block_Trade_tutorial_en.md",
               "_blank"
             );
-            window.opener = null;
           }}
           sx={{ cursor: "pointer" }}
           display={"flex"}
