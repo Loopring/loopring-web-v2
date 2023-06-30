@@ -1043,6 +1043,8 @@ export default {
   labelDualInvestQuoteTitle: "Invest {{symbolA}} (Buy {{symbolB}} Low)",
   labelDualInvestDes:
     "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
+  labelDualInvestDesInsufficient:
+    "Insufficient quota",
   labelDualCurrentPriceTip:
     "Current Price is based on USDT derived from some leading exchanges.",
   labelDualCurrentPrice: "{{symbol}} Current Price:<1>{{price}}</1>  USDT",
@@ -1790,4 +1792,6 @@ export default {
   labelAnotherNetworkDes:
     "Orbiter.finance is a 3rd party service provider to help move tokens between various Ethereum L1 and L2 networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
+  labelTutorial: "Tutorial",
+  labelExplorer: "Explorer",
 };
