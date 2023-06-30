@@ -123,11 +123,9 @@ export const useDualHook = ({
   );
 
   const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([]);
-  const [isDualBalanceSufficient, setIsDualBalanceSufficient] = React.useState<boolean | undefined>(undefined);
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
-    setIsDualBalanceSufficient(undefined)
     const market =
       marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol);
     if (nodeTimer.current !== -1) {
@@ -167,8 +165,6 @@ export const useDualHook = ({
           dualInfo: { infos, index, balance },
           raw_data: { rules },
         } = response as any;
-        const found = balance.find((_balance: any) => _balance.coin === pairASymbol)
-        setIsDualBalanceSufficient(found && sdk.toBig(found.free).isGreaterThan('0'))
         setCurrentPrice({
           base: marketSymbolA,
           quote: marketSymbolB,
@@ -288,6 +284,5 @@ export const useDualHook = ({
     onSelectStep1Token,
     onSelectStep2BuyOrSell,
     onSelectStep3Token,
-    isDualBalanceSufficient
   };
 };

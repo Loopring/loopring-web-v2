@@ -102,7 +102,6 @@ export const DualListPanel: any = withTranslation("common")(
       beginnerMode,
       handleOnPairChange,
       onToggleBeginnerMode,
-      isDualBalanceSufficient
     } = useDualHook({ setConfirmDualInvest });
 
     const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
@@ -113,6 +112,7 @@ export const DualListPanel: any = withTranslation("common")(
       ? sdk.DUAL_TYPE.DUAL_BASE
       : sdk.DUAL_TYPE.DUAL_CURRENCY;
     const marketsIsLoading = status === "PENDING";
+    // console.log('status111111', status)
 
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
@@ -370,40 +370,17 @@ export const DualListPanel: any = withTranslation("common")(
                             }
                           )}
                         </Typography>
-                          {isDualBalanceSufficient === undefined
-                            ? <Typography
-                            component={"span"}
-                            display={"inline-flex"}
-                            color={"textSecondary"}
-                            variant={"body2"}
-                          >
-                            &nbsp;
-                          </Typography>
-                            : isDualBalanceSufficient === true
-                              ? (
-                                <Typography
-                                  component={"span"}
-                                  display={"inline-flex"}
-                                  color={"textSecondary"}
-                                  variant={"body2"}
-                                >
-                                  {t("labelDualInvestDes", {
-                                    symbolA: pairASymbol,
-                                    symbolB: pairBSymbol,
-                                  })}
-                                </Typography>
-                              )
-                              : (
-                                <Typography
-                                  component={"span"}
-                                  display={"inline-flex"}
-                                  color={"var(--color-warning)"}
-                                  variant={"body2"}
-                                >
-                                  {t("labelDualInvestDesInsufficient")}
-                                </Typography>
-                              )
-                          }
+                        <Typography
+                          component={"span"}
+                          display={"inline-flex"}
+                          color={"textSecondary"}
+                          variant={"body2"}
+                        >
+                          {t("labelDualInvestDes", {
+                            symbolA: pairASymbol,
+                            symbolB: pairBSymbol,
+                          })}
+                        </Typography>
                       </Typography>
                     </Box>
                     <Typography
