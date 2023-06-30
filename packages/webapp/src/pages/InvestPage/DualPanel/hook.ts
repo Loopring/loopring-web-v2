@@ -173,9 +173,9 @@ export const useDualHook = ({
         const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
         const sellToken = tokenMap[balanceCoin]
         if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
-          var minSellVol = sdk.toBig(rules[0].baseMin).times("1e" + sellToken.decimals).toString()
+          var minSellVol = marketMap[market].baseLimitAmount
         } else {
-          minSellVol = sdk.toBig(rules[0].currencyMin).times("1e" + sellToken.decimals).toString()
+          minSellVol = marketMap[market].quoteLimitAmount
         }
         setIsDualBalanceSufficient((found && sellToken) 
           ? sdk.toBig(found.free).times('1e' + sellToken.decimals).isGreaterThanOrEqualTo(minSellVol)  
