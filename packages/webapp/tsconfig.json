@@ -11,7 +11,7 @@
     "src/types.d.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
-    "useCache": true,
+    "useCache": false,
     "transpileOnly": true
   }
 }

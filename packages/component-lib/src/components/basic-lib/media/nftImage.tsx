@@ -21,6 +21,18 @@ export const NftImage = (props: NftImageProps & any) => {
   );
 };
 
+export const NftImageStyle = (props: {src: string | undefined, style?: React.CSSProperties}) => {
+  return (
+    <img
+      referrerPolicy={"unsafe-url"}
+      style={{ objectFit: "contain", ...props.style}}
+      alt={"NFT"}
+      src={props.src?.replace(/(javascript:)|(data:)/gi, "")}
+    />
+  );
+};
+
+
 export const cssBackground = (_props: { theme: Theme }) => {
   // const fillColor = theme.colorBase.textDisable.replace("#", "%23");
   // const _svg =

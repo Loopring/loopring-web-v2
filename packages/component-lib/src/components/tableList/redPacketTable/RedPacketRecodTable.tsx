@@ -5,11 +5,13 @@ import {
   BoxNFT,
   Column,
   NftImage,
+  NftImageStyle,
   Table,
   TablePagination,
 } from "../../basic-lib";
 import {
   CoinInfo,
+  getValuePrecisionThousand,
   globalSetup,
   myLog,
   RowConfig,
@@ -29,6 +31,7 @@ import { FormatterProps } from "react-data-grid";
 import _ from "lodash";
 import moment from "moment";
 import { ColumnCoinDeep } from "../assetsTable";
+import { useTheme } from "@emotion/react";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -38,9 +41,9 @@ const TableWrapperStyled = styled(Box)`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `;
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table)<{isBlindbox: boolean}>`
   &.rdg {
-    --template-columns: 16% 16% 26% auto auto auto !important;
+    --template-columns: ${({isBlindbox}) => isBlindbox ? '16% 16% 26% auto auto !important' : '16% 16% 26% auto auto auto !important'}; 
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -84,6 +87,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       showloading,
       onItemClick,
       tokenType,
+      tableType,
       t,
     } = props;
     const history = useHistory();
@@ -103,11 +107,21 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
         myLog("AmmTable page,", page);
         updateData({
           page,
-          filter: { isNft: tokenType === TokenType.nft ? true : false },
+          filter: { 
+            isNft: tableType === 'NFT' 
+              ? true 
+              : tableType === 'token' 
+                ? false
+                : undefined,
+            modes: tableType === 'blindbox' 
+              ? 2
+              : [0,1,2]
+          },
         });
       },
-      [updateData, tokenType]
+      [updateData, tableType]
     );
+    const theme = useTheme()
     const getColumnModeTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -143,13 +157,15 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
                       height={RowConfig.rowHeight + "px"}
                       width={RowConfig.rowHeight + "px"}
                       padding={1 / 4}
-                      style={{ background: "var(--field-opacity)" }}
                     >
                       {metadata?.imageSize && (
-                        <NftImage
-                          alt={metadata?.base?.name}
-                          onError={() => undefined}
+                        <NftImageStyle
                           src={metadata?.imageSize[sdk.NFT_IMAGE_SIZES.small]}
+                          style={{
+                            width: `${theme.unit * 3}px`,
+                            height: `${theme.unit * 3}px`,
+                            borderRadius: "4px"
+                          }}
                         />
                       )}
                     </Box>
@@ -183,10 +199,10 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
           key: "Amount",
           name: t("labelRecordAmount"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{`${row.totalAmount}`}</>;
+            return <>{row.totalAmount}</>
           },
         },
-        {
+        ...(tableType !== 'blindbox' ? [{
           key: "Type",
           name: t("labelRecordType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
@@ -210,7 +226,8 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
               </>
             );
           },
-        },
+        }] : []),
+        
         {
           key: "Status",
           name: t("labelRecordStatus"),
@@ -229,18 +246,18 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return <>{found ? found[1] : ""}</>;
           },
         },
-        // {
-        //   key: "Number",
-        //   sortable: true,
-        //   cellClass: "textAlignCenter",
-        //   headerCellClass: "textAlignCenter",
-        //   name: t("labelRecordNumber"),
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     return (
-        //       <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
-        //     );
-        //   },
-        // },
+        {
+          key: "Number",
+          sortable: true,
+          cellClass: "textAlignCenter",
+          headerCellClass: "textAlignCenter",
+          name: t("labelRecordNumber"),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return (
+              <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
+            );
+          },
+        },
         {
           key: "Time",
           cellClass: "textAlignRight",
@@ -262,7 +279,7 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, [tokenType]);
+    }, [tokenType, tableType]);
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
@@ -272,8 +289,9 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
     };
 
     return (
-      <TableWrapperStyled>
+      <TableWrapperStyled >
         <TableStyled
+          isBlindbox={tableType === 'blindbox'}
           currentheight={
             RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
           }

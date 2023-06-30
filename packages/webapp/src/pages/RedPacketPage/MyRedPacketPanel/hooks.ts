@@ -536,7 +536,17 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
               (item: sdk.LuckyTokenBlindBoxItemReceive) => {
                 // @ts-ignore
                 const { luckyToken, claim: myClaim } = item;
-
+                let tokenInfo
+                if (!luckyToken.isNft) {
+                  const token = tokenMap[idIndex[luckyToken.tokenId]];
+                  tokenInfo = {
+                    ...coinMap[token.symbol ?? ""],
+                    name: token.name,
+                    type: TokenType.single,
+                    decimals: token.decimals,
+                    precision: token.precision,
+                  };
+                }
                 return {
                   type: luckyToken.type,
                   status: luckyToken.status,
@@ -545,6 +555,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
                     ? luckyToken?.sender?.ens
                     : getShortAddr(luckyToken?.sender?.address),
                   rawData: item,
+                  token: tokenInfo,
                 };
               }
             );

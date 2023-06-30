@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 
 import { HashRouter as Router, useLocation } from "react-router-dom";
 import { store } from "@loopring-web/core";
-import { ContactAPI } from "@loopring-web/loopring-sdk";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -51,19 +50,19 @@ const App = () => {
     <>
       <GlobalStyles
         styles={css`
-      ${globalCss({ theme })};
+          ${globalCss({ theme })};
 
-      body {
-        ${
-          theme.mode === "dark"
-            ? `
+          body {
+            ${
+              theme.mode === "dark"
+                ? `
             color: ${theme.colorBase.textPrimary};
           `
-            : ``
-        }
+                : ``
+            }
 
 
-      }
+          }
 
           body:before {
             ${
@@ -73,8 +72,8 @@ const App = () => {
        `
                 : ""
             }
-      }
-    }`}
+          }
+        }`}
       />
 
       <Router>

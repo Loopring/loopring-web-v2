@@ -13,6 +13,7 @@ import { useSwap } from "./hookSwap";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  myLog,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useNotify } from "@loopring-web/core";
@@ -36,6 +37,7 @@ export const SwapPage = withTranslation("common")(
       isSwapLoading,
       pageTradeLite,
       toPro,
+      isMarketInit,
       isMobile,
       priceAlertCallBack,
       smallOrderAlertCallBack,
@@ -91,7 +93,7 @@ export const SwapPage = withTranslation("common")(
         ? `${tradeData.slippage}`
         : "0.1"
       : EmptyValueTag;
-
+    myLog("isMarketInit", isMarketInit);
     return (
       <Box
         display={"flex"}
@@ -109,11 +111,13 @@ export const SwapPage = withTranslation("common")(
           <SwapPanel
             toPro={toPro}
             tokenBuyProps={{
-              disabled: isSwapLoading,
+              disableInputValue: isMarketInit,
+              disabled: isMarketInit || isSwapLoading,
               decimalsLimit: tradeCalcData.buyPrecision,
             }}
             tokenSellProps={{
-              disabled: isSwapLoading,
+              disableInputValue: isMarketInit,
+              disabled: isMarketInit || isSwapLoading,
               decimalsLimit: tradeCalcData.sellPrecision,
             }}
             campaignTagConfig={campaignTagConfig ?? ({} as any)}

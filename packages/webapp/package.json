@@ -39,8 +39,8 @@
   "main": "./public/electron.js",
   "homepage": ".",
   "scripts": {
-    "build": "git rev-parse --short HEAD; REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production react-app-rewired build",
-    "dev": "cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development react-app-rewired start",
+    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && git rev-parse --short HEAD; cross-env REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production  react-app-rewired build",
+    "dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development react-app-rewired start",
     "build_dev": "REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development react-app-rewired build"
   },
   "browserslist": {
@@ -56,9 +56,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/helper-builder-react-jsx": "^7.10.4",
-    "@babel/helper-builder-react-jsx-experimental": "^7.12.11",
-    "@babel/preset-env": "^7.14.7",
     "@types/classnames": "^2.2.11",
     "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.168",

@@ -2,7 +2,6 @@ import React from "react";
 import {
   AccountStatus,
   fnType,
-  myLog,
   TradeBtnStatus,
 } from "@loopring-web/common-resources";
 import * as _ from "lodash";

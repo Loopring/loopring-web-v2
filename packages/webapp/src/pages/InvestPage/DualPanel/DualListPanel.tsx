@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "@emotion/styled";
+import React from 'react'
+import styled from '@emotion/styled'
 import {
   Box,
   Card,
@@ -14,26 +14,27 @@ import {
   TooltipProps,
   tooltipClasses,
   IconButton,
-} from "@mui/material";
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { useDualHook } from "./hook";
+} from '@mui/material'
+import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { useDualHook } from './hook'
 import {
   Button,
   CardStyleItem,
   CoinIcon,
   CoinIcons,
   DualTable,
+  EmptyDefault,
   useOpenModals,
   useSettings,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 import {
   ModalDualPanel,
   useDualMap,
   useDualTrade,
   useSystem,
   useTokenMap,
-} from "@loopring-web/core";
-import { useHistory } from "react-router-dom";
+} from '@loopring-web/core'
+import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
   CloseIcon,
@@ -43,54 +44,54 @@ import {
   LOOPRING_DOCUMENT,
   SoursURL,
   TokenType,
-} from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
-import { useTheme } from "@emotion/react";
-import { BeginnerMode } from "./BeginnerMode";
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
+import { useTheme } from '@emotion/react'
+import { BeginnerMode } from './BeginnerMode'
 
 const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))({
   [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: "none",
+    maxWidth: 'none',
   },
-});
+})
 
 const StyleDual = styled(Box)`
   position: relative;
-` as typeof Box;
+` as typeof Box
 const WrapperStyled = styled(Box)`
   flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-`;
+`
 
 const TopRightButton = styled(IconButton)`
   position: absolute;
   top: ${({ theme }) => theme.unit * 0.5}px;
   right: ${({ theme }) => theme.unit * 0.5}px;
-`;
+`
 
-export const DualListPanel: any = withTranslation("common")(
+export const DualListPanel: any = withTranslation('common')(
   ({
     t,
     setConfirmDualInvest,
     showBeginnerModeHelp,
     onShowBeginnerModeHelp,
   }: WithTranslation & {
-    setConfirmDualInvest: (state: any) => void;
-    showBeginnerModeHelp: boolean;
-    onShowBeginnerModeHelp: (show: boolean) => void;
+    setConfirmDualInvest: (state: any) => void
+    showBeginnerModeHelp: boolean
+    onShowBeginnerModeHelp: (show: boolean) => void
   }) => {
-    const { coinJson } = useSettings();
-    const { forexMap } = useSystem();
-    const theme = useTheme();
-    const { tradeMap, marketArray, status, getDualMap } = useDualMap();
-    const { tokenMap } = useTokenMap();
-    const { setShowDual } = useOpenModals();
+    const { coinJson } = useSettings()
+    const { forexMap } = useSystem()
+    const theme = useTheme()
+    const { tradeMap, marketArray, status, getDualMap } = useDualMap()
+    const { tokenMap } = useTokenMap()
+    const { setShowDual } = useOpenModals()
     const {
       pairASymbol,
       pairBSymbol,
@@ -102,50 +103,50 @@ export const DualListPanel: any = withTranslation("common")(
       beginnerMode,
       handleOnPairChange,
       onToggleBeginnerMode,
-    } = useDualHook({ setConfirmDualInvest });
+      isDualBalanceSufficient,
+    } = useDualHook({ setConfirmDualInvest })
 
-    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade();
-    const { isMobile } = useSettings();
-    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
-    const history = useHistory();
-    const dualType = new RegExp(pair).test(market ?? "")
+    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade()
+    const { isMobile } = useSettings()
+    const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+    const history = useHistory()
+    const dualType = new RegExp(pair).test(market ?? '')
       ? sdk.DUAL_TYPE.DUAL_BASE
-      : sdk.DUAL_TYPE.DUAL_CURRENCY;
-    const marketsIsLoading = status === "PENDING";
-    // console.log('status111111', status)
+      : sdk.DUAL_TYPE.DUAL_CURRENCY
+    const marketsIsLoading = status === 'PENDING'
 
     return (
-      <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
+      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box
           marginBottom={2}
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={isMobile ? "left" : "center"}
-          flexDirection={isMobile ? "column" : "row"}
+          display={'flex'}
+          justifyContent={'space-between'}
+          alignItems={isMobile ? 'left' : 'center'}
+          flexDirection={isMobile ? 'column' : 'row'}
         >
           <Button
-            startIcon={<BackIcon fontSize={"small"} />}
-            variant={"text"}
-            size={"medium"}
+            startIcon={<BackIcon fontSize={'small'} />}
+            variant={'text'}
+            size={'medium'}
             sx={
               isMobile
                 ? {
-                    color: "var(--color-text-secondary)",
-                    justifyContent: "left",
+                    color: 'var(--color-text-secondary)',
+                    justifyContent: 'left',
                   }
-                : { color: "var(--color-text-secondary)" }
+                : { color: 'var(--color-text-secondary)' }
             }
-            color={"inherit"}
-            onClick={() => history.push("/invest/overview")}
+            color={'inherit'}
+            onClick={() => history.push('/invest/overview')}
           >
-            {t("labelInvestDualTitle")}
+            {t('labelInvestDualTitle')}
           </Button>
           <Box
-            display={"flex"}
-            flexDirection={"row"}
-            marginTop={isMobile ? 2 : "inherit"}
-            width={isMobile ? "100%" : "initial"}
-            justifyContent={"space-between"}
+            display={'flex'}
+            flexDirection={'row'}
+            marginTop={isMobile ? 2 : 'inherit'}
+            width={isMobile ? '100%' : 'initial'}
+            justifyContent={'space-between'}
           >
             {!isMobile && (
               <NoMaxWidthTooltip
@@ -154,29 +155,24 @@ export const DualListPanel: any = withTranslation("common")(
                   arrow: { style: { color: theme.colorBase.popBg } },
                 }}
                 title={
-                  <Box
-                    marginX={4}
-                    marginY={2.5}
-                    display={"flex"}
-                    alignItems={"center"}
-                  >
+                  <Box marginX={4} marginY={2.5} display={'flex'} alignItems={'center'}>
                     <Box marginRight={2.5}>
-                      <HelpIcon fontSize={"large"} />
+                      <HelpIcon fontSize={'large'} />
                     </Box>
                     <Box>
                       <Typography color={theme.colorBase.textSecondary}>
-                        {t("labelInvestDualBeginerModeDesLine1")}
+                        {t('labelInvestDualBeginerModeDesLine1')}
                       </Typography>
                       <Typography color={theme.colorBase.textSecondary}>
-                        {t("labelInvestDualBeginerModeDesLine2")}
+                        {t('labelInvestDualBeginerModeDesLine2')}
                       </Typography>
                     </Box>
                     <TopRightButton
-                      size={"large"}
-                      aria-label={t("labelClose")}
-                      color={"inherit"}
+                      size={'large'}
+                      aria-label={t('labelClose')}
+                      color={'inherit'}
                       onClick={() => {
-                        onShowBeginnerModeHelp(false);
+                        onShowBeginnerModeHelp(false)
                       }}
                     >
                       <CloseIcon />
@@ -186,40 +182,32 @@ export const DualListPanel: any = withTranslation("common")(
                 arrow
               >
                 <FormControlLabel
-                  control={
-                    <Switch
-                      checked={beginnerMode}
-                      onChange={onToggleBeginnerMode}
-                    />
-                  }
+                  control={<Switch checked={beginnerMode} onChange={onToggleBeginnerMode} />}
                   label={
-                    <Typography variant={"h6"} marginLeft={1}>
-                      {t("labelInvestDualBeginerMode")}
+                    <Typography variant={'h6'} marginLeft={1}>
+                      {t('labelInvestDualBeginerMode')}
                     </Typography>
                   }
                 />
               </NoMaxWidthTooltip>
             )}
             <Button
-              startIcon={<HelpIcon fontSize={"large"} />}
-              variant={"text"}
+              startIcon={<HelpIcon fontSize={'large'} />}
+              variant={'text'}
               onClick={() => {
-                window.open(
-                  `${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`,
-                  "_blank"
-                );
-                window.opener = null;
+                window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')
+                window.opener = null
               }}
-              sx={{ color: "var(--color-text-secondary)" }}
+              sx={{ color: 'var(--color-text-secondary)' }}
             >
-              {t("labelInvestDualTutorial")}
+              {t('labelInvestDualTutorial')}
             </Button>
             <Button
-              variant={"outlined"}
+              variant={'outlined'}
               sx={{ marginLeft: 2 }}
-              onClick={() => history.push("/invest/balance/dual")}
+              onClick={() => history.push('/invest/balance/dual')}
             >
-              {t("labelInvestMyDual")}
+              {t('labelInvestMyDual')}
             </Button>
           </Box>
         </Box>
@@ -227,23 +215,19 @@ export const DualListPanel: any = withTranslation("common")(
           <BeginnerMode setConfirmDualInvest={setConfirmDualInvest} />
         ) : marketsIsLoading ? (
           <Box
-            key={"loading"}
-            flexDirection={"column"}
-            display={"flex"}
-            justifyContent={"center"}
-            height={"100%"}
-            alignItems={"center"}
+            key={'loading'}
+            flexDirection={'column'}
+            display={'flex'}
+            justifyContent={'center'}
+            height={'100%'}
+            alignItems={'center'}
           >
-            <img
-              alt={"loading"}
-              width="36"
-              src={`${SoursURL}images/loading-line.gif`}
-            />
+            <img alt={'loading'} width='36' src={`${SoursURL}images/loading-line.gif`} />
           </Box>
         ) : // ) : false  ? (
         !!marketArray?.length ? (
           <>
-            <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
+            <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
               <Grid container spacing={2}>
                 {tradeMap &&
                   Reflect.ownKeys(tradeMap)
@@ -251,41 +235,29 @@ export const DualListPanel: any = withTranslation("common")(
                     .map((item, index) => {
                       // const item = tradeMap[key.toString()];
                       return (
-                        <Grid
-                          item
-                          xs={6}
-                          md={3}
-                          lg={2}
-                          key={item.toString() + index.toString()}
-                        >
+                        <Grid item xs={6} md={3} lg={2} key={item.toString() + index.toString()}>
                           <CardStyleItem
                             className={
-                              item.toString().toLowerCase() ===
-                              pairASymbol.toLowerCase()
-                                ? "btnCard dualInvestCard selected"
-                                : "btnCard dualInvestCard "
+                              item.toString().toLowerCase() === pairASymbol.toLowerCase()
+                                ? 'btnCard dualInvestCard selected'
+                                : 'btnCard dualInvestCard '
                             }
-                            sx={{ height: "100%" }}
-                            onClick={() =>
-                              handleOnPairChange({ pairA: item.toString() })
-                            }
+                            sx={{ height: '100%' }}
+                            onClick={() => handleOnPairChange({ pairA: item.toString() })}
                           >
-                            <CardContent sx={{ alignItems: "center" }}>
-                              <Typography
-                                component={"span"}
-                                display={"inline-flex"}
-                              >
+                            <CardContent sx={{ alignItems: 'center' }}>
+                              <Typography component={'span'} display={'inline-flex'}>
                                 <CoinIcon symbol={item.toString()} size={28} />
                               </Typography>
-                              <Typography variant={"h5"} paddingLeft={1}>
-                                {t("labelDualInvest", {
+                              <Typography variant={'h5'} paddingLeft={1}>
+                                {t('labelDualInvest', {
                                   symbol: item.toString(),
                                 })}
                               </Typography>
                             </CardContent>
                           </CardStyleItem>
                         </Grid>
-                      );
+                      )
                     })}
               </Grid>
 
@@ -293,128 +265,135 @@ export const DualListPanel: any = withTranslation("common")(
                 <Tabs
                   value={pairBSymbol}
                   onChange={(_e, value) => handleOnPairChange({ pairB: value })}
-                  aria-label="Dual Quote Tab"
-                  variant={"scrollable"}
+                  aria-label='Dual Quote Tab'
+                  variant={'scrollable'}
                 >
                   {pairASymbol &&
                     tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
                       const _index = marketArray.findIndex((_item) =>
-                        new RegExp(
-                          pairASymbol + "-" + item.toString(),
-                          "ig"
-                        ).test(_item)
-                      );
+                        new RegExp(pairASymbol + '-' + item.toString(), 'ig').test(_item),
+                      )
                       return (
                         <Tab
                           label={
                             _index !== -1
-                              ? t("labelDualBase", {
+                              ? t('labelDualBase', {
                                   symbol: item.toString(),
                                 })
-                              : t("labelDualQuote", {
+                              : t('labelDualQuote', {
                                   symbol: item.toString(),
                                 })
                           }
                           value={item.toString()}
                           key={item.toString() + index.toString()}
                         />
-                      );
+                      )
                     })}
                 </Tabs>
               </Box>
 
-              <WrapperStyled marginTop={1} flex={1} flexDirection={"column"}>
+              <WrapperStyled marginTop={1} flex={1} flexDirection={'column'}>
                 {pairASymbol && pairBSymbol && market && (
                   <Box
-                    display={"flex"}
-                    flexDirection={"row"}
+                    display={'flex'}
+                    flexDirection={'row'}
                     paddingTop={3}
                     paddingX={3}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
                   >
                     <Box
-                      component={"h3"}
-                      display={"flex"}
-                      flexDirection={"row"}
-                      alignItems={"center"}
+                      component={'h3'}
+                      display={'flex'}
+                      flexDirection={'row'}
+                      alignItems={'center'}
                     >
-                      <Typography component={"span"} display={"inline-flex"}>
+                      <Typography component={'span'} display={'inline-flex'}>
                         {/* eslint-disable-next-line react/jsx-no-undef */}
                         <CoinIcons
                           type={TokenType.dual}
                           size={32}
-                          tokenIcon={[
-                            coinJson[pairASymbol],
-                            coinJson[pairBSymbol],
-                          ]}
+                          tokenIcon={[coinJson[pairASymbol], coinJson[pairBSymbol]]}
                         />
                       </Typography>
-                      <Typography
-                        component={"span"}
-                        flexDirection={"column"}
-                        display={"flex"}
-                      >
+                      <Typography component={'span'} flexDirection={'column'} display={'flex'}>
                         <Typography
-                          component={"span"}
-                          display={"inline-flex"}
-                          color={"textPrimary"}
+                          component={'span'}
+                          display={'inline-flex'}
+                          color={'textPrimary'}
                         >
                           {t(
                             dualType === DUAL_TYPE.DUAL_BASE
-                              ? "labelDualInvestBaseTitle"
-                              : "labelDualInvestQuoteTitle",
+                              ? 'labelDualInvestBaseTitle'
+                              : 'labelDualInvestQuoteTitle',
                             {
                               symbolA: pairASymbol,
                               symbolB: pairBSymbol,
-                            }
+                            },
                           )}
                         </Typography>
-                        <Typography
-                          component={"span"}
-                          display={"inline-flex"}
-                          color={"textSecondary"}
-                          variant={"body2"}
-                        >
-                          {t("labelDualInvestDes", {
-                            symbolA: pairASymbol,
-                            symbolB: pairBSymbol,
-                          })}
-                        </Typography>
+                        {isDualBalanceSufficient === undefined ? (
+                          <Typography
+                            component={'span'}
+                            display={'inline-flex'}
+                            color={'textSecondary'}
+                            variant={'body2'}
+                          >
+                            &nbsp;
+                          </Typography>
+                        ) : isDualBalanceSufficient === true ? (
+                          <Typography
+                            component={'span'}
+                            display={'inline-flex'}
+                            color={'textSecondary'}
+                            variant={'body2'}
+                          >
+                            {t('labelDualInvestDes', {
+                              symbolA: pairASymbol,
+                              symbolB: pairBSymbol,
+                            })}
+                          </Typography>
+                        ) : (
+                          <Typography
+                            component={'span'}
+                            display={'inline-flex'}
+                            color={'var(--color-warning)'}
+                            variant={'body2'}
+                          >
+                            {t('labelDualInvestDesInsufficient')}
+                          </Typography>
+                        )}
                       </Typography>
                     </Box>
                     <Typography
-                      component={"span"}
-                      display={isMobile ? "flex" : "inline-flex"}
-                      color={"textSecondary"}
-                      variant={"body2"}
-                      flexDirection={isMobile ? "column" : "row"}
-                      alignItems={"center"}
-                      whiteSpace={"pre-wrap"}
+                      component={'span'}
+                      display={isMobile ? 'flex' : 'inline-flex'}
+                      color={'textSecondary'}
+                      variant={'body2'}
+                      flexDirection={isMobile ? 'column' : 'row'}
+                      alignItems={'center'}
+                      whiteSpace={'pre-wrap'}
                     >
                       {currentPrice &&
                         (!isMobile ? (
                           <>
-                            <Tooltip
-                              title={<>{t("labelDualCurrentPriceTip")}</>}
-                              placement={"top"}
-                            >
+                            <Tooltip title={<>{t('labelDualCurrentPriceTip')}</>} placement={'top'}>
                               <Typography
-                                component={"p"}
-                                variant="body2"
-                                color={"textSecondary"}
-                                display={"inline-flex"}
-                                alignItems={"center"}
+                                component={'p'}
+                                variant='body2'
+                                color={'textSecondary'}
+                                display={'inline-flex'}
+                                alignItems={'center'}
                               >
                                 <Info2Icon
-                                  fontSize={"small"}
-                                  color={"inherit"}
+                                  fontSize={'small'}
+                                  color={'inherit'}
                                   sx={{ marginX: 1 / 2 }}
                                 />
                               </Typography>
                             </Tooltip>
                             <Trans
-                              i18nKey={"labelDualCurrentPrice"}
+                              i18nKey={'labelDualCurrentPrice'}
                               tOptions={{
                                 price:
                                   // PriceTag[CurrencyToTag[currency]] +
@@ -422,69 +401,63 @@ export const DualListPanel: any = withTranslation("common")(
                                     currentPrice.currentPrice,
                                     currentPrice.precisionForPrice
                                       ? currentPrice.precisionForPrice
-                                      : tokenMap[currentPrice.quote]
-                                          .precisionForOrder,
+                                      : tokenMap[currentPrice.quote].precisionForOrder,
                                     currentPrice.precisionForPrice
                                       ? currentPrice.precisionForPrice
-                                      : tokenMap[currentPrice.quote]
-                                          .precisionForOrder,
+                                      : tokenMap[currentPrice.quote].precisionForOrder,
                                     currentPrice.precisionForPrice
                                       ? currentPrice.precisionForPrice
-                                      : tokenMap[currentPrice.quote]
-                                          .precisionForOrder,
+                                      : tokenMap[currentPrice.quote].precisionForOrder,
                                     true,
-                                    { floor: true }
+                                    { floor: true },
                                   ),
                                 symbol: currentPrice.base,
                               }}
                             >
                               LRC Current price:
                               <Typography
-                                component={"span"}
-                                display={"inline-flex"}
-                                color={"textPrimary"}
+                                component={'span'}
+                                display={'inline-flex'}
+                                color={'textPrimary'}
                                 paddingLeft={1}
                               >
                                 price
-                              </Typography>{" "}
+                              </Typography>{' '}
                               :
                             </Trans>
                           </>
                         ) : (
                           <>
                             <Typography
-                              component={"span"}
-                              color={"textSecondary"}
-                              variant={"body2"}
-                              textAlign={"right"}
+                              component={'span'}
+                              color={'textSecondary'}
+                              variant={'body2'}
+                              textAlign={'right'}
                             >
-                              {t("labelDualMobilePrice", {
+                              {t('labelDualMobilePrice', {
                                 symbol: currentPrice.base,
                               })}
                             </Typography>
                             <Typography
-                              textAlign={"right"}
-                              component={"span"}
-                              display={"inline-flex"}
-                              color={"textPrimary"}
+                              textAlign={'right'}
+                              component={'span'}
+                              display={'inline-flex'}
+                              color={'textPrimary'}
                               paddingLeft={1}
                             >
                               {getValuePrecisionThousand(
                                 currentPrice.currentPrice,
                                 currentPrice.precisionForPrice
                                   ? currentPrice.precisionForPrice
-                                  : tokenMap[currentPrice.quote]
-                                      .precisionForOrder,
+                                  : tokenMap[currentPrice.quote].precisionForOrder,
                                 currentPrice.precisionForPrice
                                   ? currentPrice.precisionForPrice
-                                  : tokenMap[currentPrice.quote]
-                                      .precisionForOrder,
+                                  : tokenMap[currentPrice.quote].precisionForOrder,
                                 currentPrice.precisionForPrice
                                   ? currentPrice.precisionForPrice
-                                  : tokenMap[currentPrice.quote]
-                                      .precisionForOrder,
+                                  : tokenMap[currentPrice.quote].precisionForOrder,
                                 true,
-                                { floor: true }
+                                { floor: true },
                               )}
                             </Typography>
                           </>
@@ -505,7 +478,7 @@ export const DualListPanel: any = withTranslation("common")(
                           sellSymbol: pairASymbol,
                           buySymbol: pairBSymbol,
                         },
-                      });
+                      })
                     }}
                   />
                 </Box>
@@ -514,17 +487,22 @@ export const DualListPanel: any = withTranslation("common")(
           </>
         ) : (
           <Box
-            key={"empty"}
-            flexDirection={"column"}
-            display={"flex"}
-            justifyContent={"center"}
-            height={"100%"}
-            alignItems={"center"}
+            key={'empty'}
+            flexDirection={'column'}
+            display={'flex'}
+            justifyContent={'center'}
+            flex={1}
+            alignItems={'center'}
           >
-            <img src={SoursURL + "/svg/dual-empty.svg"} />
-            <Button onClick={getDualMap} variant={"contained"}>
-              {t("labelDualRefresh")}
-            </Button>
+            <EmptyDefault
+              message={() => {
+                return (
+                  <Button onClick={getDualMap} variant={'contained'}>
+                    {t('labelDualRefresh')}
+                  </Button>
+                )
+              }}
+            />
           </Box>
         )}
         <ModalDualPanel
@@ -534,6 +512,6 @@ export const DualListPanel: any = withTranslation("common")(
           isBeginnerMode={beginnerMode}
         />
       </Box>
-    );
-  }
-);
+    )
+  },
+)

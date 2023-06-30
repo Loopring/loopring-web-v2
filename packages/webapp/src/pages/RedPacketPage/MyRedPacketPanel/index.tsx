@@ -33,6 +33,7 @@ enum TabIndex {
   NFTReceived = "NFTReceived",
   NFTSend = "NFTSend",
   BlindBoxReceived = "BlindBoxReceived",
+  BlindBoxSend = "BlindBoxSend",
   NFTsUnClaimed = "NFTsUnClaimed",
   BlindBoxUnClaimed = "BlindBoxUnClaimed",
 }
@@ -158,7 +159,7 @@ export const MyRedPacketPanel = ({
           } else if (tabType === "blindBox" && value === "Received") {
             handleTabChange(TabIndex.BlindBoxReceived);
           } else if (tabType === "blindBox" && value === "Sent") {
-            handleTabChange(TabIndex.Send);
+            handleTabChange(TabIndex.BlindBoxSend);
           }
         }}
         aria-label="l2-history-tabs"
@@ -206,17 +207,18 @@ export const MyRedPacketPanel = ({
               >
                 {t("labelRedpacketNFTS")}
               </SelectButton>
-              {isRecieve && (
-                <SelectButton
-                  onClick={() => {
-                    handleTabChange(TabIndex.BlindBoxReceived);
-                  }}
-                  selected={[TabIndex.BlindBoxReceived].includes(currentTab)}
-                  variant={"outlined"}
-                >
-                  {t("labelRedpacketBlindBox")}
-                </SelectButton>
-              )}
+
+              <SelectButton
+                onClick={() => {
+                  isRecieve
+                    ? handleTabChange(TabIndex.BlindBoxReceived)
+                    : handleTabChange(TabIndex.BlindBoxSend);
+                }}
+                selected={[TabIndex.BlindBoxReceived, TabIndex.BlindBoxSend].includes(currentTab)}
+                variant={"outlined"}
+              >
+                {t("labelRedpacketBlindBox")}
+              </SelectButton>
             </>
           )}
         </Box>
@@ -310,12 +312,15 @@ export const MyRedPacketPanel = ({
                   total: redPacketReceiveTotal,
                 },
                 showActionableRecords,
+                isUncliamedNFT: currentTab === TabIndex.NFTsUnClaimed
               }}
             />
           </Box>
         )}
-        {(currentTab === TabIndex.BlindBoxReceived ||
-          currentTab === TabIndex.BlindBoxUnClaimed) && (
+        {([
+          TabIndex.BlindBoxReceived, 
+          TabIndex.BlindBoxUnClaimed, 
+        ].includes(currentTab)) && (
           <Box
             className="tableWrapper table-divide-short"
             display={"flex"}
@@ -334,10 +339,11 @@ export const MyRedPacketPanel = ({
                 total: redPacketReceiveTotal_BlindBox,
               }}
               showActionableRecords={showActionableRecords}
+              isUnclaimed={currentTab === TabIndex.BlindBoxUnClaimed}
             />
           </Box>
         )}
-        {[TabIndex.Send, TabIndex.NFTSend].includes(currentTab) && (
+        {[TabIndex.Send, TabIndex.NFTSend, TabIndex.BlindBoxSend].includes(currentTab) && (
           <Box className="tableWrapper table-divide-short">
             <RedPacketRecordTable
               {...{
@@ -354,6 +360,11 @@ export const MyRedPacketPanel = ({
                   total: myRedPacketRecordTotal,
                 },
                 onItemClick,
+                tableType: currentTab === TabIndex.Send 
+                  ? 'token' 
+                  : currentTab === TabIndex.NFTSend 
+                    ? 'NFT'
+                    : 'blindbox' 
               }}
             />
           </Box>

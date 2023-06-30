@@ -224,7 +224,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       const accAddress = accounts[0];
       myLog("After connect >>,network part start: step1 networkUpdate");
       store.dispatch(updateAccountStatus({ _chainId: chainId }));
-      const networkFlag = networkUpdate();
+      const networkFlag = await networkUpdate();
       myLog("After connect >>,network part done: step2 check account");
 
       if (networkFlag) {
@@ -318,10 +318,11 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         props?.opts?.error &&
         /Connection request reset. Please try again/.test(props.opts.error)
       ) {
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.RejectConnect,
-        });
+        setShowConnect({ isShow: false });
+        // setShowConnect({
+        //   isShow: true,
+        //   step: WalletConnectStep.RejectConnect,
+        // });
       } else {
         setShowConnect({
           isShow: true,

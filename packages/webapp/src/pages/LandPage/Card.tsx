@@ -17,17 +17,21 @@ const BoxStyle = styled(animated.div)`
   //width: 400px !important;
   svg {
     fill: ${({ theme }: any) => theme.colorBase.textPrimary};
+
     .svg-high {
       fill: ${({ theme }: any) => theme.colorBase.primary};
     }
   }
+
   :hover {
     svg {
       fill: ${({ theme }: any) => theme.colorBase.textButton};
+
       .svg-high {
         fill: ${({ theme }: any) => theme.colorBase.star};
       }
     }
+
     p,
     h3 {
       color: ${({ theme }: any) => theme.colorBase.textButton};

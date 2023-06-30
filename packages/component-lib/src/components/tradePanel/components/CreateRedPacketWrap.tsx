@@ -42,6 +42,7 @@ import {
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
   Info2Icon,
+  RedPacketOrderType,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import {
@@ -117,6 +118,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType,
     minimum,
     maximum,
+    selectNFTDisabled,
     ...rest
   }: CreateRedPacketViewProps<T, I, F> & {
     selectedType: LuckyRedPacketItem;
@@ -139,9 +141,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         : "0.00",
     };
 
-    const inputNFTButtonDefaultProps: Partial<
-      InputButtonProps<T, I, CoinInfo<I>>
-    > = {
+    const inputNFTButtonDefaultProps: Partial<InputButtonProps<T, I, CoinInfo<I>>> = {
       label:
         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
           ? t("labelAmountEach")
@@ -160,7 +160,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
       React.useState<"up" | "down">("down");
     const inputBtnRef = React.useRef();
     const inputSplitRef = React.useRef();
-    const { total: redPacketTotalValue, splitValue } = React.useMemo(() => {
+    const isToken = tradeType === RedPacketOrderType.TOKEN || 
+      (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT)
+    const {total: redPacketTotalValue, splitValue} = React.useMemo(() => {
       // if (tradeType == TRADE_TYPE.TOKEN) {
       //
       // } else {
@@ -184,7 +186,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 .toBig(tradeData?.tradeValue ?? 0)
                 .times(tradeData?.numbers ?? 0)
             : sdk.toBig(tradeData?.tradeValue ?? 0);
-        if (tradeType == TRADE_TYPE.TOKEN) {
+        if (isToken) {
           return {
             total:
               getValuePrecisionThousand(
@@ -348,7 +350,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         // @ts-ignore
         // tradeData.numbers !== "0" &&
         tradeData.balance &&
-        tradeType === TRADE_TYPE.NFT
+        tradeType === RedPacketOrderType.NFT
       ) {
         if (selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE) {
           const value = BigNumber.min(
@@ -404,14 +406,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
       : now;
 
     const timeRangeMaxInSeconds =
-      tradeType === TRADE_TYPE.TOKEN
+      tradeType === RedPacketOrderType.TOKEN
         ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
         : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT;
     // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
       ? startDateTime.clone().add(timeRangeMaxInSeconds, "seconds")
       : undefined;
-
     // @ts-ignore
     return (
       <RedPacketBoxStyle className={"redPacket"} justifyContent={"center"}>
@@ -451,13 +452,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
           position={"relative"}
           flexDirection={"column"}
         >
-          {tradeType === "TOKEN" ? (
+          {isToken ? (
+            // @ts-ignore
             <BasicACoinTrade
               {...{
                 ...rest,
                 t,
-
-                type: tradeType ?? "TOKEN",
+                type: "TOKEN",
                 disabled,
                 walletMap,
                 tradeData:
@@ -513,6 +514,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   { to, tradeData: newTradeData }: SwitchData<T>
                 ) => {
                   if (_index === 1) {
+                    if (selectNFTDisabled) return
                     handleOnDataChange({
                       collectionInfo: undefined,
                       tokenId: undefined,
@@ -555,8 +557,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
             })}
           </Typography>
         </Box>
-        {tradeType === TRADE_TYPE.NFT &&
-          selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
+
+        {tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
             <Box
               marginY={1}
               display={"flex"}
@@ -709,19 +711,25 @@ export const CreateRedPacketStepWrap = withTranslation()(
               endMinDateTime={endMinDateTime}
               endMaxDateTime={endMaxDateTime}
               onEndChange={(m) => {
-                const maximunTimestamp = startDateTime
-                  ? moment(startDateTime)
+                if (startDateTime && m && startDateTime?.toDate().getTime() > m?.toDate().getTime()) {
+                  handleOnDataChange({
+                    validUntil: endDateTime,
+                  } as unknown as Partial<T>);
+                } else {
+                  const maximunTimestamp = startDateTime
+                    ? moment(startDateTime)
                       .add(timeRangeMaxInSeconds, "seconds")
                       .toDate()
                       .getTime()
-                  : 0;
-                handleOnDataChange({
-                  validUntil: m
-                    ? m.toDate().getTime() > maximunTimestamp
-                      ? maximunTimestamp
-                      : m.toDate().getTime()
-                    : undefined,
-                } as unknown as Partial<T>);
+                    : 0;
+                  handleOnDataChange({
+                    validUntil: m
+                      ? m.toDate().getTime() > maximunTimestamp
+                        ? maximunTimestamp
+                        : m.toDate().getTime()
+                      : undefined,
+                  } as unknown as Partial<T>);
+                }
               }}
               customeEndInputPlaceHolder={
                 tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
@@ -925,7 +933,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             width={"100%"}
             textAlign={"center"}
           >
-            {tradeType === TRADE_TYPE.TOKEN
+            {tradeType === RedPacketOrderType.TOKEN
               ? t("labelBlindBoxExpirationExplainationForToken")
               : t("labelBlindBoxExpirationExplainationForNFT")}
           </Typography>
@@ -976,7 +984,13 @@ export const CreateRedPacketStepType = withTranslation()(
           marginY={2}
         >
           {LuckyRedPacketList.filter((item) =>
-            tradeType == TRADE_TYPE.NFT ? item.showInNFTS : item.showInERC20
+            tradeType == RedPacketOrderType.NFT
+              ? item.showInNFTS
+              : tradeType == RedPacketOrderType.BlindBox
+                ? item.showInBlindbox
+                : tradeType == RedPacketOrderType.FromNFT
+                  ? item.showInFromNFT
+                  : item.showInERC20
           ).map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
@@ -992,40 +1006,58 @@ export const CreateRedPacketStepType = withTranslation()(
                     fullWidth
                     onClick={(_e) => {
                       handleOnDataChange({
+                        isNFT: item.isBlindboxNFT ? true : false,
                         type: {
                           ...tradeData?.type,
                           // scope: value,
+                          scope: item.isBlindboxNFT ? 1 : tradeData.type?.scope,
                           partition: item.value.partition,
                           mode: item.value.mode,
                         },
                       } as any);
                     }}
                   >
-                    <Typography
-                      variant={"h5"}
-                      display={"inline-flex"}
-                      marginBottom={1 / 2}
-                      alignItems={"flex-start"}
-                      component={"span"}
-                    >
-                      {t(item.labelKey)}
-                    </Typography>
-                    <Typography
-                      variant={"body1"}
-                      display={"inline-flex"}
-                      justifyContent={"flex-start"}
-                      component={"span"}
-                      color={"var(--color-text-secondary)"}
-                    >
-                      {t(item.desKey)}
-                    </Typography>
+                    {item.icon ?
+                      <Box display={"flex"} alignItems={"center"}>
+                        <img width={"32px"} src={item.icon} />
+                        <Typography
+                          variant={"h5"}
+                          display={"inline-flex"}
+                          marginLeft={2}
+                          alignItems={"flex-start"}
+                          component={"span"}
+                        >
+                          {t(item.labelKey)}
+                        </Typography>
+                      </Box>
+                      : <>
+                        <Typography
+                          variant={"h5"}
+                          display={"inline-flex"}
+                          marginBottom={1 / 2}
+                          alignItems={"flex-start"}
+                          component={"span"}
+                        >
+                          {t(item.labelKey)}
+                        </Typography>
+                        <Typography
+                          variant={"body1"}
+                          display={"inline-flex"}
+                          justifyContent={"flex-start"}
+                          component={"span"}
+                          color={"var(--color-text-secondary)"}
+                        >
+                          {t(item.desKey)}
+                        </Typography>
+                      </>
+                    }
                   </MenuBtnStyled>
                 </Box>
               </React.Fragment>
             );
           })}
         </Box>
-        {tradeType === TRADE_TYPE.NFT ? (
+        {tradeType === RedPacketOrderType.NFT ? (
           <>
             <Box
               // onClick={() => {
@@ -1078,7 +1110,7 @@ export const CreateRedPacketStepType = withTranslation()(
             </Typography>
           </>
         ) : (
-          <Box marginBottom={2} display={"flex"} alignItems={"stretch"}>
+          <Box marginBottom={4} display={"flex"} alignItems={"stretch"}>
             <RadioGroup
               aria-label="withdraw"
               name="withdraw"
@@ -1092,7 +1124,7 @@ export const CreateRedPacketStepType = withTranslation()(
                 } as any);
               }}
             >
-              {[1, 0].map((key) => {
+              {(tradeData.isNFT ? [1] : [1, 0]).map((key) => {
                 return (
                   <FormControlLabel
                     key={key}
@@ -1127,7 +1159,7 @@ export const CreateRedPacketStepType = withTranslation()(
           flexDirection={"row"}
           justifyContent={"space-between"}
         >
-          <Box width={"48%"}>
+          {tradeType !== RedPacketOrderType.FromNFT && <Box width={"48%"}>
             <Button
               variant={"outlined"}
               size={"medium"}
@@ -1142,8 +1174,8 @@ export const CreateRedPacketStepType = withTranslation()(
             >
               {t(`labelMintBack`)}
             </Button>
-          </Box>
-          <Box width={"48%"}>
+          </Box>}
+          <Box width={tradeType === RedPacketOrderType.FromNFT ? "100%" : "48%"}>
             <BtnMain
               {...{
                 defaultLabel: "labelContinue",
@@ -1191,16 +1223,16 @@ export const CreateRedPacketStepTokenType = withTranslation()(
         justifyContent={"space-evenly"}
       >
         <Grid container spacing={2}>
-          <Grid item xs={6} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={"flex"} marginBottom={2}>
             <CardStyleItem
               className={
-                tradeType === "TOKEN"
+                tradeType === RedPacketOrderType.TOKEN
                   ? "btnCard column selected"
                   : "btnCard column"
               }
               sx={{ height: "100%" }}
               onClick={() =>
-                handleOnDataChange({ tradeType: TRADE_TYPE.TOKEN } as any)
+                handleOnDataChange({ tradeType: RedPacketOrderType.TOKEN } as any)
               }
             >
               <CardContent sx={{ alignItems: "center" }}>
@@ -1222,17 +1254,17 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               </CardContent>
             </CardStyleItem>
           </Grid>
-          <Grid item xs={6} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={"flex"} marginBottom={2}>
             {showNFT && (
               <CardStyleItem
                 className={
-                  tradeType === "NFT"
+                  tradeType === RedPacketOrderType.NFT
                     ? "btnCard column selected"
                     : "btnCard column"
                 }
                 sx={{ height: "100%" }}
                 onClick={() =>
-                  handleOnDataChange({ tradeType: TRADE_TYPE.NFT } as any)
+                  handleOnDataChange({ tradeType: RedPacketOrderType.NFT } as any)
                 }
               >
                 <CardContent sx={{ alignItems: "center" }}>
@@ -1251,6 +1283,40 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                   </Typography>
                   <Typography component={"span"} variant={"h5"} marginTop={2}>
                     {t("labelRedpacketNFTS")}
+                  </Typography>
+                </CardContent>
+              </CardStyleItem>
+            )}
+          </Grid>
+          <Grid item xs={4} display={"flex"} marginBottom={2}>
+            {showNFT && (
+              <CardStyleItem
+                className={
+                  tradeType === RedPacketOrderType.BlindBox
+                    ? "btnCard column selected"
+                    : "btnCard column"
+                }
+                sx={{ height: "100%" }}
+                onClick={() =>
+                  handleOnDataChange({ tradeType: RedPacketOrderType.BlindBox } as any)
+                }
+              >
+                <CardContent sx={{ alignItems: "center" }}>
+                  <Typography component={"span"} display={"inline-flex"}>
+                    <Typography component={"span"} display={"inline-flex"}>
+                      <Avatar
+                        variant="rounded"
+                        style={{
+                          height: "var(--redPacket-avatar)",
+                          width: "var(--redPacket-avatar)",
+                        }}
+                        // src={sellData?.icon}
+                        src={SoursURL + "images/redPacketBlindbox.png"}
+                      />
+                    </Typography>
+                  </Typography>
+                  <Typography component={"span"} variant={"h5"} marginTop={2}>
+                    {t("labelRedpacketBlindBox")}
                   </Typography>
                 </CardContent>
               </CardStyleItem>

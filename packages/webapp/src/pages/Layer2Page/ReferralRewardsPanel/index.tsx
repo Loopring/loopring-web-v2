@@ -11,10 +11,11 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useAccount, useSubmitBtn } from "@loopring-web/core";
+import { useAccount, useSubmitBtn, useToast } from "@loopring-web/core";
 import {
   AccountStatus,
   copyToClipBoard,
+  EmptyValueTag,
   L1L2_NAME_DEFINED,
   LinkSharedIcon,
   MapChainId,
@@ -26,12 +27,14 @@ import {
 } from "@loopring-web/common-resources";
 import {
   Button,
+  RefundTable,
   ReferralImage,
   ReferralsTable,
   Toast,
   ToastType,
   useSettings,
 } from "@loopring-web/component-lib";
+import { useReferralsTable, useRefundTable } from "./hook";
 
 const BoxStyled = styled(Box)`
   ol {
@@ -87,6 +90,7 @@ const ReferHeader = ({
   const { t } = useTranslation(["common", "layout"]);
   const { defaultNetwork } = useSettings();
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+
   // const [image, setImage] = React.useState<any[]>([]);
   const [imageList, setImageList] = React.useState<{
     referralBanners: { en: string[] };
@@ -379,7 +383,10 @@ const ReferView = () => {
   const { account } = useAccount();
   const { t } = useTranslation();
   const { defaultNetwork } = useSettings();
+  const { toastOpen, setToastOpen, closeToast } = useToast();
   const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const refundData = useRefundTable(setToastOpen);
+  const referralsData = useReferralsTable(setToastOpen);
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1);
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const link = `${WalletSite}?referralcode=${account.accountId}`;
@@ -395,7 +402,6 @@ const ReferView = () => {
     setCopyToastOpen(true);
   };
 
-  const total = 11;
   return (
     <>
       <Toast
@@ -406,6 +412,12 @@ const ReferView = () => {
           setCopyToastOpen(false);
         }}
         severity={ToastType.success}
+      />
+      <Toast
+        alertText={toastOpen?.content ?? ""}
+        open={toastOpen?.open ?? false}
+        autoHideDuration={TOAST_TIME}
+        onClose={closeToast}
       />
       <ReferHeader handleCopy={handleCopy} link={link} />
       <Container>
@@ -443,7 +455,22 @@ const ReferView = () => {
                 <li>{t("labelReferralMethod1Step4")}</li>
               </ol>
             )}
-            {currentTab === ReferStep.method2 && <></>}
+            {currentTab === ReferStep.method2 && (
+              <ol>
+                <li>{t("labelReferralMethod2Step1")}</li>
+                <li>{t("labelReferralMethod2Step2")}</li>
+                <li>
+                  {t("labelReferralMethod2Step3", {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                    loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  })}
+                </li>
+                <li>{t("labelReferralMethod2Step4")}</li>
+              </ol>
+            )}
           </Box>
 
           {account.readyState === AccountStatus.ACTIVATED && (
@@ -466,7 +493,11 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {referralsData.summary?.totalValue
+                          ? referralsData.summary?.totalValue + " LRC"
+                          : EmptyValueTag}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -479,7 +510,11 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {referralsData.summary?.claimableValue
+                          ? referralsData.summary?.claimableValue + " LRC"
+                          : EmptyValueTag}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -492,19 +527,23 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {referralsData.summary?.downsidesNum
+                          ? referralsData.summary?.downsidesNum
+                          : EmptyValueTag}
+                      </Typography>
                     </Typography>
                   </Box>
 
                   <ReferralsTable
                     {...{
-                      rawData: [],
+                      rawData: referralsData.record,
                       pagination: {
                         pageSize: 8,
-                        total,
+                        total: referralsData.recordTotal,
                       },
-                      getList: (props: { limit: number; offset: number }) => {},
-                      showloading: false,
+                      getList: referralsData.getReferralsTableList,
+                      showloading: referralsData.showLoading,
                     }}
                   />
                 </Box>
@@ -526,7 +565,11 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {refundData.summary?.totalValue
+                          ? refundData.summary?.totalValue + " LRC"
+                          : EmptyValueTag}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -539,7 +582,11 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {refundData.summary?.claimableValue
+                          ? refundData.summary?.claimableValue + " LRC"
+                          : EmptyValueTag}
+                      </Typography>
                     </Typography>
                     <Typography
                       component={"span"}
@@ -552,18 +599,22 @@ const ReferView = () => {
                         variant={"inherit"}
                         component={"span"}
                         color={"textPrimary"}
-                      ></Typography>
+                      >
+                        {refundData.summary?.tradeNum
+                          ? refundData.summary?.tradeNum
+                          : EmptyValueTag}
+                      </Typography>
                     </Typography>
                   </Box>
-                  <ReferralsTable
+                  <RefundTable
                     {...{
-                      rawData: [],
+                      rawData: refundData.record,
                       pagination: {
                         pageSize: 8,
-                        total,
+                        total: refundData.recordTotal,
                       },
-                      getList: (props: { limit: number; offset: number }) => {},
-                      showloading: false,
+                      getList: refundData.getRefundTableList,
+                      showloading: refundData.showLoading,
                     }}
                   />
                 </Box>
