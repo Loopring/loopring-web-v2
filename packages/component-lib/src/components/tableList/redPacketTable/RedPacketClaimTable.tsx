@@ -27,6 +27,7 @@ import {
 import { ColumnCoinDeep } from "../assetsTable";
 import _ from "lodash";
 import { useTheme } from "@emotion/react";
+import { SoursURL } from "@loopring-web/loopring-sdk";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -260,11 +261,12 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         : EmptyValueTag,
       volume: undefined,
     };
+    
     const blindboxRow = {
       token: {
         icon: theme.mode === 'dark' 
-          ? "https://static.loopring.io/assets/images/blindbox_dark.png"
-          : "https://static.loopring.io/assets/images/blindbox_light.png",
+          ? SoursURL + "/images/blindbox_dark.png"
+          : SoursURL + "/images/blindbox_light.png",
         name: "Blind Box",
         simpleName: "Blind Box",
         description: "",

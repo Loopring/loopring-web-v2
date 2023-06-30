@@ -231,7 +231,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         },
       },
       {
-        key: "Receive Time",
+        key: "ReceiveTime",
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
         name: t("labelReceiveTime"),
@@ -356,7 +356,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         },
       },
       {
-        key: "Reveal Time",
+        key: "RevealTime",
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
         name: <TextTooltip text={t("labelRevealTime")} tooltipTitle={t("labelRevealTimeTooltip")}/> ,
@@ -397,7 +397,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         },
       },
       {
-        key: "Expired Time",
+        key: "ExpiredTime",
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
         name: <TextTooltip text={t("labelExpiredTime")} tooltipTitle={t("labelExpiredTimeTooltip")}/> ,
