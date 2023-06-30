@@ -30,7 +30,7 @@ import _ from "lodash";
 import moment from "moment";
 import { ColumnCoinDeep } from "../assetsTable";
 import * as sdk from "@loopring-web/loopring-sdk";
-import TextTooltip from "../../../components/text-tooltip";
+import TextTooltip from "./textTooltip";
 import { useTheme } from "@emotion/react";
 
 const TableWrapperStyled = styled(Box)`

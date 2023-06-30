@@ -31,7 +31,7 @@ import _, { random } from "lodash";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ColumnCoinDeep } from "../assetsTable";
-import TextTooltip from "../../text-tooltip";
+import TextTooltip from "./textTooltip";
 import { useTheme } from "@emotion/react";
 
 const TableWrapperStyled = styled(Box)`
