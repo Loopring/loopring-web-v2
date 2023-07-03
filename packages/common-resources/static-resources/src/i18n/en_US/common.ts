@@ -1749,4 +1749,5 @@ export default {
   labelReferralToolTip: 'Enter referral code to enjoy a three-month discount on transfer fees.',
   labelBtradeRefresh: 'Refresh',
   labelArgNoEnough: 'Insufficient {{arg}} balance',
+  WalletConnectV1: 'WalletConnect Legacy',
 }

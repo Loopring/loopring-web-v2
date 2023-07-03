@@ -1,9 +1,5 @@
 // @ts-nocheck
-import {
-  useTranslation,
-  WithTranslation,
-  withTranslation,
-} from "react-i18next";
+import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import {
   AccountStep,
   CommonConnectInProgress,
@@ -22,8 +18,8 @@ import {
   WalletConnectQRCode,
   WalletConnectStep,
   WrongNetworkGuide,
-} from "@loopring-web/component-lib";
-import React from "react";
+} from '@loopring-web/component-lib'
+import React from 'react'
 import {
   AccountStatus,
   Bridge,
@@ -36,8 +32,8 @@ import {
   SagaStatus,
   SoursURL,
   TOAST_TIME,
-} from "@loopring-web/common-resources";
-import { ConnectProviders, walletServices } from "@loopring-web/web3-provider";
+} from '@loopring-web/common-resources'
+import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import {
   CoinbaseCallback,
   gameStopCallback,
@@ -47,40 +43,37 @@ import {
   useSelectNetwork,
   walletConnectCallback,
   walletConnectV1Callback,
-} from "@loopring-web/core";
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+} from '@loopring-web/core'
+import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 export const useGatewayList = ({
   setIsOpenUnknownProvider,
   setConnectProvider,
 }: {
-  setIsOpenUnknownProvider?: any;
-  setConnectProvider?: any;
+  setIsOpenUnknownProvider?: any
+  setConnectProvider?: any
 }) => {
-  const { search } = useLocation();
-  const { t } = useTranslation();
-  const searchParams = new URLSearchParams(search);
-  const { isMobile } = useSettings();
-  const { setShowConnect } = useOpenModals();
-  const { account, status: accountStatus } = useAccount();
+  const { search } = useLocation()
+  const { t } = useTranslation()
+  const searchParams = new URLSearchParams(search)
+  const { isMobile } = useSettings()
+  const { setShowConnect } = useOpenModals()
+  const { account, status: accountStatus } = useAccount()
 
-  const [stateCheck, setStateCheck] = React.useState<boolean>(false);
-  const [processingCallback, setProcessingCallback] =
-    React.useState<{ callback: () => Promise<void> } | undefined>(undefined);
+  const [stateCheck, setStateCheck] = React.useState<boolean>(false)
+  const [processingCallback, setProcessingCallback] = React.useState<
+    { callback: () => Promise<void> } | undefined
+  >(undefined)
   React.useEffect(() => {
-    if (
-      stateCheck &&
-      [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus) !==
-        -1
-    ) {
-      myLog("clear cache connect done");
-      setStateCheck(false);
+    if (stateCheck && [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus) !== -1) {
+      myLog('clear cache connect done')
+      setStateCheck(false)
       if (processingCallback !== undefined) {
-        processingCallback.callback();
+        processingCallback.callback()
       }
     }
-  }, [accountStatus, stateCheck]);
+  }, [accountStatus, stateCheck])
   const gatewayList: GatewayItem[] = !isMobile
     ? [
         {
@@ -88,33 +81,27 @@ export const useGatewayList = ({
           handleSelect: React.useCallback(
             async (event, flag?) => {
               if (!flag && account.connectName === DefaultGatewayList[0].key) {
-                setShowConnect({ isShow: false });
+                setShowConnect({ isShow: false })
               } else {
-                const isKnow = localStorage.getItem(
-                  "useKnowCoinBaseWalletInstall"
-                );
+                const isKnow = localStorage.getItem('useKnowCoinBaseWalletInstall')
 
                 if (
-                  !(isKnow === "true") &&
-                  !(
-                    window?.ethereum?._metamask &&
-                    window?.ethereum?._metamask.requestBatch
-                  )
+                  !(isKnow === 'true') &&
+                  !(window?.ethereum?._metamask && window?.ethereum?._metamask.requestBatch)
                 ) {
-                  setIsOpenUnknownProvider && setIsOpenUnknownProvider(true);
+                  setIsOpenUnknownProvider && setIsOpenUnknownProvider(true)
                 }
-                walletServices.sendDisconnect("", "should new provider");
-                setConnectProvider &&
-                  setConnectProvider(DefaultGatewayList[0].key);
+                walletServices.sendDisconnect('', 'should new provider')
+                setConnectProvider && setConnectProvider(DefaultGatewayList[0].key)
                 setShowConnect({
                   isShow: true,
                   step: WalletConnectStep.CommonProcessing,
-                });
-                setProcessingCallback({ callback: metaMaskCallback });
-                setStateCheck(true);
+                })
+                setProcessingCallback({ callback: metaMaskCallback })
+                setStateCheck(true)
               }
             },
-            [account.connectName, setShowConnect]
+            [account.connectName, setShowConnect],
           ),
         },
         {
@@ -122,19 +109,19 @@ export const useGatewayList = ({
           handleSelect: React.useCallback(
             async (event, flag?) => {
               if (!flag && account.connectName === DefaultGatewayList[1].key) {
-                setShowConnect({ isShow: false });
+                setShowConnect({ isShow: false })
               } else {
-                walletServices.sendDisconnect("", "should new provider");
-                setConnectProvider(DefaultGatewayList[1].key);
+                walletServices.sendDisconnect('', 'should new provider')
+                setConnectProvider(DefaultGatewayList[1].key)
                 setShowConnect({
                   isShow: true,
                   step: WalletConnectStep.CommonProcessing,
-                });
-                setProcessingCallback({ callback: walletConnectCallback });
-                setStateCheck(true);
+                })
+                setProcessingCallback({ callback: walletConnectCallback })
+                setStateCheck(true)
               }
             },
-            [account.connectName, setShowConnect]
+            [account.connectName, setShowConnect],
           ),
         },
         {
@@ -142,19 +129,19 @@ export const useGatewayList = ({
           handleSelect: React.useCallback(
             async (event, flag?) => {
               if (!flag && account.connectName === DefaultGatewayList[4].key) {
-                setShowConnect({ isShow: false });
+                setShowConnect({ isShow: false })
               } else {
-                walletServices.sendDisconnect("", "should new provider");
-                setConnectProvider(DefaultGatewayList[4].key);
+                walletServices.sendDisconnect('', 'should new provider')
+                setConnectProvider(DefaultGatewayList[4].key)
                 setShowConnect({
                   isShow: true,
                   step: WalletConnectStep.CommonProcessing,
-                });
-                setProcessingCallback({ callback: walletConnectV1Callback });
-                setStateCheck(true);
+                })
+                setProcessingCallback({ callback: walletConnectV1Callback })
+                setStateCheck(true)
               }
             },
-            [account.connectName, setShowConnect]
+            [account.connectName, setShowConnect],
           ),
         },
         {
@@ -162,32 +149,32 @@ export const useGatewayList = ({
           // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
           handleSelect: React.useCallback(
             async (event, flag?) => {
-              walletServices.sendDisconnect("", "should new provider");
+              walletServices.sendDisconnect('', 'should new provider')
               setShowConnect({
                 isShow: true,
                 step: WalletConnectStep.CommonProcessing,
-              });
-              setConnectProvider(DefaultGatewayList[2].key);
-              setProcessingCallback({ callback: gameStopCallback });
-              setStateCheck(true);
+              })
+              setConnectProvider(DefaultGatewayList[2].key)
+              setProcessingCallback({ callback: gameStopCallback })
+              setStateCheck(true)
             },
-            [setShowConnect]
+            [setShowConnect],
           ),
         },
         {
           ...DefaultGatewayList[3],
           handleSelect: React.useCallback(
             async (event, flag?) => {
-              walletServices.sendDisconnect("", "should new provider");
+              walletServices.sendDisconnect('', 'should new provider')
               setShowConnect({
                 isShow: true,
                 step: WalletConnectStep.WalletConnectProcessing,
-              });
-              setConnectProvider(DefaultGatewayList[3].key);
-              setProcessingCallback({ callback: CoinbaseCallback });
-              setStateCheck(true);
+              })
+              setConnectProvider(DefaultGatewayList[3].key)
+              setProcessingCallback({ callback: CoinbaseCallback })
+              setStateCheck(true)
             },
-            [setShowConnect]
+            [setShowConnect],
           ),
         },
       ]
@@ -196,51 +183,46 @@ export const useGatewayList = ({
           ? [
               {
                 ...DefaultGatewayList[0],
-                key: t("labelConnectWithDapp"),
-                imgSrc: SoursURL + "svg/loopring.svg",
+                key: t('labelConnectWithDapp'),
+                imgSrc: SoursURL + 'svg/loopring.svg',
                 handleSelect: React.useCallback(
                   async (event, flag?) => {
-                    if (
-                      !flag &&
-                      account.connectName === DefaultGatewayList[0].key
-                    ) {
-                      setShowConnect({ isShow: false });
+                    if (!flag && account.connectName === DefaultGatewayList[0].key) {
+                      setShowConnect({ isShow: false })
                     } else {
-                      walletServices.sendDisconnect("", "should new provider");
-                      setConnectProvider(DefaultGatewayList[0].key);
+                      walletServices.sendDisconnect('', 'should new provider')
+                      setConnectProvider(DefaultGatewayList[0].key)
                       setShowConnect({
                         isShow: true,
                         step: WalletConnectStep.CommonProcessing,
-                      });
-                      setProcessingCallback({ callback: metaMaskCallback });
-                      setStateCheck(true);
+                      })
+                      setProcessingCallback({ callback: metaMaskCallback })
+                      setStateCheck(true)
                     }
                   },
-                  [account.connectName, setShowConnect]
+                  [account.connectName, setShowConnect],
                 ),
               },
             ]
           : [
               {
-                key: t("labelOpenInWalletApp"),
-                keyi18n: "labelOpenInWalletApp",
-                imgSrc: SoursURL + "svg/loopring.svg",
+                key: t('labelOpenInWalletApp'),
+                keyi18n: 'labelOpenInWalletApp',
+                imgSrc: SoursURL + 'svg/loopring.svg',
                 handleSelect: React.useCallback(
                   async (event, flag?) => {
                     // setShowConnect({ isShow: false });
-                    const token = searchParams.get("token");
-                    const l2account =
-                      searchParams.get("l2account") ||
-                      searchParams.get("owner");
+                    const token = searchParams.get('token')
+                    const l2account = searchParams.get('l2account') || searchParams.get('owner')
                     copyToClipBoard(
                       Bridge +
-                        `?${l2account ? `l2account=` + l2account : ""}&${
-                          token ? `token=` + token : ""
-                        }`
-                    );
-                    setIsConfirmLinkCopy(true);
+                        `?${l2account ? `l2account=` + l2account : ''}&${
+                          token ? `token=` + token : ''
+                        }`,
+                    )
+                    setIsConfirmLinkCopy(true)
                   },
-                  [searchParams]
+                  [searchParams],
                 ),
               },
             ]),
@@ -249,43 +231,41 @@ export const useGatewayList = ({
           handleSelect: React.useCallback(
             async (event, flag?) => {
               if (!flag && account.connectName === DefaultGatewayList[1].key) {
-                setShowConnect({ isShow: false });
+                setShowConnect({ isShow: false })
               } else {
-                walletServices.sendDisconnect("", "should new provider");
-                setConnectProvider &&
-                  setConnectProvider(DefaultGatewayList[1].key);
+                walletServices.sendDisconnect('', 'should new provider')
+                setConnectProvider && setConnectProvider(DefaultGatewayList[1].key)
                 setShowConnect({
                   isShow: true,
                   step: WalletConnectStep.CommonProcessing,
-                });
-                setProcessingCallback({ callback: walletConnectCallback });
-                setStateCheck(true);
+                })
+                setProcessingCallback({ callback: walletConnectCallback })
+                setStateCheck(true)
               }
             },
-            [account.connectName, setShowConnect]
+            [account.connectName, setShowConnect],
           ),
         },
         {
           ...DefaultGatewayList[3],
           handleSelect: React.useCallback(
             async (event, flag?) => {
-              walletServices.sendDisconnect("", "should new provider");
+              walletServices.sendDisconnect('', 'should new provider')
               setShowConnect({
                 isShow: true,
                 step: WalletConnectStep.WalletConnectProcessing,
-              });
-              setConnectProvider &&
-                setConnectProvider(DefaultGatewayList[3].key);
-              setProcessingCallback({ callback: CoinbaseCallback });
-              setStateCheck(true);
+              })
+              setConnectProvider && setConnectProvider(DefaultGatewayList[3].key)
+              setProcessingCallback({ callback: CoinbaseCallback })
+              setStateCheck(true)
             },
-            [setShowConnect]
+            [setShowConnect],
           ),
         },
-      ];
-  return { gatewayList };
-};
-export const ModalWalletConnectPanel = withTranslation("common")(
+      ]
+  return { gatewayList }
+}
+export const ModalWalletConnectPanel = withTranslation('common')(
   ({
     onClose,
     open,
@@ -295,96 +275,90 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     ...rest
   }: {
     // step?:number,
-    open: boolean;
-    wait?: number;
-    onClose?: (e: MouseEvent) => void;
+    open: boolean
+    wait?: number
+    onClose?: (e: MouseEvent) => void
   } & WithTranslation) => {
-    const { account, setShouldShow } = useAccount();
-    const { defaultNetwork } = useSettings();
+    const { account, setShouldShow } = useAccount()
+    const { defaultNetwork } = useSettings()
     const {
       modals: { isShowConnect, isWrongNetworkGuide },
       setShowConnect,
       setShowAccount,
       setShowWrongNetworkGuide,
-    } = useOpenModals();
+    } = useOpenModals()
 
-    const qrCodeUrl = useSelector(
-      (state: RootState) => state.account.qrCodeUrl
-    );
-    const [connectProvider, setConnectProvider] = React.useState<boolean>(
-      account?.connectName ?? false
-    );
+    const qrCodeUrl = useSelector((state: RootState) => state.account.qrCodeUrl)
+    const [connectProvider, setConnectProvider] = React.useState<boolean>(() => {
+      return account?.connectName ?? false
+    })
     React.useEffect(() => {
       if (account?.connectName !== connectProvider) {
-        setConnectProvider(account?.connectName);
+        setConnectProvider(account?.connectName)
       }
-    }, [account?.connectName]);
+    }, [account?.connectName])
 
     const _onClose = React.useCallback(
       async (e: any) => {
-        setShouldShow(false);
-        setShowConnect({ isShow: false });
-        if (account.readyState === "UN_CONNECT") {
-          walletServices.sendDisconnect("", "should new provider");
+        setShouldShow(false)
+        setShowConnect({ isShow: false })
+        if (account.readyState === 'UN_CONNECT') {
+          walletServices.sendDisconnect('', 'should new provider')
         }
         if (onClose) {
-          onClose(e);
+          onClose(e)
         }
       },
-      [account.readyState, onClose, setShouldShow, setShowConnect]
-    );
-    const [isOpenUnknownProvider, setIsOpenUnknownProvider] =
-      React.useState(false);
+      [account.readyState, onClose, setShouldShow, setShowConnect],
+    )
+    const [isOpenUnknownProvider, setIsOpenUnknownProvider] = React.useState(false)
     const { gatewayList } = useGatewayList({
       setConnectProvider,
       setIsOpenUnknownProvider,
-    });
-    const [isConfirmLinkCopy, setIsConfirmLinkCopy] = React.useState(false);
-    const handleCloseDialog = React.useCallback(
-      (_event: any, state?: boolean) => {
-        setIsOpenUnknownProvider(false);
-        localStorage.setItem("useKnowCoinBaseWalletInstall", String(!!state));
-      },
-      []
-    );
+    })
+    const [isConfirmLinkCopy, setIsConfirmLinkCopy] = React.useState(false)
+    const handleCloseDialog = React.useCallback((_event: any, state?: boolean) => {
+      setIsOpenUnknownProvider(false)
+      localStorage.setItem('useKnowCoinBaseWalletInstall', String(!!state))
+    }, [])
 
-    const [copyToastOpen, setCopyToastOpen] = React.useState(false);
+    const [copyToastOpen, setCopyToastOpen] = React.useState(false)
     const onRetry = React.useCallback(async () => {
       const index = gatewayList.findIndex((item) => {
-        return item.key === account.connectName;
-      });
+        return item.key === account.connectName
+      })
       if (index !== -1 && gatewayList) {
         //@ts-ignore
-        gatewayList[index].handleSelect(null, true);
+        gatewayList[index].handleSelect(null, true)
       } else {
-        walletServices.sendDisconnect("", "should new provider");
-        setShowConnect({ isShow: true, step: WalletConnectStep.Provider });
+        walletServices.sendDisconnect('', 'should new provider')
+        setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
       }
-    }, [gatewayList, account.connectName, setShowConnect]);
+    }, [gatewayList, account.connectName, setShowConnect])
     // useConnectHook({handleProcessing});
     const providerBack = React.useMemo(() => {
-      return ["UN_CONNECT", "ERROR_NETWORK"].includes(account.readyState)
+      return ['UN_CONNECT', 'ERROR_NETWORK'].includes(account.readyState)
         ? undefined
         : () => {
-            setShowConnect({ isShow: false });
+            setShowConnect({ isShow: false })
             switch (account.readyState) {
               case AccountStatus.ACTIVATED:
               case AccountStatus.LOCKED:
-                setShowAccount({ isShow: true, step: AccountStep.HadAccount });
-                break;
+                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
+                break
               case AccountStatus.DEPOSITING:
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Deposit_Submit,
-                });
-                break;
+                })
+                break
               case AccountStatus.NO_ACCOUNT:
-                setShowAccount({ isShow: true, step: AccountStep.NoAccount });
-                break;
+                setShowAccount({ isShow: true, step: AccountStep.NoAccount })
+                break
             }
-          };
-    }, [account.readyState, setShowAccount, setShowConnect]);
-    const { NetWorkItems } = useSelectNetwork({ className: "walletModal" });
+          }
+    }, [account.readyState, setShowAccount, setShowConnect])
+    const { NetWorkItems } = useSelectNetwork({ className: 'walletModal' })
 
     const walletList = React.useMemo(() => {
       return Object.values({
@@ -392,13 +366,13 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           view: (
             <ProviderMenu
               NetWorkItems={NetWorkItems}
-              termUrl={"https://www.iubenda.com/terms-and-conditions/74969935"}
+              termUrl={'https://www.iubenda.com/terms-and-conditions/74969935'}
               gatewayList={gatewayList}
               providerName={connectProvider}
               {...{ t, ...rest }}
             />
           ),
-          height: "auto",
+          height: 'auto',
           onBack: providerBack,
         },
         [WalletConnectStep.CommonProcessing]: {
@@ -420,24 +394,19 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           view: (
             <WalletConnectQRCode
               onCopy={() => {
-                copyToClipBoard(qrCodeUrl);
-                setCopyToastOpen(true);
+                copyToClipBoard(qrCodeUrl)
+                setCopyToastOpen(true)
               }}
               url={qrCodeUrl}
               {...{ t, ...rest }}
             />
           ),
           onBack: () => {
-            setShowConnect({ isShow: true, step: WalletConnectStep.Provider });
+            setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
           },
         },
         [WalletConnectStep.SuccessConnect]: {
-          view: (
-            <ConnectSuccess
-              providerName={connectProvider}
-              {...{ t, ...rest }}
-            />
-          ),
+          view: <ConnectSuccess providerName={connectProvider} {...{ t, ...rest }} />,
         },
         [WalletConnectStep.RejectConnect]: {
           view: (
@@ -449,12 +418,12 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 ...rest,
               }}
               NetWorkItems={NetWorkItems}
-              btnInfo={{ btnTxt: "labelRetry", callback: onRetry }}
+              btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />
           ),
           onBack: () => {
-            walletServices.sendDisconnect("", "should new provider");
-            setShowConnect({ isShow: true, step: WalletConnectStep.Provider });
+            walletServices.sendDisconnect('', 'should new provider')
+            setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
           },
         },
         [WalletConnectStep.FailedConnect]: {
@@ -467,15 +436,15 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 ...rest,
               }}
               NetWorkItems={NetWorkItems}
-              btnInfo={{ btnTxt: "labelRetry", callback: onRetry }}
+              btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />
           ),
           onBack: () => {
-            walletServices.sendDisconnect("", "should new provider");
-            setShowConnect({ isShow: true, step: WalletConnectStep.Provider });
+            walletServices.sendDisconnect('', 'should new provider')
+            setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
           },
         },
-      });
+      })
     }, [
       gatewayList,
       account.connectName,
@@ -487,13 +456,10 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       isShowConnect.error,
       onRetry,
       setShowConnect,
-    ]);
+    ])
     return (
       <>
-        <InformationForCoinBase
-          open={isOpenUnknownProvider}
-          handleClose={handleCloseDialog}
-        />
+        <InformationForCoinBase open={isOpenUnknownProvider} handleClose={handleCloseDialog} />
         <ConfirmLinkCopy
           open={isConfirmLinkCopy}
           setCopyToastOpen={setCopyToastOpen}
@@ -502,7 +468,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         <WrongNetworkGuide
           open={isWrongNetworkGuide.isShow}
           handleClose={() => {
-            setShowWrongNetworkGuide({ isShow: false });
+            setShowWrongNetworkGuide({ isShow: false })
           }}
         />
         <ModalWalletConnect
@@ -513,15 +479,15 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           step={isShowConnect.step}
         />
         <Toast
-          alertText={t("labelCopyAddClip")}
+          alertText={t('labelCopyAddClip')}
           open={copyToastOpen}
           autoHideDuration={TOAST_TIME}
           onClose={() => {
-            setCopyToastOpen(false);
+            setCopyToastOpen(false)
           }}
           severity={ToastType.success}
         />
       </>
-    );
-  }
-);
+    )
+  },
+)
