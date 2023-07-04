@@ -661,6 +661,7 @@ export default {
   labelL1toL2Vendor:
     "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   depositLabelTo: "To address, Account ID or ENS.",
+  labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle:
     "Preview Image (Dimensions: 1:1) <1>\uFE61</1><2>\u2139</2>",
@@ -1759,7 +1760,7 @@ export default {
   labelBtradeSettled: "Settled",
   labelOrderCancelConfirm: "Confirm to cancel this order?",
   labelOrderCancelOrder: "Cancel",
-  
+
   labelRedpacketTotalReward: "Total {{amount}}",
   labelRedpacketCantOpen: "Now is not the time to open",
   labelLocketInfo: "{{symbol}} Locked Detail",
@@ -1771,6 +1772,6 @@ export default {
     "If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the L2 account.",
   labelAnotherNetworkDes: "XXXXXXXXXXXXX <1>TOS</1>.",
   labelAnotherNetworkUnderstand: "Acknowledge and understand the risk",
-  labelExplorer: "Explorer",
   labelTutorial: "Tutorial",
+  labelExplorer: "Explorer",
 };
