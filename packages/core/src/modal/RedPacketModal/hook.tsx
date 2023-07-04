@@ -558,6 +558,7 @@ export function useRedPacketModal() {
       offset?: number;
     }) => {
       setDetail(undefined);
+      setBlindBoxDetail(undefined)
       const _info = info as sdk.LuckyTokenItemForReceive & {
         claimAmount?: string;
       };
@@ -677,6 +678,7 @@ export function useRedPacketModal() {
                   setBlindBoxType("Lottery Started and Not Win Lottery");
                 } else {
                   setBlindBoxType("Lottery Started and Win Lottery");
+
                   if (response.detail.luckyToken.isNft) {
                     setWonPrizeInfo({
                       name:
@@ -1097,7 +1099,7 @@ export function useRedPacketModal() {
           : "hidden";
       
       const tokenInfo = !detail.luckyToken.isNft 
-        ? tokenMap[idIndex[1]] 
+        ? tokenMap[idIndex[detail.luckyToken.tokenId]] 
         : undefined
       return {
         sender: _info.sender?.ens

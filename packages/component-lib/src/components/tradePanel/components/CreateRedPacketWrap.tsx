@@ -890,7 +890,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   numbers: undefined,
                   tradeValue: undefined,
                   validSince: Date.now(),
-                  validUntil: undefined,
+                  validUntil: moment().add('days', 1).toDate().getTime(),
                   memo: "",
                 } as any);
               }}

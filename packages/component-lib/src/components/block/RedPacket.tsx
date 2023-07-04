@@ -1918,6 +1918,13 @@ export const RedPacketBlindBoxDetail = ({
                 />
               )}
             </Box>}
+            {isTokenBlindbox && type === "Blind Box Started" && didClaimABlindBox && <Box marginY={1} width={"60%"}>
+              <img
+                alt={""}
+                style={{ width: "100%" }}
+                src={SoursURL + "images/redpackBlind3.webp"}
+              />
+            </Box>}
             {type === "Blind Box Started" && didClaimABlindBox && (
               <Typography>
                 {t("labelBlindBoxCongratulationsBlindBox")}
@@ -2025,7 +2032,7 @@ export const RedPacketBlindBoxDetail = ({
                 textAlign={"center"}
               >
                 {t("labelBlindBoxTokenHint", {
-                  time: moment(lotteryStartTime).format(YEAR_DAY_MINUTE_FORMAT),
+                  time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
                   interpolation: {
                     escapeValue: false,
                   },
@@ -2120,10 +2127,16 @@ export const RedPacketBlindBoxDetail = ({
                     marginY={1}
                     paddingX={1}
                   >
-                    {t("labelBlindBoxRecievedNFT", {
-                      deliverdGiftsAmount,
-                      totalGiftsAmount,
-                    })}
+                    {isTokenBlindbox
+                      ? t("labelBlindBoxRecieved", {
+                        deliverdGiftsAmount,
+                        totalGiftsAmount,
+                      })
+                      : t("labelBlindBoxRecievedNFT", {
+                        deliverdGiftsAmount,
+                        totalGiftsAmount,
+                      })
+                    }
                   </Typography>
 
                   <Box flex={1} overflow={"scroll"}>

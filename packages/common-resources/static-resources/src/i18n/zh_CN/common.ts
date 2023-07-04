@@ -1310,6 +1310,8 @@ export default {
     "Any unclaimed NFTs will be returned to the Sender after: {{time}}",
   labelBlindBoxRecievedNFT:
     "Received NFT {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
+  labelBlindBoxRecieved:
+    "Received {{deliverdGiftsAmount}}/{{totalGiftsAmount}}",
   labelBlindBoxStartDate: "Start date",
   labelBlindBoxStartTime: "Start Time",
   labelBlindBoxEndDate: "End date",

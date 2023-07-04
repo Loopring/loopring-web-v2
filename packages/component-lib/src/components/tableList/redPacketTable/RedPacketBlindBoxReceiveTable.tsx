@@ -145,9 +145,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                     display={"flex"}
                     alignItems={"center"}
                     justifyContent={"center"}
-                    height={RowConfig.rowHeight + "px"}
-                    width={RowConfig.rowHeight + "px"}
-                    padding={1 / 4}
                   >
                     {metadata?.imageSize && (
                       <NftImageStyle
@@ -364,11 +361,21 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
           return <>{moment(new Date(row.rawData.luckyToken.validUntil)).format(YEAR_DAY_MINUTE_FORMAT)}</>;
         },
       },
+      
+      {
+        key: "ExpiredTime",
+        cellClass: "textAlignRight",
+        headerCellClass: "textAlignRight",
+        name: <TextTooltip text={t("labelExpiredTime")} tooltipTitle={t("labelExpiredTimeTooltip")}/> ,
+        formatter: ({ row }: FormatterProps<R>) => {
+          return <>{moment(new Date(row.rawData.claim.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}</>;
+        },
+      },
       {
         key: "Status",
         cellClass: "textAlignRight",
         headerCellClass: "textAlignRight",
-        name: t("labelRecordStatus"),
+        name: t("labelAction"),
         formatter: ({ row }: FormatterProps<R>) => {
           if (
             row.rawData.luckyToken.validUntil > Date.now() &&
@@ -394,15 +401,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
               </Button>
             );
           }
-        },
-      },
-      {
-        key: "ExpiredTime",
-        cellClass: "textAlignRight",
-        headerCellClass: "textAlignRight",
-        name: <TextTooltip text={t("labelExpiredTime")} tooltipTitle={t("labelExpiredTimeTooltip")}/> ,
-        formatter: ({ row }: FormatterProps<R>) => {
-          return <>{moment(new Date(row.rawData.claim.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}</>;
         },
       },
       
