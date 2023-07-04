@@ -185,6 +185,7 @@ export const useCreateRedPacket = <
               validUntil: moment().add('days', 1).toDate().getTime(),
               validSince: Date.now(),
               tradeType: value,
+              isNFT: false
             } as unknown as T);
             break;
           }
@@ -205,6 +206,7 @@ export const useCreateRedPacket = <
           validSince: Date.now(),
           validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: value,
+          isNFT: false
         } as unknown as T);
       } else if (!isToken) {
         resetRedPacketOrder(value);
@@ -220,6 +222,7 @@ export const useCreateRedPacket = <
           validSince: Date.now(),
           validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: "TOKEN",
+          isNFT: false
         } as unknown as T);
       }
     },
@@ -555,9 +558,7 @@ export const useCreateRedPacket = <
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
             }
-          ).catch(e => {
-            debugger
-          })
+          )
 
           myLog("submit sendLuckTokenSend:", response);
           if (
@@ -703,7 +704,7 @@ export const useCreateRedPacket = <
   );
   React.useEffect(() => {
     if (isShow) {
-      resetDefault(RedPacketOrderType.TOKEN);
+      resetDefault(RedPacketOrderType.BlindBox);
       walletLayer2Service.sendUserUpdate();
     }
   }, [isShow]);
@@ -720,7 +721,6 @@ export const useCreateRedPacket = <
 
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isHardwareRetry: boolean = false) => {
-      debugger
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const redPacketOrder = store.getState()._router_modalData
         .redPacketOrder as T;

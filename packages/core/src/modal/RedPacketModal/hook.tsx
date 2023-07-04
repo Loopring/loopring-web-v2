@@ -427,6 +427,7 @@ export function useRedPacketModal() {
 
   const [opendBlindBoxCount, setOpendBlindBoxCount] = React.useState(0);
   React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined);
+  
   const redPacketDetailCall = React.useCallback(
     async ({
       limit = detail?.luckyToken.isNft
@@ -591,7 +592,7 @@ export function useRedPacketModal() {
               showHelper: true,
             } as any,
             account.apiKey
-          );
+          )
           const response2 = await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
             {
               accountId: account.accountId,
@@ -620,6 +621,7 @@ export function useRedPacketModal() {
                   : response ?? {}),
               },
             });
+            setShowRedPacket({ isShow: false });
           } else if (
             (response2 as sdk.RESULT_INFO).code ||
             (response2 as sdk.RESULT_INFO).message
@@ -638,6 +640,7 @@ export function useRedPacketModal() {
                   : response2 ?? {}),
               },
             });
+            setShowRedPacket({ isShow: false });
           } else {
             const now = new Date().getTime();
             if (now < response.detail.luckyToken.validSince) {
@@ -688,7 +691,7 @@ export function useRedPacketModal() {
                     const token = tokenMap[idIndex[response.detail.tokenId]];
                     const coin = coinMap[idIndex[response.detail.tokenId]];
                     const amount = getValuePrecisionThousand(
-                      sdk.toBig(response.detail.claimAmount)
+                      sdk.toBig((claimLuckyTokenResponse as any).amount)
                         .div("1e" + token.decimals),
                       token.precision,
                       token.precision,
@@ -701,9 +704,10 @@ export function useRedPacketModal() {
                     setWonPrizeInfo({
                       tokenURL: 'tokenIcon',
                       tokenName: coin?.simpleName ?? "",
-                      amountStr: amount + (coin?.simpleName ?? ""),
+                      amountStr: amount + " " + (coin?.simpleName ?? ""),
                       isNFT: false
                     });
+
                   }
                 }
                 // refetch
