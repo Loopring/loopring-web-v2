@@ -3,9 +3,10 @@ import { IconType, PanelProps, UnlockAccountBase } from './BasicPanel'
 import { Box, Link, Typography } from '@mui/material'
 import { WalletType } from '@loopring-web/loopring-sdk'
 import { FEED_BACK_LINK } from '@loopring-web/common-resources'
-import { TextareaAutosizeStyled, TransErrorHelp } from '../../basic-lib'
+import { TextareaAutosizeStyled } from '../../basic-lib'
 import React from 'react'
 import { DropdownIconStyled } from '../../tradePanel'
+import { TransErrorHelp } from '../../block'
 
 // symbol
 export const UnlockAccount_WaitForAuth = (props: PanelProps) => {
