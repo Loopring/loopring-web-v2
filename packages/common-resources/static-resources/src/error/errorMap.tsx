@@ -1,6 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next'
-import { TOptions } from 'i18next'
-import { RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { Trans } from 'react-i18next'
 import { Link } from '@mui/material'
 
 export const ErrorMap = {
@@ -449,20 +447,4 @@ export const SDK_ERROR_MAP_TO_UI = {
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
   122001: ErrorMap.ERROR_ON_REFRESH,
   115003: ErrorMap.ERROR_DUAL_EXPIRED,
-}
-export const TransErrorHelp = ({
-  error,
-  options = {},
-}: {
-  error: RESULT_INFO
-  options?: TOptions<any> | string
-}) => {
-  const { t } = useTranslation(['error'])
-  const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001]
-  const _options = { ...errorItem?.options, ...options }
-  if (errorItem) {
-    return <>{t(errorItem.messageKey, _options)}</>
-  } else {
-    return <>{error.message}</>
-  }
 }

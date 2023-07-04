@@ -43,7 +43,7 @@ export default {
   errorCollectionSameName: 'Collection called {{name}} is existe',
   errorCollectionInfo:
     "We've detected this collection is not yours or the Contract Address don't match",
-  errorCollectionNoSupport: 'Only L2 collection is allow to mint',
+  errorCollectionNoSupport: 'Only {{l2symbol}} collection is allow to mint',
   errorCollectionNotReadable: 'Read Collection Info Failed',
   errorIpfsTimeout: 'IPFS Gateway timeout, please try again',
   errorRampNoInstance: 'Ramp Widget had out-off service, please re-order it.',
