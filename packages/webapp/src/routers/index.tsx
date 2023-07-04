@@ -101,6 +101,7 @@ const WrapModal = () => {
   const { depositProps } = useDeposit(false)
   const { assetsRawData } = useGetAssets()
   const location = useLocation()
+
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
   const { open, actionEle, handleClose } = useOffFaitModal()
@@ -138,7 +139,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const searchParams = new URLSearchParams(location.search)
   const { tickerMap } = useTicker()
   const { marketArray } = useTokenMap()
-  const { setTheme, defaultNetwork } = useSettings()
+  const { setTheme, defaultNetwork, setReferralCode } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const {
@@ -148,6 +149,10 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   React.useEffect(() => {
     if (searchParams.has('theme')) {
       searchParams.get('theme') === ThemeType.dark ? setTheme('dark') : setTheme('light')
+    }
+    if (searchParams.has('referralcode')) {
+      const value = searchParams.get('referralcode')
+      setReferralCode(value ? value : '')
     }
   }, [location.search])
 
