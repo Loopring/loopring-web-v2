@@ -788,12 +788,7 @@ export const RouterAllowIndex = {
 
 export const ProfileIndex = {
   TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
-  ETHEREUM: [
-    ProfileKey.security,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    // ProfileKey.referralrewards
-  ],
+  ETHEREUM: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
   GOERLI: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
 }
 
