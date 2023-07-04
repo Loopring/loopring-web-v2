@@ -1006,7 +1006,6 @@ export default {
   labelDualInvestBaseTitle: 'Invest {{symbolA}} (Sell High for {{symbolB}})',
   labelDualInvestQuoteTitle: 'Invest {{symbolA}} (Buy {{symbolB}} Low)',
   labelDualInvestDes: 'Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}',
-  labelDualInvestDesInsufficient: 'Insufficient quota',
   labelDualCurrentPriceTip: 'Current Price is based on USDT derived from some leading exchanges.',
   labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1>  USDT',
   labelDualSuccess: 'Subscription {{symbol}} Successfully',
@@ -1734,8 +1733,6 @@ export default {
   labelAnotherNetworkDes:
     'Orbiter.finance is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
   labelAnotherNetworkUnderstand: 'Acknowledge and understand the risk',
-  labelExplorer: 'Explorer',
-  labelTutorial: 'Tutorial',
   labelReferralImageDes: 'Scan code to register',
   labelReferralImageCode: 'Code: {{code}}',
   labelInvite: 'Invite Friends',
@@ -1750,4 +1747,7 @@ export default {
   labelBtradeRefresh: 'Refresh',
   labelArgNoEnough: 'Insufficient {{arg}} balance',
   WalletConnectV1: 'WalletConnect Legacy',
+  labelDualInvestDesInsufficient: 'Insufficient quota',
+  labelExplorer: 'Explorer',
+  labelTutorial: 'Tutorial',
 }

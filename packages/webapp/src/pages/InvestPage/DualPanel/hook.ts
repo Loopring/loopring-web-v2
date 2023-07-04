@@ -168,10 +168,15 @@ export const useDualHook = ({
           // totalNum,
           dualInfo: { infos, index, balance },
           raw_data: { rules },
-        } = response as any;
-        const found = balance.find((_balance: any) => _balance.coin === pairASymbol)
-        const sellToken = tokenMap[pairASymbol]
-        const minSellVol = sdk.calcDualMiniVol({info: infos[0], rule: rules[0], sellToken, dualMarket: marketMap[market]})
+        } = response as any;     
+        const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
+        const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
+        const sellToken = tokenMap[balanceCoin]
+        if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+          var minSellVol = marketMap[market].baseLimitAmount
+        } else {
+          minSellVol = marketMap[market].quoteLimitAmount
+        }
         setIsDualBalanceSufficient((found && sellToken) 
           ? sdk.toBig(found.free).times('1e' + sellToken.decimals).isGreaterThanOrEqualTo(minSellVol)  
           : undefined
