@@ -29,6 +29,7 @@ import {
   confirmation,
   useDefiMap,
   useNotify,
+  usePopup,
   useToast,
 } from "@loopring-web/core";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -290,10 +291,32 @@ export const DeFiPanel: any = withTranslation("common")(
       confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
       confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
     } = confirmation.useConfirmation();
-    const [_confirmedDefiInvest, setConfirmedDefiInvest] = React.useState<{
-      isShow: boolean;
-      type?: "RETH" | "WSETH" | undefined;
-    }>({ isShow: false, type: "WSETH" });
+    // const []
+    const {showRETHStakignPopup, showWSTETHStakignPopup, setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup()
+    const _confirmedDefiInvest = {
+      isShow: showRETHStakignPopup || showWSTETHStakignPopup,
+      type: showRETHStakignPopup 
+        ? "RETH"
+        : showWSTETHStakignPopup 
+        ? "WSETH"
+        : undefined
+    }
+    console.log(
+      '_confirmedDefiInvest',_confirmedDefiInvest
+    )
+    const setConfirmedDefiInvest = ({isShow, type}: {isShow: boolean; type?: "RETH" | "WSETH" | undefined;}) => {
+      debugger
+      if (isShow) {
+        if (type === "RETH") {
+          setShowRETHStakignPopup(true)
+        } else {
+          setShowWSTETHStakignPopup(true)
+        } 
+      } else {
+        setShowRETHStakignPopup(false)
+        setShowWSTETHStakignPopup(false)
+      }
+    }
 
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
     const [serverUpdate, setServerUpdate] = React.useState(false);

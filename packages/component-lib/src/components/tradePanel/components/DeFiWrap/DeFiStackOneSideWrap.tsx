@@ -2,6 +2,7 @@ import {
   DeFiSideCalcData,
   EmptyValueTag,
   getValuePrecisionThousand,
+  HelpIcon,
   IBData,
   Info2Icon,
   myLog,
@@ -17,6 +18,7 @@ import { ButtonStyle } from "../Styled";
 import * as sdk from "@loopring-web/loopring-sdk";
 import moment from "moment";
 import styled from "@emotion/styled";
+import { usePopup } from "@loopring-web/core";
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -434,6 +436,7 @@ export const DeFiSideWrap = <
       ? dalyEarn + " " + tokenSell.symbol
       : EmptyValueTag;
   myLog("deFiSideCalcData.stakeViewInfo", deFiSideCalcData.stakeViewInfo);
+  const {setShowLRCStakignPopup} = usePopup()
   return (
     <GridStyle
       className={deFiSideCalcData ? "" : "loading"}
@@ -461,6 +464,15 @@ export const DeFiSideWrap = <
           alignSelf={"self-start"}
         >
           {t("labelInvestLRCTitle")}
+          <HelpIcon
+            fontSize={"large"}
+            color={"inherit"}
+            sx={{ marginLeft: 1, cursor: "pointer" }}
+            onClick={() => {
+              setShowLRCStakignPopup(true)
+            }}
+          />
+
         </Typography>
       </Grid>
       <Grid

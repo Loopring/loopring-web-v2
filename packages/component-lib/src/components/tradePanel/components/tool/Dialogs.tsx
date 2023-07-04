@@ -1823,20 +1823,6 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                checked={agree}
-                onChange={(_event: any, state: boolean) => {
-                  setAgree(state);
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-              />
-            }
-            label={t("labelDefiAgree")}
-          />
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
@@ -1874,7 +1860,6 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
-            disabled={!agree}
             onClick={(e) => {
               handleClose(e as any, true);
             }}
@@ -2150,20 +2135,6 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                checked={agree}
-                onChange={(_event: any, state: boolean) => {
-                  setAgree(state);
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-              />
-            }
-            label={t("labelLRCStakingAgree")}
-          />
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
@@ -2188,7 +2159,6 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
-            disabled={!agree}
             onClick={(e) => {
               handleClose(e as any, true);
             }}
