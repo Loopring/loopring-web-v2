@@ -651,26 +651,8 @@ export const useBtradeSwap = <
   }, [tradeBtrade.depth, account.readyState, market])
 
   const walletLayer2Callback = React.useCallback(async () => {
-    let walletMap: WalletMap<any> | undefined = undefined
     if (account.readyState === AccountStatus.ACTIVATED) {
-      walletMap = makeWalletLayer2(true).walletMap
-      setTradeData((tradeData) => {
-        return {
-          ...tradeData,
-          btradeType: tradeData?.btradeType ? tradeData.btradeType : BtradeType.Quantity,
-          sell: {
-            belong: tradeCalcData.coinSell,
-            balance: walletMap ? walletMap[tradeCalcData.coinSell as string]?.count : 0,
-          },
-          buy: {
-            belong: tradeCalcData.coinBuy,
-            balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0,
-          },
-        } as T
-      })
-      setTradeCalcData((tradeCalcData) => {
-        return { ...tradeCalcData, walletMap } as CAD
-      })
+      refreshWhenDepthUp()
     } else {
       if (tradeCalcData.coinSell && tradeCalcData.coinBuy) {
         setTradeData((state) => {
@@ -912,6 +894,7 @@ export const useBtradeSwap = <
         const btradeType = _tradeData.btradeType ? _tradeData.btradeType : _btradeType
         const coinA = _tradeData?.sell.belong
         const coinB = _tradeData?.buy.belong
+        _tradeData.sell.balance = walletMap ? walletMap[coinA]?.count : 0
         const sellToken = tokenMap[coinA as string]
         const buyToken = tokenMap[coinB as string]
         const sellBuyStr = `${sellToken.symbol}-${buyToken.symbol}`
@@ -1223,6 +1206,8 @@ export const useBtradeSwap = <
       (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
         `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
     ) {
+      const walletMap = makeWalletLayer2(true).walletMap
+
       const result = reCalcStoB({
         market,
         tradeData: tradeData as SwapTradeData<IBData<unknown>>,
@@ -1258,9 +1243,9 @@ export const useBtradeSwap = <
         }
         return {
           ..._tradeCalcData,
+          walletMap,
         }
       })
-      const walletMap = makeWalletLayer2(true).walletMap
       reCalculateDataWhenValueChange(
         {
           sell: {

@@ -18,7 +18,7 @@ import BigNumber from 'bignumber.js'
 import { SwapTradeData } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const swapDependAsync = (
+export const swapDependAsync = async (
   market: MarketType,
   level?: number,
   limit?: number,
@@ -28,44 +28,43 @@ export const swapDependAsync = (
   depth: sdk.DepthData
 }> => {
   const { ammMap } = store.getState().amm.ammMap
-
-  return new Promise((resolve, reject) => {
-    const poolAddress = ammMap['AMM-' + market]?.address
-    if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
-      Promise.all([
+  const poolAddress = ammMap['AMM-' + market]?.address
+  if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
+    try {
+      const [{ depth }, { ammPoolSnapshot }, { tickMap }] = await Promise.all([
         LoopringAPI.exchangeAPI.getMixDepth({ market, level, limit }),
         poolAddress
           ? LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({ poolAddress })
           : Promise.resolve({ ammPoolSnapshot: undefined }),
         LoopringAPI.exchangeAPI.getMixTicker({ market: market }),
-      ]).then(([{ depth }, { ammPoolSnapshot }, { tickMap }]) => {
-        store.dispatch(tickerReducer.updateTicker(tickMap))
-        const { ammMap } = store.getState().amm.ammMap
-        const ammInfo = ammMap['AMM-' + market]
-        if (ammPoolSnapshot && ammInfo) {
-          store.dispatch(
-            ammMapReducer.updateRealTimeAmmMap({
-              ammPoolStats: {
-                ['AMM-' + market]: {
-                  ...ammInfo.__rawConfig__,
-                  liquidity: [ammPoolSnapshot.pooled[0].volume, ammPoolSnapshot.pooled[1].volume],
-                  lpLiquidity: ammPoolSnapshot.lp.volume,
-                },
+      ])
+      store.dispatch(tickerReducer.updateTicker(tickMap))
+      const { ammMap } = store.getState().amm.ammMap
+      const ammInfo = ammMap['AMM-' + market]
+      if (ammPoolSnapshot && ammInfo) {
+        store.dispatch(
+          ammMapReducer.updateRealTimeAmmMap({
+            ammPoolStats: {
+              ['AMM-' + market]: {
+                ...ammInfo.__rawConfig__,
+                liquidity: [ammPoolSnapshot.pooled[0].volume, ammPoolSnapshot.pooled[1].volume],
+                lpLiquidity: ammPoolSnapshot.lp.volume,
               },
-            }),
-          )
-        }
-
-        resolve({
-          ammPoolSnapshot: ammPoolSnapshot,
-          tickMap,
-          depth,
-        })
-      })
-    } else {
-      reject(new CustomError(ErrorMap.NO_SDK))
+            },
+          }),
+        )
+      }
+      return {
+        ammPoolSnapshot: ammPoolSnapshot,
+        tickMap,
+        depth,
+      }
+    } catch (error) {
+      throw error
     }
-  })
+  } else {
+    throw new Error('api not ready')
+  }
 }
 
 export const dexSwapDependAsync = ({
