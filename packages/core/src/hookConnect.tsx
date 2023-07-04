@@ -105,7 +105,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } = useSettings()
   const { setShowConnect } = useOpenModals()
   const {
-    account: { connectName, readyState },
+    account: { connectName },
   } = useAccount()
   // const { account } = useAccount();
   React.useEffect(() => {
@@ -151,24 +151,20 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         >
           {AvaiableNetwork.reduce((prew, id, index) => {
             if (NetworkMap[id]) {
-              // myLog('readyState', readyState)
-              if (
-                ![1, 5].includes(Number(id)) &&
-                [ConnectProviders.GameStop].includes(connectName)
-              ) {
-                console.log('ConnectProviders', connectName, readyState)
-              } else {
-                prew.push(
-                  <OutlineSelectItemStyle
-                    className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
-                    aria-label={NetworkMap[id].label}
-                    value={id}
-                    key={'viewNetwork' + NetworkMap[id] + index}
-                  >
-                    <span>{t(NetworkMap[id].label)}</span>
-                  </OutlineSelectItemStyle>,
-                )
-              }
+              prew.push(
+                <OutlineSelectItemStyle
+                  disabled={
+                    ![1, 5].includes(Number(id)) &&
+                    [ConnectProviders.GameStop].includes(connectName)
+                  }
+                  className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
+                  aria-label={NetworkMap[id].label}
+                  value={id}
+                  key={'viewNetwork' + NetworkMap[id] + index}
+                >
+                  <span>{t(NetworkMap[id].label)}</span>
+                </OutlineSelectItemStyle>,
+              )
             }
             return prew
           }, [] as JSX.Element[])}

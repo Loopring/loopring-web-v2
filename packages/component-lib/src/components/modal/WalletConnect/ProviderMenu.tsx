@@ -187,33 +187,28 @@ export const ProviderMenu = ({
         <Box display={'flex'} justifyContent={'center'}>
           {NetWorkItems}
         </Box>
-        {gatewayList.map((item: GatewayItem) => {
-          if (
-            item.key == loopringProvider.ConnectProviders.GameStop &&
-            ![1, 5].includes(Number(defaultNetwork))
-          ) {
-            return <React.Fragment key={item.key}></React.Fragment>
-          } else {
-            return (
-              <Box key={item.key} marginTop={1.5}>
-                <MenuBtnStyled
-                  variant={'outlined'}
-                  size={'large'}
-                  className={`${isMobile ? 'isMobile' : ''} ${
-                    isProvider(item.key) ? 'selected provider ' : 'provider'
-                  }`}
-                  fullWidth
-                  endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
-                  onClick={(e) => {
-                    _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect)
-                  }}
-                >
-                  {t(item.keyi18n)}
-                </MenuBtnStyled>
-              </Box>
-            )
-          }
-        })}
+        {gatewayList.map((item: GatewayItem) => (
+          <Box key={item.key} marginTop={1.5}>
+            <MenuBtnStyled
+              variant={'outlined'}
+              size={'large'}
+              disabled={
+                item.key == loopringProvider.ConnectProviders.GameStop &&
+                ![1, 5].includes(Number(defaultNetwork))
+              }
+              className={`${isMobile ? 'isMobile' : ''} ${
+                isProvider(item.key) ? 'selected provider ' : 'provider'
+              }`}
+              fullWidth
+              endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
+              onClick={(e) => {
+                _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect)
+              }}
+            >
+              {t(item.keyi18n)}
+            </MenuBtnStyled>
+          </Box>
+        ))}
       </Box>
     </BoxContent>
   )
