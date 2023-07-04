@@ -52,6 +52,7 @@
     "react-redux-firebase": "^3.11.0",
     "react-resizable": "^3.0.5",
     "react-scripts": "4.0.3",
+    "react-share": "^4.4.1",
     "react-spring": "^9.7.1",
     "react-swipeable-views": "^0.13.9",
     "react-use": "^17.4.0",
