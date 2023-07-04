@@ -10,7 +10,13 @@ import {
   ToastType,
   useSettings,
 } from '@loopring-web/component-lib'
-import { myLog, HelpIcon, LOOPRING_DOCUMENT, TOAST_TIME } from '@loopring-web/common-resources'
+import {
+  myLog,
+  HelpIcon,
+  LOOPRING_DOCUMENT,
+  TOAST_TIME,
+  SoursURL,
+} from '@loopring-web/common-resources'
 import { confirmation, useBtradeMap, useBtradeSwap, useNotify } from '@loopring-web/core'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
@@ -61,38 +67,50 @@ const Content = withTranslation('common')(({ ...rest }: WithTranslation) => {
           <Typography variant={'h5'}>{t('labelTutorial')}</Typography>
         </Box>
       </Box>
-      <SwapPanel
-        titleI8nKey={'labelBtradeSwapTitle'}
-        tokenBuyProps={{
-          disableInputValue: isMarketInit,
-          disabled: isSwapLoading || isMarketInit,
-          decimalsLimit: tradeCalcData.buyPrecision,
-        }}
-        tokenSellProps={{
-          disableInputValue: isMarketInit,
-          disabled: isSwapLoading || isMarketInit,
-          placeholderText:
-            tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
-              ? t('labelBtradeSwapMiniMax', {
-                  minValue: tradeCalcData.sellMinAmtStr,
-                  maxValue: tradeCalcData.sellMaxAmtStr,
-                })
-              : t('labelBtradeSwapMini', {
-                  minValue: tradeCalcData.sellMinAmtStr,
-                }),
-        }}
-        campaignTagConfig={campaignTagConfig ?? ({} as any)}
-        market={market}
-        onRefreshData={should15sRefresh}
-        refreshRef={refreshRef}
-        tradeData={tradeData as any}
-        tradeCalcData={tradeCalcData as any}
-        onSwapClick={onSwapClick}
-        swapBtnI18nKey={swapBtnI18nKey}
-        swapBtnStatus={swapBtnStatus}
-        setToastOpen={setToastOpen}
-        {...{ handleSwapPanelEvent, ...rest }}
-      />
+      {tradeData ? (
+        <SwapPanel
+          titleI8nKey={'labelBtradeSwapTitle'}
+          tokenBuyProps={{
+            disableInputValue: isMarketInit,
+            disabled: isSwapLoading || isMarketInit,
+            decimalsLimit: tradeCalcData.buyPrecision,
+          }}
+          tokenSellProps={{
+            disableInputValue: isMarketInit,
+            disabled: isSwapLoading || isMarketInit,
+            placeholderText:
+              tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
+                ? t('labelBtradeSwapMiniMax', {
+                    minValue: tradeCalcData.sellMinAmtStr,
+                    maxValue: tradeCalcData.sellMaxAmtStr,
+                  })
+                : t('labelBtradeSwapMini', {
+                    minValue: tradeCalcData.sellMinAmtStr,
+                  }),
+          }}
+          campaignTagConfig={campaignTagConfig ?? ({} as any)}
+          market={market}
+          onRefreshData={should15sRefresh}
+          refreshRef={refreshRef}
+          tradeData={tradeData as any}
+          tradeCalcData={tradeCalcData as any}
+          onSwapClick={onSwapClick}
+          swapBtnI18nKey={swapBtnI18nKey}
+          swapBtnStatus={swapBtnStatus}
+          setToastOpen={setToastOpen}
+          {...{ handleSwapPanelEvent, ...rest }}
+        />
+      ) : (
+        <Box
+          flex={1}
+          height={'100%'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+        >
+          <img className='loading-gif' width='36' src={`${SoursURL}images/loading-line.gif`} />
+        </Box>
+      )}
 
       <Toast
         alertText={toastOpen?.content ?? ''}

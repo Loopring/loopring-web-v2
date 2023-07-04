@@ -48,7 +48,7 @@ export const SwapTradeWrap = <
   onChangeEvent,
   isStob,
   switchStobEvent,
-  swapData,
+  tradeData,
   disabled,
   handleError,
   swapBtnStatus,
@@ -62,7 +62,6 @@ export const SwapTradeWrap = <
   const sellRef = React.useRef()
   const buyRef = React.useRef()
   const history = useHistory()
-  let tradeData = swapData.tradeData
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true)
@@ -85,36 +84,36 @@ export const SwapTradeWrap = <
     (_event: React.MouseEvent, _name: string, ref: any) => {
       const focus: 'buy' | 'sell' = ref.current === buyRef.current ? 'buy' : 'sell'
       onChangeEvent(1, {
-        tradeData: swapData.tradeData,
+        tradeData,
         type: focus,
         to: 'menu',
       })
     },
-    [swapData, onChangeEvent],
+    [tradeData, onChangeEvent],
   )
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _name: string, _ref: any) => {
       const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell'
-      if (swapData.tradeData[focus].tradeValue !== ibData.tradeValue) {
+      if (tradeData[focus].tradeValue !== ibData.tradeValue) {
         onChangeEvent(0, {
-          tradeData: { ...swapData.tradeData, [focus]: ibData },
+          tradeData: { ...tradeData, [focus]: ibData },
           type: focus,
           to: 'button',
         })
       }
     },
-    [swapData, onChangeEvent],
+    [tradeData, onChangeEvent],
   )
   const covertOnClick = React.useCallback(() => {
     onChangeEvent(0, {
       tradeData: {
-        sell: swapData.tradeData.buy,
-        buy: swapData.tradeData.sell,
+        sell: tradeData.buy,
+        buy: tradeData.sell,
       } as SwapTradeData<T>,
       type: 'exchange',
       to: 'button',
     })
-  }, [swapData, onChangeEvent])
+  }, [tradeData, onChangeEvent])
 
   if (typeof handleError !== 'function') {
     handleError = ({ belong, balance, tradeValue }: any) => {
@@ -276,7 +275,7 @@ export const SwapTradeWrap = <
               onChange={(_e, value) =>
                 onChangeEvent(0, {
                   tradeData: {
-                    ...swapData.tradeData,
+                    ...tradeData,
                     btradeType: value,
                   } as SwapTradeData<T>,
                   type: (tradeCalcData as unknown as SCD)?.lastStepAt ?? 'sell',
@@ -544,7 +543,7 @@ export const SwapTradeWrap = <
                     onChange={() => {
                       onChangeEvent(0, {
                         tradeData: {
-                          ...swapData.tradeData,
+                          ...tradeData,
                           isChecked: !(tradeCalcData as SCD)?.isChecked,
                         } as SwapTradeData<T>,
                         type: (tradeCalcData as SCD)?.lastStepAt ?? 'sell',
@@ -682,7 +681,7 @@ export const SwapTradeWrap = <
             size={'large'}
             color={'primary'}
             onClick={() => {
-              onSwapClick(swapData.tradeData)
+              onSwapClick()
             }}
             loading={!getDisabled() && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
             disabled={

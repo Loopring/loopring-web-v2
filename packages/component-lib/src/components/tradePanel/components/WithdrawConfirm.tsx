@@ -1,23 +1,21 @@
-import { useTranslation } from "react-i18next";
-import { Box, Grid, Typography } from "@mui/material";
+import { useTranslation } from 'react-i18next'
+import { Box, Grid, Typography } from '@mui/material'
 import {
   EmptyValueTag,
   FeeInfo,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   NFTWholeINFO,
   TOAST_TIME,
-} from "@loopring-web/common-resources";
-import { Button, Toast, ToastType, useAddressTypeLists } from "../../index";
-import { WithdrawViewProps } from "./Interface";
-import { useSettings } from "../../../stores";
-import React from "react";
-import { sanitize } from "dompurify";
+} from '@loopring-web/common-resources'
+import { Button, Toast, ToastType, useAddressTypeLists } from '../../index'
+import { WithdrawViewProps } from './Interface'
+import { useSettings } from '../../../stores'
+import React from 'react'
+import { sanitize } from 'dompurify'
 
-export const WithdrawConfirm = <
-  T extends IBData<I> & Partial<NFTWholeINFO>,
-  I,
-  C extends FeeInfo
->({
+export const WithdrawConfirm = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   handleConfirm,
   tradeData,
   onWithdrawClick,
@@ -28,46 +26,47 @@ export const WithdrawConfirm = <
   isToMyself,
   sureIsAllowAddress,
 }: Partial<WithdrawViewProps<T, I, C>> & {
-  handleConfirm: (index: number) => void;
+  handleConfirm: (index: number) => void
 }) => {
-  const { t } = useTranslation();
-  const { isMobile } = useSettings();
-  const [open, setOpen] = React.useState(false);
-  const { walletList, exchangeList } = useAddressTypeLists();
+  const { t } = useTranslation()
+  const { isMobile, defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const [open, setOpen] = React.useState(false)
+  const { walletList, exchangeList } = useAddressTypeLists()
   return (
     <Grid
-      className={"confirm"}
+      className={'confirm'}
       container
       paddingLeft={isMobile ? 2 : 5 / 2}
       paddingRight={isMobile ? 2 : 5 / 2}
-      direction={"column"}
-      alignItems={"stretch"}
+      direction={'column'}
+      alignItems={'stretch'}
       flex={1}
-      height={"100%"}
+      height={'100%'}
       minWidth={240}
-      flexWrap={"nowrap"}
+      flexWrap={'nowrap'}
       spacing={2}
     >
       <Grid item xs={12}>
         <Box
-          display={"flex"}
-          flexDirection={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
           marginBottom={2}
         >
           <Typography
-            component={"h4"}
-            variant={isMobile ? "h4" : "h3"}
-            whiteSpace={"pre"}
+            component={'h4'}
+            variant={isMobile ? 'h4' : 'h3'}
+            whiteSpace={'pre'}
             marginRight={1}
           >
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
-            (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
-              ? t("labelL2ToL1DeployTitle", { l1Symbol: "L1" })
+            (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
+              ? t('labelL2ToL1DeployTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
               : isToMyself
-              ? t("labelL2ToMyL1Title", { l1Symbol: "L1" })
-              : t("labelL2ToOtherL1Title", { l1Symbol: "L1" })}
+              ? t('labelL2ToMyL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
+              : t('labelL2ToOtherL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })}
           </Typography>
           {/*<Typography*/}
           {/*  component={"h6"}*/}
@@ -80,98 +79,90 @@ export const WithdrawConfirm = <
         </Box>
       </Grid>
       <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2TokenAmount")}
+        <Typography color={'var(--color-text-third)'} variant={'body1'}>
+          {t('labelL2toL2TokenAmount')}
         </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
+        <Typography color={'textPrimary'} marginTop={1} variant={'body1'}>
           {tradeData?.tradeValue}
           <Typography
-            component={"span"}
-            color={"textSecondary"}
+            component={'span'}
+            color={'textSecondary'}
             dangerouslySetInnerHTML={{
               __html:
                 sanitize(
-                  type === "NFT"
-                    ? " \u2A09 " + tradeData?.name ?? "NFT"
-                    : ` ${tradeData?.belong}` ?? EmptyValueTag
-                ) ?? "",
+                  type === 'NFT'
+                    ? ' \u2A09 ' + tradeData?.name ?? 'NFT'
+                    : ` ${tradeData?.belong}` ?? EmptyValueTag,
+                ) ?? '',
             }}
           />
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Address")}
+        <Typography color={'var(--color-text-third)'} variant={'body1'}>
+          {t('labelL2toL2Address')}
         </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
+        <Typography color={'textPrimary'} marginTop={1} variant={'body1'}>
           {realAddr}
         </Typography>
       </Grid>
       {!isToMyself && (
         <Grid item xs={12}>
-          <Typography color={"var(--color-text-third)"} variant={"body1"}>
-            {t("labelL2toL1AddressType")}
+          <Typography color={'var(--color-text-third)'} variant={'body1'}>
+            {t('labelL2toL1AddressType')}
           </Typography>
-          <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
+          <Typography color={'textPrimary'} marginTop={1} variant={'body1'}>
             {
-              [...walletList, ...exchangeList].find(
-                (item) => item.value === sureIsAllowAddress
-              )?.label
+              [...walletList, ...exchangeList].find((item) => item.value === sureIsAllowAddress)
+                ?.label
             }
           </Typography>
         </Grid>
       )}
       <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelForceWithdrawFee")}
+        <Typography color={'var(--color-text-third)'} variant={'body1'}>
+          {t('labelForceWithdrawFee')}
         </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {feeInfo?.fee + " "} {feeInfo?.belong}
+        <Typography color={'textPrimary'} marginTop={1} variant={'body1'}>
+          {feeInfo?.fee + ' '} {feeInfo?.belong}
         </Typography>
       </Grid>
 
-      <Grid item marginTop={2} alignSelf={"stretch"} paddingBottom={0}>
+      <Grid item marginTop={2} alignSelf={'stretch'} paddingBottom={0}>
         {lastFailed && (
-          <Typography
-            paddingBottom={1}
-            textAlign={"center"}
-            color={"var(--color-warning)"}
-          >
-            {t("labelConfirmAgainByFailedWithBalance", {
-              symbol:
-                type === "NFT"
-                  ? "NFT"
-                  : ` ${tradeData?.belong}` ?? EmptyValueTag,
+          <Typography paddingBottom={1} textAlign={'center'} color={'var(--color-warning)'}>
+            {t('labelConfirmAgainByFailedWithBalance', {
+              symbol: type === 'NFT' ? 'NFT' : ` ${tradeData?.belong}` ?? EmptyValueTag,
               count: tradeData?.balance,
             })}
           </Typography>
         )}
         <Button
           fullWidth
-          variant={"contained"}
-          size={"medium"}
-          color={"primary"}
+          variant={'contained'}
+          size={'medium'}
+          color={'primary'}
           onClick={async () => {
             if (onWithdrawClick) {
-              await onWithdrawClick({ ...tradeData } as unknown as T);
+              await onWithdrawClick({ ...tradeData } as unknown as T)
             } else {
-              setOpen(true);
+              setOpen(true)
             }
-            handleConfirm(1);
+            handleConfirm(1)
           }}
         >
-          {t("labelConfirm")}
+          {t('labelConfirm')}
         </Button>
       </Grid>
       <Toast
-        alertText={t("errorBase", { ns: "error" })}
+        alertText={t('errorBase', { ns: 'error' })}
         open={open}
         autoHideDuration={TOAST_TIME}
         onClose={() => {
-          setOpen(false);
+          setOpen(false)
         }}
         severity={ToastType.error}
       />
     </Grid>
-  );
-};
+  )
+}
