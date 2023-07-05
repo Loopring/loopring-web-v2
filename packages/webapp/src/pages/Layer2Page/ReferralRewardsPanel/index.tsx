@@ -31,7 +31,6 @@ import {
 import {
   Button,
   RefundTable,
-  ReferralImage,
   ReferralsTable,
   Toast,
   ToastType,
@@ -410,7 +409,7 @@ const ReferView = () => {
       <ReferHeader handleCopy={handleCopy} link={link} />
       <Container>
         <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-          <Typography component={'h3'} variant={'h4'} marginY={1}>
+          <Typography component={'h3'} variant={'h4'} marginY={2}>
             {t('labelReferralRules')}
           </Typography>
           <Tabs
@@ -445,15 +444,16 @@ const ReferView = () => {
             )}
             {currentTab === ReferStep.method2 && (
               <ol>
-                <li>{t('labelReferralMethod2Step1')}</li>
                 <li>
-                  <Trans i18nKey={'labelReferralMethod2Step2'}>
+                  {' '}
+                  <Trans i18nKey={'labelReferralMethod2Step1'}>
                     Access the website
                     <Link href={linkExchange} target={'_blank'}>
                       {ExchangeIO}
                     </Link>
                   </Trans>
                 </li>
+                <li>{t('labelReferralMethod2Step2')}</li>
                 <li>
                   {t('labelReferralMethod2Step3', {
                     loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
@@ -471,7 +471,7 @@ const ReferView = () => {
           {account.readyState === AccountStatus.ACTIVATED && (
             <>
               <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-                <Typography component={'h3'} variant={'h4'} marginY={1}>
+                <Typography component={'h3'} variant={'h4'} marginY={2}>
                   {t('labelReferralMyReferrals')}
                 </Typography>
 
@@ -532,7 +532,7 @@ const ReferView = () => {
                 </Box>
               </BoxStyled>
               <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-                <Typography component={'h3'} variant={'h4'} marginY={1}>
+                <Typography component={'h3'} variant={'h4'} marginY={2}>
                   {t('labelReferralReferralsRefunds')}
                 </Typography>
                 <Box display={'flex'} flexDirection={'column'}>

@@ -1,14 +1,6 @@
-import { Trans, WithTranslation } from "react-i18next";
-import React from "react";
-import {
-  Box,
-  Grid,
-  InputAdornment,
-  Link,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Trans, WithTranslation } from 'react-i18next'
+import React from 'react'
+import { Box, Grid, InputAdornment, Link, TextField, Tooltip, Typography } from '@mui/material'
 import {
   EmptyValueTag,
   FeeInfo,
@@ -16,14 +8,12 @@ import {
   L1L2_NAME_DEFINED,
   MapChainId,
   TradeBtnStatus,
-} from "@loopring-web/common-resources";
-import { Button } from "../../basic-lib";
-import { ResetViewProps } from "./Interface";
-import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { FeeToggle } from "./tool/FeeList";
-import { useSettings } from "../../../stores";
-import { useLocation } from "react-use";
-import { useHistory } from "react-router-dom";
+} from '@loopring-web/common-resources'
+import { Button } from '../../basic-lib'
+import { ResetViewProps } from './Interface'
+import { DropdownIconStyled, FeeTokenItemWrapper } from './Styled'
+import { FeeToggle } from './tool/FeeList'
+import { useSettings } from '../../../stores'
 
 export const ResetWrap = <T extends FeeInfo>({
   t,
@@ -36,148 +26,126 @@ export const ResetWrap = <T extends FeeInfo>({
   chargeFeeTokenList = [],
   goToDeposit,
   walletMap,
+  isReset = false,
   handleFeeChange,
 }: ResetViewProps<T> & WithTranslation) => {
-  const [dropdownStatus, setDropdownStatus] =
-    React.useState<"up" | "down">("down");
-  const { search } = useLocation();
-  const history = useHistory();
-  const searchParams = new URLSearchParams(search);
-  const [value, setValue] = React.useState(
-    searchParams.get("referralcode") ?? ""
-  );
-  // const { isMobile, defaultNetwork } = useSettings();
-  const { isMobile, defaultNetwork } = useSettings();
+  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const { referralCode, setReferralCode } = useSettings()
+  const [value, setValue] = React.useState(referralCode)
+  const { isMobile, defaultNetwork } = useSettings()
 
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const getDisabled = React.useMemo(() => {
-    return disabled || resetBtnStatus === TradeBtnStatus.DISABLED;
-  }, [disabled, resetBtnStatus]);
+    return disabled || resetBtnStatus === TradeBtnStatus.DISABLED
+  }, [disabled, resetBtnStatus])
 
   const handleToggleChange = (value: T) => {
     if (handleFeeChange) {
-      handleFeeChange(value);
+      handleFeeChange(value)
     }
-  };
+  }
   const onRefChange = (e: any) => {
-    const regex = /^[0-9\b]+$/;
-    if (e?.target?.value === "" || regex.test(e?.target.value)) {
-      setValue(e.target.value);
-      searchParams.set("referralcode", e.target.value);
-      history.replace({ search: searchParams.toString() });
+    const regex = /^[0-9\b]+$/
+    if (e?.target?.value === '' || regex.test(e?.target.value)) {
+      setValue(e.target.value)
+      if (e.target.value.length > 5) {
+        setReferralCode(e.target.value)
+      }
+
+      // searchParams.set('referralcode', e.target.value)
+      // history.replace({ search: searchParams.toString() })
     }
-  };
+  }
 
   return (
     <Grid
       container
-      direction={"column"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
+      direction={'column'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
       flex={1}
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
-      height={"100%"}
+      height={'100%'}
       minWidth={320}
     >
       <Grid item marginBottom={2}>
         <Typography
-          component={"h4"}
-          textAlign={"center"}
-          variant={isMobile ? "h4" : "h3"}
-          whiteSpace={"pre"}
+          component={'h4'}
+          textAlign={'center'}
+          variant={isMobile ? 'h4' : 'h3'}
+          whiteSpace={'pre'}
           marginBottom={2}
         >
           {isNewAccount
-            ? t("labelActiveAccountTitle", {
+            ? t('labelActiveAccountTitle', {
                 loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
               })
-            : t("resetTitle", { layer2: L1L2_NAME_DEFINED[network].layer2 })}
+            : t('resetTitle', { layer2: L1L2_NAME_DEFINED[network].layer2 })}
         </Typography>
-        <Typography
-          component={"p"}
-          variant="body1"
-          color={"var(--color-text-secondary)"}
-        >
+        <Typography component={'p'} variant='body1' color={'var(--color-text-secondary)'}>
           {isNewAccount
-            ? t("labelActiveAccountDescription", { layer2: "Layer 2" })
-            : t("resetDescription", { layer2: "Layer 2" })}
+            ? t('labelActiveAccountDescription', { layer2: 'Layer 2' })
+            : t('resetDescription', { layer2: 'Layer 2' })}
         </Typography>
       </Grid>
 
-      <Grid item alignSelf={"stretch"} position={"relative"} marginTop={1}>
+      <Grid item alignSelf={'stretch'} position={'relative'} marginTop={1}>
         {!chargeFeeTokenList?.length ? (
-          <Typography>{t("labelFeeCalculating")}</Typography>
+          <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
             <Typography
-              component={"span"}
-              display={"flex"}
-              alignItems={"center"}
-              variant={"body1"}
-              color={"var(--color-text-secondary)"}
+              component={'span'}
+              display={'flex'}
+              alignItems={'center'}
+              variant={'body1'}
+              color={'var(--color-text-secondary)'}
               marginBottom={1}
             >
-              {t("labelL2toL2Fee")}：
+              {t('labelL2toL2Fee')}：
               <Box
-                component={"span"}
-                display={"flex"}
-                alignItems={"center"}
-                style={{ cursor: "pointer" }}
-                onClick={() =>
-                  setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
-                }
+                component={'span'}
+                display={'flex'}
+                alignItems={'center'}
+                style={{ cursor: 'pointer' }}
+                onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo?.belong ?? EmptyValueTag}
-                <DropdownIconStyled
-                  status={dropdownStatus}
-                  fontSize={"medium"}
-                />
+                  ? feeInfo.fee + ' ' + feeInfo.belong
+                  : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
+                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
 
                 {isFeeNotEnough.isOnLoading ? (
-                  <Typography
-                    color={"var(--color-warning)"}
-                    marginLeft={1}
-                    component={"span"}
-                  >
-                    {t("labelFeeCalculating")}
+                  <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
+                    {t('labelFeeCalculating')}
                   </Typography>
                 ) : (
                   isFeeNotEnough.isFeeNotEnough && (
-                    <Typography
-                      marginLeft={1}
-                      component={"span"}
-                      color={"var(--color-error)"}
-                    >
+                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
                       {isNewAccount && goToDeposit ? (
-                        <Trans i18nKey={"labelActiveAccountFeeNotEnough"}>
+                        <Trans i18nKey={'labelActiveAccountFeeNotEnough'}>
                           Insufficient balance
                           <Link
                             onClick={() => {
-                              goToDeposit();
+                              goToDeposit()
                             }}
-                            variant={"body2"}
+                            variant={'body2'}
                           >
                             Add assets
                           </Link>
                         </Trans>
                       ) : (
-                        t("labelL2toL2FeeNotEnough")
+                        t('labelL2toL2FeeNotEnough')
                       )}
                     </Typography>
                   )
                 )}
               </Box>
             </Typography>
-            {isNewAccount && feeInfo?.fee?.toString() == "0" ? (
-              <Typography
-                color={"var(--color-success)"}
-                marginLeft={1}
-                component={"span"}
-              >
-                {t("labelFriendsPayActivation", {
+            {isNewAccount && feeInfo?.fee?.toString() == '0' ? (
+              <Typography color={'var(--color-success)'} marginLeft={1} component={'span'}>
+                {t('labelFriendsPayActivation', {
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                   loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -186,26 +154,23 @@ export const ResetWrap = <T extends FeeInfo>({
                 })}
               </Typography>
             ) : (
-              ""
+              ''
             )}
             {isNewAccount && (
               <Typography
-                component={"span"}
-                display={"flex"}
-                alignItems={"center"}
-                variant={"body1"}
-                color={"var(--color-text-secondary)"}
+                component={'span'}
+                display={'flex'}
+                alignItems={'center'}
+                variant={'body1'}
+                color={'var(--color-text-secondary)'}
                 marginTop={1}
                 marginBottom={1}
               >
-                {t("labelYourBalance", {
+                {t('labelYourBalance', {
                   balance:
-                    walletMap &&
-                    feeInfo &&
-                    feeInfo.belong &&
-                    walletMap[feeInfo.belong]
-                      ? walletMap[feeInfo.belong]?.count + " " + feeInfo.belong
-                      : EmptyValueTag + " " + (feeInfo && feeInfo?.belong),
+                    walletMap && feeInfo && feeInfo.belong && walletMap[feeInfo.belong]
+                      ? walletMap[feeInfo.belong]?.count + ' ' + feeInfo.belong
+                      : EmptyValueTag + ' ' + (feeInfo && feeInfo?.belong),
                   layer2: L1L2_NAME_DEFINED[network].layer2,
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                   loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
@@ -215,16 +180,10 @@ export const ResetWrap = <T extends FeeInfo>({
                 })}
               </Typography>
             )}
-            {dropdownStatus === "up" && (
+            {dropdownStatus === 'up' && (
               <FeeTokenItemWrapper padding={2}>
-                <Typography
-                  variant={"body2"}
-                  color={"var(--color-text-third)"}
-                  marginBottom={1}
-                >
-                  {isNewAccount
-                    ? t("labelActiveEnterToken")
-                    : t("labelL2toL2FeeChoose")}
+                <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
+                  {isNewAccount ? t('labelActiveEnterToken') : t('labelL2toL2FeeChoose')}
                 </Typography>
                 <FeeToggle
                   disableNoToken={true}
@@ -237,72 +196,64 @@ export const ResetWrap = <T extends FeeInfo>({
           </>
         )}
       </Grid>
-      {isNewAccount && (
-        <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
-          <Tooltip title={t("labelReferralToolTip").toString()}>
-            <Typography
-              component={"span"}
-              variant={"body1"}
-              color={"textSecondary"}
-              display={"inline-flex"}
-              alignItems={"center"}
-              marginBottom={1}
-            >
-              <Trans i18nKey={"labelReferralCode"}>
-                Referral Code (Optional)
-                <Info2Icon
-                  fontSize={"small"}
-                  color={"inherit"}
-                  sx={{ marginX: 1 / 2 }}
-                />
-              </Trans>
-            </Typography>
-          </Tooltip>
-          <TextField
-            value={value}
-            fullWidth
-            variant={"outlined"}
-            inputProps={{ maxLength: 10 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Typography
-                    color={"var(--color-text-third)"}
-                    variant={"body1"}
-                    component={"span"}
-                    paddingX={1 / 2}
-                  >
-                    #
-                  </Typography>
-                </InputAdornment>
-              ),
-            }}
-            type={"text"}
-            onChange={onRefChange}
+      {/*{isNewAccount && !isReset && (*/}
+      {/*  <Grid item alignSelf={'stretch'} position={'relative'} marginTop={2}>*/}
+      {/*    <Tooltip title={t('labelReferralToolTip').toString()}>*/}
+      {/*      <Typography*/}
+      {/*        component={'span'}*/}
+      {/*        variant={'body1'}*/}
+      {/*        color={'textSecondary'}*/}
+      {/*        display={'inline-flex'}*/}
+      {/*        alignItems={'center'}*/}
+      {/*        marginBottom={1}*/}
+      {/*      >*/}
+      {/*        <Trans i18nKey={'labelReferralCode'}>*/}
+      {/*          Referral Code (Optional)*/}
+      {/*          <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />*/}
+      {/*        </Trans>*/}
+      {/*      </Typography>*/}
+      {/*    </Tooltip>*/}
+      {/*    <TextField*/}
+      {/*      value={value}*/}
+      {/*      fullWidth*/}
+      {/*      variant={'outlined'}*/}
+      {/*      inputProps={{ maxLength: 10 }}*/}
+      {/*      InputProps={{*/}
+      {/*        startAdornment: (*/}
+      {/*          <InputAdornment position='start'>*/}
+      {/*            <Typography*/}
+      {/*              color={'var(--color-text-third)'}*/}
+      {/*              variant={'body1'}*/}
+      {/*              component={'span'}*/}
+      {/*              paddingX={1 / 2}*/}
+      {/*            >*/}
+      {/*              #*/}
+      {/*            </Typography>*/}
+      {/*          </InputAdornment>*/}
+      {/*        ),*/}
+      {/*      }}*/}
+      {/*      type={'text'}*/}
+      {/*      onChange={onRefChange}*/}
+      {/*      // onChange={(event) =>*/}
+      {/*      //   handleOnMetaChange({ name: event.target.value } as Partial<T>)*/}
+      {/*      // }*/}
+      {/*    />*/}
+      {/*  </Grid>*/}
+      {/*)}*/}
 
-            // onChange={(event) =>
-            //   handleOnMetaChange({ name: event.target.value } as Partial<T>)
-            // }
-          />
-        </Grid>
-      )}
-
-      <Grid item marginTop={4} alignSelf={"stretch"}>
+      <Grid item marginTop={4} alignSelf={'stretch'}>
         <Button
           fullWidth
-          variant={"contained"}
-          size={"medium"}
-          color={"primary"}
+          variant={'contained'}
+          size={'medium'}
+          color={'primary'}
           onClick={() => {
             if (onResetClick) {
-              onResetClick({});
+              setReferralCode('')
+              onResetClick({})
             }
           }}
-          loading={
-            !getDisabled && resetBtnStatus === TradeBtnStatus.LOADING
-              ? "true"
-              : "false"
-          }
+          loading={!getDisabled && resetBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
           disabled={
             getDisabled ||
             resetBtnStatus === TradeBtnStatus.DISABLED ||
@@ -313,5 +264,5 @@ export const ResetWrap = <T extends FeeInfo>({
         </Button>
       </Grid>
     </Grid>
-  );
-};
+  )
+}

@@ -497,7 +497,10 @@ export const WithdrawWrap = <
         <Grid item alignSelf={'stretch'} paddingBottom={0}>
           {lastFailed && (
             <Typography paddingBottom={1} textAlign={'center'} color={'var(--color-warning)'}>
-              {t('labelConfirmAgainByFailedWithBalance')}
+              {t('labelConfirmAgainByFailedWithBalance', {
+                symbol: type === 'NFT' ? 'NFT' : ` ${tradeData?.belong}` ?? EmptyValueTag,
+                count: tradeData?.balance,
+              })}
             </Typography>
           )}
           <Button

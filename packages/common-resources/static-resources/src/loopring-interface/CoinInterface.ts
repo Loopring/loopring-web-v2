@@ -106,12 +106,10 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: undefined | false;
   isShowBtradeAllow?: boolean;
 };
-
 export enum BtradeType {
   Quantity = "Quantity",
   Speed = "Speed",
 }
-
 export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true;
   maxFeeBips: number;
