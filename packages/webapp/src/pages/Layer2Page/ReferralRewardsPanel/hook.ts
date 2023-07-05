@@ -27,47 +27,52 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
     async ({ start, end, limit, offset }: Partial<sdk.GetReferSelf>) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         setShowLoading(true)
-        const response = await LoopringAPI.userAPI.getReferSelf(
-          {
-            accountId: accountId.toString(),
-            limit,
-            start,
-            end,
-            offset,
-          },
-          apiKey,
-        )
-        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+        try {
+          const response = await LoopringAPI.userAPI.getReferSelf(
+            {
+              accountId: accountId.toString(),
+              limit,
+              start,
+              end,
+              offset,
+            },
+            apiKey,
+          )
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response as sdk.RESULT_INFO
+          } else {
+            const list = response?.records.map(({ lrcAmount, ...item }) => {
+              return {
+                ...item,
+                amount: {
+                  unit: 'LRC',
+                  value: getValuePrecisionThousand(
+                    lrcAmount,
+                    tokenMap['LRC'].precision,
+                    tokenMap['LRC'].precision,
+                    tokenMap['LRC'].precision,
+                    false,
+                  ),
+                },
+              } as unknown as R
+            })
+            setRecord(list)
+            setRecordTotal(response.totalNum)
+          }
+        } catch (error) {
+          let errorItem
+          if ((error as sdk.RESULT_INFO)?.code) {
+            errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
+          } else {
+            errorItem = SDK_ERROR_MAP_TO_UI[700012]
+          }
           setToastOpen({
             open: true,
             type: ToastType.error,
-            content:
-              'error : ' + errorItem
-                ? t(errorItem.messageKey)
-                : (response as sdk.RESULT_INFO).message,
+            content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
           })
-        } else {
-          //TODO:
-          // @ts-ignore
-          const list = response?.raw_data?.records.map(({ lrcAmount, ...item }) => {
-            return {
-              ...item,
-              amount: {
-                unit: 'LRC',
-                value: getValuePrecisionThousand(
-                  lrcAmount,
-                  tokenMap['LRC'].precision,
-                  tokenMap['LRC'].precision,
-                  tokenMap['LRC'].precision,
-                  false,
-                ),
-              },
-            } as unknown as R
-          })
-          setRecord(list)
-          setRecordTotal(response.totalNum)
         }
+
         setShowLoading(false)
       }
     },
@@ -146,47 +151,52 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
     async ({ start, end, limit, offset }: Partial<sdk.GetReferDownsides>) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         setShowLoading(true)
-        const response = await LoopringAPI.userAPI.getReferDownsides(
-          {
-            accountId: accountId.toString(),
-            limit,
-            start,
-            end,
-            offset,
-          },
-          apiKey,
-        )
-        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+        try {
+          const response = await LoopringAPI.userAPI.getReferDownsides(
+            {
+              accountId: accountId.toString(),
+              limit,
+              start,
+              end,
+              offset,
+            },
+            apiKey,
+          )
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response
+          } else {
+            const list = response?.records.map(({ lrcAmount, ...item }) => {
+              return {
+                ...item,
+                amount: {
+                  unit: 'LRC',
+                  value: getValuePrecisionThousand(
+                    lrcAmount,
+                    tokenMap['LRC'].precision,
+                    tokenMap['LRC'].precision,
+                    tokenMap['LRC'].precision,
+                    false,
+                  ),
+                },
+              } as unknown as R
+            })
+            setRecord(list)
+            setRecordTotal(response.totalNum)
+          }
+        } catch (error) {
+          let errorItem
+          if ((error as sdk.RESULT_INFO)?.code) {
+            errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
+          } else {
+            errorItem = SDK_ERROR_MAP_TO_UI[700012]
+          }
           setToastOpen({
             open: true,
             type: ToastType.error,
-            content:
-              'error : ' + errorItem
-                ? t(errorItem.messageKey)
-                : (response as sdk.RESULT_INFO).message,
+            content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
           })
-        } else {
-          //TODO:
-          // @ts-ignore
-          const list = response?.raw_data?.records.map(({ lrcAmount, ...item }) => {
-            return {
-              ...item,
-              amount: {
-                unit: 'LRC',
-                value: getValuePrecisionThousand(
-                  lrcAmount,
-                  tokenMap['LRC'].precision,
-                  tokenMap['LRC'].precision,
-                  tokenMap['LRC'].precision,
-                  false,
-                ),
-              },
-            } as unknown as R
-          })
-          setRecord(list)
-          setRecordTotal(response.totalNum)
         }
+
         setShowLoading(false)
       }
     },
