@@ -26,7 +26,7 @@ export type EarningsRow = {
     amount: string
     claimType: sdk.CLAIM_TYPE
   }>
-  precision: string
+  precision: number
   amountStr: string
   amount: string
   tokenValueDollar: number
@@ -44,8 +44,8 @@ const TableStyled = styled(Table)`
   &.rdg {
     min-height: 240px;
     height: ${(props: any) => {
-  return props.currentheight + 'px'
-}};
+      return props.currentheight + 'px'
+    }};
 
     .rdg-cell.action {
       display: flex;
@@ -95,17 +95,17 @@ export const EarningsTable = withTranslation(['tables', 'common'])(
           key: 'token',
           name: t('labelToken'),
           formatter: ({ row, column }) => {
-            const token = row[ column.key ]
+            const token = row[column.key]
             let tokenIcon: [any, any] = [undefined, undefined]
             const [head, middle, tail] = token.value.split('-')
             if (token.type === 'lp' && middle && tail) {
               tokenIcon =
-                coinJson[ middle ] && coinJson[ tail ]
-                  ? [coinJson[ middle ], coinJson[ tail ]]
+                coinJson[middle] && coinJson[tail]
+                  ? [coinJson[middle], coinJson[tail]]
                   : [undefined, undefined]
             }
             if (token.type !== 'lp' && head && head !== 'lp') {
-              tokenIcon = coinJson[ head ] ? [coinJson[ head ], undefined] : [undefined, undefined]
+              tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
             }
             return (
               <>
@@ -146,7 +146,7 @@ export const EarningsTable = withTranslation(['tables', 'common'])(
                   alignItems={'center'}
                   component={'span'}
                   sx={{
-                    textDecoration: onTokenLockHold ? 'underline dotted' : '',
+                    textDecoration: 'underline dotted',
                     cursor: 'pointer',
                   }}
                 >
@@ -166,7 +166,7 @@ export const EarningsTable = withTranslation(['tables', 'common'])(
             return (
               <Box className={'textAlignRight'}>
                 {getValuePrecisionThousand(
-                  (row?.tokenValueDollar || 0) * (forexMap[ currency ] ?? 0),
+                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
                   undefined,
                   undefined,
                   undefined,

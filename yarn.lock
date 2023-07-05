@@ -4534,10 +4534,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@loopring-web/loopring-sdk@3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.5.0.tgz#e750daaab78bc0a121f9156e06fae23e35b27f11"
-  integrity sha512-wjee+7tXkQzn4S79/ad/ebtIz/ABC1eg4UeDASzd8GWadQiJ2+Z5xwFbMhzS4/8JEPwdCHZmLz6mgL3e96MlDw==
+"@loopring-web/loopring-sdk@3.5.3":
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.5.2.tgz#eb7b2de9ae05e8bb3a18c7bfce19243a5dca9642"
+  integrity sha512-7G7LUh7hWsqvXbgywBWEEcXLC2BMYsmoGhOyHufwpdhTdrUbicrITEaqMX/vR9KVkeaBk+WIRGiwdGodEDMyeA==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
