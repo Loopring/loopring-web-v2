@@ -215,7 +215,12 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       myLog('After connect >>,network part start: step1 networkUpdate')
       store.dispatch(updateAccountStatus({ _chainId: chainId }))
       const networkFlag = await networkUpdate()
-      myLog('After connect >>,network part done: step2 check account')
+      const currentProvide = connectProvides.usedProvide
+      myLog(
+        'After connect >>,network part done: step2 check account,',
+        connectProvides.usedWeb3,
+        currentProvide,
+      )
 
       if (networkFlag) {
         resetLayer12Data()
