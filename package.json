@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.5.0-alpha-4",
+    "@loopring-web/loopring-sdk": "3.5.0-alpha-7",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.4.3",
     "@mui/lab": "^5.0.0-alpha.45",
@@ -52,7 +52,6 @@
     "react-redux-firebase": "^3.11.0",
     "react-resizable": "^3.0.5",
     "react-scripts": "4.0.3",
-    "react-share": "^4.4.1",
     "react-spring": "^9.7.1",
     "react-swipeable-views": "^0.13.9",
     "react-use": "^17.4.0",

@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
-import { SwapPanel } from "./Swap";
-import { Meta, Story } from "@storybook/react/types-6-0";
-import { MemoryRouter } from "react-router-dom";
-import { Box, Grid } from "@mui/material";
+import styled from '@emotion/styled'
+import { SwapPanel } from './Swap'
+import { Meta, Story } from '@storybook/react/types-6-0'
+import { MemoryRouter } from 'react-router-dom'
+import { Box, Grid } from '@mui/material'
 import {
   AccountStatus,
   AmmExitData,
@@ -12,7 +12,7 @@ import {
   SlippageTolerance,
   TRADE_TYPE,
   TradeBtnStatus,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   ammCalcData,
   coinMap,
@@ -21,10 +21,10 @@ import {
   TOKEN_INFO,
   tradeCalcData,
   walletMap,
-} from "../../static";
-import { Button } from "../basic-lib";
-import { ResetPanel } from "./Reset";
-import { useTranslation } from "react-i18next";
+} from '../../static'
+import { Button } from '../basic-lib'
+import { ResetPanel } from './Reset'
+import { useTranslation } from 'react-i18next'
 import {
   AmmPanel,
   AmmPanelType,
@@ -38,11 +38,11 @@ import {
   SwitchData,
   TransferProps,
   WithdrawProps,
-} from "./index";
+} from './index'
 
-import { DepositPanel, TransferPanel, WithdrawPanel } from "../modal";
+import { DepositPanel, TransferPanel, WithdrawPanel } from '../modal'
 
-import { useDispatch } from "react-redux";
+import { useDispatch } from 'react-redux'
 import {
   setShowAmm,
   setShowDeposit,
@@ -50,24 +50,24 @@ import {
   setShowSwap,
   setShowTransfer,
   setShowWithdraw,
-} from "../../stores";
-import { SlippagePanel } from "./components";
-import React from "react";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { boxLiner } from "../styled";
+} from '../../stores'
+import { SlippagePanel } from './components'
+import React from 'react'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { boxLiner } from '../styled'
 
 const Style = styled.div`
   background: var(--color-global-bg);
 
   height: 100%;
   flex: 1;
-`;
+`
 const BoxLinear = styled(Box)`
   && {
     ${({ theme }) => boxLiner({ theme })};
   }
-`;
-let tradeData: any = {};
+`
+let tradeData: any = {}
 // @ts-ignore
 let depositProps: DepositProps<any, any> = {
   toIsAddressCheckLoading: false,
@@ -80,20 +80,17 @@ let depositProps: DepositProps<any, any> = {
   walletMap,
   depositBtnStatus: TradeBtnStatus.AVAILABLE,
   onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
-    console.log("Swap button click", tradeData);
+    console.log('Swap button click', tradeData)
   },
-  handlePanelEvent: async (
-    props: SwitchData<any>,
-    switchType: "Tomenu" | "Tobutton"
-  ) => {
+  handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
     return new Promise(() => {
       setTimeout(() => {
-        console.log("wait 100, with props", props, switchType);
+        console.log('wait 100, with props', props, switchType)
         //res();
-      }, 500);
-    });
+      }, 500)
+    })
   },
-};
+}
 let withdrawProps: Partial<WithdrawProps<any, any>> = {
   disabled: false,
   type: TRADE_TYPE.TOKEN,
@@ -110,44 +107,37 @@ let withdrawProps: Partial<WithdrawProps<any, any>> = {
   withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
 
   onWithdrawClick: (tradeData: SwapTradeData<CoinType>) => {
-    console.log("Swap button click", tradeData);
+    console.log('Swap button click', tradeData)
   },
-  handlePanelEvent: async (
-    props: SwitchData<any>,
-    switchType: "Tomenu" | "Tobutton"
-  ) => {
+  handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
     return new Promise((res: any) => {
       setTimeout(() => {
-        console.log("wait 100, with props", props, switchType);
-        res();
-      }, 500);
-    });
+        console.log('wait 100, with props', props, switchType)
+        res()
+      }, 500)
+    })
   },
   withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
   withdrawTypes: {
     // [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
-    [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+    [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
   },
-  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
+  feeInfo: { belong: 'ETH', fee: 0.001, __raw__: '' as any },
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" as any },
-    { belong: "LRC", fee: "1", __raw__: "" as any },
+    { belong: 'ETH', fee: 0.001, __raw__: '' as any },
+    { belong: 'LRC', fee: '1', __raw__: '' as any },
   ],
   handleOnAddressChange: (value: any) => {
-    console.log("handleOnAddressChange", value);
+    console.log('handleOnAddressChange', value)
   },
-  handleFeeChange(value: {
-    belong: string;
-    fee: number | string;
-    __raw__?: any;
-  }): void {
-    console.log("handleWithdrawFee", value);
+  handleFeeChange(value: { belong: string; fee: number | string; __raw__?: any }): void {
+    console.log('handleWithdrawFee', value)
   },
   handleWithdrawTypeChange: (value: any) => {
-    console.log(value);
+    console.log(value)
   },
-};
+}
 let transferProps: Partial<TransferProps<any, any>> = {
   isFeeNotEnough: {
     isFeeNotEnough: false,
@@ -158,55 +148,44 @@ let transferProps: Partial<TransferProps<any, any>> = {
   walletMap,
   transferBtnStatus: TradeBtnStatus.AVAILABLE,
   onTransferClick: async (tradeData: any) => {
-    console.log("Swap button click", tradeData);
+    console.log('Swap button click', tradeData)
   },
-  handlePanelEvent: async (
-    props: SwitchData<any>,
-    switchType: "Tomenu" | "Tobutton"
-  ) => {
+  handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
     return new Promise((res: any) => {
       setTimeout(() => {
-        console.log("wait 100, with props", props, switchType);
-        res();
-      }, 500);
-    });
+        console.log('wait 100, with props', props, switchType)
+        res()
+      }, 500)
+    })
   },
-  handleFeeChange(value: {
-    belong: string;
-    fee: number | string;
-    __raw__?: any;
-  }): void {
-    console.log("handleWithdrawFee", value);
+  handleFeeChange(value: { belong: string; fee: number | string; __raw__?: any }): void {
+    console.log('handleWithdrawFee', value)
   },
-  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
+  feeInfo: { belong: 'ETH', fee: 0.001, __raw__: '' as any },
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" as any },
-    { belong: "LRC", fee: "1", __raw__: "" as any },
+    { belong: 'ETH', fee: 0.001, __raw__: '' as any },
+    { belong: 'LRC', fee: '1', __raw__: '' as any },
   ],
   handleOnAddressChange: (value: any) => {
-    console.log("handleOnAddressChange", value);
+    console.log('handleOnAddressChange', value)
   },
-};
+}
 let resetProps: ResetProps<any> = {
   isFeeNotEnough: {
     isFeeNotEnough: false,
     isOnLoading: false,
   },
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" as any },
-    { belong: "LRC", fee: "1", __raw__: "" as any },
+    { belong: 'ETH', fee: 0.001, __raw__: '' as any },
+    { belong: 'LRC', fee: '1', __raw__: '' as any },
   ],
-  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
-  handleFeeChange(value: {
-    belong: string;
-    fee: number | string;
-    __raw__?: any;
-  }): void {
-    console.log("handleWithdrawFee", value);
+  feeInfo: { belong: 'ETH', fee: 0.001, __raw__: '' as any },
+  handleFeeChange(value: { belong: string; fee: number | string; __raw__?: any }): void {
+    console.log('handleWithdrawFee', value)
   },
   onResetClick({}): void {},
-};
+}
 // resetBtnStatus: TradeBtnStatus.AVAILABLE,
 //   handlePanelEvent: async (
 //     props: SwitchData<any>,
@@ -236,43 +215,39 @@ let resetProps: ResetProps<any> = {
 //   },
 // };
 // @ts-ignore
-let _ammProps: AmmProps<
-  AmmJoinData<IBData<any>>,
-  AmmExitData<IBData<any>>,
-  any,
-  AmmInData<any>
-> = {
+let _ammProps: AmmProps<AmmJoinData<IBData<any>>, AmmExitData<IBData<any>>, any, AmmInData<any>> = {
   refreshRef: React.createRef(),
+  // @ts-ignore
   ammDepositData: {
-    coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
-    coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
-    slippage: "",
+    coinA: { belong: 'ETH', balance: 0.3, tradeValue: 0 },
+    coinB: { belong: 'LRC', balance: 1000, tradeValue: 0 },
+    slippage: '',
   },
   // @ts-ignore
   ammWithdrawData: {
-    coinLP: { belong: "LP-ETH-LRC", balance: 0.3, tradeValue: 0 },
-    slippage: "",
+    coinLP: { belong: 'LP-ETH-LRC', balance: 0.3, tradeValue: 0 },
+    slippage: '',
   },
   // tradeCalcData,
   ammCalcDataDeposit: ammCalcData,
   ammCalcDataWithDraw: ammCalcData,
   handleAmmAddChangeEvent: (data, type) => {
-    console.log("handleAmmAddChangeEvent", data, type);
+    console.log('handleAmmAddChangeEvent', data, type)
   },
   handleAmmRemoveChangeEvent: (data) => {
-    return console.log("handleAmmRemoveChangeEvent", data);
+    return console.log('handleAmmRemoveChangeEvent', data)
   },
   onAmmRemoveClick: (data) => {
-    console.log("onAmmRemoveClick", data);
+    console.log('onAmmRemoveClick', data)
   },
   onAmmAddClick: (data) => {
-    console.log("onAmmAddClick", data);
+    console.log('onAmmAddClick', data)
   },
-};
+}
 
 const WrapTransferPanel = (rest: any) => {
-  const dispatch = useDispatch();
-  dispatch(setShowTransfer({ isShow: false }));
+  const dispatch = useDispatch()
+  dispatch(setShowTransfer({ isShow: false }))
   return (
     <>
       <Grid item sm={6}>
@@ -282,11 +257,11 @@ const WrapTransferPanel = (rest: any) => {
         <TransferPanel {...rest} />
       </Grid>
     </>
-  );
-};
+  )
+}
 const WrapWithdrawPanel = (rest: any) => {
-  const dispatch = useDispatch();
-  dispatch(setShowDeposit({ isShow: false }));
+  const dispatch = useDispatch()
+  dispatch(setShowDeposit({ isShow: false }))
 
   return (
     <>
@@ -297,13 +272,13 @@ const WrapWithdrawPanel = (rest: any) => {
         <WithdrawPanel {...rest}> </WithdrawPanel>
       </Grid>
     </>
-  );
-};
+  )
+}
 const WrapDepositPanel = (rest: any) => {
   // const [open, setOpen] = useState(false)
-  const dispatch = useDispatch();
-  dispatch(setShowDeposit({ isShow: false }));
-  const { t } = useTranslation("common");
+  const dispatch = useDispatch()
+  dispatch(setShowDeposit({ isShow: false }))
+  const { t } = useTranslation('common')
   return (
     <>
       <Grid item sm={6}>
@@ -315,8 +290,8 @@ const WrapDepositPanel = (rest: any) => {
             ...rest,
             ...depositProps,
 
-            title: t("labelDepositTitleAndActive"),
-            description: "labelDepositAndActiveDescription",
+            title: t('labelDepositTitleAndActive'),
+            description: 'labelDepositAndActiveDescription',
           }}
         />
       </Grid>
@@ -324,11 +299,11 @@ const WrapDepositPanel = (rest: any) => {
         {/*<Button onClick={() => setOpen(true)}> open</Button>*/}
       </Grid>
     </>
-  );
-};
+  )
+}
 const WrapResetPanel = (rest: any) => {
-  const dispatch = useDispatch();
-  dispatch(setShowResetAccount({ isShow: false }));
+  const dispatch = useDispatch()
+  dispatch(setShowResetAccount({ isShow: false }))
   return (
     <>
       <Grid item sm={6}>
@@ -339,13 +314,13 @@ const WrapResetPanel = (rest: any) => {
       </Grid>
       <Grid item sm={12} />
     </>
-  );
-};
+  )
+}
 const WrapSwapPanel = (rest: any) => {
   let tradeData: any = {
     sell: { belong: undefined },
     buy: { belong: undefined },
-  };
+  }
   let swapProps: SwapProps<IBData<string>, string, any> = {
     refreshRef: React.createRef(),
     campaignTagConfig: {
@@ -358,21 +333,21 @@ const WrapSwapPanel = (rest: any) => {
     tradeData: tradeData,
     isStob: true,
     tradeCalcData,
-    onSwapClick: (tradeData) => {
-      console.log("Swap button click", tradeData);
+    onSwapClick: () => {
+      console.log('Swap button click', tradeData)
     },
     handleSwapPanelEvent: async (data: any, switchType: any) => {
-      console.log(data, switchType);
+      console.log(data, switchType)
     },
-  };
+  }
 
   setTimeout(() => {
     // console.log('swapProps update')
     // swapProps.swapTradeData = {sell: {belong: "ETH"}, buy: {belong: "LRC"}} as any;
-  }, 500);
+  }, 500)
   setTimeout(() => {
-    swapProps.tradeCalcData = { ...tradeCalcData, StoB: 1.123 };
-  }, 800);
+    swapProps.tradeCalcData = { ...tradeCalcData, StoB: 1.123 }
+  }, 800)
 
   return (
     <>
@@ -380,8 +355,8 @@ const WrapSwapPanel = (rest: any) => {
         <SwapPanel {...swapProps} {...rest} />
       </Grid>
     </>
-  );
-};
+  )
+}
 const WrapDualPanel = (rest: any) => {
   const dualWrapProps: DualWrapProps<any, any, any> = {
     refreshRef: React.createRef(),
@@ -392,26 +367,22 @@ const WrapDualPanel = (rest: any) => {
     onRefreshData: () => undefined,
     onSubmitClick: () => undefined,
     onChangeEvent: (item) => {
-      console.log(item);
+      console.log(item)
     },
 
     dualCalcData: DUALCALCDATA,
-    tokenSell: TOKEN_INFO.tokenMap["LRC"],
+    tokenSell: TOKEN_INFO.tokenMap['LRC'],
     btnStatus: TradeBtnStatus.AVAILABLE,
     accStatus: AccountStatus.ACTIVATED,
-  };
+  }
   return (
     <>
-      <BoxLinear
-        width={"80%"}
-        padding={3}
-        sx={{ background: "var(--color-box-linear)" }}
-      >
+      <BoxLinear width={'80%'} padding={3} sx={{ background: 'var(--color-box-linear)' }}>
         <DualWrap {...dualWrapProps} {...rest} />
       </BoxLinear>
     </>
-  );
-};
+  )
+}
 const WrapAmmPanel = (rest: any) => {
   // let tradeData: any = {
   //     coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
@@ -437,15 +408,12 @@ const WrapAmmPanel = (rest: any) => {
     // onAmmAddClick: (data) => {
     //     console.log('onAmmAddClick', data);
     // }
-  };
+  }
 
   return (
     <>
       <Grid item sm={6}>
-        <AmmPanel
-          {...{ ...ammProps, tabSelected: AmmPanelType.Join }}
-          {...rest}
-        />
+        <AmmPanel {...{ ...ammProps, tabSelected: AmmPanelType.Join }} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -458,10 +426,7 @@ const WrapAmmPanel = (rest: any) => {
         />
       </Grid>
       <Grid item sm={6}>
-        <AmmPanel
-          {...{ ...ammProps, tabSelected: AmmPanelType.Exit }}
-          {...rest}
-        />
+        <AmmPanel {...{ ...ammProps, tabSelected: AmmPanelType.Exit }} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -474,8 +439,8 @@ const WrapAmmPanel = (rest: any) => {
         />
       </Grid>
     </>
-  );
-};
+  )
+}
 
 const ModalPanelWrap = () => {
   return (
@@ -498,18 +463,18 @@ const ModalPanelWrap = () => {
     //   collectionAdvanceProps={{} as any}
     //   dualTradeProps={{} as any}
     // />
-  );
-};
+  )
+}
 
 const Template: Story<any> = () => {
-  const dispatch = useDispatch();
-  const { t, ...rest } = useTranslation();
-  const slippageArray: Array<number | string> = SlippageTolerance.concat(
-    `slippage:0.8`
-  ) as Array<number | string>;
+  const dispatch = useDispatch()
+  const { t, ...rest } = useTranslation()
+  const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:0.8`) as Array<
+    number | string
+  >
   return (
     <Style>
-      <MemoryRouter initialEntries={["/"]}>
+      <MemoryRouter initialEntries={['/']}>
         <Box>
           <h4>Slippage bloc</h4>
           <Grid container spacing={2}>
@@ -525,109 +490,69 @@ const Template: Story<any> = () => {
           </Grid>
 
           <h4>SwapPanel</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <WrapSwapPanel />
           </Grid>
           <h4>DualPanel</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <WrapDualPanel />
           </Grid>
 
           <h4>DepositPanel</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <WrapDepositPanel />
           </Grid>
           <h4>ResetPanel</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <WrapResetPanel />
           </Grid>
           <h4>TransferPanel</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <WrapTransferPanel />
           </Grid>
           <h4>WithdrawPanel</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <WrapWithdrawPanel />
           </Grid>
           <h4>AmmPanel</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <WrapAmmPanel />
           </Grid>
 
           <h4>Open modal btn group</h4>
-          <Grid
-            container
-            spacing={2}
-            alignContent={"center"}
-            justifyContent={"space-around"}
-          >
+          <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
             <Grid item xs={2}>
               <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
                 onClick={() => dispatch(setShowTransfer({ isShow: true }))}
               >
                 Open Transfer
               </Button>
             </Grid>
-            <Grid item xs={6} display={"flex"} justifyContent={"space-around"}>
+            <Grid item xs={6} display={'flex'} justifyContent={'space-around'}>
               <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
                 onClick={() => dispatch(setShowDeposit({ isShow: true }))}
               >
                 Open Deposit
               </Button>
 
               <Button
-                variant={"outlined"}
-                size={"small"}
-                color={"primary"}
+                variant={'outlined'}
+                size={'small'}
+                color={'primary'}
                 onClick={() =>
                   dispatch(
                     setShowDeposit({
                       isShow: true,
                       props: {
-                        title: t("depositTitleAndActive"),
+                        title: t('depositTitleAndActive'),
                       },
-                    })
+                    }),
                   )
                 }
               >
@@ -636,9 +561,9 @@ const Template: Story<any> = () => {
             </Grid>
             <Grid item xs={2}>
               <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
                 onClick={() => dispatch(setShowResetAccount({ isShow: true }))}
               >
                 Open Rest Private key
@@ -646,9 +571,9 @@ const Template: Story<any> = () => {
             </Grid>
             <Grid item xs={2}>
               <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
                 onClick={() => dispatch(setShowWithdraw({ isShow: true }))}
               >
                 Open Withdraw
@@ -656,15 +581,15 @@ const Template: Story<any> = () => {
             </Grid>
             <Grid item xs={2}>
               <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
                 onClick={() =>
                   dispatch(
                     setShowAmm({
                       isShow: true,
                       type: AmmPanelType.Exit,
-                    })
+                    }),
                   )
                 }
               >
@@ -673,23 +598,19 @@ const Template: Story<any> = () => {
             </Grid>
             <Grid item xs={2}>
               <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
-                onClick={() =>
-                  dispatch(
-                    setShowAmm({ isShow: true, type: AmmPanelType.Join })
-                  )
-                }
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
+                onClick={() => dispatch(setShowAmm({ isShow: true, type: AmmPanelType.Join }))}
               >
                 Open Amm Deposit
               </Button>
             </Grid>
             <Grid item xs={2}>
               <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
                 onClick={() => dispatch(setShowSwap({ isShow: true }))}
               >
                 Open trade
@@ -700,14 +621,14 @@ const Template: Story<any> = () => {
         </Box>
       </MemoryRouter>
     </Style>
-  );
-};
+  )
+}
 
 export default {
-  title: "components/Swap&TradePanel",
+  title: 'components/Swap&TradePanel',
   component: WrapSwapPanel,
   argTypes: {},
-} as Meta;
+} as Meta
 
-export const SwapPanelStory = Template.bind({});
+export const SwapPanelStory = Template.bind({})
 // SwitchPanel.args = {}

@@ -196,51 +196,50 @@ export const ResetWrap = <T extends FeeInfo>({
           </>
         )}
       </Grid>
-      {isNewAccount && !isReset && (
-        <Grid item alignSelf={'stretch'} position={'relative'} marginTop={2}>
-          <Tooltip title={t('labelReferralToolTip').toString()}>
-            <Typography
-              component={'span'}
-              variant={'body1'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-              marginBottom={1}
-            >
-              <Trans i18nKey={'labelReferralCode'}>
-                Referral Code (Optional)
-                <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-              </Trans>
-            </Typography>
-          </Tooltip>
-          <TextField
-            value={value}
-            fullWidth
-            variant={'outlined'}
-            inputProps={{ maxLength: 10 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Typography
-                    color={'var(--color-text-third)'}
-                    variant={'body1'}
-                    component={'span'}
-                    paddingX={1 / 2}
-                  >
-                    #
-                  </Typography>
-                </InputAdornment>
-              ),
-            }}
-            type={'text'}
-            onChange={onRefChange}
-
-            // onChange={(event) =>
-            //   handleOnMetaChange({ name: event.target.value } as Partial<T>)
-            // }
-          />
-        </Grid>
-      )}
+      {/*{isNewAccount && !isReset && (*/}
+      {/*  <Grid item alignSelf={'stretch'} position={'relative'} marginTop={2}>*/}
+      {/*    <Tooltip title={t('labelReferralToolTip').toString()}>*/}
+      {/*      <Typography*/}
+      {/*        component={'span'}*/}
+      {/*        variant={'body1'}*/}
+      {/*        color={'textSecondary'}*/}
+      {/*        display={'inline-flex'}*/}
+      {/*        alignItems={'center'}*/}
+      {/*        marginBottom={1}*/}
+      {/*      >*/}
+      {/*        <Trans i18nKey={'labelReferralCode'}>*/}
+      {/*          Referral Code (Optional)*/}
+      {/*          <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />*/}
+      {/*        </Trans>*/}
+      {/*      </Typography>*/}
+      {/*    </Tooltip>*/}
+      {/*    <TextField*/}
+      {/*      value={value}*/}
+      {/*      fullWidth*/}
+      {/*      variant={'outlined'}*/}
+      {/*      inputProps={{ maxLength: 10 }}*/}
+      {/*      InputProps={{*/}
+      {/*        startAdornment: (*/}
+      {/*          <InputAdornment position='start'>*/}
+      {/*            <Typography*/}
+      {/*              color={'var(--color-text-third)'}*/}
+      {/*              variant={'body1'}*/}
+      {/*              component={'span'}*/}
+      {/*              paddingX={1 / 2}*/}
+      {/*            >*/}
+      {/*              #*/}
+      {/*            </Typography>*/}
+      {/*          </InputAdornment>*/}
+      {/*        ),*/}
+      {/*      }}*/}
+      {/*      type={'text'}*/}
+      {/*      onChange={onRefChange}*/}
+      {/*      // onChange={(event) =>*/}
+      {/*      //   handleOnMetaChange({ name: event.target.value } as Partial<T>)*/}
+      {/*      // }*/}
+      {/*    />*/}
+      {/*  </Grid>*/}
+      {/*)}*/}
 
       <Grid item marginTop={4} alignSelf={'stretch'}>
         <Button

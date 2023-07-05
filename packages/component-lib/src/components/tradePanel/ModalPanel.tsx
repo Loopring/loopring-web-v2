@@ -56,6 +56,7 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
     position: relative;
     height: ${({ _height }) =>
       _height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'auto'};
+
     .react-swipeable-view-container {
       & > div {
         padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px ${({ theme }) => theme.unit * 5}px;
@@ -64,10 +65,12 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
         background: initial;
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none; /* Internet Explorer 10+ */
+
         &::-webkit-scrollbar {
           /* WebKit */
           width: 0;
         }
+
         .container {
           height: 100%;
           padding-top: 0;

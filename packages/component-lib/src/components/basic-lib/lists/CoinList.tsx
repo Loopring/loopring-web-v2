@@ -1,23 +1,12 @@
-import {
-  Box,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@mui/material";
-import { Trans, WithTranslation } from "react-i18next";
-import React from "react";
-import styled from "@emotion/styled";
-import { CoinItemProps, CoinMenuProps } from "./Interface";
-import {
-  CoinInfo,
-  CoinKey,
-  myLog,
-  WalletCoin,
-} from "@loopring-web/common-resources";
-import { Virtuoso } from "react-virtuoso";
-import { CoinIcon } from "../form";
-import { EmptyDefault } from "../empty";
+import { Box, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material'
+import { Trans, WithTranslation } from 'react-i18next'
+import React from 'react'
+import styled from '@emotion/styled'
+import { CoinItemProps, CoinMenuProps } from './Interface'
+import { CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources'
+import { Virtuoso } from 'react-virtuoso'
+import { CoinIcon } from '../form'
+import { EmptyDefault } from '../empty'
 
 function _CoinMenu<C, I extends CoinInfo<C>>(
   {
@@ -28,99 +17,91 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
     filterBy = (ele, filterString) => {
       return filterString && filterString.length
         ? RegExp(filterString).test(ele.simpleName as string)
-        : true;
+        : true
     },
     filterString,
     handleSelect,
     allowScroll = true,
     selected = null,
     listProps = {},
-    height = "100px",
+    height = '100px',
     ...rest
   }: CoinMenuProps<C, I> & WithTranslation,
-  _ref: React.Ref<HTMLUListElement>
+  _ref: React.Ref<HTMLUListElement>,
 ) {
-  const [select, setSelect] = React.useState<CoinKey<C> | null>(
-    selected as CoinKey<C>
-  );
-  const [list, setList] = React.useState<any[]>([]);
-  const virtuoso = React.useRef(null);
-  let rowIndex = 0;
+  const [select, setSelect] = React.useState<CoinKey<C> | null>(selected as CoinKey<C>)
+  const [list, setList] = React.useState<any[]>([])
+  const virtuoso = React.useRef(null)
+  let rowIndex = 0
   React.useEffect(() => {
     if (select !== selected) {
-      setSelect(selected);
+      setSelect(selected)
     }
-  }, [select, selected]);
+  }, [select, selected])
 
   if (nonZero === undefined) {
-    nonZero = false;
+    nonZero = false
   }
   if (sorted === undefined) {
-    sorted = true;
+    sorted = true
   }
   const update = React.useCallback(() => {
     if (coinMap) {
       setList(
         Object.keys(coinMap)
-          .reduce(
-            (list: Array<{ walletCoin: WalletCoin<C>; key: string }>, key) => {
-              const filter = filterBy(coinMap[key], filterString);
-              if (filter) {
-                const walletCoin: WalletCoin<C> = walletMap[key]
-                  ? walletMap[key]
-                  : { belong: key, count: 0 };
-                if (
-                  (nonZero && walletMap[key] && walletMap[key].count > 0) ||
-                  !nonZero
-                ) {
-                  list.push({ walletCoin, key: key });
-                  if (select === key) {
-                    rowIndex = list.length - 1;
-                  }
+          .reduce((list: Array<{ walletCoin: WalletCoin<C>; key: string }>, key) => {
+            const filter = filterBy(coinMap[key], filterString)
+            if (filter) {
+              const walletCoin: WalletCoin<C> = walletMap[key]
+                ? walletMap[key]
+                : { belong: key, count: 0 }
+              if ((nonZero && walletMap[key] && walletMap[key].count > 0) || !nonZero) {
+                list.push({ walletCoin, key: key })
+                if (select === key) {
+                  rowIndex = list.length - 1
                 }
               }
-              return list;
-            },
-            []
-          )
+            }
+            return list
+          }, [])
           .sort(function (a, b) {
             if (sorted) {
               if (a.walletCoin.count && b.walletCoin.count) {
-                return b.walletCoin.count - a.walletCoin.count;
+                return b.walletCoin.count - a.walletCoin.count
               } else if (a.walletCoin.count && !b.walletCoin.count) {
-                return -1;
+                return -1
               } else if (!a.walletCoin.count && b.walletCoin.count) {
-                return 1;
+                return 1
               }
-              return a.walletCoin.belong.localeCompare(b.walletCoin.belong);
+              return a.walletCoin.belong.localeCompare(b.walletCoin.belong)
             }
-            return 1;
-          })
-      );
+            return 1
+          }),
+      )
     }
-  }, [coinMap, filterString, sorted, walletMap, nonZero]);
+  }, [coinMap, filterString, sorted, walletMap, nonZero])
   React.useEffect(() => {
-    update();
-  }, [coinMap, filterString, sorted]);
+    update()
+  }, [coinMap, filterString, sorted])
 
   const handleListItemClick = React.useCallback(
     (_event: React.MouseEvent, select: CoinKey<C>) => {
-      setSelect(select);
-      handleSelect && handleSelect(_event, select);
+      setSelect(select)
+      handleSelect && handleSelect(_event, select)
     },
-    [handleSelect]
-  );
+    [handleSelect],
+  )
   return (
     <>
       {list.length ? (
         <Virtuoso<{ walletCoin: WalletCoin<C>; key: string }>
           data={list}
-          className={"coin-menu"}
-          style={{ minHeight: "210px", flex: 1 }}
+          className={'coin-menu'}
+          style={{ minHeight: '210px', flex: 1 }}
           ref={virtuoso}
           initialTopMostItemIndex={rowIndex}
           itemContent={(index, item) => {
-            let { walletCoin, key } = item; //list[ index ];
+            let { walletCoin, key } = item //list[ index ];
             return (
               <CoinItem<C>
                 key={index}
@@ -133,31 +114,26 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
                   ...rest,
                 }}
               />
-            );
+            )
           }}
         />
       ) : (
-        <Box flex={1} height={"100%"} width={"100%"}>
+        <Box flex={1} height={'100%'} width={'100%'}>
           <EmptyDefault
-            height={"calc(100% - 35px)"}
+            height={'calc(100% - 35px)'}
             message={() => {
-              return <Trans i18nKey="labelNoContent">Content is Empty</Trans>;
+              return <Trans i18nKey='labelNoContent'>Content is Empty</Trans>
             }}
           />
         </Box>
       )}
     </>
-  );
+  )
 }
 
-export const CoinMenu = React.memo(React.forwardRef(_CoinMenu)) as unknown as <
-  C,
-  I = CoinInfo<C>
->(
-  props: CoinMenuProps<C, I> &
-    WithTranslation &
-    React.RefAttributes<HTMLDivElement>
-) => JSX.Element;
+export const CoinMenu = React.memo(React.forwardRef(_CoinMenu)) as unknown as <C, I = CoinInfo<C>>(
+  props: CoinMenuProps<C, I> & WithTranslation & React.RefAttributes<HTMLDivElement>,
+) => JSX.Element
 
 const StyledCoinItem = styled(ListItem)`
   && {
@@ -199,7 +175,7 @@ const StyledCoinItem = styled(ListItem)`
     flex-direction: row;
     justify-content: space-between;
   }
-`;
+`
 
 export const CoinItem = React.memo(
   React.forwardRef(
@@ -212,9 +188,9 @@ export const CoinItem = React.memo(
         itemKey,
         handleListItemClick,
       }: CoinItemProps<C> & WithTranslation,
-      ref: React.ForwardedRef<any>
+      ref: React.ForwardedRef<any>,
     ) => {
-      const { simpleName } = coinInfo;
+      const { simpleName } = coinInfo
 
       return (
         <StyledCoinItem
@@ -222,9 +198,7 @@ export const CoinItem = React.memo(
           ref={ref}
           key={itemKey as string}
           selected={select === simpleName}
-          onClick={(event: React.MouseEvent) =>
-            handleListItemClick(event, itemKey)
-          }
+          onClick={(event: React.MouseEvent) => handleListItemClick(event, itemKey)}
         >
           <ListItemIcon>
             <CoinIcon symbol={simpleName} size={24} lpSize={24} />
@@ -234,10 +208,10 @@ export const CoinItem = React.memo(
             secondary={
               <>
                 <Typography
-                  sx={{ display: "block" }}
-                  component="span"
-                  color="textSecondary"
-                  variant={"h5"}
+                  sx={{ display: 'block' }}
+                  component='span'
+                  color='textSecondary'
+                  variant={'h5'}
                 >
                   {walletCoin.count}
                 </Typography>
@@ -245,12 +219,12 @@ export const CoinItem = React.memo(
             }
           />
         </StyledCoinItem>
-      );
-    }
-  )
+      )
+    },
+  ),
 ) as unknown as <C>(
-  props: CoinItemProps<C> & WithTranslation & React.RefAttributes<any>
-) => JSX.Element;
+  props: CoinItemProps<C> & WithTranslation & React.RefAttributes<any>,
+) => JSX.Element
 
 //  <C>(props: CoinItemProps<C> & RefAttributes<HTMLElement>) => JSX.Element;
 //as React.ComponentType<InputButtonProps<coinType,CoinInfo> & RefAttributes<HTMLDivElement>>;
