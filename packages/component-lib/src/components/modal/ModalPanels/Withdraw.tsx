@@ -43,6 +43,7 @@ export const Withdraw_In_Progress = (props: PanelProps) => {
 export const Withdraw_Success = (props: PanelProps) => {
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: props.t('labelL2toL1Success', {
@@ -112,11 +113,19 @@ export const NFTWithdraw_In_Progress = (props: PanelProps) => {
 }
 
 export const NFTWithdraw_Success = (props: PanelProps) => {
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: props.t('labelL2toL1Success', {
       symbol: sanitize(props.symbol ?? 'NFT'),
       value: props.value,
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
   }
   return <WithdrawBase {...propsPatch} {...props} />
