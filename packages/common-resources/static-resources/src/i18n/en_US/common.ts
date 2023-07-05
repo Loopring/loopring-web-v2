@@ -1750,4 +1750,5 @@ export default {
   labelDualInvestDesInsufficient: 'Insufficient quota',
   labelExplorer: 'Explorer',
   labelTutorial: 'Tutorial',
+  labelAssetEarnings: 'Earnings',
 }

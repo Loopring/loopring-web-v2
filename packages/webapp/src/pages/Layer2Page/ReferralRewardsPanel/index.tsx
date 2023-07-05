@@ -405,6 +405,7 @@ const ReferView = () => {
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
+        severity={toastOpen.type}
       />
       <ReferHeader handleCopy={handleCopy} link={link} />
       <Container>

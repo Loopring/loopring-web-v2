@@ -1,44 +1,40 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from 'react-i18next'
 
-import { Box, Tab, Tabs } from "@mui/material";
-import styled from "@emotion/styled";
-import {
-  AssetsTable,
-  AssetTitle,
-  AssetTitleProps,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { Box, Tab, Tabs } from '@mui/material'
+import styled from '@emotion/styled'
+import { AssetsTable, AssetTitle, AssetTitleProps, useSettings } from '@loopring-web/component-lib'
 
-import { StylePaper, useSystem, useTokenMap } from "@loopring-web/core";
-import { AssetPanelProps } from "./hook";
-import React from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import MyLiquidity from "../../InvestPage/MyLiquidityPanel";
-import { RedPacketClaimPanel } from "../../RedPacketPage/RedPacketClaimPanel";
+import { StylePaper, useSystem, useTokenMap } from '@loopring-web/core'
+import { AssetPanelProps } from './hook'
+import React from 'react'
+import { useHistory, useRouteMatch } from 'react-router-dom'
+import MyLiquidity from '../../InvestPage/MyLiquidityPanel'
+import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
 import {
   AssetL2TabIndex,
   AssetTabIndex,
   MapChainId,
   TradeBtnStatus,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
+import EarningsPanel from '../EarningPanel'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-`;
+`
 
-export const AssetPanel = withTranslation("common")(
+export const AssetPanel = withTranslation('common')(
   ({
-    t,
-    assetTitleProps,
-    assetPanelProps: {
-      assetsRawData,
-      getTokenRelatedMarketArray,
-      onSend,
-      assetBtnStatus,
-      onReceive,
-      hideInvestToken,
+     t,
+     assetTitleProps,
+     assetPanelProps: {
+       assetsRawData,
+       getTokenRelatedMarketArray,
+       onSend,
+       assetBtnStatus,
+       onReceive,
+       hideInvestToken,
       hideSmallBalances,
       allowTrade,
       setHideLpToken,
@@ -48,51 +44,51 @@ export const AssetPanel = withTranslation("common")(
     },
     ...rest
   }: {
-    assetTitleProps: AssetTitleProps;
-    assetPanelProps: AssetPanelProps; //AssetPanelProps;
+    assetTitleProps: AssetTitleProps
+    assetPanelProps: AssetPanelProps //AssetPanelProps;
   } & WithTranslation) => {
-    const container = React.useRef(null);
-    const { disableWithdrawList } = useTokenMap();
-    const { forexMap } = useSystem();
-    const { isMobile, defaultNetwork } = useSettings();
-    const match: any = useRouteMatch("/l2assets/:assets?/:item?");
-    const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>();
-    const history = useHistory();
+    const container = React.useRef(null)
+    const { disableWithdrawList } = useTokenMap()
+    const { forexMap } = useSystem()
+    const { isMobile, defaultNetwork } = useSettings()
+    const match: any = useRouteMatch('/l2assets/:assets?/:item?')
+    const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>()
+    const history = useHistory()
     const handleTabChange = (value: AssetTabIndex) => {
-      if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
+      if (AssetL2TabIndex[ MapChainId[ defaultNetwork ] ]?.includes(value)) {
         switch (value) {
           case AssetTabIndex.Invests:
-            history.replace("/l2assets/assets/Invests");
-            setCurrentTab(AssetTabIndex.Invests);
-            break;
+            history.replace('/l2assets/assets/Invests')
+            setCurrentTab(AssetTabIndex.Invests)
+            break
           case AssetTabIndex.RedPacket:
-            history.replace("/l2assets/assets/RedPacket");
-            setCurrentTab(AssetTabIndex.RedPacket);
-            break;
+            history.replace('/l2assets/assets/RedPacket')
+            setCurrentTab(AssetTabIndex.RedPacket)
+            break
+          case AssetTabIndex.Earnings:
+            history.replace('/l2assets/assets/Earnings')
+            setCurrentTab(AssetTabIndex.Earnings)
+            break
           case AssetTabIndex.Tokens:
           default:
-            history.replace("/l2assets/assets/Tokens");
-            setCurrentTab(AssetTabIndex.Tokens);
-            break;
+            history.replace('/l2assets/assets/Tokens')
+            setCurrentTab(AssetTabIndex.Tokens)
+            break
         }
       } else {
-        history.replace("/l2assets/assets/Tokens");
-        setCurrentTab(AssetTabIndex.Tokens);
+        history.replace('/l2assets/assets/Tokens')
+        setCurrentTab(AssetTabIndex.Tokens)
       }
-    };
+    }
     React.useEffect(() => {
-      handleTabChange(match?.params.item ?? AssetTabIndex.Tokens);
-    }, [match?.params.item, defaultNetwork]);
-    const hideAssets = assetTitleProps.hideL2Assets;
+      handleTabChange(match?.params.item ?? AssetTabIndex.Tokens)
+    }, [match?.params.item, defaultNetwork])
+    const hideAssets = assetTitleProps.hideL2Assets
 
     return (
       <>
         {!isMobile && (
-          <StyleTitlePaper
-            paddingX={3}
-            paddingY={5 / 2}
-            className={"MuiPaper-elevation2"}
-          >
+          <StyleTitlePaper paddingX={3} paddingY={5 / 2} className={'MuiPaper-elevation2'}>
             <AssetTitle
               {...{
                 t,
@@ -107,31 +103,19 @@ export const AssetPanel = withTranslation("common")(
         <Tabs
           value={currentTab}
           onChange={(_event, value) => handleTabChange(value)}
-          aria-label="l2-history-tabs"
-          variant="scrollable"
+          aria-label='l2-history-tabs'
+          variant='scrollable'
         >
-          {AssetL2TabIndex[MapChainId[defaultNetwork]] ? (
-            AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
-              return (
-                <Tab
-                  key={item.toString()}
-                  label={t(`labelAsset${item}`)}
-                  value={item}
-                />
-              );
+          {AssetL2TabIndex[ MapChainId[ defaultNetwork ] ] ? (
+            AssetL2TabIndex[ MapChainId[ defaultNetwork ] ].map((item: string) => {
+              return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
             })
           ) : (
             <>
-              <Tab label={t("labelAssetToken")} value={AssetTabIndex.Tokens} />
-              <Tab
-                label={t("labelAssetInvests")}
-                value={AssetTabIndex.Invests}
-              />
+              <Tab label={t('labelAssetToken')} value={AssetTabIndex.Tokens} />
+              <Tab label={t('labelAssetInvests')} value={AssetTabIndex.Invests} />
               {!isMobile && (
-                <Tab
-                  label={t("labelAssetRedPacket")}
-                  value={AssetTabIndex.RedPacket}
-                />
+                <Tab label={t('labelAssetRedPacket')} value={AssetTabIndex.RedPacket} />
               )}
             </>
           )}
@@ -141,9 +125,9 @@ export const AssetPanel = withTranslation("common")(
             marginTop={1}
             marginBottom={2}
             ref={container}
-            className={"MuiPaper-elevation2"}
+            className={'MuiPaper-elevation2'}
           >
-            <Box className="tableWrapper table-divide-short">
+            <Box className='tableWrapper table-divide-short'>
               <AssetsTable
                 {...{
                   rawData: assetsRawData,
@@ -168,6 +152,7 @@ export const AssetPanel = withTranslation("common")(
             </Box>
           </StylePaper>
         )}
+        {currentTab === AssetTabIndex.Earnings && <EarningsPanel />}
         {currentTab === AssetTabIndex.Invests && (
           <MyLiquidity isHideTotal={true} hideAssets={hideAssets} />
         )}
@@ -175,6 +160,6 @@ export const AssetPanel = withTranslation("common")(
           <RedPacketClaimPanel hideAssets={hideAssets} />
         )}
       </>
-    );
-  }
-);
+    )
+  },
+)
