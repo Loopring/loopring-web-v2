@@ -300,6 +300,11 @@ export const useCreateRedPacket = <
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
+      const blindBoxGiftsEqualsZero =
+        redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+        sdk
+          .toBig(redPacketOrder.giftNumbers ?? "0")
+          .isZero();
       const blindBoxGiftsLargerThanPackets =
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
         sdk
@@ -374,6 +379,7 @@ export const useCreateRedPacket = <
           // @ts-ignore
           isToken) &&
         redPacketConfigs?.luckTokenAgents &&
+        !blindBoxGiftsEqualsZero &&
         !blindBoxGiftsLargerThanPackets &&
         !blindBoxPacketsNumberTooLarge
       ) {
@@ -381,7 +387,9 @@ export const useCreateRedPacket = <
         return;
       } else {
         disableBtn();
-        if (!redPacketConfigs?.luckTokenAgents) {
+        if (blindBoxGiftsEqualsZero) {
+          setLabelAndParams("labelRedPacketsGiftsEqualsZero", {});
+        } else if (!redPacketConfigs?.luckTokenAgents) {
           setLabelAndParams("labelRedPacketWaitingBlock", {});
         } else if (isExceedBalance) {
           setLabelAndParams("labelRedPacketsInsufficient", {

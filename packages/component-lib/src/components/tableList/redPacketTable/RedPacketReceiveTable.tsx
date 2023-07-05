@@ -170,9 +170,6 @@ export const RedPacketReceiveTable = withTranslation(["tables", "common"])(
                     display={"flex"}
                     alignItems={"center"}
                     justifyContent={"center"}
-                    height={RowConfig.rowHeight + "px"}
-                    width={RowConfig.rowHeight + "px"}
-                    padding={1 / 4}
                   >
                     {metadata?.imageSize && (
                       <NftImageStyle

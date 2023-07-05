@@ -1414,6 +1414,8 @@ export default {
   labelRedPacketsMax: "Maximum of {{value}} {{symbol}}",
   labelRedPacketsGiftsLargerThanPackets:
     "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
+  labelRedPacketsGiftsEqualsZero:
+    "Number of Blind Box can't be zero",
   labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",

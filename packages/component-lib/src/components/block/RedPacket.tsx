@@ -1749,6 +1749,7 @@ export const RedPacketBlindBoxDetail = ({
   ) {
     return LooteryModal;
   }
+  console.log('wonInfo', wonInfo)
 
   return (
     <BlindBoxDetailBoxStyle
@@ -1930,7 +1931,7 @@ export const RedPacketBlindBoxDetail = ({
                 {t("labelBlindBoxCongratulationsBlindBox")}
               </Typography>
             )}
-              {type === "Lottery Started" && wonInfo.participated && (
+              {type === "Lottery Started" && (
                 wonInfo.isNFT ? (
                   wonInfo.won
                     ? <Typography>{wonInfo.amount} NFTs</Typography>
@@ -1957,33 +1958,37 @@ export const RedPacketBlindBoxDetail = ({
             >
               {description}
             </Typography>
-            <Typography
-              variant={"body2"}
-              color={theme.colorBase.textSecondary}
-              // color={RedPacketColorConfig.default.fontColor}
-              marginTop={1}
-              textAlign={"center"}
-            >
-              {t("labelBlindBoxExplaination2", {
-                opendBlindBoxAmount,
-                totalBlindBoxAmount,
-                // deliverdGiftsAmount,
-                // totalGiftsAmount,
-                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
-              })}
-              {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
-            </Typography>
-            <Typography
-              variant={"body2"}
-              color={theme.colorBase.textSecondary}
-              // color={RedPacketColorConfig.default.fontColor}
-              marginTop={1}
-              textAlign={"center"}
-            >
-              {t("labelBlindBoxExplaination3", {  
-                remainingGiftsAmount: remainGiftsAmount
-              })}
-            </Typography>
+            {type !== "Lottery Started" && <>
+              <Typography
+                variant={"body2"}
+                color={theme.colorBase.textSecondary}
+                // color={RedPacketColorConfig.default.fontColor}
+                marginTop={1}
+                textAlign={"center"}
+              >
+                {t("labelBlindBoxExplaination2", {
+                  opendBlindBoxAmount,
+                  totalBlindBoxAmount,
+                  // deliverdGiftsAmount,
+                  // totalGiftsAmount,
+                  remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
+                })}
+                {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
+              </Typography>
+              <Typography
+                variant={"body2"}
+                color={theme.colorBase.textSecondary}
+                // color={RedPacketColorConfig.default.fontColor}
+                marginTop={1}
+                textAlign={"center"}
+              >
+                {t("labelBlindBoxExplaination3", {  
+                  remainingGiftsAmount: remainGiftsAmount
+                })}
+              </Typography>
+            </>
+            }
+            
             <Box>
               {type === "Not Started" && (
                 <Typography

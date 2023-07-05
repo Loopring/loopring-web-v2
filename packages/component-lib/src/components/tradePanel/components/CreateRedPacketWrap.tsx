@@ -1005,16 +1005,26 @@ export const CreateRedPacketStepType = withTranslation()(
                     }`}
                     fullWidth
                     onClick={(_e) => {
-                      handleOnDataChange({
-                        isNFT: item.isBlindboxNFT ? true : false,
-                        type: {
-                          ...tradeData?.type,
-                          // scope: value,
-                          scope: item.isBlindboxNFT ? 1 : tradeData.type?.scope,
-                          partition: item.value.partition,
-                          mode: item.value.mode,
-                        },
-                      } as any);
+                      if (tradeType === RedPacketOrderType.BlindBox) {
+                        handleOnDataChange({
+                          isNFT: item.isBlindboxNFT ? true : false,
+                          type: {
+                            ...tradeData?.type,
+                            scope: item.isBlindboxNFT ? 1 : tradeData.type?.scope,
+                            partition: item.value.partition,
+                            mode: item.value.mode,
+                          },
+                        } as any);
+                      } else {
+                        handleOnDataChange({
+                          type: {
+                            ...tradeData?.type,
+                            partition: item.value.partition,
+                            mode: item.value.mode,
+                          },
+                        } as any);
+                      }
+                      
                     }}
                   >
                     {item.icon ?

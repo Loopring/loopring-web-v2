@@ -334,4 +334,5 @@ export default {
   labelExpiredTime: "Expired Time",
   labelExpiredTimeTooltip: "After expiration, all unclaimed NFTs/Tokens will be returned to the Sender.",
   labelRedpacketFromBlindbox: "From Blind Box",
+  labelRedpacketCantOpen: "It is not yet time to open, reveal time: {{time}}",
 };
