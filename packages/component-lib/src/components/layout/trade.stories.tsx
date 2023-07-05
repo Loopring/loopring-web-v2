@@ -70,6 +70,7 @@ const TradeWrap = () => {
           },
         }}
         isMobile={false}
+        chainId={1}
       />
       <Toolbar />
       <Container maxWidth='lg'>
