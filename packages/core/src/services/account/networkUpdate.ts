@@ -5,8 +5,9 @@ import { AccountStatus, SagaStatus } from "@loopring-web/common-resources";
 import { updateAccountStatus } from "../../stores/account/reducer";
 import { updateSystem } from "../../stores/system/reducer";
 import { setDefaultNetwork } from "@loopring-web/component-lib";
+import * as sdk from "@loopring-web/loopring-sdk";
 
-export const networkUpdate = (): boolean => {
+export const networkUpdate = async (): Promise<boolean> => {
   const { _chainId: accountChainId, readyState } = store.getState().account;
   const { defaultNetwork: userSettingChainId } = store.getState().settings;
   const { chainId: statusChainId, status: systemStatus } =
@@ -33,11 +34,11 @@ export const networkUpdate = (): boolean => {
       return false;
     }
   } else {
-    if (
-      statusChainId.toString() !== userSettingChainId.toString() &&
-      systemStatus !== SagaStatus.PENDING
-    ) {
+    if (statusChainId.toString() !== userSettingChainId.toString()) {
       if (AvaiableNetwork.includes(userSettingChainId.toString())) {
+        if (systemStatus !== SagaStatus.UNSET) {
+          await sdk.sleep(0);
+        }
         console.log(
           "unconnected: networkUpdate updateSystem",
           userSettingChainId
@@ -51,6 +52,7 @@ export const networkUpdate = (): boolean => {
         );
         return true;
       }
+
       store.dispatch(updateAccountStatus({ wrongChain: true }));
       return false;
     }

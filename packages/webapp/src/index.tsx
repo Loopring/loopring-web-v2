@@ -24,9 +24,30 @@ import {
 } from "@loopring-web/component-lib";
 import React, { Provider as TProvider } from "react";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import VConsole from "vconsole";
 
 if (process.env.REACT_APP_VER) {
   console.log("VER:", process.env.REACT_APP_VER);
+}
+
+function onLongPress(element: any, callback: () => void) {
+  let timer: NodeJS.Timeout | -1 = -1;
+
+  element.addEventListener("touchstart", () => {
+    timer = setTimeout(() => {
+      timer = -1;
+      callback();
+    }, 3000);
+  });
+
+  function cancel() {
+    if (timer !== -1) {
+      clearTimeout(timer);
+    }
+  }
+
+  element.addEventListener("touchend", cancel);
+  element.addEventListener("touchmove", cancel);
 }
 
 const ProviderApp = React.memo(({ children }: { children: JSX.Element }) => {
@@ -37,10 +58,19 @@ const ProviderApp = React.memo(({ children }: { children: JSX.Element }) => {
   ] as any;
   return <ProviderComposer providers={providers}>{children}</ProviderComposer>;
 });
+const isLaunch = { isLaunch: false };
 const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
   const { themeMode, setIsMobile } = useSettings();
   const isMobile = sdk.IsMobile.any() ? true : false;
   setIsMobile(isMobile);
+  if (isMobile) {
+    onLongPress(window.document.body, () => {
+      if (!isLaunch.isLaunch) {
+        isLaunch.isLaunch = true;
+        const vConsole = new VConsole({});
+      }
+    });
+  }
   const providers: Array<[TProvider<any>, any]> = [
     provider(MuThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
     provider(ThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),

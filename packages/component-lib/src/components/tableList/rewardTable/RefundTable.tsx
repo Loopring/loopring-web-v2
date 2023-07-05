@@ -10,7 +10,7 @@ import styled from '@emotion/styled'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export type ReferralsRow = sdk.ReferStatistic & {
+export type RefundRow = sdk.ReferSelf & {
   amount: { unit: string; value: string }
 }
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
@@ -52,8 +52,8 @@ const TableStyled = styled(Table)`
   }
 ` as any
 
-export const ReferralsTable = withTranslation(['tables', 'common'])(
-  <R extends ReferralsRow>(
+export const RefundTable = withTranslation(['tables', 'common'])(
+  <R extends RefundRow>(
     props: {
       rawData: R[]
       pagination: {
@@ -99,28 +99,11 @@ export const ReferralsTable = withTranslation(['tables', 'common'])(
       (): Column<R, unknown>[] => [
         {
           key: 'time',
-          name: t('labelReferralsTableTime'),
+          name: t('labelRefundTableTime'),
           headerCellClass: 'textAlignLeft',
           cellClass: 'textAlignLeft',
           formatter: ({ row }) => {
-            const renderValue = Number.isFinite(row.createdAt)
-              ? moment(new Date(row['time']), 'YYYYMMDDHHMM').fromNow()
-              : EmptyValueTag
-            return (
-              <div className='rdg-cell-value textAlignRight'>
-                <span>{renderValue}</span>
-              </div>
-            )
-          },
-        },
-        {
-          key: 'referee',
-          name: t('labelReferralsTableReferee'),
-          headerCellClass: 'textAlignRight',
-          cellClass: 'textAlignRight',
-          formatter: ({ row, column }) => {
-            const value = row[column.key]
-            const renderValue = Number.isFinite(value)
+            const renderValue = Number.isFinite(row.startAt)
               ? moment(new Date(row['time']), 'YYYYMMDDHHMM').fromNow()
               : EmptyValueTag
             return (
@@ -132,10 +115,11 @@ export const ReferralsTable = withTranslation(['tables', 'common'])(
         },
         {
           key: 'Rewards',
-          name: t('labelReferralsTableAmount'),
+          name: t('labelRefundTableAmount'),
           headerCellClass: 'textAlignRight',
           cellClass: 'textAlignRight',
           formatter: ({ row }) => {
+            // const value = row[column.key];
             const renderValue = `${row.amount} LRC`
             // const renderValue = `${getValuePrecisionThousand(valueFrom, undefined, undefined, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo, precisionTo)} ${keyTo}`
             return <div className='rdg-cell-value'>{renderValue}</div>
@@ -163,7 +147,6 @@ export const ReferralsTable = withTranslation(['tables', 'common'])(
           currentheight={RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight}
           {...{
             ...defaultArgs,
-            // rowRenderer: RowRenderer,
             ...props,
             rawData,
             showloading,

@@ -50,6 +50,7 @@ import {
 } from "./Interface";
 import {
   BoxNFT,
+  CoinIcon,
   ModalCloseButtonPosition,
   TablePagination,
 } from "../basic-lib";
@@ -1606,7 +1607,7 @@ export const RedPacketBlindBoxDetail = ({
   NFTClaimList,
   BlindBoxClaimList,
   showOpenLottery,
-  wonNFTInfo,
+  wonPrizeInfo,
   onClickClaim,
   onClickClaim2,
   onCloseOpenModal,
@@ -1624,6 +1625,8 @@ export const RedPacketBlindBoxDetail = ({
   totalBlindboxCount,
   onClickClaimPopViewDetail,
   expired,
+  isTokenBlindbox,
+  remainGiftsAmount
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation("common");
   const theme = useTheme();
@@ -1684,18 +1687,40 @@ export const RedPacketBlindBoxDetail = ({
               onClose={onCloseOpenModal!}
             />
             <Typography marginBottom={3} variant={"h3"}>
-              {wonNFTInfo
+              {wonPrizeInfo
                 ? t("labelBlindBoxCongratulations")
                 : t("labelBlindBoxSorry")}
             </Typography>
-            <Typography variant={"h5"}>
-              {wonNFTInfo ? wonNFTInfo.name : t("labelBlindBoxNoRewards")}{" "}
-            </Typography>
-            {wonNFTInfo ? (
-              <img width={"40%"} alt={""} src={wonNFTInfo.url} />
-            ) : (
-              <img src={emptyImg} alt={""} />
-            )}
+            {wonPrizeInfo
+              ? (
+                wonPrizeInfo.isNFT ? (
+                  <>
+                    <Typography variant={"h5"}>
+                      {wonPrizeInfo.name}{" "}
+                    </Typography>
+                    <img width={"40%"} alt={""} src={wonPrizeInfo.url} />
+                  </>
+                )
+                  : (
+                    <>
+                    <Box marginTop={3}/>
+                    <CoinIcon symbol={wonPrizeInfo.tokenName} size={48}/>
+                      {/* <img width={6} alt={""} src={wonPrizeInfo.tokenURL} /> */}
+                      <Typography marginTop={2} marginBottom={3} variant={"h2"}>
+                        {wonPrizeInfo.amountStr}
+                      </Typography>
+                    </>
+                  )
+              )
+              : (
+                <>
+                  <Typography variant={"h5"}>
+                    {t("labelBlindBoxNoRewards") + " "}
+                  </Typography>
+                  <img src={emptyImg} alt={""} />
+                </>
+              )
+            }
             <Link
               marginBottom={3}
               onClick={onClickClaimPopViewDetail}
@@ -1708,7 +1733,7 @@ export const RedPacketBlindBoxDetail = ({
             {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
           {t("labelClaimBtn")}
         </Button> */}
-            {wonNFTInfo && (
+            {wonPrizeInfo && (
               <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
                 {t("labelClaimBtn")}
               </Button>
@@ -1760,12 +1785,12 @@ export const RedPacketBlindBoxDetail = ({
           )}
         </Box>
         <Typography
-          flex={"2 1 0"}
+          flex={"3 1 0"}
           variant={"body1"}
           color={RedPacketColorConfig.default.fontColor}
           textAlign={"center"}
         >
-          {t("labelLuckyBlindBox")}
+          {isTokenBlindbox ? t("labelToken") : t("labelRedPacketMarketNFT")}/{t("labelLuckyBlindBox")}
         </Typography>
         <Box flex={"1 1 0"} />
       </Box>
@@ -1883,7 +1908,7 @@ export const RedPacketBlindBoxDetail = ({
               }}
               dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
             />
-            <Box marginY={1} width={"60%"}>
+            {!isTokenBlindbox && <Box marginY={1} width={"60%"}>
               {NFTURL ? (
                 <img style={{ width: "100%" }} alt={""} src={NFTURL} />
               ) : (
@@ -1893,21 +1918,31 @@ export const RedPacketBlindBoxDetail = ({
                   src={SoursURL + "images/redpackBlind3.webp"}
                 />
               )}
-            </Box>
+            </Box>}
             {type === "Blind Box Started" && didClaimABlindBox && (
               <Typography>
                 {t("labelBlindBoxCongratulationsBlindBox")}
               </Typography>
             )}
-            {type === "Lottery Started" &&
-              wonInfo.participated &&
-              (wonInfo.won ? (
-                <Typography>{wonInfo.amount} NFTs</Typography>
-              ) : (
-                <Typography color={"var(--color-error)"}>
-                  {t("labelBlindBoxSorryBlindBox")}
-                </Typography>
-              ))}
+              {type === "Lottery Started" && wonInfo.participated && (
+                wonInfo.isNFT ? (
+                  wonInfo.won
+                    ? <Typography>{wonInfo.amount} NFTs</Typography>
+                    : <Typography color={"var(--color-error)"}>
+                      {t("labelBlindBoxSorryBlindBox")}
+                    </Typography>
+                ) : (
+                  <>
+                    <Typography marginTop={3} variant={"h2"} color={RedPacketColorConfig.default.colorTop}>
+                      {wonInfo.won 
+                        ? `${wonInfo.amount} ${wonInfo.symbol}`
+                        : "--"
+                      } 
+                    </Typography>
+                    <Typography variant={"h4"} color={RedPacketColorConfig.default.colorTop}>{t("labelRedpacketTotalReward", {amount: `${wonInfo.total} ${wonInfo.symbol}`})} </Typography>
+                  </>
+                )
+              )}
             <Typography
               variant={"body2"}
               color={theme.colorBase.textSecondary}
@@ -1939,14 +1974,9 @@ export const RedPacketBlindBoxDetail = ({
               marginTop={1}
               textAlign={"center"}
             >
-              {t("labelBlindBoxExplaination3", {
-                opendBlindBoxAmount,
-                totalBlindBoxAmount,
-                // deliverdGiftsAmount,
-                // totalGiftsAmount,
-                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
+              {t("labelBlindBoxExplaination3", {  
+                remainingGiftsAmount: remainGiftsAmount
               })}
-              {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
             </Typography>
             <Box>
               {type === "Not Started" && (
@@ -1987,7 +2017,22 @@ export const RedPacketBlindBoxDetail = ({
                   })}
                 </Typography>
               )}
-              <Typography
+              {(type === "Not Started" || type === "Blind Box Started") && isTokenBlindbox && <Typography
+                variant={"body2"}
+                color={
+                  theme.colorBase.textSecondary
+                }
+                marginTop={1}
+                textAlign={"center"}
+              >
+                {t("labelBlindBoxTokenHint", {
+                  time: moment(lotteryStartTime).format(YEAR_DAY_MINUTE_FORMAT),
+                  interpolation: {
+                    escapeValue: false,
+                  },
+                })}
+              </Typography>}
+              {!isTokenBlindbox && <Typography
                 variant={"body2"}
                 color={
                   type !== "Blind Box Started" && type !== "Not Started"
@@ -2005,7 +2050,7 @@ export const RedPacketBlindBoxDetail = ({
                     escapeValue: false,
                   },
                 })}
-              </Typography>
+              </Typography>}
             </Box>
             {/* <Typography
               variant={"body2"}
@@ -2131,7 +2176,7 @@ export const RedPacketBlindBoxDetail = ({
                                   component={"span"}
                                   color={"textPrimary"}
                                 >
-                                  x {info.amount}
+                                  {info.showMultiplier && "x"} {info.amount}
                                 </Typography>
                               </Typography>
                             </Typography>

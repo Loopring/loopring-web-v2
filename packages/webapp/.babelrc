@@ -3,6 +3,13 @@
     [
       "@babel/react",
       {
+        "runtime": "automatic",
+        "loose": true
+      }
+    ],
+    [
+      "@babel/preset-react",
+      {
         "runtime": "automatic"
       }
     ]

@@ -1,8 +1,8 @@
-import { SwapProps, SwapTradeData } from "../Interface";
-import { withTranslation, WithTranslation } from "react-i18next";
-import React, { useCallback, useState } from "react";
-import { Box, Grid, Popover, Switch, Tooltip, Typography } from "@mui/material";
-import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
+import { SwapProps, SwapTradeData, SwapType } from '../Interface'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import React, { useCallback, useState } from 'react'
+import { Box, Grid, Popover, Switch, Tooltip, Typography } from '@mui/material'
+import { SwitchPanel, SwitchPanelProps } from '../../basic-lib'
 import {
   BtradeTradeCalcData,
   defaultBlockTradeSlipage,
@@ -17,22 +17,16 @@ import {
   SwapSettingIcon,
   SwapTradeCalcData,
   TradeCalcData,
-} from "@loopring-web/common-resources";
-import {
-  SlippagePanel,
-  SwapData,
-  SwapMenuList,
-  SwapTradeWrap,
-} from "../components";
-import { CountDownIcon } from "../components/tool/Refresh";
-import { IconButtonStyled } from "../components/Styled";
-import { Subject } from "rxjs";
-import { useHistory } from "react-router-dom";
-import { TagIconList } from "../../block";
-import { useSettings } from "../../../stores";
-import styled from "@emotion/styled";
-import { useTheme } from "@emotion/react";
-import { ToastType } from "../../toast";
+} from '@loopring-web/common-resources'
+import { SlippagePanel, SwapData, SwapMenuList, SwapTradeWrap } from '../components'
+import { CountDownIcon } from '../components/tool/Refresh'
+import { IconButtonStyled } from '../components/Styled'
+import { useHistory } from 'react-router-dom'
+import { TagIconList } from '../../block'
+import { useSettings } from '../../../stores'
+import styled from '@emotion/styled'
+import { useTheme } from '@emotion/react'
+import { ToastType } from '../../toast'
 
 const PopoverStyled = styled(Popover)`
   .MuiPaper-elevation2 {
@@ -40,18 +34,14 @@ const PopoverStyled = styled(Popover)`
     padding: 0;
     width: 250px;
   }
+
   .MuiBackdrop-root {
     background: transparent;
   }
-`;
+`
 
-export const SwapPanel = withTranslation("common", { withRef: true })(
-  <
-    T extends IBData<I>,
-    I,
-    TCD extends BtradeTradeCalcData<I>,
-    SCD extends SwapTradeCalcData<I>
-  >({
+export const SwapPanel = withTranslation('common', { withRef: true })(
+  <T extends IBData<I>, I, TCD extends BtradeTradeCalcData<I>, SCD extends SwapTradeCalcData<I>>({
     disabled,
     tradeCalcData,
     swapBtnStatus,
@@ -65,224 +55,89 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
     onRefreshData,
     campaignTagConfig,
     refreshRef,
+    tradeData,
     setToastOpen,
-    titleI8nKey = "swapTitle",
+    titleI8nKey = 'swapTitle',
     scenario = SCENARIO.SWAP,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
-    // useSettings()
-    let history = useHistory();
-
-    const [index, setIndex] = React.useState(0);
-
-    const [swapData, setSwapData] = React.useState<SwapData<SwapTradeData<T>>>(
-      () => {
-        let swapTradeData: SwapTradeData<T>;
-        if (tradeCalcData && tradeCalcData.coinInfoMap) {
-          swapTradeData = {
-            // @ts-ignore
-            sell: {
-              belong: tradeCalcData.coinInfoMap
-                ? tradeCalcData.coinInfoMap[tradeCalcData.coinSell]?.simpleName
-                : undefined,
-              balance: tradeCalcData.walletMap
-                ? tradeCalcData.walletMap[tradeCalcData.coinSell]?.count
-                : 0,
-            },
-            // @ts-ignore
-            buy: {
-              belong: tradeCalcData.coinInfoMap
-                ? tradeCalcData.coinInfoMap[tradeCalcData.coinBuy]?.simpleName
-                : undefined,
-              balance: tradeCalcData.walletMap
-                ? tradeCalcData.walletMap[tradeCalcData.coinBuy]?.count
-                : 0,
-            },
-            slippage: tradeCalcData.slippage,
-          };
-        } else {
-          swapTradeData = {
-            // @ts-ignore
-            sell: {
-              belong: undefined,
-              balance: 0,
-            },
-            // @ts-ignore
-            buy: {
-              belong: undefined,
-              balance: 0,
-            },
-            // slippage:undefined
-          };
-        }
-        return {
-          to: "button",
-          type: "buy",
-          tradeData: {
-            ...swapTradeData,
-          },
-        };
+    let history = useHistory()
+    const [index, setIndex] = React.useState(0)
+    const [type, setType] = React.useState<'buy' | 'sell' | 'exchange'>('buy')
+    const [to, setTo] = React.useState<'button' | 'menu'>('button')
+    const onChangeEvent = (_index: 0 | 1, { type, to, tradeData }: SwapData<SwapTradeData<T>>) => {
+      myLog('hookSwap onChangeEvent', tradeData)
+      if (_index !== index) {
+        setIndex(_index)
       }
-    );
+      switch (type) {
+        case 'exchange':
+          setType('buy')
+          break
+        default:
+          setType(type)
+      }
+      setTo(to)
 
-    const panelEventSubject = new Subject<
-      { _index: 0 | 1; swapData: SwapData<SwapTradeData<T>> } | undefined
-    >();
-
-    const onChangeEvent = (
-      _index: 0 | 1,
-      swapData: SwapData<SwapTradeData<T>>
-    ) => {
-      panelEventSubject.next({ _index, swapData });
-    };
-    const panelEventNext = React.useCallback(
-      async ({
-        _index,
-        swapData: { to, tradeData, type },
-      }: {
-        _index: 0 | 1;
-        swapData: SwapData<SwapTradeData<T>>;
-      }) => {
-        handleSwapPanelEvent &&
-          handleSwapPanelEvent(
-            {
-              to,
-              tradeData,
-              type,
-            },
-            type === "exchange" ? "exchange" : (`${type}To${to}` as any)
-          );
-        myLog("hookSwap panelEventNext", slippage, swapData.tradeData);
-
-        if (typeof rest.onChangeEvent == "function") {
-          setSwapData(rest.onChangeEvent(_index, { to, tradeData, type }));
-        } else {
-          if (type === "exchange") {
-            const countBuy =
-              tradeData.buy.belong && tradeCalcData.walletMap
-                ? tradeCalcData.walletMap[tradeData.buy.belong]?.count
-                : 0;
-            const countSell =
-              tradeData.sell.belong && tradeCalcData.walletMap
-                ? tradeCalcData.walletMap[tradeData.sell.belong]?.count
-                : 0;
-            setSwapData({
-              tradeData: {
-                ...swapData.tradeData,
-                sell: {
-                  belong: tradeData.sell.belong,
-                  balance: countSell,
-                  tradeValue: 0,
-                },
-                buy: {
-                  belong: tradeData.buy.belong,
-                  balance: countBuy,
-                  tradeValue: 0,
-                },
-              } as SwapTradeData<T>,
-              to,
-              type: "buy",
-            });
-          } else if (to === "menu") {
-            setSwapData({ tradeData, to, type });
-          } else if (to === "button") {
-            const count =
-              tradeData[type].belong && tradeCalcData.walletMap
-                ? tradeCalcData.walletMap[tradeData[type].belong]?.count
-                : 0;
-            const _tradeData = {
-              ...tradeData,
-              [type]: {
-                ...tradeData[type],
-                balance: count ? count : 0,
-              },
-            };
-
-            setSwapData({ tradeData: _tradeData, to, type });
-          }
-        }
-        if (_index !== index) {
-          setIndex(_index);
-        }
-      },
-      [handleSwapPanelEvent, tradeCalcData, rest, index, swapData]
-    );
-    React.useEffect(() => {
-      // pipe(debounceTime(200))
-
-      panelEventSubject.subscribe((result) => {
-        myLog("hookSwap panelEventSubject", panelEventSubject);
-        if (result) {
-          panelEventNext(result);
-        }
-      });
-      return () => {
-        // myLog("hookSwap panelEventSubject unsubscribe", panelEventSubject);
-
-        panelEventSubject.unsubscribe();
-      };
-    }, [panelEventSubject]);
-
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-    const [settingPopoverOpen, setSettingPopoverOpen] = useState(false);
-    const settingPopoverId = settingPopoverOpen ? "setting-popover" : undefined;
-    const { slippage, swapSecondConfirmation, setSwapSecondConfirmation } =
-      useSettings();
-    const tradeData = swapData.tradeData;
-
+      handleSwapPanelEvent &&
+        handleSwapPanelEvent(
+          {
+            to,
+            tradeData,
+            type,
+          },
+          (type === 'exchange' ? 'exchange' : `${type}To${to}`) as SwapType,
+        )
+      myLog('hookSwap panelEventNext', tradeData.slippage, tradeData)
+    }
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+    const [settingPopoverOpen, setSettingPopoverOpen] = useState(false)
+    const settingPopoverId = settingPopoverOpen ? 'setting-popover' : undefined
+    const { slippage, swapSecondConfirmation, setSwapSecondConfirmation } = useSettings()
     const onSwitchChangeCallback = useCallback(() => {
       setToastOpen &&
         setToastOpen({
           open: true,
-          content: rest.t("labelSwapSettingToggleSuccess", {
-            onOrOff: !swapSecondConfirmation ? "on" : "off",
+          content: rest.t('labelSwapSettingToggleSuccess', {
+            onOrOff: !swapSecondConfirmation ? 'on' : 'off',
           }),
           type: ToastType.success,
-        });
-      setSwapSecondConfirmation(!swapSecondConfirmation);
-    }, [swapSecondConfirmation, setSwapSecondConfirmation, setToastOpen]);
+        })
+      setSwapSecondConfirmation(!swapSecondConfirmation)
+    }, [swapSecondConfirmation, setSwapSecondConfirmation, setToastOpen])
     const onSlippageChangeCallBack = React.useCallback(
-      (
-        slippage: number | string,
-        customSlippage: number | string | undefined
-      ) => {
-        myLog("hookSwap slippage", slippage, swapData.tradeData);
-        panelEventNext({
-          _index: 0,
-          swapData: {
-            tradeData: {
-              ...swapData.tradeData,
-              ...rest?.tradeData,
-              slippage: slippage,
-              __cache__: {
-                ...swapData.tradeData.__cache__,
-                customSlippage: customSlippage,
-              },
+      (slippage: number | string, customSlippage: number | string | undefined) => {
+        myLog('hookSwap slippage', slippage, tradeData)
+        onChangeEvent(0, {
+          tradeData: {
+            ...tradeData,
+            slippage: slippage,
+            __cache__: {
+              ...tradeData?.__cache__,
+              customSlippage: customSlippage,
             },
-            type: "sell",
-            to: "button",
           },
-        });
+          type: 'sell',
+          to: 'button',
+        })
       },
-      [swapData.tradeData, rest?.tradeData, onChangeEvent]
-    );
-    const theme = useTheme();
-
-    const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
+      [tradeData, onChangeEvent],
+    )
+    const theme = useTheme()
+    const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
       index: index, // show default show
       panelList: [
         {
-          key: "trade",
-          element: React.useMemo(
-            () => (
+          key: 'trade',
+          element: React.useMemo(() => {
+            myLog('hookSwap view tradeData', tradeData)
+
+            return (
               <SwapTradeWrap<T, I, TCD, SCD>
-                key={"trade"}
+                key={'trade'}
                 {...{
                   ...rest,
-                  swapData: {
-                    ...swapData,
-                    tradeData: { ...swapData.tradeData, ...rest?.tradeData },
-                  },
+                  tradeData,
                   tradeCalcData,
                   onSwapClick,
                   onChangeEvent,
@@ -293,38 +148,37 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   handleError,
                 }}
               />
-            ),
-            [
-              rest,
-              swapData,
-              tradeCalcData,
-              onSwapClick,
-              onChangeEvent,
-              disabled,
-              swapBtnStatus,
-              tokenSellProps,
-              tokenBuyProps,
-              handleError,
-            ]
-          ),
+            )
+          }, [
+            rest,
+            tradeCalcData,
+            onSwapClick,
+            tradeData,
+            onChangeEvent,
+            disabled,
+            swapBtnStatus,
+            tokenSellProps,
+            tokenBuyProps,
+            handleError,
+          ]),
           toolBarItem: React.useMemo(
             () => (
               <>
                 <Typography
                   marginTop={1}
-                  height={"100%"}
-                  display={"inline-flex"}
-                  variant={"h5"}
-                  alignItems={"center"}
-                  alignSelf={"self-start"}
-                  component={"span"}
+                  height={'100%'}
+                  display={'inline-flex'}
+                  variant={'h5'}
+                  alignItems={'center'}
+                  alignSelf={'self-start'}
+                  component={'span'}
                 >
                   {rest.t(titleI8nKey)}
                   <Typography
-                    component={"span"}
+                    component={'span'}
                     paddingLeft={1}
-                    display={"flex"}
-                    alignItems={"center"}
+                    display={'flex'}
+                    alignItems={'center'}
                   >
                     <TagIconList
                       scenario={scenario}
@@ -334,22 +188,18 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   </Typography>
                 </Typography>
 
-                <Box alignSelf={"flex-end"} display={"flex"}>
-                  <Typography
-                    display={"inline-block"}
-                    marginLeft={2}
-                    component={"span"}
-                  >
+                <Box alignSelf={'flex-end'} display={'flex'}>
+                  <Typography display={'inline-block'} marginLeft={2} component={'span'}>
                     <IconButtonStyled
                       onClick={(e) => {
-                        setSettingPopoverOpen(true);
-                        setAnchorEl(e.currentTarget);
+                        setSettingPopoverOpen(true)
+                        setAnchorEl(e.currentTarget)
                       }}
-                      sx={{ backgroundColor: "var(--field-opacity)" }}
-                      className={"switch outlined"}
-                      aria-label="to Transaction"
+                      sx={{ backgroundColor: 'var(--field-opacity)' }}
+                      className={'switch outlined'}
+                      aria-label='to Transaction'
                       aria-describedby={settingPopoverId}
-                      size={"large"}
+                      size={'large'}
                     >
                       <SwapSettingIcon htmlColor={theme.colorBase.logo} />
                     </IconButtonStyled>
@@ -358,28 +208,28 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       open={settingPopoverOpen}
                       anchorEl={anchorEl}
                       onClose={() => {
-                        setSettingPopoverOpen(false);
-                        setAnchorEl(null);
+                        setSettingPopoverOpen(false)
+                        setAnchorEl(null)
                       }}
                       anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
+                        vertical: 'bottom',
+                        horizontal: 'left',
                       }}
-                      sx={{ background: "transparent" }}
+                      sx={{ background: 'transparent' }}
                     >
                       <Box paddingX={2} paddingTop={2} paddingBottom={4}>
                         <Box paddingBottom={1}>
-                          <Typography marginBottom={1} component={"span"}>
-                            {rest.t("labelSwapSettingTitle")}
+                          <Typography marginBottom={1} component={'span'}>
+                            {rest.t('labelSwapSettingTitle')}
                           </Typography>
                           <Typography
                             marginBottom={1}
                             paddingLeft={1}
-                            variant={"body2"}
-                            color={"var(--color-text-third)"}
-                            component={"span"}
+                            variant={'body2'}
+                            color={'var(--color-text-third)'}
+                            component={'span'}
                           >
-                            {rest.t("swapTolerance")}
+                            {rest.t('swapTolerance')}
                           </Typography>
                         </Box>
                         <SlippagePanel
@@ -387,12 +237,12 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                           max={100}
                           slippageList={
                             tradeCalcData.isBtrade
-                              ? (SlippageBtradeTolerance.concat(
-                                  `slippage:${slippage}`
-                                ) as Array<number | string>)
-                              : (SlippageTolerance.concat(
-                                  `slippage:${slippage}`
-                                ) as Array<number | string>)
+                              ? (SlippageBtradeTolerance.concat(`slippage:${slippage}`) as Array<
+                                  number | string
+                                >)
+                              : (SlippageTolerance.concat(`slippage:${slippage}`) as Array<
+                                  number | string
+                                >)
                           }
                           slippage={
                             tradeData.slippage
@@ -402,41 +252,39 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                               : defaultBlockTradeSlipage
                           }
                           handleChange={(slippage, customSlippage) => {
-                            onSlippageChangeCallBack(slippage, customSlippage);
+                            onSlippageChangeCallBack(slippage, customSlippage)
                           }}
                         />
                         <Grid
                           container
-                          justifyContent={"space-between"}
-                          direction={"row"}
-                          alignItems={"center"}
+                          justifyContent={'space-between'}
+                          direction={'row'}
+                          alignItems={'center'}
                           height={24}
                           marginTop={2.5}
                         >
                           <Tooltip
-                            title={rest
-                              .t("labelSwapSettingSecondConfirmTootip")
-                              .toString()}
-                            placement={"bottom"}
+                            title={rest.t('labelSwapSettingSecondConfirmTootip').toString()}
+                            placement={'bottom'}
                           >
                             <Typography
-                              component={"span"}
-                              variant="body2"
-                              color={"textSecondary"}
-                              display={"inline-flex"}
-                              alignItems={"center"}
+                              component={'span'}
+                              variant='body2'
+                              color={'textSecondary'}
+                              display={'inline-flex'}
+                              alignItems={'center'}
                             >
                               <Info2Icon
-                                fontSize={"small"}
-                                color={"inherit"}
+                                fontSize={'small'}
+                                color={'inherit'}
                                 sx={{ marginX: 1 / 2 }}
                               />
-                              {" " + rest.t("labelSwapSettingSecondConfirm")}
+                              {' ' + rest.t('labelSwapSettingSecondConfirm')}
                             </Typography>
                           </Tooltip>
                           <Switch
                             onChange={() => {
-                              onSwitchChangeCallback();
+                              onSwitchChangeCallback()
                             }}
                             checked={swapSecondConfirmation !== false}
                           />
@@ -444,40 +292,26 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                       </Box>
                     </PopoverStyled>
                   </Typography>
-                  <Typography
-                    display={"inline-block"}
-                    marginLeft={2}
-                    component={"span"}
-                  >
-                    <CountDownIcon
-                      onRefreshData={onRefreshData}
-                      ref={refreshRef}
-                    />
+                  <Typography display={'inline-block'} marginLeft={2} component={'span'}>
+                    <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
                   </Typography>
-                  <Typography
-                    display={"inline-block"}
-                    marginLeft={2}
-                    component={"span"}
-                  >
+                  <Typography display={'inline-block'} marginLeft={2} component={'span'}>
                     <IconButtonStyled
                       onClick={() => {
                         !tradeCalcData.isBtrade
                           ? history.push(
-                              `/l2assets/history/${RecordTabIndex.trades}?market=${market}`
+                              `/l2assets/history/${RecordTabIndex.trades}?market=${market}`,
                             )
                           : history.push(
-                              `/l2assets/history/${RecordTabIndex.btradeSwapRecords}?market=${market}`
-                            );
+                              `/l2assets/history/${RecordTabIndex.btradeSwapRecords}?market=${market}`,
+                            )
                       }}
-                      sx={{ backgroundColor: "var(--field-opacity)" }}
-                      className={"switch outlined"}
-                      aria-label="to Transaction"
-                      size={"large"}
+                      sx={{ backgroundColor: 'var(--field-opacity)' }}
+                      className={'switch outlined'}
+                      aria-label='to Transaction'
+                      size={'large'}
                     >
-                      <OrderListIcon
-                        fill={theme.colorBase.logo}
-                        fontSize={"large"}
-                      />
+                      <OrderListIcon fill={theme.colorBase.logo} fontSize={'large'} />
                     </IconButtonStyled>
                   </Typography>
                 </Box>
@@ -491,36 +325,35 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
               onSlippageChangeCallBack,
               tradeData,
               theme,
-            ]
+            ],
           ),
         },
         {
-          key: "tradeMenuList",
+          key: 'tradeMenuList',
           element: React.useMemo(
             () => (
               <SwapMenuList<T, I, TCD | SCD>
-                key={"tradeMenuList"}
+                key={'tradeMenuList'}
                 {...{
                   ...rest,
                   onChangeEvent,
                   tradeCalcData,
-                  swapData,
+                  swapData: {
+                    tradeData,
+                    type,
+                    to, //TODO 'button',
+                  },
                 }}
               />
             ),
-            [onChangeEvent, tradeCalcData, swapData, rest]
+            [onChangeEvent, tradeCalcData, type, to, rest],
           ),
           toolBarItem: undefined,
         },
       ],
-    };
-    return (
-      <SwitchPanel
-        className={"hasLinerBg"}
-        {...{ ...rest, ...props, size: "large" }}
-      />
-    );
-  }
+    }
+    return <SwitchPanel className={'hasLinerBg'} {...{ ...rest, ...props, size: 'large' }} />
+  },
 ) as <T extends IBData<I>, I, TCD extends TradeCalcData<I>>(
-  props: SwapProps<T, I, TCD> & React.RefAttributes<any>
-) => JSX.Element;
+  props: SwapProps<T, I, TCD> & React.RefAttributes<any>,
+) => JSX.Element

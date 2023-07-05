@@ -106,12 +106,10 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: undefined | false;
   isShowBtradeAllow?: boolean;
 };
-
 export enum BtradeType {
   Quantity = "Quantity",
   Speed = "Speed",
 }
-
 export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true;
   maxFeeBips: number;
@@ -488,8 +486,14 @@ export type LuckyRedPacketItem = {
   desKey: string;
   showInNFTS?: boolean;
   showInERC20?: boolean;
+  showInBlindbox?: boolean;
   defaultForERC20?: boolean;
   defaultForNFT?: boolean;
+  defaultForBlindbox?: boolean;
+  isBlindboxNFT?: boolean;
+  defaultForFromNFT?: boolean;
+  showInFromNFT?: boolean;
+  icon?: string;
   value: {
     value: number;
     partition: sdk.LuckyTokenAmountType;

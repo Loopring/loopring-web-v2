@@ -6,14 +6,14 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.4.12",
+    "@loopring-web/loopring-sdk": "3.5.0-alpha-4",
     "@loopring-web/recharts": "^2.0.10",
-    "@loopring-web/web3-provider": "^1.4.1",
+    "@loopring-web/web3-provider": "^1.4.3",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.6.2",
     "@ramp-network/ramp-instant-sdk": "^3.2.1-rc1",
@@ -65,8 +65,9 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.8.1",
     "three": "^0.149.0",
+    "vconsole": "^3.15.1",
     "voca": "^1.4.1",
-    "web3": "^4.0.1"
+    "web3": "^1.8.0"
   },
   "build": {
     "files": [
@@ -121,16 +122,27 @@
       "**/babel-eslint"
     ]
   },
+  "prettier": {
+    "semi": false,
+    "tabWidth": 2,
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "jsxSingleQuote": true,
+    "bracketSpacing": true
+  },
   "devDependencies": {
     "@babel/core": "^7.13.14",
     "@babel/helper-builder-react-jsx": "^7.10.4",
     "@babel/helper-builder-react-jsx-experimental": "^7.12.11",
     "@babel/preset-env": "^7.14.7",
     "@babel/eslint-parser": "^7.13.14",
+    "@babel/helper-builder-react-jsx": "^7.10.4",
+    "@babel/helper-builder-react-jsx-experimental": "^7.12.11",
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/plugin-syntax-bigint": "^7.8.3",
     "@babel/plugin-transform-exponentiation-operator": "^7.22.5",
-    "@babel/plugin-transform-typescript": "^7.12.1",
+    "@babel/plugin-transform-typescript": "^7.22.5",
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
@@ -168,7 +180,8 @@
     "html-loader": "^0.5.5",
     "html5-qrcode": "2.3.4",
     "lerna": "^4.0.0",
-    "node-sass": "^6.0.1",
+    "node-sass": "^9.0.0",
+    "prettier": "2.8.8",
     "react-app-rewired": "^2.2.1",
     "react-router": "^5.2.1",
     "truffle-privatekey-provider": "1.3.0",

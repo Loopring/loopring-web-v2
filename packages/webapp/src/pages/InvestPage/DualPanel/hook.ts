@@ -5,6 +5,7 @@ import {
   LoopringAPI,
   makeDualViewItem,
   useDualMap,
+  useTokenMap,
   useTokenPrices,
 } from "@loopring-web/core";
 import React from "react";
@@ -123,9 +124,12 @@ export const useDualHook = ({
   );
 
   const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([]);
+  const [isDualBalanceSufficient, setIsDualBalanceSufficient] = React.useState<boolean | undefined>(undefined);
+  const { tokenMap } = useTokenMap()
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
+    setIsDualBalanceSufficient(undefined)
     const market =
       marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol);
     if (nodeTimer.current !== -1) {
@@ -164,7 +168,19 @@ export const useDualHook = ({
           // totalNum,
           dualInfo: { infos, index, balance },
           raw_data: { rules },
-        } = response as any;
+        } = response as any;     
+        const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
+        const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
+        const sellToken = tokenMap[balanceCoin]
+        if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+          var minSellVol = marketMap[market].baseLimitAmount
+        } else {
+          minSellVol = marketMap[market].quoteLimitAmount
+        }
+        setIsDualBalanceSufficient((found && sellToken) 
+          ? sdk.toBig(found.free).times('1e' + sellToken.decimals).isGreaterThanOrEqualTo(minSellVol)  
+          : undefined
+        )
         setCurrentPrice({
           base: marketSymbolA,
           quote: marketSymbolB,
@@ -284,5 +300,6 @@ export const useDualHook = ({
     onSelectStep1Token,
     onSelectStep2BuyOrSell,
     onSelectStep3Token,
+    isDualBalanceSufficient
   };
 };

@@ -66,12 +66,13 @@ export type RedPacketClaimTableProps<R, C = sdk.Currency> = {
   showloading: boolean;
   forexMap: ForexMap<C>;
   onItemClick: (item: ClaimToken) => void;
-  onViewMoreNFTsClick?: () => void;
+  onViewMoreClick?: (type: 'NFTs' | 'blindbox') => void;
   etherscanBaseUrl: string;
   isNFT?: boolean;
   getClaimRedPacket: (props: any) => void;
   totalLuckyTokenNFTBalance?: number;
   hideAssets?: boolean;
+  blindBoxBalance?: number;
 } & XOR<
   {
     pagination?: {
@@ -95,6 +96,7 @@ export interface RedPacketRecordsTableProps<R, C = sdk.Currency> {
     total: number;
   };
   getMyRedPacketRecordTxList: (props: any) => void;
+  tableType: 'token' | 'NFT' | 'blindbox'
 }
 
 export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
@@ -117,6 +119,7 @@ export interface RedPacketReceiveTableProps<R, C = sdk.Currency> {
   ) => void;
   getRedPacketReceiveList: (props: any) => void;
   showActionableRecords: boolean;
+  isUncliamedNFT?: boolean
 }
 
 export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
@@ -134,6 +137,7 @@ export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
   ) => any;
   getRedPacketReceiveList: (props: any) => void;
   showActionableRecords: boolean;
+  isUnclaimed?: boolean;
 }
 
 export enum LuckyTokenItemStatusMap {

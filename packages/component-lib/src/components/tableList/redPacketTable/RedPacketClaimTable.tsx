@@ -26,6 +26,7 @@ import {
 } from "@loopring-web/common-resources";
 import { ColumnCoinDeep } from "../assetsTable";
 import _ from "lodash";
+import { useTheme } from "@emotion/react";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -77,13 +78,14 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       forexMap,
       showloading,
       onItemClick,
-      onViewMoreNFTsClick,
+      onViewMoreClick,
       getClaimRedPacket,
       pagination,
       page,
       isNFT = false,
       totalLuckyTokenNFTBalance,
       hideAssets,
+      blindBoxBalance,
       t,
     } = props;
     const history = useHistory();
@@ -124,9 +126,8 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignLeft",
           name: t("labelToken"),
           formatter: ({ row: { token } }: FormatterProps<R>) => {
-            // if (token.)
             if (token.type !== TokenType.nft) {
-              if (token.icon && token.simpleName === "NFTs") {
+              if (token.icon && token.simpleName === "NFTs" || token.simpleName === "Blind Box") {
                 return (
                   <Box
                     className="rdg-cell-value"
@@ -144,6 +145,8 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
                         alt={token.simpleName}
                         onError={() => undefined}
                         src={token.icon}
+                        width={28}
+                        height={28}
                       />
                     </Box>
                     <Typography
@@ -151,7 +154,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
                       flex={1}
                       display={"inline-flex"}
                       alignItems={"center"}
-                      marginLeft={1}
+                      marginLeft={0.5}
                       overflow={"hidden"}
                       textOverflow={"ellipsis"}
                       component={"span"}
@@ -217,12 +220,19 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             if (
               row.token.type === TokenType.single &&
-              row.token.name === "NFTs"
+              row.token.name === "NFTs" 
             ) {
               return (
-                <Link onClick={() => onViewMoreNFTsClick!()}>View More</Link>
+                <Link onClick={() => onViewMoreClick!('NFTs')}>View More</Link>
               );
-            } else {
+            } else if (
+              row.token.type === TokenType.single &&
+              row.token.name === "Blind Box"
+            ) {
+              return (
+                <Link onClick={() => onViewMoreClick!('blindbox')}>View More</Link>
+              );
+            }  else {
               return (
                 <Link onClick={() => onItemClick(row.rawData)}>
                   {t("labelClaim")}
@@ -233,14 +243,16 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         },
       ];
     }, [history, t, hideAssets]);
-
+    const theme = useTheme()
     const NFTrow = {
       token: {
-        icon: "https://static.loopring.io/assets/svg/NFT-logo.svg",
+        icon: theme.mode === 'dark' 
+          ? "https://static.loopring.io/assets/images/nft_dark.png"
+          : "https://static.loopring.io/assets/images/nft_light.png",
         name: "NFTs",
         simpleName: "NFTs",
-        description: "ETH",
-        company: "Ethereum",
+        description: "",
+        company: "",
         type: TokenType.single,
       },
       amountStr: totalLuckyTokenNFTBalance
@@ -248,10 +260,26 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         : EmptyValueTag,
       volume: undefined,
     };
+    const blindboxRow = {
+      token: {
+        icon: theme.mode === 'dark' 
+          ? "https://static.loopring.io/assets/images/blindbox_dark.png"
+          : "https://static.loopring.io/assets/images/blindbox_light.png",
+        name: "Blind Box",
+        simpleName: "Blind Box",
+        description: "",
+        company: "",
+        type: TokenType.single,
+      },
+      amountStr: blindBoxBalance
+        ? blindBoxBalance.toString()
+        : EmptyValueTag,
+      volume: undefined,
+    };
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
       generateRows: (rawData: any) => [
-        ...(isNFT ? [] : [NFTrow]), // if isNFT then not show nft row, else shows.
+        ...(isNFT ? [] : [NFTrow, blindboxRow]), // if isNFT then not show nft row, else shows.
         ...rawData,
       ],
       generateColumns: ({ columnsRaw }: any) =>
@@ -302,9 +330,9 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
-            const isNFTs =
-              row.token.type === TokenType.single && row.token.name === "NFTs";
-            if (!isNFTs) {
+            const isNFTsOrBlindbox = row.token.type === TokenType.single && 
+              (row.token.name === "NFTs" || row.token.name === "Blind Box");
+            if (!isNFTsOrBlindbox) {
               onItemClick(row.rawData);
             }
           }}
