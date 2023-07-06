@@ -224,9 +224,9 @@ export const TransferWrap = <
           {!isAddressCheckLoading &&
             addressDefault &&
             addrStatus === AddressError.NoError &&
-            (!isLoopringAddress || !isActiveAccount) && (
+            isActiveAccount === false && (
               <Box>
-                {(!isLoopringAddress || !isActiveAccount) && realAddr && (
+                {(isActiveAccount === false) && realAddr && (
                   <Typography
                     color={"var(--color-error)"}
                     lineHeight={1.2}
