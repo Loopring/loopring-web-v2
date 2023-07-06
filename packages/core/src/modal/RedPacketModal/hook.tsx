@@ -1083,10 +1083,8 @@ export function useRedPacketModal() {
       blinBoxDetail &&
       blindBoxType
     ) {
-      // detail.luckyToken.status === sdk.LuckyTokenItemStatus.
-
       const shareButton: "hidden" | "share" =
-        blindBoxType === "Not Started" || blindBoxType === "Blind Box Started"
+        (blindBoxType === "Not Started" || blindBoxType === "Blind Box Started") && detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
           ? "share"
           : "hidden";
 
@@ -1095,19 +1093,21 @@ export function useRedPacketModal() {
         | "claim"
         | "claiming"
         | "expired"
-        | "hidden" =
-        Date.now() > detail.luckyToken.validUntil ||
-        detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
-          ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
-            ? "claim"
-            : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
-            ? "claimed"
-            : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
-            ? "claiming"
-            : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
-            ? "expired"
-            : "hidden"
-          : "hidden";
+        | "hidden" = detail.luckyToken.isNft
+          ? (
+            Date.now() > detail.luckyToken.validUntil
+              ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
+                ? "claim"
+                : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
+                  ? "claimed"
+                  : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+                    ? "claiming"
+                    : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
+                      ? "expired"
+                      : "hidden"
+              : "hidden"
+          )
+          : (detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED ? "expired" : "hidden")
       
       const tokenInfo = !detail.luckyToken.isNft 
         ? tokenMap[idIndex[detail.luckyToken.tokenId]] 
