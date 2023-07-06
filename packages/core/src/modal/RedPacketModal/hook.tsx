@@ -387,6 +387,7 @@ export function useRedPacketModal() {
               });
             }
           },
+          isBlindBox: _info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
         };
       }
       return undefined;
@@ -594,6 +595,16 @@ export function useRedPacketModal() {
             } as any,
             account.apiKey
           )
+          if ((response as any).detail.blindBoxStatus !== "") {
+            updateRedpacketHash({
+              hash: _info?.hash,
+              chainId: chainId as any,
+              luckToken: _info,
+              claimAmount: response.detail.claimAmount.toString(),
+              address: account.accAddress,
+              blindboxClaimed: true,
+            });
+          }
           const response2 = await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
             {
               accountId: account.accountId,
@@ -1346,7 +1357,17 @@ export function useRedPacketModal() {
         },
         expired: Date.now() > detail!.luckyToken.nftExpireTime,
         isTokenBlindbox: detail!.luckyToken.isNft ? false : true,
-        remainGiftsAmount: Number(detail!.luckyToken.tokenAmount.giftCount) - (detail as any).totalNum,
+        remainGiftsAmount: detail!.luckyToken.isNft 
+          ? detail!.luckyToken.tokenAmount.remainAmount
+          : getValuePrecisionThousand(
+            sdk
+              .toBig(detail!.luckyToken.tokenAmount.remainAmount)
+              .div("1e" + tokenInfo!.decimals),
+            tokenInfo?.precision,
+            undefined,
+            undefined,
+            false
+          ) + " " + tokenInfo?.symbol,
       } as RedPacketBlindBoxDetailProps;
     } else {
       return undefined;

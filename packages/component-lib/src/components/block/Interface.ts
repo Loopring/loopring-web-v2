@@ -58,7 +58,7 @@ export type RedPacketDefaultBg = RedPacketDefault & {
   className?: string;
 };
 export type RedPacketDefault = {
-  type?: "default" | "official";
+  type?: "default" | "official" | "blindbox";
   size?: "middle" | "large";
   ImageEle?: JSX.Element | undefined;
 };
@@ -207,7 +207,7 @@ export type RedPacketBlindBoxDetailProps = {
   onClickClaimPopViewDetail: () => void;
   expired: boolean;
   isTokenBlindbox: boolean;
-  remainGiftsAmount: number;
+  remainGiftsAmount: string;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

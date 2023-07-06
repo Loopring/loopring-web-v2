@@ -386,7 +386,7 @@ export const useCreateRedPacket = <
         } else if (isExceedBalance) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol:
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN
+              isToken
                 ? (tradeToken.symbol as string)
                 : "NFT",
           });

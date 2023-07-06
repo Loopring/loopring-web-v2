@@ -800,7 +800,7 @@ export const RedPacketOpened = ({
   myAmountStr,
   amountStr,
   viewDetail,
-  ImageEle,
+  ImageEle
 }: RedPacketDefault & RedPacketOpenedProps) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
@@ -810,22 +810,34 @@ export const RedPacketOpened = ({
           <Typography
             variant={"h5"}
             color={RedPacketCssColorConfig[type].highLightColor}
+            marginTop={type === "blindbox" ? 2 : 0}
           >
-            {t("labelRedPacketReceived")}
+            {type === "blindbox" ? t("labelRedPacketBlindboxReceived1") : t("labelRedPacketReceived")}
           </Typography>
-          <Typography
-            variant={"h4"}
-            color={RedPacketCssColorConfig[type].highLightColor}
-            marginTop={1}
-          >
-            {myAmountStr ? myAmountStr : EmptyValueTag}
-          </Typography>
-          <Typography
-            variant={"body2"}
+          {type === "blindbox" && <Typography
+            variant={"h5"}
             color={RedPacketCssColorConfig[type].highLightColor}
           >
-            {t("labelTotalRedPacket", { value: amountStr })}
+            {t("labelRedPacketBlindboxReceived2")}
           </Typography>
+          }
+          {type !== "blindbox" && <>
+            <Typography
+              variant={"h4"}
+              color={RedPacketCssColorConfig[type].highLightColor}
+              marginTop={1}
+            >
+              {myAmountStr ? myAmountStr : EmptyValueTag}
+            </Typography>
+            <Typography
+              variant={"body2"}
+              color={RedPacketCssColorConfig[type].highLightColor}
+            >
+              {t("labelTotalRedPacket", { value: amountStr })}
+            </Typography>
+          </>
+          }
+          
         </Box>
         <Box
           display={"flex"}
@@ -1323,6 +1335,7 @@ export const RedPacketPrepare = ({
   onOpen,
   getIPFSString,
   baseURL,
+  claimed,
   ...props
 }: {
   chainId: sdk.ChainId;
@@ -1340,7 +1353,8 @@ export const RedPacketPrepare = ({
   baseURL: string;
   getIPFSString: GET_IPFS_STRING;
   onOpen: () => void;
-  _type?: "official" | "default";
+  _type?: "official" | "default" | "blindbox";
+  claimed: boolean;
 } & sdk.LuckyTokenItemForReceive) => {
   // const { t } = useTranslation("common");
   const ref = React.createRef();
@@ -1390,7 +1404,7 @@ export const RedPacketPrepare = ({
   }, []);
   const viewItem = React.useMemo(() => {
     let difference = new Date(_info.validSince).getTime() - Date.now();
-    if (claim) {
+    if (claimed) {
       return (
         <RedPacketOpened
           {...{
@@ -1529,7 +1543,7 @@ export const RedPacketPrepare = ({
           memo={props?.info?.memo}
           onOpen={() => {
             setShowRedPacket({
-              isShow: true,
+              isShow: false,
               step: RedPacketViewStep.Loading,
               info: _info,
             });
@@ -1659,6 +1673,7 @@ export const RedPacketBlindBoxDetail = ({
       size={"small"}
     />
   );
+  
   const LooteryModal = (
     <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
       <>
@@ -1708,6 +1723,7 @@ export const RedPacketBlindBoxDetail = ({
                       <Typography marginTop={2} marginBottom={3} variant={"h2"}>
                         {wonPrizeInfo.amountStr}
                       </Typography>
+                      <Typography width={`${25 * theme.unit}px`} textAlign={"center"} variant={"body2"}>{t('labelBlindBoxClaimHint')}</Typography>
                     </>
                   )
               )
@@ -1732,7 +1748,7 @@ export const RedPacketBlindBoxDetail = ({
             {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
           {t("labelClaimBtn")}
         </Button> */}
-            {wonPrizeInfo && (
+            {wonPrizeInfo && wonPrizeInfo.isNFT && (
               <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
                 {t("labelClaimBtn")}
               </Button>

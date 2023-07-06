@@ -1315,7 +1315,7 @@ export default {
   labelBlindBoxExplaination2:
     "{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.",
   labelBlindBoxExplaination3:
-    "{{remainingGiftsAmount}} gifts available for grabbing.",
+    "{{remainingGiftsAmount}} gifts are still available.",
   labelBlindBoxNotStarted: "Red Packet is available to grab after: {{time}}",
   labelBlindBoxStarted: "Blind Box Reveal time after: {{time}}",
   labelBlindBoxTokenHint: "Unopen tokens will be returned back to sender after: {{time}}",
@@ -1347,6 +1347,7 @@ export default {
   labelBlindBoxCongratulationsBlindBox:
     "Congratulations on receiving a Blind Box",
   labelBlindBoxSorryBlindBox: "Sorry, you did not win a prize",
+  labelBlindBoxClaimHint: "You can visit Assets > Red Packets > Tokens to claim your rewards.",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
     "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
@@ -1377,6 +1378,8 @@ export default {
     "You rejected to send {{value}} {{symbol}} red packet.",
   labelRedPacketRecordTitle: "My Red Packet Record",
   labelRedPacketReceived: "ERC20 Received",
+  labelRedPacketBlindboxReceived1: "ERC20 Blind Box",
+  labelRedPacketBlindboxReceived2: "Received",
   labelRedPacketSend: "ERC20 Send",
   labelRedPacketNFTReceived: "NFT Received",
   labelRedPacketNFTSend: "NFT Send",
