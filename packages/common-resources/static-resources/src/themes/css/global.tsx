@@ -275,8 +275,9 @@ export const globalCss = ({ theme }: any) => css`
     --nft-small-avatar: 80px;
     --redPacket-avatar: 72px;
     --notification-activited-heigth: 80px;
+    --modal-min-width: 340px;
     @media only screen and (max-width: 768px) {
-      --modal-width: 320px;
+      --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
     }
