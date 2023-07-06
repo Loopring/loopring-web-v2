@@ -244,8 +244,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         name: t("labelRecordStatus"),
         formatter: ({ row }: FormatterProps<R>) => {
           if (
-            row.rawData.luckyToken.validUntil > Date.now() &&
-            row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
+            row.rawData.luckyToken.validUntil > Date.now() 
           ) {
             return (
               <Tooltip
@@ -382,8 +381,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
         name: t("labelAction"),
         formatter: ({ row }: FormatterProps<R>) => {
           if (
-            row.rawData.luckyToken.validUntil > Date.now() &&
-            row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
+            row.rawData.luckyToken.validUntil > Date.now() 
           ) {
             return (
               <Tooltip title={<>{t("labelRedpacketCantOpen", {
