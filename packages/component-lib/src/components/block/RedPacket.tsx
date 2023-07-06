@@ -1765,7 +1765,6 @@ export const RedPacketBlindBoxDetail = ({
   ) {
     return LooteryModal;
   }
-  console.log('wonInfo', wonInfo)
 
   return (
     <BlindBoxDetailBoxStyle
