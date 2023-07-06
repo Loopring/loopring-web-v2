@@ -12,6 +12,7 @@ import {
 } from "../../basic-lib";
 import {
   CoinInfo,
+  DAY_MINUTE_FORMAT,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
@@ -247,8 +248,14 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
             row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
           ) {
             return (
-              <Tooltip title={<>{t("labelRedpacketCantOpen")}</>}>
-                <span style={{borderBottom: "1px dotted", marginRight: `${theme.unit * 2}px`}}>
+              <Tooltip
+                title={<>{t("labelRedpacketCantOpen", {
+                  time: moment(row.rawData.luckyToken.validUntil).format(YEAR_DAY_MINUTE_FORMAT),
+                  interpolation: {
+                    escapeValue: false,
+                  }
+                })}</>}>
+                <span style={{ borderBottom: "1px dotted", marginRight: `${theme.unit * 2}px` }}>
                   {t("labelRedPacketOpen", { ns: "common" })}
                 </span>
               </Tooltip>
@@ -300,9 +307,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
                     display={"flex"}
                     alignItems={"center"}
                     justifyContent={"center"}
-                    height={RowConfig.rowHeight + "px"}
-                    width={RowConfig.rowHeight + "px"}
-                    padding={1 / 4}
                   >
                     {metadata?.imageSize && (
                       <NftImageStyle
@@ -382,8 +386,13 @@ export const RedPacketBlindBoxReceiveTable = withTranslation([
             row.rawData.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
           ) {
             return (
-              <Tooltip title={<>{t("labelRedpacketCantOpen")}</>}>
-                <span style={{borderBottom: "1px dotted", marginRight: `${theme.unit * 2}px`}}>
+              <Tooltip title={<>{t("labelRedpacketCantOpen", {
+                time: moment(row.rawData.luckyToken.validUntil).format(YEAR_DAY_MINUTE_FORMAT),
+                interpolation: {
+                  escapeValue: false,
+                }
+              })}</>}>
+                <span style={{ borderBottom: "1px dotted", marginRight: `${theme.unit * 2}px` }}>
                   {t("labelRedPacketOpen", { ns: "common" })}
                 </span>
               </Tooltip>

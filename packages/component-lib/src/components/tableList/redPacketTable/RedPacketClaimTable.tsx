@@ -115,6 +115,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         updateData.cancel();
       };
     }, []);
+    const theme = useTheme()
     const getColumnModeTransaction = React.useCallback((): Column<
       R,
       unknown
@@ -244,12 +245,12 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
         },
       ];
     }, [history, t, hideAssets]);
-    const theme = useTheme()
+    
     const NFTrow = {
       token: {
         icon: theme.mode === 'dark' 
-          ? "https://static.loopring.io/assets/images/nft_dark.png"
-          : "https://static.loopring.io/assets/images/nft_light.png",
+          ? SoursURL + "images/nft_dark.png"
+          : SoursURL + "images/nft_light.png",
         name: "NFTs",
         simpleName: "NFTs",
         description: "",
@@ -265,8 +266,8 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
     const blindboxRow = {
       token: {
         icon: theme.mode === 'dark' 
-          ? SoursURL + "/images/blindbox_dark.png"
-          : SoursURL + "/images/blindbox_light.png",
+          ? SoursURL + "images/blindbox_dark.png"
+          : SoursURL + "images/blindbox_light.png",
         name: "Blind Box",
         simpleName: "Blind Box",
         description: "",
@@ -280,10 +281,7 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
     };
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
-      generateRows: (rawData: any) => [
-        ...(isNFT ? [] : [NFTrow, blindboxRow]), // if isNFT then not show nft row, else shows.
-        ...rawData,
-      ],
+      generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
@@ -344,7 +342,10 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
             // rowRenderer: RowRenderer,
             ...props,
 
-            rawData,
+            rawData: [
+              ...(isNFT ? [] : [NFTrow, blindboxRow]), // if isNFT then not show nft row, else shows.
+              ...rawData,
+            ],
             showloading,
           }}
         />

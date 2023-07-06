@@ -1272,11 +1272,9 @@ export function useRedPacketModal() {
             });
           }
         },
-        NFTURL:
-          Date.now() > detail!.luckyToken.validUntil ||
-          detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
-            ? detail.luckyToken.nftTokenInfo?.metadata?.imageSize.original
-            : undefined,
+        NFTURL: Date.now() > detail!.luckyToken.validUntil 
+          ? detail.luckyToken.nftTokenInfo?.metadata?.imageSize.original
+          : undefined,
         description: "",
         // Date.now() > detail!.luckyToken.validUntil
         //   ? t("labelBlindBoxExplainationEnded")

@@ -97,7 +97,8 @@ export const RedPacketClaimPanel = ({
         account.apiKey
       )
       .then((response) => {
-        setTotalLuckyTokenNFTBalance(response.totalNum);
+        const sum = response.list.reduce((acc, cur) => acc + Number(cur.claim.amount), 0)
+        setTotalLuckyTokenNFTBalance(sum);
       });
     LoopringAPI.luckTokenAPI
       ?.getLuckTokenClaimedBlindBox(
