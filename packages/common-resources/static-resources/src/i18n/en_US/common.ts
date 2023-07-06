@@ -1333,6 +1333,8 @@ export default {
   labelBlindBoxRedPacketWithGift: "Count of Red Packets with gift",
   labelBlindBoxExpirationExplainationForToken:
     "After expiration, any unopened Red Packets will be forfeited and sent back to the Sender",
+  labelBlindBoxExpirationExplainationForTokenBlindbox:
+    "If the recipients of the Tokens Red Packets do not open their received Tokens, the Tokens will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxExpirationExplainationForNFT:
     "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: "Private Red Packet",
@@ -1512,6 +1514,8 @@ export default {
   labelRedPacketTimeRangeBlindbox: "Start / Reveal Time",
   labelRedPacketTimeRangeBlindboxDes:
     "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received an NFT",
+  labelRedPacketTimeRangeBlindboxDesERC20:
+    "The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received tokens",
   labelRedPacketStartWithTime: "{{time}} Start",
   labelRedPacketTabReceived: "Received",
   labelRedPacketTabSent: "Sent",

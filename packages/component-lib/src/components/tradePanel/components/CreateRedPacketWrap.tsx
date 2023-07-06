@@ -681,8 +681,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 : t("labelRedPacketTimeRange")}
               <Tooltip
                 title={
-                  selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? t("labelRedPacketTimeRangeBlindboxDes")!
+                  tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                    ? (tradeData.isNFT ? t("labelRedPacketTimeRangeBlindboxDes")! : t("labelRedPacketTimeRangeBlindboxDesERC20")!)
                     : t("labelRedPacketTimeRangeDes")!
                 }
               >
@@ -933,9 +933,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
             width={"100%"}
             textAlign={"center"}
           >
-            {tradeType === RedPacketOrderType.TOKEN
-              ? t("labelBlindBoxExpirationExplainationForToken")
-              : t("labelBlindBoxExpirationExplainationForNFT")}
+            {
+              tradeData.isNFT
+                ? t("labelBlindBoxExpirationExplainationForNFT")
+                : tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                  ? t("labelBlindBoxExpirationExplainationForTokenBlindbox")
+                  : t("labelBlindBoxExpirationExplainationForToken")
+            }
           </Typography>
         </Box>
       </RedPacketBoxStyle>
