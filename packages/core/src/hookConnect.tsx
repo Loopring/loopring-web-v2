@@ -24,6 +24,7 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
+  SUBMIT_PANEL_AUTO_CLOSE,
   ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
@@ -38,6 +39,7 @@ import { useTranslation } from 'react-i18next'
 import { Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
+import EthereumProvider from '@walletconnect/ethereum-provider'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
@@ -128,7 +130,29 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         step: WalletConnectStep.CommonProcessing,
       })
       myLog(connectProvides)
-      await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
+      try {
+        await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
+      } catch (error) {
+        const chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+        setDefaultNetwork(chainId ?? defaultNetwork)
+        if (
+          connectProvides?.usedWeb3 &&
+          (error as any)?.code == 4001 &&
+          window?.ethereum?.isConnected() &&
+          !(connectProvides?.usedProvide as EthereumProvider)?.isWalletConnect
+        ) {
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.RejectSwitchNetwork,
+          })
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+        }
+
+        setShowConnect({
+          isShow: false,
+          step: WalletConnectStep.RejectSwitchNetwork,
+        })
+      }
     } else {
       networkUpdate()
     }
