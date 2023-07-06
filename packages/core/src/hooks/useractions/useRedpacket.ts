@@ -24,7 +24,6 @@ export function useOpenRedpacket() {
     //   isShow: true,
     //   step: AccountStep.RedPacketOpen_Claim_In_Progress,
     // });
-    debugger
     const _info = store.getState().modals.isShowRedPacket
       .info as sdk.LuckyTokenItemForReceive & {
       referrer?: string;

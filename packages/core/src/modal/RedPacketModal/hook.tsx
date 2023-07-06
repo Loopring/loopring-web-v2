@@ -233,14 +233,21 @@ export function useRedPacketModal() {
             : getShortAddr(_info.sender?.address),
           viewDetail: () => {
             if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-              setShowRedPacket({
-                isShow,
-                step: RedPacketViewStep.BlindBoxDetail,
-                info: {
-                  hash: _info.hash,
-                  // type: _info.type,
-                },
-              });
+              LoopringAPI.luckTokenAPI
+                ?.getLuckTokenDetail(
+                  {
+                    hash: _info.hash,
+                  },
+                  account.apiKey
+                ).then(response => {
+                  setShowRedPacket({
+                    isShow,
+                    step: RedPacketViewStep.BlindBoxDetail,
+                    info: {
+                      ...response.detail.luckyToken,
+                    },
+                  });
+                }) 
             } else {
               LoopringAPI.luckTokenAPI
                 ?.getLuckTokenDetail(
