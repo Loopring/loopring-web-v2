@@ -85,7 +85,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
       ? `${tradeData.slippage}`
       : '0.1'
     : EmptyValueTag
-  myLog('isMarketInit', isMarketInit)
+  // myLog('isMarketInit', isMarketInit)
   return (
     <Box
       display={'flex'}

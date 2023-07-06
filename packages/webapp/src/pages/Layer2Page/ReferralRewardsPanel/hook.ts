@@ -62,9 +62,9 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
         } catch (error) {
           let errorItem
           if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
-            errorItem = SDK_ERROR_MAP_TO_UI[ (error as sdk.RESULT_INFO)?.code ?? 700001 ]
+            errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
           } else {
-            errorItem = SDK_ERROR_MAP_TO_UI[ 700012 ]
+            errorItem = SDK_ERROR_MAP_TO_UI[700012]
           }
           setToastOpen({
             open: true,
@@ -125,7 +125,6 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
         })
     }
   }, [accountStatus])
-  myLog('RefundTable', showLoading)
 
   return {
     summary,
@@ -186,9 +185,9 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
         } catch (error) {
           let errorItem
           if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
-            errorItem = SDK_ERROR_MAP_TO_UI[ (error as sdk.RESULT_INFO)?.code ?? 700001 ]
+            errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
           } else {
-            errorItem = SDK_ERROR_MAP_TO_UI[ 700012 ]
+            errorItem = SDK_ERROR_MAP_TO_UI[700012]
           }
           setToastOpen({
             open: true,
@@ -246,7 +245,6 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
         })
     }
   }, [accountStatus])
-  myLog('ReferralsTable', showLoading)
 
   return {
     summary,

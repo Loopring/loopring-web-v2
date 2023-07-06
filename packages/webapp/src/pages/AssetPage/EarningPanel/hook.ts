@@ -84,7 +84,6 @@ export function useEarningsTable<R = EarningsRow>(setToastOpen: (state: any) => 
       setShowLoading(false)
     }
   }, [accountId, apiKey, setToastOpen, t, tokenMap])
-  myLog('EarningsTable', showLoading)
 
   return {
     claimList,

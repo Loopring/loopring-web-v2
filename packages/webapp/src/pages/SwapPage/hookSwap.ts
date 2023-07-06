@@ -227,7 +227,7 @@ export const useSwap = <
       history.push('/trade/lite/' + _market)
       updatePageTradeLite({ market, tradePair })
 
-      myLog('hookSwap: Market change getAmount', market)
+      // myLog('hookSwap: Market change getAmount', market)
       if (account.readyState === AccountStatus.ACTIVATED) {
         getAmount({ market })
       }
@@ -515,10 +515,10 @@ export const useSwap = <
           account.apiKey,
         )
 
-        myLog('hookSwap:-----> resp:', resp)
+        // myLog('hookSwap:-----> resp:', resp)
 
         if (resp.orderDetail?.status !== undefined) {
-          myLog('hookSwap:resp.orderDetail:', resp.orderDetail)
+          // myLog('hookSwap:resp.orderDetail:', resp.orderDetail)
           switch (resp.orderDetail?.status) {
             case sdk.OrderStatus.cancelled:
               const baseAmount = sdk.toBig(resp.orderDetail.volumes.baseAmount)
@@ -527,7 +527,7 @@ export const useSwap = <
               const quoteFilled = sdk.toBig(resp.orderDetail.volumes.quoteFilled)
               const percentage1 = baseAmount.eq(BIGO) ? 0 : baseFilled.div(baseAmount).toNumber()
               const percentage2 = quoteAmount.eq(BIGO) ? 0 : quoteFilled.div(quoteAmount).toNumber()
-              myLog('hookSwap:percentage1:', percentage1, ' percentage2:', percentage2)
+              // myLog('hookSwap:percentage1:', percentage1, ' percentage2:', percentage2)
               if (percentage1 === 0 || percentage2 === 0) {
                 setToastOpen({
                   open: true,
@@ -644,7 +644,7 @@ export const useSwap = <
     const { priceLevel } = getPriceImpactInfo(pageTradeLite.calcTradeParams, account.readyState)
     setIsSwapLoading(true)
 
-    myLog('hookSwap:---- swapCalculatorCallback priceLevel:', priceLevel)
+    // myLog('hookSwap:---- swapCalculatorCallback priceLevel:', priceLevel)
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true })
       setIsSwapLoading(false)
@@ -778,13 +778,13 @@ export const useSwap = <
     swapType: any,
   ): Promise<void> => {
     const { tradeData: _tradeData } = swapData
-    myLog('hookSwap: handleSwapPanelEvent', swapType, _tradeData)
+    // myLog('hookSwap: handleSwapPanelEvent', swapType, _tradeData)
     switch (swapType) {
       case SwapType.SEll_CLICK:
       case SwapType.BUY_CLICK:
         return
       case SwapType.SELL_SELECTED:
-        myLog('hookSwap: handleSwapPanelEvent _tradeData', _tradeData)
+        // myLog('hookSwap: handleSwapPanelEvent _tradeData', _tradeData)
         if (_tradeData?.sell.belong !== tradeData?.sell.belong) {
           resetMarket(
             `${_tradeData?.sell?.belong ?? `#null`}-${_tradeData?.buy?.belong ?? `#null`}`,
@@ -851,7 +851,7 @@ export const useSwap = <
           isChecked: undefined,
         }
 
-        myLog('hookSwap:Exchange,tradeCalcData,_tradeCalcData', tradeCalcData, _tradeCalcData)
+        // myLog('hookSwap:Exchange,tradeCalcData,_tradeCalcData', tradeCalcData, _tradeCalcData)
         callPairDetailInfoAPIs()
         updatePageTradeLite({
           market,
@@ -890,7 +890,7 @@ export const useSwap = <
   }
 
   React.useEffect(() => {
-    myLog('hookSwap: pageTradeLite.deep', pageTradeLite?.depth?.symbol, market)
+    // myLog('hookSwap: pageTradeLite.deep', pageTradeLite?.depth?.symbol, market)
     if (pageTradeLite.depth && pageTradeLite.depth.symbol === market) {
       refreshAmmPoolSnapshot()
       setIsMarketStatus((state) => {
@@ -906,7 +906,7 @@ export const useSwap = <
     if (market) {
       //@ts-ignore
       if (refreshRef.current) {
-        myLog('hookSwap: pageTradeLite, click', market)
+        // myLog('hookSwap: pageTradeLite, click', market)
         // @ts-ignore
         refreshRef.current.firstElementChild.click()
         should15sRefresh()
@@ -972,7 +972,7 @@ export const useSwap = <
         const { depth, ammPoolSnapshot } = await swapDependAsync(market)
         if (depth) {
           const { tickerMap } = store.getState().tickerMap
-          myLog('hookSwap: pageTradeLite', 'depth')
+          // myLog('hookSwap: pageTradeLite', 'depth')
           updatePageTradeLite({
             market,
             depth,
@@ -981,7 +981,7 @@ export const useSwap = <
           })
         }
       } catch (error: any) {
-        myLog('hookSwap: error:', error, 'go to LRC-ETH')
+        // myLog('hookSwap: error:', error, 'go to LRC-ETH')
         setToastOpen({
           open: true,
           content: 'error: resetMarket',
@@ -997,7 +997,7 @@ export const useSwap = <
         store.getState()._router_pageTradeLite.pageTradeLite
       const { amountMap } = store.getState().amountMap
       let calcForMinAmt, calcForMinCost, calcForPriceImpact
-      myLog('hookSwap:reCalculateDataWhenValueChange', tradeData, _tradePair, type)
+      // myLog('hookSwap:reCalculateDataWhenValueChange', tradeData, _tradePair, type)
       if (depth && market && _tradePair === tradePair && _tradeData) {
         const coinA = _tradeData.sell.belong
         const coinB = _tradeData.buy.belong
@@ -1260,7 +1260,7 @@ export const useSwap = <
             maxFeeBips = Math.ceil(
               totalFeeRaw.times(10000).div(calcTradeParams.amountBOutSlip?.minReceived).toNumber(),
             )
-            myLog('hookSwap:maxFeeBips update for tradeCost after value:', maxFeeBips)
+            // myLog('hookSwap:maxFeeBips update for tradeCost after value:', maxFeeBips)
           } else {
             totalFeeRaw = sdk.toBig(value)
           }
@@ -1285,7 +1285,7 @@ export const useSwap = <
             { floor: true },
           )
 
-          myLog('hookSwap:totalFee view value:', totalFee, tradeCost)
+          // myLog('hookSwap:totalFee view value:', totalFee, tradeCost)
         }
 
         const minimumReceived = getValuePrecisionThousand(
@@ -1402,7 +1402,7 @@ export const useSwap = <
           _tradeCalcData.minimumReceived = undefined
         }
         if (_tradeData?.isChecked !== undefined) {
-          myLog('hookSwap: tradeCalcData?.isChecked', _tradeData)
+          // myLog('hookSwap: tradeCalcData?.isChecked', _tradeData)
           _tradeCalcData.isChecked = _tradeData.isChecked
         }
         setTradeCalcData((state) => ({
