@@ -567,6 +567,7 @@ export function useRedPacketModal() {
     }) => {
       setDetail(undefined);
       setBlindBoxDetail(undefined)
+      setWonPrizeInfo(undefined)
       const _info = info as sdk.LuckyTokenItemForReceive & {
         claimAmount?: string;
       };
@@ -1306,7 +1307,7 @@ export function useRedPacketModal() {
               tokenInfo!.precision,
               tokenInfo!.precision,
               tokenInfo!.precision,
-              true
+              false
             ),
             total: getValuePrecisionThousand(
               sdk
@@ -1315,7 +1316,7 @@ export function useRedPacketModal() {
               tokenInfo!.precision,
               tokenInfo!.precision,
               tokenInfo!.precision,
-              true
+              false
             ),
             symbol: tokenInfo!.symbol,
             isNFT: false
