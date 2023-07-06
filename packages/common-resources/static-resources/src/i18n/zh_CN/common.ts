@@ -1769,6 +1769,7 @@ export default {
   
   labelRedpacketTotalReward: "Total {{amount}}",
   labelRedpacketCantOpen: "Now is not the time to open",
+  labelRedpacketStandard: "Standard",
   labelLocketInfo: "{{symbol}} Locked Detail",
   labelSendAssetToAnotherNet: "To another network",
   labelFromAnotherNet: "From another network",

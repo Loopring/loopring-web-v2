@@ -994,6 +994,7 @@ export const CreateRedPacketStepType = withTranslation()(
           ).map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
+                {tradeType == RedPacketOrderType.FromNFT && index === 1 && <Typography marginTop={1} variant={"h5"} color={"var(--color-text-secondary)"}>{t("labelRedpacketStandard")}</Typography>}
                 <Box key={item.value.value} marginBottom={1}>
                   <MenuBtnStyled
                     variant={"outlined"}
