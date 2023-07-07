@@ -180,7 +180,7 @@ export type RedPacketBlindBoxDetailProps = {
   onClickClaimDetailBack?: () => void;
   description: string;
   shareButton: "hidden" | "share";
-  claimButton: "claimed" | "claim" | "claiming" | "expired" | "hidden";
+  claimButton: "claimed" | "claim" | "claiming" | "expired" | "hidden" | "ended";
   didClaimABlindBox: boolean;
   wonInfo: {
     participated: boolean;

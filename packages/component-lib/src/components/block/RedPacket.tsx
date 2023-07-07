@@ -2285,6 +2285,10 @@ export const RedPacketBlindBoxDetail = ({
               <Button disabled variant={"contained"} fullWidth>
                 {t("Expired")}
               </Button>
+            ) : claimButton === "ended" ? (
+              <Button disabled variant={"contained"} fullWidth>
+                {t("labelRedPacketStatusEnded")}
+              </Button>
             ) : undefined}
           </Box>
           {/* )} */}

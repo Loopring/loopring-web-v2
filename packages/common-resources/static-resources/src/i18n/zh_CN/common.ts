@@ -1337,7 +1337,7 @@ export default {
   labelBlindBoxCongratulationsBlindBox:
     "Congratulations on receiving a Blind Box",
   labelBlindBoxSorryBlindBox: "Sorry, you did not win a prize",
-  labelBlindBoxClaimHint: "You can visit Assets > Red Packets > Tokens to claim your rewards.",
+  labelBlindBoxClaimHint: "You can visit Assets > Red Packets to claim your rewards.",
   labelLuckyRelayToken: "Relay Red Packet",
   labelLuckyRelayTokenDes:
     "If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.",
@@ -1408,8 +1408,8 @@ export default {
   labelRedPacketsGiftsLargerThanPackets:
     "The number of Red Packets containing gifts cannot exceed the total number of Red Packets",
   labelRedPacketsGiftsEqualsZero:
-    "Number of Blind Box can't be zero",
-  labelBlindBoxNumberOverMaximun: "Number of Blind Box exceeds maximum",
+    "Number of gifts can't be zero",
+  labelBlindBoxNumberOverMaximun: "Number of gifts exceeds maximum",
   labelRedPacketsSplitNumber: "Maximum split is {{value}}",
   labelRedPacketsSplitCommonDetail: "Distribution per red packet: {{value}}",
   labelRedPacketsSplitLuckyDetail:

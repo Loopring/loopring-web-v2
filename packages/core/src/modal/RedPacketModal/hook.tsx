@@ -1101,7 +1101,8 @@ export function useRedPacketModal() {
         | "claim"
         | "claiming"
         | "expired"
-        | "hidden" = detail.luckyToken.isNft
+        | "hidden" 
+        | "ended" = detail.luckyToken.isNft
           ? (
             Date.now() > detail.luckyToken.validUntil
               ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
@@ -1112,15 +1113,17 @@ export function useRedPacketModal() {
                     ? "claiming"
                     : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
                       ? "expired"
-                      : "hidden"
+                      : detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
+                        ? "ended"
+                        : "hidden"
               : "hidden"
           )
-          : (detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED ? "expired" : "hidden")
+          : (detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED ? "ended" : "hidden")
+      
       
       const tokenInfo = !detail.luckyToken.isNft 
         ? tokenMap[idIndex[detail.luckyToken.tokenId]] 
         : undefined
-      console.log('blinBoxDetail.claimAmount', blinBoxDetail.claimAmount)
       return {
         sender: _info.sender?.ens
           ? _info.sender?.ens
