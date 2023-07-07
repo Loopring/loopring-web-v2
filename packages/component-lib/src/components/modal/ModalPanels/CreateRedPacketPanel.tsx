@@ -206,6 +206,11 @@ export const CreateRedPacketPanel = <
         partition: found!.value.partition,
         mode: found!.value.mode,
       },
+      isNFT: (
+        tradeData.tradeType === RedPacketOrderType.NFT 
+        || tradeData.tradeType === RedPacketOrderType.FromNFT 
+        || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
+      ) ? true : false
     } as any);
   }, [tradeData.tradeType]);
 
