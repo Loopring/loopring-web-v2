@@ -492,6 +492,7 @@ export type LuckyRedPacketItem = {
   defaultForERC20?: boolean;
   defaultForNFT?: boolean;
   defaultForBlindbox?: boolean;
+  defaultForBlindboxNotShowERC20Blindbox?: boolean;
   isBlindboxNFT?: boolean;
   defaultForFromNFT?: boolean;
   showInFromNFT?: boolean;
