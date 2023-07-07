@@ -1302,7 +1302,7 @@ export function useRedPacketModal() {
             won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
             amount: getValuePrecisionThousand(
               sdk
-                .toBig(blinBoxDetail.claimAmount)
+                .toBig(blinBoxDetail.claimAmount ?? "0")
                 .div("1e" + tokenInfo!.decimals),
               tokenInfo!.precision,
               tokenInfo!.precision,
