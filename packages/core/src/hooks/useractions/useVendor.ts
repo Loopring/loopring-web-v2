@@ -259,9 +259,11 @@ export const useVendor = () => {
     : []
 
   const closeBanxa = () => {
-    const parentsNode: any = window.document.querySelector('#iframeBanxaTarget')
-    if (parentsNode) {
-      parentsNode?.style.display = 'none'
+    // @ts-ignore
+    var parentsNode: undefined | HTMLElement = window.document.getElementById('#iframeBanxaTarget')
+    if (parentsNode && parentsNode.style) {
+      // @ts-ignore
+      parentsNode.style.display = 'none'
     }
   }
 

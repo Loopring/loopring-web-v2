@@ -31,7 +31,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { accountReducer, useAccount } from './stores/account'
-import { useModalData, useSystem } from './stores'
+import { useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { store, WalletConnectL2Btn } from './index'
@@ -217,7 +217,6 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const { resetWithdrawData, resetTransferData, resetDepositData } = useModalData()
 
-  const { updateSystem } = useSystem()
   const { setShowConnect } = useOpenModals()
   const [stateAccount, setStateAccount] = React.useState<keyof typeof SagaStatus>('DONE')
   React.useEffect(() => {
@@ -352,7 +351,6 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       shouldShow,
       statusAccountUnset,
       setShowConnect,
-      updateSystem,
       resetAccount,
     ],
   )
