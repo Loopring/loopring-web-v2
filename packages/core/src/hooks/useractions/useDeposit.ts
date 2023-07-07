@@ -43,7 +43,6 @@ import {
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
-import Web3 from 'web3'
 
 export const useDeposit = <
   T extends {
@@ -368,7 +367,7 @@ export const useDeposit = <
           exchangeInfo.exchangeAddress,
         ).replace('${nonce}', '0')
         const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3 as unknown as Web3,
+          web3: connectProvides.usedWeb3,
           address: account.accAddress,
           keySeed,
           walletType: (ConnectProviders[account.connectName] ??
