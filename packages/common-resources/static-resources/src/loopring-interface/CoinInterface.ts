@@ -495,6 +495,7 @@ export type LuckyRedPacketItem = {
   isBlindboxNFT?: boolean;
   defaultForFromNFT?: boolean;
   showInFromNFT?: boolean;
+  toolgleWithShowERC20Blindbox?: boolean;
   icon?: string;
   value: {
     value: number;

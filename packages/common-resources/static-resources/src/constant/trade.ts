@@ -692,6 +692,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.BLIND_BOX,
     },
+    toolgleWithShowERC20Blindbox: true,
   },
   {
     labelKey: "labelRedpacketNFTS",

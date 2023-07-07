@@ -971,6 +971,23 @@ export const CreateRedPacketStepType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled;
     }, [disabled]);
+    const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox;
+    const filteredList = LuckyRedPacketList.filter((item) =>
+      (tradeType == RedPacketOrderType.NFT
+        ? item.showInNFTS
+        : tradeType == RedPacketOrderType.BlindBox
+          ? item.showInBlindbox
+          : tradeType == RedPacketOrderType.FromNFT
+            ? item.showInFromNFT
+            : item.showInERC20
+      ) && (
+        showERC20Blindbox 
+          ? true
+          : item.toolgleWithShowERC20Blindbox 
+            ? false
+            : true
+      )
+    )
 
     return (
       <RedPacketBoxStyle
@@ -988,15 +1005,7 @@ export const CreateRedPacketStepType = withTranslation()(
           alignSelf={"stretch"}
           marginY={2}
         >
-          {LuckyRedPacketList.filter((item) =>
-            tradeType == RedPacketOrderType.NFT
-              ? item.showInNFTS
-              : tradeType == RedPacketOrderType.BlindBox
-                ? item.showInBlindbox
-                : tradeType == RedPacketOrderType.FromNFT
-                  ? item.showInFromNFT
-                  : item.showInERC20
-          ).map((item: LuckyRedPacketItem, index) => {
+          {filteredList.map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
                 {tradeType == RedPacketOrderType.FromNFT && index === 1 && <Typography marginTop={1} variant={"h5"} color={"var(--color-text-secondary)"}>{t("labelRedpacketStandard")}</Typography>}
