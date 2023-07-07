@@ -1,16 +1,16 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { EarningsTable, Toast, ToastType } from '@loopring-web/component-lib'
+import { RewardsTable, Toast, ToastType } from '@loopring-web/component-lib'
 import React from 'react'
 import { TOAST_TIME } from '@loopring-web/common-resources'
 import { StylePaper, useAccount, useSystem, useToast } from '@loopring-web/core'
 
-import { useEarningsTable } from './hook'
+import { useRewardsTable } from './hook'
 import { Box } from '@mui/material'
 
-const EarningsPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
+const RewardsPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const { forexMap } = useSystem()
   const { toastOpen, setToastOpen, closeToast } = useToast()
-  const { claimList, showLoading, getEarningsTableList } = useEarningsTable(setToastOpen)
+  const { claimList, showLoading, getRewardsTableList } = useRewardsTable(setToastOpen)
   const {
     account: { accAddress, accountId },
   } = useAccount()
@@ -29,14 +29,12 @@ const EarningsPanel = withTranslation('common')((rest: WithTranslation<'common'>
       />
 
       <Box className='tableWrapper table-divide-short'>
-        <EarningsTable
+        <RewardsTable
           forexMap={forexMap}
           rawData={claimList}
-          onItemClick={(item) => {
-          }}
-          onDetail={(item) => {
-          }}
-          getList={getEarningsTableList}
+          onItemClick={(item) => {}}
+          onDetail={(item) => {}}
+          getList={getRewardsTableList}
           showloading={showLoading}
         />
       </Box>
@@ -44,4 +42,4 @@ const EarningsPanel = withTranslation('common')((rest: WithTranslation<'common'>
   )
 })
 
-export default EarningsPanel
+export default RewardsPanel

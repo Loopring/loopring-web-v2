@@ -12,7 +12,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { myLog, SDK_ERROR_MAP_TO_UI, TokenType } from '@loopring-web/common-resources'
 import { TokenInfo } from '@loopring-web/loopring-sdk'
 
-export function useEarningsTable<R = EarningsRow>(setToastOpen: (state: any) => void) {
+export function useRewardsTable<R = EarningsRow>(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount()
@@ -22,7 +22,7 @@ export function useEarningsTable<R = EarningsRow>(setToastOpen: (state: any) => 
   const { t } = useTranslation(['error'])
   const [claimList, setClaimList] = React.useState<R[]>([])
   const [showLoading, setShowLoading] = React.useState(false)
-  const getEarningsTableList = React.useCallback(async () => {
+  const getRewardsTableList = React.useCallback(async () => {
     if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
       setShowLoading(true)
       try {
@@ -88,6 +88,6 @@ export function useEarningsTable<R = EarningsRow>(setToastOpen: (state: any) => 
   return {
     claimList,
     showLoading,
-    getEarningsTableList,
+    getRewardsTableList,
   }
 }

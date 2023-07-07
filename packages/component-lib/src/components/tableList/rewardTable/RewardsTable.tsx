@@ -71,7 +71,7 @@ const TableStyled = styled(Table)`
   }
 ` as any
 
-export const EarningsTable = withTranslation(['tables', 'common'])(
+export const RewardsTable = withTranslation(['tables', 'common'])(
   <R extends EarningsRow>(
     props: {
       forexMap: ForexMap<sdk.Currency>

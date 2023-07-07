@@ -1751,4 +1751,5 @@ export default {
   labelExplorer: 'Explorer',
   labelTutorial: 'Tutorial',
   labelRejectSwitchNetwork: 'Switch Chain was Rejected',
+  labelAssetRewards: 'Rewards',
 }

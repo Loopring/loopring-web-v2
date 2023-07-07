@@ -16,7 +16,7 @@ import {
   MapChainId,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
-import EarningsPanel from '../EarningPanel'
+import RewardsPanel from '../RewardsPanel'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -26,15 +26,15 @@ const StyleTitlePaper = styled(Box)`
 
 export const AssetPanel = withTranslation('common')(
   ({
-     t,
-     assetTitleProps,
-     assetPanelProps: {
-       assetsRawData,
-       getTokenRelatedMarketArray,
-       onSend,
-       assetBtnStatus,
-       onReceive,
-       hideInvestToken,
+    t,
+    assetTitleProps,
+    assetPanelProps: {
+      assetsRawData,
+      getTokenRelatedMarketArray,
+      onSend,
+      assetBtnStatus,
+      onReceive,
+      hideInvestToken,
       hideSmallBalances,
       allowTrade,
       setHideLpToken,
@@ -55,7 +55,7 @@ export const AssetPanel = withTranslation('common')(
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>()
     const history = useHistory()
     const handleTabChange = (value: AssetTabIndex) => {
-      if (AssetL2TabIndex[ MapChainId[ defaultNetwork ] ]?.includes(value)) {
+      if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
           case AssetTabIndex.Invests:
             history.replace('/l2assets/assets/Invests')
@@ -65,9 +65,9 @@ export const AssetPanel = withTranslation('common')(
             history.replace('/l2assets/assets/RedPacket')
             setCurrentTab(AssetTabIndex.RedPacket)
             break
-          case AssetTabIndex.Earnings:
-            history.replace('/l2assets/assets/Earnings')
-            setCurrentTab(AssetTabIndex.Earnings)
+          case AssetTabIndex.Rewards:
+            history.replace('/l2assets/assets/Rewards')
+            setCurrentTab(AssetTabIndex.Rewards)
             break
           case AssetTabIndex.Tokens:
           default:
@@ -106,8 +106,8 @@ export const AssetPanel = withTranslation('common')(
           aria-label='l2-history-tabs'
           variant='scrollable'
         >
-          {AssetL2TabIndex[ MapChainId[ defaultNetwork ] ] ? (
-            AssetL2TabIndex[ MapChainId[ defaultNetwork ] ].map((item: string) => {
+          {AssetL2TabIndex[MapChainId[defaultNetwork]] ? (
+            AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
               return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
             })
           ) : (
@@ -152,7 +152,7 @@ export const AssetPanel = withTranslation('common')(
             </Box>
           </StylePaper>
         )}
-        {currentTab === AssetTabIndex.Earnings && <EarningsPanel />}
+        {currentTab === AssetTabIndex.Rewards && <RewardsPanel />}
         {currentTab === AssetTabIndex.Invests && (
           <MyLiquidity isHideTotal={true} hideAssets={hideAssets} />
         )}

@@ -654,7 +654,7 @@ export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',
   RedPacket = 'RedPacket',
-  Earnings = 'Earnings',
+  Rewards = 'Rewards',
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
@@ -750,13 +750,13 @@ export const AssetL2TabIndex = {
     AssetTabIndex.Tokens,
     AssetTabIndex.Invests,
     AssetTabIndex.RedPacket,
-    AssetTabIndex.Earnings,
+    AssetTabIndex.Rewards,
   ],
   GOERLI: [
     AssetTabIndex.Tokens,
     AssetTabIndex.Invests,
     AssetTabIndex.RedPacket,
-    AssetTabIndex.Earnings,
+    AssetTabIndex.Rewards,
   ],
 }
 export const RouterAllowIndex = {
