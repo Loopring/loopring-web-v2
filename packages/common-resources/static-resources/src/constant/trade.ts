@@ -698,6 +698,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     labelKey: "labelRedpacketNFTS",
     desKey: "",
     showInBlindbox: true,
+    defaultForBlindboxNotShowERC20Blindbox: true,
     icon: sdk.SoursURL + '/images/blindboxSelectNFT.png',
     isBlindboxNFT: true,
     value: {

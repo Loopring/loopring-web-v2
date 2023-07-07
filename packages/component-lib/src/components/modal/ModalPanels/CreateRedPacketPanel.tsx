@@ -25,6 +25,7 @@ import {
 } from "../../tradePanel/components/CreateRedPacketWrap";
 import { Box, styled } from "@mui/material";
 import { LuckyTokenClaimType } from "@loopring-web/loopring-sdk";
+import { useNotify } from "@loopring-web/core";
 
 const BoxStyle = styled(Box)`
   &.createRedPacket {
@@ -140,12 +141,12 @@ export const CreateRedPacketPanel = <
     });
     return clonedWalletMap;
   }, [walletMap]);
-
+  const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox;
   const [selectedType, setSelectType] = React.useState(
     tradeData.tradeType === RedPacketOrderType.NFT
       ? LuckyRedPacketList.find((config) => config.defaultForNFT)
       : tradeData.tradeType === RedPacketOrderType.BlindBox
-        ? LuckyRedPacketList.find((config) => config.defaultForBlindbox)
+        ? LuckyRedPacketList.find((config) => showERC20Blindbox ? config.defaultForBlindbox : config.defaultForBlindboxNotShowERC20Blindbox)
         : tradeData.tradeType === RedPacketOrderType.FromNFT
           ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
           : LuckyRedPacketList.find((config) => config.defaultForERC20)
@@ -193,7 +194,7 @@ export const CreateRedPacketPanel = <
       tradeData.tradeType === RedPacketOrderType.NFT
         ? LuckyRedPacketList.find((config) => config.defaultForNFT)
         : tradeData.tradeType === RedPacketOrderType.BlindBox
-          ? LuckyRedPacketList.find((config) => config.defaultForBlindbox)
+          ? LuckyRedPacketList.find((config) => showERC20Blindbox ? config.defaultForBlindbox : config.defaultForBlindboxNotShowERC20Blindbox)
           : tradeData.tradeType === RedPacketOrderType.FromNFT 
             ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
             : LuckyRedPacketList.find((config) => config.defaultForERC20);
