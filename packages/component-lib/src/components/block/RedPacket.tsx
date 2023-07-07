@@ -1934,7 +1934,7 @@ export const RedPacketBlindBoxDetail = ({
                 />
               )}
             </Box>}
-            {isTokenBlindbox && type === "Blind Box Started" && didClaimABlindBox && <Box marginY={1} width={"60%"}>
+            {isTokenBlindbox && (type === "Blind Box Started" || type === "Not Started") && <Box marginY={1} width={"60%"}>
               <img
                 alt={""}
                 style={{ width: "100%" }}
@@ -1948,18 +1948,26 @@ export const RedPacketBlindBoxDetail = ({
             )}
               {type === "Lottery Started" && (
                 wonInfo.isNFT ? (
-                  wonInfo.won
-                    ? <Typography>{wonInfo.amount} NFTs</Typography>
+                  wonInfo.participated
+                    ? (
+                      wonInfo.won 
+                        ? <Typography>{`${wonInfo.amount} NFTs`}</Typography>
+                        : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>
+                    )
                     : <Typography color={"var(--color-error)"}>
-                      {t("labelBlindBoxSorryBlindBox")}
+                      {EmptyValueTag}
                     </Typography>
                 ) : (
                   <>
                     <Typography marginTop={3} variant={"h2"} color={RedPacketColorConfig.default.colorTop}>
-                      {wonInfo.won 
-                        ? `${wonInfo.amount} ${wonInfo.symbol}`
-                        : "--"
-                      } 
+                      {wonInfo.participated
+                        ? (wonInfo.won
+                          ? `${wonInfo.amount} ${wonInfo.symbol}`
+                          : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>)
+                        : <Typography>
+                          {EmptyValueTag}
+                        </Typography>
+                      }
                     </Typography>
                     <Typography variant={"h4"} color={RedPacketColorConfig.default.colorTop}>{t("labelRedpacketTotalReward", {amount: `${wonInfo.total} ${wonInfo.symbol}`})} </Typography>
                   </>
