@@ -212,7 +212,7 @@ export const CreateRedPacketPanel = <
         || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
       ) ? true : false
     } as any);
-  }, [tradeData.tradeType]);
+  }, [tradeData.tradeType, showERC20Blindbox]);
 
   const [privateChecked, setPrivateChecked] = React.useState(false);
   const isToken = tradeType === RedPacketOrderType.TOKEN ||
