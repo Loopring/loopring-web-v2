@@ -700,6 +700,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               onStartChange={(m) => {
                 handleOnDataChange({
                   validSince: m ? m.toDate().getTime() : undefined,
+                  validUntil: m ? m.add('days', 1).toDate().getTime() : undefined,
                 } as unknown as Partial<T>);
               }}
               onStartOpen={() => {
