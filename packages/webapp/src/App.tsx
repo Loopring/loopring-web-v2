@@ -1,50 +1,47 @@
-// import { ModalProvider } from 'styled-react-modal'
-import RouterView from "./routers";
-import { GlobalStyles } from "@mui/material";
-import { css, Theme, useTheme } from "@emotion/react";
-import { globalCss } from "@loopring-web/common-resources";
-import { setLanguage } from "@loopring-web/component-lib";
-import { useInit } from "./hook";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import RouterView from './routers'
+import { GlobalStyles } from '@mui/material'
+import { css, Theme, useTheme } from '@emotion/react'
+import { globalCss } from '@loopring-web/common-resources'
+import { setLanguage } from '@loopring-web/component-lib'
+import { useInit } from './hook'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { HashRouter as Router, useLocation } from "react-router-dom";
-import { store } from "@loopring-web/core";
+import { HashRouter as Router, useLocation } from 'react-router-dom'
+import { store } from '@loopring-web/core'
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname } = useLocation()
 
   React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    window.scrollTo(0, 0)
+  }, [pathname])
 
-  return null;
-};
+  return null
+}
 const App = () => {
-  const theme: Theme = useTheme();
+  const theme: Theme = useTheme()
   const {
     i18n: { language },
-  } = useTranslation();
-  const storeLan = store.getState().settings.language;
+  } = useTranslation()
+  const storeLan = store.getState().settings.language
 
   React.useEffect(() => {
     if (storeLan !== language) {
-      store.dispatch(setLanguage(language));
+      store.dispatch(setLanguage(language))
     }
-  }, [storeLan, language]);
+  }, [storeLan, language])
 
   React.useEffect(() => {
-    if (window.location.protocol !== "https:") {
-      console.log("Current PROTOCOL::", window.location.protocol);
+    if (window.location.protocol !== 'https:') {
+      console.log('Current PROTOCOL::', window.location.protocol)
       window.location.replace(
-        `https:${window.location.href.substring(
-          window.location.protocol.length
-        )}`
-      );
+        `https:${window.location.href.substring(window.location.protocol.length)}`,
+      )
     }
-  }, []);
+  }, [])
 
-  const { state } = useInit();
+  const { state } = useInit()
 
   return (
     <>
@@ -54,7 +51,7 @@ const App = () => {
 
           body {
             ${
-              theme.mode === "dark"
+              theme.mode === 'dark'
                 ? `
             color: ${theme.colorBase.textPrimary};
           `
@@ -66,11 +63,11 @@ const App = () => {
 
           body:before {
             ${
-              theme.mode === "dark"
+              theme.mode === 'dark'
                 ? `
             background: var(--color-global-bg);
        `
-                : ""
+                : ''
             }
           }
         }`}
@@ -81,10 +78,10 @@ const App = () => {
         <RouterView state={state} />
       </Router>
     </>
-  );
-};
-const h = new Headers();
-export default App;
+  )
+}
+const h = new Headers()
+export default App
 
 // new ContactAPI({chainId: 1, baseUrl: 'https://uat2.loopring.io'})
 // .getContacts({
