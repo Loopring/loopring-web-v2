@@ -120,8 +120,8 @@ export const RedPacketMarketPanel = ({
               myAmountStr,
               tokenInfo,
               claim,
+              claimed
             } = makeViewCard(item);
-            // alert(amountStr)
 
             return !(hideOpen && claim) ? (
               <Grid
@@ -145,7 +145,12 @@ export const RedPacketMarketPanel = ({
                   tokenInfo={tokenInfo}
                   getIPFSString={getIPFSString}
                   baseURL={baseURL}
-                  _type={(item as any)?.isOfficial ? "official" : "default"}
+                  _type={
+                    item.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
+                      ? "blindbox" 
+                      : (item as any)?.isOfficial ? "official" : "default"
+                  }
+                  claimed={claimed}
                 />
               </Grid>
             ) : (

@@ -635,7 +635,7 @@ export const NFTDetail = withTranslation("common")(
                 paddingLeft={3}
                 display={"flex"}
                 flexDirection={"row"}
-                justifyContent={"space-between"}
+                justifyContent={"left"}
                 marginBottom={isMobile ? 2 : 5}
                 paddingRight={3}
               >
@@ -666,7 +666,7 @@ export const NFTDetail = withTranslation("common")(
                   popItem.minter?.toLowerCase() ===
                     account.accAddress.toLowerCase()
                 ) && (
-                  <Box className={isMobile ? "isMobile" : ""} width={"45%"}>
+                  <Box marginLeft={"2%"} className={isMobile ? "isMobile" : ""} width={"45%"}>
                     <Button
                       variant={"contained"}
                       size={"small"}
@@ -691,7 +691,8 @@ export const NFTDetail = withTranslation("common")(
                   style={{
                     cursor: "pointer",
                     width: "32px",
-                    height: "32px"
+                    height: "32px",
+                    marginLeft: "2%",
                   }}
                   onClick={() => {
                     history.push(`/redPacket/create?nftDatas=${popItem.nftData}`)

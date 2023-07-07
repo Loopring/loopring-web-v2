@@ -62,15 +62,15 @@ export type AssetPanelProps<R = AssetsRawDataItem> = {
   tokenLockDetail:
     | undefined
     | {
-    list: any[]
-    row: any
-  }
+        list: any[]
+        row: any
+      }
 }
 export const useGetAssets = (): AssetPanelProps & {
   assetTitleProps: any
   assetTitleMobileExtendProps: any
 } => {
-  const [assetsMap, setAssetsMap] = React.useState<{ [ key: string ]: any }>({})
+  const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({})
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
 
   const [userAssets, setUserAssets] = React.useState<any[]>([])
@@ -101,7 +101,7 @@ export const useGetAssets = (): AssetPanelProps & {
 
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
-      sendSocketTopic({ [ WsTopicType.account ]: true })
+      sendSocketTopic({ [WsTopicType.account]: true })
       myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
       setLoadingBtn()
     } else {
@@ -124,13 +124,13 @@ export const useGetAssets = (): AssetPanelProps & {
     const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
     const assetsDetailList =
       walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
-    let map: { [ key: string ]: any } = {}
+    let map: { [key: string]: any } = {}
 
     assetsKeyList.forEach(
       (key, index) =>
-        (map[ key ] = {
+        (map[key] = {
           token: key,
-          detail: assetsDetailList[ index ],
+          detail: assetsDetailList[index],
         }),
     )
     setAssetsMap(map)
@@ -139,9 +139,9 @@ export const useGetAssets = (): AssetPanelProps & {
 
   const tokenPriceList = tokenPrices
     ? Object.entries(tokenPrices).map((o) => ({
-      token: o[ 0 ],
-      detail: o[ 1 ],
-    }))
+        token: o[0],
+        detail: o[1],
+      }))
     : []
 
   const getUserAssets = React.useCallback(async () => {
@@ -186,9 +186,9 @@ export const useGetAssets = (): AssetPanelProps & {
       tokenKeys.forEach((key, _index) => {
         let item = undefined
         const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key)
-        if (assetsMap[ key ]) {
-          const tokenInfo = assetsMap[ key ]
-          const isLpToken = tokenInfo.token.split('-')[ 0 ] === 'LP'
+        if (assetsMap[key]) {
+          const tokenInfo = assetsMap[key]
+          const isLpToken = tokenInfo.token.split('-')[0] === 'LP'
           let tokenValueDollar = 0
           const withdrawAmount = volumeToCountAsBigNumber(
             tokenInfo.token,
@@ -209,14 +209,14 @@ export const useGetAssets = (): AssetPanelProps & {
               tokenInfo.token === 'DAI'
                 ? 1
                 : Number(
-                tokenPriceList.find((o) => o.token === tokenInfo.token)
-                  ? tokenPriceList.find((o) => o.token === tokenInfo.token)?.detail
-                  : 0,
-              ) / Number(tokenPriceList.find((o) => o.token === 'USDT')?.detail)
+                    tokenPriceList.find((o) => o.token === tokenInfo.token)
+                      ? tokenPriceList.find((o) => o.token === tokenInfo.token)?.detail
+                      : 0,
+                  ) / Number(tokenPriceList.find((o) => o.token === 'USDT')?.detail)
             const rawData = (totalAmount as BigNumber).times(tokenPriceUSDT)
             tokenValueDollar = rawData?.toNumber() || 0
           } else {
-            const price = tokenPrices?.[ tokenInfo.token ] || 0
+            const price = tokenPrices?.[tokenInfo.token] || 0
             if (totalAmount && price) {
               tokenValueDollar = totalAmount.times(price).toNumber()
             }
@@ -231,9 +231,9 @@ export const useGetAssets = (): AssetPanelProps & {
             token: {
               type: isDefi
                 ? TokenType.defi
-                : tokenInfo.token.split('-')[ 0 ] === 'LP'
-                  ? TokenType.lp
-                  : TokenType.single,
+                : tokenInfo.token.split('-')[0] === 'LP'
+                ? TokenType.lp
+                : TokenType.single,
               value: tokenInfo.token,
             },
             // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
@@ -251,9 +251,9 @@ export const useGetAssets = (): AssetPanelProps & {
             token: {
               type: isDefi
                 ? TokenType.defi
-                : key.split('-')[ 0 ] === 'LP'
-                  ? TokenType.lp
-                  : TokenType.single,
+                : key.split('-')[0] === 'LP'
+                ? TokenType.lp
+                : TokenType.single,
               value: key,
             },
             amount: EmptyValueTag,
@@ -285,9 +285,9 @@ export const useGetAssets = (): AssetPanelProps & {
           const rawList = token.split('-')
           rawList.splice(0, 1, 'AMM')
           const ammToken = rawList.join('-')
-          precision = ammMap ? ammMap[ ammToken ]?.precisions?.amount : 0
+          precision = ammMap ? ammMap[ammToken]?.precisions?.amount : 0
         } else {
-          precision = tokenMap[ o.token.value ].precision
+          precision = tokenMap[o.token.value].precision
         }
         return {
           ...o,
@@ -329,8 +329,7 @@ export const useGetAssets = (): AssetPanelProps & {
   React.useEffect(() => {
     getUserAssets()
 
-    return () => {
-    }
+    return () => {}
   }, [])
   const assetTitleProps: AssetTitleProps = {
     setHideL2Assets,
@@ -340,7 +339,7 @@ export const useGetAssets = (): AssetPanelProps & {
         .reduce((prev, next) => {
           return prev + next
         }, 0),
-      priceTag: PriceTag[ CurrencyToTag[ currency ] ],
+      priceTag: PriceTag[CurrencyToTag[currency]],
     },
     accountId: account.accountId,
     hideL2Assets,
@@ -355,11 +354,13 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
-  const [tokenLockDetail, setTokenLockDetail] = React.useState<| undefined
+  const [tokenLockDetail, setTokenLockDetail] = React.useState<
+    | undefined
     | {
-    list: any[]
-    row: any
-  }>(undefined)
+        list: any[]
+        row: any
+      }
+  >(undefined)
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
@@ -385,7 +386,7 @@ export const useGetAssets = (): AssetPanelProps & {
         const response = await LoopringAPI.userAPI.getUserLockSummary(
           {
             accountId: account.accountId,
-            tokenId: tokenMap[ _item.name ].tokenId,
+            tokenId: tokenMap[_item.name].tokenId,
             // @ts-ignore
             lockTags: [
               sdk.LOCK_TYPE.DUAL_CURRENCY,
@@ -404,14 +405,14 @@ export const useGetAssets = (): AssetPanelProps & {
             list: response.lockRecord.map((item) => {
               const amount = sdk
                 .toBig(item.amount)
-                .div('1e' + tokenMap[ _item.name ].decimals)
+                .div('1e' + tokenMap[_item.name].decimals)
                 .toString()
               return {
                 key: `label${item.lockTag}`,
                 value: getValuePrecisionThousand(
                   amount,
-                  tokenMap[ _item.name ].precision,
-                  tokenMap[ _item.name ].precision,
+                  tokenMap[_item.name].precision,
+                  tokenMap[_item.name].precision,
                   undefined,
                 ),
               }

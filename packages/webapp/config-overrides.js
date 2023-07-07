@@ -1,4 +1,4 @@
-const webpack = require("webpack");
+const webpack = require('webpack')
 const {
   override,
   addWebpackModuleRule,
@@ -6,34 +6,32 @@ const {
   fixBabelImports,
   setWebpackOptimizationSplitChunks,
   addWebpackAlias,
-} = require("customize-cra");
+} = require('customize-cra')
 
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 // Try the environment variable, otherwise use root
-const ASSET_PATH = process.env.ASSET_PATH || "/";
+const ASSET_PATH = process.env.ASSET_PATH || '/'
 // const rewireLess = require('react-app-rewire-less')
 
-const { alias } = require("react-app-rewire-alias");
+const { alias } = require('react-app-rewire-alias')
 
-const path = require("path");
+const path = require('path')
 
-const GitRevisionPlugin = require("git-revision-webpack-plugin");
-const gitRevisionPlugin = new GitRevisionPlugin();
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 // Deployment on Heroku
 // During Heroku builds, the SOURCE_VERSION and STACK environment variables are set:
-var onHeroku = process.env.SOURCE_VERSION && process.env.STACK;
+var onHeroku = process.env.SOURCE_VERSION && process.env.STACK
 // If we're on Heroku, we don't have access to the .git directory so we can't
 // rely on git commands to get the version. What we *do* have during Heroku
 // builds is a SOURCE_VERSION env with the git SHA of the commit being built,
 // so we can use that instead to generate the version file.
 function getCommitHash() {
   try {
-    return onHeroku
-      ? process.env.SOURCE_VERSION
-      : gitRevisionPlugin.commithash();
+    return onHeroku ? process.env.SOURCE_VERSION : gitRevisionPlugin.commithash()
   } catch (error) {
-    return "";
+    return ''
   }
 }
 
@@ -43,30 +41,28 @@ module.exports = override(
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, "..", "common-resources", "assets"),
-          to: "./static",
-          toType: "dir",
+          from: path.resolve(__dirname, '..', 'common-resources', 'assets'),
+          to: './static',
+          toType: 'dir',
         },
       ],
-    })
+    }),
   ),
   addWebpackPlugin(
     new webpack.DefinePlugin({
-      "process.env.COMMITHASH": JSON.stringify(getCommitHash()),
-      "process.env.TIME":
-        '"' +
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" }) +
-        '/SH"',
-    })
+      'process.env.COMMITHASH': JSON.stringify(getCommitHash()),
+      'process.env.TIME':
+        '"' + new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }) + '/SH"',
+    }),
   ),
-  fixBabelImports("import", {
-    libraryName: "antd",
-    libraryDirectory: "es",
+  fixBabelImports('import', {
+    libraryName: 'antd',
+    libraryDirectory: 'es',
     style: true,
   }),
   setWebpackOptimizationSplitChunks({
     // https://webpack.js.org/plugins/split-chunks-plugin/
-    chunks: "async",
+    chunks: 'async',
     maxSize: 4000000,
     maxAsyncRequests: 8,
     maxInitialRequests: 6,
@@ -74,9 +70,9 @@ module.exports = override(
   addWebpackModuleRule({
     test: /\.html$/i,
     exclude: /index.html/i,
-    loader: "html-loader",
+    loader: 'html-loader',
     options: {
-      attrs: [":data-src"],
+      attrs: [':data-src'],
       minimize: true,
       removeComments: false,
       collapseWhitespace: false,
@@ -84,109 +80,91 @@ module.exports = override(
   }),
   addWebpackModuleRule({
     test: /\.md$/,
-    use: "raw-loader",
+    use: 'raw-loader',
   }),
 
   (config) => {
-    config.output.publicPath = ASSET_PATH;
-    console.log(path.resolve(__dirname, "..", "assets/"));
-    console.log("-----> enter config!!!!!!!", process.env.NODE_ENV);
+    config.output.publicPath = ASSET_PATH
+    console.log(path.resolve(__dirname, '..', 'assets/'))
+    console.log('-----> enter config!!!!!!!', process.env.NODE_ENV)
 
     const setConfig = (index) => {
-      let babelLoader = config.module.rules[1].oneOf[index];
+      let babelLoader = config.module.rules[1].oneOf[index]
       console.log(
-        "-----> enter setConfig!!!!!!! index:",
-        index
+        '-----> enter setConfig!!!!!!! index:',
+        index,
         // babelLoader.options.presets,
         // babelLoader.options.plugins
-      );
+      )
 
-      babelLoader.include = babelLoader.include.replace("/webapp/src", "");
+      babelLoader.include = babelLoader.include.replace('/webapp/src', '')
       babelLoader.include = [
         babelLoader.include,
-        // ...(process.env.NODE_ENV === "development"
-        //   ? [
-        //       "../../" + `node_modules/@web3modal`,
-        //       "../../" + `node_modules/@walletconnect`,
-        //       "../../" + `node_modules/@metamask`,
-        //       "../../" + `node_modules/@scure`,
-        //       "../../" + `node_modules/@noble`,
-        //       "../../" + `node_modules/@ethereumjs`,
-        //       "../../" + `node_modules/micro-ftch`,
-        //       "../../" + `node_modules/react-spring`,
-        //       "../../" + `node_modules/@react-spring`,
-        //       "../../" + `node_modules/@loopring-web/loopring-sdk`,
-        //       "../../" + `node_modules/@loopring-web/loopring-sdk`,
-        //     ]
-        //   : []),
         ...[
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@web3modal`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@web3modal`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@walletconnect`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@walletconnect`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@metamask`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@metamask`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@scure`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@scure`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@noble`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@noble`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@ethereumjs`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@ethereumjs`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/micro-ftch`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/micro-ftch`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/react-spring`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/react-spring`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@react-spring`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@react-spring`,
           ),
           path.resolve(
             __dirname,
-            `${process.env.NODE_ENV === "development" ? "../../" : "../../"}`,
-            `node_modules/@loopring-web/loopring-sdk`
+            `${process.env.NODE_ENV === 'development' ? '../../' : '../../'}`,
+            `node_modules/@loopring-web/loopring-sdk`,
           ),
         ],
-      ];
-      console.log(
-        "-----> enter setConfig!!!!!!! include:",
-        babelLoader.include
-      );
-      config.module.rules[1].oneOf[index] = babelLoader;
-    };
+      ]
+      console.log('-----> enter setConfig!!!!!!! include:', babelLoader.include)
+      config.module.rules[1].oneOf[index] = babelLoader
+    }
 
-    setConfig(4);
+    setConfig(4)
     config.resolve.alias = {
       ...config.resolve.alias,
-      "@material-ui/core/Menu": "@mui/material/Menu",
-      "@material-ui/core": "@mui/material",
-      "@material-ui/core/Popover": "@mui/material/Popover",
-    };
+      '@material-ui/core/Menu': '@mui/material/Menu',
+      '@material-ui/core': '@mui/material',
+      '@material-ui/core/Popover': '@mui/material/Popover',
+    }
 
-    return config;
-  }
-);
+    return config
+  },
+)

@@ -6,6 +6,7 @@ import {
   ConfirmLinkCopy,
   ConnectFailed,
   ConnectReject,
+  ConnectRejectSwitchNetwork,
   ConnectSuccess,
   InformationForCoinBase,
   ModalWalletConnect,
@@ -417,6 +418,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(
                 // errorOptions: { name: connectProvider },
                 ...rest,
               }}
+              providerName={connectProvider}
               NetWorkItems={NetWorkItems}
               btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />
@@ -425,6 +427,23 @@ export const ModalWalletConnectPanel = withTranslation('common')(
             walletServices.sendDisconnect('', 'should new provider')
             setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
           },
+        },
+        [WalletConnectStep.RejectSwitchNetwork]: {
+          view: (
+            <ConnectRejectSwitchNetwork
+              {...{
+                t,
+                ...rest,
+              }}
+              providerName={connectProvider}
+              NetWorkItems={NetWorkItems}
+              btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
+            />
+          ),
+          // onBack: () => {
+          //   walletServices.sendDisconnect('', 'should new provider')
+          //   setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
+          // },
         },
         [WalletConnectStep.FailedConnect]: {
           view: (
@@ -435,6 +454,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(
                 errorOptions: { name: connectProvider },
                 ...rest,
               }}
+              providerName={connectProvider}
               NetWorkItems={NetWorkItems}
               btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />

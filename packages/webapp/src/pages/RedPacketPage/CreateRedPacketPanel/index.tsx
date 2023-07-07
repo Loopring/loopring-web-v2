@@ -10,6 +10,7 @@ import {
   getIPFSString,
   StylePaper,
   useCreateRedPacket,
+  useNotify,
   useSystem,
 } from "@loopring-web/core";
 import {

@@ -258,7 +258,7 @@ export const RedPacketQRCode = ({
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>();
   const ref = React.useRef();
-  // const colorConfig:any = RedPacketColorConfig[type];
+  const colorConfig = RedPacketColorConfig[type];
   const qrCode = new QRCodeStyling({
     type: "svg",
     width: 200,
@@ -800,7 +800,7 @@ export const RedPacketOpened = ({
   myAmountStr,
   amountStr,
   viewDetail,
-  ImageEle,
+  ImageEle
 }: RedPacketDefault & RedPacketOpenedProps) => {
   const { t } = useTranslation("common");
   const content = React.useMemo(() => {
@@ -810,22 +810,34 @@ export const RedPacketOpened = ({
           <Typography
             variant={"h5"}
             color={RedPacketCssColorConfig[type].highLightColor}
+            marginTop={type === "blindbox" ? 2 : 0}
           >
-            {t("labelRedPacketReceived")}
+            {type === "blindbox" ? t("labelRedPacketBlindboxReceived1") : t("labelRedPacketReceived")}
           </Typography>
-          <Typography
-            variant={"h4"}
-            color={RedPacketCssColorConfig[type].highLightColor}
-            marginTop={1}
-          >
-            {myAmountStr ? myAmountStr : EmptyValueTag}
-          </Typography>
-          <Typography
-            variant={"body2"}
+          {type === "blindbox" && <Typography
+            variant={"h5"}
             color={RedPacketCssColorConfig[type].highLightColor}
           >
-            {t("labelTotalRedPacket", { value: amountStr })}
+            {t("labelRedPacketBlindboxReceived2")}
           </Typography>
+          }
+          {type !== "blindbox" && <>
+            <Typography
+              variant={"h4"}
+              color={RedPacketCssColorConfig[type].highLightColor}
+              marginTop={1}
+            >
+              {myAmountStr ? myAmountStr : EmptyValueTag}
+            </Typography>
+            <Typography
+              variant={"body2"}
+              color={RedPacketCssColorConfig[type].highLightColor}
+            >
+              {t("labelTotalRedPacket", { value: amountStr })}
+            </Typography>
+          </>
+          }
+          
         </Box>
         <Box
           display={"flex"}
@@ -1323,6 +1335,7 @@ export const RedPacketPrepare = ({
   onOpen,
   getIPFSString,
   baseURL,
+  claimed,
   ...props
 }: {
   chainId: sdk.ChainId;
@@ -1340,7 +1353,8 @@ export const RedPacketPrepare = ({
   baseURL: string;
   getIPFSString: GET_IPFS_STRING;
   onOpen: () => void;
-  _type?: "official" | "default";
+  _type?: "official" | "default" | "blindbox";
+  claimed: boolean;
 } & sdk.LuckyTokenItemForReceive) => {
   // const { t } = useTranslation("common");
   const ref = React.createRef();
@@ -1390,7 +1404,7 @@ export const RedPacketPrepare = ({
   }, []);
   const viewItem = React.useMemo(() => {
     let difference = new Date(_info.validSince).getTime() - Date.now();
-    if (claim) {
+    if (claimed) {
       return (
         <RedPacketOpened
           {...{
@@ -1529,7 +1543,7 @@ export const RedPacketPrepare = ({
           memo={props?.info?.memo}
           onOpen={() => {
             setShowRedPacket({
-              isShow: true,
+              isShow: false,
               step: RedPacketViewStep.Loading,
               info: _info,
             });
@@ -1659,6 +1673,7 @@ export const RedPacketBlindBoxDetail = ({
       size={"small"}
     />
   );
+  
   const LooteryModal = (
     <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
       <>
@@ -1708,6 +1723,7 @@ export const RedPacketBlindBoxDetail = ({
                       <Typography marginTop={2} marginBottom={3} variant={"h2"}>
                         {wonPrizeInfo.amountStr}
                       </Typography>
+                      <Typography width={`${25 * theme.unit}px`} textAlign={"center"} variant={"body2"}>{t('labelBlindBoxClaimHint')}</Typography>
                     </>
                   )
               )
@@ -1732,7 +1748,7 @@ export const RedPacketBlindBoxDetail = ({
             {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
           {t("labelClaimBtn")}
         </Button> */}
-            {wonPrizeInfo && (
+            {wonPrizeInfo && wonPrizeInfo.isNFT && (
               <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
                 {t("labelClaimBtn")}
               </Button>
@@ -1918,25 +1934,40 @@ export const RedPacketBlindBoxDetail = ({
                 />
               )}
             </Box>}
+            {isTokenBlindbox && (type === "Blind Box Started" || type === "Not Started") && <Box marginY={1} width={"60%"}>
+              <img
+                alt={""}
+                style={{ width: "100%" }}
+                src={SoursURL + "images/redpackBlind3.webp"}
+              />
+            </Box>}
             {type === "Blind Box Started" && didClaimABlindBox && (
               <Typography>
                 {t("labelBlindBoxCongratulationsBlindBox")}
               </Typography>
             )}
-              {type === "Lottery Started" && wonInfo.participated && (
+              {type === "Lottery Started" && (
                 wonInfo.isNFT ? (
-                  wonInfo.won
-                    ? <Typography>{wonInfo.amount} NFTs</Typography>
+                  wonInfo.participated
+                    ? (
+                      wonInfo.won 
+                        ? <Typography>{`${wonInfo.amount} NFTs`}</Typography>
+                        : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>
+                    )
                     : <Typography color={"var(--color-error)"}>
-                      {t("labelBlindBoxSorryBlindBox")}
+                      {EmptyValueTag}
                     </Typography>
                 ) : (
                   <>
                     <Typography marginTop={3} variant={"h2"} color={RedPacketColorConfig.default.colorTop}>
-                      {wonInfo.won 
-                        ? `${wonInfo.amount} ${wonInfo.symbol}`
-                        : "--"
-                      } 
+                      {wonInfo.participated
+                        ? (wonInfo.won
+                          ? `${wonInfo.amount} ${wonInfo.symbol}`
+                          : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>)
+                        : <Typography>
+                          {EmptyValueTag}
+                        </Typography>
+                      }
                     </Typography>
                     <Typography variant={"h4"} color={RedPacketColorConfig.default.colorTop}>{t("labelRedpacketTotalReward", {amount: `${wonInfo.total} ${wonInfo.symbol}`})} </Typography>
                   </>
@@ -1950,33 +1981,37 @@ export const RedPacketBlindBoxDetail = ({
             >
               {description}
             </Typography>
-            <Typography
-              variant={"body2"}
-              color={theme.colorBase.textSecondary}
-              // color={RedPacketColorConfig.default.fontColor}
-              marginTop={1}
-              textAlign={"center"}
-            >
-              {t("labelBlindBoxExplaination2", {
-                opendBlindBoxAmount,
-                totalBlindBoxAmount,
-                // deliverdGiftsAmount,
-                // totalGiftsAmount,
-                remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
-              })}
-              {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
-            </Typography>
-            <Typography
-              variant={"body2"}
-              color={theme.colorBase.textSecondary}
-              // color={RedPacketColorConfig.default.fontColor}
-              marginTop={1}
-              textAlign={"center"}
-            >
-              {t("labelBlindBoxExplaination3", {  
-                remainingGiftsAmount: remainGiftsAmount
-              })}
-            </Typography>
+            {type !== "Lottery Started" && <>
+              <Typography
+                variant={"body2"}
+                color={theme.colorBase.textSecondary}
+                // color={RedPacketColorConfig.default.fontColor}
+                marginTop={1}
+                textAlign={"center"}
+              >
+                {t("labelBlindBoxExplaination2", {
+                  opendBlindBoxAmount,
+                  totalBlindBoxAmount,
+                  // deliverdGiftsAmount,
+                  // totalGiftsAmount,
+                  remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
+                })}
+                {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
+              </Typography>
+              <Typography
+                variant={"body2"}
+                color={theme.colorBase.textSecondary}
+                // color={RedPacketColorConfig.default.fontColor}
+                marginTop={1}
+                textAlign={"center"}
+              >
+                {t("labelBlindBoxExplaination3", {  
+                  remainingGiftsAmount: remainGiftsAmount
+                })}
+              </Typography>
+            </>
+            }
+            
             <Box>
               {type === "Not Started" && (
                 <Typography
@@ -2025,7 +2060,7 @@ export const RedPacketBlindBoxDetail = ({
                 textAlign={"center"}
               >
                 {t("labelBlindBoxTokenHint", {
-                  time: moment(lotteryStartTime).format(YEAR_DAY_MINUTE_FORMAT),
+                  time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
                   interpolation: {
                     escapeValue: false,
                   },
@@ -2120,10 +2155,16 @@ export const RedPacketBlindBoxDetail = ({
                     marginY={1}
                     paddingX={1}
                   >
-                    {t("labelBlindBoxRecievedNFT", {
-                      deliverdGiftsAmount,
-                      totalGiftsAmount,
-                    })}
+                    {isTokenBlindbox
+                      ? t("labelBlindBoxRecieved", {
+                        deliverdGiftsAmount,
+                        totalGiftsAmount,
+                      })
+                      : t("labelBlindBoxRecievedNFT", {
+                        deliverdGiftsAmount,
+                        totalGiftsAmount,
+                      })
+                    }
                   </Typography>
 
                   <Box flex={1} overflow={"scroll"}>
@@ -2251,6 +2292,10 @@ export const RedPacketBlindBoxDetail = ({
             ) : claimButton === "expired" ? (
               <Button disabled variant={"contained"} fullWidth>
                 {t("Expired")}
+              </Button>
+            ) : claimButton === "ended" ? (
+              <Button disabled variant={"contained"} fullWidth>
+                {t("labelRedPacketStatusEnded")}
               </Button>
             ) : undefined}
           </Box>

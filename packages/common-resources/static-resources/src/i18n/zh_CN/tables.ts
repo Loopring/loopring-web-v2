@@ -332,6 +332,7 @@ export default {
   labelRevealTime: "Reveal Time",
   labelRevealTimeTooltip: "The Reveal time is when the Red Packet ends， and recipients can open it to see if they have received",
   labelExpiredTime: "Expired Time",
-  labelExpiredTimeTooltip: "After expiration, all unclaimed NFTs will be returned to the Sender.",
+  labelExpiredTimeTooltip: "After expiration, all unclaimed NFTs/Tokens will be returned to the Sender.",
   labelRedpacketFromBlindbox: "From Blind Box",
+  labelRedpacketCantOpen: "It is not yet time to open, reveal time: {{time}}",
 };

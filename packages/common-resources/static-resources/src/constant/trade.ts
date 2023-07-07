@@ -565,11 +565,13 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       partition: sdk.LuckyTokenAmountType.RANDOM,
       mode: sdk.LuckyTokenClaimType.BLIND_BOX,
     },
+    toolgleWithShowERC20Blindbox: true,
   },
   {
     labelKey: 'labelRedpacketNFTS',
     desKey: '',
     showInBlindbox: true,
+    defaultForBlindboxNotShowERC20Blindbox: true,
     icon: sdk.SoursURL + '/images/blindboxSelectNFT.png',
     isBlindboxNFT: true,
     value: {

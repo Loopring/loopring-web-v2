@@ -159,14 +159,22 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
     system: { chainId },
   } = store.getState();
   let claim: string | undefined = undefined;
+  let claimed = false;
   if (
     redPacketHistory[chainId] &&
     redPacketHistory[chainId][account.accAddress] &&
     redPacketHistory[chainId][account.accAddress][luckToken.hash]
   ) {
+    const redPacket = redPacketHistory[chainId][account.accAddress][luckToken.hash]
     claim = redPacketHistory[chainId][account.accAddress][luckToken.hash].claim;
+    if (luckToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
+      claimed = redPacket.blindboxClaimed ? true : false
+    } else {
+      claimed = claim ? true : false;
+    }
   }
   const tokenInfo = tokenMap[idIndex[luckToken.tokenId] ?? ""];
+  // if ()
 
   return {
     chainId,
@@ -190,5 +198,6 @@ export const makeViewCard = (luckToken: sdk.LuckyTokenItemForReceive) => {
             .amountStr),
     tokenInfo,
     claim,
+    claimed
   };
 };

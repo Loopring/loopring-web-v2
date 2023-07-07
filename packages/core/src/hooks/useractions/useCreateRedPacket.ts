@@ -182,9 +182,11 @@ export const useCreateRedPacket = <
               balance: walletInfo?.count,
               memo: "",
               numbers: undefined,
+              giftNumbers: undefined,
               validUntil: moment().add('days', 1).toDate().getTime(),
               validSince: Date.now(),
               tradeType: value,
+              isNFT: false
             } as unknown as T);
             break;
           }
@@ -202,9 +204,11 @@ export const useCreateRedPacket = <
           balance: walletInfo?.count,
           memo: "",
           numbers: undefined,
+          giftNumbers: undefined,
           validSince: Date.now(),
           validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: value,
+          isNFT: false
         } as unknown as T);
       } else if (!isToken) {
         resetRedPacketOrder(value);
@@ -220,6 +224,7 @@ export const useCreateRedPacket = <
           validSince: Date.now(),
           validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: "TOKEN",
+          isNFT: false
         } as unknown as T);
       }
     },
@@ -297,6 +302,11 @@ export const useCreateRedPacket = <
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
+      const blindBoxGiftsEqualsZero =
+        redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+        sdk
+          .toBig(redPacketOrder.giftNumbers ?? "0")
+          .isZero();
       const blindBoxGiftsLargerThanPackets =
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
         sdk
@@ -371,6 +381,7 @@ export const useCreateRedPacket = <
           // @ts-ignore
           isToken) &&
         redPacketConfigs?.luckTokenAgents &&
+        !blindBoxGiftsEqualsZero &&
         !blindBoxGiftsLargerThanPackets &&
         !blindBoxPacketsNumberTooLarge
       ) {
@@ -378,12 +389,14 @@ export const useCreateRedPacket = <
         return;
       } else {
         disableBtn();
-        if (!redPacketConfigs?.luckTokenAgents) {
+        if (blindBoxGiftsEqualsZero) {
+          setLabelAndParams("labelRedPacketsGiftsEqualsZero", {});
+        } else if (!redPacketConfigs?.luckTokenAgents) {
           setLabelAndParams("labelRedPacketWaitingBlock", {});
         } else if (isExceedBalance) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol:
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN
+              isToken
                 ? (tradeToken.symbol as string)
                 : "NFT",
           });
@@ -555,9 +568,7 @@ export const useCreateRedPacket = <
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
             }
-          ).catch(e => {
-            debugger
-          })
+          )
 
           myLog("submit sendLuckTokenSend:", response);
           if (
@@ -703,7 +714,7 @@ export const useCreateRedPacket = <
   );
   React.useEffect(() => {
     if (isShow) {
-      resetDefault(RedPacketOrderType.TOKEN);
+      resetDefault(RedPacketOrderType.BlindBox);
       walletLayer2Service.sendUserUpdate();
     }
   }, [isShow]);
@@ -720,7 +731,6 @@ export const useCreateRedPacket = <
 
   const onCreateRedPacketClick = React.useCallback(
     async (_redPacketOrder, isHardwareRetry: boolean = false) => {
-      debugger
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
       const redPacketOrder = store.getState()._router_modalData
         .redPacketOrder as T;
