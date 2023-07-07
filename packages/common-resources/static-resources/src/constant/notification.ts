@@ -102,6 +102,7 @@ export type NOTIFICATION = {
     timeRangeMaxInSecondsToken: number;
     timeRangeMaxInSecondsNFT: number;
     showNFT: boolean;
+    showERC20Blindbox: boolean;
   };
 };
 

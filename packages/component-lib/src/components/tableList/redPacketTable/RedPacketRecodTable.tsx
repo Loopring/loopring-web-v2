@@ -43,7 +43,7 @@ const TableWrapperStyled = styled(Box)`
 `;
 const TableStyled = styled(Table)<{isBlindbox: boolean}>`
   &.rdg {
-    --template-columns: ${({isBlindbox}) => isBlindbox ? '16% 16% 26% auto auto !important' : '16% 16% 26% auto auto auto !important'}; 
+    --template-columns: ${({isBlindbox}) => isBlindbox ? '25% 25% 25% 25% !important' : '16% 16% 26% auto auto auto !important'}; 
 
     height: ${(props: any) => {
       if (props.ispro === "pro") {
@@ -154,9 +154,6 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
                       display={"flex"}
                       alignItems={"center"}
                       justifyContent={"center"}
-                      height={RowConfig.rowHeight + "px"}
-                      width={RowConfig.rowHeight + "px"}
-                      padding={1 / 4}
                     >
                       {metadata?.imageSize && (
                         <NftImageStyle
@@ -246,18 +243,22 @@ export const RedPacketRecordTable = withTranslation(["tables", "common"])(
             return <>{found ? found[1] : ""}</>;
           },
         },
-        {
-          key: "Number",
-          sortable: true,
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelRecordNumber"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
-            );
-          },
-        },
+        ...(
+          tableType !== 'blindbox'
+            ? [{
+              key: "Number",
+              sortable: true,
+              cellClass: "textAlignCenter",
+              headerCellClass: "textAlignCenter",
+              name: t("labelRecordNumber"),
+              formatter: ({ row }: FormatterProps<R, unknown>) => {
+                return (
+                  <>{`${row.totalCount - row.remainCount}/${row.totalCount}`}</>
+                );
+              },
+            }]
+            : []
+        ),
         {
           key: "Time",
           cellClass: "textAlignRight",

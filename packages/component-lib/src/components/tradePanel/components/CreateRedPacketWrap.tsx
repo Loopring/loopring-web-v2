@@ -405,10 +405,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
       ? moment.max(now, startDateTime.clone())
       : now;
 
-    const timeRangeMaxInSeconds =
-      tradeType === RedPacketOrderType.TOKEN
-        ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
-        : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT;
+
+    const timeRangeMaxInSeconds = isToken
+      ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
+      : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT;
     // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
       ? startDateTime.clone().add(timeRangeMaxInSeconds, "seconds")
@@ -681,8 +681,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 : t("labelRedPacketTimeRange")}
               <Tooltip
                 title={
-                  selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? t("labelRedPacketTimeRangeBlindboxDes")!
+                  tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                    ? (tradeData.isNFT ? t("labelRedPacketTimeRangeBlindboxDes")! : t("labelRedPacketTimeRangeBlindboxDesERC20")!)
                     : t("labelRedPacketTimeRangeDes")!
                 }
               >
@@ -700,6 +700,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               onStartChange={(m) => {
                 handleOnDataChange({
                   validSince: m ? m.toDate().getTime() : undefined,
+                  validUntil: m ? m.clone().add(1, 'days').toDate().getTime() : undefined,
                 } as unknown as Partial<T>);
               }}
               onStartOpen={() => {
@@ -890,7 +891,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   numbers: undefined,
                   tradeValue: undefined,
                   validSince: Date.now(),
-                  validUntil: undefined,
+                  validUntil: moment().add('days', 1).toDate().getTime(),
+                  giftNumbers: undefined,
                   memo: "",
                 } as any);
               }}
@@ -933,9 +935,13 @@ export const CreateRedPacketStepWrap = withTranslation()(
             width={"100%"}
             textAlign={"center"}
           >
-            {tradeType === RedPacketOrderType.TOKEN
-              ? t("labelBlindBoxExpirationExplainationForToken")
-              : t("labelBlindBoxExpirationExplainationForNFT")}
+            {
+              tradeData.isNFT
+                ? t("labelBlindBoxExpirationExplainationForNFT")
+                : tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                  ? t("labelBlindBoxExpirationExplainationForTokenBlindbox")
+                  : t("labelBlindBoxExpirationExplainationForToken")
+            }
           </Typography>
         </Box>
       </RedPacketBoxStyle>
@@ -966,6 +972,23 @@ export const CreateRedPacketStepType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled;
     }, [disabled]);
+    const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox;
+    const filteredList = LuckyRedPacketList.filter((item) =>
+      (tradeType == RedPacketOrderType.NFT
+        ? item.showInNFTS
+        : tradeType == RedPacketOrderType.BlindBox
+          ? item.showInBlindbox
+          : tradeType == RedPacketOrderType.FromNFT
+            ? item.showInFromNFT
+            : item.showInERC20
+      ) && (
+        showERC20Blindbox 
+          ? true
+          : item.toolgleWithShowERC20Blindbox 
+            ? false
+            : true
+      )
+    )
 
     return (
       <RedPacketBoxStyle
@@ -983,17 +1006,10 @@ export const CreateRedPacketStepType = withTranslation()(
           alignSelf={"stretch"}
           marginY={2}
         >
-          {LuckyRedPacketList.filter((item) =>
-            tradeType == RedPacketOrderType.NFT
-              ? item.showInNFTS
-              : tradeType == RedPacketOrderType.BlindBox
-                ? item.showInBlindbox
-                : tradeType == RedPacketOrderType.FromNFT
-                  ? item.showInFromNFT
-                  : item.showInERC20
-          ).map((item: LuckyRedPacketItem, index) => {
+          {filteredList.map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
+                {tradeType == RedPacketOrderType.FromNFT && index === 1 && <Typography marginTop={1} variant={"h5"} color={"var(--color-text-secondary)"}>{t("labelRedpacketStandard")}</Typography>}
                 <Box key={item.value.value} marginBottom={1}>
                   <MenuBtnStyled
                     variant={"outlined"}
@@ -1005,16 +1021,26 @@ export const CreateRedPacketStepType = withTranslation()(
                     }`}
                     fullWidth
                     onClick={(_e) => {
-                      handleOnDataChange({
-                        isNFT: item.isBlindboxNFT ? true : false,
-                        type: {
-                          ...tradeData?.type,
-                          // scope: value,
-                          scope: item.isBlindboxNFT ? 1 : tradeData.type?.scope,
-                          partition: item.value.partition,
-                          mode: item.value.mode,
-                        },
-                      } as any);
+                      if (tradeType === RedPacketOrderType.BlindBox) {
+                        handleOnDataChange({
+                          isNFT: item.isBlindboxNFT ? true : false,
+                          type: {
+                            ...tradeData?.type,
+                            scope: item.isBlindboxNFT ? 1 : tradeData.type?.scope,
+                            partition: item.value.partition,
+                            mode: item.value.mode,
+                          },
+                        } as any);
+                      } else {
+                        handleOnDataChange({
+                          type: {
+                            ...tradeData?.type,
+                            partition: item.value.partition,
+                            mode: item.value.mode,
+                          },
+                        } as any);
+                      }
+                      
                     }}
                   >
                     {item.icon ?

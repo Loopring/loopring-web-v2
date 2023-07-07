@@ -24,7 +24,8 @@ import {
   CreateRedPacketStepWrap,
 } from "../../tradePanel/components/CreateRedPacketWrap";
 import { Box, styled } from "@mui/material";
-import { LuckyTokenClaimType } from "@loopring-web/loopring-sdk";
+import { LuckyTokenClaimType, LuckyTokenViewType } from "@loopring-web/loopring-sdk";
+import { useNotify } from "@loopring-web/core";
 
 const BoxStyle = styled(Box)`
   &.createRedPacket {
@@ -60,12 +61,12 @@ export const CreateRedPacketPanel = <
     // index,
     walletMap,
   } as any);
-  const [panelIndex, setPanelIndex] = React.useState( 
-    tradeType === RedPacketOrderType.FromNFT 
+  const [panelIndex, setPanelIndex] = React.useState(
+    tradeType === RedPacketOrderType.FromNFT
       ? RedPacketStep.ChooseType
       : RedPacketStep.TradeType
   );
-  
+
   const steps = tradeType === RedPacketOrderType.FromNFT
     ? [
       "labelRedPacketChoose", //Prepare NFT metadata
@@ -140,12 +141,12 @@ export const CreateRedPacketPanel = <
     });
     return clonedWalletMap;
   }, [walletMap]);
-
+  const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox;
   const [selectedType, setSelectType] = React.useState(
     tradeData.tradeType === RedPacketOrderType.NFT
       ? LuckyRedPacketList.find((config) => config.defaultForNFT)
       : tradeData.tradeType === RedPacketOrderType.BlindBox
-        ? LuckyRedPacketList.find((config) => config.defaultForBlindbox)
+        ? LuckyRedPacketList.find((config) => showERC20Blindbox ? config.defaultForBlindbox : config.defaultForBlindboxNotShowERC20Blindbox)
         : tradeData.tradeType === RedPacketOrderType.FromNFT
           ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
           : LuckyRedPacketList.find((config) => config.defaultForERC20)
@@ -157,9 +158,9 @@ export const CreateRedPacketPanel = <
         if (tradeType === RedPacketOrderType.FromNFT) {
           found = LuckyRedPacketList.find(
             (config) =>
-              config.showInFromNFT && 
+              config.showInFromNFT &&
               config.value.mode === tradeData.type?.mode &&
-              config.value.partition === tradeData.type?.partition 
+              config.value.partition === tradeData.type?.partition
           )
         } else if (tradeData.type?.mode === LuckyTokenClaimType.BLIND_BOX) {
           found = LuckyRedPacketList.find(
@@ -171,8 +172,8 @@ export const CreateRedPacketPanel = <
           found = LuckyRedPacketList.find(
             (config) =>
               tradeData.type?.partition == config.value.partition &&
-              tradeData.type?.mode == config.value.mode 
-              
+              tradeData.type?.mode == config.value.mode
+
           );
         }
         return found ?? LuckyRedPacketList[2];
@@ -193,20 +194,25 @@ export const CreateRedPacketPanel = <
       tradeData.tradeType === RedPacketOrderType.NFT
         ? LuckyRedPacketList.find((config) => config.defaultForNFT)
         : tradeData.tradeType === RedPacketOrderType.BlindBox
-          ? LuckyRedPacketList.find((config) => config.defaultForBlindbox)
-          : tradeData.tradeType === RedPacketOrderType.FromNFT 
+          ? LuckyRedPacketList.find((config) => showERC20Blindbox ? config.defaultForBlindbox : config.defaultForBlindboxNotShowERC20Blindbox)
+          : tradeData.tradeType === RedPacketOrderType.FromNFT
             ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
             : LuckyRedPacketList.find((config) => config.defaultForERC20);
-
     setSelectType(found);
     handleOnDataChange({
       type: {
         ...tradeData?.type,
         partition: found!.value.partition,
         mode: found!.value.mode,
+        scope: LuckyTokenViewType.PRIVATE
       },
+      isNFT: (
+        tradeData.tradeType === RedPacketOrderType.NFT
+        || tradeData.tradeType === RedPacketOrderType.FromNFT
+        || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
+      ) ? true : false
     } as any);
-  }, [tradeData.tradeType]);
+  }, [tradeData.tradeType, showERC20Blindbox]);
 
   const [privateChecked, setPrivateChecked] = React.useState(false);
   const isToken = tradeType === RedPacketOrderType.TOKEN ||
