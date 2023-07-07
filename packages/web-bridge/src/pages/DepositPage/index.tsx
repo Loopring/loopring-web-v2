@@ -52,11 +52,12 @@ const BoxStyle = styled(Box)`
   .depositTitle {
     font-size: ${({ theme }) => theme.fontDefault.h4};
   }
-
+` as typeof SwitchPanelStyled
+const BoxWrap = styled(Box)`
   .MuiOutlinedInput-root.header {
     background: none;
   }
-` as typeof SwitchPanelStyled
+`
 export const DepositToPage = withTranslation(['common'])(
   ({ t, depositProps }: { depositProps: DepositProps<any, any> } & WithTranslation) => {
     const { isMobile, defaultNetwork } = useSettings()
@@ -146,14 +147,14 @@ export const DepositToPage = withTranslation(['common'])(
                 {t('labelPayer')}
               </Typography>
             )}
-            <Box display={'flex'} alignItems={'center'}>
+            <BoxWrap display={'flex'} alignItems={'center'}>
               <WalletConnectL1Btn
                 NetWorkItems={NetWorkItems}
                 accountState={account as AccountFull}
                 handleClick={_onDepositClick}
-                // isShowOnUnConnect={false}
+                isShowOnUnConnect={true}
               />
-            </Box>
+            </BoxWrap>
           </Box>
         </Box>
         <BoxStyle
