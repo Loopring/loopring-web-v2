@@ -198,11 +198,6 @@ export const CreateRedPacketPanel = <
           : tradeData.tradeType === RedPacketOrderType.FromNFT 
             ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
             : LuckyRedPacketList.find((config) => config.defaultForERC20);
-    const isNFT = (
-      tradeData.tradeType === RedPacketOrderType.NFT 
-      || tradeData.tradeType === RedPacketOrderType.FromNFT 
-      || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
-    )
     setSelectType(found);
     handleOnDataChange({
       type: {
@@ -211,7 +206,11 @@ export const CreateRedPacketPanel = <
         mode: found!.value.mode,
         scope: LuckyTokenViewType.PRIVATE
       },
-      isNFT
+      isNFT: (
+        tradeData.tradeType === RedPacketOrderType.NFT 
+        || tradeData.tradeType === RedPacketOrderType.FromNFT 
+        || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
+      ) ? true : false
     } as any);
   }, [tradeData.tradeType]);
 
