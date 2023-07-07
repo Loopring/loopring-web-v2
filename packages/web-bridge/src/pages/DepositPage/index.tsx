@@ -150,9 +150,9 @@ export const DepositToPage = withTranslation(['common'])(
             <BoxWrap display={'flex'} alignItems={'center'}>
               <WalletConnectL1Btn
                 NetWorkItems={NetWorkItems}
-                accountState={account as AccountFull}
+                accountState={{ account } as any}
                 handleClick={_onDepositClick}
-                isShowOnUnConnect={true}
+                isShowOnUnConnect={false}
               />
             </BoxWrap>
           </Box>
