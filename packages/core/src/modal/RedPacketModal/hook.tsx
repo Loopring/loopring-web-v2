@@ -1120,6 +1120,7 @@ export function useRedPacketModal() {
       const tokenInfo = !detail.luckyToken.isNft 
         ? tokenMap[idIndex[detail.luckyToken.tokenId]] 
         : undefined
+      console.log('blinBoxDetail.claimAmount', blinBoxDetail.claimAmount)
       return {
         sender: _info.sender?.ens
           ? _info.sender?.ens
@@ -1300,15 +1301,15 @@ export function useRedPacketModal() {
           : {
             participated: blinBoxDetail.blindBoxStatus !== "",
             won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
-            amount: getValuePrecisionThousand(
-              sdk
-                .toBig(blinBoxDetail.claimAmount ?? "0")
-                .div("1e" + tokenInfo!.decimals),
-              tokenInfo!.precision,
-              tokenInfo!.precision,
-              tokenInfo!.precision,
-              false
-            ),
+            amount: blinBoxDetail.claimAmount && getValuePrecisionThousand(
+                sdk
+                  .toBig(blinBoxDetail.claimAmount ?? "0")
+                  .div("1e" + tokenInfo!.decimals),
+                tokenInfo!.precision,
+                tokenInfo!.precision,
+                tokenInfo!.precision,
+                false
+              ),
             total: getValuePrecisionThousand(
               sdk
                 .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
