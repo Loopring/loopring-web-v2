@@ -488,8 +488,16 @@ export type LuckyRedPacketItem = {
   desKey: string;
   showInNFTS?: boolean;
   showInERC20?: boolean;
+  showInBlindbox?: boolean;
   defaultForERC20?: boolean;
   defaultForNFT?: boolean;
+  defaultForBlindbox?: boolean;
+  defaultForBlindboxNotShowERC20Blindbox?: boolean;
+  isBlindboxNFT?: boolean;
+  defaultForFromNFT?: boolean;
+  showInFromNFT?: boolean;
+  toolgleWithShowERC20Blindbox?: boolean;
+  icon?: string;
   value: {
     value: number;
     partition: sdk.LuckyTokenAmountType;

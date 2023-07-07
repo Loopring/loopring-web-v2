@@ -295,94 +295,97 @@ export const useMyRedPacketReceiveTransaction = <
   const getRedPacketReceiveList = React.useCallback(
     async ({ offset, limit, filter }: any) => {
       setShowLoading(true);
-      if (LoopringAPI.luckTokenAPI && accountId) {
-        if (apiKey) {
-          const response =
-            await LoopringAPI.luckTokenAPI.getLuckTokenClaimHistory(
-              {
-                offset,
-                limit,
-                ...filter,
-              } as any,
-              apiKey
-            );
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
-            if (setToastOpen) {
-              setToastOpen({
-                open: true,
-                type: ToastType.error,
-                content:
-                  "error : " + errorItem
-                    ? t(errorItem.messageKey)
-                    : (response as sdk.RESULT_INFO).message,
-              });
-            }
-          } else {
-            setRedPacketReceiveTotal((response as any)?.totalNum);
-            // @ts-ignore
-            let result = (response as any)?.list.reduce(
-              (prev: R[], item: sdk.LuckTokenHistory) => {
-                // @ts-ignore
-                const { luckyToken, claim: myClaim } = item;
-
-                let amount, tokenInfo;
-                if (luckyToken.isNft) {
-                  amount = amountStrNFTCallback(
-                    luckyToken.nftTokenInfo as any,
-                    myClaim?.amount?.toString() ?? 0
-                  ).amount;
-                  tokenInfo = {
-                    ...luckyToken.nftTokenInfo,
-                    type: TokenType.nft,
-                  };
-                } else {
-                  const token = tokenMap[idIndex[luckyToken.tokenId]];
-                  tokenInfo = {
-                    ...coinMap[token.symbol ?? ""],
-                    name: token.name,
-                    type: TokenType.single,
-                  };
-                  amount = amountStrCallback(
-                    tokenMap,
-                    idIndex,
-                    luckyToken.tokenId,
-                    myClaim?.amount?.toString() ?? 0
-                  ).amount;
-                }
-
-                prev.push();
-                return [
-                  ...prev,
-                  {
-                    token: {
-                      ...tokenInfo,
-                    } as any,
-                    amount,
-                    type: luckyToken.type, //sdk.LuckyTokenItemStatus
-                    status: luckyToken.status,
-                    claimAt: myClaim?.createdAt,
-                    sender: luckyToken?.sender?.ens
-                      ? luckyToken?.sender?.ens
-                      : getShortAddr(luckyToken?.sender?.address),
-                    rawData: item,
-                  },
+      try {
+        if (LoopringAPI.luckTokenAPI && accountId) {
+          if (apiKey) {
+            const response =
+              await LoopringAPI.luckTokenAPI.getLuckTokenClaimHistory(
+                {
+                  offset,
+                  limit,
+                  ...filter,
+                } as any,
+                apiKey
+              );
+            if (
+              (response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message
+            ) {
+              const errorItem =
+                SDK_ERROR_MAP_TO_UI[
+                  (response as sdk.RESULT_INFO)?.code ?? 700001
                 ];
-              },
-              [] as R[]
-            );
-
-            setRedPacketReceiveList(result);
+              if (setToastOpen) {
+                setToastOpen({
+                  open: true,
+                  type: ToastType.error,
+                  content:
+                    "error : " + errorItem
+                      ? t(errorItem.messageKey)
+                      : (response as sdk.RESULT_INFO).message,
+                });
+              }
+            } else {
+              setRedPacketReceiveTotal((response as any)?.totalNum);
+              // @ts-ignore
+              let result = (response as any)?.list.reduce(
+                (prev: R[], item: sdk.LuckTokenHistory) => {
+                  // @ts-ignore
+                  const { luckyToken, claim: myClaim } = item;
+  
+                  let amount, tokenInfo;
+                  if (luckyToken.isNft) {
+                    amount = amountStrNFTCallback(
+                      luckyToken.nftTokenInfo as any,
+                      myClaim?.amount?.toString() ?? 0
+                    ).amount;
+                    tokenInfo = {
+                      ...luckyToken.nftTokenInfo,
+                      type: TokenType.nft,
+                    };
+                  } else {
+                    const token = tokenMap[idIndex[luckyToken.tokenId]];
+                    tokenInfo = {
+                      ...coinMap[token.symbol ?? ""],
+                      name: token.name,
+                      type: TokenType.single,
+                    };
+                    amount = amountStrCallback(
+                      tokenMap,
+                      idIndex,
+                      luckyToken.tokenId,
+                      myClaim?.amount?.toString() ?? 0
+                    ).amount;
+                  }
+  
+                  prev.push();
+                  return [
+                    ...prev,
+                    {
+                      token: {
+                        ...tokenInfo,
+                      } as any,
+                      amount,
+                      type: luckyToken.type, //sdk.LuckyTokenItemStatus
+                      status: luckyToken.status,
+                      claimAt: myClaim?.createdAt,
+                      sender: luckyToken?.sender?.ens
+                        ? luckyToken?.sender?.ens
+                        : getShortAddr(luckyToken?.sender?.address),
+                      rawData: item,
+                    },
+                  ];
+                },
+                [] as R[]
+              );
+  
+              setRedPacketReceiveList(result);
+            }
           }
         }
+      } finally {
+        setShowLoading(false);
       }
-      setShowLoading(false);
     },
     [accountId, apiKey, setToastOpen, t, idIndex]
   );
@@ -500,60 +503,74 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <
         //   : undefined
       };
       setShowLoading(true);
-      if (LoopringAPI.luckTokenAPI && accountId) {
-        if (apiKey) {
-          const response =
-            await LoopringAPI.luckTokenAPI.getLuckTokenClaimedBlindBox(
-              {
-                offset,
-                limit,
-                isNft: true,
-                ..._filer,
-              } as any,
-              apiKey
-            );
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            const errorItem =
-              SDK_ERROR_MAP_TO_UI[
-                (response as sdk.RESULT_INFO)?.code ?? 700001
-              ];
-            if (setToastOpen) {
-              setToastOpen({
-                open: true,
-                type: ToastType.error,
-                content:
-                  "error : " + errorItem
-                    ? t(errorItem.messageKey)
-                    : (response as sdk.RESULT_INFO).message,
-              });
-            }
-          } else {
-            setRedPacketReceiveTotal((response as any)?.totalNum);
-            let result = (response as any)?.list.map(
-              (item: sdk.LuckyTokenBlindBoxItemReceive) => {
-                // @ts-ignore
-                const { luckyToken, claim: myClaim } = item;
-
-                return {
-                  type: luckyToken.type,
-                  status: luckyToken.status,
-                  claimAt: myClaim?.createdAt,
-                  sender: luckyToken?.sender?.ens
-                    ? luckyToken?.sender?.ens
-                    : getShortAddr(luckyToken?.sender?.address),
-                  rawData: item,
-                };
+      try {
+        if (LoopringAPI.luckTokenAPI && accountId) {
+          if (apiKey) {
+            const response =
+              await LoopringAPI.luckTokenAPI.getLuckTokenClaimedBlindBox(
+                {
+                  offset,
+                  limit,
+                  isNft: true,
+                  ..._filer,
+                } as any,
+                apiKey
+              );
+            if (
+              (response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message
+            ) {
+              const errorItem =
+                SDK_ERROR_MAP_TO_UI[
+                  (response as sdk.RESULT_INFO)?.code ?? 700001
+                ];
+              if (setToastOpen) {
+                setToastOpen({
+                  open: true,
+                  type: ToastType.error,
+                  content:
+                    "error : " + errorItem
+                      ? t(errorItem.messageKey)
+                      : (response as sdk.RESULT_INFO).message,
+                });
               }
-            );
-
-            setRedPacketReceiveList(result);
+            } else {
+              setRedPacketReceiveTotal((response as any)?.totalNum);
+              let result = (response as any)?.list.map(
+                (item: sdk.LuckyTokenBlindBoxItemReceive) => {
+                  // @ts-ignore
+                  const { luckyToken, claim: myClaim } = item;
+                  let tokenInfo
+                  if (!luckyToken.isNft) {
+                    const token = tokenMap[idIndex[luckyToken.tokenId]];
+                    tokenInfo = {
+                      ...coinMap[token.symbol ?? ""],
+                      name: token.name,
+                      type: TokenType.single,
+                      decimals: token.decimals,
+                      precision: token.precision,
+                    };
+                  }
+                  return {
+                    type: luckyToken.type,
+                    status: luckyToken.status,
+                    claimAt: myClaim?.createdAt,
+                    sender: luckyToken?.sender?.ens
+                      ? luckyToken?.sender?.ens
+                      : getShortAddr(luckyToken?.sender?.address),
+                    rawData: item,
+                    token: tokenInfo,
+                  };
+                }
+              );
+  
+              setRedPacketReceiveList(result);
+            }
           }
         }
+      } finally {
+        setShowLoading(false);
       }
-      setShowLoading(false);
     },
     [accountId, apiKey, setToastOpen, t, idIndex]
   );

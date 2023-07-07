@@ -21,7 +21,7 @@ import {
   redPacketHistory as redPacketHistoryStore,
 } from "@loopring-web/core";
 import { useMarketRedPacket } from "./hooks";
-import { Box, Button, Checkbox, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Button, Checkbox, Grid, Tab, Tabs, Typography } from "@mui/material";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import {
@@ -120,8 +120,8 @@ export const RedPacketMarketPanel = ({
               myAmountStr,
               tokenInfo,
               claim,
+              claimed
             } = makeViewCard(item);
-            // alert(amountStr)
 
             return !(hideOpen && claim) ? (
               <Grid
@@ -145,7 +145,12 @@ export const RedPacketMarketPanel = ({
                   tokenInfo={tokenInfo}
                   getIPFSString={getIPFSString}
                   baseURL={baseURL}
-                  _type={(item as any)?.isOfficial ? "official" : "default"}
+                  _type={
+                    item.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX 
+                      ? "blindbox" 
+                      : (item as any)?.isOfficial ? "official" : "default"
+                  }
+                  claimed={claimed}
                 />
               </Grid>
             ) : (
@@ -204,13 +209,12 @@ export const RedPacketMarketPanel = ({
         </Button>
         <Box display={"flex"} alignItems={"center"} justifyContent={"flex-end"}>
           <Button
-            variant={"outlined"}
-            size={"medium"}
-            color={"inherit"}
+            variant={"contained"}
+            size={"small"}
             sx={{ marginLeft: 1 }}
             onClick={() => history.push("/redPacket/create")}
           >
-            {t("labelCreateRedPacket")}
+            <Typography variant={"body1"}>{t("labelCreateRedPacket")}</Typography>
           </Button>
           <Button
             variant={"outlined"}
@@ -223,8 +227,9 @@ export const RedPacketMarketPanel = ({
           </Button>
           <Button
             startIcon={<ScanQRIcon fontSize={"small"} />}
-            variant={"contained"}
-            size={"small"}
+            variant={"outlined"}
+            size={"medium"}
+            color={"inherit"}
             sx={{ marginLeft: 1 }}
             onClick={() => {
               setShowAccount({ isShow: true, step: AccountStep.QRCodeScanner });

@@ -25,6 +25,7 @@ import {
   FeeInfo,
   GET_IPFS_STRING,
   NFTWholeINFO,
+  RedPacketOrderType,
   RequireOne,
   TRADE_TYPE,
   TradeBtnStatus,
@@ -282,6 +283,7 @@ export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
   lastFailed?: boolean;
+  selectNFTDisabled?: boolean;
 } & (
   | {
       type?: TRADE_TYPE.TOKEN;
@@ -642,7 +644,7 @@ export type CreateRedPacketInfoProps<Fee = FeeInfo> = {
   //
 };
 export type CreateRedPacketExtendsProps<T, F> = {
-  tradeType: TRADE_TYPE;
+  tradeType: RedPacketOrderType;
   handleOnDataChange: (value: Partial<T>) => void;
   handleFeeChange: (value: F) => void;
   onCreateRedPacketClick: () => Promise<void>;

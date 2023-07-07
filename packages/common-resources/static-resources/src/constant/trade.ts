@@ -658,22 +658,12 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: "labelLuckyBlindBox",
-    desKey: "labelLuckyBlindBoxDes",
-    defaultForNFT: true,
-    showInNFTS: true,
-    value: {
-      value: 3,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-  },
-  {
     labelKey: "labelLuckyRandomToken",
     desKey: "labelRedPacketsSplitLuckyDetail",
     showInNFTS: true,
     showInERC20: true,
     defaultForERC20: true,
+    defaultForNFT: true,
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -691,6 +681,63 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       mode: sdk.LuckyTokenClaimType.COMMON,
     },
   },
+  {
+    labelKey: "labelAssetTokens",
+    desKey: "",
+    showInBlindbox: true,
+    defaultForBlindbox: true,
+    icon: sdk.SoursURL + '/images/blindboxSelectToken.png',
+    value: {
+      value: 4,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+    toolgleWithShowERC20Blindbox: true,
+  },
+  {
+    labelKey: "labelRedpacketNFTS",
+    desKey: "",
+    showInBlindbox: true,
+    defaultForBlindboxNotShowERC20Blindbox: true,
+    icon: sdk.SoursURL + '/images/blindboxSelectNFT.png',
+    isBlindboxNFT: true,
+    value: {
+      value: 5,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
+    labelKey: "labelRedpacketBlindBox",
+    desKey: "labelLuckyBlindBoxDes",
+    defaultForFromNFT: true,
+    showInFromNFT: true,
+    value: {
+      value: 6,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
+    labelKey: "labelLuckyRandomToken",
+    desKey: "labelLuckyRandomTokenDes",
+    showInFromNFT: true,
+    value: {
+      value: 7,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
+  {
+    labelKey: "labelLuckyCommonToken",
+    desKey: "labelLuckyCommonTokenDes",
+    showInFromNFT: true,
+    value: {
+      value: 8,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
 ];
 
 export const QRCODE_REGION_ID = "qrcodeRegionId";
@@ -700,6 +747,7 @@ export type TX_HASH = string;
 export type RedPacketHashItems = {
   [key: TX_HASH]: {
     claim: string;
+    blindboxClaimed?: boolean;
     luckToken: sdk.LuckyTokenItemForReceive;
   };
 };
@@ -745,18 +793,21 @@ export type OffRampHashInfos = {
   [key in sdk.ChainId extends string ? string : string]: OffRampHashInfo;
 };
 
-export type RedPacketOrderData<I> = XOR<
+export enum RedPacketOrderType {
+  TOKEN = "TOKEN",
+  NFT = "NFT",
+  BlindBox = "BlindBox",
+  FromNFT = "FromNFT",
+}
+
+export type RedPacketOrderData<I> =
   {
-    tradeType: TRADE_TYPE.TOKEN;
-  } & IBData<I>,
-  {
-    tradeType: TRADE_TYPE.NFT;
-    tradeValue: number;
-  } & Partial<NFTWholeINFO>
-> & {
-  fee: FeeInfo | undefined;
-  __request__: any;
-} & Partial<sdk.LuckyTokenItemForSendV3>;
+    tradeType: RedPacketOrderType;
+    isNFT: boolean;
+    tradeValue?: number,
+    fee: FeeInfo | undefined;
+    __request__: any;
+  } & Partial<IBData<I>> & Partial<NFTWholeINFO> & Partial<sdk.LuckyTokenItemForSendV3>;
 
 export enum TabTokenTypeIndex {
   ERC20 = "ERC20",

@@ -10,6 +10,7 @@ import {
   getIPFSString,
   StylePaper,
   useCreateRedPacket,
+  useNotify,
   useSystem,
 } from "@loopring-web/core";
 import {
@@ -88,6 +89,7 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === "create",
   });
+  // createRedPacketProps.disabled
 
   return (
     <Box display={"flex"} flex={1} flexDirection={"column"}>

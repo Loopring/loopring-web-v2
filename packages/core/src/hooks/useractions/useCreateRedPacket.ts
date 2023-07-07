@@ -16,6 +16,7 @@ import {
   UIERROR_CODE,
   WalletMap,
   BLINDBOX_REDPACKET_LIMIT,
+  RedPacketOrderType,
 } from "@loopring-web/common-resources";
 import {
   store,
@@ -51,7 +52,8 @@ import Web3 from "web3";
 import { isAccActivated } from "./useCheckAccStatus";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRedPacketConfig } from "../../stores/redPacket";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import moment from "moment";
 
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
@@ -88,18 +90,19 @@ export const useCreateRedPacket = <
     useModalData();
   const { account, status: accountStatus } = useAccount();
   const { checkHWAddr, updateHW } = useWalletInfo();
-  const feeProps =
-    redPacketOrder.tradeType === "TOKEN"
-      ? {
-          requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
-          extraType: 1,
-        }
-      : {
-          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
-          tokenAddress: redPacketOrder?.tokenAddress,
-          extraType: 1,
-          isNFT: true,
-        };
+  const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+  const feeProps = isToken
+    ? {
+        requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+        extraType: 1,
+      }
+    : {
+        requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+        tokenAddress: redPacketOrder?.tokenAddress,
+        extraType: 1,
+        isNFT: true,
+      };
 
   const {
     chargeFeeTokenList,
@@ -113,10 +116,10 @@ export const useCreateRedPacket = <
     intervalTime: undefined,
     updateData: ({ fee }) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
-      if (
-        (redPacketOrder.tradeType === TRADE_TYPE.TOKEN && !feeProps.isNFT) ||
-        (redPacketOrder.tradeType === TRADE_TYPE.NFT && feeProps.isNFT)
-      ) {
+      updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee });
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
+      if ((isToken && !feeProps.isNFT) || (!isToken && feeProps.isNFT)) {
         updateRedPacketOrder({ ...(redPacketOrder as any), fee: fee });
       }
     },
@@ -130,14 +133,15 @@ export const useCreateRedPacket = <
     setWalletMap(walletMap);
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder;
     if (
-      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
+      RedPacketOrderType.TOKEN === redPacketOrder.tradeType &&
       !redPacketOrder.belong &&
       walletMap
     ) {
-      resetDefault(TRADE_TYPE.TOKEN);
+      resetDefault(RedPacketOrderType.TOKEN);
     } else if (
-      TRADE_TYPE.TOKEN === redPacketOrder.tradeType &&
-      walletMap &&
+      RedPacketOrderType.TOKEN === redPacketOrder.tradeType &&
+      walletMap && 
+      redPacketOrder.belong && 
       walletMap[redPacketOrder.belong]
     ) {
       handleOnDataChange({
@@ -157,13 +161,15 @@ export const useCreateRedPacket = <
     [updateRedPacketOrder]
   );
   const resetDefault = React.useCallback(
-    (value: TRADE_TYPE) => {
+    (value: RedPacketOrderType) => {
       if (info?.isRetry) {
         checkFeeIsEnough();
         return;
       }
       const walletMap = makeWalletLayer2(true).walletMap ?? {};
-      if (TRADE_TYPE.TOKEN === value && !redPacketOrder.belong && walletMap) {
+      const isToken = value === RedPacketOrderType.TOKEN || 
+        (value === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
+      if (isToken && !redPacketOrder.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap);
         for (let key in keys) {
           const keyVal = keys[key];
@@ -176,15 +182,17 @@ export const useCreateRedPacket = <
               balance: walletInfo?.count,
               memo: "",
               numbers: undefined,
-              validUntil: undefined,
+              giftNumbers: undefined,
+              validUntil: moment().add('days', 1).toDate().getTime(),
               validSince: Date.now(),
               tradeType: value,
+              isNFT: false
             } as unknown as T);
             break;
           }
         }
       } else if (
-        TRADE_TYPE.TOKEN === value &&
+        isToken &&
         redPacketOrder.belong &&
         walletMap
       ) {
@@ -196,11 +204,13 @@ export const useCreateRedPacket = <
           balance: walletInfo?.count,
           memo: "",
           numbers: undefined,
+          giftNumbers: undefined,
           validSince: Date.now(),
-          validUntil: undefined,
+          validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: value,
+          isNFT: false
         } as unknown as T);
-      } else if (TRADE_TYPE.NFT === value) {
+      } else if (!isToken) {
         resetRedPacketOrder(value);
       } else {
         updateRedPacketOrder({
@@ -212,8 +222,9 @@ export const useCreateRedPacket = <
           memo: "",
           numbers: undefined,
           validSince: Date.now(),
-          validUntil: undefined,
+          validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: "TOKEN",
+          isNFT: false
         } as unknown as T);
       }
     },
@@ -244,12 +255,13 @@ export const useCreateRedPacket = <
       const eachValue = sdk
         .toBig(redPacketOrder?.tradeValue ?? 0)
         .div(redPacketOrder.numbers ?? 1);
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
       return {
         tradeValue: redPacketOrder?.tradeValue,
-        eachValue:
-          redPacketOrder.tradeType === TRADE_TYPE.TOKEN
-            ? eachValue.toString()
-            : eachValue.toFixed(),
+        eachValue: isToken
+          ? eachValue.toString()
+          : eachValue.toFixed(),
       };
     } else {
       return {
@@ -290,20 +302,26 @@ export const useCreateRedPacket = <
       const feeRaw =
         redPacketOrder.fee.feeRaw ?? redPacketOrder.fee.__raw__?.feeRaw ?? 0;
       const fee = sdk.toBig(feeRaw);
+      const blindBoxGiftsEqualsZero =
+        redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
+        sdk
+          .toBig(redPacketOrder.giftNumbers ?? "0")
+          .isZero();
       const blindBoxGiftsLargerThanPackets =
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
         sdk
           .toBig(redPacketOrder.giftNumbers ?? "0")
           .isGreaterThan(redPacketOrder.numbers);
       const blindBoxPacketsNumberTooLarge =
-        redPacketOrder.tradeType === TRADE_TYPE.NFT &&
         redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX &&
         sdk
           .toBig(redPacketOrder.numbers)
           .isGreaterThan(BLINDBOX_REDPACKET_LIMIT);
+      // @ts-ignore
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN || 
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.nftData)
       if (
-        (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
+        isToken &&
         redPacketOrder.belong &&
         tokenMap[(redPacketOrder as T).belong as any]
       ) {
@@ -358,11 +376,12 @@ export const useCreateRedPacket = <
         !isExceedBalance &&
         !tooSmall &&
         !tooLarge &&
-        ((redPacketOrder.tradeType === TRADE_TYPE.NFT &&
+        ((!isToken &&
           redPacketOrder.nftData) ||
           // @ts-ignore
-          redPacketOrder.tradeType === TRADE_TYPE.TOKEN) &&
+          isToken) &&
         redPacketConfigs?.luckTokenAgents &&
+        !blindBoxGiftsEqualsZero &&
         !blindBoxGiftsLargerThanPackets &&
         !blindBoxPacketsNumberTooLarge
       ) {
@@ -370,18 +389,20 @@ export const useCreateRedPacket = <
         return;
       } else {
         disableBtn();
-        if (!redPacketConfigs?.luckTokenAgents) {
+        if (blindBoxGiftsEqualsZero) {
+          setLabelAndParams("labelRedPacketsGiftsEqualsZero", {});
+        } else if (!redPacketConfigs?.luckTokenAgents) {
           setLabelAndParams("labelRedPacketWaitingBlock", {});
         } else if (isExceedBalance) {
           setLabelAndParams("labelRedPacketsInsufficient", {
             symbol:
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
+              isToken
                 ? (tradeToken.symbol as string)
                 : "NFT",
           });
         } else if (
           isExceedBalance &&
-          (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN &&
+          (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN &&
           feeToken.tokenId === tradeToken.tokenId
         ) {
           setLabelAndParams("labelReserveFee", {
@@ -393,7 +414,7 @@ export const useCreateRedPacket = <
           if (tooSmall) {
             setLabelAndParams(
               "labelRedPacketsMin",
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
                 ? {
                     value: getValuePrecisionThousand(
                       sdk
@@ -421,13 +442,13 @@ export const useCreateRedPacket = <
             );
           } else {
             let value =
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
                 ? tradeValue
                     .div(tradeToken.luckyTokenAmounts.minimum)
                     .toFixed(0, 1)
                 : tradeValue;
             const limit =
-              (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN
+              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN
                 ? REDPACKET_ORDER_LIMIT
                 : REDPACKET_ORDER_NFT_LIMIT;
             setLabelAndParams("labelRedPacketsSplitNumber", {
@@ -437,7 +458,7 @@ export const useCreateRedPacket = <
         } else if (tooLarge) {
           setLabelAndParams(
             "labelRedPacketsMax",
-            (redPacketOrder as T).tradeType === TRADE_TYPE.TOKEN && tradeToken
+            (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
               ? {
                   value: getValuePrecisionThousand(
                     sdk
@@ -547,7 +568,7 @@ export const useCreateRedPacket = <
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
             }
-          );
+          )
 
           myLog("submit sendLuckTokenSend:", response);
           if (
@@ -604,7 +625,7 @@ export const useCreateRedPacket = <
           history.push(
             `/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`
           );
-          resetDefault(TRADE_TYPE.TOKEN);
+          resetDefault(RedPacketOrderType.TOKEN);
           if (
             request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
             (response as sdk.TX_HASH_API)?.hash
@@ -693,7 +714,7 @@ export const useCreateRedPacket = <
   );
   React.useEffect(() => {
     if (isShow) {
-      resetDefault(TRADE_TYPE.TOKEN);
+      resetDefault(RedPacketOrderType.BlindBox);
       walletLayer2Service.sendUserUpdate();
     }
   }, [isShow]);
@@ -714,6 +735,8 @@ export const useCreateRedPacket = <
       const redPacketOrder = store.getState()._router_modalData
         .redPacketOrder as T;
       const _tradeData = calcNumberAndAmount();
+      const isToken = redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+        (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
 
       if (
         readyState === AccountStatus.ACTIVATED &&
@@ -723,7 +746,7 @@ export const useCreateRedPacket = <
         chargeFeeTokenList.length &&
         !isFeeNotEnough.isFeeNotEnough &&
         redPacketOrder.belong &&
-        (redPacketOrder.tradeType === TRADE_TYPE.NFT
+        (!isToken
           ? redPacketOrder.nftData
           : tokenMap[redPacketOrder.belong]) &&
         redPacketOrder.fee &&
@@ -745,7 +768,7 @@ export const useCreateRedPacket = <
             step: AccountStep.RedPacketSend_WaitForAuth,
           });
           let tradeToken, tradeValue;
-          if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+          if (!isToken) {
             tradeToken = {
               tokenId: redPacketOrder.tokenId,
               nftDta: redPacketOrder.nftData,
@@ -781,22 +804,20 @@ export const useCreateRedPacket = <
             type: {
               ...redPacketOrder.type,
               mode:
-                redPacketOrder.tradeType === TRADE_TYPE.NFT
-                  ? redPacketOrder.type.mode ===
-                    sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? sdk.LuckyTokenClaimType.BLIND_BOX
-                    : sdk.LuckyTokenClaimType.COMMON
+              redPacketOrder.tradeType === RedPacketOrderType.BlindBox 
+                ? sdk.LuckyTokenClaimType.BLIND_BOX
+                : (redPacketOrder.tradeType === RedPacketOrderType.NFT
+                  ? sdk.LuckyTokenClaimType.COMMON
                   : // @ts-ignore
-                    redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON,
+                    redPacketOrder.type?.mode ?? sdk.LuckyTokenClaimType.COMMON)
             },
             numbers: redPacketOrder.numbers,
             giftNumbers: redPacketOrder.giftNumbers!,
             memo: redPacketOrder.memo ? redPacketOrder.memo : "Best wishes",
             signerFlag: false as any,
-            nftData:
-              redPacketOrder.tradeType === TRADE_TYPE.NFT
-                ? redPacketOrder.nftData
-                : undefined,
+            nftData: isToken
+              ? undefined
+              : redPacketOrder.nftData,
             // @ts-ignore
             templateId: 0,
             validSince: Math.round(
@@ -874,7 +895,7 @@ export const useCreateRedPacket = <
     [walletMap]
   );
   const [minimum, maximum] = React.useMemo(() => {
-    if (redPacketOrder.tradeType === TRADE_TYPE.NFT) {
+    if (redPacketOrder.tradeType === RedPacketOrderType.NFT) {
       const minimum = sdk
         .toBig(redPacketOrder?.tradeValue ?? 0)
         .div(REDPACKET_ORDER_NFT_LIMIT)
@@ -918,6 +939,41 @@ export const useCreateRedPacket = <
     },
     [processRequest, setShowAccount]
   );
+  const location = useLocation()
+  React.useEffect(() => {
+    (async () => {
+      const nftDatas = new URLSearchParams(location.search).get('nftDatas')
+      if (nftDatas) {
+        updateRedPacketOrder({
+          ...redPacketOrder,
+          tradeType: RedPacketOrderType.FromNFT,
+          isNFT: true,
+        })
+        const info = await LoopringAPI.nftAPI?.getInfoForNFTTokens({
+          nftDatas: [nftDatas]
+        })
+        if (info && info[nftDatas]) {
+          const balance = await LoopringAPI.userAPI?.getUserNFTBalances({
+            accountId: account.accountId,
+            nftDatas: nftDatas,
+            metadata: true
+          }, account.apiKey)
+          const balanceInfo = balance!.userNFTBalances[0]
+          handleOnDataChange({
+            collectionInfo: balanceInfo.collectionInfo,
+            tokenId: balanceInfo.tokenId,
+            tradeValue: undefined,
+            balance: balanceInfo.total,
+            nftData: balanceInfo.nftData,
+            belong: balanceInfo.metadata?.base.name,
+            tokenAddress: balanceInfo.tokenAddress,
+            image: balanceInfo?.metadata?.imageSize
+              && balanceInfo?.metadata?.imageSize["240-240"],
+          } as T);
+        }
+      } 
+    })()
+  }, [location.search])
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
@@ -955,6 +1011,7 @@ export const useCreateRedPacket = <
         } as T);
       }
     },
+    selectNFTDisabled: redPacketOrder.tradeType === RedPacketOrderType.FromNFT
   } as unknown as CreateRedPacketProps<T, I, F, NFT>;
 
   return { createRedPacketProps, retryBtn };

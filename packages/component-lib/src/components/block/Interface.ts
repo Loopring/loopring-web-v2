@@ -58,7 +58,7 @@ export type RedPacketDefaultBg = RedPacketDefault & {
   className?: string;
 };
 export type RedPacketDefault = {
-  type?: "default" | "official";
+  type?: "default" | "official" | "blindbox";
   size?: "middle" | "large";
   ImageEle?: JSX.Element | undefined;
 };
@@ -156,6 +156,7 @@ export type RedPacketBlindBoxDetailProps = {
     when: number;
     amount: number;
     showLuckiest?: boolean;
+    showMultiplier: boolean;
   }[];
   BlindBoxClaimList?: {
     who: string;
@@ -164,9 +165,14 @@ export type RedPacketBlindBoxDetailProps = {
     amount: number;
   }[];
   showOpenLottery?: boolean;
-  wonNFTInfo?: {
-    name: string;
+  wonPrizeInfo?: { 
+    name: string; 
     url: string;
+    isNFT: true;
+  } | {
+    amountStr: string; 
+    tokenName: string;
+    isNFT: false;
   };
   onClickClaim?: () => void;
   onClickClaim2?: () => void;
@@ -174,12 +180,20 @@ export type RedPacketBlindBoxDetailProps = {
   onClickClaimDetailBack?: () => void;
   description: string;
   shareButton: "hidden" | "share";
-  claimButton: "claimed" | "claim" | "claiming" | "expired" | "hidden";
+  claimButton: "claimed" | "claim" | "claiming" | "expired" | "hidden" | "ended";
   didClaimABlindBox: boolean;
   wonInfo: {
     participated: boolean;
     won: boolean;
     amount: number;
+    isNFT: true
+  } | {
+    participated: boolean;
+    won: boolean;
+    amount: string;
+    total: string;
+    symbol: string;
+    isNFT: false
   };
   page: number;
   totalCount: number;
@@ -192,6 +206,8 @@ export type RedPacketBlindBoxDetailProps = {
   // didClaimABlindBox: boolean;
   onClickClaimPopViewDetail: () => void;
   expired: boolean;
+  isTokenBlindbox: boolean;
+  remainGiftsAmount: string;
 };
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number;

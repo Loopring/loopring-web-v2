@@ -18,11 +18,13 @@ import {
   NFTMETA,
   NFTWholeINFO,
   RedPacketOrderData,
+  RedPacketOrderType,
   TRADE_TYPE,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "../../../api_wrapper";
+import moment from "moment";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined as any,
@@ -57,26 +59,45 @@ const initialRedPacketState: RedPacketOrderData<any> = {
   balance: 0,
   fee: undefined,
   validSince: Date.now(),
+  validUntil: moment().add('days', 1).toDate().getTime(),
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.COMMON,
     scope: sdk.LuckyTokenViewType.PRIVATE,
   },
-  tradeType: TRADE_TYPE.TOKEN,
+  tradeType: RedPacketOrderType.BlindBox,
   __request__: undefined,
+  isNFT: false,
 };
 const initialRedPacketNFTState: RedPacketOrderData<any> = {
   belong: undefined as any,
   tradeValue: 0,
   fee: undefined,
   validSince: Date.now(),
+  validUntil: moment().add('days', 1).toDate().getTime(),
   type: {
     partition: sdk.LuckyTokenAmountType.AVERAGE,
     mode: sdk.LuckyTokenClaimType.RELAY,
     scope: sdk.LuckyTokenViewType.PRIVATE,
   },
-  tradeType: TRADE_TYPE.NFT,
+  tradeType: RedPacketOrderType.NFT,
   __request__: undefined,
+  isNFT: true,
+};
+const initialBlindBoxState: RedPacketOrderData<any> = {
+  belong: undefined as any,
+  tradeValue: 0,
+  fee: undefined,
+  validSince: Date.now(),
+  validUntil: moment().add('days', 1).toDate().getTime(),
+  type: {
+    partition: sdk.LuckyTokenAmountType.AVERAGE,
+    mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    scope: sdk.LuckyTokenViewType.PRIVATE,
+  },
+  tradeType: RedPacketOrderType.BlindBox,
+  __request__: undefined,
+  isNFT: false,
 };
 
 const initialClaimState: ClaimData = {
@@ -270,14 +291,18 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetRedPacketOrder(
       state,
       _action?: PayloadAction<{
-        type?: TRADE_TYPE;
+        type?: RedPacketOrderType;
+        isNFT?: boolean
       }>
     ) {
       state.lastStep = LAST_STEP.default;
+      _action?.payload.type
       state.redPacketOrder = {
-        ...(_action?.payload?.type === TRADE_TYPE.NFT
+        ...(_action?.payload?.type === RedPacketOrderType.NFT
           ? initialRedPacketNFTState
-          : initialRedPacketState),
+          : _action?.payload?.type === RedPacketOrderType.BlindBox
+            ? initialBlindBoxState
+            : initialRedPacketState),
       } as RedPacketOrderData<any>;
     },
     resetClaimData(state) {

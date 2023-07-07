@@ -49,7 +49,6 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
     customeEndInputPlaceHolder,
   } = props;
   const { t } = useTranslation();
-  // const [] = useState(undefined,)
   return (
     <StyledDateTimeRangePicker>
       <MobileDateTimePicker

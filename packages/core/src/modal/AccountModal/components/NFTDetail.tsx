@@ -34,6 +34,7 @@ import {
   UIERROR_CODE,
   FavSolidIcon,
   FavHollowIcon,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -58,6 +59,7 @@ import { sanitize } from "dompurify";
 import { StylePaper } from "../../../component";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useHistory } from "react-router";
 enum NFTDetailTab {
   Detail = "Detail",
   Property = "Property",
@@ -143,6 +145,7 @@ export const NFTDetail = withTranslation("common")(
         ? "loading"
         : "click"
     );
+    const history = useHistory()
     myLog("showFresh", showFresh);
     const onFavoriteClick = React.useCallback(async () => {
       if (LoopringAPI.userAPI) {
@@ -632,11 +635,11 @@ export const NFTDetail = withTranslation("common")(
                 paddingLeft={3}
                 display={"flex"}
                 flexDirection={"row"}
-                justifyContent={"space-between"}
+                justifyContent={"left"}
                 marginBottom={isMobile ? 2 : 5}
                 paddingRight={3}
               >
-                <Box className={isMobile ? "isMobile" : ""} width={"48%"}>
+                <Box className={isMobile ? "isMobile" : ""} width={"45%"}>
                   <Button
                     variant={"contained"}
                     size={"small"}
@@ -663,7 +666,7 @@ export const NFTDetail = withTranslation("common")(
                   popItem.minter?.toLowerCase() ===
                     account.accAddress.toLowerCase()
                 ) && (
-                  <Box className={isMobile ? "isMobile" : ""} width={"48%"}>
+                  <Box marginLeft={"2%"} className={isMobile ? "isMobile" : ""} width={"45%"}>
                     <Button
                       variant={"contained"}
                       size={"small"}
@@ -684,6 +687,17 @@ export const NFTDetail = withTranslation("common")(
                     </Button>
                   </Box>
                 )}
+                <img
+                  style={{
+                    cursor: "pointer",
+                    width: "32px",
+                    height: "32px",
+                    marginLeft: "2%",
+                  }}
+                  onClick={() => {
+                    history.push(`/redPacket/create?nftDatas=${popItem.nftData}`)
+                  }} src={SoursURL + '/images/redpacket_logo.png'}
+                />
               </Box>
             </Grid>
           </Grid>

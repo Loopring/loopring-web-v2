@@ -242,7 +242,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
   const [isAddressCheckLoading, setIsAddressCheckLoading] =
     React.useState(false);
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
-  const [isActiveAccount, setIsActiveAccount] = React.useState(false);
+  const [isActiveAccount, setIsActiveAccount] = React.useState(undefined as boolean | undefined);
   const [isActiveAccountFee, setIsActiveAccountFee] = React.useState(false);
   const [isSameAddress, setIsSameAddress] = React.useState(false);
   const [isCFAddress, setIsCFAddress] = React.useState(false);

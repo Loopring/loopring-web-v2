@@ -16,6 +16,7 @@ export type updateRedpacketHashProps = {
   chainId: sdk.ChainId;
   address: string;
   claimAmount: string;
+  blindboxClaimed?: boolean;
 };
 const initialState: RedPacketHashInfos = {
   [ChainId.GOERLI]: {},
@@ -77,7 +78,7 @@ const redPacketHistorySlice: Slice<RedPacketHashInfos> = createSlice<
       state: ChainHashInfos,
       action: PayloadAction<updateRedpacketHashProps>
     ) {
-      const { hash, luckToken, claimAmount, address, chainId } = action.payload;
+      const { hash, luckToken, claimAmount, address, chainId, blindboxClaimed } = action.payload;
       if (!state[chainId] || !state[chainId][address]) {
         state[chainId] = { ...state[chainId], [address]: {} };
       }
@@ -92,6 +93,7 @@ const redPacketHistorySlice: Slice<RedPacketHashInfos> = createSlice<
                 hash: luckToken.hash,
               },
               claim: claimAmount,
+              blindboxClaimed: blindboxClaimed,
             },
           },
         };
