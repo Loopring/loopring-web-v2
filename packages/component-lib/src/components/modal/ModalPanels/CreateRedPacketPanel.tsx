@@ -24,7 +24,7 @@ import {
   CreateRedPacketStepWrap,
 } from "../../tradePanel/components/CreateRedPacketWrap";
 import { Box, styled } from "@mui/material";
-import { LuckyTokenClaimType } from "@loopring-web/loopring-sdk";
+import { LuckyTokenClaimType, LuckyTokenViewType } from "@loopring-web/loopring-sdk";
 import { useNotify } from "@loopring-web/core";
 
 const BoxStyle = styled(Box)`
@@ -198,19 +198,20 @@ export const CreateRedPacketPanel = <
           : tradeData.tradeType === RedPacketOrderType.FromNFT 
             ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
             : LuckyRedPacketList.find((config) => config.defaultForERC20);
-
+    const isNFT = (
+      tradeData.tradeType === RedPacketOrderType.NFT 
+      || tradeData.tradeType === RedPacketOrderType.FromNFT 
+      || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
+    )
     setSelectType(found);
     handleOnDataChange({
       type: {
         ...tradeData?.type,
         partition: found!.value.partition,
         mode: found!.value.mode,
+        scope: LuckyTokenViewType.PRIVATE
       },
-      isNFT: (
-        tradeData.tradeType === RedPacketOrderType.NFT 
-        || tradeData.tradeType === RedPacketOrderType.FromNFT 
-        || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
-      ) ? true : false
+      isNFT
     } as any);
   }, [tradeData.tradeType]);
 
