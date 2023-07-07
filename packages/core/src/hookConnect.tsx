@@ -158,7 +158,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     }
   }
 
-  const NetWorkItems = React.useMemo(() => {
+  const NetWorkItems: JSX.Element = React.useMemo(() => {
     return (
       <>
         <OutlineSelectStyle
