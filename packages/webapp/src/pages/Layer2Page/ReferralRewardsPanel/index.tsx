@@ -22,6 +22,7 @@ import {
   L1L2_NAME_DEFINED,
   LinkSharedIcon,
   MapChainId,
+  myLog,
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
@@ -30,8 +31,10 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  RefundTable,
+  CarouselItem,
   ReferralsTable,
+  RefundTable,
+  ShareModal,
   Toast,
   ToastType,
   useSettings,
@@ -52,6 +55,7 @@ const BoxStyled = styled(Box)`
     }
   }
 `
+
 export const BoxBannerStyle = styled(Box)<
   BoxProps & { backGroundUrl?: string | number; direction?: 'left' | 'right' }
 >`
@@ -79,7 +83,16 @@ enum ReferStep {
   method2 = 1,
 }
 
-const ReferHeader = ({
+export type ImageReferralBanner = {
+  referralBanners: { en: string[] }
+  lng: string[]
+  position: {
+    code: { default: any[]; [key: number]: any[] }
+    [key: string]: any
+  }
+}
+
+const ReferHeader = <R extends ImageReferralBanner>({
   isActive = true,
   handleCopy,
   link,
@@ -92,16 +105,13 @@ const ReferHeader = ({
   const { t } = useTranslation(['common', 'layout'])
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const [open, setOpen] = React.useState(false)
+  const [loading, setLoading] = React.useState<boolean>(true)
 
-  // const [image, setImage] = React.useState<any[]>([]);
-  const [imageList, setImageList] = React.useState<{
-    referralBanners: { en: string[] }
-    lng: string[]
-    position: {
-      code: { default: any[]; [key: number]: any[] }
-      [key: string]: any
-    }
-  }>({
+  const [images, setImages] = React.useState<CarouselItem[]>([])
+
+  const [imageList, setImageList] = React.useState<R>({
+    // @ts-ignore
     referralBanners: {
       en: [],
     },
@@ -117,50 +127,15 @@ const ReferHeader = ({
       .then((result) => {
         if (result.referralBanners) {
           setImageList(result)
+          renderImage(result)
         }
+        setLoading(false)
       })
   }, [])
-  // const renderImage = React.useCallback(() => {
-  //   const images = imageList?.referralBanners?.en.map((item, index) => {
-  //     const ref = React.createRef<SVGSVGElement>();
-  //     let _default = undefined;
-  //     if (imageList?.position?.code[index]) {
-  //       _default = imageList?.position?.code[index];
-  //     } else {
-  //       _default = imageList?.position?.code?.default;
-  //     }
-  //     let [left, bottom, , , color, width, height] = _default ?? [
-  //       48,
-  //       30,
-  //       230,
-  //       64,
-  //       "#000000",
-  //       630,
-  //       880,
-  //     ];
-  //     return (
-  //       <ReferralImage
-  //         ref={ref}
-  //         src={item}
-  //         code={account?.accountId?.toString()}
-  //         height={height}
-  //         width={width}
-  //         bottom={bottom}
-  //         left={left}
-  //         fontColor={color ?? "#000000"}
-  //       />
-  //     );
-  //   });
-  //   setImages(images);
-  // }, [imageList, account]);
-
-  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
-    availableTradeCheck: () => {
-      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
-    },
-    isLoading: false,
-    submitCallback: async () => {
-      const images = imageList?.referralBanners?.en.map((item, index) => {
+  const renderImage = React.useCallback(
+    (imageList: R) => {
+      let images: any[] = []
+      imageList?.referralBanners?.en.forEach((item, index) => {
         const canvas: HTMLCanvasElement = document.createElement('canvas')
         let _default = undefined
         if (imageList?.position?.code[index]) {
@@ -193,9 +168,7 @@ const ReferHeader = ({
         const image = new Image()
         image.crossOrigin = 'true'
         image.src = item
-        // const download = () => {
-        //
-        // };
+
         image.onload = function () {
           context.clearRect(0, 0, width, width)
           context.drawImage(image, 0, 0, width, height)
@@ -206,19 +179,99 @@ const ReferHeader = ({
           context.font = '44px Roboto'
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
 
-          canvas.toBlob((blob) => {
-            const a = document.createElement('a')
-            // @ts-ignore
-            a.download = (item ?? '/').split('/')?.pop()
-            a.style.display = 'none'
-            // @ts-ignore
-            a.href = URL.createObjectURL(blob)
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-          }, 'image/jpeg')
+          // myLog('imageUrl createObjectURL', canvas.toDataURL())
+          images.push({ imageUrl: canvas.toDataURL(), size: [width / 2, height / 2] })
+          if (index + 1 == imageList?.referralBanners?.en?.length) {
+            myLog('imageList', images)
+
+            setImages(images)
+          }
+          // canvas.toBlob((blob) => {
+          // const a = document.createElement('a')
+          // // @ts-ignore
+          // a.download = (item ?? '/').split('/')?.pop()
+          // a.style.display = 'none'
+          // // @ts-ignore
+          // a.href = URL.createObjectURL(blob)
+          // document.body.appendChild(a)
+          // a.click()
+          // document.body.removeChild(a)
+          // }, 'image/png')
         }
       })
+    },
+    [imageList, account],
+  )
+  const onDownloadImage = () => {
+    imageList?.referralBanners?.en.map((item, index) => {
+      const canvas: HTMLCanvasElement = document.createElement('canvas')
+      let _default = undefined
+      if (imageList?.position?.code[index]) {
+        _default = imageList?.position?.code[index]
+      } else {
+        _default = imageList?.position?.code?.default
+      }
+      let [left, bottom, , , color, width, height] = _default ?? [
+        48,
+        30,
+        230,
+        64,
+        '#000000',
+        630,
+        880,
+      ]
+      const lebelY = height - bottom - 100 + 20
+      const lebelX = left
+      const lebelCodeY = lebelY + 64
+      const lebelCodeX = left
+      const labelCode = t('labelReferralImageCode', {
+        code: account.accountId,
+      })
+      const label = t('labelReferralImageDes')
+
+      canvas.width = width
+      canvas.height = height
+      // @ts-ignore
+      const context: CanvasRenderingContext2D = canvas.getContext('2d')
+      const image = new Image()
+      image.crossOrigin = 'true'
+      image.src = item
+      // const download = () => {
+      //
+      // };
+      image.onload = function () {
+        context.clearRect(0, 0, width, width)
+        context.drawImage(image, 0, 0, width, height)
+        context.font = '28px Roboto'
+        context.fillStyle = color
+        context.textAlign = 'left'
+        context.fillText(label, lebelX, lebelY)
+        context.font = '44px Roboto'
+        context.fillText(labelCode, lebelCodeX, lebelCodeY)
+
+        canvas.toBlob((blob) => {
+          const a = document.createElement('a')
+          // @ts-ignore
+          a.download = (item ?? '/').split('/')?.pop()
+          a.style.display = 'none'
+          // @ts-ignore
+          a.href = URL.createObjectURL(blob)
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }, 'image/jpeg')
+      }
+    })
+  }
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
+    availableTradeCheck: () => {
+      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
+    },
+    isLoading: false,
+    submitCallback: async () => {
+      setOpen(true)
+      // Carousel
+      // onDownloadImage();
     },
   })
 
@@ -262,6 +315,13 @@ const ReferHeader = ({
   return (
     <BoxBannerStyle backGroundUrl={SoursURL + '/images/giftReward.webp'} direction={'right'}>
       <Container>
+        <ShareModal
+          onClick={() => onDownloadImage()}
+          open={open}
+          loading={false}
+          onClose={() => setOpen(false)}
+          imageList={images}
+        />
         <Box className={'bg'} marginY={3} display={'flex'}>
           <Box width={'65%'}>
             <Typography

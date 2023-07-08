@@ -2,7 +2,7 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { RewardsTable, Toast, ToastType } from '@loopring-web/component-lib'
 import React from 'react'
 import { TOAST_TIME } from '@loopring-web/common-resources'
-import { StylePaper, useAccount, useSystem, useToast } from '@loopring-web/core'
+import { StylePaper, useAccount, useSystem, useToast, useUserRewards } from '@loopring-web/core'
 
 import { useRewardsTable } from './hook'
 import { Box } from '@mui/material'
@@ -10,6 +10,8 @@ import { Box } from '@mui/material'
 const RewardsPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const { forexMap } = useSystem()
   const { toastOpen, setToastOpen, closeToast } = useToast()
+  const { getUserRewards } = useUserRewards()
+
   const { claimList, showLoading, getRewardsTableList } = useRewardsTable(setToastOpen)
   const {
     account: { accAddress, accountId },
@@ -32,9 +34,10 @@ const RewardsPanel = withTranslation('common')((rest: WithTranslation<'common'>)
         <RewardsTable
           forexMap={forexMap}
           rawData={claimList}
-          onItemClick={(item) => {}}
+          onItemClick={(item) => {
+            getUserRewards()
+          }}
           onDetail={(item) => {}}
-          getList={getRewardsTableList}
           showloading={showLoading}
         />
       </Box>

@@ -1,14 +1,16 @@
-import { MyAmmLP, StateBase } from "@loopring-web/common-resources";
-import { AmmUserRewardMap } from "@loopring-web/loopring-sdk";
+import { MyAmmLP, StateBase } from '@loopring-web/common-resources'
+import { AmmUserRewardMap } from '@loopring-web/loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
-export type UserRewards = AmmUserRewardMap;
+export type UserRewards = AmmUserRewardMap
 export type MyAmmLPMap<R extends { [key: string]: any }> = {
-  [key in keyof R]: MyAmmLP<R>;
-};
+  [key in keyof R]: MyAmmLP<R>
+}
 export type UserRewardsStates<R extends { [key: string]: any }> = {
-  userRewardsMap?: UserRewards | undefined;
-  myAmmLPMap: MyAmmLPMap<R> | undefined;
-  rewardU: string;
-  feeU: string;
-  __timer__: NodeJS.Timeout | -1;
-} & StateBase;
+  userRewardsMap?: UserRewards | undefined
+  myAmmLPMap: MyAmmLPMap<R> | undefined
+  totalClaims: Array<sdk.ClaimItem>
+  rewardU: string
+  feeU: string
+  __timer__: NodeJS.Timeout | -1
+} & StateBase

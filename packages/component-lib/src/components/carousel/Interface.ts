@@ -11,6 +11,7 @@ export type SocialButtonProps = {
   /** Function that sends share event to analytics */
   sendShareEvent: () => void
 }
+export type CarouselItem = { imageUrl: string; size: [number, number] }
 
 export type ShareProps = {
   /** Social Networks configuration */

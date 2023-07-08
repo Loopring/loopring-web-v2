@@ -4,7 +4,6 @@ import React from 'react'
 import {
   ForexMap,
   getValuePrecisionThousand,
-  globalSetup,
   RowConfig,
   TokenType,
 } from '@loopring-web/common-resources'
@@ -12,7 +11,6 @@ import { Column, Table } from '../../basic-lib'
 import { Box, BoxProps, Link, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
-import _ from 'lodash'
 import { CoinIcons } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -78,16 +76,12 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
       rawData: R[]
       onItemClick: (item: any) => void
       onDetail: (item: any) => void
-      getList: () => void
       showloading: boolean
     } & WithTranslation,
   ) => {
-    const { forexMap, rawData, onItemClick, onDetail, getList, showloading, t } = props
+    const { forexMap, rawData, onItemClick, onDetail, showloading, t } = props
 
     const { currency, isMobile, coinJson } = useSettings()
-    const updateData = _.debounce(() => {
-      getList()
-    }, globalSetup.wait)
 
     const getColumnMode = React.useCallback(
       (): Column<R, unknown>[] => [
@@ -195,13 +189,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-    React.useEffect(() => {
-      updateData.cancel()
-      updateData()
-      return () => {
-        updateData.cancel()
-      }
-    }, [])
+
     return (
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
