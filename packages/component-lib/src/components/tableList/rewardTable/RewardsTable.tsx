@@ -1,31 +1,36 @@
-import { WithTranslation, withTranslation } from 'react-i18next'
+import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import {
+  EmptyValueTag,
   ForexMap,
   getValuePrecisionThousand,
-  globalSetup,
+  myLog,
   RowConfig,
   TokenType,
 } from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib'
-import { Box, BoxProps, Link, Typography } from '@mui/material'
+import { Box, BoxProps, Link, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
-import _ from 'lodash'
 import { CoinIcons } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 
+export type EarningsDetail = {
+  amountStr: string
+  amount: string
+  name?: string
+  claimType: sdk.CLAIM_TYPE
+  tokenValueDollar: string
+  token: string
+  precision: number
+}
 export type EarningsRow = {
   token: {
     type: TokenType
     value: string
   }
-  detail: Array<{
-    amountStr: string
-    amount: string
-    claimType: sdk.CLAIM_TYPE
-  }>
+  detail: Array<EarningsDetail>
   precision: number
   amountStr: string
   amount: string
@@ -70,6 +75,76 @@ const TableStyled = styled(Table)`
     text-align: center;
   }
 ` as any
+const ContentWrapperStyled = styled(Box)`
+  // position: absolute;
+  // top: 45%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
+  // // min-width: ${({ theme }) => theme.unit * 87.5}px;
+  // // height: 60%;
+  //background-color: var(--color-pop-bg);
+  // box-shadow: 0px ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit / 2}px
+  //   rgba(0, 0, 0, 0.25);
+  padding: 0 ${({ theme }) => theme.unit * 1}px;
+  border-radius: ${({ theme }) => theme.unit / 2}px;
+`
+export const DetailRewardPanel = ({ detailList }: { detailList?: EarningsDetail[] }) => {
+  const { t } = useTranslation()
+  myLog('detailLis', detailList)
+  return (
+    <ContentWrapperStyled>
+      {detailList?.map((item, index) => {
+        if (item.amount === '0') {
+          return <React.Fragment key={item.toString()} />
+        } else {
+          return (
+            <Box
+              display={'flex'}
+              key={index}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+              padding={1}
+            >
+              <Typography
+                display={'inline-flex'}
+                alignItems={'center'}
+                component={'span'}
+                color={'textSecondary'}
+              >
+                {t(`labelClaimType${item.claimType}`)
+                  ? t(`labelClaimType${item.claimType}`)
+                  : item?.name
+                  ? item?.name
+                  : t('labelClaimOtherRewards')}
+              </Typography>
+              <Typography
+                display={'inline-flex'}
+                alignItems={'center'}
+                component={'span'}
+                color={'textPrimary'}
+              >
+                {item.amount !== '0'
+                  ? EmptyValueTag
+                  : getValuePrecisionThousand(
+                      item.amountStr,
+                      item.precision,
+                      item.precision,
+                      undefined,
+                      false,
+                      {
+                        floor: true,
+                      },
+                    ) +
+                    ' ' +
+                    item.token}
+              </Typography>
+            </Box>
+          )
+        }
+      })}
+    </ContentWrapperStyled>
+  )
+}
 
 export const RewardsTable = withTranslation(['tables', 'common'])(
   <R extends EarningsRow>(
@@ -78,16 +153,12 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
       rawData: R[]
       onItemClick: (item: any) => void
       onDetail: (item: any) => void
-      getList: () => void
       showloading: boolean
     } & WithTranslation,
   ) => {
-    const { forexMap, rawData, onItemClick, onDetail, getList, showloading, t } = props
+    const { forexMap, rawData, onItemClick, showloading, t } = props
 
     const { currency, isMobile, coinJson } = useSettings()
-    const updateData = _.debounce(() => {
-      getList()
-    }, globalSetup.wait)
 
     const getColumnMode = React.useCallback(
       (): Column<R, unknown>[] => [
@@ -108,7 +179,12 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
               tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
             }
             return (
-              <>
+              <Box
+                display={'inline-flex'}
+                height={'100%'}
+                flexDirection={'row'}
+                alignItems={'center'}
+              >
                 <CoinIcons type={token.type} tokenIcon={tokenIcon} />
                 <Typography
                   variant={'inherit'}
@@ -123,7 +199,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
                     {token.value}
                   </Typography>
                 </Typography>
-              </>
+              </Box>
             )
           },
         },
@@ -137,23 +213,39 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
             return (
               <Box
                 className={'textAlignRight'}
-                onClick={() => {
-                  onDetail(row)
-                }}
+                // onClick={() => {
+                //   onDetail(row)
+                // }}
               >
-                <Typography
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                  component={'span'}
-                  sx={{
-                    textDecoration: 'underline dotted',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {getValuePrecisionThousand(value, precision, precision, undefined, false, {
-                    floor: true,
-                  })}
-                </Typography>
+                {row.amount === '0' ? (
+                  EmptyValueTag
+                ) : (
+                  <Tooltip
+                    componentsProps={{
+                      tooltip: {
+                        sx: {
+                          width: 'var(--mobile-full-panel-width)',
+                        },
+                      },
+                    }}
+                    className={'detailPanel'}
+                    title={<DetailRewardPanel precision={precision} detailList={row.detail} />}
+                  >
+                    <Typography
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      component={'span'}
+                      sx={{
+                        textDecoration: 'underline dotted',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {getValuePrecisionThousand(value, precision, precision, undefined, false, {
+                        floor: true,
+                      })}
+                    </Typography>
+                  </Tooltip>
+                )}
               </Box>
             )
           },
@@ -165,14 +257,16 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }) => {
             return (
               <Box className={'textAlignRight'}>
-                {getValuePrecisionThousand(
-                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                  undefined,
-                  undefined,
-                  undefined,
-                  true,
-                  { isFait: true, floor: true },
-                )}
+                {row.amount === '0'
+                  ? EmptyValueTag
+                  : getValuePrecisionThousand(
+                      (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                      undefined,
+                      undefined,
+                      undefined,
+                      true,
+                      { isFait: true, floor: true },
+                    )}
               </Box>
             )
           },
@@ -195,13 +289,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-    React.useEffect(() => {
-      updateData.cancel()
-      updateData()
-      return () => {
-        updateData.cancel()
-      }
-    }, [])
+
     return (
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled

@@ -4534,10 +4534,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@loopring-web/loopring-sdk@3.5.5":
-  version "3.5.5"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.5.5.tgz#48eeb0cd9cccd0acccc18202beb3d5a7fa7d5a4e"
-  integrity sha512-rgth5roJh5YN6Gjxc/m946XcmSiSXehBXvGQmUj2ispE4UYTa2qpU15qkWvCIvANjZ13IeTUnFao23OqWBKM0w==
+"@loopring-web/loopring-sdk@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.5.7.tgz#59c8e7fb9c49f82d1660daf63677c740d2f0378f"
+  integrity sha512-O60Q2/pWd6otcQTW59aMxMx19FmLh9RW3GMovVpisctk7rPICIUORiMB8oSj08QcRD4shU08JXjqV78BkHWF1w==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -4556,6 +4556,7 @@
     js-sha3 "^0.8.0"
     js-sha512 "^0.8.0"
     jsbn "^1.1.0"
+    multiformats "^12.0.1"
     web-encoding "^1.1.5"
     web3 "1.10.0"
 
@@ -21812,6 +21813,11 @@ multicodec@^3.0.1:
   dependencies:
     uint8arrays "^3.0.0"
     varint "^6.0.0"
+
+multiformats@^12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-12.0.1.tgz#dd3e19dd44114c2672e4795a36888d263be30131"
+  integrity sha512-s01wijBJoDUqESWSzePY0lvTw7J3PVO9x2Cc6ASI5AMZM2Gnhh7BC17+nlFhHKU7dDzaCaRfb+NiqNzOsgPUoQ==
 
 multiformats@^9.0.2, multiformats@^9.4.2, multiformats@^9.4.5, multiformats@^9.5.1, multiformats@^9.5.4:
   version "9.6.4"

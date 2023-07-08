@@ -276,6 +276,7 @@ export const globalCss = ({ theme }: any) => css`
     --redPacket-avatar: 72px;
     --notification-activited-heigth: 80px;
     --modal-min-width: 340px;
+    --carousel-dot-size: 14px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;

@@ -336,4 +336,9 @@ export default {
   labelExpiredTimeTooltip: 'After expiration, all unclaimed NFTs will be returned to the Sender.',
   labelRedpacketFromBlindbox: 'From Blind Box',
   labelRedpacketCantOpen: 'It is not yet time to open, reveal time: {{time}}',
+  labelReferralsTableReferee: 'Referee',
+  labelReferralsTableAmount: 'Rewards',
+  labelReferralsTableTime: 'Time',
+  labelRefundTableAmount: 'Refunds',
+  labelRefundTableTime: 'Time',
 }

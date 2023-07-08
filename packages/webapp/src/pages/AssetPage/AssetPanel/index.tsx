@@ -106,19 +106,13 @@ export const AssetPanel = withTranslation('common')(
           aria-label='l2-history-tabs'
           variant='scrollable'
         >
-          {AssetL2TabIndex[MapChainId[defaultNetwork]] ? (
-            AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
+          {AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
+            if (isMobile && item == AssetTabIndex.RedPacket) {
+              return <React.Fragment key={item.toString()} />
+            } else {
               return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
-            })
-          ) : (
-            <>
-              <Tab label={t('labelAssetToken')} value={AssetTabIndex.Tokens} />
-              <Tab label={t('labelAssetInvests')} value={AssetTabIndex.Invests} />
-              {!isMobile && (
-                <Tab label={t('labelAssetRedPacket')} value={AssetTabIndex.RedPacket} />
-              )}
-            </>
-          )}
+            }
+          })}
         </Tabs>
         {currentTab === AssetTabIndex.Tokens && (
           <StylePaper

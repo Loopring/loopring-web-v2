@@ -1752,4 +1752,10 @@ export default {
   labelTutorial: 'Tutorial',
   labelRejectSwitchNetwork: 'Switch Chain was Rejected',
   labelAssetRewards: 'Rewards',
+  labelClaimTypeREBATE_FEE: 'Maker Rebate Reward',
+  labelClaimTypeRECOMMENDER_FEE: 'Recommender Reward',
+  labelClaimTypeREFERER_FEE: 'Referer Reward',
+  labelClaimTypePROTOCOL_FEE: 'Protocol Fee Reward',
+  labelClaimTypeLRC_STAKING: 'LRC Staking Reward',
+  labelClaimOtherRewards: 'Other Reward',
 }
