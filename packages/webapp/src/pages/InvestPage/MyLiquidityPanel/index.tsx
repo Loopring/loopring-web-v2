@@ -535,7 +535,9 @@ const MyLiquidity: any = withTranslation('common')(
                             </Button>
                           </>
                         ) : (
-                          EmptyValueTag
+                          <Typography component={'span'} display={'inline-flex'}>
+                            {EmptyValueTag}
+                          </Typography>
                         )}
                       </Box>
                     </Grid>

@@ -1758,4 +1758,5 @@ export default {
   labelClaimTypePROTOCOL_FEE: 'Protocol Fee Reward',
   labelClaimTypeLRC_STAKING: 'LRC Staking Reward',
   labelClaimOtherRewards: 'Other Reward',
+  labelAMMClaimableEarnings: 'Protocol Fee Earnings',
 }
