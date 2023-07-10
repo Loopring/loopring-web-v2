@@ -84,7 +84,10 @@ export const makeClaimRewards = <R = EarningsRow>(totalClaims: sdk.ClaimItem[]) 
 export type AmmActivityViewMap<R, I> = {
   [key in keyof R]?: AmmActivity<I>[] | undefined
 }
-export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends { [key: string]: any }>(
+export const makeUIAmmActivityMap = <
+  R extends { [key: string]: any },
+  I extends { [key: string]: any },
+>(
   {
     ammActivityMap,
     type,
