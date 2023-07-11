@@ -642,7 +642,7 @@ export const MyPoolTable = withTranslation('tables')(
             {totalAMMClaims && totalAMMClaims.totalDollar !== '0' ? (
               <>
                 <Typography variant={'body1'} marginRight={2} component={'span'}>
-                  {t('labelAMMClaimableEarnings')}
+                  {t('labelAMMClaimableEarnings', { ns: 'common' })}
                 </Typography>
                 <Tooltip
                   componentsProps={{

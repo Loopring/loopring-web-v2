@@ -123,7 +123,7 @@ export const DetailRewardPanel = ({ detailList }: { detailList?: EarningsDetail[
                 component={'span'}
                 color={'textPrimary'}
               >
-                {item.amount !== '0'
+                {item.amount == '0'
                   ? EmptyValueTag
                   : getValuePrecisionThousand(
                       item.amountStr,
@@ -229,7 +229,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
                       },
                     }}
                     className={'detailPanel'}
-                    title={<DetailRewardPanel precision={precision} detailList={row.detail} />}
+                    title={<DetailRewardPanel detailList={row.detail} />}
                   >
                     <Typography
                       display={'inline-flex'}
