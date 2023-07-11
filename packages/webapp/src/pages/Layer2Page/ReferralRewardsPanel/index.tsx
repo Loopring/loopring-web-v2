@@ -3,6 +3,7 @@ import {
   Box,
   BoxProps,
   Container,
+  Grid,
   InputAdornment,
   Link,
   OutlinedInput,
@@ -15,6 +16,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useAccount, useSubmitBtn, useToast } from '@loopring-web/core'
 import {
   AccountStatus,
+  AssetTabIndex,
   copyToClipBoard,
   EmptyValueTag,
   Exchange,
@@ -40,6 +42,7 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import { useReferralsTable, useRefundTable } from './hook'
+import { useHistory } from 'react-router-dom'
 
 const BoxStyled = styled(Box)`
   ol {
@@ -107,7 +110,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [open, setOpen] = React.useState(false)
   const [loading, setLoading] = React.useState<boolean>(true)
-
   const [images, setImages] = React.useState<CarouselItem[]>([])
 
   const [imageList, setImageList] = React.useState<R>({
@@ -436,6 +438,7 @@ const ReferView = () => {
   const [copyToastOpen, setCopyToastOpen] = React.useState(false)
   const link = `${WalletSite}?referralcode=${account.accountId}`
   const linkExchange = `${Exchange}?referralcode=${account.accountId}`
+  const history = useHistory()
 
   const handleCopy = (selected: 'id' | 'link') => {
     switch (selected) {
@@ -537,48 +540,92 @@ const ReferView = () => {
                 </Typography>
 
                 <Box display={'flex'} flexDirection={'column'}>
-                  <Box display={'flex'} flexDirection={'row'}>
-                    <Typography
-                      component={'span'}
-                      color={'textThird'}
-                      variant={'body1'}
-                      paddingRight={2}
-                    >
-                      {t('labelReferralsTotalEarning')}
-                      <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                        {referralsData.summary?.totalValue
-                          ? referralsData.summary?.totalValue + ' LRC'
-                          : EmptyValueTag}
+                  <Grid container marginY={2}>
+                    <Grid item xs={6}>
+                      <Typography
+                        component={'span'}
+                        color={'var(--color-text-third)'}
+                        variant={'body1'}
+                        paddingRight={2}
+                      >
+                        {t('labelReferralsTotalReferrals')}
+                        <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                          {refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0'
+                            ? refundData.summary?.tradeNum
+                            : EmptyValueTag}
+                        </Typography>
                       </Typography>
-                    </Typography>
-                    <Typography
-                      component={'span'}
-                      color={'textThird'}
-                      variant={'body1'}
-                      paddingRight={2}
+                    </Grid>
+                    <Grid
+                      item
+                      xs={3}
+                      justifyContent={'space-evenly'}
+                      flexDirection={'column'}
+                      alignItems={'flex-end'}
+                      display={'flex '}
                     >
-                      {t('labelReferralsClaimEarning')}
-                      <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                        {referralsData.summary?.claimableValue
-                          ? referralsData.summary?.claimableValue + ' LRC'
-                          : EmptyValueTag}
+                      <Typography
+                        component={'span'}
+                        color={'var(--color-text-third)'}
+                        variant={'body1'}
+                        paddingRight={2}
+                      >
+                        {t('labelReferralsTotalEarning')}
+                        <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                          {referralsData.summary?.totalValue
+                            ? referralsData.summary?.totalValue + ' LRC'
+                            : EmptyValueTag}
+                        </Typography>
                       </Typography>
-                    </Typography>
-                    <Typography
-                      component={'span'}
-                      color={'textThird'}
-                      variant={'body1'}
-                      paddingRight={2}
-                    >
-                      {t('labelReferralsTotalReferrals')}
-                      <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                        {referralsData.summary?.downsidesNum
-                          ? referralsData.summary?.downsidesNum
-                          : EmptyValueTag}
-                      </Typography>
-                    </Typography>
-                  </Box>
+                    </Grid>
 
+                    <Grid
+                      item
+                      xs={3}
+                      justifyContent={'space-evenly'}
+                      flexDirection={'column'}
+                      alignItems={'flex-end'}
+                      display={'flex'}
+                    >
+                      <Typography
+                        component={'span'}
+                        color={'var(--color-text-third)'}
+                        variant={'body1'}
+                        paddingRight={2}
+                      >
+                        {t('labelReferralsClaimEarning')}
+                        {referralsData.summary?.claimableValue ? (
+                          <>
+                            <Typography
+                              variant={'inherit'}
+                              component={'span'}
+                              color={'textPrimary'}
+                            >
+                              {referralsData.summary?.claimableValue + ' LRC'}
+                            </Typography>
+                            <Button
+                              variant={'contained'}
+                              size={'small'}
+                              sx={{ marginLeft: 2 }}
+                              onClick={() => {
+                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                              }}
+                            >
+                              {t('labelClaimBtn')}
+                            </Button>
+                          </>
+                        ) : (
+                          <Typography
+                            variant={'inherit'}
+                            component={'span'}
+                            color={'var(--color-text-third)'}
+                          >
+                            {EmptyValueTag}
+                          </Typography>
+                        )}
+                      </Typography>
+                    </Grid>
+                  </Grid>
                   <ReferralsTable
                     {...{
                       rawData: referralsData.record,
@@ -596,11 +643,33 @@ const ReferView = () => {
                 <Typography component={'h3'} variant={'h4'} marginY={2}>
                   {t('labelReferralReferralsRefunds')}
                 </Typography>
-                <Box display={'flex'} flexDirection={'column'}>
-                  <Box display={'flex'} flexDirection={'row'}>
+                <Grid container marginY={2}>
+                  <Grid item xs={6}>
                     <Typography
                       component={'span'}
-                      color={'textThird'}
+                      color={'var(--color-text-third)'}
+                      variant={'body1'}
+                      paddingRight={2}
+                    >
+                      {t('labelReferralsTotalTradeNumber')}
+                      <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                        {refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0'
+                          ? refundData.summary?.tradeNum
+                          : EmptyValueTag}
+                      </Typography>
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={3}
+                    justifyContent={'space-evenly'}
+                    flexDirection={'column'}
+                    alignItems={'flex-end'}
+                    display={'flex '}
+                  >
+                    <Typography
+                      component={'span'}
+                      color={'var(--color-text-third)'}
                       variant={'body1'}
                       paddingRight={2}
                     >
@@ -611,33 +680,49 @@ const ReferView = () => {
                           : EmptyValueTag}
                       </Typography>
                     </Typography>
+                  </Grid>
+
+                  <Grid
+                    item
+                    xs={3}
+                    justifyContent={'space-evenly'}
+                    flexDirection={'column'}
+                    alignItems={'flex-end'}
+                    display={'flex'}
+                  >
                     <Typography
                       component={'span'}
-                      color={'textThird'}
+                      color={'textPrimary'}
                       variant={'body1'}
                       paddingRight={2}
                     >
                       {t('labelReferralsClaimRefund')}
-                      <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                        {refundData.summary?.claimableValue
-                          ? refundData.summary?.claimableValue + ' LRC'
-                          : EmptyValueTag}
-                      </Typography>
+
+                      {refundData.summary?.claimableValue ? (
+                        <>
+                          <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                            {refundData.summary?.claimableValue + ' LRC'}
+                          </Typography>{' '}
+                          <Button
+                            variant={'contained'}
+                            size={'small'}
+                            sx={{ marginLeft: 2 }}
+                            onClick={() => {
+                              history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                            }}
+                          >
+                            {t('labelClaimBtn')}
+                          </Button>
+                        </>
+                      ) : (
+                        <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                          {EmptyValueTag}
+                        </Typography>
+                      )}
                     </Typography>
-                    <Typography
-                      component={'span'}
-                      color={'textThird'}
-                      variant={'body1'}
-                      paddingRight={2}
-                    >
-                      {t('labelReferralsTotalVolume')}
-                      <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                        {refundData.summary?.tradeNum
-                          ? refundData.summary?.tradeNum
-                          : EmptyValueTag}
-                      </Typography>
-                    </Typography>
-                  </Box>
+                  </Grid>
+                </Grid>
+                <Box display={'flex'} flexDirection={'column'}>
                   <RefundTable
                     {...{
                       rawData: refundData.record,

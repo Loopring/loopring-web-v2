@@ -48,7 +48,7 @@ export const ResetWrap = <T extends FeeInfo>({
     const regex = /^[0-9\b]+$/
     if (e?.target?.value === '' || regex.test(e?.target.value)) {
       setValue(e.target.value)
-      if (e.target.value.length > 5) {
+      if (e.target.value.length >= 5) {
         setReferralCode(e.target.value)
       }
 

@@ -638,80 +638,91 @@ export const MyPoolTable = withTranslation('tables')(
           ) : (
             ''
           )}
-          <Typography paddingRight={3} display={'flex'} flexDirection={'row'} alignItems={'center'}>
-            {totalAMMClaims && totalAMMClaims.totalDollar !== '0' ? (
-              <>
-                <Typography variant={'body1'} marginRight={2} component={'span'}>
-                  {t('labelAMMClaimableEarnings', { ns: 'common' })}
-                </Typography>
-                <Tooltip
-                  componentsProps={{
-                    tooltip: {
-                      sx: {
-                        width: 'var(--mobile-full-panel-width)',
+          {totalAMMClaims ? (
+            <Typography
+              paddingRight={3}
+              display={'flex'}
+              flexDirection={'row'}
+              alignItems={'center'}
+            >
+              <Typography variant={'body1'} marginRight={2} component={'span'}>
+                {t('labelAMMClaimableEarnings', { ns: 'common' })}
+              </Typography>
+
+              {totalAMMClaims.totalDollar !== '0' ? (
+                <>
+                  <Tooltip
+                    componentsProps={{
+                      tooltip: {
+                        sx: {
+                          width: 'var(--mobile-full-panel-width)',
+                        },
                       },
-                    },
-                  }}
-                  className={'detailPanel'}
-                  title={<DetailRewardPanel detailList={totalAMMClaims.detail} />}
-                >
-                  <Typography
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                    component={'span'}
-                    marginRight={2}
-                    sx={{
-                      textDecoration: 'underline dotted',
-                      cursor: 'pointer',
+                    }}
+                    className={'detailPanel'}
+                    title={<DetailRewardPanel detailList={totalAMMClaims.detail} />}
+                  >
+                    <Typography
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      component={'span'}
+                      color={'textPrimary'}
+                      marginRight={2}
+                      sx={{
+                        textDecoration: 'underline dotted',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {hideAssets
+                        ? HiddenTag
+                        : PriceTag[CurrencyToTag[currency]] +
+                          getValuePrecisionThousand(
+                            sdk.toBig(totalAMMClaims.totalDollar).times(forexMap[currency] ?? 0),
+                            undefined,
+                            undefined,
+                            2,
+                            true,
+                            { isFait: true, floor: true },
+                          )}
+                    </Typography>
+                  </Tooltip>
+                  <Button
+                    variant={'contained'}
+                    size={'small'}
+                    onClick={() => {
+                      history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                      // updateClaimData({
+                      //   belong: stakedSymbol,
+                      //   tradeValue: volumeToCount(
+                      //     stakedSymbol,
+                      //     totalClaimableRewards
+                      //   ),
+                      //   balance: volumeToCount(
+                      //     stakedSymbol,
+                      //     totalClaimableRewards
+                      //   ),
+                      //   volume: totalClaimableRewards,
+                      //   tradeType: TRADE_TYPE.TOKEN,
+                      //   claimType: CLAIM_TYPE.lrcStaking,
+                      // });
+                      // setShowClaimWithdraw({
+                      //   isShow: true,
+                      //   claimType: CLAIM_TYPE.lrcStaking,
+                      // });
                     }}
                   >
-                    {hideAssets
-                      ? HiddenTag
-                      : PriceTag[CurrencyToTag[currency]] +
-                        getValuePrecisionThousand(
-                          sdk.toBig(totalAMMClaims.totalDollar).times(forexMap[currency] ?? 0),
-                          undefined,
-                          undefined,
-                          2,
-                          true,
-                          { isFait: true, floor: true },
-                        )}
-                  </Typography>
-                </Tooltip>
-                <Button
-                  variant={'contained'}
-                  size={'small'}
-                  onClick={() => {
-                    history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
-                    // updateClaimData({
-                    //   belong: stakedSymbol,
-                    //   tradeValue: volumeToCount(
-                    //     stakedSymbol,
-                    //     totalClaimableRewards
-                    //   ),
-                    //   balance: volumeToCount(
-                    //     stakedSymbol,
-                    //     totalClaimableRewards
-                    //   ),
-                    //   volume: totalClaimableRewards,
-                    //   tradeType: TRADE_TYPE.TOKEN,
-                    //   claimType: CLAIM_TYPE.lrcStaking,
-                    // });
-                    // setShowClaimWithdraw({
-                    //   isShow: true,
-                    //   claimType: CLAIM_TYPE.lrcStaking,
-                    // });
-                  }}
-                >
-                  {t('labelClaimBtn', { ns: 'common' })}
-                </Button>
-              </>
-            ) : (
-              <Typography display={'inline-flex'} alignItems={'center'} component={'span'}>
-                {EmptyValueTag}
-              </Typography>
-            )}
-          </Typography>
+                    {t('labelClaimBtn', { ns: 'common' })}
+                  </Button>
+                </>
+              ) : (
+                <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                  {EmptyValueTag}
+                </Typography>
+              )}
+            </Typography>
+          ) : (
+            <></>
+          )}
         </Box>
 
         <Table
