@@ -1359,7 +1359,7 @@ export default {
   labelLuckyRedPacketDetail: 'View Red Packet details >',
   labelRedPacketOpenInProgress: 'Processing...',
   labelRedPacketOpenFailed: 'Read red packet failed!',
-  labelRedPacketShowQR: 'Share red packet',
+  labelRedPacketShowQR: 'share red packet',
   labelRedPacketReceivedRecord: 'Receive Red Packet {{value}}/{{count}}',
   labelAmmExitMiniOrderDisabled:
     'Transaction fees will be greater than the value of the LP, which will cost you your assets.',
