@@ -9,7 +9,7 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
-import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
+import { confirmation, usePopup, ViewAccountTemplate } from "@loopring-web/core";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
@@ -111,8 +111,10 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(
     "hidden" as "hidden" | "all" | "USDCOnly"
   );
-  const [confirmedLRCStakeInvest, setConfirmedLRCStakeInvestInvest] =
-    React.useState<boolean>(false);
+  const { 
+    showLRCStakignPopup: confirmedLRCStakeInvest, 
+    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest
+  } = usePopup()
 
   const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false);
   const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {

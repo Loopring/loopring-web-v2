@@ -4,6 +4,7 @@ import {
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
+  HelpIcon,
   IBData,
   L1L2_NAME_DEFINED,
   MapChainId,
@@ -23,6 +24,7 @@ import { useHistory } from "react-router-dom";
 import BigNumber from "bignumber.js";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../../stores";
+import { usePopup } from "@loopring-web/core";
 
 const GridStyle = styled(Grid)`
   ul {
@@ -232,6 +234,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       false,
       { floor: true }
     )} ${tokenBuy.symbol}`;
+  const {setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup() 
 
   return (
     <Grid
@@ -260,6 +263,19 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           alignSelf={"self-start"}
         >
           {t("labelInvestDefiTitle")}
+          <HelpIcon
+            fontSize={"large"}
+            color={"inherit"}
+            sx={{ marginLeft: 1, cursor: "pointer" }}
+            onClick={() => {
+
+              if (market === 'RETH-ETH') {
+                setShowRETHStakignPopup(true);
+              } else if (market === 'WSTETH-ETH'){
+                setShowWSTETHStakignPopup(true);
+              }
+            }}
+          />
         </Typography>
         <Box alignSelf={"flex-end"} display={"flex"}>
           <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
