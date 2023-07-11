@@ -146,7 +146,7 @@ export const AssetPanel = withTranslation('common')(
             </Box>
           </StylePaper>
         )}
-        {currentTab === AssetTabIndex.Rewards && <RewardsPanel />}
+        {currentTab === AssetTabIndex.Rewards && <RewardsPanel hideAssets={hideAssets} />}
         {currentTab === AssetTabIndex.Invests && (
           <MyLiquidity isHideTotal={true} hideAssets={hideAssets} />
         )}

@@ -2,10 +2,13 @@ import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import {
+  CurrencyToTag,
   EmptyValueTag,
   ForexMap,
   getValuePrecisionThousand,
+  HiddenTag,
   myLog,
+  PriceTag,
   RowConfig,
   TokenType,
 } from '@loopring-web/common-resources'
@@ -88,7 +91,13 @@ const ContentWrapperStyled = styled(Box)`
   padding: 0 ${({ theme }) => theme.unit * 1}px;
   border-radius: ${({ theme }) => theme.unit / 2}px;
 `
-export const DetailRewardPanel = ({ detailList }: { detailList?: EarningsDetail[] }) => {
+export const DetailRewardPanel = ({
+  detailList,
+  hideAssets = false,
+}: {
+  detailList?: EarningsDetail[]
+  hideAssets?: boolean
+}) => {
   const { t } = useTranslation()
   myLog('detailLis', detailList)
   return (
@@ -125,6 +134,8 @@ export const DetailRewardPanel = ({ detailList }: { detailList?: EarningsDetail[
               >
                 {item.amount == '0'
                   ? EmptyValueTag
+                  : hideAssets
+                  ? HiddenTag
                   : getValuePrecisionThousand(
                       item.amountStr,
                       item.precision,
@@ -149,6 +160,7 @@ export const DetailRewardPanel = ({ detailList }: { detailList?: EarningsDetail[
 export const RewardsTable = withTranslation(['tables', 'common'])(
   <R extends EarningsRow>(
     props: {
+      hideAssets: boolean
       forexMap: ForexMap<sdk.Currency>
       rawData: R[]
       onItemClick: (item: any) => void
@@ -156,7 +168,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
       showloading: boolean
     } & WithTranslation,
   ) => {
-    const { forexMap, rawData, onItemClick, showloading, t } = props
+    const { forexMap, hideAssets, rawData, onItemClick, showloading, t } = props
 
     const { currency, isMobile, coinJson } = useSettings()
 
@@ -229,7 +241,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
                       },
                     }}
                     className={'detailPanel'}
-                    title={<DetailRewardPanel detailList={row.detail} />}
+                    title={<DetailRewardPanel hideAssets={hideAssets} detailList={row.detail} />}
                   >
                     <Typography
                       display={'inline-flex'}
@@ -240,9 +252,11 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
                         cursor: 'pointer',
                       }}
                     >
-                      {getValuePrecisionThousand(value, precision, precision, undefined, false, {
-                        floor: true,
-                      })}
+                      {hideAssets
+                        ? HiddenTag
+                        : getValuePrecisionThousand(value, precision, precision, undefined, false, {
+                            floor: true,
+                          })}
                     </Typography>
                   </Tooltip>
                 )}
@@ -259,7 +273,10 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
               <Box className={'textAlignRight'}>
                 {row.amount === '0'
                   ? EmptyValueTag
-                  : getValuePrecisionThousand(
+                  : hideAssets
+                  ? HiddenTag
+                  : PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
                       (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
@@ -281,7 +298,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
           },
         },
       ],
-      [],
+      [hideAssets],
     )
 
     const defaultArgs: any = {
