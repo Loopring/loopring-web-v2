@@ -112,7 +112,10 @@ export const walletConnectV1Callback = async () => {
       connectName: ConnectProviders.WalletConnectV1,
     }),
   )
-  debugger
+  if (!window.process) {
+    window.process = process
+  }
+
   await connectProvides.WalletConnectV1({
     darkMode: themeMode === ThemeType.dark,
     // chainId: defaultNetwork,
