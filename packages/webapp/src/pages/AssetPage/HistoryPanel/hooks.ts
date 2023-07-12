@@ -433,9 +433,11 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
 export const useOrderList = ({
   setToastOpen,
   isStopLimit = false,
+  isOrderBookScroll = false,
 }: {
   isStopLimit?: boolean
   setToastOpen?: (props: any) => void
+  isOrderBookScroll?: boolean
 }) => {
   const { t } = useTranslation(['error'])
   const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
@@ -461,15 +463,17 @@ export const useOrderList = ({
   const jointPairs = (marketArray || []).concat(ammPairList)
 
   const getOrderList = React.useCallback(
-    async (props: Omit<GetOrdersRequest, 'accountId'> & { extraOrderTypes?: string }) => {
-      // const isOpenOrder = props.status && props.status === 'processing'
+    async ({
+      isScroll,
+      ...props
+    }: Omit<GetOrdersRequest, 'accountId'> & { isScroll?: boolean; extraOrderTypes?: string }) => {
       setShowLoading(true)
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         const userOrders = await LoopringAPI.userAPI.getOrders(
           {
-            limit: 50,
             ...props,
             accountId,
+            extraOrderTypes: isStopLimit ? 'STOP_LIMIT' : 'TRADITIONAL_ORDER',
           },
           apiKey,
         )
@@ -490,7 +494,6 @@ export const useOrderList = ({
             setTotalNum(userOrders.totalNum)
             const data = userOrders.orders.map((order) => {
               const { baseAmount, quoteAmount, baseFilled, quoteFilled } = order.volumes
-
               const marketList = order.market.split('-')
               if (marketList.length === 3) {
                 marketList.shift()
@@ -561,32 +564,31 @@ export const useOrderList = ({
                 __raw__: order,
               }
             })
-
-            setShowLoading(false)
-            return data
+            if (isScroll) {
+              setOrderOriginalData((_data) => {
+                return [..._data, ...data]
+              })
+            } else {
+              setOrderOriginalData(data)
+            }
           }
         }
-        setShowLoading(false)
-        return []
       }
       setShowLoading(false)
-      return []
     },
     [accountId, apiKey, marketMap, tokenMap, isStopLimit],
   )
 
   React.useEffect(() => {
     ;(async () => {
-      if (status === 'UNSET') {
-        const data = await getOrderList({
+      if (status === 'UNSET' && isOrderBookScroll === true) {
+        getOrderList({
           limit: 50,
           status: ['processing'],
-          extraOrderTypes: isStopLimit ? 'STOP_LIMIT' : 'TRADITIONAL_ORDER',
         })
-        setOrderOriginalData(data)
       }
     })()
-  }, [getOrderList, status])
+  }, [isOrderBookScroll, getOrderList, status])
 
   const clearOrderDetail = React.useCallback(() => {
     setOrderDetailList([])
@@ -602,18 +604,14 @@ export const useOrderList = ({
   const handleScroll = React.useCallback(
     async (event: React.UIEvent<HTMLDivElement>, isOpen: boolean = false) => {
       if (!isAtBottom(event) || (event.target as any)?.scrollTop === 0) return
-
-      const prevData = cloneDeep(orderOriginalData)
-
-      const newData = await getOrderList({
-        offset: prevData.length,
+      getOrderList({
+        isScroll: true,
+        offset: orderOriginalData.length,
         status: isOpen
           ? ['processing']
           : ['processed', 'failed', 'cancelled', 'cancelling', 'expired'],
         extraOrderTypes: isStopLimit ? 'STOP_LIMIT' : 'TRADITIONAL_ORDER',
       })
-      const jointData = [...prevData, ...newData]
-      setOrderOriginalData(jointData)
     },
     [getOrderList, isAtBottom, orderOriginalData, isStopLimit],
   )

@@ -54,7 +54,7 @@ export const OrderTableView = withTranslation('common')(
       clearOrderDetail,
       showDetailLoading,
       cancelOrderByHashList,
-    } = useOrderList({ isStopLimit })
+    } = useOrderList({ isStopLimit, isOrderBookScroll: true })
     const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
     const [tabValue, setTabValue] = React.useState(0)
     const {
@@ -72,15 +72,13 @@ export const OrderTableView = withTranslation('common')(
 
     const updateOrderList = React.useCallback(
       async (currentTabIndex: number) => {
-        const data = await getOrderList({
+        getOrderList({
           limit: 50,
           status:
             currentTabIndex === 0
               ? ['processing']
               : ['processed', 'failed', 'cancelled', 'cancelling', 'expired'],
-          extraOrderTypes: isStopLimit ? 'STOP_LIMIT' : 'TRADITIONAL_ORDER',
         })
-        setOrderOriginalData(data)
       },
       [getOrderList, setOrderOriginalData],
     )
