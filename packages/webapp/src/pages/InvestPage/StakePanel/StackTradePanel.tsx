@@ -23,7 +23,7 @@ export const StackTradePanel = ({
   symbol = "LRC",
 }: {
   symbol?: string;
-  setConfirmedLRCStakeInvestInvest: (state: any) => void;
+  setConfirmedLRCStakeInvestInvest: (state: {show: boolean, confirmationNeeded: boolean}) => void;
   isJoin?: boolean;
 }) => {
   const {
@@ -40,7 +40,7 @@ export const StackTradePanel = ({
 
   const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
   React.useEffect(() => {
-    setConfirmedLRCStakeInvestInvest(!confirmedLRCStakeInvest);
+    setConfirmedLRCStakeInvestInvest({show: !confirmedLRCStakeInvest, confirmationNeeded: true} );
   }, []);
   return (
     <>
