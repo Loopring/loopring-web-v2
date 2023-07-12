@@ -116,7 +116,7 @@ export const useGatewayList = ({
                 setConnectProvider(DefaultGatewayList[1].key)
                 setShowConnect({
                   isShow: true,
-                  step: WalletConnectStep.CommonProcessing,
+                  step: WalletConnectStep.WalletConnectProcessing,
                 })
                 setProcessingCallback({ callback: walletConnectCallback })
                 setStateCheck(true)
@@ -136,7 +136,7 @@ export const useGatewayList = ({
                 setConnectProvider(DefaultGatewayList[4].key)
                 setShowConnect({
                   isShow: true,
-                  step: WalletConnectStep.CommonProcessing,
+                  step: WalletConnectStep.WalletConnectProcessing,
                 })
                 setProcessingCallback({ callback: walletConnectV1Callback })
                 setStateCheck(true)
@@ -169,7 +169,7 @@ export const useGatewayList = ({
               walletServices.sendDisconnect('', 'should new provider')
               setShowConnect({
                 isShow: true,
-                step: WalletConnectStep.WalletConnectProcessing,
+                step: WalletConnectStep.CommonProcessing,
               })
               setConnectProvider(DefaultGatewayList[3].key)
               setProcessingCallback({ callback: CoinbaseCallback })
