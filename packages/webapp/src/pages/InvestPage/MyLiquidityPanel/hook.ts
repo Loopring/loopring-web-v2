@@ -161,7 +161,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
         stakeETHDollar: 0,
         // dualStakeDollar: summaryDefiReward,
       }
-      const { walletMap: _walletMap } = makeWalletLayer2(false)
+      const { walletMap: _walletMap } = makeWalletLayer2({ needFilterZero: false })
 
       defiCoinArray?.forEach((defiCoinKey) => {
         totalCurrentInvest.stakeETHDollar += Number(
@@ -297,7 +297,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   )
 
   return {
-    myAmmMarketArray,
     summaryMyInvest,
     myPoolRow,
     showLoading,
