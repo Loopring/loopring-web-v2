@@ -639,15 +639,15 @@ export const stakeAdvice: InvestAdvice = {
 }
 
 export enum RecordTabIndex {
-  transactions = 'transactions',
-  trades = 'trades',
-  ammRecords = 'ammRecords',
-  orders = 'orders',
-  defiRecords = 'defiRecords',
-  dualRecords = 'dualRecords',
-  sideStakingRecords = 'sideStakingRecords',
-  btradeSwapRecords = 'BtradeSwap',
-  stopLimitRecords = 'stopLimitRecords',
+  Transactions = 'Transactions',
+  Trades = 'Trades',
+  AmmRecords = 'AmmRecords',
+  Orders = 'Orders',
+  DefiRecords = 'DefiRecords',
+  DualRecords = 'DualRecords',
+  SideStakingRecords = 'SideStakingRecords',
+  BtradeSwapRecords = 'BtradeSwapRecords',
+  StopLimitRecords = 'StopLimitRecords',
 }
 
 export enum AssetTabIndex {
@@ -701,6 +701,32 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
     },
   ],
 }
+export const RecordMap: { [key: string]: RecordTabIndex[] } = {
+  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
+  ETHEREUM: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+  ],
+  GOERLI: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+  ],
+}
+
 export const AddAssetListMap = {
   TAIKO: [
     AddAssetList.FromMyL1.key,
