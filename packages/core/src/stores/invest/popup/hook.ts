@@ -6,9 +6,9 @@ import { PopupStates } from "./interface";
 import { setShowLRCStakignPopup, setShowRETHStakignPopup, setShowWSTETHStakignPopup } from "./reducer";
 
 export const usePopup = (): PopupStates & {
-  setShowRETHStakignPopup: (v: boolean) => void;
-  setShowWSTETHStakignPopup: (v: boolean) => void;
-  setShowLRCStakignPopup: (v: boolean) => void;
+  setShowRETHStakignPopup: (v: {show: boolean, confirmationNeeded: boolean}) => void;
+  setShowWSTETHStakignPopup: (v: {show: boolean, confirmationNeeded: boolean}) => void;
+  setShowLRCStakignPopup: (v: {show: boolean, confirmationNeeded: boolean}) => void;
 } => {
   const popup: PopupStates = useSelector(
     (state: RootState) => state.invest.popup

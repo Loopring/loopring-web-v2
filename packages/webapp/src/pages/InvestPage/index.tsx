@@ -113,7 +113,8 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   );
   const { 
     showLRCStakignPopup: confirmedLRCStakeInvest, 
-    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest
+    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
+    confirmationNeeded
   } = usePopup()
 
   const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false);
@@ -231,8 +232,9 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       />
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
+        confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
-          setConfirmedLRCStakeInvestInvest(false);
+          setConfirmedLRCStakeInvestInvest({show: false, confirmationNeeded: false});
           if (!isAgree) {
             history.goBack();
           } else {

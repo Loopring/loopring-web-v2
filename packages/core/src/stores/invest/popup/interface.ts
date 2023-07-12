@@ -5,5 +5,6 @@ export type PopupStates = {
   showWSTETHStakignPopup: boolean;
   showRETHStakignPopup: boolean;
   showLRCStakignPopup: boolean;
+  confirmationNeeded: boolean;
 };
 

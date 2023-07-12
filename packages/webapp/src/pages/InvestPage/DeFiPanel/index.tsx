@@ -292,29 +292,26 @@ export const DeFiPanel: any = withTranslation("common")(
       confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
     } = confirmation.useConfirmation();
     // const []
-    const {showRETHStakignPopup, showWSTETHStakignPopup, setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup()
+    const {confirmationNeeded, showRETHStakignPopup, showWSTETHStakignPopup, setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup()
     const _confirmedDefiInvest = {
       isShow: showRETHStakignPopup || showWSTETHStakignPopup,
       type: showRETHStakignPopup 
         ? "RETH"
         : showWSTETHStakignPopup 
         ? "WSETH"
-        : undefined
+        : undefined,
+      confirmationNeeded
     }
-    console.log(
-      '_confirmedDefiInvest',_confirmedDefiInvest
-    )
     const setConfirmedDefiInvest = ({isShow, type}: {isShow: boolean; type?: "RETH" | "WSETH" | undefined;}) => {
-      debugger
       if (isShow) {
         if (type === "RETH") {
-          setShowRETHStakignPopup(true)
+          setShowRETHStakignPopup({show: true, confirmationNeeded: true})
         } else {
-          setShowWSTETHStakignPopup(true)
+          setShowWSTETHStakignPopup({show: true, confirmationNeeded: true})
         } 
       } else {
-        setShowRETHStakignPopup(false)
-        setShowWSTETHStakignPopup(false)
+        setShowRETHStakignPopup({show: false, confirmationNeeded: true})
+        setShowWSTETHStakignPopup({show: false, confirmationNeeded: true})
       }
     }
 
@@ -408,6 +405,7 @@ export const DeFiPanel: any = withTranslation("common")(
           <ConfirmInvestDefiRisk
             open={_confirmedDefiInvest.isShow}
             type={_confirmedDefiInvest.type as any}
+            confirmationNeeded={confirmationNeeded}
             handleClose={(_e, isAgree) => {
               if (!isAgree) {
                 setConfirmedDefiInvest({ isShow: false });
