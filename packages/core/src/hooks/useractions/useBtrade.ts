@@ -942,7 +942,7 @@ export const useBtradeSwap = <
           l2Amount &&
           (sellBuyStr == market ? btradeAmount.base !== '0' : btradeAmount.quote !== '0')
         ) {
-          const btradeAmountVol = sellBuyStr == market ? btradeAmount.quote : btradeAmount.base
+          const btradeAmountVol = sellBuyStr == market ? btradeAmount.base : btradeAmount.quote
           if (btradeAmountVol) {
             poolToVol =
               sdk

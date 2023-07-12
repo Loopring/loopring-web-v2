@@ -1,10 +1,9 @@
-import { Box, Icon, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import {
   Button,
   ConfirmBtradeSwapRisk,
   EmptyDefault,
-  LoadingBlock,
   SwapPanel,
   Toast,
   ToastType,
