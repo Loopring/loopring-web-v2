@@ -9,7 +9,6 @@ import {
   useGetOrderHistorys,
 } from '@loopring-web/core'
 import styled from '@emotion/styled'
-import { useHistory } from 'react-router-dom'
 import { useOrderList } from '../../../AssetPage'
 
 const CheckboxStyled = styled(Box)`
@@ -58,7 +57,6 @@ export const OrderTableView = withTranslation('common')(
     } = useOrderList({ isStopLimit })
     const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
     const [tabValue, setTabValue] = React.useState(0)
-    const history = useHistory()
     const {
       account: { readyState },
     } = useAccount()
