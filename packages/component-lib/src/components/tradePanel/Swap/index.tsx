@@ -300,10 +300,10 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                       onClick={() => {
                         !tradeCalcData.isBtrade
                           ? history.push(
-                              `/l2assets/history/${RecordTabIndex.trades}?market=${market}`,
+                              `/l2assets/history/${RecordTabIndex.Trades}?market=${market}`,
                             )
                           : history.push(
-                              `/l2assets/history/${RecordTabIndex.btradeSwapRecords}?market=${market}`,
+                              `/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
                             )
                       }}
                       sx={{ backgroundColor: 'var(--field-opacity)' }}

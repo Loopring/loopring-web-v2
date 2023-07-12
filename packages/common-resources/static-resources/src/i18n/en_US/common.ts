@@ -1759,4 +1759,10 @@ export default {
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
   labelAMMClaimableEarnings: 'Protocol Fee Rewards',
+  labelLayer2HistoryOrders: 'Order Records',
+  labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
+  labelLayer2HistoryDefiRecords: 'ETH Staking',
+  labelLayer2HistoryDualRecords: 'Dual Investments',
+  labelLayer2HistorySideStakingRecords: 'LRC Staking',
+  labelLayer2HistoryBtradeSwapRecords: 'Block Trade',
 }

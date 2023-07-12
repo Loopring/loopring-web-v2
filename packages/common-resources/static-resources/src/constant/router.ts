@@ -639,15 +639,15 @@ export const stakeAdvice: InvestAdvice = {
 }
 
 export enum RecordTabIndex {
-  transactions = 'transactions',
-  trades = 'trades',
-  ammRecords = 'ammRecords',
-  orders = 'orders',
-  defiRecords = 'defiRecords',
-  dualRecords = 'dualRecords',
-  sideStakingRecords = 'sideStakingRecords',
-  btradeSwapRecords = 'BtradeSwap',
-  stopLimitRecords = 'stopLimitRecords',
+  Transactions = 'Transactions',
+  Trades = 'Trades',
+  AmmRecords = 'AmmRecords',
+  Orders = 'Orders',
+  DefiRecords = 'DefiRecords',
+  DualRecords = 'DualRecords',
+  SideStakingRecords = 'SideStakingRecords',
+  BtradeSwapRecords = 'BtradeSwapRecords',
+  StopLimitRecords = 'StopLimitRecords',
 }
 
 export enum AssetTabIndex {
@@ -702,6 +702,38 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
     },
   ],
 }
+
+export const TokenPriceBase = {
+  TAIKO: '0x0000000000000000000000000000000000000000',
+  ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
+}
+export const RecordMap: { [key: string]: RecordTabIndex[] } = {
+  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
+  ETHEREUM: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+  ],
+  GOERLI: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+  ],
+}
+
 export const AddAssetListMap = {
   TAIKO: [
     AddAssetList.FromMyL1.key,
@@ -714,7 +746,7 @@ export const AddAssetListMap = {
     AddAssetList.FromOtherL2.key,
     AddAssetList.FromOtherL1.key,
     AddAssetList.FromExchange.key,
-    AddAssetList.FromAnotherNet.key,
+    // AddAssetList.FromAnotherNet.key,
   ],
   GOERLI: [
     AddAssetList.FromMyL1.key,
@@ -735,7 +767,7 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
-    SendAssetList.SendAssetToAnotherNet.key,
+    // SendAssetList.SendAssetToAnotherNet.key,
   ],
   GOERLI: [
     SendAssetList.SendAssetToMyL1.key,

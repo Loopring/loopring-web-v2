@@ -68,7 +68,6 @@ export function useInit() {
   const { status: dualMapStatus, statusUnset: dualMapStatusUnset } = useDualMap()
   const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } = useStakingMap()
   const { status: btradeMapStatus, statusUnset: btradeMapStatusUnset } = useBtradeMap()
-
   const { status: investTokenTypeMapStatus, statusUnset: investTokenTypeMapStatusUnset } =
     useInvestTokenTypeMap()
 
@@ -232,11 +231,11 @@ export function useInit() {
   }, [ammActivityMapStatus])
   React.useEffect(() => {
     switch (tickerStatus) {
-      case 'ERROR':
+      case SagaStatus.ERROR:
         console.log('Network ERROR::', 'getMixTicker')
         tickerStatusUnset()
         break
-      case 'DONE':
+      case SagaStatus.DONE:
         tickerStatusUnset()
         break
       default:
@@ -258,10 +257,10 @@ export function useInit() {
   }, [amountStatus])
   React.useEffect(() => {
     switch (socketStatus) {
-      case 'ERROR':
+      case SagaStatus.ERROR:
         socketUnset()
         break
-      case 'DONE':
+      case SagaStatus.DONE:
         socketUnset()
         break
       default:
@@ -270,10 +269,10 @@ export function useInit() {
   }, [socketStatus])
   React.useEffect(() => {
     switch (notifyStatus) {
-      case 'ERROR':
+      case SagaStatus.ERROR:
         notifyStatusUnset()
         break
-      case 'DONE':
+      case SagaStatus.DONE:
         notifyStatusUnset()
         break
       default:

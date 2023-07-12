@@ -120,7 +120,7 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [walletL2Status, assetsRawData])
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(false)
+    const walletMap = makeWalletLayer2({ needFilterZero: false })
     const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
     const assetsDetailList =
       walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
@@ -204,22 +204,9 @@ export const useGetAssets = (): AssetPanelProps & {
           )
             ?.plus(depositAmount || 0)
             .plus(withdrawAmount || 0)
-          if (!isLpToken) {
-            const tokenPriceUSDT =
-              tokenInfo.token === 'DAI'
-                ? 1
-                : Number(
-                    tokenPriceList.find((o) => o.token === tokenInfo.token)
-                      ? tokenPriceList.find((o) => o.token === tokenInfo.token)?.detail
-                      : 0,
-                  ) / Number(tokenPriceList.find((o) => o.token === 'USDT')?.detail)
-            const rawData = (totalAmount as BigNumber).times(tokenPriceUSDT)
-            tokenValueDollar = rawData?.toNumber() || 0
-          } else {
-            const price = tokenPrices?.[tokenInfo.token] || 0
-            if (totalAmount && price) {
-              tokenValueDollar = totalAmount.times(price).toNumber()
-            }
+          const price = tokenPrices?.[tokenInfo.token] || 0
+          if (totalAmount && price) {
+            tokenValueDollar = totalAmount.times(price).toNumber()
           }
           const isSmallBalance = tokenValueDollar < 1
           const lockedAmount = volumeToCountAsBigNumber(
