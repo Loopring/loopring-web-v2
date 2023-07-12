@@ -362,6 +362,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   ])
 
   React.useEffect(() => {
+    const account = store.getState().account
     if (
       isShow &&
       accountStatus === SagaStatus.UNSET &&
@@ -375,7 +376,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       resetIntervalTime()
       _checkFeeIsEnough.cancel()
     }
-  }, [isShow, accountStatus, account.readyState])
+  }, [isShow, accountStatus])
 
   const _checkFeeIsEnough = _.debounce(() => {
     const { tradeValue: amount, withdrawType } = store.getState()._router_modalData.withdrawValue
@@ -729,34 +730,34 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         ..._withdrawValue,
         withdrawType: value,
       })
+      _checkFeeIsEnough.cancel()
       _checkFeeIsEnough()
     },
     handlePanelEvent: async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
-      return new Promise((res: any) => {
-        if (data.to === 'button') {
-          if (walletMap2 && data?.tradeData?.belong) {
-            const walletInfo = walletMap2[data?.tradeData?.belong as string]
-            updateWithdrawData({
-              ...withdrawValue,
-              belong: data.tradeData?.belong,
-              tradeValue: data.tradeData?.tradeValue,
-              balance: walletInfo?.count,
-              address: '*',
-            })
-            _checkFeeIsEnough.cancel()
-            _checkFeeIsEnough()
-          } else {
-            updateWithdrawData({
-              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-              belong: undefined,
-              tradeValue: undefined,
-              balance: undefined,
-              address: '*',
-            })
-          }
+      Promise.resolve()
+
+      if (data.to === 'button') {
+        if (walletMap2 && data?.tradeData?.belong) {
+          const walletInfo = walletMap2[data?.tradeData?.belong as string]
+          updateWithdrawData({
+            ...withdrawValue,
+            belong: data.tradeData?.belong,
+            tradeValue: data.tradeData?.tradeValue,
+            balance: walletInfo?.count,
+            address: '*',
+          })
+          _checkFeeIsEnough.cancel()
+          _checkFeeIsEnough()
+        } else {
+          updateWithdrawData({
+            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+            belong: undefined,
+            tradeValue: undefined,
+            balance: undefined,
+            address: '*',
+          })
         }
-        res()
-      })
+      }
     },
     handleFeeChange,
     feeInfo,

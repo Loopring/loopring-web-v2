@@ -21,7 +21,7 @@ const getStakingMapApi = async () => {
       marketMap: {},
     }
   } else {
-    result = (responseProduct as any)?.products?.markets.reduce(
+    result = (responseProduct as any)?.products?.markets?.reduce(
       (prev: any, item: sdk.STACKING_PRODUCT) => {
         prev.marketArray.push([item.symbol.toUpperCase()])
         prev.marketCoins.push([item.symbol.toUpperCase()])

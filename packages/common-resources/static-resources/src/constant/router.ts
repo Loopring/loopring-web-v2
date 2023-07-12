@@ -701,6 +701,8 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
       ],
     },
   ],
+  ETHEREUM: headerMenuData,
+  GOERLI: headerMenuData,
 }
 
 export const TokenPriceBase = {
