@@ -158,7 +158,7 @@ export const Deposit_Submit = (props: PanelProps) => {
           </Typography>
           <Typography component={'span'} variant={'body1'} color={'var(--color-text-primary)'}>
             {props.to
-              ? 'L2: ' + getShortAddr(props.to)
+              ? `${L1L2_NAME_DEFINED[network].l2Symbol}: ` + getShortAddr(props.to)
               : t('labelToMyL2', {
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                   loopringL2: L1L2_NAME_DEFINED[network].loopringL2,

@@ -1,15 +1,9 @@
-import React from "react";
-import styled from "@emotion/styled";
-import { Box, BoxProps, Link, Typography } from "@mui/material";
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import moment from "moment";
-import {
-  BoxNFT,
-  Column,
-  NftImage,
-  Table,
-  TablePagination,
-} from "../../basic-lib";
+import React from 'react'
+import styled from '@emotion/styled'
+import { Box, BoxProps, Link, Typography } from '@mui/material'
+import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import moment from 'moment'
+import { BoxNFT, Column, NftImage, Table, TablePagination } from '../../basic-lib'
 import {
   CompleteIcon,
   DepositIcon,
@@ -32,49 +26,42 @@ import {
 } from '@loopring-web/common-resources'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 
-import {
-  NFTTableFilter,
-  NFTTableProps,
-  TsTradeStatus,
-  TxnDetailProps,
-} from "./Interface";
-import { Filter } from "./components/Filter";
-import { NFT_IMAGE_SIZES, TxNFTType } from "@loopring-web/loopring-sdk";
-import { useSettings } from "../../../stores";
-import { sanitize } from "dompurify";
+import { NFTTableFilter, NFTTableProps, TsTradeStatus, TxnDetailProps } from './Interface'
+import { Filter } from './components/Filter'
+import { NFT_IMAGE_SIZES, TxNFTType } from '@loopring-web/loopring-sdk'
+import { useSettings } from '../../../stores'
+import { sanitize } from 'dompurify'
 
 const TYPE_COLOR_MAPPING = [
-  { type: TsTradeStatus.processed, color: "success" },
-  { type: TsTradeStatus.processing, color: "warning" },
-  { type: TsTradeStatus.received, color: "warning" },
-  { type: TsTradeStatus.failed, color: "error" },
-];
+  { type: TsTradeStatus.processed, color: 'success' },
+  { type: TsTradeStatus.processing, color: 'warning' },
+  { type: TsTradeStatus.received, color: 'warning' },
+  { type: TsTradeStatus.failed, color: 'error' },
+]
 
 const CellStatus = ({ row: { status } }: any) => {
   const RenderValue = styled.div`
     display: flex;
     align-items: center;
     color: ${({ theme }) =>
-      theme.colorBase[
-        `${TYPE_COLOR_MAPPING.find((o) => o.type === status)?.color}`
-      ]};
+      theme.colorBase[`${TYPE_COLOR_MAPPING.find((o) => o.type === status)?.color}`]};
 
     & svg {
       width: 24px;
       height: 24px;
     }
-  `;
+  `
   const svg =
-    status === "processed" ? (
+    status === 'processed' ? (
       <CompleteIcon />
-    ) : status === "processing" || status === "received" ? (
+    ) : status === 'processing' || status === 'received' ? (
       <WaitingIcon />
     ) : (
       <WarningIcon />
-    );
-  const RenderValueWrapper = <RenderValue>{svg}</RenderValue>;
-  return RenderValueWrapper;
-};
+    )
+  const RenderValueWrapper = <RenderValue>{svg}</RenderValue>
+  return RenderValueWrapper
+}
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -105,9 +92,8 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     }
   }
 
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+  ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element
 
 export const TsNFTTable = withTranslation(['tables', 'common'])(
   <Row extends TxnDetailProps>({
