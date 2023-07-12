@@ -12,7 +12,6 @@ import {
   RedPacketOrderData,
   SUBMIT_PANEL_AUTO_CLOSE,
   TOAST_TIME,
-  TRADE_TYPE,
   UIERROR_CODE,
   WalletMap,
   BLINDBOX_REDPACKET_LIMIT,
@@ -42,7 +41,12 @@ import { useRedPacketConfig } from '../../stores/redPacket'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import moment from 'moment'
 
-export const useCreateRedPacket = <T extends RedPacketOrderData<I>, I, F = FeeInfo, NFT = NFTWholeINFO>({
+export const useCreateRedPacket = <
+  T extends RedPacketOrderData<I>,
+  I,
+  F = FeeInfo,
+  NFT = NFTWholeINFO,
+>({
   assetsRawData,
   isShow = false,
 }: {
