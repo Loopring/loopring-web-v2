@@ -107,16 +107,13 @@ export const useHeader = () => {
         return headerToolBarData;
       });
     }
-    // forceUpdate()
   }, [accountStatus, account.readyState]);
   const { notifyMap } = useNotify();
   return {
     headerToolBarData,
-    headerMenuData: [1, 5].includes(Number(defaultNetwork))
-      ? headerMenuData
-      : headerMenuDataMap[network],
+    headerMenuData: headerMenuDataMap[network],
     headerMenuLandingData,
     account,
     notifyMap,
-  };
+  }
 };
