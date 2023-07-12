@@ -701,6 +701,12 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
     },
   ],
 }
+
+export const TokenPriceBase = {
+  TAIKO: '0x0000000000000000000000000000000000000000',
+  ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
+}
 export const RecordMap: { [key: string]: RecordTabIndex[] } = {
   TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
   ETHEREUM: [
