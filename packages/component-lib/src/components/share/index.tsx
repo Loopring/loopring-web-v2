@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { ShareProps } from './Interface'
-import { Box, Modal } from '@mui/material'
+import { Box, Modal, Typography } from '@mui/material'
 import { SoursURL } from '@loopring-web/common-resources'
 import { SocialButton } from './components/SocialButton'
 import { WithTranslation, withTranslation } from 'react-i18next'
@@ -72,16 +72,26 @@ export const Share = ({ social, title, loading, imageUrl, size, sendShareEvent }
   )
 }
 const BoxStyle = styled(Box)`
+  background: var(--color-global-bg);
+
+  & {
+    background: var(--color-box);
+    border-radius: ${({ theme }) => theme.unit}px;
+    //border: 1px solid var(--color-box);
+    //cursor: pointer;
+  }
+
   .btn-close {
     svg {
       height: var(--btn-icon-size);
       width: var(--btn-icon-size);
     }
 
+    margin-top: 0;
     //transform: translateY(-50%) translateX(-50%);
     //left: 50%;
-    top: ${({ theme }) => 3.5 * theme.unit}px;
-    right: ${({ theme }) => 16 * theme.unit}px;
+    top: ${({ theme }) => 2 * theme.unit}px;
+    right: ${({ theme }) => 1 * theme.unit}px;
   }
 `
 export const ShareModal = withTranslation('common')(
@@ -112,10 +122,12 @@ export const ShareModal = withTranslation('common')(
         aria-describedby='modal-modal-description'
       >
         <BoxStyle
+          className={'MuiPaper-elevation2'}
           width={'var(--modal-width)'}
+          height={'80vh'}
+          minHeight={'var(--modal-height)'}
           // height={`calc(100vh - ${HEADER_HEIGHT}px)`}
           position={'absolute'}
-          overflow={'scroll'}
           display={'flex'}
           top='50%'
           left='50%'
@@ -123,12 +135,21 @@ export const ShareModal = withTranslation('common')(
             transform: 'translateY(-50%) translateX(-50%)',
           }}
         >
-          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
-            <ModalCloseButton className='btn-close' onClose={onClose} {...{ ...rest, t }} />
-            <Box>
-              <Carousel loading={loading} imageList={imageList} />
-              <Button onClick={onClick}>xxxxxx</Button>
-            </Box>
+          <ModalCloseButton className='btn-close' onClose={onClose} {...{ ...rest, t }} />
+          <Box
+            alignItems={'center'}
+            display={'flex'}
+            flex={1}
+            width={'100%'}
+            flexDirection={'column'}
+            paddingY={3}
+            overflow={'scroll'}
+          >
+            {/*<Typography component={'h4'} variant={'h5'} color={'textSecondary'} marginBottom={2}>*/}
+            {/*  {t('labelShare')}*/}
+            {/*</Typography>*/}
+            <Carousel loading={loading} imageList={imageList} />
+            <Button onClick={onClick}>{t('labelDownload')}</Button>
           </Box>
         </BoxStyle>
       </Modal>

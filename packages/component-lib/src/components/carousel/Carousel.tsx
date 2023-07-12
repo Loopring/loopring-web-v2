@@ -6,8 +6,8 @@ import React from 'react'
 
 const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
   &.carousel {
-    margin-left: 15%;
-    margin-right: 15%;
+    //margin-left: 15%;
+    //margin-right: 15%;
 
     ul.slides {
       display: block;
@@ -16,36 +16,37 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
       padding: 0;
       overflow: hidden;
       list-style: none;
+
       input {
         display: none;
       }
-    }
 
-    .slides * {
-      user-select: none;
-      -webkit-touch-callout: none;
+      ${({ imageList }) => `
+         height: calc(${imageList[ 0 ]?.height ?? 880 / 2}px + 60px);
+         width: calc(${imageList[ 0 ]?.width ?? 630 / 2}px);
+      `}
     }
+  }
 
-    .slide-container {
-      display: block;
-    }
+  .slides * {
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
 
-    .slide-image {
-      display: block;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      opacity: 0;
-      transition: all 0.7s ease-in-out;
-      //img {
-      //  width: auto;
-      //  min-width: 100%;
-      //  height: 100%;
-      //}
-    }
+  .slide-container {
+    display: block;
+    position: absolute;
+  }
 
-    .carousel-controls {
+  .slide-image {
+    display: block;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    transition: all 0.7s ease-in-out;
+  }
+
+  .carousel-controls {
       position: absolute;
       top: 0;
       left: 0;
@@ -161,7 +162,14 @@ export const Carousel = ({
               return (
                 <React.Fragment key={index}>
                   <input type='radio' name='radio-buttons' id={`img-${index + 1}`} checked />
-                  <Box component={'li'} className='slide-container'>
+                  <Box
+                    component={'li'}
+                    className='slide-container'
+                    sx={{
+                      height: item?.size[1],
+                      width: item?.size[0],
+                    }}
+                  >
                     <Box className='slide-image'>
                       <img
                         src={item.imageUrl}

@@ -27,7 +27,6 @@ import {
   REDPACKET_ORDER_LIMIT,
   RedPacketOrderData,
   SoursURL,
-  TRADE_TYPE,
   TradeBtnStatus,
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
@@ -1003,8 +1002,8 @@ export const CreateRedPacketStepType = withTranslation()(
                     padding: '0',
                   }}
                   checked
-                  checkedIcon={<GoodIcon htmlColor={'var(--color-primary)'}></GoodIcon>}
-                  icon={<GoodIcon htmlColor={'var(--color-third)'}></GoodIcon>}
+                  checkedIcon={<GoodIcon htmlColor={'var(--color-primary)'} />}
+                  icon={<GoodIcon htmlColor={'var(--color-third)'} />}
                   color='default'
                 />
               </Box>

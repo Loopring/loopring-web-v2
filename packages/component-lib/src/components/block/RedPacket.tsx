@@ -1,16 +1,7 @@
-import styled from "@emotion/styled";
-import {
-  Box,
-  BoxProps,
-  Button,
-  Divider,
-  IconButton,
-  Link,
-  Modal,
-  Typography,
-} from "@mui/material";
-import React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import styled from '@emotion/styled'
+import { Box, BoxProps, Button, Divider, IconButton, Link, Modal, Typography } from '@mui/material'
+import React from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import {
   Account,
   BackIcon,
@@ -27,12 +18,12 @@ import {
   SoursURL,
   YEAR_DAY_MINUTE_FORMAT,
   DAY_MINUTE_FORMAT,
-} from "@loopring-web/common-resources";
-import QRCodeStyling from "qr-code-styling";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { RedPacketViewStep } from "../modal";
-import { ModalStatePlayLoad } from "../../stores";
-import moment from "moment";
+} from '@loopring-web/common-resources'
+import QRCodeStyling from 'qr-code-styling'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { RedPacketViewStep } from '../modal'
+import { ModalStatePlayLoad } from '../../stores'
+import moment from 'moment'
 import {
   RedPacketBlindBoxDetailProps,
   RedPacketBlindBoxLimit,
@@ -47,20 +38,13 @@ import {
   RedPacketQRCodeProps,
   RedPacketTimeoutProps,
   RedPacketUnreadyProps,
-} from "./Interface";
-import {
-  BoxNFT,
-  CoinIcon,
-  ModalCloseButtonPosition,
-  TablePagination,
-} from "../basic-lib";
-import { NFTMedia } from "./nftMedia";
-import { sanitize } from "dompurify";
-import { useTheme } from "@emotion/react";
+} from './Interface'
+import { BoxNFT, CoinIcon, ModalCloseButtonPosition, TablePagination } from '../basic-lib'
+import { NFTMedia } from './nftMedia'
+import { sanitize } from 'dompurify'
+import { useTheme } from '@emotion/react'
 
-export const RedPacketBg = styled(Box)<
-  BoxProps & { imageSrc?: string; type: string }
->`
+export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
   align-items: center;
   position: relative;
@@ -76,11 +60,9 @@ export const RedPacketBg = styled(Box)<
 
       .open {
         background: #fff7b1;
-        color: ${({ type }) =>
-          RedPacketCssColorConfig[type]?.highLightColor}; //#7c3400;
+        color: ${({ type }) => RedPacketCssColorConfig[type]?.highLightColor}; //#7c3400;
         &.disable {
-          color: ${({ type }) =>
-            RedPacketCssColorConfig[type]?.highLightDisableColor}; //#7c3400;
+          color: ${({ type }) => RedPacketCssColorConfig[type]?.highLightDisableColor}; //#7c3400;
         }
 
         cursor: pointer;
@@ -90,7 +72,7 @@ export const RedPacketBg = styled(Box)<
         justify-content: center;
         width: 64px;
         height: 64px;
-        content: "Open";
+        content: 'Open';
         font-size: 20px;
         font-weight: 500;
         border-radius: 100%;
@@ -98,10 +80,8 @@ export const RedPacketBg = styled(Box)<
       }
 
       .open.openUnready {
-        background: url("${SoursURL}/images/redpacketLock.webp") center
-          no-repeat;
-        color: ${({ type }) =>
-          RedPacketCssColorConfig[type]?.colorTop}; //#7c3400;
+        background: url('${SoursURL}/images/redpacketLock.webp') center no-repeat;
+        color: ${({ type }) => RedPacketCssColorConfig[type]?.colorTop}; //#7c3400;
         width: 76px;
         height: 76px;
         background-size: contain;
@@ -119,6 +99,7 @@ export const RedPacketBg = styled(Box)<
         transform: translate(-50%, -50%);
         left: 50%;
         top: -50%;
+
         .hours,
         .minutes,
         .seconds {
@@ -129,7 +110,8 @@ export const RedPacketBg = styled(Box)<
           color: #7c3400;
           display: inline-flex;
           align-items: center;
-          border-radius: ${({ theme }) => theme.unit + "px"};
+          border-radius: ${({ theme }) => theme.unit + 'px'};
+
           h4 {
             text-indent: -9999em;
             height: 0;
@@ -143,7 +125,7 @@ export const RedPacketBg = styled(Box)<
 
           &:after {
             display: block;
-            content: ":";
+            content: ':';
             position: absolute;
             font-size: 20px;
             right: -12px;
@@ -231,13 +213,13 @@ export const RedPacketBg = styled(Box)<
   //
   //  }
   //}
-` as (props: BoxProps & { imageSrc?: string; type: string }) => JSX.Element;
+` as (props: BoxProps & { imageSrc?: string; type: string }) => JSX.Element
 
 export const BoxClaim = styled(Box)`
   &.self {
     //background-color: var(--field-opacity);
   }
-` as typeof Box;
+` as typeof Box
 
 export const RedPacketSize = {
   middle: {
@@ -248,105 +230,105 @@ export const RedPacketSize = {
     height: 600,
     width: 320,
   },
-};
+}
 
 export const RedPacketQRCode = ({
-  type = "default",
+  type = 'default',
   imageEleUrl,
   url,
   ...rest
 }: RedPacketDefault & RedPacketQRCodeProps) => {
-  const qrcodeRef = React.createRef<SVGGElement>();
-  const ref = React.useRef();
-  const colorConfig = RedPacketColorConfig[type];
+  const qrcodeRef = React.createRef<SVGGElement>()
+  const ref = React.useRef()
+  const scolorConfig = RedPacketColorConfig[type]
   const qrCode = new QRCodeStyling({
-    type: "svg",
+    type: 'svg',
     width: 200,
     height: 200,
-    image: `${SoursURL + "svg/loopring.svg"}`,
+    image: `${SoursURL + 'svg/loopring.svg'}`,
     dotsOptions: {
       gradient: {
-        type: "linear",
+        type: 'linear',
         rotation: 45,
         colorStops: [
           {
             offset: 0,
-            color: "#4169FF", // hardcode for export png
+            color: '#4169FF', // hardcode for export png
           },
           {
             offset: 1,
-            color: "#000",
+            color: '#000',
           },
         ],
       },
-      type: "dots",
+      type: 'dots',
     },
     backgroundOptions: {
-      color: "#ffffff", //colorConfig.bgColor
+      color: '#ffffff', //colorConfig.bgColor
     },
     imageOptions: {
-      crossOrigin: "anonymous",
+      crossOrigin: 'anonymous',
       margin: 4,
     },
     cornersSquareOptions: {
-      type: "extra-rounded",
+      type: 'extra-rounded',
     },
     cornersDotOptions: {
-      type: "square",
+      type: 'square',
     },
-  });
-  const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined);
+  })
+  const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined)
 
   const updateSvg = React.useCallback(async () => {
     qrCode.update({
       data: url,
-    });
-    const svgEle = await qrCode._getElement("svg");
-    setQrCodeG(svgEle?.innerHTML);
-  }, [url]);
+    })
+    const svgEle = await qrCode._getElement('svg')
+    setQrCodeG(svgEle?.innerHTML)
+  }, [url])
   React.useEffect(() => {
-    updateSvg();
-  }, [url]);
+    updateSvg()
+  }, [url])
   const onClick = (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
     try {
       // @ts-ignore-start
-      const svg: SVGElement = ref.current as SVGElement;
-      const w = parseInt(svg.getAttribute("width") ?? "334");
-      const h = parseInt(svg.getAttribute("height") ?? "603");
+      const svg: SVGElement = ref.current as SVGElement
+      const w = parseInt(svg.getAttribute('width') ?? '334')
+      const h = parseInt(svg.getAttribute('height') ?? '603')
       if (svg && svg.outerHTML) {
-        const canvas = document.createElement("canvas");
-        const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
-        const img_to_download = document.createElement("img");
-        img_to_download.src = "data:image/svg+xml;base64," + base64doc;
+        const canvas = document.createElement('canvas')
+        const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)))
+        const img_to_download = document.createElement('img')
+        img_to_download.src = 'data:image/svg+xml;base64,' + base64doc
         img_to_download.onload = function () {
-          canvas.setAttribute("width", w.toString());
-          canvas.setAttribute("height", h.toString());
+          canvas.setAttribute('width', w.toString())
+          canvas.setAttribute('height', h.toString())
           // @ts-ignore
-          const context: CanvasRenderingContext2D = canvas.getContext("2d");
-          context.drawImage(img_to_download, 0, 0, w, h);
-          const dataURL = canvas.toDataURL("image/png");
+          const context: CanvasRenderingContext2D = canvas.getContext('2d')
+          context.drawImage(img_to_download, 0, 0, w, h)
+          const dataURL = canvas.toDataURL('image/png')
           // @ts-ignore
           if (window.navigator.msSaveBlob) {
             // @ts-ignore
             window.navigator.msSaveBlob(
               // @ts-ignore
               canvas.msToBlob(),
-              "Loopring_Red_Packet.png"
-            );
-            e.preventDefault();
+              'Loopring_Red_Packet.png',
+            )
+            e.preventDefault()
           } else {
-            const a = document.createElement("a");
-            const my_evt = new MouseEvent("click");
-            a.download = "Loopring_Red_Packet.png";
-            a.href = dataURL;
-            a.dispatchEvent(my_evt);
+            const a = document.createElement('a')
+            const my_evt = new MouseEvent('click')
+            a.download = 'Loopring_Red_Packet.png'
+            a.href = dataURL
+            a.dispatchEvent(my_evt)
           }
           //canvas.parentNode.removeChild(canvas);
-        };
+        }
       }
       // @ts-ignore-end
     } catch (error) {}
-  };
+  }
   return (
     <>
       {qrCodeG && (
@@ -363,16 +345,16 @@ export const RedPacketQRCode = ({
         </Box>
       )}
     </>
-  );
-};
+  )
+}
 
 export const RedPacketBgDefault = ({
-  type = "default",
-  size = "middle",
+  type = 'default',
+  size = 'middle',
   className,
   content,
 }: RedPacketDefaultBg & any) => {
-  const scale = RedPacketSize[size].width / 260;
+  const scale = RedPacketSize[size].width / 260
 
   return (
     <RedPacketBg
@@ -380,24 +362,24 @@ export const RedPacketBgDefault = ({
       sx={{
         transform: `scale(${scale})`,
       }}
-      className={className ?? "redPacketOpen"}
+      className={className ?? 'redPacketOpen'}
     >
       <Box
-        className={"bg"}
-        position={"absolute"}
+        className={'bg'}
+        position={'absolute'}
         top={0}
         left={0}
         right={0}
         bottom={0}
         zIndex={100}
-        display={"flex"}
-        justifyContent={"center"}
+        display={'flex'}
+        justifyContent={'center'}
         marginTop={1}
       >
         <RedPacketWrapSVG
           {...{ ...RedPacketCssColorConfig[type] }}
-          height={"100%"}
-          width={"100%"}
+          height={'100%'}
+          width={'100%'}
           type={type}
           // height={RedPacketSize[size].height}
           // width={RedPacketSize[size].width}
@@ -405,23 +387,23 @@ export const RedPacketBgDefault = ({
       </Box>
       <Box
         className={`content content${size}`}
-        position={"relative"}
+        position={'relative'}
         zIndex={200}
-        height={RedPacketSize["middle"].height}
-        width={RedPacketSize["middle"].width}
+        height={RedPacketSize['middle'].height}
+        width={RedPacketSize['middle'].width}
       >
         {content}
       </Box>
     </RedPacketBg>
-  );
-};
+  )
+}
 
 export const RedPacketBgOpened = ({
-  type = "default",
-  size = "middle",
+  type = 'default',
+  size = 'middle',
   content,
 }: RedPacketDefaultBg & any) => {
-  const scale = RedPacketSize[size].width / 260;
+  const scale = RedPacketSize[size].width / 260
 
   return (
     <RedPacketBg
@@ -429,39 +411,39 @@ export const RedPacketBgOpened = ({
       sx={{
         transform: `scale(${scale})`,
       }}
-      className={"redPacketOpened"}
+      className={'redPacketOpened'}
     >
       <Box
-        position={"absolute"}
+        position={'absolute'}
         top={0}
         left={0}
         right={0}
         bottom={0}
         zIndex={100}
-        display={"flex"}
-        justifyContent={"center"}
+        display={'flex'}
+        justifyContent={'center'}
       >
         <RedPacketOpenWrapSVG
           {...{ ...RedPacketCssColorConfig[type] }}
-          height={"100%"}
-          width={"100%"}
+          height={'100%'}
+          width={'100%'}
           type={type}
         />
       </Box>
       <Box
         className={`content content${size}`}
-        position={"relative"}
+        position={'relative'}
         zIndex={200}
-        height={RedPacketSize["middle"].height}
+        height={RedPacketSize['middle'].height}
       >
         {content}
       </Box>
     </RedPacketBg>
-  );
-};
+  )
+}
 
 export const RedPacketOpen = ({
-  type = "default",
+  type = 'default',
   size,
   sender,
   amountStr,
@@ -470,73 +452,73 @@ export const RedPacketOpen = ({
   onOpen,
   ImageEle,
 }: RedPacketDefault & RedPacketOpenProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const content = React.useMemo(() => {
     return (
-      <Box display={"flex"} flex={1} onClick={onOpen} flexDirection={"column"}>
-        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
-          <Box display={"flex"} position={"absolute"} className={"open"}>
-            {t("labelRedPacketOpen")}
+      <Box display={'flex'} flex={1} onClick={onOpen} flexDirection={'column'}>
+        <Box display={'flex'} className={'betweenEle'} position={'absolute'}>
+          <Box display={'flex'} position={'absolute'} className={'open'}>
+            {t('labelRedPacketOpen')}
           </Box>
         </Box>
-        <Box display={"flex"} className={"top"} flexDirection={"column"}>
-          <Typography color={"inherit"}>{sender}</Typography>
+        <Box display={'flex'} className={'top'} flexDirection={'column'}>
+          <Typography color={'inherit'}>{sender}</Typography>
         </Box>
-        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+        <Box display={'flex'} className={'middle'} flexDirection={'column'}>
           {ImageEle}
           <Typography
-            color={"inherit"}
-            variant={"h4"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
+            color={'inherit'}
+            variant={'h4'}
+            whiteSpace={'pre-line'}
+            textAlign={'center'}
             paddingX={2}
             paddingTop={1}
           >
             {amountStr}
           </Typography>
           <Typography
-            color={"inherit"}
-            variant={"body1"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
+            color={'inherit'}
+            variant={'body1'}
+            whiteSpace={'pre-line'}
+            textAlign={'center'}
+            overflow={'hidden'}
+            textOverflow={'ellipsis'}
             paddingX={4}
             sx={{
-              wordBreak: "break-all",
-              display: "-webkit-box",
-              "-webkit-line-clamp": "2",
-              lineClamp: "2",
-              "-webkit-box-orient": "vertical",
+              wordBreak: 'break-all',
+              display: '-webkit-box',
+              '-webkit-line-clamp': '2',
+              lineClamp: '2',
+              '-webkit-box-orient': 'vertical',
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
           />
         </Box>
-        <Box display={"flex"} className={"footer"}>
+        <Box display={'flex'} className={'footer'}>
           {viewDetail && (
             <Link
-              className={"viewDetail"}
-              whiteSpace={"pre-line"}
-              color={"inherit"}
-              variant={"body1"}
+              className={'viewDetail'}
+              whiteSpace={'pre-line'}
+              color={'inherit'}
+              variant={'body1'}
               onClick={(e) => {
-                e.stopPropagation();
-                viewDetail();
+                e.stopPropagation()
+                viewDetail()
               }}
             >
-              {t("labelLuckyRedPacketDetail")}
+              {t('labelLuckyRedPacketDetail')}
             </Link>
           )}
         </Box>
       </Box>
-    );
-  }, [size, sender, amountStr, memo, viewDetail, onOpen]);
+    )
+  }, [size, sender, amountStr, memo, viewDetail, onOpen])
 
-  return <RedPacketBgDefault type={type} size={size} content={content} />;
-};
+  return <RedPacketBgDefault type={type} size={size} content={content} />
+}
 
 export const RedPacketClock = ({
-  type = "default",
+  type = 'default',
   size,
   validSince,
   sender,
@@ -544,176 +526,148 @@ export const RedPacketClock = ({
   showRedPacket,
   ImageEle,
 }: RedPacketDefault & RedPacketClockProps) => {
-  const { t } = useTranslation("common");
-  const anchorRef = React.useRef();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  const [countDown, setCountDown] =
-    React.useState<{
-      days: undefined | string;
-      hours: undefined | string;
-      seconds: undefined | string;
-      minutes: undefined | string;
-    }>();
+  const { t } = useTranslation('common')
+  const anchorRef = React.useRef()
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
+  const [countDown, setCountDown] = React.useState<{
+    days: undefined | string
+    hours: undefined | string
+    seconds: undefined | string
+    minutes: undefined | string
+  }>()
   const calculateTimeLeft = React.useCallback((validSince: number) => {
     if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      clearTimeout(nodeTimer.current as NodeJS.Timeout)
     }
-    let difference = +new Date(validSince).getTime() - Date.now();
+    let difference = +new Date(validSince).getTime() - Date.now()
     if (difference > 0) {
       setCountDown({
         days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
-        hours: (
-          "0" + Math.floor((difference / (1000 * 60 * 60)) % 24).toString()
-        ).slice(-2),
-        minutes: (
-          "0" + Math.floor((difference / 1000 / 60) % 60).toString()
-        ).slice(-2),
-        seconds: ("0" + Math.floor((difference / 1000) % 60).toString()).slice(
-          -2
-        ),
-      });
-      nodeTimer.current = setTimeout(() => calculateTimeLeft(validSince), 1000);
+        hours: ('0' + Math.floor((difference / (1000 * 60 * 60)) % 24).toString()).slice(-2),
+        minutes: ('0' + Math.floor((difference / 1000 / 60) % 60).toString()).slice(-2),
+        seconds: ('0' + Math.floor((difference / 1000) % 60).toString()).slice(-2),
+      })
+      nodeTimer.current = setTimeout(() => calculateTimeLeft(validSince), 1000)
     } else {
-      showRedPacket();
+      showRedPacket()
     }
-  }, []);
+  }, [])
   React.useEffect(() => {
-    calculateTimeLeft(validSince);
+    calculateTimeLeft(validSince)
     return () => {
       if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+        clearTimeout(nodeTimer.current as NodeJS.Timeout)
       }
-    };
-  }, [validSince]);
+    }
+  }, [validSince])
 
   const content = React.useMemo(() => {
     return (
       <>
-        <Box display={"flex"} className={"betweenEle"} position={"absolute"}>
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            position={"absolute"}
-            className={"clock"}
-          >
+        <Box display={'flex'} className={'betweenEle'} position={'absolute'}>
+          <Box display={'flex'} flexDirection={'column'} position={'absolute'} className={'clock'}>
             <Typography
-              display={"none"}
-              component={"span"}
-              variant={"body1"}
+              display={'none'}
+              component={'span'}
+              variant={'body1'}
               // marginBottom={1}
             >
-              {t("labelCountDown")}
+              {t('labelCountDown')}
             </Typography>
-            <Box
-              display={"flex"}
-              flexDirection={"row"}
-              flex={1}
-              ref={anchorRef}
-            >
+            <Box display={'flex'} flexDirection={'row'} flex={1} ref={anchorRef}>
               <Box
-                className={"hours"}
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
+                className={'hours'}
+                display={'flex'}
+                flexDirection={'column'}
+                alignItems={'center'}
                 marginRight={2}
               >
-                <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                  {Number(countDown?.hours) >= 0
-                    ? countDown?.hours
-                    : EmptyValueTag}
+                <Typography variant={'h2'} component={'span'} color={'inherit'}>
+                  {Number(countDown?.hours) >= 0 ? countDown?.hours : EmptyValueTag}
                 </Typography>
                 <Typography
-                  variant={"h4"}
-                  color={"var(--color-text-secondary)"}
-                  display={"none"}
-                  style={{ textTransform: "uppercase" }}
+                  variant={'h4'}
+                  color={'var(--color-text-secondary)'}
+                  display={'none'}
+                  style={{ textTransform: 'uppercase' }}
                 >
-                  {t("labelHours")}
+                  {t('labelHours')}
                 </Typography>
               </Box>
               <Box
-                className={"minutes"}
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
+                className={'minutes'}
+                display={'flex'}
+                flexDirection={'column'}
+                alignItems={'center'}
                 marginRight={2}
               >
-                <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                  {Number(countDown?.minutes) >= 0
-                    ? countDown?.minutes
-                    : EmptyValueTag}
+                <Typography variant={'h2'} component={'span'} color={'inherit'}>
+                  {Number(countDown?.minutes) >= 0 ? countDown?.minutes : EmptyValueTag}
                 </Typography>
                 <Typography
-                  variant={"h4"}
-                  color={"var(--color-text-secondary)"}
-                  display={"none"}
-                  style={{ textTransform: "uppercase" }}
+                  variant={'h4'}
+                  color={'var(--color-text-secondary)'}
+                  display={'none'}
+                  style={{ textTransform: 'uppercase' }}
                 >
-                  {t("labelMinutes")}
+                  {t('labelMinutes')}
                 </Typography>
               </Box>
               <Box
-                className={"seconds"}
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
+                className={'seconds'}
+                display={'flex'}
+                flexDirection={'column'}
+                alignItems={'center'}
               >
-                <Typography variant={"h2"} component={"span"} color={"inherit"}>
-                  {Number(countDown?.seconds) >= 0
-                    ? countDown?.seconds
-                    : EmptyValueTag}
+                <Typography variant={'h2'} component={'span'} color={'inherit'}>
+                  {Number(countDown?.seconds) >= 0 ? countDown?.seconds : EmptyValueTag}
                 </Typography>
                 <Typography
-                  variant={"h4"}
-                  color={"var(--color-text-secondary)"}
-                  display={"none"}
-                  style={{ textTransform: "uppercase" }}
+                  variant={'h4'}
+                  color={'var(--color-text-secondary)'}
+                  display={'none'}
+                  style={{ textTransform: 'uppercase' }}
                 >
-                  {t("labelSeconds")}
+                  {t('labelSeconds')}
                 </Typography>
               </Box>
             </Box>
           </Box>
         </Box>
 
-        <Box display={"flex"} className={"top"} flexDirection={"column"}>
-          <Typography color={"inherit"}>{sender}</Typography>
+        <Box display={'flex'} className={'top'} flexDirection={'column'}>
+          <Typography color={'inherit'}>{sender}</Typography>
         </Box>
         <Typography
-          color={"inherit"}
-          variant={"body1"}
-          whiteSpace={"pre-line"}
-          textAlign={"center"}
-          overflow={"hidden"}
-          textOverflow={"ellipsis"}
+          color={'inherit'}
+          variant={'body1'}
+          whiteSpace={'pre-line'}
+          textAlign={'center'}
+          overflow={'hidden'}
+          textOverflow={'ellipsis'}
           paddingX={4}
           sx={{
-            wordBreak: "break-all",
-            display: "-webkit-box",
-            "-webkit-line-clamp": "2",
-            lineClamp: "2",
-            "-webkit-box-orient": "vertical",
+            wordBreak: 'break-all',
+            display: '-webkit-box',
+            '-webkit-line-clamp': '2',
+            lineClamp: '2',
+            '-webkit-box-orient': 'vertical',
           }}
-          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
         />
-        <Box display={"flex"} className={"middle"} flexDirection={"column"}>
+        <Box display={'flex'} className={'middle'} flexDirection={'column'}>
           {ImageEle}
         </Box>
       </>
-    );
-  }, [countDown]);
+    )
+  }, [countDown])
   return (
-    <RedPacketBgDefault
-      className={"RedPacketClock"}
-      type={type}
-      size={size}
-      content={content}
-    />
-  );
-};
+    <RedPacketBgDefault className={'RedPacketClock'} type={type} size={size} content={content} />
+  )
+}
 
 export const RedPacketUnready = ({
-  type = "default",
+  type = 'default',
   size,
   sender,
   validSince,
@@ -723,249 +677,225 @@ export const RedPacketUnready = ({
   onClickOpen,
 }: // ImageEle,
 RedPacketDefault & RedPacketUnreadyProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const content = React.useMemo(() => {
     return (
-      <Box display={"flex"} flex={1} flexDirection={"column"}>
-        <Box
-          onClick={onClickOpen}
-          display={"flex"}
-          className={"betweenEle"}
-          position={"absolute"}
-        >
-          <Box display={"flex"} position={"absolute"} className={"open"}>
-            {t("labelRedPacketOpen")}
+      <Box display={'flex'} flex={1} flexDirection={'column'}>
+        <Box onClick={onClickOpen} display={'flex'} className={'betweenEle'} position={'absolute'}>
+          <Box display={'flex'} position={'absolute'} className={'open'}>
+            {t('labelRedPacketOpen')}
           </Box>
         </Box>
-        <Box display={"flex"} className={"top"} flexDirection={"column"}>
-          <Typography color={"inherit"}>{sender}</Typography>
+        <Box display={'flex'} className={'top'} flexDirection={'column'}>
+          <Typography color={'inherit'}>{sender}</Typography>
         </Box>
-        <Box
-          display={"flex"}
-          className={"middle"}
-          flexDirection={"column"}
-          position={"relative"}
-        >
-          <Typography
-            color={"inherit"}
-            position={"absolute"}
-            marginTop={3}
-            top={0}
-          >
-            {`${moment(validSince).format(DAY_MINUTE_FORMAT)} ${t(
-              "labelOpenStart"
-            )}`}
+        <Box display={'flex'} className={'middle'} flexDirection={'column'} position={'relative'}>
+          <Typography color={'inherit'} position={'absolute'} marginTop={3} top={0}>
+            {`${moment(validSince).format(DAY_MINUTE_FORMAT)} ${t('labelOpenStart')}`}
           </Typography>
           {ImageEle}
           <Typography
-            color={"inherit"}
-            variant={"h4"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
+            color={'inherit'}
+            variant={'h4'}
+            whiteSpace={'pre-line'}
+            textAlign={'center'}
             paddingX={2}
             paddingTop={1}
           >
             {amountStr}
           </Typography>
           <Typography
-            color={"inherit"}
-            variant={"body1"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
+            color={'inherit'}
+            variant={'body1'}
+            whiteSpace={'pre-line'}
+            textAlign={'center'}
+            overflow={'hidden'}
+            textOverflow={'ellipsis'}
             paddingX={4}
             sx={{
-              wordBreak: "break-all",
-              display: "-webkit-box",
-              "-webkit-line-clamp": "2",
-              lineClamp: "2",
-              "-webkit-box-orient": "vertical",
+              wordBreak: 'break-all',
+              display: '-webkit-box',
+              '-webkit-line-clamp': '2',
+              lineClamp: '2',
+              '-webkit-box-orient': 'vertical',
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
           />
         </Box>
       </Box>
-    );
-  }, [size, sender, amountStr, memo]);
+    )
+  }, [size, sender, amountStr, memo])
 
-  return <RedPacketBgDefault type={type} size={size} content={content} />;
-};
+  return <RedPacketBgDefault type={type} size={size} content={content} />
+}
 
 export const RedPacketOpened = ({
-  type = "default",
+  type = 'default',
   size,
   sender,
   memo,
   myAmountStr,
   amountStr,
   viewDetail,
-  ImageEle
+  ImageEle,
 }: RedPacketDefault & RedPacketOpenedProps) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation('common')
   const content = React.useMemo(() => {
     return (
-      <Box display={"flex"} flex={1} flexDirection={"column"}>
-        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+      <Box display={'flex'} flex={1} flexDirection={'column'}>
+        <Box display={'flex'} className={'top'} flexDirection={'column'}>
           <Typography
-            variant={"h5"}
+            variant={'h5'}
             color={RedPacketCssColorConfig[type].highLightColor}
-            marginTop={type === "blindbox" ? 2 : 0}
+            marginTop={type === 'blindbox' ? 2 : 0}
           >
-            {type === "blindbox" ? t("labelRedPacketBlindboxReceived1") : t("labelRedPacketReceived")}
+            {type === 'blindbox'
+              ? t('labelRedPacketBlindboxReceived1')
+              : t('labelRedPacketReceived')}
           </Typography>
-          {type === "blindbox" && <Typography
-            variant={"h5"}
-            color={RedPacketCssColorConfig[type].highLightColor}
-          >
-            {t("labelRedPacketBlindboxReceived2")}
-          </Typography>
-          }
-          {type !== "blindbox" && <>
-            <Typography
-              variant={"h4"}
-              color={RedPacketCssColorConfig[type].highLightColor}
-              marginTop={1}
-            >
-              {myAmountStr ? myAmountStr : EmptyValueTag}
+          {type === 'blindbox' && (
+            <Typography variant={'h5'} color={RedPacketCssColorConfig[type].highLightColor}>
+              {t('labelRedPacketBlindboxReceived2')}
             </Typography>
-            <Typography
-              variant={"body2"}
-              color={RedPacketCssColorConfig[type].highLightColor}
-            >
-              {t("labelTotalRedPacket", { value: amountStr })}
-            </Typography>
-          </>
-          }
-          
+          )}
+          {type !== 'blindbox' && (
+            <>
+              <Typography
+                variant={'h4'}
+                color={RedPacketCssColorConfig[type].highLightColor}
+                marginTop={1}
+              >
+                {myAmountStr ? myAmountStr : EmptyValueTag}
+              </Typography>
+              <Typography variant={'body2'} color={RedPacketCssColorConfig[type].highLightColor}>
+                {t('labelTotalRedPacket', { value: amountStr })}
+              </Typography>
+            </>
+          )}
         </Box>
-        <Box
-          display={"flex"}
-          className={"middle RedPacketReceived"}
-          flexDirection={"column"}
-        >
+        <Box display={'flex'} className={'middle RedPacketReceived'} flexDirection={'column'}>
           {ImageEle}
-          <Typography color={"inherit"}>{sender}</Typography>
+          <Typography color={'inherit'}>{sender}</Typography>
           <Typography
-            variant={"body2"}
-            color={"inherit"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
+            variant={'body2'}
+            color={'inherit'}
+            whiteSpace={'pre-line'}
+            textAlign={'center'}
             marginTop={1 / 2}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
+            overflow={'hidden'}
+            textOverflow={'ellipsis'}
             paddingX={4}
             sx={{
-              wordBreak: "break-all",
-              display: "-webkit-box",
-              "-webkit-line-clamp": "2",
-              lineClamp: "2",
-              "-webkit-box-orient": "vertical",
+              wordBreak: 'break-all',
+              display: '-webkit-box',
+              '-webkit-line-clamp': '2',
+              lineClamp: '2',
+              '-webkit-box-orient': 'vertical',
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
             width={300}
           />
         </Box>
-        <Box display={"flex"} className={"footer"}>
+        <Box display={'flex'} className={'footer'}>
           <Link
-            className={"viewDetail"}
-            whiteSpace={"pre-line"}
-            color={"inherit"}
-            variant={"body1"}
+            className={'viewDetail'}
+            whiteSpace={'pre-line'}
+            color={'inherit'}
+            variant={'body1'}
             onClick={(e) => {
-              e.stopPropagation();
-              viewDetail();
+              e.stopPropagation()
+              viewDetail()
             }}
           >
-            {t("labelLuckyRedPacketDetail")}
+            {t('labelLuckyRedPacketDetail')}
           </Link>
         </Box>
       </Box>
-    );
-  }, [type]);
-  return <RedPacketBgOpened type={type} content={content} size={size} />;
-};
+    )
+  }, [type])
+  return <RedPacketBgOpened type={type} content={content} size={size} />
+}
 
 export const RedPacketDetailStyled = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
   background-color: var(--color-box);
-` as typeof Box;
+` as typeof Box
 
 export const RedPacketTimeout = ({
-  type = "default",
+  type = 'default',
   size,
   sender,
   memo,
   viewDetail,
 }: RedPacketTimeoutProps) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation('common')
   const content = React.useMemo(() => {
     return (
       <Box
         className={`content content${size}`}
-        position={"relative"}
+        position={'relative'}
         zIndex={200}
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"stretch"}
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'stretch'}
         // alignItems={"s"}
-        height={RedPacketSize["middle"].height}
+        height={RedPacketSize['middle'].height}
       >
-        <Box display={"flex"} className={"top"} flexDirection={"column"}>
+        <Box display={'flex'} className={'top'} flexDirection={'column'}>
           <Typography
-            color={"inherit"}
-            variant={"h4"}
-            className={"timeoutTitle"}
-            whiteSpace={"pre-line"}
+            color={'inherit'}
+            variant={'h4'}
+            className={'timeoutTitle'}
+            whiteSpace={'pre-line'}
             paddingTop={2}
-            textAlign={"center"}
+            textAlign={'center'}
           >
-            {t("labelLuckyRedPacketTimeout")}
+            {t('labelLuckyRedPacketTimeout')}
           </Typography>
-          <Typography paddingTop={1 / 2} className={"secondary"}>
+          <Typography paddingTop={1 / 2} className={'secondary'}>
             {sender}
           </Typography>
         </Box>
-        <Box display={"flex"} className={"middle"}>
+        <Box display={'flex'} className={'middle'}>
           <Typography
-            color={"inherit"}
-            variant={"body1"}
-            whiteSpace={"pre-line"}
-            textAlign={"center"}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
+            color={'inherit'}
+            variant={'body1'}
+            whiteSpace={'pre-line'}
+            textAlign={'center'}
+            overflow={'hidden'}
+            textOverflow={'ellipsis'}
             paddingX={4}
             sx={{
-              wordBreak: "break-all",
-              display: "-webkit-box",
-              "-webkit-line-clamp": "2",
-              lineClamp: "2",
-              "-webkit-box-orient": "vertical",
+              wordBreak: 'break-all',
+              display: '-webkit-box',
+              '-webkit-line-clamp': '2',
+              lineClamp: '2',
+              '-webkit-box-orient': 'vertical',
             }}
-            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+            dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
           />
         </Box>
-        <Box display={"flex"} className={"footer"}>
+        <Box display={'flex'} className={'footer'}>
           {viewDetail && (
             <Link
-              className={"viewDetail"}
-              whiteSpace={"pre-line"}
-              color={"inherit"}
-              variant={"body1"}
+              className={'viewDetail'}
+              whiteSpace={'pre-line'}
+              color={'inherit'}
+              variant={'body1'}
               onClick={(e) => {
-                e.stopPropagation();
-                viewDetail();
+                e.stopPropagation()
+                viewDetail()
               }}
             >
-              {t("labelLuckyRedPacketDetail")}
+              {t('labelLuckyRedPacketDetail')}
             </Link>
           )}
         </Box>
       </Box>
-    );
-  }, []);
-  return <RedPacketBgOpened type={type} content={content} size={size} />;
-};
+    )
+  }, [])
+  return <RedPacketBgOpened type={type} content={content} size={size} />
+}
 
 const BoxStyle = styled(Box)`
   background: var(--color-box);
@@ -981,7 +911,7 @@ const BoxStyle = styled(Box)`
     border-bottom-right-radius: 100%;
     border-bottom-left-radius: 100%;
   }
-`;
+`
 
 export const RedPacketDetail = ({
   redPacketType,
@@ -1010,107 +940,85 @@ export const RedPacketDetail = ({
   claimButton,
   totalNumber,
 }: RedPacketDetailProps) => {
-  const { t } = useTranslation("common");
-  const showLucky = detail.luckyToken.tokenAmount.remainCount == 0;
-  const limit = detail.luckyToken.isNft
-    ? RedPacketNFTDetailLimit
-    : RedPacketDetailLimit;
+  const { t } = useTranslation('common')
+  const showLucky = detail.luckyToken.tokenAmount.remainCount == 0
+  const limit = detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit
   const pageNation = totalNumber - limit > 0 && (
     <TablePagination
-      size={"small"}
+      size={'small'}
       page={page}
       pageSize={limit}
       total={totalNumber}
       onPageChange={(_page) => {
-        handlePageChange(_page);
+        handlePageChange(_page)
       }}
     />
-  );
+  )
 
   return (
     <BoxStyle
       flex={1}
       width={RedPacketSize.large.width}
       height={RedPacketSize.large.height}
-      display={"flex"}
+      display={'flex'}
       paddingBottom={1}
-      flexDirection={"column"}
-      overflow={"scroll"}
+      flexDirection={'column'}
+      overflow={'scroll'}
     >
       <Box
-        className={"top"}
-        width={"100%"}
+        className={'top'}
+        width={'100%'}
         sx={{
           background: RedPacketColorConfig.default.startColor,
-          height: "88px",
+          height: '88px',
         }}
-        display={"flex"}
-        alignItems={"center"}
-        justifyContent={"center"}
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'center'}
       >
-        <Typography
-          variant={"body1"}
-          color={RedPacketColorConfig.default.fontColor}
-        >
+        <Typography variant={'body1'} color={RedPacketColorConfig.default.fontColor}>
           {t(`label${redPacketType}RedPacket`)}
         </Typography>
       </Box>
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"center"}
-        marginY={2}
-      >
-        <Typography variant={"body1"}>{sender}</Typography>
+      <Box display={'flex'} flexDirection={'column'} alignItems={'center'} marginY={2}>
+        <Typography variant={'body1'}>{sender}</Typography>
         <Typography
-          variant={"body2"}
-          color={"textThird"}
-          whiteSpace={"pre-line"}
-          textAlign={"center"}
+          variant={'body2'}
+          color={'textThird'}
+          whiteSpace={'pre-line'}
+          textAlign={'center'}
           marginTop={1 / 2}
-          overflow={"hidden"}
-          textOverflow={"ellipsis"}
+          overflow={'hidden'}
+          textOverflow={'ellipsis'}
           paddingX={4}
           sx={{
-            wordBreak: "break-all",
-            display: "-webkit-box",
-            "-webkit-line-clamp": "2",
-            lineClamp: "2",
-            "-webkit-box-orient": "vertical",
+            wordBreak: 'break-all',
+            display: '-webkit-box',
+            '-webkit-line-clamp': '2',
+            lineClamp: '2',
+            '-webkit-box-orient': 'vertical',
           }}
-          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
         />
         {ImageEle}
-        <Typography
-          variant={"h3"}
-          color={RedPacketColorConfig.default.colorTop}
-          marginTop={1}
-        >
+        <Typography variant={'h3'} color={RedPacketColorConfig.default.colorTop} marginTop={1}>
           {myAmountStr ? myAmountStr : EmptyValueTag}
         </Typography>
-        <Typography
-          variant={"body2"}
-          color={RedPacketColorConfig.default.colorTop}
-        >
-          {t("labelTotalRedPacket", { value: amountStr })}
+        <Typography variant={'body2'} color={RedPacketColorConfig.default.colorTop}>
+          {t('labelTotalRedPacket', { value: amountStr })}
         </Typography>
       </Box>
       {/*<Divider orientation={"horizontal"} sx={{ borderWidth: 3 }} />*/}
-      <Box
-        flex={1}
-        display={"flex"}
-        justifyContent={"stretch"}
-        flexDirection={"column"}
-      >
+      <Box flex={1} display={'flex'} justifyContent={'stretch'} flexDirection={'column'}>
         <Typography
-          variant={"body1"}
-          color={"textThird"}
+          variant={'body1'}
+          color={'textThird'}
           marginY={1}
           paddingX={1}
           paddingY={1}
-          sx={{ background: "var(--color-divide)" }}
+          sx={{ background: 'var(--color-divide)' }}
         >
-          {t("labelRedPacketReceivedRecord", {
+          {t('labelRedPacketReceivedRecord', {
             value: totalCount - remainCount,
             count: totalCount,
           })}
@@ -1124,84 +1032,69 @@ export const RedPacketDetail = ({
             claimList.map((item, index) => {
               return (
                 <BoxClaim
-                  className={item.isSelf ? "self claim" : "claim"}
-                  display={"flex"}
-                  justifyContent={"stretch"}
-                  flexDirection={"column"}
+                  className={item.isSelf ? 'self claim' : 'claim'}
+                  display={'flex'}
+                  justifyContent={'stretch'}
+                  flexDirection={'column'}
                   paddingTop={1 / 2}
                   paddingX={1}
                 >
                   <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
+                    component={'span'}
+                    display={'inline-flex'}
+                    flexDirection={'row'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
                     paddingX={1}
                   >
                     <Typography
-                      variant={"body1"}
-                      component={"span"}
-                      color={item.isSelf ? "success" : "textPrimary"}
+                      variant={'body1'}
+                      component={'span'}
+                      color={item.isSelf ? 'success' : 'textPrimary'}
                     >
                       {item.accountStr}
-                      {item.isSelf ? ` (${t("labelRedPacketMe")})` : ""}
+                      {item.isSelf ? ` (${t('labelRedPacketMe')})` : ''}
                     </Typography>
-                    <Typography
-                      variant={"body1"}
-                      component={"span"}
-                      color={"textPrimary"}
-                    >
+                    <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
                       {item.amountStr}
                     </Typography>
                   </Typography>
                   <Typography
-                    component={"span"}
-                    display={"inline-flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
+                    component={'span'}
+                    display={'inline-flex'}
+                    flexDirection={'row'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
                     paddingX={1}
                   >
-                    <Typography
-                      variant={"body2"}
-                      component={"span"}
-                      color={"textThird"}
-                    >
-                      {moment(
-                        new Date(item.createdAt),
-                        "YYYYMMDDHHMM"
-                      ).fromNow()}
+                    <Typography variant={'body2'} component={'span'} color={'textThird'}>
+                      {moment(new Date(item.createdAt), 'YYYYMMDDHHMM').fromNow()}
                     </Typography>
-                    <Typography display={"inline"}>
+                    <Typography display={'inline'}>
                       {item.helper && (
                         <Typography
-                          component={"span"}
-                          color={"var(--color-primary)"}
-                          display={"inline-flex"}
-                          alignItems={"center"}
-                          variant={"body2"}
+                          component={'span'}
+                          color={'var(--color-primary)'}
+                          display={'inline-flex'}
+                          alignItems={'center'}
+                          variant={'body2'}
                         >
                           {item.helper} Help
                         </Typography>
                       )}
                       {showLucky &&
-                        (redPacketType === "lucky" ||
-                          redPacketType === "relay") &&
+                        (redPacketType === 'lucky' || redPacketType === 'relay') &&
                         item.isMax && (
                           <Typography
-                            component={"span"}
-                            color={"var(--color-warning)"}
-                            display={"inline-flex"}
-                            alignItems={"center"}
-                            variant={"body2"}
+                            component={'span'}
+                            color={'var(--color-warning)'}
+                            display={'inline-flex'}
+                            alignItems={'center'}
+                            variant={'body2'}
                             marginLeft={1}
                           >
-                            <FirstPlaceIcon
-                              fontSize={"medium"}
-                              sx={{ paddingRight: 1 / 2 }}
-                            />
-                            {t("labelLuckDraw")}
+                            <FirstPlaceIcon fontSize={'medium'} sx={{ paddingRight: 1 / 2 }} />
+                            {t('labelLuckDraw')}
                           </Typography>
                         )}
                     </Typography>
@@ -1209,7 +1102,7 @@ export const RedPacketDetail = ({
 
                   {index + 1 !== claimList.length && (
                     <Divider
-                      orientation={"horizontal"}
+                      orientation={'horizontal'}
                       sx={{
                         borderWidth: 1 / 2,
                         paddingX: 1,
@@ -1218,98 +1111,98 @@ export const RedPacketDetail = ({
                     />
                   )}
                 </BoxClaim>
-              );
+              )
             })}
         </Box>
         {pageNation}
       </Box>
       {/* {showShareBtn && ( */}
-      <Box paddingX={1} display={"flex"} flexDirection={"column"}>
-        {claimButton === "claim" ? (
-          <Button variant={"contained"} fullWidth onClick={onClickClaim}>
-            {t("labelClaimBtn")}
+      <Box paddingX={1} display={'flex'} flexDirection={'column'}>
+        {claimButton === 'claim' ? (
+          <Button variant={'contained'} fullWidth onClick={onClickClaim}>
+            {t('labelClaimBtn')}
           </Button>
-        ) : claimButton === "expired" && bottomButton === "ended" ? (
-          <Button variant={"contained"} fullWidth disabled>
-            {t("labelClaimBtnExpired")}
+        ) : claimButton === 'expired' && bottomButton === 'ended' ? (
+          <Button variant={'contained'} fullWidth disabled>
+            {t('labelClaimBtnExpired')}
           </Button>
-        ) : claimButton === "claimed" && bottomButton === "ended" ? (
-          <Button variant={"contained"} fullWidth disabled>
-            {t("labelClaimBtnClaimed")}
+        ) : claimButton === 'claimed' && bottomButton === 'ended' ? (
+          <Button variant={'contained'} fullWidth disabled>
+            {t('labelClaimBtnClaimed')}
           </Button>
         ) : (
           <></>
         )}
-        {bottomButton === "share" ? (
-          claimButton === "claim" ? (
-            <Button variant={"text"} size={"small"} onClick={onShared}>
-              {t("labelRedPacketGrab")}
+        {bottomButton === 'share' ? (
+          claimButton === 'claim' ? (
+            <Button variant={'text'} size={'small'} onClick={onShared}>
+              {t('labelRedPacketGrab')}
             </Button>
           ) : (
             <Button
-              variant={"contained"}
-              color={"error"}
+              variant={'contained'}
+              color={'error'}
               sx={{
                 backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                "&:hover": {
+                '&:hover': {
                   backgroundColor: RedPacketColorConfig.default.colorTop as any,
                 },
               }}
               fullWidth={true}
               onClick={onShared}
             >
-              {t("labelRedPacketGrab")}
+              {t('labelRedPacketGrab')}
             </Button>
           )
         ) : (
-          claimButton === "hidden" && (
+          claimButton === 'hidden' && (
             <Button
-              variant={"contained"}
-              color={"error"}
+              variant={'contained'}
+              color={'error'}
               sx={{
                 backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                "&:hover": {
+                '&:hover': {
                   backgroundColor: RedPacketColorConfig.default.colorTop as any,
                 },
               }}
               fullWidth={true}
               disabled
             >
-              {t("labelRedPacketEnded")}
+              {t('labelRedPacketEnded')}
             </Button>
           )
         )}
 
         {showRelayText && (
           <Typography
-            color={"textSecondary"}
-            variant={"body2"}
-            textAlign={"center"}
+            color={'textSecondary'}
+            variant={'body2'}
+            textAlign={'center'}
             paddingTop={1}
-            component={"span"}
+            component={'span'}
           >
             <Trans
-              i18nKey={"labelRedpacketHavePeopleHelp"}
+              i18nKey={'labelRedpacketHavePeopleHelp'}
               tOptions={{
                 number: relyNumber ? relyNumber : EmptyValueTag,
                 amount:
                   relyAmount && !sdk.toBig(relyAmount).isZero()
-                    ? relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : "")
+                    ? relyAmount + (tokenSymbol ? ` ${tokenSymbol}` : '')
                     : EmptyValueTag,
               }}
             >
               have
               <Typography
-                variant={"inherit"}
-                component={"span"}
+                variant={'inherit'}
+                component={'span'}
                 color={RedPacketColorConfig.default.startColor}
               >
                 {relyNumber ?? EmptyValueTag}
               </Typography>
               friends help you pick up Redpacket, you extends reward:
               <Typography
-                variant={"inherit"}
-                component={"span"}
+                variant={'inherit'}
+                component={'span'}
                 color={RedPacketColorConfig.default.fontColor}
               >
                 {relyAmount ?? EmptyValueTag}
@@ -1320,8 +1213,8 @@ export const RedPacketDetail = ({
       </Box>
       {/* )} */}
     </BoxStyle>
-  );
-};
+  )
+}
 
 export const RedPacketPrepare = ({
   chainId,
@@ -1329,7 +1222,7 @@ export const RedPacketPrepare = ({
   tokenInfo,
   setShowRedPacket,
   claim,
-  _type = "default",
+  _type = 'default',
   amountStr,
   myAmountStr,
   onOpen,
@@ -1338,40 +1231,40 @@ export const RedPacketPrepare = ({
   claimed,
   ...props
 }: {
-  chainId: sdk.ChainId;
-  account: Account;
-  amountStr: string;
-  tokenInfo: sdk.TokenInfo;
-  claim: string | undefined;
-  myAmountStr: string | undefined;
+  chainId: sdk.ChainId
+  account: Account
+  amountStr: string
+  tokenInfo: sdk.TokenInfo
+  claim: string | undefined
+  myAmountStr: string | undefined
   setShowRedPacket: (
     state: ModalStatePlayLoad & {
-      step?: number;
-      info?: { [key: string]: any };
-    }
-  ) => void;
-  baseURL: string;
-  getIPFSString: GET_IPFS_STRING;
-  onOpen: () => void;
-  _type?: "official" | "default" | "blindbox";
-  claimed: boolean;
+      step?: number
+      info?: { [key: string]: any }
+    },
+  ) => void
+  baseURL: string
+  getIPFSString: GET_IPFS_STRING
+  onOpen: () => void
+  _type?: 'official' | 'default' | 'blindbox'
+  claimed: boolean
 } & sdk.LuckyTokenItemForReceive) => {
   // const { t } = useTranslation("common");
-  const ref = React.createRef();
-  const _info = props as sdk.LuckyTokenItemForReceive;
+  const ref = React.createRef()
+  const _info = props as sdk.LuckyTokenItemForReceive
   // const props.isNft;
   const ImageEle = React.useMemo(() => {
     return props.isNft ? (
-      <BoxNFT flex={1} position={"relative"} className={"redPacketNFT"}>
+      <BoxNFT flex={1} position={'relative'} className={'redPacketNFT'}>
         <Box
-          position={"absolute"}
+          position={'absolute'}
           top={0}
           right={0}
           bottom={0}
           left={0}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
         >
           <NFTMedia
             ref={ref}
@@ -1386,24 +1279,22 @@ export const RedPacketPrepare = ({
       </BoxNFT>
     ) : (
       <></>
-    );
-  }, [props]);
+    )
+  }, [props])
 
   // following code is for triggering rerender
   const getDifferenceStatus = () => {
-    const difference = new Date(_info.validSince).getTime() - Date.now();
-    return difference > 180000 ? 0 : difference > 0 ? 1 : 2;
-  };
-  const [differenceStatus, setDifferenceStatus] = React.useState(
-    getDifferenceStatus()
-  );
+    const difference = new Date(_info.validSince).getTime() - Date.now()
+    return difference > 180000 ? 0 : difference > 0 ? 1 : 2
+  }
+  const [differenceStatus, setDifferenceStatus] = React.useState(getDifferenceStatus())
   React.useEffect(() => {
     setInterval(() => {
-      setDifferenceStatus(getDifferenceStatus);
-    }, 1000);
-  }, []);
+      setDifferenceStatus(getDifferenceStatus)
+    }, 1000)
+  }, [])
   const viewItem = React.useMemo(() => {
-    let difference = new Date(_info.validSince).getTime() - Date.now();
+    let difference = new Date(_info.validSince).getTime() - Date.now()
     if (claimed) {
       return (
         <RedPacketOpened
@@ -1421,7 +1312,7 @@ export const RedPacketPrepare = ({
                 info: {
                   ..._info,
                 },
-              });
+              })
             } else {
               setShowRedPacket({
                 isShow: true,
@@ -1429,26 +1320,18 @@ export const RedPacketPrepare = ({
                 info: {
                   ..._info,
                 },
-              });
+              })
             }
           }}
-          sender={
-            props?.sender?.ens
-              ? props?.sender?.ens
-              : getShortAddr(props?.sender?.address)
-          }
+          sender={props?.sender?.ens ? props?.sender?.ens : getShortAddr(props?.sender?.address)}
           memo={props?.info?.memo}
           type={_type}
         />
-      );
+      )
     } else if (difference > 180000) {
       return (
         <RedPacketUnready
-          sender={
-            props?.sender?.ens
-              ? props?.sender?.ens
-              : getShortAddr(props?.sender?.address)
-          }
+          sender={props?.sender?.ens ? props?.sender?.ens : getShortAddr(props?.sender?.address)}
           {...props?.info}
           ImageEle={ImageEle}
           amountStr={amountStr}
@@ -1462,20 +1345,16 @@ export const RedPacketPrepare = ({
               info: {
                 ..._info,
               },
-            });
+            })
           }}
         />
-      );
+      )
     } else if (difference > 0) {
       return (
         <RedPacketClock
           {...props?.info}
           ImageEle={ImageEle}
-          sender={
-            props?.sender?.ens
-              ? props?.sender?.ens
-              : getShortAddr(props?.sender?.address)
-          }
+          sender={props?.sender?.ens ? props?.sender?.ens : getShortAddr(props?.sender?.address)}
           showRedPacket={() => {
             // do nothing
             // setShowRedPacket({
@@ -1488,7 +1367,7 @@ export const RedPacketPrepare = ({
           validSince={_info.validSince}
           type={_type}
         />
-      );
+      )
     } else if (
       // difference + 86400000 < 0 ||
       _info.status == sdk.LuckyTokenItemStatus.COMPLETED ||
@@ -1499,12 +1378,8 @@ export const RedPacketPrepare = ({
         <RedPacketTimeout
           {...props?.info}
           ImageEle={ImageEle}
-          sender={
-            props?.sender?.ens
-              ? props?.sender?.ens
-              : getShortAddr(props?.sender?.address)
-          }
-          type={_type ?? "default"}
+          sender={props?.sender?.ens ? props?.sender?.ens : getShortAddr(props?.sender?.address)}
+          type={_type ?? 'default'}
           viewDetail={() => {
             if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
               setShowRedPacket({
@@ -1513,7 +1388,7 @@ export const RedPacketPrepare = ({
                 info: {
                   ..._info,
                 },
-              });
+              })
             } else {
               setShowRedPacket({
                 isShow: true,
@@ -1521,11 +1396,11 @@ export const RedPacketPrepare = ({
                 info: {
                   ..._info,
                 },
-              });
+              })
             }
           }}
         />
-      );
+      )
     } else {
       return (
         <RedPacketOpen
@@ -1535,19 +1410,15 @@ export const RedPacketPrepare = ({
           ImageEle={ImageEle ?? undefined}
           type={_type}
           amountStr={amountStr}
-          sender={
-            props?.sender?.ens
-              ? props?.sender?.ens
-              : getShortAddr(props?.sender?.address)
-          }
+          sender={props?.sender?.ens ? props?.sender?.ens : getShortAddr(props?.sender?.address)}
           memo={props?.info?.memo}
           onOpen={() => {
             setShowRedPacket({
               isShow: false,
               step: RedPacketViewStep.Loading,
               info: _info,
-            });
-            onOpen();
+            })
+            onOpen()
           }}
           viewDetail={
             _info.sender.accountId === account.accountId
@@ -1559,7 +1430,7 @@ export const RedPacketPrepare = ({
                       info: {
                         ..._info,
                       },
-                    });
+                    })
                   } else {
                     setShowRedPacket({
                       isShow: true,
@@ -1567,17 +1438,17 @@ export const RedPacketPrepare = ({
                       info: {
                         ..._info,
                       },
-                    });
+                    })
                   }
                 }
               : undefined
           }
         />
-      );
+      )
     }
-  }, [amountStr, claim, myAmountStr, onOpen, _info, differenceStatus]);
-  return <Box>{viewItem}</Box>;
-};
+  }, [amountStr, claim, myAmountStr, onOpen, _info, differenceStatus])
+  return <Box>{viewItem}</Box>
+}
 
 const BlindBoxDetailBoxStyle = styled(Box)`
   background: var(--color-box);
@@ -1601,7 +1472,7 @@ const BlindBoxDetailBoxStyle = styled(Box)`
       text-decoration: underline;
     }
   }
-`;
+`
 
 export const RedPacketBlindBoxDetail = ({
   sender,
@@ -1639,131 +1510,112 @@ export const RedPacketBlindBoxDetail = ({
   onClickClaimPopViewDetail,
   expired,
   isTokenBlindbox,
-  remainGiftsAmount
+  remainGiftsAmount,
 }: RedPacketBlindBoxDetailProps) => {
-  const { t } = useTranslation("common");
-  const theme = useTheme();
+  const { t } = useTranslation('common')
+  const theme = useTheme()
   const emptyImg =
-    theme.mode === "dark"
-      ? SoursURL + "images/redpackBlind1.webp"
-      : SoursURL + "images/redpackBlind2.webp";
+    theme.mode === 'dark'
+      ? SoursURL + 'images/redpackBlind1.webp'
+      : SoursURL + 'images/redpackBlind2.webp'
 
   const pageNation = totalClaimedNFTsCount - RedPacketNFTDetailLimit > 0 && (
-    <Box width={"100%"}>
+    <Box width={'100%'}>
       <TablePagination
         page={page}
         pageSize={RedPacketNFTDetailLimit}
         total={totalClaimedNFTsCount}
         onPageChange={(_page) => {
-          handlePageChange(_page);
+          handlePageChange(_page)
         }}
-        size={"small"}
+        size={'small'}
       />
     </Box>
-  );
-  const pageNationBlindBox = totalBlindboxCount - RedPacketBlindBoxLimit >
-    0 && (
+  )
+  const pageNationBlindBox = totalBlindboxCount - RedPacketBlindBoxLimit > 0 && (
     <TablePagination
       page={pageForBlindbox}
       pageSize={RedPacketBlindBoxLimit}
       total={totalBlindboxCount}
       onPageChange={(_page) => {
-        handlePageChange_BlindBox(_page);
+        handlePageChange_BlindBox(_page)
       }}
-      size={"small"}
+      size={'small'}
     />
-  );
-  
+  )
+
   const LooteryModal = (
     <Modal open={showOpenLottery === true} onClose={onCloseOpenModal}>
       <>
-        <Box
-          height={"100%"}
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
+        <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
           <Box
             padding={5}
-            bgcolor={"var(--color-box)"}
-            width={"var(--modal-width)"}
+            bgcolor={'var(--color-box)'}
+            width={'var(--modal-width)'}
             borderRadius={1}
-            display={"flex"}
-            alignItems={"center"}
-            flexDirection={"column"}
-            position={"relative"}
+            display={'flex'}
+            alignItems={'center'}
+            flexDirection={'column'}
+            position={'relative'}
           >
             {/* <Box></Box> */}
-            <ModalCloseButtonPosition
-              right={2}
-              top={2}
-              t={t}
-              onClose={onCloseOpenModal!}
-            />
-            <Typography marginBottom={3} variant={"h3"}>
-              {wonPrizeInfo
-                ? t("labelBlindBoxCongratulations")
-                : t("labelBlindBoxSorry")}
+            <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onCloseOpenModal!} />
+            <Typography marginBottom={3} variant={'h3'}>
+              {wonPrizeInfo ? t('labelBlindBoxCongratulations') : t('labelBlindBoxSorry')}
             </Typography>
-            {wonPrizeInfo
-              ? (
-                wonPrizeInfo.isNFT ? (
-                  <>
-                    <Typography variant={"h5"}>
-                      {wonPrizeInfo.name}{" "}
-                    </Typography>
-                    <img width={"40%"} alt={""} src={wonPrizeInfo.url} />
-                  </>
-                )
-                  : (
-                    <>
-                    <Box marginTop={3}/>
-                    <CoinIcon symbol={wonPrizeInfo.tokenName} size={48}/>
-                      {/* <img width={6} alt={""} src={wonPrizeInfo.tokenURL} /> */}
-                      <Typography marginTop={2} marginBottom={3} variant={"h2"}>
-                        {wonPrizeInfo.amountStr}
-                      </Typography>
-                      <Typography width={`${25 * theme.unit}px`} textAlign={"center"} variant={"body2"}>{t('labelBlindBoxClaimHint')}</Typography>
-                    </>
-                  )
-              )
-              : (
+            {wonPrizeInfo ? (
+              wonPrizeInfo.isNFT ? (
                 <>
-                  <Typography variant={"h5"}>
-                    {t("labelBlindBoxNoRewards") + " "}
+                  <Typography variant={'h5'}>{wonPrizeInfo.name} </Typography>
+                  <img width={'40%'} alt={''} src={wonPrizeInfo.url} />
+                </>
+              ) : (
+                <>
+                  <Box marginTop={3} />
+                  <CoinIcon symbol={wonPrizeInfo.tokenName} size={48} />
+                  {/* <img width={6} alt={""} src={wonPrizeInfo.tokenURL} /> */}
+                  <Typography marginTop={2} marginBottom={3} variant={'h2'}>
+                    {wonPrizeInfo.amountStr}
                   </Typography>
-                  <img src={emptyImg} alt={""} />
+                  <Typography width={`${25 * theme.unit}px`} textAlign={'center'} variant={'body2'}>
+                    {t('labelBlindBoxClaimHint')}
+                  </Typography>
                 </>
               )
-            }
+            ) : (
+              <>
+                <Typography variant={'h5'}>{t('labelBlindBoxNoRewards') + ' '}</Typography>
+                <img src={emptyImg} alt={''} />
+              </>
+            )}
             <Link
               marginBottom={3}
               onClick={onClickClaimPopViewDetail}
-              variant={"body1"}
+              variant={'body1'}
               color={theme.colorBase.textSecondary}
               marginTop={5}
             >
-              <u>{t("labelLuckyRedPacketDetail")}</u>
+              <u>{t('labelLuckyRedPacketDetail')}</u>
             </Link>
             {/* <Button variant={"contained"} fullWidth onClick={onClickClaim}>
           {t("labelClaimBtn")}
         </Button> */}
             {wonPrizeInfo && wonPrizeInfo.isNFT && (
-              <Button variant={"contained"} fullWidth onClick={onClickClaim2}>
-                {t("labelClaimBtn")}
+              <Button variant={'contained'} fullWidth onClick={onClickClaim2}>
+                {t('labelClaimBtn')}
               </Button>
             )}
           </Box>
         </Box>
       </>
     </Modal>
-  );
+  )
 
   if (
-    type === "Lottery Started and Not Win Lottery" ||
-    type === "Lottery Started and Win Lottery"
+    type === 'Lottery Started and Not Win Lottery' ||
+    type === 'Lottery Started and Win Lottery'
   ) {
-    return LooteryModal;
+    return LooteryModal
   }
 
   return (
@@ -1771,120 +1623,101 @@ export const RedPacketBlindBoxDetail = ({
       flex={1}
       width={RedPacketSize.large.width}
       height={RedPacketSize.large.height}
-      display={"flex"}
+      display={'flex'}
       paddingBottom={1}
-      flexDirection={"column"}
-      overflow={"scroll"}
+      flexDirection={'column'}
+      overflow={'scroll'}
     >
       {LooteryModal}
 
       <Box
-        className={"top"}
-        width={"100%"}
+        className={'top'}
+        width={'100%'}
         sx={{
           background: RedPacketColorConfig.default.startColor,
-          height: "88px",
+          height: '88px',
         }}
-        display={"flex"}
-        alignItems={"center"}
-        justifyContent={"space-between"}
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'space-between'}
       >
-        <Box flex={"1 1 0"}>
-          {type === "BlindBox Claime Detail" && (
-            <IconButton
-              onClick={onClickClaimDetailBack!}
-              sx={{ marginLeft: 3 }}
-            >
+        <Box flex={'1 1 0'}>
+          {type === 'BlindBox Claime Detail' && (
+            <IconButton onClick={onClickClaimDetailBack!} sx={{ marginLeft: 3 }}>
               <BackIcon htmlColor={RedPacketColorConfig.default.fontColor} />
             </IconButton>
           )}
         </Box>
         <Typography
-          flex={"3 1 0"}
-          variant={"body1"}
+          flex={'3 1 0'}
+          variant={'body1'}
           color={RedPacketColorConfig.default.fontColor}
-          textAlign={"center"}
+          textAlign={'center'}
         >
-          {isTokenBlindbox ? t("labelToken") : t("labelRedPacketMarketNFT")}/{t("labelLuckyBlindBox")}
+          {isTokenBlindbox ? t('labelToken') : t('labelRedPacketMarketNFT')}/
+          {t('labelLuckyBlindBox')}
         </Typography>
-        <Box flex={"1 1 0"} />
+        <Box flex={'1 1 0'} />
       </Box>
 
-      {type === "BlindBox Claime Detail" ? (
+      {type === 'BlindBox Claime Detail' ? (
         <Box
           flex={1}
-          display={"flex"}
-          justifyContent={"stretch"}
-          flexDirection={"column"}
-          width={"100%"}
+          display={'flex'}
+          justifyContent={'stretch'}
+          flexDirection={'column'}
+          width={'100%'}
           paddingX={1}
           marginTop={3}
         >
-          <Typography
-            variant={"body1"}
-            color={"textThird"}
-            marginY={1}
-            paddingX={1}
-          >
-            {t("labelLuckyRecievedBlindBox", {
+          <Typography variant={'body1'} color={'textThird'} marginY={1} paddingX={1}>
+            {t('labelLuckyRecievedBlindBox', {
               opendBlindBoxAmount,
               totalBlindBoxAmount,
             })}
             {/* Received Blind Box {opendBlindBoxAmount}/{totalBlindBoxAmount} */}
           </Typography>
 
-          <Box flex={1} overflow={"scroll"}>
+          <Box flex={1} overflow={'scroll'}>
             {BlindBoxClaimList &&
               BlindBoxClaimList.map((info) => {
                 return (
                   <BoxClaim
-                    className={"claim"}
-                    display={"flex"}
-                    justifyContent={"stretch"}
-                    flexDirection={"column"}
+                    className={'claim'}
+                    display={'flex'}
+                    justifyContent={'stretch'}
+                    flexDirection={'column'}
                     paddingY={1}
                     paddingX={1}
                   >
                     <Typography
-                      component={"span"}
-                      display={"inline-flex"}
-                      flexDirection={"row"}
-                      justifyContent={"space-between"}
-                      alignItems={"center"}
+                      component={'span'}
+                      display={'inline-flex'}
+                      flexDirection={'row'}
+                      justifyContent={'space-between'}
+                      alignItems={'center'}
                     >
-                      <Typography
-                        variant={"body1"}
-                        component={"span"}
-                        color={"textPrimary"}
-                      >
+                      <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
                         {info.who}
-                        {info.isMe ? ` (${t("labelRedPacketMe")})` : ""}
+                        {info.isMe ? ` (${t('labelRedPacketMe')})` : ''}
                       </Typography>
-                      <Typography
-                        variant={"body1"}
-                        component={"span"}
-                        color={"textPrimary"}
-                      >
+                      <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
                         x 1
                       </Typography>
                     </Typography>
                     <Typography
-                      component={"span"}
-                      display={"inline-flex"}
-                      flexDirection={"row"}
-                      justifyContent={"space-between"}
-                      alignItems={"center"}
+                      component={'span'}
+                      display={'inline-flex'}
+                      flexDirection={'row'}
+                      justifyContent={'space-between'}
+                      alignItems={'center'}
                     >
-                      <Typography
-                        variant={"body2"}
-                        component={"span"}
-                        color={"textThird"}
-                      >
+                      <Typography variant={'body2'} component={'span'} color={'textThird'}>
                         {moment(info.when).fromNow()}
                       </Typography>
                     </Typography>
                   </BoxClaim>
-                );
+                )
               })}
             {pageNationBlindBox}
           </Box>
@@ -1892,199 +1725,207 @@ export const RedPacketBlindBoxDetail = ({
       ) : (
         <Box
           paddingBottom={2}
-          display={"flex"}
-          flexDirection={"column"}
+          display={'flex'}
+          flexDirection={'column'}
           paddingX={1}
-          justifyContent={"space-between"}
-          height={"100%"}
+          justifyContent={'space-between'}
+          height={'100%'}
         >
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-            marginY={2}
-          >
-            <Typography variant={"body1"}>{sender}</Typography>
+          <Box display={'flex'} flexDirection={'column'} alignItems={'center'} marginY={2}>
+            <Typography variant={'body1'}>{sender}</Typography>
             <Typography
-              variant={"body2"}
-              color={"textThird"}
-              whiteSpace={"pre-line"}
-              textAlign={"center"}
+              variant={'body2'}
+              color={'textThird'}
+              whiteSpace={'pre-line'}
+              textAlign={'center'}
               marginTop={1 / 2}
-              overflow={"hidden"}
-              textOverflow={"ellipsis"}
+              overflow={'hidden'}
+              textOverflow={'ellipsis'}
               paddingX={4}
               sx={{
-                wordBreak: "break-all",
-                display: "-webkit-box",
-                "-webkit-line-clamp": "2",
-                lineClamp: "2",
-                "-webkit-box-orient": "vertical",
+                wordBreak: 'break-all',
+                display: '-webkit-box',
+                '-webkit-line-clamp': '2',
+                lineClamp: '2',
+                '-webkit-box-orient': 'vertical',
               }}
-              dangerouslySetInnerHTML={{ __html: sanitize(memo ?? "") }}
+              dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
             />
-            {!isTokenBlindbox && <Box marginY={1} width={"60%"}>
-              {NFTURL ? (
-                <img style={{ width: "100%" }} alt={""} src={NFTURL} />
-              ) : (
-                <img
-                  alt={""}
-                  style={{ width: "100%" }}
-                  src={SoursURL + "images/redpackBlind3.webp"}
-                />
-              )}
-            </Box>}
-            {isTokenBlindbox && (type === "Blind Box Started" || type === "Not Started") && <Box marginY={1} width={"60%"}>
-              <img
-                alt={""}
-                style={{ width: "100%" }}
-                src={SoursURL + "images/redpackBlind3.webp"}
-              />
-            </Box>}
-            {type === "Blind Box Started" && didClaimABlindBox && (
-              <Typography>
-                {t("labelBlindBoxCongratulationsBlindBox")}
-              </Typography>
-            )}
-              {type === "Lottery Started" && (
-                wonInfo.isNFT ? (
-                  wonInfo.participated
-                    ? (
-                      wonInfo.won 
-                        ? <Typography>{`${wonInfo.amount} NFTs`}</Typography>
-                        : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>
-                    )
-                    : <Typography color={"var(--color-error)"}>
-                      {EmptyValueTag}
-                    </Typography>
+            {!isTokenBlindbox && (
+              <Box marginY={1} width={'60%'}>
+                {NFTURL ? (
+                  <img style={{ width: '100%' }} alt={''} src={NFTURL} />
                 ) : (
-                  <>
-                    <Typography marginTop={3} variant={"h2"} color={RedPacketColorConfig.default.colorTop}>
-                      {wonInfo.participated
-                        ? (wonInfo.won
-                          ? `${wonInfo.amount} ${wonInfo.symbol}`
-                          : <Typography color={"var(--color-error)"}>{t("labelBlindBoxSorryBlindBox")}</Typography>)
-                        : <Typography>
-                          {EmptyValueTag}
-                        </Typography>
-                      }
+                  <img
+                    alt={''}
+                    style={{ width: '100%' }}
+                    src={SoursURL + 'images/redpackBlind3.webp'}
+                  />
+                )}
+              </Box>
+            )}
+            {isTokenBlindbox && (type === 'Blind Box Started' || type === 'Not Started') && (
+              <Box marginY={1} width={'60%'}>
+                <img
+                  alt={''}
+                  style={{ width: '100%' }}
+                  src={SoursURL + 'images/redpackBlind3.webp'}
+                />
+              </Box>
+            )}
+            {type === 'Blind Box Started' && didClaimABlindBox && (
+              <Typography>{t('labelBlindBoxCongratulationsBlindBox')}</Typography>
+            )}
+            {type === 'Lottery Started' &&
+              (wonInfo.isNFT ? (
+                wonInfo.participated ? (
+                  wonInfo.won ? (
+                    <Typography>{`${wonInfo.amount} NFTs`}</Typography>
+                  ) : (
+                    <Typography color={'var(--color-error)'}>
+                      {t('labelBlindBoxSorryBlindBox')}
                     </Typography>
-                    <Typography variant={"h4"} color={RedPacketColorConfig.default.colorTop}>{t("labelRedpacketTotalReward", {amount: `${wonInfo.total} ${wonInfo.symbol}`})} </Typography>
-                  </>
+                  )
+                ) : (
+                  <Typography color={'var(--color-error)'}>{EmptyValueTag}</Typography>
                 )
-              )}
+              ) : (
+                <>
+                  <Typography
+                    marginTop={3}
+                    variant={'h2'}
+                    color={RedPacketColorConfig.default.colorTop}
+                  >
+                    {wonInfo.participated ? (
+                      wonInfo.won ? (
+                        `${wonInfo.amount} ${wonInfo.symbol}`
+                      ) : (
+                        <Typography color={'var(--color-error)'}>
+                          {t('labelBlindBoxSorryBlindBox')}
+                        </Typography>
+                      )
+                    ) : (
+                      <Typography>{EmptyValueTag}</Typography>
+                    )}
+                  </Typography>
+                  <Typography variant={'h4'} color={RedPacketColorConfig.default.colorTop}>
+                    {t('labelRedpacketTotalReward', {
+                      amount: `${wonInfo.total} ${wonInfo.symbol}`,
+                    })}{' '}
+                  </Typography>
+                </>
+              ))}
             <Typography
-              variant={"body2"}
+              variant={'body2'}
               color={theme.colorBase.textSecondary}
               marginTop={1}
-              textAlign={"center"}
+              textAlign={'center'}
             >
               {description}
             </Typography>
-            {type !== "Lottery Started" && <>
-              <Typography
-                variant={"body2"}
-                color={theme.colorBase.textSecondary}
-                // color={RedPacketColorConfig.default.fontColor}
-                marginTop={1}
-                textAlign={"center"}
-              >
-                {t("labelBlindBoxExplaination2", {
-                  opendBlindBoxAmount,
-                  totalBlindBoxAmount,
-                  // deliverdGiftsAmount,
-                  // totalGiftsAmount,
-                  remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
-                })}
-                {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
-              </Typography>
-              <Typography
-                variant={"body2"}
-                color={theme.colorBase.textSecondary}
-                // color={RedPacketColorConfig.default.fontColor}
-                marginTop={1}
-                textAlign={"center"}
-              >
-                {t("labelBlindBoxExplaination3", {  
-                  remainingGiftsAmount: remainGiftsAmount
-                })}
-              </Typography>
-            </>
-            }
-            
-            <Box>
-              {type === "Not Started" && (
+            {type !== 'Lottery Started' && (
+              <>
                 <Typography
-                  variant={"body2"}
+                  variant={'body2'}
+                  color={theme.colorBase.textSecondary}
+                  // color={RedPacketColorConfig.default.fontColor}
+                  marginTop={1}
+                  textAlign={'center'}
+                >
+                  {t('labelBlindBoxExplaination2', {
+                    opendBlindBoxAmount,
+                    totalBlindBoxAmount,
+                    // deliverdGiftsAmount,
+                    // totalGiftsAmount,
+                    remainingGiftsAmount: totalGiftsAmount - deliverdGiftsAmount,
+                  })}
+                  {/* {opendBlindBoxAmount} out of {totalBlindBoxAmount} blind boxes have been opened; {deliverdGiftsAmount} out of {totalGiftsAmount} gifts delivered. */}
+                </Typography>
+                <Typography
+                  variant={'body2'}
+                  color={theme.colorBase.textSecondary}
+                  // color={RedPacketColorConfig.default.fontColor}
+                  marginTop={1}
+                  textAlign={'center'}
+                >
+                  {t('labelBlindBoxExplaination3', {
+                    remainingGiftsAmount: remainGiftsAmount,
+                  })}
+                </Typography>
+              </>
+            )}
+
+            <Box>
+              {type === 'Not Started' && (
+                <Typography
+                  variant={'body2'}
                   color={theme.colorBase.warning}
                   marginTop={1}
-                  textAlign={"center"}
+                  textAlign={'center'}
                 >
-                  {t("labelBlindBoxNotStarted", {
-                    time: moment(blindBoxStartTime).format(
-                      YEAR_DAY_MINUTE_FORMAT
-                    ),
+                  {t('labelBlindBoxNotStarted', {
+                    time: moment(blindBoxStartTime).format(YEAR_DAY_MINUTE_FORMAT),
                     interpolation: {
                       escapeValue: false,
                     },
                   })}
                 </Typography>
               )}
-              {(type === "Not Started" || type === "Blind Box Started") && (
+              {(type === 'Not Started' || type === 'Blind Box Started') && (
                 <Typography
-                  variant={"body2"}
+                  variant={'body2'}
                   color={
-                    type === "Blind Box Started"
+                    type === 'Blind Box Started'
                       ? theme.colorBase.warning
                       : theme.colorBase.textSecondary
                   }
                   marginTop={1}
-                  textAlign={"center"}
+                  textAlign={'center'}
                 >
-                  {t("labelBlindBoxStarted", {
-                    time: moment(lotteryStartTime).format(
-                      YEAR_DAY_MINUTE_FORMAT
-                    ),
+                  {t('labelBlindBoxStarted', {
+                    time: moment(lotteryStartTime).format(YEAR_DAY_MINUTE_FORMAT),
                     interpolation: {
                       escapeValue: false,
                     },
                   })}
                 </Typography>
               )}
-              {(type === "Not Started" || type === "Blind Box Started") && isTokenBlindbox && <Typography
-                variant={"body2"}
-                color={
-                  theme.colorBase.textSecondary
-                }
-                marginTop={1}
-                textAlign={"center"}
-              >
-                {t("labelBlindBoxTokenHint", {
-                  time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
-                  interpolation: {
-                    escapeValue: false,
-                  },
-                })}
-              </Typography>}
-              {!isTokenBlindbox && <Typography
-                variant={"body2"}
-                color={
-                  type !== "Blind Box Started" && type !== "Not Started"
-                    ? expired
-                      ? theme.colorBase.textDisable
-                      : theme.colorBase.warning
-                    : theme.colorBase.textSecondary
-                }
-                marginTop={1}
-                textAlign={"center"}
-              >
-                {t("labelBlindBoxClaimStarted", {
-                  time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
-                  interpolation: {
-                    escapeValue: false,
-                  },
-                })}
-              </Typography>}
+              {(type === 'Not Started' || type === 'Blind Box Started') && isTokenBlindbox && (
+                <Typography
+                  variant={'body2'}
+                  color={theme.colorBase.textSecondary}
+                  marginTop={1}
+                  textAlign={'center'}
+                >
+                  {t('labelBlindBoxTokenHint', {
+                    time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    },
+                  })}
+                </Typography>
+              )}
+              {!isTokenBlindbox && (
+                <Typography
+                  variant={'body2'}
+                  color={
+                    type !== 'Blind Box Started' && type !== 'Not Started'
+                      ? expired
+                        ? theme.colorBase.textDisable
+                        : theme.colorBase.warning
+                      : theme.colorBase.textSecondary
+                  }
+                  marginTop={1}
+                  textAlign={'center'}
+                >
+                  {t('labelBlindBoxClaimStarted', {
+                    time: moment(lotteryEndTime).format(YEAR_DAY_MINUTE_FORMAT),
+                    interpolation: {
+                      escapeValue: false,
+                    },
+                  })}
+                </Typography>
+              )}
             </Box>
             {/* <Typography
               variant={"body2"}
@@ -2117,144 +1958,132 @@ export const RedPacketBlindBoxDetail = ({
                     }
                   })}
             </Typography> */}
-            {(type === "Blind Box Started" || type === "Lottery Started") && (
+            {(type === 'Blind Box Started' || type === 'Lottery Started') && (
               <Link
-                className={"viewDetail"}
-                whiteSpace={"pre-line"}
-                color={"inherit"}
-                variant={"body1"}
+                className={'viewDetail'}
+                whiteSpace={'pre-line'}
+                color={'inherit'}
+                variant={'body1'}
                 onClick={(e) => {
-                  e.stopPropagation();
-                  onClickViewDetail!();
+                  e.stopPropagation()
+                  onClickViewDetail!()
                 }}
               >
-                {t("labelLuckyRedPacketDetail")}
+                {t('labelLuckyRedPacketDetail')}
               </Link>
             )}
-            {type === "Lottery Started" && (
+            {type === 'Lottery Started' && (
               <>
                 <Divider
-                  orientation={"horizontal"}
+                  orientation={'horizontal'}
                   sx={{
                     borderWidth: 3,
-                    width: "120%",
+                    width: '120%',
                     marginY: 1,
                     marginX: -2,
                   }}
                 />
                 <Box
                   flex={1}
-                  display={"flex"}
-                  justifyContent={"stretch"}
-                  flexDirection={"column"}
-                  width={"100%"}
+                  display={'flex'}
+                  justifyContent={'stretch'}
+                  flexDirection={'column'}
+                  width={'100%'}
                 >
-                  <Typography
-                    variant={"body1"}
-                    color={"textThird"}
-                    marginY={1}
-                    paddingX={1}
-                  >
+                  <Typography variant={'body1'} color={'textThird'} marginY={1} paddingX={1}>
                     {isTokenBlindbox
-                      ? t("labelBlindBoxRecieved", {
-                        deliverdGiftsAmount,
-                        totalGiftsAmount,
-                      })
-                      : t("labelBlindBoxRecievedNFT", {
-                        deliverdGiftsAmount,
-                        totalGiftsAmount,
-                      })
-                    }
+                      ? t('labelBlindBoxRecieved', {
+                          deliverdGiftsAmount,
+                          totalGiftsAmount,
+                        })
+                      : t('labelBlindBoxRecievedNFT', {
+                          deliverdGiftsAmount,
+                          totalGiftsAmount,
+                        })}
                   </Typography>
 
-                  <Box flex={1} overflow={"scroll"}>
+                  <Box flex={1} overflow={'scroll'}>
                     {NFTClaimList &&
                       NFTClaimList.map((info) => {
                         return (
                           <BoxClaim
-                            className={"claim"}
-                            display={"flex"}
-                            justifyContent={"stretch"}
-                            flexDirection={"column"}
+                            className={'claim'}
+                            display={'flex'}
+                            justifyContent={'stretch'}
+                            flexDirection={'column'}
                             paddingY={1}
                             paddingX={1}
                           >
                             <Typography
-                              component={"span"}
-                              display={"inline-flex"}
-                              flexDirection={"row"}
-                              justifyContent={"space-between"}
-                              alignItems={"center"}
+                              component={'span'}
+                              display={'inline-flex'}
+                              flexDirection={'row'}
+                              justifyContent={'space-between'}
+                              alignItems={'center'}
                             >
                               <Typography
-                                component={"span"}
-                                display={"inline-flex"}
-                                flexDirection={"row"}
-                                justifyContent={"space-between"}
-                                alignItems={"center"}
+                                component={'span'}
+                                display={'inline-flex'}
+                                flexDirection={'row'}
+                                justifyContent={'space-between'}
+                                alignItems={'center'}
                               >
                                 <Typography
-                                  variant={"body1"}
-                                  component={"span"}
-                                  color={"textPrimary"}
+                                  variant={'body1'}
+                                  component={'span'}
+                                  color={'textPrimary'}
                                 >
                                   {info.who}
-                                  {info.isMe
-                                    ? ` (${t("labelRedPacketMe")})`
-                                    : ""}
+                                  {info.isMe ? ` (${t('labelRedPacketMe')})` : ''}
                                 </Typography>
                               </Typography>
                               <Typography
-                                component={"span"}
-                                display={"inline-flex"}
-                                flexDirection={"row"}
-                                justifyContent={"space-between"}
-                                alignItems={"center"}
+                                component={'span'}
+                                display={'inline-flex'}
+                                flexDirection={'row'}
+                                justifyContent={'space-between'}
+                                alignItems={'center'}
                               >
                                 <Typography
-                                  variant={"body2"}
-                                  component={"span"}
-                                  color={"textPrimary"}
+                                  variant={'body2'}
+                                  component={'span'}
+                                  color={'textPrimary'}
                                 >
-                                  {info.showMultiplier && "x"} {info.amount}
+                                  {info.showMultiplier && 'x'} {info.amount}
                                 </Typography>
                               </Typography>
                             </Typography>
                             <Typography
-                              component={"span"}
-                              display={"inline-flex"}
-                              flexDirection={"row"}
-                              justifyContent={"space-between"}
-                              alignItems={"center"}
+                              component={'span'}
+                              display={'inline-flex'}
+                              flexDirection={'row'}
+                              justifyContent={'space-between'}
+                              alignItems={'center'}
                             >
-                              <Typography
-                                variant={"body2"}
-                                component={"span"}
-                                color={"textThird"}
-                              >
+                              <Typography variant={'body2'} component={'span'} color={'textThird'}>
                                 {moment(info.when).fromNow()}
                               </Typography>
-                              <Typography display={"inline"}>
+                              <Typography display={'inline'}>
                                 {info.showLuckiest && (
                                   <Typography
-                                    component={"span"}
-                                    color={"var(--color-warning)"}
-                                    display={"inline-flex"}
-                                    alignItems={"center"}
-                                    variant={"body2"}
+                                    component={'span'}
+                                    color={'var(--color-warning)'}
+                                    display={'inline-flex'}
+                                    alignItems={'center'}
+                                    variant={'body2'}
                                     marginLeft={1}
                                   >
                                     <FirstPlaceIcon
-                                      fontSize={"medium"}
+                                      fontSize={'medium'}
                                       sx={{ paddingRight: 1 / 2 }}
                                     />
-                                    {t("labelLuckDraw")}
+                                    {t('labelLuckDraw')}
                                   </Typography>
                                 )}
                               </Typography>
                             </Typography>
                           </BoxClaim>
-                        );
+                        )
                       })}
                   </Box>
                   {pageNation}
@@ -2264,38 +2093,37 @@ export const RedPacketBlindBoxDetail = ({
           </Box>
           {/* {(type === "Not Started" || type === "Blind Box Started") && ( */}
           <Box marginBottom={1}>
-            {shareButton === "share" && (
+            {shareButton === 'share' && (
               <Button
-                variant={"contained"}
-                color={"error"}
+                variant={'contained'}
+                color={'error'}
                 sx={{
                   backgroundColor: RedPacketColorConfig.default.colorTop as any,
-                  "&:hover": {
-                    backgroundColor: RedPacketColorConfig.default
-                      .colorTop as any,
+                  '&:hover': {
+                    backgroundColor: RedPacketColorConfig.default.colorTop as any,
                   },
                 }}
                 fullWidth={true}
                 onClick={onShared}
               >
-                {t("labelRedPacketGrab")}
+                {t('labelRedPacketGrab')}
               </Button>
             )}
-            {claimButton === "claim" ? (
-              <Button variant={"contained"} fullWidth onClick={onClickClaim}>
-                {t("labelClaimBtn")}
+            {claimButton === 'claim' ? (
+              <Button variant={'contained'} fullWidth onClick={onClickClaim}>
+                {t('labelClaimBtn')}
               </Button>
-            ) : claimButton === "claimed" ? (
-              <Button disabled variant={"contained"} fullWidth>
-                {t("labelClaimBtnClaimed")}
+            ) : claimButton === 'claimed' ? (
+              <Button disabled variant={'contained'} fullWidth>
+                {t('labelClaimBtnClaimed')}
               </Button>
-            ) : claimButton === "expired" ? (
-              <Button disabled variant={"contained"} fullWidth>
-                {t("Expired")}
+            ) : claimButton === 'expired' ? (
+              <Button disabled variant={'contained'} fullWidth>
+                {t('Expired')}
               </Button>
-            ) : claimButton === "ended" ? (
-              <Button disabled variant={"contained"} fullWidth>
-                {t("labelRedPacketStatusEnded")}
+            ) : claimButton === 'ended' ? (
+              <Button disabled variant={'contained'} fullWidth>
+                {t('labelRedPacketStatusEnded')}
               </Button>
             ) : undefined}
           </Box>
@@ -2303,5 +2131,5 @@ export const RedPacketBlindBoxDetail = ({
         </Box>
       )}
     </BlindBoxDetailBoxStyle>
-  );
-};
+  )
+}
