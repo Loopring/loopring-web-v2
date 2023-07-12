@@ -38,7 +38,7 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
   }
 ` as (props: StyledProps & BoxProps) => JSX.Element
 
-export const MarketBlock = ;<C extends CoinKey<I>, I>({
+export const MarketBlock = <C extends CoinKey<I>, I>({
   coinAInfo,
   t,
   coinBInfo,
