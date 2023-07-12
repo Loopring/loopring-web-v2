@@ -6,6 +6,7 @@ import {
   DefaultFeeBips,
   getPriceImpactInfo,
   getTimestampDaysLater,
+  isTradePairMarket,
   LoopringAPI,
   makeWalletLayer2,
   MAPFEEBIPS,
@@ -998,7 +999,7 @@ export const useSwap = <
       const { amountMap } = store.getState().amountMap
       let calcForMinAmt, calcForMinCost, calcForPriceImpact
       myLog('hookSwap:reCalculateDataWhenValueChange', tradeData, _tradePair, type)
-      if (depth && market && _tradePair === tradePair && _tradeData) {
+      if (depth && market && _tradePair && isTradePairMarket(_tradePair, market) && _tradeData) {
         const coinA = _tradeData.sell.belong
         const coinB = _tradeData.buy.belong
         _tradeData.sell.balance = walletMap ? walletMap[coinA]?.count : 0

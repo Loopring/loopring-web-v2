@@ -879,9 +879,7 @@ export const useBtradeSwap = <
       const {
         tradeBtrade: { depth, tradePair, btradeType: _btradeType },
       } = store.getState()._router_tradeBtrade
-
-      const walletMap = tradeCalcData?.walletMap as WalletMap<any>
-
+      const walletMap = makeWalletLayer2(true).walletMap
       myLog('useBtradeSwap:reCalculateDataWhenValueChange', tradeData, _tradePair, type)
       if (
         depth &&
