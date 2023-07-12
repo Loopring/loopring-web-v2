@@ -237,9 +237,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             onClick={() => {
 
               if (market === 'RETH-ETH') {
-                setShowRETHStakignPopup(true);
+                setShowRETHStakignPopup({show: true, confirmationNeeded: false});
               } else if (market === 'WSTETH-ETH'){
-                setShowWSTETHStakignPopup(true);
+                setShowWSTETHStakignPopup({show: true, confirmationNeeded: false});
               }
             }}
           />

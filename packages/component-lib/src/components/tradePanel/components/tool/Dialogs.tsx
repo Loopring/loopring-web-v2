@@ -1747,9 +1747,11 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
     open,
     type,
     handleClose,
+    confirmationNeeded
   }: WithTranslation & {
     open: boolean;
     type: "WSETH" | "RETH";
+    confirmationNeeded: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
@@ -1823,6 +1825,20 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
+          {confirmationNeeded && <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelDefiAgree")}
+          />}
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
@@ -1860,6 +1876,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
+            disabled={confirmationNeeded ? !agree : false}
             onClick={(e) => {
               handleClose(e as any, true);
             }}
@@ -2083,8 +2100,10 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
     t,
     open,
     handleClose,
+    confirmationNeeded
   }: WithTranslation & {
     open: boolean;
+    confirmationNeeded: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
@@ -2135,6 +2154,20 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
+          {confirmationNeeded && <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelLRCStakingAgree")}
+          />}
         </DialogContent>
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
@@ -2159,6 +2192,7 @@ export const ConfirmInvestLRCStakeRisk = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
+            disabled={confirmationNeeded ? !agree : false}
             onClick={(e) => {
               handleClose(e as any, true);
             }}

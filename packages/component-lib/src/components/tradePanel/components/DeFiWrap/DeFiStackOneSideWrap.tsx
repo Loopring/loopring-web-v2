@@ -469,7 +469,7 @@ export const DeFiSideWrap = <
             color={"inherit"}
             sx={{ marginLeft: 1, cursor: "pointer" }}
             onClick={() => {
-              setShowLRCStakignPopup(true)
+              setShowLRCStakignPopup({show: true, confirmationNeeded: false})
             }}
           />
 
