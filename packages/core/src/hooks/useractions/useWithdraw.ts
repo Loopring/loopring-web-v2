@@ -73,7 +73,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { withdrawValue, updateWithdrawData, resetWithdrawData } = useModalData()
 
   const [walletMap2, setWalletMap2] = React.useState(
-    makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>),
+    makeWalletLayer2({ needFilterZero: true, _isToL1: true }).walletMap ?? ({} as WalletMap<R>),
   )
 
   const [sureIsAllowAddress, setSureIsAllowAddress] = React.useState<
@@ -279,7 +279,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   }, [withdrawValue.belong])
 
   const walletLayer2Callback = () => {
-    const walletMap = makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>)
+    const walletMap =
+      makeWalletLayer2({ needFilterZero: true, _isToL1: true }).walletMap ?? ({} as WalletMap<R>)
     setWalletMap2(walletMap)
   }
 

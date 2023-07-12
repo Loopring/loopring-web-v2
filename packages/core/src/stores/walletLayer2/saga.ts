@@ -64,7 +64,6 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
 
 export function* getPostsSaga() {
   try {
-    //
     const { walletLayer2 } = yield call(getWalletLayer2Balance)
     yield put(getWalletLayer2Status({ walletLayer2 }))
   } catch (err) {

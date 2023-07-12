@@ -56,7 +56,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   const [knowDisable, setKnowDisable] = React.useState(true)
   const [isAddressContract, setIsAddressContract] = React.useState<undefined | boolean>(undefined)
   const [walletMap, setWalletMap] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>),
+    makeWalletLayer2({ needFilterZero: true, isActive: true }).walletMap ?? ({} as WalletMap<any>),
   )
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState({
     isFeeNotEnough: true,
@@ -77,7 +77,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     }
   }
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? {}
+    const walletMap = makeWalletLayer2({ needFilterZero: true, isActive: true }).walletMap ?? {}
     setWalletMap(walletMap)
     setIsFeeNotEnough((state) => ({
       ...state,

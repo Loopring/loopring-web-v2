@@ -120,7 +120,7 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [walletL2Status, assetsRawData])
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(false)
+    const walletMap = makeWalletLayer2({ needFilterZero: false })
     const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
     const assetsDetailList =
       walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []

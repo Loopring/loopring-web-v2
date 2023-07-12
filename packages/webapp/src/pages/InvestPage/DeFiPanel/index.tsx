@@ -1,20 +1,8 @@
-import React from "react";
-import styled from "@emotion/styled";
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import {
-  useTranslation,
-  WithTranslation,
-  withTranslation,
-} from "react-i18next";
-import { DeFiTradePanel } from "./DeFiTradePanel";
+import React from 'react'
+import styled from '@emotion/styled'
+import { Avatar, Box, Card, CardContent, Grid, Tooltip, Typography } from '@mui/material'
+import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
+import { DeFiTradePanel } from './DeFiTradePanel'
 import {
   boxLiner,
   Button,
@@ -24,15 +12,9 @@ import {
   LoadingBlock,
   ConfirmInvestDefiRisk,
   ToastType,
-} from "@loopring-web/component-lib";
-import {
-  confirmation,
-  useDefiMap,
-  useNotify,
-  usePopup,
-  useToast,
-} from "@loopring-web/core";
-import { useHistory, useRouteMatch } from "react-router-dom";
+} from '@loopring-web/component-lib'
+import { confirmation, useDefiMap, useNotify, usePopup, useToast } from '@loopring-web/core'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
   defiRETHAdvice,
@@ -41,7 +23,7 @@ import {
   MarketType,
   TOAST_TIME,
   UpColor,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 
 export const StyleWrapper = styled(Box)`
   position: relative;
@@ -56,7 +38,7 @@ export const StyleWrapper = styled(Box)`
   }
 
   border-radius: ${({ theme }) => theme.unit}px;
-` as typeof Grid;
+` as typeof Grid
 export const StyleCardContent = styled(CardContent)`
   display: flex;
 
@@ -87,33 +69,32 @@ export const StyleCardContent = styled(CardContent)`
 
   &.isMobile {
     flex: 1;
+
     .content {
       flex-direction: row;
       width: 100%;
+
       .des {
         margin-left: ${({ theme }) => 2 * theme.unit}px;
         align-items: flex-start;
       }
     }
   }
-` as typeof CardContent;
+` as typeof CardContent
 
 const LandDefiInvest = ({
   setConfirmedDefiInvest,
 }: {
-  setConfirmedDefiInvest: (props: {
-    isShow: boolean;
-    type: "RETH" | "WSETH";
-  }) => void;
+  setConfirmedDefiInvest: (props: { isShow: boolean; type: 'RETH' | 'WSETH' }) => void
 }) => {
-  const history = useHistory();
-  const { notifyMap } = useNotify();
-  const { marketMap: defiMarketMap } = useDefiMap();
-  const { t } = useTranslation("common");
-  const { isMobile, upColor } = useSettings();
+  const history = useHistory()
+  const { notifyMap } = useNotify()
+  const { marketMap: defiMarketMap } = useDefiMap()
+  const { t } = useTranslation('common')
+  const { isMobile, upColor } = useSettings()
   const {
     confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
-  } = confirmation.useConfirmation();
+  } = confirmation.useConfirmation()
   // const {
   //   confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
   //   confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
@@ -125,127 +106,114 @@ const LandDefiInvest = ({
       ...(notifyMap?.invest?.STAKE ? notifyMap?.invest?.STAKE[0] : {}),
       click: () => {
         if (!confirmedWSETHDefiInvest) {
-          setConfirmedDefiInvest({ isShow: true, type: "WSETH" });
+          setConfirmedDefiInvest({ isShow: true, type: 'WSETH' })
         } else {
-          history.push(defiWSTETHAdvice.router);
+          history.push(defiWSTETHAdvice.router)
         }
       },
-      apy: defiMarketMap[defiWSTETHAdvice?.market ?? ""]?.apy,
+      apy: defiMarketMap[defiWSTETHAdvice?.market ?? '']?.apy,
     },
     {
       ...defiRETHAdvice,
       ...(notifyMap?.invest?.STAKE ? notifyMap?.invest?.STAKE[1] : {}),
       click: () => {
         if (!confirmedRETHDefiInvest) {
-          setConfirmedDefiInvest({ isShow: true, type: "RETH" });
+          setConfirmedDefiInvest({ isShow: true, type: 'RETH' })
         } else {
-          history.push(defiRETHAdvice.router);
+          history.push(defiRETHAdvice.router)
         }
       },
-      apy: defiMarketMap[defiRETHAdvice?.market ?? ""]?.apy,
+      apy: defiMarketMap[defiRETHAdvice?.market ?? '']?.apy,
     },
-  ];
+  ]
 
   return (
-    <Box flex={1} display={"flex"} alignItems={"center"} alignSelf={"stretch"}>
-      <Grid
-        container
-        spacing={isMobile ? 2 : 4}
-        padding={3}
-        flex={1}
-        justifyContent={"center"}
-      >
+    <Box flex={1} display={'flex'} alignItems={'center'} alignSelf={'stretch'}>
+      <Grid container spacing={isMobile ? 2 : 4} padding={3} flex={1} justifyContent={'center'}>
         {investAdviceList.map((item, index) => {
           return (
             <React.Fragment key={item.type + index}>
               {item.enable ? (
                 <Grid item xs={12} md={4} lg={3}>
-                  <Card sx={{ display: "flex" }} onClick={item.click}>
-                    <StyleCardContent
-                      className={isMobile ? "isMobile" : "tableLap"}
-                    >
+                  <Card sx={{ display: 'flex' }} onClick={item.click}>
+                    <StyleCardContent className={isMobile ? 'isMobile' : 'tableLap'}>
                       <Box
-                        className={"content"}
-                        display={"flex"}
-                        flexDirection={"row"}
-                        alignItems={"center"}
+                        className={'content'}
+                        display={'flex'}
+                        flexDirection={'row'}
+                        alignItems={'center'}
                       >
                         <Avatar
-                          variant="circular"
+                          variant='circular'
                           style={{
-                            height: "var(--svg-size-huge)",
-                            width: "var(--svg-size-huge)",
+                            height: 'var(--svg-size-huge)',
+                            width: 'var(--svg-size-huge)',
                           }}
                           src={item.banner}
                         />
                         <Box
                           flex={1}
-                          display={"flex"}
-                          flexDirection={"column"}
+                          display={'flex'}
+                          flexDirection={'column'}
                           paddingLeft={1}
-                          className={"des"}
+                          className={'des'}
                         >
-                          <Typography variant={"h4"}>
-                            {t(item.titleI18n, { ns: "layout" })}
+                          <Typography variant={'h4'}>
+                            {t(item.titleI18n, { ns: 'layout' })}
                           </Typography>
                           <Typography
-                            variant={"body2"}
-                            textOverflow={"ellipsis"}
-                            whiteSpace={"pre"}
-                            overflow={"hidden"}
-                            color={"textSecondary"}
+                            variant={'body2'}
+                            textOverflow={'ellipsis'}
+                            whiteSpace={'pre'}
+                            overflow={'hidden'}
+                            color={'textSecondary'}
                           >
-                            {t(item.desI18n, { ns: "layout" })}
+                            {t(item.desI18n, { ns: 'layout' })}
                           </Typography>
                           {isMobile ? (
                             <Typography
-                              variant={"body1"}
-                              textOverflow={"ellipsis"}
-                              whiteSpace={"pre"}
-                              overflow={"hidden"}
+                              variant={'body1'}
+                              textOverflow={'ellipsis'}
+                              whiteSpace={'pre'}
+                              overflow={'hidden'}
                               paddingTop={1}
                               color={
                                 upColor === UpColor.green
-                                  ? "var(--color-success)"
-                                  : "var(--color-error)"
+                                  ? 'var(--color-success)'
+                                  : 'var(--color-error)'
                               }
                             >
-                              {"APR: " + item.apy + "%"}
+                              {'APR: ' + item.apy + '%'}
                             </Typography>
                           ) : (
                             <Typography
-                              display={"flex"}
-                              flexDirection={"column"}
-                              alignItems={"center"}
+                              display={'flex'}
+                              flexDirection={'column'}
+                              alignItems={'center'}
                               marginTop={2}
-                              component={"span"}
+                              component={'span'}
                             >
                               <Typography
-                                variant={"h3"}
-                                component={"span"}
+                                variant={'h3'}
+                                component={'span'}
                                 color={
                                   upColor === UpColor.green
-                                    ? "var(--color-success)"
-                                    : "var(--color-error)"
+                                    ? 'var(--color-success)'
+                                    : 'var(--color-error)'
                                 }
                               >
-                                {item.apy + "%"}
+                                {item.apy + '%'}
                               </Typography>
-                              <Tooltip
-                                title={t("labelEstRateAprDes").toString()}
-                              >
+                              <Tooltip title={t('labelEstRateAprDes').toString()}>
                                 <Typography
-                                  variant={"body2"}
-                                  component={"span"}
-                                  display={"inline-flex"}
-                                  alignItems={"center"}
-                                  color={"var(--color-text-third)"}
+                                  variant={'body2'}
+                                  component={'span'}
+                                  display={'inline-flex'}
+                                  alignItems={'center'}
+                                  color={'var(--color-text-third)'}
                                 >
-                                  {t("labelEstRateApr")}
-                                  <Info2Icon
-                                    color={"inherit"}
-                                    sx={{ marginLeft: 1 / 2 }}
-                                  />
+                                  {t('labelEstRateApr')}
+                                  <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
                                 </Typography>
                               </Tooltip>
                             </Typography>
@@ -253,20 +221,16 @@ const LandDefiInvest = ({
                         </Box>
                         {isMobile ? (
                           <BackIcon
-                            className={"backIcon"}
-                            fontSize={"small"}
-                            htmlColor={"var(--color-text-third)"}
+                            className={'backIcon'}
+                            fontSize={'small'}
+                            htmlColor={'var(--color-text-third)'}
                             sx={{
-                              transform: "rotate(180deg)",
+                              transform: 'rotate(180deg)',
                             }}
                           />
                         ) : (
-                          <Button
-                            variant={"contained"}
-                            fullWidth={true}
-                            size={"medium"}
-                          >
-                            {t("labelInvestBtn")}
+                          <Button variant={'contained'} fullWidth={true} size={'medium'}>
+                            {t('labelInvestBtn')}
                           </Button>
                         )}
                       </Box>
@@ -274,158 +238,152 @@ const LandDefiInvest = ({
                   </Card>
                 </Grid>
               ) : (
-                ""
+                ''
               )}
             </React.Fragment>
-          );
+          )
         })}
       </Grid>
     </Box>
-  );
-};
-export const DeFiPanel: any = withTranslation("common")(
-  ({ t }: WithTranslation & {}) => {
-    const { marketArray } = useDefiMap();
+  )
+}
+export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
+  const { marketArray } = useDefiMap()
 
-    const {
-      confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
-      confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
-    } = confirmation.useConfirmation();
-    // const []
-    const {showRETHStakignPopup, showWSTETHStakignPopup, setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup()
-    const _confirmedDefiInvest = {
-      isShow: showRETHStakignPopup || showWSTETHStakignPopup,
-      type: showRETHStakignPopup 
-        ? "RETH"
-        : showWSTETHStakignPopup 
-        ? "WSETH"
-        : undefined
-    }
-    console.log(
-      '_confirmedDefiInvest',_confirmedDefiInvest
-    )
-    const setConfirmedDefiInvest = ({isShow, type}: {isShow: boolean; type?: "RETH" | "WSETH" | undefined;}) => {
-      debugger
-      if (isShow) {
-        if (type === "RETH") {
-          setShowRETHStakignPopup(true)
-        } else {
-          setShowWSTETHStakignPopup(true)
-        } 
-      } else {
-        setShowRETHStakignPopup(false)
-        setShowWSTETHStakignPopup(false)
-      }
-    }
-
-    const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
-    const [serverUpdate, setServerUpdate] = React.useState(false);
-    const { toastOpen, setToastOpen, closeToast } = useToast();
-    const history = useHistory();
-
-    const _market: MarketType = [...(marketArray ? marketArray : [])].find(
-      (_item) => {
-        if (match?.params?.market) {
-          //@ts-ignore
-          const [, , base] = _item.match(/(defi-)?(\w+)(-\w+)?/i);
-          //@ts-ignore
-          const [_base] = match?.params?.market?.split("-");
-          return base.toUpperCase() == _base.toUpperCase();
-        }
-      }
-    ) as MarketType;
-    const isJoin =
-      match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
-
-    return (
-      <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
-        <Box
-          marginBottom={2}
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
-          <Button
-            startIcon={<BackIcon fontSize={"small"} />}
-            variant={"text"}
-            size={"medium"}
-            sx={{ color: "var(--color-text-secondary)" }}
-            color={"inherit"}
-            onClick={() =>
-              history.push(
-                !_market
-                  ? "/invest/overview"
-                  : match?.params?.isJoin
-                  ? "/invest/balance"
-                  : "/invest/defi"
-              )
-            }
-          >
-            {t("labelInvestDefiTitle")}
-            {/*<Typography color={"textPrimary"}></Typography>*/}
-          </Button>
-          <Button
-            variant={"outlined"}
-            sx={{ marginLeft: 2 }}
-            onClick={() => history.push("/invest/balance/stake")}
-          >
-            {t("labelInvestMyDefi")}
-          </Button>
-        </Box>
-        <StyleWrapper
-          display={"flex"}
-          flexDirection={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          flex={1}
-        >
-          {marketArray?.length ? (
-            match?.params?.market && _market ? (
-              <DeFiTradePanel
-                market={_market}
-                isJoin={isJoin}
-                setServerUpdate={setServerUpdate}
-                setToastOpen={setToastOpen}
-              />
-            ) : (
-              <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
-            )
-          ) : (
-            <LoadingBlock />
-          )}
-          <Toast
-            alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? ToastType.success}
-            open={toastOpen?.open ?? false}
-            autoHideDuration={TOAST_TIME}
-            onClose={closeToast}
-          />
-
-          <ConfirmInvestDefiServiceUpdate
-            open={serverUpdate}
-            handleClose={() => setServerUpdate(false)}
-          />
-          <ConfirmInvestDefiRisk
-            open={_confirmedDefiInvest.isShow}
-            type={_confirmedDefiInvest.type as any}
-            handleClose={(_e, isAgree) => {
-              if (!isAgree) {
-                setConfirmedDefiInvest({ isShow: false });
-              } else {
-                if (_confirmedDefiInvest.type === "RETH") {
-                  confirmedRETHDefiInvestFun();
-                  history.push(defiRETHAdvice.router);
-                }
-                if (_confirmedDefiInvest.type === "WSETH") {
-                  confirmedWSETHDefiInvestFun();
-                  history.push(defiWSTETHAdvice.router);
-                }
-              }
-              setConfirmedDefiInvest({ isShow: false });
-            }}
-          />
-        </StyleWrapper>
-      </Box>
-    );
+  const {
+    confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
+    confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
+  } = confirmation.useConfirmation()
+  // const []
+  const {
+    showRETHStakignPopup,
+    showWSTETHStakignPopup,
+    setShowRETHStakignPopup,
+    setShowWSTETHStakignPopup,
+  } = usePopup()
+  const _confirmedDefiInvest = {
+    isShow: showRETHStakignPopup || showWSTETHStakignPopup,
+    type: showRETHStakignPopup ? 'RETH' : showWSTETHStakignPopup ? 'WSETH' : undefined,
   }
-);
+  console.log('_confirmedDefiInvest', _confirmedDefiInvest)
+  const setConfirmedDefiInvest = ({
+    isShow,
+    type,
+  }: {
+    isShow: boolean
+    type?: 'RETH' | 'WSETH' | undefined
+  }) => {
+    if (isShow) {
+      if (type === 'RETH') {
+        setShowRETHStakignPopup(true)
+      } else {
+        setShowWSTETHStakignPopup(true)
+      }
+    } else {
+      setShowRETHStakignPopup(false)
+      setShowWSTETHStakignPopup(false)
+    }
+  }
+
+  const match: any = useRouteMatch('/invest/defi/:market?/:isJoin?')
+  const [serverUpdate, setServerUpdate] = React.useState(false)
+  const { toastOpen, setToastOpen, closeToast } = useToast()
+  const history = useHistory()
+
+  const _market: MarketType = [...(marketArray ? marketArray : [])].find((_item) => {
+    if (match?.params?.market) {
+      //@ts-ignore
+      const [, , base] = _item.match(/(defi-)?(\w+)(-\w+)?/i)
+      //@ts-ignore
+      const [_base] = match?.params?.market?.split('-')
+      return base.toUpperCase() == _base.toUpperCase()
+    }
+  }) as MarketType
+  const isJoin = match?.params?.isJoin?.toUpperCase() !== 'Redeem'.toUpperCase()
+
+  return (
+    <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+      <Box marginBottom={2} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+        <Button
+          startIcon={<BackIcon fontSize={'small'} />}
+          variant={'text'}
+          size={'medium'}
+          sx={{ color: 'var(--color-text-secondary)' }}
+          color={'inherit'}
+          onClick={() =>
+            history.push(
+              !_market
+                ? '/invest/overview'
+                : match?.params?.isJoin
+                ? '/invest/balance'
+                : '/invest/defi',
+            )
+          }
+        >
+          {t('labelInvestDefiTitle')}
+          {/*<Typography color={"textPrimary"}></Typography>*/}
+        </Button>
+        <Button
+          variant={'outlined'}
+          sx={{ marginLeft: 2 }}
+          onClick={() => history.push('/invest/balance/stake')}
+        >
+          {t('labelInvestMyDefi')}
+        </Button>
+      </Box>
+      <StyleWrapper
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'center'}
+        alignItems={'center'}
+        flex={1}
+      >
+        {marketArray?.length ? (
+          match?.params?.market && _market ? (
+            <DeFiTradePanel
+              market={_market}
+              isJoin={isJoin}
+              setServerUpdate={setServerUpdate}
+              setToastOpen={setToastOpen}
+            />
+          ) : (
+            <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
+          )
+        ) : (
+          <LoadingBlock />
+        )}
+        <Toast
+          alertText={toastOpen?.content ?? ''}
+          severity={toastOpen?.type ?? ToastType.success}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
+
+        <ConfirmInvestDefiServiceUpdate
+          open={serverUpdate}
+          handleClose={() => setServerUpdate(false)}
+        />
+        <ConfirmInvestDefiRisk
+          open={_confirmedDefiInvest.isShow}
+          type={_confirmedDefiInvest.type as any}
+          handleClose={(_e, isAgree) => {
+            if (!isAgree) {
+              setConfirmedDefiInvest({ isShow: false })
+            } else {
+              if (_confirmedDefiInvest.type === 'RETH') {
+                confirmedRETHDefiInvestFun()
+                history.push(defiRETHAdvice.router)
+              }
+              if (_confirmedDefiInvest.type === 'WSETH') {
+                confirmedWSETHDefiInvestFun()
+                history.push(defiWSTETHAdvice.router)
+              }
+            }
+            setConfirmedDefiInvest({ isShow: false })
+          }}
+        />
+      </StyleWrapper>
+    </Box>
+  )
+})

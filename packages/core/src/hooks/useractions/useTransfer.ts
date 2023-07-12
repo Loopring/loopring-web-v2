@@ -139,7 +139,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const { transferValue, updateTransferData, resetTransferData } = useModalData()
 
   const [walletMap, setWalletMap] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>),
+    makeWalletLayer2({ needFilterZero: true }).walletMap ?? ({} as WalletMap<R>),
   )
 
   const [sureItsLayer2, setSureItsLayer2] = React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(
@@ -249,7 +249,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   ])
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? {}
+    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
     setWalletMap(walletMap)
   }, [])
 
