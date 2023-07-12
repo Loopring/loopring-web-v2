@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
-import { Box, BoxProps, Grid, Typography } from "@mui/material";
-import { css, Theme, useTheme } from "@emotion/react";
-import { UpColor } from "@loopring-web/common-resources";
-import { Button, ButtonProps } from "./basic-lib";
-import { useSettings } from "../stores";
+import styled from '@emotion/styled'
+import { Box, BoxProps, Grid, Typography } from '@mui/material'
+import { css, Theme, useTheme } from '@emotion/react'
+import { UpColor } from '@loopring-web/common-resources'
+import { Button, ButtonProps } from './basic-lib'
+import { useSettings } from '../stores'
 
 // @ts-ignore
 export const boxLiner = (_props: { theme: Theme }) => css`
@@ -24,16 +24,16 @@ export const boxLiner = (_props: { theme: Theme }) => css`
   .MuiToolbar-root .MuiButtonBase-root.outlined {
     background-color: var(--field-opacity);
   }
-`;
+`
 export const TypographyStrong = styled(Typography)`
   color: var(--color-secoundary);
-` as typeof Typography;
+` as typeof Typography
 export const TypographyGood = styled(Typography)`
   color: var(--color-success);
-` as typeof Typography;
+` as typeof Typography
 export const TablePaddingX = (_props: { pLeft: number; pRight: number }) => {
-  const { unit } = useTheme();
-  const { isMobile } = useSettings();
+  const { unit } = useTheme()
+  const { isMobile } = useSettings()
   return css`
     .rdg-row,
     .rdg-header-row {
@@ -45,39 +45,34 @@ export const TablePaddingX = (_props: { pLeft: number; pRight: number }) => {
         padding-right: ${unit * (isMobile ? 1 : 3)}px;
       }
     }
-  `;
-};
+  `
+}
 export const VipStyled = styled(Typography)`
   margin-left: ${({ theme }) => theme.unit}px;
   padding: ${({ theme }) => theme.unit / 4}px ${({ theme }) => theme.unit}px;
-  ${({ theme }) =>
-    theme.border.defaultFrame({ c_key: "rgba(0,0,0,0)", d_R: 0.25 })};
+  ${({ theme }) => theme.border.defaultFrame({ c_key: 'rgba(0,0,0,0)', d_R: 0.25 })};
   background-color: var(--vip-bg);
   height: 2rem;
   //line-height: 2rem;
   color: var(--vip-text);
-` as typeof Typography;
+` as typeof Typography
 export const floatTag = ({ theme, custom }: any) => css`
   .float-group {
     font-weight: lighter;
 
     .float-tag.float-increase {
-      color: ${custom.chg === UpColor.green
-        ? theme.colorBase.success
-        : theme.colorBase.error};
+      color: ${custom.chg === UpColor.green ? theme.colorBase.success : theme.colorBase.error};
     }
 
     .float-tag.float-decrease {
-      color: ${custom.chg === UpColor.green
-        ? theme.colorBase.error
-        : theme.colorBase.success};
+      color: ${custom.chg === UpColor.green ? theme.colorBase.error : theme.colorBase.success};
     }
 
     .float-tag.float-none {
       color: ${theme.colorBase.textPrimary};
     }
   }
-`;
+`
 export const AvatarIconPair = ({ theme }: any) => css`
   //.MuiAvatar-root {
   //  width: var(--chart-title-coin-size);
@@ -87,7 +82,7 @@ export const AvatarIconPair = ({ theme }: any) => css`
   .icon-next {
     margin-left: -${theme.unit}px;
   }
-`;
+`
 export const baseTitleCss = ({ theme, custom }: any) => css`
   height: 72px;
 
@@ -115,16 +110,17 @@ export const baseTitleCss = ({ theme, custom }: any) => css`
       color: ${theme.colorBase.textSecondary};
     }
   }
-`;
+`
 export const ButtonListRightStyled = styled(Grid)`
   .MuiButton-root:not(:last-child) {
     margin-right: ${({ theme }) => theme.unit}px;
   }
-` as typeof Grid;
+` as typeof Grid
 export const modalContentBaseStyle = ({ theme }: any) => css`
   &:focus-visible {
     outline: 0;
   }
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -136,11 +132,11 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   padding-top: var(--toolbar-row-padding);
   border: 0;
   border-radius: ${theme.unit}px;
-`;
+`
 export const ModelPanelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
   background: ${({ theme }) => theme.colorBase.box};
-` as typeof Box;
+` as typeof Box
 
 export const SwitchPanelStyled: any = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
@@ -158,8 +154,7 @@ export const SwitchPanelStyled: any = styled(Box)<
   .trade-panel {
     .react-swipeable-view-container {
       & > div {
-        padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px
-          ${({ theme }) => theme.unit * 5}px;
+        padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px ${({ theme }) => theme.unit * 5}px;
 
         .container {
           height: 100%;
@@ -176,19 +171,9 @@ export const SwitchPanelStyled: any = styled(Box)<
       background: ${theme.colorBase.box};
       .react-swipeable-view-container {
            height: ${
-             _height && Number.isNaN(_height)
-               ? _height + "px"
-               : _height
-               ? _height
-               : "100%"
+             _height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'
            } ;
-           width: ${
-             _width && Number.isNaN(_width)
-               ? _width + "px"
-               : _width
-               ? _width
-               : "100%"
-           };
+           width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
            & > div{
               height:initial;
               overflow-x: hidden;
@@ -234,9 +219,7 @@ export const SwitchPanelStyled: any = styled(Box)<
       height: 100%;
     }
   }
-` as (
-  props: { _height?: number | string; _width?: number | string } & BoxProps
-) => JSX.Element;
+` as (props: { _height?: number | string; _width?: number | string } & BoxProps) => JSX.Element
 // height:${
 //   _height
 //     ? typeof _height === "number"
@@ -272,12 +255,11 @@ export const toolBarPanel = ({ theme }: any) => css`
       font-size: ${theme.fontDefault.h4};
     }
   }
-`;
+`
 
 export const TableFilterStyled = styled(Box)`
-  margin: 0 ${({ theme }) => theme.unit * 3}px
-    ${({ theme }) => theme.unit * 2}px;
-` as typeof Box;
+  margin: 0 ${({ theme }) => theme.unit * 3}px ${({ theme }) => theme.unit * 2}px;
+` as typeof Box
 
 export const AnimationArrow = styled(Box)`
   &.arrowCta {
@@ -294,7 +276,7 @@ export const AnimationArrow = styled(Box)`
 
   &.arrowCta:after,
   &.arrowCta:before {
-    content: "";
+    content: '';
     display: block;
     height: inherit;
     width: inherit;
@@ -359,7 +341,7 @@ export const AnimationArrow = styled(Box)`
       transform: translate(0, 0);
     }
   }
-` as typeof Box;
+` as typeof Box
 
 export const shake = css`
   @keyframes shake {
@@ -381,7 +363,8 @@ export const shake = css`
       transform: translate3d(4px, 0, 0);
     }
   }
-`;
+`
+const loadingGif = './static/loading.gif'
 
 export const MenuBtnStyled = styled(Button)<ButtonProps>`
   font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -416,8 +399,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     height: auto;
     text-indent: 0em;
     text-align: left;
-    padding: ${({ theme }) => theme.unit * 2}px
-      ${({ theme }) => theme.unit * 4}px;
+    padding: ${({ theme }) => theme.unit * 2}px ${({ theme }) => theme.unit * 4}px;
 
     .mainTitlte {
     }
@@ -427,6 +409,33 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     justify-content: space-between;
     flex-direction: row;
     white-space: pre;
+
+    &.MuiButton-root {
+      ${({ loading, loadingbg }) => {
+        return loading === 'true'
+          ? `
+           pointer-events: none;
+           // color:transparent;
+           background-color:${loadingbg};
+           &::after{
+            display: block;
+            content: '';
+            background: url(${loadingGif});
+            background-size: contain;
+            height: 40px;
+            width: 40px;
+            position: absolute;
+            transform:scale(.4);
+            display:flex;
+            flex-direction:row;
+            align-items: center;
+            justify-content: right;
+            // color:#fff  
+           }
+       `
+          : ''
+      }}
+    }
   }
 
   &.vendor {
@@ -461,7 +470,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
 
     &:after {
       position: absolute;
-      content: "\u25CF";
+      content: '\u25CF';
       text-indent: 0em;
       color: var(--color-success);
       //width: 100%;
@@ -473,18 +482,18 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
-` as (props: ButtonProps) => JSX.Element;
+` as (props: ButtonProps) => JSX.Element
 
 export const StyledPaperBg = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-` as any;
+` as any
 
 export const MediaLabelStyled = styled(Box)<BoxProps & { colorbg?: string }>`
   border-radius: 0 0 ${({ theme }) => theme.unit}px 0;
   padding: ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit}px;
   color: var(--color-box);
   font-size: 1.4rem;
-  background: ${({ colorbg }) => (colorbg ? colorbg : "var(--color-tag)")};
+  background: ${({ colorbg }) => (colorbg ? colorbg : 'var(--color-tag)')};
   cursor: help;
-` as (props: BoxProps & { colorbg?: string }) => JSX.Element;
+` as (props: BoxProps & { colorbg?: string }) => JSX.Element
