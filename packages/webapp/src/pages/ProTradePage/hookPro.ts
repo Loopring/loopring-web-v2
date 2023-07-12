@@ -21,10 +21,11 @@ import {
   useWalletLayer2,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { useOrderList } from './panel/orderTable/hookTable'
+// import { useOrderList } from './panel/orderTable/hookTable'
 import { useProSocket, useSocketProService } from './proService'
 import { useHistory } from 'react-router-dom'
 import { useGetAssets } from '../AssetPage/AssetPanel/hook'
+import { useOrderList } from '../AssetPage'
 
 export const usePro = <C extends { [key: string]: any }>({
   path = '/trade/pro',

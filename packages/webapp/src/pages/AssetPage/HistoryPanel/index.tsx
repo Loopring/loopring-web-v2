@@ -105,14 +105,15 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     showLoading,
     marketArray: orderRaw,
     cancelOrder,
-  } = useOrderList(setToastOpen)
+  } = useOrderList({ setToastOpen })
   const {
     rawData: stopLimitRawData,
     getOrderList: getStopLimitOrderList,
     totalNum: totalNumStopLimit,
     showLoading: showLoadingStopLimit,
     cancelOrder: cancelOrderStopLimit,
-  } = useOrderList(setToastOpen)
+  } = useOrderList({ setToastOpen, isStopLimit: true })
+
   const {
     dualList,
     showLoading: showDualLoading,
