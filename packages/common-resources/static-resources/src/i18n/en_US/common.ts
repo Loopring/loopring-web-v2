@@ -445,7 +445,7 @@ export default {
     '(CIDv0 or dag-pb CIDv1) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR',
   depositNFTIdLabelPlaceholder: 'please input NFT id...',
   nftDepositDescription:
-    'Creates a smart contract on {{EthereumL1}}, \n which requires a gas fee. NFTs minted \nhere remain on {{loopringL2}} until deployed.',
+    'Creates a smart contract on {{ethereumL1}}, \n which requires a gas fee. NFTs minted \nhere remain on {{loopringL2}} until deployed.',
   labelNFTDescribe: 'Description:',
   labelNFTTitle: 'Amount',
   labelNFTDepositInputTitle: 'Amount:',

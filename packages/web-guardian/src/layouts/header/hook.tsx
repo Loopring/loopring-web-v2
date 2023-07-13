@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {
-  fnType,
   GuardianToolBarComponentsMap,
   headerGuardianToolBarData,
   headerMenuLandingData,
@@ -9,20 +8,15 @@ import {
 } from '@loopring-web/common-resources'
 
 import {
-  accountReducer,
   accountStaticCallBack,
-  btnClickMap,
   btnConnectL1kMap,
-  store,
   useAccount,
   useNotify,
   useSelectNetwork,
   useSystem,
 } from '@loopring-web/core'
 
-import { AccountStep, useOpenModals } from '@loopring-web/component-lib'
-
-import _ from 'lodash'
+import { useOpenModals } from '@loopring-web/component-lib'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
