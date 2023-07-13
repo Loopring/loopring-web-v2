@@ -243,7 +243,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
             addrStatus === AddressError.NoError &&
             isActiveAccount === false && (
               <Box>
-                {(isActiveAccount === false) && realAddr && (
+                {isActiveAccount === false && realAddr && (
                   <Typography
                     color={'var(--color-error)'}
                     lineHeight={1.2}
