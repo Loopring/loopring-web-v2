@@ -10,6 +10,7 @@ import {
   MapChainId,
   myLog,
   OrderListIcon,
+  RecordTabIndex,
   ReverseIcon,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
@@ -25,6 +26,7 @@ import BigNumber from 'bignumber.js'
 import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
 import { usePopup } from '@loopring-web/core'
+import { useTheme } from '@emotion/react'
 
 const GridStyle = styled(Grid)`
   ul {
@@ -65,6 +67,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinSellRef = React.useRef()
   const coinBuyRef = React.useRef()
   const { t } = useTranslation()
+  const theme = useTheme()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const history = useHistory()
@@ -120,13 +123,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     t,
   ])
 
-  // const getDisabled = () => {
-  //   return (
-  //     disabled ||
-  //     deFiCalcData === undefined ||
-  //     deFiCalcData.coinMap === undefined
-  //   );
-  // };
   const getDisabled = React.useMemo(() => {
     return disabled || deFiCalcData === undefined || deFiCalcData.AtoB === undefined
   }, [btnStatus, deFiCalcData, disabled])
@@ -263,9 +259,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             sx={{ marginLeft: 1, cursor: 'pointer' }}
             onClick={() => {
               if (market === 'RETH-ETH') {
-                setShowRETHStakignPopup({show: true, confirmationNeeded: false});
-              } else if (market === 'WSTETH-ETH'){
-                setShowWSTETHStakignPopup({show: true, confirmationNeeded: false});
+                setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
+              } else if (market === 'WSTETH-ETH') {
+                setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
               }
             }}
           />
@@ -282,7 +278,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               aria-label='to Transaction'
               size={'large'}
             >
-              <OrderListIcon color={'primary'} fontSize={'large'} />
+              <OrderListIcon fill={theme.colorBase.logo} fontSize={'large'} />
             </IconButtonStyled>
           </Typography>
         </Box>

@@ -86,7 +86,7 @@ export const ResetWrap = <T extends FeeInfo>({
         <Typography component={'p'} variant='body1' color={'var(--color-text-secondary)'}>
           {isNewAccount
             ? t('labelActiveAccountDescription', { layer2: 'Layer 2' })
-            : t('resetDescription', { layer2: 'Layer 2' })}
+            : t('labelResetDescription', { layer2: 'Layer 2' })}
         </Typography>
       </Grid>
 
