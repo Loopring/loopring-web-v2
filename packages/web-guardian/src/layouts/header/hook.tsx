@@ -12,6 +12,7 @@ import {
   accountReducer,
   accountStaticCallBack,
   btnClickMap,
+  btnConnectL1kMap,
   store,
   useAccount,
   useNotify,
@@ -34,38 +35,6 @@ export const useHeader = () => {
     return { account }
   }, [account])
 
-  const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-    [fnType.ACTIVATED]: [
-      function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
-      },
-    ],
-    [fnType.NO_ACCOUNT]: [
-      function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
-      },
-    ],
-    [fnType.DEPOSITING]: [
-      function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
-      },
-    ],
-    [fnType.NOT_ACTIVE]: [
-      function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
-      },
-    ],
-    [fnType.LOCKED]: [
-      function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
-      },
-    ],
-  })
   const onkeypress = (e: KeyboardEvent) => {
     if (e.altKey && e.shiftKey && e.code == 'KeyX') {
       console.log(e.altKey && e.shiftKey && e.code && e.timeStamp)
@@ -73,8 +42,8 @@ export const useHeader = () => {
   }
   const onWalletBtnConnect = React.useCallback(async () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`)
-    accountStaticCallBack(_btnClickMap, [])
-  }, [account, setShouldShow, _btnClickMap])
+    accountStaticCallBack(btnConnectL1kMap, [])
+  }, [account, setShouldShow, btnConnectL1kMap])
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
   const [headerToolBarData, setHeaderToolBarData] = React.useState<
