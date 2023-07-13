@@ -8,10 +8,12 @@ import {
   L1L2_NAME_DEFINED,
   LoopringIcon,
   MapChainId,
+  myLog,
   SagaStatus,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import {
+  AccountStep,
   boxLiner,
   BtnInfo,
   DepositPanel,
@@ -21,8 +23,11 @@ import {
   WalletConnectL1Btn,
 } from '@loopring-web/component-lib'
 import {
+  accountReducer,
   accountStaticCallBack,
   btnClickMap,
+  btnConnectL1kMap,
+  store,
   useAccount,
   useSelectNetwork,
 } from '@loopring-web/core'
@@ -74,6 +79,10 @@ export const DepositToPage = withTranslation(['common'])(
       setDepositBtnStatus(depositBtnStatus as TradeBtnStatus)
       return btnInfo
     }
+    const onWalletBtnConnectClick = React.useCallback(async () => {
+      myLog(`onWalletBtnConnect click: ${account.readyState}`)
+      accountStaticCallBack(btnConnectL1kMap)
+    }, [])
     React.useEffect(() => {
       if (accountStatus === SagaStatus.UNSET) {
         setDepositBtnI18nKey(
@@ -151,7 +160,7 @@ export const DepositToPage = withTranslation(['common'])(
               <WalletConnectL1Btn
                 NetWorkItems={NetWorkItems}
                 accountState={{ account } as any}
-                handleClick={_onDepositClick}
+                handleClick={onWalletBtnConnectClick}
                 isShowOnUnConnect={false}
               />
             </BoxWrap>
