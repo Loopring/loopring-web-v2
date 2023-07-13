@@ -824,11 +824,18 @@ export const ProfileIndex = {
   TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
   ETHEREUM: [
     ProfileKey.security,
+    ProfileKey.forcewithdraw,
     ProfileKey.vip,
     ProfileKey.contact,
     // ProfileKey.referralrewards
   ],
-  GOERLI: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
+  GOERLI: [
+    ProfileKey.security,
+    ProfileKey.forcewithdraw,
+    ProfileKey.vip,
+    ProfileKey.contact,
+    ProfileKey.referralrewards,
+  ],
 }
 
 export const L1L2_NAME_DEFINED = {
