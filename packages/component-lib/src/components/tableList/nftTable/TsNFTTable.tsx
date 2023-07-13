@@ -111,7 +111,7 @@ export const TsNFTTable = withTranslation(['tables', 'common'])(
     t,
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
-    const [isDropDown, setIsDropDown] = React.useState(tue)
+    const [isDropDown, setIsDropDown] = React.useState(true)
     const { isMobile, defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
