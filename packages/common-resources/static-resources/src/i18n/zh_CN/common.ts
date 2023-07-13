@@ -1756,6 +1756,12 @@ export default {
   labelRedPacketTimeRangeBlindboxDesERC20:
     'The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received tokens',
   labelBlindBoxExpirationExplainationForTokenBlindbox:
-    "'If the recipients of the Tokens Red Packets do not open their received Tokens, the Tokens will be forfeited and sent back to the Sender\'s wallet.'
+    "'If the recipients of the Tokens Red Packets do not open their received Tokens, the Tokens will be forfeited and sent back to the Sender\'s wallet.'",
   labelBlindBoxRecieved: 'Received {{deliverdGiftsAmount}}/{{totalGiftsAmount}}',
+  labelBlindBoxClaimHint: 'You can visit Assets > Red Packets to claim your rewards.',
+  labelRedPacketBlindboxReceived1: 'ERC20 Blind Box',
+  labelRedPacketBlindboxReceived2: 'Received',
+  labelRedPacketsGiftsEqualsZero:
+    'Number of gifts can\'t be zero',
+  labelRedpacketStandard: 'Standard',
 }
