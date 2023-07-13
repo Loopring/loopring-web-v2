@@ -15,6 +15,7 @@ export type ToggleState = {
   WSTETHInvest: { enable: boolean; reason?: string };
   RETHInvest: { enable: boolean; reason?: string };
   dualInvest: { enable: boolean; reason?: string };
+  leverageETHInvest: { enable: boolean; reason?: string };
   collectionNFT: { enable: boolean; reason?: string };
   claim: { enable: boolean; reason?: string };
   redPacketNFTV1: { enable: boolean; reason?: string };

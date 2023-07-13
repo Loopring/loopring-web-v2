@@ -60,6 +60,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   maxSellVol,
   maxBuyVol,
   market,
+  title,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -222,9 +223,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       tokenBuy.precision,
       tokenBuy.precision,
       false,
-      { floor: true },
-    )} ${tokenBuy.symbol}`
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup } = usePopup()
+      { floor: true }
+    )} ${tokenBuy.symbol}`;
+  const {setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup()
 
   return (
     <Grid
@@ -252,7 +253,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           alignItems={'center'}
           alignSelf={'self-start'}
         >
-          {t('labelInvestDefiTitle')}
+          {title}
           <HelpIcon
             fontSize={'large'}
             color={'inherit'}

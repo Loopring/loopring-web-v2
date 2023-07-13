@@ -327,11 +327,12 @@ export const defaultBlockTradeSlipage = 0.1
 export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number }
 
 export const enum InvestMapType {
-  Token = 'Token',
-  AMM = 'AMM',
-  STAKE = 'STAKE',
-  DUAL = 'DUAL',
-  STAKELRC = 'STAKELRC',
+  Token = "Token",
+  AMM = "AMM",
+  STAKE = "STAKE",
+  DUAL = "DUAL",
+  STAKELRC = "STAKELRC",
+  LEVERAGEETH = "LEVERAGEETH",
   // BTradeInvest = "BTradeInvest",
 }
 

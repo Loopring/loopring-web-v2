@@ -1131,3 +1131,62 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
     showLoading,
   }
 }
+
+export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
+  const { t } = useTranslation(["error"]);
+  const [leverageETHList, setLeverageETHRecordList] = React.useState<
+    sdk.UserDefiTxsHistory[]
+  >([]);
+  const [leverageETHTotal, setLeverageETHTotal] = React.useState(0);
+  const [showLoading, setShowLoading] = React.useState(true);
+  const { accountId, apiKey } = store.getState().account;
+  const getLeverageETHTxList = React.useCallback(
+    async ({ start, end, offset, limit }: any) => {
+      debugger
+      setShowLoading(true);
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const response = await LoopringAPI.defiAPI.getDefiTransaction(
+          {
+            accountId,
+            offset,
+            start,
+            end,
+            limit,
+            marktes: "RETH-ETH"
+          } as any,
+          apiKey
+        );
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          setToastOpen({
+            open: true,
+            type: ToastType.error,
+            content:
+              "error : " + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
+          });
+        } else {
+          // @ts-ignore
+          const result = (response as any).userDefiTxs;
+          setLeverageETHRecordList(result);
+          setShowLoading(false);
+          setLeverageETHTotal((response as any).totalNum);
+        }
+      }
+      setShowLoading(false);
+    },
+    [accountId, apiKey, setToastOpen, t]
+  );
+
+  return {
+    leverageETHList,
+    showLoading,
+    getLeverageETHTxList,
+    leverageETHTotal,
+  };
+}

@@ -1593,7 +1593,7 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
     confirmationNeeded,
   }: WithTranslation & {
     open: boolean
-    type: 'WSETH' | 'RETH'
+    type: 'WSETH' | 'RETH' | 'CiETH'
     confirmationNeeded: boolean
     handleClose: (event: any, isAgree?: boolean) => void
   }) => {
@@ -1676,6 +1676,21 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
                 reflect ETH staking rewards earned.
               </Typography>
             </Trans>
+            {type === "CiETH" && <Trans
+              i18nKey={'labelDefiWithdrawFee'}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"span"}
+                    variant={"body1"}
+                    display={"block"}
+                    marginBottom={1}
+                    color={"textSecondary"}
+                  />
+                ),
+              }}
+            />}
           </DialogContentText>
           {confirmationNeeded && (
             <MuiFormControlLabel
@@ -1694,7 +1709,7 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
             />
           )}
         </DialogContent>
-        <DialogContent>
+        {type !== "CiETH" && <DialogContent>
           <DialogContentText id='alert-dialog-defiRisk2'>
             <Trans
               i18nKey={`label${type}DefiRisk2`}
@@ -1734,7 +1749,7 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
               </Typography>
             </Trans>
           </DialogContentText>
-        </DialogContent>
+        </DialogContent>}
         <DialogActions>
           <Button
             variant={'contained'}

@@ -76,6 +76,7 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
         currPage?: number;
         pageSize?: number;
       }) => {
+        
         getDefiTxList({
           limit: pageSize,
           offset: (currPage - 1) * pageSize,
@@ -349,7 +350,9 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
+    
     React.useEffect(() => {
+      
       // let filters: any = {};
       updateData.cancel();
       updateData({ currPage: 1 });

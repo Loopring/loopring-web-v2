@@ -11,6 +11,7 @@ const initialState: Confirmation = {
   confirmedLRCStakeInvest: false,
   showDualBeginnerHelp: false,
   confirmedBtradeSwap: false,
+  confirmedLeverageETHInvest: false,
 };
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -57,6 +58,9 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     hidDualBeginnerHelp(state: Confirmation, _action: PayloadAction<string>) {
       state.showDualBeginnerHelp = false;
     },
+    confirmedLeverageETHInvest(state: Confirmation,_action: PayloadAction<string>) {
+      state.confirmedLeverageETHInvest = true;
+    },
   },
 });
 
@@ -71,4 +75,5 @@ export const {
   confirmedBtradeSwap,
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
+  confirmedLeverageETHInvest
 } = confirmationSlice.actions;

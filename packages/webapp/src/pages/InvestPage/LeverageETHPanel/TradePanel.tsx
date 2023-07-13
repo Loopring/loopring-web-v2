@@ -1,7 +1,8 @@
-import { useDefiMap, useDefiTrade } from "@loopring-web/core";
+import { useDefiMap, useDefiTrade, useLeverageETHTrade } from "@loopring-web/core";
 import {
-  DEFI_ADVICE_MAP,
+  // DEFI_ADVICE_MAP,
   MarketType,
+  leverageETHAdvice,
   myLog,
 } from "@loopring-web/common-resources";
 import {
@@ -14,24 +15,26 @@ import { Box } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-export const DeFiTradePanel = ({
+export const TradePanel = ({
   isJoin,
-  market,
+  // market,
   setServerUpdate,
   setToastOpen,
 }: {
-  market: MarketType;
+  // market: MarketType;
   isJoin: boolean;
   setServerUpdate: (state: any) => void;
   setToastOpen: (state: any) => void;
 }) => {
+  const market: MarketType = "CIETH-ETH"
   const { marketArray, marketMap } = useDefiMap();
   myLog("isJoin", isJoin, "market", market);
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] =
     React.useState<boolean>(false);
   const [confirmShowNoBalance, setConfirmShowNoBalance] =
     React.useState<boolean>(false);
-  const { deFiWrapProps } = useDefiTrade({
+    
+  const { deFiWrapProps } = useLeverageETHTrade({
     isJoin,
     setToastOpen: setToastOpen as any,
     market: market ? market : marketArray[0], // marketArray[1] as MarketType,
@@ -40,12 +43,15 @@ export const DeFiTradePanel = ({
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
   });
+  console.log('deFiWrapProps', deFiWrapProps.deFiCalcData.coinSell)
+  const {t} = useTranslation()
 
   const { isMobile } = useSettings();
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? [];
 
   const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
-  const {t} = useTranslation()
+  // leverageETHAdvice
+  // console.log('leverageETHAdvice', leverageETHAdvice)
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (
@@ -59,8 +65,8 @@ export const DeFiTradePanel = ({
           <DeFiWrap
             market={market}
             isJoin={isJoin}
-            type={DEFI_ADVICE_MAP[tokenBase].project}
-            title={t("labelInvestDefiTitle")}
+            type={leverageETHAdvice.project}
+            title={t("labelLeverageETHTitle")}
             {...(deFiWrapProps as any)}
           />
         </Box>
@@ -70,7 +76,7 @@ export const DeFiTradePanel = ({
       <ConfirmDefiNOBalance
         isJoin={isJoin}
         market={market}
-        type={DEFI_ADVICE_MAP[tokenBase].project}
+        type={leverageETHAdvice.project as any}
         handleClose={(_e) => {
           setConfirmShowNoBalance(false);
           if (deFiWrapProps?.onRefreshData) {

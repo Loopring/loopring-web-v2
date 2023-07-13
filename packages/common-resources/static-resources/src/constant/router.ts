@@ -370,7 +370,16 @@ export const subMenuInvest = [
       description: 'labelInvestStakeLRCDes',
     },
   },
-]
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/leverageETH" },
+    label: {
+      id: "todo",
+      i18nKey: "labelInvestLeverageETH",
+      description: "labelInvestLeverageETHDes",
+    },
+  },
+];
 
 export const subMenuNFT = {
   NFTGroup: [
@@ -636,7 +645,19 @@ export const stakeAdvice: InvestAdvice = {
   titleI18n: 'labelInvestStakeLRC',
   desI18n: 'labelInvestStakeLRCDes',
   enable: true,
-}
+  
+};
+export const leverageETHAdvice: InvestAdvice = {
+  type: InvestMapType.LEVERAGEETH,
+  router: "/invest/leverageETH",
+  notification: "",
+  banner: SoursURL + "images/icon-leverage-ETH.svg",
+  titleI18n: "labelInvestLeverageETH",
+  desI18n: "labelInvestLeverageETH",
+  enable: true,
+  project: "TODO Pool",
+  market: "CIETH-ETH",
+};
 
 export enum RecordTabIndex {
   Transactions = 'Transactions',
@@ -648,6 +669,7 @@ export enum RecordTabIndex {
   SideStakingRecords = 'SideStakingRecords',
   BtradeSwapRecords = 'BtradeSwapRecords',
   StopLimitRecords = 'StopLimitRecords',
+  leverageETHRecords = "leverageETHRecords",
 }
 
 export enum AssetTabIndex {
@@ -721,6 +743,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.DualRecords,
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
   ],
   GOERLI: [
     RecordTabIndex.Transactions,
@@ -732,6 +755,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.DualRecords,
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
   ],
 }
 
