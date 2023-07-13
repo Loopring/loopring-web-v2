@@ -24,13 +24,14 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
+  SUBMIT_PANEL_AUTO_CLOSE,
   ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { accountReducer, useAccount } from './stores/account'
-import { useModalData, useSystem } from './stores'
+import { useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { store, WalletConnectL2Btn } from './index'
@@ -38,6 +39,7 @@ import { useTranslation } from 'react-i18next'
 import { Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
+import EthereumProvider from '@walletconnect/ethereum-provider'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
@@ -128,13 +130,35 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         step: WalletConnectStep.CommonProcessing,
       })
       myLog(connectProvides)
-      await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
+      try {
+        await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
+      } catch (error) {
+        const chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+        setDefaultNetwork(chainId ?? defaultNetwork)
+        if (
+          connectProvides?.usedWeb3 &&
+          (error as any)?.code == 4001 &&
+          window?.ethereum?.isConnected() &&
+          !(connectProvides?.usedProvide as EthereumProvider)?.isWalletConnect
+        ) {
+          setShowConnect({
+            isShow: true,
+            step: WalletConnectStep.RejectSwitchNetwork,
+          })
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+        }
+
+        setShowConnect({
+          isShow: false,
+          step: WalletConnectStep.RejectSwitchNetwork,
+        })
+      }
     } else {
       networkUpdate()
     }
   }
 
-  const NetWorkItems = React.useMemo(() => {
+  const NetWorkItems: JSX.Element = React.useMemo(() => {
     return (
       <>
         <OutlineSelectStyle
@@ -193,7 +217,6 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const { resetWithdrawData, resetTransferData, resetDepositData } = useModalData()
 
-  const { updateSystem } = useSystem()
   const { setShowConnect } = useOpenModals()
   const [stateAccount, setStateAccount] = React.useState<keyof typeof SagaStatus>('DONE')
   React.useEffect(() => {
@@ -302,7 +325,8 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
       statusAccountUnset()
       setShowAccount({ isShow: false })
-      if (
+      if (props?.opts?.error?.code === -32002) {
+      } else if (
         props?.opts?.connectName === ConnectProviders.WalletConnect &&
         props?.opts?.error &&
         props?.opts?.error?.code === UIERROR_CODE.ERROR_WALLECTCONNECT_MANUALLY_CLOSE
@@ -313,13 +337,13 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         //   step: WalletConnectStep.RejectConnect,
         // });
       } else {
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.FailedConnect,
-          error: {
-            ...props.opts.error,
-          } as sdk.RESULT_INFO,
-        })
+        // setShowConnect({
+        //   isShow: true,
+        //   step: WalletConnectStep.FailedConnect,
+        //   error: {
+        //     ...props.opts.error,
+        //   } as sdk.RESULT_INFO,
+        // })
       }
     },
     [
@@ -328,7 +352,6 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       shouldShow,
       statusAccountUnset,
       setShowConnect,
-      updateSystem,
       resetAccount,
     ],
   )

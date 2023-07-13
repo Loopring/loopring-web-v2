@@ -376,7 +376,14 @@ export const WithdrawWrap = <
               >
                 {t(`labelInvalid${isNotAvailableAddress}`, {
                   token: type === 'NFT' ? 'NFT' : tradeData.belong,
-                  way: t(`labelL2toL1`),
+                  way: t(`labelL2toL1`, {
+                    layer2: L1L2_NAME_DEFINED[network].layer2,
+                    l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  }),
                 })}
               </Typography>
             ) : (

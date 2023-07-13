@@ -638,21 +638,22 @@ export const stakeAdvice: InvestAdvice = {
 }
 
 export enum RecordTabIndex {
-  transactions = 'transactions',
-  trades = 'trades',
-  ammRecords = 'ammRecords',
-  orders = 'orders',
-  defiRecords = 'defiRecords',
-  dualRecords = 'dualRecords',
-  sideStakingRecords = 'sideStakingRecords',
-  btradeSwapRecords = 'BtradeSwap',
-  stopLimitRecords = 'stopLimitRecords',
+  Transactions = 'Transactions',
+  Trades = 'Trades',
+  AmmRecords = 'AmmRecords',
+  Orders = 'Orders',
+  DefiRecords = 'DefiRecords',
+  DualRecords = 'DualRecords',
+  SideStakingRecords = 'SideStakingRecords',
+  BtradeSwapRecords = 'BtradeSwapRecords',
+  StopLimitRecords = 'StopLimitRecords',
 }
 
 export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',
   RedPacket = 'RedPacket',
+  Rewards = 'Rewards',
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
@@ -699,7 +700,41 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
       ],
     },
   ],
+  ETHEREUM: headerMenuData,
+  GOERLI: headerMenuData,
 }
+
+export const TokenPriceBase = {
+  TAIKO: '0x0000000000000000000000000000000000000000',
+  ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
+}
+export const RecordMap: { [key: string]: RecordTabIndex[] } = {
+  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
+  ETHEREUM: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+  ],
+  GOERLI: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+  ],
+}
+
 export const AddAssetListMap = {
   TAIKO: [
     AddAssetList.FromMyL1.key,
@@ -744,8 +779,18 @@ export const SendAssetListMap = {
 }
 export const AssetL2TabIndex = {
   TAIKO: [AssetTabIndex.Tokens],
-  ETHEREUM: [AssetTabIndex.Tokens, AssetTabIndex.Invests, AssetTabIndex.RedPacket],
-  GOERLI: [AssetTabIndex.Tokens, AssetTabIndex.Invests, AssetTabIndex.RedPacket],
+  ETHEREUM: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+    AssetTabIndex.Rewards,
+  ],
+  GOERLI: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+    AssetTabIndex.Rewards,
+  ],
 }
 export const RouterAllowIndex = {
   TAIKO: [
@@ -787,12 +832,7 @@ export const RouterAllowIndex = {
 
 export const ProfileIndex = {
   TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
-  ETHEREUM: [
-    ProfileKey.security,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    // ProfileKey.referralrewards
-  ],
+  ETHEREUM: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
   GOERLI: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
 }
 

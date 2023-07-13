@@ -62,4 +62,8 @@ export default {
   errorBetaEnv:
     'Oops! This site is not released yet and could contain bugs. Please use it with caution!.',
   errorProviderErrorUnknown: 'Unknown Error',
+  errorNoGamestopExtension: 'User not installed GameStop extension',
+  errorSwitchEthereum: 'wallet switch Ethereum Chain is not allowed',
+  errorEthereumNotMetamask: 'Global ethereum is not MetaMask',
+  errorGamestopNoChainChange: 'Gamestop extension no switch Ethereum Chain method',
 }

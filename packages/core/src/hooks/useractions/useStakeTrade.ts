@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react'
 import {
   AccountStep,
   DeFiSideWrapProps,
   ToastType,
   useOpenModals,
   useToggle,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CustomErrorWithCode,
@@ -19,7 +19,7 @@ import {
   SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
   TradeStake,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 
 import {
   calcSideStaking,
@@ -27,10 +27,10 @@ import {
   useStakingMap,
   useSubmitBtn,
   useWalletLayer2Socket,
-} from "@loopring-web/core";
-import _ from "lodash";
+} from '@loopring-web/core'
+import _ from 'lodash'
 
-import * as sdk from "@loopring-web/loopring-sdk";
+import * as sdk from '@loopring-web/loopring-sdk'
 
 import {
   LoopringAPI,
@@ -39,70 +39,52 @@ import {
   useSystem,
   useTokenMap,
   walletLayer2Service,
-} from "../../index";
-import { useTranslation } from "react-i18next";
-import { useTradeStake } from "../../stores";
+} from '../../index'
+import { useTranslation } from 'react-i18next'
+import { useTradeStake } from '../../stores'
 
-export const useStakeTradeJOIN = <
-  T extends IBData<I>,
-  I,
-  ACD extends DeFiSideCalcData<T>
->({
+export const useStakeTradeJOIN = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
   setToastOpen,
   symbol: coinSellSymbol,
 }: {
-  symbol: string;
-  setToastOpen: (props: {
-    open: boolean;
-    content: JSX.Element | string;
-    type: ToastType;
-  }) => void;
+  symbol: string
+  setToastOpen: (props: { open: boolean; content: JSX.Element | string; type: ToastType }) => void
 }) => {
-  const { t } = useTranslation(["common"]);
-  const refreshRef = React.createRef();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { tokenMap } = useTokenMap();
-  const { account } = useAccount();
-  const { setShowAccount } = useOpenModals();
-  const {
-    status: stakingMapStatus,
-    marketMap: stakingMap,
-    getStakingMap,
-  } = useStakingMap();
+  const { t } = useTranslation(['common'])
+  const refreshRef = React.createRef()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const { tokenMap } = useTokenMap()
+  const { account } = useAccount()
+  const { setShowAccount } = useOpenModals()
+  const { status: stakingMapStatus, marketMap: stakingMap, getStakingMap } = useStakingMap()
 
-  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
-  const { tradeStake, updateTradeStake, resetTradeStake } = useTradeStake();
-  const { exchangeInfo, allowTrade } = useSystem();
-  const { toggle } = useToggle();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals()
+  const { tradeStake, updateTradeStake, resetTradeStake } = useTradeStake()
+  const { exchangeInfo, allowTrade } = useSystem()
+  const { toggle } = useToggle()
 
   const handleOnchange = _.debounce(
-    ({
-      tradeData,
-      _tradeStake = {},
-    }: {
-      tradeData: T;
-      _tradeStake?: Partial<TradeStake<T>>;
-    }) => {
-      const tradeStake = store.getState()._router_tradeStake.tradeStake;
+    ({ tradeData, _tradeStake = {} }: { tradeData: T; _tradeStake?: Partial<TradeStake<T>> }) => {
+      const tradeStake = store.getState()._router_tradeStake.tradeStake
       let _deFiSideCalcData: DeFiSideCalcData<T> = {
         ...tradeStake.deFiSideCalcData,
-      } as unknown as DeFiSideCalcData<T>;
+      } as unknown as DeFiSideCalcData<T>
       let _oldTradeStake = {
         ...tradeStake,
         ..._tradeStake,
-      };
+      }
       //_.cloneDeep({ ...tradeStake, ..._tradeStake });
-      myLog("defi handleOnchange", _oldTradeStake);
+      myLog('defi handleOnchange', _oldTradeStake)
 
       if (tradeData && coinSellSymbol) {
-        const inputValue = tradeData?.tradeValue?.toString() ?? "0";
-        const tokenSell = tokenMap[coinSellSymbol];
+        const inputValue = tradeData?.tradeValue?.toString() ?? '0'
+        const tokenSell = tokenMap[coinSellSymbol]
         const { sellVol, deFiSideCalcData } = calcSideStaking({
           inputValue,
           isJoin: true,
           deFiSideCalcData: _deFiSideCalcData,
           tokenSell,
-        });
+        })
 
         // @ts-ignore
         _deFiSideCalcData = {
@@ -111,22 +93,22 @@ export const useStakeTradeJOIN = <
             ...tradeData,
             tradeValue: tradeData?.tradeValue?.toString(),
           },
-        };
+        }
         updateTradeStake({
           sellToken: tokenSell,
           sellVol,
           deFiSideCalcData: {
             ..._deFiSideCalcData,
           },
-        });
+        })
       }
     },
-    globalSetup.wait
-  );
+    globalSetup.wait,
+  )
 
   const resetDefault = React.useCallback(
     async (clearTrade: boolean = false) => {
-      let walletMap: any = {};
+      let walletMap: any = {}
       let deFiSideCalcDataInit: Partial<DeFiSideCalcData<any>> = {
         ...tradeStake.deFiSideCalcData,
         coinSell: {
@@ -137,32 +119,28 @@ export const useStakeTradeJOIN = <
               ? tradeStake.deFiSideCalcData?.coinSell?.tradeValue
               : undefined,
         },
-      };
+      }
       try {
-        let item = stakingMap[coinSellSymbol];
+        let item = stakingMap[coinSellSymbol]
         if (item && stakingMap) {
-          deFiSideCalcDataInit.stakeViewInfo = { ...item };
+          deFiSideCalcDataInit.stakeViewInfo = { ...item }
         } else {
-          throw new Error("no product");
+          throw new Error('no product')
         }
 
         if (account.readyState === AccountStatus.ACTIVATED) {
           if (clearTrade === true) {
-            walletLayer2Service.sendUserUpdate();
+            walletLayer2Service.sendUserUpdate()
           }
-          walletMap = makeWalletLayer2(true).walletMap ?? {};
+          walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
 
-          deFiSideCalcDataInit.coinSell.balance =
-            walletMap[coinSellSymbol]?.count;
+          deFiSideCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count
         }
 
-        if (
-          clearTrade ||
-          tradeStake.deFiSideCalcData?.coinSell?.tradeValue === undefined
-        ) {
-          deFiSideCalcDataInit.coinSell.tradeValue = undefined;
+        if (clearTrade || tradeStake.deFiSideCalcData?.coinSell?.tradeValue === undefined) {
+          deFiSideCalcDataInit.coinSell.tradeValue = undefined
           updateTradeStake({
-            sellVol: "0",
+            sellVol: '0',
             sellToken: tokenMap[coinSellSymbol],
             deFiSideCalcData: {
               ...deFiSideCalcDataInit,
@@ -171,27 +149,26 @@ export const useStakeTradeJOIN = <
                 tradeValue: undefined,
               },
             } as DeFiSideCalcData<T>,
-          });
-          myLog("resetDefault defi clearTrade", deFiSideCalcDataInit);
+          })
+          myLog('resetDefault defi clearTrade', deFiSideCalcDataInit)
         } else {
           const tradeData = {
             ...deFiSideCalcDataInit.coinSell,
-            tradeValue:
-              tradeStake.deFiSideCalcData?.coinSell?.tradeValue ?? undefined,
-          };
-          handleOnchange({ tradeData });
+            tradeValue: tradeStake.deFiSideCalcData?.coinSell?.tradeValue ?? undefined,
+          }
+          handleOnchange({ tradeData })
         }
       } catch (error) {
         setToastOpen({
           open: true,
           type: ToastType.error,
           content: t(
-            SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO).code ?? 700001]
-              ?.messageKey ?? (error as sdk.RESULT_INFO).message
+            SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO).code ?? 700001]?.messageKey ??
+              (error as sdk.RESULT_INFO).message,
           ),
-        });
+        })
       }
-      setIsLoading(false);
+      setIsLoading(false)
     },
     [
       account.readyState,
@@ -201,55 +178,49 @@ export const useStakeTradeJOIN = <
       tokenMap,
       tradeStake.deFiSideCalcData,
       updateTradeStake,
-    ]
-  );
+    ],
+  )
 
   const walletLayer2Callback = React.useCallback(async () => {
-    let tradeValue: any = undefined;
+    let tradeValue: any = undefined
     let deFiSideCalcDataInit: Partial<DeFiSideCalcData<any>> = {
       coinSell: {
         belong: coinSellSymbol,
         balance: undefined,
       },
       ...(tradeStake?.deFiSideCalcData ?? {}),
-    };
+    }
     if (tradeStake.deFiSideCalcData) {
-      tradeValue =
-        tradeStake?.deFiSideCalcData?.coinSell?.tradeValue ?? undefined;
+      tradeValue = tradeStake?.deFiSideCalcData?.coinSell?.tradeValue ?? undefined
     }
     if (deFiSideCalcDataInit?.coinSell?.belong) {
-      let walletMap: any;
+      let walletMap: any
       if (account.readyState === AccountStatus.ACTIVATED) {
-        walletMap = makeWalletLayer2(true).walletMap;
+        walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
         deFiSideCalcDataInit.coinSell = {
           belong: coinSellSymbol,
           balance: walletMap[coinSellSymbol]?.count,
-        };
+        }
       } else {
         deFiSideCalcDataInit.coinSell = {
           belong: coinSellSymbol,
           balance: undefined,
-        };
+        }
       }
       const tradeData = {
         ...deFiSideCalcDataInit.coinSell,
         tradeValue,
-      };
-      myLog("resetDefault Defi walletLayer2Callback", tradeData);
-      handleOnchange({ tradeData });
+      }
+      myLog('resetDefault Defi walletLayer2Callback', tradeData)
+      handleOnchange({ tradeData })
     }
-  }, [
-    account.readyState,
-    coinSellSymbol,
-    handleOnchange,
-    tradeStake.deFiSideCalcData,
-  ]);
+  }, [account.readyState, coinSellSymbol, handleOnchange, tradeStake.deFiSideCalcData])
 
-  useWalletLayer2Socket({ walletLayer2Callback });
+  useWalletLayer2Socket({ walletLayer2Callback })
   const sendRequest = React.useCallback(async () => {
-    const tradeStake = store.getState()._router_tradeStake.tradeStake;
+    const tradeStake = store.getState()._router_tradeStake.tradeStake
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       if (
         LoopringAPI.userAPI &&
         LoopringAPI.defiAPI &&
@@ -264,21 +235,17 @@ export const useStakeTradeJOIN = <
             tokenId: tradeStake.sellToken?.tokenId,
             volume: tradeStake.sellVol,
           },
-        };
-        myLog("Stake Trade request:", request);
+        }
+        myLog('Stake Trade request:', request)
 
         const response = await LoopringAPI.defiAPI.sendStake(
           request,
           account.eddsaKey.sk,
-          account.apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-          throw new CustomErrorWithCode(errorItem);
+          account.apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+          throw new CustomErrorWithCode(errorItem)
         } else {
           const response1 = await LoopringAPI.defiAPI.getStakeSummary(
             {
@@ -286,15 +253,12 @@ export const useStakeTradeJOIN = <
               hashes: response.hash,
               tokenId: tradeStake.sellToken.tokenId,
             },
-            account.apiKey
-          );
-          let item: any;
-          if (
-            (response1 as sdk.RESULT_INFO).code ||
-            (response1 as sdk.RESULT_INFO).message
-          ) {
+            account.apiKey,
+          )
+          let item: any
+          if ((response1 as sdk.RESULT_INFO).code || (response1 as sdk.RESULT_INFO).message) {
           } else {
-            item = (response1 as any).list[0];
+            item = (response1 as any).list[0]
           }
 
           setShowAccount({
@@ -304,38 +268,33 @@ export const useStakeTradeJOIN = <
               symbol: tradeStake.sellToken.symbol,
               amount: tradeStake.deFiSideCalcData.coinSell.tradeValue,
               daysDuration: Math.ceil(
-                Number(
-                  tradeStake?.deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0
-                ) / 86400000
+                Number(tradeStake?.deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0) / 86400000,
               ),
               ...item,
             },
-          });
-          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
-          walletLayer2Service.sendUserUpdate();
+          })
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE)
+          walletLayer2Service.sendUserUpdate()
           if (
             store.getState().modals.isShowAccount.isShow &&
-            store.getState().modals.isShowAccount.step ==
-              AccountStep.Staking_Success
+            store.getState().modals.isShowAccount.step == AccountStep.Staking_Success
           ) {
-            setShowAccount({ isShow: false });
+            setShowAccount({ isShow: false })
           }
         }
       } else {
-        throw new Error("api not ready");
+        throw new Error('api not ready')
       }
     } catch (reason) {
       setToastOpen({
         open: true,
         type: ToastType.error,
         content:
-          t("labelInvestFailed") +
-            " " +
-            (reason as CustomErrorWithCode)?.messageKey ??
+          t('labelInvestFailed') + ' ' + (reason as CustomErrorWithCode)?.messageKey ??
           ` error: ${t((reason as CustomErrorWithCode)?.messageKey)}`,
-      });
+      })
     } finally {
-      resetDefault(true);
+      resetDefault(true)
     }
   }, [
     account.accountId,
@@ -345,7 +304,7 @@ export const useStakeTradeJOIN = <
     resetDefault,
     setToastOpen,
     t,
-  ]);
+  ])
 
   const onSubmitBtnClick = React.useCallback(async () => {
     // const tradeStake = store.getState().router_tradeStake.tradeStake;
@@ -356,14 +315,14 @@ export const useStakeTradeJOIN = <
       account.eddsaKey?.sk
     ) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
-        setShowSupport({ isShow: true });
+        setShowSupport({ isShow: true })
       } else if (toggle && !toggle[`${coinSellSymbol}StackInvest`].enable) {
-        setShowTradeIsFrozen({ isShow: true, type: "StakingInvest" });
+        setShowTradeIsFrozen({ isShow: true, type: 'StakingInvest' })
       } else {
-        sendRequest();
+        sendRequest()
       }
     } else {
-      return false;
+      return false
     }
   }, [
     account.readyState,
@@ -373,23 +332,20 @@ export const useStakeTradeJOIN = <
     sendRequest,
     setToastOpen,
     t,
-  ]);
+  ])
   const availableTradeCheck = React.useCallback((): {
-    tradeBtnStatus: TradeBtnStatus;
-    label: string;
+    tradeBtnStatus: TradeBtnStatus
+    label: string
   } => {
-    const account = store.getState().account;
-    const tradeStake = store.getState()._router_tradeStake.tradeStake;
-    myLog("tradeStake", tradeStake);
+    const account = store.getState().account
+    const tradeStake = store.getState()._router_tradeStake.tradeStake
+    myLog('tradeStake', tradeStake)
     if (account.readyState === AccountStatus.ACTIVATED) {
-      if (
-        tradeStake?.sellVol === undefined ||
-        sdk.toBig(tradeStake?.sellVol).lte(0)
-      ) {
+      if (tradeStake?.sellVol === undefined || sdk.toBig(tradeStake?.sellVol).lte(0)) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: "labelEnterAmount",
-        };
+          label: 'labelEnterAmount',
+        }
       } else if (
         sdk
           .toBig(tradeStake?.sellVol)
@@ -399,16 +355,14 @@ export const useStakeTradeJOIN = <
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMin| ${getValuePrecisionThousand(
-            sdk.toBig(
-              tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount ?? 0
-            ),
+            sdk.toBig(tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount ?? 0),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
             false,
-            { floor: false, isAbbreviate: true }
+            { floor: false, isAbbreviate: true },
           )} ${coinSellSymbol}`,
-        };
+        }
       } else if (
         sdk
           .toBig(tradeStake?.sellVol)
@@ -417,16 +371,14 @@ export const useStakeTradeJOIN = <
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelDefiMax| ${getValuePrecisionThousand(
-            sdk.toBig(
-              tradeStake?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount ?? 0
-            ),
+            sdk.toBig(tradeStake?.deFiSideCalcData?.stakeViewInfo?.maxSellAmount ?? 0),
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
             tokenMap[coinSellSymbol].precision,
             false,
-            { floor: false, isAbbreviate: true }
+            { floor: false, isAbbreviate: true },
           )} ${coinSellSymbol}`,
-        };
+        }
         // return {
         //   tradeBtnStatus: TradeBtnStatus.DISABLED,
         //   label: `labelDefiNoEnough| ${coinSellSymbol}`,
@@ -440,12 +392,12 @@ export const useStakeTradeJOIN = <
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelStakeNoEnough| ${coinSellSymbol}`,
-        };
+        }
       } else {
-        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
+        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
       }
     }
-    return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
+    return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
   }, [
     tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellVol,
     tradeStake.sellVol,
@@ -453,7 +405,7 @@ export const useStakeTradeJOIN = <
     tradeStake.deFiSideCalcData,
     tokenMap,
     coinSellSymbol,
-  ]);
+  ])
   const {
     btnStatus,
     onBtnClick,
@@ -462,18 +414,18 @@ export const useStakeTradeJOIN = <
     availableTradeCheck,
     isLoading,
     submitCallback: onSubmitBtnClick,
-  });
+  })
   React.useEffect(() => {
-    getStakingMap();
-    walletLayer2Service.sendUserUpdate();
-  }, []);
+    getStakingMap()
+    walletLayer2Service.sendUserUpdate()
+  }, [])
   React.useEffect(() => {
     const {
       _router_tradeStake: { tradeStake },
       invest: {
         stakingMap: { marketMap: stakingMap },
       },
-    } = store.getState();
+    } = store.getState()
 
     if (
       stakingMapStatus === SagaStatus.UNSET &&
@@ -481,21 +433,17 @@ export const useStakeTradeJOIN = <
       stakingMap[coinSellSymbol]?.symbol == coinSellSymbol &&
       !(tradeStake?.deFiSideCalcData?.coinSell?.belong == coinSellSymbol)
     ) {
-      resetDefault(true);
-    } else if (
-      stakingMapStatus === SagaStatus.UNSET &&
-      stakingMap &&
-      !stakingMap[coinSellSymbol]
-    ) {
+      resetDefault(true)
+    } else if (stakingMapStatus === SagaStatus.UNSET && stakingMap && !stakingMap[coinSellSymbol]) {
       // setToastOpen({
       //
       // })
     }
     return () => {
-      resetTradeStake();
-      handleOnchange.cancel();
-    };
-  }, [stakingMapStatus]);
+      resetTradeStake()
+      handleOnchange.cancel()
+    }
+  }, [stakingMapStatus])
   const stakeWrapProps = React.useMemo(() => {
     return {
       disabled: false,
@@ -505,9 +453,7 @@ export const useStakeTradeJOIN = <
       },
       isJoin: true,
       isLoading,
-      switchStobEvent: (
-        _isStoB: boolean | ((prevState: boolean) => boolean)
-      ) => {},
+      switchStobEvent: (_isStoB: boolean | ((prevState: boolean) => boolean)) => {},
       onSubmitClick: onBtnClick as () => void,
       onChangeEvent: handleOnchange,
       deFiSideCalcData: {
@@ -522,7 +468,7 @@ export const useStakeTradeJOIN = <
       },
       btnStatus,
       accStatus: account.readyState,
-    };
+    }
   }, [
     refreshRef,
     sendRequest,
@@ -536,8 +482,8 @@ export const useStakeTradeJOIN = <
     tokenMap,
     coinSellSymbol,
     btnStatus,
-  ]); // as ForceWithdrawProps<any, any>;
+  ]) // as ForceWithdrawProps<any, any>;
   return {
     stakeWrapProps: stakeWrapProps as unknown as DeFiSideWrapProps<T, I, ACD>,
-  };
-};
+  }
+}

@@ -1,8 +1,8 @@
-import { Box, Typography } from "@mui/material";
-import { Button, ModalCloseButton } from "@loopring-web/component-lib";
-import styled from "@emotion/styled";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Box, Typography } from '@mui/material'
+import { Button, ModalCloseButton } from '@loopring-web/component-lib'
+import styled from '@emotion/styled'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const StyledBox = styled(Box)`
   bottom: 0;
@@ -20,64 +20,49 @@ const StyledBox = styled(Box)`
   }
   .full-btn-close {
   }
-` as typeof Box;
+` as typeof Box
 
 export interface PopperProps {
-  isShow: boolean;
-  title?: string;
-  content: string;
-  btnTxt: string;
-  clickToConfirm?: () => void;
+  isShow: boolean
+  title?: string
+  content: string
+  btnTxt: string
+  clickToConfirm?: () => void
 }
 
-export const BottomRule = ({
-  isShow,
-  title,
-  content,
-  btnTxt,
-  clickToConfirm,
-}: PopperProps) => {
-  const [_isShow, setIsShow] = React.useState(isShow);
-  const trans = useTranslation();
+export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm }: PopperProps) => {
+  const [_isShow, setIsShow] = React.useState(isShow)
+  const trans = useTranslation()
   return _isShow ? (
     <StyledBox
       height={60}
-      width={"100%"}
+      width={'100%'}
       flex={1}
-      display={"flex"}
-      alignItems={"center"}
-      justifyContent={"center"}
-      flexDirection={"row"}
-      position={"fixed"}
+      display={'flex'}
+      alignItems={'center'}
+      justifyContent={'center'}
+      flexDirection={'row'}
+      position={'fixed'}
     >
-      {title ? <Typography className={"title"}>{title}</Typography> : <></>}
-      <Typography
-        className={"content"}
-        color={"textSecondary"}
-        variant={"body1"}
-        paddingX={3}
-      >
+      {title ? <Typography className={'title'}>{title}</Typography> : <></>}
+      <Typography className={'content'} color={'textSecondary'} variant={'body1'} paddingX={3}>
         {content}
       </Typography>
       <Button
-        variant={"contained"}
-        size={"small"}
+        variant={'contained'}
+        size={'small'}
         onClick={() => {
           if (clickToConfirm) {
-            clickToConfirm();
-            setIsShow(false);
+            clickToConfirm()
+            setIsShow(false)
           }
         }}
       >
-        {" "}
-        {btnTxt}{" "}
+        {btnTxt}
       </Button>
-      <ModalCloseButton
-        onClose={() => setIsShow(false)}
-        {...{ ...trans, tReady: true }}
-      />
+      <ModalCloseButton onClose={() => setIsShow(false)} {...{ ...trans, tReady: true }} />
     </StyledBox>
   ) : (
     <></>
-  );
-};
+  )
+}

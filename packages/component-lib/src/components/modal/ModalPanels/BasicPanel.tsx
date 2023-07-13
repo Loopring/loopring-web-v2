@@ -324,7 +324,6 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
                     marginTop={0}
                     alignSelf={'flex-center'}
                     paddingX={2}
-                    sx={{ wordBreak: 'break-all' }}
                   >
                     {describe1}
                   </Typography>

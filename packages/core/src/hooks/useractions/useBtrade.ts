@@ -182,7 +182,7 @@ export const useBtradeSwap = <
         walletLayer2Status === SagaStatus.UNSET
       ) {
         if (!Object.keys(tradeCalcData?.walletMap ?? {}).length) {
-          walletMap = makeWalletLayer2(true).walletMap as WalletMap<any>
+          walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap as WalletMap<any>
         }
         walletMap = tradeCalcData?.walletMap as WalletMap<any>
       }
@@ -327,7 +327,7 @@ export const useBtradeSwap = <
         tradeBtnStatus: TradeBtnStatus.DISABLED,
       }
     }
-    const walletMap = makeWalletLayer2(true).walletMap ?? {}
+    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
     let validAmt = !!(
       tradeCalcData?.volumeSell &&
       sellMinAmtInfo &&
@@ -792,7 +792,7 @@ export const useBtradeSwap = <
         setTradeCalcData(_tradeCalcData)
         // @ts-ignore
         setTradeData((state) => {
-          const walletMap = makeWalletLayer2(true).walletMap
+          const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
 
           return {
             ...(state ?? {}),
@@ -879,9 +879,7 @@ export const useBtradeSwap = <
       const {
         tradeBtrade: { depth, tradePair, btradeType: _btradeType },
       } = store.getState()._router_tradeBtrade
-
-      const walletMap = tradeCalcData?.walletMap as WalletMap<any>
-
+      const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
       myLog('useBtradeSwap:reCalculateDataWhenValueChange', tradeData, _tradePair, type)
       if (
         depth &&
@@ -942,7 +940,7 @@ export const useBtradeSwap = <
           l2Amount &&
           (sellBuyStr == market ? btradeAmount.base !== '0' : btradeAmount.quote !== '0')
         ) {
-          const btradeAmountVol = sellBuyStr == market ? btradeAmount.quote : btradeAmount.base
+          const btradeAmountVol = sellBuyStr == market ? btradeAmount.base : btradeAmount.quote
           if (btradeAmountVol) {
             poolToVol =
               sdk
@@ -1206,7 +1204,7 @@ export const useBtradeSwap = <
       (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
         `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
     ) {
-      const walletMap = makeWalletLayer2(true).walletMap
+      const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
 
       const result = reCalcStoB({
         market,

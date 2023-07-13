@@ -66,7 +66,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
     const [type, setType] = React.useState<'buy' | 'sell' | 'exchange'>('buy')
     const [to, setTo] = React.useState<'button' | 'menu'>('button')
     const onChangeEvent = (_index: 0 | 1, { type, to, tradeData }: SwapData<SwapTradeData<T>>) => {
-      myLog('hookSwap onChangeEvent', tradeData)
+      // myLog('hookSwap onChangeEvent', tradeData)
       if (_index !== index) {
         setIndex(_index)
       }
@@ -88,7 +88,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
           },
           (type === 'exchange' ? 'exchange' : `${type}To${to}`) as SwapType,
         )
-      myLog('hookSwap panelEventNext', tradeData.slippage, tradeData)
+      // myLog('hookSwap panelEventNext', tradeData.slippage, tradeData)
     }
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
     const [settingPopoverOpen, setSettingPopoverOpen] = useState(false)
@@ -107,7 +107,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
     }, [swapSecondConfirmation, setSwapSecondConfirmation, setToastOpen])
     const onSlippageChangeCallBack = React.useCallback(
       (slippage: number | string, customSlippage: number | string | undefined) => {
-        myLog('hookSwap slippage', slippage, tradeData)
+        // myLog('hookSwap slippage', slippage, tradeData)
         onChangeEvent(0, {
           tradeData: {
             ...tradeData,
@@ -130,7 +130,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
         {
           key: 'trade',
           element: React.useMemo(() => {
-            myLog('hookSwap view tradeData', tradeData)
+            // myLog('hookSwap view tradeData', tradeData)
 
             return (
               <SwapTradeWrap<T, I, TCD, SCD>
@@ -300,10 +300,10 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                       onClick={() => {
                         !tradeCalcData.isBtrade
                           ? history.push(
-                              `/l2assets/history/${RecordTabIndex.trades}?market=${market}`,
+                              `/l2assets/history/${RecordTabIndex.Trades}?market=${market}`,
                             )
                           : history.push(
-                              `/l2assets/history/${RecordTabIndex.btradeSwapRecords}?market=${market}`,
+                              `/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
                             )
                       }}
                       sx={{ backgroundColor: 'var(--field-opacity)' }}

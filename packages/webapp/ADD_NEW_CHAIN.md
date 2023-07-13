@@ -233,4 +233,44 @@ export const L1L2_NAME_DEFINED = {
 };
 ```
 
+### U base token address
+
+```ts 
+export const TokenPriceBase = {
+TAIKO: '0x0000000000000000000000000000000000000000',
+ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
+}
+```
+
+### Record history
+
+```ts 
+export const RecordMap: { [key: string]: RecordTabIndex[] } = {
+    TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
+    ETHEREUM: [
+        RecordTabIndex.Transactions,
+        RecordTabIndex.Trades,
+        RecordTabIndex.Orders,
+        RecordTabIndex.StopLimitRecords,
+        RecordTabIndex.AmmRecords,
+        RecordTabIndex.DefiRecords,
+        RecordTabIndex.DualRecords,
+        RecordTabIndex.SideStakingRecords,
+        RecordTabIndex.BtradeSwapRecords,
+    ],
+    GOERLI: [
+        RecordTabIndex.Transactions,
+        RecordTabIndex.Trades,
+        RecordTabIndex.Orders,
+        RecordTabIndex.StopLimitRecords,
+        RecordTabIndex.AmmRecords,
+        RecordTabIndex.DefiRecords,
+        RecordTabIndex.DualRecords,
+        RecordTabIndex.SideStakingRecords,
+        RecordTabIndex.BtradeSwapRecords,
+    ],
+}
+```
+
 

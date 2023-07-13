@@ -101,6 +101,7 @@ const WrapModal = () => {
   const { depositProps } = useDeposit(false)
   const { assetsRawData } = useGetAssets()
   const location = useLocation()
+
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
   const { open, actionEle, handleClose } = useOffFaitModal()

@@ -1,3 +1,4 @@
+import { SoursURL } from "../constant";
 import { sanitize } from "dompurify";
 import React from "react";
 
@@ -27,6 +28,7 @@ export const RedPacketColorConfig: {
 export const RedPacketCssColorConfig: {
   default: ColorCssConfig;
   official: ColorCssConfig;
+  blindbox: ColorCssConfig;
 } = {
   default: {
     colorTop: "#FD7659",
@@ -58,6 +60,23 @@ export const RedPacketCssColorConfig: {
     secondaryColor: "#D09145",
     disableColor: "#7C3400",
   },
+  blindbox: {
+    // background: linear-gradient(95.9deg, #A35388 0.7%, #FF6151 99.3%);
+
+    colorTop: "url('#gradient1')",
+    startColor: "#A35388",
+    endColor: "#FF6151",
+    startBgColor: "#FC7A5A",
+    endBgColor: "#930D00",
+    startCard: "#FEF4DE",
+    endCard: "#FED897",
+    line: "#D4B164",
+    highLightColor: "#A25402",
+    highLightDisableColor: "#A25402",
+    primaryColor: "#FFF7B1",
+    secondaryColor: "#D09145",
+    disableColor: "#7C3400",
+  },
 };
 export const RedPacketWrapSVG = ({
   colorTop,
@@ -65,13 +84,14 @@ export const RedPacketWrapSVG = ({
   endColor,
   type,
 }: {
-  type: "default" | "official";
+  type: "default" | "official" | "blindbox";
   colorTop: "#FD7659" | "#FFD595";
   startColor: "#FC7A5A" | "#FFD596";
   endColor: "#FF6151" | "#FDBD6A";
-}) => {
+}) => { 
   return (
     <svg width={274} height={414} viewBox="0 0 274 414" aria-hidden="true">
+      
       <path
         d="M7 13C7 7.47714 11.4772 3 17 3H257C262.523 3 267 7.47715 267 13V393C267 398.523 262.523 403 257 403H17C11.4772 403 7 398.523 7 393V13Z"
         fill={`url(#paint_linear_${type})`}
@@ -80,8 +100,9 @@ export const RedPacketWrapSVG = ({
         <path
           d="M17 3C11.4771 3 7 7.47716 7 13V108.095C7 112.092 9.3688 115.728 13.1024 117.154C43.3399 128.709 87.6387 136 137 136C186.361 136 230.66 128.709 260.898 117.154C264.631 115.728 267 112.092 267 108.095V13C267 7.47716 262.523 3 257 3H17Z"
           fill={colorTop}
-        />
+        />  
       </g>
+      {type === "blindbox" && <image style={{transform: "translate(37px, 150px)"}} opacity={"0.2"} href={SoursURL + "images/redpackBlind3.webp"} height="200" width="200" />  }
       <defs>
         <filter
           id={`filterWrap${type}1`}
@@ -118,16 +139,13 @@ export const RedPacketWrapSVG = ({
             result="shape"
           />
         </filter>
-        <linearGradient
-          id={`paint_linear_${type}`}
-          x1="137"
-          y1="2.99997"
-          x2="137"
-          y2="403"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stop-color={startColor} />
-          <stop offset="1" stop-color={endColor} />
+        <linearGradient gradientTransform="rotate(95.9deg)" id={`paint_linear_${type}`}>
+          <stop offset="0.7%" stop-color={startColor} />
+          <stop offset="99.3%" stop-color={endColor} />
+        </linearGradient>
+        <linearGradient gradientTransform="rotate(95.9deg)" id="gradient1">
+          <stop offset="0.7%" stop-color="#A35388" />
+          <stop offset="99.3%" stop-color="#FF6151" />
         </linearGradient>
       </defs>
     </svg>
@@ -145,7 +163,7 @@ export const RedPacketOpenWrapSVG = ({
   line,
   type,
 }: {
-  type: "default" | "official";
+  type: "default" | "official" | "blindbox";
   colorTop: "#FD7659" | "#FFD595";
   startColor: "#FC7A5A" | "#FFD596";
   endColor: "#FF6151" | "#FDBD6A";
@@ -180,7 +198,9 @@ export const RedPacketOpenWrapSVG = ({
             fill={`url(#paint${type}2)`}
           />
         </g>
+        {type === "blindbox" && <image style={{transform: "translate(30px, 150px)"}} opacity={"0.2"} href={SoursURL + "images/redpackBlind3.webp"} height="200" width="200" />  }
       </g>
+
       <defs>
         <filter
           id={`filterOpenWrap${type}0`}
@@ -216,7 +236,24 @@ export const RedPacketOpenWrapSVG = ({
             result="effect1_innerShadow_8955_1198"
           />
         </filter>
-        <linearGradient
+        <linearGradient gradientTransform="rotate(95.9deg)" id={`paint${type}0`}>
+          <stop offset="0.7%" stop-color={startBgColor} />
+          <stop offset="99.3%" stop-color={endBgColor} />
+        </linearGradient>
+        <linearGradient gradientTransform="rotate(95.9deg)" id={`paint${type}1`}>
+          <stop offset="0.7%" stop-color={startCard} />
+          <stop offset="99.3%" stop-color={endCard} />
+        </linearGradient>
+        <linearGradient gradientTransform="rotate(95.9deg)" id={`paint${type}2`}>
+          <stop offset="0.7%" stop-color={startColor} />
+          <stop offset="99.3%" stop-color={endColor} />
+        </linearGradient>
+        {/* <linearGradient gradientTransform="rotate(95.9deg)" id="gradient1">
+          <stop offset="0.7%" stop-color="#A35388" />
+          <stop offset="99.3%" stop-color="#FF6151" />
+        </linearGradient> */}
+
+        {/* <linearGradient
           id={`paint${type}0`}
           x1="130"
           y1="29"
@@ -248,7 +285,7 @@ export const RedPacketOpenWrapSVG = ({
         >
           <stop stopColor={startColor} />
           <stop offset="1" stopColor={endColor} />
-        </linearGradient>
+        </linearGradient> */}
       </defs>
     </svg>
   );
@@ -275,8 +312,8 @@ export type ColorConfig = {
   qrColor: string;
 };
 export type ColorCssConfig = {
-  colorTop: "#FD7659" | "#FFD595";
-  startColor: "#FC7A5A" | "#FFD596";
+  colorTop: string;
+  startColor: string;
   endColor: "#FF6151" | "#FDBD6A";
   startBgColor: "#FC7A5A" | "#FFD595";
   endBgColor: "#930D00" | "#934F00";

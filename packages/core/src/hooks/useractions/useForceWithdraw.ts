@@ -1,12 +1,12 @@
-import React from "react";
-import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
+import React from 'react'
+import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import {
   AccountStep,
   ForceWithdrawProps,
   SwitchData,
   TransactionTradeViews,
   useOpenModals,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CoinMap,
@@ -17,13 +17,13 @@ import {
   LIVE_FEE_TIMES,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   LAST_STEP,
   updateForceWithdrawData as updateForceWithdrawDataStore,
-} from "@loopring-web/core";
+} from '@loopring-web/core'
 
-import * as sdk from "@loopring-web/loopring-sdk";
+import * as sdk from '@loopring-web/loopring-sdk'
 
 import {
   useTokenMap,
@@ -42,26 +42,22 @@ import {
   useSystem,
   WalletMapExtend,
   WalletLayer2Map,
-} from "../../index";
-import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import Web3 from "web3";
+} from '../../index'
+import { useWalletInfo } from '../../stores/localStore/walletInfo'
+import { useHistory, useRouteMatch } from 'react-router-dom'
+import Web3 from 'web3'
 
 export const useForceWithdraw = <R extends IBData<T>, T>() => {
-  const { tokenMap, totalCoinMap, idIndex } = useTokenMap();
-  const { account } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
-  const { setShowAccount } = useOpenModals();
-  const history = useHistory();
-  const match = useRouteMatch("/layer2/:forceWithdraw");
-  const {
-    forceWithdrawValue,
-    updateForceWithdrawData,
-    resetForceWithdrawData,
-  } = useModalData();
+  const { tokenMap, totalCoinMap, idIndex } = useTokenMap()
+  const { account } = useAccount()
+  const { exchangeInfo, chainId } = useSystem()
+  const { setShowAccount } = useOpenModals()
+  const history = useHistory()
+  const match = useRouteMatch('/layer2/:forceWithdraw')
+  const { forceWithdrawValue, updateForceWithdrawData, resetForceWithdrawData } = useModalData()
   const {
     modals: { isShowAccount },
-  } = useOpenModals();
+  } = useOpenModals()
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -72,18 +68,16 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
     updateData: ({ fee }) => {
-      const { forceWithdrawValue } = store.getState()._router_modalData;
-      store.dispatch(
-        updateForceWithdrawDataStore({ ...forceWithdrawValue, fee })
-      );
+      const { forceWithdrawValue } = store.getState()._router_modalData
+      store.dispatch(updateForceWithdrawDataStore({ ...forceWithdrawValue, fee }))
     },
-  });
+  })
 
-  const { checkHWAddr, updateHW } = useWalletInfo();
+  const { checkHWAddr, updateHW } = useWalletInfo()
   // const [forceWithDrawAccount, setForceWithDrawAccount] =
   //   React.useState<by>();
 
-  const [walletItsMap, setWalletItsMap] = React.useState<WalletMap<T>>({});
+  const [walletItsMap, setWalletItsMap] = React.useState<WalletMap<T>>({})
 
   const {
     address,
@@ -94,9 +88,9 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     isLoopringAddress,
     isActiveAccount,
     isAddressCheckLoading,
-  } = useAddressCheck();
+  } = useAddressCheck()
 
-  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
 
   const checkBtnStatus = React.useCallback(() => {
     if (
@@ -108,11 +102,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       !!forceWithdrawValue?.withdrawAddress &&
       !isFeeNotEnough.isFeeNotEnough
     ) {
-      enableBtn();
-      myLog("enableBtn");
-      return;
+      enableBtn()
+      myLog('enableBtn')
+      return
     }
-    disableBtn();
+    disableBtn()
   }, [
     tokenMap,
     forceWithdrawValue.fee?.belong,
@@ -123,10 +117,10 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     isFeeNotEnough.isFeeNotEnough,
     disableBtn,
     enableBtn,
-  ]);
+  ])
 
   React.useEffect(() => {
-    checkBtnStatus();
+    checkBtnStatus()
   }, [
     address,
     addrStatus,
@@ -136,7 +130,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     forceWithdrawValue.belong,
     isLoopringAddress,
     isActiveAccount,
-  ]);
+  ])
 
   const walletLayer2Callback = React.useCallback(async () => {
     if (
@@ -147,28 +141,25 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       !isActiveAccount
     ) {
       const { userBalances } = await LoopringAPI.userAPI?.getUserBalances(
-        { accountId: checkAddAccountId, tokens: "" },
-        account.apiKey
-      );
-      let walletMap: WalletMap<T> = {};
+        { accountId: checkAddAccountId, tokens: '' },
+        account.apiKey,
+      )
+      let walletMap: WalletMap<T> = {}
       if (userBalances) {
-        const walletLayer2 = Reflect.ownKeys(userBalances).reduce(
-          (prev, item) => {
-            // @ts-ignore
-            return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
-          },
-          {} as WalletLayer2Map<R>
-        );
+        const walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
+          // @ts-ignore
+          return { ...prev, [idIndex[item]]: userBalances[Number(item)] }
+        }, {} as WalletLayer2Map<R>)
         walletMap = Reflect.ownKeys(walletLayer2).reduce((prev, item) => {
           const {
             total,
             locked,
             // pending: { withdraw },
-          } = walletLayer2[item as string];
-          const countBig = sdk.toBig(total).minus(sdk.toBig(locked));
+          } = walletLayer2[item as string]
+          const countBig = sdk.toBig(total).minus(sdk.toBig(locked))
 
           if (countBig.eq(BIGO)) {
-            return prev;
+            return prev
           }
 
           return {
@@ -178,22 +169,20 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
               count: sdk.fromWEI(tokenMap, item, countBig.toString()),
               detail: walletLayer2[item as string],
             },
-          };
-        }, {} as WalletMapExtend<T>);
+          }
+        }, {} as WalletMapExtend<T>)
       }
-      const key = Reflect.ownKeys(walletMap).length
-        ? Reflect.ownKeys(walletMap)[0]
-        : undefined;
-      const _value = key ? walletMap[key] : undefined;
+      const key = Reflect.ownKeys(walletMap).length ? Reflect.ownKeys(walletMap)[0] : undefined
+      const _value = key ? walletMap[key] : undefined
       updateForceWithdrawData({
         withdrawAddress: realAddr,
-        belong: _value?.belong ?? "",
+        belong: _value?.belong ?? '',
         tradeValue: _value?.count,
         balance: _value?.count,
-      });
-      setWalletItsMap({ ...walletMap });
+      })
+      setWalletItsMap({ ...walletMap })
     } else {
-      setWalletItsMap({});
+      setWalletItsMap({})
     }
   }, [
     account.apiKey,
@@ -204,75 +193,59 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     realAddr,
     tokenMap,
     updateForceWithdrawData,
-  ]);
+  ])
 
   React.useEffect(() => {
-    if (
-      checkAddAccountId &&
-      isLoopringAddress &&
-      !isActiveAccount &&
-      !!realAddr
-    ) {
-      walletLayer2Callback();
+    if (checkAddAccountId && isLoopringAddress && !isActiveAccount && !!realAddr) {
+      walletLayer2Callback()
     } else {
-      setWalletItsMap({});
+      setWalletItsMap({})
       updateForceWithdrawData({
-        withdrawAddress: "",
-        belong: "",
+        withdrawAddress: '',
+        belong: '',
         tradeValue: undefined,
         balance: undefined,
-      });
+      })
     }
-  }, [isLoopringAddress, isActiveAccount, checkAddAccountId, realAddr]);
+  }, [isLoopringAddress, isActiveAccount, checkAddAccountId, realAddr])
   // useWalletLayer2Socket({ walletLayer2Callback });
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
-    resetForceWithdrawData();
-    setWalletItsMap({});
-    setAddress("");
-  }, [checkFeeIsEnough, resetForceWithdrawData, setAddress]);
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
+    resetForceWithdrawData()
+    setWalletItsMap({})
+    setAddress('')
+  }, [checkFeeIsEnough, resetForceWithdrawData, setAddress])
 
   React.useEffect(() => {
     // @ts-ignore
-    if (match?.params?.forcewithdraw?.toLowerCase() === "forcewithdraw") {
-      resetDefault();
+    if (match?.params?.forcewithdraw?.toLowerCase() === 'forcewithdraw') {
+      resetDefault()
     } else {
-      resetIntervalTime();
+      resetIntervalTime()
     }
     return () => {
-      resetIntervalTime();
-    };
-  }, [match?.params]);
+      resetIntervalTime()
+    }
+  }, [match?.params])
 
   const processRequest = React.useCallback(
-    async (
-      request: sdk.OriginForcesWithdrawalsV3,
-      isNotHardwareWallet: boolean
-    ) => {
-      const { apiKey, connectName, eddsaKey } = account;
+    async (request: sdk.OriginForcesWithdrawalsV3, isNotHardwareWallet: boolean) => {
+      const { apiKey, connectName, eddsaKey } = account
 
       try {
-        if (
-          connectProvides.usedWeb3 &&
-          LoopringAPI.userAPI &&
-          isAccActivated()
-        ) {
-          let isHWAddr = checkHWAddr(account.accAddress);
+        if (connectProvides.usedWeb3 && LoopringAPI.userAPI && isAccActivated()) {
+          let isHWAddr = checkHWAddr(account.accAddress)
 
           if (!isHWAddr && !isNotHardwareWallet) {
-            isHWAddr = true;
+            isHWAddr = true
           }
 
-          myLog(
-            "force Withdraw processRequest:",
-            isHWAddr,
-            isNotHardwareWallet
-          );
+          myLog('force Withdraw processRequest:', isHWAddr, isNotHardwareWallet)
           const response = await LoopringAPI.userAPI.submitForceWithdrawals(
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId: chainId === "unknown" ? 1 : chainId,
+              chainId: chainId === 'unknown' ? 1 : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
@@ -282,47 +255,43 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
             {
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
-            }
-          );
-          myLog("submitNFTWithdraw:", response);
+            },
+          )
+          myLog('submitNFTWithdraw:', response)
 
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            throw response;
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response
           }
           setShowAccount({
             isShow: true,
             step: AccountStep.ForceWithdraw_In_Progress,
-          });
+          })
           setShowAccount({
             isShow: true,
             step: AccountStep.ForceWithdraw_Submit,
             info: {
               symbol: forceWithdrawValue.belong,
             },
-          });
+          })
           if (isHWAddr) {
-            myLog("......try to set isHWAddr", isHWAddr);
-            updateHW({ wallet: account.accAddress, isHWAddr });
+            myLog('......try to set isHWAddr', isHWAddr)
+            updateHW({ wallet: account.accAddress, isHWAddr })
           }
-          walletLayer2Service.sendUserUpdate();
-          resetDefault();
+          walletLayer2Service.sendUserUpdate()
+          resetDefault()
           history.push(
-            `/l2assets/history/transactions?types=${TransactionTradeViews.forceWithdraw}`
-          );
-          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+            `/l2assets/history/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.forceWithdraw}`,
+          )
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
           if (
             store.getState().modals.isShowAccount.isShow &&
-            store.getState().modals.isShowAccount.step ==
-              AccountStep.ForceWithdraw_Submit
+            store.getState().modals.isShowAccount.step == AccountStep.ForceWithdraw_Submit
           ) {
-            setShowAccount({ isShow: false });
+            setShowAccount({ isShow: false })
           }
         }
       } catch (e: any) {
-        const code = sdk.checkErrorInfo(e, isNotHardwareWallet);
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet)
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
@@ -331,8 +300,8 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
               info: {
                 symbol: forceWithdrawValue.belong,
               },
-            });
-            break;
+            })
+            break
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
             setShowAccount({
@@ -341,15 +310,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
               info: {
                 symbol: forceWithdrawValue.belong,
               },
-            });
-            break;
+            })
+            break
           default:
-            if (
-              [102024, 102025, 114001, 114002].includes(
-                (e as sdk.RESULT_INFO)?.code || 0
-              )
-            ) {
-              checkFeeIsEnough({ isRequiredAPI: true });
+            if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
+              checkFeeIsEnough({ isRequiredAPI: true })
             }
             setShowAccount({
               isShow: true,
@@ -367,8 +332,8 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
                     }
                   : e ?? {}),
               },
-            });
-            break;
+            })
+            break
         }
       }
     },
@@ -381,14 +346,13 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       checkFeeIsEnough,
       resetDefault,
       updateHW,
-    ]
-  );
+    ],
+  )
 
   const handleForceWithdraw = React.useCallback(
     async (_inputValue: R, isFirstTime: boolean = true) => {
-      const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-      const forceWithdrawValue =
-        store.getState()._router_modalData.forceWithdrawValue;
+      const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
+      const forceWithdrawValue = store.getState()._router_modalData.forceWithdrawValue
 
       if (
         readyState === AccountStatus.ACTIVATED &&
@@ -406,14 +370,12 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           setShowAccount({
             isShow: true,
             step: AccountStep.ForceWithdraw_WaitForAuth,
-          });
+          })
 
-          const feeToken = tokenMap[forceWithdrawValue.fee.belong];
+          const feeToken = tokenMap[forceWithdrawValue.fee.belong]
           const feeRaw =
-            forceWithdrawValue.fee.feeRaw ??
-            forceWithdrawValue.fee.__raw__?.feeRaw ??
-            0;
-          const fee = sdk.toBig(feeRaw);
+            forceWithdrawValue.fee.feeRaw ?? forceWithdrawValue.fee.__raw__?.feeRaw ?? 0
+          const fee = sdk.toBig(feeRaw)
           // const fee = sdk.toBig(forceWithdrawValue.fee.__raw__?.feeRaw ?? 0);
 
           const storageId = await LoopringAPI.userAPI?.getNextStorageId(
@@ -421,11 +383,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
               accountId,
               sellTokenId: Number(feeToken.tokenId),
             },
-            apiKey
-          );
+            apiKey,
+          )
           const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
             type: 1,
-          });
+          })
 
           const request: sdk.OriginForcesWithdrawalsV3 = {
             transfer: {
@@ -443,13 +405,13 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
             requesterAddress: accAddress,
             tokenId: tokenMap[forceWithdrawValue.belong].tokenId,
             withdrawAddress: forceWithdrawValue.withdrawAddress ?? realAddr,
-          };
+          }
 
-          myLog("ForcesWithdrawals request:", request);
+          myLog('ForcesWithdrawals request:', request)
 
-          processRequest(request, isFirstTime);
+          processRequest(request, isFirstTime)
         } catch (e: any) {
-          sdk.dumpError400(e);
+          sdk.dumpError400(e)
           setShowAccount({
             isShow: true,
             step: AccountStep.ForceWithdraw_Failed,
@@ -457,12 +419,12 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
               code: UIERROR_CODE.UNKNOWN,
               msg: e?.message,
             },
-          });
+          })
         }
 
-        return true;
+        return true
       } else {
-        return false;
+        return false
       }
     },
     [
@@ -473,26 +435,26 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       setShowAccount,
       realAddr,
       processRequest,
-    ]
-  );
+    ],
+  )
 
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
       setShowAccount({
         isShow: true,
         step: AccountStep.ForceWithdraw_WaitForAuth,
-      });
+      })
       handleForceWithdraw(
         {
           belong: forceWithdrawValue.belong,
           balance: forceWithdrawValue.balance,
           tradeValue: forceWithdrawValue.tradeValue,
         } as R,
-        !isHardwareRetry
-      );
+        !isHardwareRetry,
+      )
     },
-    [forceWithdrawValue, handleForceWithdraw, setShowAccount]
-  );
+    [forceWithdrawValue, handleForceWithdraw, setShowAccount],
+  )
   // myLog("walletItsMap", walletItsMap);
   // @ts-ignore
   const forceWithdrawProps: ForceWithdrawProps<any, any> = React.useMemo(() => {
@@ -502,12 +464,12 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       type: TRADE_TYPE.TOKEN,
       addressDefault: address,
       handleOnAddressChange: (value: any) => {
-        setAddress(value);
+        setAddress(value)
         updateForceWithdrawData({
-          belong: "",
+          belong: '',
           tradeValue: undefined,
           balance: undefined,
-        });
+        })
       },
       lastFailed: isShowAccount?.info?.lastFailed === LAST_STEP.forceWithdraw,
       isActiveAccount,
@@ -523,9 +485,9 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       onWithdrawClick: handleForceWithdraw,
       handlePanelEvent: async (data: SwitchData<R>) => {
         return new Promise((res: any) => {
-          if (data.to === "button") {
+          if (data.to === 'button') {
             if (data.tradeData.belong) {
-              const walletInfo = walletItsMap[data.tradeData.belong];
+              const walletInfo = walletItsMap[data.tradeData.belong]
 
               updateForceWithdrawData({
                 ...forceWithdrawValue,
@@ -533,24 +495,24 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
                 tradeValue: walletInfo?.count, //data.tradeData?.tradeValue,
                 balance: walletInfo?.count,
                 // withdrawAddress: realAddr,
-              });
+              })
             } else {
               updateForceWithdrawData({
-                belong: "",
+                belong: '',
                 tradeValue: undefined,
                 balance: undefined,
                 // withdrawAddress: realAddr,
-              });
+              })
             }
           }
-          res();
-        });
+          res()
+        })
       },
       handleFeeChange,
       feeInfo,
       chargeFeeTokenList,
       isFeeNotEnough,
-    };
+    }
   }, [
     addrStatus,
     address,
@@ -571,13 +533,13 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     totalCoinMap,
     updateForceWithdrawData,
     walletItsMap,
-  ]); // as ForceWithdrawProps<any, any>;
+  ]) // as ForceWithdrawProps<any, any>;
 
   return {
     forceWithdrawProps,
     retryBtn,
-  };
-};
+  }
+}
 
 // ErrorCode.ERR_REST_ACCOUNT_NOT_EXIST, //104003
 //   message =s"payer hasn't completed opening an payerAccount, payerAccount id

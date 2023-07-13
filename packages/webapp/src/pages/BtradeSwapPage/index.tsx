@@ -1,10 +1,9 @@
-import { Box, Icon, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import {
   Button,
   ConfirmBtradeSwapRisk,
   EmptyDefault,
-  LoadingBlock,
   SwapPanel,
   Toast,
   ToastType,
@@ -16,6 +15,7 @@ import {
   LOOPRING_DOCUMENT,
   TOAST_TIME,
   SoursURL,
+  ImageIcon,
 } from '@loopring-web/common-resources'
 import { confirmation, useBtradeMap, useBtradeSwap, useNotify } from '@loopring-web/core'
 import React from 'react'
@@ -166,6 +166,13 @@ export const BtradeSwapPage = withTranslation('common')(({ t, ...rest }: WithTra
             alignItems={'center'}
           >
             <EmptyDefault
+              emptyPic={
+                <img
+                  className='loading-gif'
+                  width='36'
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
+              }
               message={() => {
                 return (
                   <Button onClick={getBtradeMap} variant={'contained'}>

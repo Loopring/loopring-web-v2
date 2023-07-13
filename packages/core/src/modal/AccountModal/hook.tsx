@@ -2670,7 +2670,7 @@ export function useAccountModalForUI({
                   }
                 }
               setShowAccount({ isShow: false })
-              setShowActiveAccount({ isShow: true })
+              setShowActiveAccount({ isShow: true, info: { isReset: true } })
             }}
             {...{
               ...rest,

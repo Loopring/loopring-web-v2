@@ -6,6 +6,7 @@ import {
   DefaultFeeBips,
   getPriceImpactInfo,
   getTimestampDaysLater,
+  isTradePairMarket,
   LoopringAPI,
   makeWalletLayer2,
   MAPFEEBIPS,
@@ -171,7 +172,7 @@ export const useSwap = <
         walletLayer2Status === SagaStatus.UNSET
       ) {
         if (!Object.keys(tradeCalcData.walletMap ?? {}).length) {
-          walletMap = makeWalletLayer2(true).walletMap as WalletMap<any>
+          walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap as WalletMap<any>
         }
         walletMap = tradeCalcData.walletMap as WalletMap<any>
       }
@@ -228,9 +229,6 @@ export const useSwap = <
       updatePageTradeLite({ market, tradePair })
 
       myLog('hookSwap: Market change getAmount', market)
-      if (account.readyState === AccountStatus.ACTIVATED) {
-        getAmount({ market })
-      }
     }
   }
   const [{ market, tradePair, isMarketInit }, setIsMarketStatus] = React.useState<{
@@ -306,7 +304,7 @@ export const useSwap = <
         tradeBtnStatus: TradeBtnStatus.DISABLED,
       }
     }
-    const walletMap = makeWalletLayer2(true).walletMap ?? {}
+    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
 
     let validAmt = !!(
       calcTradeParams?.amountS &&
@@ -866,7 +864,7 @@ export const useSwap = <
         setSellMinAmt(undefined)
         setTradeCalcData(_tradeCalcData)
         setTradeData((state) => {
-          const walletMap = makeWalletLayer2(true).walletMap
+          const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
 
           return {
             ...(state ?? {}),
@@ -890,8 +888,18 @@ export const useSwap = <
   }
 
   React.useEffect(() => {
-    myLog('hookSwap: pageTradeLite.deep', pageTradeLite?.depth?.symbol, market)
-    if (pageTradeLite.depth && pageTradeLite.depth.symbol === market) {
+    myLog(
+      'hookSwap: pageTradeLite.deep amountStatus storageId',
+      storageId,
+      amountStatus,
+      pageTradeLite?.depth?.symbol,
+      market,
+    )
+    if (
+      amountStatus == SagaStatus.UNSET &&
+      pageTradeLite.depth &&
+      pageTradeLite.depth.symbol === market
+    ) {
       refreshAmmPoolSnapshot()
       setIsMarketStatus((state) => {
         return {
@@ -900,7 +908,14 @@ export const useSwap = <
         }
       })
     }
-  }, [pageTradeLite.depth, tradeCalcData.coinBuy, account.readyState, amountStatus, market])
+  }, [
+    pageTradeLite.depth,
+    tradeCalcData.coinBuy,
+    account.readyState,
+    storageId,
+    amountStatus,
+    market,
+  ])
 
   React.useEffect(() => {
     if (market) {
@@ -915,7 +930,6 @@ export const useSwap = <
   }, [market])
   const refreshAmmPoolSnapshot = React.useCallback(() => {
     const { ticker, ammPoolSnapshot, depth, lastStepAt, tradePair, market } = pageTradeLite
-
     if (
       tradeData &&
       lastStepAt &&
@@ -931,7 +945,7 @@ export const useSwap = <
       (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
         `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
     ) {
-      const walletMap = makeWalletLayer2(true).walletMap
+      const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
       let { stob, btos, close } = calcPriceByAmmTickMapDepth({
         market: market as any,
         tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
@@ -992,13 +1006,13 @@ export const useSwap = <
   }, [market, ammMap, tickerMap])
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
-      const walletMap = makeWalletLayer2(true).walletMap
+      const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
       const { ammPoolSnapshot, depth, tradePair, close } =
         store.getState()._router_pageTradeLite.pageTradeLite
       const { amountMap } = store.getState().amountMap
       let calcForMinAmt, calcForMinCost, calcForPriceImpact
       myLog('hookSwap:reCalculateDataWhenValueChange', tradeData, _tradePair, type)
-      if (depth && market && _tradePair === tradePair && _tradeData) {
+      if (depth && market && _tradePair && isTradePairMarket(_tradePair, market) && _tradeData) {
         const coinA = _tradeData.sell.belong
         const coinB = _tradeData.buy.belong
         _tradeData.sell.balance = walletMap ? walletMap[coinA]?.count : 0

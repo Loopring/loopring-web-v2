@@ -61,6 +61,7 @@ export const ProviderMenu = ({
   termUrl,
   handleSelect,
   NetWorkItems,
+  status,
   providerName = loopringProvider.ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
   const { isMobile, defaultNetwork } = useSettings()
@@ -196,6 +197,8 @@ export const ProviderMenu = ({
                 item.key == loopringProvider.ConnectProviders.GameStop &&
                 ![1, 5].includes(Number(defaultNetwork))
               }
+              loadingbg={'var(--field-opacity)'}
+              loading={status === 'processing' && isProvider(item.key) ? 'true' : 'false'}
               className={`${isMobile ? 'isMobile' : ''} ${
                 isProvider(item.key) ? 'selected provider ' : 'provider'
               }`}

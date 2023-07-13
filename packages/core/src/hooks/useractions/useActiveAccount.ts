@@ -28,7 +28,7 @@ export const useActiveAccount = <T>(): {
   } = useOpenModals()
   const { status: walletLayer2Status } = useWalletLayer2()
   const [walletMap, setWalletMap] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>),
+    makeWalletLayer2({ needFilterZero: true, isActive: true }).walletMap ?? ({} as WalletMap<any>),
   )
   const { goUpdateAccount } = useUpdateAccount()
   const { activeAccountValue } = useModalData()
@@ -62,7 +62,7 @@ export const useActiveAccount = <T>(): {
     },
   })
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? {}
+    const walletMap = makeWalletLayer2({ needFilterZero: true, isActive: true }).walletMap ?? {}
     setWalletMap(walletMap)
     checkFeeIsEnough()
   }, [])
