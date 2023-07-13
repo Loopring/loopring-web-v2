@@ -386,6 +386,11 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               i18nKey='transferDescription'
               tOptions={{
                 l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
               Transfer to any valid Ethereum addresses instantly. Please make sure the recipient
