@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   Button,
   CoinIcon,
@@ -6,171 +6,143 @@ import {
   ModalSettingFeeProps,
   useOpenModals,
   useSettings,
-} from "../../../index";
-import {
-  Box,
-  Link,
-  ListItemIcon,
-  ListItemText,
-  Modal,
-  Typography,
-} from "@mui/material";
-import { SwitchPanelStyled } from "../../styled";
-import {
-  DragListIcon,
-  FeeChargeOrderDefault,
-  myLog,
-} from "@loopring-web/common-resources";
+} from '../../../index'
+import { Box, Link, ListItemIcon, ListItemText, Modal, Typography } from '@mui/material'
+import { SwitchPanelStyled } from '../../styled'
+import { DragListIcon, FeeChargeOrderDefault, myLog } from '@loopring-web/common-resources'
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
   ResponderProvided,
-} from "react-beautiful-dnd";
-import React from "react";
-import { useTheme } from "@emotion/react";
+} from 'react-beautiful-dnd'
+import React from 'react'
+import { useTheme } from '@emotion/react'
 
-export const PanelStyled = {};
+export const PanelStyled = {}
 
-export const ModalSettingFee = withTranslation("common", { withRef: true })(
-  ({
-    t,
-    open,
-    onClose,
-    style,
-    ...rest
-  }: ModalSettingFeeProps & WithTranslation) => {
-    const theme = useTheme();
-    const { feeChargeOrder, setFeeChargeOrder } = useSettings();
-    const { setShowFeeSetting } = useOpenModals();
+export const ModalSettingFee = withTranslation('common', { withRef: true })(
+  ({ t, open, onClose, style, ...rest }: ModalSettingFeeProps & WithTranslation) => {
+    const theme = useTheme()
+    const { feeChargeOrder, setFeeChargeOrder } = useSettings()
+    const { setShowFeeSetting } = useOpenModals()
 
     const [feeChargeValue, setFeeChargeValue] = React.useState<string[]>(
-      feeChargeOrder ?? FeeChargeOrderDefault
-    );
-    const onDragEnd = React.useCallback(
-      (dropResult: DropResult, provider: ResponderProvided) => {
-        myLog("draggableDone", dropResult, provider);
-        if (dropResult.destination) {
-          const { index: startIndex } = dropResult.source;
-          const { index: endIndex } = dropResult.destination;
-          setFeeChargeValue((state) => {
-            const result = [].slice.call(state);
-            const [removed] = result.splice(startIndex, 1);
-            result.splice(endIndex, 0, removed);
-            return result;
-          });
-          // const result = [].concat(feeChargeValue);
-          // const [removed] = result.splice(startIndex, 1);
-          // result.splice(endIndex, 0, removed);
-        }
+      feeChargeOrder ?? FeeChargeOrderDefault,
+    )
+    const onDragEnd = React.useCallback((dropResult: DropResult, provider: ResponderProvided) => {
+      myLog('draggableDone', dropResult, provider)
+      if (dropResult.destination) {
+        const { index: startIndex } = dropResult.source
+        const { index: endIndex } = dropResult.destination
+        setFeeChargeValue((state) => {
+          const result = [].slice.call(state)
+          const [removed] = result.splice(startIndex, 1)
+          result.splice(endIndex, 0, removed)
+          return result
+        })
+        // const result = [].concat(feeChargeValue);
+        // const [removed] = result.splice(startIndex, 1);
+        // result.splice(endIndex, 0, removed);
+      }
 
-        // result: DropResult, provided: ResponderProvided
-      },
-      []
-    );
-    const getItemStyle = (
-      isDragging: any,
-      draggableStyle: any,
-      index: number
-    ) => {
+      // result: DropResult, provided: ResponderProvided
+    }, [])
+    const getItemStyle = (isDragging: any, draggableStyle: any, index: number) => {
       return {
-        userSelect: "none",
-        background: isDragging ? "var(--color-box-hover)" : "",
+        userSelect: 'none',
+        background: isDragging ? 'var(--color-box-hover)' : '',
         ...draggableStyle,
-        position: draggableStyle.position === "fixed" ? "absolute" : "",
+        position: draggableStyle.position === 'fixed' ? 'absolute' : '',
         //--list-coin-item = 44   +  margin = 16
         top:
-          draggableStyle.position === "fixed"
+          draggableStyle.position === 'fixed'
             ? `calc((var(--list-coin-item) + ${theme.unit * 2}px) * ${index})`
-            : "",
+            : '',
         left: 0,
-      };
-    };
+      }
+    }
     return (
       <Modal
         open={open}
         onClose={onClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
       >
-        <SwitchPanelStyled width={"var(--modal-width)"}>
-          <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+        <SwitchPanelStyled width={'var(--modal-width)'}>
+          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
             <ModalCloseButton onClose={onClose} t={t} {...rest} />
             <Box
               flex={1}
-              alignItems={"stretch"}
-              display={"flex"}
-              flexDirection={"column"}
+              alignItems={'stretch'}
+              display={'flex'}
+              flexDirection={'column'}
               paddingX={5}
               paddingBottom={5}
             >
-              <Typography component={"h4"} variant={"h3"} textAlign={"center"}>
-                {t("labelSettingChargeFeeOrder")}
+              <Typography component={'h4'} variant={'h3'} textAlign={'center'}>
+                {t('labelSettingChargeFeeOrder')}
               </Typography>
               <Typography
-                component={"h5"}
-                variant={"body1"}
-                color={"text.secondary"}
-                textAlign={"center"}
+                component={'h5'}
+                variant={'body1'}
+                color={'text.secondary'}
+                textAlign={'center'}
                 marginTop={2}
                 marginBottom={3}
               >
-                {t("desSettingChargeFeeOrder")}
+                {t('labelDesSettingChargeFeeOrder')}
               </Typography>
               <Box>
                 <DragDropContext onDragEnd={onDragEnd}>
-                  <Droppable droppableId="chargeList">
+                  <Droppable droppableId='chargeList'>
                     {(provided) => (
                       <Box
-                        display={"flex"}
-                        position={"relative"}
+                        display={'flex'}
+                        position={'relative'}
                         marginBottom={3}
-                        flexDirection={"column"}
+                        flexDirection={'column'}
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                       >
                         {feeChargeValue.map((item, index) => (
-                          <Draggable
-                            key={item}
-                            draggableId={item}
-                            index={index}
-                          >
+                          <Draggable key={item} draggableId={item} index={index}>
                             {(draggableProvided, draggableSnapshot) => (
                               <Box
                                 marginY={1}
                                 paddingY={1}
-                                height={"var(--list-coin-item)"}
-                                display={"inline-flex"}
-                                alignItems={"center"}
-                                justifyContent={"space-between"}
+                                height={'var(--list-coin-item)'}
+                                display={'inline-flex'}
+                                alignItems={'center'}
+                                justifyContent={'space-between'}
                                 ref={draggableProvided.innerRef}
                                 {...draggableProvided.draggableProps}
                                 {...draggableProvided.dragHandleProps}
                                 style={getItemStyle(
                                   draggableSnapshot.isDragging,
                                   draggableProvided.draggableProps.style,
-                                  index
+                                  index,
                                 )}
                               >
                                 <Typography
-                                  component={"span"}
-                                  variant={"h5"}
-                                  display={"inline-flex"}
-                                  alignItems={"center"}
+                                  component={'span'}
+                                  variant={'h5'}
+                                  display={'inline-flex'}
+                                  alignItems={'center'}
                                 >
-                                  <ListItemIcon style={{ minWidth: "40px" }}>
+                                  <ListItemIcon style={{ minWidth: '40px' }}>
                                     <CoinIcon symbol={item} size={32} />
                                   </ListItemIcon>
                                   <ListItemText>
-                                    <Typography marginLeft={1} variant={"h5"}>
+                                    <Typography marginLeft={1} variant={'h5'}>
                                       {item}
                                     </Typography>
                                   </ListItemText>
                                 </Typography>
                                 <DragListIcon
-                                  htmlColor={"var(--color-text-third)"}
-                                  fontSize={"large"}
+                                  htmlColor={'var(--color-text-third)'}
+                                  fontSize={'large'}
                                 />
                                 {/*{draggableProvided.placeholder}*/}
                               </Box>
@@ -186,36 +158,36 @@ export const ModalSettingFee = withTranslation("common", { withRef: true })(
 
               <Button
                 fullWidth
-                variant={"contained"}
-                size={"medium"}
-                color={"primary"}
+                variant={'contained'}
+                size={'medium'}
+                color={'primary'}
                 onClick={() => {
                   // copyToClipBoard(info)
                   // setExportAccountToastOpen(true)
-                  setFeeChargeOrder(feeChargeValue);
-                  setShowFeeSetting({ isShow: false });
+                  setFeeChargeOrder(feeChargeValue)
+                  setShowFeeSetting({ isShow: false })
                 }}
               >
                 {t(`labelQueryFeeOK`)}
               </Button>
-              <Typography textAlign={"center"} marginTop={1}>
+              <Typography textAlign={'center'} marginTop={1}>
                 <Link
-                  color={"inherit"}
+                  color={'inherit'}
                   style={{
-                    textDecoration: "underline dotted",
-                    color: "var(--color-text-secondary)",
+                    textDecoration: 'underline dotted',
+                    color: 'var(--color-text-secondary)',
                   }}
                   onClick={() => {
-                    setFeeChargeValue(FeeChargeOrderDefault);
+                    setFeeChargeValue(FeeChargeOrderDefault)
                   }}
                 >
-                  {t("labelReset")}
+                  {t('labelReset')}
                 </Link>
               </Typography>
             </Box>
           </Box>
         </SwitchPanelStyled>
       </Modal>
-    );
-  }
-);
+    )
+  },
+)

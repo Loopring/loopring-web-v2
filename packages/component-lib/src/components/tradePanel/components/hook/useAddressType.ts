@@ -4,19 +4,17 @@ import {
   L1L2_NAME_DEFINED,
   MapChainId,
   WALLET_TYPE,
-} from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
-import { useSettings } from "../../../../stores";
+} from '@loopring-web/common-resources'
+import { useTranslation } from 'react-i18next'
+import { useSettings } from '../../../../stores'
 
-export const useAddressTypeLists = <
-  T extends WALLET_TYPE | EXCHANGE_TYPE
->() => {
-  const { t } = useTranslation("common");
-  const { defaultNetwork } = useSettings();
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+export const useAddressTypeLists = <T extends WALLET_TYPE | EXCHANGE_TYPE>() => {
+  const { t } = useTranslation('common')
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const walletList: AddressItemType<T>[] = [
     {
-      label: t("labelWalletTypeOptions", {
+      label: t('labelWalletTypeOptions', {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -40,7 +38,7 @@ export const useAddressTypeLists = <
       }),
     },
     {
-      label: t("labelWalletTypeOptions", {
+      label: t('labelWalletTypeOptions', {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -64,7 +62,7 @@ export const useAddressTypeLists = <
       }),
     },
     {
-      label: t("labelWalletTypeOptions", {
+      label: t('labelWalletTypeOptions', {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -100,25 +98,25 @@ export const useAddressTypeLists = <
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       }),
     },
-  ];
-  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (
-    type: WALLET_TYPE
-  ) => {
-    if (type === WALLET_TYPE.Exchange) throw "wrong type";
+  ]
+  const walletListFn: (type: WALLET_TYPE) => AddressItemType<T>[] = (type: WALLET_TYPE) => {
+    if (type === WALLET_TYPE.Exchange) throw 'wrong type'
     return [
       {
-        label: t("labelWalletTypeOptions", {
+        label: t('labelWalletTypeOptions', {
           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
           type: t(`labelWalletType${WALLET_TYPE.EOA}`, {
             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
           }),
         }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
@@ -129,10 +127,11 @@ export const useAddressTypeLists = <
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
       },
       {
-        label: t("labelWalletTypeOptions", {
+        label: t('labelWalletTypeOptions', {
           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -144,6 +143,7 @@ export const useAddressTypeLists = <
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
           }),
         }),
         disabled: type === WALLET_TYPE.Loopring ? false : true,
@@ -154,21 +154,24 @@ export const useAddressTypeLists = <
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
       },
       {
-        label: t("labelWalletTypeOptions", {
+        label: t('labelWalletTypeOptions', {
           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
           type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`, {
             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
           }),
         }),
         disabled: type === WALLET_TYPE.OtherSmart ? false : true,
@@ -179,6 +182,7 @@ export const useAddressTypeLists = <
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
       },
       {
@@ -188,15 +192,17 @@ export const useAddressTypeLists = <
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Binance as T,
-        description: t("labelContactsBinanceNotSupportted", {
+        description: t('labelContactsBinanceNotSupportted', {
           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
       },
       {
@@ -206,15 +212,17 @@ export const useAddressTypeLists = <
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Huobi as T,
-        description: t("labelContactsHuobiNotSupportted", {
+        description: t('labelContactsHuobiNotSupportted', {
           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
       },
       {
@@ -224,13 +232,21 @@ export const useAddressTypeLists = <
           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
         }),
         disabled: type === WALLET_TYPE.EOA ? false : true,
         value: EXCHANGE_TYPE.Others as T,
-        description: t("labelContactsOtherExchangesNotSupportted"),
+        description: t('labelContactsOtherExchangesNotSupportted', {
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+        }),
       },
-    ];
-  };
+    ]
+  }
   const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`, {
@@ -239,6 +255,7 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
       value: EXCHANGE_TYPE.NonExchange as T,
       disabled: false,
@@ -248,9 +265,10 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
     },
-  ];
+  ]
   const exchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelExchange${EXCHANGE_TYPE.Binance}`, {
@@ -259,6 +277,7 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
       value: EXCHANGE_TYPE.Binance as T,
       disabled: false,
@@ -268,8 +287,9 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
-      maxWidth: "initial",
+      maxWidth: 'initial',
     },
     {
       label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`, {
@@ -278,6 +298,7 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
       value: EXCHANGE_TYPE.Huobi as T,
       disabled: false,
@@ -287,8 +308,9 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
-      maxWidth: "initial",
+      maxWidth: 'initial',
     },
     {
       label: t(`labelExchange${EXCHANGE_TYPE.Others}`, {
@@ -297,6 +319,7 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
       value: EXCHANGE_TYPE.Others as T,
       disabled: false,
@@ -306,14 +329,15 @@ export const useAddressTypeLists = <
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
       }),
-      maxWidth: "initial",
+      maxWidth: 'initial',
     },
-  ];
+  ]
   return {
     walletList,
     walletListFn,
     nonExchangeList,
     exchangeList,
-  };
-};
+  }
+}
