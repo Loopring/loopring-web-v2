@@ -3,8 +3,8 @@ import {
   DepartmentRow,
   InvestOverviewTableProps,
   RowInvest,
-} from "./Interface";
+} from './Interface'
 
-export * from "./InvestOverviewTable";
-export type { InvestOverviewTableProps, RowInvest, DepartmentRow };
-export { InvestColumnKey };
+export * from './InvestOverviewTable'
+export type { InvestOverviewTableProps, RowInvest, DepartmentRow }
+export { InvestColumnKey }

@@ -1,55 +1,55 @@
-import { Subject } from "rxjs";
-import { create, IPFSHTTPClient } from "ipfs-http-client";
+import { Subject } from 'rxjs'
+import { create, IPFSHTTPClient } from 'ipfs-http-client'
 
 import {
   CustomError,
   ErrorMap,
   IPFS_LOOPRING_URL,
   UIERROR_CODE,
-} from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum IPFSCommands {
-  ErrorGetIpfs = "ErrorGetIpfs",
-  IpfsResult = "IpfsResult",
+  ErrorGetIpfs = 'ErrorGetIpfs',
+  IpfsResult = 'IpfsResult',
 }
 export class IpfsProvides {
-  private _ipfs: IPFSHTTPClient | undefined = undefined;
+  private _ipfs: IPFSHTTPClient | undefined = undefined
 
   get ipfs(): IPFSHTTPClient | undefined {
-    return this._ipfs;
+    return this._ipfs
   }
 
   async init() {
     try {
       this._ipfs = await create({
         url: `${IPFS_LOOPRING_URL}`,
-      });
+      })
     } catch (error) {
-      console.error("IPFSHTTPClient ERROR ON INIT::", error);
-      ipfsService.sendError(new CustomError(ErrorMap.CREATE_IPFS_ERROR));
+      console.error('IPFSHTTPClient ERROR ON INIT::', error)
+      ipfsService.sendError(new CustomError(ErrorMap.CREATE_IPFS_ERROR))
     }
-    return this._ipfs;
+    return this._ipfs
   }
 
   stop() {
     if (this._ipfs) {
       try {
-        this._ipfs = undefined;
+        this._ipfs = undefined
       } catch (err) {
-        console.error("IPFSHTTPClient ERROR ON STOP::", err as any);
+        console.error('IPFSHTTPClient ERROR ON STOP::', err as any)
       }
     }
   }
 }
 
 const subject = new Subject<{
-  status: IPFSCommands;
+  status: IPFSCommands
   data?: {
-    uniqueId?: string;
-    [key: string]: any;
-  };
-}>();
+    uniqueId?: string
+    [key: string]: any
+  }
+}>()
 
 export const ipfsService = {
   sendError: (error: CustomError) => {
@@ -58,24 +58,24 @@ export const ipfsService = {
       data: {
         error: error,
       },
-    });
+    })
   },
   addJSONStringify: async ({
     ipfs,
     str,
     uniqueId,
   }: {
-    ipfs: IPFSHTTPClient;
-    str: string;
-    uniqueId: string;
+    ipfs: IPFSHTTPClient
+    str: string
+    uniqueId: string
   }) => {
     if (ipfs) {
       try {
-        const data = await ipfs.add(str); //callIpfs({ ipfs, cmd, opts });
+        const data = await ipfs.add(str) //callIpfs({ ipfs, cmd, opts });
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId },
-        });
+        })
       } catch (error) {
         subject.next({
           status: IPFSCommands.ErrorGetIpfs,
@@ -87,7 +87,7 @@ export const ipfsService = {
               uniqueId,
             },
           },
-        });
+        })
       }
     } else {
       subject.next({
@@ -96,10 +96,10 @@ export const ipfsService = {
           uniqueId,
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
-            message: "IPFSHTTPClient is undefined",
+            message: 'IPFSHTTPClient is undefined',
           } as sdk.RESULT_INFO,
         },
-      });
+      })
     }
   },
   addFile: async ({
@@ -107,19 +107,19 @@ export const ipfsService = {
     file,
     uniqueId,
   }: {
-    ipfs: IPFSHTTPClient | undefined;
-    file: File;
-    uniqueId: string;
+    ipfs: IPFSHTTPClient | undefined
+    file: File
+    uniqueId: string
   }) => {
     if (ipfs) {
       try {
         const data = await ipfs.add({ content: file.stream() }).catch((e) => {
-          throw e;
-        });
+          throw e
+        })
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId, file },
-        });
+        })
       } catch (error) {
         subject.next({
           status: IPFSCommands.ErrorGetIpfs,
@@ -130,7 +130,7 @@ export const ipfsService = {
             },
             uniqueId,
           },
-        });
+        })
       }
     } else {
       subject.next({
@@ -139,10 +139,10 @@ export const ipfsService = {
           uniqueId,
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
-            message: "IPFSHTTPClient is undefined",
+            message: 'IPFSHTTPClient is undefined',
           },
         },
-      });
+      })
     }
   },
   addJSON: async ({
@@ -150,17 +150,17 @@ export const ipfsService = {
     json,
     uniqueId,
   }: {
-    ipfs: IPFSHTTPClient | undefined;
-    json: string;
-    uniqueId: string;
+    ipfs: IPFSHTTPClient | undefined
+    json: string
+    uniqueId: string
   }) => {
     if (ipfs) {
       try {
-        const data = await ipfs.add(json); //callIpfs({ ipfs, cmd, opts });
+        const data = await ipfs.add(json) //callIpfs({ ipfs, cmd, opts });
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId },
-        });
+        })
       } catch (error) {
         subject.next({
           status: IPFSCommands.ErrorGetIpfs,
@@ -171,7 +171,7 @@ export const ipfsService = {
             },
             uniqueId,
           },
-        });
+        })
       }
     } else {
       subject.next({
@@ -180,13 +180,13 @@ export const ipfsService = {
           uniqueId,
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
-            message: "IPFSHTTPClient is undefined",
+            message: 'IPFSHTTPClient is undefined',
           },
         },
-      });
+      })
     }
   },
 
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),
-};
+}

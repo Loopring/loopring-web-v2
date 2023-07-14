@@ -1,2 +1,2 @@
-export * from "./AmmRecordTable";
-export * from "./Interface";
+export * from './AmmRecordTable'
+export * from './Interface'

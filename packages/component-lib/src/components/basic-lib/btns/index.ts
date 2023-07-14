@@ -1,3 +1,3 @@
-export * from "./Button";
-export * from "./Interface";
-export * from "./BtnPercentage";
+export * from './Button'
+export * from './Interface'
+export * from './BtnPercentage'

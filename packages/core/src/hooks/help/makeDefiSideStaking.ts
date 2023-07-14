@@ -1,5 +1,5 @@
-import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE, toBig } from "@loopring-web/loopring-sdk";
+import * as sdk from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE, toBig } from '@loopring-web/loopring-sdk'
 import {
   DeFiSideCalcData,
   DeFiSideRedeemCalcData,
@@ -8,9 +8,9 @@ import {
   getValuePrecisionThousand,
   IBData,
   myLog,
-} from "@loopring-web/common-resources";
-import moment from "moment";
-import { BigNumber } from "bignumber.js";
+} from '@loopring-web/common-resources'
+import moment from 'moment'
+import { BigNumber } from 'bignumber.js'
 
 export const makeDefiSideStaking = (
   info: sdk.DualProductAndPrice,
@@ -18,27 +18,25 @@ export const makeDefiSideStaking = (
   rule: sdk.DualRulesCoinsInfo,
   sellSymbol: string,
   buySymbol: string,
-  market: sdk.DefiMarketInfo
+  market: sdk.DefiMarketInfo,
 ): DualViewInfo => {
-  const { expireTime, strike, ratio, profit, dualType } = info;
-  const { precisionForPrice } = market;
-  myLog("makeDualViewItem", expireTime, strike, ratio, dualType);
+  const { expireTime, strike, ratio, profit, dualType } = info
+  const { precisionForPrice } = market
+  myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
       ? [sellSymbol, buySymbol]
-      : [buySymbol, sellSymbol];
+      : [buySymbol, sellSymbol]
 
-  const settleRatio = toBig(profit)
-    .times(ratio)
-    .toFixed(6, BigNumber.ROUND_DOWN);
+  const settleRatio = toBig(profit).times(ratio).toFixed(6, BigNumber.ROUND_DOWN)
 
   const apy = toBig(settleRatio)
     .div((expireTime - Date.now()) / 86400000)
-    .times(36500); // year APY
-  const term = moment().to(new Date(expireTime), true);
+    .times(36500) // year APY
+  const term = moment().to(new Date(expireTime), true)
 
-  myLog("dual", {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + "%",
+  myLog('dual', {
+    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + '%',
     settleRatio, //targetPrice
     term,
     productId: info.productId,
@@ -51,9 +49,9 @@ export const makeDefiSideStaking = (
     },
     sellSymbol,
     buySymbol,
-  });
+  })
   return {
-    apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + "%") as any,
+    apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
     settleRatio,
     term,
     strike,
@@ -73,15 +71,15 @@ export const makeDefiSideStaking = (
       index,
       rule,
     },
-  };
-};
+  }
+}
 
 export const makeDefiSideStakingItem = (
   props: sdk.UserDualTxsHistory,
   sellSymbol: string,
   buySymbol: string,
   currentPrice: number,
-  market: sdk.DefiMarketInfo
+  market: sdk.DefiMarketInfo,
 ): DualViewOrder => {
   const {
     settleRatio,
@@ -90,20 +88,20 @@ export const makeDefiSideStakingItem = (
     productId,
     createdAt,
     timeOrigin: { expireTime },
-  } = props;
+  } = props
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
       ? [sellSymbol, buySymbol]
-      : [buySymbol, sellSymbol];
+      : [buySymbol, sellSymbol]
 
   const apy = toBig(settleRatio)
     .div((expireTime - createdAt) / 86400000)
-    .times(36500); // year APY
-  const term = moment().to(new Date(expireTime), true);
-  const { precisionForPrice } = market;
+    .times(36500) // year APY
+  const term = moment().to(new Date(expireTime), true)
+  const { precisionForPrice } = market
 
   return {
-    apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + "%") as any,
+    apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
     settleRatio: settleRatio.toString(), // quote Interest
     term,
     strike: strike.toString(),
@@ -122,50 +120,44 @@ export const makeDefiSideStakingItem = (
     __raw__: {
       order: props,
     },
-  };
-};
+  }
+}
 export const calcSideStaking = <T>({
   inputValue,
   deFiSideCalcData,
   tokenSell,
 }: {
-  inputValue: string;
-  isJoin: true;
-  deFiSideCalcData: DeFiSideCalcData<T>;
-  tokenSell: sdk.TokenInfo;
+  inputValue: string
+  isJoin: true
+  deFiSideCalcData: DeFiSideCalcData<T>
+  tokenSell: sdk.TokenInfo
 }): {
-  minSellVol: string | undefined;
-  maxSellVol: string | undefined;
-  sellVol: string;
-  isJoin: true;
-  deFiSideCalcData: DeFiSideCalcData<T>;
+  minSellVol: string | undefined
+  maxSellVol: string | undefined
+  sellVol: string
+  isJoin: true
+  deFiSideCalcData: DeFiSideCalcData<T>
 } => {
-  const sellVol = sdk
-    .toBig(inputValue ? inputValue : 0)
-    .times("1e" + tokenSell.decimals);
-  let dalyEarn: undefined | string = undefined;
+  const sellVol = sdk.toBig(inputValue ? inputValue : 0).times('1e' + tokenSell.decimals)
+  let dalyEarn: undefined | string = undefined
   if (
     inputValue &&
     deFiSideCalcData.stakeViewInfo.apr &&
-    deFiSideCalcData.stakeViewInfo.apr !== "" &&
-    deFiSideCalcData.stakeViewInfo.apr !== "0.00"
+    deFiSideCalcData.stakeViewInfo.apr !== '' &&
+    deFiSideCalcData.stakeViewInfo.apr !== '0.00'
   ) {
-    dalyEarn = sdk
-      .toBig(sellVol)
-      .times(deFiSideCalcData.stakeViewInfo.apr)
-      .div(365)
-      .toString();
+    dalyEarn = sdk.toBig(sellVol).times(deFiSideCalcData.stakeViewInfo.apr).div(365).toString()
   } else {
-    dalyEarn = undefined;
+    dalyEarn = undefined
   }
   const maxSellAmount = sdk
     .toBig(deFiSideCalcData.stakeViewInfo.maxAmount)
-    .div("1e" + tokenSell.decimals)
-    .toString();
+    .div('1e' + tokenSell.decimals)
+    .toString()
   const minSellAmount = sdk
     .toBig(deFiSideCalcData.stakeViewInfo.minAmount)
-    .div("1e" + tokenSell.decimals)
-    .toString();
+    .div('1e' + tokenSell.decimals)
+    .toString()
   if (deFiSideCalcData.stakeViewInfo.symbol) {
     return {
       sellVol: sellVol.toString(),
@@ -183,7 +175,7 @@ export const calcSideStaking = <T>({
       isJoin: true,
       minSellVol: deFiSideCalcData.stakeViewInfo.minAmount,
       maxSellVol: deFiSideCalcData.stakeViewInfo.maxAmount,
-    };
+    }
   } else {
     return {
       sellVol: sellVol.toString(),
@@ -201,9 +193,9 @@ export const calcSideStaking = <T>({
       isJoin: true,
       minSellVol: undefined,
       maxSellVol: undefined,
-    };
+    }
   }
-};
+}
 
 export const calcRedeemStaking = <T extends IBData<any>, R>({
   inputValue,
@@ -211,34 +203,32 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
   deFiSideRedeemCalcData: { stakeViewInfo, coinSell, ...rest },
   tokenSell,
 }: {
-  inputValue: string;
-  isJoin: false;
-  deFiSideRedeemCalcData: DeFiSideRedeemCalcData<T>;
-  tokenSell: sdk.TokenInfo;
+  inputValue: string
+  isJoin: false
+  deFiSideRedeemCalcData: DeFiSideRedeemCalcData<T>
+  tokenSell: sdk.TokenInfo
 }): {
-  minSellVol: string | undefined;
-  maxSellVol: string | undefined;
-  sellVol: string;
-  isJoin: boolean;
-  deFiSideRedeemCalcData: DeFiSideRedeemCalcData<T, R>;
+  minSellVol: string | undefined
+  maxSellVol: string | undefined
+  sellVol: string
+  isJoin: boolean
+  deFiSideRedeemCalcData: DeFiSideRedeemCalcData<T, R>
 } => {
-  let sellVol;
+  let sellVol
   if (inputValue?.toString() == coinSell.balance?.toString()) {
-    sellVol = (stakeViewInfo as any).remainAmount;
+    sellVol = (stakeViewInfo as any).remainAmount
   } else {
-    sellVol = sdk
-      .toBig(inputValue ? inputValue : 0)
-      .times("1e" + tokenSell.decimals);
+    sellVol = sdk.toBig(inputValue ? inputValue : 0).times('1e' + tokenSell.decimals)
   }
 
   const maxSellAmount = sdk
     .toBig((stakeViewInfo as any)?.maxAmount)
-    .div("1e" + tokenSell.decimals)
-    .toString();
+    .div('1e' + tokenSell.decimals)
+    .toString()
   const minSellAmount = sdk
     .toBig((stakeViewInfo as any).minAmount)
-    .div("1e" + tokenSell.decimals)
-    .toString();
+    .div('1e' + tokenSell.decimals)
+    .toString()
 
   if ((stakeViewInfo as any).symbol) {
     return {
@@ -257,7 +247,7 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
       isJoin: true,
       minSellVol: (stakeViewInfo as any).minAmount,
       maxSellVol: (stakeViewInfo as any).maxAmount,
-    };
+    }
   } else {
     return {
       sellVol: sellVol.toString(),
@@ -275,6 +265,6 @@ export const calcRedeemStaking = <T extends IBData<any>, R>({
       isJoin: true,
       minSellVol: undefined,
       maxSellVol: undefined,
-    };
+    }
   }
-};
+}

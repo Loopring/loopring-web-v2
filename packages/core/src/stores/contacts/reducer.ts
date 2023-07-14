@@ -1,30 +1,30 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
-import { AddressType } from "@loopring-web/loopring-sdk";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
+import { AddressType } from '@loopring-web/loopring-sdk'
 
 export type DisplayContact = {
-  name: string;
-  address: string;
-  avatarURL: string;
-  editing: boolean;
-  addressType: AddressType;
-};
+  name: string
+  address: string
+  avatarURL: string
+  editing: boolean
+  addressType: AddressType
+}
 
 export type ContactsState = {
-  contacts: DisplayContact[] | undefined;
+  contacts: DisplayContact[] | undefined
   currentAccountId: number | undefined
 }
 
 const initialState: ContactsState = {
   contacts: [],
-  currentAccountId: undefined
-};
+  currentAccountId: undefined,
+}
 
 export const contactsSlice: Slice<ContactsState> = createSlice<
   ContactsState,
   SliceCaseReducers<ContactsState>
 >({
-  name: "contacts",
+  name: 'contacts',
   initialState: initialState,
   reducers: {
     updateContacts(state, action: PayloadAction<DisplayContact[]>) {
@@ -34,9 +34,6 @@ export const contactsSlice: Slice<ContactsState> = createSlice<
       state.currentAccountId = action.payload
     },
   },
-});
-export default contactsSlice;
-export const {
-  updateContacts,
-  updateAccountId
-} = contactsSlice.actions;
+})
+export default contactsSlice
+export const { updateContacts, updateAccountId } = contactsSlice.actions

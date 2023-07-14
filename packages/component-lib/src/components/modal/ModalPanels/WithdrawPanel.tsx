@@ -1,23 +1,15 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import {
-  ModalBackButton,
-  SwitchPanel,
-  SwitchPanelProps,
-} from "../../basic-lib";
-import { WithdrawProps } from "../../tradePanel/Interface";
-import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
-import {
-  TradeMenuList,
-  useBasicTrade,
-  WithdrawWrap,
-} from "../../tradePanel/components";
-import React from "react";
-import { cloneDeep } from "lodash";
-import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
-import { ContactSelection } from "../../tradePanel/components/ContactSelection";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { ModalBackButton, SwitchPanel, SwitchPanelProps } from '../../basic-lib'
+import { WithdrawProps } from '../../tradePanel/Interface'
+import { IBData, TRADE_TYPE } from '@loopring-web/common-resources'
+import { TradeMenuList, useBasicTrade, WithdrawWrap } from '../../tradePanel/components'
+import React from 'react'
+import { cloneDeep } from 'lodash'
+import { WithdrawConfirm } from '../../tradePanel/components/WithdrawConfirm'
+import { ContactSelection } from '../../tradePanel/components/ContactSelection'
 // import { getAllContacts } from "./TransferPanel";
 
-export const WithdrawPanel = withTranslation(["common", "error"], {
+export const WithdrawPanel = withTranslation(['common', 'error'], {
   withRef: true,
 })(
   <T extends IBData<I>, I>({
@@ -39,32 +31,32 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
       coinMap,
       type,
       walletMap,
-    });
+    })
 
-    const [panelIndex, setPanelIndex] = React.useState(index + 1);
+    const [panelIndex, setPanelIndex] = React.useState(index + 1)
     const handleConfirm = (index: number) => {
-      setPanelIndex(index);
-    };
+      setPanelIndex(index)
+    }
     // const hanleConfirm = () => {};
     React.useEffect(() => {
-      setPanelIndex(index + 1);
-    }, [index]);
+      setPanelIndex(index + 1)
+    }, [index])
 
     // LP token should not exist in withdraw panel for now
     const getWalletMapWithoutLP = React.useCallback(() => {
-      const clonedWalletMap = cloneDeep(walletMap ?? {});
-      const keyList = Object.keys(clonedWalletMap);
+      const clonedWalletMap = cloneDeep(walletMap ?? {})
+      const keyList = Object.keys(clonedWalletMap)
       keyList.forEach((key) => {
-        const [first] = key.split("-");
-        if (first === "LP") {
-          delete clonedWalletMap[key];
+        const [first] = key.split('-')
+        if (first === 'LP') {
+          delete clonedWalletMap[key]
         }
-      });
-      return clonedWalletMap;
-    }, [walletMap]);
-    
+      })
+      return clonedWalletMap
+    }, [walletMap])
+
     const confirmPanel = {
-      key: "confirm",
+      key: 'confirm',
       element: React.useMemo(
         () => (
           <WithdrawConfirm
@@ -77,26 +69,26 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             }}
           />
         ),
-        [onWithdrawClick, rest, switchData.tradeData, type]
+        [onWithdrawClick, rest, switchData.tradeData, type],
       ),
       toolBarItem: (
         <ModalBackButton
           marginTop={0}
           marginLeft={-2}
           onBack={() => {
-            setPanelIndex(1);
+            setPanelIndex(1)
           }}
           {...rest}
         />
       ),
-    };
+    }
     const tradePanel = {
-      key: "trade",
+      key: 'trade',
       element: React.useMemo(
         () => (
           // @ts-ignore
           <WithdrawWrap
-            key={"transfer"}
+            key={'transfer'}
             {...{
               ...rest,
               type,
@@ -114,7 +106,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
               isFromContact,
               contact,
               onClickContact: () => {
-                setPanelIndex(3); // todo handle tradeMenuList
+                setPanelIndex(3) // todo handle tradeMenuList
                 // rest.handleOnAddressChange(address)
               },
             }}
@@ -131,7 +123,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
           withdrawBtnStatus,
           assetsData,
           walletMap,
-        ]
+        ],
       ),
       toolBarItem: React.useMemo(
         () => (
@@ -142,7 +134,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
                 marginTop={0}
                 marginLeft={-2}
                 onBack={() => {
-                  onBack();
+                  onBack()
                 }}
                 {...rest}
               />
@@ -151,11 +143,11 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             )}
           </>
         ),
-        [onBack]
+        [onBack],
       ),
-    };
+    }
     const tokenSelectionPanel = {
-      key: "tradeMenuList",
+      key: 'tradeMenuList',
       element: React.useMemo(
         () => (
           <TradeMenuList
@@ -172,26 +164,26 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             }}
           />
         ),
-        [switchData, rest, onChangeEvent, getWalletMapWithoutLP]
+        [switchData, rest, onChangeEvent, getWalletMapWithoutLP],
       ),
       toolBarItem: undefined,
-    };
+    }
 
     const contactSelectionPanel = {
-      key: "contactSelection",
+      key: 'contactSelection',
       element: React.useMemo(
         () => (
           <ContactSelection
-            key={"contactSelection"}
+            key={'contactSelection'}
             contacts={contacts}
             onSelect={(address) => {
-              setPanelIndex(1);
-              rest.handleOnAddressChange(address, true);
+              setPanelIndex(1)
+              rest.handleOnAddressChange(address, true)
             }}
-            scrollHeight={"320px"}
+            scrollHeight={'320px'}
           />
         ),
-        [contacts]
+        [contacts],
       ),
       toolBarItem: React.useMemo(
         () => (
@@ -199,26 +191,19 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             marginTop={0}
             marginLeft={-2}
             onBack={() => {
-              setPanelIndex(1);
+              setPanelIndex(1)
             }}
             {...rest}
           />
         ),
-        [onBack]
+        [onBack],
       ),
-    };
+    }
 
     const props: SwitchPanelProps<string> = {
       index: panelIndex, // show default show
-      panelList: [
-        confirmPanel,
-        tradePanel,
-        tokenSelectionPanel,
-        contactSelectionPanel,
-      ],
-    };
-    return <SwitchPanel {...{ ...rest, ...props }} />;
-  }
-) as <T, I>(
-  props: WithdrawProps<T, I> & React.RefAttributes<any>
-) => JSX.Element;
+      panelList: [confirmPanel, tradePanel, tokenSelectionPanel, contactSelectionPanel],
+    }
+    return <SwitchPanel {...{ ...rest, ...props }} />
+  },
+) as <T, I>(props: WithdrawProps<T, I> & React.RefAttributes<any>) => JSX.Element

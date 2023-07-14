@@ -4,14 +4,14 @@ import {
   defaultSlipage,
   IBData,
   TradeBtnStatus,
-} from "@loopring-web/common-resources";
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
+} from '@loopring-web/common-resources'
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 // import { PageAmmCommon } from "./index";
-import { PageAmmExit, PageAmmJoin, PageAmmPoolStatus } from "./interface";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { BIGO } from "../../../defs";
+import { PageAmmExit, PageAmmJoin, PageAmmPoolStatus } from './interface'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { BIGO } from '../../../defs'
 
-export const initSlippage = defaultSlipage;
+export const initSlippage = defaultSlipage
 
 const initJoinState: PageAmmJoin = {
   fees: {},
@@ -26,7 +26,7 @@ const initJoinState: PageAmmJoin = {
     coinB: { belong: undefined } as unknown as IBData<string>,
     slippage: initSlippage,
   } as AmmJoinData<IBData<string>, string>,
-};
+}
 
 const initExitState: PageAmmExit = {
   volA_show: undefined,
@@ -45,7 +45,7 @@ const initExitState: PageAmmExit = {
     coinB: { belong: undefined } as unknown as IBData<string>,
     slippage: initSlippage,
   } as AmmExitData<IBData<string>, string>,
-};
+}
 
 // const initCommonState: PageAmmCommon = {
 //   ammInfo: undefined,
@@ -58,15 +58,15 @@ const initialState: PageAmmPoolStatus = {
   // common: initCommonState,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
-};
+}
 
 const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
-  name: "_router_pageAmmPool",
+  name: '_router_pageAmmPool',
   initialState,
   reducers: {
     resetAmmPool(state) {
-      state.ammJoin = initJoinState;
-      state.ammExit = initExitState;
+      state.ammJoin = initJoinState
+      state.ammExit = initExitState
       // state.common = initCommonState;
     },
 
@@ -83,28 +83,28 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
     // },
 
     updatePageAmmJoinBtn(state, action: PayloadAction<Partial<PageAmmJoin>>) {
-      const { btnI18nKey, btnStatus } = action.payload;
+      const { btnI18nKey, btnStatus } = action.payload
 
-      state.ammJoin.btnI18nKey = btnI18nKey;
+      state.ammJoin.btnI18nKey = btnI18nKey
 
       if (btnStatus) {
-        state.ammJoin.btnStatus = btnStatus;
+        state.ammJoin.btnStatus = btnStatus
       }
     },
 
     updatePageAmmJoin(state, action: PayloadAction<Partial<PageAmmJoin>>) {
-      const { fee, fees, request, ammCalcData, ammData } = action.payload;
+      const { fee, fees, request, ammCalcData, ammData } = action.payload
 
-      if (typeof fee !== "undefined") {
-        state.ammJoin.fee = fee;
+      if (typeof fee !== 'undefined') {
+        state.ammJoin.fee = fee
         state.ammJoin.ammCalcData = {
           ...state.ammJoin.ammCalcData,
-          fee: fee + " " + state.ammJoin?.ammCalcData?.lpCoinB?.belong,
-        } as any;
+          fee: fee + ' ' + state.ammJoin?.ammCalcData?.lpCoinB?.belong,
+        } as any
       }
 
       if (fees) {
-        state.ammJoin.fees = fees;
+        state.ammJoin.fees = fees
       }
       // if (fee) {
       //   state.ammJoin.fee = fee;
@@ -115,25 +115,25 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
       // }
 
       if (request) {
-        state.ammJoin.request = request;
+        state.ammJoin.request = request
       }
 
       if (ammCalcData) {
-        state.ammJoin.ammCalcData = ammCalcData;
+        state.ammJoin.ammCalcData = ammCalcData
       }
 
       if (ammData) {
-        state.ammJoin.ammData = ammData;
+        state.ammJoin.ammData = ammData
       }
     },
 
     updatePageAmmExitBtn(state, action: PayloadAction<Partial<PageAmmExit>>) {
-      const { btnI18nKey, btnStatus } = action.payload;
+      const { btnI18nKey, btnStatus } = action.payload
 
-      state.ammExit.btnI18nKey = btnI18nKey;
+      state.ammExit.btnI18nKey = btnI18nKey
 
       if (btnStatus) {
-        state.ammExit.btnStatus = btnStatus;
+        state.ammExit.btnStatus = btnStatus
       }
     },
 
@@ -147,44 +147,44 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
         volA_show,
         volB_show,
-      } = action.payload;
+      } = action.payload
 
-      if (typeof fee !== "undefined") {
-        state.ammExit.fee = fee;
+      if (typeof fee !== 'undefined') {
+        state.ammExit.fee = fee
         state.ammExit.ammCalcData = {
           ...state.ammExit.ammCalcData,
-          fee: fee + " " + state.ammExit?.ammCalcData?.lpCoinB?.belong,
-        } as any;
+          fee: fee + ' ' + state.ammExit?.ammCalcData?.lpCoinB?.belong,
+        } as any
       }
 
       if (fees) {
-        state.ammExit.fees = fees;
+        state.ammExit.fees = fees
       }
 
       if (request) {
-        state.ammExit.request = request;
+        state.ammExit.request = request
       }
 
       if (ammCalcData) {
-        state.ammExit.ammCalcData = ammCalcData;
+        state.ammExit.ammCalcData = ammCalcData
       }
 
       if (ammData) {
-        state.ammExit.ammData = ammData;
+        state.ammExit.ammData = ammData
       }
 
       if (volA_show !== undefined && sdk.toBig(volA_show).gte(BIGO)) {
-        state.ammExit.volA_show = volA_show;
+        state.ammExit.volA_show = volA_show
       }
 
       if (volB_show !== undefined && sdk.toBig(volB_show).gte(BIGO)) {
-        state.ammExit.volB_show = volB_show;
+        state.ammExit.volB_show = volB_show
       }
     },
   },
-});
+})
 
-export { pageAmmPoolSlice };
+export { pageAmmPoolSlice }
 
 export const {
   updatePageAmmJoin,
@@ -193,4 +193,4 @@ export const {
   updatePageAmmExitBtn,
   // updatePageAmmCommon,
   resetAmmPool,
-} = pageAmmPoolSlice.actions;
+} = pageAmmPoolSlice.actions

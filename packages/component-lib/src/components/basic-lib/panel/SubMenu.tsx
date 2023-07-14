@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import { List, ListProps } from "@mui/material";
+import styled from '@emotion/styled'
+import { List, ListProps } from '@mui/material'
 
 export const SubMenu = styled(List)<ListProps>`
   width: 100%;
@@ -10,4 +10,4 @@ export const SubMenu = styled(List)<ListProps>`
   &.color-light {
     background-color: initial;
   }
-` as typeof List;
+` as typeof List

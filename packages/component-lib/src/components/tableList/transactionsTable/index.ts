@@ -1,2 +1,2 @@
-export * from "./TransactionTable";
-export * from "./Interface";
+export * from './TransactionTable'
+export * from './Interface'

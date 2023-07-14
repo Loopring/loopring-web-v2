@@ -1,21 +1,16 @@
-import {
-  EmptyValueTag,
-  FeeInfo,
-  TradeBtnStatus,
-  TradeNFT,
-} from "@loopring-web/common-resources";
-import { NFTDeployViewProps } from "./Interface";
-import { useTranslation } from "react-i18next";
-import React from "react";
-import { Box, Grid, Link, Toolbar, Typography } from "@mui/material";
-import { Button, ModalBackButton } from "../../basic-lib";
-import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { FeeToggle } from "./tool/FeeList";
+import { EmptyValueTag, FeeInfo, TradeBtnStatus, TradeNFT } from '@loopring-web/common-resources'
+import { NFTDeployViewProps } from './Interface'
+import { useTranslation } from 'react-i18next'
+import React from 'react'
+import { Box, Grid, Link, Toolbar, Typography } from '@mui/material'
+import { Button, ModalBackButton } from '../../basic-lib'
+import { DropdownIconStyled, FeeTokenItemWrapper } from './Styled'
+import { FeeToggle } from './tool/FeeList'
 
 export const DeployNFTWrap = <
   T extends TradeNFT<I, any> & { broker: string },
   I,
-  C extends FeeInfo
+  C extends FeeInfo,
 >({
   tradeData,
   title,
@@ -30,78 +25,68 @@ export const DeployNFTWrap = <
   onBack,
   assetsData = [],
 }: NFTDeployViewProps<T, I, C>) => {
-  const { t } = useTranslation(["common"]);
-  const [dropdownStatus, setDropdownStatus] =
-    React.useState<"up" | "down">("down");
+  const { t } = useTranslation(['common'])
+  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
 
   const getDisabled = React.useMemo(() => {
     if (disabled || nftDeployBtnStatus === TradeBtnStatus.DISABLED) {
-      return true;
+      return true
     } else {
-      return false;
+      return false
     }
-  }, [nftDeployBtnStatus, disabled]);
+  }, [nftDeployBtnStatus, disabled])
 
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
-      handleFeeChange(value);
+      handleFeeChange(value)
     }
-  };
+  }
   // @ts-ignore
   return (
     <Box flex={1}>
       {!!onBack && (
-        <Toolbar variant={"dense"}>
-          <ModalBackButton
-            marginTop={0}
-            marginLeft={-2}
-            onBack={onBack}
-            t={t}
-          />
+        <Toolbar variant={'dense'}>
+          <ModalBackButton marginTop={0} marginLeft={-2} onBack={onBack} t={t} />
         </Toolbar>
       )}
       <Box flex={1}>
         <Grid
-          className={assetsData ? "" : "loading"}
+          className={assetsData ? '' : 'loading'}
           paddingBottom={3}
           container
           marginTop={0}
           paddingLeft={5 / 2}
           paddingRight={5 / 2}
-          direction={"column"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
+          direction={'column'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
           flex={1}
-          height={"100%"}
+          height={'100%'}
         >
           <Grid item>
             <Box
-              display={"flex"}
-              flexDirection={"row"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              flexDirection={'row'}
+              justifyContent={'center'}
+              alignItems={'center'}
               /* textAlign={'center'} */ marginBottom={2}
             >
-              <Typography component={"h4"} variant={"h3"} marginRight={1}>
-                {title ? title : t("nftDeployTitle")}
+              <Typography component={'h4'} variant={'h3'} marginRight={1}>
+                {title ? title : t('nftDeployTitle')}
               </Typography>
             </Box>
           </Grid>
 
-          <Grid item marginTop={2} alignSelf={"stretch"}>
+          <Grid item marginTop={2} alignSelf={'stretch'}>
             <Box
-              display={"flex"}
-              alignItems={"flex-start"}
-              justifyContent={"space-between"}
-              position={"relative"}
-              flexDirection={"column"}
+              display={'flex'}
+              alignItems={'flex-start'}
+              justifyContent={'space-between'}
+              position={'relative'}
+              flexDirection={'column'}
             >
-              <Typography
-                component={"h6"}
-                color={"text.primary"}
-                variant={"h4"}
-              >
-                {t("labelNFTDetail")}
+              <Typography component={'h6'} color={'text.primary'} variant={'h4'}>
+                {t('labelNFTDetail')}
               </Typography>
               {/*<Typography*/}
               {/*  display={"inline-flex"}*/}
@@ -135,116 +120,86 @@ export const DeployNFTWrap = <
               {/*    {tradeData?.nftIdView ?? ""}*/}
               {/*  </Typography>*/}
               {/*</Typography>*/}
-              <Typography
-                display={"inline-flex"}
-                variant={"body1"}
-                marginTop={2}
-              >
-                <Typography color={"var(--color-text-third)"} width={160}>
-                  {t("labelNFTTYPE")}
+              <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                <Typography color={'var(--color-text-third)'} width={160}>
+                  {t('labelNFTTYPE')}
                 </Typography>
-                <Typography
-                  color={"var(--color-text-third)"}
-                  title={tradeData?.nftType}
-                >
+                <Typography color={'var(--color-text-third)'} title={tradeData?.nftType}>
                   {tradeData.nftType}
                 </Typography>
               </Typography>
-              <Typography
-                display={"inline-flex"}
-                variant={"body1"}
-                marginTop={2}
-              >
-                <Typography color={"var(--color-text-third)"} width={160}>
-                  {t("labelNFTContractAddress")}
+              <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                <Typography color={'var(--color-text-third)'} width={160}>
+                  {t('labelNFTContractAddress')}
                 </Typography>
                 <Link
-                  fontSize={"inherit"}
-                  whiteSpace={"break-spaces"}
-                  style={{ wordBreak: "break-all" }}
+                  fontSize={'inherit'}
+                  whiteSpace={'break-spaces'}
+                  style={{ wordBreak: 'break-all' }}
                 >
                   {tradeData.tokenAddress}
                 </Link>
               </Typography>
-              <Typography
-                display={"inline-flex"}
-                variant={"body1"}
-                marginTop={2}
-              >
-                <Typography color={"var(--color-text-third)"} width={160}>
-                  {t("labelNFTDeployBroker")}
+              <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                <Typography color={'var(--color-text-third)'} width={160}>
+                  {t('labelNFTDeployBroker')}
                 </Typography>
                 <Link
-                  fontSize={"inherit"}
-                  whiteSpace={"break-spaces"}
-                  style={{ wordBreak: "break-all" }}
+                  fontSize={'inherit'}
+                  whiteSpace={'break-spaces'}
+                  style={{ wordBreak: 'break-all' }}
                 >
                   {tradeData.broker}
                 </Link>
               </Typography>
             </Box>
           </Grid>
-          <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
+          <Grid item alignSelf={'stretch'} position={'relative'} marginTop={2}>
             {!chargeFeeTokenList?.length ? (
-              <Typography>{t("labelFeeCalculating")}</Typography>
+              <Typography>{t('labelFeeCalculating')}</Typography>
             ) : (
               <>
                 <Typography
-                  component={"span"}
-                  display={"flex"}
-                  alignItems={"center"}
-                  variant={"body1"}
-                  color={"var(--color-text-secondary)"}
+                  component={'span'}
+                  display={'flex'}
+                  alignItems={'center'}
+                  variant={'body1'}
+                  color={'var(--color-text-secondary)'}
                   marginBottom={1}
                 >
-                  {t("labelL2toL2Fee")}：
+                  {t('labelL2toL2Fee')}：
                   <Box
-                    component={"span"}
-                    display={"flex"}
-                    alignItems={"center"}
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      setDropdownStatus((prev) =>
-                        prev === "up" ? "down" : "up"
-                      )
-                    }
+                    component={'span'}
+                    display={'flex'}
+                    alignItems={'center'}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
                   >
                     {feeInfo && feeInfo.belong && feeInfo.fee
-                      ? feeInfo.fee + " " + feeInfo.belong
-                      : EmptyValueTag + " " + feeInfo?.belong ?? EmptyValueTag}
-                    <DropdownIconStyled
-                      status={dropdownStatus}
-                      fontSize={"medium"}
-                    />
+                      ? feeInfo.fee + ' ' + feeInfo.belong
+                      : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
+                    <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
                     {isFeeNotEnough.isOnLoading ? (
-                      <Typography
-                        marginLeft={1}
-                        component={"span"}
-                        color={"var(--color-warning)"}
-                      >
-                        {t("labelFeeCalculating")}
+                      <Typography marginLeft={1} component={'span'} color={'var(--color-warning)'}>
+                        {t('labelFeeCalculating')}
                       </Typography>
                     ) : (
                       isFeeNotEnough.isFeeNotEnough && (
-                        <Typography
-                          marginLeft={1}
-                          component={"span"}
-                          color={"var(--color-error)"}
-                        >
-                          {t("labelL2toL2FeeNotEnough")}
+                        <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
+                          {t('labelL2toL2FeeNotEnough')}
                         </Typography>
                       )
                     )}
                   </Box>
                 </Typography>
-                {dropdownStatus === "up" && (
+                {dropdownStatus === 'up' && (
                   <FeeTokenItemWrapper padding={2}>
                     <Typography
-                      variant={"body2"}
-                      color={"var(--color-text-third)"}
+                      variant={'body2'}
+                      color={'var(--color-text-third)'}
                       marginBottom={1}
                     >
-                      {t("labelActiveEnterToken")}
+                      {t('labelActiveEnterToken')}
                     </Typography>
                     <FeeToggle
                       chargeFeeTokenList={chargeFeeTokenList}
@@ -256,31 +211,25 @@ export const DeployNFTWrap = <
               </>
             )}
           </Grid>
-          <Grid item marginTop={3} alignSelf={"stretch"}>
+          <Grid item marginTop={3} alignSelf={'stretch'}>
             <Button
               fullWidth
-              variant={"contained"}
-              size={"medium"}
-              color={"primary"}
+              variant={'contained'}
+              size={'medium'}
+              color={'primary'}
               onClick={() => {
-                onNFTDeployClick(tradeData);
+                onNFTDeployClick(tradeData)
               }}
               loading={
-                !getDisabled && nftDeployBtnStatus === TradeBtnStatus.LOADING
-                  ? "true"
-                  : "false"
+                !getDisabled && nftDeployBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
               }
-              disabled={
-                getDisabled || nftDeployBtnStatus === TradeBtnStatus.LOADING
-              }
+              disabled={getDisabled || nftDeployBtnStatus === TradeBtnStatus.LOADING}
             >
-              {btnInfo
-                ? t(btnInfo.label, btnInfo.params)
-                : t(`labelNFTDeployBtn`)}
+              {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTDeployBtn`)}
             </Button>
           </Grid>
         </Grid>
       </Box>
     </Box>
-  );
-};
+  )
+}

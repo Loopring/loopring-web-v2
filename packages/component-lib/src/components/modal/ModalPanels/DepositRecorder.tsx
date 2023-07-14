@@ -1,7 +1,7 @@
-import { Box, Link, Typography } from "@mui/material";
-import styled from "@emotion/styled";
-import React from "react";
-import { TFunction } from "react-i18next";
+import { Box, Link, Typography } from '@mui/material'
+import styled from '@emotion/styled'
+import React from 'react'
+import { TFunction } from 'react-i18next'
 import {
   AccountHashInfo,
   CompleteIcon,
@@ -11,9 +11,9 @@ import {
   MapChainId,
   WaitingIcon,
   WarningIcon,
-} from "@loopring-web/common-resources";
-import { useTheme } from "@emotion/react";
-import { useSettings } from "../../../stores";
+} from '@loopring-web/common-resources'
+import { useTheme } from '@emotion/react'
+import { useSettings } from '../../../stores'
 
 const BoxStyled = styled(Box)`
   background: var(--color-global-bg);
@@ -26,7 +26,7 @@ const BoxStyled = styled(Box)`
     width: 0;
   }
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     display: block;
     top: 0;
@@ -38,7 +38,7 @@ const BoxStyled = styled(Box)`
   }
   border-bottom-left-radius: ${({ theme }) => theme.unit}px;
   border-bottom-right-radius: ${({ theme }) => theme.unit}px;
-` as typeof Box;
+` as typeof Box
 
 export const DepositRecorder = ({
   t,
@@ -48,15 +48,15 @@ export const DepositRecorder = ({
   clear,
 }: // updateDepositHash
 { t: TFunction } & {
-  accAddress: string;
-  etherscanUrl: string;
-  chainInfos: AccountHashInfo;
-  clear?: () => void;
+  accAddress: string
+  etherscanUrl: string
+  chainInfos: AccountHashInfo
+  clear?: () => void
   // updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
 }) => {
-  const theme = useTheme();
-  const { defaultNetwork } = useSettings();
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
+  const theme = useTheme()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const depositView = React.useMemo(() => {
     return (
       <>
@@ -66,18 +66,18 @@ export const DepositRecorder = ({
         chainInfos?.depositHashes[accAddress].length ? (
           <>
             <Typography
-              display={"inline-flex"}
-              justifyContent={"space-between"}
+              display={'inline-flex'}
+              justifyContent={'space-between'}
               paddingY={1 / 2}
-              component={"h6"}
+              component={'h6'}
             >
               <Typography
-                component={"p"}
-                variant={"body2"}
-                color={"text.primary"}
+                component={'p'}
+                variant={'body2'}
+                color={'text.primary'}
                 paddingBottom={1}
               >
-                {t("labelL1toL2Hash", {
+                {t('labelL1toL2Hash', {
                   loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
                   l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
@@ -86,13 +86,13 @@ export const DepositRecorder = ({
               </Typography>
               {clear && (
                 <Link
-                  variant={"body2"}
+                  variant={'body2'}
                   paddingBottom={1}
                   onClick={() => {
-                    clear();
+                    clear()
                   }}
                 >
-                  {t("labelClearAll")}
+                  {t('labelClearAll')}
                 </Link>
               )}
             </Typography>
@@ -100,23 +100,23 @@ export const DepositRecorder = ({
               return (
                 <Typography
                   key={txInfo.hash}
-                  display={"inline-flex"}
-                  justifyContent={"space-between"}
-                  fontSize={"h5"}
+                  display={'inline-flex'}
+                  justifyContent={'space-between'}
+                  fontSize={'h5'}
                   paddingY={1 / 2}
                 >
                   {/*{depoistView}*/}
                   <Link
-                    fontSize={"inherit"}
-                    alignItems={"center"}
-                    display={"inline-flex"}
+                    fontSize={'inherit'}
+                    alignItems={'center'}
+                    display={'inline-flex'}
                     href={`${etherscanUrl}tx/${txInfo.hash}`}
-                    target={"_blank"}
-                    rel={"noopener noreferrer"}
+                    target={'_blank'}
+                    rel={'noopener noreferrer'}
                   >
                     {txInfo.symbol ? (
-                      <Typography component={"span"} color={"text.secondary"}>
-                        {t("labelL1toL2Record", {
+                      <Typography component={'span'} color={'text.secondary'}>
+                        {t('labelL1toL2Record', {
                           symbol: txInfo.symbol,
                           value: txInfo.value,
                         })}
@@ -124,38 +124,31 @@ export const DepositRecorder = ({
                     ) : (
                       getFormattedHash(txInfo.hash)
                     )}
-                    <LinkIcon
-                      style={{ marginLeft: `${theme.unit}px` }}
-                      fontSize={"small"}
-                    />
+                    <LinkIcon style={{ marginLeft: `${theme.unit}px` }} fontSize={'small'} />
                   </Link>
-                  <Typography fontSize={"inherit"} component={"span"}>
-                    {txInfo.status === "pending" ? (
-                      <WaitingIcon fontSize={"large"} />
-                    ) : txInfo.status === "success" ? (
-                      <CompleteIcon fontSize={"large"} />
+                  <Typography fontSize={'inherit'} component={'span'}>
+                    {txInfo.status === 'pending' ? (
+                      <WaitingIcon fontSize={'large'} />
+                    ) : txInfo.status === 'success' ? (
+                      <CompleteIcon fontSize={'large'} />
                     ) : (
-                      <WarningIcon fontSize={"large"} />
+                      <WarningIcon fontSize={'large'} />
                     )}
                   </Typography>
                 </Typography>
-              );
+              )
             })}
           </>
         ) : (
           <Typography
-            display={"flex"}
+            display={'flex'}
             flex={1}
-            justifyContent={"center"}
-            flexDirection={"column"}
-            component={"h6"}
+            justifyContent={'center'}
+            flexDirection={'column'}
+            component={'h6'}
           >
-            <Typography
-              component={"p"}
-              variant={"body1"}
-              color={"text.secondary"}
-            >
-              {t("labelL1toL2HashEmpty", {
+            <Typography component={'p'} variant={'body1'} color={'text.secondary'}>
+              {t('labelL1toL2HashEmpty', {
                 loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                 l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
                 l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
@@ -165,23 +158,23 @@ export const DepositRecorder = ({
           </Typography>
         )}
       </>
-    );
-  }, [network, chainInfos?.depositHashes[accAddress]]);
+    )
+  }, [network, chainInfos?.depositHashes[accAddress]])
 
   return (
     <BoxStyled
       minHeight={60}
       maxHeight={180}
-      component={"div"}
-      display={"flex"}
+      component={'div'}
+      display={'flex'}
       paddingX={5}
       paddingY={1}
       flex={1}
-      flexDirection={"column"}
-      alignSelf={"flex-end"}
-      className={"depositRecord"}
+      flexDirection={'column'}
+      alignSelf={'flex-end'}
+      className={'depositRecord'}
     >
       {depositView}
     </BoxStyled>
-  );
-};
+  )
+}

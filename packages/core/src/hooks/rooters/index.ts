@@ -1,1 +1,1 @@
-export * from "./useLocationChange";
+export * from './useLocationChange'

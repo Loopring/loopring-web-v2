@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8"/>
-	<link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
-	<meta name="description" content="Ethereum zkRollup Exchange and Payment Protocol">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-	<meta name="theme-color" content="#000000"/>
-	<meta
-					name="description"
-					content="Loopring Layer 2, Ethereum zkRollup Exchange and Payment Protocol"
-	/>
-	<link
-					rel="stylesheet"
-					href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-	/>
-	<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png"/>
-	<!--
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="description" content="Ethereum zkRollup Exchange and Payment Protocol" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Loopring Layer 2, Ethereum zkRollup Exchange and Payment Protocol"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
 		manifest.json provides metadata used when your web app is installed on a
 		user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
 	-->
-	<link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
-	<!--
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
 		Notice the use of %PUBLIC_URL% in the tags above.
 		It will be replaced with the URL of the `public` folder during the build.
 		Only files inside the `public` folder can be referenced from the HTML.
@@ -29,50 +32,47 @@
 		work correctly both with client-side routing and a non-root public URL.
 		Learn how to configure a non-root public URL by running `npm run build`.
 	-->
-	<style type="text/css">
+    <style type="text/css">
       body {
-          height: 100vh;
-          background: linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%);
-          color: #fff;
-          flex-direction: column;
+        height: 100vh;
+        background: linear-gradient(194.79deg, #322c53 17.96%, #262b50 44.29%, #32314f 96.93%);
+        color: #fff;
+        flex-direction: column;
       }
 
       .iubenda-pure {
-          height: 0 !important;
-          width: 0 !important;
-          line-height: 0 !important;
-          overflow: hidden !important;
-          padding: 0;
-          margin: 0;
-          display: none !important;
-
+        height: 0 !important;
+        width: 0 !important;
+        line-height: 0 !important;
+        overflow: hidden !important;
+        padding: 0;
+        margin: 0;
+        display: none !important;
       }
 
       #iubenda-pp iframe {
-          display: block;
+        display: block;
       }
-	</style>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-224502206-1">
-	</script>
-	<script>
-    window.dataLayer = window.dataLayer || [];
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-224502206-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+      function gtag() {
+        dataLayer.push(arguments)
+      }
 
-    gtag('js', new Date());
-    gtag('config', 'UA-224502206-1');
-	</script>
-	<title>Loopring - Ethereum Layer2</title>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
+      gtag('js', new Date())
+      gtag('config', 'UA-224502206-1')
+    </script>
+    <title>Loopring - Ethereum Layer2</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  </head>
 
-</head>
-
-<body ondragstart="return false;" ondrop="return false;" draggable="false">
-<noscript>You need to enable JavaScript to run this app.</noscript>
-<div id="root" style="width: 100%; height: 100vh ; display: flex; flex-direction: column"></div>
-<!--
+  <body ondragstart="return false;" ondrop="return false;" draggable="false">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root" style="width: 100%; height: 100vh; display: flex; flex-direction: column"></div>
+    <!--
 	This HTML file is a template.
 	If you open it directly in the browser, you will see an empty page.
 
@@ -82,26 +82,32 @@
 	To begin the development, run `npm start` or `yarn start`.
 	To create a production bundle, use `npm run build` or `yarn build`.
 -->
-<div hidden>
-	<a href="https://www.iubenda.com/terms-and-conditions/74969935" data-index="0"
-		 class="iubenda-white iubenda-embed iubenda-pure iubenda-noiframe"></a>
-	<!--      <a href="https://www.iubenda.com/terms-and-conditions/74969935"-->
-	<!--         class="iubenda-black iubenda-embed iubenda-pure iubenda-noiframe"></a>-->
-</div>
-<script type="text/javascript">(function (w, d) {
-  var loader = function () {
-    var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0];
-    s.src = "https://cdn.iubenda.com/iubenda.js";
-    tag.parentNode.insertBefore(s, tag);
-  };
-  if (w.addEventListener) {
-    w.addEventListener("load", loader, false);
-  } else if (w.attachEvent) {
-    w.attachEvent("onload", loader);
-  } else {
-    w.onload = loader;
-  }
-})(window, document);</script>
-<script src='https://d17nz991552y2g.cloudfront.net/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js'></script>
-</body>
+    <div hidden>
+      <a
+        href="https://www.iubenda.com/terms-and-conditions/74969935"
+        data-index="0"
+        class="iubenda-white iubenda-embed iubenda-pure iubenda-noiframe"
+      ></a>
+      <!--      <a href="https://www.iubenda.com/terms-and-conditions/74969935"-->
+      <!--         class="iubenda-black iubenda-embed iubenda-pure iubenda-noiframe"></a>-->
+    </div>
+    <script type="text/javascript">
+      ;(function (w, d) {
+        var loader = function () {
+          var s = d.createElement('script'),
+            tag = d.getElementsByTagName('script')[0]
+          s.src = 'https://cdn.iubenda.com/iubenda.js'
+          tag.parentNode.insertBefore(s, tag)
+        }
+        if (w.addEventListener) {
+          w.addEventListener('load', loader, false)
+        } else if (w.attachEvent) {
+          w.attachEvent('onload', loader)
+        } else {
+          w.onload = loader
+        }
+      })(window, document)
+    </script>
+    <script src="https://d17nz991552y2g.cloudfront.net/app/js/jqueryandencoder.ffa5afd5124fbedceea9.js"></script>
+  </body>
 </html>

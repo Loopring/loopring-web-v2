@@ -1,11 +1,11 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { Box, Modal, Typography } from "@mui/material";
-import { ModalQRCodeProps, QRCodePanelProps } from "./Interface";
-import { ModalCloseButton } from "../../basic-lib";
-import QRCodeStyling from "qr-code-styling";
-import { SoursURL } from "@loopring-web/common-resources";
-import React from "react";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import styled from '@emotion/styled'
+import { Box, Modal, Typography } from '@mui/material'
+import { ModalQRCodeProps, QRCodePanelProps } from './Interface'
+import { ModalCloseButton } from '../../basic-lib'
+import QRCodeStyling from 'qr-code-styling'
+import { SoursURL } from '@loopring-web/common-resources'
+import React from 'react'
 
 const ModalContentStyled = styled(Box)`
   & > div {
@@ -20,35 +20,35 @@ const ModalContentStyled = styled(Box)`
     padding-top: ${({ theme }) => 5 * theme.unit}px;
     border-radius: ${({ theme }) => theme.unit}px;
   }
-`;
+`
 
 export type QCodeProps = {
-  url: string;
-  size?: number;
-  fgColor1?: string;
-  fgColor2?: string;
-  bgColor?: string;
-  imageInfo?: { imageSrc?: string; size?: number };
-};
-const qrCode = new QRCodeStyling();
+  url: string
+  size?: number
+  fgColor1?: string
+  fgColor2?: string
+  bgColor?: string
+  imageInfo?: { imageSrc?: string; size?: number }
+}
+const qrCode = new QRCodeStyling()
 
 export const QRCode = ({
   size = 160,
-  fgColor1 = "var(--color-primary)",
-  fgColor2 = "#000",
-  bgColor = "#fff",
-  url = "https://exchange.loopring.io/",
+  fgColor1 = 'var(--color-primary)',
+  fgColor2 = '#000',
+  bgColor = '#fff',
+  url = 'https://exchange.loopring.io/',
   imageInfo = {
-    imageSrc: `${SoursURL + "svg/loopring.svg"}`,
+    imageSrc: `${SoursURL + 'svg/loopring.svg'}`,
     size: 40,
   },
 }: QCodeProps & QRCodePanelProps) => {
-  const ref = React.useRef();
+  const ref = React.useRef()
 
   React.useEffect(() => {
     if (url) {
       qrCode.update({
-        type: "svg",
+        type: 'svg',
         data: url,
         width: size,
         height: size,
@@ -57,43 +57,44 @@ export const QRCode = ({
           gradient: {
             rotation: 45,
             type: 'linear',
-            colorStops: [{
-              offset: 0,
-              color: fgColor1,
-            },
-            {
-              offset: 1,
-              color: fgColor2
-            }
-          ]
+            colorStops: [
+              {
+                offset: 0,
+                color: fgColor1,
+              },
+              {
+                offset: 1,
+                color: fgColor2,
+              },
+            ],
           },
-          type: "dots",
+          type: 'dots',
         },
         backgroundOptions: {
           color: bgColor,
         },
         imageOptions: {
-          crossOrigin: "anonymous",
+          crossOrigin: 'anonymous',
           margin: 8,
         },
         cornersSquareOptions: {
-          type: 'extra-rounded'
+          type: 'extra-rounded',
         },
         cornersDotOptions: {
-          type: 'square'
-        }
+          type: 'square',
+        },
       })
       if (ref.current) {
         const boxRef = ref.current as any
-        while(boxRef.hasChildNodes()){
-          boxRef.removeChild(boxRef.lastChild);
+        while (boxRef.hasChildNodes()) {
+          boxRef.removeChild(boxRef.lastChild)
         }
         qrCode.append(ref.current)
       }
     }
-  }, [url]);
-  return <Box ref={ref} />;
-};
+  }, [url])
+  return <Box ref={ref} />
+}
 export const QRCodePanel = ({
   title,
   description,
@@ -106,67 +107,57 @@ export const QRCodePanel = ({
 // handleClick
 QCodeProps & QRCodePanelProps) => {
   if (rest.url === undefined) {
-    rest.url = "";
+    rest.url = ''
   }
   return (
     <Box
-      display={"flex"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-      flexDirection={"column"}
+      display={'flex'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
+      flexDirection={'column'}
     >
       {title && (
-        <Typography
-          variant={"h4"}
-          component="h3"
-          className="modalTitle"
-          marginBottom={3}
-        >
+        <Typography variant={'h4'} component='h3' className='modalTitle' marginBottom={3}>
           {title}
         </Typography>
       )}
       <QRCode {...rest} />
       {description && (
-        <Typography variant={"body1"} marginBottom={3} marginTop={1}>
+        <Typography variant={'body1'} marginBottom={3} marginTop={1}>
           {description}
         </Typography>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export const ModalQRCode = withTranslation("common")(
-  ({
-    onClose,
-    open,
-    t,
-    ...rest
-  }: QCodeProps & ModalQRCodeProps & WithTranslation) => {
+export const ModalQRCode = withTranslation('common')(
+  ({ onClose, open, t, ...rest }: QCodeProps & ModalQRCodeProps & WithTranslation) => {
     return (
       <Modal
         open={open}
         onClose={onClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
       >
         <ModalContentStyled
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
           className={rest?.className}
         >
           <Box
-            className={"content"}
+            className={'content'}
             paddingTop={3}
             paddingBottom={3}
-            display={"flex"}
-            flexDirection={"column"}
+            display={'flex'}
+            flexDirection={'column'}
           >
             <ModalCloseButton onClose={onClose} {...{ ...rest, t }} />
             <QRCodePanel {...{ ...rest, t }} />
           </Box>
         </ModalContentStyled>
       </Modal>
-    );
-  }
-);
+    )
+  },
+)

@@ -1,1 +1,1 @@
-export * from "./RowDepthFormatter";
+export * from './RowDepthFormatter'

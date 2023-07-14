@@ -1,54 +1,49 @@
-import {
-  AddIcon,
-  DeleteIcon,
-  MetaProperty,
-  PROPERTY_LIMIT,
-} from "@loopring-web/common-resources";
-import { Trans, useTranslation } from "react-i18next";
-import { Button, TextField } from "../../../basic-lib";
-import { Box, Grid, IconButton, Typography } from "@mui/material";
-import React, { ForwardedRef } from "react";
+import { AddIcon, DeleteIcon, MetaProperty, PROPERTY_LIMIT } from '@loopring-web/common-resources'
+import { Trans, useTranslation } from 'react-i18next'
+import { Button, TextField } from '../../../basic-lib'
+import { Box, Grid, IconButton, Typography } from '@mui/material'
+import React, { ForwardedRef } from 'react'
 
 export const Properties = ({
   properties = [],
   handleChange,
   disabled = false,
 }: {
-  disabled?: boolean;
-  properties: MetaProperty[];
-  handleChange: (properties: Array<Partial<MetaProperty>>) => void;
+  disabled?: boolean
+  properties: MetaProperty[]
+  handleChange: (properties: Array<Partial<MetaProperty>>) => void
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const _handleChange = React.useCallback(
     (_property: Partial<MetaProperty>, index: number) => {
-      let _properties = [...properties];
-      _properties[index] = { ...(_properties[index] ?? {}), ..._property };
-      handleChange(_properties);
+      let _properties = [...properties]
+      _properties[index] = { ...(_properties[index] ?? {}), ..._property }
+      handleChange(_properties)
       // properties.filter((item,_index) => index!== )
       // properties[index]
     },
-    [properties, handleChange]
-  );
+    [properties, handleChange],
+  )
   const onDelete = React.useCallback(
     (index: number) => {
-      let _properties = [...properties];
+      let _properties = [...properties]
       if (_properties.length > 1) {
-        handleChange(_properties.filter((_item, _index) => _index !== index));
+        handleChange(_properties.filter((_item, _index) => _index !== index))
       }
     },
-    [handleChange, properties]
-  );
+    [handleChange, properties],
+  )
   const addItem = React.useCallback(() => {
     if (properties.length < PROPERTY_LIMIT) {
-      let _properties = [...properties, { key: "", value: "" }];
-      handleChange(_properties);
+      let _properties = [...properties, { key: '', value: '' }]
+      handleChange(_properties)
     }
-  }, [handleChange, properties]);
+  }, [handleChange, properties])
   React.useEffect(() => {
     if (!properties.length) {
-      addItem();
+      addItem()
     }
-  }, []);
+  }, [])
   return (
     <Box>
       {properties.map((property, index) => (
@@ -66,20 +61,20 @@ export const Properties = ({
         <Box paddingTop={1}>
           <Button
             startIcon={<AddIcon />}
-            size={"small"}
+            size={'small'}
             disabled={disabled}
-            variant={"outlined"}
+            variant={'outlined'}
             // variant={"contained"}
             onClick={addItem}
-            title={t("labelPropertyAdd")}
+            title={t('labelPropertyAdd')}
           >
-            {t("labelPropertyAdd")}
+            {t('labelPropertyAdd')}
           </Button>
         </Box>
       )}
     </Box>
-  );
-};
+  )
+}
 export const Property = React.memo(
   React.forwardRef(
     (
@@ -90,21 +85,21 @@ export const Property = React.memo(
         onDelete,
         disabled = false,
       }: {
-        disabled?: boolean;
-        property: MetaProperty;
-        index: number;
-        handleChange: (property: Partial<MetaProperty>, index: number) => void;
-        onDelete: (index: number) => void;
+        disabled?: boolean
+        property: MetaProperty
+        index: number
+        handleChange: (property: Partial<MetaProperty>, index: number) => void
+        onDelete: (index: number) => void
       },
-      ref: ForwardedRef<any>
+      ref: ForwardedRef<any>,
     ) => {
       // const [,] = React.useState<Partial<MetaProperty>>();
       const _handleChange = React.useCallback(
         (_property: Partial<MetaProperty>) => {
-          handleChange({ ...property, ..._property }, index);
+          handleChange({ ...property, ..._property }, index)
         },
-        [handleChange, index, property]
-      );
+        [handleChange, index, property],
+      )
 
       return (
         <>
@@ -114,8 +109,8 @@ export const Property = React.memo(
               value={property.key}
               inputProps={{ maxLength: 10 }}
               fullWidth
-              label={<Trans i18nKey={"labelMintPropertyKey"}>key</Trans>}
-              type={"text"}
+              label={<Trans i18nKey={'labelMintPropertyKey'}>key</Trans>}
+              type={'text'}
               onChange={(e) => _handleChange({ key: e.target.value })}
             />
           </Grid>
@@ -125,23 +120,17 @@ export const Property = React.memo(
               value={property.value}
               inputProps={{ maxLength: 20 }}
               fullWidth
-              label={<Trans i18nKey={"labelMintPropertyValue"}>value</Trans>}
-              type={"text"}
+              label={<Trans i18nKey={'labelMintPropertyValue'}>value</Trans>}
+              type={'text'}
               onChange={(e) => _handleChange({ value: e.target.value })}
             />
           </Grid>
-          <Grid
-            item
-            xs={1}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            <Typography color={"var(--color-button-icon)"}>
+          <Grid item xs={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            <Typography color={'var(--color-button-icon)'}>
               <IconButton
                 sx={{ marginTop: 3 }}
-                edge={"end"}
-                size={"large"}
+                edge={'end'}
+                size={'large'}
                 disabled={disabled}
                 // disabled={properties.length === 1 ? true : false}
                 onClick={() => onDelete(index)}
@@ -151,10 +140,10 @@ export const Property = React.memo(
             </Typography>
           </Grid>
         </>
-      );
-    }
-  )
-);
+      )
+    },
+  ),
+)
 // export const PropertyReview = React.memo(
 //   React.forwardRef(
 //     ({

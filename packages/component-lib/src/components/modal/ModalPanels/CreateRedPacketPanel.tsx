@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
-import { CreateRedPacketProps, RedPacketStep } from "../../tradePanel";
+import { useTranslation } from 'react-i18next'
+import { SwitchPanel, SwitchPanelProps } from '../../basic-lib'
+import { CreateRedPacketProps, RedPacketStep } from '../../tradePanel'
 import {
   FeeInfo,
   LuckyRedPacketItem,
@@ -9,23 +9,23 @@ import {
   RedPacketOrderData,
   RedPacketOrderType,
   TRADE_TYPE,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   HorizontalLabelPositionBelowStepper,
   TradeMenuList,
   useBasicTrade,
-} from "../../tradePanel/components";
-import React from "react";
-import { cloneDeep } from "lodash";
+} from '../../tradePanel/components'
+import React from 'react'
+import { cloneDeep } from 'lodash'
 
 import {
   CreateRedPacketStepTokenType,
   CreateRedPacketStepType,
   CreateRedPacketStepWrap,
-} from "../../tradePanel/components/CreateRedPacketWrap";
-import { Box, styled } from "@mui/material";
-import { LuckyTokenClaimType, LuckyTokenViewType } from "@loopring-web/loopring-sdk";
-import { useNotify } from "@loopring-web/core";
+} from '../../tradePanel/components/CreateRedPacketWrap'
+import { Box, styled } from '@mui/material'
+import { LuckyTokenClaimType, LuckyTokenViewType } from '@loopring-web/loopring-sdk'
+import { useNotify } from '@loopring-web/core'
 
 const BoxStyle = styled(Box)`
   &.createRedPacket {
@@ -34,12 +34,12 @@ const BoxStyle = styled(Box)`
       display: flex;
     }
   }
-`;
+`
 export const CreateRedPacketPanel = <
   T extends Partial<RedPacketOrderData<I>>,
   I extends any,
   C = FeeInfo,
-  NFT = NFTWholeINFO
+  NFT = NFTWholeINFO,
 >({
   tradeType,
   tradeData,
@@ -53,47 +53,42 @@ export const CreateRedPacketPanel = <
   myNFTPanel,
   ...rest
 }: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
-  const { t, i18n, ready: tReady } = useTranslation(["common", "error"]);
+  const { t, i18n, ready: tReady } = useTranslation(['common', 'error'])
   const { onChangeEvent, index, switchData } = useBasicTrade({
     ...rest,
     coinMap,
     type: tradeType,
     // index,
     walletMap,
-  } as any);
+  } as any)
   const [panelIndex, setPanelIndex] = React.useState(
-    tradeType === RedPacketOrderType.FromNFT
-      ? RedPacketStep.ChooseType
-      : RedPacketStep.TradeType
-  );
+    tradeType === RedPacketOrderType.FromNFT ? RedPacketStep.ChooseType : RedPacketStep.TradeType,
+  )
 
-  const steps = tradeType === RedPacketOrderType.FromNFT
-    ? [
-      "labelRedPacketChoose", //Prepare NFT metadata
-      "labelRedPacketMain", //labelADMint2
-    ]
-    : [
-      "labelRedPacketTypeTokens", //labelADMint2
-      "labelRedPacketChoose", //Prepare NFT metadata
-      "labelRedPacketMain", //labelADMint2
-    ];
+  const steps =
+    tradeType === RedPacketOrderType.FromNFT
+      ? [
+          'labelRedPacketChoose', //Prepare NFT metadata
+          'labelRedPacketMain', //labelADMint2
+        ]
+      : [
+          'labelRedPacketTypeTokens', //labelADMint2
+          'labelRedPacketChoose', //Prepare NFT metadata
+          'labelRedPacketMain', //labelADMint2
+        ]
 
   React.useEffect(() => {
     // isToken
-    if (
-      !isToken &&
-      tradeData.nftData &&
-      panelIndex === RedPacketStep.NFTList
-    ) {
-      setActiveStep(RedPacketStep.Main);
+    if (!isToken && tradeData.nftData && panelIndex === RedPacketStep.NFTList) {
+      setActiveStep(RedPacketStep.Main)
     }
-  }, [tradeData?.nftData, panelIndex, tradeType]);
+  }, [tradeData?.nftData, panelIndex, tradeType])
 
   const setActiveStep = React.useCallback((index: RedPacketStep) => {
     switch (index) {
       case RedPacketStep.TradeType:
-        setPanelIndex(0);
-        break;
+        setPanelIndex(0)
+        break
       case RedPacketStep.ChooseType:
         if (tradeType !== RedPacketOrderType.FromNFT) {
           handleOnDataChange({
@@ -105,52 +100,56 @@ export const CreateRedPacketPanel = <
             belong: undefined,
             tokenAddress: undefined,
             image: undefined,
-          } as any);
+          } as any)
         }
-        setPanelIndex(1);
-        break;
+        setPanelIndex(1)
+        break
       case RedPacketStep.Main:
         handleOnDataChange({
           validSince: Date.now(),
-        } as any);
-        setPanelIndex(2);
-        break;
+        } as any)
+        setPanelIndex(2)
+        break
       case RedPacketStep.NFTList:
-        setPanelIndex(3);
-        break;
+        setPanelIndex(3)
+        break
     }
-  }, []);
+  }, [])
   React.useEffect(() => {
     setPanelIndex((state) => {
       if (state > 1) {
-        return index + 2;
+        return index + 2
       } else {
-        return state;
+        return state
       }
-    });
-  }, [index]);
+    })
+  }, [index])
   // LP token should not exist in withdraw panel for now
   const getWalletMapWithoutLP = React.useCallback(() => {
-    const clonedWalletMap = cloneDeep(walletMap ?? {});
-    const keyList = Object.keys(clonedWalletMap);
+    const clonedWalletMap = cloneDeep(walletMap ?? {})
+    const keyList = Object.keys(clonedWalletMap)
     keyList.forEach((key) => {
-      const [first] = key.split("-");
-      if (first === "LP") {
-        delete clonedWalletMap[key];
+      const [first] = key.split('-')
+      if (first === 'LP') {
+        delete clonedWalletMap[key]
       }
-    });
-    return clonedWalletMap;
-  }, [walletMap]);
-  const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox;
+    })
+    return clonedWalletMap
+  }, [walletMap])
+  const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox
   const [selectedType, setSelectType] = React.useState(
     tradeData.tradeType === RedPacketOrderType.NFT
       ? LuckyRedPacketList.find((config) => config.defaultForNFT)
       : tradeData.tradeType === RedPacketOrderType.BlindBox
-        ? LuckyRedPacketList.find((config) => showERC20Blindbox ? config.defaultForBlindbox : config.defaultForBlindboxNotShowERC20Blindbox)
-        : tradeData.tradeType === RedPacketOrderType.FromNFT
-          ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
-          : LuckyRedPacketList.find((config) => config.defaultForERC20)
-  );
+      ? LuckyRedPacketList.find((config) =>
+          showERC20Blindbox
+            ? config.defaultForBlindbox
+            : config.defaultForBlindboxNotShowERC20Blindbox,
+        )
+      : tradeData.tradeType === RedPacketOrderType.FromNFT
+      ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
+      : LuckyRedPacketList.find((config) => config.defaultForERC20),
+  )
   React.useEffect(() => {
     setSelectType(() => {
       if (tradeData && tradeData.type) {
@@ -160,62 +159,67 @@ export const CreateRedPacketPanel = <
             (config) =>
               config.showInFromNFT &&
               config.value.mode === tradeData.type?.mode &&
-              config.value.partition === tradeData.type?.partition
+              config.value.partition === tradeData.type?.partition,
           )
         } else if (tradeData.type?.mode === LuckyTokenClaimType.BLIND_BOX) {
           found = LuckyRedPacketList.find(
             (config) =>
               config.value.mode === LuckyTokenClaimType.BLIND_BOX &&
-              (tradeData.isNFT ? true : false) === (config.isBlindboxNFT ? true : false)
+              (tradeData.isNFT ? true : false) === (config.isBlindboxNFT ? true : false),
           )
         } else {
           found = LuckyRedPacketList.find(
             (config) =>
               tradeData.type?.partition == config.value.partition &&
-              tradeData.type?.mode == config.value.mode
-
-          );
+              tradeData.type?.mode == config.value.mode,
+          )
         }
-        return found ?? LuckyRedPacketList[2];
+        return found ?? LuckyRedPacketList[2]
       } else {
-        return LuckyRedPacketList[2];
+        return LuckyRedPacketList[2]
       }
-    });
+    })
     // setScope();
   }, [
     tradeData?.type?.partition,
     // tradeData?.type?.scope,
     tradeData?.type?.mode,
-    tradeData.isNFT
-  ]);
+    tradeData.isNFT,
+  ])
 
   React.useEffect(() => {
     const found =
       tradeData.tradeType === RedPacketOrderType.NFT
         ? LuckyRedPacketList.find((config) => config.defaultForNFT)
         : tradeData.tradeType === RedPacketOrderType.BlindBox
-          ? LuckyRedPacketList.find((config) => showERC20Blindbox ? config.defaultForBlindbox : config.defaultForBlindboxNotShowERC20Blindbox)
-          : tradeData.tradeType === RedPacketOrderType.FromNFT
-            ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
-            : LuckyRedPacketList.find((config) => config.defaultForERC20);
-    setSelectType(found);
+        ? LuckyRedPacketList.find((config) =>
+            showERC20Blindbox
+              ? config.defaultForBlindbox
+              : config.defaultForBlindboxNotShowERC20Blindbox,
+          )
+        : tradeData.tradeType === RedPacketOrderType.FromNFT
+        ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
+        : LuckyRedPacketList.find((config) => config.defaultForERC20)
+    setSelectType(found)
     handleOnDataChange({
       type: {
         ...tradeData?.type,
         partition: found!.value.partition,
         mode: found!.value.mode,
-        scope: LuckyTokenViewType.PRIVATE
+        scope: LuckyTokenViewType.PRIVATE,
       },
-      isNFT: (
-        tradeData.tradeType === RedPacketOrderType.NFT
-        || tradeData.tradeType === RedPacketOrderType.FromNFT
-        || (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
-      ) ? true : false
-    } as any);
-  }, [tradeData.tradeType, showERC20Blindbox]);
+      isNFT:
+        tradeData.tradeType === RedPacketOrderType.NFT ||
+        tradeData.tradeType === RedPacketOrderType.FromNFT ||
+        (tradeData.tradeType === RedPacketOrderType.BlindBox && !showERC20Blindbox)
+          ? true
+          : false,
+    } as any)
+  }, [tradeData.tradeType, showERC20Blindbox])
 
-  const [privateChecked, setPrivateChecked] = React.useState(false);
-  const isToken = tradeType === RedPacketOrderType.TOKEN ||
+  const [privateChecked, setPrivateChecked] = React.useState(false)
+  const isToken =
+    tradeType === RedPacketOrderType.TOKEN ||
     (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT)
 
   const props: SwitchPanelProps<string> = React.useMemo(() => {
@@ -223,7 +227,7 @@ export const CreateRedPacketPanel = <
       index: panelIndex,
       panelList: [
         {
-          key: "selectTokenType",
+          key: 'selectTokenType',
           element: (
             <CreateRedPacketStepTokenType
               {...({
@@ -239,7 +243,7 @@ export const CreateRedPacketPanel = <
           toolBarItem: undefined,
         },
         {
-          key: "selectType",
+          key: 'selectType',
           element: (
             <CreateRedPacketStepType
               {...({
@@ -262,15 +266,15 @@ export const CreateRedPacketPanel = <
                     ...tradeData?.type,
                     scope: !privateChecked ? 1 : 0,
                   },
-                } as any);
-                setPrivateChecked(!privateChecked);
+                } as any)
+                setPrivateChecked(!privateChecked)
               }}
             />
           ),
           toolBarItem: undefined,
         },
         {
-          key: "trade",
+          key: 'trade',
           element: (
             // @ts-ignore
             <CreateRedPacketStepWrap
@@ -296,7 +300,7 @@ export const CreateRedPacketPanel = <
         isToken
           ? ([
               {
-                key: "tradeMenuList",
+                key: 'tradeMenuList',
                 element: (
                   <TradeMenuList
                     {...({
@@ -319,15 +323,15 @@ export const CreateRedPacketPanel = <
           : myNFTPanel
           ? ([
               {
-                key: "nftList",
+                key: 'nftList',
                 element: myNFTPanel,
                 toolBarItem: undefined,
               },
             ] as any)
-          : []
+          : [],
       ),
-      _width: "100%",
-    };
+      _width: '100%',
+    }
   }, [
     tradeData,
     rest,
@@ -342,32 +346,25 @@ export const CreateRedPacketPanel = <
     panelIndex,
     disabled,
     tradeData,
-  ]);
+  ])
   return (
     <BoxStyle
-      className={walletMap ? "createRedPacket" : "loading createRedPacket"}
-      display={"flex"}
+      className={walletMap ? 'createRedPacket' : 'loading createRedPacket'}
+      display={'flex'}
       flex={1}
-      flexDirection={"column"}
+      flexDirection={'column'}
       paddingY={5 / 2}
       paddingTop={3}
       paddingBottom={0}
-      alignItems={"center"}
+      alignItems={'center'}
     >
       <HorizontalLabelPositionBelowStepper
         activeStep={panelIndex === 2 || panelIndex === 3 ? 2 : panelIndex}
         steps={steps}
       />
-      <Box
-        paddingTop={2}
-        display={"flex"}
-        flex={1}
-        width={"100%"}
-        minWidth={240}
-        paddingX={3}
-      >
+      <Box paddingTop={2} display={'flex'} flex={1} width={'100%'} minWidth={240} paddingX={3}>
         <SwitchPanel {...{ ...rest, tReady, i18n, t, ...props }} />
       </Box>
     </BoxStyle>
-  );
-};
+  )
+}

@@ -1,22 +1,22 @@
-import { Grid } from "@mui/material";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { InputSearch } from "../../../";
+import { Grid } from '@mui/material'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { InputSearch } from '../../../'
 
 export interface FilterProps {
   // hideInvestToken: boolean;
   // hideSmallBalances: boolean;
   // setHideLpToken: (value: boolean) => void;
   // setHideSmallBalances: (value: boolean) => void;
-  searchValue: string;
-  handleFilterChange: (props: { searchValue: string }) => void;
+  searchValue: string
+  handleFilterChange: (props: { searchValue: string }) => void
 }
 
 export enum CheckboxType {
-  smallBalance = "smallBalance",
-  invest = "invest",
+  smallBalance = 'smallBalance',
+  invest = 'invest',
 }
 
-export const Filter = withTranslation("tables", { withRef: true })(
+export const Filter = withTranslation('tables', { withRef: true })(
   ({
     // t,
     handleFilterChange,
@@ -29,16 +29,16 @@ export const Filter = withTranslation("tables", { withRef: true })(
     // myLog(searchValue, "searchValue");
 
     return (
-      <Grid container spacing={4} justifyContent={"space-between"}>
+      <Grid container spacing={4} justifyContent={'space-between'}>
         <Grid item>
           <InputSearch
             value={searchValue}
             onChange={(value: any) => {
-              handleFilterChange({ searchValue: value });
+              handleFilterChange({ searchValue: value })
             }}
           />
         </Grid>
       </Grid>
-    );
-  }
-);
+    )
+  },
+)

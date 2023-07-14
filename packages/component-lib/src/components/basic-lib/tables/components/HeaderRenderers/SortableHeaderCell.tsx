@@ -1,21 +1,19 @@
-import { HeaderRendererProps } from "react-data-grid";
-import styled from "@emotion/styled";
-import { Box, BoxProps } from "@mui/material";
-import { css } from "@emotion/react";
-import React from "react";
+import { HeaderRendererProps } from 'react-data-grid'
+import styled from '@emotion/styled'
+import { Box, BoxProps } from '@mui/material'
+import { css } from '@emotion/react'
+import React from 'react'
 
 export const headerSortCell = css`
   cursor: pointer;
   display: flex;
-`;
+`
 export const headerSortName = css`
   flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-const StyledArrowSort = styled(Box)<
-  BoxProps & { sortdirection: "ASC" | "DESC" | undefined }
->`
+`
+const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }>`
   margin-left: ${({ theme }) => `${theme.unit / 2}px`};
   .up {
     width: 0;
@@ -24,10 +22,7 @@ const StyledArrowSort = styled(Box)<
     border-bottom-color: ${({
       // theme,
       sortdirection,
-    }) =>
-      sortdirection === "DESC"
-        ? `var(--color-text-primary)`
-        : `var(--color-text-third)`};
+    }) => (sortdirection === 'DESC' ? `var(--color-text-primary)` : `var(--color-text-third)`)};
   }
 
   .down {
@@ -37,37 +32,31 @@ const StyledArrowSort = styled(Box)<
     border-top-color: ${({
       // theme,
       sortdirection,
-    }) =>
-      sortdirection === "ASC"
-        ? `var(--color-text-primary)`
-        : `var(--color-text-third)`};
+    }) => (sortdirection === 'ASC' ? `var(--color-text-primary)` : `var(--color-text-third)`)};
     margin-top: ${({ theme }) => `${theme.unit / 4}px`};
   }
-` as (
-  props: BoxProps & { sortdirection: "ASC" | "DESC" | undefined }
-) => JSX.Element;
+` as (props: BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }) => JSX.Element
 
 // @ts-ignore
 export const ArrowSort = ({
   sortDirection,
   // children,
   ...rest
-}: BoxProps & { sortDirection: "ASC" | "DESC" | undefined }) => {
+}: BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }) => {
   return (
     <StyledArrowSort {...{ ...rest }} sortdirection={sortDirection}>
-      <div className="up" />
-      <div className="down" />
+      <div className='up' />
+      <div className='down' />
     </StyledArrowSort>
-  );
-};
+  )
+}
 
 // type SharedHeaderCellProps<R, SR> = Pick<
 //     HeaderRendererProps<R, SR>,
 //     'sortDirection' | 'onSort' | 'priority'
 //     >;
-export interface SortableHeaderCellProps<R, SR = unknown>
-  extends HeaderRendererProps<R, SR> {
-  children?: React.ReactNode;
+export interface SortableHeaderCellProps<R, SR = unknown> extends HeaderRendererProps<R, SR> {
+  children?: React.ReactNode
 }
 
 export function SortableHeaderCell<R, SR>({
@@ -89,9 +78,9 @@ export function SortableHeaderCell<R, SR>({
 
     return (
       <Box
-        component={"span"}
-        display={"flex"}
-        alignItems={"center"}
+        component={'span'}
+        display={'flex'}
+        alignItems={'center'}
         className={`rdg-header-sort-cell ${headerSortCell}`}
         onClick={(e: React.MouseEvent) => onSort(e.ctrlKey)}
       >
@@ -101,8 +90,8 @@ export function SortableHeaderCell<R, SR>({
         <ArrowSort {...{ sortDirection }} />
         {priority}
       </Box>
-    );
+    )
   } else {
-    return <>{children ? children : column.name}</>;
+    return <>{children ? children : column.name}</>
   }
 }

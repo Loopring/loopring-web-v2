@@ -1,11 +1,5 @@
-import { Subject } from "rxjs";
-import {
-  LoopringAPI,
-  store,
-  resetNFTMintData,
-  updateNFTMintData,
-  LAST_STEP,
-} from "../../index";
+import { Subject } from 'rxjs'
+import { LoopringAPI, store, resetNFTMintData, updateNFTMintData, LAST_STEP } from '../../index'
 import {
   AccountStatus,
   // AccountStatus,
@@ -16,11 +10,11 @@ import {
   MetaDataProperty,
   myLog,
   UIERROR_CODE,
-} from "@loopring-web/common-resources";
-import { IpfsProvides, ipfsService } from "../ipfs";
-import { BigNumber } from "bignumber.js";
-import { AddResult } from "ipfs-core-types/types/src/root";
-import * as sdk from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { IpfsProvides, ipfsService } from '../ipfs'
+import { BigNumber } from 'bignumber.js'
+import { AddResult } from 'ipfs-core-types/types/src/root'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 // import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -31,70 +25,63 @@ export enum MintCommands {
 }
 
 const subject = new Subject<{
-  status: MintCommands;
+  status: MintCommands
   data?: {
-    uniqueId?: string;
-    [key: string]: any;
-  };
-}>();
+    uniqueId?: string
+    [key: string]: any
+  }
+}>()
 
 export const mintService = {
   emptyData: async (
     props:
       | {
-          contractAddress?: string | undefined;
-          lastStep?: LAST_STEP | undefined;
+          contractAddress?: string | undefined
+          lastStep?: LAST_STEP | undefined
         }
-      | undefined
+      | undefined,
   ) => {
     const {
       account,
       // system: { chainId },
-    } = store.getState();
+    } = store.getState()
     let tokenAddress = props?.contractAddress,
-      collection: undefined | CollectionMeta = undefined;
-    if (
-      tokenAddress &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      account.accAddress
-    ) {
+      collection: undefined | CollectionMeta = undefined
+    if (tokenAddress && account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
       const response = await LoopringAPI.userAPI?.getUserOwenCollection(
         {
           owner: account.accAddress,
           tokenAddress: props?.contractAddress,
         },
-        account.apiKey
-      );
+        account.apiKey,
+      )
       if (
         response &&
-        ((response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message)
+        ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
       ) {
-        throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+        throw new CustomError(ErrorMap.ERROR_UNKNOWN)
       }
-      collection = (response as any).collections[0];
+      collection = (response as any).collections[0]
     }
-    store.dispatch(
-      resetNFTMintData({ tokenAddress, collection, lastStep: props?.lastStep })
-    );
+    store.dispatch(resetNFTMintData({ tokenAddress, collection, lastStep: props?.lastStep }))
     subject.next({
       status: MintCommands.MetaDataSetup,
       data: {
         emptyData: true,
         collection,
       },
-    });
+    })
   },
   processingIPFS: ({
     ipfsProvides,
     uniqueId,
   }: {
-    ipfsProvides: IpfsProvides;
-    uniqueId: string;
+    ipfsProvides: IpfsProvides
+    uniqueId: string
   }) => {
     const {
       nftMintValue: { nftMETA },
-    } = store.getState()._router_modalData;
+    } = store.getState()._router_modalData
     let _nftMETA: any = {
       image: nftMETA.image,
       animation_url: nftMETA.animationUrl ?? nftMETA.image,
@@ -102,46 +89,46 @@ export const mintService = {
       royalty_percentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
       description: nftMETA.description,
       collection_metadata: nftMETA.collection_metadata,
-      mint_channel: "Loopring",
-    };
+      mint_channel: 'Loopring',
+    }
     // const attributes = [];
     const obj =
       nftMETA.properties?.reduce(
         (prev, item) => {
           if (!!item.key?.trim() && !!item.value?.trim()) {
-            const obj = { trait_type: item.key, value: item.value };
-            prev.attributes = [...prev.attributes, obj];
-            prev.properties = { ...prev.properties, [item.key]: item.value };
-            return prev;
+            const obj = { trait_type: item.key, value: item.value }
+            prev.attributes = [...prev.attributes, obj]
+            prev.properties = { ...prev.properties, [item.key]: item.value }
+            return prev
           } else {
-            return prev;
+            return prev
           }
         },
         {
           properties: {} as MetaDataProperty,
           attributes: [] as AttributesProperty[],
-        }
-      ) ?? {};
+        },
+      ) ?? {}
 
     _nftMETA = {
       ..._nftMETA,
       ...obj,
-    };
-    myLog("_nftMETA", _nftMETA);
+    }
+    myLog('_nftMETA', _nftMETA)
     ipfsService.addJSON({
       ipfs: ipfsProvides.ipfs,
       json: JSON.stringify(_nftMETA),
       uniqueId, //:),
-    });
+    })
   },
   completedIPFSCallMint: ({ ipfsResult }: { ipfsResult: AddResult }) => {
     const {
       nftMintValue: { nftMETA, mintData, collection },
-    } = store.getState()._router_modalData;
+    } = store.getState()._router_modalData
     try {
-      const cid = ipfsResult.cid.toString();
-      let nftId: string = LoopringAPI?.nftAPI?.ipfsCid0ToNftID(cid) ?? "";
-      let nftIdView = new BigNumber(nftId ?? "0", 16).toString();
+      const cid = ipfsResult.cid.toString()
+      let nftId: string = LoopringAPI?.nftAPI?.ipfsCid0ToNftID(cid) ?? ''
+      let nftIdView = new BigNumber(nftId ?? '0', 16).toString()
       store.dispatch(
         updateNFTMintData({
           nftMETA: nftMETA,
@@ -152,13 +139,13 @@ export const mintService = {
             nftId,
           },
           collection,
-        })
-      );
+        }),
+      )
       subject.next({
         status: MintCommands.SignatureMint,
-      });
+      })
     } catch (error: any) {
-      myLog("handleMintDataChange ->.cid", error);
+      myLog('handleMintDataChange ->.cid', error)
       subject.next({
         status: MintCommands.MetaDataSetup,
         data: {
@@ -167,7 +154,7 @@ export const mintService = {
             message: `error on decode ipfsResult: ${ipfsResult}`,
           },
         },
-      });
+      })
     }
     // }
   },
@@ -177,7 +164,7 @@ export const mintService = {
       data: {
         isHardware: isHardware,
       },
-    });
+    })
   },
   backMetaDataSetup: () => {
     subject.next({
@@ -185,12 +172,12 @@ export const mintService = {
       data: {
         emptyData: false,
       },
-    });
+    })
   },
   signatureMint: () => {
     subject.next({
       status: MintCommands.SignatureMint,
-    });
+    })
   },
   onSocket: () => subject.asObservable(),
-};
+}

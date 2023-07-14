@@ -1,18 +1,18 @@
-import React from "react";
-import styled from "@emotion/styled";
-import { Grid, MenuItem } from "@mui/material";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { Button, DateRangePicker, TextField } from "../../../basic-lib";
-import { DropDownIcon } from "@loopring-web/common-resources";
-import { FilterTradeNFTTypes } from "../Interface";
-import { useSettings } from "../../../../stores";
-import { DateRange } from "@mui/lab";
+import React from 'react'
+import styled from '@emotion/styled'
+import { Grid, MenuItem } from '@mui/material'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { Button, DateRangePicker, TextField } from '../../../basic-lib'
+import { DropDownIcon } from '@loopring-web/common-resources'
+import { FilterTradeNFTTypes } from '../Interface'
+import { useSettings } from '../../../../stores'
+import { DateRange } from '@mui/lab'
 
 export interface FilterProps {
-  filterDate?: DateRange<Date | string>;
-  filterType: FilterTradeNFTTypes;
-  handleReset: () => void;
-  handleFilterChange: ({ type, date }: any) => void;
+  filterDate?: DateRange<Date | string>
+  filterType: FilterTradeNFTTypes
+  handleReset: () => void
+  handleFilterChange: ({ type, date }: any) => void
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -24,15 +24,15 @@ const StyledTextFiled = styled(TextField)`
     width: initial;
     max-width: initial;
   }
-`;
+`
 
 export enum FilterTradeTypes {
-  maker = "Maker",
-  taker = "Taker",
-  allTypes = "all",
+  maker = 'Maker',
+  taker = 'Taker',
+  allTypes = 'all',
 }
 
-export const Filter = withTranslation("tables", { withRef: true })(
+export const Filter = withTranslation('tables', { withRef: true })(
   ({
     t,
     filterDate = [null, null],
@@ -45,30 +45,30 @@ export const Filter = withTranslation("tables", { withRef: true })(
   FilterProps & WithTranslation) => {
     const FilterTradeTypeList = [
       {
-        label: t("labelFilterTradeNFTAll"),
+        label: t('labelFilterTradeNFTAll'),
         value: FilterTradeNFTTypes.allTypes,
       },
       {
-        label: t("labelFilterTradeNFTSell"),
+        label: t('labelFilterTradeNFTSell'),
         value: FilterTradeNFTTypes.sell,
       },
       {
-        label: t("labelFilterTradeNFTBuy"),
+        label: t('labelFilterTradeNFTBuy'),
         value: FilterTradeNFTTypes.buy,
       },
-    ];
+    ]
 
-    const { isMobile } = useSettings();
+    const { isMobile } = useSettings()
     return (
-      <Grid container spacing={2} alignItems={"center"}>
+      <Grid container spacing={2} alignItems={'center'}>
         <Grid item xs={6} md={3} order={isMobile ? 1 : 0}>
           <StyledTextFiled
-            id="table-amm-filter-types"
+            id='table-amm-filter-types'
             select
             fullWidth
             value={filterType}
             onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-              handleFilterChange({ type: event.target.value });
+              handleFilterChange({ type: event.target.value })
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
@@ -83,22 +83,22 @@ export const Filter = withTranslation("tables", { withRef: true })(
           <DateRangePicker
             value={filterDate}
             onChange={(date: any) => {
-              handleFilterChange({ date: date });
+              handleFilterChange({ date: date })
             }}
           />
         </Grid>
         <Grid item xs={6} md={3} order={2}>
           <Button
             fullWidth
-            variant={"outlined"}
-            size={"medium"}
-            color={"primary"}
+            variant={'outlined'}
+            size={'medium'}
+            color={'primary'}
             onClick={handleReset}
           >
-            {t("labelFilterReset")}
+            {t('labelFilterReset')}
           </Button>
         </Grid>
       </Grid>
-    );
-  }
-);
+    )
+  },
+)

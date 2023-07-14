@@ -1,22 +1,22 @@
-import { resetUserRewards } from "../../stores/userRewards/reducer";
-import { reset as resetWalletLayer1 } from "../../stores/walletLayer1/reducer";
-import { reset as resetWalletLayer2 } from "../../stores/walletLayer2/reducer";
-import { reset as resetwalletLayer2NFT } from "../../stores/walletLayer2NFT/reducer";
-import { resetAmount } from "../../stores/amount/reducer";
-import { store } from "../../stores";
-import { resetTokenPrices } from "../../stores/tokenPrices/reducer";
-import { resetTicker } from "../../stores/ticker/reducer";
-import { updateToggleStatus } from "@loopring-web/component-lib";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { myLog } from "@loopring-web/common-resources";
+import { resetUserRewards } from '../../stores/userRewards/reducer'
+import { reset as resetWalletLayer1 } from '../../stores/walletLayer1/reducer'
+import { reset as resetWalletLayer2 } from '../../stores/walletLayer2/reducer'
+import { reset as resetwalletLayer2NFT } from '../../stores/walletLayer2NFT/reducer'
+import { resetAmount } from '../../stores/amount/reducer'
+import { store } from '../../stores'
+import { resetTokenPrices } from '../../stores/tokenPrices/reducer'
+import { resetTicker } from '../../stores/ticker/reducer'
+import { updateToggleStatus } from '@loopring-web/component-lib'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { myLog } from '@loopring-web/common-resources'
 
 export async function resetLayer12Data() {
-  store.dispatch(resetAmount(undefined));
-  store.dispatch(resetUserRewards(undefined));
-  store.dispatch(resetWalletLayer1(undefined));
-  store.dispatch(resetWalletLayer2(undefined));
-  store.dispatch(resetwalletLayer2NFT(undefined));
-  let toggle = {};
+  store.dispatch(resetAmount(undefined))
+  store.dispatch(resetUserRewards(undefined))
+  store.dispatch(resetWalletLayer1(undefined))
+  store.dispatch(resetWalletLayer2(undefined))
+  store.dispatch(resetwalletLayer2NFT(undefined))
+  let toggle = {}
   if (
     store.getState().system.chainId === sdk.ChainId.MAINNET &&
     store.getState().system.dexToggleUrl
@@ -24,10 +24,10 @@ export async function resetLayer12Data() {
     toggle = await fetch(store.getState().system.dexToggleUrl)
       .then((response) => {
         if (response.ok) {
-          return response.json();
+          return response.json()
         }
       })
-      .catch(() => ({}));
+      .catch(() => ({}))
   }
   store.dispatch(
     updateToggleStatus({
@@ -48,71 +48,68 @@ export async function resetLayer12Data() {
       redPacketNFTV1: { enable: true, reason: undefined },
       claim: { enable: true, reason: undefined },
       ...toggle,
-    })
-  );
+    }),
+  )
 }
 
 export async function resetSystemData() {
-  store.dispatch(resetTokenPrices(undefined));
-  store.dispatch(resetTicker(undefined));
+  store.dispatch(resetTokenPrices(undefined))
+  store.dispatch(resetTicker(undefined))
 }
 
 export function resetLayer2Data() {
-  store.dispatch(resetAmount(undefined));
-  store.dispatch(resetUserRewards(undefined));
-  store.dispatch(resetWalletLayer2(undefined));
-  store.dispatch(resetwalletLayer2NFT(undefined));
+  store.dispatch(resetAmount(undefined))
+  store.dispatch(resetUserRewards(undefined))
+  store.dispatch(resetWalletLayer2(undefined))
+  store.dispatch(resetwalletLayer2NFT(undefined))
 }
 
-const LoopFrozenFlag = true;
+const LoopFrozenFlag = true
 
-export async function toggleCheck(
-  chainId?: sdk.ChainId,
-  dexToggleUrl?: string
-) {
+export async function toggleCheck(chainId?: sdk.ChainId, dexToggleUrl?: string) {
   if (chainId === undefined) {
-    const system = store.getState().system;
-    chainId = (system.chainId ?? sdk.ChainId.MAINNET) as sdk.ChainId;
-    dexToggleUrl = system.dexToggleUrl;
+    const system = store.getState().system
+    chainId = (system.chainId ?? sdk.ChainId.MAINNET) as sdk.ChainId
+    dexToggleUrl = system.dexToggleUrl
   }
 
-  const account = store.getState().account;
+  const account = store.getState().account
   if (account?.frozen === LoopFrozenFlag) {
-    myLog("account.frozen ___timer___", account.accountId);
+    myLog('account.frozen ___timer___', account.accountId)
     store.dispatch(
       updateToggleStatus({
-        order: { enable: false, reason: "account frozen" },
-        joinAmm: { enable: false, reason: "account frozen" },
-        exitAmm: { enable: false, reason: "account frozen" },
-        transfer: { enable: false, reason: "account frozen" },
-        transferNFT: { enable: false, reason: "account frozen" },
+        order: { enable: false, reason: 'account frozen' },
+        joinAmm: { enable: false, reason: 'account frozen' },
+        exitAmm: { enable: false, reason: 'account frozen' },
+        transfer: { enable: false, reason: 'account frozen' },
+        transferNFT: { enable: false, reason: 'account frozen' },
         // deposit: { enable: false, reason: "account frozen" },
         // depositNFT: { enable: false, reason: "account frozen" },
-        withdraw: { enable: false, reason: "account frozen" },
-        withdrawNFT: { enable: false, reason: "account frozen" },
-        mintNFT: { enable: true, reason: "account frozen" },
-        deployNFT: { enable: false, reason: "account frozen" },
+        withdraw: { enable: false, reason: 'account frozen' },
+        withdrawNFT: { enable: false, reason: 'account frozen' },
+        mintNFT: { enable: true, reason: 'account frozen' },
+        deployNFT: { enable: false, reason: 'account frozen' },
         //forceWithdraw: { enable: false, reason: "account frozen" },
-        defiInvest: { enable: false, reason: "account frozen" },
-        WSTEHTInvest: { enable: false, reason: "account frozen" },
-        RETHInvest: { enable: false, reason: "account frozen" },
-        dualInvest: { enable: false, reason: "account frozen" },
-        collectionNFT: { enable: false, reason: "account frozen" },
-        claim: { enable: false, reason: "account frozen" },
-        redPacketNFTV1: { enable: false, reason: "account frozen" },
-        LRCStackInvest: { enable: false, reason: "account frozen" },
-        BTradeInvest: { enable: false, reason: "account frozen" },
-        StopLimit: { enable: false, reason: "account frozen" },
-      })
-    );
+        defiInvest: { enable: false, reason: 'account frozen' },
+        WSTEHTInvest: { enable: false, reason: 'account frozen' },
+        RETHInvest: { enable: false, reason: 'account frozen' },
+        dualInvest: { enable: false, reason: 'account frozen' },
+        collectionNFT: { enable: false, reason: 'account frozen' },
+        claim: { enable: false, reason: 'account frozen' },
+        redPacketNFTV1: { enable: false, reason: 'account frozen' },
+        LRCStackInvest: { enable: false, reason: 'account frozen' },
+        BTradeInvest: { enable: false, reason: 'account frozen' },
+        StopLimit: { enable: false, reason: 'account frozen' },
+      }),
+    )
   } else if (dexToggleUrl && chainId === sdk.ChainId.MAINNET) {
-    const toggle = await fetch(dexToggleUrl ?? "")
+    const toggle = await fetch(dexToggleUrl ?? '')
       .then((response) => {
         if (response.ok) {
-          return response.json();
+          return response.json()
         }
       })
-      .catch(() => ({}));
+      .catch(() => ({}))
 
     store.dispatch(
       updateToggleStatus({
@@ -133,7 +130,7 @@ export async function toggleCheck(
         redPacketNFTV1: { enable: true, reason: undefined },
         claim: { enable: true, reason: undefined },
         ...toggle,
-      })
-    );
+      }),
+    )
   }
 }

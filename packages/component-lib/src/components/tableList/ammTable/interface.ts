@@ -1,4 +1,4 @@
 export enum AmmSideTypes {
-  Exit = "Exit",
-  Join = "Join",
+  Exit = 'Exit',
+  Join = 'Join',
 }

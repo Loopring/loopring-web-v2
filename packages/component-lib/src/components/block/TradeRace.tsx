@@ -1,24 +1,20 @@
-import React from "react";
-import { Column, Table } from "../basic-lib";
-import { useTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
-import {
-  EmptyValueTag,
-  getValuePrecisionThousand,
-  RowConfig,
-} from "@loopring-web/common-resources";
+import React from 'react'
+import { Column, Table } from '../basic-lib'
+import { useTranslation } from 'react-i18next'
+import styled from '@emotion/styled'
+import { Box, Typography } from '@mui/material'
+import { EmptyValueTag, getValuePrecisionThousand, RowConfig } from '@loopring-web/common-resources'
 
 export interface TradeRaceRow {
-  project: string;
-  pair: string;
+  project: string
+  pair: string
   reward: {
-    count: number;
-    token: string;
-  };
+    count: number
+    token: string
+  }
 }
 
-const rowHeight = RowConfig.rowHeight;
+const rowHeight = RowConfig.rowHeight
 const TableStyle = styled(Table)`
   &.rdg {
     box-sizing: border-box;
@@ -27,9 +23,9 @@ const TableStyle = styled(Table)`
     min-height: initial;
     height: ${(props: any) => {
       if (props.currentheight) {
-        return props.currentheight + 2 + "px";
+        return props.currentheight + 2 + 'px'
       } else {
-        return "100%";
+        return '100%'
       }
     }};
     .rdg-header-row {
@@ -57,79 +53,62 @@ const TableStyle = styled(Table)`
       text-align: right;
     }
   }
-` as typeof Table;
+` as typeof Table
 
-export const TradeRacePanel = ({
-  rawData,
-  ...rest
-}: {
-  rawData: TradeRaceRow[];
-}) => {
-  const { t } = useTranslation(["tables"]);
+export const TradeRacePanel = ({ rawData, ...rest }: { rawData: TradeRaceRow[] }) => {
+  const { t } = useTranslation(['tables'])
 
   const getColumnMode = React.useCallback(
     (): Column<any, unknown>[] => [
       {
-        key: "project",
-        name: t("labelTradeRaceProject"),
+        key: 'project',
+        name: t('labelTradeRaceProject'),
         formatter: ({ row }) => {
-          const value = row["project"];
+          const value = row['project']
 
-          return <Box className="rdg-cell-value">{value}</Box>;
+          return <Box className='rdg-cell-value'>{value}</Box>
         },
       },
       {
-        key: "pair",
-        name: /\-/gi.test(rawData[0].pair)
-          ? t("labelTradeRacePair")
-          : t("labelTradeRaceToken"),
+        key: 'pair',
+        name: /\-/gi.test(rawData[0].pair) ? t('labelTradeRacePair') : t('labelTradeRaceToken'),
       },
       {
-        key: "reward",
+        key: 'reward',
         // cellClass: "",
         // headerCellClass: "",
-        name: t("labelTradeRaceReward"),
+        name: t('labelTradeRaceReward'),
         formatter: ({ row }) => {
           return (
             <>
               {row.reward.token ? (
                 <>
-                  <Typography variant={"body1"} component={"span"}>
-                    {row.reward.count !== "" &&
-                      getValuePrecisionThousand(row.reward.count)}
+                  <Typography variant={'body1'} component={'span'}>
+                    {row.reward.count !== '' && getValuePrecisionThousand(row.reward.count)}
                   </Typography>
-                  <Typography
-                    variant={"body1"}
-                    component={"span"}
-                    marginLeft={1}
-                  >
+                  <Typography variant={'body1'} component={'span'} marginLeft={1}>
                     {row.reward.token}
                   </Typography>
                 </>
               ) : (
-                <Typography variant={"body1"} component={"span"} marginLeft={1}>
+                <Typography variant={'body1'} component={'span'} marginLeft={1}>
                   {EmptyValueTag}
                 </Typography>
               )}
             </>
-          );
+          )
         },
       },
     ],
-    []
-  );
+    [],
+  )
 
   const defaultArgs: any = {
     columnMode: getColumnMode(),
     currentheight: (rawData.length + 1) * rowHeight,
     generateRows: (rawData: any) => rawData,
-    generateColumns: ({ columnsRaw }: any) =>
-      columnsRaw as Column<any, unknown>[],
-  };
+    generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
+  }
 
-  return (
-    <TableStyle<TradeRaceRow, unknown>
-      {...{ ...defaultArgs, t, ...rest, rawData }}
-    />
-  );
-};
+  return <TableStyle<TradeRaceRow, unknown> {...{ ...defaultArgs, t, ...rest, rawData }} />
+}

@@ -1,2 +1,2 @@
-export * from "./BtnConnect";
-export * from "./styled";
+export * from './BtnConnect'
+export * from './styled'

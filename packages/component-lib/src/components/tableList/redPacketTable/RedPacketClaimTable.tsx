@@ -1,18 +1,18 @@
-import styled from "@emotion/styled";
-import { Box, Link, Typography } from "@mui/material";
-import { TablePaddingX } from "../../styled";
-import { Column, NftImage, Table, TablePagination } from "../../basic-lib";
-import { WithTranslation, withTranslation } from "react-i18next";
+import styled from '@emotion/styled'
+import { Box, Link, Typography } from '@mui/material'
+import { TablePaddingX } from '../../styled'
+import { Column, NftImage, Table, TablePagination } from '../../basic-lib'
+import { WithTranslation, withTranslation } from 'react-i18next'
 
 import {
   RawDataNFTRedPacketClaimItem,
   RawDataRedPacketClaimItem,
   RedPacketClaimTableProps,
-} from "./Interface";
-import { useHistory } from "react-router-dom";
-import { useSettings } from "../../../stores";
-import React from "react";
-import { FormatterProps } from "react-data-grid";
+} from './Interface'
+import { useHistory } from 'react-router-dom'
+import { useSettings } from '../../../stores'
+import React from 'react'
+import { FormatterProps } from 'react-data-grid'
 import {
   CurrencyToTag,
   EmptyValueTag,
@@ -23,30 +23,29 @@ import {
   PriceTag,
   RowConfig,
   TokenType,
-} from "@loopring-web/common-resources";
-import { ColumnCoinDeep } from "../assetsTable";
-import _ from "lodash";
-import { useTheme } from "@emotion/react";
-import { SoursURL } from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { ColumnCoinDeep } from '../assetsTable'
+import _ from 'lodash'
+import { useTheme } from '@emotion/react'
+import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
   height: 100%;
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-`;
+  ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+`
 const TableStyled = styled(Table)`
   &.rdg {
     height: ${(props: any) => {
-      if (props.ispro === "pro") {
-        return "620px";
+      if (props.ispro === 'pro') {
+        return '620px'
       }
       if (props.currentheight && props.currentheight > 350) {
-        return props.currentheight + "px";
+        return props.currentheight + 'px'
       } else {
-        return "100%";
+        return '100%'
       }
     }};
 
@@ -68,11 +67,11 @@ const TableStyled = styled(Table)`
   .textAlignCenter {
     text-align: center;
   }
-` as any;
+` as any
 
-export const RedPacketClaimTable = withTranslation(["tables", "common"])(
+export const RedPacketClaimTable = withTranslation(['tables', 'common'])(
   <R extends RawDataRedPacketClaimItem | RawDataNFTRedPacketClaimItem>(
-    props: RedPacketClaimTableProps<R> & WithTranslation
+    props: RedPacketClaimTableProps<R> & WithTranslation,
   ) => {
     const {
       rawData,
@@ -88,59 +87,56 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
       hideAssets,
       blindBoxBalance,
       t,
-    } = props;
-    const history = useHistory();
-    const { currency } = useSettings();
+    } = props
+    const history = useHistory()
+    const { currency } = useSettings()
     const updateData = _.debounce(async ({ page = 1 }: any) => {
       await getClaimRedPacket({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
         limit: pagination?.pageSize ?? 10,
-      });
-    }, globalSetup.wait);
+      })
+    }, globalSetup.wait)
 
     const handlePageChange = React.useCallback(
       ({ page = 1 }: any) => {
-        myLog("RedPacket Receive page,", page);
+        myLog('RedPacket Receive page,', page)
         updateData({
           page,
-        });
+        })
       },
-      [updateData]
-    );
+      [updateData],
+    )
     React.useEffect(() => {
-      updateData.cancel();
-      handlePageChange({ page: 1 });
+      updateData.cancel()
+      handlePageChange({ page: 1 })
       // updateData({});
       return () => {
-        updateData.cancel();
-      };
-    }, []);
+        updateData.cancel()
+      }
+    }, [])
     const theme = useTheme()
-    const getColumnModeTransaction = React.useCallback((): Column<
-      R,
-      unknown
-    >[] => {
+    const getColumnModeTransaction = React.useCallback((): Column<R, unknown>[] => {
       return [
         {
-          key: "Token",
+          key: 'Token',
           sortable: true,
-          cellClass: "textAlignLeft",
-          headerCellClass: "textAlignLeft",
-          name: t("labelToken"),
+          cellClass: 'textAlignLeft',
+          headerCellClass: 'textAlignLeft',
+          name: t('labelToken'),
           formatter: ({ row: { token } }: FormatterProps<R>) => {
             if (token.type !== TokenType.nft) {
-              if (token.icon && token.simpleName === "NFTs" || token.simpleName === "Blind Box") {
+              if ((token.icon && token.simpleName === 'NFTs') || token.simpleName === 'Blind Box') {
                 return (
                   <Box
-                    className="rdg-cell-value"
-                    height={"100%"}
-                    display={"flex"}
-                    alignItems={"center"}
+                    className='rdg-cell-value'
+                    height={'100%'}
+                    display={'flex'}
+                    alignItems={'center'}
                   >
                     <Box
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
+                      display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'center'}
                       // style={{ background: "var(--field-opacity)" }}
                     >
                       <NftImage
@@ -152,51 +148,42 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
                       />
                     </Box>
                     <Typography
-                      color={"inherit"}
+                      color={'inherit'}
                       flex={1}
-                      display={"inline-flex"}
-                      alignItems={"center"}
+                      display={'inline-flex'}
+                      alignItems={'center'}
                       marginLeft={0.5}
-                      overflow={"hidden"}
-                      textOverflow={"ellipsis"}
-                      component={"span"}
+                      overflow={'hidden'}
+                      textOverflow={'ellipsis'}
+                      component={'span'}
                     >
                       {token.simpleName}
                     </Typography>
                   </Box>
-                );
+                )
               } else {
-                return (
-                  <ColumnCoinDeep
-                    isNotRequiredName={true}
-                    token={token as any}
-                  />
-                );
+                return <ColumnCoinDeep isNotRequiredName={true} token={token as any} />
               }
             } else {
-              return <></>;
+              return <></>
             }
           },
         },
         {
-          key: "Amount",
+          key: 'Amount',
           sortable: true,
-          name: t("labelAmount"),
+          name: t('labelAmount'),
           formatter: ({ row }: FormatterProps<R>) => {
-            return (
-              <Box display={"flex"}>
-                {hideAssets ? HiddenTag : row.amountStr}
-              </Box>
-            );
+            return <Box display={'flex'}>{hideAssets ? HiddenTag : row.amountStr}</Box>
           },
         },
         {
-          key: "Value",
+          key: 'Value',
           sortable: true,
-          name: t("labelValue"),
+          name: t('labelValue'),
           formatter: ({ row }: FormatterProps<R>) => {
             return (
-              <Box display="flex">
+              <Box display='flex'>
                 {row.volume !== undefined
                   ? hideAssets
                     ? HiddenTag
@@ -207,117 +194,98 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
                         2,
                         2,
                         true,
-                        { isFait: true }
+                        { isFait: true },
                       )
                   : EmptyValueTag}
               </Box>
-            );
+            )
           },
         },
         {
-          key: "Actions",
-          name: t("labelActions"),
-          headerCellClass: "textAlignRight",
-          cellClass: "textAlignRight",
+          key: 'Actions',
+          name: t('labelActions'),
+          headerCellClass: 'textAlignRight',
+          cellClass: 'textAlignRight',
           formatter: ({ row }) => {
-            if (
-              row.token.type === TokenType.single &&
-              row.token.name === "NFTs" 
-            ) {
-              return (
-                <Link onClick={() => onViewMoreClick!('NFTs')}>View More</Link>
-              );
-            } else if (
-              row.token.type === TokenType.single &&
-              row.token.name === "Blind Box"
-            ) {
-              return (
-                <Link onClick={() => onViewMoreClick!('blindbox')}>View More</Link>
-              );
-            }  else {
-              return (
-                <Link onClick={() => onItemClick(row.rawData)}>
-                  {t("labelClaim")}
-                </Link>
-              );
+            if (row.token.type === TokenType.single && row.token.name === 'NFTs') {
+              return <Link onClick={() => onViewMoreClick!('NFTs')}>View More</Link>
+            } else if (row.token.type === TokenType.single && row.token.name === 'Blind Box') {
+              return <Link onClick={() => onViewMoreClick!('blindbox')}>View More</Link>
+            } else {
+              return <Link onClick={() => onItemClick(row.rawData)}>{t('labelClaim')}</Link>
             }
           },
         },
-      ];
-    }, [history, t, hideAssets]);
-    
+      ]
+    }, [history, t, hideAssets])
+
     const NFTrow = {
       token: {
-        icon: theme.mode === 'dark' 
-          ? SoursURL + "images/nft_dark.png"
-          : SoursURL + "images/nft_light.png",
-        name: "NFTs",
-        simpleName: "NFTs",
-        description: "",
-        company: "",
+        icon:
+          theme.mode === 'dark'
+            ? SoursURL + 'images/nft_dark.png'
+            : SoursURL + 'images/nft_light.png',
+        name: 'NFTs',
+        simpleName: 'NFTs',
+        description: '',
+        company: '',
         type: TokenType.single,
       },
-      amountStr: totalLuckyTokenNFTBalance
-        ? totalLuckyTokenNFTBalance.toString()
-        : EmptyValueTag,
+      amountStr: totalLuckyTokenNFTBalance ? totalLuckyTokenNFTBalance.toString() : EmptyValueTag,
       volume: undefined,
-    };
-    
+    }
+
     const blindboxRow = {
       token: {
-        icon: theme.mode === 'dark' 
-          ? SoursURL + "images/blindbox_dark.png"
-          : SoursURL + "images/blindbox_light.png",
-        name: "Blind Box",
-        simpleName: "Blind Box",
-        description: "",
-        company: "",
+        icon:
+          theme.mode === 'dark'
+            ? SoursURL + 'images/blindbox_dark.png'
+            : SoursURL + 'images/blindbox_light.png',
+        name: 'Blind Box',
+        simpleName: 'Blind Box',
+        description: '',
+        company: '',
         type: TokenType.single,
       },
-      amountStr: blindBoxBalance
-        ? blindBoxBalance.toString()
-        : EmptyValueTag,
+      amountStr: blindBoxBalance ? blindBoxBalance.toString() : EmptyValueTag,
       volume: undefined,
-    };
+    }
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(),
       generateRows: (rawData: any) => rawData,
-      generateColumns: ({ columnsRaw }: any) =>
-        columnsRaw as Column<any, unknown>[],
-    };
+      generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
+    }
     const sortMethod = React.useCallback(
       (_sortedRows, sortColumn) => {
-        let resultRows: R[] = [];
+        let resultRows: R[] = []
         switch (sortColumn) {
-          case "Token":
+          case 'Token':
             resultRows = rawData.sort((a: R, b: R) => {
               if (a.token.type == TokenType.nft) {
                 return (a.token as any)?.metadata?.base?.name?.localeCompare(
-                  (b.token as any)?.metadata?.base?.name
-                );
+                  (b.token as any)?.metadata?.base?.name,
+                )
               } else {
-                return (a.token as any)?.simpleName.localeCompare(
-                  (b.token as any)?.simpleName
-                );
+                return (a.token as any)?.simpleName.localeCompare((b.token as any)?.simpleName)
               }
-            });
-            break;
-          case "Amount":
+            })
+            break
+          case 'Amount':
             resultRows = rawData.sort((a: R, b: R) => {
-              return a.amountStr.localeCompare(b.amountStr);
-            });
-            break;
-          case "Value":
+              return a.amountStr.localeCompare(b.amountStr)
+            })
+            break
+          case 'Value':
             resultRows = rawData.sort((a: R, b: R) => {
-              return b.volume - a.volume;
-            });
-            break;
+              return b.volume - a.volume
+            })
+            break
           default:
         }
-        return resultRows;
+        return resultRows
       },
-      [rawData]
-    );
+      [rawData],
+    )
 
     return (
       <TableWrapperStyled>
@@ -330,10 +298,11 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
-            const isNFTsOrBlindbox = row.token.type === TokenType.single && 
-              (row.token.name === "NFTs" || row.token.name === "Blind Box");
+            const isNFTsOrBlindbox =
+              row.token.type === TokenType.single &&
+              (row.token.name === 'NFTs' || row.token.name === 'Blind Box')
             if (!isNFTsOrBlindbox) {
-              onItemClick(row.rawData);
+              onItemClick(row.rawData)
             }
           }}
           sortMethod={sortMethod}
@@ -358,6 +327,6 @@ export const RedPacketClaimTable = withTranslation(["tables", "common"])(
           />
         )}
       </TableWrapperStyled>
-    );
-  }
-);
+    )
+  },
+)

@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import styled from "@emotion/styled";
-import { CalculatedColumn, Cell, RowRendererProps } from "react-data-grid";
-import React from "react";
+import clsx from 'clsx'
+import styled from '@emotion/styled'
+import { CalculatedColumn, Cell, RowRendererProps } from 'react-data-grid'
+import React from 'react'
 // import type { Column } from 'react-data-grid';
 
 const RowDepthStyled = styled.div`
@@ -34,22 +34,22 @@ const RowDepthStyled = styled.div`
       &.rgb-depth-red {
         background: var(--color-error);
           //background: ${({ theme, style }) =>
-            theme.colorBase[style === "good" ? "success" : "error"]};;
+            theme.colorBase[style === 'good' ? 'success' : 'error']};;
       }
     }
   }
 }
-`;
+`
 
 export interface IDepthRendererProps<R, SR> extends RowRendererProps<R, SR> {
-  depthKey: string;
+  depthKey: string
   rowBeforeRender: (prors: {
-    depthKey: string;
-    row: R;
-    column: readonly CalculatedColumn<R, SR>[];
-    className: any;
-    [key: string]: any;
-  }) => JSX.Element;
+    depthKey: string
+    row: R
+    column: readonly CalculatedColumn<R, SR>[]
+    className: any
+    [key: string]: any
+  }) => JSX.Element
 }
 
 function _DepthRow<R, SR = unknown>(
@@ -73,30 +73,30 @@ function _DepthRow<R, SR = unknown>(
     selectRow,
     rowBeforeRender,
     depthKey,
-    "aria-rowindex": ariaRowIndex,
-    "aria-selected": ariaSelected,
+    'aria-rowindex': ariaRowIndex,
+    'aria-selected': ariaSelected,
     ...props
   }: IDepthRendererProps<R, SR> & { selectRow: any },
-  ref: React.Ref<HTMLDivElement>
+  ref: React.Ref<HTMLDivElement>,
 ) {
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
-    setDraggedOverRowIdx?.(rowIdx);
-    onMouseEnter?.(event);
+    setDraggedOverRowIdx?.(rowIdx)
+    onMouseEnter?.(event)
   }
 
   className = clsx(
     `rdg-row`,
-    `rdg-row-${rowIdx % 2 === 0 ? "even" : "odd"}`,
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     {
-      "rdg-cell-selected": isRowSelected,
-      "rdg-group-row-selected": selectedCellProps?.idx === -1,
+      'rdg-cell-selected': isRowSelected,
+      'rdg-group-row-selected': selectedCellProps?.idx === -1,
     },
     rowClass?.(row),
-    className
-  );
+    className,
+  )
   return (
     <RowDepthStyled
-      role="row"
+      role='row'
       aria-rowindex={ariaRowIndex}
       aria-selected={ariaSelected}
       ref={ref}
@@ -105,7 +105,7 @@ function _DepthRow<R, SR = unknown>(
       style={{ top }}
       {...props}
     >
-      <div className={"row-background-value"}>
+      <div className={'row-background-value'}>
         {rowBeforeRender({
           row,
           depthKey,
@@ -115,7 +115,7 @@ function _DepthRow<R, SR = unknown>(
         })}
       </div>
       {viewportColumns.map((column) => {
-        const isCellSelected = selectedCellProps?.idx === column.idx;
+        const isCellSelected = selectedCellProps?.idx === column.idx
 
         return (
           CellRenderer && (
@@ -131,34 +131,25 @@ function _DepthRow<R, SR = unknown>(
               isCellSelected={isCellSelected}
               // isRowSelected={isRowSelected}
               dragHandleProps={
-                isCellSelected
-                  ? (selectedCellProps as any).dragHandleProps
-                  : undefined
+                isCellSelected ? (selectedCellProps as any).dragHandleProps : undefined
               }
-              onFocus={
-                isCellSelected ? (selectedCellProps as any).onFocus : undefined
-              }
-              onKeyDown={
-                isCellSelected ? selectedCellProps!.onKeyDown : undefined
-              }
+              onFocus={isCellSelected ? (selectedCellProps as any).onFocus : undefined}
+              onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
               onRowClick={onRowClick}
               onRowChange={onRowChange}
               selectCell={selectCell}
               // selectRow={selectRow}
             />
           )
-        );
+        )
       })}
     </RowDepthStyled>
-  );
+  )
 }
 
-export const DepthRow = React.memo(React.forwardRef(_DepthRow)) as unknown as <
-  R,
-  SR = unknown
->(
-  props: IDepthRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>
-) => JSX.Element;
+export const DepthRow = React.memo(React.forwardRef(_DepthRow)) as unknown as <R, SR = unknown>(
+  props: IDepthRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>,
+) => JSX.Element
 
 export const RowBefore = <R, SR>({
   row,
@@ -170,11 +161,5 @@ export const RowBefore = <R, SR>({
   // onRowReorder,
   ...props
 }: { column: any; width: string } & IDepthRendererProps<R, SR>) => {
-  return (
-    <div
-      className={`rgb-depth-row ${className}`}
-      style={{ width: width }}
-      {...props}
-    ></div>
-  );
-};
+  return <div className={`rgb-depth-row ${className}`} style={{ width: width }} {...props}></div>
+}

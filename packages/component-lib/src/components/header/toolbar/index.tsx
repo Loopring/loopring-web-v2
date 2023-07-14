@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton } from "@mui/material";
+import { Badge, Box, IconButton } from '@mui/material'
 import {
   Account,
   AccountStatus,
@@ -8,37 +8,37 @@ import {
   Notify,
   ProfileIcon,
   SettingIcon,
-} from "@loopring-web/common-resources";
-import { WithTranslation } from "react-i18next";
-import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
-import { bindPopper } from "material-ui-popup-state/es";
-import { PopoverPure, SubMenu, SubMenuList } from "../../basic-lib";
-import { SettingPanel } from "../../block/SettingPanel";
-import { NotificationPanel } from "../../block/NotificationPanel";
-import React from "react";
-import { DownloadPanel } from "../../block/DownloadPanel";
-import * as sdk from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { WithTranslation } from 'react-i18next'
+import { bindHover, usePopupState } from 'material-ui-popup-state/hooks'
+import { bindPopper } from 'material-ui-popup-state/es'
+import { PopoverPure, SubMenu, SubMenuList } from '../../basic-lib'
+import { SettingPanel } from '../../block/SettingPanel'
+import { NotificationPanel } from '../../block/NotificationPanel'
+import React from 'react'
+import { DownloadPanel } from '../../block/DownloadPanel'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export const BtnDownload = ({
   t,
   url,
   i18nTitle,
 }: {
-  i18nTitle: string;
-  i18nDescription: string;
-  url: string;
+  i18nTitle: string
+  i18nDescription: string
+  url: string
 } & WithTranslation) => {
   const popupState = usePopupState({
-    variant: "popover",
-    popupId: "downloadPop",
-  });
+    variant: 'popover',
+    popupId: 'downloadPop',
+  })
   return (
     <Box>
       <IconButton
         title={t(i18nTitle)}
-        aria-label={t("labeldownloadApp")}
-        rel="noopener noreferrer"
-        target="_blank"
+        aria-label={t('labeldownloadApp')}
+        rel='noopener noreferrer'
+        target='_blank'
         href={url}
         {...bindHover(popupState)}
       >
@@ -47,12 +47,12 @@ export const BtnDownload = ({
       <PopoverPure
         {...bindPopper(popupState)}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
         <Box minWidth={160}>
@@ -60,8 +60,8 @@ export const BtnDownload = ({
         </Box>
       </PopoverPure>
     </Box>
-  );
-};
+  )
+}
 // export const BtnNetworkSwitch = ({
 //   onTestOpen,
 //   isShow = false,
@@ -93,61 +93,57 @@ export const BtnNotification = ({
   account,
   chainId,
 }: {
-  notification: Notify;
-  account: Account;
-  chainId: sdk.ChainId;
+  notification: Notify
+  account: Account
+  chainId: sdk.ChainId
 }) => {
   const popupState = usePopupState({
-    variant: "popover",
-    popupId: "notificationPop",
-  });
-  const [content] = React.useState(0);
+    variant: 'popover',
+    popupId: 'notificationPop',
+  })
+  const [content] = React.useState(0)
   return (
-    <Box position={"relative"}>
-      <IconButton aria-label={"notification"} {...bindHover(popupState)}>
+    <Box position={'relative'}>
+      <IconButton aria-label={'notification'} {...bindHover(popupState)}>
         <Badge badgeContent={content}>
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {(notification?.activities?.length ??
-        0 + notification?.notifications?.length ??
-        0) > 0 && (
+      {(notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 && (
         <CircleIcon
           sx={{
-            position: "absolute",
+            position: 'absolute',
             top: -6,
             right: -6,
-            pointerEvents: "none" as any,
+            pointerEvents: 'none' as any,
           }}
-          className={"noteit"}
-          fontSize={"large"}
-          htmlColor={"var(--color-error)"}
+          className={'noteit'}
+          fontSize={'large'}
+          htmlColor={'var(--color-error)'}
         />
       )}
       <PopoverPure
         {...bindPopper(popupState)}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
-        <NotificationPanel
-          notification={{ ...notification, account, chainId }}
-        />
+        <NotificationPanel notification={{ ...notification, account, chainId }} />
       </PopoverPure>
     </Box>
-  );
-};
+  )
+}
 
 export const BtnSetting = ({ t, label }: any) => {
   const popupState = usePopupState({
-    variant: "popover",
-    popupId: "settingPop",
-  });
+    variant: 'popover',
+    popupId: 'settingPop',
+  })
   return (
     <Box>
       <IconButton aria-label={t(label)} {...bindHover(popupState)}>
@@ -156,12 +152,12 @@ export const BtnSetting = ({ t, label }: any) => {
       <PopoverPure
         {...bindPopper(popupState)}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
         <Box margin={2} minWidth={320}>
@@ -169,43 +165,39 @@ export const BtnSetting = ({ t, label }: any) => {
         </Box>
       </PopoverPure>
     </Box>
-  );
-};
+  )
+}
 
 export const ProfileMenu = ({ t, label, readyState, router, subMenu }: any) => {
   const popupState = usePopupState({
-    variant: "popover",
-    popupId: "settingPop",
-  });
+    variant: 'popover',
+    popupId: 'settingPop',
+  })
   return readyState == AccountStatus.ACTIVATED ? (
     <Box>
-      <IconButton
-        aria-label={t(label)}
-        size={"large"}
-        {...bindHover(popupState)}
-      >
+      <IconButton aria-label={t(label)} size={'large'} {...bindHover(popupState)}>
         <ProfileIcon />
       </IconButton>
       <PopoverPure
         {...bindPopper(popupState)}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
-        <SubMenu className={"color-light"}>
+        <SubMenu className={'color-light'}>
           <SubMenuList selected={router} subMenu={{ ...subMenu } as any} />
         </SubMenu>
       </PopoverPure>
     </Box>
   ) : (
     <></>
-  );
-};
+  )
+}
 
-export * from "./Interface";
-export * from "./WalletConnect";
+export * from './Interface'
+export * from './WalletConnect'
