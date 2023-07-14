@@ -161,6 +161,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       let totalCurrentInvest = {
         ammPoolDollar: 0,
         stakeETHDollar: 0,
+        leverageETHDollar: 0,
         // dualStakeDollar: summaryDefiReward,
       }
       const { walletMap: _walletMap } = makeWalletLayer2({ needFilterZero: false })
@@ -175,6 +176,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       resultData.forEach((item) => {
         totalCurrentInvest.ammPoolDollar += Number(item.balanceU ?? 0)
       })
+      // todo calculate leverageETHDollar
       setSummaryMyInvest((state) => {
         return {
           ...state,
@@ -182,6 +184,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
           investDollar: sdk
             .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
             .plus(totalCurrentInvest.stakeETHDollar ?? 0)
+            // .plus(totalCurrentInvest. ?? 0)
             // .plus(totalCurrentInvest.dualStakeDollar ?? 0)
             .plus(state.stakeLRCDollar ?? 0)
             .toString(),
@@ -286,6 +289,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
                 .toBig(state.ammPoolDollar ?? 0)
                 .plus(state.dualStakeDollar ?? 0)
                 .plus(state.stakeETHDollar ?? 0)
+                .plus(state.leverageETHDollar ?? 0)
                 .plus(totalDollar ?? 0)
                 .toString(),
             }
