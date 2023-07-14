@@ -198,7 +198,6 @@ export type SummaryMyInvest = {
   stakeETHDollar?: Value
   stakeLRCDollar?: Value
   dualStakeDollar?: Value
-  leverageETHDollar?: Value
 }
 export const makeSummaryMyAmm = <C extends { [key: string]: any }>({
   userRewardsMap,
