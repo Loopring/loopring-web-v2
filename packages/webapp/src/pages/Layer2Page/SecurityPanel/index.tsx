@@ -103,7 +103,13 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({ t }: WithT
                 {t('labelTitleExportAccount')}
               </Typography>
               <Typography variant={'body1'} color={'text.secondary'} component={'p'}>
-                {t('labelDescriptionExportAccount')}
+                {t('labelDescriptionExportAccount', {
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                })}
               </Typography>
             </Grid>
             <Grid

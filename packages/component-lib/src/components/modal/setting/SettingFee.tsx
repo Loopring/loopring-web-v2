@@ -9,7 +9,13 @@ import {
 } from '../../../index'
 import { Box, Link, ListItemIcon, ListItemText, Modal, Typography } from '@mui/material'
 import { SwitchPanelStyled } from '../../styled'
-import { DragListIcon, FeeChargeOrderDefault, myLog } from '@loopring-web/common-resources'
+import {
+  DragListIcon,
+  FeeChargeOrderDefault,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  myLog,
+} from '@loopring-web/common-resources'
 import {
   DragDropContext,
   Draggable,
@@ -25,9 +31,9 @@ export const PanelStyled = {}
 export const ModalSettingFee = withTranslation('common', { withRef: true })(
   ({ t, open, onClose, style, ...rest }: ModalSettingFeeProps & WithTranslation) => {
     const theme = useTheme()
-    const { feeChargeOrder, setFeeChargeOrder } = useSettings()
+    const { feeChargeOrder, setFeeChargeOrder, defaultNetwork } = useSettings()
     const { setShowFeeSetting } = useOpenModals()
-
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const [feeChargeValue, setFeeChargeValue] = React.useState<string[]>(
       feeChargeOrder ?? FeeChargeOrderDefault,
     )
@@ -92,7 +98,14 @@ export const ModalSettingFee = withTranslation('common', { withRef: true })(
                 marginTop={2}
                 marginBottom={3}
               >
-                {t('labelDesSettingChargeFeeOrder')}
+                {t('labelDesSettingChargeFeeOrder', {
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                })}
               </Typography>
               <Box>
                 <DragDropContext onDragEnd={onDragEnd}>

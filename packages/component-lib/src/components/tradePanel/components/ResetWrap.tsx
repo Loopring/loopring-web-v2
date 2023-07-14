@@ -85,8 +85,22 @@ export const ResetWrap = <T extends FeeInfo>({
         </Typography>
         <Typography component={'p'} variant='body1' color={'var(--color-text-secondary)'}>
           {isNewAccount
-            ? t('labelActiveAccountDescription', { layer2: 'Layer 2' })
-            : t('labelResetDescription', { layer2: 'Layer 2' })}
+            ? t('labelActiveAccountDescription', {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              })
+            : t('labelResetDescription', {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              })}
         </Typography>
       </Grid>
 
