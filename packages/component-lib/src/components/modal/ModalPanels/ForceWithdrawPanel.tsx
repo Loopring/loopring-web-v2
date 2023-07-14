@@ -106,27 +106,29 @@ export const ForceWithdrawPanel = withTranslation(['common', 'error'], {
           toolBarItem: undefined,
         },
       ].concat(
-        type === 'TOKEN'
+        walletMap && Object.keys(walletMap)?.length
           ? ([
               {
                 key: 'tradeMenuList',
-                element: React.useMemo(
-                  () => (
-                    <TradeMenuList
-                      {...{
-                        nonZero: true,
-                        sorted: true,
-                        ...rest,
-                        onChangeEvent,
-                        coinMap,
-                        selected: switchData.tradeData.belong,
-                        tradeData: switchData.tradeData,
-                        walletMap,
-                        //oinMap
-                      }}
-                    />
-                  ),
-                  [walletMap, switchData, rest, onChangeEvent],
+                element: (
+                  <TradeMenuList
+                    {...{
+                      nonZero: true,
+                      sorted: true,
+                      ...rest,
+                      onChangeEvent,
+                      coinMap: Object.keys(walletMap)?.reduce((prev, item) => {
+                        if (coinMap[item]) {
+                          prev[item] = coinMap[item]
+                        }
+                        return prev
+                      }, {} as any),
+                      selected: switchData.tradeData.belong,
+                      tradeData: switchData.tradeData,
+                      walletMap,
+                      //oinMap
+                    }}
+                  />
                 ),
                 toolBarItem: undefined,
               },
