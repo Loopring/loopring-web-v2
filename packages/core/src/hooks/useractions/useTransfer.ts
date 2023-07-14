@@ -141,9 +141,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     makeWalletLayer2({ needFilterZero: true }).walletMap ?? ({} as WalletMap<R>),
   )
 
-  const [sureItsLayer2, setSureItsLayer2] = React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(
-    undefined,
-  )
+  const [sureItsLayer2, setSureItsLayer2] =
+    React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined)
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const [feeWithActive, setFeeWithActive] = React.useState(false)
