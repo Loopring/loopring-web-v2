@@ -1,15 +1,14 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { LeverageETHMapStates } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { LeverageETHMapStates } from './interface'
+import { SagaStatus } from '@loopring-web/common-resources'
 
 const initialState: Required<LeverageETHMapStates> = {
   marketArray: [],
   marketCoins: [],
   marketMap: {},
-  
-};
+}
 const leverageETHMapSlice: Slice = createSlice({
-  name: "leverageETHMap",
+  name: 'leverageETHMap',
   initialState,
   reducers: {
     // getLeverageETHMap(state, _action: PayloadAction<undefined>) {
@@ -35,25 +34,25 @@ const leverageETHMapSlice: Slice = createSlice({
     //   }
     //   state.status = SagaStatus.DONE;
     // },
-    updateLeverageETHMap(state, _action: PayloadAction<{leverageETHMap: LeverageETHMapStates}>) {
+    updateLeverageETHMap(state, _action: PayloadAction<{ leverageETHMap: LeverageETHMapStates }>) {
       // debugger
       if (_action.payload) {
-        state.marketArray = _action.payload.leverageETHMap.marketArray;
-        state.marketCoins = _action.payload.leverageETHMap.marketCoins;
-        state.marketMap = _action.payload.leverageETHMap.marketMap;
+        state.marketArray = _action.payload.leverageETHMap.marketArray
+        state.marketCoins = _action.payload.leverageETHMap.marketCoins
+        state.marketMap = _action.payload.leverageETHMap.marketMap
       }
     },
     // statusUnset: (state) => {
     //   state.status = SagaStatus.UNSET;
     // },
   },
-});
+})
 const { getLeverageETHMap, updateLeverageETHMap, getLeverageETHMapStatus, statusUnset } =
-  leverageETHMapSlice.actions;
+  leverageETHMapSlice.actions
 export {
   leverageETHMapSlice,
   getLeverageETHMap,
   getLeverageETHMapStatus,
   statusUnset,
   updateLeverageETHMap,
-};
+}
