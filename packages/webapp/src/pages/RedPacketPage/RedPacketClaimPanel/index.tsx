@@ -133,7 +133,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           variant={'text'}
           target='_self'
           rel='noopener noreferrer'
-          href={`./#/l2assets/history/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.redPacket}`}
+          href={`/l2assets/history/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.redPacket}`}
         >
           {t('labelTransactionsLink')}
         </Button>

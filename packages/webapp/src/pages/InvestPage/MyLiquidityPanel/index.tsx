@@ -36,6 +36,7 @@ import {
   HiddenTag,
   myLog,
   PriceTag,
+  RecordTabIndex,
   RowInvestConfig,
   STAKING_INVEST_LIMIT,
   TokenType,

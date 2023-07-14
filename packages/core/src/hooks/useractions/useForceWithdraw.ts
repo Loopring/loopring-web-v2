@@ -17,6 +17,7 @@ import {
   LIVE_FEE_TIMES,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
+  RecordTabIndex,
 } from '@loopring-web/common-resources'
 import {
   LAST_STEP,
