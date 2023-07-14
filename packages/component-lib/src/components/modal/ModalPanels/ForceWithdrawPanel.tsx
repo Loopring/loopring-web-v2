@@ -1,16 +1,12 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import {
-  ModalBackButton,
-  SwitchPanel,
-  SwitchPanelProps,
-} from "../../basic-lib";
-import { ForceWithdrawProps } from "../../tradePanel";
-import { IBData, TRADE_TYPE } from "@loopring-web/common-resources";
-import { TradeMenuList, useBasicTrade } from "../../tradePanel/components";
-import React from "react";
-import { ForceWithdrawWrap } from "../../tradePanel/components/ForceWithdrawWrap";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { ModalBackButton, SwitchPanel, SwitchPanelProps } from '../../basic-lib'
+import { ForceWithdrawProps } from '../../tradePanel'
+import { IBData, TRADE_TYPE } from '@loopring-web/common-resources'
+import { TradeMenuList, useBasicTrade } from '../../tradePanel/components'
+import React from 'react'
+import { ForceWithdrawWrap } from '../../tradePanel/components/ForceWithdrawWrap'
 
-export const ForceWithdrawPanel = withTranslation(["common", "error"], {
+export const ForceWithdrawPanel = withTranslation(['common', 'error'], {
   withRef: true,
 })(
   <T extends IBData<I>, I>({
@@ -29,16 +25,11 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
       coinMap,
       type,
       walletMap,
-    });
-
-    const [panelIndex, setPanelIndex] = React.useState(index + 1);
-    // const handleConfirm = (index: number) => {
-    //   setPanelIndex(index);
-    // };
-    // const hanleConfirm = () => {};
+    })
+    const [panelIndex, setPanelIndex] = React.useState(index + 1)
     React.useEffect(() => {
-      setPanelIndex(index + 1);
-    }, [index]);
+      setPanelIndex(index + 1)
+    }, [index])
 
     // LP token should not exist in withdraw panel for now
 
@@ -46,7 +37,7 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
       index: panelIndex, // show default show
       panelList: [
         {
-          key: "confirm",
+          key: 'confirm',
           element: React.useMemo(
             () => (
               // @ts-ignore
@@ -61,7 +52,7 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
               // />
               <></>
             ),
-            [onWithdrawClick, rest, switchData.tradeData, type]
+            [onWithdrawClick, rest, switchData.tradeData, type],
           ),
           toolBarItem: (
             <>
@@ -69,7 +60,7 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
                 marginTop={0}
                 marginLeft={-2}
                 onBack={() => {
-                  setPanelIndex(1);
+                  setPanelIndex(1)
                 }}
                 {...rest}
               />
@@ -77,19 +68,17 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
           ),
         },
         {
-          key: "trade",
+          key: 'trade',
           element: React.useMemo(
             () => (
               // @ts-ignore
               <ForceWithdrawWrap
-                key={"transfer"}
+                key={'transfer'}
                 {...{
                   ...rest,
                   type,
                   // handleConfirm,
-                  chargeFeeTokenList: chargeFeeTokenList
-                    ? chargeFeeTokenList
-                    : [],
+                  chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
                   tradeData: { ...switchData.tradeData, ...rest.tradeData },
                   onChangeEvent,
                   coinMap,
@@ -112,15 +101,15 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
               withdrawBtnStatus,
               assetsData,
               walletMap,
-            ]
+            ],
           ),
           toolBarItem: undefined,
         },
       ].concat(
-        type === "TOKEN"
+        type === 'TOKEN'
           ? ([
               {
-                key: "tradeMenuList",
+                key: 'tradeMenuList',
                 element: React.useMemo(
                   () => (
                     <TradeMenuList
@@ -137,16 +126,14 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
                       }}
                     />
                   ),
-                  [switchData, rest, onChangeEvent]
+                  [walletMap, switchData, rest, onChangeEvent],
                 ),
                 toolBarItem: undefined,
               },
             ] as any)
-          : []
+          : [],
       ),
-    };
-    return <SwitchPanel {...{ ...rest, ...props }} />;
-  }
-) as <T, I>(
-  props: ForceWithdrawProps<T, I> & React.RefAttributes<any>
-) => JSX.Element;
+    }
+    return <SwitchPanel {...{ ...rest, ...props }} />
+  },
+) as <T, I>(props: ForceWithdrawProps<T, I> & React.RefAttributes<any>) => JSX.Element

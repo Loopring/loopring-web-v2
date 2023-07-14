@@ -11,7 +11,7 @@ import {
 import { useForceWithdraw } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useHistory } from 'react-router-dom'
-import { BackIcon } from '@loopring-web/common-resources'
+import { BackIcon, RecordTabIndex } from '@loopring-web/common-resources'
 
 const StylePaper = styled(Box)`
   background: var(--color-box);
