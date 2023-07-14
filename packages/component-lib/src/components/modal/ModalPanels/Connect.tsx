@@ -1,73 +1,97 @@
-import { ConnectProviders } from "@loopring-web/web3-provider";
-import { ConnectBase, IconType, PanelProps } from "./BasicPanel";
-import { useSettings } from "../../../stores";
-import { Box, Typography } from "@mui/material";
+import { ConnectProviders } from '@loopring-web/web3-provider'
+import { ConnectBase, IconType, PanelProps } from './BasicPanel'
+import { useSettings } from '../../../stores'
+import { Box, Typography } from '@mui/material'
 
 // value symbol
 export const CommonConnectInProgress = (props: PanelProps) => {
-  const { isMobile } = useSettings();
+  const { isMobile } = useSettings()
 
-  const providerName = props.providerName;
+  const providerName = props.providerName
   const propsPatch = {
     providerName,
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelProviderProcessing", {
+    describe1: props.t('labelProviderProcessing', {
       name: isMobile
-        ? "DApp"
+        ? 'DApp, network:' + props?.network
         : providerName
-        ? providerName
-        : props.t("labelUnknown"),
+        ? providerName + ', network:' + props?.network
+        : props.t('labelUnknown') + ', network:' + props?.network,
     }),
-  };
-  return <ConnectBase {...propsPatch} {...props} />;
-};
+  }
+  return <ConnectBase {...propsPatch} {...props} />
+}
 
 export const WalletConnectConnectInProgress = (props: PanelProps) => {
   const propsPatch = {
     providerName: ConnectProviders.WalletConnect,
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelProviderProcessing", {
+    describe1: props.t('labelProviderProcessing', {
       name: ConnectProviders.WalletConnect,
     }),
-  };
-  return <ConnectBase {...propsPatch} {...props} />;
-};
+  }
+  return <ConnectBase {...propsPatch} {...props} />
+}
 
 // value symbol
 export const ConnectSuccess = (props: PanelProps) => {
   const propsPatch = {
     providerName: undefined,
     iconType: IconType.DoneIcon,
-    describe1: props.t("labelSuccessConnect", {
+    describe1: props.t('labelSuccessConnect', {
       providerName: props.providerName,
     }),
     describe2: (
-      <Box display={"flex"} marginTop={0} alignItems={"flex-center"}>
+      <Box display={'flex'} marginTop={0} alignItems={'flex-center'}>
         <Typography
           marginX={3}
-          whiteSpace={"pre-line"}
-          variant={"h5"}
-          textAlign={"center"}
-          color={"textPrimary"}
-          component={"div"}
+          whiteSpace={'pre-line'}
+          variant={'h5'}
+          textAlign={'center'}
+          color={'textPrimary'}
+          component={'div'}
           marginTop={0}
-          alignSelf={"flex-center"}
+          alignSelf={'flex-center'}
           paddingX={1}
         >
-          {props.t("labelSuccessConnectDescribe")}
+          {props.t('labelSuccessConnectDescribe')}
         </Typography>
       </Box>
     ),
-  };
-  return <ConnectBase {...propsPatch} {...props} />;
-};
+  }
+  return <ConnectBase {...propsPatch} {...props} />
+}
 
 // value symbol
-export const ConnectFailed = (props: PanelProps) => {
+export const ConnectFailed = ({ NetWorkItems, providerName, ...props }: PanelProps) => {
   const propsPatch = {
     providerName: undefined,
     iconType: IconType.FailedIcon,
-    describe1: props.t("labelFailedConnect"),
-  };
-  return <ConnectBase {...propsPatch} {...props} />;
-};
+    describe1: props.t('labelFailedConnect'),
+    describe2: <>{NetWorkItems}</>,
+  }
+  return <ConnectBase {...propsPatch} {...props} />
+}
+export const ConnectReject = ({ NetWorkItems, providerName, ...props }: PanelProps) => {
+  const propsPatch = {
+    providerName: undefined,
+    iconType: IconType.RefuseIcon,
+    describe1: props.t('labelRejectConnect'),
+    describe2: <>{NetWorkItems}</>,
+  }
+  return <ConnectBase {...propsPatch} {...props} />
+}
+
+export const ConnectRejectSwitchNetwork = ({
+  NetWorkItems,
+  providerName,
+  ...props
+}: PanelProps) => {
+  const propsPatch = {
+    title: 'labelRejectSwitchNetwork',
+    // providerName,
+    iconType: IconType.RefuseIcon,
+    describe1: <>{NetWorkItems}</>,
+  }
+  return <ConnectBase {...propsPatch} {...props} />
+}

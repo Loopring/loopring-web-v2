@@ -1,10 +1,10 @@
-import { Box } from "@mui/material";
-import { Column, Table } from "../../basic-lib";
-import { TFunction, withTranslation, WithTranslation } from "react-i18next";
-import { EmptyValueTag } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
-import moment from "moment";
+import { Box } from "@mui/material";
 import { TablePaddingX } from "../../styled";
+import { TFunction, WithTranslation, withTranslation } from "react-i18next";
+import { Column, Table } from "../../basic-lib";
+import moment from "moment";
+import { EmptyValueTag } from "@loopring-web/common-resources";
 
 interface Row {
   amount: string;
@@ -21,6 +21,7 @@ const TableStyled = styled(Box)`
     --template-columns: auto auto !important;
     min-height: ${({ theme }) => theme.unit * 30}px !important;
   }
+
   .textAlignRight {
     text-align: right;
 

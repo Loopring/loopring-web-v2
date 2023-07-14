@@ -3,26 +3,33 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  NETWORKEXTEND,
   EddsaKey,
 } from "../../index";
-import { FeeInfo, myLog, UIERROR_CODE } from "@loopring-web/common-resources";
+import {
+  ChainIdExtends,
+  FeeInfo,
+  myLog,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
 import Web3 from "web3";
 
 export async function activateAccount({
   isHWAddr,
+  referral,
   feeInfo = {} as FeeInfo,
 }: {
   isHWAddr: boolean;
   feeInfo?: FeeInfo;
   isReset?: boolean;
+  referral?: string | null;
 }): Promise<EddsaKey> {
   // let result: ActionResult =;
   const system = store.getState().system;
   let eddsaKey = undefined; //isReset ?  //: account.eddsaKey;
   const { tokenMap } = store.getState().tokenMap;
+  // const {} = store.getState().account;
   const {
     accAddress,
     connectName,
@@ -31,7 +38,7 @@ export async function activateAccount({
 
   if (
     !system.exchangeInfo?.exchangeAddress ||
-    system.chainId === NETWORKEXTEND.NONETWORK ||
+    system.chainId === ChainIdExtends.NONETWORK ||
     connectName === ConnectProviders.Unknown ||
     !LoopringAPI?.exchangeAPI ||
     !accAddress
@@ -79,7 +86,6 @@ export async function activateAccount({
     }
     myLog("generateKeyPair done");
 
-    // @ts-ignore
     const request: sdk.UpdateAccountRequestV3 = {
       // // @ts-ignore
       // recommenderAccountId: "" as any,
@@ -93,9 +99,9 @@ export async function activateAccount({
       },
       validUntil: getTimestampDaysLater(DAYS),
       keySeed,
-      nonce: accInfo.nonce as number,
       // @ts-ignore
-      recommenderAccountId: "" as any,
+      recommenderAccountId: referral ? referral : undefined,
+      nonce: accInfo.nonce as number,
     };
 
     myLog("updateAccountFromServer req:", request);
@@ -103,11 +109,12 @@ export async function activateAccount({
       const response = await LoopringAPI?.userAPI?.updateAccount(
         {
           request,
-          web3: connectProvides.usedWeb3 as unknown as Web3,
-          chainId: system.chainId,
+          web3: connectProvides.usedWeb3 as any,
+          chainId: system.chainId as any,
           walletType: (ConnectProviders[connectName] ??
             connectName) as unknown as sdk.ConnectorNames,
           isHWAddr,
+          privateKey: eddsaKey.sk,
         },
         {
           accountId: accInfo.accountId,

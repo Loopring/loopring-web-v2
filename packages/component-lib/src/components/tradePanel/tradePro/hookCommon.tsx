@@ -2,6 +2,8 @@ import React from "react";
 import { TradeCommonProps, TradeProBaseEventProps } from "./Interface";
 import {
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   TradeBaseType,
   TradeCalcProData,
@@ -12,6 +14,7 @@ import { LimitTradeData, MarketTradeData } from "../Interface";
 import { InputSize } from "../../basic-lib";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useSettings } from "../../../stores";
 
 export const useCommon = <
   X extends LimitTradeData<T> | MarketTradeData<T>,
@@ -38,6 +41,8 @@ export const useCommon = <
   WithTranslation) => {
   const quoteRef = React.useRef();
   const baseRef = React.useRef();
+  const { defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const [selectedPercentage, setSelectedPercentage] = React.useState(0);
   // const [tabIndex, setTabIndex] = React.useState<TradeProType>(tradeData.type ?? TradeProType.buy);
   const [inputError, setInputError] = React.useState<{
@@ -156,6 +161,12 @@ export const useCommon = <
       tradeType:
         tradeType === TradeProType.sell ? t("labelProSell") : t("labelProBuy"),
       symbol: tradeCalcProData.coinBase,
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     });
   }, [inputError, t, i18nKey, tradeType, tradeCalcProData]);
 

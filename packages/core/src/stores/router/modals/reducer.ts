@@ -139,6 +139,7 @@ export const initialNFTMETA: Partial<NFTMETA> = {
 const initialActiveAccountState: ActiveAccountData = {
   chargeFeeList: [],
   walletLayer2: undefined,
+  referral: undefined,
 };
 
 const initialState: ModalDataStatus = {
@@ -313,13 +314,16 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state,
       action: PayloadAction<Partial<ActiveAccountData>>
     ) {
-      const { chargeFeeList, walletLayer2, isFeeNotEnough, ...rest } =
+      const { chargeFeeList, walletLayer2, isFeeNotEnough, referral, ...rest } =
         action.payload;
       state.lastStep = LAST_STEP.default;
       if (chargeFeeList) {
         state.activeAccountValue.chargeFeeList = chargeFeeList;
         state.activeAccountValue.walletLayer2 = walletLayer2;
         state.activeAccountValue.isFeeNotEnough = isFeeNotEnough;
+      }
+      if (referral !== undefined) {
+        state.activeAccountValue.referral = referral;
       }
       state.activeAccountValue = {
         ...state.activeAccountValue,

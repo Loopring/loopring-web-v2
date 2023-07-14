@@ -157,7 +157,7 @@ DepositGroupProps<T, I>) => {
           textAlign={"center"}
         >
           {depositProps.isNewAccount
-            ? t("labelCreateLayer2Title")
+            ? t("labelCreateLayer2Title", { layer2: "Layer 2" })
             : t("labelAddAsset")}
         </Typography>
       </Box>

@@ -1,27 +1,30 @@
-import React from "react";
+import React from 'react'
 
 import {
   AccountStep,
   DepositProps,
   SwitchData,
   useOpenModals,
-} from "@loopring-web/component-lib";
+  useSettings,
+} from '@loopring-web/component-lib'
 import {
   AccountStatus,
   AddressError,
   CoinMap,
   IBData,
   L1_UPDATE,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
   UIERROR_CODE,
   WalletMap,
-} from "@loopring-web/common-resources";
-import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
+} from '@loopring-web/common-resources'
+import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 
-import * as sdk from "@loopring-web/loopring-sdk";
+import * as sdk from '@loopring-web/loopring-sdk'
 import {
   ActionResultCode,
   BIGO,
@@ -37,66 +40,63 @@ import {
   useSystem,
   useTokenMap,
   useWalletLayer1,
-} from "../../index";
-import { useTranslation } from "react-i18next";
-import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
-import Web3 from "web3";
+} from '../../index'
+import { useTranslation } from 'react-i18next'
+import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
 
 export const useDeposit = <
   T extends {
-    referAddress?: string;
-    toAddress?: string;
-    addressError?: { error: boolean; message?: string };
+    referAddress?: string
+    toAddress?: string
+    addressError?: { error: boolean; message?: string }
   } & IBData<I>,
-  I
+  I,
 >(
   isAllowInputToAddress = false,
-  opts?: { token?: string | null; owner?: string | null }
+  opts?: { token?: string | null; owner?: string | null },
 ) => {
-  const subject = React.useMemo(() => depositServices.onSocket(), []);
+  const subject = React.useMemo(() => depositServices.onSocket(), [])
 
-  const { tokenMap, totalCoinMap } = useTokenMap();
-  const { account } = useAccount();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  const [isToAddressEditable, setIsToAddressEditable] = React.useState(false);
-  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem();
+  const { tokenMap, totalCoinMap } = useTokenMap()
+  const { account } = useAccount()
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
+  const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
+  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const {
     realAddr: realToAddress,
     setAddress: setToAddress,
     addrStatus: toAddressStatus,
     isAddressCheckLoading: toIsAddressCheckLoading,
-  } = useAddressCheck();
+  } = useAddressCheck()
   const {
     realAddr: realReferAddress,
     setAddress: setReferAddress,
     addrStatus: referStatus,
     isLoopringAddress: referIsLoopringAddress,
     isAddressCheckLoading: referIsAddressCheckLoading,
-  } = useAddressCheck();
+  } = useAddressCheck()
 
   const {
     depositValue,
     updateDepositData,
     resetDepositData,
     activeAccountValue: { chargeFeeList },
-  } = useModalData();
+  } = useModalData()
   const {
     modals: {
       isShowDeposit: { symbol, isShow },
     },
     setShowDeposit,
     setShowAccount,
-  } = useOpenModals();
+  } = useOpenModals()
 
-  const {
-    walletLayer1,
-    updateWalletLayer1,
-    status: walletLayer1Status,
-  } = useWalletLayer1();
+  const { walletLayer1, updateWalletLayer1, status: walletLayer1Status } = useWalletLayer1()
 
-  const { updateDepositHash } = useOnChainInfo();
-  const { t } = useTranslation("common");
+  const { updateDepositHash } = useOnChainInfo()
+  const { t } = useTranslation('common')
   const {
     btnStatus,
     btnInfo,
@@ -105,68 +105,59 @@ export const useDeposit = <
     disableBtn,
     setLabelAndParams,
     resetBtnInfo,
-  } = useBtnStatus();
+  } = useBtnStatus()
 
   const { allowanceInfo } = useAllowances({
     owner: account.accAddress,
     symbol: depositValue.belong as string,
-  });
-  const isNewAccount = [
-    AccountStatus.NO_ACCOUNT,
-    AccountStatus.NOT_ACTIVE,
-  ].includes(account.readyState as any);
+  })
+  const isNewAccount = [AccountStatus.NO_ACCOUNT, AccountStatus.NOT_ACTIVE].includes(
+    account.readyState as any,
+  )
   const updateBtnStatus = React.useCallback(() => {
-    resetBtnInfo();
+    resetBtnInfo()
 
     if (
       (!isAllowInputToAddress || //toIsLoopringAddress &&
         (realToAddress &&
           !!depositValue.toAddress &&
-          depositValue.toAddress.trim() !== "" &&
+          depositValue.toAddress.trim() !== '' &&
           (toAddressStatus as AddressError) === AddressError.NoError)) &&
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
       sdk.toBig(walletLayer1?.ETH?.count ?? 0).gt(BIGO) &&
       sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
-      sdk
-        .toBig(depositValue?.tradeValue)
-        .lte(sdk.toBig(depositValue?.balance ?? ""))
+      sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance ?? ''))
     ) {
-      myLog("walletLayer1?.ETH?.count", walletLayer1?.ETH?.count);
+      myLog('walletLayer1?.ETH?.count', walletLayer1?.ETH?.count)
 
       const curValInWei = sdk
         .toBig(depositValue?.tradeValue)
-        .times("1e" + allowanceInfo?.tokenInfo.decimals);
+        .times('1e' + allowanceInfo?.tokenInfo.decimals)
       if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
-        myLog(
-          "!!---> set labelL1toL2NeedApprove!!!! belong:",
-          depositValue.belong
-        );
-        setLabelAndParams("labelL1toL2NeedApprove", {
+        myLog('!!---> set labelL1toL2NeedApprove!!!! belong:', depositValue.belong)
+        setLabelAndParams('labelL1toL2NeedApprove', {
           symbol: depositValue.belong as string,
-        });
+        })
       }
 
       // NewAccountCheck
-      const index =
-        chargeFeeList?.findIndex(
-          ({ belong }) => belong === depositValue.belong
-        ) ?? -1;
+      const index = chargeFeeList?.findIndex(({ belong }) => belong === depositValue.belong) ?? -1
       if (
         isAllowInputToAddress ||
         (isNewAccount && (index !== -1 || /dev|uat/gi.test(baseURL))) ||
         !isNewAccount
       ) {
-        enableBtn();
-        return;
+        enableBtn()
+        return
       }
     }
-    myLog("try to disable deposit btn!");
+    myLog('try to disable deposit btn!')
     if (sdk.toBig(walletLayer1?.ETH?.count ?? 0).eq(BIGO)) {
-      setLabelAndParams("labelNOETH", {});
+      setLabelAndParams('labelNOETH', {})
     }
-    disableBtn();
+    disableBtn()
   }, [
     resetBtnInfo,
     isAllowInputToAddress,
@@ -184,10 +175,10 @@ export const useDeposit = <
     isNewAccount,
     setLabelAndParams,
     enableBtn,
-  ]);
+  ])
 
   React.useEffect(() => {
-    updateBtnStatus();
+    updateBtnStatus()
   }, [
     depositValue?.belong,
     depositValue?.tradeValue,
@@ -198,104 +189,96 @@ export const useDeposit = <
     realToAddress,
     toIsAddressCheckLoading,
     walletLayer1?.ETH?.count,
-  ]);
+  ])
 
   const handlePanelEvent = React.useCallback(
-    async (
-      data: SwitchData<Partial<T>>,
-      _switchType: "Tomenu" | "Tobutton"
-    ) => {
-      const oldValue = store.getState()._router_modalData.depositValue;
+    async (data: SwitchData<Partial<T>>, _switchType: 'Tomenu' | 'Tobutton') => {
+      const oldValue = store.getState()._router_modalData.depositValue
 
       let newValue = {
         ...oldValue,
-      };
-      if (data?.tradeData.hasOwnProperty("referAddress")) {
-        newValue.referAddress = data?.tradeData.referAddress;
-        setReferAddress(newValue.referAddress ?? "");
       }
-      if (data?.tradeData.hasOwnProperty("toAddress")) {
-        newValue.toAddress = data?.tradeData.toAddress;
-        setToAddress(newValue.toAddress ?? "");
+      if (data?.tradeData.hasOwnProperty('referAddress')) {
+        newValue.referAddress = data?.tradeData.referAddress
+        setReferAddress(newValue.referAddress ?? '')
       }
-      if (data?.tradeData.hasOwnProperty("addressError")) {
-        newValue.addressError = data?.tradeData.addressError;
+      if (data?.tradeData.hasOwnProperty('toAddress')) {
+        newValue.toAddress = data?.tradeData.toAddress
+        setToAddress(newValue.toAddress ?? '')
       }
-      if (data.to === "button") {
+      if (data?.tradeData.hasOwnProperty('addressError')) {
+        newValue.addressError = data?.tradeData.addressError
+      }
+      if (data.to === 'button') {
         if (walletLayer1 && data?.tradeData?.belong) {
-          const walletInfo = walletLayer1[data.tradeData.belong];
+          const walletInfo = walletLayer1[data.tradeData.belong]
           newValue = {
             ...newValue,
             ...data.tradeData,
             balance: walletInfo?.count,
-          };
+          }
         }
       }
-      updateDepositData(newValue);
-      return Promise.resolve();
+      updateDepositData(newValue)
+      return Promise.resolve()
 
       // return new Promise<void>((resolve) => {
       //
       //   resolve();
       // });
     },
-    [setReferAddress, setToAddress, updateDepositData, walletLayer1]
-  );
+    [setReferAddress, setToAddress, updateDepositData, walletLayer1],
+  )
   const handleClear = React.useCallback(() => {
     if (isAllowInputToAddress && !isToAddressEditable) {
-      return;
+      return
     }
     handlePanelEvent(
       {
-        to: "button",
+        to: 'button',
         tradeData: {
           referAddress: undefined,
           toAddress: undefined,
           addressError: undefined,
         } as T,
       },
-      "Tobutton"
-    );
-  }, [handlePanelEvent, isAllowInputToAddress, isToAddressEditable]);
+      'Tobutton',
+    )
+  }, [handlePanelEvent, isAllowInputToAddress, isToAddressEditable])
 
   const walletLayer1Callback = React.useCallback(
     (isClean?: boolean) => {
-      const _symbol = isClean
-        ? opts?.token?.toUpperCase() ?? symbol
-        : depositValue.belong;
-      const tradeValue = isClean ? undefined : depositValue.tradeValue;
-      let updateData = {};
+      const _symbol = isClean ? opts?.token?.toUpperCase() ?? symbol : depositValue.belong
+      const tradeValue = isClean ? undefined : depositValue.tradeValue
+      let updateData = {}
       if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current);
+        clearTimeout(nodeTimer.current)
       }
       nodeTimer.current = setTimeout(() => {
-        if (
-          store.getState().modals.isShowDeposit.isShow ||
-          isAllowInputToAddress
-        ) {
-          updateWalletLayer1();
+        if (store.getState().modals.isShowDeposit.isShow || isAllowInputToAddress) {
+          updateWalletLayer1()
         }
-      }, L1_UPDATE);
+      }, L1_UPDATE)
       if (_symbol && walletLayer1) {
         // updateDepositData();
         updateData = {
           belong: _symbol as any,
           balance: walletLayer1[_symbol]?.count ?? 0,
           tradeValue,
-        };
+        }
       } else if (!depositValue.belong && walletLayer1) {
-        const keys = Reflect.ownKeys(walletLayer1);
+        const keys = Reflect.ownKeys(walletLayer1)
         for (var key in keys) {
-          const keyVal = keys[key] as any;
-          const walletInfo = walletLayer1[keyVal];
+          const keyVal = keys[key] as any
+          const walletInfo = walletLayer1[keyVal]
           if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
             // updateDepositData();
             updateData = {
               belong: keyVal as any,
               tradeValue: undefined,
               balance: walletInfo?.count,
-            };
-            break;
+            }
+            break
           }
         }
       } else if (depositValue.belong && walletLayer1) {
@@ -303,7 +286,7 @@ export const useDeposit = <
           belong: depositValue.belong,
           balance: walletLayer1[depositValue.belong]?.count ?? 0,
           tradeValue,
-        };
+        }
       }
 
       if (isAllowInputToAddress) {
@@ -312,20 +295,20 @@ export const useDeposit = <
             ...updateData,
             toAddress: opts?.owner?.toLowerCase(),
             addressError: undefined,
-          } as T;
+          } as T
           // setToAddress(opts?.owner?.toLowerCase());
-          setIsToAddressEditable(false);
+          setIsToAddressEditable(false)
         } else {
-          setIsToAddressEditable(true);
+          setIsToAddressEditable(true)
         }
       }
       handlePanelEvent(
         {
-          to: "button",
+          to: 'button',
           tradeData: updateData,
         },
-        "Tobutton"
-      );
+        'Tobutton',
+      )
     },
     [
       depositValue.belong,
@@ -338,26 +321,26 @@ export const useDeposit = <
       handlePanelEvent,
       account.accAddress,
       handleClear,
-    ]
-  );
+    ],
+  )
 
   React.useEffect(() => {
     if (walletLayer1Status == SagaStatus.UNSET) {
-      walletLayer1Callback();
+      walletLayer1Callback()
     }
     return () => {
       if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current);
+        clearTimeout(nodeTimer.current)
       }
-    };
-  }, [walletLayer1Status]);
+    }
+  }, [walletLayer1Status])
 
   React.useEffect(() => {
     if (isShow || isAllowInputToAddress) {
-      walletLayer1Callback(true);
-      updateWalletLayer1();
+      walletLayer1Callback(true)
+      updateWalletLayer1()
     }
-  }, [isShow, isAllowInputToAddress]);
+  }, [isShow, isAllowInputToAddress])
 
   const signRefer = React.useCallback(async () => {
     if (
@@ -370,29 +353,28 @@ export const useDeposit = <
       try {
         const refAccount = await LoopringAPI.exchangeAPI.getAccount({
           owner: realReferAddress,
-        });
+        })
         if (
           (refAccount &&
-            ((refAccount as sdk.RESULT_INFO).code ||
-              (refAccount as sdk.RESULT_INFO).message)) ||
+            ((refAccount as sdk.RESULT_INFO).code || (refAccount as sdk.RESULT_INFO).message)) ||
           (refAccount.accInfo && !refAccount.accInfo?.accountId)
         ) {
-          return;
+          return
         }
         // const referId = refAccount.accInfo?.accountId;
         let keySeed = sdk.GlobalAPI.KEY_MESSAGE.replace(
-          "${exchangeAddress}",
-          exchangeInfo.exchangeAddress
-        ).replace("${nonce}", "0");
+          '${exchangeAddress}',
+          exchangeInfo.exchangeAddress,
+        ).replace('${nonce}', '0')
         const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3 as unknown as Web3,
+          web3: connectProvides.usedWeb3,
           address: account.accAddress,
           keySeed,
           walletType: (ConnectProviders[account.connectName] ??
             account.connectName) as unknown as sdk.ConnectorNames,
           chainId: chainId as any,
           accountId: account.accountId,
-        });
+        })
 
         const response = await LoopringAPI.userAPI.SetReferrer(
           {
@@ -401,15 +383,11 @@ export const useDeposit = <
             publicKeyX: eddsaKey.formatedPx,
             publicKeyY: eddsaKey.formatedPy,
           },
-          eddsaKey.sk
-        );
-        myLog(
-          "setRefer generateKeyPair!!! referId:",
-          refAccount.accInfo.accountId,
-          response
-        );
+          eddsaKey.sk,
+        )
+        myLog('setRefer generateKeyPair!!! referId:', refAccount.accInfo.accountId, response)
       } catch (reason: any) {
-        sdk.dumpError400(reason);
+        sdk.dumpError400(reason)
       }
     }
   }, [
@@ -420,11 +398,11 @@ export const useDeposit = <
     exchangeInfo,
     realReferAddress,
     referIsLoopringAddress,
-  ]);
+  ])
 
   const handleDeposit = React.useCallback(
     async (inputValue: any) => {
-      myLog("handleDeposit:", inputValue);
+      myLog('handleDeposit:', inputValue)
       // if (isNewAccount && inputValue.referAddress) {
       //   setShowAccount({
       //     isShow: true,
@@ -435,8 +413,8 @@ export const useDeposit = <
       //   });
       //   await signRefer();
       // }
-      const { readyState, connectName } = account;
-      let result = { code: ActionResultCode.NoError };
+      const { readyState, connectName } = account
+      let result = { code: ActionResultCode.NoError }
 
       try {
         if (
@@ -448,27 +426,24 @@ export const useDeposit = <
           LoopringAPI.exchangeAPI &&
           (!isAllowInputToAddress || (isAllowInputToAddress && realToAddress))
         ) {
-          const tokenInfo = tokenMap[inputValue.belong];
-          const gasLimit = parseInt(tokenInfo.gasAmounts.deposit);
-          const fee = 0;
-          const isMetaMask = true;
+          const tokenInfo = tokenMap[inputValue.belong]
+          const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
+          const fee = 0
+          const isMetaMask = true
 
-          const realGasPrice = gasPrice ?? 30;
+          const realGasPrice = gasPrice ?? 30
 
-          const _chainId =
-            chainId === "unknown" ? sdk.ChainId.MAINNET : chainId;
+          const _chainId = chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
 
-          let nonce = 0;
+          let nonce = 0
 
-          let nonceInit = false;
+          let nonceInit = false
 
           if (allowanceInfo?.needCheck) {
-            const curValInWei = sdk
-              .toBig(inputValue.tradeValue)
-              .times("1e" + tokenInfo.decimals);
+            const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
 
             if (curValInWei.gt(allowanceInfo.allowance)) {
-              myLog(curValInWei, allowanceInfo.allowance, " need approveMax!");
+              myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
 
               setShowAccount({
                 isShow: true,
@@ -476,14 +451,11 @@ export const useDeposit = <
                 info: {
                   isAllowInputToAddress,
                 },
-              });
+              })
 
-              nonce = await sdk.getNonce(
-                connectProvides.usedWeb3 as unknown as Web3,
-                account.accAddress
-              );
+              nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
-              nonceInit = true;
+              nonceInit = true
 
               try {
                 await sdk.approveMax(
@@ -495,9 +467,9 @@ export const useDeposit = <
                   gasLimit,
                   _chainId,
                   nonce,
-                  isMetaMask
-                );
-                nonce += 1;
+                  isMetaMask,
+                )
+                nonce += 1
               } catch (error: any) {
                 if (error instanceof Error) {
                   throw {
@@ -506,17 +478,17 @@ export const useDeposit = <
                     // Explicitly pull Error's non-enumerable properties
                     message: error.message,
                     stack: error.stack,
-                    type: "ApproveToken",
-                  };
+                    type: 'ApproveToken',
+                  }
                 } else {
                   throw {
                     ...(error as any),
-                    type: "ApproveToken",
-                  };
+                    type: 'ApproveToken',
+                  }
                 }
               }
             } else {
-              myLog("allowance is enough! don't need approveMax!");
+              myLog("allowance is enough! don't need approveMax!")
             }
           }
 
@@ -527,19 +499,16 @@ export const useDeposit = <
               to: isAllowInputToAddress ? realToAddress : null,
               isAllowInputToAddress,
             },
-          });
+          })
 
           if (!nonceInit) {
-            nonce = await sdk.getNonce(
-              connectProvides.usedWeb3 as unknown as Web3,
-              account.accAddress
-            );
+            nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
           }
 
-          myLog("before deposit:", chainId, connectName, isMetaMask);
+          myLog('before deposit:', chainId, connectName, isMetaMask)
 
-          const realChainId = chainId === "unknown" ? 1 : chainId;
-          let response;
+          const realChainId = chainId === 'unknown' ? 1 : chainId
+          let response
           try {
             //response = { result: "xxxxxxxx" };
             response = await sdk.deposit(
@@ -554,31 +523,31 @@ export const useDeposit = <
               realChainId,
               nonce,
               isMetaMask,
-              isAllowInputToAddress ? realToAddress : account.accAddress
-            );
+              isAllowInputToAddress ? realToAddress : account.accAddress,
+            )
           } catch (error) {
             if (error instanceof Error) {
               throw {
                 ...error,
                 message: error.message,
                 stack: error.stack,
-                type: "Deposit",
-              };
+                type: 'Deposit',
+              }
             } else {
               throw {
                 ...(error as any),
-                type: "Deposit",
-              };
+                type: 'Deposit',
+              }
             }
           }
 
-          myLog("response:", response);
+          myLog('response:', response)
 
           if (response) {
             // Close Deposit panel...
-            setShowDeposit({ isShow: false });
-            resetDepositData();
-            updateWalletLayer1();
+            setShowDeposit({ isShow: false })
+            resetDepositData()
+            updateWalletLayer1()
             setShowAccount({
               isShow: true,
               info: {
@@ -590,45 +559,42 @@ export const useDeposit = <
                 isNewAccount,
               },
               step: AccountStep.Deposit_Submit,
-            });
+            })
             updateDepositHash(response.result, account.accAddress, undefined, {
               symbol: tokenInfo.symbol,
-              type: "Deposit",
+              type: 'Deposit',
               value: inputValue.tradeValue,
-            });
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE);
+            })
+            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
             if (
               store.getState().modals.isShowAccount.isShow &&
-              store.getState().modals.isShowAccount.step ==
-                AccountStep.Deposit_Submit
+              store.getState().modals.isShowAccount.step == AccountStep.Deposit_Submit
             ) {
-              setShowAccount({ isShow: false });
+              setShowAccount({ isShow: false })
             }
           } else {
-            throw { code: UIERROR_CODE.ERROR_NO_RESPONSE };
+            throw { code: UIERROR_CODE.ERROR_NO_RESPONSE }
           }
         } else {
-          throw { code: UIERROR_CODE.DATA_NOT_READY };
+          throw { code: UIERROR_CODE.DATA_NOT_READY }
         }
       } catch (e) {
-        const { type, ..._error } = (e as any)?.message
-          ? (e as any)
-          : { type: "" };
+        const { type, ..._error } = (e as any)?.message ? (e as any) : { type: '' }
         const error = LoopringAPI?.exchangeAPI?.genErr(_error as any) ?? {
           code: UIERROR_CODE.DATA_NOT_READY,
-        };
-        const code = sdk.checkErrorInfo(error, true);
+        }
+        const code = sdk.checkErrorInfo(error, true)
         switch (code) {
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
-            if (type === "ApproveToken") {
+            if (type === 'ApproveToken') {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Deposit_Approve_Denied,
                 info: {
                   isAllowInputToAddress,
                 },
-              });
+              })
             } else {
               setShowAccount({
                 isShow: true,
@@ -636,9 +602,9 @@ export const useDeposit = <
                 info: {
                   isAllowInputToAddress,
                 },
-              });
+              })
             }
-            break;
+            break
           default:
             setShowAccount({
               isShow: true,
@@ -651,14 +617,14 @@ export const useDeposit = <
                 ...error,
                 code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
               },
-            });
-            resetDepositData();
-            break;
+            })
+            resetDepositData()
+            break
         }
-        updateWalletLayer1();
+        updateWalletLayer1()
       }
 
-      return result;
+      return result
     },
     [
       isNewAccount,
@@ -677,92 +643,86 @@ export const useDeposit = <
       updateWalletLayer1,
       resetDepositData,
       updateDepositHash,
-    ]
-  );
+    ],
+  )
 
   const onDepositClick = React.useCallback(async () => {
     // setLoadingBtn();
-    const depositValue = store.getState()._router_modalData.depositValue;
-    myLog("onDepositClick depositValue:", depositValue);
+    const depositValue = store.getState()._router_modalData.depositValue
+    myLog('onDepositClick depositValue:', depositValue)
 
     if (depositValue && depositValue.belong) {
       // enableBtn();
-      await handleDeposit(depositValue as T);
+      await handleDeposit(depositValue as T)
     }
-  }, [depositValue, handleDeposit]);
+  }, [depositValue, handleDeposit])
 
   const handleAddressError = React.useCallback(() => {
     if (
       referStatus &&
-      ((referStatus as AddressError) !== AddressError.NoError ||
-        !referIsLoopringAddress)
+      ((referStatus as AddressError) !== AddressError.NoError || !referIsLoopringAddress)
     ) {
       handlePanelEvent(
         {
-          to: "button",
+          to: 'button',
           tradeData: {
             addressError: {
               error: true,
-              message: !referIsLoopringAddress
-                ? "Not Loopring L2"
-                : "Invalid Address",
+              message: !referIsLoopringAddress ? 'Not Loopring L2' : 'Invalid Address',
             },
           } as T,
         },
-        "Tobutton"
-      );
-    } else if (
-      toAddressStatus &&
-      (toAddressStatus as AddressError) !== AddressError.NoError
-    ) {
+        'Tobutton',
+      )
+    } else if (toAddressStatus && (toAddressStatus as AddressError) !== AddressError.NoError) {
       handlePanelEvent(
         {
-          to: "button",
+          to: 'button',
           tradeData: {
             addressError: {
               error: true,
-              message: "Invalid Address",
+              message: 'Invalid Address',
             },
           } as T,
         },
-        "Tobutton"
-      );
+        'Tobutton',
+      )
     } else {
       handlePanelEvent(
         {
-          to: "button",
+          to: 'button',
           tradeData: {
             addressError: undefined,
           } as T,
         },
-        "Tobutton"
-      );
+        'Tobutton',
+      )
     }
-  }, [referStatus, referIsLoopringAddress, toAddressStatus, handlePanelEvent]);
+  }, [referStatus, referIsLoopringAddress, toAddressStatus, handlePanelEvent])
   React.useEffect(() => {
-    handleAddressError();
-  }, [referStatus, toAddressStatus]);
+    handleAddressError()
+  }, [referStatus, toAddressStatus])
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
-      myLog("subscription Deposit DepsitERC20");
+      myLog('subscription Deposit DepsitERC20')
 
       switch (props.status) {
         case DepositCommands.DepsitERC20:
-          onDepositClick();
-          break;
+          onDepositClick()
+          break
         default:
-          break;
+          break
       }
-    });
+    })
     return () => {
-      subscription.unsubscribe();
-    };
-  }, [subject]);
+      subscription.unsubscribe()
+    }
+  }, [subject])
 
   const title =
     account.readyState === AccountStatus.NO_ACCOUNT
-      ? t("depositTitleAndActive")
-      : t("depositTitle");
+      ? t('labelDepositTitleAndActive', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
+      : t('labelDepositTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
   const depositProps: DepositProps<T, I> = {
     btnInfo,
     isNewAccount,
@@ -787,9 +747,9 @@ export const useDeposit = <
     realReferAddress,
     referStatus,
     isToAddressEditable,
-  };
+  }
 
   return {
     depositProps,
-  };
-};
+  }
+}

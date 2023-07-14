@@ -7,6 +7,8 @@ import {
   ExchangeIcon,
   getValuePrecisionThousand,
   IBData,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   ReverseIcon,
   SlippageTolerance,
@@ -57,7 +59,8 @@ export const AmmWithdrawWrap = <
   ammData,
   ...rest
 }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
-  const { coinJson, slippage } = useSettings();
+  const { coinJson, slippage, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const coinLPRef = React.useRef();
   const tokenAIcon = coinJson[ammCalcData?.lpCoinA?.belong as string];
   const tokenBIcon = coinJson[ammCalcData?.lpCoinB?.belong as string];
@@ -81,9 +84,33 @@ export const AmmWithdrawWrap = <
   const label = React.useMemo(() => {
     if (ammWithdrawBtnI18nKey) {
       const key = ammWithdrawBtnI18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1].toString(),
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+          : {
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+      );
     } else {
-      return t(`labelRemoveLiquidityBtn`);
+      return t(`labelRemoveLiquidityBtn`, {
+        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+      });
     }
   }, [ammWithdrawBtnI18nKey]);
 

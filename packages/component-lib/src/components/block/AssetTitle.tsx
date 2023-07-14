@@ -4,6 +4,8 @@ import {
   HeaderMenuItemInterface,
   HiddenTag,
   HideIcon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   subMenuLayer2,
   TradeBtnStatus,
   ViewIcon,
@@ -40,6 +42,8 @@ export const AssetTitle = withTranslation("common")(
     assetBtnStatus,
   }: AssetTitleProps & WithTranslation) => {
     const history = useHistory();
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     return (
       <Grid
         container
@@ -61,7 +65,9 @@ export const AssetTitle = withTranslation("common")(
               paddingRight={3}
               color={"textSecondary"}
             >
-              {t("labelAssetTitle")}
+              {t("labelAssetTitle", {
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              })}
               {` (UID: ${accountId})`}
               <IconButton
                 size={"small"}
@@ -151,7 +157,8 @@ export const AssetTitleMobile = ({
   hideL2Assets,
   setHideL2Assets,
 }: AssetTitleMobileProps) => {
-  const { hideL2Action, setHideL2Action } = useSettings();
+  const { hideL2Action, setHideL2Action, defaultNetwork } = useSettings();
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
   const { t } = useTranslation(["common", "layout"]);
   let match: any = useRouteMatch("/l2assets/:item");
   const history = useHistory();
@@ -178,7 +185,11 @@ export const AssetTitleMobile = ({
           left={2}
           top={2}
         >
-          {t(label ?? "labelAssets", { ns: "layout" })}
+          {t(label ?? "labelAssets", {
+            ns: "layout",
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          })}
         </Typography>
         <Typography
           component={"span"}
@@ -187,7 +198,12 @@ export const AssetTitleMobile = ({
           alignItems={"center"}
           marginBottom={1}
         >
-          {t("labelAssetMobileTitle")}
+          {t("labelAssetMobileTitle", {
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          })}
           {` (UID: ${accountId})`}
           <IconButton
             size={"small"}

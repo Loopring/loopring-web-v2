@@ -827,7 +827,14 @@ const initLng = "en_US";
 console.log("en_US");
 const settingPersist = "persist:settings";
 (function init() {
-  let settings = JSON.parse(localStorage.getItem(settingPersist) ?? "{}");
+  let searchParam = window.location.search;
+  const searchParams = new URLSearchParams(searchParam);
+  if (searchParams.get("referralcode")) {
+    const referralcode = searchParams.get("referralcode");
+    document.getElementById("logo").innerHTML =
+      "https://loopring.io/#/?referralcode=" + referralcode;
+    // let settings = JSON.parse(localStorage.getItem(settingPersist) ?? "{}");
+  }
   let themeMode = "dark";
   if (settings.themeMode && JSON.parse(settings.themeMode)) {
     themeMode = JSON.parse(settings.themeMode);

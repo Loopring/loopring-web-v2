@@ -38,7 +38,11 @@ export const offFaitService = {
     if (__timer__ !== -1) {
       clearTimeout(__timer__);
     }
-    if (account?.accAddress && offRampHistory[chainId][account?.accAddress]) {
+    if (
+      account?.accAddress &&
+      offRampHistory[chainId] &&
+      offRampHistory[chainId][account?.accAddress]
+    ) {
       const { pending, payments }: OffRampHashItemObj = offRampHistory[chainId][
         account.accAddress
       ][VendorProviders.Banxa] ?? { pending: undefined, payments: undefined };

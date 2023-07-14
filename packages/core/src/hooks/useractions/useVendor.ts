@@ -1,22 +1,21 @@
 import {
   AccountStatus,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   TradeBtnStatus,
   VendorItem,
   VendorList,
-} from "@loopring-web/common-resources";
-import { store, useAccount, useModalData, useSystem } from "../../index";
-import {
-  RampInstantEventTypes,
-  RampInstantSDK,
-} from "@ramp-network/ramp-instant-sdk";
-import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { BanxaCheck, banxaService, OrderENDReason } from "../../services";
-import _ from "lodash";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { useLocation } from "react-use";
+} from '@loopring-web/common-resources'
+import { store, useAccount, useModalData, useSystem } from '../../index'
+import { RampInstantEventTypes, RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
+import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { BanxaCheck, banxaService, OrderENDReason } from '../../services'
+import _ from 'lodash'
+import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useLocation } from 'react-use'
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -25,42 +24,43 @@ export enum RAMP_SELL_PANEL {
 }
 
 export const useVendor = () => {
-  const { account } = useAccount();
-  const { t } = useTranslation();
-  const { setShowTradeIsFrozen } = useOpenModals();
-  const match: any = useRouteMatch("/trade/fiat/:tab?");
-
-  const banxaRef = React.useRef();
-  const subject = React.useMemo(() => banxaService.onSocket(), []);
+  const { account } = useAccount()
+  const { t } = useTranslation()
+  const { setShowTradeIsFrozen } = useOpenModals()
+  const match: any = useRouteMatch('/trade/fiat/:tab?')
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const banxaRef = React.useRef()
+  const subject = React.useMemo(() => banxaService.onSocket(), [])
 
   const {
     allowTrade: { raw_data },
-  } = useSystem();
-  const legalEnable = (raw_data as any)?.legal?.enable;
-  const legalShow = (raw_data as any)?.legal?.show;
-  const { setShowAccount } = useOpenModals();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  const history = useHistory();
-  const { href } = useLocation();
-  const search = href?.split("?")[1] ?? "";
-  const searchParams = new URLSearchParams(search);
+  } = useSystem()
+  const legalEnable = (raw_data as any)?.legal?.enable
+  const legalShow = (raw_data as any)?.legal?.show
+  const { setShowAccount } = useOpenModals()
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
+  const history = useHistory()
+  const { href } = useLocation()
+  const search = href?.split('?')[1] ?? ''
+  const searchParams = new URLSearchParams(search)
   const {
     // updateOffRampData,
     resetOffRampData,
     resetOffBanxaData,
-  } = useModalData();
+  } = useModalData()
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
-    RAMP_SELL_PANEL.LIST
+    RAMP_SELL_PANEL.LIST,
     // RAMP_SELL_PANEL.BANXA_CONFIRM
-  );
+  )
   const [banxaBtnStatus, setBanxaBtnStatus] = React.useState<TradeBtnStatus>(
-    TradeBtnStatus.AVAILABLE
-  );
+    TradeBtnStatus.AVAILABLE,
+  )
   const _banxaClick = _.debounce(() => {
-    resetOffBanxaData();
-    banxaService.banxaStart();
-  }, 500);
+    resetOffBanxaData()
+    banxaService.banxaStart()
+  }, 500)
 
   const vendorListBuy: VendorItem[] = legalShow
     ? [
@@ -69,40 +69,40 @@ export const useVendor = () => {
           // svgIcon: "RampIcon",
           ...VendorList.Ramp,
           handleSelect: () => {
-            setShowAccount({ isShow: false });
+            setShowAccount({ isShow: false })
             if (legalEnable) {
               let config: any = {
-                hostAppName: "Loopring",
-                hostLogoUrl: "https://static.loopring.io/assets/svg/logo.svg",
+                hostAppName: 'Loopring',
+                hostLogoUrl: 'https://static.loopring.io/assets/svg/logo.svg',
                 userAddress: account.accAddress,
-                defaultFlow: "ONRAMP",
-                enabledFlows: ["ONRAMP"],
-              };
+                defaultFlow: 'ONRAMP',
+                enabledFlows: ['ONRAMP'],
+              }
               if (account && account.accountId && account.accountId !== -1) {
                 config = {
                   ...config,
-                  swapAsset: "LOOPRING_*",
+                  swapAsset: 'LOOPRING_*',
                   // enabledFlows: ["ONRAMP"],
-                  hostApiKey: "r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7",
-                };
+                  hostApiKey: 'r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7',
+                }
               } else {
                 config = {
                   ...config,
-                  swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
-                  hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
-                };
+                  swapAsset: 'LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC',
+                  hostApiKey: 'xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz',
+                }
               }
               window.rampInstance = new RampInstantSDK({
                 ...config,
-              }).show();
+              }).show()
               window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
-                resetOffRampData();
-                setSellPanel(RAMP_SELL_PANEL.LIST);
+                resetOffRampData()
+                setSellPanel(RAMP_SELL_PANEL.LIST)
                 if (window.rampInstance) {
-                  window.rampInstance.unsubscribe("*", () => undefined);
-                  window.rampInstance = undefined;
+                  window.rampInstance.unsubscribe('*', () => undefined)
+                  window.rampInstance = undefined
                 }
-                let dex = "labelAddAssetTitleCardDes";
+                let dex = 'labelAddAssetTitleCardDes'
                 if (
                   account.readyState &&
                   [
@@ -111,27 +111,33 @@ export const useVendor = () => {
                     AccountStatus.NO_ACCOUNT,
                   ].includes(
                     // @ts-ignore
-                    account?.readyState
+                    account?.readyState,
                   )
                 ) {
-                  dex = "labelAddAssetTitleCardDesActive";
+                  dex = 'labelAddAssetTitleCardDesActive'
                 }
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.ThirdPanelReturn,
                   info: {
-                    title: t("labelAddAssetTitleCard"),
-                    description: t(dex),
+                    title: t('labelAddAssetTitleCard'),
+                    description: t(dex, {
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    }),
                   },
-                });
-              });
+                })
+              })
             }
           },
         },
         {
           ...VendorList.Banxa,
           handleSelect: () => {
-            let dex = "labelAddAssetTitleCardDes";
+            let dex = 'labelAddAssetTitleCardDes'
             if (
               account.readyState &&
               [
@@ -140,31 +146,37 @@ export const useVendor = () => {
                 AccountStatus.NO_ACCOUNT,
               ].includes(
                 // @ts-ignore
-                account?.readyState
+                account?.readyState,
               )
             ) {
-              dex = "labelAddAssetTitleCardDesActive";
+              dex = 'labelAddAssetTitleCardDesActive'
             }
             setShowAccount({
               isShow: true,
               step: AccountStep.ThirdPanelReturn,
               info: {
-                title: t("labelAddAssetTitleCard"),
-                description: t(dex),
+                title: t('labelAddAssetTitleCard'),
+                description: t(dex, {
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                }),
               },
-            });
+            })
             if (legalEnable) {
               window.open(
-                "https://loopring.banxa.com/?code=1fe263e17175561954c6&buyMode&walletAddress=" +
+                'https://loopring.banxa.com/?code=1fe263e17175561954c6&buyMode&walletAddress=' +
                   account.accAddress,
-                "_blank"
-              );
-              window.opener = null;
+                '_blank',
+              )
+              window.opener = null
             }
           },
         },
       ]
-    : [];
+    : []
 
   const vendorListSell: VendorItem[] = legalShow
     ? [
@@ -237,71 +249,73 @@ export const useVendor = () => {
           ...VendorList.Banxa,
           btnStatus: banxaBtnStatus,
           handleSelect: async (_event) => {
-            setBanxaBtnStatus(TradeBtnStatus.LOADING);
-            setShowAccount({ isShow: false });
-            _banxaClick();
+            setBanxaBtnStatus(TradeBtnStatus.LOADING)
+            setShowAccount({ isShow: false })
+            _banxaClick()
             // @ts-ignore
           },
         },
       ]
-    : [];
+    : []
 
   const closeBanxa = () => {
-    const parentsNode: any =
-      window.document.querySelector("#iframeBanxaTarget");
-    parentsNode.style.display = "none";
-  };
+    // @ts-ignore
+    var parentsNode: undefined | HTMLElement = window.document.getElementById('iframeBanxaTarget')
+    if (parentsNode && parentsNode.style) {
+      // @ts-ignore
+      parentsNode.style.display = 'none'
+    }
+  }
 
   const enterCheck = React.useCallback(async () => {
-    const data = await banxaService.banxaCheckHavePending();
-    if (data?.order?.status === "waitingPayment") {
-      myLog("banxa Check Have waitingPayment", data.order);
-      banxaService.KYCDone();
-      searchParams.set("orderId", data?.order.id);
+    const data = await banxaService.banxaCheckHavePending()
+    if (data?.order?.status === 'waitingPayment') {
+      myLog('banxa Check Have waitingPayment', data.order)
+      banxaService.KYCDone()
+      searchParams.set('orderId', data?.order.id)
       history.replace({
-        pathname: "/trade/fiat/sell",
+        pathname: '/trade/fiat/sell',
         search: searchParams.toString(),
-      });
+      })
       store.dispatch(
         setShowAccount({
           isShow: true,
           step: AccountStep.ContinuousBanxaOrder,
           info: { orderId: data?.order.id },
-        })
-      );
-      return;
+        }),
+      )
+      return
     }
-    setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
-  }, []);
+    setBanxaBtnStatus(TradeBtnStatus.AVAILABLE)
+  }, [])
   React.useEffect(() => {
-    const offBanxaValue = store.getState()._router_modalData.offBanxaValue;
+    const offBanxaValue = store.getState()._router_modalData.offBanxaValue
     if (
-      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
-      searchParams.get("orderId") &&
-      searchParams.get("orderId")?.toLowerCase() !==
-        offBanxaValue?.id?.toLowerCase()
+      match?.params?.tab?.toLowerCase() === 'sell'.toLowerCase() &&
+      searchParams.get('orderId') &&
+      searchParams.get('orderId')?.toLowerCase() !== offBanxaValue?.id?.toLowerCase()
     ) {
-      banxaService.banxaCheckHavePending();
+      banxaService.banxaCheckHavePending()
     } else if (
-      match?.params?.tab?.toLowerCase() === "sell".toLowerCase() &&
-      !searchParams.has("orderId")
+      match?.params?.tab?.toLowerCase() === 'sell'.toLowerCase() &&
+      !searchParams.has('orderId')
     ) {
-      setBanxaBtnStatus(TradeBtnStatus.LOADING);
-      setSellPanel(RAMP_SELL_PANEL.LIST);
-      enterCheck();
+      setBanxaBtnStatus(TradeBtnStatus.LOADING)
+      setSellPanel(RAMP_SELL_PANEL.LIST)
+      enterCheck()
     }
-  }, [match?.params?.tab, searchParams?.get("orderId")]);
+  }, [match?.params?.tab, searchParams?.get('orderId')])
   const clickEvent = () =>
     banxaService.banxaEnd({
       reason: OrderENDReason.UserCancel,
-      data: { resource: "on close" },
-    });
+      data: { resource: 'on close' },
+    })
 
   React.useEffect(() => {
-    const close = window.document.querySelector("#iframeBanxaClose");
-    const parentsNode = window.document.querySelector("#iframeBanxaTarget");
+    const close = window.document.querySelector('#iframeBanxaClose')
+    const parentsNode = window.document.querySelector('#iframeBanxaTarget')
     if (close && parentsNode) {
-      parentsNode.addEventListener("click", clickEvent);
+      parentsNode.addEventListener('click', clickEvent)
     }
     const subscription = subject.subscribe((props) => {
       switch (props.status) {
@@ -309,46 +323,46 @@ export const useVendor = () => {
         //   checkOrderStatus(props.data);
         //   break;
         case BanxaCheck.OrderHide:
-          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE)
           // hideBanxa();
-          closeBanxa();
-          break;
+          closeBanxa()
+          break
         case BanxaCheck.OrderShow:
-          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE)
           // showBanxa();
-          break;
+          break
         case BanxaCheck.OrderEnd:
           // myLog("subscription Banxa", props.status, props.data);
           if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
             setShowTradeIsFrozen({
               isShow: true,
-              messageKey: "labelBanxaNotReady",
-            });
+              messageKey: 'labelBanxaNotReady',
+            })
           }
           if (props?.data?.reason === OrderENDReason.CreateOrderFailed) {
             setShowTradeIsFrozen({
               isShow: true,
-              messageKey: "labelBanxaFailedForAPI",
-            });
+              messageKey: 'labelBanxaFailedForAPI',
+            })
           }
-          closeBanxa();
-          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE);
+          closeBanxa()
+          setBanxaBtnStatus(TradeBtnStatus.AVAILABLE)
 
           // clearTimeout(nodeTimer.current as NodeJS.Timeout);
-          break;
+          break
         default:
-          break;
+          break
       }
-    });
+    })
     return () => {
       if (close && parentsNode) {
-        parentsNode?.removeEventListener("click", clickEvent);
+        parentsNode?.removeEventListener('click', clickEvent)
       }
-      clearTimeout(nodeTimer.current as NodeJS.Timeout);
-      subscription.unsubscribe();
-      closeBanxa();
-    };
-  }, []);
+      clearTimeout(nodeTimer.current as NodeJS.Timeout)
+      subscription.unsubscribe()
+      closeBanxa()
+    }
+  }, [])
   return {
     banxaRef,
     vendorListBuy,
@@ -357,5 +371,5 @@ export const useVendor = () => {
     sellPanel,
     setSellPanel,
     // setSellPanel,
-  };
-};
+  }
+}

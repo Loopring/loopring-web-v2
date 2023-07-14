@@ -4,6 +4,8 @@ import {
   Account,
   CopyIcon,
   copyToClipBoard,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
@@ -37,6 +39,8 @@ export const QRAddressPanel = withTranslation("common")(
   } & Account) => {
     const { feeChargeOrder } = useSettings();
     const [copyToastOpen, setCopyToastOpen] = React.useState(false);
+    const { defaultNetwork } = useSettings();
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
     //     const etherscanLink = etherscanUrl + 'address/' + accAddress;
     return (
       <Box
@@ -64,9 +68,16 @@ export const QRAddressPanel = withTranslation("common")(
             >
               {isNewAccount
                 ? t("labelReceiveAddressGuide", {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                     symbol: feeChargeOrder?.join(", "),
                   })
-                : t("labelReceiveAddressGuide", { symbol: t("labelAssets") })}
+                : t("labelReceiveAddressGuide", {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+
+                    symbol: t("labelAssets", {
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    }),
+                  })}
             </Typography>
           </BoxStyle>
         )}
@@ -100,7 +111,14 @@ export const QRAddressPanel = withTranslation("common")(
           {t(
             isNewAccount
               ? "labelReceiveAddressDesActive"
-              : "labelReceiveAddressDes"
+              : "labelReceiveAddressDes",
+            {
+              loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
           )}
         </Typography>
         <Box alignSelf={"stretch"} paddingX={5}>

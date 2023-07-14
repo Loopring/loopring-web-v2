@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 import {
   Box,
   Button,
@@ -8,9 +8,9 @@ import {
   Link,
   Modal,
   Typography,
-} from "@mui/material";
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+} from '@mui/material'
+import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AmmPanelType,
   AssetsTable,
@@ -23,7 +23,7 @@ import {
   SwitchPanelStyled,
   useOpenModals,
   useSettings,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 import {
   CheckBoxIcon,
   CheckedIcon,
@@ -36,14 +36,15 @@ import {
   HiddenTag,
   myLog,
   PriceTag,
+  RecordTabIndex,
   RowInvestConfig,
   STAKING_INVEST_LIMIT,
   TokenType,
   TRADE_TYPE,
-} from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
-import { useOverview } from "./hook";
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
+import { useOverview } from './hook'
 import {
   TableWrapStyled,
   useAccount,
@@ -55,59 +56,54 @@ import {
   useTokenMap,
   useTokenPrices,
   volumeToCount,
-} from "@loopring-web/core";
-import { useTheme } from "@emotion/react";
-import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
-import { useDualAsset } from "../../AssetPage/HistoryPanel/useDualAsset";
-import React from "react";
+} from '@loopring-web/core'
+import { useTheme } from '@emotion/react'
+import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
+import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
+import React from 'react'
 
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
-` as typeof Grid;
+` as typeof Grid
 
-const MyLiquidity: any = withTranslation("common")(
+const MyLiquidity: any = withTranslation('common')(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
     isHideTotal,
     hideAssets,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
-    isHideTotal?: boolean;
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
-    hideAssets?: boolean;
+    isHideTotal?: boolean
+    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
+    hideAssets?: boolean
   }) => {
-    let match: any = useRouteMatch("/invest/balance/:type");
-    const { search } = useLocation();
-    const searchParams = new URLSearchParams(search);
+    let match: any = useRouteMatch('/invest/balance/:type')
+    const { search } = useLocation()
+    const searchParams = new URLSearchParams(search)
 
-    const ammPoolRef = React.useRef(null);
-    const stakingRef = React.useRef(null);
-    const dualRef = React.useRef(null);
-    const sideStakeRef = React.useRef(null);
+    const ammPoolRef = React.useRef(null)
+    const stakingRef = React.useRef(null)
+    const dualRef = React.useRef(null)
+    const sideStakeRef = React.useRef(null)
 
-    const { updateClaimData } = useModalData();
-    const { setShowClaimWithdraw } = useOpenModals();
+    const { updateClaimData } = useModalData()
+    const { setShowClaimWithdraw } = useOpenModals()
 
-    const { ammActivityMap } = useAmmActivityMap();
-    const { forexMap } = useSystem();
-    const { tokenMap, disableWithdrawList, idIndex } = useTokenMap();
-    const { tokenPrices } = useTokenPrices();
-    const { redeemItemClick } = useStakeRedeemClick();
-    const { marketMap: dualMarketMap } = useDualMap();
-    const {
-      assetsRawData,
-      onSend,
-      onReceive,
-      allowTrade,
-      getTokenRelatedMarketArray,
-    } = useGetAssets();
-    const { account } = useAccount();
-    const history = useHistory();
-    const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
-    const { setShowAmm } = useOpenModals();
+    const { ammActivityMap } = useAmmActivityMap()
+    const { forexMap } = useSystem()
+    const { tokenMap, disableWithdrawList, idIndex } = useTokenMap()
+    const { tokenPrices } = useTokenPrices()
+    const { redeemItemClick } = useStakeRedeemClick()
+    const { marketMap: dualMarketMap } = useDualMap()
+    const { assetsRawData, onSend, onReceive, allowTrade, getTokenRelatedMarketArray } =
+      useGetAssets()
+    const { account } = useAccount()
+    const history = useHistory()
+    const { currency, hideSmallBalances, setHideSmallBalances } = useSettings()
+    const { setShowAmm } = useOpenModals()
     const {
       dualList,
       dualOnInvestAsset,
@@ -123,7 +119,7 @@ const MyLiquidity: any = withTranslation("common")(
       setShowRefreshError,
       showRefreshError,
       refreshErrorInfo,
-    } = useDualAsset();
+    } = useDualAsset()
     const {
       summaryMyInvest,
       myPoolRow,
@@ -143,103 +139,96 @@ const MyLiquidity: any = withTranslation("common")(
       dualOnInvestAsset,
       hideSmallBalances,
       // dualList,
-    });
-    myLog("summaryMyInvest", summaryMyInvest, forexMap[currency]);
+    })
+    myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
       if (match?.params?.type) {
         switch (match?.params?.type) {
-          case "dual":
+          case 'dual':
             // @ts-ignore
-            window.scrollTo(0, dualRef?.current?.offsetTop);
-            break;
-          case "stake":
+            window.scrollTo(0, dualRef?.current?.offsetTop)
+            break
+          case 'stake':
             // @ts-ignore
-            window.scrollTo(0, stakingRef?.current?.offsetTop);
+            window.scrollTo(0, stakingRef?.current?.offsetTop)
 
-            break;
-          case "amm":
+            break
+          case 'amm':
             // @ts-ignore
-            window.scrollTo(0, ammPoolRef?.current?.offsetTop);
-            break;
-          case "sideStake":
+            window.scrollTo(0, ammPoolRef?.current?.offsetTop)
+            break
+          case 'sideStake':
             // @ts-ignore
-            window.scrollTo(0, sideStakeRef?.current?.offsetTop);
+            window.scrollTo(0, sideStakeRef?.current?.offsetTop)
         }
       }
-      if (searchParams?.get("refreshStake")) {
-        getStakingList({});
+      if (searchParams?.get('refreshStake')) {
+        getStakingList({})
       }
-    }, [match?.params?.type, searchParams?.get("refreshStake")]);
+    }, [match?.params?.type, searchParams?.get('refreshStake')])
 
     React.useEffect(() => {
       if (account.accountId) {
-        getDualTxList({});
+        getDualTxList({})
       }
-    }, [account.accountId]);
+    }, [account.accountId])
 
-    const theme = useTheme();
-    const { isMobile } = useSettings();
+    const theme = useTheme()
+    const { isMobile } = useSettings()
     const fontSize: any = isMobile
       ? {
-          title: "body1",
-          count: "h5",
-          title2: "body1",
-          count2: "h5",
+          title: 'body1',
+          count: 'h5',
+          title2: 'body1',
+          count2: 'h5',
         }
       : {
-          title: "body1",
-          count: "h1",
-          title2: "body1",
-          count2: "h5",
-        };
+          title: 'body1',
+          count: 'h1',
+          title2: 'body1',
+          count2: 'h5',
+        }
     const lidoAssets = assetsRawData.filter((o) => {
       return (
         o.token.type !== TokenType.single &&
         o.token.type !== TokenType.lp &&
         (hideSmallBalances ? !o.smallBalance : true)
-      );
-    });
+      )
+    })
     const totalClaimableRewardsAmount =
-      totalClaimableRewards && totalClaimableRewards !== "0"
+      totalClaimableRewards && totalClaimableRewards !== '0'
         ? getValuePrecisionThousand(
-            sdk
-              .toBig(totalClaimableRewards ?? 0)
-              .div("1e" + tokenMap[stakedSymbol].decimals),
+            sdk.toBig(totalClaimableRewards ?? 0).div('1e' + tokenMap[stakedSymbol].decimals),
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             false,
-            { floor: true, isAbbreviate: true }
+            { floor: true, isAbbreviate: true },
           )
-        : "0";
+        : '0'
 
     const dualStakeDollar = dualOnInvestAsset
       ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
-          const price = tokenPrices[idIndex[cur.tokenId]];
+          const price = tokenPrices[idIndex[cur.tokenId]]
           return sdk
             .toBig(cur?.amount ?? 0)
-            .div("1e" + tokenMap[idIndex[cur.tokenId]].decimals)
+            .div('1e' + tokenMap[idIndex[cur.tokenId]].decimals)
             .times(price)
             .plus(pre)
-            .toString();
-        }, "0")
-      : undefined;
+            .toString()
+        }, '0')
+      : undefined
     const _summaryMyInvest = sdk
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
-      .toString();
+      .toString()
     return (
-      <Box
-        display={"flex"}
-        flex={1}
-        position={"relative"}
-        flexDirection={"column"}
-      >
+      <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         <Box
-          position={"absolute"}
-          display={"flex"}
-          alignItems={"center"}
+          position={'absolute'}
+          display={'flex'}
+          alignItems={'center'}
           sx={
             isHideTotal && !isMobile
               ? {
@@ -258,46 +247,44 @@ const MyLiquidity: any = withTranslation("common")(
             sx={{
               marginRight: 2,
               paddingRight: 0,
-              fontSize: isMobile
-                ? theme.fontDefault.body2
-                : theme.fontDefault.body1,
+              fontSize: isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1,
             }}
             control={
               <Checkbox
                 checked={hideSmallBalances}
                 checkedIcon={<CheckedIcon />}
                 icon={<CheckBoxIcon />}
-                color="default"
+                color='default'
                 onChange={(event) => {
-                  setHideSmallBalances(event.target.checked);
+                  setHideSmallBalances(event.target.checked)
                 }}
               />
             }
-            label={t("labelHideSmallBalances", { ns: "tables" })}
+            label={t('labelHideSmallBalances', { ns: 'tables' })}
           />
           <Link
-            variant={"body1"}
-            target="_self"
-            rel="noopener noreferrer"
+            variant={'body1'}
+            target='_self'
+            rel='noopener noreferrer'
             //?tokenSymbol=${market}
-            onClick={() => history.push(`/l2assets/history/ammRecords`)}
+            onClick={() => history.push(`/l2assets/history/${RecordTabIndex.AmmRecords}`)}
             // href={"./#/layer2/history/ammRecords"}
           >
-            {t("labelTransactionsLink")}
+            {t('labelTransactionsLink')}
           </Link>
         </Box>
         <StyleWrapper
           container
-          className={"MuiPaper-elevation2"}
+          className={'MuiPaper-elevation2'}
           paddingY={3}
           paddingX={4}
           margin={0}
-          display={isHideTotal ? "none" : "flex"}
+          display={isHideTotal ? 'none' : 'flex'}
         >
-          <Grid container spacing={2} alignItems={"flex-end"}>
-            <Grid item display={"flex"} flexDirection={"column"} sm={6} md={5}>
-              <Typography variant={fontSize.title} color={"textSecondary"}>
-                {t("labelTotalPositionValue")}
+          <Grid container spacing={2} alignItems={'flex-end'}>
+            <Grid item display={'flex'} flexDirection={'column'} sm={6} md={5}>
+              <Typography variant={fontSize.title} color={'textSecondary'}>
+                {t('labelTotalPositionValue')}
               </Typography>
               <Typography variant={fontSize.count} marginTop={1}>
                 {_summaryMyInvest
@@ -311,7 +298,7 @@ const MyLiquidity: any = withTranslation("common")(
                       undefined,
                       2,
                       true,
-                      { isFait: true, floor: true }
+                      { isFait: true, floor: true },
                     )
                   : EmptyValueTag}
               </Typography>
@@ -357,19 +344,19 @@ const MyLiquidity: any = withTranslation("common")(
             <TableWrapStyled
               flex={1}
               marginTop={isHideTotal ? 1 : 2}
-              height={"100%"}
-              display={"flex"}
-              width={"100%"}
+              height={'100%'}
+              display={'flex'}
+              width={'100%'}
             >
               <EmptyDefault
                 sx={{ flex: 1 }}
                 message={() => {
                   return (
-                    <Trans i18nKey="labelNoInvestContent">
-                      You have no investment assets, invest AMM, ETH Stacking,
-                      DUAL earn your rewards
+                    <Trans i18nKey='labelNoInvestContent'>
+                      You have no investment assets, invest AMM, ETH Stacking, DUAL earn your
+                      rewards
                     </Trans>
-                  );
+                  )
                 }}
               />
             </TableWrapStyled>
@@ -384,22 +371,16 @@ const MyLiquidity: any = withTranslation("common")(
                   paddingX={0}
                   flex={1}
                 >
-                  <Grid
-                    item
-                    xs={12}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    flex={1}
-                  >
+                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                     <MyPoolTable
                       forexMap={forexMap as any}
                       title={
                         <Typography
-                          variant={"h5"}
+                          variant={'h5'}
                           marginBottom={isMobile ? 3 : 0}
                           // paddingLeft={3}
                         >
-                          {t("labelMyAmm")}
+                          {t('labelMyAmm')}
                         </Typography>
                       }
                       totalDollar={summaryMyInvest.ammPoolDollar}
@@ -417,20 +398,20 @@ const MyLiquidity: any = withTranslation("common")(
                       idIndex={idIndex}
                       tokenPrices={tokenPrices as any}
                       handleWithdraw={(row) => {
-                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`;
+                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`
                         setShowAmm({
                           isShow: true,
                           type: AmmPanelType.Exit,
                           symbol: pair,
-                        });
+                        })
                       }}
                       handleDeposit={(row) => {
-                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`;
+                        const pair = `${row.ammDetail.coinAInfo.simpleName}-${row.ammDetail.coinBInfo.simpleName}`
                         setShowAmm({
                           isShow: true,
                           type: AmmPanelType.Join,
                           symbol: pair,
-                        });
+                        })
                       }}
                       rowConfig={RowInvestConfig}
                       hideAssets={hideAssets}
@@ -449,11 +430,11 @@ const MyLiquidity: any = withTranslation("common")(
                 >
                   <Grid container>
                     <Grid item xs={6}>
-                      <Typography variant={"h5"} marginBottom={2} marginX={3}>
-                        {t("labelInvestType_LRCSTAKE")}
+                      <Typography variant={'h5'} marginBottom={2} marginX={3}>
+                        {t('labelInvestType_LRCSTAKE')}
                       </Typography>
                       {summaryMyInvest?.stakeLRCDollar !== undefined ? (
-                        <Typography component={"h4"} variant={"h3"} marginX={3}>
+                        <Typography component={'h4'} variant={'h3'} marginX={3}>
                           {summaryMyInvest?.stakeLRCDollar
                             ? hideAssets
                               ? HiddenTag
@@ -466,50 +447,40 @@ const MyLiquidity: any = withTranslation("common")(
                                   undefined,
                                   2,
                                   true,
-                                  { isFait: true, floor: true }
+                                  { isFait: true, floor: true },
                                 )
                             : EmptyValueTag}
                         </Typography>
                       ) : (
-                        ""
+                        ''
                       )}
                     </Grid>
                     <Grid
                       item
                       xs={3}
-                      justifyContent={"space-evenly"}
-                      flexDirection={"column"}
-                      alignItems={"flex-end"}
-                      display={"flex "}
+                      justifyContent={'space-evenly'}
+                      flexDirection={'column'}
+                      alignItems={'flex-end'}
+                      display={'flex '}
                     >
-                      <Typography
-                        variant={"body1"}
-                        marginBottom={1}
-                        marginX={3}
-                        component={"span"}
-                      >
-                        {t("labelStakingCumulativeEarnings")}
+                      <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
+                        {t('labelStakingCumulativeEarnings')}
                       </Typography>
-                      <Typography
-                        variant={"body1"}
-                        marginBottom={1}
-                        marginX={3}
-                        component={"span"}
-                      >
-                        {totalStakedRewards && totalStakedRewards !== "0"
+                      <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
+                        {totalStakedRewards && totalStakedRewards !== '0'
                           ? hideAssets
                             ? HiddenTag
                             : getValuePrecisionThousand(
                                 sdk
                                   .toBig(totalStakedRewards ?? 0)
-                                  .div("1e" + tokenMap[stakedSymbol].decimals),
+                                  .div('1e' + tokenMap[stakedSymbol].decimals),
                                 tokenMap[stakedSymbol].precision,
                                 tokenMap[stakedSymbol].precision,
                                 tokenMap[stakedSymbol].precision,
                                 false,
-                                { floor: true, isAbbreviate: true }
+                                { floor: true, isAbbreviate: true },
                               ) +
-                              " " +
+                              ' ' +
                               stakedSymbol
                           : EmptyValueTag}
                       </Typography>
@@ -518,65 +489,47 @@ const MyLiquidity: any = withTranslation("common")(
                     <Grid
                       item
                       xs={3}
-                      justifyContent={"space-evenly"}
-                      flexDirection={"column"}
-                      alignItems={"flex-end"}
-                      display={"flex"}
+                      justifyContent={'space-evenly'}
+                      flexDirection={'column'}
+                      alignItems={'flex-end'}
+                      display={'flex'}
                     >
-                      <Typography
-                        variant={"body1"}
-                        marginBottom={1}
-                        marginX={3}
-                        component={"span"}
-                      >
-                        {t("labelStakingClaimableEarnings")}
+                      <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
+                        {t('labelStakingClaimableEarnings')}
                       </Typography>
                       <Box
                         marginBottom={1}
                         marginX={3}
-                        display={"flex"}
-                        flexDirection={"row"}
-                        alignItems={"center"}
+                        display={'flex'}
+                        flexDirection={'row'}
+                        alignItems={'center'}
                       >
-                        {totalClaimableRewardsAmount &&
-                        totalClaimableRewardsAmount !== "0" ? (
+                        {totalClaimableRewardsAmount && totalClaimableRewardsAmount !== '0' ? (
                           <>
-                            <Typography
-                              component={"span"}
-                              display={"inline-flex"}
-                              paddingRight={2}
-                            >
+                            <Typography component={'span'} display={'inline-flex'} paddingRight={2}>
                               {hideAssets
                                 ? HiddenTag
-                                : totalClaimableRewardsAmount +
-                                  " " +
-                                  stakedSymbol}
+                                : totalClaimableRewardsAmount + ' ' + stakedSymbol}
                             </Typography>
                             <Button
-                              variant={"contained"}
-                              size={"small"}
+                              variant={'contained'}
+                              size={'small'}
                               onClick={() => {
                                 updateClaimData({
                                   belong: stakedSymbol,
-                                  tradeValue: volumeToCount(
-                                    stakedSymbol,
-                                    totalClaimableRewards
-                                  ),
-                                  balance: volumeToCount(
-                                    stakedSymbol,
-                                    totalClaimableRewards
-                                  ),
+                                  tradeValue: volumeToCount(stakedSymbol, totalClaimableRewards),
+                                  balance: volumeToCount(stakedSymbol, totalClaimableRewards),
                                   volume: totalClaimableRewards,
                                   tradeType: TRADE_TYPE.TOKEN,
                                   claimType: CLAIM_TYPE.lrcStaking,
-                                });
+                                })
                                 setShowClaimWithdraw({
                                   isShow: true,
                                   claimType: CLAIM_TYPE.lrcStaking,
-                                });
+                                })
                               }}
                             >
-                              {t("labelClaimBtn")}
+                              {t('labelClaimBtn')}
                             </Button>
                           </>
                         ) : (
@@ -608,7 +561,7 @@ const MyLiquidity: any = withTranslation("common")(
                 <TableWrapStyled
                   ref={stakingRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
-                    lidoAssets?.length > 0 ? "min-height" : ""
+                    lidoAssets?.length > 0 ? 'min-height' : ''
                   }`}
                   marginTop={2}
                   paddingY={2}
@@ -616,20 +569,13 @@ const MyLiquidity: any = withTranslation("common")(
                   flex={1}
                 >
                   <Grid item xs={12}>
-                    <Typography variant={"h5"} marginBottom={1} marginX={3}>
-                      {t("labelInvestType_STAKE")}
+                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
+                      {t('labelInvestType_STAKE')}
                     </Typography>
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    flex={1}
-                    marginX={0}
-                  >
+                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
                     {summaryMyInvest?.stakeETHDollar !== undefined ? (
-                      <Typography component={"h4"} variant={"h3"} marginX={3}>
+                      <Typography component={'h4'} variant={'h3'} marginX={3}>
                         {summaryMyInvest?.stakeETHDollar
                           ? hideAssets
                             ? HiddenTag
@@ -642,12 +588,12 @@ const MyLiquidity: any = withTranslation("common")(
                                 undefined,
                                 2,
                                 true,
-                                { isFait: true, floor: true }
+                                { isFait: true, floor: true },
                               )
                           : EmptyValueTag}
                       </Typography>
                     ) : (
-                      ""
+                      ''
                     )}
                     <AssetsTable
                       {...{
@@ -678,20 +624,13 @@ const MyLiquidity: any = withTranslation("common")(
                   flex={1}
                 >
                   <Grid item xs={12}>
-                    <Typography variant={"h5"} marginBottom={1} marginX={3}>
-                      {t("labelInvestType_DUAL")}
+                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
+                      {t('labelInvestType_DUAL')}
                     </Typography>
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    flex={1}
-                    margin={0}
-                  >
+                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
                     {dualStakeDollar !== undefined ? (
-                      <Typography component={"h4"} variant={"h3"} marginX={3}>
+                      <Typography component={'h4'} variant={'h3'} marginX={3}>
                         {dualStakeDollar
                           ? hideAssets
                             ? HiddenTag
@@ -703,7 +642,7 @@ const MyLiquidity: any = withTranslation("common")(
                           : EmptyValueTag}
                       </Typography>
                     ) : (
-                      ""
+                      ''
                     )}
                     <DualAssetTable
                       rawData={dualList}
@@ -721,45 +660,34 @@ const MyLiquidity: any = withTranslation("common")(
                     <Modal
                       open={dualOpen}
                       onClose={(_e: any) => setDualOpen(false)}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
+                      aria-labelledby='modal-modal-title'
+                      aria-describedby='modal-modal-description'
                     >
-                      <SwitchPanelStyled width={"var(--modal-width)"}>
-                        <ModalCloseButton
-                          onClose={(_e: any) => setDualOpen(false)}
-                          t={t}
-                        />
+                      <SwitchPanelStyled width={'var(--modal-width)'}>
+                        <ModalCloseButton onClose={(_e: any) => setDualOpen(false)} t={t} />
                         {dualDetail && (
                           <Box
                             flex={1}
                             paddingY={2}
-                            width={"100%"}
-                            display={"flex"}
-                            flexDirection={"column"}
+                            width={'100%'}
+                            display={'flex'}
+                            flexDirection={'column'}
                           >
                             <Typography
-                              variant={isMobile ? "h5" : "h4"}
+                              variant={isMobile ? 'h5' : 'h4'}
                               marginTop={-4}
-                              textAlign={"center"}
+                              textAlign={'center'}
                               paddingBottom={2}
                             >
-                              {t("labelDuaInvestmentDetails", { ns: "common" })}
+                              {t('labelDuaInvestmentDetails', { ns: 'common' })}
                             </Typography>
                             <DualDetail
                               isOrder={true}
-                              dualViewInfo={
-                                dualDetail.dualViewInfo as DualViewBase
-                              }
-                              currentPrice={
-                                dualDetail.dualViewInfo.currentPrice
-                              }
+                              dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
+                              currentPrice={dualDetail.dualViewInfo.currentPrice}
                               tokenMap={tokenMap}
-                              lessEarnTokenSymbol={
-                                dualDetail.lessEarnTokenSymbol
-                              }
-                              greaterEarnTokenSymbol={
-                                dualDetail.greaterEarnTokenSymbol
-                              }
+                              lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
+                              greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
                               lessEarnView={dualDetail.lessEarnView}
                               greaterEarnView={dualDetail.greaterEarnView}
                             />
@@ -776,23 +704,20 @@ const MyLiquidity: any = withTranslation("common")(
         <Modal
           open={showRefreshError}
           onClose={(_e: any) => setShowRefreshError(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
         >
-          <SwitchPanelStyled width={"var(--modal-width)"}>
-            <ModalCloseButton
-              onClose={(_e: any) => setShowRefreshError(false)}
-              t={t}
-            />
+          <SwitchPanelStyled width={'var(--modal-width)'}>
+            <ModalCloseButton onClose={(_e: any) => setShowRefreshError(false)} t={t} />
             <Box marginTop={9}>
-              <FailedIcon color={"error"} style={{ width: 60, height: 60 }} />
+              <FailedIcon color={'error'} style={{ width: 60, height: 60 }} />
             </Box>
 
-            <Typography marginTop={1} variant={"h5"}>
-              {t("labelInvestDualRefreshErrorTitle")}
+            <Typography marginTop={1} variant={'h5'}>
+              {t('labelInvestDualRefreshErrorTitle')}
             </Typography>
             <Typography marginTop={5} marginBottom={22}>
-              {t("labelInvestDualRefreshError", {
+              {t('labelInvestDualRefreshError', {
                 token1: refreshErrorInfo[0],
                 token2: refreshErrorInfo[1],
               })}
@@ -800,8 +725,8 @@ const MyLiquidity: any = withTranslation("common")(
           </SwitchPanelStyled>
         </Modal>
       </Box>
-    );
-  }
-);
+    )
+  },
+)
 
-export default MyLiquidity;
+export default MyLiquidity

@@ -4,11 +4,14 @@ import { Box, Grid, Typography } from "@mui/material";
 import moment from "moment";
 import {
   EmptyValueTag,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   YEAR_DAY_MINUTE_FORMAT,
 } from "@loopring-web/common-resources";
 import { TxType } from "@loopring-web/loopring-sdk";
 import React from "react";
 import { TxnDetailProps } from "../Interface";
+import { useSettings } from "../../../../stores";
 
 // import { getValuePrecisionThousand } from '@loopring-web/common-resources';
 
@@ -103,6 +106,8 @@ export const TxnDetailPanel = withTranslation("common", { withRef: true })(
       }: TxnDetailProps & WithTranslation,
       ref: React.ForwardedRef<any>
     ) => {
+      const { defaultNetwork } = useSettings();
+      const network = MapChainId[defaultNetwork] ?? MapChainId[1];
       const headerLabel =
         txType === TxType.DEPOSIT
           ? "labelDTxnDetailHeader"
@@ -127,13 +132,19 @@ export const TxnDetailPanel = withTranslation("common", { withRef: true })(
           </HeaderStyled>
           <GridContainerStyled container flexDirection={"column"}>
             <GridItemStyled item>
-              <TypographyStyled>{t("labelTxnDetailHash")}</TypographyStyled>
+              <TypographyStyled>
+                {t("labelTxnDetailHash", {
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                })}
+              </TypographyStyled>
               <InfoValueStyled>{hash}</InfoValueStyled>
             </GridItemStyled>
             {txHash && (
               <GridItemStyled item>
                 <TypographyStyled>
-                  {t("labelTxnDetailHashLv1")}
+                  {t("labelTxnDetailHashLv1", {
+                    layer2: L1L2_NAME_DEFINED[network].layer2,
+                  })}
                 </TypographyStyled>
                 <InfoValueStyled>
                   <EthHshStyled

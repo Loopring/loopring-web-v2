@@ -23,6 +23,7 @@ import { WalletConnectBtn } from "../header";
 import {
   CommonConnectInProgress,
   ConnectFailed,
+  ConnectReject,
   ConnectSuccess,
   WalletConnectConnectInProgress,
 } from "../index";
@@ -153,6 +154,9 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
       },
       [WalletConnectStep.FailedConnect]: {
         view: <ConnectFailed {...rest} onRetry={() => {}} />,
+      },
+      [WalletConnectStep.RejectConnect]: {
+        view: <ConnectReject {...rest} onRetry={() => {}} />,
       },
     });
   }, [rest]);
