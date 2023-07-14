@@ -34,8 +34,9 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
     setLoadingBtn,
   } = useBtnStatus()
   const { collectionAdvanceValue, updateCollectionAdvanceData } = useModalData()
-  const [error, setError] =
-    React.useState<undefined | { code: UIERROR_CODE; message: string }>(undefined)
+  const [error, setError] = React.useState<undefined | { code: UIERROR_CODE; message: string }>(
+    undefined,
+  )
   const onSubmitClick = React.useCallback(
     async (_data: T) => {
       if (
