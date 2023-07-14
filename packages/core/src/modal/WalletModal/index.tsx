@@ -63,9 +63,8 @@ export const useGatewayList = ({
   const { account, status: accountStatus } = useAccount()
 
   const [stateCheck, setStateCheck] = React.useState<boolean>(false)
-  const [processingCallback, setProcessingCallback] = React.useState<
-    { callback: () => Promise<void> } | undefined
-  >(undefined)
+  const [processingCallback, setProcessingCallback] =
+    React.useState<{ callback: () => Promise<void> } | undefined>(undefined)
   React.useEffect(() => {
     if (stateCheck && [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus) !== -1) {
       myLog('clear cache connect done')
