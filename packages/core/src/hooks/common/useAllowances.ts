@@ -6,12 +6,11 @@ import * as sdk from '@loopring-web/loopring-sdk'
 export function useAllowances({ owner, symbol }: { owner: string; symbol: string }) {
   const { tokenMap } = useTokenMap()
 
-  const [allowanceInfo, setAllowanceInfo] =
-    React.useState<{
-      allowance: BigNumber
-      needCheck: boolean
-      tokenInfo: sdk.TokenInfo
-    }>()
+  const [allowanceInfo, setAllowanceInfo] = React.useState<{
+    allowance: BigNumber
+    needCheck: boolean
+    tokenInfo: sdk.TokenInfo
+  }>()
 
   const updateAllowance = React.useCallback(
     async (symbol: string) => {

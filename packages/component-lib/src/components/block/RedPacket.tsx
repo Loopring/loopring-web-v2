@@ -527,13 +527,12 @@ export const RedPacketClock = ({
   const { t } = useTranslation('common')
   const anchorRef = React.useRef()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  const [countDown, setCountDown] =
-    React.useState<{
-      days: undefined | string
-      hours: undefined | string
-      seconds: undefined | string
-      minutes: undefined | string
-    }>()
+  const [countDown, setCountDown] = React.useState<{
+    days: undefined | string
+    hours: undefined | string
+    seconds: undefined | string
+    minutes: undefined | string
+  }>()
   const calculateTimeLeft = React.useCallback((validSince: number) => {
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout)

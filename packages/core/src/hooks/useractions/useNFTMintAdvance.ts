@@ -53,10 +53,12 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
   const { t } = useTranslation('common')
   const { checkHWAddr, updateHW } = useWalletInfo()
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT()
-  const [isNotAvailableCID, setIsNotAvailableCID] =
-    React.useState<undefined | { reason: string }>(undefined)
-  const [isNotAvailableTokenAddress, setIsNotAvailableTokenAddress] =
-    React.useState<undefined | { reason: string }>(undefined)
+  const [isNotAvailableCID, setIsNotAvailableCID] = React.useState<undefined | { reason: string }>(
+    undefined,
+  )
+  const [isNotAvailableTokenAddress, setIsNotAvailableTokenAddress] = React.useState<
+    undefined | { reason: string }
+  >(undefined)
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false)
   const { setShowAccount, setShowNFTMintAdvance } = useOpenModals()
   const { baseURL, etherscanBaseUrl } = useSystem()

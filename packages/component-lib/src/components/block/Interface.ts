@@ -26,7 +26,7 @@ export type AssetTitleProps = {
   assetInfo: {
     isShow?: boolean
     totalAsset: number
-    priceTag: typeof PriceTag[keyof typeof PriceTag]
+    priceTag: (typeof PriceTag)[keyof typeof PriceTag]
     [key: string]: any
   }
   accountId: number
