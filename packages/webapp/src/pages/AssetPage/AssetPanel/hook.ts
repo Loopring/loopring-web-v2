@@ -339,14 +339,13 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
-  const [tokenLockDetail, setTokenLockDetail] =
-    React.useState<
-      | undefined
-      | {
-          list: any[]
-          row: any
-        }
-    >(undefined)
+  const [tokenLockDetail, setTokenLockDetail] = React.useState<
+    | undefined
+    | {
+        list: any[]
+        row: any
+      }
+  >(undefined)
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
