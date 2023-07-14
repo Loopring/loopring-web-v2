@@ -1,1 +1,1 @@
-export * from "./TradePro";
+export * from './TradePro'

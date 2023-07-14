@@ -1,2 +1,2 @@
-export * from "./KlineChart";
-export * from "./data";
+export * from './KlineChart'
+export * from './data'

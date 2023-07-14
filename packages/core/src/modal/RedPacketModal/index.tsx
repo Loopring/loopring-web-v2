@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   ModalRedPacket,
   RedPacketBlindBoxDetail,
@@ -11,22 +11,22 @@ import {
   RedPacketTimeout,
   RedPacketViewStep,
   useOpenModals,
-} from "@loopring-web/component-lib";
-import React from "react";
-import { useRedPacketModal } from "./hook";
-import { myLog, SoursURL } from "@loopring-web/common-resources";
-import { Box } from "@mui/material";
+} from '@loopring-web/component-lib'
+import React from 'react'
+import { useRedPacketModal } from './hook'
+import { myLog, SoursURL } from '@loopring-web/common-resources'
+import { Box } from '@mui/material'
 
-export const ModalRedPacketPanel = withTranslation("common")(
+export const ModalRedPacketPanel = withTranslation('common')(
   ({
     etherscanBaseUrl,
   }: WithTranslation & {
-    etherscanBaseUrl: string;
+    etherscanBaseUrl: string
   }) => {
     const {
       modals: { isShowRedPacket },
       setShowRedPacket,
-    } = useOpenModals();
+    } = useOpenModals()
     const {
       redPacketQRCodeProps,
       redPacketTimeoutProps,
@@ -35,20 +35,15 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketDetailProps,
       redPacketClockProps,
       redPacketBlindBoxDetailProps,
-    } = useRedPacketModal();
+    } = useRedPacketModal()
     // const { redPacketProps } = useRedPacketDetail();
     // const theme = useTheme();
     const redPacketList = React.useMemo(() => {
-      myLog(redPacketOpenProps);
+      myLog(redPacketOpenProps)
       return Object.values({
         [RedPacketViewStep.QRCodePanel]: {
           view: redPacketQRCodeProps ? (
-            <Box
-              height={603}
-              display={"flex"}
-              justifyContent={"start"}
-              alignItems={"start"}
-            >
+            <Box height={603} display={'flex'} justifyContent={'start'} alignItems={'start'}>
               <Box flex={1}>
                 <RedPacketQRCode {...redPacketQRCodeProps} />
               </Box>
@@ -62,12 +57,12 @@ export const ModalRedPacketPanel = withTranslation("common")(
             <Box
               height={RedPacketSize.large.height}
               width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
             >
               <Box flex={1}>
-                <RedPacketOpen size={"large"} {...redPacketOpenProps} />
+                <RedPacketOpen size={'large'} {...redPacketOpenProps} />
               </Box>
             </Box>
           ) : (
@@ -79,12 +74,12 @@ export const ModalRedPacketPanel = withTranslation("common")(
             <Box
               height={RedPacketSize.large.height}
               width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
             >
               <Box flex={1}>
-                <RedPacketClock size={"large"} {...redPacketClockProps} />
+                <RedPacketClock size={'large'} {...redPacketClockProps} />
               </Box>
             </Box>
           ) : (
@@ -96,12 +91,12 @@ export const ModalRedPacketPanel = withTranslation("common")(
             <Box
               height={RedPacketSize.large.height}
               width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
             >
               <Box flex={1}>
-                <RedPacketOpened size={"large"} {...redPacketOpenedProps} />
+                <RedPacketOpened size={'large'} {...redPacketOpenedProps} />
               </Box>
             </Box>
           ) : (
@@ -113,12 +108,12 @@ export const ModalRedPacketPanel = withTranslation("common")(
             <Box
               height={RedPacketSize.large.height}
               width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
             >
               <Box flex={1}>
-                <RedPacketTimeout size={"large"} {...redPacketTimeoutProps} />
+                <RedPacketTimeout size={'large'} {...redPacketTimeoutProps} />
               </Box>
             </Box>
           ) : (
@@ -129,11 +124,11 @@ export const ModalRedPacketPanel = withTranslation("common")(
           view: redPacketDetailProps ? (
             <Box
               minHeight={RedPacketSize.large.height}
-              height={"80vh"}
+              height={'80vh'}
               width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"start"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'start'}
             >
               <RedPacketDetail {...redPacketDetailProps} />
             </Box>
@@ -147,11 +142,11 @@ export const ModalRedPacketPanel = withTranslation("common")(
           view: redPacketBlindBoxDetailProps ? (
             <Box
               minHeight={RedPacketSize.large.height}
-              height={"80vh"}
+              height={'80vh'}
               width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"start"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'start'}
             >
               <RedPacketBlindBoxDetail {...redPacketBlindBoxDetailProps} />
             </Box>
@@ -163,22 +158,22 @@ export const ModalRedPacketPanel = withTranslation("common")(
           view: (
             <Box
               minHeight={RedPacketSize.large.height}
-              height={"80vh"}
+              height={'80vh'}
               width={RedPacketSize.large.width}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
             >
               <img
-                className="loading-gif"
-                alt={"loading"}
-                width="36"
+                className='loading-gif'
+                alt={'loading'}
+                width='36'
                 src={`${SoursURL}images/loading-line.gif`}
               />
             </Box>
           ),
         },
-      });
+      })
     }, [
       redPacketQRCodeProps,
       redPacketOpenProps,
@@ -187,17 +182,17 @@ export const ModalRedPacketPanel = withTranslation("common")(
       redPacketOpenedProps,
       redPacketClockProps,
       redPacketBlindBoxDetailProps,
-    ]);
+    ])
     return (
       <ModalRedPacket
         onClose={() => {
-          setShowRedPacket({ isShow: false });
+          setShowRedPacket({ isShow: false })
         }}
         etherscanBaseUrl={etherscanBaseUrl}
         step={isShowRedPacket.step}
         open={isShowRedPacket.isShow}
         panelList={redPacketList}
       />
-    );
-  }
-);
+    )
+  },
+)

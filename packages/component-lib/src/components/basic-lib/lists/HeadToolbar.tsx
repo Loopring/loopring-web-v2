@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import { MenuItem, MenuItemProps } from "@mui/material";
+import styled from '@emotion/styled'
+import { MenuItem, MenuItemProps } from '@mui/material'
 //${({ theme }) => theme.unit * 2}
 export const TabItemPlus = styled<any>(MenuItem)`
   && {
@@ -40,4 +40,4 @@ export const TabItemPlus = styled<any>(MenuItem)`
       }
     }
   }
-` as (props: MenuItemProps) => JSX.Element;
+` as (props: MenuItemProps) => JSX.Element

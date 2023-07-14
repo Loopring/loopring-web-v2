@@ -1,7 +1,7 @@
-import { Meta, Story } from "@storybook/react/types-6-0";
-import { WithTranslation, withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { Grid, Typography } from "@mui/material";
+import { Meta, Story } from '@storybook/react/types-6-0'
+import { WithTranslation, withTranslation } from 'react-i18next'
+import styled from '@emotion/styled'
+import { Grid, Typography } from '@mui/material'
 import {
   ActiveIcon,
   AddIcon,
@@ -129,7 +129,7 @@ import {
   YoutubeIcon,
   ZoomIcon,
   ContactIcon,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 
 const Styled = styled.div`
   background: var(--color-global-bg);
@@ -138,7 +138,7 @@ const Styled = styled.div`
     height: 24px;
     width: 24px;
   }
-`;
+`
 
 // @ts-ignore
 const listIcon = [
@@ -267,45 +267,43 @@ const listIcon = [
   <UploadedIcon />,
   <EditIcon />,
   <ConvertToIcon />,
-];
+]
 
-export const IconList: Story<any> = withTranslation()(
-  ({}: WithTranslation & any) => {
-    const view = listIcon.map((item, index) => {
-      return (
-        <Grid
-          key={index}
-          item
-          padding={2}
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"center"}
-        >
-          {item}
-          <Typography padding={1} variant={"body2"}>
-            {item.type.name}
-          </Typography>
-        </Grid>
-      );
-    });
-
+export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {
+  const view = listIcon.map((item, index) => {
     return (
-      <>
-        <Styled>
-          {/*<MemoryRouter initialEntries={['/']}>*/}
-          <Grid container>{view}</Grid>
-        </Styled>
-        {/*</MemoryRouter>*/}
-      </>
-    );
-  }
-) as Story<any>;
+      <Grid
+        key={index}
+        item
+        padding={2}
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'center'}
+      >
+        {item}
+        <Typography padding={1} variant={'body2'}>
+          {item.type.name}
+        </Typography>
+      </Grid>
+    )
+  })
+
+  return (
+    <>
+      <Styled>
+        {/*<MemoryRouter initialEntries={['/']}>*/}
+        <Grid container>{view}</Grid>
+      </Styled>
+      {/*</MemoryRouter>*/}
+    </>
+  )
+}) as Story<any>
 
 //export const Button = Template.bind({});
 // @ts-ignore
 export default {
-  title: "Resource/IconsList",
+  title: 'Resource/IconsList',
   component: IconList,
   argTypes: {},
-} as Meta;
+} as Meta
 // LButton.args = {}

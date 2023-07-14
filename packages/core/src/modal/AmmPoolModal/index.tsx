@@ -1,5 +1,5 @@
-import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
+import React from 'react'
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   boxLiner,
   ModalBackButton,
@@ -9,16 +9,16 @@ import {
   ToastType,
   useOpenModals,
   useSettings,
-} from "@loopring-web/component-lib";
-import { myLog, TOAST_TIME } from "@loopring-web/common-resources";
-import { Box, Link, Modal as MuiModal } from "@mui/material";
-import styled from "@emotion/styled";
-import { store, useAmmMap } from "../../index";
-import { AmmPanelView } from "./components/ammPanel";
-import { useTheme } from "@emotion/react";
-import { useAmmCommon } from "../../hooks/useractions/hookAmmCommon";
-import { ChartAndInfoPanel } from "./components/chartAndInfo";
-import { AmmRecordPanel } from "./components/ammRecordPanel";
+} from '@loopring-web/component-lib'
+import { myLog, TOAST_TIME } from '@loopring-web/common-resources'
+import { Box, Link, Modal as MuiModal } from '@mui/material'
+import styled from '@emotion/styled'
+import { store, useAmmMap } from '../../index'
+import { AmmPanelView } from './components/ammPanel'
+import { useTheme } from '@emotion/react'
+import { useAmmCommon } from '../../hooks/useractions/hookAmmCommon'
+import { ChartAndInfoPanel } from './components/chartAndInfo'
+import { AmmRecordPanel } from './components/ammRecordPanel'
 
 const BoxStyle = styled(Box)`
   .rdg {
@@ -26,7 +26,7 @@ const BoxStyle = styled(Box)`
     border-bottom-left-radius: ${({ theme }) => theme.unit}px;
     border-bottom-right-radius: ${({ theme }) => theme.unit}px;
   }
-`;
+`
 const BoxLinear = styled(SwitchPanelStyled)`
   && {
     ${({ theme }) => boxLiner({ theme })};
@@ -48,8 +48,8 @@ const BoxLinear = styled(SwitchPanelStyled)`
       overflow: scroll;
     }
   }
-`;
-const Content = withTranslation("common")(
+`
+const Content = withTranslation('common')(
   ({
     t,
     market,
@@ -62,9 +62,9 @@ const Content = withTranslation("common")(
         isShowAmm: { type },
       },
       setShowAmm,
-    } = useOpenModals();
-    const { isMobile } = useSettings();
-    const theme = useTheme();
+    } = useOpenModals()
+    const { isMobile } = useSettings()
+    const theme = useTheme()
     const {
       toastOpen,
       setToastOpen,
@@ -73,47 +73,47 @@ const Content = withTranslation("common")(
       updateAmmPoolSnapshot,
       updateExitFee,
       updateJoinFee,
-    } = useAmmCommon({ market });
-    myLog("amm type", type);
+    } = useAmmCommon({ market })
+    myLog('amm type', type)
     return (
       <>
         <Box
-          display={"flex"}
-          width={"100%"}
-          flexDirection={"column"}
-          alignItems={!isMobile ? "stretch" : "center"}
+          display={'flex'}
+          width={'100%'}
+          flexDirection={'column'}
+          alignItems={!isMobile ? 'stretch' : 'center'}
         >
           {panelIndex === 1 ? (
             <ModalBackButton
-              marginTop={"-27px"}
+              marginTop={'-27px'}
               marginLeft={1}
               onBack={() => {
-                setPanelIndex(0);
+                setPanelIndex(0)
               }}
             />
           ) : (
             <>
               {isMobile && (
                 <Link
-                  position={"absolute"}
-                  variant={"body1"}
+                  position={'absolute'}
+                  variant={'body1'}
                   sx={{
                     left: 2 * theme.unit,
                     top: 2 * theme.unit,
                     zIndex: 999,
                   }}
                   onClick={() => {
-                    setPanelIndex(1);
+                    setPanelIndex(1)
                   }}
                 >
-                  {t("labelAMMTransactionsLink")}
+                  {t('labelAMMTransactionsLink')}
                 </Link>
               )}
             </>
           )}
           <ModalCloseButton
             onClose={() => {
-              setShowAmm({ isShow: false });
+              setShowAmm({ isShow: false })
             }}
             t={t}
             {...rest}
@@ -122,37 +122,37 @@ const Content = withTranslation("common")(
         {panelIndex === 0 && (
           <Box
             flex={1}
-            alignSelf={"center"}
-            flexDirection={!isMobile ? "row" : "column"}
-            alignItems={!isMobile ? "stretch" : "center"}
-            justifyContent={"stretch"}
-            position={"relative"}
-            display={"flex"}
+            alignSelf={'center'}
+            flexDirection={!isMobile ? 'row' : 'column'}
+            alignItems={!isMobile ? 'stretch' : 'center'}
+            justifyContent={'stretch'}
+            position={'relative'}
+            display={'flex'}
           >
             {!isMobile && (
               <Link
-                position={"absolute"}
-                variant={"body1"}
+                position={'absolute'}
+                variant={'body1'}
                 sx={{
                   right: 2 * theme.unit,
                   top: 2 * theme.unit,
                   zIndex: 999,
                 }}
                 onClick={() => {
-                  setPanelIndex(1);
+                  setPanelIndex(1)
                 }}
               >
-                {t("labelAMMTransactionsLink")}
+                {t('labelAMMTransactionsLink')}
               </Link>
             )}
             <Box
               marginBottom={2}
-              display={"flex"}
-              width={isMobile ? "100%" : "initial"}
-              flexDirection={isMobile ? "column" : "row"}
+              display={'flex'}
+              width={isMobile ? '100%' : 'initial'}
+              flexDirection={isMobile ? 'column' : 'row'}
             >
               <Toast
-                alertText={toastOpen?.content ?? ""}
+                alertText={toastOpen?.content ?? ''}
                 severity={toastOpen?.type ?? ToastType.success}
                 open={toastOpen?.open ?? false}
                 autoHideDuration={TOAST_TIME}
@@ -172,19 +172,14 @@ const Content = withTranslation("common")(
           </Box>
         )}
         {panelIndex === 1 && (
-          <BoxStyle
-            display={"flex"}
-            overflow={"scroll"}
-            flex={1}
-            height={"100%"}
-          >
+          <BoxStyle display={'flex'} overflow={'scroll'} flex={1} height={'100%'}>
             {market && <AmmRecordPanel market={market} />}
           </BoxStyle>
         )}
       </>
-    );
-  }
-);
+    )
+  },
+)
 
 export const ModalCoinPairPanel = () => {
   const {
@@ -192,49 +187,47 @@ export const ModalCoinPairPanel = () => {
       isShowAmm: { isShow },
     },
     setShowAmm,
-  } = useOpenModals();
-  const [panelIndex, setPanelIndex] = React.useState<0 | 1>(0);
-  const { ammMap } = useAmmMap();
-  const [market, setMarket] = React.useState<string>("");
+  } = useOpenModals()
+  const [panelIndex, setPanelIndex] = React.useState<0 | 1>(0)
+  const { ammMap } = useAmmMap()
+  const [market, setMarket] = React.useState<string>('')
   React.useEffect(() => {
     if (isShow) {
-      const { symbol } = store.getState().modals.isShowAmm;
+      const { symbol } = store.getState().modals.isShowAmm
       setMarket((market) => {
         if (symbol !== market) {
-          return ammMap[`AMM-${symbol}`]
-            ? ammMap[`AMM-${symbol}`].market
-            : "LRC-ETH";
+          return ammMap[`AMM-${symbol}`] ? ammMap[`AMM-${symbol}`].market : 'LRC-ETH'
         } else {
-          return market == "" ? "LRC-ETH" : market;
+          return market == '' ? 'LRC-ETH' : market
         }
-      });
+      })
     }
     return () => {
-      setPanelIndex(0);
-      setMarket("");
-    };
-  }, [isShow]);
+      setPanelIndex(0)
+      setMarket('')
+    }
+  }, [isShow])
 
-  const { isMobile } = useSettings();
+  const { isMobile } = useSettings()
   return (
     <MuiModal
       open={isShow}
       onClose={() => {
-        setShowAmm({ isShow: false });
+        setShowAmm({ isShow: false })
       }}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
+      aria-labelledby='modal-modal-title'
+      aria-describedby='modal-modal-description'
     >
       <BoxLinear
-        width={"80%"}
-        minWidth={isMobile ? "initial" : 720}
-        maxWidth={isMobile ? "initial" : 1000}
-        position={"relative"}
-        style={{ alignItems: "stretch" }}
+        width={'80%'}
+        minWidth={isMobile ? 'initial' : 720}
+        maxWidth={isMobile ? 'initial' : 1000}
+        position={'relative'}
+        style={{ alignItems: 'stretch' }}
       >
-        {market && ammMap["AMM-" + market] ? (
+        {market && ammMap['AMM-' + market] ? (
           <Content
-            market={market.replace("AMM-", "")}
+            market={market.replace('AMM-', '')}
             panelIndex={panelIndex}
             setPanelIndex={setPanelIndex}
           />
@@ -243,5 +236,5 @@ export const ModalCoinPairPanel = () => {
         )}
       </BoxLinear>
     </MuiModal>
-  );
-};
+  )
+}

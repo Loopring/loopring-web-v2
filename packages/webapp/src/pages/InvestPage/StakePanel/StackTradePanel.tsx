@@ -1,4 +1,4 @@
-import { confirmation, useStakeTradeJOIN, useToast } from "@loopring-web/core";
+import { confirmation, useStakeTradeJOIN, useToast } from '@loopring-web/core'
 
 import {
   Button,
@@ -8,109 +8,100 @@ import {
   ToastType,
   useSettings,
   useToggle,
-} from "@loopring-web/component-lib";
-import { Box } from "@mui/material";
-import React from "react";
-import { BackIcon, TOAST_TIME } from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-import { StyleWrapper } from "../DeFiPanel/";
-import { ErrorPage } from "@loopring-web/web-bridge/src/pages/ErrorPage";
+} from '@loopring-web/component-lib'
+import { Box } from '@mui/material'
+import React from 'react'
+import { BackIcon, TOAST_TIME } from '@loopring-web/common-resources'
+import { useTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
+import { StyleWrapper } from '../DeFiPanel/'
+import { ErrorPage } from '@loopring-web/web-bridge/src/pages/ErrorPage'
 
 export const StackTradePanel = ({
   setConfirmedLRCStakeInvestInvest,
   isJoin = true,
-  symbol = "LRC",
+  symbol = 'LRC',
 }: {
-  symbol?: string;
-  setConfirmedLRCStakeInvestInvest: (state: {show: boolean, confirmationNeeded: boolean}) => void;
-  isJoin?: boolean;
+  symbol?: string
+  setConfirmedLRCStakeInvestInvest: (state: { show: boolean; confirmationNeeded: boolean }) => void
+  isJoin?: boolean
 }) => {
   const {
     confirmation: { confirmedLRCStakeInvest },
-  } = confirmation.useConfirmation();
-  const { toggle } = useToggle();
+  } = confirmation.useConfirmation()
+  const { toggle } = useToggle()
 
-  const { toastOpen, setToastOpen, closeToast } = useToast();
-  const { t } = useTranslation();
-  const history = useHistory();
-  const { stakeWrapProps } = useStakeTradeJOIN({ setToastOpen, symbol });
+  const { toastOpen, setToastOpen, closeToast } = useToast()
+  const { t } = useTranslation()
+  const history = useHistory()
+  const { stakeWrapProps } = useStakeTradeJOIN({ setToastOpen, symbol })
 
-  const { isMobile } = useSettings();
+  const { isMobile } = useSettings()
 
-  const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
   React.useEffect(() => {
-    setConfirmedLRCStakeInvestInvest({show: !confirmedLRCStakeInvest, confirmationNeeded: true} );
-  }, []);
+    setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
+  }, [])
   return (
     <>
       <Toast
-        alertText={toastOpen?.content ?? ""}
+        alertText={toastOpen?.content ?? ''}
         severity={toastOpen?.type ?? ToastType.success}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
       />
       {toggle?.LRCStackInvest.enable ? (
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          flex={1}
-          marginBottom={2}
-        >
+        <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
           <Box
             marginBottom={2}
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={isMobile ? "left" : "center"}
-            flexDirection={isMobile ? "column" : "row"}
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={isMobile ? 'left' : 'center'}
+            flexDirection={isMobile ? 'column' : 'row'}
           >
             <Button
-              startIcon={<BackIcon fontSize={"small"} />}
-              variant={"text"}
-              size={"medium"}
+              startIcon={<BackIcon fontSize={'small'} />}
+              variant={'text'}
+              size={'medium'}
               sx={
                 isMobile
                   ? {
-                      color: "var(--color-text-secondary)",
-                      justifyContent: "left",
+                      color: 'var(--color-text-secondary)',
+                      justifyContent: 'left',
                     }
-                  : { color: "var(--color-text-secondary)" }
+                  : { color: 'var(--color-text-secondary)' }
               }
-              color={"inherit"}
-              onClick={() => history.push("/invest/overview")}
+              color={'inherit'}
+              onClick={() => history.push('/invest/overview')}
             >
-              {t("labelInvestLRCStakingTitle")}
+              {t('labelInvestLRCStakingTitle')}
             </Button>
             <Button
-              variant={"outlined"}
-              size={"medium"}
-              onClick={() => history.push("/invest/balance/sideStake")}
-              sx={{ color: "var(--color-text-secondary)" }}
+              variant={'outlined'}
+              size={'medium'}
+              onClick={() => history.push('/invest/balance/sideStake')}
+              sx={{ color: 'var(--color-text-secondary)' }}
             >
-              {t("labelMyInvestLRCStaking")}
+              {t('labelMyInvestLRCStaking')}
             </Button>
           </Box>
           <StyleWrapper
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'center'}
+            alignItems={'center'}
             flex={1}
           >
             {stakeWrapProps.deFiSideCalcData ? (
               <Box
-                className={"hasLinerBg"}
-                display={"flex"}
+                className={'hasLinerBg'}
+                display={'flex'}
                 style={styles}
-                justifyContent={"center"}
+                justifyContent={'center'}
                 padding={5 / 2}
               >
-                <DeFiSideWrap
-                  isJoin={isJoin}
-                  symbol={"LRC"}
-                  {...(stakeWrapProps as any)}
-                />
+                <DeFiSideWrap isJoin={isJoin} symbol={'LRC'} {...(stakeWrapProps as any)} />
               </Box>
             ) : (
               <LoadingBlock />
@@ -118,8 +109,8 @@ export const StackTradePanel = ({
           </StyleWrapper>
         </Box>
       ) : (
-        <ErrorPage messageKey={"errorBase"} />
+        <ErrorPage messageKey={'errorBase'} />
       )}
     </>
-  );
-};
+  )
+}

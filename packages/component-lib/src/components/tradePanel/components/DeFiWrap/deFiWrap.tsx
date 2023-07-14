@@ -223,9 +223,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       tokenBuy.precision,
       tokenBuy.precision,
       false,
-      { floor: true }
-    )} ${tokenBuy.symbol}`;
-  const {setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup()
+      { floor: true },
+    )} ${tokenBuy.symbol}`
+  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup } = usePopup()
 
   return (
     <Grid

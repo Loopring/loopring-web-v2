@@ -1,4 +1,4 @@
 export enum TableType {
-    filter = 'filter',
-    page = 'page'
+  filter = 'filter',
+  page = 'page',
 }

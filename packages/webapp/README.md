@@ -25,9 +25,11 @@ cd ./packages/webapp
 npm run dev
 
 
-``` 
+```
+
 ## 📚 Loopring UI component StoryBook
-```bash 
+
+```bash
 
 cd ./packages/component-lib
 npm run storybook
@@ -40,6 +42,7 @@ npm run storybook
 ## 👉 [What is Loopring?](https://loopring.org/#/)
 
 ## 🫂 Community
+
 - [Loopring Website](https://loopring.org/)
 - [Loopring Exchange](https://loopring.io/#/layer2)
 - [Loopring Reddit](https://www.reddit.com/r/loopringorg/)
@@ -47,19 +50,19 @@ npm run storybook
 - [Loopring Twitter](https://twitter.com/loopringorg)
 - [Loopring Telegram](https://t.me/loopring_en)
 
-
 ## 👺 For Developer
+
 - We appreciate any improvements or initiatives for Loopring Layer2 website, please view the source code in `./packages/component-lib`.
 - The project contains a separate lib "web3-provider", which is a third-party ETH web3 wallet provider service (wallectConnect & metamask),
 - You are welcome to reuse it or integrate your provider service with our website.
 - Feel free to leave suggestions or ideas.
 
 ### 📒 API & Dependency
+
 - [Web3-Provider](https://www.npmjs.com/package/@loopring-web/web3-provider)
 - [Loopring-sdk](https://www.npmjs.com/package/@loopring-web/loopring-sdk)
 - [Python](https://github.com/Loopring/hello_loopring)
 - [APIs](https://docs.loopring.io/en/)
-
 
 ## 🙋 Protocol & Architecture
 
@@ -74,5 +77,5 @@ npm run storybook
 - [Protocol Audit](https://loopring.org/resources/loopring1.0_audit.pdf)
 
 ## Release Process
-alpha.loopring.io, beta.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.
 
+alpha.loopring.io, beta.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.

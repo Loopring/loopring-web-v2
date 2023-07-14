@@ -1,2 +1,2 @@
-export * from "./QRCode";
-export * from "./Interface";
+export * from './QRCode'
+export * from './Interface'

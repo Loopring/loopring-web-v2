@@ -133,7 +133,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     showLoading: showLeverageETHLoading,
     getLeverageETHTxList,
     leverageETHTotal,
-  } = useGetLeverageETHRecord(setToastOpen);
+  } = useGetLeverageETHRecord(setToastOpen)
 
   const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
   const { etherscanBaseUrl } = useSystem()

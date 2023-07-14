@@ -1,6 +1,6 @@
-import { MuToggleButtonGroupStyle } from "../../../basic-lib";
-import { ToggleButton } from "@mui/material";
-import { FeeInfo } from "@loopring-web/common-resources";
+import { MuToggleButtonGroupStyle } from '../../../basic-lib'
+import { ToggleButton } from '@mui/material'
+import { FeeInfo } from '@loopring-web/common-resources'
 
 export const FeeToggle = <C extends FeeInfo>({
   chargeFeeTokenList,
@@ -8,20 +8,18 @@ export const FeeToggle = <C extends FeeInfo>({
   feeInfo,
   disableNoToken = false,
 }: {
-  chargeFeeTokenList: Array<C>;
-  handleToggleChange: (value: C) => void;
-  feeInfo: C;
-  disableNoToken?: boolean;
+  chargeFeeTokenList: Array<C>
+  handleToggleChange: (value: C) => void
+  feeInfo: C
+  disableNoToken?: boolean
 }) => {
   return (
     <MuToggleButtonGroupStyle
-      size={"small"}
-      value={chargeFeeTokenList.findIndex(
-        (ele) => feeInfo?.belong === ele.belong
-      )}
+      size={'small'}
+      value={chargeFeeTokenList.findIndex((ele) => feeInfo?.belong === ele.belong)}
       exclusive
       onChange={(_e, value: number) => {
-        handleToggleChange(chargeFeeTokenList[value]);
+        handleToggleChange(chargeFeeTokenList[value])
       }}
     >
       {chargeFeeTokenList?.map((feeInfo, index) => (
@@ -35,5 +33,5 @@ export const FeeToggle = <C extends FeeInfo>({
         </ToggleButton>
       ))}
     </MuToggleButtonGroupStyle>
-  );
-};
+  )
+}

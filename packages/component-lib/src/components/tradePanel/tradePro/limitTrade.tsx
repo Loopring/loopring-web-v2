@@ -1,6 +1,6 @@
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { BtnPercentage, InputCoin, InputSize } from "../../basic-lib";
-import { LimitTradeData, TradeLimitProps } from "../Interface";
+import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { BtnPercentage, InputCoin, InputSize } from '../../basic-lib'
+import { LimitTradeData, TradeLimitProps } from '../Interface'
 import {
   CheckBoxIcon,
   CheckedIcon,
@@ -14,26 +14,26 @@ import {
   TradeBtnStatus,
   TradeCalcProData,
   TradeProType,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   Box,
   Checkbox,
   FormControlLabel as MuiFormControlLabel,
   Tab,
   Typography,
-} from "@mui/material";
-import { TabsStyle } from "../components/Styled";
-import { useCommon } from "./hookCommon";
-import { Button } from "./../../index";
-import React from "react";
-import { useSettings } from "../../../stores";
+} from '@mui/material'
+import { TabsStyle } from '../components/Styled'
+import { useCommon } from './hookCommon'
+import { Button } from './../../index'
+import React from 'react'
+import { useSettings } from '../../../stores'
 
-export const LimitTrade = withTranslation("common", { withRef: true })(
+export const LimitTrade = withTranslation('common', { withRef: true })(
   <
     L extends LimitTradeData<T>,
     T extends IBData<I>,
     TCD extends TradeCalcProData<I>,
-    I = CoinKey<any>
+    I = CoinKey<any>,
   >({
     tradeData = { type: TradeProType.sell } as L,
     ...props
@@ -47,9 +47,9 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
       tokenPriceProps,
       handleSubmitEvent,
       onChangeEvent,
-    } = props;
-    const { currency } = useSettings();
-    const priceRef = React.useRef();
+    } = props
+    const { currency } = useSettings()
+    const priceRef = React.useRef()
     const {
       quoteRef,
       baseRef,
@@ -65,71 +65,62 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
       onPercentage,
       selectedPercentage,
     } = useCommon({
-      type: "limit",
+      type: 'limit',
       ...(props as any),
       tradeData,
       tradeType,
       onChangeEvent,
-      i18nKey: tradeLimitI18nKey ? tradeLimitI18nKey : "labelProLimitBtn",
+      i18nKey: tradeLimitI18nKey ? tradeLimitI18nKey : 'labelProLimitBtn',
       tradeBtnBaseStatus: tradeLimitBtnStatus,
-    });
+    })
     const propsPrice = React.useMemo(() => {
       return {
-        label: t("labelProPrice"),
+        label: t('labelProPrice'),
         subLabel: `\u2248 ${PriceTag[CurrencyToTag[currency]]}`,
-        emptyText: t("tokenSelectToken"),
-        placeholderText: "0.00",
+        emptyText: t('tokenSelectToken'),
+        placeholderText: '0.00',
         size: InputSize.small,
         order: '"right"' as any,
         coinPrecision: 2,
-        coinLabelStyle: { color: "var(--color-text-secondary)" },
+        coinLabelStyle: { color: 'var(--color-text-secondary)' },
         isShowCoinIcon: false,
         ...tokenPriceProps,
         handleCountChange,
         maxAllow: false,
         t,
-      };
-    }, [tradeType, TradeProType, tokenPriceProps, handleCountChange]);
+      }
+    }, [tradeType, TradeProType, tokenPriceProps, handleCountChange])
 
     return (
-      <Box
-        flex={1}
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"stretch"}
-      >
+      <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
         <Box
-          className={"tool-bar"}
+          className={'tool-bar'}
           paddingX={2}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
         >
-          <Box component={"header"} width={"100%"}>
+          <Box component={'header'} width={'100%'}>
             <TabsStyle
-              className={"trade-tabs pro-tabs"}
-              variant={"fullWidth"}
+              className={'trade-tabs pro-tabs'}
+              variant={'fullWidth'}
               value={tradeType}
               onChange={(_e, index) => _handleChangeIndex(index)}
             >
+              <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')} />
               <Tab
-                className={"trade-tab-buy"}
-                value={TradeProType.buy}
-                label={t("labelProBuy")}
-              />
-              <Tab
-                className={"trade-tab-sell"}
+                className={'trade-tab-sell'}
                 value={TradeProType.sell}
-                label={t("labelProSell")}
+                label={t('labelProSell')}
               />
             </TabsStyle>
           </Box>
         </Box>
-        <Box className={"trade-panel"} paddingX={2} paddingTop={2}>
+        <Box className={'trade-panel'} paddingX={2} paddingTop={2}>
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={priceRef as any}
-              name={"price"}
+              name={'price'}
               disabled={false}
               {...({
                 ...propsPrice,
@@ -148,7 +139,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={baseRef as any}
-              name={"base"}
+              name={'base'}
               disabled={getDisabled()}
               {...{
                 ...propsBase,
@@ -165,34 +156,34 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
               }}
             />
           </Box>
-          <Box alignSelf={"center"} paddingTop={4} paddingX={1}>
+          <Box alignSelf={'center'} paddingTop={4} paddingX={1}>
             <BtnPercentage
               step={1}
               // valuetext={(value)=>`${value}%`}
               getAriaLabel={(value) => `${value}%`}
               valueLabelFormat={(value) => `${value}%`}
-              valueLabelDisplay={"on"}
+              valueLabelDisplay={'on'}
               selected={selectedPercentage}
               anchors={[
                 {
                   value: 0,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 25,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 50,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 75,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 100,
-                  label: "",
+                  label: '',
                 },
               ]}
               handleChanged={onPercentage}
@@ -201,7 +192,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={quoteRef}
-              name={"quote"}
+              name={'quote'}
               disabled={getDisabled()}
               {...{
                 ...propsQuote,
@@ -218,11 +209,11 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
             />
           </Box>
         </Box>
-        <Box className={"info-panel"} paddingX={2} paddingTop={2}></Box>
+        <Box className={'info-panel'} paddingX={2} paddingTop={2}></Box>
         {tradeCalcProData.isNotMatchMarketPrice && (
           <Box paddingX={2} paddingTop={2}>
             <MuiFormControlLabel
-              sx={{ alignItems: "flex-start" }}
+              sx={{ alignItems: 'flex-start' }}
               control={
                 <Checkbox
                   checked={tradeCalcProData?.isChecked ? true : false}
@@ -232,18 +223,18 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
                         ...tradeData,
                         isChecked: !tradeCalcProData?.isChecked,
                       },
-                      TradeBaseType.checkMarketPrice
-                    );
+                      TradeBaseType.checkMarketPrice,
+                    )
                   }}
                   checkedIcon={<CheckedIcon />}
                   icon={<CheckBoxIcon />}
-                  color="default"
+                  color='default'
                 />
               }
               label={
-                <Typography variant={"body2"}>
+                <Typography variant={'body2'}>
                   <Trans
-                    i18nKey={"labelExpectSettlementLimitPrice"}
+                    i18nKey={'labelExpectSettlementLimitPrice'}
                     interpolation={{ escapeValue: false }}
                     tOptions={{
                       symbolBase: tradeCalcProData.coinBase,
@@ -253,11 +244,10 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
                       marketRatePrice: tradeCalcProData.marketRatePrice,
                     }}
                   >
-                    The expected settlement price from this order is symbol =
-                    xxxx, while the current market price from a trusted oracle
-                    is symbol = xxx. There is a 10.45% variance observed. To
-                    proceed, tap here to confirm you understand and acknowledge
-                    the risk.
+                    The expected settlement price from this order is symbol = xxxx, while the
+                    current market price from a trusted oracle is symbol = xxx. There is a 10.45%
+                    variance observed. To proceed, tap here to confirm you understand and
+                    acknowledge the risk.
                   </Trans>
                 </Typography>
               }
@@ -267,22 +257,18 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
         <Box paddingX={2} paddingTop={2}>
           {/*{getDisabled()} {tradeBtnBaseStatus}*/}
           <Button
-            variant={"contained"}
-            size={"medium"}
-            color={tradeType === TradeProType.sell ? "error" : "success"}
+            variant={'contained'}
+            size={'medium'}
+            color={tradeType === TradeProType.sell ? 'error' : 'success'}
             loadingbg={
-              tradeType === TradeProType.sell
-                ? "var(--color-error)"
-                : "var(--color-success)"
+              tradeType === TradeProType.sell ? 'var(--color-error)' : 'var(--color-success)'
             }
             style={tradeLimitBtnStyle}
             onClick={() => {
-              handleSubmitEvent(tradeData);
+              handleSubmitEvent(tradeData)
             }}
             loading={
-              !getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING
-                ? "true"
-                : "false"
+              !getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
             }
             disabled={
               getDisabled() ||
@@ -295,13 +281,13 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
           </Button>
         </Box>
       </Box>
-    );
-  }
+    )
+  },
 ) as <
   L extends LimitTradeData<T>,
   T extends IBData<I>,
   TCD extends TradeCalcProData<I>,
-  I = CoinKey<any>
+  I = CoinKey<any>,
 >(
-  props: TradeLimitProps<L, T, TCD, I>
-) => JSX.Element;
+  props: TradeLimitProps<L, T, TCD, I>,
+) => JSX.Element

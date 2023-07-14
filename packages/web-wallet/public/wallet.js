@@ -757,277 +757,221 @@ const svgGroup = {
 </radialGradient>
 </defs>
 </svg>`,
-};
+}
 
 const resources = {
   en_US: {
     common: {
-      labelNavZkRollupLayer2: "zkRollup Layer 2",
-      labelNavWallet: "Wallet Guardian",
-      labelNavLanuch: "Launch App",
-      labelAbout: "About",
-      labelLoopringOrg: "Loopring.org",
-      labelLoopringTerms: "Terms of Service",
-      labelPrivacyPolicy: "Privacy Policy",
-      labelRiskDisclosure: "Risk Disclosure",
-      labelSupport: "Support",
-      labelSubmitARequest: "❤️ Submit a Request",
-      labelCreatorGrants: "Creator Grants",
-      labelListAToken: "List a Token",
-      labelWalletGuardian: "Wallet Guardian",
-      labelPlatform: "Platform",
-      labelFees: "Fees",
-      labelVIPProgram: "VIP Program",
-      labelReferrals: "Referrals",
-      labelDevelopers: "Developers",
-      labelSmartContracts: "Smart Contracts",
-      labelAPIs: "APIs",
-      labelLayer2Explorer: "Layer 2 Explorer",
-      labelBugBounty: "Bug Bounty",
-      labelSubgraph: "Subgraph",
-      labelFollowus: "Follow us",
-      labelEthereumUnleashed: "Ethereum Unleashed",
-      labelGatewayToEthereum:
-        "Your Gateway to Ethereum, DeFi, \n NFTs, and Financial Freedom",
-      labelIOS: "iOS",
-      labelAndroid: "Android",
-      labelGooglePlay: "Google Play",
-      labelFeature1: "Fast, Secure, and 100x \nLower Fees",
+      labelNavZkRollupLayer2: 'zkRollup Layer 2',
+      labelNavWallet: 'Wallet Guardian',
+      labelNavLanuch: 'Launch App',
+      labelAbout: 'About',
+      labelLoopringOrg: 'Loopring.org',
+      labelLoopringTerms: 'Terms of Service',
+      labelPrivacyPolicy: 'Privacy Policy',
+      labelRiskDisclosure: 'Risk Disclosure',
+      labelSupport: 'Support',
+      labelSubmitARequest: '❤️ Submit a Request',
+      labelCreatorGrants: 'Creator Grants',
+      labelListAToken: 'List a Token',
+      labelWalletGuardian: 'Wallet Guardian',
+      labelPlatform: 'Platform',
+      labelFees: 'Fees',
+      labelVIPProgram: 'VIP Program',
+      labelReferrals: 'Referrals',
+      labelDevelopers: 'Developers',
+      labelSmartContracts: 'Smart Contracts',
+      labelAPIs: 'APIs',
+      labelLayer2Explorer: 'Layer 2 Explorer',
+      labelBugBounty: 'Bug Bounty',
+      labelSubgraph: 'Subgraph',
+      labelFollowus: 'Follow us',
+      labelEthereumUnleashed: 'Ethereum Unleashed',
+      labelGatewayToEthereum: 'Your Gateway to Ethereum, DeFi, \n NFTs, and Financial Freedom',
+      labelIOS: 'iOS',
+      labelAndroid: 'Android',
+      labelGooglePlay: 'Google Play',
+      labelFeature1: 'Fast, Secure, and 100x \nLower Fees',
       labelFeatureDes1:
-        "Experience DeFi as it should be - fast and affordable. Built with zkRollups,  Loopring provides instant transactions at 100x  lower fees than Ethereum without sacrificing any of its security.",
-      labelFeature2: "Invest, Stake, and Earn",
+        'Experience DeFi as it should be - fast and affordable. Built with zkRollups,  Loopring provides instant transactions at 100x  lower fees than Ethereum without sacrificing any of its security.',
+      labelFeature2: 'Invest, Stake, and Earn',
       labelFeatureDes2:
-        "Easily earn yield on your  crypto. Your funds never leave your wallet and can be accessed at any time.",
-      labelFeature3: "Dual Investment",
+        'Easily earn yield on your  crypto. Your funds never leave your wallet and can be accessed at any time.',
+      labelFeature3: 'Dual Investment',
       labelFeatureDes3:
-        "Buy Low or Sell High. Get rewarded no matter which direction the market moves.",
-      labelFeature4: "Buy Crypto on L2",
+        'Buy Low or Sell High. Get rewarded no matter which direction the market moves.',
+      labelFeature4: 'Buy Crypto on L2',
       labelFeatureDes4:
-        "Use card, bank transfer, or Apple Pay without ever having to leave your wallet.",
-      labelFeature5: "Your Personal Vault",
+        'Use card, bank transfer, or Apple Pay without ever having to leave your wallet.',
+      labelFeature5: 'Your Personal Vault',
       labelFeatureDes5:
-        "Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You’re always in control.",
-      labelFeature6: "Manage and Display \nYour NFT Collection",
+        'Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You’re always in control.',
+      labelFeature6: 'Manage and Display \nYour NFT Collection',
       labelFeatureDes6:
-        "Immerse yourself in the world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to your favorite marketplaces.",
-      labelFeature7: "Digital Red Packets",
+        'Immerse yourself in the world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to your favorite marketplaces.',
+      labelFeature7: 'Digital Red Packets',
       labelFeatureDes7:
-        "Create memorable experiences for friends, family, and your community. Red Packets are perfect for gifts, social events, gaming rewards, airdrops, and more!",
-      labelFeatureDes8: "Loopring Wallet",
-      labelFeatureDes8_2: "Crypto exchange on the go",
-      labelCopyRight:
-        "© 2017 Loopring Technology Limited. All rights reserved.",
+        'Create memorable experiences for friends, family, and your community. Red Packets are perfect for gifts, social events, gaming rewards, airdrops, and more!',
+      labelFeatureDes8: 'Loopring Wallet',
+      labelFeatureDes8_2: 'Crypto exchange on the go',
+      labelCopyRight: '© 2017 Loopring Technology Limited. All rights reserved.',
     },
   },
   // zh_CN: {...zhCN},
-};
+}
 
 // const initLng = JSON.parse(localStorage.getItem('persist:settings') as string)?.language === `"${LanguageType.zh_CN}"` ? LanguageType.zh_CN : LanguageType.en_US
-const initLng = "en_US";
-console.log("en_US");
-const settingPersist = "persist:settings";
-(function init() {
-  let searchParam = window.location.search;
-  const searchParams = new URLSearchParams(searchParam);
-  if (searchParams.get("referralcode")) {
-    const referralcode = searchParams.get("referralcode");
-    document.getElementById("logo").innerHTML =
-      "https://loopring.io/#/?referralcode=" + referralcode;
+const initLng = 'en_US'
+console.log('en_US')
+const settingPersist = 'persist:settings'
+;(function init() {
+  let searchParam = window.location.search
+  const searchParams = new URLSearchParams(searchParam)
+  if (searchParams.get('referralcode')) {
+    const referralcode = searchParams.get('referralcode')
+    document.getElementById('logo').innerHTML =
+      'https://loopring.io/#/?referralcode=' + referralcode
     // let settings = JSON.parse(localStorage.getItem(settingPersist) ?? "{}");
   }
-  let themeMode = "dark";
+  let themeMode = 'dark'
   if (settings.themeMode && JSON.parse(settings.themeMode)) {
-    themeMode = JSON.parse(settings.themeMode);
+    themeMode = JSON.parse(settings.themeMode)
   }
-  const onColorChange = (value = "dark", _this) => {
-    settings.themeMode = JSON.stringify(value);
-    window.localStorage.setItem(settingPersist, JSON.stringify(settings));
-    let link = document.getElementById("themeModeCss");
-    link.setAttribute(
-      "href",
-      value !== "light" ? "./wallet_dark.css" : "./wallet_light.css"
-    );
+  const onColorChange = (value = 'dark', _this) => {
+    settings.themeMode = JSON.stringify(value)
+    window.localStorage.setItem(settingPersist, JSON.stringify(settings))
+    let link = document.getElementById('themeModeCss')
+    link.setAttribute('href', value !== 'light' ? './wallet_dark.css' : './wallet_light.css')
     if (_this) {
-      _this.setAttribute("value", value);
+      _this.setAttribute('value', value)
     }
-  };
-  const onColorChangeLoaded = (value = "dark") => {
-    const basicUrl = "https://static.loopring.io/assets/images/landPage/";
-    const imageEnd = value !== "light" ? ".png" : "_light" + ".png";
+  }
+  const onColorChangeLoaded = (value = 'dark') => {
+    const basicUrl = 'https://static.loopring.io/assets/images/landPage/'
+    const imageEnd = value !== 'light' ? '.png' : '_light' + '.png'
     document
-      .getElementById("imageChang1")
-      .setAttribute("src", basicUrl + "wallet_banner1" + imageEnd);
+      .getElementById('imageChang1')
+      .setAttribute('src', basicUrl + 'wallet_banner1' + imageEnd)
     document
-      .getElementById("imageChang2")
-      .setAttribute("src", basicUrl + "wallet_banner2" + imageEnd);
+      .getElementById('imageChang2')
+      .setAttribute('src', basicUrl + 'wallet_banner2' + imageEnd)
     document
-      .getElementById("imageChang3")
-      .setAttribute("src", basicUrl + "wallet_banner3" + imageEnd);
+      .getElementById('imageChang3')
+      .setAttribute('src', basicUrl + 'wallet_banner3' + imageEnd)
     // document
     //   .getElementById("imageChang4")
     //   .setAttribute("src", basicUrl + "wallet_banner3" + imageEnd);
     document
-      .getElementById("imageSection1")
-      .setAttribute("src", basicUrl + "wallet_section1" + imageEnd);
+      .getElementById('imageSection1')
+      .setAttribute('src', basicUrl + 'wallet_section1' + imageEnd)
     document
-      .getElementById("imageSection2")
-      .setAttribute("src", basicUrl + "wallet_section2" + imageEnd);
+      .getElementById('imageSection2')
+      .setAttribute('src', basicUrl + 'wallet_section2' + imageEnd)
     document
-      .getElementById("imageSection3")
-      .setAttribute("src", basicUrl + "wallet_section3" + imageEnd);
+      .getElementById('imageSection3')
+      .setAttribute('src', basicUrl + 'wallet_section3' + imageEnd)
     document
-      .getElementById("imageSection4")
-      .setAttribute("src", basicUrl + "wallet_section4" + imageEnd);
+      .getElementById('imageSection4')
+      .setAttribute('src', basicUrl + 'wallet_section4' + imageEnd)
     document
-      .getElementById("imageSection5")
-      .setAttribute("src", basicUrl + "wallet_section5" + imageEnd);
+      .getElementById('imageSection5')
+      .setAttribute('src', basicUrl + 'wallet_section5' + imageEnd)
     document
-      .getElementById("imageSection6")
-      .setAttribute("src", basicUrl + "wallet_section6" + imageEnd);
+      .getElementById('imageSection6')
+      .setAttribute('src', basicUrl + 'wallet_section6' + imageEnd)
     document
-      .getElementById("imageSection7" + "")
-      .setAttribute("src", basicUrl + "wallet_section7" + imageEnd);
-    document.getElementById("bgContent").innerHTML =
-      value !== "light"
+      .getElementById('imageSection7' + '')
+      .setAttribute('src', basicUrl + 'wallet_section7' + imageEnd)
+    document.getElementById('bgContent').innerHTML =
+      value !== 'light'
         ? svgGroup.blackSvg + svgGroup.darkSvgBG
-        : svgGroup.lightSvg + svgGroup.lightSvgBG;
-    document.getElementById("changeColor").innerHTML =
-      value !== "light" ? svgGroup.DarkIcon : svgGroup.LightIcon;
-    document
-      .getElementById("changeColor")
-      .setAttribute("data-theme", themeMode);
-  };
+        : svgGroup.lightSvg + svgGroup.lightSvgBG
+    document.getElementById('changeColor').innerHTML =
+      value !== 'light' ? svgGroup.DarkIcon : svgGroup.LightIcon
+    document.getElementById('changeColor').setAttribute('data-theme', themeMode)
+  }
 
-  onColorChange(themeMode !== "dark" ? "light" : "dark");
+  onColorChange(themeMode !== 'dark' ? 'light' : 'dark')
   window.onGlobalChange = () => {
-    themeMode = themeMode !== "dark" ? "dark" : "light";
-    onColorChange(themeMode);
-    onColorChangeLoaded(themeMode);
-  };
+    themeMode = themeMode !== 'dark' ? 'dark' : 'light'
+    onColorChange(themeMode)
+    onColorChangeLoaded(themeMode)
+  }
   // Language now english only
   const onlanguagechange = (value) => {
-    let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {});
-    settings.language = value;
-    window.localStorage.setItem(settingPersist, JSON.stringify(settings));
-    i18next.changeLanguage("en_US");
-  };
+    let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {})
+    settings.language = value
+    window.localStorage.setItem(settingPersist, JSON.stringify(settings))
+    i18next.changeLanguage('en_US')
+  }
   const updateI18n = () => {
-    document.getElementById("labelNavZkRollupLayer2").innerHTML = i18next.t(
-      "labelNavZkRollupLayer2"
-    );
-    document.getElementById("labelNavWallet").innerHTML =
-      i18next.t("labelNavWallet");
-    document.getElementById("labelNavLanuch").innerHTML =
-      i18next.t("labelNavLanuch");
-    document.getElementById("labelAbout").innerHTML = i18next.t("labelAbout");
-    document.getElementById("labelLoopringOrg").innerHTML =
-      i18next.t("labelLoopringOrg");
-    document.getElementById("labelLoopringTerms").innerHTML =
-      i18next.t("labelLoopringTerms");
-    document.getElementById("labelPrivacyPolicy").innerHTML =
-      i18next.t("labelPrivacyPolicy");
-    document.getElementById("labelRiskDisclosure").innerHTML = i18next.t(
-      "labelRiskDisclosure"
-    );
-    document.getElementById("labelSupport").innerHTML =
-      i18next.t("labelSupport");
-    document.getElementById("labelSubmitARequest").innerHTML = i18next.t(
-      "labelSubmitARequest"
-    );
-    document.getElementById("labelCreatorGrants").innerHTML =
-      i18next.t("labelCreatorGrants");
-    document.getElementById("labelListAToken").innerHTML =
-      i18next.t("labelListAToken");
-    document.getElementById("labelWalletGuardian").innerHTML = i18next.t(
-      "labelWalletGuardian"
-    );
-    document.getElementById("labelPlatform").innerHTML =
-      i18next.t("labelPlatform");
-    document.getElementById("labelFees").innerHTML = i18next.t("labelFees");
-    document.getElementById("labelVIPProgram").innerHTML =
-      i18next.t("labelVIPProgram");
-    document.getElementById("labelReferrals").innerHTML =
-      i18next.t("labelReferrals");
-    document.getElementById("labelDevelopers").innerHTML =
-      i18next.t("labelDevelopers");
-    document.getElementById("labelSmartContracts").innerHTML = i18next.t(
-      "labelSmartContracts"
-    );
-    document.getElementById("labelAPIs").innerHTML = i18next.t("labelAPIs");
-    document.getElementById("labelLayer2Explorer").innerHTML = i18next.t(
-      "labelLayer2Explorer"
-    );
-    document.getElementById("labelBugBounty").innerHTML =
-      i18next.t("labelBugBounty");
-    document.getElementById("labelSubgraph").innerHTML =
-      i18next.t("labelSubgraph");
-    document.getElementById("labelFollowus").innerHTML =
-      i18next.t("labelFollowus");
-    document.getElementById("labelEthereumUnleashed").innerHTML = i18next.t(
-      "labelEthereumUnleashed"
-    );
-    document.getElementById("labelGatewayToEthereum").innerHTML = i18next.t(
-      "labelGatewayToEthereum"
-    );
-    document.getElementById("labelIOS").innerHTML = i18next.t("labelIOS");
-    document.getElementById("labelAndroid").innerHTML =
-      i18next.t("labelAndroid");
-    document.getElementById("labelGooglePlay").innerHTML =
-      i18next.t("labelGooglePlay");
-    document.getElementById("labelIOS2").innerHTML = i18next.t("labelIOS");
-    document.getElementById("labelAndroid2").innerHTML =
-      i18next.t("labelAndroid");
-    document.getElementById("labelGooglePlay2").innerHTML =
-      i18next.t("labelGooglePlay");
-    document.getElementById("labelFeature1").innerHTML =
-      i18next.t("labelFeature1");
-    document.getElementById("labelFeatureDes1").innerHTML =
-      i18next.t("labelFeatureDes1");
-    document.getElementById("labelFeature2").innerHTML =
-      i18next.t("labelFeature2");
-    document.getElementById("labelFeatureDes2").innerHTML =
-      i18next.t("labelFeatureDes2");
-    document.getElementById("labelFeature3").innerHTML =
-      i18next.t("labelFeature3");
-    document.getElementById("labelFeatureDes3").innerHTML =
-      i18next.t("labelFeatureDes3");
-    document.getElementById("labelFeature4").innerHTML =
-      i18next.t("labelFeature4");
-    document.getElementById("labelFeatureDes4").innerHTML =
-      i18next.t("labelFeatureDes4");
-    document.getElementById("labelFeature5").innerHTML =
-      i18next.t("labelFeature5");
-    document.getElementById("labelFeatureDes5").innerHTML =
-      i18next.t("labelFeatureDes5");
-    document.getElementById("labelFeature6").innerHTML =
-      i18next.t("labelFeature6");
-    document.getElementById("labelFeatureDes6").innerHTML =
-      i18next.t("labelFeatureDes6");
-    document.getElementById("labelFeature7").innerHTML =
-      i18next.t("labelFeature7");
-    document.getElementById("labelFeatureDes7").innerHTML =
-      i18next.t("labelFeatureDes7");
-    document.getElementById("labelFeatureDes8").innerHTML =
-      i18next.t("labelFeatureDes8");
-    document.getElementById("labelFeatureDes8_2").innerHTML =
-      i18next.t("labelFeatureDes8_2");
-    document.getElementById("labelCopyRight").innerHTML =
-      i18next.t("labelCopyRight");
-  };
+    document.getElementById('labelNavZkRollupLayer2').innerHTML =
+      i18next.t('labelNavZkRollupLayer2')
+    document.getElementById('labelNavWallet').innerHTML = i18next.t('labelNavWallet')
+    document.getElementById('labelNavLanuch').innerHTML = i18next.t('labelNavLanuch')
+    document.getElementById('labelAbout').innerHTML = i18next.t('labelAbout')
+    document.getElementById('labelLoopringOrg').innerHTML = i18next.t('labelLoopringOrg')
+    document.getElementById('labelLoopringTerms').innerHTML = i18next.t('labelLoopringTerms')
+    document.getElementById('labelPrivacyPolicy').innerHTML = i18next.t('labelPrivacyPolicy')
+    document.getElementById('labelRiskDisclosure').innerHTML = i18next.t('labelRiskDisclosure')
+    document.getElementById('labelSupport').innerHTML = i18next.t('labelSupport')
+    document.getElementById('labelSubmitARequest').innerHTML = i18next.t('labelSubmitARequest')
+    document.getElementById('labelCreatorGrants').innerHTML = i18next.t('labelCreatorGrants')
+    document.getElementById('labelListAToken').innerHTML = i18next.t('labelListAToken')
+    document.getElementById('labelWalletGuardian').innerHTML = i18next.t('labelWalletGuardian')
+    document.getElementById('labelPlatform').innerHTML = i18next.t('labelPlatform')
+    document.getElementById('labelFees').innerHTML = i18next.t('labelFees')
+    document.getElementById('labelVIPProgram').innerHTML = i18next.t('labelVIPProgram')
+    document.getElementById('labelReferrals').innerHTML = i18next.t('labelReferrals')
+    document.getElementById('labelDevelopers').innerHTML = i18next.t('labelDevelopers')
+    document.getElementById('labelSmartContracts').innerHTML = i18next.t('labelSmartContracts')
+    document.getElementById('labelAPIs').innerHTML = i18next.t('labelAPIs')
+    document.getElementById('labelLayer2Explorer').innerHTML = i18next.t('labelLayer2Explorer')
+    document.getElementById('labelBugBounty').innerHTML = i18next.t('labelBugBounty')
+    document.getElementById('labelSubgraph').innerHTML = i18next.t('labelSubgraph')
+    document.getElementById('labelFollowus').innerHTML = i18next.t('labelFollowus')
+    document.getElementById('labelEthereumUnleashed').innerHTML =
+      i18next.t('labelEthereumUnleashed')
+    document.getElementById('labelGatewayToEthereum').innerHTML =
+      i18next.t('labelGatewayToEthereum')
+    document.getElementById('labelIOS').innerHTML = i18next.t('labelIOS')
+    document.getElementById('labelAndroid').innerHTML = i18next.t('labelAndroid')
+    document.getElementById('labelGooglePlay').innerHTML = i18next.t('labelGooglePlay')
+    document.getElementById('labelIOS2').innerHTML = i18next.t('labelIOS')
+    document.getElementById('labelAndroid2').innerHTML = i18next.t('labelAndroid')
+    document.getElementById('labelGooglePlay2').innerHTML = i18next.t('labelGooglePlay')
+    document.getElementById('labelFeature1').innerHTML = i18next.t('labelFeature1')
+    document.getElementById('labelFeatureDes1').innerHTML = i18next.t('labelFeatureDes1')
+    document.getElementById('labelFeature2').innerHTML = i18next.t('labelFeature2')
+    document.getElementById('labelFeatureDes2').innerHTML = i18next.t('labelFeatureDes2')
+    document.getElementById('labelFeature3').innerHTML = i18next.t('labelFeature3')
+    document.getElementById('labelFeatureDes3').innerHTML = i18next.t('labelFeatureDes3')
+    document.getElementById('labelFeature4').innerHTML = i18next.t('labelFeature4')
+    document.getElementById('labelFeatureDes4').innerHTML = i18next.t('labelFeatureDes4')
+    document.getElementById('labelFeature5').innerHTML = i18next.t('labelFeature5')
+    document.getElementById('labelFeatureDes5').innerHTML = i18next.t('labelFeatureDes5')
+    document.getElementById('labelFeature6').innerHTML = i18next.t('labelFeature6')
+    document.getElementById('labelFeatureDes6').innerHTML = i18next.t('labelFeatureDes6')
+    document.getElementById('labelFeature7').innerHTML = i18next.t('labelFeature7')
+    document.getElementById('labelFeatureDes7').innerHTML = i18next.t('labelFeatureDes7')
+    document.getElementById('labelFeatureDes8').innerHTML = i18next.t('labelFeatureDes8')
+    document.getElementById('labelFeatureDes8_2').innerHTML = i18next.t('labelFeatureDes8_2')
+    document.getElementById('labelCopyRight').innerHTML = i18next.t('labelCopyRight')
+  }
 
   const upLoadSvg = () => {
-    document.getElementById("logSvg").innerHTML = svgGroup.logSvg;
-    document.getElementById("iconIos").innerHTML = svgGroup.ios;
-    document.getElementById("iconAndroid").innerHTML = svgGroup.android;
-    document.getElementById("iconGooglePlay").innerHTML = svgGroup.googlePlay;
-    document.getElementById("iconIos2").innerHTML = svgGroup.ios;
-    document.getElementById("iconAndroid2").innerHTML = svgGroup.android;
-    document.getElementById("iconGooglePlay2").innerHTML = svgGroup.googlePlay;
-    document.getElementById("youtubeIcon").innerHTML = svgGroup.youtubeIcon;
-    document.getElementById("twitterIcon").innerHTML = svgGroup.twitterIcon;
-    document.getElementById("mediumIcon").innerHTML = svgGroup.mediumIcon;
-    document.getElementById("discordIcon").innerHTML = svgGroup.discordIcon;
-  };
+    document.getElementById('logSvg').innerHTML = svgGroup.logSvg
+    document.getElementById('iconIos').innerHTML = svgGroup.ios
+    document.getElementById('iconAndroid').innerHTML = svgGroup.android
+    document.getElementById('iconGooglePlay').innerHTML = svgGroup.googlePlay
+    document.getElementById('iconIos2').innerHTML = svgGroup.ios
+    document.getElementById('iconAndroid2').innerHTML = svgGroup.android
+    document.getElementById('iconGooglePlay2').innerHTML = svgGroup.googlePlay
+    document.getElementById('youtubeIcon').innerHTML = svgGroup.youtubeIcon
+    document.getElementById('twitterIcon').innerHTML = svgGroup.twitterIcon
+    document.getElementById('mediumIcon').innerHTML = svgGroup.mediumIcon
+    document.getElementById('discordIcon').innerHTML = svgGroup.discordIcon
+  }
 
   window.onload = () => {
     i18next
@@ -1037,11 +981,11 @@ const settingPersist = "persist:settings";
         {
           resources,
           debug: false,
-          ns: ["common"],
-          defaultNS: "common",
+          ns: ['common'],
+          defaultNS: 'common',
           lng: initLng,
           fallbackLng: initLng,
-          keySeparator: ".", // we do not use keys in form messages.welcome
+          keySeparator: '.', // we do not use keys in form messages.welcome
           interpolation: {
             escapeValue: true, // react already safes from xss
             formatSeparator: `, `,
@@ -1049,49 +993,49 @@ const settingPersist = "persist:settings";
         },
         function (err, t) {
           // init set content
-          updateI18n();
-        }
-      );
-    var i18nLng = window.localStorage.getItem("lng");
+          updateI18n()
+        },
+      )
+    var i18nLng = window.localStorage.getItem('lng')
     if (!i18nLng) {
-      i18nLng = "en";
+      i18nLng = 'en'
     }
-    upLoadSvg();
-    onlanguagechange(i18nLng);
-    onColorChangeLoaded(themeMode);
+    upLoadSvg()
+    onlanguagechange(i18nLng)
+    onColorChangeLoaded(themeMode)
 
     const handleScroll = () => {
-      const imgs = document.getElementsByClassName("scroll-up-img");
+      const imgs = document.getElementsByClassName('scroll-up-img')
       for (let index = 0; index < imgs.length; index++) {
-        const img = imgs.item(index);
+        const img = imgs.item(index)
         if (img.getBoundingClientRect().top < window.innerHeight) {
-          img.style.opacity = 1;
-          img.style.transform = "translateY(0)";
+          img.style.opacity = 1
+          img.style.transform = 'translateY(0)'
         }
       }
-    };
+    }
     setTimeout(() => {
-      handleScroll();
-    }, 50);
+      handleScroll()
+    }, 50)
 
-    window.addEventListener("scroll", handleScroll);
-    let clear = -1;
-    var options = document.getElementsByName("slider"); //.options;
+    window.addEventListener('scroll', handleScroll)
+    let clear = -1
+    var options = document.getElementsByName('slider') //.options;
 
     function loopScroll() {
       if (clear !== -1) {
-        clearTimeout(clear);
+        clearTimeout(clear)
       }
-      let i = [].slice.call(options).findIndex((item) => item.checked == true);
-      let next = i + 1;
-      options[options.length - next > 0 ? next : 0].checked = true;
+      let i = [].slice.call(options).findIndex((item) => item.checked == true)
+      let next = i + 1
+      options[options.length - next > 0 ? next : 0].checked = true
       clear = setTimeout(() => {
         if (window.innerWidth < 768) {
-          loopScroll();
+          loopScroll()
         }
-      }, 3000);
+      }, 3000)
     }
 
-    loopScroll();
-  };
-})();
+    loopScroll()
+  }
+})()

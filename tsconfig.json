@@ -9,13 +9,6 @@
       "@loopring-web/web-bridge/*": ["./packages/web-bridge/src/*"]
     }
   },
-  "include": [
-    "**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "../*.stories.*",
-    "docs"
-  ]
+  "include": ["**/*"],
+  "exclude": ["node_modules", "dist", "../*.stories.*", "docs"]
 }

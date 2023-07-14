@@ -1,2 +1,2 @@
-export * from "./DualTable";
-export * from "./Interface";
+export * from './DualTable'
+export * from './Interface'

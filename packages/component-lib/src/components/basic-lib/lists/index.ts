@@ -1,16 +1,11 @@
-import {
-  IconButton,
-  MenuItem as MuiMenuItem,
-  Select,
-  SelectProps,
-} from "@mui/material";
-import styled from "@emotion/styled";
-import { MuiMenuItemProps } from "./Interface";
-import React from "react";
+import { IconButton, MenuItem as MuiMenuItem, Select, SelectProps } from '@mui/material'
+import styled from '@emotion/styled'
+import { MuiMenuItemProps } from './Interface'
+import React from 'react'
 
 export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
   ${({ withnocheckicon }) => {
-    return withnocheckicon === "true"
+    return withnocheckicon === 'true'
       ? `        
         &.Mui-selected, &.Mui-selected.Mui-focusVisible {
             color: var(--color-text-primary);
@@ -19,9 +14,9 @@ export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
             }
         }
      `
-      : "";
+      : ''
   }}
-` as React.ComponentType<MuiMenuItemProps>;
+` as React.ComponentType<MuiMenuItemProps>
 
 export const OutlineSelect = styled(Select)`
   //padding: 0;
@@ -40,7 +35,7 @@ export const OutlineSelect = styled(Select)`
     }
 
     &:before {
-      content: "";
+      content: '';
       display: none;
       pointer-events: none;
     }
@@ -63,7 +58,7 @@ export const OutlineSelect = styled(Select)`
     border: 0;
     pointer-events: none;
   }
-` as React.ComponentType<SelectProps>;
+` as React.ComponentType<SelectProps>
 
 export const OutlineSelectItem = styled(MenuItem)<any>`
   &.MuiSelect-root {
@@ -77,28 +72,27 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
 
   &.Mui-selected,
   &.Mui-selected.Mui-focusVisible {
-    padding: ${({ theme }) =>
-      `${theme.unit * 1} ${theme.unit * 1} 0 ${theme.unit * 1} `};
+    padding: ${({ theme }) => `${theme.unit * 1} ${theme.unit * 1} 0 ${theme.unit * 1} `};
     padding-right: ${({ theme }) => `${theme.unit * 2}`};
 
     &:after {
-      content: "";
+      content: '';
     }
   }
-` as typeof MenuItem;
+` as typeof MenuItem
 export const IconButtonStyle = styled(IconButton)`
   background-color: var(--color-box-nft-btn);
   margin: 0 ${({ theme }) => theme.unit / 2}px;
-  ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
-}`;
+  ${({ theme }) => theme.border.defaultFrame({ c_key: 'transparent' })};
+}`
 
-export * from "./FileListItem";
-export * from "./HeadMenuItem";
-export * from "./Interface";
-export * from "./CoinList";
-export * from "./HeadToolbar";
-export * from "./SubMenuList";
-export * from "./Notification";
-export * from "./CollectionItem";
-export * from "./NFTList";
+export * from './FileListItem'
+export * from './HeadMenuItem'
+export * from './Interface'
+export * from './CoinList'
+export * from './HeadToolbar'
+export * from './SubMenuList'
+export * from './Notification'
+export * from './CollectionItem'
+export * from './NFTList'
 // export * from './SimpleSelectItem'

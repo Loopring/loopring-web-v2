@@ -1,16 +1,16 @@
-import { DepositGroupProps, DepositPanelType } from "./Interface";
-import { IBData } from "@loopring-web/common-resources";
-import { PanelContent } from "../../basic-lib";
-import { DepositPanel } from "../../modal/ModalPanels/DepositPanel";
-import { VendorMenu } from "./VendorMenu";
-import { Box, BoxProps, Toolbar, Typography } from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { DepositTitleGroup, DepositTitleNewGroup } from "./DepositTitle";
-import React from "react";
-import SwipeableViews from "react-swipeable-views";
-import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
-import { useSettings } from "../../../stores";
+import { DepositGroupProps, DepositPanelType } from './Interface'
+import { IBData } from '@loopring-web/common-resources'
+import { PanelContent } from '../../basic-lib'
+import { DepositPanel } from '../../modal/ModalPanels/DepositPanel'
+import { VendorMenu } from './VendorMenu'
+import { Box, BoxProps, Toolbar, Typography } from '@mui/material'
+import { useTheme } from '@emotion/react'
+import { DepositTitleGroup, DepositTitleNewGroup } from './DepositTitle'
+import React from 'react'
+import SwipeableViews from 'react-swipeable-views'
+import styled from '@emotion/styled'
+import { useTranslation } from 'react-i18next'
+import { useSettings } from '../../../stores'
 
 const ToolbarStyle = styled(Toolbar)`
   .MuiTabs-root {
@@ -20,7 +20,7 @@ const ToolbarStyle = styled(Toolbar)`
       flex-direction: row;
     }
   }
-`;
+`
 const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
   .trade-panel {
     width: 100%;
@@ -105,7 +105,7 @@ const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
   }
   padding-left: 0;
   padding-right: 0;
-` as (props: BoxProps & { isMobile: boolean | undefined }) => JSX.Element;
+` as (props: BoxProps & { isMobile: boolean | undefined }) => JSX.Element
 
 export const DepositGroup = <T extends IBData<I>, I>({
   depositProps,
@@ -113,90 +113,78 @@ export const DepositGroup = <T extends IBData<I>, I>({
   tabIndex = DepositPanelType.Deposit,
 }: // onTabChange,
 DepositGroupProps<T, I>) => {
-  const theme = useTheme();
-  const { t } = useTranslation(["common"]);
-  const { isMobile } = useSettings();
+  const theme = useTheme()
+  const { t } = useTranslation(['common'])
+  const { isMobile } = useSettings()
   const [_tabIndex, setTabIndex] = React.useState<DepositPanelType>(
-    tabIndex ?? DepositPanelType.Deposit
-  );
+    tabIndex ?? DepositPanelType.Deposit,
+  )
 
   React.useEffect(() => {
-    setTabIndex(tabIndex);
-  }, [tabIndex]);
+    setTabIndex(tabIndex)
+  }, [tabIndex])
 
-  const panelList: Pick<
-    PanelContent<"Deposit" | "Vendor">,
-    "key" | "element"
-  >[] = [
+  const panelList: Pick<PanelContent<'Deposit' | 'Vendor'>, 'key' | 'element'>[] = [
     {
-      key: "Deposit",
+      key: 'Deposit',
       element: <DepositPanel {...{ ...depositProps }} />,
     },
     {
-      key: "Vendor",
+      key: 'Vendor',
       element: <VendorMenu {...{ ...vendorMenuProps }} />,
     },
-  ];
+  ]
 
   return (
     <BoxStyle
       isMobile={isMobile}
-      display={"flex"}
-      height={"auto"}
-      flexDirection={"column"}
-      flexWrap={"nowrap"}
+      display={'flex'}
+      height={'auto'}
+      flexDirection={'column'}
+      flexWrap={'nowrap'}
       paddingX={3}
       marginTop={-4}
       paddingBottom={3}
     >
       <Box marginBottom={3} marginTop={isMobile ? 0 : 3}>
-        <Typography
-          component={"h4"}
-          variant={"h4"}
-          marginRight={1}
-          textAlign={"center"}
-        >
+        <Typography component={'h4'} variant={'h4'} marginRight={1} textAlign={'center'}>
           {depositProps.isNewAccount
-            ? t("labelCreateLayer2Title", { layer2: "Layer 2" })
-            : t("labelAddAsset")}
+            ? t('labelCreateLayer2Title', { layer2: 'Layer 2' })
+            : t('labelAddAsset')}
         </Typography>
       </Box>
       <Box
-        display={"flex"}
-        flexDirection={"row"}
-        justifyContent={"center"}
-        alignItems={"center"}
+        display={'flex'}
+        flexDirection={'row'}
+        justifyContent={'center'}
+        alignItems={'center'}
         marginBottom={2}
       >
         {depositProps.isNewAccount ? (
           <Box
-            minWidth={"320px"}
-            width={
-              isMobile
-                ? "auto"
-                : `calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`
-            }
-            display={"flex"}
+            minWidth={'320px'}
+            width={isMobile ? 'auto' : `calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
+            display={'flex'}
           >
             <Box
-              className={"content way-content isNew"}
-              display={"flex"}
+              className={'content way-content isNew'}
+              display={'flex'}
               flex={1}
-              flexDirection={isMobile ? "column" : "row"}
-              justifyContent={"space-around"}
+              flexDirection={isMobile ? 'column' : 'row'}
+              justifyContent={'space-around'}
             >
               {panelList.map((panel, index) => {
                 return (
                   <Box
-                    width={isMobile ? "auto" : "48%"}
+                    width={isMobile ? 'auto' : '48%'}
                     key={index}
-                    minHeight={isMobile ? "320" : "280"}
+                    minHeight={isMobile ? '320' : '280'}
                   >
                     <Box
                       flex={1}
-                      display={"flex"}
-                      flexDirection={"row"}
-                      justifyContent={"space-around"}
+                      display={'flex'}
+                      flexDirection={'row'}
+                      justifyContent={'space-around'}
                       marginBottom={2}
                       paddingLeft={4}
                     >
@@ -204,36 +192,28 @@ DepositGroupProps<T, I>) => {
                     </Box>
                     {panel.element}
                   </Box>
-                );
+                )
               })}
             </Box>
           </Box>
         ) : (
-          <Box
-            minHeight={240}
-            width={`calc(var(--swap-box-width) + ${theme.unit * 5}px)`}
-          >
-            <ToolbarStyle className={"large"} variant={"regular"}>
+          <Box minHeight={240} width={`calc(var(--swap-box-width) + ${theme.unit * 5}px)`}>
+            <ToolbarStyle className={'large'} variant={'regular'}>
               <DepositTitleGroup
                 onTabChange={(index) => {
-                  setTabIndex(index);
+                  setTabIndex(index)
                 }}
                 tabIndex={_tabIndex}
               />
             </ToolbarStyle>
-            <SwipeableViews
-              axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-              index={_tabIndex}
-            >
+            <SwipeableViews axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={_tabIndex}>
               {panelList.map((panel, index) => {
-                return (
-                  <React.Fragment key={index}>{panel.element}</React.Fragment>
-                );
+                return <React.Fragment key={index}>{panel.element}</React.Fragment>
               })}
             </SwipeableViews>
           </Box>
         )}
       </Box>
     </BoxStyle>
-  );
-};
+  )
+}

@@ -15,10 +15,10 @@ import {
   QRAddressPanel,
   useOpenModals,
   useSettings,
-} from "@loopring-web/component-lib";
-import { ConnectProviders, walletServices } from "@loopring-web/web3-provider";
+} from '@loopring-web/component-lib'
+import { ConnectProviders, walletServices } from '@loopring-web/web3-provider'
 
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   Account,
   AccountStatus,
@@ -26,7 +26,7 @@ import {
   copyToClipBoard,
   L1L2_NAME_DEFINED,
   MapChainId,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   depositServices,
   goActiveAccount,
@@ -39,7 +39,7 @@ import {
   useRampTransPost,
   useSystem,
   useToast,
-} from "@loopring-web/core";
+} from '@loopring-web/core'
 
 export function useAccountModalForL1UI({
   t,
@@ -47,129 +47,129 @@ export function useAccountModalForL1UI({
   depositProps,
   ...rest
 }: {
-  t: any;
-  etherscanBaseUrl: string;
-  depositProps: DepositProps<any, any>;
-  account: Account;
-  assetsRawData: AssetsRawDataItem[];
+  t: any
+  etherscanBaseUrl: string
+  depositProps: DepositProps<any, any>
+  account: Account
+  assetsRawData: AssetsRawDataItem[]
   // onClose?: any;
 }) {
-  const { chainInfos, updateDepositHash } = onchainHashInfo.useOnChainInfo();
-  const { defaultNetwork } = useSettings();
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
-  const { processRequestRampTransfer } = useRampTransPost();
-  const { campaignTagConfig } = useNotify().notifyMap ?? {};
+  const { chainInfos, updateDepositHash } = onchainHashInfo.useOnChainInfo()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { processRequestRampTransfer } = useRampTransPost()
+  const { campaignTagConfig } = useNotify().notifyMap ?? {}
   const {
     modals: { isShowAccount },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
-  } = useOpenModals();
-  rest = { ...rest, ...isShowAccount.info };
+  } = useOpenModals()
+  rest = { ...rest, ...isShowAccount.info }
 
-  const { allowTrade } = useSystem();
+  const { allowTrade } = useSystem()
 
-  const { account, addressShort, shouldShow, setShouldShow } = useAccount();
+  const { account, addressShort, shouldShow, setShouldShow } = useAccount()
 
-  const { toastOpen, setToastOpen, closeToast } = useToast();
+  const { toastOpen, setToastOpen, closeToast } = useToast()
   // const { nftDepositProps } = useNFTDeposit();
 
-  const [openQRCode, setOpenQRCode] = useState(false);
+  const [openQRCode, setOpenQRCode] = useState(false)
 
-  const [copyToastOpen, setCopyToastOpen] = useState(false);
+  const [copyToastOpen, setCopyToastOpen] = useState(false)
 
   const onSwitch = React.useCallback(() => {
-    setShowAccount({ isShow: false });
-    setShouldShow(true);
-    setShowConnect({ isShow: shouldShow ?? false });
-  }, [setShowAccount, setShouldShow, setShowConnect, shouldShow]);
+    setShowAccount({ isShow: false })
+    setShouldShow(true)
+    setShowConnect({ isShow: shouldShow ?? false })
+  }, [setShowAccount, setShouldShow, setShowConnect, shouldShow])
 
   const onCopy = React.useCallback(async () => {
-    copyToClipBoard(account.accAddress);
-    setCopyToastOpen(true);
-  }, [account, setCopyToastOpen]);
+    copyToClipBoard(account.accAddress)
+    setCopyToastOpen(true)
+  }, [account, setCopyToastOpen])
 
   const onViewQRCode = React.useCallback(() => {
-    setOpenQRCode(true);
-  }, [setOpenQRCode]);
+    setOpenQRCode(true)
+  }, [setOpenQRCode])
 
   const onDisconnect = React.useCallback(async () => {
-    walletServices.sendDisconnect("", "customer click disconnect");
-    setShowAccount({ isShow: false });
-  }, [setShowAccount]);
+    walletServices.sendDisconnect('', 'customer click disconnect')
+    setShowAccount({ isShow: false })
+  }, [setShowAccount])
 
   const onQRClick = React.useCallback(() => {
-    setShowAccount({ isShow: true, step: AccountStep.QRCode });
-  }, [setShowAccount]);
+    setShowAccount({ isShow: true, step: AccountStep.QRCode })
+  }, [setShowAccount])
 
   const unlockBtn = React.useMemo(() => {
     return (
       <Button
-        variant={"contained"}
+        variant={'contained'}
         fullWidth
-        size={"medium"}
+        size={'medium'}
         onClick={() => {
-          setShouldShow(true);
-          unlockAccount();
+          setShouldShow(true)
+          unlockAccount()
         }}
       >
-        {t("labelUnLockLayer2")}
+        {t('labelUnLockLayer2')}
       </Button>
-    );
-  }, [t, setShouldShow]);
+    )
+  }, [t, setShouldShow])
 
   const lockBtn = React.useMemo(() => {
     return (
       <Button
-        variant={"contained"}
+        variant={'contained'}
         fullWidth
-        size={"medium"}
+        size={'medium'}
         onClick={() => {
-          lockAccount();
+          lockAccount()
         }}
       >
-        {t("labelLockLayer2")}
+        {t('labelLockLayer2')}
       </Button>
-    );
-  }, [t]);
+    )
+  }, [t])
 
   const onQRBack = React.useCallback(() => {
     if (Number.isInteger(isShowAccount.info?.backTo)) {
-      setShowAccount({ isShow: true, step: isShowAccount.info?.backTo });
+      setShowAccount({ isShow: true, step: isShowAccount.info?.backTo })
     } else {
       switch (account.readyState) {
         case AccountStatus.NO_ACCOUNT:
         case AccountStatus.DEPOSITING:
-          setShowAccount({ isShow: true, step: AccountStep.NoAccount });
-          break;
+          setShowAccount({ isShow: true, step: AccountStep.NoAccount })
+          break
         case AccountStatus.LOCKED:
         case AccountStatus.ACTIVATED:
-          setShowAccount({ isShow: true, step: AccountStep.HadAccount });
-          break;
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
+          break
         default:
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
       }
     }
-  }, [account.readyState, isShowAccount, setShowAccount]);
+  }, [account.readyState, isShowAccount, setShowAccount])
 
   const closeBtnInfo = React.useCallback(
     (props?: { closeExtend?: (e?: any) => void }) => {
       return {
-        btnTxt: "labelClose",
+        btnTxt: 'labelClose',
         callback: (e: any) => {
-          setShouldShow(false);
-          setShowAccount({ isShow: false });
+          setShouldShow(false)
+          setShowAccount({ isShow: false })
           if (props?.closeExtend) {
-            props?.closeExtend(e);
+            props?.closeExtend(e)
           }
           // if (onClose) {
           //   onClose(e);
           // }
         },
-      };
+      }
     },
-    [setShouldShow, setShowAccount]
-  );
+    [setShouldShow, setShowAccount],
+  )
 
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
@@ -183,8 +183,8 @@ export function useAccountModalForL1UI({
               // isSupport,
               noButton: true,
               onClose: (_e: any) => {
-                setShouldShow(false);
-                setShowAccount({ isShow: false });
+                setShouldShow(false)
+                setShowAccount({ isShow: false })
               },
               clearDepositHash: () => undefined,
               updateDepositHash,
@@ -199,7 +199,7 @@ export function useAccountModalForL1UI({
           />
         ),
         onQRClick,
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.QRCode]: {
         view: (
@@ -209,12 +209,11 @@ export function useAccountModalForL1UI({
               account,
               btnInfo: {
                 ...closeBtnInfo(),
-                btnTxt: isShowAccount?.info?.btnTxt ?? t("labelIKnow2"),
+                btnTxt: isShowAccount?.info?.btnTxt ?? t('labelIKnow2'),
               } as any,
               ...account,
               isNewAccount: depositProps.isNewAccount,
-              isForL2Send:
-                isShowAccount.info?.backTo === AccountStep.AddAssetGateway,
+              isForL2Send: isShowAccount.info?.backTo === AccountStep.AddAssetGateway,
               etherscanUrl: rest.etherscanBaseUrl,
               t,
             }}
@@ -222,7 +221,7 @@ export function useAccountModalForL1UI({
         ),
         onBack: onQRBack,
         noClose: true,
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.HadAccount]: {
         view: (
@@ -235,24 +234,20 @@ export function useAccountModalForL1UI({
               onSwitch,
               onCopy,
               onClose: (_e: any) => {
-                setShouldShow(false);
-                setShowAccount({ isShow: false });
+                setShouldShow(false)
+                setShowAccount({ isShow: false })
               },
               etherscanUrl: rest.etherscanBaseUrl,
               onViewQRCode,
               onDisconnect,
               addressShort,
-              etherscanLink:
-                rest.etherscanBaseUrl + "address/" + account.accAddress,
-              mainBtn:
-                account.readyState === AccountStatus.ACTIVATED
-                  ? lockBtn
-                  : unlockBtn,
+              etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
+              mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
             }}
           />
         ),
         onQRClick,
-        height: "auto",
+        height: 'auto',
       },
       [AccountStep.Deposit_Sign_WaitForRefer]: {
         view: (
@@ -282,9 +277,9 @@ export function useAccountModalForL1UI({
         view: (
           <Deposit_Approve_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                depositServices.depositERC20();
+                depositServices.depositERC20()
               },
             }}
             {...{
@@ -295,7 +290,7 @@ export function useAccountModalForL1UI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.Deposit_WaitForAuth]: {
@@ -314,16 +309,16 @@ export function useAccountModalForL1UI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.Deposit_Denied]: {
         view: (
           <Deposit_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: 'labelRetry',
               callback: () => {
-                depositServices.depositERC20();
+                depositServices.depositERC20()
               },
             }}
             {...{
@@ -334,7 +329,7 @@ export function useAccountModalForL1UI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({ isShow: false })
         },
       },
       [AccountStep.Deposit_Failed]: {
@@ -349,7 +344,7 @@ export function useAccountModalForL1UI({
                     ...isShowAccount.info,
                     lastFailed: LAST_STEP.deposit,
                   },
-                });
+                })
               },
             })}
             {...{
@@ -362,8 +357,8 @@ export function useAccountModalForL1UI({
         ),
         onBack: !depositProps.isAllowInputToAddress
           ? () => {
-              setShowAccount({ isShow: false });
-              setShowDeposit({ isShow: true });
+              setShowAccount({ isShow: false })
+              setShowDeposit({ isShow: true })
             }
           : undefined,
       },
@@ -371,9 +366,9 @@ export function useAccountModalForL1UI({
         view: (
           <Deposit_Submit
             btnInfo={{
-              btnTxt: "labelDoAgain",
+              btnTxt: 'labelDoAgain',
               param: {
-                method: t("labelDepositL1", {
+                method: t('labelDepositL1', {
                   loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
                   l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
@@ -381,14 +376,11 @@ export function useAccountModalForL1UI({
                 }),
               },
               callback: () => {
-                setShowAccount({ isShow: false });
+                setShowAccount({ isShow: false })
                 setShowDeposit({
                   isShow: true,
-                  symbol:
-                    (rest as any)?.symbol ??
-                    isShowAccount?.info?.symbol ??
-                    "LRC",
-                });
+                  symbol: (rest as any)?.symbol ?? isShowAccount?.info?.symbol ?? 'LRC',
+                })
               },
             }}
             {...{
@@ -399,7 +391,7 @@ export function useAccountModalForL1UI({
           />
         ),
       },
-    });
+    })
   }, [
     network,
     account,
@@ -429,9 +421,9 @@ export function useAccountModalForL1UI({
     setShowDeposit,
 
     processRequestRampTransfer,
-  ]);
+  ])
 
-  const currentModal = accountList[isShowAccount.step];
+  const currentModal = accountList[isShowAccount.step]
 
   return {
     depositProps,
@@ -449,5 +441,5 @@ export function useAccountModalForL1UI({
     closeToast,
     // checkActiveStatusProps,
     // dualToastOpen,
-  };
+  }
 }

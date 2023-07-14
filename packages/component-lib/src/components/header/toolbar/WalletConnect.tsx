@@ -1,6 +1,6 @@
-import { WalletConnectBtnProps } from "./Interface";
-import { useTranslation } from "react-i18next";
-import React from "react";
+import { WalletConnectBtnProps } from './Interface'
+import { useTranslation } from 'react-i18next'
+import React from 'react'
 import {
   AccountStatus,
   ChainTests,
@@ -11,13 +11,13 @@ import {
   LockIcon,
   myLog,
   UnConnectIcon,
-} from "@loopring-web/common-resources";
-import { Typography, Box } from "@mui/material";
-import { Button, ButtonProps } from "../../basic-lib";
-import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
-import styled from "@emotion/styled";
-import { useSettings } from "../../../stores";
-import * as sdk from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { Typography, Box } from '@mui/material'
+import { Button, ButtonProps } from '../../basic-lib'
+import { bindHover, usePopupState } from 'material-ui-popup-state/hooks'
+import styled from '@emotion/styled'
+import { useSettings } from '../../../stores'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 // type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
@@ -54,7 +54,7 @@ const WalletConnectBtnStyled = styled(Button)`
     background: var(--color-error);
     color: var(--color-text-primary);
   }
-`;
+`
 const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
   display: none;
   background-image: none;
@@ -65,143 +65,123 @@ const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
   background-position: center;
   ${({ account }) => {
     if (account && account.connectName) {
-      const item = gatewayList.find(({ key }) => key === account.connectName);
+      const item = gatewayList.find(({ key }) => key === account.connectName)
       // connectName: keyof typeof ConnectProviders;
       return item?.imgSrc
         ? `
          display: flex;
          background-image:url(${item.imgSrc});
         `
-        : "";
+        : ''
     }
   }};
-` as (props: ButtonProps & { account: any }) => JSX.Element;
+` as (props: ButtonProps & { account: any }) => JSX.Element
 
 export const WalletConnectBtn = ({
   accountState,
   handleClick,
   NetWorkItems,
 }: WalletConnectBtnProps) => {
-  const { t, i18n } = useTranslation(["layout", "common"]);
-  const { isMobile } = useSettings();
-  const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
+  const { t, i18n } = useTranslation(['layout', 'common'])
+  const { isMobile } = useSettings()
+  const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
 
-  const [btnClassname, setBtnClassname] =
-    React.useState<string | undefined>("");
-  const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+  const [btnClassname, setBtnClassname] = React.useState<string | undefined>('')
+  const [icon, setIcon] = React.useState<JSX.Element | undefined>()
 
   React.useEffect(() => {
-    const account = accountState?.account;
+    const account = accountState?.account
     if (account) {
-      const addressShort = account.accAddress
-        ? getShortAddr(account?.accAddress)
-        : undefined;
+      const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined
       if (addressShort) {
-        setLabel(addressShort);
+        setLabel(addressShort)
       }
-      setIcon(undefined);
+      setIcon(undefined)
 
-      myLog("wallet connect account.readyState:", account.readyState);
+      myLog('wallet connect account.readyState:', account.readyState)
 
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
-          setBtnClassname("un-connect");
-          setLabel("labelConnectWallet");
-          break;
+          setBtnClassname('un-connect')
+          setLabel('labelConnectWallet')
+          break
         case AccountStatus.LOCKED:
-          setBtnClassname("locked");
-          setIcon(
-            <LockIcon color={"error"} style={{ width: 16, height: 16 }} />
-          );
-          break;
+          setBtnClassname('locked')
+          setIcon(<LockIcon color={'error'} style={{ width: 16, height: 16 }} />)
+          break
         case AccountStatus.ACTIVATED:
-          setBtnClassname("unlocked");
-          setIcon(
-            <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
-          );
-          break;
+          setBtnClassname('unlocked')
+          setIcon(<CircleIcon fontSize={'large'} htmlColor={'var(--color-success)'} />)
+          break
         case AccountStatus.NO_ACCOUNT:
-          setBtnClassname("no-account");
-          setIcon(<CircleIcon fontSize={"large"} color={"error"} />);
-          break;
+          setBtnClassname('no-account')
+          setIcon(<CircleIcon fontSize={'large'} color={'error'} />)
+          break
         case AccountStatus.DEPOSITING:
-          setBtnClassname("depositing");
-          setIcon(
-            <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
-          );
-          break;
+          setBtnClassname('depositing')
+          setIcon(<LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />)
+          break
         case AccountStatus.NOT_ACTIVE:
-          setBtnClassname("not-active");
-          setIcon(
-            <CircleIcon fontSize={"large"} htmlColor={"var(--color-warning)"} />
-          );
-          break;
+          setBtnClassname('not-active')
+          setIcon(<CircleIcon fontSize={'large'} htmlColor={'var(--color-warning)'} />)
+          break
         case AccountStatus.ERROR_NETWORK:
-          setBtnClassname("wrong-network");
-          setLabel("labelWrongNetwork");
-          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />);
-          break;
+          setBtnClassname('wrong-network')
+          setLabel('labelWrongNetwork')
+          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />)
+          break
         default:
       }
     } else {
-      setLabel("labelConnectWallet");
+      setLabel('labelConnectWallet')
     }
-  }, [accountState?.account?.readyState, i18n]);
+  }, [accountState?.account?.readyState, i18n])
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)
     if (handleClick) {
-      handleClick(event);
+      handleClick(event)
     }
-  };
+  }
 
   const popupState = usePopupState({
-    variant: "popover",
+    variant: 'popover',
     popupId: `popupId: 'wallet-connect-notification'`,
-  });
+  })
   return (
     <>
       {NetWorkItems}
       {!isMobile && <ProviderBox account={accountState?.account} />}
       <WalletConnectBtnStyled
         variant={
-          ["un-connect", "wrong-network"].findIndex(
-            (ele) => btnClassname === ele
-          ) !== -1
-            ? "contained"
-            : "outlined"
+          ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
+            ? 'contained'
+            : 'outlined'
         }
         size={
-          ["un-connect", "wrong-network"].findIndex(
-            (ele) => btnClassname === ele
-          ) !== -1
-            ? "small"
-            : "medium"
+          ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
+            ? 'small'
+            : 'medium'
         }
-        color={"primary"}
+        color={'primary'}
         className={`wallet-btn ${btnClassname}`}
         onClick={_handleClick}
         {...bindHover(popupState)}
       >
         {icon ? (
-          <Typography component={"i"} marginLeft={-1}>
+          <Typography component={'i'} marginLeft={-1}>
             {icon}
           </Typography>
         ) : (
           <></>
         )}
-        <Typography
-          component={"span"}
-          variant={"body1"}
-          lineHeight={1}
-          color={"inherit"}
-        >
+        <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}>
           {t(label)}
         </Typography>
       </WalletConnectBtnStyled>
     </>
-  );
-};
+  )
+}
 
 export const WalletConnectL1Btn = ({
   accountState,
@@ -210,143 +190,124 @@ export const WalletConnectL1Btn = ({
   isShowOnUnConnect,
 }: // isShowOnUnConnect,
 WalletConnectBtnProps) => {
-  const { t } = useTranslation(["layout", "common"]);
+  const { t } = useTranslation(['layout', 'common'])
   // const { isMobile } = useSettings();
-  const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
+  const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
 
-  const [btnClassname, setBtnClassname] =
-    React.useState<string | undefined>("");
-  const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+  const [btnClassname, setBtnClassname] = React.useState<string | undefined>('')
+  const [icon, setIcon] = React.useState<JSX.Element | undefined>()
 
   React.useEffect(() => {
-    const account = accountState?.account;
+    const account = accountState?.account
     if (account) {
-      const addressShort = account.accAddress
-        ? getShortAddr(account?.accAddress)
-        : undefined;
+      const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined
       if (addressShort) {
-        setLabel(addressShort);
+        setLabel(addressShort)
       }
-      setIcon(undefined);
+      setIcon(undefined)
 
-      myLog("wallet connect account.readyState:", account.readyState);
+      myLog('wallet connect account.readyState:', account.readyState)
 
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
-          setBtnClassname("un-connect");
-          setLabel("labelConnectWallet");
-          break;
+          setBtnClassname('un-connect')
+          setLabel('labelConnectWallet')
+          break
         case AccountStatus.LOCKED:
         case AccountStatus.ACTIVATED:
         case AccountStatus.NO_ACCOUNT:
         case AccountStatus.DEPOSITING:
         case AccountStatus.NOT_ACTIVE:
-          setBtnClassname("unlocked");
-          const chainId = account._chainId as any;
+          setBtnClassname('unlocked')
+          const chainId = account._chainId as any
           switch (chainId) {
             case sdk.ChainId.MAINNET:
               setIcon(
                 <Typography
                   paddingRight={1}
-                  color={"var(--color-text-third)"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
+                  color={'var(--color-text-third)'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
                 >
-                  <CircleIcon
-                    fontSize={"large"}
-                    htmlColor={"var(--color-success)"}
-                  />
+                  <CircleIcon fontSize={'large'} htmlColor={'var(--color-success)'} />
                   L1
-                </Typography>
+                </Typography>,
                 // <CircleIcon fontSize={"large"} ChainIdhtmlColor={"var(--color-success)"} />
-              );
-              break;
+              )
+              break
             // case sdk.ChainId.GOERLI:
             // case ChainIdExtends[]:
             default:
               if (ChainTests.includes(Number(chainId))) {
                 setIcon(
-                  <Typography
-                    paddingRight={1}
-                    color={"var(--color-text-third)"}
-                  >
+                  <Typography paddingRight={1} color={'var(--color-text-third)'}>
                     Test
-                  </Typography>
+                  </Typography>,
                   // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
-                );
+                )
               }
-              break;
+              break
             // setIcon(
             //   <Typography color={'--color-text-third'>{ChainIdExtends[account._chainId]}</Typography>
             //   // <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
             // );
           }
-          break;
+          break
         case AccountStatus.ERROR_NETWORK:
-          setBtnClassname("wrong-network");
-          setLabel("labelWrongNetwork");
-          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />);
-          break;
+          setBtnClassname('wrong-network')
+          setLabel('labelWrongNetwork')
+          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />)
+          break
         default:
       }
     } else {
-      setLabel("labelConnectWallet");
+      setLabel('labelConnectWallet')
     }
-  }, [accountState?.account?.readyState]);
+  }, [accountState?.account?.readyState])
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)
     if (handleClick) {
-      handleClick(event);
+      handleClick(event)
     }
-  };
+  }
 
   const popupState = usePopupState({
-    variant: "popover",
+    variant: 'popover',
     popupId: `popupId: 'wallet-connect-notification'`,
-  });
+  })
   return (
     <>
       {NetWorkItems}
-      {(!isShowOnUnConnect ||
-        accountState?.account?.readyState !== AccountStatus.UN_CONNECT) && (
+      {(!isShowOnUnConnect || accountState?.account?.readyState !== AccountStatus.UN_CONNECT) && (
         <WalletConnectBtnStyled
           variant={
-            ["un-connect", "wrong-network"].findIndex(
-              (ele) => btnClassname === ele
-            ) !== -1
-              ? "contained"
-              : "outlined"
+            ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
+              ? 'contained'
+              : 'outlined'
           }
           size={
-            ["un-connect", "wrong-network"].findIndex(
-              (ele) => btnClassname === ele
-            ) !== -1
-              ? "small"
-              : "medium"
+            ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
+              ? 'small'
+              : 'medium'
           }
-          color={"primary"}
+          color={'primary'}
           className={`wallet-btn ${btnClassname}`}
           onClick={_handleClick}
           {...bindHover(popupState)}
         >
           {icon ? (
-            <Typography component={"i"} marginLeft={-1}>
+            <Typography component={'i'} marginLeft={-1}>
               {icon}
             </Typography>
           ) : (
             <></>
           )}
-          <Typography
-            component={"span"}
-            variant={"body1"}
-            lineHeight={1}
-            color={"inherit"}
-          >
+          <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}>
             {t(label)}
           </Typography>
         </WalletConnectBtnStyled>
       )}
     </>
-  );
-};
+  )
+}

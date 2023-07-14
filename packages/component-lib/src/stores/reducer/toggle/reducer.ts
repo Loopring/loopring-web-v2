@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
-import { ToggleState } from "./interface";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
+import { ToggleState } from './interface'
 
 const initialState: ToggleState = {
   order: { enable: true },
@@ -27,19 +27,19 @@ const initialState: ToggleState = {
   BTradeInvest: { enable: true },
   StopLimit: { enable: true },
   send: {
-    orbiter: ["ETH"],
+    orbiter: ['ETH'],
   },
   receive: {
-    layerSwap: ["ETH", "LRC", "USDC"],
-    orbiter: ["ETH"],
+    layerSwap: ['ETH', 'LRC', 'USDC'],
+    orbiter: ['ETH'],
   },
-};
+}
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
   ToggleState,
   SliceCaseReducers<ToggleState>
 >({
-  name: "toggle",
+  name: 'toggle',
   initialState: initialState,
   reducers: {
     updateToggleStatus(state, action: PayloadAction<Partial<ToggleState>>) {
@@ -68,83 +68,83 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
         StopLimit,
         send,
         receive,
-      } = action.payload;
+      } = action.payload
       if (order !== undefined) {
-        state.order = order;
+        state.order = order
       }
 
       if (joinAmm !== undefined) {
-        state.joinAmm = joinAmm;
+        state.joinAmm = joinAmm
       }
       if (exitAmm !== undefined) {
-        state.exitAmm = exitAmm;
+        state.exitAmm = exitAmm
       }
       if (transfer !== undefined) {
-        state.transfer = transfer;
+        state.transfer = transfer
       }
       if (transferNFT !== undefined) {
-        state.transferNFT = transferNFT;
+        state.transferNFT = transferNFT
       }
       if (deposit !== undefined) {
-        state.deposit = deposit;
+        state.deposit = deposit
       }
       if (depositNFT !== undefined) {
-        state.depositNFT = depositNFT;
+        state.depositNFT = depositNFT
       }
       if (withdraw !== undefined) {
-        state.withdraw = withdraw;
+        state.withdraw = withdraw
       }
       if (withdrawNFT !== undefined) {
-        state.withdrawNFT = withdrawNFT;
+        state.withdrawNFT = withdrawNFT
       }
       if (mintNFT !== undefined) {
-        state.mintNFT = mintNFT;
+        state.mintNFT = mintNFT
       }
       if (deployNFT !== undefined) {
-        state.deployNFT = deployNFT;
+        state.deployNFT = deployNFT
       }
       if (updateAccount !== undefined) {
-        state.updateAccount = updateAccount;
+        state.updateAccount = updateAccount
       }
 
       if (WSTETHInvest !== undefined) {
-        state.WSTETHInvest = WSTETHInvest;
+        state.WSTETHInvest = WSTETHInvest
       }
       if (RETHInvest !== undefined) {
-        state.RETHInvest = RETHInvest;
+        state.RETHInvest = RETHInvest
       }
       if (collectionNFT !== undefined) {
-        state.collectionNFT = collectionNFT;
+        state.collectionNFT = collectionNFT
       }
       if (defiInvest !== undefined) {
-        state.defiInvest = defiInvest;
+        state.defiInvest = defiInvest
       }
       if (claim !== undefined) {
-        state.claim = claim;
+        state.claim = claim
       }
       if (dualInvest !== undefined) {
-        state.dualInvest = dualInvest;
+        state.dualInvest = dualInvest
       }
       if (redPacketNFTV1 !== undefined) {
-        state.redPacketNFTV1 = redPacketNFTV1;
+        state.redPacketNFTV1 = redPacketNFTV1
       }
       if (LRCStackInvest !== undefined) {
-        state.LRCStackInvest = LRCStackInvest;
+        state.LRCStackInvest = LRCStackInvest
       }
       if (StopLimit !== undefined) {
-        state.StopLimit = StopLimit;
+        state.StopLimit = StopLimit
       }
 
       if (BTradeInvest !== undefined) {
-        state.BTradeInvest = BTradeInvest;
+        state.BTradeInvest = BTradeInvest
       }
       if (send !== undefined) {
-        state.send = send;
+        state.send = send
       }
       if (receive !== undefined) {
-        state.receive = receive;
+        state.receive = receive
       }
     },
   },
-});
-export const { updateToggleStatus } = toggleSlice.actions;
+})
+export const { updateToggleStatus } = toggleSlice.actions

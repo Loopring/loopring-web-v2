@@ -1,11 +1,11 @@
-import { withTranslation } from "react-i18next";
+import { withTranslation } from 'react-i18next'
 
-import React from "react";
-import { Layout, Layouts, Responsive, WidthProvider } from "react-grid-layout";
+import React from 'react'
+import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout'
 
-import { usePro } from "./hookPro";
-import { useTheme } from "@emotion/react";
-import { Box, IconButton } from "@mui/material";
+import { usePro } from './hookPro'
+import { useTheme } from '@emotion/react'
+import { Box, IconButton } from '@mui/material'
 import {
   BreakPoint,
   DragIcon,
@@ -16,7 +16,7 @@ import {
   ResizeIcon,
   RowConfig,
   SoursURL,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   ChartView,
   MarketView,
@@ -25,18 +25,18 @@ import {
   TabMarketIndex,
   Toolbar,
   WalletInfo,
-} from "./panel";
-import { boxLiner, useSettings } from "@loopring-web/component-lib";
-import styled from "@emotion/styled/";
-import { usePageTradePro } from "@loopring-web/core";
-import { useHistory } from "react-router-dom";
+} from './panel'
+import { boxLiner, useSettings } from '@loopring-web/component-lib'
+import styled from '@emotion/styled/'
+import { usePageTradePro } from '@loopring-web/core'
+import { useHistory } from 'react-router-dom'
 
-const MARKET_ROW_LENGTH: number = 8;
+const MARKET_ROW_LENGTH: number = 8
 // const MARKET_ROW_LENGTH_LG: number = 11;
 
-const MARKET_TRADES_LENGTH: number = 19;
+const MARKET_TRADES_LENGTH: number = 19
 // const MARKET_TRADES_LENGTH_LG: number = 24;
-export const HeaderHeight = RowConfig.rowHeaderHeight;
+export const HeaderHeight = RowConfig.rowHeaderHeight
 
 const BoxStyle = styled(Box)`
   --tab-header: ${HeaderHeight}px;
@@ -60,122 +60,114 @@ const BoxStyle = styled(Box)`
       }
     }
   }
-`;
-const ResponsiveGridLayout = WidthProvider(Responsive);
+`
+const ResponsiveGridLayout = WidthProvider(Responsive)
 
 const initBreakPoint = (): BreakPoint => {
   if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xlg]) {
-    return BreakPoint.xlg;
+    return BreakPoint.xlg
   } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.lg]) {
-    return BreakPoint.lg;
+    return BreakPoint.lg
   } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.md]) {
-    return BreakPoint.md;
+    return BreakPoint.md
   } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.sm]) {
-    return BreakPoint.sm;
+    return BreakPoint.sm
   } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xs]) {
-    return BreakPoint.xs;
-  } else if (
-    window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xxs]
-  ) {
-    return BreakPoint.xxs;
+    return BreakPoint.xs
+  } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xxs]) {
+    return BreakPoint.xxs
   } else {
-    return BreakPoint.md;
+    return BreakPoint.md
   }
-};
-export const OrderbookPage = withTranslation("common")(<
-  Config extends LayoutConfigInfo
->() => {
+}
+export const OrderbookPage = withTranslation('common')(<Config extends LayoutConfigInfo>() => {
   const {
     pageTradePro: { depthLevel, depthForCalc },
-  } = usePageTradePro();
-  const { market, handleOnMarketChange, assetBtnStatus, resetTradeCalcData } =
-    usePro({});
-  const { unit } = useTheme();
-  const { proLayout, setLayouts, isMobile } = useSettings();
+  } = usePageTradePro()
+  const { market, handleOnMarketChange, assetBtnStatus, resetTradeCalcData } = usePro({})
+  const { unit } = useTheme()
+  const { proLayout, setLayouts, isMobile } = useSettings()
 
-  const history = useHistory();
+  const history = useHistory()
 
-  const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
+  const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH)
   const [tradeTableLengths, setTradeTableLengths] = React.useState<{
-    market: number;
-    market2: number;
+    market: number
+    market2: number
   }>({
     market: MARKET_TRADES_LENGTH,
     market2: MARKET_TRADES_LENGTH,
-  });
+  })
 
   const [configLayout, setConfigLayout] = React.useState<Config>({
     // @ts-ignore
-    compactType: "vertical",
+    compactType: 'vertical',
     currentBreakpoint: initBreakPoint(),
     mounted: false,
     layouts: proLayout ?? layoutConfigs[0].layouts,
-  });
+  })
   const sportMemo = React.useMemo(() => {
     return (
       <>
         {depthForCalc ? (
-          <SpotView
-            market={market as any}
-            resetTradeCalcData={resetTradeCalcData}
-          />
+          <SpotView market={market as any} resetTradeCalcData={resetTradeCalcData} />
         ) : (
           <Box
             flex={1}
-            height={"100%"}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
+            height={'100%'}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
           >
             {/*<LoadingIcon />*/}
             <img
-              className="loading-gif"
-              alt={"loading"}
-              width="36"
+              className='loading-gif'
+              alt={'loading'}
+              width='36'
               src={`${SoursURL}images/loading-line.gif`}
             />
           </Box>
         )}
       </>
-    );
-  }, [market, depthForCalc]);
+    )
+  }, [market, depthForCalc])
 
   const onRestDepthTableLength = React.useCallback(
     (h: number) => {
       if (h) {
-        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 40);
+        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 40)
         if (i <= 40) {
-          setRowLength(i);
+          setRowLength(i)
         } else {
-          setRowLength(48);
+          setRowLength(48)
         }
       }
     },
-    [isMobile]
-  );
+    [isMobile],
+  )
   const onRestMarketTableLength = React.useCallback(
     (layout: Layout | undefined) => {
       if (layout && layout.h) {
-        const h = layout.h;
-        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 20);
+        const h = layout.h
+        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 20)
         setTradeTableLengths((state) => {
           if (i <= 30) {
             //32
             return {
               ...state,
               [layout.i]: i,
-            };
+            }
           } else {
             return {
               ...state,
               [layout.i]: MARKET_TRADES_LENGTH + 30,
-            };
+            }
           }
-        });
+        })
       }
     },
-    [isMobile]
-  );
+    [isMobile],
+  )
 
   const onBreakpointChange = React.useCallback(
     (breakpoint: BreakPoint) => {
@@ -183,51 +175,47 @@ export const OrderbookPage = withTranslation("common")(<
         return {
           ...state,
           currentBreakpoint: breakpoint,
-        };
-      });
+        }
+      })
       configLayout.layouts[breakpoint].forEach((layoutItem, index) => {
         onResize(
           configLayout.layouts[breakpoint],
           configLayout.layouts[configLayout.currentBreakpoint][index],
-          layoutItem
-        );
-      });
+          layoutItem,
+        )
+      })
     },
-    [configLayout]
-  );
+    [configLayout],
+  )
 
   const onResize = React.useCallback(
     (layout: Layout[], oldLayoutItem, layoutItem) => {
-      if (layoutItem.i === "market") {
-        onRestDepthTableLength(layoutItem.h);
-        onRestMarketTableLength(layoutItem);
+      if (layoutItem.i === 'market') {
+        onRestDepthTableLength(layoutItem.h)
+        onRestMarketTableLength(layoutItem)
       }
-      if (layoutItem.i === "market2") {
-        onRestMarketTableLength(layoutItem);
+      if (layoutItem.i === 'market2') {
+        onRestMarketTableLength(layoutItem)
       }
-      setLayouts({ [configLayout.currentBreakpoint]: layout });
+      setLayouts({ [configLayout.currentBreakpoint]: layout })
     },
-    [configLayout, setRowLength]
-  );
+    [configLayout, setRowLength],
+  )
 
   const handleLayoutChange = React.useCallback(
-    (
-      currentLayout: Layout[],
-      allLayouts?: Layouts,
-      defaultlayouts?: Layouts
-    ) => {
+    (currentLayout: Layout[], allLayouts?: Layouts, defaultlayouts?: Layouts) => {
       if (defaultlayouts) {
-        setLayouts(defaultlayouts);
-        history.push("/loading");
+        setLayouts(defaultlayouts)
+        history.push('/loading')
         setTimeout(() => {
-          history.go(-1);
-        }, 0);
+          history.go(-1)
+        }, 0)
       } else {
       }
-      myLog(currentLayout);
+      myLog(currentLayout)
     },
-    [configLayout, proLayout, setConfigLayout, setLayouts]
-  );
+    [configLayout, proLayout, setConfigLayout, setLayouts],
+  )
   const ViewList = {
     toolbar: React.useMemo(
       () => (
@@ -237,13 +225,11 @@ export const OrderbookPage = withTranslation("common")(<
           handleOnMarketChange={handleOnMarketChange}
         />
       ),
-      [market, handleLayoutChange, handleOnMarketChange]
+      [market, handleLayoutChange, handleOnMarketChange],
     ),
     walletInfo: React.useMemo(
-      () => (
-        <WalletInfo market={market as any} assetBtnStatus={assetBtnStatus} />
-      ),
-      [market, assetBtnStatus]
+      () => <WalletInfo market={market as any} assetBtnStatus={assetBtnStatus} />,
+      [market, assetBtnStatus],
     ),
     spot: sportMemo,
     market: React.useMemo(
@@ -260,13 +246,7 @@ export const OrderbookPage = withTranslation("common")(<
           )}
         </>
       ),
-      [
-        market,
-        rowLength,
-        configLayout.currentBreakpoint,
-        depthLevel,
-        tradeTableLengths.market,
-      ]
+      [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market],
     ),
     market2: React.useMemo(
       () => (
@@ -281,55 +261,39 @@ export const OrderbookPage = withTranslation("common")(<
           />
         </>
       ),
-      [
-        market,
-        rowLength,
-        configLayout.currentBreakpoint,
-        depthLevel,
-        tradeTableLengths.market2,
-      ]
+      [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market2],
     ), //<MarketView market={market as any}/>, [market])
     chart: React.useMemo(
       () => <ChartView market={market} rowLength={rowLength} />,
-      [market, rowLength]
+      [market, rowLength],
     ),
     orderTable: React.useMemo(
-      () => (
-        <OrderTableView
-          market={market}
-          handleOnMarketChange={handleOnMarketChange}
-        />
-      ),
-      [market]
+      () => <OrderTableView market={market} handleOnMarketChange={handleOnMarketChange} />,
+      [market],
     ),
-  };
+  }
   return (
-    <Box
-      display={"block"}
-      margin={"0 auto"}
-      width={"100%"}
-      position={"relative"}
-    >
+    <Box display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
       {market ? (
         <ResponsiveGridLayout
-          className="layout"
+          className='layout'
           {...{ ...configLayout }}
           onBreakpointChange={onBreakpointChange}
           onLayoutChange={handleLayoutChange}
           onResizeStop={onResize}
           resizeHandle={
             <IconButton
-              size={"medium"}
+              size={'medium'}
               style={{
-                position: "absolute",
+                position: 'absolute',
                 zIndex: 78,
                 right: 0,
                 bottom: 0,
               }}
-              className={"resize-holder"}
+              className={'resize-holder'}
             >
               <ResizeIcon
-                htmlColor={"var(--color-text-third)"}
+                htmlColor={'var(--color-text-third)'}
                 style={{
                   marginRight: `-${unit}px`,
                   marginBottom: `-${unit}px`,
@@ -337,62 +301,60 @@ export const OrderbookPage = withTranslation("common")(<
               />
             </IconButton>
           }
-          draggableHandle={".drag-holder"}
+          draggableHandle={'.drag-holder'}
           breakpoints={layoutConfigs[0].breakpoints}
           cols={layoutConfigs[0].cols}
           rowHeight={unit / 2}
           margin={[unit / 2, unit / 2]}
         >
-          {configLayout.layouts[configLayout.currentBreakpoint].map(
-            (layout) => {
-              return (
-                <BoxStyle
-                  key={layout.i}
-                  overflow={"hidden"}
-                  className={layout.i}
-                  component={"section"}
-                  position={"relative"}
-                  display={"flex"}
-                  flexDirection={"column"}
+          {configLayout.layouts[configLayout.currentBreakpoint].map((layout) => {
+            return (
+              <BoxStyle
+                key={layout.i}
+                overflow={'hidden'}
+                className={layout.i}
+                component={'section'}
+                position={'relative'}
+                display={'flex'}
+                flexDirection={'column'}
+              >
+                {ViewList[layout.i]}
+                <IconButton
+                  size={'medium'}
+                  style={{
+                    position: 'absolute',
+                    zIndex: 78,
+                    right: 0,
+                    top: 0,
+                  }}
+                  className={'drag-holder'}
                 >
-                  {ViewList[layout.i]}
-                  <IconButton
-                    size={"medium"}
-                    style={{
-                      position: "absolute",
-                      zIndex: 78,
-                      right: 0,
-                      top: 0,
-                    }}
-                    className={"drag-holder"}
-                  >
-                    <DragIcon
-                      htmlColor={"var(--color-text-third)"}
-                      style={{ marginRight: `-${unit}px`, marginTop: "" }}
-                    />
-                  </IconButton>
-                </BoxStyle>
-              );
-            }
-          )}
+                  <DragIcon
+                    htmlColor={'var(--color-text-third)'}
+                    style={{ marginRight: `-${unit}px`, marginTop: '' }}
+                  />
+                </IconButton>
+              </BoxStyle>
+            )
+          })}
         </ResponsiveGridLayout>
       ) : (
         <Box
           flex={1}
-          height={"100%"}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
+          height={'100%'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
         >
           {/*<LoadingIcon />*/}
           <img
-            className="loading-gif"
-            alt={"loading"}
-            width="36"
+            className='loading-gif'
+            alt={'loading'}
+            width='36'
             src={`${SoursURL}images/loading-line.gif`}
           />
         </Box>
       )}
     </Box>
-  );
-});
+  )
+})

@@ -255,28 +255,36 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
   } = confirmation.useConfirmation()
   // const []
-    const {confirmationNeeded, showRETHStakignPopup, showWSTETHStakignPopup, setShowRETHStakignPopup, setShowWSTETHStakignPopup} = usePopup()
-    const _confirmedDefiInvest = {
-      isShow: showRETHStakignPopup || showWSTETHStakignPopup,
-      type: showRETHStakignPopup 
-        ? "RETH"
-        : showWSTETHStakignPopup 
-        ? "WSETH"
-        : undefined,
-      confirmationNeeded
-    }
-    const setConfirmedDefiInvest = ({isShow, type}: {isShow: boolean; type?: "RETH" | "WSETH" | undefined;}) => {
-      if (isShow) {
-        if (type === "RETH") {
-          setShowRETHStakignPopup({show: true, confirmationNeeded: true})
-        } else {
-          setShowWSTETHStakignPopup({show: true, confirmationNeeded: true})
-        } 
+  const {
+    confirmationNeeded,
+    showRETHStakignPopup,
+    showWSTETHStakignPopup,
+    setShowRETHStakignPopup,
+    setShowWSTETHStakignPopup,
+  } = usePopup()
+  const _confirmedDefiInvest = {
+    isShow: showRETHStakignPopup || showWSTETHStakignPopup,
+    type: showRETHStakignPopup ? 'RETH' : showWSTETHStakignPopup ? 'WSETH' : undefined,
+    confirmationNeeded,
+  }
+  const setConfirmedDefiInvest = ({
+    isShow,
+    type,
+  }: {
+    isShow: boolean
+    type?: 'RETH' | 'WSETH' | undefined
+  }) => {
+    if (isShow) {
+      if (type === 'RETH') {
+        setShowRETHStakignPopup({ show: true, confirmationNeeded: true })
       } else {
-        setShowRETHStakignPopup({show: false, confirmationNeeded: true})
-        setShowWSTETHStakignPopup({show: false, confirmationNeeded: true})
+        setShowWSTETHStakignPopup({ show: true, confirmationNeeded: true })
       }
+    } else {
+      setShowRETHStakignPopup({ show: false, confirmationNeeded: true })
+      setShowWSTETHStakignPopup({ show: false, confirmationNeeded: true })
     }
+  }
 
   const match: any = useRouteMatch('/invest/defi/:market?/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
@@ -360,7 +368,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         <ConfirmInvestDefiRisk
           open={_confirmedDefiInvest.isShow}
           type={_confirmedDefiInvest.type as any}
-            confirmationNeeded={confirmationNeeded}
+          confirmationNeeded={confirmationNeeded}
           handleClose={(_e, isAgree) => {
             if (!isAgree) {
               setConfirmedDefiInvest({ isShow: false })

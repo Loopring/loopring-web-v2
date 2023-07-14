@@ -1133,17 +1133,15 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
 }
 
 export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
-  const { t } = useTranslation(["error"]);
-  const [leverageETHList, setLeverageETHRecordList] = React.useState<
-    sdk.UserDefiTxsHistory[]
-  >([]);
-  const [leverageETHTotal, setLeverageETHTotal] = React.useState(0);
-  const [showLoading, setShowLoading] = React.useState(true);
-  const { accountId, apiKey } = store.getState().account;
+  const { t } = useTranslation(['error'])
+  const [leverageETHList, setLeverageETHRecordList] = React.useState<sdk.UserDefiTxsHistory[]>([])
+  const [leverageETHTotal, setLeverageETHTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
+  const { accountId, apiKey } = store.getState().account
   const getLeverageETHTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       debugger
-      setShowLoading(true);
+      setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
@@ -1152,41 +1150,37 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            marktes: "RETH-ETH"
+            marktes: 'RETH-ETH',
           } as any,
-          apiKey
-        );
-        if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
-        ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           setToastOpen({
             open: true,
             type: ToastType.error,
             content:
-              "error : " + errorItem
+              'error : ' + errorItem
                 ? t(errorItem.messageKey)
                 : (response as sdk.RESULT_INFO).message,
-          });
+          })
         } else {
           // @ts-ignore
-          const result = (response as any).userDefiTxs;
-          setLeverageETHRecordList(result);
-          setShowLoading(false);
-          setLeverageETHTotal((response as any).totalNum);
+          const result = (response as any).userDefiTxs
+          setLeverageETHRecordList(result)
+          setShowLoading(false)
+          setLeverageETHTotal((response as any).totalNum)
         }
       }
-      setShowLoading(false);
+      setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t]
-  );
+    [accountId, apiKey, setToastOpen, t],
+  )
 
   return {
     leverageETHList,
     showLoading,
     getLeverageETHTxList,
     leverageETHTotal,
-  };
+  }
 }

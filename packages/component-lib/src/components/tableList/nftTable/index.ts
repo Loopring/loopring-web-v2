@@ -1,2 +1,2 @@
-export * from "./TsNFTTable";
-export * from "./Interface";
+export * from './TsNFTTable'
+export * from './Interface'

@@ -1,3 +1,3 @@
-export * from "./hook";
-export * as investTokenTypeMapReducer from "./reducer";
-export * from "./interface";
+export * from './hook'
+export * as investTokenTypeMapReducer from './reducer'
+export * from './interface'

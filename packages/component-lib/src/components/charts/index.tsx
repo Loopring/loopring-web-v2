@@ -1,3 +1,3 @@
-export * from "./scaleAreaChart";
-export * from "./doughnutChart";
-export * from "./constant";
+export * from './scaleAreaChart'
+export * from './doughnutChart'
+export * from './constant'

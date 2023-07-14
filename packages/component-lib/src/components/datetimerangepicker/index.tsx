@@ -1,9 +1,9 @@
-import { ConvertToIcon } from "@loopring-web/common-resources";
-import { MobileDateTimePicker } from "@mui/lab";
-import { TextField, Box } from "@mui/material";
-import styled from "@emotion/styled";
-import moment from "moment";
-import { useTranslation } from "react-i18next";
+import { ConvertToIcon } from '@loopring-web/common-resources'
+import { MobileDateTimePicker } from '@mui/lab'
+import { TextField, Box } from '@mui/material'
+import styled from '@emotion/styled'
+import moment from 'moment'
+import { useTranslation } from 'react-i18next'
 
 const StyledDateTimeRangePicker = styled(Box)`
   background-color: var(--field-opacity);
@@ -15,22 +15,22 @@ const StyledDateTimeRangePicker = styled(Box)`
     background-color: transparent !important;
     height: var(--input-height-large);
   }
-`;
+`
 
 type DateTimeRangePickerProps = {
-  startValue: moment.Moment | null;
-  startMinDateTime?: moment.Moment;
-  startMaxDateTime?: moment.Moment;
-  onStartChange?: (m: moment.Moment | null) => void;
-  onStartOpen?: () => void;
+  startValue: moment.Moment | null
+  startMinDateTime?: moment.Moment
+  startMaxDateTime?: moment.Moment
+  onStartChange?: (m: moment.Moment | null) => void
+  onStartOpen?: () => void
 
-  endValue: moment.Moment | null;
-  endMinDateTime?: moment.Moment;
-  endMaxDateTime?: moment.Moment;
-  onEndChange?: (m: moment.Moment | null) => void;
-  onEndOpen?: () => void;
-  customeEndInputPlaceHolder?: string;
-};
+  endValue: moment.Moment | null
+  endMinDateTime?: moment.Moment
+  endMaxDateTime?: moment.Moment
+  onEndChange?: (m: moment.Moment | null) => void
+  onEndOpen?: () => void
+  customeEndInputPlaceHolder?: string
+}
 
 export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
   const {
@@ -47,8 +47,8 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
     onEndOpen,
 
     customeEndInputPlaceHolder,
-  } = props;
-  const { t } = useTranslation();
+  } = props
+  const { t } = useTranslation()
   return (
     <StyledDateTimeRangePicker>
       <MobileDateTimePicker
@@ -58,10 +58,10 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
         minDateTime={startMinDateTime}
         maxDateTime={startMaxDateTime}
         renderInput={(params) => (
-          <TextField placeholder={t("labelBlindBoxStartTime")} {...params} />
+          <TextField placeholder={t('labelBlindBoxStartTime')} {...params} />
         )}
       />
-      <ConvertToIcon fontSize={"large"} htmlColor={"var(--color-text-third)"} />
+      <ConvertToIcon fontSize={'large'} htmlColor={'var(--color-text-third)'} />
       <MobileDateTimePicker
         onOpen={onEndOpen}
         value={endValue}
@@ -70,13 +70,11 @@ export const DateTimeRangePicker = (props: DateTimeRangePickerProps) => {
         maxDateTime={endMaxDateTime}
         renderInput={(params) => (
           <TextField
-            placeholder={
-              customeEndInputPlaceHolder ?? t("labelBlindBoxEndTime")
-            }
+            placeholder={customeEndInputPlaceHolder ?? t('labelBlindBoxEndTime')}
             {...params}
           />
         )}
       />
     </StyledDateTimeRangePicker>
-  );
-};
+  )
+}

@@ -1,10 +1,10 @@
-import { CoinInfo, CoinKey, IBData } from "@loopring-web/common-resources";
-import { WithTranslation } from "react-i18next";
-import React from "react";
-import { CoinMenu, InputSelect, InputSelectProps } from "../../../basic-lib";
-import { Box, Link, Typography } from "@mui/material";
-import { TradeMenuListProps } from "../Interface";
-import { useTheme } from "@emotion/react";
+import { CoinInfo, CoinKey, IBData } from '@loopring-web/common-resources'
+import { WithTranslation } from 'react-i18next'
+import React from 'react'
+import { CoinMenu, InputSelect, InputSelectProps } from '../../../basic-lib'
+import { Box, Link, Typography } from '@mui/material'
+import { TradeMenuListProps } from '../Interface'
+import { useTheme } from '@emotion/react'
 
 export const TradeMenuList = <T extends IBData<I>, I>({
   nonZero,
@@ -18,14 +18,14 @@ export const TradeMenuList = <T extends IBData<I>, I>({
   _height,
   ...rest
 }: TradeMenuListProps<T, I> & WithTranslation) => {
-  const ref = React.useRef<any>(null);
+  const ref = React.useRef<any>(null)
   const inputSelectProps: InputSelectProps<I> = {
-    placeholder: "tokenSearchCoin",
+    placeholder: 'tokenSearchCoin',
     focusOnInput: true,
     allowScroll: true,
-    selected: "",
+    selected: '',
     panelRender: () => <></>,
-  };
+  }
   // const PanelEmptyRender = () => {
   //   return (
   //     <>
@@ -38,43 +38,39 @@ export const TradeMenuList = <T extends IBData<I>, I>({
   //     </>
   //   );
   // };
-  const theme = useTheme();
+  const theme = useTheme()
   const backElement = React.useMemo(
     () => (
       <>
-        <Typography fontSize={"body1"} color="textPrimary">
+        <Typography fontSize={'body1'} color='textPrimary'>
           <Link
-            style={{ color: "var(--color-text-primary)", textAlign: "right" }}
+            style={{ color: 'var(--color-text-primary)', textAlign: 'right' }}
             onClick={() => {
-              onChangeEvent(0, { tradeData, to: "button" });
+              onChangeEvent(0, { tradeData, to: 'button' })
             }}
           >
-            {t("labelCancel")}
+            {t('labelCancel')}
           </Link>
         </Typography>
       </>
     ),
-    [onChangeEvent, tradeData]
-  );
+    [onChangeEvent, tradeData],
+  )
   const filterBy = (coinInfo: CoinInfo<I>, filterString: string) => {
     return filterString && filterString.length
-      ? RegExp(filterString, "i").test(coinInfo.simpleName as string)
-      : true;
-  };
+      ? RegExp(filterString, 'i').test(coinInfo.simpleName as string)
+      : true
+  }
 
   const PanelRender = ({ selected, value }: any) => {
     return (
       <CoinMenu
         height={
           _height
-            ? typeof _height === "number"
-              ? ` calc(${_height + "px"}  - 2 * var(--toolbar-row-padding) - ${
-                  theme.unit * 3
-                }px ) `
-              : ` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${
-                  theme.unit * 3
-                }px )`
-            : "460px"
+            ? typeof _height === 'number'
+              ? ` calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px ) `
+              : ` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px )`
+            : '460px'
         }
         {...{
           coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
@@ -86,8 +82,8 @@ export const TradeMenuList = <T extends IBData<I>, I>({
           handleSelect: (_event: any, itemKey: CoinKey<I>) => {
             onChangeEvent(0, {
               ...{ tradeData: { ...tradeData, belong: itemKey } },
-              to: "button",
-            });
+              to: 'button',
+            })
           },
           walletMap: walletMap, //tradeCalcData?.walletMap as any,
           selected,
@@ -96,15 +92,15 @@ export const TradeMenuList = <T extends IBData<I>, I>({
         }}
         ref={ref}
       />
-    );
-  };
+    )
+  }
   return (
     <Box
-      className={"menu-panel"}
-      flexDirection={"column"}
+      className={'menu-panel'}
+      flexDirection={'column'}
       flex={1}
-      height={"100%"}
-      display={"flex"}
+      height={'100%'}
+      display={'flex'}
     >
       <InputSelect
         {...{
@@ -116,5 +112,5 @@ export const TradeMenuList = <T extends IBData<I>, I>({
         }}
       />
     </Box>
-  );
-};
+  )
+}
