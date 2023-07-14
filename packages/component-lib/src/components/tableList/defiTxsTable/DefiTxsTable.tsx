@@ -307,7 +307,6 @@ export const DefiTxsTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-
     React.useEffect(() => {
       // let filters: any = {};
       updateData.cancel()

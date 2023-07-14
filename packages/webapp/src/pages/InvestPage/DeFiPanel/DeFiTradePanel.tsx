@@ -38,6 +38,7 @@ export const DeFiTradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
+
   const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
   const { t } = useTranslation()
   return (
