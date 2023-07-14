@@ -69,8 +69,9 @@ export const DepositToPage = withTranslation(['common'])(
     const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-    const [_depositBtnI18nKey, setDepositBtnI18nKey] =
-      React.useState<BtnInfo | undefined>(undefined)
+    const [_depositBtnI18nKey, setDepositBtnI18nKey] = React.useState<BtnInfo | undefined>(
+      undefined,
+    )
     const [_depositBtnStatus, setDepositBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const { account, status: accountStatus } = useAccount()
     const { onDepositClick, btnInfo, depositBtnStatus, ...restProps } = depositProps
