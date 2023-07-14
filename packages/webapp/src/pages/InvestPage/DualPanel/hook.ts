@@ -110,8 +110,9 @@ export const useDualHook = ({
   )
 
   const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([])
-  const [isDualBalanceSufficient, setIsDualBalanceSufficient] =
-    React.useState<boolean | undefined>(undefined)
+  const [isDualBalanceSufficient, setIsDualBalanceSufficient] = React.useState<boolean | undefined>(
+    undefined,
+  )
   const { tokenMap } = useTokenMap()
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {

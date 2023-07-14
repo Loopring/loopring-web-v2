@@ -34,10 +34,12 @@ export const useHebaoMain = <
   H extends sdk.HebaoOperationLog,
 >() => {
   const { account, status: accountStatus } = useAccount()
-  const [loopringSmartContractWallet, setLoopringSmartContractWallet] =
-    React.useState<boolean | undefined>(undefined)
-  const [nonLoopringSmartContractWallet, setNonLoopringSmartContractWallet] =
-    React.useState<boolean | undefined>(undefined)
+  const [loopringSmartContractWallet, setLoopringSmartContractWallet] = React.useState<
+    boolean | undefined
+  >(undefined)
+  const [nonLoopringSmartContractWallet, setNonLoopringSmartContractWallet] = React.useState<
+    boolean | undefined
+  >(undefined)
 
   const [{ guardianConfig, protectList, guardiansList, operationLogList }, setList] =
     React.useState<{

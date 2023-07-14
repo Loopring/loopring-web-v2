@@ -163,8 +163,9 @@ export const useRedPacketScanQrcodeSuccess = () => {
     account: { apiKey, accountId },
   } = useAccount()
 
-  const [redPacketInfo, setRedPacketInfo] =
-    React.useState<{ hash: string; referrer: string } | undefined>(undefined)
+  const [redPacketInfo, setRedPacketInfo] = React.useState<
+    { hash: string; referrer: string } | undefined
+  >(undefined)
   const getLuckTokenDetail = React.useCallback(async () => {
     if (LoopringAPI.luckTokenAPI && redPacketInfo) {
       setShowAccount({

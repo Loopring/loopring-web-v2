@@ -26,13 +26,12 @@ export const useTradeRace = () => {
   const [eventsList, setEventsList] = React.useState<Array<EventData & { type: string }>>([])
   const [eventStatus, setEventStatus] = React.useState<EVENT_STATUS | undefined>()
 
-  const [countDown, setCountDown] =
-    React.useState<{
-      days: undefined | string
-      hours: undefined | string
-      seconds: undefined | string
-      minutes: undefined | string
-    }>()
+  const [countDown, setCountDown] = React.useState<{
+    days: undefined | string
+    hours: undefined | string
+    seconds: undefined | string
+    minutes: undefined | string
+  }>()
 
   React.useEffect(() => {
     if (baseURL) {

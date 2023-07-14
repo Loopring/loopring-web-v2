@@ -43,10 +43,9 @@ export const useCollectionImport = <
   const [onLoading, setOnLoading] = React.useState<boolean>(false)
 
   // const [contractList, setContractList] = React.useState<string[]>([""]);
-  const [selectContract, setSelectContract] =
-    React.useState<{ value: string; total?: number; list?: sdk.UserNFTBalanceInfo[] } | undefined>(
-      undefined,
-    )
+  const [selectContract, setSelectContract] = React.useState<
+    { value: string; total?: number; list?: sdk.UserNFTBalanceInfo[] } | undefined
+  >(undefined)
   const [filter, setFilter] = React.useState<{
     isLegacy: boolean
     tokenAddress: string
