@@ -76,8 +76,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     makeWalletLayer2({ needFilterZero: true, _isToL1: true }).walletMap ?? ({} as WalletMap<R>),
   )
 
-  const [sureIsAllowAddress, setSureIsAllowAddress] =
-    React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined)
+  const [sureIsAllowAddress, setSureIsAllowAddress] = React.useState<
+    WALLET_TYPE | EXCHANGE_TYPE | undefined
+  >(undefined)
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] = React.useState<boolean>(false)
 
