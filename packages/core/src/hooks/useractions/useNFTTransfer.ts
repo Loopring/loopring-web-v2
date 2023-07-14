@@ -95,8 +95,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { search, pathname } = useLocation()
   const searchParams = new URLSearchParams(search)
 
-  const [sureItsLayer2, setSureItsLayer2] =
-    React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(undefined)
+  const [sureItsLayer2, setSureItsLayer2] = React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(
+    undefined,
+  )
 
   const [feeWithActive, setFeeWithActive] = React.useState(false)
   // const [chargeFeeTransferList, setChargeFeeTransferList] = React.useState([
