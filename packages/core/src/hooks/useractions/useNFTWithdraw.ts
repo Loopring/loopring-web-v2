@@ -91,9 +91,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   })
 
   const { checkHWAddr, updateHW } = useWalletInfo()
-  const [sureIsAllowAddress, setSureIsAllowAddress] = React.useState<
-    EXCHANGE_TYPE | WALLET_TYPE | undefined
-  >(undefined)
+  const [sureIsAllowAddress, setSureIsAllowAddress] =
+    React.useState<EXCHANGE_TYPE | WALLET_TYPE | undefined>(undefined)
 
   const [lastRequest, setLastRequest] = React.useState<any>({})
 
