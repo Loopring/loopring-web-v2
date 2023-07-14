@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 import {
   Box,
   Divider,
@@ -7,13 +7,13 @@ import {
   ListItemProps,
   ListItemText,
   Typography,
-} from "@mui/material";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { SubMenuListProps } from "./Interface";
+} from '@mui/material'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { SubMenuListProps } from './Interface'
 
-import { Link as RouterLink } from "react-router-dom";
-import { L1L2_NAME_DEFINED, MapChainId } from "@loopring-web/common-resources";
-import { useSettings } from "../../../stores";
+import { Link as RouterLink } from 'react-router-dom'
+import { L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
+import { useSettings } from '../../../stores'
 
 export const SubMenuItem = styled<any>(ListItem)`
   border-left: 2px solid transparent;
@@ -66,95 +66,88 @@ export const SubMenuItem = styled<any>(ListItem)`
   //  //border-color:var(--primary);
   //
   //}
-` as (props: ListItemProps<any>) => JSX.Element;
-export const SubMenuList = withTranslation(["layout", "common"], {
+` as (props: ListItemProps<any>) => JSX.Element
+export const SubMenuList = withTranslation(['layout', 'common'], {
   withRef: true,
-})(
-  <I extends any>({
-    t,
-    selected,
-    subMenu,
-  }: SubMenuListProps<I> & WithTranslation<"layout">) => {
-    const { defaultNetwork } = useSettings();
-    const network = MapChainId[defaultNetwork] ?? MapChainId[1];
-    return (
-      <>
-        {Object.keys(subMenu).map((list: any, index) => {
-          const subList = subMenu[list].map((item: any) => {
-            return (
-              <SubMenuItem
-                button
-                selected={new RegExp(item.label.id, "ig").test(selected)}
-                alignItems={item.label.description ? "flex-start" : "center"}
-                key={item.label.id}
-                {...{
-                  component: RouterLink,
-                  to: item.router ? item.router.path : "",
-                  style: { textDecoration: "none" },
-                  // ...props
-                }}
-              >
-                <ListItemAvatar>
-                  <item.icon />
-                </ListItemAvatar>
-                {item.label.description ? (
-                  <ListItemText
-                    primary={
-                      <Typography
-                        sx={{ display: "block" }}
-                        component="span"
-                        variant="body1"
-                      >
-                        {t(item.label.i18nKey, {
-                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                        })}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                      >
-                        {t(item.label.description)}
-                      </Typography>
-                    }
-                  />
-                ) : (
-                  <ListItemText
-                    primary={
-                      <Typography
-                        sx={{ display: "block" }}
-                        color={"text.button"}
-                        component="span"
-                        variant="body1"
-                      >
-                        {t(item.label.i18nKey, {
-                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                        })}
-                      </Typography>
-                    }
-                  />
-                )}
-              </SubMenuItem>
-            );
-          });
+})(<I extends any>({ t, selected, subMenu }: SubMenuListProps<I> & WithTranslation<'layout'>) => {
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  return (
+    <>
+      {Object.keys(subMenu).map((list: any, index) => {
+        const subList = subMenu[list]?.map((item: any) => {
           return (
-            <div key={`group-${list}`}>
-              {subList}
-              {index + 1 !== Object.keys(subMenu).length ? (
-                <Box marginX={3}>
-                  <Divider />
-                </Box>
+            <SubMenuItem
+              button
+              selected={new RegExp(item.label.id, 'ig').test(selected)}
+              alignItems={item.label.description ? 'flex-start' : 'center'}
+              key={item.label.id}
+              {...{
+                component: RouterLink,
+                to: item.router ? item.router.path : '',
+                style: { textDecoration: 'none' },
+                // ...props
+              }}
+            >
+              <ListItemAvatar>
+                <item.icon />
+              </ListItemAvatar>
+              {item.label.description ? (
+                <ListItemText
+                  primary={
+                    <Typography sx={{ display: 'block' }} component='span' variant='body1'>
+                      {t(item.label.i18nKey, {
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      })}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography sx={{ display: 'inline' }} component='span' variant='body2'>
+                      {t(item.label.description)}
+                    </Typography>
+                  }
+                />
               ) : (
-                ""
+                <ListItemText
+                  primary={
+                    <Typography
+                      sx={{ display: 'block' }}
+                      color={'text.button'}
+                      component='span'
+                      variant='body1'
+                    >
+                      {t(item.label.i18nKey, {
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      })}
+                    </Typography>
+                  }
+                />
               )}
-            </div>
-          );
-        })}
-      </>
-    );
-  }
-);
+            </SubMenuItem>
+          )
+        })
+        return (
+          <>
+            {' '}
+            {subList ? (
+              <div key={`group-${list}`}>
+                {subList}
+                {index + 1 !== Object.keys(subMenu).length ? (
+                  <Box marginX={3}>
+                    <Divider />
+                  </Box>
+                ) : (
+                  ''
+                )}
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
+        )
+      })}
+    </>
+  )
+})
