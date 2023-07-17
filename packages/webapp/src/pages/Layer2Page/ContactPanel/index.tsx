@@ -24,14 +24,14 @@ const ContactPageStyle = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `
 
-const Line = styled("div")`
-  border-radius: ${({ t'div'}) => theme.unit / 2}px;
+const Line = styled('div')`
+  border-radius: ${({ theme }) => theme.unit / 2}px;
   height: 1px;
   margin-top: ${({ theme }) => theme.unit * 2}px;
   background: var(--color-divide);
-`;
+`
 
-export enum ContactL3Router
+export enum ContactL3Router {
   list = 'list',
   transactions = 'transactions',
 }
@@ -39,11 +39,7 @@ export enum ContactL3Router
 export const ContactPage = () => {
   let match: any = useRouteMatch('/layer2/contact/:item')
   const view = React.useMemo(() => {
-    return match?.params?.item == 'transactions' ? (
-      <ContactTransactionsPage />
-    ) : (
-      <ContractPanel />
-    )
+    return match?.params?.item == 'transactions' ? <ContactTransactionsPage /> : <ContractPanel />
   }, [match?.params?.item])
   return <>{view}</>
 }
@@ -81,7 +77,7 @@ export const ContractPanel = () => {
     loading,
     showPagination,
     // onScroll
-  } = useContact();
+  } = useContact()
   const { t } = useTranslation()
 
   let totastText = ''
@@ -124,24 +120,12 @@ export const ContractPanel = () => {
   const history = useHistory()
 
   const noContact = (
-    <Box
-      height={'80vh'}
-      display={'flex'}
-      justifyContent={'center'}
-      alignItems={'center'}
-    >
-      <Typography color={'var(--color-text-third)'}>
-        {t('labelContactsNoContact')}
-      </Typography>
+    <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+      <Typography color={'var(--color-text-third)'}>{t('labelContactsNoContact')}</Typography>
     </Box>
-  );
+  )
   const loadingView = (
-    <Box
-      height={'80vh'}
-      display={'flex'}
-      justifyContent={'center'}
-      alignItems={'center'}
-    >
+    <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
       <img
         className='loading-gif'
         alt={'loading'}
@@ -152,10 +136,7 @@ export const ContractPanel = () => {
   )
   const normalView = (
     <>
-      <Box
-        height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`}
-        overflow={'scroll'}
-      >
+      <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={'scroll'}>
         {contacts &&
           contacts.map((data) => {
             const { editing, name, address, avatarURL, addressType } = data
@@ -223,10 +204,7 @@ export const ContractPanel = () => {
                       variant={'outlined'}
                       size={'medium'}
                       onClick={() => {
-                        history.push(
-                          '/layer2/contact/transactions?contactAddress=' +
-                          address,
-                        )
+                        history.push('/layer2/contact/transactions?contactAddress=' + address)
                       }}
                     >
                       {t('labelContactsTransactions')}
@@ -243,7 +221,7 @@ export const ContractPanel = () => {
                   </Button>
                 </Box>
               </Box>
-            );
+            )
           })}
       </Box>
       {showPagination && pagination && (
@@ -255,14 +233,10 @@ export const ContractPanel = () => {
         />
       )}
     </>
-  );
+  )
 
   return (
-    <ContactPageStyle
-      className={'MuiPaper-elevation2'}
-      paddingX={4}
-      paddingY={3}
-    >
+    <ContactPageStyle className={'MuiPaper-elevation2'} paddingX={4} paddingY={3}>
       <Toast
         alertText={totastText}
         severity={toastInfo.isSuccess ? ToastType.success : ToastType.error}
@@ -310,13 +284,9 @@ export const ContractPanel = () => {
       <Box className='table-divide'>
         <Line />
         <Box>
-          {loading
-            ? loadingView
-            : !contacts || contacts.length === 0
-              ? noContact
-              : normalView}
+          {loading ? loadingView : !contacts || contacts.length === 0 ? noContact : normalView}
         </Box>
       </Box>
     </ContactPageStyle>
-  );
-};
+  )
+}

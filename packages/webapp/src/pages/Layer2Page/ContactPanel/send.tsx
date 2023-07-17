@@ -2,13 +2,13 @@
 
 import React from 'react'
 import {
+  Box,
   Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   Typography,
-  Box,
 } from '@mui/material'
 import { Contact, useContactSend } from './hooks'
 import { CheckIcon, CloseIcon, L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
@@ -65,16 +65,17 @@ const SelectNetwork = (props: {
     >
       {icon}
       <Typography marginLeft={1.5}>{text}</Typography>
-      {selected ? <CheckIcon fontSize={'small'} className={'check-ico'small'heckIcon> : u'check-icon'  </BoxWithTriangle>
+      {selected ? <CheckIcon fontSize={'small'} className={'check-icon'} /> : undefined}
+    </BoxWithTriangle>
   )
 }
 
 interface SendDialogProps {
-  onCloseSend: () => void;
+  onCloseSend: () => void
   sendInfo: {
-    open: boolean;
-    selected: Contact | undefined;
-  };
+    open: boolean
+    selected: Contact | undefined
+  }
 }
 
 const CloseIconStyled = styled(CloseIcon)`
@@ -83,22 +84,21 @@ const CloseIconStyled = styled(CloseIcon)`
   transform: translateY(-50%);
   right: ${({ theme }) => theme.unit}px;
   cursor: pointer;
-`;
+`
 
 export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
-  const { submitSendingContact, sendNetwork, setSendNetwork } =
-    useContactSend();
-  const { defaultNetwork } = useSettings();
-  const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ];
-  const theme = useTheme();
-  const { t } = useTranslation();
+  const { submitSendingContact, sendNetwork, setSendNetwork } = useContactSend()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const theme = useTheme()
+  const { t } = useTranslation()
   return (
     <div>
       <Dialog
         maxWidth={'lg'}
         open={sendInfo.open}
         onClose={() => {
-          onCloseSend();
+          onCloseSend()
         }}
       >
         <CloseIconStyled
@@ -106,25 +106,22 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
           fontSize={'large'}
           // style={{ visibility: inputValue ? "visible" : "hidden" }}
           onClick={() => {
-            onCloseSend();
+            onCloseSend()
             // setInputValue('')
           }}
         />
         <DialogTitle>
           <Typography marginTop={3} variant={'h3'} textAlign={'center'}>
             {t('labelContactsNetworkChoose', {
-              loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
-              l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
-              l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
-              ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
-              loopringLayer2: L1L2_NAME_DEFINED[ network ].loopringLayer2,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
             })}
           </Typography>
         </DialogTitle>
-        <DialogContent
-          sx={{ paddingX: 4 }}
-          style={{ width: 'var(--modal-width)' }}
-        >
+        <DialogContent sx={{ paddingX: 4 }} style={{ width: 'var(--modal-width)' }}>
           <Box paddingX={2}>
             <Box marginTop={6}>
               <TextField
@@ -146,21 +143,21 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
             <Box display={'flex'} marginBottom={10} marginTop={5}>
               <SelectNetwork
                 onClick={() => {
-                  setSendNetwork('L1');
+                  setSendNetwork('L1')
                 }}
                 style={{ marginRight: '4%', width: '48%' }}
                 selected={sendNetwork === 'L1'}
                 text={'Ethereum/L1'}
-                icon={<CoinIcon size={32} symbol={'ETH'}></CoinIcon>}
+                icon={<CoinIcon size={32} symbol={'ETH'} />}
               />
               <SelectNetwork
                 onClick={() => {
-                  setSendNetwork('L2');
+                  setSendNetwork('L2')
                 }}
                 style={{ width: '48%' }}
                 selected={sendNetwork === 'L2'}
                 text={'Loopring/L2'}
-                icon={<CoinIcon size={32} symbol={'LRC'}></CoinIcon>}
+                icon={<CoinIcon size={32} symbol={'LRC'} />}
               />
             </Box>
           </Box>
@@ -168,11 +165,11 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
         <DialogActions>
           <Box width={'100%'} paddingX={2} paddingBottom={2}>
             <Button
-              variant="contained"
+              variant='contained'
               onClick={() => {
                 submitSendingContact(sendInfo.selected!, sendNetwork, () => {
-                  onCloseSend();
-                });
+                  onCloseSend()
+                })
               }}
               fullWidth
             >
@@ -182,5 +179,5 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
         </DialogActions>
       </Dialog>
     </div>
-  );
-};
+  )
+}

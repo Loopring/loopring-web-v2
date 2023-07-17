@@ -2,14 +2,14 @@
 
 import React from 'react'
 import {
+  Box,
   Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Typography,
-  Box,
+  DialogContent,
+  DialogTitle,
   IconButton,
+  Typography,
 } from '@mui/material'
 import { Contact } from './hooks'
 import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources'
@@ -28,40 +28,50 @@ interface DeleteDialogProps {
 }
 
 export const Delete: React.FC<DeleteDialogProps> = (props) => {
-  const { deleteInfo, onCloseDelete, submitDeleteContact, loading } = props;
+  const { deleteInfo, onCloseDelete, submitDeleteContact, loading } = props
 
-  cnst theme = useTheme();
-  cost { t } = useTranslation();
+  const theme = useTheme()
+  const { t } = useTranslation()
 
-  rturn (
+  return (
     <div>
       <Dialog
         open={deleteInfo.open}
         onClose={() => {
-          onCloseDelete();
-       }}
+          onCloseDelete()
+        }}
       >
         <DialogTitle>
-          <Typography variant={"h3"} 'h3'Align={"cente'center'         {t("label'labelContactsDeleteContact'       </Typography>
+          <Typography variant={'h3'} textAlign={'center'}>
+            {t('labelContactsDeleteContact')}
+          </Typography>
           <IconButton
-            size={"mediu'medium'        sx={{
-              position: "absol'absolute'          right: 8,
+            size={'medium'}
+            sx={{
+              position: 'absolute',
+              right: 8,
               top: 8,
             }}
-            color={"inher'inherit'        onClick={() => {
-              onCloseDelete();
-           }}
+            color={'inherit'}
+            onClick={() => {
+              onCloseDelete()
+            }}
           >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent style={{ width: "var(-'var(--modal-width)'         <Box marginBottom={12} marginTop={6}>
+        <DialogContent style={{ width: 'var(--modal-width)' }}>
+          <Box marginBottom={12} marginTop={6}>
             <TextField
-              label={t("label'labelDeleteContactInfo'           style={{
-                backgroundColor: "var(-'var(--box-card-decorate)'          }}
-              color={"prima'primary'          InputProps={{
+              label={t('labelDeleteContactInfo')}
+              style={{
+                backgroundColor: 'var(--box-card-decorate)',
+              }}
+              color={'primary'}
+              InputProps={{
                 style: {
-                  background: "var(-'var(--field-opacity)'              height: `${theme.unit * 6}px`,
+                  background: 'var(--field-opacity)',
+                  height: `${theme.unit * 6}px`,
                 },
               }}
               fullWidth
@@ -72,20 +82,13 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
         <DialogActions>
           <Box width={'100%'} flexDirection={'column'} display={'flex'}>
             <Button
-              variant="contained"
+              variant='contained'
               onClick={() => {
-                submitDeleteContact!(
-                  deleteInfo.selected!.address,
-                  deleteInfo.selected!.name
-                );
+                submitDeleteContact!(deleteInfo.selected!.address, deleteInfo.selected!.name)
               }}
               fullWidth
             >
-              {loading ? (
-                <LoadingIcon></LoadingIcon>
-              ) : (
-                t('labelContactsDeleteContactBtn')
-              )}
+              {loading ? <LoadingIcon></LoadingIcon> : t('labelContactsDeleteContactBtn')}
             </Button>
             <Box></Box>
             <Button
@@ -96,7 +99,7 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
               }}
               color={'info'}
               onClick={() => {
-                onCloseDelete();
+                onCloseDelete()
               }}
             >
               {t('labelCancel')}
@@ -105,5 +108,5 @@ export const Delete: React.FC<DeleteDialogProps> = (props) => {
         </DialogActions>
       </Dialog>
     </div>
-  );
-};
+  )
+}

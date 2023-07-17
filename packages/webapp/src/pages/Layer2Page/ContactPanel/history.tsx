@@ -39,7 +39,7 @@ export const ContactTransactionsPage = withTranslation('common')(
     } = useContractRecord(setToastOpen)
 
     return (
-      <Box fex={1} display={'flex'} flexDirection={'column'}>
+      <Box flex={1} display={'flex'} flexDirection={'column'}>
         <Box marginBottom={2}>
           <Button
             startIcon={<BackIcon fontSize={'small'} />}

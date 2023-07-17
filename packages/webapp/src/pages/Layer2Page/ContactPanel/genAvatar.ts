@@ -8,23 +8,19 @@ export const getRandomColor = () => {
 }
 
 const getInitials = (name: string) => {
-  let initials;
- const nameSplit = name.split(" ' '
- const nameLength = nameSplit.length;
- if (nameLength > 1) {
-    initials =
-      nameSplit[ 0 ].substring(0, 1) + nameSplit[ nameLength - 1 ].substring(0, 1);
- } else if (nameLength === 1) {
-    initials = nameSplit[ 0 ].substring(0, 1);
- } else return;
-  return initials.toUpperCase();
-;
+  let initials
+  const nameSplit = name.split(' ')
+  const nameLength = nameSplit.length
+  if (nameLength > 1) {
+    initials = nameSplit[0].substring(0, 1) + nameSplit[nameLength - 1].substring(0, 1)
+  } else if (nameLength === 1) {
+    initials = nameSplit[0].substring(0, 1)
+  } else return
 
-export const createImageFromInitials = (
-  size: number,
-  _name: string,
-  color: string,
-) => {
+  return initials.toUpperCase()
+}
+
+export const createImageFromInitials = (size: number, _name: string, color: string) => {
   if (_name == null) return
   const name = getInitials(_name)!
 

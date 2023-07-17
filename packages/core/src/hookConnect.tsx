@@ -32,7 +32,6 @@ import {
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-
 import { accountReducer, useAccount } from './stores/account'
 import { useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
@@ -43,7 +42,6 @@ import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
 import EthereumProvider from '@walletconnect/ethereum-provider'
-import { useTheme } from '@emotion/react'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
@@ -141,7 +139,6 @@ export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
   }
 ` as typeof OutlineSelectItem
 const Icon = ({ label = '' }: { label: string }) => {
-  const theme = useTheme()
   switch (label) {
     case 'GOERLI':
       return (
