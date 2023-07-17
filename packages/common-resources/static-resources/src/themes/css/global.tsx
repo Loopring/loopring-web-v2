@@ -4,7 +4,6 @@ import reset from './reset'
 import InterMedium from '../fonts/english/Inter-Medium.ttf'
 // @ts-ignore
 // import GilroyMedium from '../fonts/english/DINCondensed.ttf';
-import DINCondensed from '../fonts/english/DINCondensed/363123_0_0.ttf'
 
 import { ColorDarkDefault, ColorLightDefault, hexToRGB } from './color-lib'
 
@@ -144,6 +143,7 @@ export const scrollbarDefault = ({ theme }: any) => css`
 export const globalCss = ({ theme }: any) => css`
   ${colorBase({ theme })}
   ${scrollbarDefault({ theme })};
+
   ${reset}
   #root {
     display: flex;
@@ -276,6 +276,7 @@ export const globalCss = ({ theme }: any) => css`
     --redPacket-avatar: 72px;
     --notification-activited-heigth: 80px;
     --modal-min-width: 340px;
+    --carousel-dot-size: 14px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;

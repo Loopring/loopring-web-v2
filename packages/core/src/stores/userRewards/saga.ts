@@ -1,35 +1,59 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
 
-import { store, LoopringAPI, makeSummaryMyAmm } from '../../index'
-import { AccountStatus, CustomError, ErrorMap } from '@loopring-web/common-resources'
+import { LoopringAPI, makeClaimRewards, makeSummaryMyAmm, store } from '../../index'
+import { AccountStatus, myLog } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 const getUserRewardsApi = async () => {
-  const { accountId } = store.getState().account
+  const { accountId, apiKey, readyState } = store.getState().account
   let { __timer__ } = store.getState().userRewardsMap
-  if (LoopringAPI.ammpoolAPI && accountId) {
+  if (LoopringAPI.ammpoolAPI && LoopringAPI.userAPI && accountId) {
     let ammUserRewardMap = {},
+      _totalClaims = [],
       result: any = {}
     try {
-      const response = await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({
-        owner: accountId,
-      })
-      if (
-        response &&
-        ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
-      ) {
-        throw new CustomError(ErrorMap.ERROR_UNKNOWN)
-      }
-      ammUserRewardMap = response.ammUserRewardMap
+      ;[ammUserRewardMap, _totalClaims] = await Promise.all([
+        LoopringAPI.ammpoolAPI
+          .getAmmPoolUserRewards({
+            owner: accountId,
+          })
+          .then((response) => {
+            if (
+              response &&
+              ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+            ) {
+              // throw new CustomError(ErrorMap.ERROR_UNKNOWN)
+              return {}
+            }
+            return response.ammUserRewardMap
+          }),
+        LoopringAPI.userAPI
+          .getUserTotalClaim(
+            {
+              accountId: accountId,
+            },
+            apiKey,
+          )
+          .then((response) => {
+            myLog('totalClaims', response)
 
-      const { readyState } = store.getState().account
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+              // throw response as sdk.RESULT_INFO
+              return []
+            }
+            //TODO:
+            // @ts-ignore
+            return response?.raw_data?.data[0]?.items
+          }),
+      ])
+      // myLog('totalClaims', _totalClaims)
       if (readyState === AccountStatus.ACTIVATED) {
         result = makeSummaryMyAmm({
           userRewardsMap: ammUserRewardMap,
         })
       }
-
+      const totalClaims = makeClaimRewards(_totalClaims ?? [])
       __timer__ = ((__timer__) => {
         if (__timer__ && __timer__ !== -1) {
           clearInterval(__timer__)
@@ -38,14 +62,27 @@ const getUserRewardsApi = async () => {
           store.dispatch(getUserRewards(undefined))
         }, 300000 * 4)
       })(__timer__)
-    } catch (e) {
-      ammUserRewardMap = {}
+      return {
+        data: { userRewardsMap: ammUserRewardMap, totalClaims, ...result },
+        __timer__,
+      }
+    } catch (error) {
+      throw error
+      // let errorItem
+      // if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
+      //   errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
+      // } else {
+      //   errorItem = SDK_ERROR_MAP_TO_UI[700012]
+      // }
+      // setToastOpen({
+      //   open: true,
+      //   type: ToastType.error,
+      //   content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
+      // })
     }
-
-    return {
-      data: { userRewardsMap: ammUserRewardMap, ...result },
-      __timer__,
-    }
+    // catch (e) {
+    //   ammUserRewardMap = {}
+    // }
   } else {
     if (__timer__ && __timer__ !== -1) {
       clearInterval(__timer__)

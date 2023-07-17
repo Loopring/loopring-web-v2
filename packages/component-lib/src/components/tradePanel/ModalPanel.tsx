@@ -46,7 +46,7 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
   flex-direction: column;
   justify-content: center;
   ${({ theme }) => modalContentBaseStyle({ theme: theme })}
-  background: ${({ theme }) => theme.colorBase.box};
+  background: var(--color-pop-bg);
 
   .trade-wrap {
     margin-top: -26px;

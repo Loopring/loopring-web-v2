@@ -11,6 +11,7 @@ import { ProviderMenuProps } from './Interface'
 import {
   CheckBoxIcon,
   CheckedIcon,
+  ConvertToIcon,
   GatewayItem,
   LOOPRING_DOCUMENT,
   myLog,
@@ -61,6 +62,7 @@ export const ProviderMenu = ({
   termUrl,
   handleSelect,
   NetWorkItems,
+  status,
   providerName = loopringProvider.ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
   const { isMobile, defaultNetwork } = useSettings()
@@ -105,6 +107,7 @@ export const ProviderMenu = ({
     },
     [providerName],
   )
+  const loadingGif = './static/loading-1.gif'
   // const  !==  loopringProvider.ConnectProviders.Unknown
   return (
     <BoxContent
@@ -196,16 +199,45 @@ export const ProviderMenu = ({
                 item.key == loopringProvider.ConnectProviders.GameStop &&
                 ![1, 5].includes(Number(defaultNetwork))
               }
+              loadingbg={'var(--field-opacity)'}
+              loading={status === 'processing' && isProvider(item.key) ? 'true' : 'false'}
               className={`${isMobile ? 'isMobile' : ''} ${
                 isProvider(item.key) ? 'selected provider ' : 'provider'
               }`}
               fullWidth
-              endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
               onClick={(e) => {
                 _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect)
               }}
+              endIcon={
+                status === 'processing' && isProvider(item.key) ? (
+                  <Typography
+                    display={'flex'}
+                    component={'span'}
+                    alignItems={'center'}
+                    color={'var(--color-text-third)'}
+                    variant={'body2'}
+                    className={'loading'}
+                  >
+                    <img src={loadingGif} height={24} />
+                    <Typography component={'span'} variant={'inherit'}>
+                      {t('labelConnecting')}
+                    </Typography>
+                  </Typography>
+                ) : (
+                  <ConvertToIcon fontSize={'medium'} color={'inherit'} />
+                )
+              }
             >
-              {t(item.keyi18n)}
+              <Typography
+                color={'inherit'}
+                component={'span'}
+                display={'inline-flex'}
+                fontSize={'inherit'}
+                alignItems={'center'}
+              >
+                <img src={item.imgSrc} alt={item.key} height={36} />
+                <span> {t(item.keyi18n)}</span>
+              </Typography>
             </MenuBtnStyled>
           </Box>
         ))}

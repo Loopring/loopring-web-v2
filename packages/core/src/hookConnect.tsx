@@ -17,6 +17,9 @@ import {
 } from '@loopring-web/web3-provider'
 import {
   AccountStatus,
+  ChainETHEREUMIcon,
+  ChainGOERLIIcon,
+  ChainTAIKOIcon,
   DropDownIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
@@ -29,14 +32,13 @@ import {
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-
 import { accountReducer, useAccount } from './stores/account'
 import { useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { store, WalletConnectL2Btn } from './index'
 import { useTranslation } from 'react-i18next'
-import { Box, SelectChangeEvent, Typography } from '@mui/material'
+import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -44,14 +46,24 @@ import EthereumProvider from '@walletconnect/ethereum-provider'
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
     background: var(--field-opacity);
-    height: var(--input-height-large);
+    height: var(--row-height);
+  }
+
+  .MuiAvatar-root {
+    background: var(--color-white);
+    margin-right: ${({ theme }) => theme.unit}px;
+    width: 24px;
+    height: 24px;
   }
 
   // .MuiSelect-select {
   //   padding-left: ${({ theme }) => theme.unit * 3}px;
   // }
+  //.MuiAvatar-root{
+  //  height:
+  //}
 
-  &.test .MuiSelect-outlined span {
+  &.test .MuiSelect-outlined .label {
     background: var(--network-bg);
     display: inline-flex;
     padding: 3px 4px;
@@ -70,6 +82,8 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
   .MuiSelect-outlined.MuiSelect-outlined {
     padding-right: ${({ theme }) => theme.unit * 3}px;
     padding-left: ${({ theme }) => theme.unit * 3}px;
+    display: inline-flex;
+    align-items: center;
   }
 
   &.mobile .MuiSelect-outlined.MuiSelect-outlined {
@@ -77,21 +91,44 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     padding-right: ${({ theme }) => theme.unit * 2}px;
   }
 
-  &.header.mobile {
-    padding-left: 0;
-    padding-right: 0;
-    position: relative;
+  &.header {
+    .MuiSelect-outlined {
+      .MuiAvatar-root {
+        display: none;
+      }
+    }
 
-    .MuiSelect-icon {
-      position: absolute;
-      top: 85%;
-      left: 50%;
-      transform: translateX(-50%);
+    &.mobile {
+      .MuiAvatar-root {
+        display: flex;
+      }
+
+      .label {
+        display: none;
+      }
+
+      padding-left: 0;
+      padding-right: ${({ theme }) => theme.unit * 4}px;
+      position: relative;
+
+      //.MuiSelect-icon {
+      //  position: absolute;
+      //  top: 85%;
+      //  left: 50%;
+      //  transform: translateX(-50%);
+      //}
     }
   }
 ` as typeof OutlineSelect
 export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
-  &.provider-test {
+  .MuiAvatar-root {
+    width: 20px;
+    height: 20px;
+    background: var(--color-white);
+    margin-right: ${({ theme }) => theme.unit}px;
+  }
+
+  &.provider-test .label {
     &:after {
       content: ' test';
       padding-left: 0.5em;
@@ -101,7 +138,34 @@ export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
     }
   }
 ` as typeof OutlineSelectItem
-
+const Icon = ({ label = '' }: { label: string }) => {
+  switch (label) {
+    case 'GOERLI':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainGOERLIIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    case 'ETHEREUM':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainETHEREUMIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    case 'TAIKO':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainTAIKOIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    default:
+      return (
+        <Avatar component={'span'} variant='circular'>
+          {label}
+        </Avatar>
+      )
+  }
+}
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } = useSettings()
@@ -186,7 +250,10 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
                   value={id}
                   key={'viewNetwork' + NetworkMap[id] + index}
                 >
-                  <span>{t(NetworkMap[id].label)}</span>
+                  <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
+                    <Icon label={MapChainId[id]} />
+                    <span className={'label'}>{t(NetworkMap[id].label)}</span>
+                  </Typography>
                 </OutlineSelectItemStyle>,
               )
             }
@@ -325,7 +392,8 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
       statusAccountUnset()
       setShowAccount({ isShow: false })
-      if (
+      if (props?.opts?.error?.code === -32002) {
+      } else if (
         props?.opts?.connectName === ConnectProviders.WalletConnect &&
         props?.opts?.error &&
         props?.opts?.error?.code === UIERROR_CODE.ERROR_WALLECTCONNECT_MANUALLY_CLOSE
@@ -336,13 +404,13 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         //   step: WalletConnectStep.RejectConnect,
         // });
       } else {
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.FailedConnect,
-          error: {
-            ...props.opts.error,
-          } as sdk.RESULT_INFO,
-        })
+        // setShowConnect({
+        //   isShow: true,
+        //   step: WalletConnectStep.FailedConnect,
+        //   error: {
+        //     ...props.opts.error,
+        //   } as sdk.RESULT_INFO,
+        // })
       }
     },
     [

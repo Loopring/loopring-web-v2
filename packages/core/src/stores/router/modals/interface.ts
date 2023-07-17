@@ -45,8 +45,8 @@ export type TransferData = {
 
 export type ClaimData = {
   belong: string | undefined
-  tradeValue: number | undefined
-  balance: number | undefined
+  tradeValue: string | number | undefined
+  balance: string | number | undefined
   fee: FeeInfo | undefined
   address: string | undefined
   volume: string | undefined

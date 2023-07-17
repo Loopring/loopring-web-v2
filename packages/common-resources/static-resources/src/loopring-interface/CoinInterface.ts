@@ -1,8 +1,6 @@
 import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constant'
 import * as sdk from '@loopring-web/loopring-sdk'
 import React from 'react'
-import { AmmPoolInfoV3, TickerData } from '@loopring-web/loopring-sdk'
-import { AmmPoolStat } from '@loopring-web/loopring-sdk/dist/defs'
 
 export type CoinKey<R> = keyof R
 export type PairKey<P> = keyof P
@@ -51,6 +49,7 @@ export enum TokenType {
   dual = 'dual',
   nft = 'nft',
 }
+
 export type PairMap<
   R extends { [key: string]: any },
   P = { coinA: CoinInfo<R>; coinB: CoinInfo<R> },
@@ -100,10 +99,12 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: undefined | false
   isShowBtradeAllow?: boolean
 }
+
 export enum BtradeType {
   Quantity = 'Quantity',
   Speed = 'Speed',
 }
+
 export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true
   maxFeeBips: number
@@ -271,9 +272,9 @@ export type AmmDetail<T> = AmmDetailBase<T> & {
   stob: string
   btos: string
   tradeFloat: Partial<TradeFloat>
-  __rawConfig__: AmmPoolInfoV3
-  __ammPoolState__: AmmPoolStat
-} & AmmPoolInfoV3
+  __rawConfig__: sdk.AmmPoolInfoV3
+  __ammPoolState__: sdk.AmmPoolStat
+} & sdk.AmmPoolInfoV3
 
 export type AmmCardProps<T> = AmmDetail<T> & {
   activity: AmmActivity<T>
@@ -500,7 +501,7 @@ export type Ticker = TradeFloat & {
   volume: number | string
   base: string
   quote: string
-  __rawTicker__: TickerData
+  __rawTicker__: sdk.TickerData
 }
 export type NetworkItemInfo = {
   label: string

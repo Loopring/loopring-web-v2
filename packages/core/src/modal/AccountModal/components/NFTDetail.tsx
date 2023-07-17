@@ -60,10 +60,12 @@ import { StylePaper } from '../../../component'
 import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router'
+
 enum NFTDetailTab {
   Detail = 'Detail',
   Property = 'Property',
 }
+
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg-opacity);
   img {
