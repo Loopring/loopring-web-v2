@@ -189,7 +189,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 request: request as sdk.OriginClaimRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === 'unknown' ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[ connectName ] ??
+                walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -206,7 +206,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 request: request as sdk.OriginStakeClaimRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === 'unknown' ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[ connectName ] ??
+                walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
