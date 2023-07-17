@@ -65687,4 +65687,4 @@ export const testKlineData = [
     close: 51.08,
     volume: 2630306,
   },
-];
+]

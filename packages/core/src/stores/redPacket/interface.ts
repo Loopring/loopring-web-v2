@@ -1,7 +1,7 @@
-import { StateBase } from "@loopring-web/common-resources";
+import { StateBase } from '@loopring-web/common-resources'
 
-export type RedPacketConfig = any;
+export type RedPacketConfig = any
 export type RedPacketConfigStates = {
-  redPacketConfigs: RedPacketConfig;
-  __timer__?: number;
-} & StateBase;
+  redPacketConfigs: RedPacketConfig
+  __timer__?: number
+} & StateBase

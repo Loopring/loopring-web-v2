@@ -1,4 +1,4 @@
 export type FooterInterface = {
-  linkName: string;
-  linkHref: string;
-};
+  linkName: string
+  linkHref: string
+}

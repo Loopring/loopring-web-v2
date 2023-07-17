@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   Approve_Failed,
   Approve_Success,
@@ -14,11 +14,11 @@ import {
   Reject_Success,
   Reject_User_Denied,
   Reject_WaitForAuth,
-} from "@loopring-web/component-lib";
-import React from "react";
-import { useSystem } from "@loopring-web/core";
+} from '@loopring-web/component-lib'
+import React from 'react'
+import { useSystem } from '@loopring-web/core'
 
-export const ModalLock = withTranslation("common")(
+export const ModalLock = withTranslation('common')(
   ({
     onClose,
     onBack,
@@ -29,66 +29,63 @@ export const ModalLock = withTranslation("common")(
     handleOpenModal,
     ...rest
   }: {
-    open: boolean;
-    step: GuardianStep;
-    handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
-    onBack?: () => void;
-    options: any;
+    open: boolean
+    step: GuardianStep
+    handleOpenModal: (props: { step: GuardianStep; options?: any }) => void
+    onBack?: () => void
+    options: any
     onClose: {
-      bivarianceHack(
-        event: {},
-        reason: "backdropClick" | "escapeKeyDown"
-      ): void;
-    }["bivarianceHack"];
+      bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void
+    }['bivarianceHack']
   } & WithTranslation) => {
-    const { etherscanBaseUrl } = useSystem();
+    const { etherscanBaseUrl } = useSystem()
     const backToLockAccountBtnInfo = React.useMemo(() => {
-      const _options = options;
+      const _options = options
       return {
-        btnTxt: "labelRetry",
+        btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.LockAccount_WaitForAuth });
+          handleOpenModal({ step: GuardianStep.LockAccount_WaitForAuth })
           if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams);
+            _options.lockRetry(_options.lockRetryParams)
           }
         },
-      };
-    }, [handleOpenModal, options]);
+      }
+    }, [handleOpenModal, options])
     const backToRejectBtnInfo = React.useMemo(() => {
-      const _options = options;
+      const _options = options
       return {
-        btnTxt: "labelRetry",
+        btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.Reject_WaitForAuth });
+          handleOpenModal({ step: GuardianStep.Reject_WaitForAuth })
           if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams);
+            _options.lockRetry(_options.lockRetryParams)
           }
         },
-      };
-    }, [handleOpenModal, options]);
+      }
+    }, [handleOpenModal, options])
     const backToApproveBtnInfo = React.useMemo(() => {
-      const _options = options;
+      const _options = options
       return {
-        btnTxt: "labelRetry",
+        btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.Approve_WaitForAuth });
+          handleOpenModal({ step: GuardianStep.Approve_WaitForAuth })
           if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams);
+            _options.lockRetry(_options.lockRetryParams)
           }
         },
-      };
-    }, [handleOpenModal, options]);
+      }
+    }, [handleOpenModal, options])
 
     const closeBtnInfo = React.useMemo(() => {
       return {
-        btnTxt: "labelClose",
+        btnTxt: 'labelClose',
         callback: (e: any) => {
           if (onClose) {
-            onClose(e, "escapeKeyDown");
+            onClose(e, 'escapeKeyDown')
           }
         },
-      };
-    }, [onClose]);
+      }
+    }, [onClose])
 
     const accountList = React.useMemo(() => {
       return Object.values({
@@ -225,8 +222,8 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-      });
-    }, []);
+      })
+    }, [])
 
     return (
       <>
@@ -239,6 +236,6 @@ export const ModalLock = withTranslation("common")(
           etherscanBaseUrl={etherscanBaseUrl}
         />
       </>
-    );
-  }
-);
+    )
+  },
+)

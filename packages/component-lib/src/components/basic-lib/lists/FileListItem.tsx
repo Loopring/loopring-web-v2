@@ -1,18 +1,7 @@
-import {
-  Box,
-  IconButton,
-  ListItem,
-  ListItemText,
-  Typography,
-} from "@mui/material";
-import {
-  CloseIcon,
-  CompleteIcon,
-  FailedIcon,
-  LoadingIcon,
-} from "@loopring-web/common-resources";
-import React, { ForwardedRef } from "react";
-import { IpfsFile } from "../panel";
+import { Box, IconButton, ListItem, ListItemText, Typography } from '@mui/material'
+import { CloseIcon, CompleteIcon, FailedIcon, LoadingIcon } from '@loopring-web/common-resources'
+import React, { ForwardedRef } from 'react'
+import { IpfsFile } from '../panel'
 
 export const FileListItem = React.memo(
   React.forwardRef(
@@ -24,60 +13,52 @@ export const FileListItem = React.memo(
         isProcessing,
         error,
       }: IpfsFile & {
-        onDelete: () => void;
-        index: number;
+        onDelete: () => void
+        index: number
       },
-      ref: ForwardedRef<any>
+      ref: ForwardedRef<any>,
     ) => {
       return (
         <ListItem
           ref={ref}
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
           <ListItemText
             primary={
-              <Typography
-                sx={{ display: "block" }}
-                component="span"
-                variant="body1"
-              >
+              <Typography sx={{ display: 'block' }} component='span' variant='body1'>
                 {file.name}
               </Typography>
             }
             secondary={
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body2"
-              >
+              <Typography sx={{ display: 'inline' }} component='span' variant='body2'>
                 size: {file.size}
               </Typography>
             }
           />
           <Box
-            className={"status"}
-            display={"flex"}
-            justifyContent={"flex-end"}
-            alignItems={"center"}
+            className={'status'}
+            display={'flex'}
+            justifyContent={'flex-end'}
+            alignItems={'center'}
           >
-            <Typography color={"primay"}>
+            <Typography color={'primay'}>
               {isProcessing ? (
-                <LoadingIcon color={"inherit"} />
+                <LoadingIcon color={'inherit'} />
               ) : error ? (
-                <FailedIcon color={"error"} />
+                <FailedIcon color={'error'} />
               ) : (
-                <CompleteIcon color={"success"} />
+                <CompleteIcon color={'success'} />
               )}
             </Typography>
-            <IconButton edge={"end"} onClick={onDelete}>
-              <CloseIcon color={"error"} />
+            <IconButton edge={'end'} onClick={onDelete}>
+              <CloseIcon color={'error'} />
             </IconButton>
           </Box>
         </ListItem>
-      );
-    }
-  )
-);
+      )
+    },
+  ),
+)

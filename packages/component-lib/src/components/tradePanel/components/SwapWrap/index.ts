@@ -2,6 +2,6 @@
 // please do not export this index to global
 
 // export * from './Interface'
-export * from "./SwapTradeWrap";
-export * from "./SwapMenuList";
-export * from "./Interface";
+export * from './SwapTradeWrap'
+export * from './SwapMenuList'
+export * from './Interface'

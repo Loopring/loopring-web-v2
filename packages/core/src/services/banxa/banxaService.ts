@@ -1,20 +1,20 @@
-import * as sdk from "@loopring-web/loopring-sdk";
-import { ChainId } from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "../../api_wrapper";
+import * as sdk from '@loopring-web/loopring-sdk'
+import { ChainId } from '@loopring-web/loopring-sdk'
+import { LoopringAPI } from '../../api_wrapper'
 import {
   Account,
   BANXA_URLS,
   BanxaOrder,
   myLog,
   VendorProviders,
-} from "@loopring-web/common-resources";
-import { resetTransferBanxaData, store } from "../../stores";
-import { Subject } from "rxjs";
-import { offFaitService } from "./offFaitService";
+} from '@loopring-web/common-resources'
+import { resetTransferBanxaData, store } from '../../stores'
+import { Subject } from 'rxjs'
+import { offFaitService } from './offFaitService'
 import {
   // AccountStep,
   setShowAccount,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 
 export enum BalanceReason {
   Balance = 0,
@@ -45,15 +45,14 @@ export const banxaApiCall = async ({
   chainId,
   account,
 }: {
-  url: string;
-  query: URLSearchParams | string | string[][];
-  payload: object | undefined;
-  method: sdk.ReqMethod;
-  chainId: ChainId;
-  account: Account;
+  url: string
+  query: URLSearchParams | string | string[][]
+  payload: object | undefined
+  method: sdk.ReqMethod
+  chainId: ChainId
+  account: Account
 }): Promise<{ data: any }> => {
-  const querys =
-    url + (query ? "?" + new URLSearchParams(query).toString() : "");
+  const querys = url + (query ? '?' + new URLSearchParams(query).toString() : '')
   const { result } = (await LoopringAPI.globalAPI?.getBanxaAPI(
     {
       url: BANXA_URLS[chainId as number],
@@ -63,22 +62,22 @@ export const banxaApiCall = async ({
       payload: JSON.stringify(payload),
     },
     account.eddsaKey.sk,
-    account.apiKey
-  )) ?? { result: null };
-  let data: any;
+    account.apiKey,
+  )) ?? { result: null }
+  let data: any
   try {
     // @ts-ignore
-    data = JSON.parse(result)?.data;
+    data = JSON.parse(result)?.data
   } catch (e) {}
-  return { data };
-};
+  return { data }
+}
 
 const subject = new Subject<{
-  status: BanxaCheck;
+  status: BanxaCheck
   data?: {
-    [key: string]: any;
-  };
-}>();
+    [key: string]: any
+  }
+}>()
 export const banxaService = {
   banxaCheckHavePending: async () => {
     const {
@@ -86,33 +85,28 @@ export const banxaService = {
       system: { chainId },
       localStore: { offRampHistory },
       // modals:{isShowAccount}
-    } = store.getState();
+    } = store.getState()
     if (
       offRampHistory[chainId][account.accAddress] &&
       offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
-      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-        "pending"
-      ]
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa]['pending']
     ) {
-      const _order =
-        offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-          "pending"
-        ];
+      const _order = offRampHistory[chainId][account.accAddress][VendorProviders.Banxa]['pending']
       const { data } = await banxaApiCall({
         chainId: chainId as ChainId,
         method: sdk.ReqMethod.GET,
         url: `/api/orders/${_order.orderId}`,
-        query: "",
+        query: '',
         payload: {},
         account,
-      });
+      })
       if (data) {
-        myLog("banxa Check Have Pending", data.order);
+        myLog('banxa Check Have Pending', data.order)
 
         offFaitService.banxaCheckStatus({
           data: data.order,
-        });
-        return data;
+        })
+        return data
       }
     }
   },
@@ -122,7 +116,7 @@ export const banxaService = {
       system: { chainId },
       localStore: { offRampHistory },
       // modals:{isShowAccount}
-    } = store.getState();
+    } = store.getState()
 
     // let banxa: any = undefined;
     // try {
@@ -137,18 +131,12 @@ export const banxaService = {
     //     data: "Banxa SKD is not ready",
     //   });
     // }
-    store.dispatch(
-      setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } })
-    );
+    store.dispatch(setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } }))
     if (
       offRampHistory[chainId][account.accAddress] &&
       offRampHistory[chainId][account.accAddress][VendorProviders.Banxa] &&
-      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-        "pending"
-      ] &&
-      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-        "pending"
-      ].checkout_iframe
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa]['pending'] &&
+      offRampHistory[chainId][account.accAddress][VendorProviders.Banxa]['pending'].checkout_iframe
     ) {
       // const url =
       //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
@@ -157,7 +145,7 @@ export const banxaService = {
       // myLog("iframeBanxaTarget checkout_iframe", url);
       // banxa.generateIframe("#iframeBanxaTarget", url, false);
     } else {
-      banxaService.banxaStart(true);
+      banxaService.banxaStart(true)
     }
   },
   banxaStart: async (_createNew = false) => {
@@ -165,69 +153,64 @@ export const banxaService = {
       account,
       system: { chainId },
       // localStore: { offRampHistory },
-    } = store.getState();
-    let banxa: any = undefined;
+    } = store.getState()
+    let banxa: any = undefined
     try {
       // @ts-ignore
-      banxa = new window.Banxa(
-        "loopring",
-        chainId == ChainId.GOERLI ? "sandbox" : ""
-      );
+      banxa = new window.Banxa('loopring', chainId == ChainId.GOERLI ? 'sandbox' : '')
     } catch (e) {
       banxaService.banxaEnd({
         reason: OrderENDReason.BanxaNotReady,
-        data: "Banxa SKD is not ready",
-      });
-      return;
+        data: 'Banxa SKD is not ready',
+      })
+      return
     }
-    store.dispatch(
-      setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } })
-    );
-    const anchor: any = window.document.querySelector("#iframeBanxaTarget");
+    store.dispatch(setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } }))
+    const anchor: any = window.document.querySelector('#iframeBanxaTarget')
     // anchor.querySelector("anchor");
     if (anchor && banxa) {
-      anchor.style.display = "flex";
+      anchor.style.display = 'flex'
       try {
         const { data } = await banxaApiCall({
           chainId: chainId as ChainId,
           account,
           method: sdk.ReqMethod.POST,
-          url: "/api/orders",
-          query: "",
+          url: '/api/orders',
+          query: '',
           payload: {
-            blockchain: "LRC",
-            iframe_domain: window.location.href.replace(/http(s)?:\/\//, ""), //: BANXA_URLS[chainId].replace(/http(s)?:\/\//, ""),
-            source: "USDT",
-            target: "AUD",
+            blockchain: 'LRC',
+            iframe_domain: window.location.href.replace(/http(s)?:\/\//, ''), //: BANXA_URLS[chainId].replace(/http(s)?:\/\//, ""),
+            source: 'USDT',
+            target: 'AUD',
             refund_address: account.accAddress,
-            return_url_on_success: "https://loopring.io/#/l2assets",
+            return_url_on_success: 'https://loopring.io/#/l2assets',
             account_reference: account.accAddress,
           },
-        });
+        })
 
         banxa.generateIframe(
-          "#iframeBanxaTarget",
+          '#iframeBanxaTarget',
           data.order.checkout_iframe,
-          false
+          false,
           // "800px", //Optional width parameter – Pass false if not needed.
           // "400px" //Optional height parameter – Pass false if not needed.
-        );
+        )
         offFaitService.banxaCheckStatus({
           data: {
             ...data.order,
-            status: data.order.status ?? "create",
+            status: data.order.status ?? 'create',
             id: data.order.id,
           },
-        });
+        })
         subject.next({
           status: BanxaCheck.CheckOrderStatus,
           data: data,
-        });
+        })
       } catch (e) {
         banxaService.banxaEnd({
           reason: OrderENDReason.CreateOrderFailed,
           data: (e as any)?.message,
-        });
+        })
       }
     }
 
@@ -237,37 +220,36 @@ export const banxaService = {
     subject.next({
       status: BanxaCheck.OrderHide,
       data: {
-        reason: "KYCDone",
+        reason: 'KYCDone',
       },
-    });
+    })
   },
   TransferDone: ({ order }: { order: Partial<BanxaOrder> }) => {
     offFaitService.banxaCheckStatus({
       data: {
-        status: "paymentReceived",
-        id: order.id ?? "",
+        status: 'paymentReceived',
+        id: order.id ?? '',
         wallet_address: order.wallet_address,
       },
-    });
+    })
     subject.next({
       status: BanxaCheck.OrderShow,
       data: {
-        reason: "transferDone",
-        id: order.id ?? "",
+        reason: 'transferDone',
+        id: order.id ?? '',
       },
-    });
+    })
   },
   orderDone: () => {},
   orderExpired: () => {
-    banxaService.banxaEnd({ reason: OrderENDReason.Expired, data: "" });
+    banxaService.banxaEnd({ reason: OrderENDReason.Expired, data: '' })
   },
   banxaEnd: ({ reason, data }: { reason: OrderENDReason; data: any }) => {
-    store.dispatch(resetTransferBanxaData(undefined));
-    const parentsNode: any =
-      window.document.querySelector("#iframeBanxaTarget");
-    const items = parentsNode?.getElementsByTagName("iframe");
+    store.dispatch(resetTransferBanxaData(undefined))
+    const parentsNode: any = window.document.querySelector('#iframeBanxaTarget')
+    const items = parentsNode?.getElementsByTagName('iframe')
     if (items && items[0]) {
-      [].slice.call(items).forEach((item) => parentsNode.removeChild(item));
+      ;[].slice.call(items).forEach((item) => parentsNode.removeChild(item))
     }
     subject.next({
       status: BanxaCheck.OrderEnd,
@@ -275,8 +257,8 @@ export const banxaService = {
         reason,
         data,
       },
-    });
+    })
   },
   banxaConfirm: () => {},
   onSocket: () => subject.asObservable(),
-};
+}

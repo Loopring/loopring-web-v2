@@ -1,3 +1,3 @@
 export interface TradeProSettings {
-  hideOtherTradingPairs: boolean;
+  hideOtherTradingPairs: boolean
 }

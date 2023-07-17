@@ -1,28 +1,28 @@
-import { Box, BoxProps, Typography } from "@mui/material";
-import { TFunction, withTranslation, WithTranslation } from "react-i18next";
-import moment from "moment";
-import { Column, Table } from "../../basic-lib";
+import { Box, BoxProps, Typography } from '@mui/material'
+import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
+import moment from 'moment'
+import { Column, Table } from '../../basic-lib'
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
   MarketRowHeight,
   SECOND_FORMAT,
   TradeTypes,
-} from "@loopring-web/common-resources";
-import { RawDataTradeItem } from "../tradeTable";
-import { useSettings } from "../../../stores";
-import styled from "@emotion/styled";
-import { TablePaddingX } from "../../styled";
-import { Currency, MarketInfo } from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { RawDataTradeItem } from '../tradeTable'
+import { useSettings } from '../../../stores'
+import styled from '@emotion/styled'
+import { TablePaddingX } from '../../styled'
+import { Currency, MarketInfo } from '@loopring-web/loopring-sdk'
 
 export type TradeProTableProps = {
-  rawData: RawDataTradeItem[];
-  precision: number;
-  marketInfo: MarketInfo;
-  currentheight?: number;
-  rowHeight?: number;
-  headerRowHeight?: number;
-};
+  rawData: RawDataTradeItem[]
+  precision: number
+  marketInfo: MarketInfo
+  currentheight?: number
+  rowHeight?: number
+  headerRowHeight?: number
+}
 
 const TableStyled = styled(Box)`
   display: flex;
@@ -50,11 +50,10 @@ const TableStyled = styled(Box)`
     }
   }
 
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 2, pRight: theme.unit * 2 })}
-` as (props: { currentheight?: number } & BoxProps) => JSX.Element;
+  ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 2, pRight: theme.unit * 2 })}
+` as (props: { currentheight?: number } & BoxProps) => JSX.Element
 
-export const TradePro = withTranslation("tables")(
+export const TradePro = withTranslation('tables')(
   ({
     t,
     rawData,
@@ -67,76 +66,67 @@ export const TradePro = withTranslation("tables")(
     precision,
     ...rest
   }: WithTranslation & TradeProTableProps) => {
-    const { currency, isMobile } = useSettings();
+    const { currency, isMobile } = useSettings()
     // @ts-ignore
-    const [, baseSymbol, quoteSymbol] =
-      marketInfo?.market?.match(/(\w+)-(\w+)/i);
+    const [, baseSymbol, quoteSymbol] = marketInfo?.market?.match(/(\w+)-(\w+)/i)
     const getColumnModeAssets = (
       t: TFunction,
       _currency: Currency,
       // quotePrecision,
       baseSymbol: string,
       quoteSymbol: string,
-      precision: number
+      precision: number,
     ): Column<Required<RawDataTradeItem>, unknown>[] => [
       ...[
         {
-          key: "price",
-          name: t("labelTradeProPrice", { symbol: quoteSymbol }),
+          key: 'price',
+          name: t('labelTradeProPrice', { symbol: quoteSymbol }),
           // @ts-ignore
           formatter: ({ row }) => {
             const color =
-              row["side"] === TradeTypes.Buy
-                ? "var(--color-error)"
-                : "var(--color-success)";
-            const { value } = row["price"];
+              row['side'] === TradeTypes.Buy ? 'var(--color-error)' : 'var(--color-success)'
+            const { value } = row['price']
 
             // const precision = row['precision'] || 6
             const renderValue = value
-              ? getValuePrecisionThousand(
-                  value,
-                  undefined,
-                  undefined,
-                  precision,
-                  true
-                )
-              : EmptyValueTag;
+              ? getValuePrecisionThousand(value, undefined, undefined, precision, true)
+              : EmptyValueTag
 
             return (
-              <Box className="rdg-cell-value">
+              <Box className='rdg-cell-value'>
                 <Typography
-                  textAlign={"left"}
+                  textAlign={'left'}
                   color={color}
-                  variant={"body2"}
+                  variant={'body2'}
                   lineHeight={`${MarketRowHeight}px`}
                 >
                   {renderValue}
                 </Typography>
               </Box>
-            );
+            )
           },
         },
         {
-          key: "amount",
-          name: t("labelTradeProAmount", { symbol: baseSymbol }),
-          headerCellClass: "text-align-right",
+          key: 'amount',
+          name: t('labelTradeProAmount', { symbol: baseSymbol }),
+          headerCellClass: 'text-align-right',
           // @ts-ignore
           formatter: ({ row }) => {
-            const { volume } = row["amount"];
+            const { volume } = row['amount']
             // getValuePrecisionThousand(volume, precision, precision, precision, true)
             // const value =
             return (
-              <Box className="rdg-cell-value">
+              <Box className='rdg-cell-value'>
                 <Typography
-                  className=" text-align-right"
-                  textAlign={"right"}
-                  variant={"body2"}
+                  className=' text-align-right'
+                  textAlign={'right'}
+                  variant={'body2'}
                   lineHeight={`${MarketRowHeight}px`}
                 >
                   {volume ? volume : EmptyValueTag}
                 </Typography>
               </Box>
-            );
+            )
           },
         },
       ],
@@ -144,30 +134,28 @@ export const TradePro = withTranslation("tables")(
         ? []
         : [
             {
-              key: "time",
-              name: t("labelTradeTime"),
-              headerCellClass: "text-align-right",
+              key: 'time',
+              name: t('labelTradeTime'),
+              headerCellClass: 'text-align-right',
               // @ts-ignore
               formatter: ({ row }) => {
-                const time = moment(new Date(row["time"])).format(
-                  SECOND_FORMAT
-                ); //,M-DD
+                const time = moment(new Date(row['time'])).format(SECOND_FORMAT) //,M-DD
                 return (
-                  <Box className="rdg-cell-value">
+                  <Box className='rdg-cell-value'>
                     <Typography
-                      className=" text-align-right"
-                      textAlign={"right"}
-                      variant={"body2"}
+                      className=' text-align-right'
+                      textAlign={'right'}
+                      variant={'body2'}
                       lineHeight={`${MarketRowHeight}px`}
                     >
                       {time}
                     </Typography>
                   </Box>
-                );
+                )
               },
             },
           ]),
-    ];
+    ]
     const defaultArgs: any = {
       rawData: rawData,
       columnMode: getColumnModeAssets(
@@ -176,15 +164,14 @@ export const TradePro = withTranslation("tables")(
         // quotePrecision,
         baseSymbol,
         quoteSymbol,
-        precision
+        precision,
       ).filter((o) => !o.hidden),
       generateRows: (rawData: any) => rawData,
-      generateColumns: ({ columnsRaw }: any) =>
-        columnsRaw as Column<RawDataTradeItem, unknown>[],
+      generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<RawDataTradeItem, unknown>[],
       style: {
         // backgroundColor: ({colorBase}: any) => `${colorBase.box}`
       },
-    };
+    }
 
     return (
       <TableStyled currentheight={currentheight}>
@@ -200,6 +187,6 @@ export const TradePro = withTranslation("tables")(
           }}
         />
       </TableStyled>
-    );
-  }
-);
+    )
+  },
+)

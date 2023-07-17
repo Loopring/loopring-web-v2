@@ -1,41 +1,39 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../index";
-import { WalletInfo } from "./interface";
-import { clearAll, updateWallet } from "./reducer";
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../index'
+import { WalletInfo } from './interface'
+import { clearAll, updateWallet } from './reducer'
 
 export const useWalletInfo = () => {
-  const walletInfo: WalletInfo = useSelector(
-    (state: RootState) => state.localStore.walletInfo
-  );
-  const dispatch = useDispatch();
+  const walletInfo: WalletInfo = useSelector((state: RootState) => state.localStore.walletInfo)
+  const dispatch = useDispatch()
 
   const clearAllWrapper = React.useCallback(() => {
-    dispatch(clearAll(undefined));
-  }, [dispatch]);
+    dispatch(clearAll(undefined))
+  }, [dispatch])
 
   const updateHW = React.useCallback(
     ({ wallet, isHWAddr }: { wallet: string; isHWAddr: boolean }) => {
-      dispatch(updateWallet({ address: wallet, isHW: isHWAddr }));
+      dispatch(updateWallet({ address: wallet, isHW: isHWAddr }))
     },
-    [dispatch]
-  );
+    [dispatch],
+  )
 
   const checkHWAddr = React.useCallback(
     (address: string) => {
       if (!address) {
-        return false;
+        return false
       }
-      const wInfo = walletInfo.walletTypeMap[address];
-      return !!wInfo;
+      const wInfo = walletInfo.walletTypeMap[address]
+      return !!wInfo
     },
-    [walletInfo]
-  );
+    [walletInfo],
+  )
 
   return {
     checkHWAddr,
     walletInfo,
     clearAllWrapper,
     updateHW,
-  };
-};
+  }
+}

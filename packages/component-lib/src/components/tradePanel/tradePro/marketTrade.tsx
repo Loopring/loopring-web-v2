@@ -1,5 +1,5 @@
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import { MarketTradeData, TradeMarketProps } from "../Interface";
+import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { MarketTradeData, TradeMarketProps } from '../Interface'
 import {
   CheckBoxIcon,
   CheckedIcon,
@@ -16,7 +16,7 @@ import {
   TradeBtnStatus,
   TradeCalcProData,
   TradeProType,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 import {
   Box,
   Checkbox,
@@ -25,37 +25,32 @@ import {
   Tab,
   Tooltip,
   Typography,
-} from "@mui/material";
-import {
-  BtnPercentage,
-  InputCoin,
-  LinkActionStyle,
-  PopoverPure,
-} from "../../basic-lib";
-import { useCommon } from "./hookCommon";
-import { ButtonStyle, TabsStyle } from "../components/Styled";
-import { bindHover, bindPopover } from "material-ui-popup-state/es";
-import { SlippagePanel } from "../components";
-import React from "react";
-import { usePopupState } from "material-ui-popup-state/hooks";
-import { useSettings } from "../../../stores";
+} from '@mui/material'
+import { BtnPercentage, InputCoin, LinkActionStyle, PopoverPure } from '../../basic-lib'
+import { useCommon } from './hookCommon'
+import { ButtonStyle, TabsStyle } from '../components/Styled'
+import { bindHover, bindPopover } from 'material-ui-popup-state/es'
+import { SlippagePanel } from '../components'
+import React from 'react'
+import { usePopupState } from 'material-ui-popup-state/hooks'
+import { useSettings } from '../../../stores'
 
-export const MarketTrade = withTranslation("common", { withRef: true })(
+export const MarketTrade = withTranslation('common', { withRef: true })(
   <
     M extends MarketTradeData<T>,
     T extends IBData<I>,
     TCD extends TradeCalcProData<I>,
-    I = CoinKey<any>
+    I = CoinKey<any>,
   >({
     tradeData = {} as M,
     ...props
   }: TradeMarketProps<M, T, TCD, I> & WithTranslation) => {
     // const {slippage} = useSettings();
     // onChangeEvent?: (data:L,type:TradeProType) => L,
-    const { slippage } = useSettings();
+    const { slippage } = useSettings()
     const slippageArray: Array<number | string> = SlippageTolerance.concat(
-      `slippage:${slippage}`
-    ) as Array<number | string>;
+      `slippage:${slippage}`,
+    ) as Array<number | string>
     const {
       t,
       // disabled,
@@ -66,7 +61,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       handleSubmitEvent,
       onChangeEvent,
       // ...rest
-    } = props;
+    } = props
 
     const {
       quoteRef,
@@ -83,24 +78,21 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
       handleCountChange,
       selectedPercentage,
     } = useCommon({
-      type: "market",
+      type: 'market',
       ...(props as any),
       tradeData,
       tradeType,
       onChangeEvent,
-      i18nKey: tradeMarketI18nKey ? tradeMarketI18nKey : "labelProMarketBtn",
+      i18nKey: tradeMarketI18nKey ? tradeMarketI18nKey : 'labelProMarketBtn',
       tradeBtnBaseStatus: tradeMarketBtnStatus,
-    });
+    })
     const popupState = usePopupState({
-      variant: "popover",
-      popupId: "slippagePop",
-    });
+      variant: 'popover',
+      popupId: 'slippagePop',
+    })
     const _onSlippageChange = React.useCallback(
-      (
-        slippage: number | string,
-        customSlippage: number | string | undefined
-      ) => {
-        popupState.close();
+      (slippage: number | string, customSlippage: number | string | undefined) => {
+        popupState.close()
         onChangeEvent(
           {
             ...tradeData,
@@ -110,94 +102,76 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
               customSlippage: customSlippage,
             },
           },
-          TradeBaseType.slippage
-        );
+          TradeBaseType.slippage,
+        )
       },
-      [tradeData, onChangeEvent]
-    );
+      [tradeData, onChangeEvent],
+    )
 
     const priceImpactColor = tradeCalcProData?.priceImpactColor
       ? tradeCalcProData.priceImpactColor
-      : "textPrimary";
+      : 'textPrimary'
     const priceImpact =
       tradeCalcProData?.priceImpact !== undefined
-        ? getValuePrecisionThousand(
-            tradeCalcProData.priceImpact,
-            2,
-            undefined,
-            undefined,
-            false,
-            { floor: true }
-          ) + " %"
-        : EmptyValueTag;
+        ? getValuePrecisionThousand(tradeCalcProData.priceImpact, 2, undefined, undefined, false, {
+            floor: true,
+          }) + ' %'
+        : EmptyValueTag
 
     const fee =
       tradeCalcProData && tradeCalcProData.fee
         ? `${tradeCalcProData.fee} ${
-            tradeType === TradeProType.sell
-              ? tradeData.quote?.belong
-              : tradeData.base?.belong
+            tradeType === TradeProType.sell ? tradeData.quote?.belong : tradeData.base?.belong
           }` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
-        : EmptyValueTag;
+        : EmptyValueTag
 
     const userTakerRate =
       tradeCalcProData && tradeCalcProData.feeTakerRate
         ? (tradeCalcProData.feeTakerRate / 100).toString()
-        : EmptyValueTag;
+        : EmptyValueTag
 
     const tradeCostMin =
       tradeCalcProData && tradeCalcProData.tradeCost
         ? `${tradeCalcProData.tradeCost} ${tradeData.quote?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
-        : EmptyValueTag;
+        : EmptyValueTag
     // const minimumReceived = tradeCalcProData && tradeCalcProData.minimumReceived ? tradeCalcProData.minimumReceived : EmptyValueTag
     const minimumReceived =
       tradeCalcProData && tradeCalcProData.minimumReceived
         ? `${tradeCalcProData.minimumReceived}  ${
-            tradeType === TradeProType.buy
-              ? tradeData.base.belong
-              : tradeData.quote.belong
+            tradeType === TradeProType.buy ? tradeData.base.belong : tradeData.quote.belong
           }`
-        : EmptyValueTag;
+        : EmptyValueTag
 
     return (
-      <Box
-        flex={1}
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"stretch"}
-      >
+      <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
         <Box
-          className={"tool-bar"}
+          className={'tool-bar'}
           paddingX={2}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
         >
-          <Box component={"header"} width={"100%"}>
+          <Box component={'header'} width={'100%'}>
             <TabsStyle
-              className={"trade-tabs pro-tabs"}
-              variant={"fullWidth"}
+              className={'trade-tabs pro-tabs'}
+              variant={'fullWidth'}
               value={tradeType}
               onChange={(_e, index) => _handleChangeIndex(index)}
             >
+              <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')} />
               <Tab
-                className={"trade-tab-buy"}
-                value={TradeProType.buy}
-                label={t("labelProBuy")}
-              />
-              <Tab
-                className={"trade-tab-sell"}
+                className={'trade-tab-sell'}
                 value={TradeProType.sell}
-                label={t("labelProSell")}
+                label={t('labelProSell')}
               />
             </TabsStyle>
           </Box>
         </Box>
-        <Box className={"trade-panel"} paddingTop={2} paddingX={2}>
+        <Box className={'trade-panel'} paddingTop={2} paddingX={2}>
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={baseRef as any}
-              name={"base"}
+              name={'base'}
               disabled={getDisabled()}
               {...{
                 ...propsBase,
@@ -216,34 +190,34 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
           </Box>
           {/*</Grid>*/}
           {/*<Grid item>*/}
-          <Box alignSelf={"center"} paddingTop={4} paddingX={1}>
+          <Box alignSelf={'center'} paddingTop={4} paddingX={1}>
             <BtnPercentage
               step={25}
               // valuetext={(value)=>`${value}%`}
               getAriaLabel={(value) => `${value}%`}
               valueLabelFormat={(value) => `${value}%`}
-              valueLabelDisplay={"on"}
+              valueLabelDisplay={'on'}
               selected={selectedPercentage}
               anchors={[
                 {
                   value: 0,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 25,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 50,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 75,
-                  label: "",
+                  label: '',
                 },
                 {
                   value: 100,
-                  label: "",
+                  label: '',
                 },
               ]}
               handleChanged={onPercentage}
@@ -252,7 +226,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
           <Box paddingTop={2}>
             <InputCoin<any, I, CoinInfo<I>>
               ref={quoteRef}
-              name={"quote"}
+              name={'quote'}
               disabled={getDisabled()}
               {...{
                 ...propsQuote,
@@ -274,83 +248,63 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
           {/*< label={tradeCalcProData.baseToken} coinMap={tradeCalcProData.coinMap} />*/}
         </Box>
         <Box paddingTop={2} paddingX={2}>
-          <Grid
-            container
-            direction={"column"}
-            spacing={1}
-            alignItems={"stretch"}
-          >
-            <Grid item marginBottom={1} sx={{ color: "text.secondary" }}>
+          <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
+            <Grid item marginBottom={1} sx={{ color: 'text.secondary' }}>
               <Grid
                 container
-                justifyContent={"space-between"}
-                direction={"row"}
-                alignItems={"center"}
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
                 marginTop={1 / 2}
               >
                 <Tooltip
-                  title={t("labelSwapFeeTooltips", {
+                  title={t('labelSwapFeeTooltips', {
                     rate: userTakerRate,
                     value: tradeCostMin,
                   }).toString()}
-                  placement={"top"}
+                  placement={'top'}
                 >
                   <Typography
-                    component={"p"}
-                    variant="body2"
-                    color={"textSecondary"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
                   >
-                    <Info2Icon
-                      fontSize={"small"}
-                      color={"inherit"}
-                      sx={{ marginX: 1 / 2 }}
-                    />
-                    {" " + t("swapFeeS")}
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('swapFeeS')}
                   </Typography>
                 </Tooltip>
-                <Typography
-                  component={"p"}
-                  variant="body2"
-                  color={"textPrimary"}
-                >
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
                   {fee}
                 </Typography>
               </Grid>
               <Grid
                 container
-                justifyContent={"space-between"}
-                direction={"row"}
-                alignItems={"center"}
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
                 height={24}
               >
-                <Tooltip
-                  title={t("labelSwapToleranceTooltips").toString()}
-                  placement={"top"}
-                >
+                <Tooltip title={t('labelSwapToleranceTooltips').toString()} placement={'top'}>
                   <Typography
-                    component={"p"}
-                    variant="body2"
-                    color={"textSecondary"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
                   >
-                    <Info2Icon
-                      fontSize={"small"}
-                      color={"inherit"}
-                      sx={{ marginX: 1 / 2 }}
-                    />
-                    {" " + t("swapTolerance")}
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('swapTolerance')}
                   </Typography>
                 </Tooltip>
-                <Typography component={"p"} variant="body2">
+                <Typography component={'p'} variant='body2'>
                   {tradeCalcProData ? (
                     <>
                       <Typography
                         {...bindHover(popupState)}
-                        component={"span"}
-                        color={"textPrimary"}
+                        component={'span'}
+                        color={'textPrimary'}
                       >
                         <LinkActionStyle>
                           {tradeData.slippage
@@ -361,16 +315,16 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                           %
                         </LinkActionStyle>
                         <PopoverPure
-                          className={"arrow-right"}
+                          className={'arrow-right'}
                           {...bindPopover(popupState)}
                           {...{
                             anchorOrigin: {
-                              vertical: "bottom",
-                              horizontal: "right",
+                              vertical: 'bottom',
+                              horizontal: 'right',
                             },
                             transformOrigin: {
-                              vertical: "top",
-                              horizontal: "right",
+                              vertical: 'top',
+                              horizontal: 'right',
                             },
                           }}
                         >
@@ -396,72 +350,48 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
               </Grid>
               <Grid
                 container
-                justifyContent={"space-between"}
-                direction={"row"}
-                alignItems={"center"}
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Tooltip
-                  title={t("labelSwapPriceImpactTooltips").toString()}
-                  placement={"top"}
-                >
+                <Tooltip title={t('labelSwapPriceImpactTooltips').toString()} placement={'top'}>
                   <Typography
-                    component={"p"}
-                    variant="body2"
-                    color={"textSecondary"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
                   >
-                    <Info2Icon
-                      fontSize={"small"}
-                      color={"inherit"}
-                      sx={{ marginX: 1 / 2 }}
-                    />
-                    {" " + t("swapPriceImpact")}
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('swapPriceImpact')}
                   </Typography>
                 </Tooltip>
-                <Typography
-                  component={"p"}
-                  color={priceImpactColor}
-                  variant="body2"
-                >
+                <Typography component={'p'} color={priceImpactColor} variant='body2'>
                   {priceImpact}
                 </Typography>
               </Grid>
               <Grid
                 container
-                justifyContent={"space-between"}
-                direction={"row"}
-                alignItems={"center"}
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Tooltip
-                  title={t("labelSwapMinReceiveTooltips").toString()}
-                  placement={"top"}
-                >
+                <Tooltip title={t('labelSwapMinReceiveTooltips').toString()} placement={'top'}>
                   <Typography
-                    component={"p"}
-                    variant="body2"
-                    color={"textSecondary"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
                   >
-                    <Info2Icon
-                      fontSize={"small"}
-                      color={"inherit"}
-                      sx={{ marginX: 1 / 2 }}
-                    />
-                    {" " + t("swapMinReceiveS")}
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('swapMinReceiveS')}
                   </Typography>
                 </Tooltip>
-                <Typography
-                  component={"p"}
-                  variant="body2"
-                  color={"textPrimary"}
-                >
-                  {minimumReceived !== EmptyValueTag
-                    ? minimumReceived
-                    : EmptyValueTag}
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                  {minimumReceived !== EmptyValueTag ? minimumReceived : EmptyValueTag}
                 </Typography>
               </Grid>
             </Grid>
@@ -474,7 +404,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
             {tradeCalcProData.isNotMatchMarketPrice && (
               <Grid item marginBottom={1}>
                 <MuiFormControlLabel
-                  sx={{ alignItems: "flex-start" }}
+                  sx={{ alignItems: 'flex-start' }}
                   control={
                     <Checkbox
                       checked={tradeCalcProData?.isChecked ? true : false}
@@ -486,18 +416,18 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                           },
                           tradeCalcProData?.lastStepAt === TradeBaseType.quote
                             ? TradeBaseType.quote
-                            : TradeBaseType.base
-                        );
+                            : TradeBaseType.base,
+                        )
                       }}
                       checkedIcon={<CheckedIcon />}
                       icon={<CheckBoxIcon />}
-                      color="default"
+                      color='default'
                     />
                   }
                   label={
-                    <Typography variant={"body2"}>
+                    <Typography variant={'body2'}>
                       <Trans
-                        i18nKey={"labelExpectSettlementPrice"}
+                        i18nKey={'labelExpectSettlementPrice'}
                         interpolation={{ escapeValue: false }}
                         tOptions={{
                           // ,symbolBuy
@@ -511,11 +441,10 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                           marketRatePrice: tradeCalcProData.marketRatePrice,
                         }}
                       >
-                        The expected settlement price from this order is symbol
-                        = value, while the current market price from a trusted
-                        oracle is symbol= marketPrice. There is marketRatePrice%
-                        variance observed. Please acknowledge the risk if you
-                        still want to continue.
+                        The expected settlement price from this order is symbol = value, while the
+                        current market price from a trusted oracle is symbol= marketPrice. There is
+                        marketRatePrice% variance observed. Please acknowledge the risk if you still
+                        want to continue.
                       </Trans>
                     </Typography>
                   }
@@ -526,22 +455,18 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
         </Box>
         <Box paddingTop={2} paddingX={2}>
           <ButtonStyle
-            variant={"contained"}
-            size={"medium"}
-            color={tradeType === TradeProType.sell ? "error" : "success"}
+            variant={'contained'}
+            size={'medium'}
+            color={tradeType === TradeProType.sell ? 'error' : 'success'}
             loadingbg={
-              tradeType === TradeProType.sell
-                ? "var(--color-error)"
-                : "var(--color-success)"
+              tradeType === TradeProType.sell ? 'var(--color-error)' : 'var(--color-success)'
             }
             style={{ ...tradeMarketBtnStyle }}
             onClick={() => {
-              handleSubmitEvent(tradeData);
+              handleSubmitEvent(tradeData)
             }}
             loading={
-              !getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING
-                ? "true"
-                : "false"
+              !getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
             }
             disabled={
               getDisabled() ||
@@ -554,13 +479,13 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
           </ButtonStyle>
         </Box>
       </Box>
-    );
-  }
+    )
+  },
 ) as <
   M extends MarketTradeData<T>,
   T extends IBData<I>,
   TCD extends TradeCalcProData<I>,
-  I = CoinKey<any>
+  I = CoinKey<any>,
 >(
-  props: TradeMarketProps<M, T, TCD, I>
-) => JSX.Element;
+  props: TradeMarketProps<M, T, TCD, I>,
+) => JSX.Element

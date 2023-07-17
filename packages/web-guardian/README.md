@@ -25,11 +25,11 @@ cd ./packages/webapp
 npm run dev
 
 
-``` 
+```
 
 ## 📚 Loopring UI component StoryBook
 
-```bash 
+```bash
 
 cd ./packages/component-lib
 npm run storybook

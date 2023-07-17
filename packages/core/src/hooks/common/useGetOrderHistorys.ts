@@ -1,75 +1,61 @@
-import React from "react";
-import { RawDataTradeItem } from "@loopring-web/component-lib";
+import React from 'react'
+import { RawDataTradeItem } from '@loopring-web/component-lib'
 
-import { Side, toBig, GetUserTradesRequest } from "@loopring-web/loopring-sdk";
+import { Side, toBig, GetUserTradesRequest } from '@loopring-web/loopring-sdk'
 import {
   store,
   LoopringAPI,
   useAccount,
   volumeToCount,
   volumeToCountAsBigNumber,
-} from "../../index";
-import { TradeTypes } from "@loopring-web//common-resources";
+} from '../../index'
+import { TradeTypes } from '@loopring-web//common-resources'
 
 export function useGetOrderHistorys() {
-  const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([]);
-  const [showLoading, setShowLoading] = React.useState(true);
-  const [userOrderDetailList, setUserOrderDetailList] = React.useState<any[]>(
-    []
-  );
+  const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([])
+  const [showLoading, setShowLoading] = React.useState(true)
+  const [userOrderDetailList, setUserOrderDetailList] = React.useState<any[]>([])
 
   const {
     account: { accountId, apiKey },
-  } = useAccount();
+  } = useAccount()
 
-  const tokenMap = store.getState().tokenMap.tokenMap;
+  const tokenMap = store.getState().tokenMap.tokenMap
 
   const getUserTrade = React.useCallback(
-    async (props?: Omit<GetUserTradesRequest, "accountId">) => {
-      if (
-        LoopringAPI &&
-        LoopringAPI.userAPI &&
-        accountId &&
-        apiKey &&
-        tokenMap
-      ) {
+    async (props?: Omit<GetUserTradesRequest, 'accountId'>) => {
+      if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey && tokenMap) {
         const userTrades = await LoopringAPI.userAPI.getUserTrades(
           {
             ...props,
             accountId,
           },
-          apiKey
-        );
-        return userTrades;
+          apiKey,
+        )
+        return userTrades
       }
     },
-    [accountId, apiKey, tokenMap]
-  );
+    [accountId, apiKey, tokenMap],
+  )
 
   const getUserOrderDetailTradeList = React.useCallback(
-    async (props?: Omit<GetUserTradesRequest, "accountId">) => {
-      if (
-        LoopringAPI &&
-        LoopringAPI.userAPI &&
-        accountId &&
-        apiKey &&
-        tokenMap
-      ) {
-        const userTrades = await getUserTrade({ ...props });
+    async (props?: Omit<GetUserTradesRequest, 'accountId'>) => {
+      if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey && tokenMap) {
+        const userTrades = await getUserTrade({ ...props })
         if (userTrades && userTrades.userTrades) {
           setUserOrderDetailList(
             userTrades.userTrades.map((o) => {
-              const marketList = o.market.split("-");
+              const marketList = o.market.split('-')
               // due to AMM case, we cannot use first index
               // const side = o.side === 'BUY' ? TradeTypes.Buy : TradeTypes.Sell
-              const tokenFirst = marketList[marketList.length - 2];
-              const tokenLast = marketList[marketList.length - 1];
-              const baseToken = o.side === "BUY" ? tokenFirst : tokenLast;
-              const quoteToken = o.side === "BUY" ? tokenLast : tokenFirst;
+              const tokenFirst = marketList[marketList.length - 2]
+              const tokenLast = marketList[marketList.length - 1]
+              const baseToken = o.side === 'BUY' ? tokenFirst : tokenLast
+              const quoteToken = o.side === 'BUY' ? tokenLast : tokenFirst
 
-              const volumeToken = o.side === "BUY" ? baseToken : quoteToken;
-              const volume = volumeToCount(volumeToken, o.volume);
-              const feeKey = o.side === "BUY" ? baseToken : quoteToken;
+              const volumeToken = o.side === 'BUY' ? baseToken : quoteToken
+              const volume = volumeToCount(volumeToken, o.volume)
+              const feeKey = o.side === 'BUY' ? baseToken : quoteToken
 
               return {
                 market: o.market,
@@ -81,34 +67,34 @@ export function useGetOrderHistorys() {
                   key: feeKey,
                   value: o.fee ? volumeToCount(feeKey, o.fee) : undefined,
                 },
-              };
-            })
-          );
+              }
+            }),
+          )
         }
       }
     },
-    [accountId, apiKey, getUserTrade, tokenMap]
-  );
+    [accountId, apiKey, getUserTrade, tokenMap],
+  )
 
   const getUserTradeList = React.useCallback(async () => {
     if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey && tokenMap) {
-      const userTrades = await getUserTrade();
+      const userTrades = await getUserTrade()
 
       if (userTrades && userTrades.userTrades) {
         setUserTrades(
           // @ts-ignore
           userTrades.userTrades.map((o) => {
-            const marketList = o.market.split("-");
+            const marketList = o.market.split('-')
             // due to AMM case, we cannot use first index
-            const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell;
-            const tokenFirst = marketList[marketList.length - 2];
-            const tokenLast = marketList[marketList.length - 1];
-            const baseToken = side === TradeTypes.Buy ? tokenFirst : tokenLast;
-            const quoteToken = side === TradeTypes.Buy ? tokenLast : tokenFirst;
+            const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+            const tokenFirst = marketList[marketList.length - 2]
+            const tokenLast = marketList[marketList.length - 1]
+            const baseToken = side === TradeTypes.Buy ? tokenFirst : tokenLast
+            const quoteToken = side === TradeTypes.Buy ? tokenLast : tokenFirst
 
             // const amt = toBig(o.volume).times(o.price).toString()
 
-            const feeKey = o.side === Side.Buy ? baseToken : quoteToken;
+            const feeKey = o.side === Side.Buy ? baseToken : quoteToken
 
             return {
               side: side,
@@ -120,40 +106,34 @@ export function useGetOrderHistorys() {
               fee: {
                 key: feeKey,
                 // value: VolToNumberWithPrecision(o.fee, quoteToken),
-                value: feeKey
-                  ? volumeToCount(feeKey, o.fee)?.toFixed(6)
-                  : undefined,
+                value: feeKey ? volumeToCount(feeKey, o.fee)?.toFixed(6) : undefined,
               },
               time: Number(o.tradeTime),
               amount: {
                 from: {
                   key: baseToken,
                   // value: VolToNumberWithPrecision(o.volume, baseToken),
-                  value: baseToken
-                    ? volumeToCount(baseToken, o.volume)
-                    : undefined,
+                  value: baseToken ? volumeToCount(baseToken, o.volume) : undefined,
                 },
                 to: {
                   key: quoteToken,
                   // value: VolToNumberWithPrecision(amt, quoteToken)
                   value: baseToken
-                    ? volumeToCountAsBigNumber(baseToken, o.volume)
-                        ?.times(o.price)
-                        .toNumber()
+                    ? volumeToCountAsBigNumber(baseToken, o.volume)?.times(o.price).toNumber()
                     : undefined,
                 },
               },
-            };
-          })
-        );
-        setShowLoading(false);
+            }
+          }),
+        )
+        setShowLoading(false)
       }
     }
-  }, [accountId, apiKey, getUserTrade, tokenMap]);
+  }, [accountId, apiKey, getUserTrade, tokenMap])
 
   React.useEffect(() => {
-    getUserTradeList();
-  }, [getUserTradeList]);
+    getUserTradeList()
+  }, [getUserTradeList])
 
   // useCustomDCEffect(async() => {
 
@@ -177,5 +157,5 @@ export function useGetOrderHistorys() {
     showLoading,
     userOrderDetailList,
     getUserOrderDetailTradeList,
-  };
+  }
 }

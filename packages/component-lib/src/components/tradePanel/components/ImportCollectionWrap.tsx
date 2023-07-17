@@ -1,7 +1,7 @@
-import { ImportCollectionStep, ImportCollectionViewProps } from "./Interface";
-import { Trans, useTranslation } from "react-i18next";
-import React from "react";
-import { Box, Link, ListItemText, Typography } from "@mui/material";
+import { ImportCollectionStep, ImportCollectionViewProps } from './Interface'
+import { Trans, useTranslation } from 'react-i18next'
+import React from 'react'
+import { Box, Link, ListItemText, Typography } from '@mui/material'
 import {
   AddIcon,
   BackIcon,
@@ -11,20 +11,14 @@ import {
   NFTWholeINFO,
   SoursURL,
   ViewMoreIcon,
-} from "@loopring-web/common-resources";
-import {
-  Button,
-  CollectionInput,
-  EmptyDefault,
-  MenuItem,
-  TextField,
-} from "../../basic-lib";
-import styled from "@emotion/styled";
-import { useSettings } from "../../../stores";
-import { CollectionManageWrap } from "./CollectionManageWrap";
-import { NFTMedia } from "../../block";
-import { useHistory } from "react-router-dom";
-import { BtnMain, HorizontalLabelPositionBelowStepper } from "./tool";
+} from '@loopring-web/common-resources'
+import { Button, CollectionInput, EmptyDefault, MenuItem, TextField } from '../../basic-lib'
+import styled from '@emotion/styled'
+import { useSettings } from '../../../stores'
+import { CollectionManageWrap } from './CollectionManageWrap'
+import { NFTMedia } from '../../block'
+import { useHistory } from 'react-router-dom'
+import { BtnMain, HorizontalLabelPositionBelowStepper } from './tool'
 
 const MintAdStyle = styled(Box)`
   .MuiFormGroup-root {
@@ -43,18 +37,15 @@ const MintAdStyle = styled(Box)`
     padding-left: ${({ theme }) => theme.unit * 4}px;
     padding-right: ${({ theme }) => theme.unit * 4}px;
   }
-`;
+`
 
 const steps = [
-  "labelImportCollection1", //Prepare NFT metadata
-  "labelImportCollection2", //labelADMint2
-  "labelImportCollection3", //Preview & Mint NFT
-];
+  'labelImportCollection1', //Prepare NFT metadata
+  'labelImportCollection2', //labelADMint2
+  'labelImportCollection3', //Preview & Mint NFT
+]
 
-export const ImportCollectionWrap = <
-  Co extends CollectionMeta,
-  NFT extends Partial<NFTWholeINFO>
->({
+export const ImportCollectionWrap = <Co extends CollectionMeta, NFT extends Partial<NFTWholeINFO>>({
   onContractChange,
   onContractNext,
   setStep,
@@ -69,9 +60,9 @@ export const ImportCollectionWrap = <
   disabled,
   onLoading,
 }: ImportCollectionViewProps<Co, NFT>) => {
-  const { t } = useTranslation(["common"]);
-  const { isMobile } = useSettings();
-  const history = useHistory();
+  const { t } = useTranslation(['common'])
+  const { isMobile } = useSettings()
+  const history = useHistory()
   const {
     contractList,
     selectContract,
@@ -79,41 +70,41 @@ export const ImportCollectionWrap = <
     selectCollection,
     nftProps,
     selectNFTList,
-  } = data;
+  } = data
   // myLog("ImportCollectionWrap", contractList);
 
   const panelList: Array<{
-    view: JSX.Element;
-    onBack?: undefined | (() => void);
-    height?: any;
-    width?: any;
+    view: JSX.Element
+    onBack?: undefined | (() => void)
+    height?: any
+    width?: any
   }> = React.useMemo(() => {
     return [
       {
         view: (
           <Box
             marginTop={3}
-            display={"flex"}
-            justifyContent={"space-around"}
-            flexDirection={"column"}
-            alignItems={"stretch"}
-            width={"100%"}
-            maxWidth={"760px"}
+            display={'flex'}
+            justifyContent={'space-around'}
+            flexDirection={'column'}
+            alignItems={'stretch'}
+            width={'100%'}
+            maxWidth={'760px'}
             flex={1}
           >
             <Box
-              display={"flex"}
-              alignItems={"flex-start"}
-              flexDirection={"column"}
-              justifyContent={"stretch"}
+              display={'flex'}
+              alignItems={'flex-start'}
+              flexDirection={'column'}
+              justifyContent={'stretch'}
             >
               <TextField
-                id="ContractAddress"
+                id='ContractAddress'
                 select
-                label={t("labelSelectContractAddress")}
-                value={selectContract?.value ?? ""}
+                label={t('labelSelectContractAddress')}
+                value={selectContract?.value ?? ''}
                 onChange={(event: React.ChangeEvent<any>) => {
-                  onContractChange(event.target?.value);
+                  onContractChange(event.target?.value)
                 }}
                 inputProps={{ IconComponent: DropDownIcon }}
                 fullWidth={true}
@@ -124,31 +115,31 @@ export const ImportCollectionWrap = <
                       key={item.toString() + index}
                       value={item}
                       selected={item === selectContract?.value ?? "'"}
-                      withnocheckicon={"true"}
+                      withnocheckicon={'true'}
                     >
                       <ListItemText
                         primary={
                           <Typography
-                            sx={{ display: "inline" }}
-                            component="span"
-                            variant="body1"
-                            color="text.primary"
+                            sx={{ display: 'inline' }}
+                            component='span'
+                            variant='body1'
+                            color='text.primary'
                           >
                             {getShortAddr(item)}
                           </Typography>
                         }
                       />
                     </MenuItem>
-                  );
+                  )
                 })}
               </TextField>
               {selectContract && (
                 <Box
-                  display={"flex"}
-                  flexDirection={"row"}
+                  display={'flex'}
+                  flexDirection={'row'}
                   marginTop={2}
-                  width={"100%"}
-                  justifyContent={"center"}
+                  width={'100%'}
+                  justifyContent={'center'}
                 >
                   {!onLoading ? (
                     selectContract.total ? (
@@ -161,8 +152,8 @@ export const ImportCollectionWrap = <
                               width={60}
                               height={60}
                               borderRadius={1}
-                              display={"flex"}
-                              overflow={"hidden"}
+                              display={'flex'}
+                              overflow={'hidden'}
                             >
                               <NFTMedia
                                 item={item as NFT}
@@ -174,7 +165,7 @@ export const ImportCollectionWrap = <
                                 baseURL={baseURL}
                               />
                             </Box>
-                          );
+                          )
                         })}
                         {selectContract.total > 3 && (
                           <Box
@@ -182,28 +173,28 @@ export const ImportCollectionWrap = <
                             width={60}
                             height={60}
                             borderRadius={1}
-                            display={"flex"}
-                            overflow={"hidden"}
-                            alignItems={"center"}
-                            justifyContent={"center"}
-                            border={"1px var(--color-border-disable) solid"}
+                            display={'flex'}
+                            overflow={'hidden'}
+                            alignItems={'center'}
+                            justifyContent={'center'}
+                            border={'1px var(--color-border-disable) solid'}
                           >
                             <ViewMoreIcon
-                              fontSize={"large"}
-                              htmlColor={"var(--color-text-secondary)"}
+                              fontSize={'large'}
+                              htmlColor={'var(--color-text-secondary)'}
                             />
                           </Box>
                         )}
                       </>
                     ) : (
-                      <Box flex={1} alignItems={"center"}>
+                      <Box flex={1} alignItems={'center'}>
                         <EmptyDefault
                           message={() => (
                             <Box
                               flex={1}
-                              display={"flex"}
-                              alignItems={"center"}
-                              justifyContent={"center"}
+                              display={'flex'}
+                              alignItems={'center'}
+                              justifyContent={'center'}
                             >
                               No NFT
                             </Box>
@@ -214,16 +205,16 @@ export const ImportCollectionWrap = <
                   ) : (
                     <Box
                       flex={1}
-                      display={"flex"}
-                      alignItems={"center"}
-                      height={"90%"}
-                      width={"100%"}
-                      justifyContent={"center"}
+                      display={'flex'}
+                      alignItems={'center'}
+                      height={'90%'}
+                      width={'100%'}
+                      justifyContent={'center'}
                     >
                       <img
-                        className="loading-gif"
-                        alt={"loading"}
-                        width="36"
+                        className='loading-gif'
+                        alt={'loading'}
+                        width='36'
                         src={`${SoursURL}images/loading-line.gif`}
                       />
                     </Box>
@@ -232,25 +223,23 @@ export const ImportCollectionWrap = <
               )}
             </Box>
             <Box
-              width={"100%"}
+              width={'100%'}
               paddingX={isMobile ? 2 : 0}
               marginTop={2}
-              flexDirection={"row"}
-              display={"flex"}
-              justifyContent={"space-between"}
+              flexDirection={'row'}
+              display={'flex'}
+              justifyContent={'space-between'}
             >
               <BtnMain
                 {...{
-                  defaultLabel: "labelContinue",
+                  defaultLabel: 'labelContinue',
                   fullWidth: true,
                   disabled: () => {
-                    return (
-                      disabled || !selectContract || !selectContract?.total
-                    );
+                    return disabled || !selectContract || !selectContract?.total
                   },
                   onClick: () => {
-                    setStep(ImportCollectionStep.SELECTCOLLECTION);
-                    onContractNext(selectContract?.value ?? "");
+                    setStep(ImportCollectionStep.SELECTCOLLECTION)
+                    onContractNext(selectContract?.value ?? '')
                   },
                 }}
               />
@@ -263,46 +252,46 @@ export const ImportCollectionWrap = <
         view: (
           <Box
             marginTop={3}
-            display={"flex"}
-            justifyContent={"flex-start"}
-            flexDirection={"column"}
-            alignItems={"flex-start"}
-            width={"100%"}
-            maxWidth={"760px"}
+            display={'flex'}
+            justifyContent={'flex-start'}
+            flexDirection={'column'}
+            alignItems={'flex-start'}
+            width={'100%'}
+            maxWidth={'760px'}
           >
             <Typography
-              variant={"body1"}
-              color={"textSecondary"}
+              variant={'body1'}
+              color={'textSecondary'}
               marginBottom={2}
-              textAlign={"center"}
-              whiteSpace={"pre-line"}
+              textAlign={'center'}
+              whiteSpace={'pre-line'}
             >
-              {t("labelImportChooseCollection")}
+              {t('labelImportChooseCollection')}
             </Typography>
 
             {onLoading ? (
               <Box
                 flex={1}
-                display={"flex"}
-                alignItems={"center"}
-                height={"90%"}
-                width={"100%"}
-                justifyContent={"center"}
+                display={'flex'}
+                alignItems={'center'}
+                height={'90%'}
+                width={'100%'}
+                justifyContent={'center'}
               >
                 <img
-                  className="loading-gif"
-                  alt={"loading"}
-                  width="36"
+                  className='loading-gif'
+                  alt={'loading'}
+                  width='36'
                   src={`${SoursURL}images/loading-line.gif`}
                 />
               </Box>
             ) : collectionInputProps?.collectionListProps?.total > 0 ? (
               <>
                 <Box
-                  width={"100%"}
+                  width={'100%'}
                   paddingTop={2}
                   paddingX={isMobile ? 2 : 0}
-                  alignItems={"center"}
+                  alignItems={'center'}
                 >
                   <CollectionInput
                     {...{
@@ -310,26 +299,25 @@ export const ImportCollectionWrap = <
                       collection: selectCollection,
 
                       onSelected: (item: Co) => {
-                        collectionInputProps?.onSelected &&
-                          collectionInputProps.onSelected(item);
-                        onCollectionChange(item);
+                        collectionInputProps?.onSelected && collectionInputProps.onSelected(item)
+                        onCollectionChange(item)
                       },
                     }}
                     fullWidth={true}
                     collectionListProps={{
                       ...collectionInputProps.collectionListProps,
-                      size: "small",
+                      size: 'small',
                     }}
-                    size={isMobile ? "small" : "large"}
+                    size={isMobile ? 'small' : 'large'}
                     showCopy={true}
                   />
-                  <Typography component={"p"} variant={"body1"} marginTop={1}>
-                    <Trans i18nKey={"labelORCreateCollection"}>
+                  <Typography component={'p'} variant={'body1'} marginTop={1}>
+                    <Trans i18nKey={'labelORCreateCollection'}>
                       or
                       <Link
                         href={`./#/NFT/addLegacyCollection/${selectContract?.value}`}
-                        variant={"body1"}
-                        target={"_self"}
+                        variant={'body1'}
+                        target={'_self'}
                       >
                         Create Collection
                       </Link>
@@ -337,23 +325,23 @@ export const ImportCollectionWrap = <
                   </Typography>
                 </Box>
                 <Box
-                  width={"100%"}
+                  width={'100%'}
                   paddingX={isMobile ? 2 : 0}
                   marginTop={2}
-                  flexDirection={"row"}
-                  display={"flex"}
-                  justifyContent={"space-between"}
+                  flexDirection={'row'}
+                  display={'flex'}
+                  justifyContent={'space-between'}
                 >
                   <Button
-                    variant={"outlined"}
-                    size={"medium"}
-                    color={"primary"}
-                    className={"step"}
-                    sx={{ height: "var(--btn-medium-height)" }}
-                    startIcon={<BackIcon fontSize={"small"} />}
+                    variant={'outlined'}
+                    size={'medium'}
+                    color={'primary'}
+                    className={'step'}
+                    sx={{ height: 'var(--btn-medium-height)' }}
+                    startIcon={<BackIcon fontSize={'small'} />}
                     onClick={() => {
-                      onCollectionChange(undefined);
-                      setStep(ImportCollectionStep.SELECTCONTRACT);
+                      onCollectionChange(undefined)
+                      setStep(ImportCollectionStep.SELECTCONTRACT)
                     }}
                   >
                     {t(`labelMintBack`)}
@@ -361,14 +349,14 @@ export const ImportCollectionWrap = <
 
                   <BtnMain
                     {...{
-                      defaultLabel: "labelMintNext",
+                      defaultLabel: 'labelMintNext',
                       btnInfo: undefined, //btnInfo,
                       disabled: () => {
-                        return disabled || !selectCollection;
+                        return disabled || !selectCollection
                       },
                       onClick: () => {
-                        setStep(ImportCollectionStep.SELECTNFT);
-                        selectCollection && onCollectionNext(selectCollection);
+                        setStep(ImportCollectionStep.SELECTNFT)
+                        selectCollection && onCollectionNext(selectCollection)
                       },
                     }}
                   />
@@ -377,35 +365,35 @@ export const ImportCollectionWrap = <
             ) : (
               <>
                 <Box
-                  width={"100%"}
+                  width={'100%'}
                   paddingX={isMobile ? 2 : 0}
                   marginTop={2}
-                  flexDirection={"row"}
-                  display={"flex"}
-                  justifyContent={"space-between"}
+                  flexDirection={'row'}
+                  display={'flex'}
+                  justifyContent={'space-between'}
                 >
                   <Button
-                    variant={"outlined"}
-                    size={"medium"}
-                    color={"primary"}
-                    className={"step"}
-                    sx={{ height: "var(--btn-medium-height)" }}
-                    startIcon={<BackIcon fontSize={"small"} />}
+                    variant={'outlined'}
+                    size={'medium'}
+                    color={'primary'}
+                    className={'step'}
+                    sx={{ height: 'var(--btn-medium-height)' }}
+                    startIcon={<BackIcon fontSize={'small'} />}
                     onClick={() => {
-                      onCollectionChange(undefined);
-                      setStep(ImportCollectionStep.SELECTCONTRACT);
+                      onCollectionChange(undefined)
+                      setStep(ImportCollectionStep.SELECTCONTRACT)
                     }}
                   >
                     {t(`labelMintBack`)}
                   </Button>
                   <Button
-                    variant={"contained"}
-                    size={"medium"}
-                    sx={{ height: "var(--btn-medium-height)", marginLeft: 2 }}
-                    color={"primary"}
-                    className={"step"}
+                    variant={'contained'}
+                    size={'medium'}
+                    sx={{ height: 'var(--btn-medium-height)', marginLeft: 2 }}
+                    color={'primary'}
+                    className={'step'}
                     fullWidth={true}
-                    startIcon={<AddIcon fontSize={"large"} />}
+                    startIcon={<AddIcon fontSize={'large'} />}
                     href={`./#/NFT/addLegacyCollection/${selectContract?.value}`}
                   >
                     {t(`labelCreateLegacyCollection`)}
@@ -420,11 +408,11 @@ export const ImportCollectionWrap = <
         view: (
           <Box
             marginTop={3}
-            display={"flex"}
-            justifyContent={"flex-start"}
-            flexDirection={"column"}
-            alignItems={"stretch"}
-            width={"100%"}
+            display={'flex'}
+            justifyContent={'flex-start'}
+            flexDirection={'column'}
+            alignItems={'stretch'}
+            width={'100%'}
             // maxWidth={"760px"}
           >
             {selectCollection && (
@@ -439,36 +427,36 @@ export const ImportCollectionWrap = <
               />
             )}
             <Box
-              width={"100%"}
+              width={'100%'}
               paddingX={isMobile ? 2 : 0}
               marginTop={2}
-              flexDirection={"row"}
-              display={"flex"}
-              justifyContent={"space-between"}
+              flexDirection={'row'}
+              display={'flex'}
+              justifyContent={'space-between'}
             >
               <Button
-                className={"step"}
-                startIcon={<BackIcon fontSize={"small"} />}
-                sx={{ height: "var(--btn-medium-height)" }}
-                variant={"outlined"}
-                size={"medium"}
-                color={"primary"}
+                className={'step'}
+                startIcon={<BackIcon fontSize={'small'} />}
+                sx={{ height: 'var(--btn-medium-height)' }}
+                variant={'outlined'}
+                size={'medium'}
+                color={'primary'}
                 onClick={() => {
-                  setStep(ImportCollectionStep.SELECTCOLLECTION);
-                  selectCollection && onCollectionChange(undefined);
+                  setStep(ImportCollectionStep.SELECTCOLLECTION)
+                  selectCollection && onCollectionChange(undefined)
                 }}
               >
                 {t(`labelMintBack`)}
               </Button>
               <BtnMain
                 {...{
-                  defaultLabel: t("labelDoneBtn"),
+                  defaultLabel: t('labelDoneBtn'),
                   btnInfo: undefined,
                   disabled: () => {
-                    return disabled || !selectCollection;
+                    return disabled || !selectCollection
                   },
                   onClick: () => {
-                    history.push("/nft/myCollection");
+                    history.push('/nft/myCollection')
                   },
                 }}
               />
@@ -476,7 +464,7 @@ export const ImportCollectionWrap = <
           </Box>
         ),
       },
-    ];
+    ]
   }, [
     t,
     selectContract,
@@ -496,34 +484,30 @@ export const ImportCollectionWrap = <
     onContractNext,
     onCollectionChange,
     onCollectionNext,
-  ]);
+  ])
 
   // @ts-ignore
   return (
     <Box
       // className={walletMap ? "" : "loading"}
-      display={"flex"}
+      display={'flex'}
       flex={1}
-      flexDirection={"column"}
+      flexDirection={'column'}
       padding={5 / 2}
-      alignItems={"center"}
+      alignItems={'center'}
     >
       <HorizontalLabelPositionBelowStepper activeStep={step} steps={steps} />
       <MintAdStyle
         flex={1}
         marginTop={2}
         paddingX={isMobile ? 2 : 5}
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"stretch"}
-        width={"100%"}
+        display={'flex'}
+        justifyContent={'center'}
+        alignItems={'stretch'}
+        width={'100%'}
       >
         {panelList.map((panel, index) => {
-          return (
-            <React.Fragment key={index}>
-              {step === index ? panel.view : <></>}
-            </React.Fragment>
-          );
+          return <React.Fragment key={index}>{step === index ? panel.view : <></>}</React.Fragment>
         })}
       </MintAdStyle>
       {/*{copyToastOpen && (*/}
@@ -547,5 +531,5 @@ export const ImportCollectionWrap = <
       {/*  />*/}
       {/*)}*/}
     </Box>
-  );
-};
+  )
+}

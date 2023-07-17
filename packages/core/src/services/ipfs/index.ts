@@ -1,2 +1,2 @@
-export * from "./ipfsService";
-export * from "./useIpfs";
+export * from './ipfsService'
+export * from './useIpfs'

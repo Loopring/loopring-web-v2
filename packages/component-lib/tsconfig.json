@@ -9,16 +9,6 @@
     "baseUrl": "./src",
     "rootDir": "./src"
   },
-  "include": [
-    "src",
-    "src/**/*.json",
-    "src/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    "example",
-    "rollup.config.js"
-  ]
+  "include": ["src", "src/**/*.json", "src/*"],
+  "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]
 }

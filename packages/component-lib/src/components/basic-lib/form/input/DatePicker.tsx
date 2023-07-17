@@ -1,11 +1,5 @@
-import {
-  Box,
-  experimentalStyled,
-  IconButton,
-  InputAdornment,
-  TextFieldProps,
-} from "@mui/material";
-import styled from "@emotion/styled";
+import { Box, experimentalStyled, IconButton, InputAdornment, TextFieldProps } from '@mui/material'
+import styled from '@emotion/styled'
 import {
   DatePicker as MuDatePicker,
   DatePickerProps as MuDatePickerProps,
@@ -13,15 +7,15 @@ import {
   DateRangePickerProps as MuDateRangePickerProps,
   DateTimePicker as MuDateTimePicker,
   DateTimePickerProps as MuDateTimePickerProps,
-} from "@mui/lab";
+} from '@mui/lab'
 
-import { TFunction } from "i18next";
+import { TFunction } from 'i18next'
 import {
   CalendarIcon,
   YEAR_DAY_FORMAT,
   YEAR_DAY_MINUTE_FORMAT,
-} from "@loopring-web/common-resources";
-import { TextField } from "./style";
+} from '@loopring-web/common-resources'
+import { TextField } from './style'
 
 export const DateTextField = styled(TextField)`
   // && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
@@ -82,16 +76,13 @@ export const DateTextField = styled(TextField)`
   //  margin-left: -.8rem;
   //
   //}
-`;
+`
 
 // const DateRangeDelimiterStyled = styled(DateRangeDelimiter)`
 //     margin: 0 ${({theme}) => theme.unit}px !important;
 // `
 
-export type DateRangePickerProps = {} & Omit<
-  MuDateRangePickerProps<Date>,
-  "renderInput"
->;
+export type DateRangePickerProps = {} & Omit<MuDateRangePickerProps<Date>, 'renderInput'>
 
 export const DateRangePicker = experimentalStyled(
   ({ ...props }: DateRangePickerProps & { t: TFunction }) => {
@@ -100,8 +91,8 @@ export const DateRangePicker = experimentalStyled(
         {...props}
         disableFuture={props.disableFuture ? props.disableFuture : true}
         calendars={props.calendars ? props.calendars : 2}
-        mask={props.mask ? props.mask : "__-__-__"}
-        inputFormat={props.inputFormat ? props.inputFormat : "YY-MM-DD"}
+        mask={props.mask ? props.mask : '__-__-__'}
+        inputFormat={props.inputFormat ? props.inputFormat : 'YY-MM-DD'}
         // endIcon={<CalendarIcon/>}
         OpenPickerButtonProps={props.OpenPickerButtonProps}
         renderInput={(startProps: any, endProps: any) => {
@@ -109,96 +100,89 @@ export const DateRangePicker = experimentalStyled(
             ...startProps.InputProps,
             endAdornment: (
               <InputAdornment
-                variant={"standard"}
-                position="end"
-                className={"date-range-adornment"}
+                variant={'standard'}
+                position='end'
+                className={'date-range-adornment'}
               >
-                <IconButton size={"large"} edge={"end"}>
+                <IconButton size={'large'} edge={'end'}>
                   <CalendarIcon />
                 </IconButton>
               </InputAdornment>
             ),
-          };
+          }
           endProps.InputProps = {
             ...endProps.InputProps,
             endAdornment: (
               <InputAdornment
-                variant={"standard"}
-                position="end"
-                className={"date-range-adornment"}
+                variant={'standard'}
+                position='end'
+                className={'date-range-adornment'}
               >
-                <IconButton size={"large"} edge={"end"}>
+                <IconButton size={'large'} edge={'end'}>
                   <CalendarIcon />
                 </IconButton>
               </InputAdornment>
             ),
-          };
+          }
           return (
             <>
               <DateTextField
                 ref={startProps.inputRef}
                 {...{ ...startProps, helperText: null, label: undefined }}
-                placeholder={"YY-MM-DD"}
+                placeholder={'YY-MM-DD'}
               />
               <Box sx={{ mx: 2 }}> - </Box>
               {/*<DateRangeDelimiterStyled>-</DateRangeDelimiterStyled>*/}
               <DateTextField
                 ref={endProps.inputRef}
                 {...{ ...endProps, helperText: null, label: undefined }}
-                placeholder={"YY-MM-DD"}
+                placeholder={'YY-MM-DD'}
               />
             </>
-          );
+          )
         }}
       />
-    );
-  }
+    )
+  },
 )<DateRangePickerProps>`
 
-` as React.ComponentType<DateRangePickerProps & { t?: TFunction }>;
+` as React.ComponentType<DateRangePickerProps & { t?: TFunction }>
 
-export type DatePickerProps = Omit<MuDatePickerProps, "renderInput"> & {
-  textFiledProps?: TextFieldProps;
-};
+export type DatePickerProps = Omit<MuDatePickerProps, 'renderInput'> & {
+  textFiledProps?: TextFieldProps
+}
 export const DatePicker = styled(
-  ({
-    t,
-    inputFormat,
-    value,
-    ...props
-  }: DatePickerProps & { t?: TFunction }) => (
+  ({ t, inputFormat, value, ...props }: DatePickerProps & { t?: TFunction }) => (
     <MuDatePicker
       {...props}
       disableFuture={props.disableFuture ? props.disableFuture : true}
-      mask={props.mask ? props.mask : "__-__-__"}
+      mask={props.mask ? props.mask : '__-__-__'}
       inputFormat={inputFormat ? inputFormat : YEAR_DAY_FORMAT}
-      openTo={props.openTo ? props.openTo : "day"}
-      views={props.views ? props.views : ["year", "day"]}
+      openTo={props.openTo ? props.openTo : 'day'}
+      views={props.views ? props.views : ['year', 'day']}
       value={value}
       components={{ OpenPickerIcon: CalendarIcon }}
       OpenPickerButtonProps={
         props.OpenPickerButtonProps
           ? props.OpenPickerButtonProps
           : {
-              size: "large",
+              size: 'large',
             }
       }
-      desktopModeMediaQuery={"@media (min-width: 720px)"}
+      desktopModeMediaQuery={'@media (min-width: 720px)'}
       renderInput={(_props) => {
         return (
           <DateTextField
             ref={_props.inputRef}
             {...{ ..._props, ...props?.textFiledProps, helperText: null }}
           />
-        );
+        )
       }}
     />
-  )
-)<DatePickerProps>`` as React.ComponentType<
-  DatePickerProps & { t?: TFunction }
->;
+  ),
+)<DatePickerProps>`` as React.ComponentType<DatePickerProps & { t?: TFunction }>
 
-export type DateTimePickerProps = Omit<MuDateTimePickerProps, "renderInput">;
+export type DateTimePickerProps = Omit<MuDateTimePickerProps, 'renderInput'>
 
 export const DateTimePicker = ({
   t,
@@ -208,17 +192,17 @@ export const DateTimePicker = ({
   textFiledProps,
   ...props
 }: DateTimePickerProps & {
-  t?: TFunction;
-  fullWidth?: boolean;
-  textFiledProps?: Partial<TextFieldProps>;
+  t?: TFunction
+  fullWidth?: boolean
+  textFiledProps?: Partial<TextFieldProps>
 }) => (
   <MuDateTimePicker
     {...props}
     disableFuture={props.disableFuture ? props.disableFuture : false}
-    mask={props.mask ? props.mask : "__-__-__"}
+    mask={props.mask ? props.mask : '__-__-__'}
     inputFormat={inputFormat ? inputFormat : YEAR_DAY_MINUTE_FORMAT}
-    openTo={props.openTo ? props.openTo : "day"}
-    views={props.views ? props.views : ["day", "hours", "minutes"]}
+    openTo={props.openTo ? props.openTo : 'day'}
+    views={props.views ? props.views : ['day', 'hours', 'minutes']}
     value={value}
     components={{
       OpenPickerIcon: CalendarIcon,
@@ -227,10 +211,10 @@ export const DateTimePicker = ({
       props.OpenPickerButtonProps
         ? props.OpenPickerButtonProps
         : {
-            size: "large",
+            size: 'large',
           }
     }
-    desktopModeMediaQuery={"@media (min-width: 720px)"}
+    desktopModeMediaQuery={'@media (min-width: 720px)'}
     renderInput={(_props) => {
       return (
         <DateTextField
@@ -238,10 +222,10 @@ export const DateTimePicker = ({
           fullWidth={fullWidth}
           {...{ ...textFiledProps, ..._props, helperText: null }}
         />
-      );
+      )
     }}
   />
-);
+)
 // (({ theme }) => ({
 //     position: 'relative',
 //     '& .MuiIconButton-edgeEnd': {

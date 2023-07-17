@@ -1,1 +1,1 @@
-export * from "./useConnectHook";
+export * from './useConnectHook'

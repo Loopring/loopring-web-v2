@@ -11,20 +11,10 @@ import {
   RadioGroup,
   Tooltip,
   Typography,
-} from "@mui/material";
-import React from "react";
-import {
-  Button,
-  CardStyleItem,
-  InputButtonProps,
-  InputCoin,
-  TextField,
-} from "../../basic-lib";
-import {
-  useTranslation,
-  WithTranslation,
-  withTranslation,
-} from "react-i18next";
+} from '@mui/material'
+import React from 'react'
+import { Button, CardStyleItem, InputButtonProps, InputCoin, TextField } from '../../basic-lib'
+import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import {
   BackIcon,
   CoinInfo,
@@ -43,27 +33,23 @@ import {
   REDPACKET_ORDER_NFT_LIMIT,
   Info2Icon,
   RedPacketOrderType,
-} from "@loopring-web/common-resources";
-import { useSettings } from "../../../stores";
-import {
-  CreateRedPacketViewProps,
-  RedPacketStep,
-  SwitchData,
-} from "../Interface";
-import { MenuBtnStyled } from "../../styled";
-import styled from "@emotion/styled";
-import { BasicACoinTrade } from "./BasicACoinTrade";
-import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { FeeToggle } from "./tool/FeeList";
-import { BtnMain } from "./tool";
-import * as sdk from "@loopring-web/loopring-sdk";
-import moment from "moment";
-import { NFTInput } from "./BasicANFTTrade";
-import { DateTimeRangePicker } from "../../datetimerangepicker";
-import BigNumber from "bignumber.js";
-import { useNotify } from "@loopring-web/core";
+} from '@loopring-web/common-resources'
+import { useSettings } from '../../../stores'
+import { CreateRedPacketViewProps, RedPacketStep, SwitchData } from '../Interface'
+import { MenuBtnStyled } from '../../styled'
+import styled from '@emotion/styled'
+import { BasicACoinTrade } from './BasicACoinTrade'
+import { DropdownIconStyled, FeeTokenItemWrapper } from './Styled'
+import { FeeToggle } from './tool/FeeList'
+import { BtnMain } from './tool'
+import * as sdk from '@loopring-web/loopring-sdk'
+import moment from 'moment'
+import { NFTInput } from './BasicANFTTrade'
+import { DateTimeRangePicker } from '../../datetimerangepicker'
+import BigNumber from 'bignumber.js'
+import { useNotify } from '@loopring-web/core'
 
-const StyledTextFiled = styled(TextField)``;
+const StyledTextFiled = styled(TextField)``
 
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
@@ -95,7 +81,7 @@ const RedPacketBoxStyle = styled(Box)`
       border-color: var(--color-border-hover);
     }
   }
-`;
+`
 
 export const CreateRedPacketStepWrap = withTranslation()(
   <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>({
@@ -121,48 +107,47 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectNFTDisabled,
     ...rest
   }: CreateRedPacketViewProps<T, I, F> & {
-    selectedType: LuckyRedPacketItem;
+    selectedType: LuckyRedPacketItem
   } & WithTranslation) => {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation('common')
 
     const inputButtonDefaultProps = {
       label:
         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-          ? t("labelAmountEach")
-          : t("labelRedPacketTotalAmount"),
-      decimalsLimit:
-        (tokenMap && tokenMap[tradeData?.belong as string])?.precision ?? 8,
+          ? t('labelAmountEach')
+          : t('labelRedPacketTotalAmount'),
+      decimalsLimit: (tokenMap && tokenMap[tradeData?.belong as string])?.precision ?? 8,
       minimum,
       placeholderText: tradeData?.belong
-        ? t("labelRedPacketsMinRange", { value: minimum }) +
+        ? t('labelRedPacketsMinRange', { value: minimum }) +
           (sdk.toBig(maximum ?? 0).lt(sdk.toBig(tradeData.balance ?? 0))
-            ? " - " + t("labelRedPacketsMaxRange", { value: maximum })
-            : "")
-        : "0.00",
-    };
+            ? ' - ' + t('labelRedPacketsMaxRange', { value: maximum })
+            : '')
+        : '0.00',
+    }
 
     const inputNFTButtonDefaultProps: Partial<InputButtonProps<T, I, CoinInfo<I>>> = {
       label:
         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-          ? t("labelAmountEach")
-          : t("labelRedPacketTotalAmount"),
+          ? t('labelAmountEach')
+          : t('labelRedPacketTotalAmount'),
       decimalsLimit: 0,
       minimum,
-      placeholderText: "0",
-    };
+      placeholderText: '0',
+    }
     // const [dayValue, setDayValue] = React.useState<Moment | null>(moment());
     // const [durationValue, setDurationValue] = React.useState<number>(1);
 
     const getDisabled = React.useMemo(() => {
-      return disabled || btnStatus === TradeBtnStatus.DISABLED;
-    }, [disabled, btnStatus]);
-    const [dropdownStatus, setDropdownStatus] =
-      React.useState<"up" | "down">("down");
-    const inputBtnRef = React.useRef();
-    const inputSplitRef = React.useRef();
-    const isToken = tradeType === RedPacketOrderType.TOKEN || 
+      return disabled || btnStatus === TradeBtnStatus.DISABLED
+    }, [disabled, btnStatus])
+    const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+    const inputBtnRef = React.useRef()
+    const inputSplitRef = React.useRef()
+    const isToken =
+      tradeType === RedPacketOrderType.TOKEN ||
       (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT)
-    const {total: redPacketTotalValue, splitValue} = React.useMemo(() => {
+    const { total: redPacketTotalValue, splitValue } = React.useMemo(() => {
       // if (tradeType == TRADE_TYPE.TOKEN) {
       //
       // } else {
@@ -179,13 +164,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
         const splitValue =
           selectedType.value.partition == sdk.LuckyTokenAmountType.RANDOM
             ? sdk.toBig(tradeData?.tradeValue ?? 0).div(tradeData?.numbers ?? 1)
-            : sdk.toBig(tradeData?.tradeValue ?? 0);
+            : sdk.toBig(tradeData?.tradeValue ?? 0)
         const total =
           selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-            ? sdk
-                .toBig(tradeData?.tradeValue ?? 0)
-                .times(tradeData?.numbers ?? 0)
-            : sdk.toBig(tradeData?.tradeValue ?? 0);
+            ? sdk.toBig(tradeData?.tradeValue ?? 0).times(tradeData?.numbers ?? 0)
+            : sdk.toBig(tradeData?.tradeValue ?? 0)
         if (isToken) {
           return {
             total:
@@ -194,10 +177,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 tokenMap[tradeData?.belong as string].precision,
                 tokenMap[tradeData?.belong as string].precision,
                 tokenMap[tradeData?.belong as string].precision,
-                false
+                false,
                 // { isFait: true }
               ) +
-              " " +
+              ' ' +
               tradeData.belong,
             splitValue:
               getValuePrecisionThousand(
@@ -205,12 +188,12 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 tokenMap[tradeData?.belong as string].precision,
                 tokenMap[tradeData?.belong as string].precision,
                 tokenMap[tradeData?.belong as string].precision,
-                false
+                false,
                 // { isFait: true }
               ) +
-              " " +
+              ' ' +
               tradeData.belong,
-          };
+          }
         } else {
           return {
             total:
@@ -219,73 +202,64 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 0,
                 0,
                 1,
-                false
+                false,
                 // { isFait: true }
               ) +
-              " " +
-              (total.gt(1) ? "NFTs" : "NFT"),
+              ' ' +
+              (total.gt(1) ? 'NFTs' : 'NFT'),
             splitValue:
               getValuePrecisionThousand(
                 splitValue.toFixed(0, 1),
                 0,
                 0,
                 1,
-                false
+                false,
                 // { isFait: true }
               ) +
-              " " +
-              "NFT",
-          };
+              ' ' +
+              'NFT',
+          }
         }
       } else {
         return {
           total: EmptyValueTag,
           splitValue:
-            selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE &&
-            EmptyValueTag,
-        };
+            selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE && EmptyValueTag,
+        }
       }
-    }, [
-      tradeData,
-      tradeData?.numbers,
-      selectedType.value.partition,
-      coinMap,
-      tradeType,
-    ]);
+    }, [tradeData, tradeData?.numbers, selectedType.value.partition, coinMap, tradeType])
     const inputSplitProps = React.useMemo(() => {
       const inputSplitProps: any = {
         label:
           selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-            ? t("labelQuantity")
-            : t("labelSplit"), //t("labelTokenAmount"),
-        placeholderText: t("labelQuantity"),
+            ? t('labelQuantity')
+            : t('labelSplit'), //t("labelTokenAmount"),
+        placeholderText: t('labelQuantity'),
         isHideError: true,
         isShowCoinInfo: false,
         handleCountChange: (ibData: IBData<any>, _name: string, _ref: any) => {
           handleOnDataChange({
             numbers: ibData.tradeValue,
-          } as unknown as Partial<T>);
+          } as unknown as Partial<T>)
         },
         fullWidth: true,
-      };
+      }
       let inputSplitExtendProps = {},
-        balance: any = undefined;
+        balance: any = undefined
       if (tradeData?.tradeValue && Number(tradeData?.tradeValue) && maximum) {
         if (selectedType.value.partition === sdk.LuckyTokenAmountType.AVERAGE) {
           balance = sdk
             .toBig(tradeData?.balance ?? 0)
             .div(tradeData.tradeValue)
-            .toFixed(0, 1);
+            .toFixed(0, 1)
         } else {
           balance = sdk
             .toBig(tradeData.tradeValue)
             .div(Number(minimum) ?? 1)
-            .toFixed(0, 1);
+            .toFixed(0, 1)
         }
 
-        balance = sdk.toBig(balance).lte(REDPACKET_ORDER_LIMIT)
-          ? balance
-          : REDPACKET_ORDER_LIMIT;
+        balance = sdk.toBig(balance).lte(REDPACKET_ORDER_LIMIT) ? balance : REDPACKET_ORDER_LIMIT
 
         inputSplitExtendProps = {
           // maxAllow: true,
@@ -306,12 +280,12 @@ export const CreateRedPacketStepWrap = withTranslation()(
           inputData: {
             belong:
               selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                ? t("labelQuantity")
-                : t("labelSplit"),
+                ? t('labelQuantity')
+                : t('labelSplit'),
             tradeValue: tradeData?.numbers,
             balance: balance,
           },
-        };
+        }
       } else {
         inputSplitExtendProps = {
           // maxAllow: false,
@@ -320,29 +294,23 @@ export const CreateRedPacketStepWrap = withTranslation()(
           inputData: {
             belong:
               selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                ? t("labelAmountEach")
-                : t("labelSplit"),
+                ? t('labelAmountEach')
+                : t('labelSplit'),
             tradeValue: tradeData?.numbers,
             // count: tradeData?.numbers,
           },
-        };
+        }
       }
       return {
         ...inputSplitProps,
         ...inputSplitExtendProps,
-      };
-    }, [
-      tradeData?.numbers,
-      selectedType.value.partition,
-      maximum,
-      minimum,
-      tradeType,
-    ]);
+      }
+    }, [tradeData?.numbers, selectedType.value.partition, maximum, minimum, tradeType])
     const handleToggleChange = (value: F) => {
       if (handleFeeChange) {
-        handleFeeChange(value);
+        handleFeeChange(value)
       }
-    };
+    }
     const _balance = React.useMemo(() => {
       if (
         tradeData.belong !== undefined &&
@@ -353,104 +321,84 @@ export const CreateRedPacketStepWrap = withTranslation()(
         tradeType === RedPacketOrderType.NFT
       ) {
         if (selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE) {
-          const value = BigNumber.min(
-            tradeData.balance,
-            REDPACKET_ORDER_NFT_LIMIT
-          ).toString();
+          const value = BigNumber.min(tradeData.balance, REDPACKET_ORDER_NFT_LIMIT).toString()
           return sdk
             .toBig(value)
-            .div(
-              tradeData?.numbers && tradeData?.numbers != 0
-                ? tradeData?.numbers
-                : 1
-            )
-            .toFixed(0, 1);
+            .div(tradeData?.numbers && tradeData?.numbers != 0 ? tradeData?.numbers : 1)
+            .toFixed(0, 1)
         } else {
-          return BigNumber.min(
-            tradeData.balance,
-            REDPACKET_ORDER_NFT_LIMIT
-          ).toString();
+          return BigNumber.min(tradeData.balance, REDPACKET_ORDER_NFT_LIMIT).toString()
         }
       } else if (
         selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE &&
         tradeData.belong !== undefined &&
         tradeData?.numbers &&
         // @ts-ignore
-        tradeData.numbers !== "0" &&
+        tradeData.numbers !== '0' &&
         tradeData.balance
       ) {
-        return sdk.toBig(tradeData.balance).div(tradeData.numbers).toString();
+        return sdk.toBig(tradeData.balance).div(tradeData.numbers).toString()
       } else {
-        return tradeData.balance;
+        return tradeData.balance
       }
-    }, [selectedType.value.partition, tradeData.balance, tradeData?.numbers]);
-    const { isMobile } = useSettings();
+    }, [selectedType.value.partition, tradeData.balance, tradeData?.numbers])
+    const { isMobile } = useSettings()
 
-    const startDateTime = tradeData.validSince
-      ? moment(tradeData.validSince)
-      : null;
-    const endDateTime = tradeData.validUntil
-      ? moment(tradeData.validUntil)
-      : null;
-    const now = moment();
+    const startDateTime = tradeData.validSince ? moment(tradeData.validSince) : null
+    const endDateTime = tradeData.validUntil ? moment(tradeData.validUntil) : null
+    const now = moment()
 
     const startMinDateTime = endDateTime
-      ? moment.max(now, endDateTime.clone().subtract(7, "days"))
-      : now;
-    const startMaxDateTime = endDateTime
-      ? endDateTime.clone()
-      : now.clone().add(1, "days");
+      ? moment.max(now, endDateTime.clone().subtract(7, 'days'))
+      : now
+    const startMaxDateTime = endDateTime ? endDateTime.clone() : now.clone().add(1, 'days')
 
-    const endMinDateTime = startDateTime
-      ? moment.max(now, startDateTime.clone())
-      : now;
-
+    const endMinDateTime = startDateTime ? moment.max(now, startDateTime.clone()) : now
 
     const timeRangeMaxInSeconds = isToken
       ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
-      : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT;
+      : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT
     // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
-      ? startDateTime.clone().add(timeRangeMaxInSeconds, "seconds")
-      : undefined;
+      ? startDateTime.clone().add(timeRangeMaxInSeconds, 'seconds')
+      : undefined
     // @ts-ignore
     return (
-      <RedPacketBoxStyle className={"redPacket"} justifyContent={"center"}>
-        <Box marginY={1} display={"flex"}>
+      <RedPacketBoxStyle className={'redPacket'} justifyContent={'center'}>
+        <Box marginY={1} display={'flex'}>
           <Box
-            display={"flex"}
-            flexDirection={"row"}
-            justifyContent={"flex-start"}
-            alignItems={"center"}
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'flex-start'}
+            alignItems={'center'}
             marginBottom={1}
           >
             <Typography
-              component={"h4"}
-              variant={isMobile ? "body1" : "h5"}
-              whiteSpace={"pre"}
+              component={'h4'}
+              variant={isMobile ? 'body1' : 'h5'}
+              whiteSpace={'pre'}
               marginRight={1}
             >
               {t(
                 selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
-                  ? "labelLuckyBlindBox"
+                  ? 'labelLuckyBlindBox'
                   : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
-                  ? "labelRelayRedPacket"
-                  : selectedType.value.partition ==
-                    sdk.LuckyTokenAmountType.AVERAGE
-                  ? "labelRedPacketSendCommonTitle"
-                  : "labelRedPacketSenRandomTitle"
+                  ? 'labelRelayRedPacket'
+                  : selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                  ? 'labelRedPacketSendCommonTitle'
+                  : 'labelRedPacketSenRandomTitle',
               ) +
-                " — " +
+                ' — ' +
                 t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
             </Typography>
           </Box>
         </Box>
         <Box
           marginY={1}
-          display={"flex"}
-          alignSelf={"stretch"}
-          position={"relative"}
-          flexDirection={"column"}
+          display={'flex'}
+          alignSelf={'stretch'}
+          position={'relative'}
+          flexDirection={'column'}
         >
           {isToken ? (
             // @ts-ignore
@@ -458,12 +406,12 @@ export const CreateRedPacketStepWrap = withTranslation()(
               {...{
                 ...rest,
                 t,
-                type: "TOKEN",
+                type: 'TOKEN',
                 disabled,
                 walletMap,
                 tradeData:
-                  selectedType.value.partition ==
-                    sdk.LuckyTokenAmountType.AVERAGE && tradeData?.numbers
+                  selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE &&
+                  tradeData?.numbers
                     ? {
                         ...tradeData,
                         balance: _balance,
@@ -483,36 +431,28 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 isThumb: true,
                 isSelected: true,
                 type: tradeType,
-                subLabel: t("labelTokenNFTMaxRedPack"),
+                subLabel: t('labelTokenNFTMaxRedPack'),
                 disabled,
                 tradeData: {
                   ...tradeData,
                   balance:
                     tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
                       ? Math.min(
-                          (tradeData.giftNumbers ?? 1) *
-                            REDPACKET_ORDER_NFT_LIMIT,
-                          tradeData.balance ?? 0
+                          (tradeData.giftNumbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT,
+                          tradeData.balance ?? 0,
                         )
-                      : tradeData.type?.partition ===
-                        sdk.LuckyTokenAmountType.AVERAGE
-                      ? Math.min(
-                          REDPACKET_ORDER_NFT_LIMIT,
-                          tradeData.balance ?? 0
-                        )
+                      : tradeData.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
+                      ? Math.min(REDPACKET_ORDER_NFT_LIMIT, tradeData.balance ?? 0)
                       : Math.min(
                           (tradeData.numbers ?? 1) * REDPACKET_ORDER_NFT_LIMIT,
-                          tradeData.balance ?? 0
+                          tradeData.balance ?? 0,
                         ),
                 },
                 handleError: ({ balance: _balance }: T) => {
-                  return { error: false, message: "" };
+                  return { error: false, message: '' }
                 },
 
-                onChangeEvent: (
-                  _index: 0 | 1,
-                  { to, tradeData: newTradeData }: SwitchData<T>
-                ) => {
+                onChangeEvent: (_index: 0 | 1, { to, tradeData: newTradeData }: SwitchData<T>) => {
                   if (_index === 1) {
                     if (selectNFTDisabled) return
                     handleOnDataChange({
@@ -523,15 +463,15 @@ export const CreateRedPacketStepWrap = withTranslation()(
                       nftData: undefined,
                       belong: undefined,
                       image: undefined,
-                    } as T);
-                    setActiveStep(RedPacketStep.NFTList);
-                  } else if (to === "button") {
+                    } as T)
+                    setActiveStep(RedPacketStep.NFTList)
+                  } else if (to === 'button') {
                     handleOnDataChange({
                       tradeValue: newTradeData.tradeValue,
                       belong: newTradeData.belong,
                       balance: tradeData.balance,
                       nftData: newTradeData.nftData,
-                    } as any);
+                    } as any)
                   }
                 },
                 inputNFTDefaultProps: inputNFTButtonDefaultProps,
@@ -541,97 +481,90 @@ export const CreateRedPacketStepWrap = withTranslation()(
           )}
 
           <Typography
-            display={"flex"}
-            width={"100%"}
-            justifyContent={"flex-end"}
-            color={"textSecondary"}
+            display={'flex'}
+            width={'100%'}
+            justifyContent={'flex-end'}
+            color={'textSecondary'}
           >
-            {t("labelAssetAmount", {
-              value: getValuePrecisionThousand(
-                tradeData.balance,
-                8,
-                8,
-                8,
-                false
-              ),
+            {t('labelAssetAmount', {
+              value: getValuePrecisionThousand(tradeData.balance, 8, 8, 8, false),
             })}
           </Typography>
         </Box>
 
         {tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
-            <Box
-              marginY={1}
-              display={"flex"}
-              alignSelf={"stretch"}
-              justifyContent={"stretch"}
-              flexDirection={"column"}
-              position={"relative"}
-            >
-              <InputCoin<any, I, any>
-                // ref={inputSplitRef}
-                label={t("labelBlindBoxRedPacketWithGift")}
-                placeholderText={t("labelQuantity")}
-                isHideError={false}
-                isShowCoinInfo={false}
-                // handleError={(data: any) => {
-                //   handleOnDataChange({
-                //     giftNumbers: data.tradeValue,
-                //   } as unknown as Partial<T>);
-                //   return {
-                //     error:
-                //       tradeData.giftNumbers &&
-                //       tradeData.numbers &&
-                //       tradeData.giftNumbers > tradeData.numbers
-                //         ? true
-                //         : false,
-                //   };
-                // }}
-                name={"giftnumbers"}
-                order={"right"}
-                handleCountChange={(data) => {
-                  handleOnDataChange({
-                    giftNumbers: data.tradeValue,
-                  } as unknown as Partial<T>);
-                }}
-                inputData={{
-                  belong:
-                    selectedType.value.partition ==
-                    sdk.LuckyTokenAmountType.AVERAGE
-                      ? t("labelQuantity")
-                      : t("labelSplit"),
-                  tradeValue: tradeData?.giftNumbers,
-                }}
-                coinMap={{}}
-                coinPrecision={undefined}
-                disabled={disabled}
-                // inputError={
-                //   tradeData.giftNumbers &&
-                //   tradeData.numbers &&
-                //   tradeData.giftNumbers > tradeData.numbers
-                //     ? { error: true }
-                //     : { error: false }
-                // }
-              />
-            </Box>
-          )}
+          <Box
+            marginY={1}
+            display={'flex'}
+            alignSelf={'stretch'}
+            justifyContent={'stretch'}
+            flexDirection={'column'}
+            position={'relative'}
+          >
+            <InputCoin<any, I, any>
+              // ref={inputSplitRef}
+              label={t('labelBlindBoxRedPacketWithGift')}
+              placeholderText={t('labelQuantity')}
+              isHideError={false}
+              isShowCoinInfo={false}
+              // handleError={(data: any) => {
+              //   handleOnDataChange({
+              //     giftNumbers: data.tradeValue,
+              //   } as unknown as Partial<T>);
+              //   return {
+              //     error:
+              //       tradeData.giftNumbers &&
+              //       tradeData.numbers &&
+              //       tradeData.giftNumbers > tradeData.numbers
+              //         ? true
+              //         : false,
+              //   };
+              // }}
+              name={'giftnumbers'}
+              order={'right'}
+              handleCountChange={(data) => {
+                handleOnDataChange({
+                  giftNumbers: data.tradeValue,
+                } as unknown as Partial<T>)
+              }}
+              inputData={{
+                belong:
+                  selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                    ? t('labelQuantity')
+                    : t('labelSplit'),
+                tradeValue: tradeData?.giftNumbers,
+              }}
+              coinMap={{}}
+              coinPrecision={undefined}
+              disabled={disabled}
+              // inputError={
+              //   tradeData.giftNumbers &&
+              //   tradeData.numbers &&
+              //   tradeData.giftNumbers > tradeData.numbers
+              //     ? { error: true }
+              //     : { error: false }
+              // }
+            />
+          </Box>
+        )}
         <Box
           marginY={1}
-          display={"flex"}
-          alignSelf={"stretch"}
-          justifyContent={"stretch"}
-          flexDirection={"column"}
-          position={"relative"}
+          display={'flex'}
+          alignSelf={'stretch'}
+          justifyContent={'stretch'}
+          flexDirection={'column'}
+          position={'relative'}
         >
           <InputCoin<any, I, any>
             ref={inputSplitRef}
             {...{
               ...inputSplitProps,
-              name: "numbers",
-              order: "right",
+              name: 'numbers',
+              order: 'right',
               handleCountChange: (data) => {
                 handleOnDataChange({
                   numbers: data.tradeValue,
-                } as unknown as Partial<T>);
+                } as unknown as Partial<T>)
               },
               coinMap: {},
               coinPrecision: undefined,
@@ -639,11 +572,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
             disabled={disabled}
           />
         </Box>
-        <Box marginY={1} display={"flex"} alignSelf={"stretch"}>
+        <Box marginY={1} display={'flex'} alignSelf={'stretch'}>
           <StyledTextFiled
             label={
-              <Typography component={"span"} color={"var(--color-text-third)"}>
-                {t("labelRedPacketMemo")}
+              <Typography component={'span'} color={'var(--color-text-third)'}>
+                {t('labelRedPacketMemo')}
               </Typography>
             }
             value={tradeData.memo}
@@ -652,38 +585,35 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 memo: event.target.value, //event?.target?.value,
               } as unknown as Partial<T>)
             }
-            size={"large"}
+            size={'large'}
             inputProps={{
-              placeholder: t("labelRedPacketMemoPlaceholder"),
+              placeholder: t('labelRedPacketMemoPlaceholder'),
               maxLength: 25,
             }}
             fullWidth={true}
           />
         </Box>
-        <Box
-          marginY={1}
-          display={"flex"}
-          alignSelf={"stretch"}
-          flexDirection={"column"}
-        >
+        <Box marginY={1} display={'flex'} alignSelf={'stretch'} flexDirection={'column'}>
           <FormLabel>
             <Typography
-              variant={"body1"}
-              component={"span"}
-              lineHeight={"20px"}
-              display={"inline-flex"}
-              alignItems={"center"}
-              className={"main-label"}
-              color={"var(--color-text-third)"}
+              variant={'body1'}
+              component={'span'}
+              lineHeight={'20px'}
+              display={'inline-flex'}
+              alignItems={'center'}
+              className={'main-label'}
+              color={'var(--color-text-third)'}
             >
               {selectedType.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                ? t("labelRedPacketTimeRangeBlindbox")
-                : t("labelRedPacketTimeRange")}
+                ? t('labelRedPacketTimeRangeBlindbox')
+                : t('labelRedPacketTimeRange')}
               <Tooltip
                 title={
                   tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                    ? (tradeData.isNFT ? t("labelRedPacketTimeRangeBlindboxDes")! : t("labelRedPacketTimeRangeBlindboxDesERC20")!)
-                    : t("labelRedPacketTimeRangeDes")!
+                    ? tradeData.isNFT
+                      ? t('labelRedPacketTimeRangeBlindboxDes')!
+                      : t('labelRedPacketTimeRangeBlindboxDesERC20')!
+                    : t('labelRedPacketTimeRangeDes')!
                 }
               >
                 <IconButton>
@@ -701,40 +631,41 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 handleOnDataChange({
                   validSince: m ? m.toDate().getTime() : undefined,
                   validUntil: m ? m.clone().add(1, 'days').toDate().getTime() : undefined,
-                } as unknown as Partial<T>);
+                } as unknown as Partial<T>)
               }}
               onStartOpen={() => {
                 handleOnDataChange({
                   validUntil: undefined,
-                } as unknown as Partial<T>);
+                } as unknown as Partial<T>)
               }}
               endValue={endDateTime}
               endMinDateTime={endMinDateTime}
               endMaxDateTime={endMaxDateTime}
               onEndChange={(m) => {
-                if (startDateTime && m && startDateTime?.toDate().getTime() > m?.toDate().getTime()) {
+                if (
+                  startDateTime &&
+                  m &&
+                  startDateTime?.toDate().getTime() > m?.toDate().getTime()
+                ) {
                   handleOnDataChange({
                     validUntil: endDateTime,
-                  } as unknown as Partial<T>);
+                  } as unknown as Partial<T>)
                 } else {
                   const maximunTimestamp = startDateTime
-                    ? moment(startDateTime)
-                      .add(timeRangeMaxInSeconds, "seconds")
-                      .toDate()
-                      .getTime()
-                    : 0;
+                    ? moment(startDateTime).add(timeRangeMaxInSeconds, 'seconds').toDate().getTime()
+                    : 0
                   handleOnDataChange({
                     validUntil: m
                       ? m.toDate().getTime() > maximunTimestamp
                         ? maximunTimestamp
                         : m.toDate().getTime()
                       : undefined,
-                  } as unknown as Partial<T>);
+                  } as unknown as Partial<T>)
                 }
               }}
               customeEndInputPlaceHolder={
                 tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                  ? t("labelBlindBoxEndDate2")
+                  ? t('labelBlindBoxEndDate2')
                   : undefined
               }
             />
@@ -742,76 +673,61 @@ export const CreateRedPacketStepWrap = withTranslation()(
         </Box>
         <Box
           marginY={1}
-          display={"flex"}
-          alignSelf={"stretch"}
-          position={"relative"}
-          flexDirection={"column"}
+          display={'flex'}
+          alignSelf={'stretch'}
+          position={'relative'}
+          flexDirection={'column'}
         >
           {!chargeFeeTokenList?.length ? (
-            <Typography component={"span"}>
-              {t("labelFeeCalculating")}
-            </Typography>
+            <Typography component={'span'}>{t('labelFeeCalculating')}</Typography>
           ) : (
             <>
               <Typography
-                component={"span"}
-                display={"flex"}
-                flexWrap={"wrap"}
-                alignItems={"center"}
-                variant={"body1"}
-                color={"var(--color-text-secondary)"}
+                component={'span'}
+                display={'flex'}
+                flexWrap={'wrap'}
+                alignItems={'center'}
+                variant={'body1'}
+                color={'var(--color-text-secondary)'}
                 marginBottom={1}
               >
-                <Typography component={"span"} color={"inherit"} minWidth={28}>
-                  {t("labelL2toL2Fee")}：
+                <Typography component={'span'} color={'inherit'} minWidth={28}>
+                  {t('labelL2toL2Fee')}：
                 </Typography>
                 <Box
-                  component={"span"}
-                  display={"flex"}
-                  alignItems={"center"}
-                  style={{ cursor: "pointer" }}
-                  onClick={() =>
-                    setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
-                  }
+                  component={'span'}
+                  display={'flex'}
+                  alignItems={'center'}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
                 >
                   {feeInfo && feeInfo.belong && feeInfo.fee
-                    ? feeInfo.fee + " " + feeInfo.belong
-                    : EmptyValueTag + " " + feeInfo?.belong ?? EmptyValueTag}
-                  <DropdownIconStyled
-                    status={dropdownStatus}
-                    fontSize={"medium"}
-                  />
+                    ? feeInfo.fee + ' ' + feeInfo.belong
+                    : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
+                  <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
                   {isFeeNotEnough?.isOnLoading ? (
-                    <Typography
-                      color={"var(--color-warning)"}
-                      marginLeft={1}
-                      component={"span"}
-                    >
-                      {t("labelFeeCalculating")}
+                    <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
+                      {t('labelFeeCalculating')}
                     </Typography>
                   ) : (
                     isFeeNotEnough?.isFeeNotEnough && (
-                      <Typography
-                        component={"span"}
-                        marginLeft={1}
-                        color={"var(--color-error)"}
-                      >
-                        {t("labelL2toL2FeeNotEnough")}
+                      <Typography component={'span'} marginLeft={1} color={'var(--color-error)'}>
+                        {t('labelL2toL2FeeNotEnough')}
                       </Typography>
                     )
                   )}
                 </Box>
               </Typography>
-              {dropdownStatus === "up" && (
+              {dropdownStatus === 'up' && (
                 <FeeTokenItemWrapper padding={2}>
-                  <Box display={"flex"} flexDirection={"column"}>
+                  <Box display={'flex'} flexDirection={'column'}>
                     <Typography
-                      component={"span"}
-                      variant={"body2"}
-                      color={"var(--color-text-third)"}
+                      component={'span'}
+                      variant={'body2'}
+                      color={'var(--color-text-third)'}
                       marginBottom={1}
                     >
-                      {t("labelL2toL2FeeChoose")}
+                      {t('labelL2toL2FeeChoose')}
                     </Typography>
                     <FeeToggle
                       chargeFeeTokenList={chargeFeeTokenList}
@@ -824,134 +740,121 @@ export const CreateRedPacketStepWrap = withTranslation()(
             </>
           )}
         </Box>
-        <Box
-          marginY={1}
-          display={"flex"}
-          flexDirection={"column"}
-          alignSelf={"stretch"}
-        >
+        <Box marginY={1} display={'flex'} flexDirection={'column'} alignSelf={'stretch'}>
           <Typography
-            display={"inline-flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            variant={"h3"}
-            component={"span"}
-            color={"textPrimary"}
-            width={"100%"}
-            textAlign={"center"}
+            display={'inline-flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            variant={'h3'}
+            component={'span'}
+            color={'textPrimary'}
+            width={'100%'}
+            textAlign={'center'}
           >
             {redPacketTotalValue}
           </Typography>
           <Typography
-            display={"inline-flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            variant={"body2"}
-            component={"span"}
-            color={"textThird"}
-            width={"100%"}
-            textAlign={"center"}
+            display={'inline-flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            variant={'body2'}
+            component={'span'}
+            color={'textThird'}
+            width={'100%'}
+            textAlign={'center'}
           >
             {selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-              ? t("labelRedPacketsSplitCommonDetail", { value: splitValue })
-              : t("labelRedPacketsSplitLuckyDetail")}
+              ? t('labelRedPacketsSplitCommonDetail', { value: splitValue })
+              : t('labelRedPacketsSplitLuckyDetail')}
           </Typography>
         </Box>
-        <Box marginY={1} display={"flex"} alignSelf={"stretch"}>
+        <Box marginY={1} display={'flex'} alignSelf={'stretch'}>
           {lastFailed && (
             <Typography
-              component={"span"}
+              component={'span'}
               paddingBottom={1}
-              textAlign={"center"}
-              color={"var(--color-warning)"}
+              textAlign={'center'}
+              color={'var(--color-warning)'}
             >
-              {t("labelConfirmAgainByFailed")}
+              {t('labelConfirmAgainByFailed')}
             </Typography>
           )}
         </Box>
         <Box
           marginY={1}
-          display={"flex"}
-          alignSelf={"stretch"}
-          flexDirection={"row"}
-          justifyContent={"space-between"}
+          display={'flex'}
+          alignSelf={'stretch'}
+          flexDirection={'row'}
+          justifyContent={'space-between'}
         >
-          <Box width={"48%"}>
+          <Box width={'48%'}>
             <Button
-              variant={"outlined"}
-              size={"medium"}
+              variant={'outlined'}
+              size={'medium'}
               fullWidth
-              className={"step"}
-              startIcon={<BackIcon fontSize={"small"} />}
-              color={"primary"}
-              sx={{ height: "var(--btn-medium-height)" }}
+              className={'step'}
+              startIcon={<BackIcon fontSize={'small'} />}
+              color={'primary'}
+              sx={{ height: 'var(--btn-medium-height)' }}
               onClick={() => {
-                setActiveStep(RedPacketStep.ChooseType);
+                setActiveStep(RedPacketStep.ChooseType)
                 handleOnDataChange({
                   numbers: undefined,
                   tradeValue: undefined,
                   validSince: Date.now(),
                   validUntil: moment().add('days', 1).toDate().getTime(),
                   giftNumbers: undefined,
-                  memo: "",
-                } as any);
+                  memo: '',
+                } as any)
               }}
             >
               {t(`labelMintBack`)}
             </Button>
           </Box>
-          <Box width={"50%"}>
+          <Box width={'50%'}>
             <Button
               fullWidth
-              variant={"contained"}
-              size={"medium"}
-              color={"primary"}
+              variant={'contained'}
+              size={'medium'}
+              color={'primary'}
               onClick={() => {
-                onCreateRedPacketClick();
+                onCreateRedPacketClick()
               }}
-              loading={
-                !getDisabled && btnStatus === TradeBtnStatus.LOADING
-                  ? "true"
-                  : "false"
-              }
+              loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
               disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
             >
-              {btnInfo?.label
-                ? t(btnInfo.label, btnInfo.params)
-                : t(`labelCreateRedPacketBtn`)}
+              {btnInfo?.label ? t(btnInfo.label, btnInfo.params) : t(`labelCreateRedPacketBtn`)}
             </Button>
           </Box>
         </Box>
 
-        <Box marginTop={4} display={"flex"} alignSelf={"stretch"}>
+        <Box marginTop={4} display={'flex'} alignSelf={'stretch'}>
           <Typography
             paddingBottom={0}
-            display={"inline-flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            variant={"body2"}
-            component={"span"}
-            color={"textSecondary"}
-            width={"100%"}
-            textAlign={"center"}
+            display={'inline-flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            variant={'body2'}
+            component={'span'}
+            color={'textSecondary'}
+            width={'100%'}
+            textAlign={'center'}
           >
-            {
-              tradeData.isNFT
-                ? t("labelBlindBoxExpirationExplainationForNFT")
-                : tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                  ? t("labelBlindBoxExpirationExplainationForTokenBlindbox")
-                  : t("labelBlindBoxExpirationExplainationForToken")
-            }
+            {tradeData.isNFT
+              ? t('labelBlindBoxExpirationExplainationForNFT')
+              : tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+              ? t('labelBlindBoxExpirationExplainationForTokenBlindbox')
+              : t('labelBlindBoxExpirationExplainationForToken')}
           </Typography>
         </Box>
       </RedPacketBoxStyle>
-    );
-  }
+    )
+  },
 ) as <T extends Partial<RedPacketOrderData<I>>, I, F extends FeeInfo>(
   props: CreateRedPacketViewProps<T, I, F> & {
-    selectedType: LuckyRedPacketItem;
-  }
-) => JSX.Element;
+    selectedType: LuckyRedPacketItem
+  },
+) => JSX.Element
 
 export const CreateRedPacketStepType = withTranslation()(
   <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
@@ -964,60 +867,59 @@ export const CreateRedPacketStepType = withTranslation()(
     disabled = false,
     btnInfo,
     t,
-  }: Omit<CreateRedPacketViewProps<T, I, C>, "tokenMap"> & {
-    selectedType: LuckyRedPacketItem;
+  }: Omit<CreateRedPacketViewProps<T, I, C>, 'tokenMap'> & {
+    selectedType: LuckyRedPacketItem
     // setSelectType: (value: LuckyRedPacketItem) => void;
   } & WithTranslation) => {
-    const { isMobile } = useSettings();
+    const { isMobile } = useSettings()
     const getDisabled = React.useMemo(() => {
-      return disabled;
-    }, [disabled]);
-    const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox;
-    const filteredList = LuckyRedPacketList.filter((item) =>
-      (tradeType == RedPacketOrderType.NFT
-        ? item.showInNFTS
-        : tradeType == RedPacketOrderType.BlindBox
+      return disabled
+    }, [disabled])
+    const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox
+    const filteredList = LuckyRedPacketList.filter(
+      (item) =>
+        (tradeType == RedPacketOrderType.NFT
+          ? item.showInNFTS
+          : tradeType == RedPacketOrderType.BlindBox
           ? item.showInBlindbox
           : tradeType == RedPacketOrderType.FromNFT
-            ? item.showInFromNFT
-            : item.showInERC20
-      ) && (
-        showERC20Blindbox 
-          ? true
-          : item.toolgleWithShowERC20Blindbox 
-            ? false
-            : true
-      )
+          ? item.showInFromNFT
+          : item.showInERC20) &&
+        (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true),
     )
 
     return (
       <RedPacketBoxStyle
-        className={isMobile ? "mobile redPacket" : ""}
-        justifyContent={"flex-start"}
-        flexDirection={"column"}
-        alignItems={"center"}
-        width={"100%"}
+        className={isMobile ? 'mobile redPacket' : ''}
+        justifyContent={'flex-start'}
+        flexDirection={'column'}
+        alignItems={'center'}
+        width={'100%'}
         maxWidth={720}
       >
         <Box
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"stretch"}
-          alignSelf={"stretch"}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'stretch'}
+          alignSelf={'stretch'}
           marginY={2}
         >
           {filteredList.map((item: LuckyRedPacketItem, index) => {
             return (
               <React.Fragment key={index}>
-                {tradeType == RedPacketOrderType.FromNFT && index === 1 && <Typography marginTop={1} variant={"h5"} color={"var(--color-text-secondary)"}>{t("labelRedpacketStandard")}</Typography>}
+                {tradeType == RedPacketOrderType.FromNFT && index === 1 && (
+                  <Typography marginTop={1} variant={'h5'} color={'var(--color-text-secondary)'}>
+                    {t('labelRedpacketStandard')}
+                  </Typography>
+                )}
                 <Box key={item.value.value} marginBottom={1}>
                   <MenuBtnStyled
-                    variant={"outlined"}
-                    size={"large"}
-                    className={`${isMobile ? "isMobile" : ""} ${
+                    variant={'outlined'}
+                    size={'large'}
+                    className={`${isMobile ? 'isMobile' : ''} ${
                       selectedType.value.value === item.value.value
-                        ? "selected redPacketType "
-                        : "redPacketType"
+                        ? 'selected redPacketType '
+                        : 'redPacketType'
                     }`}
                     fullWidth
                     onClick={(_e) => {
@@ -1030,7 +932,7 @@ export const CreateRedPacketStepType = withTranslation()(
                             partition: item.value.partition,
                             mode: item.value.mode,
                           },
-                        } as any);
+                        } as any)
                       } else {
                         handleOnDataChange({
                           type: {
@@ -1038,49 +940,49 @@ export const CreateRedPacketStepType = withTranslation()(
                             partition: item.value.partition,
                             mode: item.value.mode,
                           },
-                        } as any);
+                        } as any)
                       }
-                      
                     }}
                   >
-                    {item.icon ?
-                      <Box display={"flex"} alignItems={"center"}>
-                        <img width={"32px"} src={item.icon} />
+                    {item.icon ? (
+                      <Box display={'flex'} alignItems={'center'}>
+                        <img width={'32px'} src={item.icon} />
                         <Typography
-                          variant={"h5"}
-                          display={"inline-flex"}
+                          variant={'h5'}
+                          display={'inline-flex'}
                           marginLeft={2}
-                          alignItems={"flex-start"}
-                          component={"span"}
+                          alignItems={'flex-start'}
+                          component={'span'}
                         >
                           {t(item.labelKey)}
                         </Typography>
                       </Box>
-                      : <>
+                    ) : (
+                      <>
                         <Typography
-                          variant={"h5"}
-                          display={"inline-flex"}
+                          variant={'h5'}
+                          display={'inline-flex'}
                           marginBottom={1 / 2}
-                          alignItems={"flex-start"}
-                          component={"span"}
+                          alignItems={'flex-start'}
+                          component={'span'}
                         >
                           {t(item.labelKey)}
                         </Typography>
                         <Typography
-                          variant={"body1"}
-                          display={"inline-flex"}
-                          justifyContent={"flex-start"}
-                          component={"span"}
-                          color={"var(--color-text-secondary)"}
+                          variant={'body1'}
+                          display={'inline-flex'}
+                          justifyContent={'flex-start'}
+                          component={'span'}
+                          color={'var(--color-text-secondary)'}
                         >
                           {t(item.desKey)}
                         </Typography>
                       </>
-                    }
+                    )}
                   </MenuBtnStyled>
                 </Box>
               </React.Fragment>
-            );
+            )
           })}
         </Box>
         {tradeType === RedPacketOrderType.NFT ? (
@@ -1089,57 +991,55 @@ export const CreateRedPacketStepType = withTranslation()(
               // onClick={() => {
               //   onChangePrivateChecked!();
               // }}
-              style={{ cursor: "pointer" }}
-              position={"relative"}
+              style={{ cursor: 'pointer' }}
+              position={'relative'}
               marginBottom={10}
-              display={"flex"}
-              alignItems={"start"}
+              display={'flex'}
+              alignItems={'start'}
             >
-              <Box position={"absolute"} left={8} top={5}>
+              <Box position={'absolute'} left={8} top={5}>
                 <Checkbox
                   style={{
-                    padding: "0",
+                    padding: '0',
                   }}
                   checked
-                  checkedIcon={
-                    <GoodIcon htmlColor={"var(--color-primary)"}></GoodIcon>
-                  }
-                  icon={<GoodIcon htmlColor={"var(--color-third)"}></GoodIcon>}
-                  color="default"
+                  checkedIcon={<GoodIcon htmlColor={'var(--color-primary)'}></GoodIcon>}
+                  icon={<GoodIcon htmlColor={'var(--color-third)'}></GoodIcon>}
+                  color='default'
                 />
               </Box>
               {/* <GoodIcon htmlColor={"var(--color-third)"}></GoodIcon> */}
-              <Box display={"flex"} marginLeft={4} flexDirection={"column"}>
+              <Box display={'flex'} marginLeft={4} flexDirection={'column'}>
                 <Typography
-                  variant={"h5"}
-                  display={"inline-flex"}
+                  variant={'h5'}
+                  display={'inline-flex'}
                   marginBottom={1 / 2}
-                  alignItems={"flex-start"}
-                  component={"span"}
-                  style={{ cursor: "pointer" }}
+                  alignItems={'flex-start'}
+                  component={'span'}
+                  style={{ cursor: 'pointer' }}
                 >
-                  {t("labelBlindBoxPrivate")}
+                  {t('labelBlindBoxPrivate')}
                 </Typography>
                 <Typography
-                  variant={"body1"}
-                  display={"inline-flex"}
-                  justifyContent={"flex-start"}
-                  component={"span"}
-                  color={"var(--color-text-secondary)"}
+                  variant={'body1'}
+                  display={'inline-flex'}
+                  justifyContent={'flex-start'}
+                  component={'span'}
+                  color={'var(--color-text-secondary)'}
                 >
-                  {t("labelBlindBoxPrivateDes")}
+                  {t('labelBlindBoxPrivateDes')}
                 </Typography>
               </Box>
             </Box>
-            <Typography marginBottom={3} color={"var(--color-text-secondary)"}>
-              {t("labelBlindBoxClaimWarning")}
+            <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
+              {t('labelBlindBoxClaimWarning')}
             </Typography>
           </>
         ) : (
-          <Box marginBottom={4} display={"flex"} alignItems={"stretch"}>
+          <Box marginBottom={4} display={'flex'} alignItems={'stretch'}>
             <RadioGroup
-              aria-label="withdraw"
-              name="withdraw"
+              aria-label='withdraw'
+              name='withdraw'
               value={tradeData?.type?.scope as sdk.LuckyTokenViewType}
               onChange={(_e, value) => {
                 handleOnDataChange({
@@ -1147,7 +1047,7 @@ export const CreateRedPacketStepType = withTranslation()(
                     ...tradeData.type,
                     scope: value,
                   },
-                } as any);
+                } as any)
               }}
             >
               {(tradeData.isNFT ? [1] : [1, 0]).map((key) => {
@@ -1158,67 +1058,69 @@ export const CreateRedPacketStepType = withTranslation()(
                     value={key.toString()}
                     control={<Radio />}
                     label={
-                      <Box display={"flex"} flexDirection={"column"}>
-                        <Typography component={"span"}>
-                          {t("labelLuckyTokenViewType" + key)}
+                      <Box display={'flex'} flexDirection={'column'}>
+                        <Typography component={'span'}>
+                          {t('labelLuckyTokenViewType' + key)}
                         </Typography>
                         <Typography
-                          color={"var(--color-text-secondary)"}
-                          variant={"body2"}
-                          component={"span"}
+                          color={'var(--color-text-secondary)'}
+                          variant={'body2'}
+                          component={'span'}
                         >
-                          {t("labelLuckyTokenViewTypeDes" + key)}
+                          {t('labelLuckyTokenViewTypeDes' + key)}
                         </Typography>
                       </Box>
                     }
                   />
-                );
+                )
               })}
             </RadioGroup>
           </Box>
         )}
         <Box
-          width={"100%"}
-          alignSelf={"stretch"}
+          width={'100%'}
+          alignSelf={'stretch'}
           paddingBottom={1}
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"space-between"}
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'space-between'}
         >
-          {tradeType !== RedPacketOrderType.FromNFT && <Box width={"48%"}>
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              fullWidth
-              className={"step"}
-              startIcon={<BackIcon fontSize={"small"} />}
-              color={"primary"}
-              sx={{ height: "var(--btn-medium-height)" }}
-              onClick={() => {
-                setActiveStep(RedPacketStep.TradeType);
-              }}
-            >
-              {t(`labelMintBack`)}
-            </Button>
-          </Box>}
-          <Box width={tradeType === RedPacketOrderType.FromNFT ? "100%" : "48%"}>
+          {tradeType !== RedPacketOrderType.FromNFT && (
+            <Box width={'48%'}>
+              <Button
+                variant={'outlined'}
+                size={'medium'}
+                fullWidth
+                className={'step'}
+                startIcon={<BackIcon fontSize={'small'} />}
+                color={'primary'}
+                sx={{ height: 'var(--btn-medium-height)' }}
+                onClick={() => {
+                  setActiveStep(RedPacketStep.TradeType)
+                }}
+              >
+                {t(`labelMintBack`)}
+              </Button>
+            </Box>
+          )}
+          <Box width={tradeType === RedPacketOrderType.FromNFT ? '100%' : '48%'}>
             <BtnMain
               {...{
-                defaultLabel: "labelContinue",
+                defaultLabel: 'labelContinue',
                 fullWidth: true,
                 btnInfo: btnInfo,
                 disabled: () => getDisabled,
                 onClick: () => {
-                  setActiveStep(RedPacketStep.Main);
+                  setActiveStep(RedPacketStep.Main)
                 },
               }}
             />
           </Box>
         </Box>
       </RedPacketBoxStyle>
-    );
-  }
-);
+    )
+  },
+)
 
 export const CreateRedPacketStepTokenType = withTranslation()(
   <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
@@ -1228,141 +1130,136 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     handleOnDataChange,
     btnInfo,
     t,
-  }: Omit<CreateRedPacketViewProps<T, I, C>, "tradeData" | "tokenMap"> &
-    WithTranslation) => {
-    const { isMobile } = useSettings();
+  }: Omit<CreateRedPacketViewProps<T, I, C>, 'tradeData' | 'tokenMap'> & WithTranslation) => {
+    const { isMobile } = useSettings()
     const getDisabled = React.useMemo(() => {
-      return disabled;
-    }, [disabled]);
-    const showNFT = useNotify().notifyMap?.redPacket.showNFT;
+      return disabled
+    }, [disabled])
+    const showNFT = useNotify().notifyMap?.redPacket.showNFT
     return (
       <RedPacketBoxStyle
-        display={"flex"}
-        flexDirection={"column"}
-        width={"100%"}
+        display={'flex'}
+        flexDirection={'column'}
+        width={'100%'}
         maxWidth={720}
         paddingX={isMobile ? 2 : 10}
-        className="modalConte"
-        position={"absolute"}
-        height={"100%"}
-        maxHeight={"480px"}
-        justifyContent={"space-evenly"}
+        className='modalConte'
+        position={'absolute'}
+        height={'100%'}
+        maxHeight={'480px'}
+        justifyContent={'space-evenly'}
       >
         <Grid container spacing={2}>
-          <Grid item xs={4} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={'flex'} marginBottom={2}>
             <CardStyleItem
               className={
                 tradeType === RedPacketOrderType.TOKEN
-                  ? "btnCard column selected"
-                  : "btnCard column"
+                  ? 'btnCard column selected'
+                  : 'btnCard column'
               }
-              sx={{ height: "100%" }}
-              onClick={() =>
-                handleOnDataChange({ tradeType: RedPacketOrderType.TOKEN } as any)
-              }
+              sx={{ height: '100%' }}
+              onClick={() => handleOnDataChange({ tradeType: RedPacketOrderType.TOKEN } as any)}
             >
-              <CardContent sx={{ alignItems: "center" }}>
-                <Typography component={"span"} display={"inline-flex"}>
+              <CardContent sx={{ alignItems: 'center' }}>
+                <Typography component={'span'} display={'inline-flex'}>
                   <Avatar
-                    variant="rounded"
+                    variant='rounded'
                     style={{
-                      height: "var(--redPacket-avatar)",
-                      width: "var(--redPacket-avatar)",
+                      height: 'var(--redPacket-avatar)',
+                      width: 'var(--redPacket-avatar)',
                     }}
                     // src={sellData?.icon}
-                    src={SoursURL + "images/redPacketERC20.webp"}
+                    src={SoursURL + 'images/redPacketERC20.webp'}
                   />
                 </Typography>
 
-                <Typography component={"span"} variant={"h5"} marginTop={2}>
-                  {t("labelRedpacketTokens")}
+                <Typography component={'span'} variant={'h5'} marginTop={2}>
+                  {t('labelRedpacketTokens')}
                 </Typography>
               </CardContent>
             </CardStyleItem>
           </Grid>
-          <Grid item xs={4} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={'flex'} marginBottom={2}>
             {showNFT && (
               <CardStyleItem
                 className={
                   tradeType === RedPacketOrderType.NFT
-                    ? "btnCard column selected"
-                    : "btnCard column"
+                    ? 'btnCard column selected'
+                    : 'btnCard column'
                 }
-                sx={{ height: "100%" }}
-                onClick={() =>
-                  handleOnDataChange({ tradeType: RedPacketOrderType.NFT } as any)
-                }
+                sx={{ height: '100%' }}
+                onClick={() => handleOnDataChange({ tradeType: RedPacketOrderType.NFT } as any)}
               >
-                <CardContent sx={{ alignItems: "center" }}>
-                  <Typography component={"span"} display={"inline-flex"}>
-                    <Typography component={"span"} display={"inline-flex"}>
+                <CardContent sx={{ alignItems: 'center' }}>
+                  <Typography component={'span'} display={'inline-flex'}>
+                    <Typography component={'span'} display={'inline-flex'}>
                       <Avatar
-                        variant="rounded"
+                        variant='rounded'
                         style={{
-                          height: "var(--redPacket-avatar)",
-                          width: "var(--redPacket-avatar)",
+                          height: 'var(--redPacket-avatar)',
+                          width: 'var(--redPacket-avatar)',
                         }}
                         // src={sellData?.icon}
-                        src={SoursURL + "images/redPacketNFT.webp"}
+                        src={SoursURL + 'images/redPacketNFT.webp'}
                       />
                     </Typography>
                   </Typography>
-                  <Typography component={"span"} variant={"h5"} marginTop={2}>
-                    {t("labelRedpacketNFTS")}
+                  <Typography component={'span'} variant={'h5'} marginTop={2}>
+                    {t('labelRedpacketNFTS')}
                   </Typography>
                 </CardContent>
               </CardStyleItem>
             )}
           </Grid>
-          <Grid item xs={4} display={"flex"} marginBottom={2}>
+          <Grid item xs={4} display={'flex'} marginBottom={2}>
             {showNFT && (
               <CardStyleItem
                 className={
                   tradeType === RedPacketOrderType.BlindBox
-                    ? "btnCard column selected"
-                    : "btnCard column"
+                    ? 'btnCard column selected'
+                    : 'btnCard column'
                 }
-                sx={{ height: "100%" }}
+                sx={{ height: '100%' }}
                 onClick={() =>
                   handleOnDataChange({ tradeType: RedPacketOrderType.BlindBox } as any)
                 }
               >
-                <CardContent sx={{ alignItems: "center" }}>
-                  <Typography component={"span"} display={"inline-flex"}>
-                    <Typography component={"span"} display={"inline-flex"}>
+                <CardContent sx={{ alignItems: 'center' }}>
+                  <Typography component={'span'} display={'inline-flex'}>
+                    <Typography component={'span'} display={'inline-flex'}>
                       <Avatar
-                        variant="rounded"
+                        variant='rounded'
                         style={{
-                          height: "var(--redPacket-avatar)",
-                          width: "var(--redPacket-avatar)",
+                          height: 'var(--redPacket-avatar)',
+                          width: 'var(--redPacket-avatar)',
                         }}
                         // src={sellData?.icon}
-                        src={SoursURL + "images/redPacketBlindbox.png"}
+                        src={SoursURL + 'images/redPacketBlindbox.png'}
                       />
                     </Typography>
                   </Typography>
-                  <Typography component={"span"} variant={"h5"} marginTop={2}>
-                    {t("labelRedpacketBlindBox")}
+                  <Typography component={'span'} variant={'h5'} marginTop={2}>
+                    {t('labelRedpacketBlindBox')}
                   </Typography>
                 </CardContent>
               </CardStyleItem>
             )}
           </Grid>
         </Grid>
-        <Box width={"100%"}>
+        <Box width={'100%'}>
           <BtnMain
             {...{
-              defaultLabel: "labelContinue",
+              defaultLabel: 'labelContinue',
               fullWidth: true,
               btnInfo: btnInfo,
               disabled: () => getDisabled,
               onClick: () => {
-                setActiveStep(RedPacketStep.ChooseType);
+                setActiveStep(RedPacketStep.ChooseType)
               },
             }}
           />
         </Box>
       </RedPacketBoxStyle>
-    );
-  }
-);
+    )
+  },
+)

@@ -1,15 +1,11 @@
-import styled from "@emotion/styled";
-import { Box, Card, CardProps, Typography } from "@mui/material";
-import {
-  FirstPlaceIcon,
-  SecondPlaceIcon,
-  ThirdPlaceIcon,
-} from "@loopring-web/common-resources";
+import styled from '@emotion/styled'
+import { Box, Card, CardProps, Typography } from '@mui/material'
+import { FirstPlaceIcon, SecondPlaceIcon, ThirdPlaceIcon } from '@loopring-web/common-resources'
 
-export * from "./SwitchPanel";
-export * from "./SubMenu";
-export * from "./Interface";
-export * from "./IPFSSourceUpload";
+export * from './SwitchPanel'
+export * from './SubMenu'
+export * from './Interface'
+export * from './IPFSSourceUpload'
 
 export const CardNFTStyled = styled(Card)`
   display: flex;
@@ -18,22 +14,19 @@ export const CardNFTStyled = styled(Card)`
   justify-content: space-between;
   position: relative;
   width: var(--nft-card);
-`;
+`
 
 export const CardStyleItem = styled(Card)<
   CardProps & {
-    contentheight?: number;
-    size?: "large" | "medium" | "small" | undefined;
+    contentheight?: number
+    size?: 'large' | 'medium' | 'small' | undefined
   }
 >`
   background: var(--color-global-bg);
   width: 100%;
   cursor: pointer;
   height: 0;
-  padding: 0 0
-    calc(
-      100% + ${({ contentheight }) => `${contentheight ? contentheight : 80}px`}
-    );
+  padding: 0 0 calc(100% + ${({ contentheight }) => `${contentheight ? contentheight : 80}px`});
   position: relative;
 
   .boxLabel {
@@ -45,7 +38,7 @@ export const CardStyleItem = styled(Card)<
 
     .boxLabel {
       ${({ size, theme }) =>
-        size === "small"
+        size === 'small'
           ? `
             padding: ${1 * theme.unit}px;
             margin:0;
@@ -102,7 +95,7 @@ export const CardStyleItem = styled(Card)<
     transition: none;
     ${({ theme }) =>
       theme.border.defaultFrame({
-        c_key: "var(--field-opacity)",
+        c_key: 'var(--field-opacity)',
         d_R: 0.5,
       })};
 
@@ -110,7 +103,7 @@ export const CardStyleItem = styled(Card)<
     &:hover {
       ${({ theme }) =>
         theme.border.defaultFrame({
-          c_key: "var(--color-border-select)",
+          c_key: 'var(--color-border-select)',
           d_R: 0.5,
         })};
     }
@@ -121,10 +114,10 @@ export const CardStyleItem = styled(Card)<
   }
 ` as (
   props: CardProps & {
-    contentheight?: number;
-    size?: "large" | "medium" | "small" | undefined;
-  }
-) => JSX.Element;
+    contentheight?: number
+    size?: 'large' | 'medium' | 'small' | undefined
+  },
+) => JSX.Element
 
 export const ImageUploadWrapper = styled(Box)`
   position: relative;
@@ -139,46 +132,33 @@ export const ImageUploadWrapper = styled(Box)`
       color: var(--color-text-secondary);
     }
   }
-` as typeof Box;
+` as typeof Box
 
 export const PlaceComponent = ({ rank }: { rank: number }) => {
   return (
-    <Typography
-      component={"span"}
-      display={"inline-flex"}
-      position={"relative"}
-    >
+    <Typography component={'span'} display={'inline-flex'} position={'relative'}>
       <>
-        {rank.toString() === "1" ? (
-          <FirstPlaceIcon
-            sx={{ position: "absolute", top: -6 }}
-            fontSize={"large"}
-          />
-        ) : rank.toString() === "2" ? (
-          <SecondPlaceIcon
-            sx={{ position: "absolute", top: -4, left: -1 }}
-            fontSize={"large"}
-          />
-        ) : rank.toString() === "3" ? (
-          <ThirdPlaceIcon
-            sx={{ position: "absolute", top: -4, left: -1 }}
-            fontSize={"large"}
-          />
+        {rank.toString() === '1' ? (
+          <FirstPlaceIcon sx={{ position: 'absolute', top: -6 }} fontSize={'large'} />
+        ) : rank.toString() === '2' ? (
+          <SecondPlaceIcon sx={{ position: 'absolute', top: -4, left: -1 }} fontSize={'large'} />
+        ) : rank.toString() === '3' ? (
+          <ThirdPlaceIcon sx={{ position: 'absolute', top: -4, left: -1 }} fontSize={'large'} />
         ) : (
-          ""
+          ''
         )}
         <Typography
-          display={"inline-flex"}
-          component={"span"}
+          display={'inline-flex'}
+          component={'span'}
           zIndex={99}
           width={24}
-          justifyContent={"center"}
-          alignItems={"center"}
-          color={Number(rank) <= 3 ? "#B07D00" : "inherit"}
+          justifyContent={'center'}
+          alignItems={'center'}
+          color={Number(rank) <= 3 ? '#B07D00' : 'inherit'}
         >
           {rank}
         </Typography>
       </>
     </Typography>
-  );
-};
+  )
+}

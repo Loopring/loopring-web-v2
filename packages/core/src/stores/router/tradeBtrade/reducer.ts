@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { TradeBtrade, TradeBtradeStatus } from "./interface";
-import { MAPFEEBIPS } from "../../../defs";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { TradeBtrade, TradeBtradeStatus } from './interface'
+import { MAPFEEBIPS } from '../../../defs'
 
 const initState: TradeBtrade = {
   market: undefined,
@@ -9,20 +9,20 @@ const initState: TradeBtrade = {
     isBtrade: true,
   },
   maxFeeBips: MAPFEEBIPS,
-} as unknown as TradeBtrade;
+} as unknown as TradeBtrade
 const initialState: TradeBtradeStatus = {
   // pageTradePro: initState,
   tradeBtrade: initState,
   __DAYS__: 30,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
-};
+}
 const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
-  name: "_router_tradeBtrade",
+  name: '_router_tradeBtrade',
   initialState,
   reducers: {
     resetBtradeSwap(state) {
-      state.tradeBtrade = initState;
+      state.tradeBtrade = initState
     },
     updateBtradeTrade(state, action: PayloadAction<Partial<TradeBtrade>>) {
       const {
@@ -43,12 +43,10 @@ const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
         maxFeeBips,
         btradeType,
         ...rest
-      } = action.payload;
+      } = action.payload
       if (market !== state.tradeBtrade.market && market && tradePair) {
         // @ts-ignore
-        const [_, sellToken, buyToken] = (tradePair ?? "").match(
-          /(\w+)-(\w+)/i
-        );
+        const [_, sellToken, buyToken] = (tradePair ?? '').match(/(\w+)-(\w+)/i)
         // @ts-ignore
         state.tradeBtrade = {
           market,
@@ -70,61 +68,61 @@ const tradeBtradeSlice: Slice<TradeBtradeStatus> = createSlice({
           btradeType,
           maxFeeBips,
           ...rest,
-        };
+        }
       } else {
         if (lastStepAt) {
-          state.tradeBtrade.lastStepAt = lastStepAt;
+          state.tradeBtrade.lastStepAt = lastStepAt
         }
         if (btradeType) {
-          state.tradeBtrade.btradeType = btradeType;
+          state.tradeBtrade.btradeType = btradeType
         }
 
         if (tradePair && tradePair) {
-          const [_, sellToken, buyToken] = tradePair.match(/(\w+)-(\w+)/i);
-          state.tradeBtrade.tradePair = tradePair;
-          state.tradeBtrade.sellToken = sellToken;
-          state.tradeBtrade.buyToken = buyToken;
-          state.tradeBtrade.lastStepAt = undefined;
+          const [_, sellToken, buyToken] = tradePair.match(/(\w+)-(\w+)/i)
+          state.tradeBtrade.tradePair = tradePair
+          state.tradeBtrade.sellToken = sellToken
+          state.tradeBtrade.buyToken = buyToken
+          state.tradeBtrade.lastStepAt = undefined
         }
         if (depth) {
-          state.tradeBtrade.depth = depth;
+          state.tradeBtrade.depth = depth
         }
 
         if (totalFee) {
-          state.tradeBtrade.totalFee = totalFee;
+          state.tradeBtrade.totalFee = totalFee
         }
         // if (takerRate) {
         //   state.tradeBtrade.takerRate = takerRate;
         // }
         if (minOrderInfo) {
-          state.tradeBtrade.minOrderInfo = minOrderInfo;
+          state.tradeBtrade.minOrderInfo = minOrderInfo
         }
         if (maxFeeBips !== undefined) {
-          state.tradeBtrade.maxFeeBips = maxFeeBips;
+          state.tradeBtrade.maxFeeBips = maxFeeBips
         }
         if (tradeCalcData) {
-          state.tradeBtrade.tradeCalcData = tradeCalcData;
+          state.tradeBtrade.tradeCalcData = tradeCalcData
         }
         if (sellUserOrderInfo !== undefined) {
-          state.tradeBtrade.sellUserOrderInfo = sellUserOrderInfo;
+          state.tradeBtrade.sellUserOrderInfo = sellUserOrderInfo
         }
         if (buyUserOrderInfo !== undefined) {
-          state.tradeBtrade.buyUserOrderInfo = buyUserOrderInfo;
+          state.tradeBtrade.buyUserOrderInfo = buyUserOrderInfo
         }
 
         if (sellMinAmtInfo !== undefined) {
-          state.tradeBtrade.sellMinAmtInfo = sellMinAmtInfo;
+          state.tradeBtrade.sellMinAmtInfo = sellMinAmtInfo
         }
         if (sellMaxL2AmtInfo !== undefined) {
-          state.tradeBtrade.sellMaxL2AmtInfo = sellMaxL2AmtInfo;
+          state.tradeBtrade.sellMaxL2AmtInfo = sellMaxL2AmtInfo
         }
         if (sellMaxAmtInfo !== undefined) {
-          state.tradeBtrade.sellMaxAmtInfo = sellMaxAmtInfo;
+          state.tradeBtrade.sellMaxAmtInfo = sellMaxAmtInfo
         }
       }
     },
   },
-});
+})
 
-export { tradeBtradeSlice };
-export const { resetBtradeSwap, updateBtradeTrade } = tradeBtradeSlice.actions;
+export { tradeBtradeSlice }
+export const { resetBtradeSwap, updateBtradeTrade } = tradeBtradeSlice.actions
