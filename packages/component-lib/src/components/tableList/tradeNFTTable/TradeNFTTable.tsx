@@ -420,7 +420,7 @@ const getColumnModeMobileAssets = (
             <Typography variant={'body1'} component={'span'}>
               {`${renderValue} ${feeTokenSymbol}`}
             </Typography>
-            <Typography color={'textThird'} variant={'body2'} component={'span'}>
+            <Typography color={'var(--color-text-third)'} variant={'body2'} component={'span'}>
               {time}
             </Typography>
           </Box>

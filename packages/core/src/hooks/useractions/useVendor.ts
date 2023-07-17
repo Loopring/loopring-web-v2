@@ -180,6 +180,71 @@ export const useVendor = () => {
 
   const vendorListSell: VendorItem[] = legalShow
     ? [
+        // {
+        //   ...VendorList.Ramp,
+        //   handleSelect: () => {
+        //     setShowAccount({ isShow: false });
+        //     if (legalEnable) {
+        //       let config: any = {
+        //         hostAppName: "Loopring",
+        //         hostLogoUrl: "https://static.loopring.io/assets/svg/logo.svg",
+        //         userAddress: account.accAddress,
+        //         defaultFlow: "OFFRAMP",
+        //         enabledFlows: ["OFFRAMP"],
+        //         url: "https://ramp.network/sell-beta",
+        //       };
+        //       config = {
+        //         ...config,
+        //         hostApiKey: "qjkymvqp2q7uvvrf7x6fb93pxn4aqc5tb7xheg8u",
+        //       };
+        //       window.rampInstance = new RampInstantSDK({
+        //         ...config,
+        //       });
+        //       window.rampInstance.onSendCrypto(
+        //         (
+        //           assetSymbol: string,
+        //           amount: string,
+        //           destinationAddress: string
+        //         ) => {
+        //           if (window.rampInstance) {
+        //             try {
+        //               updateOffRampData({
+        //                 send: { assetSymbol, amount, destinationAddress },
+        //               });
+        //               setSellPanel(RAMP_SELL_PANEL.RAMP_CONFIRM);
+        //               console.log(
+        //                 "onSendCrypto",
+        //                 assetSymbol,
+        //                 destinationAddress
+        //               );
+        //               //@ts-ignore
+        //               window.rampInstance.domNodes.overlay.style.display =
+        //                 "none";
+        //               console.log("RAMP WEIGHT hidden on send Crypto");
+        //             } catch (e) {
+        //               console.log("RAMP WEIGHT hidden failed");
+        //             }
+        //           } else {
+        //             resetOffRampData();
+        //             setSellPanel(RAMP_SELL_PANEL.LIST);
+        //           }
+        //           return new Promise(() => {});
+        //         }
+        //       );
+        //       window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
+        //         console.log("RAMP WEIGHT close");
+        //         resetOffRampData();
+        //         setSellPanel(RAMP_SELL_PANEL.LIST);
+        //         if (window.rampInstance) {
+        //           window.rampInstance.unsubscribe("*", () => undefined);
+        //           window.rampInstance = undefined;
+        //         }
+        //       });
+        //       console.log("RAMP WEIGHT display on send user selected");
+        //       window.rampInstance.show();
+        //     }
+        //   },
+        // },
         {
           ...VendorList.Banxa,
           btnStatus: banxaBtnStatus,

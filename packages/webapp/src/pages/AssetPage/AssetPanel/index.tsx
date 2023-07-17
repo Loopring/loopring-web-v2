@@ -16,6 +16,7 @@ import {
   MapChainId,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
+import RewardsPanel from '../RewardsPanel'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -64,6 +65,10 @@ export const AssetPanel = withTranslation('common')(
             history.replace('/l2assets/assets/RedPacket')
             setCurrentTab(AssetTabIndex.RedPacket)
             break
+          case AssetTabIndex.Rewards:
+            history.replace('/l2assets/assets/Rewards')
+            setCurrentTab(AssetTabIndex.Rewards)
+            break
           case AssetTabIndex.Tokens:
           default:
             history.replace('/l2assets/assets/Tokens')
@@ -101,19 +106,13 @@ export const AssetPanel = withTranslation('common')(
           aria-label='l2-history-tabs'
           variant='scrollable'
         >
-          {AssetL2TabIndex[MapChainId[defaultNetwork]] ? (
-            AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
+          {AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
+            if (isMobile && item == AssetTabIndex.RedPacket) {
+              return <React.Fragment key={item.toString()} />
+            } else {
               return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
-            })
-          ) : (
-            <>
-              <Tab label={t('labelAssetToken')} value={AssetTabIndex.Tokens} />
-              <Tab label={t('labelAssetInvests')} value={AssetTabIndex.Invests} />
-              {!isMobile && (
-                <Tab label={t('labelAssetRedPacket')} value={AssetTabIndex.RedPacket} />
-              )}
-            </>
-          )}
+            }
+          })}
         </Tabs>
         {currentTab === AssetTabIndex.Tokens && (
           <StylePaper
@@ -147,6 +146,7 @@ export const AssetPanel = withTranslation('common')(
             </Box>
           </StylePaper>
         )}
+        {currentTab === AssetTabIndex.Rewards && <RewardsPanel hideAssets={hideAssets} />}
         {currentTab === AssetTabIndex.Invests && (
           <MyLiquidity isHideTotal={true} hideAssets={hideAssets} />
         )}

@@ -759,7 +759,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             justifyContent={'center'}
             variant={'body2'}
             component={'span'}
-            color={'textThird'}
+            color={'var(--color-text-third)'}
             width={'100%'}
             textAlign={'center'}
           >

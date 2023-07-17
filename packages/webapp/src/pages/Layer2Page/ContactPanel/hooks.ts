@@ -55,11 +55,11 @@ const getAllContacts = async (
   accountId: number,
   apiKey: string,
   accountAddress: string,
-  color: string,
+  color: string
 ) => {
-  const limit = 100
+  c,onst limit = 100;
   const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
-    const isHebao = await checkIsHebao(accountAddress)
+    const isHebao = await checkIsHebao(accountAddress);
     const response = await LoopringAPI.contactAPI!.getContacts(
       {
         isHebao,
@@ -67,8 +67,8 @@ const getAllContacts = async (
         limit,
         offset,
       },
-      apiKey,
-    )
+      apiKey
+    );
     const displayContacts = response.contacts
       .filter((contact) => contact.addressType !== AddressType.OFFICIAL)
       .map((contact) => {
@@ -78,17 +78,17 @@ const getAllContacts = async (
           avatarURL: createImageFromInitials(32, contact.contactName, color),
           editing: false,
           addressType: contact.addressType,
-        } as DisplayContact
-      })
+        } as DisplayContact;
+      });
     if (response.total > offset + limit) {
-      const rest = await recursiveLoad(offset + limit)
-      return displayContacts.concat(rest)
+      const rest = await recursiveLoad(offset + limit);
+      return displayContacts.concat(rest);
     } else {
-      return displayContacts
+      return displayContacts;
     }
-  }
-  return recursiveLoad(offset)
-}
+  };
+  return recursiveLoad(offset);
+};
 
 export const useContact = () => {
   const [addOpen, setAddOpen] = React.useState(false)
@@ -104,9 +104,13 @@ export const useContact = () => {
   const {
     account: { accountId, apiKey, accAddress },
   } = useAccount()
-  const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
+  const cachedForAccountId = useSelector(
+    (state: RootState) => state.contacts.currentAccountId,
+  )
   const { t } = useTranslation()
-  const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
+  const [tableHeight] = useState(
+    window.innerHeight * viewHeightRatio - viewHeightOffset,
+  )
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const pageSize = Math.floor(tableHeight / RowHeight)
@@ -115,10 +119,10 @@ export const useContact = () => {
   const total = contacts?.length
   const pagination = total
     ? {
-        page,
-        pageSize,
-        total,
-      }
+      page,
+      pageSize,
+      total,
+    }
     : undefined
   const getContacts = useCallback(async () => {
     if (cachedForAccountId === accountId) return
@@ -192,7 +196,7 @@ export const useContact = () => {
       })
     },
     [],
-  )
+  );
   const onCloseSend = React.useCallback(() => {
     setSendInfo({
       open: false,
@@ -200,10 +204,10 @@ export const useContact = () => {
     })
   }, [])
   const [toastInfo, setToastInfo] = React.useState<{
-    open: boolean
-    isSuccess: boolean | undefined
-    type: 'Add' | 'Delete' | 'Edit' | 'Send' | 'Copy' | undefined
-    customerText?: string
+    open: boolean;
+    isSuccess: boolean | undefined;
+    type: 'Add' | 'Delete' | 'Edit' | 'Send' | 'Copy' | undefined;
+    customerText?: string;
   }>({
     open: false,
     isSuccess: undefined,
@@ -249,10 +253,10 @@ export const useContact = () => {
             isSuccess: false,
             type: 'Edit',
           })
-        })
+        });
     },
     [contacts, apiKey, accAddress],
-  )
+  );
   const onChangeInput = React.useCallback(
     (address: string, inputValue) => {
       updateContacts(
@@ -289,7 +293,9 @@ export const useContact = () => {
       )
         .then((response) => {
           if (response === true) {
-            updateContacts(contacts!.filter((contact) => contact.address !== address))
+            updateContacts(
+              contacts!.filter((contact) => contact.address !== address),
+            )
             setToastInfo({
               open: true,
               isSuccess: true,
@@ -312,13 +318,17 @@ export const useContact = () => {
         })
         .finally(() => {
           setDeleteLoading(false)
-        })
+        });
     },
     [apiKey, contacts],
-  )
+  );
   const [addLoading, setAddLoading] = React.useState(false)
   const submitAddContact = React.useCallback(
-    async (address: string, name: string, callBack: (success: boolean) => void) => {
+    async (
+      address: string,
+      name: string,
+      callBack: (success: boolean) => void,
+    ) => {
       setAddLoading(true)
       const isHebao = await checkIsHebao(accAddress)
       LoopringAPI.contactAPI!.createContact(
@@ -345,8 +355,9 @@ export const useContact = () => {
                   ['V1_1_6', AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
                 ]
                 addressType = map.find(
-                  (x) => x[0] === response2.walletType?.loopringWalletContractVersion,
-                )![1]
+                  (x) =>
+                    x[ 0 ] === response2.walletType?.loopringWalletContractVersion,
+                )![ 1 ]
               } else if (response2.walletType?.isInCounterFactualStatus) {
                 addressType = AddressType.LOOPRING_HEBAO_CF
               } else if (response2.walletType?.isContract) {
@@ -374,9 +385,9 @@ export const useContact = () => {
                         }
                       }),
                     )
-                  })
+                  });
               }
-            })
+            });
           if (response === true) {
             setLoading(true)
             try {
@@ -389,7 +400,8 @@ export const useContact = () => {
               )
               const all = contacts ? contacts.concat(newContacts) : newContacts
               updateContacts(uniqBy(all, (contact) => contact.address))
-            } catch {}
+            } catch {
+            }
             setLoading(false)
             setToastInfo({
               open: true,
@@ -422,10 +434,10 @@ export const useContact = () => {
         })
         .finally(() => {
           setAddLoading(false)
-        })
+        });
     },
     [apiKey, contacts, total],
-  )
+  );
 
   const onPageChange = React.useCallback((page: number) => {
     setSearchValue('')
@@ -438,14 +450,18 @@ export const useContact = () => {
       contacts &&
       (searchValue === ''
         ? contacts.slice(
-            (page - 1) * pageSize,
-            page * pageSize >= contacts.length ? contacts.length : page * pageSize,
-          )
+          (page - 1) * pageSize,
+          page * pageSize >= contacts.length
+            ? contacts.length
+            : page * pageSize,
+        )
         : contacts.filter((contact) => {
-            return (
-              contact.address.toLowerCase().includes(searchValue.toLowerCase()) ||
-              contact.name.toLowerCase().includes(searchValue.toLowerCase())
-            )
+          return (
+            contact.address
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            contact.name.toLowerCase().includes(searchValue.toLowerCase())
+          )
           })),
     onClickEditing,
     onChangeInput,
@@ -477,13 +493,15 @@ export const useContact = () => {
     loading,
     showPagination,
     // onScroll
-  }
-}
+  };
+};
 export const useContactAdd = () => {
   const [addLoading, setAddLoading] = React.useState(false)
   const [addAddress, setAddAddress] = React.useState('')
   const [addName, setAddName] = React.useState('')
-  const [toastStatus, setToastStatus] = React.useState('Succuss' as 'Succuss' | 'Error' | 'Init')
+  const [toastStatus, setToastStatus] = React.useState(
+    'Succuss' as 'Succuss' | 'Error' | 'Init',
+  )
 
   const onChangeName = React.useCallback((input: string) => {
     if (new TextEncoder().encode(input).length <= 48) {
@@ -494,11 +512,12 @@ export const useContactAdd = () => {
   const [ensResolvedAddress, setEnsResolvedAddress] = useState(
     undefined as undefined | false | string,
   )
-  const addButtonDisable = (!utils.isAddress(addAddress) && !ensResolvedAddress) || addName === ''
+  const addButtonDisable =
+    (!utils.isAddress(addAddress) && !ensResolvedAddress) || addName === ''
   const debounceCheckEns = debounce((input: string) => {
-    ;(connectProvides.usedWeb3
-      ? connectProvides.usedWeb3.eth.ens.getAddress(input)
-      : Promise.reject('no web3')
+    (connectProvides.usedWeb3
+        ? connectProvides.usedWeb3.eth.ens.getAddress(input)
+        : Promise.reject('no web3')
     )
       .then((addressResovled: string) => {
         setEnsResolvedAddress(addressResovled)
@@ -513,7 +532,9 @@ export const useContactAdd = () => {
     setAddAddress(input)
   }, [])
   const addShowInvalidAddress =
-    addAddress !== '' && !utils.isAddress(addAddress) && ensResolvedAddress === false
+    addAddress !== '' &&
+    !utils.isAddress(addAddress) &&
+    ensResolvedAddress === false
 
   const displayEnsResolvedAddress =
     ensResolvedAddress !== undefined && ensResolvedAddress !== false
@@ -533,8 +554,8 @@ export const useContactAdd = () => {
     addButtonDisable,
     displayEnsResolvedAddress,
     // submitAddingContact,
-  }
-}
+  };
+};
 
 export const useContactSend = () => {
   const [sendNetwork, setSendNetwork] = React.useState('L1' as Network)
@@ -566,24 +587,24 @@ export const useContactSend = () => {
       }
     },
     [],
-  )
+  );
 
   return {
     submitSendingContact,
     sendNetwork,
     setSendNetwork,
   }
-}
+};
 
 type TxsFilterProps = {
   // accountId: number;
-  tokenSymbol?: string
-  start?: number
-  end?: number
-  offset?: number
-  limit?: number
-  types?: sdk.UserTxTypes[] | string
-}
+  tokenSymbol?: string;
+  start?: number;
+  end?: number;
+  offset?: number;
+  limit?: number;
+  types?: sdk.UserTxTypes[] | string;
+};
 
 export function useContractRecord(setToastOpen: (state: any) => void) {
   const {
@@ -601,18 +622,18 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
     return status === ''
       ? TransactionStatus.processing
       : status === 'PROCESSED'
-      ? TransactionStatus.processed
-      : status === 'PROCESSING'
-      ? TransactionStatus.processing
-      : status === 'RECEIVED'
-      ? TransactionStatus.received
-      : TransactionStatus.failed
+        ? TransactionStatus.processed
+        : status === 'PROCESSING'
+          ? TransactionStatus.processing
+          : status === 'RECEIVED'
+            ? TransactionStatus.received
+            : TransactionStatus.failed
   }
 
   const getUserTxnList = useCallback(
     async ({ tokenSymbol, start, end, limit, offset }: TxsFilterProps) => {
       // const address = routeMatch.params[0];
-      const tokenId = tokenSymbol ? tokenMap[tokenSymbol!].tokenId : undefined
+      const tokenId = tokenSymbol ? tokenMap[ tokenSymbol! ].tokenId : undefined
       const response = await LoopringAPI.userAPI!.getUserBills(
         {
           accountId,
@@ -629,8 +650,12 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
         },
         apiKey,
       )
-      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-        const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        const errorItem =
+          SDK_ERROR_MAP_TO_UI[ (response as sdk.RESULT_INFO)?.code ?? 700001 ]
         setToastOpen({
           open: true,
           type: ToastType.error,
@@ -640,31 +665,33 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
               : (response as sdk.RESULT_INFO).message,
         })
       } else {
-        const formattedList: RawDataTransactionItem[] = (response as any).raw_data.bills.map(
-          (o: any) => {
-            const feePrecision = tokenMap ? tokenMap[o.tokenF].precision : undefined
-            return {
-              ...o,
-              txType: o.billType,
-              side: o.billType as any,
-              amount: {
-                unit: o.token || '',
-                value: Number(volumeToCount(o.token, o.amount)),
-              },
-              fee: {
-                unit: o.tokenF || '',
-                value: Number(volumeToCountAsBigNumber(o.tokenF, o.amountF || 0)),
-              },
-              memo: o.memo || '',
-              time: o.timestamp,
-              txnHash: o.hash,
-              status: getTxnStatus(o.status),
-              feePrecision: feePrecision,
-              receiverAddress: o.to,
-              senderAddress: o.from,
-            } as RawDataTransactionItem
-          },
-        )
+        const formattedList: RawDataTransactionItem[] = (
+          response as any
+        ).raw_data.bills.map((o: any) => {
+          const feePrecision = tokenMap
+            ? tokenMap[ o.tokenF ].precision
+            : undefined
+          return {
+            ...o,
+            txType: o.billType,
+            side: o.billType as any,
+            amount: {
+              unit: o.token || '',
+              value: Number(volumeToCount(o.token, o.amount)),
+            },
+            fee: {
+              unit: o.tokenF || '',
+              value: Number(volumeToCountAsBigNumber(o.tokenF, o.amountF || 0)),
+            },
+            memo: o.memo || '',
+            time: o.timestamp,
+            txnHash: o.hash,
+            status: getTxnStatus(o.status),
+            feePrecision: feePrecision,
+            receiverAddress: o.to,
+            senderAddress: o.from,
+          } as RawDataTransactionItem
+        })
         setTxs(formattedList)
 
         setTxsTotal(response.totalNum)
@@ -672,7 +699,7 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
       }
     },
     [accountId, apiKey, t, tokenMap],
-  )
+  );
 
   return {
     txs,

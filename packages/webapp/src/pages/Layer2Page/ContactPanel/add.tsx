@@ -35,7 +35,7 @@ export const Add: React.FC<AddDialogProps> = ({
 }) => {
   const theme = useTheme()
   const {
-    // addLoading,
+    // adLoading,
     // setAddLoading,
     addShowInvalidAddress,
     addAddress,
@@ -48,7 +48,7 @@ export const Add: React.FC<AddDialogProps> = ({
     // toastStatus,
     // setToastStatus
   } = useContactAdd()
-  const { t } = useTranslation()
+  const { t } = useranslation()
   // web3.eth.ens
   //             .getAddress(address)
   //             .then((addressResovled: string) => {
@@ -69,8 +69,7 @@ export const Add: React.FC<AddDialogProps> = ({
   return (
     <div>
       <Dialog
-        maxWidth={'lg'}
-        open={addOpen}
+        maxWidth={'l'lg'        open={addOpen}
         onClose={() => {
           setAddOpen(false)
           onChangeAddress('')
@@ -196,4 +195,4 @@ export const Add: React.FC<AddDialogProps> = ({
       </Dialog>
     </div>
   )
-}
+};
