@@ -161,16 +161,16 @@ export const useGatewayList = ({
                 status: 'processing',
               },
             })
-              setProcessingCallback({ callback: gameStopCallback })
-              setStateCheck(true)
-            },
-            [setShowConnect],
-          ),
-        },
-        {
-          ...DefaultGatewayList[3],
-          handleSelect: React.useCallback(
-            async (event, flag?) => {
+            setProcessingCallback({ callback: gameStopCallback })
+            setStateCheck(true)
+          },
+          [setShowConnect],
+        ),
+      },
+      {
+        ...DefaultGatewayList[ 3 ],
+        handleSelect: React.useCallback(
+          async (event, flag?) => {
               walletServices.sendDisconnect('', 'should new provider')
               setConnectProvider(DefaultGatewayList[3].key)
               setShowConnect({

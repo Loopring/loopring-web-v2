@@ -134,7 +134,13 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
   }
 ` as (props: BoxProps & { imageList: CarouselItem[] }) => JSX.Element
 
-export const Carousel = ({ loading, imageList }: { loading: boolean; imageList: CarouselItem[] }) => {
+export const Carousel = ({
+  loading,
+  imageList,
+}: {
+  loading: boolean
+  imageList: CarouselItem[]
+}) => {
   myLog('imageList', imageList)
   return (
     <Box>
