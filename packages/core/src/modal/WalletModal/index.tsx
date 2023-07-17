@@ -127,50 +127,50 @@ export const useGatewayList = ({
             [account.connectName, setShowConnect],
           ),
         },
-      // {
-      //   ...DefaultGatewayList[4],
-      //   handleSelect: React.useCallback(
-      //     async (event, flag?) => {
-      //       if (!flag && account.connectName === DefaultGatewayList[4].key) {
-      //         setShowConnect({ isShow: false })
-      //       } else {
-      //         walletServices.sendDisconnect('', 'should new provider')
-      //         setConnectProvider(DefaultGatewayList[4].key)
-      //         setShowConnect({
-      //           isShow: true,
-      //           step: WalletConnectStep.WalletConnectProcessing,
-      //         })
-      //         setProcessingCallback({ callback: walletConnectV1Callback })
-      //         setStateCheck(true)
-      //       }
-      //     },
-      //     [account.connectName, setShowConnect],
-      //   ),
-      // },
-      {
-        ...DefaultGatewayList[ 2 ],
-        // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
-        handleSelect: React.useCallback(
-          async (event, flag?) => {
-            walletServices.sendDisconnect('', 'should new provider')
-            setConnectProvider(DefaultGatewayList[ 2 ].key)
-            setShowConnect({
-              isShow: true,
-              step: WalletConnectStep.Provider,
-              info: {
-                status: 'processing',
-              },
-            })
-            setProcessingCallback({ callback: gameStopCallback })
-            setStateCheck(true)
-          },
-          [setShowConnect],
-        ),
-      },
-      {
-        ...DefaultGatewayList[ 3 ],
-        handleSelect: React.useCallback(
-          async (event, flag?) => {
+        // {
+        //   ...DefaultGatewayList[4],
+        //   handleSelect: React.useCallback(
+        //     async (event, flag?) => {
+        //       if (!flag && account.connectName === DefaultGatewayList[4].key) {
+        //         setShowConnect({ isShow: false })
+        //       } else {
+        //         walletServices.sendDisconnect('', 'should new provider')
+        //         setConnectProvider(DefaultGatewayList[4].key)
+        //         setShowConnect({
+        //           isShow: true,
+        //           step: WalletConnectStep.WalletConnectProcessing,
+        //         })
+        //         setProcessingCallback({ callback: walletConnectV1Callback })
+        //         setStateCheck(true)
+        //       }
+        //     },
+        //     [account.connectName, setShowConnect],
+        //   ),
+        // },
+        {
+          ...DefaultGatewayList[2],
+          // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
+          handleSelect: React.useCallback(
+            async (event, flag?) => {
+              walletServices.sendDisconnect('', 'should new provider')
+              setConnectProvider(DefaultGatewayList[2].key)
+              setShowConnect({
+                isShow: true,
+                step: WalletConnectStep.Provider,
+                info: {
+                  status: 'processing',
+                },
+              })
+              setProcessingCallback({ callback: gameStopCallback })
+              setStateCheck(true)
+            },
+            [setShowConnect],
+          ),
+        },
+        {
+          ...DefaultGatewayList[3],
+          handleSelect: React.useCallback(
+            async (event, flag?) => {
               walletServices.sendDisconnect('', 'should new provider')
               setConnectProvider(DefaultGatewayList[3].key)
               setShowConnect({
