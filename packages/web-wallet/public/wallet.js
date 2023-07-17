@@ -834,6 +834,7 @@ const settingPersist = 'persist:settings'
     // let settings = JSON.parse(localStorage.getItem(settingPersist) ?? "{}");
   }
   let themeMode = 'dark'
+  let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {})
   if (settings.themeMode && JSON.parse(settings.themeMode)) {
     themeMode = JSON.parse(settings.themeMode)
   }
