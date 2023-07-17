@@ -2,13 +2,13 @@
 
 import React from 'react'
 import {
+  Box,
   Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   Typography,
-  Box,
 } from '@mui/material'
 import { Contact, useContactSend } from './hooks'
 import { CheckIcon, CloseIcon, L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
@@ -65,7 +65,7 @@ const SelectNetwork = (props: {
     >
       {icon}
       <Typography marginLeft={1.5}>{text}</Typography>
-      {selected ? <CheckIcon fontSize={'small'} className={'check-icon'}></CheckIcon> : undefined}
+      {selected ? <CheckIcon fontSize={'small'} className={'check-icon'} /> : undefined}
     </BoxWithTriangle>
   )
 }
@@ -148,7 +148,7 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
                 style={{ marginRight: '4%', width: '48%' }}
                 selected={sendNetwork === 'L1'}
                 text={'Ethereum/L1'}
-                icon={<CoinIcon size={32} symbol={'ETH'}></CoinIcon>}
+                icon={<CoinIcon size={32} symbol={'ETH'} />}
               />
               <SelectNetwork
                 onClick={() => {
@@ -157,7 +157,7 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
                 style={{ width: '48%' }}
                 selected={sendNetwork === 'L2'}
                 text={'Loopring/L2'}
-                icon={<CoinIcon size={32} symbol={'LRC'}></CoinIcon>}
+                icon={<CoinIcon size={32} symbol={'LRC'} />}
               />
             </Box>
           </Box>

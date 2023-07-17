@@ -1,9 +1,17 @@
 {
-  "plugins": ["react-hooks"],
-  "extends": ["react-app", "react-app/jest"],
+  "plugins": [
+    "react-hooks"
+  ],
+  "extends": [
+    "react-app",
+    "react-app/jest"
+  ],
   "overrides": [
     {
-      "files": ["**/*.tsx", "**/*.ts"],
+      "files": [
+        "**/*.tsx",
+        "**/*.ts"
+      ],
       "rules": {
         "import/no-anonymous-default-export": "off",
         "@typescript-eslint/no-unused-vars": "off",

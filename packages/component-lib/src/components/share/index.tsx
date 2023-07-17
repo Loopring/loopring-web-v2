@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { ShareProps } from './Interface'
-import { Box, Modal, Typography } from '@mui/material'
+import { Box, Modal } from '@mui/material'
 import { SoursURL } from '@loopring-web/common-resources'
 import { SocialButton } from './components/SocialButton'
 import { WithTranslation, withTranslation } from 'react-i18next'

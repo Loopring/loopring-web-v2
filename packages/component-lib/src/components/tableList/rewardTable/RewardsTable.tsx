@@ -160,7 +160,7 @@ export const DetailRewardPanel = ({
 export const RewardsTable = withTranslation(['tables', 'common'])(
   <R extends EarningsRow>(
     props: {
-      hideAssets: boolean
+      hideAssets?: boolean
       forexMap: ForexMap<sdk.Currency>
       rawData: R[]
       onItemClick: (item: any) => void

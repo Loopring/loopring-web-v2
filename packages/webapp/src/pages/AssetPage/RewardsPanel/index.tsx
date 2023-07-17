@@ -13,6 +13,7 @@ import { StylePaper, useModalData, useSystem, useToast, volumeToCount } from '@l
 
 import { useRewardsTable } from './hook'
 import { Box } from '@mui/material'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const RewardsPanel = withTranslation('common')(
   ({
@@ -47,15 +48,15 @@ const RewardsPanel = withTranslation('common')(
               // getUserRewards()
               updateClaimData({
                 belong: item.token.value,
-                tradeValue: volumeToCount(item.token.value, item.amount),
-                balance: volumeToCount(item.token.value, item.amount),
+                tradeValue: item.amountStr?.replaceAll(sdk.SEP, ''),
+                balance: item.amountStr?.replaceAll(sdk.SEP, ''),
                 volume: item.amount,
                 tradeType: TRADE_TYPE.TOKEN,
-                claimType: CLAIM_TYPE.lrcStaking,
+                claimType: CLAIM_TYPE.allToken,
               })
               setShowClaimWithdraw({
                 isShow: true,
-                claimType: CLAIM_TYPE.lrcStaking,
+                claimType: CLAIM_TYPE.allToken,
               })
             }}
             onDetail={(item) => {}}
