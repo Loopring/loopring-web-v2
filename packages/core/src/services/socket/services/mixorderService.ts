@@ -1,23 +1,23 @@
-import { Subject } from "rxjs";
-import { DepthData, getMidPrice } from "@loopring-web/loopring-sdk";
+import { Subject } from 'rxjs'
+import { DepthData, getMidPrice } from '@loopring-web/loopring-sdk'
 
 const subject = new Subject<{
-  mixorderMap: MixorderMap<{ [key: string]: any }>;
-}>();
+  mixorderMap: MixorderMap<{ [key: string]: any }>
+}>()
 
 export type MixorderMap<R> = {
-  [key in keyof R]: DepthData;
-};
+  [key in keyof R]: DepthData
+}
 // <R extends {[key:string]:any}>
 
 export const mixorderService = {
   sendMixorder: (mixorderMap: MixorderMap<{ [key: string]: any }>) => {
     const _mixorderMap = Reflect.ownKeys(mixorderMap).reduce((pre, key) => {
-      const data = mixorderMap[key as string];
+      const data = mixorderMap[key as string]
       const { bids, asks, mid_price } = getMidPrice({
-        _asks: data["asks"],
-        _bids: data["bids"],
-      });
+        _asks: data['asks'],
+        _bids: data['bids'],
+      })
 
       return {
         ...pre,
@@ -37,11 +37,11 @@ export const mixorderService = {
           asks_amtTotal: asks.amtTotal.toString(),
           asks_volTotal: asks.volTotal.toString(),
         },
-      };
-    }, {});
+      }
+    }, {})
 
-    subject.next({ mixorderMap: _mixorderMap });
+    subject.next({ mixorderMap: _mixorderMap })
   },
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),
-};
+}

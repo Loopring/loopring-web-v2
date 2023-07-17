@@ -1,3 +1,3 @@
 export interface WalletInfo {
-  walletTypeMap: { [key: string]: boolean };
+  walletTypeMap: { [key: string]: boolean }
 }

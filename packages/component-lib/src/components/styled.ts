@@ -120,7 +120,6 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   &:focus-visible {
     outline: 0;
   }
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -364,7 +363,6 @@ export const shake = css`
     }
   }
 `
-const loadingGif = './static/loading.gif'
 
 export const MenuBtnStyled = styled(Button)<ButtonProps>`
   font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -409,33 +407,6 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     justify-content: space-between;
     flex-direction: row;
     white-space: pre;
-
-    &.MuiButton-root {
-      ${({ loading, loadingbg }) => {
-        return loading === 'true'
-          ? `
-           pointer-events: none;
-           // color:transparent;
-           background-color:${loadingbg};
-           &::after{
-            display: block;
-            content: '';
-            background: url(${loadingGif});
-            background-size: contain;
-            height: 40px;
-            width: 40px;
-            position: absolute;
-            transform:scale(.4);
-            display:flex;
-            flex-direction:row;
-            align-items: center;
-            justify-content: right;
-            // color:#fff  
-           }
-       `
-          : ''
-      }}
-    }
   }
 
   &.vendor {

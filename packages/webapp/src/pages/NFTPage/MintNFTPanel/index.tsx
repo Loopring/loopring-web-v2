@@ -1,20 +1,16 @@
-import { useTranslation } from "react-i18next";
-import { Box, Button } from "@mui/material";
+import { useTranslation } from 'react-i18next'
+import { Box, Button } from '@mui/material'
 import {
   MintAdvanceNFTWrap,
   MintNFTConfirm,
   PanelContent,
   StyledPaperBg,
-} from "@loopring-web/component-lib";
-import React from "react";
-import { MetaNFTPanel } from "./metaNFTPanel";
-import { useMintNFTPanel } from "./hook";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import {
-  BackIcon,
-  CollectionMeta,
-  TradeNFT,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/component-lib'
+import React from 'react'
+import { MetaNFTPanel } from './metaNFTPanel'
+import { useMintNFTPanel } from './hook'
+import { useHistory, useRouteMatch } from 'react-router-dom'
+import { BackIcon, CollectionMeta, TradeNFT } from '@loopring-web/common-resources'
 import {
   getIPFSString,
   LoopringAPI,
@@ -22,21 +18,18 @@ import {
   useMyCollection,
   useNFTMintAdvance,
   useSystem,
-} from "@loopring-web/core";
+} from '@loopring-web/core'
 
 export const MintNFTPanel = <Co extends CollectionMeta>() => {
-  const history = useHistory();
-  const mintWholeProps = useMintNFTPanel();
-  const collectionListProps = useMyCollection();
-  const { t } = useTranslation(["common"]);
-  const { baseURL } = useSystem();
+  const history = useHistory()
+  const mintWholeProps = useMintNFTPanel()
+  const collectionListProps = useMyCollection()
+  const { t } = useTranslation(['common'])
+  const { baseURL } = useSystem()
 
-  const panelList: Pick<
-    PanelContent<"METADATA" | "MINT_CONFIRM">,
-    "key" | "element"
-  >[] = [
+  const panelList: Pick<PanelContent<'METADATA' | 'MINT_CONFIRM'>, 'key' | 'element'>[] = [
     {
-      key: "METADATA",
+      key: 'METADATA',
       element: (
         <MetaNFTPanel
           {...{
@@ -49,7 +42,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
                 collection: mintWholeProps.nftMintValue.collection,
                 collectionListProps: {
                   ...collectionListProps,
-                  size: "small",
+                  size: 'small',
                 },
                 domain: LoopringAPI.delegate?.getCollectionDomain(),
                 makeMeta,
@@ -63,7 +56,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
       ),
     },
     {
-      key: "MINT_CONFIRM",
+      key: 'MINT_CONFIRM',
       element: (
         <MintNFTConfirm
           disabled={false}
@@ -78,103 +71,93 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
         />
       ),
     },
-  ];
+  ]
   return (
     <>
       <Box marginBottom={2}>
         <Button
-          startIcon={<BackIcon fontSize={"small"} />}
-          variant={"text"}
-          size={"medium"}
-          sx={{ color: "var(--color-text-secondary)" }}
-          color={"inherit"}
+          startIcon={<BackIcon fontSize={'small'} />}
+          variant={'text'}
+          size={'medium'}
+          sx={{ color: 'var(--color-text-secondary)' }}
+          color={'inherit'}
           onClick={history.goBack}
         >
-          {t("labelMINTNFTTitle")}
+          {t('labelMINTNFTTitle')}
           {/*<Typography color={"textPrimary"}></Typography>*/}
         </Button>
       </Box>
       <StyledPaperBg
         flex={1}
-        className={"MuiPaper-elevation2"}
+        className={'MuiPaper-elevation2'}
         marginTop={0}
         marginBottom={2}
-        display={"flex"}
-        flexDirection={"column"}
+        display={'flex'}
+        flexDirection={'column'}
       >
-        <Box flex={1} display={"flex"}>
+        <Box flex={1} display={'flex'}>
           {
             panelList.map((panel, index) => {
               return (
                 <Box
                   flex={1}
-                  display={
-                    mintWholeProps.currentTab === index ? "flex" : "none"
-                  }
-                  alignItems={"stretch"}
+                  display={mintWholeProps.currentTab === index ? 'flex' : 'none'}
+                  alignItems={'stretch'}
                   key={index}
                 >
                   {panel.element}
                 </Box>
-              );
+              )
             })
             // panelList[currentTab].element
           }
         </Box>
       </StyledPaperBg>
     </>
-  );
-};
-export const MintNFTAdvancePanel = <
-  T extends TradeNFT<I, Co>,
-  Co extends CollectionMeta,
-  I
->() => {
-  const {
-    resetDefault: resetNFTMint,
-    nftMintAdvanceProps,
-    resetIntervalTime,
-  } = useNFTMintAdvance();
+  )
+}
+export const MintNFTAdvancePanel = <T extends TradeNFT<I, Co>, Co extends CollectionMeta, I>() => {
+  const { resetDefault: resetNFTMint, nftMintAdvanceProps, resetIntervalTime } = useNFTMintAdvance()
 
-  const history = useHistory();
-  const match: any = useRouteMatch("/nft/:type");
+  const history = useHistory()
+  const match: any = useRouteMatch('/nft/:type')
   React.useEffect(() => {
-    if (match.params?.type === "mintNFTAdvance") {
-      resetNFTMint();
+    if (match.params?.type === 'mintNFTAdvance') {
+      resetNFTMint()
     } else {
-      resetIntervalTime();
+      resetIntervalTime()
     }
     return () => {
-      resetIntervalTime();
-    };
-  }, [match.params?.type]);
-  const { t } = useTranslation("common");
+      resetIntervalTime()
+    }
+  }, [match.params?.type])
+  const { t } = useTranslation('common')
 
   return (
     <>
       <Box marginBottom={2}>
         <Button
-          startIcon={<BackIcon fontSize={"small"} />}
-          variant={"text"}
-          size={"medium"}
-          sx={{ color: "var(--color-text-secondary)" }}
-          color={"inherit"}
+          startIcon={<BackIcon fontSize={'small'} />}
+          variant={'text'}
+          size={'medium'}
+          sx={{ color: 'var(--color-text-secondary)' }}
+          color={'inherit'}
           onClick={history.goBack}
         >
-          {t("labelAdMintTitle")}
+          {t('labelAdMintTitle')}
         </Button>
       </Box>
       <StyledPaperBg
         flex={1}
-        className={"MuiPaper-elevation2"}
+        className={'MuiPaper-elevation2'}
         marginTop={0}
         marginBottom={2}
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"stretch"}
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'stretch'}
       >
         <MintAdvanceNFTWrap {...{ ...nftMintAdvanceProps }} />
       </StyledPaperBg>
     </>
-  );
-};
+  )
+}

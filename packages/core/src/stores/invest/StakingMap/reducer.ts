@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { StakingMapStates } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { StakingMapStates } from './interface'
+import { SagaStatus } from '@loopring-web/common-resources'
 
 const initialState: Required<StakingMapStates> = {
   marketArray: [],
@@ -9,48 +9,42 @@ const initialState: Required<StakingMapStates> = {
   __timer__: -1,
   status: SagaStatus.PENDING,
   errorMessage: null,
-};
+}
 const stakingMapSlice: Slice = createSlice({
-  name: "stakingMap",
+  name: 'stakingMap',
   initialState,
   reducers: {
     getStakingMap(state, _action: PayloadAction<undefined>) {
-      state.status = SagaStatus.PENDING;
+      state.status = SagaStatus.PENDING
     },
     getStakingMapStatus(state, action: PayloadAction<StakingMapStates>) {
       // @ts-ignore
       if (action.error) {
-        state.status = SagaStatus.ERROR;
+        state.status = SagaStatus.ERROR
         // @ts-ignore
-        state.errorMessage = action.error;
+        state.errorMessage = action.error
       }
-      const { __timer__, ...stakingMap } = action.payload;
+      const { __timer__, ...stakingMap } = action.payload
       if (stakingMap) {
-        state.marketArray = stakingMap.marketArray;
-        state.marketCoins = stakingMap.marketCoins;
-        state.marketMap = stakingMap.marketMap;
+        state.marketArray = stakingMap.marketArray
+        state.marketCoins = stakingMap.marketCoins
+        state.marketMap = stakingMap.marketMap
         // , marketCoins, marketMap
         // state.marketArray = { ...state, ...stakingMap };
       }
       if (__timer__) {
-        state.__timer__ = __timer__;
+        state.__timer__ = __timer__
       }
-      state.status = SagaStatus.DONE;
+      state.status = SagaStatus.DONE
     },
     updateDefiSyncMap(state, _action: PayloadAction<StakingMapStates>) {
-      state.status = SagaStatus.PENDING;
+      state.status = SagaStatus.PENDING
     },
     statusUnset: (state) => {
-      state.status = SagaStatus.UNSET;
+      state.status = SagaStatus.UNSET
     },
   },
-});
+})
 const { getStakingMap, updateDefiSyncMap, getStakingMapStatus, statusUnset } =
-  stakingMapSlice.actions;
-export {
-  stakingMapSlice,
-  getStakingMap,
-  getStakingMapStatus,
-  statusUnset,
-  updateDefiSyncMap,
-};
+  stakingMapSlice.actions
+export { stakingMapSlice, getStakingMap, getStakingMapStatus, statusUnset, updateDefiSyncMap }

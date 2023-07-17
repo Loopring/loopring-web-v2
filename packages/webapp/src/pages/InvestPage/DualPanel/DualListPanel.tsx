@@ -23,7 +23,6 @@ import {
   CoinIcon,
   CoinIcons,
   DualTable,
-  EmptyDefault,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
@@ -491,18 +490,13 @@ export const DualListPanel: any = withTranslation('common')(
             flexDirection={'column'}
             display={'flex'}
             justifyContent={'center'}
-            flex={1}
+            height={'100%'}
             alignItems={'center'}
           >
-            <EmptyDefault
-              message={() => {
-                return (
-                  <Button onClick={getDualMap} variant={'contained'}>
-                    {t('labelBtradeRefresh')}
-                  </Button>
-                )
-              }}
-            />
+            <img src={SoursURL + '/svg/dual-empty.svg'} />
+            <Button onClick={getDualMap} variant={'contained'}>
+              {t('labelDualRefresh')}
+            </Button>
           </Box>
         )}
         <ModalDualPanel

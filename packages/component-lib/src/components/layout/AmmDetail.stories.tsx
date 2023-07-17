@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
-import { Meta, Story } from "@storybook/react/types-6-0";
-import { MemoryRouter } from "react-router-dom";
+import styled from '@emotion/styled'
+import { Meta, Story } from '@storybook/react/types-6-0'
+import { MemoryRouter } from 'react-router-dom'
 import {
   Box,
   Breadcrumbs,
@@ -11,9 +11,9 @@ import {
   Link,
   Toolbar,
   Typography,
-} from "@mui/material";
+} from '@mui/material'
 
-import { css, Theme, useTheme } from "@emotion/react";
+import { css, Theme, useTheme } from '@emotion/react'
 import {
   AmmDetailExtendProps,
   AmmInData,
@@ -27,36 +27,36 @@ import {
   MyAmmLP,
   PriceTag,
   YEAR_DAY_FORMAT,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/common-resources'
 
-import { account, ammCalcData, coinMap, tradeCalcData } from "../../static";
-import { withTranslation } from "react-i18next";
-import { useSettings } from "../../stores";
-import moment from "moment";
-import { TradeTitle } from "../block";
-import { Header } from "../header";
-import React from "react";
-import { AmmPanel, AmmPanelType, AmmProps } from "../tradePanel";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { account, ammCalcData, coinMap, tradeCalcData } from '../../static'
+import { withTranslation } from 'react-i18next'
+import { useSettings } from '../../stores'
+import moment from 'moment'
+import { TradeTitle } from '../block'
+import { Header } from '../header'
+import React from 'react'
+import { AmmPanel, AmmPanelType, AmmProps } from '../tradePanel'
+import { Currency } from '@loopring-web/loopring-sdk'
 
-const Style = styled.div``;
+const Style = styled.div``
 const tradeData: any = {
-  coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
-  coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
-};
+  coinA: { belong: 'ETH', balance: 0.3, tradeValue: 0 },
+  coinB: { belong: 'LRC', balance: 1000, tradeValue: 0 },
+}
 
 const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
   // tradeCalcData:,
   ammCalcData: ammCalcData,
   activity: {
-    ruleType: "SWAP_VOLUME_RANKING",
-    market: "LRC-ETH",
-    status: "NotStarted" as any,
+    ruleType: 'SWAP_VOLUME_RANKING',
+    market: 'LRC-ETH',
+    status: 'NotStarted' as any,
     totalRewards: 1232141,
     myRewards: 122,
-    rewardToken: coinMap["USDT"] as CoinInfo<any>,
+    rewardToken: coinMap['USDT'] as CoinInfo<any>,
     duration: {
-      from: new Date("2021-1-1"),
+      from: new Date('2021-1-1'),
       to: new Date(),
     },
   },
@@ -64,7 +64,7 @@ const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
   coinBInfo: coinMap[ammCalcData.myCoinB.belong] as CoinInfo<any>,
   tradeFloat: {
     change: 1000,
-    timeUnit: "24h",
+    timeUnit: '24h',
     priceU: 1.23123,
     floatTag: FloatTag.increase,
     // tagNew: false,
@@ -75,14 +75,14 @@ const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
   totalB: 12344,
   totalAU: 0.002,
   totalBU: 12344,
-  rewardToken: "LRC",
+  rewardToken: 'LRC',
   rewardA: 13,
   feeA: 121,
   feeB: 1232,
   isNew: true,
   isActivity: false,
   APR: 56,
-};
+}
 const myAmm: MyAmmLP<any> = {
   feeA: 122,
   feeB: 21,
@@ -92,8 +92,8 @@ const myAmm: MyAmmLP<any> = {
   balanceA: 12131,
   balanceB: 0.0012,
   balanceU: 232,
-};
-const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
+}
+const AmmDetailWrap = withTranslation('common')(({ t, ...rest }: any) => {
   const ammProps: AmmProps<any, any, any, any> = {
     ammCalcDataDeposit: ammCalcData,
     ammCalcDataWithDraw: ammCalcData,
@@ -102,33 +102,28 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
     ammWithdrawData: tradeData,
     // tradeCalcData,
     handleAmmAddChangeEvent: (data, type) => {
-      console.log("handleAmmAddChangeEvent", data, type);
+      console.log('handleAmmAddChangeEvent', data, type)
     },
     handleAmmRemoveChangeEvent: (data) => {
-      console.log("handleAmmRemoveChangeEvent", data);
+      console.log('handleAmmRemoveChangeEvent', data)
     },
     onAmmRemoveClick: (data) => {
-      console.log("onAmmRemoveClick", data);
+      console.log('onAmmRemoveClick', data)
     },
     onAmmAddClick: (data) => {
-      console.log("onAmmAddClick", data);
+      console.log('onAmmAddClick', data)
     },
-  };
+  }
 
   const WrapAmmPanel = (rest: any) => {
-    return (
-      <AmmPanel
-        {...{ ...ammProps, tabSelected: AmmPanelType.Join }}
-        {...rest}
-      />
-    );
-  };
+    return <AmmPanel {...{ ...ammProps, tabSelected: AmmPanelType.Join }} {...rest} />
+  }
 
   const BoxStyled = styled(Box)`
-    ${({ theme }) => theme.border.defaultFrame({ c_key: "" })};
+    ${({ theme }) => theme.border.defaultFrame({ c_key: '' })};
     background-color: var(--color-box);
-  `;
-  const { currency } = useSettings();
+  `
+  const { currency } = useSettings()
 
   return (
     <>
@@ -136,7 +131,7 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
         account={account}
         headerMenuData={headerMenuData}
         headerToolBarData={headerToolBarData}
-        selected={"markets"}
+        selected={'markets'}
         notification={undefined}
         allowTrade={{
           register: {
@@ -163,19 +158,19 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
         isMobile={false}
       />
       <Toolbar />
-      <Container maxWidth="lg">
+      <Container maxWidth='lg'>
         {/*style={{height: '100%' }}*/}
         <Grid container marginTop={3}>
           <Grid item xs={8}>
-            <Breadcrumbs aria-label="breadcrumb">
-              <Link color="textSecondary" href="/">
-                {t("labelAmmList")}
+            <Breadcrumbs aria-label='breadcrumb'>
+              <Link color='textSecondary' href='/'>
+                {t('labelAmmList')}
               </Link>
               <Typography
-                color={"textSecondary"}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"center"}
+                color={'textSecondary'}
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'center'}
               >
                 {tradeData.coinA.belong}
                 <LinkedIcon />
@@ -183,15 +178,9 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
               </Typography>
             </Breadcrumbs>
           </Grid>
-          <Grid
-            item
-            xs={4}
-            alignItems={"center"}
-            justifyContent={"flex-end"}
-            display={"flex"}
-          >
-            <Link href={""} variant={"h6"}>
-              {t("labelBack")}
+          <Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>
+            <Link href={''} variant={'h6'}>
+              {t('labelBack')}
             </Link>
           </Grid>
         </Grid>
@@ -206,8 +195,8 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                 tradeCalcData,
                 tradeFloat: {
                   priceU: +123,
-                  change: "+15%",
-                  timeUnit: "24h",
+                  change: '+15%',
+                  timeUnit: '24h',
                 },
               }}
             />
@@ -222,116 +211,104 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
           {/*</ButtonListRightStyled>*/}
         </Grid>
 
-        <Box
-          flex={1}
-          display={"flex"}
-          alignItems={"stretch"}
-          flexDirection="row"
-          marginTop={3}
-        >
-          <Box flex={1} display={"flex"}>
-            <Grid container spacing={2} wrap={"nowrap"}>
+        <Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection='row' marginTop={3}>
+          <Box flex={1} display={'flex'}>
+            <Grid container spacing={2} wrap={'nowrap'}>
               <Grid
                 item
                 md={5}
                 xs={12}
                 paddingRight={2}
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"stretch"}
-                justifyContent={"space-between"}
+                display={'flex'}
+                flexDirection={'column'}
+                alignItems={'stretch'}
+                justifyContent={'space-between'}
               >
                 <BoxStyled
                   paddingY={3}
                   paddingX={(1 / 2) * 5}
-                  display={"flex"}
-                  flexDirection={"column"}
+                  display={'flex'}
+                  flexDirection={'column'}
                 >
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                   >
-                    <Typography
-                      component={"span"}
-                      style={{ textTransform: "capitalize" }}
-                    >
-                      {t("labelLiquidity")}
+                    <Typography component={'span'} style={{ textTransform: 'capitalize' }}>
+                      {t('labelLiquidity')}
                     </Typography>
-                    <Typography
-                      component={"span"}
-                      style={{ textTransform: "uppercase" }}
-                    >
-                      {t("labelAPR")}
+                    <Typography component={'span'} style={{ textTransform: 'uppercase' }}>
+                      {t('labelAPR')}
                     </Typography>
                   </Typography>
                   <Typography
-                    component={"p"}
-                    color={"textPrimary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textPrimary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                     marginTop={1}
                   >
                     <>
-                      <Typography component={"span"}>
-                        {" "}
-                        {typeof titleInfo.amountU === "undefined"
+                      <Typography component={'span'}>
+                        {' '}
+                        {typeof titleInfo.amountU === 'undefined'
                           ? EmptyValueTag
                           : currency === Currency.usd
                           ? PriceTag.Dollar + titleInfo.amountU
                           : 0}
                       </Typography>
-                      <Typography component={"span"}>
-                        {" "}
+                      <Typography component={'span'}>
+                        {' '}
                         {titleInfo.APR ? titleInfo.APR : EmptyValueTag}%
                       </Typography>
                     </>
                   </Typography>
 
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                     marginTop={2}
                   >
-                    <Typography component={"span"} color={"textSecondary"}>
-                      <Hidden mdDown>{t("labelLPTotal")}</Hidden>
-                      {t("labelLPTokens")}
+                    <Typography component={'span'} color={'textSecondary'}>
+                      <Hidden mdDown>{t('labelLPTotal')}</Hidden>
+                      {t('labelLPTokens')}
                     </Typography>
-                    <Typography component={"span"} color={"textSecondary"}>
+                    <Typography component={'span'} color={'textSecondary'}>
                       {titleInfo.totalLPToken}
                     </Typography>
                   </Typography>
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                     marginTop={1}
                   >
-                    <Typography component={"span"} color={"textSecondary"}>
-                      <Hidden mdDown>{t("labelLPTotal")}</Hidden>
+                    <Typography component={'span'} color={'textSecondary'}>
+                      <Hidden mdDown>{t('labelLPTotal')}</Hidden>
                       {titleInfo.ammCalcData?.myCoinA.belong}
                     </Typography>
 
-                    <Typography component={"span"} color={"textSecondary"}>
+                    <Typography component={'span'} color={'textSecondary'}>
                       {titleInfo.totalA}
                     </Typography>
                   </Typography>
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                     marginTop={1}
                   >
-                    <Typography component={"span"} color={"textSecondary"}>
-                      <Hidden mdDown>{t("labelLPTotal")}</Hidden>
+                    <Typography component={'span'} color={'textSecondary'}>
+                      <Hidden mdDown>{t('labelLPTotal')}</Hidden>
                       {titleInfo.ammCalcData?.myCoinB.belong}
                     </Typography>
-                    <Typography component={"span"} color={"textSecondary"}>
+                    <Typography component={'span'} color={'textSecondary'}>
                       {titleInfo.totalB}
                     </Typography>
                   </Typography>
@@ -339,101 +316,72 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                 <BoxStyled
                   paddingY={3}
                   paddingX={(1 / 2) * 5}
-                  display={"flex"}
-                  flexDirection={"column"}
+                  display={'flex'}
+                  flexDirection={'column'}
                 >
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
                   >
-                    <Typography
-                      component={"span"}
-                      color={"textSecondary"}
-                      variant={"body2"}
-                    >
-                      {titleInfo.tradeFloat.timeUnit} {t("labelVolume")}
+                    <Typography component={'span'} color={'textSecondary'} variant={'body2'}>
+                      {titleInfo.tradeFloat.timeUnit} {t('labelVolume')}
                     </Typography>
-                    <Typography component={"span"} color={"textSecondary"}>
-                      {t("labelFee")} {/* ' : '*/}
+                    <Typography component={'span'} color={'textSecondary'}>
+                      {t('labelFee')} {/* ' : '*/}
                     </Typography>
                   </Typography>
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                     marginTop={1}
-                    alignItems={"center"}
+                    alignItems={'center'}
                   >
-                    <Typography
-                      component={"span"}
-                      variant={"h5"}
-                      color={"textPrimary"}
-                    >
+                    <Typography component={'span'} variant={'h5'} color={'textPrimary'}>
                       {PriceTag.Dollar + titleInfo.tradeFloat.priceU}
                     </Typography>
                     <Typography
                       noWrap
-                      textAlign={"center"}
-                      component={"span"}
-                      color={"textSecondary"}
-                      variant={"body2"}
-                      textOverflow={"ellipsis"}
-                      display={"flex"}
-                      alignItems={"center"}
+                      textAlign={'center'}
+                      component={'span'}
+                      color={'textSecondary'}
+                      variant={'body2'}
+                      textOverflow={'ellipsis'}
+                      display={'flex'}
+                      alignItems={'center'}
                     >
                       <Typography
-                        component={"span"}
-                        color={"inherit"}
-                        variant={"inherit"}
-                        display={"flex"}
-                        flexDirection={"column"}
+                        component={'span'}
+                        color={'inherit'}
+                        variant={'inherit'}
+                        display={'flex'}
+                        flexDirection={'column'}
                       >
-                        <Typography
-                          component={"span"}
-                          color={"inherit"}
-                          variant={"inherit"}
-                        >
+                        <Typography component={'span'} color={'inherit'} variant={'inherit'}>
                           {titleInfo.ammCalcData?.myCoinA.belong}
                         </Typography>
-                        <Typography
-                          component={"span"}
-                          color={"inherit"}
-                          variant={"inherit"}
-                        >
+                        <Typography component={'span'} color={'inherit'} variant={'inherit'}>
                           {titleInfo.feeA}
                         </Typography>
                       </Typography>
-                      <Typography
-                        component={"span"}
-                        color={"inherit"}
-                        variant={"h6"}
-                        paddingX={1}
-                      >
-                        {" + "}
+                      <Typography component={'span'} color={'inherit'} variant={'h6'} paddingX={1}>
+                        {' + '}
                       </Typography>
                       <Typography
-                        component={"span"}
-                        color={"inherit"}
-                        variant={"inherit"}
-                        display={"flex"}
-                        flexDirection={"column"}
+                        component={'span'}
+                        color={'inherit'}
+                        variant={'inherit'}
+                        display={'flex'}
+                        flexDirection={'column'}
                       >
-                        <Typography
-                          component={"span"}
-                          color={"inherit"}
-                          variant={"inherit"}
-                        >
+                        <Typography component={'span'} color={'inherit'} variant={'inherit'}>
                           {titleInfo.ammCalcData?.myCoinB.belong}
                         </Typography>
-                        <Typography
-                          component={"span"}
-                          color={"inherit"}
-                          variant={"inherit"}
-                        >
+                        <Typography component={'span'} color={'inherit'} variant={'inherit'}>
                           {titleInfo.feeB}
                         </Typography>
                       </Typography>
@@ -443,99 +391,75 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                 <BoxStyled
                   paddingY={3}
                   paddingX={(1 / 2) * 5}
-                  display={"flex"}
-                  flexDirection={"column"}
+                  display={'flex'}
+                  flexDirection={'column'}
                 >
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                   >
-                    <Typography component={"span"} color={"textSecondary"}>
-                      {" "}
-                      {t("labelMyPoolShare")}
+                    <Typography component={'span'} color={'textSecondary'}>
+                      {' '}
+                      {t('labelMyPoolShare')}
                     </Typography>
                   </Typography>
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                     marginTop={1}
                   >
-                    <Typography component={"span"} color={"textSecondary"}>
-                      {" "}
-                      {myAmm.balanceA ? myAmm.balanceA : EmptyValueTag}{" "}
-                      {titleInfo.ammCalcData?.myCoinA.belong}{" "}
+                    <Typography component={'span'} color={'textSecondary'}>
+                      {' '}
+                      {myAmm.balanceA ? myAmm.balanceA : EmptyValueTag}{' '}
+                      {titleInfo.ammCalcData?.myCoinA.belong}{' '}
                     </Typography>
-                    <Typography
-                      component={"span"}
-                      color={"textSecondary"}
-                      variant={"h6"}
-                    >
-                      {" "}
-                      --{" "}
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                      {' '}
+                      --{' '}
                     </Typography>
                   </Typography>
                   <Typography
-                    component={"p"}
-                    color={"textSecondary"}
-                    display={"flex"}
-                    justifyContent={"space-between"}
+                    component={'p'}
+                    color={'textSecondary'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
                     marginTop={1}
                   >
-                    <Typography component={"span"} color={"textSecondary"}>
-                      {" "}
-                      {myAmm.balanceB ? myAmm.balanceA : EmptyValueTag}{" "}
+                    <Typography component={'span'} color={'textSecondary'}>
+                      {' '}
+                      {myAmm.balanceB ? myAmm.balanceA : EmptyValueTag}{' '}
                       {titleInfo.ammCalcData?.myCoinB.belong}
                     </Typography>
-                    <Typography
-                      component={"span"}
-                      color={"textSecondary"}
-                      variant={"h6"}
-                    >
-                      {" "}
-                      --{" "}
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                      {' '}
+                      --{' '}
                     </Typography>
                   </Typography>
                 </BoxStyled>
                 <BoxStyled
                   paddingY={3}
                   paddingX={(1 / 2) * 5}
-                  display={"flex"}
-                  flexDirection={"column"}
+                  display={'flex'}
+                  flexDirection={'column'}
                 >
-                  <Box
-                    display={"flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                  >
-                    <Typography
-                      display={"flex"}
-                      flexDirection={"column"}
-                      component={"div"}
-                    >
-                      <Typography
-                        variant={"body2"}
-                        component={"h5"}
-                        color={"textSecondary"}
-                      >
-                        {t("labelReward")}
+                  <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+                    <Typography display={'flex'} flexDirection={'column'} component={'div'}>
+                      <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
+                        {t('labelReward')}
                       </Typography>
-                      <Typography
-                        variant={"body1"}
-                        component={"span"}
-                        color={"textPrimary"}
-                      >
-                        {typeof titleInfo.activity === "undefined" ? (
+                      <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
+                        {typeof titleInfo.activity === 'undefined' ? (
                           EmptyValueTag
                         ) : (
                           <>
-                            <Typography component={"span"}>
-                              {titleInfo.activity.totalRewards}{" "}
+                            <Typography component={'span'}>
+                              {titleInfo.activity.totalRewards}{' '}
                             </Typography>
-                            <Typography component={"span"}>
+                            <Typography component={'span'}>
                               {titleInfo.activity.rewardToken.simpleName}
                             </Typography>
                           </>
@@ -543,30 +467,22 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                       </Typography>
                     </Typography>
                     <Typography
-                      display={"flex"}
-                      flexDirection={"column"}
-                      alignItems={"flex-end"}
-                      component={"div"}
+                      display={'flex'}
+                      flexDirection={'column'}
+                      alignItems={'flex-end'}
+                      component={'div'}
                     >
-                      <Typography
-                        variant={"body2"}
-                        component={"h5"}
-                        color={"textSecondary"}
-                      >
-                        {t("labelMyReward")}
+                      <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
+                        {t('labelMyReward')}
                       </Typography>
-                      <Typography
-                        variant={"body1"}
-                        component={"span"}
-                        color={"textPrimary"}
-                      >
-                        {typeof titleInfo.activity === "undefined" ? (
+                      <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
+                        {typeof titleInfo.activity === 'undefined' ? (
                           EmptyValueTag
                         ) : (
                           <>
-                            <Typography component={"span"}>
+                            <Typography component={'span'}>
                               {myAmm.reward}
-                              <Typography component={"span"}>
+                              <Typography component={'span'}>
                                 {titleInfo.activity.rewardToken.simpleName}
                               </Typography>
                             </Typography>
@@ -576,22 +492,18 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                     </Typography>
                   </Box>
                   <Typography
-                    alignSelf={"flex-start"}
-                    variant={"body2"}
-                    color={"textSecondary"}
-                    component="span"
+                    alignSelf={'flex-start'}
+                    variant={'body2'}
+                    color={'textSecondary'}
+                    component='span'
                     marginTop={1}
                   >
-                    {t("labelDate")}:
-                    {typeof titleInfo.activity === "undefined"
+                    {t('labelDate')}:
+                    {typeof titleInfo.activity === 'undefined'
                       ? EmptyValueTag
-                      : moment(titleInfo.activity.duration.from).format(
-                          YEAR_DAY_FORMAT
-                        ) +
-                        " - " +
-                        moment(titleInfo.activity.duration.to).format(
-                          YEAR_DAY_FORMAT
-                        )}
+                      : moment(titleInfo.activity.duration.from).format(YEAR_DAY_FORMAT) +
+                        ' - ' +
+                        moment(titleInfo.activity.duration.to).format(YEAR_DAY_FORMAT)}
                   </Typography>
                 </BoxStyled>
               </Grid>
@@ -600,7 +512,7 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
               </Hidden>
             </Grid>
           </Box>
-          <Box display={"flex"}>
+          <Box display={'flex'}>
             <WrapAmmPanel />
           </Box>
         </Box>
@@ -608,11 +520,11 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
 
       {/*<Footer></Footer>*/}
     </>
-  );
-});
+  )
+})
 
 const Template: Story<any> = () => {
-  const theme: Theme = useTheme();
+  const theme: Theme = useTheme()
   return (
     <>
       <GlobalStyles
@@ -621,30 +533,30 @@ const Template: Story<any> = () => {
 
       body:before {
         ${
-          theme.mode === "dark"
+          theme.mode === 'dark'
             ? ` 
                         background: var(--color-global-bg);
                    `
-            : ""
+            : ''
         }
       }
     }
     `}
       />
       <Style>
-        <MemoryRouter initialEntries={["/"]}>
+        <MemoryRouter initialEntries={['/']}>
           <AmmDetailWrap />
         </MemoryRouter>
-      </Style>{" "}
+      </Style>{' '}
     </>
-  );
-};
+  )
+}
 
 export default {
-  title: "components/Layout/AmmDetail",
+  title: 'components/Layout/AmmDetail',
   component: Template,
   argTypes: {},
-} as Meta;
+} as Meta
 
-export const AmmDetailStory = Template.bind({});
+export const AmmDetailStory = Template.bind({})
 // SwitchPanel.args = {}

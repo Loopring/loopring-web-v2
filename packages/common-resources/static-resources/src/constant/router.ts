@@ -41,6 +41,7 @@ export enum Layer2RouterID {
   referralrewards = 'referralrewards',
   forcewithdraw = 'forcewithdraw',
 }
+
 export const Profile = {
   security: [
     {
@@ -653,7 +654,6 @@ export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',
   RedPacket = 'RedPacket',
-  Rewards = 'Rewards',
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
@@ -747,7 +747,7 @@ export const AddAssetListMap = {
     AddAssetList.FromOtherL2.key,
     AddAssetList.FromOtherL1.key,
     AddAssetList.FromExchange.key,
-    AddAssetList.FromAnotherNet.key,
+    // AddAssetList.FromAnotherNet.key,
   ],
   GOERLI: [
     AddAssetList.FromMyL1.key,
@@ -768,7 +768,7 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
-    SendAssetList.SendAssetToAnotherNet.key,
+    // SendAssetList.SendAssetToAnotherNet.key,
   ],
   GOERLI: [
     SendAssetList.SendAssetToMyL1.key,
@@ -779,18 +779,8 @@ export const SendAssetListMap = {
 }
 export const AssetL2TabIndex = {
   TAIKO: [AssetTabIndex.Tokens],
-  ETHEREUM: [
-    AssetTabIndex.Tokens,
-    AssetTabIndex.Invests,
-    AssetTabIndex.RedPacket,
-    AssetTabIndex.Rewards,
-  ],
-  GOERLI: [
-    AssetTabIndex.Tokens,
-    AssetTabIndex.Invests,
-    AssetTabIndex.RedPacket,
-    AssetTabIndex.Rewards,
-  ],
+  ETHEREUM: [AssetTabIndex.Tokens, AssetTabIndex.Invests, AssetTabIndex.RedPacket],
+  GOERLI: [AssetTabIndex.Tokens, AssetTabIndex.Invests, AssetTabIndex.RedPacket],
 }
 export const RouterAllowIndex = {
   TAIKO: [
@@ -832,8 +822,20 @@ export const RouterAllowIndex = {
 
 export const ProfileIndex = {
   TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
-  ETHEREUM: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
-  GOERLI: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
+  ETHEREUM: [
+    ProfileKey.security,
+    ProfileKey.forcewithdraw,
+    ProfileKey.vip,
+    ProfileKey.contact,
+    // ProfileKey.referralrewards
+  ],
+  GOERLI: [
+    ProfileKey.security,
+    ProfileKey.forcewithdraw,
+    ProfileKey.vip,
+    ProfileKey.contact,
+    ProfileKey.referralrewards,
+  ],
 }
 
 export const L1L2_NAME_DEFINED = {

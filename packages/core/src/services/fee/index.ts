@@ -1,1 +1,1 @@
-export * from "./useChargeFees";
+export * from './useChargeFees'

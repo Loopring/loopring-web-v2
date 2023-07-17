@@ -325,8 +325,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
       statusAccountUnset()
       setShowAccount({ isShow: false })
-      if (props?.opts?.error?.code === -32002) {
-      } else if (
+      if (
         props?.opts?.connectName === ConnectProviders.WalletConnect &&
         props?.opts?.error &&
         props?.opts?.error?.code === UIERROR_CODE.ERROR_WALLECTCONNECT_MANUALLY_CLOSE
@@ -337,13 +336,13 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         //   step: WalletConnectStep.RejectConnect,
         // });
       } else {
-        // setShowConnect({
-        //   isShow: true,
-        //   step: WalletConnectStep.FailedConnect,
-        //   error: {
-        //     ...props.opts.error,
-        //   } as sdk.RESULT_INFO,
-        // })
+        setShowConnect({
+          isShow: true,
+          step: WalletConnectStep.FailedConnect,
+          error: {
+            ...props.opts.error,
+          } as sdk.RESULT_INFO,
+        })
       }
     },
     [

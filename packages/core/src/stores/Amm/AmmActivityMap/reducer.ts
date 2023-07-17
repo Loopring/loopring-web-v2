@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { AmmActivityMapStates } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { AmmActivityMapStates } from './interface'
+import { SagaStatus } from '@loopring-web/common-resources'
 
 const initialState: Required<AmmActivityMapStates> = {
   ammActivityMap: {},
@@ -9,45 +9,42 @@ const initialState: Required<AmmActivityMapStates> = {
   groupByRuleType: {},
   groupByActivityStatus: {},
   groupByRuleTypeAndStatus: {},
-  status: "PENDING",
+  status: 'PENDING',
   errorMessage: null,
-};
+}
 const ammActivityMapSlice: Slice = createSlice({
-  name: "ammActivityMap",
+  name: 'ammActivityMap',
   initialState,
   reducers: {
     getAmmActivityMap(state, _action: PayloadAction<string | undefined>) {
-      state.status = SagaStatus.PENDING;
+      state.status = SagaStatus.PENDING
     },
-    getAmmActivityMapStatus(
-      state,
-      action: PayloadAction<AmmActivityMapStates>
-    ) {
+    getAmmActivityMapStatus(state, action: PayloadAction<AmmActivityMapStates>) {
       // @ts-ignore
       if (action.payload?.error) {
-        state.status = SagaStatus.ERROR;
+        state.status = SagaStatus.ERROR
         // @ts-ignore
-        state.errorMessage = action.payload.error;
+        state.errorMessage = action.payload.error
       }
-      state.ammActivityMap = { ...action.payload.groupByRuleTypeAndStatus };
+      state.ammActivityMap = { ...action.payload.groupByRuleTypeAndStatus }
       state.activityInProgressRules = {
         ...action.payload.activityInProgressRules,
-      };
-      state.activityDateMap = { ...action.payload.activityDateMap };
-      state.groupByRuleType = { ...action.payload.groupByRuleType };
+      }
+      state.activityDateMap = { ...action.payload.activityDateMap }
+      state.groupByRuleType = { ...action.payload.groupByRuleType }
       state.groupByActivityStatus = {
         ...action.payload.groupByActivityStatus,
-      };
+      }
       state.groupByRuleTypeAndStatus = {
         ...action.payload.groupByRuleTypeAndStatus,
-      };
-      state.status = SagaStatus.DONE;
+      }
+      state.status = SagaStatus.DONE
     },
     statusUnset: (state) => {
-      state.status = SagaStatus.UNSET;
+      state.status = SagaStatus.UNSET
     },
   },
-});
-export { ammActivityMapSlice };
+})
+export { ammActivityMapSlice }
 export const { getAmmActivityMap, getAmmActivityMapStatus, statusUnset } =
-  ammActivityMapSlice.actions;
+  ammActivityMapSlice.actions

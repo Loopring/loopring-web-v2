@@ -4,12 +4,7 @@
     "baseUrl": "src/",
     "rootDir": "."
   },
-  "include": [
-    "src",
-    "src/*",
-    "src/**/*.json",
-    "src/types.d.ts"
-  ],
+  "include": ["src", "src/*", "src/**/*.json", "src/types.d.ts"],
   "awesomeTypescriptLoaderOptions": {
     "useCache": false,
     "transpileOnly": true

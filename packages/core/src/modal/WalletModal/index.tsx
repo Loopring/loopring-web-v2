@@ -34,7 +34,7 @@ import {
   SoursURL,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
-import { walletServices } from '@loopring-web/web3-provider'
+import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import {
   CoinbaseCallback,
   gameStopCallback,
@@ -96,10 +96,7 @@ export const useGatewayList = ({
                 setConnectProvider && setConnectProvider(DefaultGatewayList[0].key)
                 setShowConnect({
                   isShow: true,
-                  step: WalletConnectStep.Provider,
-                  info: {
-                    status: 'processing',
-                  },
+                  step: WalletConnectStep.CommonProcessing,
                 })
                 setProcessingCallback({ callback: metaMaskCallback })
                 setStateCheck(true)
@@ -118,7 +115,8 @@ export const useGatewayList = ({
                 walletServices.sendDisconnect('', 'should new provider')
                 setConnectProvider(DefaultGatewayList[1].key)
                 setShowConnect({
-                  isShow: false,
+                  isShow: true,
+                  step: WalletConnectStep.WalletConnectProcessing,
                 })
                 setProcessingCallback({ callback: walletConnectCallback })
                 setStateCheck(true)
@@ -127,40 +125,37 @@ export const useGatewayList = ({
             [account.connectName, setShowConnect],
           ),
         },
-        // {
-        //   ...DefaultGatewayList[4],
-        //   handleSelect: React.useCallback(
-        //     async (event, flag?) => {
-        //       if (!flag && account.connectName === DefaultGatewayList[4].key) {
-        //         setShowConnect({ isShow: false })
-        //       } else {
-        //         walletServices.sendDisconnect('', 'should new provider')
-        //         setConnectProvider(DefaultGatewayList[4].key)
-        //         setShowConnect({
-        //           isShow: true,
-        //           step: WalletConnectStep.WalletConnectProcessing,
-        //         })
-        //         setProcessingCallback({ callback: walletConnectV1Callback })
-        //         setStateCheck(true)
-        //       }
-        //     },
-        //     [account.connectName, setShowConnect],
-        //   ),
-        // },
+        {
+          ...DefaultGatewayList[4],
+          handleSelect: React.useCallback(
+            async (event, flag?) => {
+              if (!flag && account.connectName === DefaultGatewayList[4].key) {
+                setShowConnect({ isShow: false })
+              } else {
+                walletServices.sendDisconnect('', 'should new provider')
+                setConnectProvider(DefaultGatewayList[4].key)
+                setShowConnect({
+                  isShow: true,
+                  step: WalletConnectStep.WalletConnectProcessing,
+                })
+                setProcessingCallback({ callback: walletConnectV1Callback })
+                setStateCheck(true)
+              }
+            },
+            [account.connectName, setShowConnect],
+          ),
+        },
         {
           ...DefaultGatewayList[2],
           // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
           handleSelect: React.useCallback(
             async (event, flag?) => {
               walletServices.sendDisconnect('', 'should new provider')
-              setConnectProvider(DefaultGatewayList[2].key)
               setShowConnect({
                 isShow: true,
-                step: WalletConnectStep.Provider,
-                info: {
-                  status: 'processing',
-                },
+                step: WalletConnectStep.CommonProcessing,
               })
+              setConnectProvider(DefaultGatewayList[2].key)
               setProcessingCallback({ callback: gameStopCallback })
               setStateCheck(true)
             },
@@ -172,14 +167,11 @@ export const useGatewayList = ({
           handleSelect: React.useCallback(
             async (event, flag?) => {
               walletServices.sendDisconnect('', 'should new provider')
-              setConnectProvider(DefaultGatewayList[3].key)
               setShowConnect({
                 isShow: true,
-                step: WalletConnectStep.Provider,
-                info: {
-                  status: 'processing',
-                },
+                step: WalletConnectStep.CommonProcessing,
               })
+              setConnectProvider(DefaultGatewayList[3].key)
               setProcessingCallback({ callback: CoinbaseCallback })
               setStateCheck(true)
             },
@@ -378,7 +370,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(
               termUrl={'https://www.iubenda.com/terms-and-conditions/74969935'}
               gatewayList={gatewayList}
               providerName={connectProvider}
-              status={isShowConnect?.info?.status}
               {...{ t, ...rest }}
             />
           ),

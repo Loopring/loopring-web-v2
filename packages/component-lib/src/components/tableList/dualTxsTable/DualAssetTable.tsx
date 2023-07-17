@@ -1,6 +1,6 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import { useSettings } from "../../../stores";
-import React from "react";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { useSettings } from '../../../stores'
+import React from 'react'
 import {
   ClockIcon,
   EmptyValueTag,
@@ -10,18 +10,18 @@ import {
   RowConfig,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
-} from "@loopring-web/common-resources";
-import { Column, Table, TablePagination } from "../../basic-lib";
-import { Box, BoxProps, Link, Typography } from "@mui/material";
-import moment from "moment";
-import { TablePaddingX } from "../../styled";
-import styled from "@emotion/styled";
-import { FormatterProps } from "react-data-grid";
-import { DualAssetTableProps, RawDataDualAssetItem } from "./Interface";
-import { CoinIcons } from "../assetsTable";
-import _ from "lodash";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { DUAL_TYPE } from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { Column, Table, TablePagination } from '../../basic-lib'
+import { Box, BoxProps, Link, Typography } from '@mui/material'
+import moment from 'moment'
+import { TablePaddingX } from '../../styled'
+import styled from '@emotion/styled'
+import { FormatterProps } from 'react-data-grid'
+import { DualAssetTableProps, RawDataDualAssetItem } from './Interface'
+import { CoinIcons } from '../assetsTable'
+import _ from 'lodash'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   display: flex;
@@ -36,13 +36,12 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
-  ${({ theme }) =>
-    TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (prosp: BoxProps & { isMobile: boolean }) => JSX.Element;
+  ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+` as (prosp: BoxProps & { isMobile: boolean }) => JSX.Element
 const TableStyled = styled(Table)`
   &.rdg {
     height: ${(props: any) => {
-      return props.currentheight + "px";
+      return props.currentheight + 'px'
     }};
 
     .rdg-cell.action {
@@ -67,12 +66,10 @@ const TableStyled = styled(Table)`
   .textAlignCenter {
     text-align: center;
   }
-` as any;
+` as any
 
-export const DualAssetTable = withTranslation(["tables", "common"])(
-  <R extends RawDataDualAssetItem>(
-    props: DualAssetTableProps<R> & WithTranslation
-  ) => {
+export const DualAssetTable = withTranslation(['tables', 'common'])(
+  <R extends RawDataDualAssetItem>(props: DualAssetTableProps<R> & WithTranslation) => {
     const {
       rawData,
       pagination,
@@ -84,10 +81,10 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       refresh,
       hideAssets,
       t,
-    } = props;
+    } = props
 
-    const { isMobile, coinJson } = useSettings();
-    const [page, setPage] = React.useState(1);
+    const { isMobile, coinJson } = useSettings()
+    const [page, setPage] = React.useState(1)
     const updateData = _.debounce(
       ({
         // tableType,
@@ -95,34 +92,34 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         pageSize = pagination?.pageSize ?? 10,
       }: {
         // tableType: TableType;
-        currPage?: number;
-        pageSize?: number;
+        currPage?: number
+        pageSize?: number
       }) => {
         getDualAssetList({
           limit: pageSize,
           offset: (currPage - 1) * pageSize,
-        });
+        })
       },
-      globalSetup.wait
-    );
+      globalSetup.wait,
+    )
 
     const handlePageChange = React.useCallback(
       (currPage: number) => {
-        if (currPage === page) return;
-        setPage(currPage);
-        updateData({ currPage: currPage });
+        if (currPage === page) return
+        setPage(currPage)
+        updateData({ currPage: currPage })
       },
-      [updateData, page]
-    );
+      [updateData, page],
+    )
     const getColumnMode = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "Product",
+          key: 'Product',
           sortable: false,
-          width: "auto",
-          name: t("labelDualAssetProduct"),
-          cellClass: "textAlignLeft",
-          headerCellClass: "textAlignLeft",
+          width: 'auto',
+          name: t('labelDualAssetProduct'),
+          cellClass: 'textAlignLeft',
+          headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const {
               sellSymbol,
@@ -130,203 +127,177 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
               __raw__: {
                 order: { dualType, investmentStatus },
               },
-            } = row;
+            } = row
             const [base, quote] =
-              dualType === DUAL_TYPE.DUAL_BASE
-                ? [sellSymbol, buySymbol]
-                : [buySymbol, sellSymbol];
-            const showClock =
-              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
+              dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
+            const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
             //${row.sellSymbol}/${row.buySymbol}
             return (
               <Typography
-                component={"span"}
-                flexDirection={"row"}
-                display={"flex"}
-                height={"100%"}
-                alignItems={"center"}
+                component={'span'}
+                flexDirection={'row'}
+                display={'flex'}
+                height={'100%'}
+                alignItems={'center'}
               >
-                <Typography component={"span"} display={"inline-flex"}>
+                <Typography component={'span'} display={'inline-flex'}>
                   {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
                     type={TokenType.dual}
                     size={24}
-                    tokenIcon={[
-                      coinJson[row.sellSymbol],
-                      coinJson[row.buySymbol],
-                    ]}
+                    tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
-                <Typography component={"span"} display={"flex"}>
+                <Typography component={'span'} display={'flex'}>
                   <Typography
-                    component={"span"}
+                    component={'span'}
                     // display={"inline-flex"}
-                    color={"textPrimary"}
-                    display={"flex"}
-                    flexDirection={"column"}
+                    color={'textPrimary'}
+                    display={'flex'}
+                    flexDirection={'column'}
                   >
                     {`${base}/${quote}`}
                   </Typography>
                   {showClock && (
-                    <Box
-                      component={"span"}
-                      marginLeft={1}
-                      display={"flex"}
-                      alignItems={"center"}
-                    >
+                    <Box component={'span'} marginLeft={1} display={'flex'} alignItems={'center'}>
                       <ClockIcon />
                     </Box>
                   )}
                 </Typography>
               </Typography>
-            );
+            )
           },
         },
         {
-          key: "Frozen",
+          key: 'Frozen',
           sortable: false,
-          width: "auto",
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelDualAssetFrozen"),
+          width: 'auto',
+          cellClass: 'textAlignCenter',
+          headerCellClass: 'textAlignCenter',
+          name: t('labelDualAssetFrozen'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             if (hideAssets) {
-              return <>{HiddenTag}</>;
+              return <>{HiddenTag}</>
             } else if (!row?.amount) {
-              return <>{"-- " + row.sellSymbol}</>;
+              return <>{'-- ' + row.sellSymbol}</>
             } else {
-              return <>{row?.amount + " " + row.sellSymbol}</>;
+              return <>{row?.amount + ' ' + row.sellSymbol}</>
             }
           },
         },
         {
-          key: "Return",
+          key: 'Return',
           sortable: false,
-          width: "auto",
-          name: t("labelDualAssetReturn"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
+          width: 'auto',
+          name: t('labelDualAssetReturn'),
+          cellClass: 'textAlignCenter',
+          headerCellClass: 'textAlignCenter',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const { currentPrice, lessEarnView, greaterEarnView } =
-              getDetail(row);
-            const { base, quote } = currentPrice;
+            const { currentPrice, lessEarnView, greaterEarnView } = getDetail(row)
+            const { base, quote } = currentPrice
             return (
               <>
                 {hideAssets
                   ? HiddenTag
-                  : (lessEarnView === "0" ? EmptyValueTag : lessEarnView) +
-                    " " +
+                  : (lessEarnView === '0' ? EmptyValueTag : lessEarnView) +
+                    ' ' +
                     base +
-                    "/" +
-                    (greaterEarnView === "0"
-                      ? EmptyValueTag
-                      : greaterEarnView) +
-                    " " +
+                    '/' +
+                    (greaterEarnView === '0' ? EmptyValueTag : greaterEarnView) +
+                    ' ' +
                     quote}
               </>
-            );
+            )
           },
         },
         {
-          key: "Price",
+          key: 'Price',
           sortable: false,
-          width: "auto",
-          name: t("labelDualAssetPrice"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
+          width: 'auto',
+          name: t('labelDualAssetPrice'),
+          cellClass: 'textAlignCenter',
+          headerCellClass: 'textAlignCenter',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.strike}</>;
+            return <>{row?.strike}</>
           },
         },
         {
-          key: "Settlement_Date",
+          key: 'Settlement_Date',
           sortable: true,
-          width: "auto",
-          name: t("labelDualAssetSettlement_Date"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
+          width: 'auto',
+          name: t('labelDualAssetSettlement_Date'),
+          cellClass: 'textAlignCenter',
+          headerCellClass: 'textAlignCenter',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>
-                {moment(new Date(row.expireTime)).format(
-                  YEAR_DAY_MINUTE_FORMAT
-                )}
-              </>
-            );
+            return <>{moment(new Date(row.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}</>
           },
         },
         {
-          key: "APR",
+          key: 'APR',
           sortable: true,
-          width: "auto",
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
-          name: t("labelDualAssetAPR"),
+          width: 'auto',
+          cellClass: 'textAlignCenter',
+          headerCellClass: 'textAlignCenter',
+          name: t('labelDualAssetAPR'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row?.apy}</>;
+            return <>{row?.apy}</>
           },
         },
         {
-          key: "Action",
+          key: 'Action',
           sortable: false,
-          width: "auto",
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualAssetAction"),
+          width: 'auto',
+          cellClass: 'textAlignRight',
+          headerCellClass: 'textAlignRight',
+          name: t('labelDualAssetAction'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const investmentStatus = row.__raw__.order.investmentStatus;
-            const showRefresh =
-              investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING;
+            const investmentStatus = row.__raw__.order.investmentStatus
+            const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
             return showRefresh ? (
               <Link
                 onClick={(_e) => {
-                  refresh(row);
+                  refresh(row)
                 }}
               >
-                {t("labelDualAssetRefresh")}
+                {t('labelDualAssetRefresh')}
               </Link>
             ) : (
-              <Link onClick={(_e) => showDetail(row)}>
-                {t("labelDualAssetDetail")}
-              </Link>
-            );
+              <Link onClick={(_e) => showDetail(row)}>{t('labelDualAssetDetail')}</Link>
+            )
           },
         },
       ],
-      [coinJson, t, hideAssets]
-    );
+      [coinJson, t, hideAssets],
+    )
 
     const getColumnMobile = React.useCallback(
       (): Column<R, unknown>[] => [
         {
-          key: "Product",
+          key: 'Product',
           sortable: false,
-          width: "auto",
-          name: t("labelDualAssetProduct"),
-          cellClass: "textAlignLeft",
-          headerCellClass: "textAlignLeft",
+          width: 'auto',
+          name: t('labelDualAssetProduct'),
+          cellClass: 'textAlignLeft',
+          headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Typography
-                component={"span"}
-                flexDirection={"row"}
-                display={"flex"}
-                height={"100%"}
-                alignItems={"center"}
+                component={'span'}
+                flexDirection={'row'}
+                display={'flex'}
+                height={'100%'}
+                alignItems={'center'}
               >
-                <Typography component={"span"} display={"inline-flex"}>
+                <Typography component={'span'} display={'inline-flex'}>
                   {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
                     type={TokenType.dual}
                     size={24}
-                    tokenIcon={[
-                      coinJson[row.sellSymbol],
-                      coinJson[row.buySymbol],
-                    ]}
+                    tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
               </Typography>
-            );
+            )
           },
         },
         // {
@@ -341,118 +312,104 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
         //   },
         // },
         {
-          key: "Price",
+          key: 'Price',
           sortable: false,
-          width: "auto",
-          name:
-            t("labelDualAssetPrice") + "/" + t("labelDualAssetSettlement_Date"),
-          cellClass: "textAlignCenter",
-          headerCellClass: "textAlignCenter",
+          width: 'auto',
+          name: t('labelDualAssetPrice') + '/' + t('labelDualAssetSettlement_Date'),
+          cellClass: 'textAlignCenter',
+          headerCellClass: 'textAlignCenter',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <Box
-                className={"textAlignRight"}
-                display={"flex"}
-                flexDirection={"column"}
-                height={"100%"}
-                justifyContent={"center"}
+                className={'textAlignRight'}
+                display={'flex'}
+                flexDirection={'column'}
+                height={'100%'}
+                justifyContent={'center'}
               >
-                <Typography component={"span"}>{row?.strike}</Typography>
-                <Typography
-                  component={"span"}
-                  variant={"body2"}
-                  color={"textSecondary"}
-                >
-                  {moment(new Date(row.expireTime)).format(
-                    YEAR_DAY_MINUTE_FORMAT
-                  )}
+                <Typography component={'span'}>{row?.strike}</Typography>
+                <Typography component={'span'} variant={'body2'} color={'textSecondary'}>
+                  {moment(new Date(row.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}
                 </Typography>
               </Box>
-            );
+            )
           },
         },
         {
-          key: "APR",
+          key: 'APR',
           sortable: false,
-          width: "auto",
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: t("labelDualAssetAPR") + "/" + t("labelDualAssetFrozen"),
+          width: 'auto',
+          cellClass: 'textAlignRight',
+          headerCellClass: 'textAlignRight',
+          name: t('labelDualAssetAPR') + '/' + t('labelDualAssetFrozen'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
                 <Box
-                  className={"textAlignRight"}
-                  display={"flex"}
-                  flexDirection={"column"}
-                  height={"100%"}
-                  justifyContent={"center"}
+                  className={'textAlignRight'}
+                  display={'flex'}
+                  flexDirection={'column'}
+                  height={'100%'}
+                  justifyContent={'center'}
                 >
-                  <Typography component={"span"}>{row?.apy}</Typography>
-                  <Typography
-                    component={"span"}
-                    variant={"body2"}
-                    color={"textSecondary"}
-                  >
-                    {hideAssets
-                      ? HiddenTag
-                      : row?.amount + " " + row.sellSymbol}
+                  <Typography component={'span'}>{row?.apy}</Typography>
+                  <Typography component={'span'} variant={'body2'} color={'textSecondary'}>
+                    {hideAssets ? HiddenTag : row?.amount + ' ' + row.sellSymbol}
                   </Typography>
                 </Box>
               </>
-            );
+            )
           },
         },
         {
-          key: "Action",
+          key: 'Action',
           sortable: false,
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignRight",
-          name: "",
+          cellClass: 'textAlignRight',
+          headerCellClass: 'textAlignRight',
+          name: '',
           formatter: () => {
-            return <MoreIcon cursor={"pointer"} />;
+            return <MoreIcon cursor={'pointer'} />
           },
         },
       ],
-      [coinJson, t, hideAssets]
-    );
+      [coinJson, t, hideAssets],
+    )
 
     const sortMethod = React.useCallback(
       (_sortedRows, sortColumn) => {
-        let _dualList: R[] = [];
+        let _dualList: R[] = []
         switch (sortColumn) {
-          case "Settlement_Date":
+          case 'Settlement_Date':
             _dualList = rawData.sort((a, b) => {
-              return b.expireTime - a.expireTime;
-            });
-            break;
+              return b.expireTime - a.expireTime
+            })
+            break
 
-          case "APR":
+          case 'APR':
             _dualList = rawData.sort((a, b) => {
-              const replaced = new RegExp(`[\\${sdk.SEP},%]`, "ig");
-              const valueA = a.apy?.replace(replaced, "") ?? 0;
-              const valueB = b.apy?.replace(replaced, "") ?? 0;
-              return Number(valueB) - Number(valueA);
-            });
-            break;
+              const replaced = new RegExp(`[\\${sdk.SEP},%]`, 'ig')
+              const valueA = a.apy?.replace(replaced, '') ?? 0
+              const valueB = b.apy?.replace(replaced, '') ?? 0
+              return Number(valueB) - Number(valueA)
+            })
+            break
           default:
-            _dualList = rawData;
+            _dualList = rawData
         }
         // resetTableData(_dualList)
-        return _dualList;
+        return _dualList
       },
-      [rawData]
-    );
+      [rawData],
+    )
     const defaultArgs: any = {
       columnMode: isMobile ? getColumnMobile() : getColumnMode(),
       generateRows: (rawData: any) => rawData,
-      generateColumns: ({ columnsRaw }: any) =>
-        columnsRaw as Column<any, unknown>[],
-    };
+      generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
+    }
     React.useEffect(() => {
       if (dualMarketMap) {
-        updateData.cancel();
-        updateData({ currPage: 1 });
+        updateData.cancel()
+        updateData({ currPage: 1 })
       }
       // let filters: any = {};
       // handlePageChange(1);
@@ -461,18 +418,16 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
       // }
       // handleFilterChange(filters);
       return () => {
-        updateData.cancel();
-      };
-    }, [pagination?.pageSize, dualMarketMap]);
+        updateData.cancel()
+      }
+    }, [pagination?.pageSize, dualMarketMap])
     return (
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
-          currentheight={
-            RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
-          }
+          currentheight={RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight}
           onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-            if (c.key === "Action") return;
-            showDetail(row);
+            if (c.key === 'Action') return
+            showDetail(row)
           }}
           sortMethod={sortMethod}
           {...{
@@ -492,6 +447,6 @@ export const DualAssetTable = withTranslation(["tables", "common"])(
           />
         )}
       </TableWrapperStyled>
-    );
-  }
-);
+    )
+  },
+)

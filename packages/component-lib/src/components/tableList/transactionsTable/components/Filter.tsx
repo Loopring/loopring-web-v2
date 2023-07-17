@@ -1,21 +1,21 @@
-import React from "react";
-import styled from "@emotion/styled";
-import { Box, Grid, MenuItem } from "@mui/material";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { DateRangePicker, TextField } from "../../../basic-lib/form";
-import { Button } from "../../../basic-lib/btns";
-import { DropDownIcon } from "@loopring-web/common-resources";
-import { DateRange } from "@mui/lab";
-import { useSettings } from "../../../../stores";
-import { TransactionTradeViews } from "../Interface";
+import React from 'react'
+import styled from '@emotion/styled'
+import { Box, Grid, MenuItem } from '@mui/material'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { DateRangePicker, TextField } from '../../../basic-lib/form'
+import { Button } from '../../../basic-lib/btns'
+import { DropDownIcon } from '@loopring-web/common-resources'
+import { DateRange } from '@mui/lab'
+import { useSettings } from '../../../../stores'
+import { TransactionTradeViews } from '../Interface'
 
 export interface FilterProps {
-  filterTokens: string[];
-  filterDate: DateRange<Date | string>;
-  filterType: TransactionTradeViews;
-  filterToken: string;
-  handleFilterChange: ({ type, date }: any) => void;
-  handleReset: () => void;
+  filterTokens: string[]
+  filterDate: DateRange<Date | string>
+  filterType: TransactionTradeViews
+  filterToken: string
+  handleFilterChange: ({ type, date }: any) => void
+  handleReset: () => void
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -26,7 +26,7 @@ const StyledTextFiled = styled(TextField)`
     width: initial;
     max-width: initial;
   }
-`;
+`
 
 const StyledBtnBox = styled(Box)`
   display: flex;
@@ -35,9 +35,9 @@ const StyledBtnBox = styled(Box)`
   button:first-of-type {
     margin-right: 8px;
   }
-`;
+`
 
-export const Filter = withTranslation("tables", { withRef: true })(
+export const Filter = withTranslation('tables', { withRef: true })(
   ({
     t,
     filterTokens = [],
@@ -47,22 +47,22 @@ export const Filter = withTranslation("tables", { withRef: true })(
     handleFilterChange,
     handleReset,
   }: FilterProps & WithTranslation) => {
-    const { isMobile } = useSettings();
+    const { isMobile } = useSettings()
     const transactionTypeList = [
       {
-        label: t("labelTxFilterALL"),
+        label: t('labelTxFilterALL'),
         value: TransactionTradeViews.allTypes,
       },
       {
-        label: t("labelTxFilterRECEIVE"),
+        label: t('labelTxFilterRECEIVE'),
         value: TransactionTradeViews.receive,
       },
       {
-        label: t("labelTxFilterSEND"),
+        label: t('labelTxFilterSEND'),
         value: TransactionTradeViews.send,
       },
       {
-        label: t("labelTxFilterFORCEWITHDRAW"),
+        label: t('labelTxFilterFORCEWITHDRAW'),
         value: TransactionTradeViews.forceWithdraw,
       },
       // {
@@ -82,47 +82,41 @@ export const Filter = withTranslation("tables", { withRef: true })(
       //   label: t("labelTxFilterFORCEWITHDRAW"),
       //   value: TransactionTradeTypes.forceWithdraw,
       // },
-    ];
+    ]
 
     const tokenTypeList: { label: string; value: string }[] = [
       {
-        label: t("labelTxFilterAllTokens"),
-        value: "all",
+        label: t('labelTxFilterAllTokens'),
+        value: 'all',
       },
       ...Array.from(filterTokens)
         .sort((a: string, b: string) => {
-          return a.localeCompare(b);
+          return a.localeCompare(b)
         })
         .map((token: string) => ({
           label: token,
           value: token,
         })),
-    ];
+    ]
 
     return (
-      <Grid container spacing={isMobile ? 1 : 2} alignItems={"center"}>
+      <Grid container spacing={isMobile ? 1 : 2} alignItems={'center'}>
         <Grid item xs={12} order={isMobile ? 0 : 1} lg={6}>
           <DateRangePicker
             value={filterDate}
             onChange={(date: any) => {
-              handleFilterChange({ date: date });
+              handleFilterChange({ date: date })
             }}
           />
         </Grid>
-        <Grid
-          item
-          xs={4}
-          order={isMobile ? 1 : 0}
-          lg={2}
-          sx={{ display: "none" }}
-        >
+        <Grid item xs={4} order={isMobile ? 1 : 0} lg={2} sx={{ display: 'none' }}>
           <StyledTextFiled
-            id="table-transaction-trade-types"
+            id='table-transaction-trade-types'
             select
             fullWidth
             value={filterType}
             onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-              handleFilterChange({ type: event.target.value });
+              handleFilterChange({ type: event.target.value })
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
@@ -135,12 +129,12 @@ export const Filter = withTranslation("tables", { withRef: true })(
         </Grid>
         <Grid item xs={4} order={2} lg={2}>
           <StyledTextFiled
-            id="table-transaction-token-types"
+            id='table-transaction-token-types'
             select
             fullWidth
             value={filterToken}
             onChange={(event: React.ChangeEvent<{ value: string }>) => {
-              handleFilterChange({ token: event.target.value });
+              handleFilterChange({ token: event.target.value })
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
@@ -155,20 +149,20 @@ export const Filter = withTranslation("tables", { withRef: true })(
           <StyledBtnBox>
             <Button
               fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
+              variant={'outlined'}
+              size={'medium'}
+              color={'primary'}
               onClick={handleReset}
             >
-              {t("labelFilterReset")}
+              {t('labelFilterReset')}
             </Button>
             {/* <Button variant={'contained'} size={'small'} color={'primary'}
                             onClick={handleSearch}>{t('Search')}</Button> */}
           </StyledBtnBox>
         </Grid>
       </Grid>
-    );
-  }
-);
+    )
+  },
+)
 
-export const Filter2 = Filter;
+export const Filter2 = Filter

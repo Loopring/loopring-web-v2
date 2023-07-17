@@ -1,5 +1,5 @@
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
-import React from "react";
+import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import React from 'react'
 import {
   AlertImpact,
   AlertLimitPrice,
@@ -10,7 +10,7 @@ import {
   SmallOrderAlert,
   Toast,
   ToastType,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -18,42 +18,39 @@ import {
   MarketType,
   TOAST_TIME,
   TradeProType,
-} from "@loopring-web/common-resources";
-import { usePageTradePro, useTokenMap } from "@loopring-web/core";
-import { useMarket } from "./hookMarket";
-import { useLimit } from "./hookLimit";
-import { Box, Divider, Tab, Tabs, Typography } from "@mui/material";
-import { bindHover } from "material-ui-popup-state/es";
-import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
+} from '@loopring-web/common-resources'
+import { usePageTradePro, useTokenMap } from '@loopring-web/core'
+import { useMarket } from './hookMarket'
+import { useLimit } from './hookLimit'
+import { Box, Divider, Tab, Tabs, Typography } from '@mui/material'
+import { bindHover } from 'material-ui-popup-state/es'
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;
 //   width: 100%;
 // ` as typeof Tabs
 export enum TabIndex {
-  market = "market",
-  limit = "limit",
+  market = 'market',
+  limit = 'limit',
 }
 
-export const SpotView = withTranslation("common")(
+export const SpotView = withTranslation('common')(
   ({
     t,
     market,
     resetTradeCalcData,
   }: // ,marketTicker
   {
-    market: MarketType;
-    resetTradeCalcData: (props: {
-      tradeData?: any;
-      market: MarketType | string;
-    }) => void;
+    market: MarketType
+    resetTradeCalcData: (props: { tradeData?: any; market: MarketType | string }) => void
     // marketTicker:  MarketBlockProps<C>
   } & WithTranslation) => {
-    const { pageTradePro } = usePageTradePro();
-    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.limit);
-    const { marketMap, tokenMap } = useTokenMap();
+    const { pageTradePro } = usePageTradePro()
+    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.limit)
+    const { marketMap, tokenMap } = useTokenMap()
     //@ts-ignore
-    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
+    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i)
     const {
       toastOpen: toastOpenL,
       closeToast: closeToastL,
@@ -68,7 +65,7 @@ export const SpotView = withTranslation("common")(
       resetLimitData,
       limitAlertOpen,
       limitSubmit,
-    } = useLimit({ market, resetTradeCalcData });
+    } = useLimit({ market, resetTradeCalcData })
 
     const {
       alertOpen,
@@ -86,142 +83,138 @@ export const SpotView = withTranslation("common")(
       priceAlertCallBack,
       smallOrderAlertCallBack,
       smallOrderAlertOpen,
-    } = useMarket({ market, resetTradeCalcData });
+    } = useMarket({ market, resetTradeCalcData })
     const onTabChange = React.useCallback(
       (_e, value) => {
-        setTabIndex(value);
+        setTabIndex(value)
         //HIGH: Do not move the query
-        resetLimitData();
-        resetMarketData();
-        resetTradeCalcData({ market });
+        resetLimitData()
+        resetMarketData()
+        resetTradeCalcData({ market })
 
         //HIGH: Do not move the query
       },
-      [market]
-    );
+      [market],
+    )
 
     const priceImpact = (getValuePrecisionThousand(
-      parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? "0") * 100,
-      2
-    ) + "%") as any;
+      parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? '0') * 100,
+      2,
+    ) + '%') as any
     const popupLimitState = usePopupState({
-      variant: "popover",
+      variant: 'popover',
       popupId: `popupId-limit`,
-    });
+    })
     const popupMarketState = usePopupState({
-      variant: "popover",
+      variant: 'popover',
       popupId: `popupId-market`,
-    });
+    })
 
     const limitLabel = React.useMemo(() => {
       return (
         <>
-          <Typography display={"inline-flex"} alignItems={"center"}>
-            <Typography component={"span"} marginRight={1}>
-              {t("labelProLimit")}
+          <Typography display={'inline-flex'} alignItems={'center'}>
+            <Typography component={'span'} marginRight={1}>
+              {t('labelProLimit')}
             </Typography>
             <Info2Icon
               {...bindHover(popupLimitState)}
-              fontSize={"medium"}
-              htmlColor={"var(--color-text-third)"}
+              fontSize={'medium'}
+              htmlColor={'var(--color-text-third)'}
             />
           </Typography>
           <PopoverPure
-            className={"arrow-center"}
+            className={'arrow-center'}
             {...bindPopper(popupLimitState)}
             anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
+              vertical: 'bottom',
+              horizontal: 'center',
             }}
             transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
+              vertical: 'top',
+              horizontal: 'center',
             }}
           >
             <Typography
               padding={2}
-              component={"p"}
-              variant={"body2"}
-              whiteSpace={"pre-line"}
+              component={'p'}
+              variant={'body2'}
+              whiteSpace={'pre-line'}
               maxWidth={280}
             >
-              <Trans i18nKey={"depositLimit"}>
-                Limit orders set the maximum or minimum price at which you are
-                willing to buy or sell.
+              <Trans i18nKey={'depositLimit'}>
+                Limit orders set the maximum or minimum price at which you are willing to buy or
+                sell.
               </Trans>
             </Typography>
           </PopoverPure>
         </>
-      );
-    }, [popupLimitState]);
+      )
+    }, [popupLimitState])
     const marketLabel = React.useMemo(() => {
       return (
         <>
-          <Typography display={"inline-flex"} alignItems={"center"}>
-            <Typography component={"span"} marginRight={1}>
-              {t("labelProMarket")}
+          <Typography display={'inline-flex'} alignItems={'center'}>
+            <Typography component={'span'} marginRight={1}>
+              {t('labelProMarket')}
             </Typography>
             <Info2Icon
               {...bindHover(popupMarketState)}
-              fontSize={"medium"}
-              htmlColor={"var(--color-text-third)"}
+              fontSize={'medium'}
+              htmlColor={'var(--color-text-third)'}
             />
           </Typography>
           <PopoverPure
-            className={"arrow-center"}
+            className={'arrow-center'}
             {...bindPopper(popupMarketState)}
             anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
+              vertical: 'bottom',
+              horizontal: 'center',
             }}
             transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
+              vertical: 'top',
+              horizontal: 'center',
             }}
           >
             <Typography
               padding={2}
-              component={"p"}
-              variant={"body2"}
-              whiteSpace={"pre-line"}
+              component={'p'}
+              variant={'body2'}
+              whiteSpace={'pre-line'}
               maxWidth={280}
             >
-              <Trans i18nKey={"depositMarket"}>
-                Market orders are transactions meant to execute as quickly as
-                possible at the current market price.
+              <Trans i18nKey={'depositMarket'}>
+                Market orders are transactions meant to execute as quickly as possible at the
+                current market price.
               </Trans>
             </Typography>
           </PopoverPure>
         </>
-      );
-    }, [popupMarketState]);
+      )
+    }, [popupMarketState])
 
     const isMarketUnavailable =
-      marketMap && marketMap.market && (marketMap.market.status || 0) % 3 !== 0;
+      marketMap && marketMap.market && (marketMap.market.status || 0) % 3 !== 0
     const marketUnavailableConent =
       isMarketUnavailable && (marketMap.market.status || 0) % 3 === 2
-        ? "This pair doesn’t support limit order, please place a market order"
-        : "";
+        ? 'This pair doesn’t support limit order, please place a market order'
+        : ''
 
-    const tradeType = pageTradePro.tradeType;
-    const tradeCalcData = pageTradePro.tradeCalcProData;
-    const tradeData = marketTradeData;
+    const tradeType = pageTradePro.tradeType
+    const tradeCalcData = pageTradePro.tradeCalcProData
+    const tradeData = marketTradeData
     const estimatedFee =
       tradeCalcData && tradeCalcData.fee
         ? `${tradeCalcData.fee} ${
-            tradeType === TradeProType.sell
-              ? tradeData.quote?.belong
-              : tradeData.base?.belong
+            tradeType === TradeProType.sell ? tradeData.quote?.belong : tradeData.base?.belong
           }` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
-        : EmptyValueTag;
+        : EmptyValueTag
     const minimumReceived =
       tradeCalcData && tradeCalcData.minimumReceived
         ? `${tradeCalcData.minimumReceived}  ${
-            tradeType === TradeProType.buy
-              ? tradeData.base.belong
-              : tradeData.quote.belong
+            tradeType === TradeProType.buy ? tradeData.base.belong : tradeData.quote.belong
           }`
-        : EmptyValueTag;
+        : EmptyValueTag
     const feePercentage =
       tradeCalcData && tradeData?.quote?.tradeValue
         ? (
@@ -231,23 +224,19 @@ export const SpotView = withTranslation("common")(
                 : tradeData.base.tradeValue)) *
             100
           ).toFixed(2)
-        : EmptyValueTag;
+        : EmptyValueTag
 
     return (
       <>
         <Toast
-          alertText={toastOpen?.content ?? ""}
+          alertText={toastOpen?.content ?? ''}
           severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
         <Toast
-          alertText={
-            isMarketUnavailable
-              ? marketUnavailableConent
-              : toastOpenL?.content ?? ""
-          }
+          alertText={isMarketUnavailable ? marketUnavailableConent : toastOpenL?.content ?? ''}
           severity={toastOpenL?.type ?? ToastType.success}
           open={toastOpenL?.open ?? false}
           autoHideDuration={TOAST_TIME}
@@ -278,27 +267,27 @@ export const SpotView = withTranslation("common")(
           open={limitAlertOpen}
           value={
             pageTradePro.tradeType === TradeProType.buy
-              ? "labelPriceCompareGreat"
-              : "labelPriceCompareLess"
+              ? 'labelPriceCompareGreat'
+              : 'labelPriceCompareLess'
           }
         />
         <Box
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"stretch"}
-          height={"inherit"}
-          sx={{ overflowY: "scroll" }}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'stretch'}
+          height={'inherit'}
+          sx={{ overflowY: 'scroll' }}
           marginBottom={2}
         >
-          <Box component={"header"} width={"100%"}>
-            <Tabs variant={"fullWidth"} value={tabIndex} onChange={onTabChange}>
+          <Box component={'header'} width={'100%'}>
+            <Tabs variant={'fullWidth'} value={tabIndex} onChange={onTabChange}>
               <Tab value={TabIndex.limit} label={limitLabel} />
               <Tab value={TabIndex.market} label={marketLabel} />
             </Tabs>
           </Box>
 
-          <Divider style={{ marginTop: "-1px" }} />
-          <Box display={"flex"} flex={1} component={"section"}>
+          <Divider style={{ marginTop: '-1px' }} />
+          <Box display={'flex'} flex={1} component={'section'}>
             {tabIndex === TabIndex.limit && (
               <LimitTrade
                 // disabled={false}
@@ -349,6 +338,6 @@ export const SpotView = withTranslation("common")(
           </Box>
         </Box>
       </>
-    );
-  }
-);
+    )
+  },
+)

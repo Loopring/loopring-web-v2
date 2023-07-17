@@ -1,21 +1,21 @@
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from 'react-router-dom'
 
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from '@mui/material'
 
-import { useTranslation, withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from 'react-i18next'
 import {
   ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
   useSettings,
-} from "@loopring-web/component-lib";
-import React from "react";
-import { confirmation, usePopup, ViewAccountTemplate } from "@loopring-web/core";
-import MyLiquidityPanel from "./MyLiquidityPanel";
-import { PoolsPanel } from "./PoolsPanel";
-import { DeFiPanel } from "./DeFiPanel";
-import { OverviewPanel } from "./OverviewPanel";
-import { DualListPanel } from "./DualPanel/DualListPanel";
-import { StackTradePanel } from "./StakePanel/StackTradePanel";
+} from '@loopring-web/component-lib'
+import React from 'react'
+import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
+import MyLiquidityPanel from './MyLiquidityPanel'
+import { PoolsPanel } from './PoolsPanel'
+import { DeFiPanel } from './DeFiPanel'
+import { OverviewPanel } from './OverviewPanel'
+import { DualListPanel } from './DualPanel/DualListPanel'
+import { StackTradePanel } from './StakePanel/StackTradePanel'
 
 export enum InvestType {
   MyBalance = 0,
@@ -26,168 +26,161 @@ export enum InvestType {
   Stack = 5,
 }
 
-export const InvestRouter = [
-  "balance",
-  "ammpool",
-  "defi",
-  "overview",
-  "dual",
-  "stakelrc",
-];
+export const InvestRouter = ['balance', 'ammpool', 'defi', 'overview', 'dual', 'stakelrc']
 export const BalanceTitle = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
-    <Typography display={"inline-flex"} alignItems={"center"}>
+    <Typography display={'inline-flex'} alignItems={'center'}>
       <Typography
-        component={"span"}
-        variant={"h5"}
-        whiteSpace={"pre"}
+        component={'span'}
+        variant={'h5'}
+        whiteSpace={'pre'}
         marginRight={1}
-        className={"invest-Balance-Title"}
+        className={'invest-Balance-Title'}
       >
-        {t("labelInvestBalanceTitle")}
+        {t('labelInvestBalanceTitle')}
       </Typography>
     </Typography>
-  );
-};
+  )
+}
 export const OverviewTitle = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
-    <Typography display={"inline-flex"} alignItems={"center"}>
+    <Typography display={'inline-flex'} alignItems={'center'}>
       <Typography
-        component={"span"}
-        variant={"h5"}
-        whiteSpace={"pre"}
+        component={'span'}
+        variant={'h5'}
+        whiteSpace={'pre'}
         marginRight={1}
-        className={"invest-Overview-Title"}
+        className={'invest-Overview-Title'}
       >
-        {t("labelInvestOverviewTitle")}
+        {t('labelInvestOverviewTitle')}
       </Typography>
     </Typography>
-  );
-};
+  )
+}
 export const AmmTitle = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
-    <Typography display={"inline-flex"} alignItems={"center"}>
+    <Typography display={'inline-flex'} alignItems={'center'}>
       <Typography
-        component={"span"}
-        variant={"h5"}
-        whiteSpace={"pre"}
+        component={'span'}
+        variant={'h5'}
+        whiteSpace={'pre'}
         marginRight={1}
-        className={"invest-Amm-Title"}
+        className={'invest-Amm-Title'}
       >
-        {t("labelInvestAmmTitle")}
+        {t('labelInvestAmmTitle')}
       </Typography>
     </Typography>
-  );
-};
+  )
+}
 
 export const DefiTitle = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
-    <Typography display={"inline-flex"} alignItems={"center"}>
+    <Typography display={'inline-flex'} alignItems={'center'}>
       <Typography
-        component={"span"}
-        variant={"h5"}
-        whiteSpace={"pre"}
+        component={'span'}
+        variant={'h5'}
+        whiteSpace={'pre'}
         marginRight={1}
-        className={"invest-defi-Title"}
+        className={'invest-defi-Title'}
       >
-        {t("labelInvestDefiTitle")}
+        {t('labelInvestDefiTitle')}
       </Typography>
     </Typography>
-  );
-};
+  )
+}
 
-export const InvestPage = withTranslation("common", { withRef: true })(() => {
-  let match: any = useRouteMatch("/invest/:item?");
-  const history = useHistory();
+export const InvestPage = withTranslation('common', { withRef: true })(() => {
+  let match: any = useRouteMatch('/invest/:item?')
+  const history = useHistory()
   const {
     confirmDualInvest: confirmDualInvestFun,
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
-  } = confirmation.useConfirmation();
+  } = confirmation.useConfirmation()
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(
-    "hidden" as "hidden" | "all" | "USDCOnly"
-  );
-  const { 
-    showLRCStakignPopup: confirmedLRCStakeInvest, 
+    'hidden' as 'hidden' | 'all' | 'USDCOnly',
+  )
+  const {
+    showLRCStakignPopup: confirmedLRCStakeInvest,
     setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
-    confirmationNeeded
+    confirmationNeeded,
   } = usePopup()
 
-  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false);
+  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false)
   const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
-    setShowBeginnerModeHelp(show);
-  }, []);
+    setShowBeginnerModeHelp(show)
+  }, [])
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
       ? InvestType[match?.params?.item]
-      : InvestType.Overview) as any
+      : InvestType.Overview) as any,
     // InvestType.Overview
-  );
-  const [isShowTab, setIsShowTab] = React.useState<Boolean>(false);
+  )
+  const [isShowTab, setIsShowTab] = React.useState<Boolean>(false)
   React.useEffect(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
-        setTabIndex(InvestType.MyBalance);
-        setIsShowTab(true);
-        return;
+        setTabIndex(InvestType.MyBalance)
+        setIsShowTab(true)
+        return
       // return ;
       case InvestRouter[InvestType.AmmPool]:
-        setTabIndex(InvestType.AmmPool);
-        setIsShowTab(false);
-        return;
+        setTabIndex(InvestType.AmmPool)
+        setIsShowTab(false)
+        return
       case InvestRouter[InvestType.DeFi]:
-        setTabIndex(InvestType.DeFi);
-        setIsShowTab(false);
-        return;
+        setTabIndex(InvestType.DeFi)
+        setIsShowTab(false)
+        return
       case InvestRouter[InvestType.Dual]:
-        setTabIndex(InvestType.Dual);
-        setIsShowTab(false);
-        return;
+        setTabIndex(InvestType.Dual)
+        setIsShowTab(false)
+        return
       case InvestRouter[InvestType.Stack]:
-        setTabIndex(InvestType.Stack);
-        setIsShowTab(false);
-        return;
+        setTabIndex(InvestType.Stack)
+        setIsShowTab(false)
+        return
       case InvestRouter[InvestType.Overview]:
-      case "":
+      case '':
       default:
-        setTabIndex(InvestType.Overview);
-        setIsShowTab(true);
-        return;
+        setTabIndex(InvestType.Overview)
+        setIsShowTab(true)
+        return
     }
-  }, [match?.params.item]);
+  }, [match?.params.item])
 
   return (
-    <Box flex={1} flexDirection={"column"} display={"flex"}>
+    <Box flex={1} flexDirection={'column'} display={'flex'}>
       {isShowTab && (
-        <Box display={"flex"}>
+        <Box display={'flex'}>
           <Tabs
-            variant={"scrollable"}
+            variant={'scrollable'}
             value={tabIndex}
             onChange={(_e, value) => {
-              history.push(`/invest/${InvestRouter[value]}`);
-              setTabIndex(value);
+              history.push(`/invest/${InvestRouter[value]}`)
+              setTabIndex(value)
             }}
           >
             <Tab value={InvestType.Overview} label={<OverviewTitle />} />
             <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
             <Tab
-              sx={{ visibility: "hidden", width: 0 }}
+              sx={{ visibility: 'hidden', width: 0 }}
               value={InvestType.AmmPool}
               label={<AmmTitle />}
             />
             <Tab
-              sx={{ visibility: "hidden", width: 0 }}
+              sx={{ visibility: 'hidden', width: 0 }}
               value={InvestType.DeFi}
               label={<DefiTitle />}
             />
           </Tabs>
         </Box>
       )}
-      <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
+      <Box flex={1} component={'section'} marginTop={1} display={'flex'}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
@@ -199,34 +192,27 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           />
         )}
         {tabIndex === InvestType.MyBalance && (
-          <Box
-            flex={1}
-            alignItems={"stretch"}
-            display={"flex"}
-            flexDirection={"column"}
-          >
+          <Box flex={1} alignItems={'stretch'} display={'flex'} flexDirection={'column'}>
             <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
           </Box>
         )}
         {tabIndex === InvestType.Stack && (
-          <StackTradePanel
-            setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest}
-          />
+          <StackTradePanel setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest} />
         )}
       </Box>
 
       <ConfirmInvestDualRisk
-        open={confirmDualInvest !== "hidden"}
-        USDCOnly={confirmDualInvest === "USDCOnly"}
+        open={confirmDualInvest !== 'hidden'}
+        USDCOnly={confirmDualInvest === 'USDCOnly'}
         handleClose={(_e, isAgree) => {
           if (!isAgree) {
-            history.goBack();
+            history.goBack()
           } else {
-            confirmDualInvestFun();
-            setShowBeginnerModeHelp(true);
+            confirmDualInvestFun()
+            setShowBeginnerModeHelp(true)
             setTimeout(() => {
-              onShowBeginnerModeHelp(false);
-            }, 5 * 1000);
+              onShowBeginnerModeHelp(false)
+            }, 5 * 1000)
           }
         }}
       />
@@ -234,14 +220,14 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
-          setConfirmedLRCStakeInvestInvest({show: false, confirmationNeeded: false});
+          setConfirmedLRCStakeInvestInvest({ show: false, confirmationNeeded: false })
           if (!isAgree) {
-            history.goBack();
+            history.goBack()
           } else {
-            confirmedLRCInvestFun();
+            confirmedLRCInvestFun()
           }
         }}
       />
     </Box>
-  );
-});
+  )
+})

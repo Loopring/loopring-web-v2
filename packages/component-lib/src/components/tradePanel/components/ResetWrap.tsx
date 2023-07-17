@@ -1,10 +1,9 @@
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, InputAdornment, Link, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Grid, Link, Typography } from '@mui/material'
 import {
   EmptyValueTag,
   FeeInfo,
-  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   TradeBtnStatus,
@@ -48,7 +47,7 @@ export const ResetWrap = <T extends FeeInfo>({
     const regex = /^[0-9\b]+$/
     if (e?.target?.value === '' || regex.test(e?.target.value)) {
       setValue(e.target.value)
-      if (e.target.value.length >= 5) {
+      if (e.target.value.length > 5) {
         setReferralCode(e.target.value)
       }
 
@@ -85,8 +84,22 @@ export const ResetWrap = <T extends FeeInfo>({
         </Typography>
         <Typography component={'p'} variant='body1' color={'var(--color-text-secondary)'}>
           {isNewAccount
-            ? t('labelActiveAccountDescription', { layer2: 'Layer 2' })
-            : t('resetDescription', { layer2: 'Layer 2' })}
+            ? t('labelActiveAccountDescription', {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              })
+            : t('labelResetDescription', {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              })}
         </Typography>
       </Grid>
 
@@ -196,50 +209,50 @@ export const ResetWrap = <T extends FeeInfo>({
           </>
         )}
       </Grid>
-      {isNewAccount && !isReset && (
-        <Grid item alignSelf={'stretch'} position={'relative'} marginTop={2}>
-          <Tooltip title={t('labelReferralToolTip').toString()}>
-            <Typography
-              component={'span'}
-              variant={'body1'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-              marginBottom={1}
-            >
-              <Trans i18nKey={'labelReferralCode'}>
-                Referral Code (Optional)
-                <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-              </Trans>
-            </Typography>
-          </Tooltip>
-          <TextField
-            value={value}
-            fullWidth
-            variant={'outlined'}
-            inputProps={{ maxLength: 10 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Typography
-                    color={'var(--color-text-third)'}
-                    variant={'body1'}
-                    component={'span'}
-                    paddingX={1 / 2}
-                  >
-                    #
-                  </Typography>
-                </InputAdornment>
-              ),
-            }}
-            type={'text'}
-            onChange={onRefChange}
-            // onChange={(event) =>
-            //   handleOnMetaChange({ name: event.target.value } as Partial<T>)
-            // }
-          />
-        </Grid>
-      )}
+      {/*{isNewAccount && !isReset && (*/}
+      {/*  <Grid item alignSelf={'stretch'} position={'relative'} marginTop={2}>*/}
+      {/*    <Tooltip title={t('labelReferralToolTip').toString()}>*/}
+      {/*      <Typography*/}
+      {/*        component={'span'}*/}
+      {/*        variant={'body1'}*/}
+      {/*        color={'textSecondary'}*/}
+      {/*        display={'inline-flex'}*/}
+      {/*        alignItems={'center'}*/}
+      {/*        marginBottom={1}*/}
+      {/*      >*/}
+      {/*        <Trans i18nKey={'labelReferralCode'}>*/}
+      {/*          Referral Code (Optional)*/}
+      {/*          <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />*/}
+      {/*        </Trans>*/}
+      {/*      </Typography>*/}
+      {/*    </Tooltip>*/}
+      {/*    <TextField*/}
+      {/*      value={value}*/}
+      {/*      fullWidth*/}
+      {/*      variant={'outlined'}*/}
+      {/*      inputProps={{ maxLength: 10 }}*/}
+      {/*      InputProps={{*/}
+      {/*        startAdornment: (*/}
+      {/*          <InputAdornment position='start'>*/}
+      {/*            <Typography*/}
+      {/*              color={'var(--color-text-third)'}*/}
+      {/*              variant={'body1'}*/}
+      {/*              component={'span'}*/}
+      {/*              paddingX={1 / 2}*/}
+      {/*            >*/}
+      {/*              #*/}
+      {/*            </Typography>*/}
+      {/*          </InputAdornment>*/}
+      {/*        ),*/}
+      {/*      }}*/}
+      {/*      type={'text'}*/}
+      {/*      onChange={onRefChange}*/}
+      {/*      // onChange={(event) =>*/}
+      {/*      //   handleOnMetaChange({ name: event.target.value } as Partial<T>)*/}
+      {/*      // }*/}
+      {/*    />*/}
+      {/*  </Grid>*/}
+      {/*)}*/}
 
       <Grid item marginTop={4} alignSelf={'stretch'}>
         <Button

@@ -1,2 +1,2 @@
-export * from "./qrCodeService";
-export * from "./useQrcodeScan";
+export * from './qrCodeService'
+export * from './useQrcodeScan'

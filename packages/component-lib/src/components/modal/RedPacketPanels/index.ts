@@ -1,2 +1,2 @@
-export * from "./RedPacketModal";
-export * from "./Interface";
+export * from './RedPacketModal'
+export * from './Interface'

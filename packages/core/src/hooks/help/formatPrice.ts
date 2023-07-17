@@ -1,17 +1,17 @@
-import { getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
-import { store } from "../../index";
+import { getExistedMarket, toBig } from '@loopring-web/loopring-sdk'
+import { store } from '../../index'
 
 export function formatedVal(rawData: string, base: string, quote: string) {
-  const { marketMap, marketArray } = store.getState().tokenMap;
+  const { marketMap, marketArray } = store.getState().tokenMap
 
   if (!rawData || !base || !quote || !marketMap || !marketArray) {
-    return "";
+    return ''
   }
 
-  const { market } = getExistedMarket(marketArray, base, quote);
-  const marketInfo = marketMap[market];
+  const { market } = getExistedMarket(marketArray, base, quote)
+  const marketInfo = marketMap[market]
 
-  const showVal = toBig(rawData).toFixed(marketInfo.precisionForPrice);
+  const showVal = toBig(rawData).toFixed(marketInfo.precisionForPrice)
 
-  return showVal;
+  return showVal
 }

@@ -99,7 +99,6 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
         transform: translate(-50%, -50%);
         left: 50%;
         top: -50%;
-
         .hours,
         .minutes,
         .seconds {
@@ -111,7 +110,6 @@ export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: str
           display: inline-flex;
           align-items: center;
           border-radius: ${({ theme }) => theme.unit + 'px'};
-
           h4 {
             text-indent: -9999em;
             height: 0;
@@ -240,7 +238,7 @@ export const RedPacketQRCode = ({
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>()
   const ref = React.useRef()
-  const scolorConfig = RedPacketColorConfig[type]
+  const colorConfig = RedPacketColorConfig[type]
   const qrCode = new QRCodeStyling({
     type: 'svg',
     width: 200,
@@ -984,7 +982,7 @@ export const RedPacketDetail = ({
         <Typography variant={'body1'}>{sender}</Typography>
         <Typography
           variant={'body2'}
-          color={'var(--color-text-third)'}
+          color={'textThird'}
           whiteSpace={'pre-line'}
           textAlign={'center'}
           marginTop={1 / 2}
@@ -1012,7 +1010,7 @@ export const RedPacketDetail = ({
       <Box flex={1} display={'flex'} justifyContent={'stretch'} flexDirection={'column'}>
         <Typography
           variant={'body1'}
-          color={'var(--color-text-third)'}
+          color={'textThird'}
           marginY={1}
           paddingX={1}
           paddingY={1}
@@ -1067,11 +1065,7 @@ export const RedPacketDetail = ({
                     alignItems={'center'}
                     paddingX={1}
                   >
-                    <Typography
-                      variant={'body2'}
-                      component={'span'}
-                      color={'var(--color-text-third)'}
-                    >
+                    <Typography variant={'body2'} component={'span'} color={'textThird'}>
                       {moment(new Date(item.createdAt), 'YYYYMMDDHHMM').fromNow()}
                     </Typography>
                     <Typography display={'inline'}>
@@ -1674,7 +1668,7 @@ export const RedPacketBlindBoxDetail = ({
           paddingX={1}
           marginTop={3}
         >
-          <Typography variant={'body1'} color={'var(--color-text-third)'} marginY={1} paddingX={1}>
+          <Typography variant={'body1'} color={'textThird'} marginY={1} paddingX={1}>
             {t('labelLuckyRecievedBlindBox', {
               opendBlindBoxAmount,
               totalBlindBoxAmount,
@@ -1716,11 +1710,7 @@ export const RedPacketBlindBoxDetail = ({
                       justifyContent={'space-between'}
                       alignItems={'center'}
                     >
-                      <Typography
-                        variant={'body2'}
-                        component={'span'}
-                        color={'var(--color-text-third)'}
-                      >
+                      <Typography variant={'body2'} component={'span'} color={'textThird'}>
                         {moment(info.when).fromNow()}
                       </Typography>
                     </Typography>
@@ -1743,7 +1733,7 @@ export const RedPacketBlindBoxDetail = ({
             <Typography variant={'body1'}>{sender}</Typography>
             <Typography
               variant={'body2'}
-              color={'var(--color-text-third)'}
+              color={'textThird'}
               whiteSpace={'pre-line'}
               textAlign={'center'}
               marginTop={1 / 2}
@@ -1998,12 +1988,7 @@ export const RedPacketBlindBoxDetail = ({
                   flexDirection={'column'}
                   width={'100%'}
                 >
-                  <Typography
-                    variant={'body1'}
-                    color={'var(--color-text-third)'}
-                    marginY={1}
-                    paddingX={1}
-                  >
+                  <Typography variant={'body1'} color={'textThird'} marginY={1} paddingX={1}>
                     {isTokenBlindbox
                       ? t('labelBlindBoxRecieved', {
                           deliverdGiftsAmount,
@@ -2073,11 +2058,7 @@ export const RedPacketBlindBoxDetail = ({
                               justifyContent={'space-between'}
                               alignItems={'center'}
                             >
-                              <Typography
-                                variant={'body2'}
-                                component={'span'}
-                                color={'var(--color-text-third)'}
-                              >
+                              <Typography variant={'body2'} component={'span'} color={'textThird'}>
                                 {moment(info.when).fromNow()}
                               </Typography>
                               <Typography display={'inline'}>

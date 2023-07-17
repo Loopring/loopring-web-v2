@@ -1,5 +1,5 @@
 import React from 'react'
-import { MyPoolRow, RawDataDefiSideStakingItem } from '@loopring-web/component-lib'
+import { AmmRecordRow, MyPoolRow, RawDataDefiSideStakingItem } from '@loopring-web/component-lib'
 import {
   LoopringAPI,
   makeDefiInvestReward,
@@ -13,8 +13,10 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
+  // useWalletLayer2,
   useWalletLayer2Socket,
   walletLayer2Service,
+  // volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
   AccountStatus,
@@ -38,7 +40,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   rowConfig?: any
   hideSmallBalances: boolean
 }): {
-  // myAmmMarketArray: AmmRecordRow<R>[]
+  myAmmMarketArray: AmmRecordRow<R>[]
   summaryMyInvest: Partial<SummaryMyInvest>
   myPoolRow: MyPoolRow<R>[]
   showLoading: boolean
@@ -57,12 +59,12 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
 } => {
   const { account, status: accountStatus } = useAccount()
   const { getUserRewards } = useUserRewards()
-  const { totalClaims, status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
-  const { tokenMap } = useTokenMap()
+  const { status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
+  const { tokenMap, idIndex } = useTokenMap()
   const { marketCoins: defiCoinArray } = useDefiMap()
   const { status: ammMapStatus, ammMap } = useAmmMap()
   const { tokenPrices } = useTokenPrices()
-  const { marketMap: stakingMap } = useStakingMap()
+  const { status: stakingMapStatus, marketMap: stakingMap } = useStakingMap()
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<Partial<SummaryMyInvest>>({})
   const [filter, setFilter] = React.useState({
@@ -144,7 +146,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     updateData()
   }, [filter, hideSmallBalances])
 
-  // const [myAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([])
+  const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([])
   const [showLoading, setShowLoading] = React.useState(false)
   const mountedRef = React.useRef(false)
 
@@ -237,7 +239,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
             account.apiKey,
           ),
         ])
-
         if (
           (response &&
             ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)) ||
@@ -297,6 +298,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   )
 
   return {
+    myAmmMarketArray,
     summaryMyInvest,
     myPoolRow,
     showLoading,

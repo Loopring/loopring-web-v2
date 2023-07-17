@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   DepositProps,
   ModalAccount,
@@ -6,15 +6,11 @@ import {
   Toast,
   ToastType,
   useOpenModals,
-} from "@loopring-web/component-lib";
-import { useAccountModalForL1UI } from "./hook";
-import {
-  Account,
-  AssetsRawDataItem,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
+} from '@loopring-web/component-lib'
+import { useAccountModalForL1UI } from './hook'
+import { Account, AssetsRawDataItem, TOAST_TIME } from '@loopring-web/common-resources'
 
-export const ModalAccountL1Info = withTranslation("common")(
+export const ModalAccountL1Info = withTranslation('common')(
   ({
     // onClose,
     etherscanBaseUrl,
@@ -24,12 +20,12 @@ export const ModalAccountL1Info = withTranslation("common")(
     t,
     ...rest
   }: {
-    open: boolean;
-    account: Account;
-    depositProps: DepositProps<any, any>;
+    open: boolean
+    account: Account
+    depositProps: DepositProps<any, any>
     // onClose?: (e: MouseEvent) => void;
-    etherscanBaseUrl: string;
-    assetsRawData: AssetsRawDataItem[];
+    etherscanBaseUrl: string
+    assetsRawData: AssetsRawDataItem[]
   } & WithTranslation) => {
     // const { isMobile } = useSettings();
     const {
@@ -42,7 +38,7 @@ export const ModalAccountL1Info = withTranslation("common")(
       // setShowDeposit,
       // setShowTransfer,
       // setShowWithdraw,
-    } = useOpenModals();
+    } = useOpenModals()
     const {
       setCopyToastOpen,
       setOpenQRCode,
@@ -59,7 +55,7 @@ export const ModalAccountL1Info = withTranslation("common")(
       depositProps,
       etherscanBaseUrl,
       ...rest,
-    });
+    })
     // myLog(
     //   "resetProps.chargeFeeTokenList",
     //   activeAccountProps.chargeFeeTokenList
@@ -67,13 +63,13 @@ export const ModalAccountL1Info = withTranslation("common")(
     return (
       <>
         <Toast
-          alertText={toastOpen?.content ?? ""}
+          alertText={toastOpen?.content ?? ''}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
         <Toast
-          alertText={toastOpen?.content ?? ""}
+          alertText={toastOpen?.content ?? ''}
           severity={toastOpen?.type ?? ToastType.success}
           open={toastOpen?.open ?? false}
           autoHideDuration={TOAST_TIME}
@@ -88,25 +84,25 @@ export const ModalAccountL1Info = withTranslation("common")(
         {/*/>*/}
 
         <Toast
-          alertText={t("labelCopyAddClip")}
+          alertText={t('labelCopyAddClip')}
           open={copyToastOpen}
           autoHideDuration={TOAST_TIME}
           onClose={() => {
-            setCopyToastOpen(false);
+            setCopyToastOpen(false)
           }}
           severity={ToastType.success}
         />
         <ModalQRCode
           open={openQRCode}
           onClose={() => setOpenQRCode(false)}
-          title={"ETH Address"}
+          title={'ETH Address'}
           description={account?.accAddress}
           url={account?.accAddress}
         />
         <ModalAccount
           open={isShowAccount.isShow}
           onClose={() => {
-            setShowAccount({ isShow: false });
+            setShowAccount({ isShow: false })
             // currentModal?.onClose && currentModal?.onClose();
           }}
           panelList={accountList}
@@ -117,6 +113,6 @@ export const ModalAccountL1Info = withTranslation("common")(
           isLayer2Only={true}
         />
       </>
-    );
-  }
-);
+    )
+  },
+)

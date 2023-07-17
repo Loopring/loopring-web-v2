@@ -9,7 +9,6 @@ export interface ProviderMenuProps {
   gatewayList: GatewayItem[]
   handleSelect?: (event: React.MouseEvent, key: string) => void
   providerName?: string
-  status?: 'processing'
 }
 
 export enum WalletConnectStep {

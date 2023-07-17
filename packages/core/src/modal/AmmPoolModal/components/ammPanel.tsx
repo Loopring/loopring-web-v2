@@ -1,22 +1,17 @@
-import React from "react";
+import React from 'react'
 import {
   AmmPanel,
   AmmPanelType,
   ConfirmAmmExitMiniOrder,
   TOASTOPEN,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 
-import { Grid } from "@mui/material";
-import {
-  useAccount,
-  useAmmMap,
-  usePageAmmPool,
-  walletLayer2Service,
-} from "../../../index";
-import styled from "@emotion/styled";
-import { useAmmJoin } from "../../../hooks/useractions/hookAmmJoin";
-import { useAmmExit } from "../../../hooks/useractions/hookAmmExit";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { Grid } from '@mui/material'
+import { useAccount, useAmmMap, usePageAmmPool, walletLayer2Service } from '../../../index'
+import styled from '@emotion/styled'
+import { useAmmJoin } from '../../../hooks/useractions/hookAmmJoin'
+import { useAmmExit } from '../../../hooks/useractions/hookAmmExit'
+import { SagaStatus } from '@loopring-web/common-resources'
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
@@ -34,7 +29,7 @@ export const BoxWrapperStyled = styled(Grid)`
       border-right: 1px solid var(--color-divide);
     }
   }
-` as typeof Grid;
+` as typeof Grid
 
 export const AmmPanelView = ({
   market,
@@ -50,35 +45,33 @@ export const AmmPanelView = ({
   // ammJoin,
   ...rest
 }: {
-  market: string;
-  refreshRef: React.Ref<any>;
-  updateAmmPoolSnapshot: () => void;
-  setToastOpen: (state: TOASTOPEN) => void;
+  market: string
+  refreshRef: React.Ref<any>
+  updateAmmPoolSnapshot: () => void
+  setToastOpen: (state: TOASTOPEN) => void
   // getFee: () => void;
-  ammType?: keyof typeof AmmPanelType;
-  getRecentAmmPoolTxs?: (props: { limit?: number; offset?: number }) => void;
-  updateExitFee: () => Promise<void>;
-  updateJoinFee: () => Promise<void>;
+  ammType?: keyof typeof AmmPanelType
+  getRecentAmmPoolTxs?: (props: { limit?: number; offset?: number }) => void
+  updateExitFee: () => Promise<void>
+  updateJoinFee: () => Promise<void>
   // ammExit: any;
   // ammJoin: any;
 } & any) => {
   const [confirmExitSmallOrder, setConfirmExitSmallOrder] = React.useState<{
-    open: boolean;
-    type: "Disabled" | "Mini";
-  }>({ open: false, type: "Disabled" });
-  const { ammMap } = useAmmMap();
+    open: boolean
+    type: 'Disabled' | 'Mini'
+  }>({ open: false, type: 'Disabled' })
+  const { ammMap } = useAmmMap()
 
-  const [index, setIndex] = React.useState(
-    ammType == 1 ? AmmPanelType.Exit : AmmPanelType.Join
-  );
+  const [index, setIndex] = React.useState(ammType == 1 ? AmmPanelType.Exit : AmmPanelType.Join)
   const handleTabChange = React.useCallback(
     (newValue: any) => {
       if (index !== newValue) {
-        setIndex(newValue);
+        setIndex(newValue)
       }
     },
-    [index]
-  );
+    [index],
+  )
   const {
     ammCalcData: ammCalcDataDeposit,
     ammData: ammJoinData,
@@ -93,7 +86,7 @@ export const AmmPanelView = ({
     setToastOpen,
     market,
     refreshRef,
-  });
+  })
   const {
     ammCalcData: ammCalcDataWithdraw,
     ammData: ammExitData,
@@ -111,42 +104,42 @@ export const AmmPanelView = ({
     // ammCalcDefault: ammExit.ammCalcData,
     // ammDataDefault: ammExit.ammData,
     setConfirmExitSmallOrder,
-  });
-  const { resetAmmPool } = usePageAmmPool();
-  const { status: accountStatus } = useAccount();
+  })
+  const { resetAmmPool } = usePageAmmPool()
+  const { status: accountStatus } = useAccount()
 
   React.useEffect(() => {
     if (refreshRef.current) {
       // @ts-ignore
-      refreshRef.current.firstElementChild.click();
+      refreshRef.current.firstElementChild.click()
     }
     return () => {
-      resetAmmPool();
-    };
-  }, []);
+      resetAmmPool()
+    }
+  }, [])
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {
-      walletLayer2Service.sendUserUpdate();
+      walletLayer2Service.sendUserUpdate()
     }
-  }, [accountStatus]);
+  }, [accountStatus])
 
   return (
     <>
       <ConfirmAmmExitMiniOrder
         type={confirmExitSmallOrder.type}
         handleClose={(_e: any, isAgree = false) => {
-          setConfirmExitSmallOrder({ open: false, type: "Disabled" });
-          exitSmallOrderCloseClick(isAgree);
+          setConfirmExitSmallOrder({ open: false, type: 'Disabled' })
+          exitSmallOrderCloseClick(isAgree)
         }}
         open={confirmExitSmallOrder.open}
       />
       <AmmPanel
         {...{ ...rest }}
         onRefreshData={() => {
-          updateAmmPoolSnapshot();
+          updateAmmPoolSnapshot()
         }}
         tabSelected={ammType ? ammType : AmmPanelType.Join}
-        ammInfo={ammMap["AMM-" + market]}
+        ammInfo={ammMap['AMM-' + market]}
         refreshRef={refreshRef}
         ammType={index}
         handleTabChange={handleTabChange}
@@ -167,5 +160,5 @@ export const AmmPanelView = ({
         propsLPExtends={propsLPExtends}
       />
     </>
-  );
-};
+  )
+}

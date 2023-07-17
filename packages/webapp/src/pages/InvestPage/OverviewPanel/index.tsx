@@ -1,21 +1,12 @@
-import { WithTranslation, withTranslation } from "react-i18next";
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  Link,
-  Typography,
-} from "@mui/material";
-import styled from "@emotion/styled";
+import { WithTranslation, withTranslation } from 'react-i18next'
+import { Avatar, Box, Card, CardContent, Divider, Grid, Link, Typography } from '@mui/material'
+import styled from '@emotion/styled'
 
-import React from "react";
-import { useOverview } from "./hook";
+import React from 'react'
+import { useOverview } from './hook'
 
-import { useSettings, InvestOverviewTable } from "@loopring-web/component-lib";
-import { useHistory } from "react-router-dom";
+import { useSettings, InvestOverviewTable } from '@loopring-web/component-lib'
+import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
   ammAdvice,
@@ -25,8 +16,8 @@ import {
   dualAdvice,
   myLog,
   stakeAdvice,
-} from "@loopring-web/common-resources";
-import { useAccount, useNotify } from "@loopring-web/core";
+} from '@loopring-web/common-resources'
+import { useAccount, useNotify } from '@loopring-web/core'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -45,136 +36,114 @@ const WrapperStyled = styled(Box)`
       background: var(--color-box-hover);
     }
   }
-`;
+`
 
-export const OverviewPanel = withTranslation("common")(
-  ({ t }: WithTranslation & {}) => {
-    const {
-      filteredData,
-      filterValue,
-      getFilteredData,
-      rawData,
-      myMapLoading,
-      myRawData,
-    } = useOverview();
-    const { coinJson } = useSettings();
-    const { account } = useAccount();
-    const { notifyMap } = useNotify();
-    const showLoading = filteredData && !filteredData.length;
-    const history = useHistory();
-    const investAdviceList = [
-      { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
-      { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
-      { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
-      { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
-    ];
-    // myLog(investAdviceList[1].banner);
-    return (
-      <>
-        <WrapperStyled marginBottom={3}>
-          <Grid container spacing={2} padding={3}>
-            {investAdviceList.map((item, index) => {
-              return (
-                <Grid item xs={12} md={4} lg={3} key={item.type + index}>
-                  <Card onClick={() => history.push(item.router)}>
-                    <CardContent>
-                      <Box
-                        display={"flex"}
-                        flexDirection={"row"}
-                        alignItems={"center"}
-                      >
-                        <Avatar
-                          variant="circular"
-                          style={{
-                            height: "var(--svg-size-huge)",
-                            width: "var(--svg-size-huge)",
-                          }}
-                          src={item.banner}
-                        />
-                        <Box
-                          flex={1}
-                          display={"flex"}
-                          flexDirection={"column"}
-                          paddingLeft={1}
+export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation & {}) => {
+  const { filteredData, filterValue, getFilteredData, rawData, myMapLoading, myRawData } =
+    useOverview()
+  const { coinJson } = useSettings()
+  const { account } = useAccount()
+  const { notifyMap } = useNotify()
+  const showLoading = filteredData && !filteredData.length
+  const history = useHistory()
+  const investAdviceList = [
+    { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
+    { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
+    { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
+    { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
+  ]
+  // myLog(investAdviceList[1].banner);
+  return (
+    <>
+      <WrapperStyled marginBottom={3}>
+        <Grid container spacing={2} padding={3}>
+          {investAdviceList.map((item, index) => {
+            return (
+              <Grid item xs={12} md={4} lg={3} key={item.type + index}>
+                <Card onClick={() => history.push(item.router)}>
+                  <CardContent>
+                    <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+                      <Avatar
+                        variant='circular'
+                        style={{
+                          height: 'var(--svg-size-huge)',
+                          width: 'var(--svg-size-huge)',
+                        }}
+                        src={item.banner}
+                      />
+                      <Box flex={1} display={'flex'} flexDirection={'column'} paddingLeft={1}>
+                        <Typography variant={'h5'}>
+                          {t(item.titleI18n, { ns: 'layout' })}
+                        </Typography>
+                        <Typography
+                          variant={'body2'}
+                          textOverflow={'ellipsis'}
+                          whiteSpace={'pre'}
+                          overflow={'hidden'}
+                          color={'var(--color-text-third)'}
                         >
-                          <Typography variant={"h5"}>
-                            {t(item.titleI18n, { ns: "layout" })}
-                          </Typography>
-                          <Typography
-                            variant={"body2"}
-                            textOverflow={"ellipsis"}
-                            whiteSpace={"pre"}
-                            overflow={"hidden"}
-                            color={"var(--color-text-third)"}
-                          >
-                            {t(item.desI18n, { ns: "layout" })}
-                          </Typography>
-                        </Box>
-                        <BackIcon
-                          fontSize={"small"}
-                          htmlColor={"var(--color-text-third)"}
-                          sx={{
-                            transform: "rotate(180deg)",
-                          }}
-                        />
+                          {t(item.desI18n, { ns: 'layout' })}
+                        </Typography>
                       </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
-          {!!(account.readyState === AccountStatus.ACTIVATED) && (
-            <>
-              <Box display={"flex"} flexDirection={"column"}>
-                <Typography variant={"h5"} marginBottom={1} marginX={3}>
-                  {t("labelTitleMyInvestAvailable", { ns: "common" })}
-                </Typography>
-                <InvestOverviewTable
-                  showLoading={myMapLoading}
-                  coinJson={coinJson}
-                  rawData={myRawData}
-                  rowConfig={RowInvestConfig}
-                />
-              </Box>
-              <Box marginTop={3} marginBottom={2} marginX={2}>
-                <Divider />
-              </Box>
-            </>
-          )}
+                      <BackIcon
+                        fontSize={'small'}
+                        htmlColor={'var(--color-text-third)'}
+                        sx={{
+                          transform: 'rotate(180deg)',
+                        }}
+                      />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )
+          })}
+        </Grid>
+        {!!(account.readyState === AccountStatus.ACTIVATED) && (
+          <>
+            <Box display={'flex'} flexDirection={'column'}>
+              <Typography variant={'h5'} marginBottom={1} marginX={3}>
+                {t('labelTitleMyInvestAvailable', { ns: 'common' })}
+              </Typography>
+              <InvestOverviewTable
+                showLoading={myMapLoading}
+                coinJson={coinJson}
+                rawData={myRawData}
+                rowConfig={RowInvestConfig}
+              />
+            </Box>
+            <Box marginTop={3} marginBottom={2} marginX={2}>
+              <Divider />
+            </Box>
+          </>
+        )}
 
-          <Box
-            display={"flex"}
-            flex={1}
-            marginBottom={1}
-            flexDirection={"column"}
-          >
-            <InvestOverviewTable
-              showLoading={showLoading}
-              showFilter={true}
-              filterValue={filterValue}
-              getFilteredData={getFilteredData}
-              coinJson={coinJson}
-              rawData={filteredData}
-              rowConfig={RowInvestConfig}
-            />
-            {rawData.length !== filteredData.length && (
-              <Link
-                variant={"body1"}
-                marginY={1}
-                textAlign={"center"}
-                display={"inline-flex"}
-                justifyContent={"center"}
-                onClick={() => {
-                  getFilteredData("");
-                }}
-              >
-                {t("labelViewMore")}
-              </Link>
-            )}
-          </Box>
-        </WrapperStyled>
-      </>
-    );
-  }
-);
+        <Box display={'flex'} flex={1} marginBottom={1} flexDirection={'column'}>
+          <InvestOverviewTable
+            showLoading={showLoading}
+            showFilter={true}
+            filterValue={filterValue}
+            getFilteredData={getFilteredData}
+            coinJson={coinJson}
+            rawData={filteredData}
+            rowConfig={RowInvestConfig}
+          />
+          {rawData.length !== filteredData.length && (
+            <Link
+              variant={'body1'}
+              marginY={1}
+              textAlign={'center'}
+              display={'inline-flex'}
+              justifyContent={'center'}
+              onClick={() => {
+                getFilteredData('')
+              }}
+            >
+              {t('labelViewMore')}
+            </Link>
+          )}
+        </Box>
+      </WrapperStyled>
+    </>
+  )
+})

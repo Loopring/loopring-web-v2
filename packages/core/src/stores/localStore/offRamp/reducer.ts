@@ -1,29 +1,29 @@
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
 import {
   ChainHashInfos,
   OffRampHashInfos,
   OffRampHashItem,
   OffRampStatus,
-} from "@loopring-web/common-resources";
-import { ChainId } from "@loopring-web/loopring-sdk";
+} from '@loopring-web/common-resources'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
 const initialState: OffRampHashInfos = {
   [ChainId.GOERLI]: {},
   [ChainId.MAINNET]: {},
   // withdrawHashes:{},
-};
+}
 const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
   OffRampHashInfos,
   SliceCaseReducers<any>,
-  "offRampHistory"
+  'offRampHistory'
 >({
-  name: "offRampHistory",
+  name: 'offRampHistory',
   initialState,
   reducers: {
     // @ts-ignore
     clearAll(state: OffRampHashInfos, _action: PayloadAction<undefined>) {
-      state = { ...initialState };
+      state = { ...initialState }
     },
     // clearOffRampHash(
     //   state: OffRampHashInfos,
@@ -47,15 +47,12 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
     //     [ChainId.MAINNET]: make(state, ChainId.MAINNET.toString()),
     //   };
     // },
-    updateOffRampHash(
-      state: ChainHashInfos,
-      action: PayloadAction<OffRampHashItem>
-    ) {
-      const { orderId, product, status, address, chainId } = action.payload;
+    updateOffRampHash(state: ChainHashInfos, action: PayloadAction<OffRampHashItem>) {
+      const { orderId, product, status, address, chainId } = action.payload
       if (!state[chainId] || !state[chainId][address]) {
-        state[chainId] = { ...state[chainId], [address]: {} };
+        state[chainId] = { ...state[chainId], [address]: {} }
       }
-      let productObj: any = { pending: undefined, payments: [] };
+      let productObj: any = { pending: undefined, payments: [] }
       switch (status) {
         case OffRampStatus.cancel:
         case OffRampStatus.done:
@@ -63,30 +60,27 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
         case OffRampStatus.refund:
           if (state[chainId][address][product]) {
             if (
-              state[chainId][address][product].pending?.orderId.toString() ==
-              orderId.toString()
+              state[chainId][address][product].pending?.orderId.toString() == orderId.toString()
             ) {
-              state[chainId][address][product].pending = undefined;
+              state[chainId][address][product].pending = undefined
             } else {
               state[chainId][address][product].payments?.filter(
-                (_item: OffRampHashInfos) =>
-                  _item?.orderId.toString() == orderId.toString()
-              );
+                (_item: OffRampHashInfos) => _item?.orderId.toString() == orderId.toString(),
+              )
             }
           }
-          break;
+          break
         case OffRampStatus.waitingForWithdraw:
           if (state[chainId][address][product]) {
             let pending,
-              prev: any = undefined;
+              prev: any = undefined
             if (
-              state[chainId][address][product]?.pending?.orderId.toString() !==
-              orderId.toString()
+              state[chainId][address][product]?.pending?.orderId.toString() !== orderId.toString()
             ) {
-              pending = state[chainId][address][product]?.pending;
+              pending = state[chainId][address][product]?.pending
             } else {
-              pending = undefined;
-              prev = state[chainId][address][product]?.pending;
+              pending = undefined
+              prev = state[chainId][address][product]?.pending
             }
 
             productObj = {
@@ -95,12 +89,12 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
                 ...(state[chainId][address][product]?.payments ?? undefined),
                 { ...prev, ...action.payload },
               ],
-            };
+            }
           } else {
             productObj = {
               pending: undefined,
               payments: [{ ...action.payload }],
-            };
+            }
           }
           state[chainId] = {
             ...state[chainId],
@@ -108,29 +102,27 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
               ...state[chainId][address],
               [product]: productObj,
             },
-          };
-          break;
+          }
+          break
         case OffRampStatus.watingForCreateOrder:
           if (
             state[chainId][address][product]?.payments &&
             state[chainId][address][product]?.payments.find(
-              (_item: OffRampHashInfos) =>
-                _item?.orderId.toString() == orderId.toString()
+              (_item: OffRampHashInfos) => _item?.orderId.toString() == orderId.toString(),
             )
           ) {
-            productObj = state[chainId][address][product];
+            productObj = state[chainId][address][product]
           } else {
-            let pending;
+            let pending
             if (
-              state[chainId][address][product]?.pending?.orderId.toString() ==
-              orderId.toString()
+              state[chainId][address][product]?.pending?.orderId.toString() == orderId.toString()
             ) {
-              pending = state[chainId][address][product]?.pending;
+              pending = state[chainId][address][product]?.pending
             }
             productObj = {
               pending: { ...pending, ...action.payload },
               payments: [...(state[chainId][address][product]?.payments ?? [])],
-            };
+            }
           }
           state[chainId] = {
             ...state[chainId],
@@ -138,12 +130,11 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
               ...state[chainId][address],
               [product]: productObj,
             },
-          };
-          break;
+          }
+          break
       }
     },
   },
-});
-export { offRampHistorySlice };
-export const { clearAll, clearOffRampHash, updateOffRampHash } =
-  offRampHistorySlice.actions;
+})
+export { offRampHistorySlice }
+export const { clearAll, clearOffRampHash, updateOffRampHash } = offRampHistorySlice.actions

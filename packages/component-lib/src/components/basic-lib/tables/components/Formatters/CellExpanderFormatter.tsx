@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import { useFocusRef } from "../../hook";
+import styled from '@emotion/styled'
+import { useFocusRef } from '../../hook'
 
 const CellExpandClassname = styled.div`
   float: right;
@@ -11,12 +11,12 @@ const CellExpandClassname = styled.div`
     vertical-align: middle;
     cursor: pointer;
   }
-`;
+`
 
 interface CellExpanderFormatterProps {
-  isCellSelected: boolean;
-  expanded: boolean;
-  onCellExpand: () => void;
+  isCellSelected: boolean
+  expanded: boolean
+  onCellExpand: () => void
 }
 
 export function CellExpanderFormatter({
@@ -24,17 +24,17 @@ export function CellExpanderFormatter({
   expanded,
   onCellExpand,
 }: CellExpanderFormatterProps) {
-  const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected)
 
   function handleClick(e: React.MouseEvent<HTMLSpanElement>) {
-    e.stopPropagation();
-    onCellExpand();
+    e.stopPropagation()
+    onCellExpand()
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      onCellExpand();
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault()
+      onCellExpand()
     }
   }
 
@@ -42,9 +42,9 @@ export function CellExpanderFormatter({
     <CellExpandClassname>
       <span onClick={handleClick} onKeyDown={handleKeyDown}>
         <span ref={iconRef} tabIndex={-1}>
-          {expanded ? "\u25BC" : "\u25B6"}
+          {expanded ? '\u25BC' : '\u25B6'}
         </span>
       </span>
     </CellExpandClassname>
-  );
+  )
 }

@@ -1,199 +1,177 @@
-import { TxStatus } from "@loopring-web/loopring-sdk";
-import { Account, myLog } from "@loopring-web/common-resources";
+import { TxStatus } from '@loopring-web/loopring-sdk'
+import { Account, myLog } from '@loopring-web/common-resources'
 
 export enum CONSTANTS {
-  Handler = "handler",
-  AccountId = "account_id",
-  Account = "account",
-  Apikey = "apikey",
-  Eddsakey = "eddsakey",
-  ActiveTime = "active_time",
-  AmmOrder = "amm_order",
-  HardwareAddresses = "hardware_addresses",
-  ConnectorName = "connector_name",
+  Handler = 'handler',
+  AccountId = 'account_id',
+  Account = 'account',
+  Apikey = 'apikey',
+  Eddsakey = 'eddsakey',
+  ActiveTime = 'active_time',
+  AmmOrder = 'amm_order',
+  HardwareAddresses = 'hardware_addresses',
+  ConnectorName = 'connector_name',
 
-  DepositHash = "__loopring__.depositsHash",
+  DepositHash = '__loopring__.depositsHash',
 
-  WalletConnect = "walletconnect",
+  WalletConnect = 'walletconnect',
 }
 
-const SESSION_TIMEOUT_SECONDS = 60 * 15;
+const SESSION_TIMEOUT_SECONDS = 60 * 15
 
 export class UserStorage {
-  public static getLocalDepositHash(
-    account: Account
-  ): { [key: string]: any } | undefined {
-    let depositsHash = window.localStorage.getItem(CONSTANTS.DepositHash);
+  public static getLocalDepositHash(account: Account): { [key: string]: any } | undefined {
+    let depositsHash = window.localStorage.getItem(CONSTANTS.DepositHash)
     if (depositsHash) {
-      depositsHash = JSON.parse(depositsHash);
-      if (
-        depositsHash &&
-        account.accAddress &&
-        depositsHash[account.accAddress]
-      ) {
-        return depositsHash[account.accAddress];
+      depositsHash = JSON.parse(depositsHash)
+      if (depositsHash && account.accAddress && depositsHash[account.accAddress]) {
+        return depositsHash[account.accAddress]
       }
     }
-    return undefined;
+    return undefined
   }
 
   public static clearDepositHash(account: Account, value: string) {
     // @ts-ignore
-    let depositsHash: { [key: string]: object } = window.localStorage.getItem(
-      CONSTANTS.DepositHash
-    );
-    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-    if (
-      depositsHash[account.accAddress] &&
-      depositsHash[account.accAddress][value]
-    ) {
-      delete depositsHash[account.accAddress][value];
+    let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash)
+    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {}
+    if (depositsHash[account.accAddress] && depositsHash[account.accAddress][value]) {
+      delete depositsHash[account.accAddress][value]
     }
   }
 
-  public static setLocalDepositHash(
-    account: Account,
-    value: string,
-    status: TxStatus
-  ): void {
+  public static setLocalDepositHash(account: Account, value: string, status: TxStatus): void {
     // @ts-ignore
-    let depositsHash: { [key: string]: object } = window.localStorage.getItem(
-      CONSTANTS.DepositHash
-    );
-    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
+    let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash)
+    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {}
     depositsHash[account.accAddress] = {
       ...depositsHash[account.accAddress],
       [value]: status,
-    };
+    }
   }
 
   public static clearWalletConnect() {
-    myLog("try to clearWalletConnect....");
-    localStorage.removeItem(CONSTANTS.WalletConnect);
+    myLog('try to clearWalletConnect....')
+    localStorage.removeItem(CONSTANTS.WalletConnect)
   }
 
   public static setConnectorName(connectionName: string) {
-    localStorage.setItem(CONSTANTS.ConnectorName, connectionName);
+    localStorage.setItem(CONSTANTS.ConnectorName, connectionName)
   }
 
   public static getConnectorName() {
-    return localStorage.getItem(CONSTANTS.ConnectorName);
+    return localStorage.getItem(CONSTANTS.ConnectorName)
   }
 
   public static clearConnectorName() {
-    myLog("try to clearConnectorName");
-    localStorage.removeItem(CONSTANTS.ConnectorName);
+    myLog('try to clearConnectorName')
+    localStorage.removeItem(CONSTANTS.ConnectorName)
   }
 
   public static getHandler() {
-    const rawHandler = sessionStorage.getItem(CONSTANTS.Handler);
+    const rawHandler = sessionStorage.getItem(CONSTANTS.Handler)
     try {
-      if (rawHandler !== undefined && rawHandler !== null)
-        return parseInt(rawHandler);
+      if (rawHandler !== undefined && rawHandler !== null) return parseInt(rawHandler)
     } catch (err) {}
-    return undefined;
+    return undefined
   }
 
   public static setHandler(handler: any) {
-    sessionStorage.setItem(CONSTANTS.Handler, handler);
+    sessionStorage.setItem(CONSTANTS.Handler, handler)
   }
 
   public static clearHandler() {
-    sessionStorage.removeItem(CONSTANTS.Handler);
+    sessionStorage.removeItem(CONSTANTS.Handler)
   }
 
   public static checkTimeout(reset: boolean = false): boolean {
-    let dateTimeStr = localStorage.getItem(CONSTANTS.ActiveTime);
-    let now = new Date().getTime();
+    let dateTimeStr = localStorage.getItem(CONSTANTS.ActiveTime)
+    let now = new Date().getTime()
 
     if (dateTimeStr !== null && !reset) {
-      let tmpDt = new Date(parseInt(dateTimeStr));
+      let tmpDt = new Date(parseInt(dateTimeStr))
 
       if (now - tmpDt.getTime() > SESSION_TIMEOUT_SECONDS * 1000) {
-        myLog(
-          `TIMEOUT! now:${now} dateTimeStr:${dateTimeStr} delta:${
-            now - tmpDt.getTime()
-          }`
-        );
-        sessionStorage.clear();
-        localStorage.setItem(CONSTANTS.ActiveTime, now.toString());
-        return true;
+        myLog(`TIMEOUT! now:${now} dateTimeStr:${dateTimeStr} delta:${now - tmpDt.getTime()}`)
+        sessionStorage.clear()
+        localStorage.setItem(CONSTANTS.ActiveTime, now.toString())
+        return true
       }
     } else {
-      localStorage.setItem(CONSTANTS.ActiveTime, now.toString());
+      localStorage.setItem(CONSTANTS.ActiveTime, now.toString())
     }
 
-    return false;
+    return false
   }
 
   public static getAccountId() {
-    const rawId = sessionStorage.getItem(CONSTANTS.AccountId);
+    const rawId = sessionStorage.getItem(CONSTANTS.AccountId)
     try {
-      if (rawId) return parseInt(rawId);
+      if (rawId) return parseInt(rawId)
     } catch (err) {}
-    return undefined;
+    return undefined
   }
 
   public static setAccountId(accountId: number) {
-    sessionStorage.setItem(CONSTANTS.AccountId, accountId.toString());
+    sessionStorage.setItem(CONSTANTS.AccountId, accountId.toString())
   }
 
   public static getAccount() {
-    return sessionStorage.getItem(CONSTANTS.Account);
+    return sessionStorage.getItem(CONSTANTS.Account)
   }
 
   public static setAccount(account: string) {
-    sessionStorage.setItem(CONSTANTS.Account, account);
+    sessionStorage.setItem(CONSTANTS.Account, account)
   }
 
   public static getApikey() {
-    return sessionStorage.getItem(CONSTANTS.Apikey);
+    return sessionStorage.getItem(CONSTANTS.Apikey)
   }
 
   public static setApikey(apikey: string) {
-    sessionStorage.setItem(CONSTANTS.Apikey, apikey);
+    sessionStorage.setItem(CONSTANTS.Apikey, apikey)
   }
 
   public static getEddsakey() {
-    return sessionStorage.getItem(CONSTANTS.Eddsakey);
+    return sessionStorage.getItem(CONSTANTS.Eddsakey)
   }
 
   public static setEddsakey(eddsakey: string) {
-    sessionStorage.setItem(CONSTANTS.Eddsakey, eddsakey);
+    sessionStorage.setItem(CONSTANTS.Eddsakey, eddsakey)
   }
 
   public static getAmmOrder(): string {
-    var orderHash = localStorage.getItem(CONSTANTS.AmmOrder);
-    return orderHash ? orderHash : "";
+    var orderHash = localStorage.getItem(CONSTANTS.AmmOrder)
+    return orderHash ? orderHash : ''
   }
 
   public static setAmmOrder(orderHash: string) {
-    localStorage.setItem(CONSTANTS.AmmOrder, orderHash);
+    localStorage.setItem(CONSTANTS.AmmOrder, orderHash)
   }
 
   public static clearAmmOrder() {
-    localStorage.removeItem(CONSTANTS.AmmOrder);
+    localStorage.removeItem(CONSTANTS.AmmOrder)
   }
 
   public static isHardwareAddress(address: string) {
-    let current = localStorage.getItem(CONSTANTS.HardwareAddresses);
+    let current = localStorage.getItem(CONSTANTS.HardwareAddresses)
     if (current) {
       if (current.includes(address.toLowerCase())) {
-        return true;
+        return true
       }
     }
-    return false;
+    return false
   }
 
   public static saveHardwareAddress(address: string) {
-    let current = localStorage.getItem(CONSTANTS.HardwareAddresses);
+    let current = localStorage.getItem(CONSTANTS.HardwareAddresses)
     if (current) {
       if (current.includes(address.toLowerCase()) !== true) {
-        let newValue = current + "," + address.toLowerCase();
-        localStorage.setItem(CONSTANTS.HardwareAddresses, newValue);
+        let newValue = current + ',' + address.toLowerCase()
+        localStorage.setItem(CONSTANTS.HardwareAddresses, newValue)
       }
     } else {
-      localStorage.setItem(CONSTANTS.HardwareAddresses, address.toLowerCase());
+      localStorage.setItem(CONSTANTS.HardwareAddresses, address.toLowerCase())
     }
   }
 }

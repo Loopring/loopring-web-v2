@@ -1,25 +1,25 @@
-import React from "react";
-import styled from "@emotion/styled";
-import { Grid, MenuItem } from "@mui/material";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { DateRangePicker, TextField } from "../../../";
-import { Button } from "../../../basic-lib/btns";
-import { DropDownIcon } from "@loopring-web/common-resources";
-import { DateRange } from "@mui/lab";
+import React from 'react'
+import styled from '@emotion/styled'
+import { Grid, MenuItem } from '@mui/material'
+import { withTranslation, WithTranslation } from 'react-i18next'
+import { DateRangePicker, TextField } from '../../../'
+import { Button } from '../../../basic-lib/btns'
+import { DropDownIcon } from '@loopring-web/common-resources'
+import { DateRange } from '@mui/lab'
 
 export interface FilterProps {
-  handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void;
-  filterDate: DateRange<Date | string>;
-  filterType: FilterOrderTypes;
-  filterToken: string;
-  handleReset: () => void;
-  marketArray?: string[];
+  handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void
+  filterDate: DateRange<Date | string>
+  filterType: FilterOrderTypes
+  filterToken: string
+  handleReset: () => void
+  marketArray?: string[]
 }
 
 export enum FilterOrderTypes {
-  allTypes = "all",
-  buy = "Buy",
-  sell = "Sell",
+  allTypes = 'all',
+  buy = 'Buy',
+  sell = 'Sell',
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -30,9 +30,9 @@ const StyledTextFiled = styled(TextField)`
     width: initial;
     max-width: initial;
   }
-`;
+`
 
-export const Filter = withTranslation("tables", { withRef: true })(
+export const Filter = withTranslation('tables', { withRef: true })(
   ({
     t,
     filterDate,
@@ -44,15 +44,15 @@ export const Filter = withTranslation("tables", { withRef: true })(
     const getTokenTypeList = React.useCallback(() => {
       return [
         {
-          label: t("labelOrderFilterAllPairs"),
-          value: "all",
+          label: t('labelOrderFilterAllPairs'),
+          value: 'all',
         },
         ...Array.from(new Set(marketArray)).map((token) => ({
           label: token,
           value: token,
         })),
-      ];
-    }, [t, marketArray]);
+      ]
+    }, [t, marketArray])
 
     return (
       <Grid container spacing={2}>
@@ -61,18 +61,18 @@ export const Filter = withTranslation("tables", { withRef: true })(
           <DateRangePicker
             value={filterDate}
             onChange={(date: any) => {
-              handleFilterChange({ date: date });
+              handleFilterChange({ date: date })
             }}
           />
         </Grid>
         <Grid item xs={6} lg={2}>
           <StyledTextFiled
-            id="table-order-token-types"
+            id='table-order-token-types'
             select
             fullWidth
             value={filterToken}
             onChange={(event: React.ChangeEvent<{ value: string }>) => {
-              handleFilterChange({ token: event.target.value });
+              handleFilterChange({ token: event.target.value })
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
@@ -86,15 +86,15 @@ export const Filter = withTranslation("tables", { withRef: true })(
         <Grid item xs={6} lg={2}>
           <Button
             fullWidth
-            variant={"outlined"}
-            size={"medium"}
-            color={"primary"}
+            variant={'outlined'}
+            size={'medium'}
+            color={'primary'}
             onClick={handleReset}
           >
-            {t("labelFilterReset")}
+            {t('labelFilterReset')}
           </Button>
         </Grid>
       </Grid>
-    );
-  }
-);
+    )
+  },
+)

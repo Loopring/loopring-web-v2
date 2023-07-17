@@ -1,16 +1,16 @@
-import React from "react";
-import { StylePaper } from "../../../component";
-import { BoxProps, Divider, Tab, Tabs } from "@mui/material";
-import { AmmRecordTable, useSettings } from "@loopring-web/component-lib";
-import { AccountStatus, RowConfig } from "@loopring-web/common-resources";
-import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
-import { store, useSystem } from "../../../stores";
-import { useAmmRecord } from "../hooks";
+import React from 'react'
+import { StylePaper } from '../../../component'
+import { BoxProps, Divider, Tab, Tabs } from '@mui/material'
+import { AmmRecordTable, useSettings } from '@loopring-web/component-lib'
+import { AccountStatus, RowConfig } from '@loopring-web/common-resources'
+import styled from '@emotion/styled'
+import { useTranslation } from 'react-i18next'
+import { store, useSystem } from '../../../stores'
+import { useAmmRecord } from '../hooks'
 
 const TabsStyled = styled(Tabs)`
   padding-left: ${({ theme }) => theme.unit}px;
-`;
+`
 const AMMPanelStyled = styled(StylePaper)<BoxProps & { isMobile: boolean }>`
   background: initial;
   && {
@@ -24,14 +24,14 @@ const AMMPanelStyled = styled(StylePaper)<BoxProps & { isMobile: boolean }>`
           : `--template-columns: 86% 14% !important;`}
     }
   }
-` as (props: BoxProps & { isMobile: boolean }) => JSX.Element;
+` as (props: BoxProps & { isMobile: boolean }) => JSX.Element
 
 const applyProps = (index: number) => {
   return {
     id: `simple-tab-${index}`,
-    "aria-controls": `tabpanel-${index}`,
-  };
-};
+    'aria-controls': `tabpanel-${index}`,
+  }
+}
 export const AmmRecordPanel = ({ market }: { market: string }) => {
   const {
     isMyAmmLoading,
@@ -43,31 +43,26 @@ export const AmmRecordPanel = ({ market }: { market: string }) => {
     getUserAmmPoolTxs,
     getRecentAmmPoolTxs,
     pageSize,
-  } = useAmmRecord({ market });
-  const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
+  } = useAmmRecord({ market })
+  const [tabIndex, setTabIndex] = React.useState<0 | 1>(0)
 
-  const { t } = useTranslation("common");
-  const { currency, isMobile } = useSettings();
-  const { forexMap } = useSystem();
-  const tableHeight =
-    RowConfig.rowHeaderHeight +
-    (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
+  const { t } = useTranslation('common')
+  const { currency, isMobile } = useSettings()
+  const { forexMap } = useSystem()
+  const tableHeight = RowConfig.rowHeaderHeight + (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight
 
   const handleTabsChange = React.useCallback((_: any, value: 0 | 1) => {
-    setTabIndex(value);
-  }, []);
+    setTabIndex(value)
+  }, [])
   React.useEffect(() => {
     if (container.current) {
       if (tabIndex == 0) {
-        getRecentAmmPoolTxs({});
-      } else if (
-        store.getState().account.readyState === AccountStatus.ACTIVATED &&
-        tabIndex == 1
-      ) {
-        getUserAmmPoolTxs({});
+        getRecentAmmPoolTxs({})
+      } else if (store.getState().account.readyState === AccountStatus.ACTIVATED && tabIndex == 1) {
+        getUserAmmPoolTxs({})
       }
     }
-  }, [tabIndex, container]);
+  }, [tabIndex, container])
   return (
     <AMMPanelStyled
       isMobile={isMobile}
@@ -76,15 +71,11 @@ export const AmmRecordPanel = ({ market }: { market: string }) => {
       ref={container}
       marginBottom={0}
     >
-      <TabsStyled
-        value={tabIndex}
-        onChange={handleTabsChange}
-        aria-label="tabs switch"
-      >
-        <Tab label={t("labelAmmAllTransactions")} {...applyProps(0)} />
-        <Tab label={t("labelAmmMyTransactions")} {...applyProps(1)} />
+      <TabsStyled value={tabIndex} onChange={handleTabsChange} aria-label='tabs switch'>
+        <Tab label={t('labelAmmAllTransactions')} {...applyProps(0)} />
+        <Tab label={t('labelAmmMyTransactions')} {...applyProps(1)} />
       </TabsStyled>
-      <Divider style={{ marginTop: "-1px" }} />
+      <Divider style={{ marginTop: '-1px' }} />
       {/*ammRecordArray*/}
       {tabIndex === 0 ? (
         <AmmRecordTable
@@ -113,5 +104,5 @@ export const AmmRecordPanel = ({ market }: { market: string }) => {
         />
       )}
     </AMMPanelStyled>
-  );
-};
+  )
+}

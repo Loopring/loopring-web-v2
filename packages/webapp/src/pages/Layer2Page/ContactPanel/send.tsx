@@ -1,6 +1,6 @@
 // import { Dialog } from "@mui/material";
 
-import React from "react";
+import React from 'react'
 import {
   Button,
   Dialog,
@@ -9,18 +9,13 @@ import {
   DialogActions,
   Typography,
   Box,
-} from "@mui/material";
-import { Contact, useContactSend } from "./hooks";
-import {
-  CheckIcon,
-  CloseIcon,
-  L1L2_NAME_DEFINED,
-  MapChainId,
-} from "@loopring-web/common-resources";
-import { CoinIcon, TextField, useSettings } from "@loopring-web/component-lib";
-import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
+} from '@mui/material'
+import { Contact, useContactSend } from './hooks'
+import { CheckIcon, CloseIcon, L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
+import { CoinIcon, TextField, useSettings } from '@loopring-web/component-lib'
+import { useTheme } from '@emotion/react'
+import styled from '@emotion/styled'
+import { useTranslation } from 'react-i18next'
 
 const BoxWithTriangle = styled(Box)<{ selected: boolean }>`
   position: relative;
@@ -32,11 +27,11 @@ const BoxWithTriangle = styled(Box)<{ selected: boolean }>`
     selected ? theme.colorBase.borderSelect : theme.colorBase.border};
 
   ::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     right: 0;
-    display: ${({ selected }) => (selected ? "" : "none")};
+    display: ${({ selected }) => (selected ? '' : 'none')};
     border-bottom: 12px solid transparent;
     border-right: 12px solid ${({ theme }) => theme.colorBase.borderSelect};
     border-top: 12px solid ${({ theme }) => theme.colorBase.borderSelect};
@@ -47,18 +42,18 @@ const BoxWithTriangle = styled(Box)<{ selected: boolean }>`
     position: absolute;
     top: 0;
     right: 0;
-    color: ${({ theme }) => (theme.mode === "dark" ? "black" : "white")};
+    color: ${({ theme }) => (theme.mode === 'dark' ? 'black' : 'white')};
   }
-`;
+`
 const SelectNetwork = (props: {
-  icon: JSX.Element;
-  selected: boolean;
-  text: string;
-  style?: React.CSSProperties;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  icon: JSX.Element
+  selected: boolean
+  text: string
+  style?: React.CSSProperties
+  onClick: React.MouseEventHandler<HTMLDivElement>
 }) => {
   // const theme = useTheme()
-  const { icon, selected, text, style, onClick } = props;
+  const { icon, selected, text, style, onClick } = props
   return (
     <BoxWithTriangle
       selected={selected}
@@ -70,19 +65,17 @@ const SelectNetwork = (props: {
     >
       {icon}
       <Typography marginLeft={1.5}>{text}</Typography>
-      {selected ? (
-        <CheckIcon fontSize={"small"} className={"check-icon"}></CheckIcon>
-      ) : undefined}
+      {selected ? <CheckIcon fontSize={'small'} className={'check-icon'}></CheckIcon> : undefined}
     </BoxWithTriangle>
-  );
-};
+  )
+}
 
 interface SendDialogProps {
-  onCloseSend: () => void;
+  onCloseSend: () => void
   sendInfo: {
-    open: boolean;
-    selected: Contact | undefined;
-  };
+    open: boolean
+    selected: Contact | undefined
+  }
 }
 
 const CloseIconStyled = styled(CloseIcon)`
@@ -91,36 +84,35 @@ const CloseIconStyled = styled(CloseIcon)`
   transform: translateY(-50%);
   right: ${({ theme }) => theme.unit}px;
   cursor: pointer;
-`;
+`
 
 export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
-  const { submitSendingContact, sendNetwork, setSendNetwork } =
-    useContactSend();
-  const { defaultNetwork } = useSettings();
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1];
-  const theme = useTheme();
-  const { t } = useTranslation();
+  const { submitSendingContact, sendNetwork, setSendNetwork } = useContactSend()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const theme = useTheme()
+  const { t } = useTranslation()
   return (
     <div>
       <Dialog
-        maxWidth={"lg"}
+        maxWidth={'lg'}
         open={sendInfo.open}
         onClose={() => {
-          onCloseSend();
+          onCloseSend()
         }}
       >
         <CloseIconStyled
-          htmlColor={"var(--color-text-third)"}
-          fontSize={"large"}
+          htmlColor={'var(--color-text-third)'}
+          fontSize={'large'}
           // style={{ visibility: inputValue ? "visible" : "hidden" }}
           onClick={() => {
-            onCloseSend();
+            onCloseSend()
             // setInputValue('')
           }}
         />
         <DialogTitle>
-          <Typography marginTop={3} variant={"h3"} textAlign={"center"}>
-            {t("labelContactsNetworkChoose", {
+          <Typography marginTop={3} variant={'h3'} textAlign={'center'}>
+            {t('labelContactsNetworkChoose', {
               loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
               l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
               l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
@@ -129,20 +121,17 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
             })}
           </Typography>
         </DialogTitle>
-        <DialogContent
-          sx={{ paddingX: 4 }}
-          style={{ width: "var(--modal-width)" }}
-        >
+        <DialogContent sx={{ paddingX: 4 }} style={{ width: 'var(--modal-width)' }}>
           <Box paddingX={2}>
             <Box marginTop={6}>
               <TextField
-                label={"Send to"}
+                label={'Send to'}
                 style={{
-                  backgroundColor: "var(--box-card-decorate)",
+                  backgroundColor: 'var(--box-card-decorate)',
                 }}
                 InputProps={{
                   style: {
-                    background: "var(--field-opacity)",
+                    background: 'var(--field-opacity)',
                     height: `${theme.unit * 6}px`,
                   },
                 }}
@@ -151,44 +140,44 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
                 value={`${sendInfo.selected?.name}\n${sendInfo.selected?.address}`}
               />
             </Box>
-            <Box display={"flex"} marginBottom={10} marginTop={5}>
+            <Box display={'flex'} marginBottom={10} marginTop={5}>
               <SelectNetwork
                 onClick={() => {
-                  setSendNetwork("L1");
+                  setSendNetwork('L1')
                 }}
-                style={{ marginRight: "4%", width: "48%" }}
-                selected={sendNetwork === "L1"}
-                text={"Ethereum/L1"}
-                icon={<CoinIcon size={32} symbol={"ETH"}></CoinIcon>}
+                style={{ marginRight: '4%', width: '48%' }}
+                selected={sendNetwork === 'L1'}
+                text={'Ethereum/L1'}
+                icon={<CoinIcon size={32} symbol={'ETH'}></CoinIcon>}
               />
               <SelectNetwork
                 onClick={() => {
-                  setSendNetwork("L2");
+                  setSendNetwork('L2')
                 }}
-                style={{ width: "48%" }}
-                selected={sendNetwork === "L2"}
-                text={"Loopring/L2"}
-                icon={<CoinIcon size={32} symbol={"LRC"}></CoinIcon>}
+                style={{ width: '48%' }}
+                selected={sendNetwork === 'L2'}
+                text={'Loopring/L2'}
+                icon={<CoinIcon size={32} symbol={'LRC'}></CoinIcon>}
               />
             </Box>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Box width={"100%"} paddingX={2} paddingBottom={2}>
+          <Box width={'100%'} paddingX={2} paddingBottom={2}>
             <Button
-              variant="contained"
+              variant='contained'
               onClick={() => {
                 submitSendingContact(sendInfo.selected!, sendNetwork, () => {
-                  onCloseSend();
-                });
+                  onCloseSend()
+                })
               }}
               fullWidth
             >
-              {t("labelContactsNext")}
+              {t('labelContactsNext')}
             </Button>
           </Box>
         </DialogActions>
       </Dialog>
     </div>
-  );
-};
+  )
+}

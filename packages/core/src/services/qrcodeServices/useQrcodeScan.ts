@@ -1,43 +1,40 @@
-import React from "react";
+import React from 'react'
 import {
   H5QrcodeScannerCommands,
   h5QrcodeScannerService,
   Html5QrcodeScannerProvides,
-} from "./qrCodeService";
+} from './qrCodeService'
 
-export const h5QrcodeScannerProvides = new Html5QrcodeScannerProvides();
+export const h5QrcodeScannerProvides = new Html5QrcodeScannerProvides()
 
-export function useQrcodeScan({
-  handleFailedUpload,
-  handleSuccessUpload,
-}: any) {
-  const subject = React.useMemo(() => h5QrcodeScannerService.onSocket(), []);
+export function useQrcodeScan({ handleFailedUpload, handleSuccessUpload }: any) {
+  const subject = React.useMemo(() => h5QrcodeScannerService.onSocket(), [])
 
   const start = React.useCallback(async () => {
-    await h5QrcodeScannerProvides.init();
-  }, []);
+    await h5QrcodeScannerProvides.init()
+  }, [])
   React.useEffect(() => {
-    start();
-    h5QrcodeScannerProvides.init();
+    start()
+    h5QrcodeScannerProvides.init()
     const subscription = subject.subscribe(
       ({ data, status }: { status: H5QrcodeScannerCommands; data?: any }) => {
         switch (status) {
           case H5QrcodeScannerCommands.SuccessH5QrcodeScanner:
-            handleSuccessUpload(data);
-            break;
+            handleSuccessUpload(data)
+            break
           case H5QrcodeScannerCommands.ErrorHtml5QrcodeScanner:
-            handleFailedUpload(data);
-            break;
+            handleFailedUpload(data)
+            break
         }
-      }
-    );
+      },
+    )
     return () => {
-      h5QrcodeScannerProvides.stop();
-      subscription.unsubscribe();
-    };
-  }, []);
+      h5QrcodeScannerProvides.stop()
+      subscription.unsubscribe()
+    }
+  }, [])
 
   return {
     h5QrcodeScannerProvides,
-  };
+  }
 }

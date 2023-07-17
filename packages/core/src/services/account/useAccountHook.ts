@@ -1,6 +1,6 @@
-import React from "react";
-import { AccountCommands } from "./command";
-import { accountServices } from "./accountServices";
+import React from 'react'
+import { AccountCommands } from './command'
+import { accountServices } from './accountServices'
 
 export function useAccountHook({
   handleLockAccount, // clear private data
@@ -17,51 +17,51 @@ export function useAccountHook({
   handleProcessAccountCheck,
   handleAccountActive,
 }: any) {
-  const subject = React.useMemo(() => accountServices.onSocket(), []);
+  const subject = React.useMemo(() => accountServices.onSocket(), [])
   React.useEffect(() => {
     const subscription = subject.subscribe(
       ({ data, status }: { status: AccountCommands; data?: any }) => {
         switch (status) {
           case AccountCommands.ErrorNetwork:
-            handleErrorAccount(data);
-            break; // clear private data
+            handleErrorAccount(data)
+            break // clear private data
           case AccountCommands.LockAccount:
-            handleLockAccount(data);
-            break; // clear private data
+            handleLockAccount(data)
+            break // clear private data
           case AccountCommands.NoAccount:
-            handleNoAccount(data);
-            break; //
+            handleNoAccount(data)
+            break //
           case AccountCommands.DepositingAccount:
-            handleDepositingAccount(data);
-            break;
+            handleDepositingAccount(data)
+            break
           case AccountCommands.ErrorApproveToken:
-            handleErrorApproveToken(data);
-            break;
+            handleErrorApproveToken(data)
+            break
           case AccountCommands.ErrorDepositSign:
-            handleErrorDepositSign(data);
-            break;
+            handleErrorDepositSign(data)
+            break
           case AccountCommands.ProcessDeposit:
-            handleProcessDeposit(data);
-            break; // two or one step
+            handleProcessDeposit(data)
+            break // two or one step
           case AccountCommands.SignAccount:
-            handleSignAccount(data);
-            break; //unlock or update account  assgin
+            handleSignAccount(data)
+            break //unlock or update account  assgin
           case AccountCommands.ProcessSign:
-            handleProcessSign(data);
-            break;
+            handleProcessSign(data)
+            break
           case AccountCommands.SignDeniedByUser:
-            handleSignDeniedByUser(data);
-            break;
+            handleSignDeniedByUser(data)
+            break
           case AccountCommands.ErrorSign:
-            handleSignError(data);
-            break;
+            handleSignError(data)
+            break
           case AccountCommands.AccountUnlocked:
-            handleAccountActive(data);
-            break;
+            handleAccountActive(data)
+            break
         }
-      }
-    );
-    return () => subscription.unsubscribe();
+      },
+    )
+    return () => subscription.unsubscribe()
   }, [
     subject,
     handleLockAccount, // clear private data
@@ -75,5 +75,5 @@ export function useAccountHook({
     handleProcessSign,
     handleSignDeniedByUser,
     handleProcessAccountCheck,
-  ]);
+  ])
 }

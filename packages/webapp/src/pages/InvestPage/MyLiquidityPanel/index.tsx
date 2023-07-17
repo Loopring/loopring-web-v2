@@ -15,10 +15,8 @@ import {
   AmmPanelType,
   AssetsTable,
   DefiStakingTable,
-  DetailRewardPanel,
   DualAssetTable,
   DualDetail,
-  EarningsDetail,
   EmptyDefault,
   ModalCloseButton,
   MyPoolTable,
@@ -27,9 +25,9 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import {
-  AssetTabIndex,
   CheckBoxIcon,
   CheckedIcon,
+  CLAIM_TYPE,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
@@ -38,9 +36,11 @@ import {
   HiddenTag,
   myLog,
   PriceTag,
+  RecordTabIndex,
   RowInvestConfig,
   STAKING_INVEST_LIMIT,
   TokenType,
+  TRADE_TYPE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
@@ -50,11 +50,12 @@ import {
   useAccount,
   useAmmActivityMap,
   useDualMap,
+  useModalData,
   useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
-  useUserRewards,
+  volumeToCount,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
@@ -82,12 +83,14 @@ const MyLiquidity: any = withTranslation('common')(
     let match: any = useRouteMatch('/invest/balance/:type')
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
-    const { totalClaims } = useUserRewards()
 
     const ammPoolRef = React.useRef(null)
     const stakingRef = React.useRef(null)
     const dualRef = React.useRef(null)
     const sideStakeRef = React.useRef(null)
+
+    const { updateClaimData } = useModalData()
+    const { setShowClaimWithdraw } = useOpenModals()
 
     const { ammActivityMap } = useAmmActivityMap()
     const { forexMap } = useSystem()
@@ -204,21 +207,7 @@ const MyLiquidity: any = withTranslation('common')(
             { floor: true, isAbbreviate: true },
           )
         : '0'
-    const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = Reflect.ownKeys(
-      totalClaims ?? {},
-    ).reduce(
-      (prev, key) => {
-        const item = totalClaims[key]?.detail?.find(
-          (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.PROTOCOL_FEE,
-        )
-        if (item && item.amount !== '0') {
-          prev.detail.push({ ...item })
-          prev.totalDollar = sdk.toBig(item.tokenValueDollar).plus(prev.totalDollar).toString()
-        }
-        return prev
-      },
-      { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
-    )
+
     const dualStakeDollar = dualOnInvestAsset
       ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
           const price = tokenPrices[idIndex[cur.tokenId]]
@@ -230,7 +219,6 @@ const MyLiquidity: any = withTranslation('common')(
             .toString()
         }, '0')
       : undefined
-
     const _summaryMyInvest = sdk
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
@@ -279,7 +267,7 @@ const MyLiquidity: any = withTranslation('common')(
             target='_self'
             rel='noopener noreferrer'
             //?tokenSymbol=${market}
-            onClick={() => history.push(`/l2assets/history/ammRecords`)}
+            onClick={() => history.push(`/l2assets/history/${RecordTabIndex.AmmRecords}`)}
             // href={"./#/layer2/history/ammRecords"}
           >
             {t('labelTransactionsLink')}
@@ -374,7 +362,7 @@ const MyLiquidity: any = withTranslation('common')(
             </TableWrapStyled>
           ) : (
             <>
-              {myPoolRow?.length > 0 && (
+              {!!(myPoolRow?.length > 0) && (
                 <TableWrapStyled
                   ref={ammPoolRef}
                   className={`table-divide-short MuiPaper-elevation2`}
@@ -385,7 +373,6 @@ const MyLiquidity: any = withTranslation('common')(
                 >
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                     <MyPoolTable
-                      totalAMMClaims={totalAMMClaims}
                       forexMap={forexMap as any}
                       title={
                         <Typography
@@ -432,7 +419,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {stakingList?.length > 0 && (
+              {!!(stakingList?.length > 0) && (
                 <TableWrapStyled
                   ref={sideStakeRef}
                   className={`table-divide-short MuiPaper-elevation2 min-height`}
@@ -528,16 +515,25 @@ const MyLiquidity: any = withTranslation('common')(
                               variant={'contained'}
                               size={'small'}
                               onClick={() => {
-                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                                updateClaimData({
+                                  belong: stakedSymbol,
+                                  tradeValue: volumeToCount(stakedSymbol, totalClaimableRewards),
+                                  balance: volumeToCount(stakedSymbol, totalClaimableRewards),
+                                  volume: totalClaimableRewards,
+                                  tradeType: TRADE_TYPE.TOKEN,
+                                  claimType: CLAIM_TYPE.lrcStaking,
+                                })
+                                setShowClaimWithdraw({
+                                  isShow: true,
+                                  claimType: CLAIM_TYPE.lrcStaking,
+                                })
                               }}
                             >
                               {t('labelClaimBtn')}
                             </Button>
                           </>
                         ) : (
-                          <Typography component={'span'} display={'inline-flex'}>
-                            {EmptyValueTag}
-                          </Typography>
+                          EmptyValueTag
                         )}
                       </Box>
                     </Grid>
@@ -561,7 +557,7 @@ const MyLiquidity: any = withTranslation('common')(
                   />
                 </TableWrapStyled>
               )}
-              {lidoAssets?.length > 0 && (
+              {!!(lidoAssets?.length > 0) && (
                 <TableWrapStyled
                   ref={stakingRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
@@ -618,7 +614,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {dualList?.length > 0 && (
+              {!!(dualList?.length > 0) && (
                 <TableWrapStyled
                   ref={dualRef}
                   className={`table-divide-short MuiPaper-elevation2 min-height`}

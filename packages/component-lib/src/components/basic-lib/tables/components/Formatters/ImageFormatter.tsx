@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 
 const WrapperClassname = styled.div`
   display: flex;
   justify-content: space-around;
-`;
+`
 
 const ImageCellClassname = styled.div`
   background: #efefef;
@@ -13,11 +13,11 @@ const ImageCellClassname = styled.div`
   width: 28px;
   vertical-align: middle;
   background-position: center;
-`;
+`
 
 interface Props {
   /** image url, used as background-image */
-  value: string;
+  value: string
 }
 
 export function ImageFormatter({ value }: Props) {
@@ -25,5 +25,5 @@ export function ImageFormatter({ value }: Props) {
     <WrapperClassname>
       <ImageCellClassname style={{ backgroundImage: `url(${value})` }} />
     </WrapperClassname>
-  );
+  )
 }

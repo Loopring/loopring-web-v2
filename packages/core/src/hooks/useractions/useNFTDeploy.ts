@@ -13,13 +13,9 @@ import {
   useChargeFees,
   useWalletLayer2NFT,
   useWalletL2Collection,
-} from "../../index";
-import {
-  AccountStep,
-  NFTDeployProps,
-  useOpenModals,
-} from "@loopring-web/component-lib";
-import React from "react";
+} from '../../index'
+import { AccountStep, NFTDeployProps, useOpenModals } from '@loopring-web/component-lib'
+import React from 'react'
 
 import {
   AccountStatus,
@@ -29,47 +25,42 @@ import {
   UIERROR_CODE,
   LIVE_FEE_TIMES,
   SUBMIT_PANEL_QUICK_AUTO_CLOSE,
-} from "@loopring-web/common-resources";
-import { useBtnStatus } from "../common/useBtnStatus";
+} from '@loopring-web/common-resources'
+import { useBtnStatus } from '../common/useBtnStatus'
 
-import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
+import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 
-import * as sdk from "@loopring-web/loopring-sdk";
-import { useLayer1Store } from "../../stores/localStore/layer1Store";
-import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import * as sdk from '@loopring-web/loopring-sdk'
+import { useLayer1Store } from '../../stores/localStore/layer1Store'
+import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import {
   useHistory,
   useLocation,
   // useLocation
-} from "react-router-dom";
-import Web3 from "web3";
+} from 'react-router-dom'
+import Web3 from 'web3'
 
-export function useNFTDeploy<
-  T extends TradeNFT<I, any> & { broker: string },
-  I
->() {
-  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-  const { tokenMap } = useTokenMap();
-  const { account } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
-  const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
-    useModalData();
-  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const { page: collectionPage, updateWalletL2Collection } =
-    useWalletL2Collection();
+export function useNFTDeploy<T extends TradeNFT<I, any> & { broker: string }, I>() {
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
+  const { tokenMap } = useTokenMap()
+  const { account } = useAccount()
+  const { exchangeInfo, chainId } = useSystem()
+  const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } = useModalData()
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT()
+  const { page: collectionPage, updateWalletL2Collection } = useWalletL2Collection()
 
   const {
     setShowAccount,
     setShowNFTDetail,
     setShowNFTDeploy,
     modals: { isShowNFTDeploy, isShowNFTDetail },
-  } = useOpenModals();
+  } = useOpenModals()
 
-  const { setOneItem } = useLayer1Store();
-  const { checkHWAddr, updateHW } = useWalletInfo();
-  const history = useHistory();
-  const { search, pathname } = useLocation();
-  const searchParams = new URLSearchParams(search);
+  const { setOneItem } = useLayer1Store()
+  const { checkHWAddr, updateHW } = useWalletInfo()
+  const history = useHistory()
+  const { search, pathname } = useLocation()
+  const searchParams = new URLSearchParams(search)
 
   const {
     chargeFeeTokenList,
@@ -82,32 +73,27 @@ export function useNFTDeploy<
     tokenAddress: nftDeployValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
     updateData: ({ fee }) => {
-      updateNFTDeployData({ ...nftDeployValue, fee });
+      updateNFTDeployData({ ...nftDeployValue, fee })
     },
-  });
+  })
   const processRequestNFT = React.useCallback(
     async (
-      request:
-        | sdk.OriginDeployNFTRequestV3
-        | sdk.OriginDeployCollectionRequestV3,
-      isFirstTime: boolean
+      request: sdk.OriginDeployNFTRequestV3 | sdk.OriginDeployCollectionRequestV3,
+      isFirstTime: boolean,
     ) => {
-      const { apiKey, connectName, eddsaKey } = account;
+      const { apiKey, connectName, eddsaKey } = account
 
       try {
         if (connectProvides.usedWeb3 && isAccActivated()) {
-          let isHWAddr = checkHWAddr(account.accAddress);
-          isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
-          let response;
-          if (request.hasOwnProperty("nftData")) {
+          let isHWAddr = checkHWAddr(account.accAddress)
+          isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+          let response
+          if (request.hasOwnProperty('nftData')) {
             response = await LoopringAPI.userAPI?.submitDeployNFT(
               {
                 request: request as sdk.OriginDeployNFTRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
-                chainId:
-                  chainId !== sdk.ChainId.GOERLI
-                    ? sdk.ChainId.MAINNET
-                    : chainId,
+                chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
                 walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
@@ -117,17 +103,14 @@ export function useNFTDeploy<
               {
                 accountId: account.accountId,
                 counterFactualInfo: eddsaKey.counterFactualInfo,
-              }
-            );
+              },
+            )
           } else {
             response = await LoopringAPI.userAPI?.submitDeployCollection(
               {
                 request: request as sdk.OriginDeployCollectionRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
-                chainId:
-                  chainId !== sdk.ChainId.GOERLI
-                    ? sdk.ChainId.MAINNET
-                    : chainId,
+                chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
                 walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
@@ -137,21 +120,18 @@ export function useNFTDeploy<
               {
                 accountId: account.accountId,
                 counterFactualInfo: eddsaKey.counterFactualInfo,
-              }
-            );
+              },
+            )
           }
 
-          if (
-            (response as sdk.RESULT_INFO).code ||
-            (response as sdk.RESULT_INFO).message
-          ) {
-            throw response;
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response
           }
           setOneItem({
             chainId: chainId as sdk.ChainId,
             uniqueId: request.tokenAddress.toLowerCase(),
             domain: Layer1Action.NFTDeploy,
-          });
+          })
           // setShowAccount({
           //   isShow: true,
           //   step: AccountStep.NFTDeploy_In_Progress,
@@ -163,40 +143,39 @@ export function useNFTDeploy<
             info: {
               symbol: nftDeployValue?.tokenAddress,
             },
-          });
+          })
           if (isHWAddr) {
-            myLog("......try to set isHWAddr", isHWAddr);
-            updateHW({ wallet: account.accAddress, isHWAddr });
+            myLog('......try to set isHWAddr', isHWAddr)
+            updateHW({ wallet: account.accAddress, isHWAddr })
           }
-          walletLayer2Service.sendUserUpdate();
-          setShowNFTDeploy({ isShow: false });
-          resetNFTDeployData();
+          walletLayer2Service.sendUserUpdate()
+          setShowNFTDeploy({ isShow: false })
+          resetNFTDeployData()
           // searchParams.delete("detail");
 
           if (nftDeployValue.nftData) {
             updateWalletLayer2NFT({
-              page: Number(searchParams.get("collectionPage")) ?? 1,
+              page: Number(searchParams.get('collectionPage')) ?? 1,
               collectionId: nftDeployValue?.collectionMeta?.id,
-              collectionContractAddress:
-                nftDeployValue?.collectionMeta?.contractAddress,
-            });
+              collectionContractAddress: nftDeployValue?.collectionMeta?.contractAddress,
+            })
             setShowNFTDetail({
               ...isShowNFTDetail,
               deploymentStatus: sdk.DEPLOYMENT_STATUS.DEPLOYING,
-            });
+            })
           } else {
             updateWalletL2Collection({
               page: collectionPage,
-            });
-            history.push(pathname + "?" + searchParams.toString());
+            })
+            history.push(pathname + '?' + searchParams.toString())
           }
-          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE);
+          await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE)
           if (store.getState().modals.isShowAccount.isShow) {
-            setShowAccount({ isShow: false });
+            setShowAccount({ isShow: false })
           }
         }
       } catch (e: any) {
-        const code = sdk.checkErrorInfo(e, isFirstTime);
+        const code = sdk.checkErrorInfo(e, isFirstTime)
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
@@ -205,8 +184,8 @@ export function useNFTDeploy<
               info: {
                 symbol: nftDeployValue?.tokenAddress,
               },
-            });
-            break;
+            })
+            break
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
             setShowAccount({
@@ -215,15 +194,11 @@ export function useNFTDeploy<
               info: {
                 symbol: nftDeployValue?.tokenAddress,
               },
-            });
-            break;
+            })
+            break
           default:
-            if (
-              [102024, 102025, 114001, 114002].includes(
-                (e as sdk.RESULT_INFO)?.code || 0
-              )
-            ) {
-              checkFeeIsEnough({ isRequiredAPI: true });
+            if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
+              checkFeeIsEnough({ isRequiredAPI: true })
             }
             setShowAccount({
               isShow: true,
@@ -241,9 +216,9 @@ export function useNFTDeploy<
                     }
                   : e ?? {}),
               },
-            });
+            })
 
-            break;
+            break
         }
       }
     },
@@ -259,37 +234,34 @@ export function useNFTDeploy<
       page,
       resetNFTDeployData,
       updateHW,
-    ]
-  );
+    ],
+  )
   React.useEffect(() => {
     if (isShowNFTDeploy.isShow) {
-      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES });
+      checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     } else {
-      resetIntervalTime();
+      resetIntervalTime()
     }
     return () => {
-      resetIntervalTime();
-    };
-  }, [isShowNFTDeploy]);
+      resetIntervalTime()
+    }
+  }, [isShowNFTDeploy])
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && !isFeeNotEnough.isFeeNotEnough) {
-      enableBtn();
-      return;
+      enableBtn()
+      return
     }
-    disableBtn();
-  }, [disableBtn, enableBtn, isFeeNotEnough.isFeeNotEnough, tokenMap]);
+    disableBtn()
+  }, [disableBtn, enableBtn, isFeeNotEnough.isFeeNotEnough, tokenMap])
 
   React.useEffect(() => {
-    checkBtnStatus();
-  }, [checkBtnStatus, nftDeployValue, isFeeNotEnough.isFeeNotEnough]);
+    checkBtnStatus()
+  }, [checkBtnStatus, nftDeployValue, isFeeNotEnough.isFeeNotEnough])
 
-  const onNFTDeployClick = async (
-    _nftDeployValue: T,
-    isFirsTime: boolean = true
-  ) => {
-    const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-    const nftDeployValue = store.getState()._router_modalData.nftDeployValue;
+  const onNFTDeployClick = async (_nftDeployValue: T, isFirsTime: boolean = true) => {
+    const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
+    const nftDeployValue = store.getState()._router_modalData.nftDeployValue
 
     if (
       readyState === AccountStatus.ACTIVATED &&
@@ -313,33 +285,29 @@ export function useNFTDeploy<
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTDeploy_WaitForAuth,
-        });
-        const feeToken = tokenMap[nftDeployValue.fee.belong];
-        const feeRaw =
-          nftDeployValue.fee.feeRaw ?? nftDeployValue.fee.__raw__?.feeRaw ?? 0;
-        const _fee = sdk.toBig(feeRaw);
+        })
+        const feeToken = tokenMap[nftDeployValue.fee.belong]
+        const feeRaw = nftDeployValue.fee.feeRaw ?? nftDeployValue.fee.__raw__?.feeRaw ?? 0
+        const _fee = sdk.toBig(feeRaw)
         // const _fee = sdk.toBig(nftDeployValue.fee.__raw__?.feeRaw ?? 0);
-        myLog("fee.__raw__", _fee);
+        myLog('fee.__raw__', _fee)
         const storageId = await LoopringAPI.userAPI?.getNextStorageId(
           {
             accountId,
             sellTokenId: Number(feeToken.tokenId),
           },
-          apiKey
-        );
-        let req:
-          | sdk.OriginDeployNFTRequestV3
-          | sdk.OriginDeployCollectionRequestV3;
+          apiKey,
+        )
+        let req: sdk.OriginDeployNFTRequestV3 | sdk.OriginDeployCollectionRequestV3
         if (
           nftDeployValue.collectionMeta &&
-          nftDeployValue.collectionMeta.owner?.toLowerCase() ===
-            account.accAddress?.toLowerCase()
+          nftDeployValue.collectionMeta.owner?.toLowerCase() === account.accAddress?.toLowerCase()
         ) {
           req = {
             nftOwner: account.accAddress?.toLowerCase(),
-            nftBaseUri: nftDeployValue.collectionMeta.baseUri ?? "",
+            nftBaseUri: nftDeployValue.collectionMeta.baseUri ?? '',
             tokenAddress: nftDeployValue.tokenAddress,
-            nftFactory: nftDeployValue.collectionMeta?.nftFactory ?? "",
+            nftFactory: nftDeployValue.collectionMeta?.nftFactory ?? '',
             transfer: {
               exchange: exchangeInfo.exchangeAddress,
               payerAddr: accAddress,
@@ -352,10 +320,10 @@ export function useNFTDeploy<
               },
               validUntil: getTimestampDaysLater(DAYS),
             },
-          };
+          }
         } else {
           req = {
-            nftData: nftDeployValue.nftData ?? "",
+            nftData: nftDeployValue.nftData ?? '',
             tokenAddress: nftDeployValue.tokenAddress,
             transfer: {
               exchange: exchangeInfo.exchangeAddress,
@@ -369,26 +337,26 @@ export function useNFTDeploy<
               },
               validUntil: getTimestampDaysLater(DAYS),
             },
-          };
+          }
         }
 
-        myLog("nftDeploy req:", req);
+        myLog('nftDeploy req:', req)
 
-        processRequestNFT(req, isFirsTime);
+        processRequestNFT(req, isFirsTime)
       } catch (e: unknown) {
         // nftTransfer failed
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTDeploy_Failed,
           error: { code: UIERROR_CODE.UNKNOWN, msg: (e as any).message },
-        });
+        })
       }
     } else {
-      return false;
+      return false
     }
-  };
+  }
 
-  useWalletLayer2Socket({});
+  useWalletLayer2Socket({})
 
   const nftDeployProps = {
     coinMap: {},
@@ -396,17 +364,17 @@ export function useNFTDeploy<
     tradeData: nftDeployValue as T,
     walletMap: {},
     onNFTDeployClick: (trade: T) => {
-      onNFTDeployClick(trade);
+      onNFTDeployClick(trade)
     },
     nftDeployBtnStatus: btnStatus,
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
-  } as NFTDeployProps<any, any>;
+  } as NFTDeployProps<any, any>
 
   return {
     nftDeployProps,
     updateNFTDeployData,
-  };
+  }
 }

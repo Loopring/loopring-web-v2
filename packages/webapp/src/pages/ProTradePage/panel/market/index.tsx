@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   DepthBlock,
   DepthTitle,
@@ -6,7 +6,7 @@ import {
   ToggleButtonGroup,
   TradePro,
   useSettings,
-} from "@loopring-web/component-lib";
+} from '@loopring-web/component-lib'
 import {
   BreakPoint,
   CurrencyToTag,
@@ -22,26 +22,21 @@ import {
   SoursURL,
   UpColor,
   UpIcon,
-} from "@loopring-web/common-resources";
-import { Box, Divider, MenuItem, Tab, Tabs, Typography } from "@mui/material";
-import React from "react";
-import {
-  usePageTradePro,
-  useSystem,
-  useTokenMap,
-  useTokenPrices,
-} from "@loopring-web/core";
-import styled from "@emotion/styled/";
-import { TextField } from "@loopring-web/component-lib";
+} from '@loopring-web/common-resources'
+import { Box, Divider, MenuItem, Tab, Tabs, Typography } from '@mui/material'
+import React from 'react'
+import { usePageTradePro, useSystem, useTokenMap, useTokenPrices } from '@loopring-web/core'
+import styled from '@emotion/styled/'
+import { TextField } from '@loopring-web/component-lib'
 export enum TabMarketIndex {
-  Orderbook = "Orderbook",
-  Trades = "Trades",
+  Orderbook = 'Orderbook',
+  Trades = 'Trades',
 }
 
 enum DepthShowType {
-  asks = "asks",
-  half = "half",
-  bids = "bids",
+  asks = 'asks',
+  half = 'half',
+  bids = 'bids',
 }
 
 const MarketToolbar = styled(Box)`
@@ -80,9 +75,9 @@ const MarketToolbar = styled(Box)`
   //.MuiToggleButton-root.MuiToggleButton-sizeSmall.Mui-selected{
   //  depthType === DepthShowType.bids ?  :
   //}
-` as typeof Box;
+` as typeof Box
 
-export const MarketView = withTranslation("common")(
+export const MarketView = withTranslation('common')(
   ({
     rowLength,
     tableLength,
@@ -93,66 +88,62 @@ export const MarketView = withTranslation("common")(
     isOnlyTrade = false,
     ...rest
   }: {
-    market: MarketType;
-    main: keyof typeof TabMarketIndex;
-    breakpoint: BreakPoint;
-    rowLength: number;
-    tableLength: number;
-    isOnlyTrade?: boolean;
+    market: MarketType
+    main: keyof typeof TabMarketIndex
+    breakpoint: BreakPoint
+    rowLength: number
+    tableLength: number
+    isOnlyTrade?: boolean
   } & WithTranslation) => {
     // @ts-ignore
-    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
-    const [tabIndex, setTabIndex] = React.useState<TabMarketIndex>(
-      main as TabMarketIndex
-    );
-    const { pageTradePro, updatePageTradePro } = usePageTradePro();
-    const { marketMap, tokenMap } = useTokenMap();
-    const { upColor, currency } = useSettings();
-    const { tokenPrices } = useTokenPrices();
-    const { forexMap } = useSystem();
+    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i)
+    const [tabIndex, setTabIndex] = React.useState<TabMarketIndex>(main as TabMarketIndex)
+    const { pageTradePro, updatePageTradePro } = usePageTradePro()
+    const { marketMap, tokenMap } = useTokenMap()
+    const { upColor, currency } = useSettings()
+    const { tokenPrices } = useTokenPrices()
+    const { forexMap } = useSystem()
 
     const [depthViewData, setDepthViewData] = React.useState<{
-      asks: DepthViewData[];
-      bids: DepthViewData[];
+      asks: DepthViewData[]
+      bids: DepthViewData[]
     }>({
       asks: [],
       bids: [],
-    });
-    const [depthType, setDepthType] = React.useState<DepthShowType>(
-      DepthShowType.half
-    );
+    })
+    const [depthType, setDepthType] = React.useState<DepthShowType>(DepthShowType.half)
     const handleOnDepthTypeChange = React.useCallback(
       (event: React.MouseEvent<HTMLElement> | any, newValue) => {
-        setDepthType(newValue);
-        rebuildList();
+        setDepthType(newValue)
+        rebuildList()
       },
-      []
-    );
+      [],
+    )
 
     const handleOnLevelChange = React.useCallback(
       (event: React.ChangeEvent<{ value: string }>) => {
-        updatePageTradePro({ market, depthLevel: Number(event.target?.value) });
+        updatePageTradePro({ market, depthLevel: Number(event.target?.value) })
       },
-      [market]
-    );
+      [market],
+    )
     React.useEffect(() => {
       if ([BreakPoint.lg, BreakPoint.xlg].includes(breakpoint)) {
-        setTabIndex(main as TabMarketIndex);
+        setTabIndex(main as TabMarketIndex)
       }
-    }, [breakpoint]);
+    }, [breakpoint])
     const rebuildList = React.useCallback(() => {
-      const depth = pageTradePro.depth;
+      const depth = pageTradePro.depth
       if (depth && (depth.bids.length || depth.asks.length)) {
-        const baseDecimal = tokenMap[baseSymbol]?.decimals;
-        const quoteDecimal = tokenMap[baseSymbol]?.decimals;
-        const precisionForPrice = marketMap[market]?.precisionForPrice;
+        const baseDecimal = tokenMap[baseSymbol]?.decimals
+        const quoteDecimal = tokenMap[baseSymbol]?.decimals
+        const precisionForPrice = marketMap[market]?.precisionForPrice
         //@ts-ignore
-        const basePrecision = tokenMap[baseSymbol].precisionForOrder;
-        let [countAsk, countBid] = [rowLength, rowLength];
+        const basePrecision = tokenMap[baseSymbol].precisionForOrder
+        let [countAsk, countBid] = [rowLength, rowLength]
         if (depthType === DepthShowType.bids) {
-          [countAsk, countBid] = [0, rowLength * 2];
+          ;[countAsk, countBid] = [0, rowLength * 2]
         } else if (depthType === DepthShowType.asks) {
-          [countAsk, countBid] = [rowLength * 2, 0];
+          ;[countAsk, countBid] = [rowLength * 2, 0]
         } else {
         }
         const viewData = depth2ViewData({
@@ -163,44 +154,32 @@ export const MarketView = withTranslation("common")(
           quoteDecimal,
           precisionForPrice,
           basePrecision,
-        });
-        setDepthViewData(viewData);
+        })
+        setDepthViewData(viewData)
       }
-    }, [pageTradePro, depthType, rowLength]);
+    }, [pageTradePro, depthType, rowLength])
     const middlePrice = React.useMemo(() => {
-      const { ticker, depth } = pageTradePro;
-      let close: number | string | undefined = undefined;
-      let up: "up" | "down" | "" = "";
-      let priceColor = "";
-      let value = "";
-      if (
-        ticker &&
-        depth &&
-        tokenPrices &&
-        depth.mid_price &&
-        depth.symbol === market
-      ) {
-        const quotePrice = tokenPrices[quoteSymbol];
-        close = ticker.close ? ticker.close : depth?.mid_price;
+      const { ticker, depth } = pageTradePro
+      let close: number | string | undefined = undefined
+      let up: 'up' | 'down' | '' = ''
+      let priceColor = ''
+      let value = ''
+      if (ticker && depth && tokenPrices && depth.mid_price && depth.symbol === market) {
+        const quotePrice = tokenPrices[quoteSymbol]
+        close = ticker.close ? ticker.close : depth?.mid_price
         if (depth.mid_price === close) {
-          priceColor = "";
-          up = "";
+          priceColor = ''
+          up = ''
         } else if (depth.mid_price < close) {
-          priceColor =
-            upColor == UpColor.green
-              ? "var(--color-success)"
-              : "var(--color-error)";
-          up = "up";
+          priceColor = upColor == UpColor.green ? 'var(--color-success)' : 'var(--color-error)'
+          up = 'up'
         } else {
-          up = "down";
-          priceColor =
-            upColor == UpColor.green
-              ? "var(--color-error)"
-              : "var(--color-success)";
+          up = 'down'
+          priceColor = upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'
         }
 
         value =
-          "\u2248 " +
+          '\u2248 ' +
           PriceTag[CurrencyToTag[currency]] +
           getValuePrecisionThousand(
             close * (quotePrice ?? 0) * (forexMap[currency] ?? 0),
@@ -208,22 +187,20 @@ export const MarketView = withTranslation("common")(
             undefined,
             2,
             true,
-            { isFait: true }
-          );
+            { isFait: true },
+          )
       }
-      close = close
-        ? close.toFixed(marketMap[market]?.precisionForPrice)
-        : undefined;
+      close = close ? close.toFixed(marketMap[market]?.precisionForPrice) : undefined
       return (
         <Typography
-          color={"var(--color-text-third)"}
-          variant={"body2"}
-          component={"p"}
-          display={"inline-flex"}
-          textAlign={"center"}
-          alignItems={"baseline"}
+          color={'var(--color-text-third)'}
+          variant={'body2'}
+          component={'p'}
+          display={'inline-flex'}
+          textAlign={'center'}
+          alignItems={'baseline'}
           onClick={(event: any) => {
-            priceClick(event, { price: close } as any, "close");
+            priceClick(event, { price: close } as any, 'close')
           }}
         >
           {close ? (
@@ -231,18 +208,18 @@ export const MarketView = withTranslation("common")(
               <Typography
                 lineHeight={1}
                 color={priceColor}
-                component={"span"}
+                component={'span'}
                 paddingRight={1}
-                alignItems={"center"}
-                display={"inline-flex"}
+                alignItems={'center'}
+                display={'inline-flex'}
               >
                 {close}
                 {up && (
                   <UpIcon
-                    fontSize={"small"}
+                    fontSize={'small'}
                     htmlColor={priceColor}
                     style={{
-                      transform: priceColor === "up" ? "" : "rotate(-180deg)",
+                      transform: priceColor === 'up' ? '' : 'rotate(-180deg)',
                     }}
                   />
                 )}
@@ -253,19 +230,19 @@ export const MarketView = withTranslation("common")(
             EmptyValueTag
           )}
         </Typography>
-      );
-    }, [pageTradePro, market, currency, tokenPrices]);
+      )
+    }, [pageTradePro, market, currency, tokenPrices])
     const toggleData = React.useMemo(() => {
       return [
         {
           value: DepthShowType.half,
           JSX: (
             <DepthHIcon
-              fontSize={"large"}
-              bo={"var(--color-border)"}
-              l={"var(--color-border)"}
-              a={"var(--color-error)"}
-              b={"var(--color-success)"}
+              fontSize={'large'}
+              bo={'var(--color-border)'}
+              l={'var(--color-border)'}
+              a={'var(--color-error)'}
+              b={'var(--color-success)'}
             />
           ),
           key: DepthShowType.half,
@@ -274,11 +251,11 @@ export const MarketView = withTranslation("common")(
           value: DepthShowType.bids,
           JSX: (
             <DepthFIcon
-              fontSize={"large"}
-              bo={"var(--color-border)"}
-              l={"var(--color-border)"}
-              a={"var(--color-success)"}
-              b={""}
+              fontSize={'large'}
+              bo={'var(--color-border)'}
+              l={'var(--color-border)'}
+              a={'var(--color-success)'}
+              b={''}
             />
           ),
           key: DepthShowType.bids,
@@ -287,17 +264,17 @@ export const MarketView = withTranslation("common")(
           value: DepthShowType.asks,
           JSX: (
             <DepthFIcon
-              fontSize={"large"}
-              bo={"var(--color-border)"}
-              l={"var(--color-border)"}
-              a={"var(--color-error)"}
-              b={""}
+              fontSize={'large'}
+              bo={'var(--color-border)'}
+              l={'var(--color-border)'}
+              a={'var(--color-error)'}
+              b={''}
             />
           ),
           key: DepthShowType.asks,
         },
-      ];
-    }, [depthType]);
+      ]
+    }, [depthType])
     const tradeProTable = React.useMemo(() => {
       // myLog('tableLength',tableLength)
 
@@ -308,11 +285,7 @@ export const MarketView = withTranslation("common")(
               // rowHeight={MarketRowHeight}
               // headerRowHeight={20}
               marketInfo={marketMap[market]}
-              rawData={
-                pageTradePro.tradeArray
-                  ? pageTradePro.tradeArray.slice(0, tableLength)
-                  : []
-              }
+              rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
               // basePrecision={basePrecision}
               precision={marketMap[market]?.precisionForPrice}
               currentheight={tableLength * 20 + 20}
@@ -320,33 +293,29 @@ export const MarketView = withTranslation("common")(
           ) : (
             <Box
               flex={1}
-              height={"100%"}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
+              height={'100%'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
             >
-              <img
-                className="loading-gif"
-                width="36"
-                src={`${SoursURL}images/loading-line.gif`}
-              />
+              <img className='loading-gif' width='36' src={`${SoursURL}images/loading-line.gif`} />
             </Box>
           )}
         </>
-      );
-    }, [tableLength, market, pageTradePro.tradeArray, pageTradePro.depthLevel]);
+      )
+    }, [tableLength, market, pageTradePro.tradeArray, pageTradePro.depthLevel])
 
     const priceClick = React.useCallback(
       (event, chooseDepth, type) => {
-        updatePageTradePro({ market, chooseDepth: { ...chooseDepth, type } });
+        updatePageTradePro({ market, chooseDepth: { ...chooseDepth, type } })
       },
-      [updatePageTradePro, market]
-    );
+      [updatePageTradePro, market],
+    )
     React.useEffect(() => {
       if (pageTradePro.depth?.symbol === market && rowLength) {
-        rebuildList();
+        rebuildList()
       }
-    }, [pageTradePro.depth, depthType, rowLength]);
+    }, [pageTradePro.depth, depthType, rowLength])
     // const defaultDepth =
     // React.useEffect(() => {
     //     // if (pageTradePro.depth?.symbol === market && rowLength) {
@@ -357,17 +326,12 @@ export const MarketView = withTranslation("common")(
     //     return
     // }, [pageTradePro.precisionLevels, pageTradePro.depthLevel, handleOnLevelChange])
     return (
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"stretch"}
-        height={"100%"}
-      >
-        <Box component={"header"} width={"100%"} paddingX={2}>
+      <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} height={'100%'}>
+        <Box component={'header'} width={'100%'} paddingX={2}>
           {[BreakPoint.lg, BreakPoint.xlg].includes(breakpoint) ? (
             // <Tabs value={tabIndex}>
             //     <Tab value={tabIndex} labelProl={t(`labelPro${tabIndex}`)}/>
-            <Typography variant={"body1"} lineHeight={"44px"}>
+            <Typography variant={'body1'} lineHeight={'44px'}>
               {t(`labelPro${tabIndex}`)}
             </Typography>
           ) : (
@@ -375,7 +339,7 @@ export const MarketView = withTranslation("common")(
             <Tabs
               value={tabIndex}
               onChange={(_e, value) => {
-                setTabIndex(value);
+                setTabIndex(value)
               }}
             >
               {!isOnlyTrade && (
@@ -397,17 +361,17 @@ export const MarketView = withTranslation("common")(
           {/*<Tab key={TabMarketIndex.Trades} value={TabMarketIndex.Trades} label={t(`labelPro${TabMarketIndex.Trades}`)}/>*/}
           {/*{React.useMemo(()=>store.getState()._router_pageTradePro.pageTradePro.depthLevel,[pageTradePro])}*/}
         </Box>
-        <Divider style={{ marginTop: "-1px" }} />
+        <Divider style={{ marginTop: '-1px' }} />
         {tabIndex === TabMarketIndex.Orderbook ? (
-          <Box className={"depthPanel"} flex={1} paddingY={1}>
+          <Box className={'depthPanel'} flex={1} paddingY={1}>
             <MarketToolbar
-              component={"header"}
-              className={"pro"}
-              width={"100%"}
-              display={"flex"}
+              component={'header'}
+              className={'pro'}
+              width={'100%'}
+              display={'flex'}
               paddingX={2}
-              alignItems={"stretch"}
-              justifyContent={"space-between"}
+              alignItems={'stretch'}
+              justifyContent={'space-between'}
               height={24}
             >
               <ToggleButtonGroup
@@ -417,14 +381,14 @@ export const MarketView = withTranslation("common")(
                   t,
                   tgItemJSXs: toggleData,
                   value: depthType,
-                  size: "small",
+                  size: 'small',
                 }}
                 onChange={handleOnDepthTypeChange}
               />
               <TextField
-                id="outlined-select-level"
+                id='outlined-select-level'
                 select
-                size={"small"}
+                size={'small'}
                 value={pageTradePro.depthLevel}
                 onChange={handleOnLevelChange}
                 inputProps={{ IconComponent: DropDownIcon }}
@@ -438,14 +402,8 @@ export const MarketView = withTranslation("common")(
               </TextField>
             </MarketToolbar>
 
-            {pageTradePro.ticker &&
-            pageTradePro.depth?.symbol === pageTradePro.market ? (
-              <Box
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"stretch"}
-                paddingX={2}
-              >
+            {pageTradePro.ticker && pageTradePro.depth?.symbol === pageTradePro.market ? (
+              <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} paddingX={2}>
                 <Box paddingTop={1 / 2}>
                   <DepthTitle marketInfo={marketMap[market]} />
                 </Box>
@@ -459,12 +417,12 @@ export const MarketView = withTranslation("common")(
                   // showTitle={true}
                 />
                 <Box
-                  display={"flex"}
-                  flexDirection={"column"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
                   height={24}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                 >
                   {middlePrice}
                 </Box>
@@ -480,26 +438,26 @@ export const MarketView = withTranslation("common")(
             ) : (
               <Box
                 flex={1}
-                height={"100%"}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"center"}
+                height={'100%'}
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'center'}
               >
                 <img
-                  className="loading-gif"
-                  alt={"loading"}
-                  width="36"
+                  className='loading-gif'
+                  alt={'loading'}
+                  width='36'
                   src={`${SoursURL}images/loading-line.gif`}
                 />
               </Box>
             )}
           </Box>
         ) : (
-          <Box className={"tradePanel"} flex={1} paddingY={1}>
+          <Box className={'tradePanel'} flex={1} paddingY={1}>
             {tradeProTable}
           </Box>
         )}
       </Box>
-    );
-  }
-);
+    )
+  },
+)

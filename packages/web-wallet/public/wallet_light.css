@@ -1,21 +1,20 @@
 @import 'reset.css';
 
 html {
-    --color-global-Bg: var(--light900);
-    --color-primary: #446EFF;
-    --color-primary-hover: var(--light900) 20;
-    --color-primary-pressed: #2D49B2;
-    --color-disable: #343754;
-    --color-text-primary: var(--dark);
-    --color-border: var(--dark900);
-    --color-divide: var(--light500);
-    --color-border-hover: var(--color-primary);
-    --color-text-Secondary: var(--dark500);
-    --color-text-third: var(--light400);
-    --color-text-Button: var(--dark);
-    --color-text-ButtonSelect: var(--dark);
-    --color-text-Disable: var(--dark) 25;
-    --color-box: var(--light);
-    --color-logo: #446EFF;
+  --color-global-Bg: var(--light900);
+  --color-primary: #446eff;
+  --color-primary-hover: var(--light900) 20;
+  --color-primary-pressed: #2d49b2;
+  --color-disable: #343754;
+  --color-text-primary: var(--dark);
+  --color-border: var(--dark900);
+  --color-divide: var(--light500);
+  --color-border-hover: var(--color-primary);
+  --color-text-Secondary: var(--dark500);
+  --color-text-third: var(--light400);
+  --color-text-Button: var(--dark);
+  --color-text-ButtonSelect: var(--dark);
+  --color-text-Disable: var(--dark) 25;
+  --color-box: var(--light);
+  --color-logo: #446eff;
 }
-
