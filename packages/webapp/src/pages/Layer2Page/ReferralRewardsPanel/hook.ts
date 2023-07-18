@@ -47,7 +47,7 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
                 amount: {
                   unit: 'LRC',
                   value: getValuePrecisionThousand(
-                    lrcAmount,
+                    sdk.toBig(lrcAmount).div('1e' + tokenMap['LRC'].decimals),
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,
@@ -176,7 +176,7 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
                 amount: {
                   unit: 'LRC',
                   value: getValuePrecisionThousand(
-                    lrcAmount,
+                    sdk.toBig(lrcAmount).div('1e' + tokenMap['LRC'].decimals),
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,

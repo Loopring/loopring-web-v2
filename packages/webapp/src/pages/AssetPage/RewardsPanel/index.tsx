@@ -30,7 +30,7 @@ const RewardsPanel = withTranslation('common')(
     const container = React.useRef<HTMLDivElement>(null)
 
     return (
-      <StylePaper ref={container} flex={1}>
+      <StylePaper ref={container} flex={1} marginTop={2}>
         <Toast
           alertText={toastOpen?.content ?? ''}
           severity={toastOpen?.type ?? ToastType.success}
