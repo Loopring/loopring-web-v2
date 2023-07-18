@@ -107,7 +107,7 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
             setSummary({
               ...response,
               totalValue:
-                response.totalProfit == '0'
+                response.totalProfit == '' || response.totalProfit == '0'
                   ? undefined
                   : getValuePrecisionThousand(
                       sdk.toBig(response.totalProfit).div('1e' + tokenMap['LRC'].decimals),
@@ -117,7 +117,7 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
                       false,
                     ),
               claimableValue:
-                response.claimableProfit == '0'
+                response.claimableProfit == '' || response.claimableProfit == '0'
                   ? undefined
                   : getValuePrecisionThousand(
                       sdk.toBig(response.claimableProfit).div('1e' + tokenMap['LRC'].decimals),
@@ -233,7 +233,7 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
             setSummary({
               ...response,
               totalValue:
-                response.totalProfit == '0'
+                response.totalProfit == '' || response.totalProfit == '0'
                   ? undefined
                   : getValuePrecisionThousand(
                       sdk.toBig(response.totalProfit).div('1e' + tokenMap['LRC'].decimals),
@@ -243,7 +243,7 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
                       false,
                     ),
               claimableValue:
-                response.claimableProfit == '0'
+                response.claimableProfit == '' || response.claimableProfit == '0'
                   ? undefined
                   : getValuePrecisionThousand(
                       sdk.toBig(response.claimableProfit).div('1e' + tokenMap['LRC'].decimals),

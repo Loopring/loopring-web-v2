@@ -450,7 +450,7 @@ const ReferView = () => {
     }
     setCopyToastOpen(true)
   }
-
+  myLog('refundData', refundData, referralsData)
   return (
     <>
       <Toast
@@ -547,18 +547,20 @@ const ReferView = () => {
                         variant={'body1'}
                         paddingRight={2}
                       >
-                        {t('labelReferralsTotalReferrals') +
-                          (refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
-                            <Typography
-                              variant={'inherit'}
-                              component={'span'}
-                              color={'textPrimary'}
-                            >
-                              {refundData.summary?.tradeNum}
-                            </Typography>
-                          ) : (
-                            EmptyValueTag
-                          ))}
+                        {t('labelReferralsTotalReferrals')}
+                        {referralsData.summary?.downsidesNum &&
+                        referralsData.summary?.downsidesNum != '0' ? (
+                          <Typography
+                            variant={'inherit'}
+                            component={'span'}
+                            color={'textPrimary'}
+                            paddingLeft={1}
+                          >
+                            {referralsData.summary?.downsidesNum}
+                          </Typography>
+                        ) : (
+                          EmptyValueTag
+                        )}
                       </Typography>
                     </Grid>
                     <Grid
@@ -575,18 +577,19 @@ const ReferView = () => {
                         variant={'body1'}
                         paddingRight={2}
                       >
-                        {t('labelReferralsTotalEarning') +
-                          (referralsData.summary?.totalValue ? (
-                            <Typography
-                              variant={'inherit'}
-                              component={'span'}
-                              color={'textPrimary'}
-                            >
-                              {referralsData.summary?.totalValue + ' LRC'}
-                            </Typography>
-                          ) : (
-                            EmptyValueTag
-                          ))}
+                        {t('labelReferralsTotalEarning')}
+                        {referralsData.summary?.totalValue ? (
+                          <Typography
+                            variant={'inherit'}
+                            component={'span'}
+                            color={'textPrimary'}
+                            paddingLeft={1}
+                          >
+                            {referralsData.summary?.totalValue + ' LRC'}
+                          </Typography>
+                        ) : (
+                          EmptyValueTag
+                        )}
                       </Typography>
                     </Grid>
 
@@ -662,14 +665,19 @@ const ReferView = () => {
                       variant={'body1'}
                       paddingRight={2}
                     >
-                      {t('labelReferralsTotalTradeNumber') +
-                        (refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
-                          <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                            {refundData.summary?.tradeNum}
-                          </Typography>
-                        ) : (
-                          EmptyValueTag
-                        ))}
+                      {t('labelReferralsTotalTradeNumber')}
+                      {refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
+                        <Typography
+                          variant={'inherit'}
+                          component={'span'}
+                          color={'textPrimary'}
+                          paddingLeft={1}
+                        >
+                          {refundData.summary?.tradeNum}
+                        </Typography>
+                      ) : (
+                        EmptyValueTag
+                      )}
                     </Typography>
                   </Grid>
                   <Grid
@@ -686,15 +694,19 @@ const ReferView = () => {
                       variant={'body1'}
                       paddingRight={2}
                     >
-                      {t('labelReferralsTotalRefund') +
-                        (refundData.summary?.totalValue ? (
-                          <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                            {' '}
-                            {refundData.summary?.totalValue + ' LRC'}
-                          </Typography>
-                        ) : (
-                          EmptyValueTag
-                        ))}
+                      {t('labelReferralsTotalRefund')}
+                      {refundData.summary?.totalValue ? (
+                        <Typography
+                          variant={'inherit'}
+                          component={'span'}
+                          color={'textPrimary'}
+                          paddingLeft={1}
+                        >
+                          {refundData.summary?.totalValue + ' LRC'}
+                        </Typography>
+                      ) : (
+                        EmptyValueTag
+                      )}
                     </Typography>
                   </Grid>
 
@@ -716,7 +728,12 @@ const ReferView = () => {
 
                       {refundData.summary?.claimableValue ? (
                         <>
-                          <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                          <Typography
+                            variant={'inherit'}
+                            component={'span'}
+                            color={'textPrimary'}
+                            paddingLeft={1}
+                          >
                             {refundData.summary?.claimableValue + ' LRC'}
                           </Typography>{' '}
                           <Button
