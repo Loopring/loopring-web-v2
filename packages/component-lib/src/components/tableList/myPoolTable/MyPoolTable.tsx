@@ -59,6 +59,16 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   }
 
   ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+  .assetWrap & {
+    .titleSummary.mobile {
+      margin-top: ${({ theme }) => theme.unit * 5}px;
+      flex-direction: row;
+    }
+  }
+
+  .titleSummary.mobile {
+    flex-direction: row;
+  }
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element
 
 const PoolStyle = styled(Box)`
@@ -448,15 +458,16 @@ export const MyPoolTable = withTranslation('tables')(
                 height={'100%'}
               >
                 <CoinIcons
+                  size={18}
                   type={TokenType.lp}
                   tokenIcon={[coinJson[row.ammDetail?.coinA], coinJson[row.ammDetail?.coinB]]}
                 />
                 <Typography
-                  variant={'inherit'}
+                  variant={'body2'}
                   color={'textPrimary'}
                   display={'flex'}
                   flexDirection={'column'}
-                  marginLeft={2}
+                  marginLeft={0}
                   component={'span'}
                   paddingRight={1}
                 >
@@ -523,14 +534,14 @@ export const MyPoolTable = withTranslation('tables')(
                         abbreviate: 3,
                       }) +
                       ' ' +
-                      coinAInfo.simpleName +
+                      coinAInfo?.simpleName +
                       `  +  ` +
                       getValuePrecisionThousand(balanceB, undefined, 2, 2, true, {
                         isAbbreviate: true,
                         abbreviate: 3,
                       }) +
                       ' ' +
-                      coinBInfo.simpleName}
+                      coinBInfo?.simpleName}
                 </Typography>
               </Box>
             )
@@ -598,6 +609,7 @@ export const MyPoolTable = withTranslation('tables')(
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
+            className={`titleSummary ${isMobile ? 'mobile' : ''}`}
             flexDirection={isMobile ? 'column' : 'row'}
           >
             <>{title}</>

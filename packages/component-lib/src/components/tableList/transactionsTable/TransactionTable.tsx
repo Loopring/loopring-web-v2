@@ -279,11 +279,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
             const hasSymbol =
               row.side.toLowerCase() === sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? ''
-                : // t("labelForceWithdrawTotalDes", {
-                //     address: getShortAddr(row.withdrawalInfo?.recipient),
-                //     symbol: row.symbol,
-                //   })
-                row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER // TransactionTradeTypes.transfer
+                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER // TransactionTradeTypes.transfer
                 ? row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
                   ? '+'
                   : '-'

@@ -148,7 +148,7 @@ export const AssetPanel = withTranslation('common')(
         )}
         {currentTab === AssetTabIndex.Rewards && <RewardsPanel hideAssets={hideAssets} />}
         {currentTab === AssetTabIndex.Invests && (
-          <MyLiquidity isHideTotal={true} hideAssets={hideAssets} />
+          <MyLiquidity className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
         )}
         {!isMobile && currentTab === AssetTabIndex.RedPacket && (
           <RedPacketClaimPanel hideAssets={hideAssets} />

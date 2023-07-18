@@ -1778,4 +1778,8 @@ export default {
   labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
   labelClaimallToken: 'Reward token {{symbol}}',
+  labelImportLegacyCollection: 'Import Collection for Legacy NFT',
+  labelImportLegacyCollectionDes:
+    'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
+  labelImportLegacyCollectionBtn: 'Go',
 }
