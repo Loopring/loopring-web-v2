@@ -44,11 +44,12 @@ const BoxContent = styled(Box)`
 `
 const BoxStyle = styled(Box)`
   ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_R: 1 / 2, d_W: 0 })};
-  background: var(--provider-agree);
+  //background: var(--provider-agree);
 
   .MuiFormControlLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.h6};
     align-items: flex-start;
+    margin-right: 0;
 
     .MuiTypography-root {
       padding: ${({ theme }) => theme.unit}px 0;
@@ -116,6 +117,7 @@ export const ProviderMenu = ({
       alignItems={'center'}
       justifyContent={'space-between'}
       flexDirection={'column'}
+      paddingBottom={4}
       // sx={{ marginTop: "-40px" }}
     >
       <Typography
@@ -134,58 +136,8 @@ export const ProviderMenu = ({
         alignItems={'stretch'}
         alignSelf={'stretch'}
         className='modalContent'
+        marginBottom={3}
         // paddingX={isMobile ? 7 : 10}
-      >
-        <BoxStyle
-          paddingX={5 / 3}
-          display={'flex'}
-          flexDirection={'row'}
-          justifyContent={'stretch'}
-          alignItems={'flex-start'}
-        >
-          <MuiFormControlLabel
-            control={
-              <CheckboxStyled
-                className={isShake ? 'shake' : ''}
-                checked={checkboxValue}
-                onChange={handleCheckboxChange}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color='default'
-              />
-            }
-            label={
-              <Trans i18nKey='labelProviderAgree'>
-                I have read, understand, and agree to the
-                <Link
-                  component={'a'}
-                  href={termUrl}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  onClick={(_event) => {
-                    window.open(`${LOOPRING_DOCUMENT}terms_en.md`, '_blank')
-                    window.opener = null
-                  }}
-                >
-                  Terms of Service
-                </Link>
-                .
-              </Trans>
-            }
-          />
-        </BoxStyle>
-      </Box>
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        justifyContent={'center'}
-        flex={1}
-        alignItems={'stretch'}
-        alignSelf={'stretch'}
-        className='modalContent'
-        marginTop={3}
-        // paddingX={isMobile ? 7 : 10}
-        paddingBottom={4}
       >
         <Box display={'flex'} justifyContent={'center'}>
           {NetWorkItems}
@@ -241,6 +193,55 @@ export const ProviderMenu = ({
             </MenuBtnStyled>
           </Box>
         ))}
+      </Box>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'center'}
+        flex={1}
+        alignItems={'stretch'}
+        alignSelf={'stretch'}
+        className='modalContent'
+        // paddingX={isMobile ? 7 : 10}
+      >
+        <BoxStyle
+          // paddingX={5 / 3}
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'stretch'}
+          alignItems={'flex-start'}
+        >
+          <MuiFormControlLabel
+            control={
+              <CheckboxStyled
+                className={isShake ? 'shake' : ''}
+                checked={checkboxValue}
+                onChange={handleCheckboxChange}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={
+              <Trans i18nKey='labelProviderAgree'>
+                I have read, understand, and agree to the
+                <Link
+                  component={'a'}
+                  href={termUrl}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  onClick={(_event) => {
+                    window.open(`${LOOPRING_DOCUMENT}terms_en.md`, '_blank')
+                    window.opener = null
+                  }}
+                >
+                  Terms of Service
+                </Link>
+                .
+              </Trans>
+            }
+          />
+        </BoxStyle>
       </Box>
     </BoxContent>
   )
