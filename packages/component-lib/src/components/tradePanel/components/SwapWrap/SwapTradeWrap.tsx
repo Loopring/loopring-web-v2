@@ -242,9 +242,9 @@ export const SwapTradeWrap = <
       ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
 
-  const minimumReceived =
-    tradeCalcData && tradeCalcData.minimumReceived
-      ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
+  const minimumConverted =
+    tradeCalcData && tradeCalcData.minimumConverted
+      ? `${tradeCalcData.minimumConverted}  ${tradeData.buy?.belong}`
       : EmptyValueTag
   const { isMobile } = useSettings()
 
@@ -499,7 +499,7 @@ export const SwapTradeWrap = <
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumReceived}
+                {minimumConverted}
               </Typography>
             </Grid>
             <Grid
@@ -636,7 +636,7 @@ export const SwapTradeWrap = <
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumReceived}
+                {minimumConverted}
               </Typography>
             </Grid>
 

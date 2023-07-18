@@ -1313,6 +1313,19 @@ export const useSwap = <
           false,
           { floor: true },
         )
+        const minimumConverted = calcTradeParams?.output
+          ? getValuePrecisionThousand(
+              sdk
+                .toBig(calcTradeParams.output)
+                .times(sdk.toBig(1).minus(sdk.toBig(slippage).div('10000')))
+                .toString(),
+              tokenMap[minSymbol].precision,
+              tokenMap[minSymbol].precision,
+              tokenMap[minSymbol].precision,
+              false,
+              { floor: true },
+            )
+          : undefined
 
         const priceImpactObj = getPriceImpactInfo(calcTradeParams, account.readyState)
         let _tradeCalcData: CAD & { [key: string]: any } = {
@@ -1324,6 +1337,7 @@ export const useSwap = <
           fee: totalFee,
           feeTakerRate,
           tradeCost,
+          minimumConverted
         } as CAD
         _tradeData[isAtoB ? 'buy' : 'sell'].tradeValue = getShowStr(calcTradeParams?.output)
 
