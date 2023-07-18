@@ -446,7 +446,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapFee')}
+                  {' ' + t('labelTradingFeeEst')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -486,7 +486,7 @@ export const SwapTradeWrap = <
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('labelSwapMinReceiveTooltips').toString()} placement={'top'}>
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
                 <Typography
                   component={'p'}
                   variant='body2'
@@ -495,7 +495,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapMinReceive')}
+                  {' ' + t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -606,7 +606,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapFee')}
+                  {' ' + t('labelTradingFeeEst')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -623,7 +623,7 @@ export const SwapTradeWrap = <
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('labelBtradeMinReceiveTooltips').toString()} placement={'top'}>
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
                 <Typography
                   component={'p'}
                   variant='body2'
@@ -632,7 +632,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {t('swapMinReceive')}
+                  {t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
