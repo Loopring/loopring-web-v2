@@ -52,8 +52,16 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
   .MuiAvatar-root {
     background: var(--color-white);
     margin-right: ${({ theme }) => theme.unit}px;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      right: -50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   &.test .MuiSelect-outlined .label {
@@ -104,8 +112,14 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
 ` as typeof OutlineSelect
 export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
   .MuiAvatar-root {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
     background: var(--color-white);
     margin-right: ${({ theme }) => theme.unit}px;
   }

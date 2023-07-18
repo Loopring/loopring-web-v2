@@ -124,10 +124,13 @@ export const ProviderMenu = ({
         component={'h3'}
         variant={isMobile ? 'h4' : 'h3'}
         whiteSpace={'pre'}
-        marginBottom={3}
+        marginBottom={2}
       >
         {t('labelConnectWallet')}
       </Typography>
+      <Box display={'flex'} justifyContent={'center'} marginBottom={3}>
+        {NetWorkItems}
+      </Box>
       <Box
         display={'flex'}
         flexDirection={'column'}
@@ -139,9 +142,6 @@ export const ProviderMenu = ({
         marginBottom={3}
         // paddingX={isMobile ? 7 : 10}
       >
-        <Box display={'flex'} justifyContent={'center'}>
-          {NetWorkItems}
-        </Box>
         {gatewayList.map((item: GatewayItem) => (
           <Box key={item.key} marginTop={1.5}>
             <MenuBtnStyled
