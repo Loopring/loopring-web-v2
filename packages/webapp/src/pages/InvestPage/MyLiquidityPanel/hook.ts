@@ -13,10 +13,8 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
-  // useWalletLayer2,
   useWalletLayer2Socket,
   walletLayer2Service,
-  // volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
   AccountStatus,
@@ -64,7 +62,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const { marketCoins: defiCoinArray } = useDefiMap()
   const { status: ammMapStatus, ammMap } = useAmmMap()
   const { tokenPrices } = useTokenPrices()
-  const { status: stakingMapStatus, marketMap: stakingMap } = useStakingMap()
+  const { marketMap: stakingMap } = useStakingMap()
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<Partial<SummaryMyInvest>>({})
   const [filter, setFilter] = React.useState({

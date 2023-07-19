@@ -43,7 +43,6 @@ import {
   useAccount,
   useSelectNetwork,
   walletConnectCallback,
-  walletConnectV1Callback,
 } from '@loopring-web/core'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
@@ -51,9 +50,11 @@ import { useLocation } from 'react-router-dom'
 export const useGatewayList = ({
   setIsOpenUnknownProvider,
   setConnectProvider,
+  setIsConfirmLinkCopy,
 }: {
   setIsOpenUnknownProvider?: any
   setConnectProvider?: any
+  setIsConfirmLinkCopy: (boolean) => void
 }) => {
   const { search } = useLocation()
   const { t } = useTranslation()
@@ -85,7 +86,6 @@ export const useGatewayList = ({
                 setShowConnect({ isShow: false })
               } else {
                 const isKnow = localStorage.getItem('useKnowCoinBaseWalletInstall')
-
                 if (
                   !(isKnow === 'true') &&
                   !(window?.ethereum?._metamask && window?.ethereum?._metamask.requestBatch)
@@ -118,7 +118,11 @@ export const useGatewayList = ({
                 walletServices.sendDisconnect('', 'should new provider')
                 setConnectProvider(DefaultGatewayList[1].key)
                 setShowConnect({
-                  isShow: false,
+                  isShow: true,
+                  step: WalletConnectStep.Provider,
+                  info: {
+                    status: 'processing',
+                  },
                 })
                 setProcessingCallback({ callback: walletConnectCallback })
                 setStateCheck(true)
@@ -127,29 +131,8 @@ export const useGatewayList = ({
             [account.connectName, setShowConnect],
           ),
         },
-        // {
-        //   ...DefaultGatewayList[4],
-        //   handleSelect: React.useCallback(
-        //     async (event, flag?) => {
-        //       if (!flag && account.connectName === DefaultGatewayList[4].key) {
-        //         setShowConnect({ isShow: false })
-        //       } else {
-        //         walletServices.sendDisconnect('', 'should new provider')
-        //         setConnectProvider(DefaultGatewayList[4].key)
-        //         setShowConnect({
-        //           isShow: true,
-        //           step: WalletConnectStep.WalletConnectProcessing,
-        //         })
-        //         setProcessingCallback({ callback: walletConnectV1Callback })
-        //         setStateCheck(true)
-        //       }
-        //     },
-        //     [account.connectName, setShowConnect],
-        //   ),
-        // },
         {
           ...DefaultGatewayList[2],
-          // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
           handleSelect: React.useCallback(
             async (event, flag?) => {
               walletServices.sendDisconnect('', 'should new provider')
@@ -173,13 +156,27 @@ export const useGatewayList = ({
             async (event, flag?) => {
               walletServices.sendDisconnect('', 'should new provider')
               setConnectProvider(DefaultGatewayList[3].key)
-              setShowConnect({
-                isShow: true,
-                step: WalletConnectStep.Provider,
-                info: {
-                  status: 'processing',
-                },
-              })
+              if (
+                window.ethereum &&
+                'isCoinbaseBrowser' in ethereum &&
+                ethereum.isCoinbaseBrowser
+              ) {
+                setShowConnect({
+                  isShow: true,
+                  step: WalletConnectStep.Provider,
+                  info: {
+                    status: 'processing',
+                  },
+                })
+              } else {
+                setShowConnect({
+                  isShow: false,
+                  step: WalletConnectStep.Provider,
+                  info: {
+                    status: 'processing',
+                  },
+                })
+              }
               setProcessingCallback({ callback: CoinbaseCallback })
               setStateCheck(true)
             },
@@ -200,10 +197,13 @@ export const useGatewayList = ({
                       setShowConnect({ isShow: false })
                     } else {
                       walletServices.sendDisconnect('', 'should new provider')
-                      setConnectProvider(DefaultGatewayList[0].key)
+                      setConnectProvider && setConnectProvider(DefaultGatewayList[0].key)
                       setShowConnect({
                         isShow: true,
-                        step: WalletConnectStep.CommonProcessing,
+                        step: WalletConnectStep.Provider,
+                        info: {
+                          status: 'processing',
+                        },
                       })
                       setProcessingCallback({ callback: metaMaskCallback })
                       setStateCheck(true)
@@ -246,7 +246,10 @@ export const useGatewayList = ({
                 setConnectProvider && setConnectProvider(DefaultGatewayList[1].key)
                 setShowConnect({
                   isShow: true,
-                  step: WalletConnectStep.CommonProcessing,
+                  step: WalletConnectStep.Provider,
+                  info: {
+                    status: 'processing',
+                  },
                 })
                 setProcessingCallback({ callback: walletConnectCallback })
                 setStateCheck(true)
@@ -260,11 +263,14 @@ export const useGatewayList = ({
           handleSelect: React.useCallback(
             async (event, flag?) => {
               walletServices.sendDisconnect('', 'should new provider')
-              setShowConnect({
-                isShow: true,
-                step: WalletConnectStep.WalletConnectProcessing,
-              })
               setConnectProvider && setConnectProvider(DefaultGatewayList[3].key)
+              setShowConnect({
+                isShow: false,
+                step: WalletConnectStep.Provider,
+                info: {
+                  status: 'processing',
+                },
+              })
               setProcessingCallback({ callback: CoinbaseCallback })
               setStateCheck(true)
             },
@@ -279,11 +285,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(
     onClose,
     open,
     wait = globalSetup.wait,
-    // step,
     t,
     ...rest
   }: {
-    // step?:number,
     open: boolean
     wait?: number
     onClose?: (e: MouseEvent) => void
@@ -321,11 +325,12 @@ export const ModalWalletConnectPanel = withTranslation('common')(
       [account.readyState, onClose, setShouldShow, setShowConnect],
     )
     const [isOpenUnknownProvider, setIsOpenUnknownProvider] = React.useState(false)
+    const [isConfirmLinkCopy, setIsConfirmLinkCopy] = React.useState(false)
     const { gatewayList } = useGatewayList({
       setConnectProvider,
       setIsOpenUnknownProvider,
+      setIsConfirmLinkCopy,
     })
-    const [isConfirmLinkCopy, setIsConfirmLinkCopy] = React.useState(false)
     const handleCloseDialog = React.useCallback((_event: any, state?: boolean) => {
       setIsOpenUnknownProvider(false)
       localStorage.setItem('useKnowCoinBaseWalletInstall', String(!!state))
@@ -344,7 +349,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(
         setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
       }
     }, [gatewayList, account.connectName, setShowConnect])
-    // useConnectHook({handleProcessing});
     const providerBack = React.useMemo(() => {
       return ['UN_CONNECT', 'ERROR_NETWORK'].includes(account.readyState)
         ? undefined
@@ -423,8 +427,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(
             <ConnectReject
               {...{
                 t,
-                // error: isShowConnect.error,
-                // errorOptions: { name: connectProvider },
                 ...rest,
               }}
               providerName={connectProvider}
@@ -449,10 +451,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(
               btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />
           ),
-          // onBack: () => {
-          //   walletServices.sendDisconnect('', 'should new provider')
-          //   setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
-          // },
         },
         [WalletConnectStep.FailedConnect]: {
           view: (

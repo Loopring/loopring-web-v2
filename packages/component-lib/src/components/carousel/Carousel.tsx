@@ -22,8 +22,8 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
       }
 
       ${({ imageList }) => `
-         height: calc(${imageList[ 0 ]?.height ?? 880 / 2}px + 60px);
-         width: calc(${imageList[ 0 ]?.width ?? 630 / 2}px);
+         height: calc(${imageList[0]?.height ?? 880 / 2}px + 60px);
+         width: calc(${imageList[0]?.width ?? 630 / 2}px);
       `}
     }
   }
@@ -113,13 +113,13 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
     }
 
     ${({ imageList }) => {
-  let label: string = imageList.reduce((prev, _, index) => {
-    prev += `input#img-${index + 1}:checked ~ .carousel-dots label#img-dot-${index + 1},`
-    return prev
-  }, '' as string)
-  label += `{ opacity: 1;}`
-  return label
-}}
+      let label: string = imageList.reduce((prev, _, index) => {
+        prev += `input#img-${index + 1}:checked ~ .carousel-dots label#img-dot-${index + 1},`
+        return prev
+      }, '' as string)
+      label += `{ opacity: 1;}`
+      return label
+    }}
     //input#img-1:checked ~ .carousel-dots label#img-dot-1,
     //input#img-2:checked ~ .carousel-dots label#img-dot-2,
     //input#img-3:checked ~ .carousel-dots label#img-dot-3,
@@ -136,9 +136,9 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
 ` as (props: BoxProps & { imageList: CarouselItem[] }) => JSX.Element
 
 export const Carousel = ({
-                           loading,
-                           imageList,
-                         }: {
+  loading,
+  imageList,
+}: {
   loading: boolean
   imageList: CarouselItem[]
 }) => {
@@ -166,8 +166,8 @@ export const Carousel = ({
                     component={'li'}
                     className='slide-container'
                     sx={{
-                      height: item?.size[ 1 ],
-                      width: item?.size[ 0 ],
+                      height: item?.size[1],
+                      width: item?.size[0],
                     }}
                   >
                     <Box className='slide-image'>
@@ -175,8 +175,8 @@ export const Carousel = ({
                         src={item.imageUrl}
                         alt={'image'}
                         style={{
-                          height: item?.size[ 1 ],
-                          width: item?.size[ 0 ],
+                          height: item?.size[1],
+                          width: item?.size[0],
                         }}
                       />
                     </Box>

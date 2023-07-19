@@ -737,11 +737,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
 }
 
 export const AddAssetListMap = {
-  TAIKO: [
-    AddAssetList.FromMyL1.key,
-    AddAssetList.FromOtherL2.key,
-    // AddAssetList.FromExchange.key,
-  ],
+  TAIKO: [AddAssetList.FromMyL1.key, AddAssetList.FromOtherL2.key],
   ETHEREUM: [
     AddAssetList.FromMyL1.key,
     AddAssetList.BuyWithCard.key,

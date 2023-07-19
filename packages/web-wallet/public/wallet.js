@@ -831,10 +831,10 @@ const settingPersist = 'persist:settings'
     const referralcode = searchParams.get('referralcode')
     document.getElementById('logo').innerHTML =
       'https://loopring.io/#/?referralcode=' + referralcode
-    // let settings = JSON.parse(localStorage.getItem(settingPersist) ?? "{}");
   }
   let themeMode = 'dark'
-  let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {})
+  let settingPersistJson = localStorage.getItem(settingPersist)
+  let settings = JSON.parse(settingPersistJson ? settingPersistJson : '{}')
   if (settings.themeMode && JSON.parse(settings.themeMode)) {
     themeMode = JSON.parse(settings.themeMode)
   }
@@ -900,7 +900,8 @@ const settingPersist = 'persist:settings'
   }
   // Language now english only
   const onlanguagechange = (value) => {
-    let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {})
+    let settingPersistJson = localStorage.getItem(settingPersist)
+    let settings = JSON.parse(settingPersistJson ? settingPersistJson : '{}')
     settings.language = value
     window.localStorage.setItem(settingPersist, JSON.stringify(settings))
     i18next.changeLanguage('en_US')

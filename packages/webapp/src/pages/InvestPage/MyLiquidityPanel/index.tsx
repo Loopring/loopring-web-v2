@@ -74,9 +74,11 @@ const MyLiquidity: any = withTranslation('common')(
     t,
     isHideTotal,
     hideAssets,
+    className,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
+    className?: string
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
   }) => {
@@ -236,7 +238,13 @@ const MyLiquidity: any = withTranslation('common')(
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
     return (
-      <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
+      <Box
+        display={'flex'}
+        className={className}
+        flex={1}
+        position={'relative'}
+        flexDirection={'column'}
+      >
         <Box
           position={'absolute'}
           display={'flex'}
@@ -390,7 +398,7 @@ const MyLiquidity: any = withTranslation('common')(
                       title={
                         <Typography
                           variant={'h5'}
-                          marginBottom={isMobile ? 3 : 0}
+                          // marginBottom={isMobile ? 3 : 0}
                           // paddingLeft={3}
                         >
                           {t('labelMyAmm')}
@@ -442,7 +450,7 @@ const MyLiquidity: any = withTranslation('common')(
                   flex={1}
                 >
                   <Grid container>
-                    <Grid item xs={6}>
+                    <Grid item md={6} xs={12}>
                       <Typography variant={'h5'} marginBottom={2} marginX={3}>
                         {t('labelInvestType_LRCSTAKE')}
                       </Typography>
@@ -470,10 +478,11 @@ const MyLiquidity: any = withTranslation('common')(
                     </Grid>
                     <Grid
                       item
-                      xs={3}
+                      md={3}
+                      xs={6}
                       justifyContent={'space-evenly'}
                       flexDirection={'column'}
-                      alignItems={'flex-end'}
+                      alignItems={isMobile ? 'flex-start' : 'flex-end'}
                       display={'flex '}
                     >
                       <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
@@ -501,7 +510,8 @@ const MyLiquidity: any = withTranslation('common')(
 
                     <Grid
                       item
-                      xs={3}
+                      md={3}
+                      xs={6}
                       justifyContent={'space-evenly'}
                       flexDirection={'column'}
                       alignItems={'flex-end'}

@@ -73,6 +73,22 @@ export const BoxBannerStyle = styled(Box)<
     background-size: contain;
     background-image: url('${({ backGroundUrl }) => backGroundUrl}');
   }
+
+  &.mobile .bg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &:after {
+      opacity: 0.08;
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  }
 ` as (
   props: BoxProps & {
     backGroundUrl?: string | number
@@ -105,10 +121,9 @@ const ReferHeader = <R extends ImageReferralBanner>({
 }) => {
   const { account } = useAccount()
   const { t } = useTranslation(['common', 'layout'])
-  const { defaultNetwork } = useSettings()
+  const { defaultNetwork, isMobile } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [open, setOpen] = React.useState(false)
-  const [loading, setLoading] = React.useState<boolean>(true)
   const [images, setImages] = React.useState<CarouselItem[]>([])
 
   const [imageList, setImageList] = React.useState<R>({
@@ -130,7 +145,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
           setImageList(result)
           renderImage(result)
         }
-        setLoading(false)
       })
   }, [])
   const renderImage = React.useCallback(
@@ -314,7 +328,11 @@ const ReferHeader = <R extends ImageReferralBanner>({
   }, [t, btnLabel])
 
   return (
-    <BoxBannerStyle backGroundUrl={SoursURL + '/images/giftReward.webp'} direction={'right'}>
+    <BoxBannerStyle
+      className={isMobile ? 'mobile' : ''}
+      backGroundUrl={SoursURL + '/images/giftReward.webp'}
+      direction={'right'}
+    >
       <Container>
         <ShareModal
           onClick={() => onDownloadImage()}
@@ -324,10 +342,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
           imageList={images}
         />
         <Box className={'bg'} marginY={3} display={'flex'}>
-          <Box width={'65%'}>
+          <Box width={isMobile ? '100%' : '65%'}>
             <Typography
               component={'h1'}
-              variant={'h2'}
+              variant={isMobile ? 'h4' : 'h2'}
               sx={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}
             >
               {t('labelReferTitle')}
@@ -343,7 +361,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
             </Typography>
             {account.readyState == AccountStatus.ACTIVATED && (
               <>
-                <Box paddingTop={1} width={'70%'}>
+                <Box paddingTop={1} width={isMobile ? '100%' : '70%'}>
                   <OutlinedInput
                     size={'medium'}
                     className={'copy'}
@@ -364,7 +382,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
                     }
                   />
                 </Box>
-                <Box paddingTop={1} width={'70%'}>
+                <Box paddingTop={1} width={isMobile ? '100%' : '70%'}>
                   <OutlinedInput
                     size={'medium'}
                     className={'copy'}
@@ -428,7 +446,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
 const ReferView = () => {
   const { account } = useAccount()
   const { t } = useTranslation()
-  const { defaultNetwork } = useSettings()
+  const { defaultNetwork, isMobile } = useSettings()
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const refundData = useRefundTable(setToastOpen)
@@ -450,7 +468,7 @@ const ReferView = () => {
     }
     setCopyToastOpen(true)
   }
-
+  myLog('refundData', refundData, referralsData)
   return (
     <>
       <Toast
@@ -540,30 +558,33 @@ const ReferView = () => {
 
                 <Box display={'flex'} flexDirection={'column'}>
                   <Grid container marginY={2}>
-                    <Grid item xs={6}>
+                    <Grid item md={4} xs={6}>
                       <Typography
                         component={'span'}
                         color={'var(--color-text-third)'}
                         variant={'body1'}
-                        paddingRight={2}
+                        paddingRight={isMobile ? '' : 2}
                       >
-                        {t('labelReferralsTotalReferrals') +
-                          (refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
-                            <Typography
-                              variant={'inherit'}
-                              component={'span'}
-                              color={'textPrimary'}
-                            >
-                              {refundData.summary?.tradeNum}
-                            </Typography>
-                          ) : (
-                            EmptyValueTag
-                          ))}
+                        {t('labelReferralsTotalReferrals')}
+                        {referralsData.summary?.downsidesNum &&
+                        referralsData.summary?.downsidesNum != '0' ? (
+                          <Typography
+                            variant={'inherit'}
+                            component={'span'}
+                            color={'textPrimary'}
+                            paddingLeft={1}
+                          >
+                            {referralsData.summary?.downsidesNum}
+                          </Typography>
+                        ) : (
+                          EmptyValueTag
+                        )}
                       </Typography>
                     </Grid>
                     <Grid
                       item
-                      xs={3}
+                      md={4}
+                      xs={6}
                       justifyContent={'space-evenly'}
                       flexDirection={'column'}
                       alignItems={'flex-end'}
@@ -573,58 +594,50 @@ const ReferView = () => {
                         component={'span'}
                         color={'var(--color-text-third)'}
                         variant={'body1'}
-                        paddingRight={2}
+                        paddingRight={isMobile ? '' : 2}
                       >
-                        {t('labelReferralsTotalEarning') +
-                          (referralsData.summary?.totalValue ? (
-                            <Typography
-                              variant={'inherit'}
-                              component={'span'}
-                              color={'textPrimary'}
-                            >
-                              {referralsData.summary?.totalValue + ' LRC'}
-                            </Typography>
-                          ) : (
-                            EmptyValueTag
-                          ))}
+                        {t('labelReferralsTotalEarning')}
+                        {referralsData.summary?.totalValue ? (
+                          <Typography
+                            variant={'inherit'}
+                            component={'span'}
+                            color={'textPrimary'}
+                            paddingLeft={1}
+                          >
+                            {referralsData.summary?.totalValue + ' LRC'}
+                          </Typography>
+                        ) : (
+                          EmptyValueTag
+                        )}
                       </Typography>
                     </Grid>
 
                     <Grid
                       item
-                      xs={3}
-                      justifyContent={'space-evenly'}
-                      flexDirection={'column'}
-                      alignItems={'flex-end'}
+                      md={4}
+                      xs={12}
+                      flexDirection={'row'}
+                      alignItems={'center'}
                       display={'flex'}
+                      paddingTop={isMobile ? 1 : ''}
+                      justifyContent={isMobile ? 'space-between' : 'flex-end'}
                     >
                       <Typography
                         component={'span'}
                         color={'var(--color-text-third)'}
                         variant={'body1'}
-                        paddingRight={2}
+                        paddingRight={isMobile ? '' : 2}
                       >
                         {t('labelReferralsClaimEarning')}
                         {referralsData.summary?.claimableValue ? (
-                          <>
-                            <Typography
-                              variant={'inherit'}
-                              component={'span'}
-                              color={'textPrimary'}
-                            >
-                              {referralsData.summary?.claimableValue + ' LRC'}
-                            </Typography>
-                            <Button
-                              variant={'contained'}
-                              size={'small'}
-                              sx={{ marginLeft: 2 }}
-                              onClick={() => {
-                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
-                              }}
-                            >
-                              {t('labelClaimBtn')}
-                            </Button>
-                          </>
+                          <Typography
+                            paddingLeft={1}
+                            variant={'inherit'}
+                            component={'span'}
+                            color={'textPrimary'}
+                          >
+                            {referralsData.summary?.claimableValue + ' LRC'}
+                          </Typography>
                         ) : (
                           <Typography
                             variant={'inherit'}
@@ -635,6 +648,20 @@ const ReferView = () => {
                           </Typography>
                         )}
                       </Typography>
+                      {referralsData.summary?.claimableValue ? (
+                        <Button
+                          variant={'contained'}
+                          size={'small'}
+                          sx={{ marginLeft: 2 }}
+                          onClick={() => {
+                            history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                          }}
+                        >
+                          {t('labelClaimBtn')}
+                        </Button>
+                      ) : (
+                        <></>
+                      )}
                     </Grid>
                   </Grid>
                   <ReferralsTable
@@ -655,26 +682,32 @@ const ReferView = () => {
                   {t('labelReferralReferralsRefunds')}
                 </Typography>
                 <Grid container marginY={2}>
-                  <Grid item xs={6}>
+                  <Grid item md={4} xs={6}>
                     <Typography
                       component={'span'}
                       color={'var(--color-text-third)'}
                       variant={'body1'}
-                      paddingRight={2}
+                      paddingRight={isMobile ? '' : 2}
                     >
-                      {t('labelReferralsTotalTradeNumber') +
-                        (refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
-                          <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                            {refundData.summary?.tradeNum}
-                          </Typography>
-                        ) : (
-                          EmptyValueTag
-                        ))}
+                      {t('labelReferralsTotalTradeNumber')}
+                      {refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
+                        <Typography
+                          variant={'inherit'}
+                          component={'span'}
+                          color={'textPrimary'}
+                          paddingLeft={1}
+                        >
+                          {refundData.summary?.tradeNum}
+                        </Typography>
+                      ) : (
+                        EmptyValueTag
+                      )}
                     </Typography>
                   </Grid>
                   <Grid
                     item
-                    xs={3}
+                    md={4}
+                    xs={6}
                     justifyContent={'space-evenly'}
                     flexDirection={'column'}
                     alignItems={'flex-end'}
@@ -684,52 +717,51 @@ const ReferView = () => {
                       component={'span'}
                       color={'var(--color-text-third)'}
                       variant={'body1'}
-                      paddingRight={2}
+                      paddingRight={isMobile ? '' : 2}
                     >
-                      {t('labelReferralsTotalRefund') +
-                        (refundData.summary?.totalValue ? (
-                          <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                            {' '}
-                            {refundData.summary?.totalValue + ' LRC'}
-                          </Typography>
-                        ) : (
-                          EmptyValueTag
-                        ))}
+                      {t('labelReferralsTotalRefund')}
+                      {refundData.summary?.totalValue ? (
+                        <Typography
+                          variant={'inherit'}
+                          component={'span'}
+                          color={'textPrimary'}
+                          paddingLeft={1}
+                        >
+                          {refundData.summary?.totalValue + ' LRC'}
+                        </Typography>
+                      ) : (
+                        EmptyValueTag
+                      )}
                     </Typography>
                   </Grid>
 
                   <Grid
                     item
-                    xs={3}
-                    justifyContent={'space-evenly'}
-                    flexDirection={'column'}
-                    alignItems={'flex-end'}
+                    md={4}
+                    xs={12}
+                    flexDirection={'row'}
+                    alignItems={'center'}
                     display={'flex'}
+                    paddingTop={isMobile ? 1 : ''}
+                    justifyContent={isMobile ? 'space-between' : 'flex-end'}
                   >
                     <Typography
                       component={'span'}
                       color={'var(--color-text-third)'}
                       variant={'body1'}
-                      paddingRight={2}
+                      paddingRight={isMobile ? '' : 2}
                     >
                       {t('labelReferralsClaimRefund')}
 
                       {refundData.summary?.claimableValue ? (
-                        <>
-                          <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
-                            {refundData.summary?.claimableValue + ' LRC'}
-                          </Typography>{' '}
-                          <Button
-                            variant={'contained'}
-                            size={'small'}
-                            sx={{ marginLeft: 2 }}
-                            onClick={() => {
-                              history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
-                            }}
-                          >
-                            {t('labelClaimBtn')}
-                          </Button>
-                        </>
+                        <Typography
+                          variant={'inherit'}
+                          component={'span'}
+                          color={'textPrimary'}
+                          paddingLeft={1}
+                        >
+                          {refundData.summary?.claimableValue + ' LRC'}
+                        </Typography>
                       ) : (
                         <Typography
                           variant={'inherit'}
@@ -740,6 +772,20 @@ const ReferView = () => {
                         </Typography>
                       )}
                     </Typography>
+                    {refundData.summary?.claimableValue ? (
+                      <Button
+                        variant={'contained'}
+                        size={'small'}
+                        sx={{ marginLeft: 2 }}
+                        onClick={() => {
+                          history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                        }}
+                      >
+                        {t('labelClaimBtn')}
+                      </Button>
+                    ) : (
+                      <></>
+                    )}
                   </Grid>
                 </Grid>
                 <Box display={'flex'} flexDirection={'column'}>

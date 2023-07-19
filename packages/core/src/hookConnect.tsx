@@ -52,30 +52,27 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
   .MuiAvatar-root {
     background: var(--color-white);
     margin-right: ${({ theme }) => theme.unit}px;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      right: -50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 
-  // .MuiSelect-select {
-  //   padding-left: ${({ theme }) => theme.unit * 3}px;
-  // }
-  //.MuiAvatar-root{
-  //  height:
-  //}
-
   &.test .MuiSelect-outlined .label {
-    background: var(--network-bg);
     display: inline-flex;
-    padding: 3px 4px;
-    border-radius: 4px;
-    color: var(--network-text);
 
     &:after {
+      color: var(--network-text);
       content: ' test';
       padding-left: 0.5em;
       display: inline-flex;
       font-size: var(body2);
-      color: inherit;
     }
   }
 
@@ -93,9 +90,9 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
 
   &.header {
     .MuiSelect-outlined {
-      .MuiAvatar-root {
-        display: none;
-      }
+      //.MuiAvatar-root {
+      //  display: none;
+      //}
     }
 
     &.mobile {
@@ -110,20 +107,19 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
       padding-left: 0;
       padding-right: ${({ theme }) => theme.unit * 4}px;
       position: relative;
-
-      //.MuiSelect-icon {
-      //  position: absolute;
-      //  top: 85%;
-      //  left: 50%;
-      //  transform: translateX(-50%);
-      //}
     }
   }
 ` as typeof OutlineSelect
 export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
   .MuiAvatar-root {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
     background: var(--color-white);
     margin-right: ${({ theme }) => theme.unit}px;
   }
@@ -159,11 +155,8 @@ const Icon = ({ label = '' }: { label: string }) => {
         </Avatar>
       )
     default:
-      return (
-        <Avatar component={'span'} variant='circular'>
-          {label}
-        </Avatar>
-      )
+      const child = label.split(' ')?.map((item) => item[0])
+      return <Avatar component={'span'} variant='circular' children={child} />
   }
 }
 export const useSelectNetwork = ({ className }: { className?: string }) => {

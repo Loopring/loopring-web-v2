@@ -46,7 +46,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
   const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus()
   const feeProps =
     claimValue.tradeType === TRADE_TYPE.TOKEN
-      ? claimType === CLAIM_TYPE.lrcStaking
+      ? claimType === CLAIM_TYPE.lrcStaking || claimType === CLAIM_TYPE.allToken
         ? {
             requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
             extraType: 3,
@@ -170,6 +170,23 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             response = await LoopringAPI.luckTokenAPI.sendLuckTokenWithdraws(
               {
                 request: request as sdk.OriginLuckTokenWithdrawsRequestV3,
+                web3: connectProvides.usedWeb3 as unknown as Web3,
+                chainId: chainId === 'unknown' ? 1 : chainId,
+                walletType: (ConnectProvidersSignMap[connectName] ??
+                  connectName) as unknown as sdk.ConnectorNames,
+                eddsaKey: eddsaKey.sk,
+                apiKey,
+                isHWAddr,
+              },
+              {
+                accountId: account.accountId,
+                counterFactualInfo: eddsaKey.counterFactualInfo,
+              },
+            )
+          } else if (claimValue.claimType === CLAIM_TYPE.allToken) {
+            response = await LoopringAPI.userAPI?.sendTotalClaim(
+              {
+                request: request as sdk.OriginClaimRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === 'unknown' ? 1 : chainId,
                 walletType: (ConnectProvidersSignMap[connectName] ??
@@ -334,6 +351,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               brokerType = 2
               break
             case CLAIM_TYPE.lrcStaking:
+            case CLAIM_TYPE.allToken:
               brokerType = 0
               break
           }
@@ -371,7 +389,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               },
               luckyTokenHash: claimToken?.luckyTokenHash,
             }
-          } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
+          } else if (claimValue.claimType === CLAIM_TYPE.allToken) {
             request = {
               accountId: account.accountId,
               token: {
@@ -385,7 +403,32 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 payeeAddr: broker,
                 storageId: storageId.offchainId,
                 maxFee: {
-                  tokenId: 0,
+                  tokenId: feeToken.tokenId,
+                  volume: '0',
+                },
+                token: {
+                  tokenId: feeToken.tokenId,
+                  volume: fee.toFixed(), // TEST: fee.toString(),
+                },
+                validUntil: getTimestampDaysLater(DAYS),
+              },
+            }
+          } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
+            request = {
+              accountId: account.accountId,
+              token: {
+                tokenId: token.tokenId,
+                volume: amount.toString(),
+              },
+              transfer: {
+                exchange: exchangeInfo.exchangeAddress,
+                payerAddr: accAddress,
+                payeeId: 0,
+                payerId: accountId,
+                payeeAddr: broker,
+                storageId: storageId.offchainId,
+                maxFee: {
+                  tokenId: feeToken.tokenId,
                   volume: '0',
                 },
                 token: {

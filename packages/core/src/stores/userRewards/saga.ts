@@ -37,9 +37,7 @@ const getUserRewardsApi = async () => {
           )
           .then((response) => {
             myLog('totalClaims', response)
-
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-              // throw response as sdk.RESULT_INFO
               return []
             }
             //TODO:
@@ -68,21 +66,7 @@ const getUserRewardsApi = async () => {
       }
     } catch (error) {
       throw error
-      // let errorItem
-      // if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
-      //   errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
-      // } else {
-      //   errorItem = SDK_ERROR_MAP_TO_UI[700012]
-      // }
-      // setToastOpen({
-      //   open: true,
-      //   type: ToastType.error,
-      //   content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
-      // })
     }
-    // catch (e) {
-    //   ammUserRewardMap = {}
-    // }
   } else {
     if (__timer__ && __timer__ !== -1) {
       clearInterval(__timer__)
