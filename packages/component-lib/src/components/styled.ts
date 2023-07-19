@@ -135,7 +135,7 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
 `
 export const ModelPanelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
-  background: ${({ theme }) => theme.colorBase.box};
+  background: var(--color-global-bg);
 ` as typeof Box
 
 export const SwitchPanelStyled: any = styled(Box)<
