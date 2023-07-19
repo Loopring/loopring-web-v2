@@ -351,8 +351,10 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               brokerType = 2
               break
             case CLAIM_TYPE.lrcStaking:
-            case CLAIM_TYPE.allToken:
               brokerType = 0
+              break
+            case CLAIM_TYPE.allToken:
+              brokerType = 3
               break
           }
           const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
