@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getWalletL2NFTCollectionStatus, updateWalletL2NFTCollection } from './reducer'
 import { store, LoopringAPI } from '../../index'
-import { CustomError, ErrorMap, myLog, CollectionLimit } from '@loopring-web/common-resources'
+import { CustomError, ErrorMap, CollectionLimit } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 const getWalletL2NFTCollectionBalance = async <_R extends { [key: string]: any }>({
@@ -24,6 +24,7 @@ const getWalletL2NFTCollectionBalance = async <_R extends { [key: string]: any }
       .catch((_error) => {
         throw new CustomError(ErrorMap.TIME_OUT)
       })
+
     let collections: sdk.CollectionMeta[] = [],
       totalNum = 0
     if (response && ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)) {
@@ -33,6 +34,7 @@ const getWalletL2NFTCollectionBalance = async <_R extends { [key: string]: any }
     totalNum = (response as any).totalNum
     return {
       walletL2NFTCollection: collections ?? [],
+
       total: totalNum,
       page,
     }
