@@ -341,4 +341,5 @@ export default {
   labelReferralsTableTime: 'Time',
   labelRefundTableAmount: 'Refunds',
   labelRefundTableTime: 'Time',
+  labelTypeUNIFIED_CLAIM: 'Claim Rewards',
 }
