@@ -133,7 +133,7 @@ export const DefiTxsTable = withTranslation(['tables', 'common'])(
         },
         {
           key: 'fee',
-          name: t('labelTxNetworkFee'),
+          name: t('labelTxTradingFee'),
           headerCellClass: 'textAlignRight',
           formatter: ({ row }) => {
             const { fee } = row
@@ -192,7 +192,7 @@ export const DefiTxsTable = withTranslation(['tables', 'common'])(
               alignItems={'center'}
             >
               <span>{t('labelDefiType')}</span>
-              <span>{t('labelDefiTime') + '/' + t('labelTxNetworkFee')}</span>
+              <span>{t('labelDefiTime') + '/' + t('labelTxTradingFee')}</span>
             </Typography>
           ),
           headerCellClass: 'textAlignRight',

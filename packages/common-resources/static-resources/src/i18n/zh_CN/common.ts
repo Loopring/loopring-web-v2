@@ -1766,5 +1766,6 @@ export default {
   labelSwapMinConverted: 'Minimum Converted',
   labelSwapMinConvertedTooltip: 'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
   labelNetworkFee: 'Network Fee',
+  labelTradingFee: 'Trading Fee',
   labelTradingFeeEst: 'Trading Fee(est.)',
 }
