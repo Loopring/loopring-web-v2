@@ -403,7 +403,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 payeeAddr: broker,
                 storageId: storageId.offchainId,
                 maxFee: {
-                  tokenId: 0,
+                  tokenId: feeToken.tokenId,
                   volume: '0',
                 },
                 token: {
@@ -428,7 +428,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 payeeAddr: broker,
                 storageId: storageId.offchainId,
                 maxFee: {
-                  tokenId: 0,
+                  tokenId: feeToken.tokenId,
                   volume: '0',
                 },
                 token: {
