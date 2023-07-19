@@ -8,6 +8,7 @@ import {
   L2CollectionFilter,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { nextAccountStatus } from '../account/reducer'
 
 const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
   page,
@@ -17,7 +18,23 @@ const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
   filter?: L2CollectionFilter
 }) => {
   const offset = (page - 1) * CollectionLimit
-  const { accountId, apiKey, accAddress } = store.getState().account
+  const { accountId, apiKey, accAddress, hasUnknownCollection } = store.getState().account
+  if (hasUnknownCollection == undefined) {
+    LoopringAPI.nftAPI
+      ?.getHadUnknownCollection({
+        accountId: accountId,
+      })
+      .then((_response: boolean) => {
+        if (hasUnknownCollection == undefined) {
+          store.dispatch(
+            nextAccountStatus({ ...store.getState().account, hasUnknownCollection: _response }),
+          )
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
   let response
   if (filter?.isLegacy && apiKey && accountId && LoopringAPI.userAPI && filter?.tokenAddress) {
     response = await LoopringAPI.userAPI
