@@ -1634,17 +1634,17 @@ export default {
   labelStopLimitConfirm: 'Confirm',
   labelBtradeSwapPending: 'Pending',
   labelStopLimitTitle: 'Stop-Limit',
-  labelStopPrice: 'Limit Price',
-  labelStopStopPrice: 'Stop Price',
+  labelStopPrice: 'Limit / Buy Price',
+  labelStopStopPrice: 'Stop / Trigger Price',
   labelStopLimitWhatIs: "What's Stop-Limit?",
   labelStopLimitMinMax: 'Min {{minValue}} - Max {{maxValue}}',
   labelLimitStopPriceMinMax: 'Stop Price Range {{arg}}',
   labelLimitMainContent:
     'A Stop-Limit order is a limit order with a limit price and a stop price. When the stop price is reached, the limit order will be placed on the order book. Once the limit price is reached, the limit order will be executed.',
-  labelLimitStopPriceLabel: 'Stop Price',
+  labelLimitStopPriceLabel: 'Stop Price / Trigger Price',
   labelLimitStopPriceContent:
     'When the current asset price reaches the given stop price, the Stop-Limit order is executed to buy or sell the asset at the given limit price or better.',
-  labelLimitLimitPriceLabel: 'Limit Price',
+  labelLimitLimitPriceLabel: 'Limit Price / Buy Price',
   labelLimitLimitPriceContent:
     'The selected (or potentially better) price that the Stop-Limit order is executed at.',
   labelLimitAmountLabel: 'Amount',
@@ -1768,4 +1768,6 @@ export default {
   labelNetworkFee: 'Network Fee',
   labelTradingFee: 'Trading Fee',
   labelTradingFeeEst: 'Trading Fee(est.)',
+  labelStopStopPriceDes: 'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
+  labelStopPriceDes: 'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. '
 }
