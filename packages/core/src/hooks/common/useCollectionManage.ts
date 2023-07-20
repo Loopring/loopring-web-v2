@@ -167,6 +167,9 @@ export const useCollectionManage = <Co extends CollectionMeta, NFT extends Parti
             accountId: account.accountId,
           })
           .then((_response: boolean) => {
+            if ((_response as sdk.RESULT_INFO)?.code) {
+              return
+            }
             store.dispatch(
               nextAccountStatus({ ...store.getState().account, hasUnknownCollection: _response }),
             )

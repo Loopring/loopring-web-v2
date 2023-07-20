@@ -66,7 +66,7 @@ const accountSlice: Slice<AccountState> = createSlice<
           isCFAddress,
           isContract,
           __timer__,
-          hasUnknownCollection,
+          // hasUnknownCollection,
         } = action.payload
         if (_accountIdNotActive) {
           state._accountIdNotActive = _accountIdNotActive
@@ -112,8 +112,8 @@ const accountSlice: Slice<AccountState> = createSlice<
         if (__timer__ !== undefined) {
           state.__timer__ = __timer__
         }
-        if (hasUnknownCollection !== undefined) {
-          state.hasUnknownCollection = hasUnknownCollection
+        if (action.payload.hasOwnProperty('hasUnknownCollection')) {
+          state.hasUnknownCollection = action.payload.hasUnknownCollection
         }
         state.isInCounterFactualStatus = isInCounterFactualStatus
         state.isContract1XAddress = isContract1XAddress

@@ -65,6 +65,7 @@ export type TxInfo = {
 
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] }
+  showHadUnknownCollection: { [key: string]: boolean }
 }
 
 export interface NFTHashInfo {

@@ -345,6 +345,9 @@ export const CollectionHadUnknown = withTranslation('common')(
               <img
                 alt={'collection demo'}
                 width='80%'
+                // style={{
+                //   minHeight: '60px',
+                // }}
                 src={`${SoursURL}images/collection_unknown_${mode}.webp`}
               />
             </Box>

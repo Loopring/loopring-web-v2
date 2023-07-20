@@ -1,9 +1,15 @@
 import { useRouteMatch } from 'react-router-dom'
-
-import { Box } from '@mui/material'
-import { subMenuNFT } from '@loopring-web/common-resources'
+import { Box, Link, Typography } from '@mui/material'
+import {
+  AccountStatus,
+  ChainHashInfos,
+  Explorer,
+  subMenuNFT,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  TOAST_TIME,
+} from '@loopring-web/common-resources'
 import React from 'react'
-import { useAccount, ViewAccountTemplate } from '@loopring-web/core'
+import { onchainHashInfo, store, useAccount, ViewAccountTemplate } from '@loopring-web/core'
 import { MyNFTPanel } from './MyNFT'
 import { MyNFTHistory } from './NFThistory'
 import { MintNFTAdvancePanel, MintNFTPanel } from './MintNFTPanel'
@@ -12,14 +18,27 @@ import { NFTCollectPanel } from './CollectionPanel'
 import { EditCollectionPanel } from './EditCollectionPanel'
 import { MintLandingPage } from './components/landingPanel'
 import { ImportCollectionPanel } from './ImportCollectionPanel'
-import { CollectionHadUnknown } from '@loopring-web/component-lib'
+import { CollectionHadUnknown, ToastType, Toast } from '@loopring-web/component-lib'
+import { Trans } from 'react-i18next'
+import styled from '@emotion/styled'
 
 export const subMenu = subMenuNFT
+export const BoxStyle = styled(Box)`
+  .MuiSnackbar-root {
+    max-width: var(--modal-min-width);
+    pointer-events: initial;
+  }
+` as typeof Box
 
 export const NFTPage = () => {
   let match: any = useRouteMatch('/NFT/:item')
   const selected = match?.params?.item ?? 'assetsNFT'
-  const account = useAccount()
+  const { account } = useAccount()
+  const [showUnknownCollection, setShowUnknownCollection] = React.useState(false)
+  const {
+    updateHadUnknownCollection,
+    // chainInfos: { showHadUnknownCollection },
+  } = onchainHashInfo.useOnChainInfo()
   const [open, setOpen] = React.useState(false)
   const routerNFT = React.useMemo(() => {
     switch (selected) {
@@ -46,10 +65,21 @@ export const NFTPage = () => {
     }
   }, [selected])
   React.useEffect(() => {
-    if (account?.hasUnknownCollection) {
-      setOpen(true)
+    if (account?.hasUnknownCollection && account.readyState === AccountStatus.ACTIVATED) {
+      const {
+        system: { chainId },
+        localStore: { chainHashInfos },
+      } = store.getState()
+      const showHadUnknownCollection = chainHashInfos[chainId]?.showHadUnknownCollection
+      if (
+        !(showHadUnknownCollection && showHadUnknownCollection[account?.accAddress?.toLowerCase()])
+      ) {
+        setOpen(true)
+      } else {
+        // setShowUnknownCollection(true)
+      }
     }
-  }, [])
+  }, [account?.readyState])
 
   const activeViewTemplate = React.useMemo(
     () => (
@@ -70,9 +100,42 @@ export const NFTPage = () => {
   )
 
   return (
-    <>
-      <CollectionHadUnknown open={true} onClose={() => setOpen(false)} />
+    <BoxStyle flex={1} display={'flex'} flexDirection={'column'}>
+      <Toast
+        alertText={
+          <Typography component={'span'}>
+            <Trans i18nKey={'errorHadUnknownCollectionDes'} ns={'error'}>
+              As the creator, you will be able to generate collection information for those NFT
+              minted earlier that belong to nowhere. And once done, the other people holding your
+              NFT will be able to view those NFT with proper collection information via loopring.io
+              and loopring wallet.
+              <Link
+                display={'inline-flex'}
+                target='_self'
+                rel='noopener noreferrer'
+                href={'/nft/importLegacyCollection'}
+                paddingLeft={1 / 2}
+              >
+                GO
+              </Link>
+            </Trans>
+          </Typography>
+        }
+        open={showUnknownCollection}
+        autoHideDuration={SUBMIT_PANEL_AUTO_CLOSE}
+        onClose={() => {
+          setShowUnknownCollection(false)
+        }}
+        severity={ToastType.warning}
+      />
+      <CollectionHadUnknown
+        open={open}
+        onClose={() => {
+          updateHadUnknownCollection({ accountAddress: account?.accAddress?.toLowerCase() })
+          setOpen(false)
+        }}
+      />
       <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />
-    </>
+    </BoxStyle>
   )
 }
