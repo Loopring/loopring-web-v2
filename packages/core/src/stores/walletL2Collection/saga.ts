@@ -25,7 +25,11 @@ const getWalletL2CollectionBalance = async <_R extends { [key: string]: any }>({
         accountId: accountId,
       })
       .then((_response: boolean) => {
-        if (hasUnknownCollection == undefined) {
+        if ((_response as sdk.RESULT_INFO)?.code) {
+          // console.error(_response)
+          return
+        }
+        if (hasUnknownCollection == undefined && accountId === store.getState().account.accountId) {
           store.dispatch(
             nextAccountStatus({ ...store.getState().account, hasUnknownCollection: _response }),
           )
