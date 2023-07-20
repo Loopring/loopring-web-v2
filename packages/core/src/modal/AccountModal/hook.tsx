@@ -2705,7 +2705,7 @@ export function useAccountModalForUI({
               callback: (_e?: any) => {
                 activeAccountProps.onResetClick({
                   isReset: true,
-                  isFirstTime: false,
+                  isNotFirstTime: false,
                 })
               },
             }}
@@ -2818,7 +2818,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: t('labelTryAnother'),
               callback: (_e?: any) => {
-                activeAccountProps.onResetClick({ isFirstTime: false })
+                activeAccountProps.onResetClick({ isNotFirstTime: true })
                 // goUpdateAccount({ isFirstTime: false });
               },
             }}

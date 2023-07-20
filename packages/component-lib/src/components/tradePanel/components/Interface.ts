@@ -140,7 +140,7 @@ export type ResetInfoProps<C> = {
 >
 
 export type ResetExtendProps<C> = {
-  onResetClick: (props: { isFirstTime?: boolean; isReset?: boolean }) => void
+  onResetClick: (props: { isNotFirstTime?: boolean; isReset?: boolean }) => void
 } & ResetInfoProps<C>
 
 export type ResetViewProps<C extends FeeInfo> = ResetExtendProps<C>
