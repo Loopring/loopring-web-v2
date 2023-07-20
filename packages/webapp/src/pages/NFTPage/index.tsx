@@ -71,7 +71,7 @@ export const NFTPage = () => {
 
   return (
     <>
-      <CollectionHadUnknown open={open} onClose={() => setOpen(false)} />
+      <CollectionHadUnknown open={true} onClose={() => setOpen(false)} />
       <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />
     </>
   )

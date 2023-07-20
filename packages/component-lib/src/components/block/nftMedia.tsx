@@ -356,7 +356,7 @@ export const CollectionHadUnknown = withTranslation('common')(
                 color={'primary'}
                 href={'/nft/importLegacyCollection'}
               >
-                <Typography paddingX={2}> {t('labelGo')}</Typography>
+                {t('labelGo')}
               </Button>
             </Box>
           </Box>
