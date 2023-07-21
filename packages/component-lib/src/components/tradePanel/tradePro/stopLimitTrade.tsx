@@ -41,7 +41,16 @@ const BoxStyle = styled(Box)`
       width: 90%;
       transform: translate(-50%, -50%);
     }
+    .MuiGrid-grid-xs-3 {
+      z-index: 2;
+    }
   }
+  .limit-price{
+    .MuiGrid-grid-xs-3 {
+      z-index: 2;
+    }
+  }
+
 ` as typeof Box
 export const StopLimitTrade = withTranslation('common', { withRef: true })(
   <
@@ -221,6 +230,7 @@ export const StopLimitTrade = withTranslation('common', { withRef: true })(
               ref={priceRef as any}
               name={TradeBaseType.price}
               disabled={false}
+              className={'limit-price'}
               {...({
                 ...propsPrice,
                 isShowCoinInfo: true,
