@@ -297,7 +297,7 @@ export const TsNFTTable = withTranslation(['tables', 'common'])(
         },
         {
           key: 'fee',
-          name: t('labelTxFee'),
+          name: t('labelTxNetworkFee'),
           headerCellClass: 'textAlignRight',
           formatter: ({ row }) => {
             const fee = row['fee'] ?? {}
@@ -360,7 +360,7 @@ export const TsNFTTable = withTranslation(['tables', 'common'])(
               alignItems={'center'}
             >
               <span>{t('labelTransactions')}</span>
-              <span>{t('labelTxAmount') + ' / ' + t('labelTxFee')}</span>
+              <span>{t('labelTxAmount') + ' / ' + t('labelTxNetworkFee')}</span>
             </Typography>
           ),
           cellClass: 'textAlignLeft',

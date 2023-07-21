@@ -370,7 +370,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               marginTop={1 / 2}
             >
               <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                {t('labelDefiFee')}
+                {t('labelTradingFee')}
               </Typography>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
                 {deFiCalcData?.fee ? deFiCalcData.fee + ` ${tokenBuy.symbol}` : EmptyValueTag}

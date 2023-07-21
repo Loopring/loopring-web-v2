@@ -12,13 +12,14 @@ import {
   CoinMap,
   CurrencyToTag,
   IBData,
+  Info2Icon,
   PriceTag,
   TradeBaseType,
   TradeBtnStatus,
   TradeCalcProData,
   TradeProType,
 } from '@loopring-web/common-resources'
-import { Box, Tab } from '@mui/material'
+import { Box, Icon, Tab, Tooltip, Typography } from '@mui/material'
 import { TabsStyle } from '../components/Styled'
 import { useCommon } from './hookCommon'
 import { Button } from './../../index'
@@ -91,7 +92,16 @@ export const StopLimitTrade = withTranslation('common', { withRef: true })(
     })
     const propsPrice = React.useMemo(() => {
       return {
-        label: t('labelStopPrice'),
+        label: (
+          <Box display={'flex'} alignItems={'center'}>
+            {t('labelStopPrice')}
+            <Tooltip sx={{ marginLeft: 1 / 2 }} title={t('labelStopStopPriceDes')}>
+              <Icon>
+                <Info2Icon fontSize={'medium'} />
+              </Icon>
+            </Tooltip>
+          </Box>
+        ),
         subLabel: `\u2248 ${PriceTag[CurrencyToTag[currency]]}`,
         emptyText: t('tokenSelectToken'),
         placeholderText: '0.00',
@@ -108,7 +118,16 @@ export const StopLimitTrade = withTranslation('common', { withRef: true })(
     }, [tradeType, TradeProType, tokenPriceProps, handleCountChange])
     const propsStopPrice = React.useMemo(() => {
       return {
-        label: t('labelStopStopPrice'),
+        label: (
+          <Box display={'flex'} alignItems={'center'}>
+            {t('labelStopStopPrice')}
+            <Tooltip sx={{ marginLeft: 1 / 2 }} title={t('labelStopStopPriceDes')}>
+              <Icon>
+                <Info2Icon fontSize={'medium'} />
+              </Icon>
+            </Tooltip>
+          </Box>
+        ),
         subLabel: `\u2248 ${PriceTag[CurrencyToTag[currency]]}`,
         emptyText: t('tokenSelectToken'),
         placeholderText:
