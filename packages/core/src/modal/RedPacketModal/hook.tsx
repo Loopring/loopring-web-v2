@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-pascal-case */
-
 import {
   AccountStep,
   RedPacketDetailProps,
@@ -17,11 +16,10 @@ import {
   RedPacketBlindBoxDetailTypes,
   RedPacketNFTDetailLimit,
   RedPacketBlindBoxLimit,
-  useSettings,
-  CoinIcon,
 } from '@loopring-web/component-lib'
 import React, { useState } from 'react'
 import {
+  AssetTabIndex,
   CLAIM_TYPE,
   CustomError,
   EmptyValueTag,
@@ -52,6 +50,7 @@ import { Box } from '@mui/material'
 import { getIPFSString } from '../../utils'
 import { NFT_IMAGE_SIZES, toBig } from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router'
+import { ClaimCommands, claimServices } from '../../services'
 
 export function useRedPacketModal() {
   const ref = React.createRef()
@@ -70,6 +69,7 @@ export function useRedPacketModal() {
   const { tokenMap, idIndex, coinMap } = useTokenMap()
   const { t } = useTranslation('common')
   const { callOpen } = useOpenRedpacket()
+  const subject = React.useMemo(() => claimServices.onSocket(), [])
 
   const [detail, setDetail] = React.useState<undefined | sdk.LuckTokenClaimDetail>(undefined)
   const [blinBoxDetail, setBlindBoxDetail] = React.useState<undefined | any>(undefined)
@@ -260,7 +260,6 @@ export function useRedPacketModal() {
     }
     if (isShow && info && step === RedPacketViewStep.OpenPanel) {
       if (_info?.status == sdk.LuckyTokenItemStatus.COMPLETED) {
-        // TODO:
       } else if (_info.status === sdk.LuckyTokenItemStatus.OVER_DUE) {
         setShowRedPacket({
           isShow,
@@ -689,11 +688,13 @@ export function useRedPacketModal() {
                   } as any,
                   account.apiKey,
                 )
-                info?.refreshCallback && info?.refreshCallback()
+                //TODO refreshCallback
+                // info?.refreshCallback && info?.refreshCallback()
               } else {
                 setBlindBoxType('Lottery Started')
               }
             }
+            //TODO refreshCallback
             // info?.refreshCallback && info?.refreshCallback()
 
             if (
@@ -974,10 +975,11 @@ export function useRedPacketModal() {
                     luckyTokenHash: detail.luckyToken.hash,
                   },
                   claimType: CLAIM_TYPE.redPacket,
-                  successCallback: () => {
-                    redPacketDetailCall({ offset: 0 })
-                    info.refreshCallback && info.refreshCallback()
-                  },
+                  // TODO  successCallback remove
+                  // successCallback: () => {
+                  //   redPacketDetailCall({ offset: 0 })
+                  //   info.refreshCallback && info.refreshCallback()
+                  // },
                 })
               }
             })
@@ -989,6 +991,40 @@ export function useRedPacketModal() {
     }
   }, [info, detail, amountClaimStr, amountStr, account.accAddress, isShow, step])
   const { setShowClaimWithdraw } = useOpenModals()
+  const successCallback = React.useCallback(async () => {
+    if (isShow) {
+      switch (step) {
+        case RedPacketViewStep.DetailPanel:
+          redPacketDetailCall({ offset: 0 })
+          //TODO: refreshCallback dispatch refreshService here
+          break
+        case RedPacketViewStep.BlindBoxDetail:
+          redPacketBlindBoxDetailCall({ offset: 0 })
+          //TODO: Check async is reuqired or not   for onClickClaim2
+          if (wonPrizeInfo && wonPrizeInfo.isNFT) {
+            setShowRedPacket({ isShow: false })
+          }
+          //TODO: refreshCallback dispatch refreshService here
+          break
+      }
+    }
+  }, [step, isShow])
+  React.useEffect(() => {
+    const subscription = subject.subscribe((props) => {
+      switch (props.status) {
+        case ClaimCommands.Success:
+          if (props?.data?.type == CLAIM_TYPE.redPacket) {
+            successCallback()
+          }
+          break
+        default:
+          break
+      }
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [subject])
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string
@@ -1106,7 +1142,7 @@ export function useRedPacketModal() {
             setShowRedPacket({
               isShow: false,
             })
-            history.push('/l2assets/assets/RedPacket')
+            history.push(`/l2assets/assets/${AssetTabIndex.RedPacket}`)
             return
           }
           const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
@@ -1132,54 +1168,60 @@ export function useRedPacketModal() {
                 luckyTokenHash: detail.luckyToken.hash,
               },
               claimType: CLAIM_TYPE.redPacket,
-              successCallback: () => {
-                redPacketBlindBoxDetailCall({ offset: 0 })
-                info.refreshCallback && info.refreshCallback()
-              },
+              // TODO  successCallback remove
+              // successCallback: () => {
+              //   info.refreshCallback && info.refreshCallback()
+              //   redPacketBlindBoxDetailCall({ offset: 0 }).then(() => {
+              //     setShowRedPacket({ isShow: false })
+              //   })
+              //   // setBlindBoxType("Lottery Started")
+              // },
             })
           }
         },
-        onClickClaim2: async () => {
-          if (!detail.luckyToken.isNft) {
-            setShowRedPacket({
-              isShow: false,
-            })
-            history.push('/l2assets/assets/RedPacket')
-            return
-          }
-          const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
-            {
-              accountId: account.accountId,
-              isNft: detail.luckyToken.isNft,
-              tokens: [detail.luckyToken.tokenId],
-            },
-            account.apiKey,
-          )
-          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-          } else {
-            setShowClaimWithdraw({
-              isShow: true,
-              claimToken: {
-                tokenId: detail.luckyToken.tokenId,
-                // response!.tokenBalance[0].tokenId,
-                total: detail.claimAmount.toString(),
-                locked: response!.tokenBalance[0].locked,
-                pending: response!.tokenBalance[0].pending,
-                nftTokenInfo: detail.luckyToken.nftTokenInfo,
-                isNft: detail.luckyToken.isNft,
-                luckyTokenHash: detail.luckyToken.hash,
-              },
-              claimType: CLAIM_TYPE.redPacket,
-              successCallback: () => {
-                info.refreshCallback && info.refreshCallback()
-                redPacketBlindBoxDetailCall({ offset: 0 }).then(() => {
-                  setShowRedPacket({ isShow: false })
-                })
-                // setBlindBoxType("Lottery Started")
-              },
-            })
-          }
-        },
+        //TODO remove lookLike same logic as onClickClaim
+        // onClickClaim2: async () => {
+        //   if (!detail.luckyToken.isNft) {
+        //     setShowRedPacket({
+        //       isShow: false,
+        //     })
+        //     history.push(`/l2assets/assets/${AssetTabIndex.RedPacket}`)
+        //     return
+        //   }
+        //   const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
+        //     {
+        //       accountId: account.accountId,
+        //       isNft: detail.luckyToken.isNft,
+        //       tokens: [detail.luckyToken.tokenId],
+        //     },
+        //     account.apiKey,
+        //   )
+        //   if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        //   } else {
+        //     setShowClaimWithdraw({
+        //       isShow: true,
+        //       claimToken: {
+        //         tokenId: detail.luckyToken.tokenId,
+        //         // response!.tokenBalance[0].tokenId,
+        //         total: detail.claimAmount.toString(),
+        //         locked: response!.tokenBalance[0].locked,
+        //         pending: response!.tokenBalance[0].pending,
+        //         nftTokenInfo: detail.luckyToken.nftTokenInfo,
+        //         isNft: detail.luckyToken.isNft,
+        //         luckyTokenHash: detail.luckyToken.hash,
+        //       },
+        //       claimType: CLAIM_TYPE.redPacket,
+        //       // TODO  successCallback remove
+        //       // successCallback: () => {
+        //       //   info.refreshCallback && info.refreshCallback()
+        //       //   redPacketBlindBoxDetailCall({ offset: 0 }).then(() => {
+        //       //     setShowRedPacket({ isShow: false })
+        //       //   })
+        //       //   // setBlindBoxType("Lottery Started")
+        //       // },
+        //     })
+        //   }
+        // },
         NFTURL:
           Date.now() > detail!.luckyToken.validUntil
             ? detail.luckyToken.nftTokenInfo?.metadata?.imageSize.original

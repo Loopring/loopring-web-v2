@@ -23,20 +23,7 @@ const Styled = styled(Box)`
 
     justify-content: flex-start;
     align-content: space-between;
-    // .MuiButtonBase-root{
-    //   .MuiFormControl-root{
-    //     .MuiOutlinedInput-root{
-    //       border:0
-    //     }
-    //     margin:0  -${({ theme }) => theme.unit - 1}px
-    //   }
-    // }
   }
-  //.MuiInputBase-sizeSmall{
-  //  height: 2.4rem;
-  //}
-
-  //background: var(--color-global-bg);
 `
 // ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--color-box-secondary)',d_R:1/2, d_W: 1 })};
 

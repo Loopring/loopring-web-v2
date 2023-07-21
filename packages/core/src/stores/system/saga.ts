@@ -266,7 +266,6 @@ const should15MinutesUpdateDataGroup = async (
 }> => {
   // const { defaultNetwork } = store.getState().settings
   const network = MapChainId[chainId] ?? MapChainId[1]
-  const { tokenMap } = store.getState().tokenMap
   if (LoopringAPI.exchangeAPI && TokenPriceBase[network]) {
     let indexUSD = 0
     const tokenAddress = TokenPriceBase[network] //addressIndex[TokenPriceBase[network]];
@@ -328,32 +327,37 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
   } else {
     LoopringAPI.InitApi(chainId as sdk.ChainId)
-
     if (LoopringAPI.exchangeAPI) {
       let baseURL, socketURL, etherscanBaseUrl
       if (extendsChain.includes(chainId.toString())) {
         baseURL = `https://${process.env['REACT_APP_API_URL_' + chainId.toString()]}`
         socketURL = `wss://ws.${process.env['REACT_APP_API_URL_' + chainId.toString()]}/v3/ws`
         etherscanBaseUrl = chainId == 5 ? `https://goerli.etherscan.io/` : `https://etherscan.io/`
-
-        // baseURL = !isTaikoTest
-        //   ? `https://${process.env.REACT_APP_API_URL}`
-        //   : `https://${process.env.REACT_APP_API_URL_UAT}`;
-        // socketURL = !isTaikoTest
-        //   ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`
-        //   : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
-        // etherscanBaseUrl = !isTaikoTest
-        //   ? `https://etherscan.io/`
-        //   : `https://goerli.etherscan.io/`;
       } else {
-        baseURL =
-          sdk.ChainId.MAINNET === chainId
-            ? `https://${process.env.REACT_APP_API_URL_1}`
-            : `https://${process.env.REACT_APP_API_URL_5}`
-        socketURL =
-          sdk.ChainId.MAINNET === chainId
-            ? `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
-            : `wss://ws.${process.env.REACT_APP_API_URL_5}/v3/ws`
+        if (sdk.ChainId.MAINNET === chainId) {
+          baseURL = `https://${process.env.REACT_APP_API_URL_1}`
+          socketURL = `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
+        } else {
+          const isDevToggle = store.getState().settings.isDevToggle
+          if (isDevToggle === true && process.env?.REACT_APP_TEST_ENV) {
+            baseURL = `https://${process.env.REACT_APP_API_URL_5}`.replace('uat2', 'dev')
+            socketURL = `wss://ws.${process.env.REACT_APP_API_URL_5}/v3/ws`.replace('uat2', 'dev')
+            // @ts-ignore
+            sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
+              process.env.REACT_APP_GOERLI_DEV_NFT_FACTORY_COLLECTION
+          } else {
+            baseURL = `https://${process.env.REACT_APP_API_URL_5}`
+            socketURL = `wss://ws.${process.env.REACT_APP_API_URL_5}/v3/ws`
+            // @ts-ignore
+            sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
+              process.env[
+                `REACT_APP_GOERLI_${
+                  /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_5 ?? '') ? 'DEV' : 'UAT'
+                }_NFT_FACTORY_COLLECTION`
+              ]
+          }
+        }
+
         etherscanBaseUrl =
           sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
       }
@@ -368,14 +372,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       LoopringAPI.delegate?.setBaseUrl(baseURL)
       LoopringAPI.defiAPI?.setBaseUrl(baseURL)
       let allowTrade, exchangeInfo, gasPrice, forexMap
-      if (
-        /dev\.loopring\.io/.test(baseURL) &&
-        sdk.ChainId.MAINNET !== chainId &&
-        process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION
-      ) {
-        sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
-          process.env.REACT_APP_GOERLI_NFT_FACTORY_COLLECTION
-      }
       try {
         const _exchangeInfo = JSON.parse(window.localStorage.getItem('exchangeInfo') ?? '{}')
         ;[{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] = await Promise.all([
@@ -410,6 +406,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
                 [exchangeInfo.chainId]: exchangeInfo,
               }),
             )
+            window.location.reload()
             myLog('exchangeInfo from service')
           })
         }

@@ -5,6 +5,9 @@ export type DefiMap = {
   marketArray: string[]
   marketCoins: string[]
   marketMap: sdk.LoopringMap<sdk.DefiMarketInfo>
+  marketLeverageArray: string[]
+  marketLeverageCoins: string[]
+  marketLeverageMap: sdk.LoopringMap<sdk.DefiMarketInfo>
 }
 
 export type DefiMapStates = DefiMap & {

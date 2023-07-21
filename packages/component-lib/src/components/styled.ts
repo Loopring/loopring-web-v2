@@ -120,6 +120,7 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   &:focus-visible {
     outline: 0;
   }
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -407,6 +408,44 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     justify-content: space-between;
     flex-direction: row;
     white-space: pre;
+    color: var(--color-text-primary);
+    height: var(--provider-btn-height);
+
+    &:hover {
+      outline: 1px solid var(--color-border-select);
+    }
+
+    &.Mui-disabled {
+      .MuiButton-endIcon {
+        color: var(--color-text-disable);
+      }
+    }
+
+    &.selected {
+      outline: 1px solid var(--color-border-select);
+
+      &:after {
+        display: none;
+      }
+    }
+
+    &.MuiButton-root {
+      ${
+        // @ts-ignore
+        ({ loading, loadingbg, t }) => {
+          return loading === 'true'
+            ? `
+           pointer-events: none;    
+         
+       `
+            : ''
+        }
+      }
+    }
+
+    .loading {
+      font-size: ${({ theme }) => theme.fontDefault.body2};
+    }
   }
 
   &.vendor {

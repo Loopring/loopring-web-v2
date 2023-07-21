@@ -19,6 +19,9 @@ import {
   NFTMedaProps,
   useImage,
   useOpenModals,
+  useSettings,
+  SwitchPanelStyled,
+  Button,
 } from '../../index'
 import { NFT_IMAGE_SIZES } from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
@@ -286,6 +289,81 @@ export const ZoomMedia = withTranslation('common')(
             </Box>
           </Box>
         </ModalFullStyled>
+      </Modal>
+    )
+  },
+)
+
+export const CollectionHadUnknown = withTranslation('common')(
+  ({
+    t,
+    open,
+    onClose,
+    ...rest
+  }: WithTranslation & {
+    open: boolean
+    onClose: () => void
+  }) => {
+    const { mode } = useTheme()
+    const { isMobile } = useSettings()
+    return (
+      <Modal
+        open={open}
+        onClose={onClose}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <SwitchPanelStyled
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          width={isMobile ? '90%' : 'var(--lage-modal-width)'}
+          sx={{ background: 'var(--color-pop-bg)' }}
+          // className={className ?? ''}
+        >
+          <ModalCloseButton className='full-btn-close' onClose={onClose} {...{ ...rest, t }} />
+          <Box
+            alignItems={'flex-start'}
+            justifyContent={'stretch'}
+            zIndex={88}
+            paddingX={3}
+            flexDirection={'column'}
+          >
+            <Typography component={'h4'} variant={isMobile ? 'h5' : 'h4'} textAlign={'center'}>
+              {t('labelHadUnknownCollectionTitle')}
+            </Typography>
+            <Typography
+              component={'p'}
+              variant={'body1'}
+              color={'textSecondary'}
+              textAlign={'left'}
+              marginY={2}
+            >
+              {t('labelHadUnknownCollectionDes')}
+            </Typography>
+            <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+              <img
+                alt={'collection demo'}
+                width='80%'
+                // style={{
+                //   minHeight: '60px',
+                // }}
+                src={`${SoursURL}images/collection_unknown_${mode}.webp`}
+              />
+            </Box>
+            <Box display={'flex'} marginY={4} marginX={2} justifyContent={'center'}>
+              <Button
+                fullWidth
+                variant={'contained'}
+                size={'large'}
+                color={'primary'}
+                href={'/nft/importLegacyCollection'}
+              >
+                {t('labelGo')}
+              </Button>
+            </Box>
+          </Box>
+        </SwitchPanelStyled>
       </Modal>
     )
   },

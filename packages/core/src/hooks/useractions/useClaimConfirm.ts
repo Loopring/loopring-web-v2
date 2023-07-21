@@ -23,6 +23,7 @@ import { isAccActivated } from './useCheckAccStatus'
 import Web3 from 'web3'
 import { getTimestampDaysLater } from '../../utils'
 import { DAYS } from '../../defs'
+import { claimServices } from '../../services/claimServices'
 
 export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }, I>() => {
   const { exchangeInfo, chainId } = useSystem()
@@ -38,7 +39,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
     setShowAccount,
     setShowClaimWithdraw,
     modals: {
-      isShowClaimWithdraw: { claimToken, isShow, claimType, successCallback },
+      isShowClaimWithdraw: { claimToken, isShow, claimType },
       isShowAccount: { info },
     },
   } = useOpenModals()
@@ -46,7 +47,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
   const { btnStatus, enableBtn, disableBtn, btnInfo } = useBtnStatus()
   const feeProps =
     claimValue.tradeType === TRADE_TYPE.TOKEN
-      ? claimType === CLAIM_TYPE.lrcStaking
+      ? claimType === CLAIM_TYPE.lrcStaking || claimType === CLAIM_TYPE.allToken
         ? {
             requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
             extraType: 3,
@@ -113,7 +114,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           balance: Number(claimToken.total),
           claimType,
           luckyTokenHash: claimToken.luckyTokenHash,
-          successCallback,
         } as any)
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]]
@@ -124,7 +124,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),
           claimType,
-          successCallback,
         })
       }
     } else {
@@ -183,6 +182,23 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 counterFactualInfo: eddsaKey.counterFactualInfo,
               },
             )
+          } else if (claimValue.claimType === CLAIM_TYPE.allToken) {
+            response = await LoopringAPI.userAPI?.sendTotalClaim(
+              {
+                request: request as sdk.OriginClaimRequestV3,
+                web3: connectProvides.usedWeb3 as unknown as Web3,
+                chainId: chainId === 'unknown' ? 1 : chainId,
+                walletType: (ConnectProvidersSignMap[connectName] ??
+                  connectName) as unknown as sdk.ConnectorNames,
+                eddsaKey: eddsaKey.sk,
+                apiKey,
+                isHWAddr,
+              },
+              {
+                accountId: account.accountId,
+                counterFactualInfo: eddsaKey.counterFactualInfo,
+              },
+            )
           } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
             response = await LoopringAPI.defiAPI?.sendStakeClaim(
               {
@@ -207,7 +223,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
             throw response
           }
-          claimValue.successCallback && claimValue.successCallback()
 
           setShowAccount({
             isShow: true,
@@ -220,6 +235,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               symbol: claimValue.belong,
             },
           })
+          claimServices.claimSuccess({ type: claimValue.claimType })
           if (isHWAddr) {
             myLog('......try to set isHWAddr', isHWAddr)
             updateHW({ wallet: account.accAddress, isHWAddr })
@@ -236,6 +252,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isHardwareWallet)
+        claimServices.claimFailed({ type: claimValue.claimType, error: { ...e, code } })
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
@@ -334,6 +351,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               brokerType = 2
               break
             case CLAIM_TYPE.lrcStaking:
+            case CLAIM_TYPE.allToken:
               brokerType = 0
               break
           }
@@ -371,7 +389,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               },
               luckyTokenHash: claimToken?.luckyTokenHash,
             }
-          } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
+          } else if (claimValue.claimType === CLAIM_TYPE.allToken) {
             request = {
               accountId: account.accountId,
               token: {
@@ -385,7 +403,32 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 payeeAddr: broker,
                 storageId: storageId.offchainId,
                 maxFee: {
-                  tokenId: 0,
+                  tokenId: feeToken.tokenId,
+                  volume: '0',
+                },
+                token: {
+                  tokenId: feeToken.tokenId,
+                  volume: fee.toFixed(), // TEST: fee.toString(),
+                },
+                validUntil: getTimestampDaysLater(DAYS),
+              },
+            }
+          } else if (claimValue.claimType === CLAIM_TYPE.lrcStaking) {
+            request = {
+              accountId: account.accountId,
+              token: {
+                tokenId: token.tokenId,
+                volume: amount.toString(),
+              },
+              transfer: {
+                exchange: exchangeInfo.exchangeAddress,
+                payerAddr: accAddress,
+                payeeId: 0,
+                payerId: accountId,
+                payeeAddr: broker,
+                storageId: storageId.offchainId,
+                maxFee: {
+                  tokenId: feeToken.tokenId,
                   volume: '0',
                 },
                 token: {

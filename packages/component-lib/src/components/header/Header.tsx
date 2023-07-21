@@ -50,6 +50,7 @@ import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import { useTheme } from '@emotion/react'
 import _ from 'lodash'
 import { useSettings } from '../../stores'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
@@ -79,6 +80,17 @@ const HeaderStyled = styled(AppBar)`
     border-radius: 0;
 
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
+    }
+
+    &.testNet {
+      .beta {
+        color: var(--color-warning);
+        font-size: 9px;
+
+        &.dev {
+          color: var(--color-success);
+        }
+      }
     }
   }
 `
@@ -126,7 +138,7 @@ const LogoStyle = styled(Typography)`
   }
 ` as typeof Typography
 
-export const LoopringLogo = React.memo(() => {
+export const LoopringLogo = () => {
   return (
     <LogoStyle variant='h6' component='h1' marginRight={4}>
       <IconButton
@@ -142,7 +154,7 @@ export const LoopringLogo = React.memo(() => {
       </IconButton>
     </LogoStyle>
   )
-})
+}
 
 const ToolBarItem = ({
   buttonComponent,
@@ -172,8 +184,7 @@ const ToolBarItem = ({
         return <BtnSetting {...props} />
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />
-      // case ButtonComponentsMap.TestNet:
-      //   return <BtnNetworkSwitch {...props} />;
+
       case ButtonComponentsMap.WalletConnect:
         return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} />
       default:
@@ -251,6 +262,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       const theme = useTheme()
       const location = useLocation()
       const match = useRouteMatch('/:l1/:l2?/:pair?')
+
       const _headerToolBarData = isLandPage
         ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
             if ((key as unknown as ButtonComponentsMap) !== ButtonComponentsMap.WalletConnect) {
@@ -315,11 +327,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                   _obj[key].reduce(
                     (prev: JSX.Element[], props: HeaderMenuItemInterface, l2Index: number) => {
                       const { label, child, status } = props
-                      // const selectedFlag = new RegExp(label.id, "ig").test(
-                      //   selected.split("/")[1]
-                      //     ? selected.split("/")[1]
-                      //     : selected
-                      // );
+
                       if (status === HeaderMenuTabStatus.hidden) {
                         return prev
                       } else {
@@ -341,13 +349,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                           new RegExp(label.id?.toLowerCase(), 'ig').test(
                             match?.params[LAYERMAP[layer + 1]],
                           )
-                        // myLog(
-                        //   "match?.params[LAYERMAP[layer + 1]]",
-                        //   match?.params[LAYERMAP[layer + 1]],
-                        //   layer,
-                        //   label.id,
-                        //   selectFlag
-                        // );
                         return [
                           ...prev,
                           <HeadMenuItem
@@ -370,7 +371,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                               style: { textDecoration: 'none' },
                               key: key.toString() + '-' + layer + l2Index,
                             }}
-                            // onClick={handleListKeyDown ? handleListKeyDown : ""}
                           />,
                         ]
                       }
@@ -446,6 +446,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       // }, [themeMode, setTheme]);
 
       const isMaintaining = false
+      const { isDevToggle, setIsDevToggle } = useSettings()
 
       const displayDesktop = React.useMemo(() => {
         return (
@@ -457,6 +458,18 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
               alignItems={'stretch'}
               flexDirection={'row'} //!isMobile ? "row" : "column"}
             >
+              {process.env?.REACT_APP_TEST_ENV && chainId !== sdk.ChainId.MAINNET ? (
+                <Button
+                  variant={'text'}
+                  size={'small'}
+                  className={isDevToggle ? 'dev beta' : 'beta'}
+                  onClick={() => setIsDevToggle(!isDevToggle)}
+                >
+                  Beta
+                </Button>
+              ) : (
+                ''
+              )}
               <LoopringLogo />
               {!isLandPage
                 ? getDrawerChoices({
@@ -527,6 +540,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
         )
         // @ts-ignore
         const pair = match?.params?.pair ?? 'LRC-ETH'
+
         return (
           <ToolBarStyled>
             <Box
@@ -536,6 +550,18 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
               alignItems={'stretch'}
               flexDirection={'row'} //!isMobile ? "row" : "column"}
             >
+              {process.env?.REACT_APP_TEST_ENV && chainId !== sdk.ChainId.MAINNET ? (
+                <Button
+                  variant={'text'}
+                  size={'small'}
+                  className={isDevToggle ? 'dev beta' : 'beta'}
+                  onClick={() => setIsDevToggle(!isDevToggle)}
+                >
+                  B
+                </Button>
+              ) : (
+                ''
+              )}
               <Typography display={'inline-flex'} alignItems={'center'}>
                 <LoopringLogoIcon
                   fontSize={'large'}
@@ -678,7 +704,11 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       }
 
       return (
-        <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
+        <HeaderStyled
+          elevation={4}
+          ref={ref}
+          className={`${rest?.className} ` + process.env?.REACT_APP_TEST_ENV ? 'testNet' : ''}
+        >
           {isWrap ? (
             <Container style={paddingStyle} className={'wrap'} maxWidth='lg'>
               {isMobile ? displayMobile : displayDesktop}

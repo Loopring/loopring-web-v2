@@ -360,14 +360,13 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
     [accountId, apiKey, setToastOpen, t, idIndex],
   )
 
-  const onItemClick = (item: sdk.LuckTokenHistory, refreshCallback?: () => void) => {
+  const onItemClick = (item: sdk.LuckTokenHistory) => {
     if (item.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
       setShowRedPacket({
         isShow: true,
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
-          refreshCallback,
         },
       })
     } else {
@@ -376,12 +375,11 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
         step: RedPacketViewStep.DetailPanel,
         info: {
           ...item.luckyToken,
-          refreshCallback,
         },
       })
     }
   }
-  const onClaimItem = async (item: sdk.LuckTokenHistory, successCallback: () => void) => {
+  const onClaimItem = async (item: sdk.LuckTokenHistory) => {
     const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
       {
         accountId: accountId,
@@ -415,7 +413,8 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
           luckyTokenHash: item.luckyToken.hash,
         },
         claimType: CLAIM_TYPE.redPacket,
-        successCallback: successCallback,
+        // TODO  successCallback remove
+        // successCallback: successCallback,
       })
     }
   }
@@ -439,7 +438,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
   const { t } = useTranslation(['error'])
 
   const {
-    account: { accountId, apiKey, accAddress, eddsaKey },
+    account: { accountId, apiKey },
   } = useAccount()
 
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>([])
@@ -523,20 +522,21 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
     },
     [accountId, apiKey, setToastOpen, t, idIndex],
   )
+  //TODO subscribe RefreshService here
 
   const onItemClick = async (
     item: sdk.LuckyTokenBlindBoxItemReceive,
     pageInfo?: { offset: number; limit: number; filter: any },
   ) => {
-    const refreshCallback = () => {
-      getRedPacketReceiveList(pageInfo)
-    }
+    //TODO RefreshService
+    // const refreshCallback = () => {
+    //   getRedPacketReceiveList(pageInfo)
+    // }
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
         ...item.luckyToken,
-        refreshCallback,
       },
     })
   }

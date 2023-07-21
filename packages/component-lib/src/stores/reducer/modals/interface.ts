@@ -39,7 +39,6 @@ export interface ModalState {
   isShowClaimWithdraw: ModalStatePlayLoad & {
     claimToken: ClaimToken | undefined
     claimType: CLAIM_TYPE | undefined
-    successCallback?: () => void
   }
   isShowTransfer: ModalStatePlayLoad & Transaction & Contact
   isShowWithdraw: ModalStatePlayLoad & Transaction & Contact
@@ -63,7 +62,11 @@ export interface ModalState {
     type?: string
     messageKey?: string
   }
-  isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO }
+  isShowConnect: ModalStatePlayLoad & {
+    step: number
+    error?: RESULT_INFO
+    info?: { [key: string]: any }
+  }
   isShowAccount: ModalStatePlayLoad & {
     step: number
     error?: RESULT_INFO

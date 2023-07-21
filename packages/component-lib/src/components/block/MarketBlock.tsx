@@ -18,7 +18,6 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
   min-height: ${({ theme }) => theme.unit * 14.625}px;
   & {
     background: var(--color-box);
-
     border-radius: ${({ theme }) => theme.unit}px;
     border: 1px solid var(--color-box);
     cursor: pointer;

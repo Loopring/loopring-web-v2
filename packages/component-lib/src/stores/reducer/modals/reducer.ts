@@ -259,13 +259,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow: boolean
         step?: number
         error?: RESULT_INFO
+        info?: { [key: string]: any }
       }>,
     ) {
-      const { isShow, step, error } = action.payload
+      const { isShow, step, error, info } = action.payload
       state.isShowConnect = {
         isShow,
         step: step ? step : 0,
         error: error ?? undefined,
+        info: info ?? undefined,
       }
     },
     setShowAccount(
@@ -324,16 +326,14 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         ModalStatePlayLoad & {
           claimToken: ClaimToken
           claimType: CLAIM_TYPE
-          successCallback?: () => void
         }
       >,
     ) {
-      const { isShow, claimToken, claimType, successCallback } = action.payload
+      const { isShow, claimToken, claimType } = action.payload
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
         claimType,
-        successCallback,
       }
     },
     setShowSideStakingRedeem(

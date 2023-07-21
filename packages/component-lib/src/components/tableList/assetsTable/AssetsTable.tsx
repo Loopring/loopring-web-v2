@@ -337,7 +337,6 @@ export const AssetsTable = withTranslation('tables')(
           return (
             <ActionMemo
               {...{
-                t,
                 isInvest,
                 tokenValue,
                 getMarketArrayListCallback,
@@ -409,7 +408,6 @@ export const AssetsTable = withTranslation('tables')(
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           return (
-            // @ts-ignore
             <LockedMemo
               {...{
                 ...row,
@@ -443,7 +441,6 @@ export const AssetsTable = withTranslation('tables')(
           return (
             <ActionMemo
               {...{
-                t,
                 tokenValue,
                 getMarketArrayListCallback,
                 disableWithdrawList,

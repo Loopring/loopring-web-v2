@@ -15,8 +15,13 @@ import {
   TradeDefi,
 } from '@loopring-web/common-resources'
 
-import { makeWalletLayer2, useSubmitBtn, useWalletLayer2Socket } from '@loopring-web/core'
-import _, { pickBy, toArray } from 'lodash'
+import {
+  makeWalletLayer2,
+  useDefiMap,
+  useSubmitBtn,
+  useWalletLayer2Socket,
+} from '@loopring-web/core'
+import _ from 'lodash'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -31,8 +36,7 @@ import {
   walletLayer2Service,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
-import { useDefiMap, useLeverageETHMap, useTradeLeverageETH } from '../../stores'
-// import { useTradeLeverageETH } from "../../stores/router/tradeLeverageETH";
+import { useTradeLeverageETH } from '../../stores'
 
 export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   isJoin = true,
@@ -56,14 +60,13 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
   // const match: any = useRouteMatch("/invest/:defi?/:market?/:isJoin?");
 
   const {
-    marketMap: defiMarketMap,
-    updateLeverageETHMap,
+    marketLeverageMap: defiMarketMap,
     // status: defiMarketStatus,
-  } = useLeverageETHMap()
+  } = useDefiMap()
   const [isLoading, setIsLoading] = React.useState(false)
   const [isStoB, setIsStoB] = React.useState(true)
 
-  const { tokenMap, idIndex } = useTokenMap()
+  const { tokenMap } = useTokenMap()
   const { account } = useAccount()
   // const { status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo, allowTrade } = useSystem()
@@ -310,7 +313,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     async (clearTrade: boolean = false, feeInfo: undefined | { fee: any; feeRaw: any }) => {
       let walletMap: any = {}
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i) ?? []
-      const defiMarketMap = store.getState().invest.leverageETHMap?.marketMap
+      const defiMarketMap = store.getState().invest.defiMap?.marketLeverageMap
       const marketInfo = defiMarketMap[market]
       let deFiCalcDataInit: Partial<DeFiCalcData<any>> = {
         ...tradeLeverageETH.deFiCalcData,
@@ -343,7 +346,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         if (clearTrade) {
           walletLayer2Service.sendUserUpdate()
         }
-        walletMap = makeWalletLayer2(true).walletMap ?? {}
+        walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
 
         deFiCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count
         deFiCalcDataInit.coinBuy.balance = walletMap[coinBuySymbol]?.count
@@ -490,7 +493,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     if (deFiCalcDataInit[type]?.belong) {
       let walletMap: any
       if (account.readyState === AccountStatus.ACTIVATED) {
-        walletMap = makeWalletLayer2(true).walletMap
+        walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
         deFiCalcDataInit.coinSell = {
           belong: coinSellSymbol,
           balance: walletMap[coinSellSymbol]?.count,
@@ -629,8 +632,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         account.eddsaKey?.sk,
       tradeLeverageETH.buyVol)
     ) {
-      const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
-
       if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true })
       } else if (toggle && !toggle.leverageETHInvest.enable) {

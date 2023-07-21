@@ -1,10 +1,5 @@
-import { useDefiMap, useDefiTrade, useLeverageETHMap, useLeverageETHTrade } from '@loopring-web/core'
-import {
-  // DEFI_ADVICE_MAP,
-  MarketType,
-  leverageETHAdvice,
-  myLog,
-} from '@loopring-web/common-resources'
+import { useLeverageETHTrade } from '@loopring-web/core'
+import { MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
   DeFiWrap,
@@ -14,20 +9,18 @@ import {
 import { Box } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDefiMap } from '@loopring-web/core'
 
 export const TradePanel = ({
   isJoin,
-  // market,
   setServerUpdate,
   setToastOpen,
 }: {
-  // market: MarketType;
   isJoin: boolean
   setServerUpdate: (state: any) => void
   setToastOpen: (state: any) => void
 }) => {
-   
-  const { marketArray } = useLeverageETHMap()
+  const { marketLeverageArray: marketArray } = useDefiMap()
   // @ts-ignore
   const market: MarketType = marketArray[0]
   myLog('isJoin', isJoin, 'market', market)
