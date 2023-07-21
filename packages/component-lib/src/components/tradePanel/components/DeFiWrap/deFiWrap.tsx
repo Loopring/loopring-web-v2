@@ -60,6 +60,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   maxSellVol,
   maxBuyVol,
   market,
+  title,
+  isLeverageETH,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -252,7 +254,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           alignItems={'center'}
           alignSelf={'self-start'}
         >
-          {t('labelInvestDefiTitle')}
+          {title}
           <HelpIcon
             fontSize={'large'}
             color={'inherit'}
@@ -271,7 +273,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           <Typography display={'inline-block'} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/l2assets/history/${RecordTabIndex.DefiRecords}?market=${market}`)
+                if (isLeverageETH) {
+                  history.push('/l2assets/history/leverageETHRecords')
+                } else {
+                  history.push(`/l2assets/history/${RecordTabIndex.DefiRecords}?market=${market}`)
+                }
               }}
               sx={{ backgroundColor: 'var(--field-opacity)' }}
               className={'switch outlined'}

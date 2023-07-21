@@ -18,6 +18,7 @@ const initialState: ToggleState = {
   collectionNFT: { enable: true },
   WSTETHInvest: { enable: true },
   RETHInvest: { enable: true },
+  leverageETHInvest: { enable: true },
   defiInvest: { enable: true },
   dualInvest: { enable: true },
   claim: { enable: true },

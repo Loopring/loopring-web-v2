@@ -130,6 +130,7 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
         row: any
       }
   hideAssets?: boolean
+  isLeverageETH?: boolean
 } & XOR<
   {
     hideInvestToken: boolean
@@ -162,6 +163,7 @@ export const AssetsTable = withTranslation('tables')(
       hideAssets,
       onTokenLockHold,
       tokenLockDetail,
+      isLeverageETH,
       ...rest
     } = props
 
@@ -347,6 +349,7 @@ export const AssetsTable = withTranslation('tables')(
                 market: renderMarket,
                 onReceive,
                 onSend,
+                isLeverageETH,
               }}
             />
           )
@@ -451,6 +454,7 @@ export const AssetsTable = withTranslation('tables')(
                 market: renderMarket,
                 onReceive,
                 onSend,
+                isLeverageETH,
               }}
             />
           )

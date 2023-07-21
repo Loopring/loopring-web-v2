@@ -332,6 +332,7 @@ export const enum InvestMapType {
   STAKE = 'STAKE',
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
+  LEVERAGEETH = 'LEVERAGEETH',
   // BTradeInvest = "BTradeInvest",
 }
 

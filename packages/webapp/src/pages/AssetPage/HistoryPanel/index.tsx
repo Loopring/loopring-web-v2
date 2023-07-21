@@ -32,6 +32,7 @@ import {
   useDualTransaction,
   useGetAmmRecord,
   useGetDefiRecord,
+  useGetLeverageETHRecord,
   useGetTrades,
   useGetTxs,
   useOrderList,
@@ -127,6 +128,12 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     getSideStakingTxList,
     sideStakingTotal,
   } = useDefiSideRecord(setToastOpen)
+  const {
+    leverageETHList,
+    showLoading: showLeverageETHLoading,
+    getLeverageETHTxList,
+    leverageETHTotal,
+  } = useGetLeverageETHRecord(setToastOpen)
 
   const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
   const { etherscanBaseUrl } = useSystem()
@@ -442,6 +449,21 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                 onItemClick={onDetail}
               />
             </Box>
+          ) : currentTab === RecordTabIndex.leverageETHRecords ? (
+            <DefiTxsTable
+              {...{
+                rawData: leverageETHList,
+                pagination: {
+                  pageSize: pageSize,
+                  total: leverageETHTotal,
+                },
+                getDefiTxList: getLeverageETHTxList,
+                showloading: showLeverageETHLoading,
+                ...rest,
+              }}
+              tokenMap={tokenMap}
+              idIndex={idIndex}
+            />
           ) : (
             <></>
           )}

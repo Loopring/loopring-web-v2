@@ -1593,7 +1593,7 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
     confirmationNeeded,
   }: WithTranslation & {
     open: boolean
-    type: 'WSETH' | 'RETH'
+    type: 'WSETH' | 'RETH' | 'CiETH'
     confirmationNeeded: boolean
     handleClose: (event: any, isAgree?: boolean) => void
   }) => {
@@ -1676,6 +1676,23 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
                 reflect ETH staking rewards earned.
               </Typography>
             </Trans>
+            {type === 'CiETH' && (
+              <Trans
+                i18nKey={'labelDefiWithdrawFee'}
+                components={{
+                  p: (
+                    <Typography
+                      whiteSpace={'pre-line'}
+                      component={'span'}
+                      variant={'body1'}
+                      display={'block'}
+                      marginBottom={1}
+                      color={'textSecondary'}
+                    />
+                  ),
+                }}
+              />
+            )}
           </DialogContentText>
           {confirmationNeeded && (
             <MuiFormControlLabel
@@ -1694,47 +1711,49 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
             />
           )}
         </DialogContent>
-        <DialogContent>
-          <DialogContentText id='alert-dialog-defiRisk2'>
-            <Trans
-              i18nKey={`label${type}DefiRisk2`}
-              tOptions={{
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-              }}
-            >
-              <Typography
-                whiteSpace={'pre-line'}
-                component={'span'}
-                variant={'body2'}
-                marginTop={2}
-                display={'block'}
-                color={'textThird'}
+        {type !== 'CiETH' && (
+          <DialogContent>
+            <DialogContentText id='alert-dialog-defiRisk2'>
+              <Trans
+                i18nKey={`label${type}DefiRisk2`}
+                tOptions={{
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                }}
               >
-                It is important to note that users can't redeem wstETH for ETH until phase 2 of
-                Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges
-                at market prices.{' '}
-              </Typography>
-              <Typography
-                whiteSpace={'pre-line'}
-                component={'span'}
-                variant={'body2'}
-                marginTop={2}
-                display={'block'}
-                color={'textThird'}
-              >
-                Loopring will provide a pool to allow users to trade wstETH for ETH directly on
-                Layer 2. The pool will rebalance periodically when it reaches a specific threshold.
-                If there is not enough inventory on Layer 2, user can always withdraw their wstETH
-                tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.
-              </Typography>
-            </Trans>
-          </DialogContentText>
-        </DialogContent>
+                <Typography
+                  whiteSpace={'pre-line'}
+                  component={'span'}
+                  variant={'body2'}
+                  marginTop={2}
+                  display={'block'}
+                  color={'textThird'}
+                >
+                  It is important to note that users can't redeem wstETH for ETH until phase 2 of
+                  Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges
+                  at market prices.{' '}
+                </Typography>
+                <Typography
+                  whiteSpace={'pre-line'}
+                  component={'span'}
+                  variant={'body2'}
+                  marginTop={2}
+                  display={'block'}
+                  color={'textThird'}
+                >
+                  Loopring will provide a pool to allow users to trade wstETH for ETH directly on
+                  Layer 2. The pool will rebalance periodically when it reaches a specific
+                  threshold. If there is not enough inventory on Layer 2, user can always withdraw
+                  their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.
+                </Typography>
+              </Trans>
+            </DialogContentText>
+          </DialogContent>
+        )}
         <DialogActions>
           <Button
             variant={'contained'}

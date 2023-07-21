@@ -1763,4 +1763,5 @@ export default {
   labelRedPacketBlindboxReceived2: 'Received',
   labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
+  labelLayer2HistoryleverageETHRecords: 'Leverage ETH',
 }
