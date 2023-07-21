@@ -64,6 +64,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 
 import BigNumber from 'bignumber.js'
+import { RESULT_INFO } from '@loopring-web/loopring-sdk'
 
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket()
@@ -298,7 +299,7 @@ export const useSwap = <
 
     const { calcTradeParams } = pageTradeLite
 
-    if (!sellToken || !buyToken || !calcTradeParams) {
+    if (!sellToken || !buyToken || !calcTradeParams || !storageId.orderId) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -427,6 +428,7 @@ export const useSwap = <
     sellMinAmt,
     isMarketInit,
     isSwapLoading,
+    storageId.orderId,
   ])
   /*** Btn related function ***/
   const swapFunc = React.useCallback(async () => {
@@ -704,6 +706,7 @@ export const useSwap = <
       tokenMap[tradeCalcData.coinSell] &&
       LoopringAPI.userAPI
     ) {
+      // setStorageId({} as any)
       const storageId = await LoopringAPI.userAPI.getNextStorageId(
         {
           accountId: account.accountId,
@@ -711,7 +714,17 @@ export const useSwap = <
         },
         account.apiKey,
       )
-      setStorageId(storageId)
+      if ((storageId as RESULT_INFO).code) {
+        setToastOpen({
+          open: true,
+          content: 'error: getStorageId',
+          type: ToastType.error,
+        })
+      } else {
+        setStorageId(storageId)
+      }
+    } else {
+      setStorageId({} as any)
     }
   }, [tradeCalcData?.coinSell, account, tokenMap])
   React.useEffect(() => {
@@ -720,10 +733,17 @@ export const useSwap = <
       // walletLayer2Callback()
       if (account.readyState === AccountStatus.ACTIVATED) {
         getAmount({ market })
-        getStorageId()
       }
     }
   }, [accountStatus, market])
+  React.useEffect(() => {
+    if (accountStatus === SagaStatus.UNSET) {
+      const account = store.getState().account
+      if (account.readyState === AccountStatus.ACTIVATED && tradeCalcData?.coinSell) {
+        getStorageId()
+      }
+    }
+  }, [accountStatus, tradeCalcData?.coinSell])
 
   const walletLayer2Callback = React.useCallback(async () => {
     // let walletMap: WalletMap<any> | undefined = undefined
@@ -865,7 +885,6 @@ export const useSwap = <
         setTradeCalcData(_tradeCalcData)
         setTradeData((state) => {
           const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
-
           return {
             ...(state ?? {}),
             sell: {
