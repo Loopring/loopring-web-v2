@@ -26,8 +26,10 @@ export const TradePanel = ({
   setServerUpdate: (state: any) => void
   setToastOpen: (state: any) => void
 }) => {
-  const market: MarketType = 'CIETH-ETH'
+   
+  // 'CIETH-ETH'
   const { marketArray, marketMap } = useDefiMap()
+  const market: MarketType = "WSTETH-ETH"
   myLog('isJoin', isJoin, 'market', market)
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] = React.useState<boolean>(false)
   const [confirmShowNoBalance, setConfirmShowNoBalance] = React.useState<boolean>(false)
@@ -61,6 +63,7 @@ export const TradePanel = ({
           padding={5 / 2}
         >
           <DeFiWrap
+            isLeverageETH
             market={market}
             isJoin={isJoin}
             type={leverageETHAdvice.project}

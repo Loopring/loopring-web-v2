@@ -16,7 +16,7 @@ import {
 } from '@loopring-web/common-resources'
 
 import { makeWalletLayer2, useSubmitBtn, useWalletLayer2Socket } from '@loopring-web/core'
-import _ from 'lodash'
+import _, { pickBy, toArray } from 'lodash'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -63,7 +63,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
   const [isLoading, setIsLoading] = React.useState(false)
   const [isStoB, setIsStoB] = React.useState(true)
 
-  const { tokenMap } = useTokenMap()
+  const { tokenMap, idIndex } = useTokenMap()
   const { account } = useAccount()
   // const { status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo, allowTrade } = useSystem()
@@ -442,7 +442,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         setIsLoading(true)
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: 'CIAN' }),
+        LoopringAPI.defiAPI?.getDefiMarkets({}),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(isJoin ? sdk.OffchainFeeReqType.DEFI_JOIN : sdk.OffchainFeeReqType.DEFI_EXIT)
           : Promise.resolve(undefined),
@@ -456,11 +456,18 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           if (!(isJoin ? status[status.length - 2] === '1' : status[status.length - 4] === '1')) {
             setServerUpdate(true)
           } else {
+            const arr = toArray(defiMapInfo?.markets)
+            // @ts-ignore
+            const marketArr = arr.filter(market => market.extra && market.extra.isLeverage).map(market => market.market)
+            // @ts-ignore
+            const tokenArr = arr.filter(market => market.extra && market.extra.isLeverage).map(market => idIndex[market.baseTokenId])
+            // @ts-ignore
+            const marketMap = pickBy(response?.markets, (market) => market.extra && market.extra.isLeverage)
             updateLeverageETHMap({
               leverageETHMap: {
-                marketMap: defiMapInfo.markets,
-                marketCoins: defiMapInfo.tokenArr,
-                marketArray: defiMapInfo.marketArr,
+                marketMap: marketMap,
+                marketCoins: tokenArr,
+                marketArray: marketArr,
               },
             })
           }
@@ -535,7 +542,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
 
   useWalletLayer2Socket({ walletLayer2Callback })
   const sendRequest = React.useCallback(async () => {
-    debugger
     try {
       setIsLoading(true)
       if (
@@ -629,7 +635,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
 
   const handleSubmit = React.useCallback(async () => {
     const { tradeLeverageETH } = store.getState()._router_tradeLeverageETH
-    debugger
     // const marketInfo = defiMarketMap[market];
 
     if (

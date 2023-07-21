@@ -1140,7 +1140,6 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
   const { accountId, apiKey } = store.getState().account
   const getLeverageETHTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
-      debugger
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
@@ -1150,7 +1149,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            marktes: 'RETH-ETH',
+            marktes: 'WSTETH-ETH',
           } as any,
           apiKey,
         )

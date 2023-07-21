@@ -20,6 +20,7 @@ import {
   useLeverageETHMap,
   useNotify,
   useToast,
+  useTokenMap,
 } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
@@ -32,6 +33,7 @@ import {
   UpColor,
 } from '@loopring-web/common-resources'
 import { updateLeverageETHMap } from '@loopring-web/core/src/stores/invest/leverageETHMap/reducer'
+import { pickBy, toArray } from 'lodash'
 
 export const StyleWrapper = styled(Box)`
   position: relative;
@@ -89,25 +91,7 @@ export const StyleCardContent = styled(CardContent)`
 ` as typeof CardContent
 
 const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
-  const { marketArray, updateLeverageETHMap } = useLeverageETHMap()
-  useEffect(() => {
-    ;(async () => {
-      const response = await LoopringAPI.defiAPI?.getDefiMarkets({
-        defiType: 'CIAN',
-      })
-      if (response) {
-        updateLeverageETHMap({
-          leverageETHMap: {
-            marketArray: response.marketArr,
-            marketCoins: response.tokenArr,
-            marketMap: response.markets,
-          },
-        })
-      }
-
-      // debugger
-    })()
-  }, [])
+  const { marketArray } = useLeverageETHMap()
   const {
     confirmedLeverageETHInvest,
     confirmation: { confirmedLeverageETHInvest: confirmed },
@@ -117,7 +101,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     type?: 'CiETH'
   }>({ isShow: !confirmed, type: 'CiETH' })
 
-  const match: any = useRouteMatch('/invest/defi/:market?/:isJoin?')
+  const match: any = useRouteMatch('/invest/leverageETH/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()

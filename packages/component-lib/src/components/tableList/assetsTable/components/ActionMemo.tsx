@@ -33,6 +33,7 @@ export type ActionProps = {
   // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[]
   t: TFunction
+  isLeverageETH: boolean
 }
 const ActionPopContent = React.memo(
   ({
@@ -49,6 +50,7 @@ const ActionPopContent = React.memo(
     // onShowWithdraw,
     getMarketArrayListCallback,
     t,
+    isLeverageETH
   }: ActionProps) => {
     const history = useHistory()
     const { setShowAmm } = useOpenModals()
@@ -178,6 +180,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     // onShowDeposit,
     // onShowTransfer,
     // onShowWithdraw,
+    isLeverageETH
   } = props
   const popoverProps: PopoverWrapProps = {
     type: PopoverType.click,
@@ -208,7 +211,34 @@ const ActionMemo = React.memo((props: ActionProps) => {
       ) : (
         <>
           <Box display={'flex'}>
-            {isInvest ? (
+            {isLeverageETH ? (
+              <>
+                <Grid item>
+                  <Button
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
+                    onClick={() => {
+                      history.push(`/invest/leverageETH`)
+                    }}
+                  >
+                    {t('labelDefiInvest')}
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant={'text'}
+                    size={'small'}
+                    color={'primary'}
+                    onClick={() => {
+                      history.push(`/invest/leverageETH/redeem`)
+                    }}
+                  >
+                    {t('labelDefiRedeem')}
+                  </Button>
+                </Grid>
+              </>
+            ) : isInvest ? (
               <>
                 <Grid item>
                   <Button

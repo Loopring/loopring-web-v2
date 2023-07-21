@@ -1784,4 +1784,5 @@ export default {
   labelDefiWithdrawFee:
     '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
   labelLeverageETHTitle: 'Leverage ETH',
+  labelLayer2HistoryleverageETHRecords: 'Leverage ETH',
 }
