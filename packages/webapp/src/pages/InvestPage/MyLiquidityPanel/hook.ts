@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AmmRecordRow, MyPoolRow, RawDataDefiSideStakingItem } from '@loopring-web/component-lib'
 import {
   LoopringAPI,
@@ -9,6 +9,7 @@ import {
   useAccount,
   useAmmMap,
   useDefiMap,
+  useLeverageETHMap,
   useStakingMap,
   useTokenMap,
   useTokenPrices,
@@ -28,6 +29,7 @@ import {
   STAKING_INVEST_LIMIT,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { pickBy, toArray } from 'lodash'
 // import { walletServices } from "@loopring-web/web3-provider";
 
 export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
@@ -62,6 +64,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const { status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
   const { tokenMap, idIndex } = useTokenMap()
   const { marketCoins: defiCoinArray } = useDefiMap()
+  const { marketCoins: leverageETHCoinArray, updateLeverageETHMap } = useLeverageETHMap()
   const { status: ammMapStatus, ammMap } = useAmmMap()
   const { tokenPrices } = useTokenPrices()
   const { status: stakingMapStatus, marketMap: stakingMap } = useStakingMap()
@@ -135,7 +138,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }
       resetTableData(resultData)
     }
-  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray])
+  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray, leverageETHCoinArray])
   const handleFilterChange = React.useCallback(
     (filter) => {
       setFilter(filter)
@@ -176,7 +179,13 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       resultData.forEach((item) => {
         totalCurrentInvest.ammPoolDollar += Number(item.balanceU ?? 0)
       })
-      // todo calculate leverageETHDollar
+      leverageETHCoinArray.forEach((defiCoinKey) => {
+        totalCurrentInvest.leverageETHDollar += Number(
+          // @ts-ignore
+          (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
+            tokenPrices[defiCoinKey] ?? 0,
+        )
+      })
       setSummaryMyInvest((state) => {
         return {
           ...state,
@@ -184,8 +193,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
           investDollar: sdk
             .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
             .plus(totalCurrentInvest.stakeETHDollar ?? 0)
-            // .plus(totalCurrentInvest. ?? 0)
-            // .plus(totalCurrentInvest.dualStakeDollar ?? 0)
+            .plus(totalCurrentInvest.leverageETHDollar ?? 0)
             .plus(state.stakeLRCDollar ?? 0)
             .toString(),
         }
