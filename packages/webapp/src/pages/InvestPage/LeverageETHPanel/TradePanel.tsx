@@ -1,4 +1,4 @@
-import { useDefiMap, useDefiTrade, useLeverageETHTrade } from '@loopring-web/core'
+import { useDefiMap, useDefiTrade, useLeverageETHMap, useLeverageETHTrade } from '@loopring-web/core'
 import {
   // DEFI_ADVICE_MAP,
   MarketType,
@@ -27,9 +27,9 @@ export const TradePanel = ({
   setToastOpen: (state: any) => void
 }) => {
    
-  // 'CIETH-ETH'
-  const { marketArray, marketMap } = useDefiMap()
-  const market: MarketType = "WSTETH-ETH"
+  const { marketArray } = useLeverageETHMap()
+  // @ts-ignore
+  const market: MarketType = marketArray[0]
   myLog('isJoin', isJoin, 'market', market)
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] = React.useState<boolean>(false)
   const [confirmShowNoBalance, setConfirmShowNoBalance] = React.useState<boolean>(false)
@@ -37,7 +37,7 @@ export const TradePanel = ({
   const { deFiWrapProps } = useLeverageETHTrade({
     isJoin,
     setToastOpen: setToastOpen as any,
-    market: market ? market : marketArray[0], // marketArray[1] as MarketType,
+    market: market,
     setServerUpdate,
     setConfirmShowNoBalance,
     confirmShowLimitBalance,
