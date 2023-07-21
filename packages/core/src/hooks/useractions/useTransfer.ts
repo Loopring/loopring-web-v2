@@ -129,7 +129,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       },
     },
   } = useOpenModals()
-  const [memo, setMemo] = React.useState('')
   const { tokenMap, totalCoinMap } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId, forexMap } = useSystem()
@@ -181,7 +180,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     requestType: undefined as any,
   })
   const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemo(e.target.value)
+    updateTransferData({
+      memo: e.target.value
+    })
   }, [])
 
   const {
@@ -310,7 +311,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         })
       }
     }
-    setMemo('')
+    updateTransferData({
+      memo: ""
+    })
     if (contactAddress) {
       setAddress(contactAddress)
     } else {
@@ -741,7 +744,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
     isAddressCheckLoading,
     addrStatus,
-    memo,
+    memo: transferValue.memo ?? "",
     handleOnMemoChange,
     handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
       checkActiveFeeIsEnough({
