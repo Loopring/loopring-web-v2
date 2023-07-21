@@ -62,7 +62,6 @@ import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/co
 import { useContacts } from '../../stores/contacts/hooks'
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
-  const [memo, setMemo] = React.useState('')
   const {
     setShowAccount,
     setShowNFTTransfer,
@@ -166,7 +165,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemo(e.target.value)
+    updateNFTTransferData({
+      memo: e.target.value
+    })
   }, [])
   const checkBtnStatus = React.useCallback(() => {
     if (
@@ -492,6 +493,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             },
             apiKey,
           )
+          
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,
@@ -643,7 +645,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   }, [realAddr, isShow, contacts])
   const nftTransferProps: TransferProps<R, T> = {
     handleOnMemoChange,
-    memo,
+    memo: nftTransferValue.memo ?? "",
     type: TRADE_TYPE.NFT,
     addressDefault: address,
     realAddr,
