@@ -50,7 +50,6 @@ import {
   useAccount,
   useAmmActivityMap,
   useDualMap,
-  useLeverageETHMap,
   useModalData,
   useStakeRedeemClick,
   useSystem,
@@ -142,8 +141,8 @@ const MyLiquidity: any = withTranslation('common')(
       hideSmallBalances,
       // dualList,
     })
-    const { marketCoins } = useLeverageETHMap()
-    
+    const { marketLeverageCoins: marketCoins } = useDefiMap()
+
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
@@ -646,7 +645,7 @@ const MyLiquidity: any = withTranslation('common')(
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
                     {summaryMyInvest?.leverageETHDollar !== undefined ? (
                       <Typography component={'h4'} variant={'h3'} marginX={3}>
-                        {summaryMyInvest?.leverageETHDollar 
+                        {summaryMyInvest?.leverageETHDollar
                           ? hideAssets
                             ? HiddenTag
                             : PriceTag[CurrencyToTag[currency]] +

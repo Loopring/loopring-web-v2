@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React from 'react'
 import {
   LoopringAPI,
   makeDualOrderedItem,
   store,
   tradeItemToTableDataItem,
   useAccount,
+  useDefiMap,
   useDualMap,
-  useLeverageETHMap,
   useTokenMap,
   useWalletLayer2,
   volumeToCount,
@@ -40,7 +40,6 @@ import {
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
-import { toArray } from 'lodash'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -63,9 +62,9 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
   } = useAccount()
   const { tokenMap } = store.getState().tokenMap
   const { t } = useTranslation(['error'])
-  const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
-  const [txsTotal, setTxsTotal] = useState(0)
-  const [showLoading, setShowLoading] = useState(false)
+  const [txs, setTxs] = React.useState<RawDataTransactionItem[]>([])
+  const [txsTotal, setTxsTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
 
   const getTxnStatus = (status: string) =>
     status === ''
@@ -78,7 +77,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
       ? TransactionStatus.received
       : TransactionStatus.failed
 
-  const getUserTxnList = useCallback(
+  const getUserTxnList = React.useCallback(
     async ({ tokenSymbol, start, end, limit, offset, types }: TxsFilterProps) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         setShowLoading(true)
@@ -335,6 +334,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
+        //TODO... YAO filter 掉 leverage
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -446,7 +446,6 @@ export const useOrderList = ({
   const [totalNum, setTotalNum] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(false)
   const [showDetailLoading, setShowDetailLoading] = React.useState(false)
-  // const [openOrderList, setOpenOrderList] = React.useState<OrderHistoryRawDataItem[]>([])
   const {
     account: { accountId, apiKey, readyState },
   } = useAccount()
@@ -869,8 +868,6 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
     getDualTxList,
     dualTotal,
     dualMarketMap,
-    // pagination,
-    // updateTickersUI,
   }
 }
 
@@ -878,7 +875,6 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
   setToastOpen: (props: any) => void,
 ) => {
   const { t } = useTranslation(['error'])
-
   const [btradeOrderData, setBtradeOrderData] = React.useState<R[]>([])
   const [totalNum, setTotalNum] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(false)
@@ -1138,16 +1134,18 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
   const [leverageETHList, setLeverageETHRecordList] = React.useState<sdk.UserDefiTxsHistory[]>([])
   const [leverageETHTotal, setLeverageETHTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
+  const { marketLeverageArray } = useDefiMap()
   const { accountId, apiKey } = store.getState().account
   const getLeverageETHTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        const markets = await LoopringAPI.defiAPI.getDefiMarkets({})
-        const arr = toArray(markets?.markets)
+        // const markets = await LoopringAPI.defiAPI.getDefiMarkets({})
+        // const arr = toArray(markets?.markets)
         // @ts-ignore
-        const marketArr = arr.filter(market => market.extra && market.extra.isLeverage)
-          .map(market => market.market)
+        // const marketArr = arr
+        //   .filter((market) => market.extra && market.extra.isLeverage)
+        //   .map((market) => market.market)
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -1155,7 +1153,8 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            marktes: marketArr[0],
+            //TDOO 可扩展性？？？？
+            marktes: marketLeverageArray?.join(','),
           } as any,
           apiKey,
         )

@@ -6,7 +6,6 @@ import { btradeMapFork } from './BtradeMap/saga'
 import * as defiReducer from './DefiMap/reducer'
 import * as stakingSlice from './StakingMap/reducer'
 import * as btradeSlice from './BtradeMap/reducer'
-import * as leverageETHMapSlice from './leverageETHMap/reducer'
 
 import * as investTokenTypeMapReducer from './InvestTokenTypeMap/reducer'
 import * as popupSlice from './popup/reducer'
@@ -22,7 +21,6 @@ export const investReducer = combineReducers({
   investTokenTypeMap: investTokenTypeMapReducer.investTokenTypeMapSlice.reducer,
   btradeMap: btradeSlice.btradeMapSlice.reducer,
   popup: popupSlice.popupSlice.reducer,
-  leverageETHMap: leverageETHMapSlice.leverageETHMapSlice.reducer,
 })
 export const investForks = [
   ...defiMapFork,
@@ -38,4 +36,3 @@ export * from './InvestTokenTypeMap'
 export * from './StakingMap'
 export * from './BtradeMap'
 export * from './popup'
-export * from './leverageETHMap'
