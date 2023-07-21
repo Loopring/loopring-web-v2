@@ -50,6 +50,7 @@ import {
   useAccount,
   useAmmActivityMap,
   useDualMap,
+  useLeverageETHMap,
   useModalData,
   useStakeRedeemClick,
   useSystem,
@@ -141,6 +142,8 @@ const MyLiquidity: any = withTranslation('common')(
       hideSmallBalances,
       // dualList,
     })
+    const { marketCoins } = useLeverageETHMap()
+    
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
@@ -199,6 +202,7 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const leverageETHAssets = assetsRawData.filter((o) => {
       return (
+        marketCoins.includes(o.name) &&
         o.token.type !== TokenType.single &&
         o.token.type !== TokenType.lp &&
         (hideSmallBalances ? !o.smallBalance : true)
@@ -636,7 +640,7 @@ const MyLiquidity: any = withTranslation('common')(
                 >
                   <Grid item xs={12}>
                     <Typography variant={'h5'} marginBottom={1} marginX={3}>
-                      {t('labelInvestType_STAKE')}
+                      {t('labelLeverageETHTitle')}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
@@ -674,6 +678,7 @@ const MyLiquidity: any = withTranslation('common')(
                         forexMap: forexMap as any,
                         isInvest: true,
                         hideAssets,
+                        isLeverageETH: true,
                         ...rest,
                       }}
                     />
