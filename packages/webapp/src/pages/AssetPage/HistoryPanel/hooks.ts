@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   LoopringAPI,
   makeDualOrderedItem,
@@ -6,6 +6,7 @@ import {
   tradeItemToTableDataItem,
   useAccount,
   useDualMap,
+  useLeverageETHMap,
   useTokenMap,
   useWalletLayer2,
   volumeToCount,
@@ -39,7 +40,7 @@ import {
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
-import { cloneDeep } from 'lodash'
+import { toArray } from 'lodash'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -1142,6 +1143,11 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const markets = await LoopringAPI.defiAPI.getDefiMarkets({})
+        const arr = toArray(markets?.markets)
+        // @ts-ignore
+        const marketArr = arr.filter(market => market.extra && market.extra.isLeverage)
+          .map(market => market.market)
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -1149,7 +1155,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            marktes: 'WSTETH-ETH',
+            marktes: marketArr[0],
           } as any,
           apiKey,
         )

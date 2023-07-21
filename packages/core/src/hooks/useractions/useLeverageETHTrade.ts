@@ -455,21 +455,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
 
           if (!(isJoin ? status[status.length - 2] === '1' : status[status.length - 4] === '1')) {
             setServerUpdate(true)
-          } else {
-            const arr = toArray(defiMapInfo?.markets)
-            // @ts-ignore
-            const marketArr = arr.filter(market => market.extra && market.extra.isLeverage).map(market => market.market)
-            // @ts-ignore
-            const tokenArr = arr.filter(market => market.extra && market.extra.isLeverage).map(market => idIndex[market.baseTokenId])
-            // @ts-ignore
-            const marketMap = pickBy(response?.markets, (market) => market.extra && market.extra.isLeverage)
-            updateLeverageETHMap({
-              leverageETHMap: {
-                marketMap: marketMap,
-                marketCoins: tokenArr,
-                marketArray: marketArr,
-              },
-            })
           }
         }
         resetDefault(clearTrade, {
