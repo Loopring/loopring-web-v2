@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useOverview } from './hook'
 
-import { useSettings, InvestOverviewTable } from '@loopring-web/component-lib'
+import { Button, useSettings, InvestOverviewTable } from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
@@ -18,6 +18,7 @@ import {
   stakeAdvice,
 } from '@loopring-web/common-resources'
 import { useAccount, useNotify } from '@loopring-web/core'
+import { useTheme } from '@emotion/react'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -52,10 +53,17 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
     { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
   ]
-  // myLog(investAdviceList[1].banner);
+  const theme = useTheme()
   return (
     <>
       <WrapperStyled marginBottom={3}>
+        <Typography marginBottom={2} fontSize={"48px"} variant={"h1"}>
+          Loopring Earn
+        </Typography>
+        <Typography marginBottom={3} color={"var(--color-text-third)"} variant={"h4"}>
+          Earn stable profits with professional asset management
+        </Typography>
+        <Button sx={{width: 18 * theme.unit}} variant={"contained"}>My Investment</Button>
         <Grid container spacing={2} padding={3}>
           {investAdviceList.map((item, index) => {
             return (

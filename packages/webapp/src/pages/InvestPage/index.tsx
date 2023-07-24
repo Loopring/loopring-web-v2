@@ -155,31 +155,6 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
 
   return (
     <Box flex={1} flexDirection={'column'} display={'flex'}>
-      {isShowTab && (
-        <Box display={'flex'}>
-          <Tabs
-            variant={'scrollable'}
-            value={tabIndex}
-            onChange={(_e, value) => {
-              history.push(`/invest/${InvestRouter[value]}`)
-              setTabIndex(value)
-            }}
-          >
-            <Tab value={InvestType.Overview} label={<OverviewTitle />} />
-            <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
-            <Tab
-              sx={{ visibility: 'hidden', width: 0 }}
-              value={InvestType.AmmPool}
-              label={<AmmTitle />}
-            />
-            <Tab
-              sx={{ visibility: 'hidden', width: 0 }}
-              value={InvestType.DeFi}
-              label={<DefiTitle />}
-            />
-          </Tabs>
-        </Box>
-      )}
       <Box flex={1} component={'section'} marginTop={1} display={'flex'}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
