@@ -51,6 +51,7 @@ import {
   useAmmActivityMap,
   useDualMap,
   useModalData,
+  useDefiMap,
   useStakeRedeemClick,
   useSystem,
   useTokenMap,
