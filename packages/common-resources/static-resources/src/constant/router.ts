@@ -675,6 +675,7 @@ export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',
   RedPacket = 'RedPacket',
+  Rewards = 'Rewards',
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {

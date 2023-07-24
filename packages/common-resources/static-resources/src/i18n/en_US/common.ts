@@ -1786,11 +1786,20 @@ export default {
   labelLeverageETHTitle: 'Leverage ETH',
   labelLayer2HistoryleverageETHRecords: 'Leverage ETH',
   labelSwapMinConverted: 'Minimum Converted',
-  labelSwapMinConvertedTooltip: 'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
+  labelSwapMinConvertedTooltip:
+    'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
   labelNetworkFee: 'Network Fee',
   labelTradingFee: 'Trading Fee',
   labelTradingFeeEst: 'Trading Fee(est.)',
-  labelStopStopPriceDes: 'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
-  labelStopPriceDes: 'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
+  labelStopStopPriceDes:
+    'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
+  labelStopPriceDes:
+    'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
+  labelClaimallToken: 'Reward token {{symbol}}',
+  labelConnecting: 'Connecting',
+  labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
+  labelHadUnknownCollectionDes:
+    'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
+  labelGo: 'Go',
 }

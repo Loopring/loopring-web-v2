@@ -1,7 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AccountHashInfo, ChainHashInfos, SagaStatus, TxInfo } from '@loopring-web/common-resources'
-import { clearAll, clearDepositHash, updateDepositHash } from './reducer'
+import {
+  clearAll,
+  clearDepositHash,
+  updateDepositHash,
+  updateHadUnknownCollection,
+} from './reducer'
 import { updateWalletLayer1 } from '../../walletLayer1/reducer'
 import { updateWalletLayer2 } from '../../walletLayer2/reducer'
 import { WalletLayer1States } from '../../walletLayer1'
@@ -16,6 +21,7 @@ export const useOnChainInfo = (): {
     status?: 'success' | 'failed',
     args?: { [key: string]: any },
   ) => void
+  updateHadUnknownCollection: (props: { accountAddress: string }) => void
 } => {
   const { chainId } = useSelector((state: any) => state.system)
 
@@ -71,5 +77,11 @@ export const useOnChainInfo = (): {
     clearAllWrapper,
     clearDepositHash: _clearDepositHash,
     updateDepositHash: _updateDepositHash,
+    updateHadUnknownCollection: React.useCallback(
+      (props: { accountAddress: string }) => {
+        dispatch(updateHadUnknownCollection({ ...props, chainId }))
+      },
+      [dispatch, walletLayer1.status],
+    ),
   }
 }

@@ -13,6 +13,8 @@ import {
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
 import { useSettings } from '../../stores'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { Button } from '../basic-lib'
 
 const LinkStyle = styled(Link)`
   color: var(--color-text-secondary);
@@ -130,6 +132,7 @@ export const Footer = withTranslation(['layout'])(
         </List>
       )
     }, [mediaList])
+    const { isDevToggle, setIsDevToggle, defaultNetwork } = useSettings()
 
     return (
       <FooterDiv component={'footer'} fontSize={'body1'}>
@@ -211,8 +214,20 @@ export const Footer = withTranslation(['layout'])(
                 <Typography
                   fontSize={12}
                   component={'span'}
-                  color={isBeta ? 'var(--color-warning)' : 'var(--color-text-third)'}
+                  color={
+                    isBeta
+                      ? isDevToggle && defaultNetwork !== sdk.ChainId.MAINNET
+                        ? 'var(--color-star)'
+                        : 'var(--color-warning)'
+                      : 'var(--color-text-third)'
+                  }
                   paddingLeft={2}
+                  onClick={() => {
+                    if (isBeta && defaultNetwork !== sdk.ChainId.MAINNET) {
+                      setIsDevToggle(!isDevToggle)
+                      window.location.reload()
+                    }
+                  }}
                   paddingTop={isMobile ? 2 : 0}
                 >
                   {isBeta

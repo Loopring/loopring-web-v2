@@ -2,23 +2,22 @@
 
 import React from 'react'
 import {
+  Box,
   Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Typography,
-  Box,
+  DialogContent,
+  DialogTitle,
+  FormHelperText,
   IconButton,
   OutlinedInput,
-  FormHelperText,
+  Typography,
 } from '@mui/material'
 import { useContactAdd } from './hooks'
 import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources'
-import { TextField } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { useTranslation } from 'react-i18next'
 import { isAddress } from 'ethers/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 interface AddDialogProps {
   addOpen: boolean
@@ -35,8 +34,6 @@ export const Add: React.FC<AddDialogProps> = ({
 }) => {
   const theme = useTheme()
   const {
-    // addLoading,
-    // setAddLoading,
     addShowInvalidAddress,
     addAddress,
     onChangeAddress,
@@ -44,27 +41,8 @@ export const Add: React.FC<AddDialogProps> = ({
     onChangeName,
     addButtonDisable,
     displayEnsResolvedAddress,
-    // submitAddingContact,
-    // toastStatus,
-    // setToastStatus
   } = useContactAdd()
   const { t } = useTranslation()
-  // web3.eth.ens
-  //             .getAddress(address)
-  //             .then((addressResovled: string) => {
-  //               myLog("addressResovled:", addressResovled);
-  //               resolve({
-  //                 realAddr: addressResovled,
-  //                 addressErr: AddressError.NoError,
-  //               });
-  //             })
-  //             .catch((e: any) => {
-  //               myLog("ens catch", e);
-  //               resolve({
-  //                 realAddr: "",
-  //                 addressErr: AddressError.InvalidAddr,
-  //               });
-  //             });
 
   return (
     <div>

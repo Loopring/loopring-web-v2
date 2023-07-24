@@ -119,7 +119,7 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
       },
       5: {
         label: 'Görli',
-        chainId: '',
+        chainId: '5',
         isTest: true,
       },
     },
