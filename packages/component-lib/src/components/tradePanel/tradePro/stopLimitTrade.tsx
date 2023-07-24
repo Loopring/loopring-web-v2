@@ -103,7 +103,7 @@ export const StopLimitTrade = withTranslation('common', { withRef: true })(
       return {
         label: (
           <Box display={'flex'} alignItems={'center'}>
-            {t('labelStopPrice')}
+            {tradeType === TradeProType.buy ? t('labelStopPrice') : t('labelStopPriceSell')}
             <Tooltip sx={{ marginLeft: 1 / 2 }} title={t('labelStopStopPriceDes')}>
               <Icon>
                 <Info2Icon fontSize={'medium'} />
