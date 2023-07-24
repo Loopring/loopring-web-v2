@@ -3,6 +3,7 @@ import {
   amountStrCallback,
   amountStrNFTCallback,
   LoopringAPI,
+  redpacketService,
   useAccount,
   useTokenMap,
 } from '@loopring-web/core'
@@ -22,6 +23,7 @@ import {
   useOpenModals,
 } from '@loopring-web/component-lib'
 import { url } from 'inspector'
+import { Subscription } from 'rxjs'
 
 export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecordsItem>({
   setToastOpen,
@@ -413,8 +415,6 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
           luckyTokenHash: item.luckyToken.hash,
         },
         claimType: CLAIM_TYPE.redPacket,
-        // TODO  successCallback remove
-        // successCallback: successCallback,
       })
     }
   }
@@ -528,10 +528,9 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
     item: sdk.LuckyTokenBlindBoxItemReceive,
     pageInfo?: { offset: number; limit: number; filter: any },
   ) => {
-    //TODO RefreshService
-    // const refreshCallback = () => {
-    //   getRedPacketReceiveList(pageInfo)
-    // }
+    redpacketService.onRefresh(() => {
+      getRedPacketReceiveList(pageInfo)
+    })
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
