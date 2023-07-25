@@ -20,7 +20,7 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>() => {
   const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
   const history = useHistory()
-  const { account } = useAccount()
+  const { account, status: accountStatus } = useAccount()
   const [_collection, setCollection] = React.useState<undefined | Co>(
     searchParams.get('isEdit') ? (collectionValue as Co) : undefined,
   )

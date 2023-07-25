@@ -2,14 +2,14 @@
 
 import React from 'react'
 import {
-  Box,
   Button,
   Dialog,
-  DialogActions,
-  DialogContent,
   DialogTitle,
-  IconButton,
+  DialogContent,
+  DialogActions,
   Typography,
+  Box,
+  IconButton,
 } from '@mui/material'
 import { Contact } from './hooks'
 import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources'

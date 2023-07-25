@@ -8,8 +8,8 @@ import {
   setHideL2Assets,
   setHideLpToken,
   setHideSmallBalances,
-  setIsDevToggle,
   setIsMobile,
+  setIsShowTestToggle,
   // setIsTaikoTest,
   setLanguage,
   setLayouts,
@@ -52,7 +52,7 @@ export function useSettings(): SettingsState & {
   setFeeChargeOrder(value: string[]): void
   setIsMobile(value: boolean): void
   setSwapSecondConfirmation(value: boolean): void
-  setIsDevToggle(value: boolean): void
+  setIsShowTestToggle(value: boolean): void
   setReferralCode(value: string): void
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings)
@@ -65,6 +65,10 @@ export function useSettings(): SettingsState & {
     ),
     setDefaultNetwork: React.useCallback(
       (value: number) => dispatch(setDefaultNetwork(value)),
+      [dispatch],
+    ),
+    setIsShowTestToggle: React.useCallback(
+      (value: boolean) => dispatch(setIsShowTestToggle(value)),
       [dispatch],
     ),
     setTheme: React.useCallback(

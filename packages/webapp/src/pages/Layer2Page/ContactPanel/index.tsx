@@ -260,10 +260,8 @@ export const ContractPanel = () => {
       />
       <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
       <Box display={'flex'} justifyContent={'space-between'}>
-        <Typography variant={'h2'} paddingRight={2}>
-          {t('labelContacts')}
-        </Typography>
-        <Box display={'flex'} alignItems={'center'}>
+        <Typography variant={'h2'}>{t('labelContacts')}</Typography>
+        <Box display={'flex'}>
           <InputSearch
             value={searchValue}
             onChange={(e) => {

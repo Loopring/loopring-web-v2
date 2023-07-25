@@ -1796,10 +1796,4 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
-  labelClaimallToken: 'Reward token {{symbol}}',
-  labelConnecting: 'Connecting',
-  labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
-  labelHadUnknownCollectionDes:
-    'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
-  labelGo: 'Go',
 }

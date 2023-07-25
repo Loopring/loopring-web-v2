@@ -47,7 +47,7 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
                 amount: {
                   unit: 'LRC',
                   value: getValuePrecisionThousand(
-                    sdk.toBig(lrcAmount).div('1e' + tokenMap['LRC'].decimals),
+                    lrcAmount,
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,
@@ -61,7 +61,7 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
           }
         } catch (error) {
           let errorItem
-          if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
+          if ((error as sdk.RESULT_INFO)?.code) {
             errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
           } else {
             errorItem = SDK_ERROR_MAP_TO_UI[700012]
@@ -106,31 +106,26 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
 
             setSummary({
               ...response,
-              totalValue:
-                response.totalProfit == '' || response.totalProfit == '0'
-                  ? undefined
-                  : getValuePrecisionThousand(
-                      sdk.toBig(response.totalProfit).div('1e' + tokenMap['LRC'].decimals),
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      false,
-                    ),
-              claimableValue:
-                response.claimableProfit == '' || response.claimableProfit == '0'
-                  ? undefined
-                  : getValuePrecisionThousand(
-                      sdk.toBig(response.claimableProfit).div('1e' + tokenMap['LRC'].decimals),
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      false,
-                    ),
+              totalValue: getValuePrecisionThousand(
+                response.totalProfit,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                false,
+              ),
+              claimableValue: getValuePrecisionThousand(
+                response.claimableProfit,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                false,
+              ),
             })
           }
         })
     }
   }, [accountStatus])
+  myLog('RefundTable', showLoading)
 
   return {
     summary,
@@ -176,7 +171,7 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
                 amount: {
                   unit: 'LRC',
                   value: getValuePrecisionThousand(
-                    sdk.toBig(lrcAmount).div('1e' + tokenMap['LRC'].decimals),
+                    lrcAmount,
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,
                     tokenMap['LRC'].precision,
@@ -190,7 +185,7 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
           }
         } catch (error) {
           let errorItem
-          if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
+          if ((error as sdk.RESULT_INFO)?.code) {
             errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
           } else {
             errorItem = SDK_ERROR_MAP_TO_UI[700012]
@@ -232,31 +227,26 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
           } else {
             setSummary({
               ...response,
-              totalValue:
-                response.totalProfit == '' || response.totalProfit == '0'
-                  ? undefined
-                  : getValuePrecisionThousand(
-                      sdk.toBig(response.totalProfit).div('1e' + tokenMap['LRC'].decimals),
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      false,
-                    ),
-              claimableValue:
-                response.claimableProfit == '' || response.claimableProfit == '0'
-                  ? undefined
-                  : getValuePrecisionThousand(
-                      sdk.toBig(response.claimableProfit).div('1e' + tokenMap['LRC'].decimals),
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      tokenMap['LRC'].precision,
-                      false,
-                    ),
+              totalValue: getValuePrecisionThousand(
+                response.totalProfit,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                false,
+              ),
+              claimableValue: getValuePrecisionThousand(
+                response.claimableProfit,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                tokenMap['LRC'].precision,
+                false,
+              ),
             })
           }
         })
     }
   }, [accountStatus])
+  myLog('ReferralsTable', showLoading)
 
   return {
     summary,

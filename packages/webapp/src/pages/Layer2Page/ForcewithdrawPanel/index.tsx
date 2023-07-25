@@ -48,6 +48,7 @@ export const ForcewithdrawPanel = withTranslation(['common', 'layout'])(
             onClick={history.goBack}
           >
             {t('labelForceWithdrawTitle')}
+            {/*<Typography color={"textPrimary"}></Typography>*/}
           </Button>
         </Box>
         <StylePaper

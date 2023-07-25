@@ -4,7 +4,6 @@ import { CollectionMeta, NFTLimit, NFTWholeINFO } from '@loopring-web/common-res
 import {
   getIPFSString,
   LoopringAPI,
-  store,
   useAccount,
   useNFTListDeep,
   useSystem,
@@ -13,7 +12,6 @@ import {
 import { CollectionManageProps, CollectionMethod, ToastType } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
-import { nextAccountStatus } from '../../stores/account/reducer'
 
 BigNumber.config({ EXPONENTIAL_AT: 100 })
 
@@ -162,18 +160,6 @@ export const useCollectionManage = <Co extends CollectionMeta, NFT extends Parti
             content: t('labelNFTMoveSuccess'),
           })
         }
-        LoopringAPI.nftAPI
-          ?.getHadUnknownCollection({
-            accountId: account.accountId,
-          })
-          .then((_response: boolean) => {
-            if ((_response as sdk.RESULT_INFO)?.code) {
-              return
-            }
-            store.dispatch(
-              nextAccountStatus({ ...store.getState().account, hasUnknownCollection: _response }),
-            )
-          })
         onFilterNFT({ ...filter })
       }
     },

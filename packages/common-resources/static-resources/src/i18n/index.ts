@@ -37,18 +37,6 @@ i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: true, // react already safes from xss
     formatSeparator: `, `,
-    // format: function (value, _format, lng) {
-    //
-    //   if (
-    //     Object().toString.call(value) === "[object Array]" &&
-    //     lng === LanguageType.en_US
-    //   ) {
-    //     return value.join(", ");
-    //   }
-    //   return value;
-    //   // if (format === 'uppercase') return value.toUpperCase();
-    //   // return value;
-    // },
   },
   react: {
     bindI18n: 'languageChanged',

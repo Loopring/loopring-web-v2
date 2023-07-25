@@ -58,6 +58,7 @@ import {
   RequireOne,
   TradeNFT,
   RedPacketOrderData,
+  TRADE_TYPE,
   RedPacketOrderType,
 } from '@loopring-web/common-resources'
 import { RootState } from '../../index'

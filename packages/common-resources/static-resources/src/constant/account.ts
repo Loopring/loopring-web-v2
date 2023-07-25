@@ -49,7 +49,6 @@ export type Account = {
   _accountIdNotActive?: number
   _userOnModel?: boolean | undefined
   __timer__: NodeJS.Timer | -1
-  hasUnknownCollection: undefined | boolean
 }
 export type AccountState = Account & StateBase
 export type AccountFull = {

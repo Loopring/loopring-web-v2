@@ -91,16 +91,16 @@ export const useActiveAccount = <T>(): {
 
   const activeAccountProps: ResetProps<any> = {
     onResetClick: ({
-      isNotFirstTime = false,
+      isFirstTime = false,
       isReset = false,
     }: {
-      isNotFirstTime?: boolean
+      isFirstTime?: boolean
       isReset?: boolean
     }) => {
       if (activeAccountValue?.fee?.belong && activeAccountValue?.fee?.__raw__) {
         setShowActiveAccount({ isShow: false })
         goUpdateAccount({
-          isFirstTime: !isNotFirstTime,
+          isFirstTime,
           isReset,
           feeInfo: activeAccountValue.fee,
         })

@@ -87,7 +87,6 @@ export const accountServices = {
           keyNonce: accInfo.keyNonce,
           keySeed: accInfo.keySeed,
           accAddress: accInfo.owner,
-          hasUnknownCollection: undefined,
         }
       : {
           readyState: AccountStatus.LOCKED,
@@ -95,7 +94,6 @@ export const accountServices = {
           eddsaKey: '',
           publicKey: '',
           nonce: undefined,
-          hasUnknownCollection: undefined,
         }
     store.dispatch(updateAccountStatus(updateInfo))
 
@@ -175,7 +173,6 @@ export const accountServices = {
       updateAccountStatus({
         readyState: AccountStatus.NO_ACCOUNT,
         accAddress: ethAddress,
-        hasUnknownCollection: undefined,
         _accountIdNotActive: -1,
       }),
     )
@@ -194,7 +191,6 @@ export const accountServices = {
         tags: accInfo.tags,
         nonce: accInfo.nonce,
         keySeed: accInfo.keySeed,
-        hasUnknownCollection: undefined,
       }),
     )
     subject.next({
@@ -253,7 +249,6 @@ export const accountServices = {
         updateAccountStatus({
           accAddress: ethAddress,
           readyState: AccountStatus.UN_CONNECT,
-          hasUnknownCollection: undefined,
           _accountIdNotActive: -1,
         }),
       )
