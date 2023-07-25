@@ -371,14 +371,14 @@ export const ModalWalletConnectPanel = withTranslation('common')(
             }
           }
     }, [account.readyState, setShowAccount, setShowConnect])
-    const { NetWorkItems } = useSelectNetwork({ className: 'walletModal' })
+    // const { NetWorkItems } = useSelectNetwork({ className: 'walletModal' })
 
     const walletList = React.useMemo(() => {
       return Object.values({
         [WalletConnectStep.Provider]: {
           view: (
             <ProviderMenu
-              NetWorkItems={NetWorkItems}
+              // NetWorkItems={NetWorkItems}
               termUrl={'https://www.iubenda.com/terms-and-conditions/74969935'}
               gatewayList={gatewayList}
               providerName={connectProvider}

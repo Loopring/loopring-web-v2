@@ -128,9 +128,11 @@ export const ProviderMenu = ({
       >
         {t('labelConnectWallet')}
       </Typography>
-      <Box display={'flex'} justifyContent={'center'} marginBottom={3}>
-        {NetWorkItems}
-      </Box>
+      {NetWorkItems && (
+        <Box display={'flex'} justifyContent={'center'} marginBottom={3}>
+          {NetWorkItems}
+        </Box>
+      )}
       <Box
         display={'flex'}
         flexDirection={'column'}
