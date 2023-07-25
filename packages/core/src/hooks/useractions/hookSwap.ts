@@ -1330,7 +1330,7 @@ export const useSwap = <
           false,
           { floor: true },
         )
-        const minimumConverted = calcTradeParams?.output
+        const minimumConverted = calcTradeParams?.amountBOut
           ? getValuePrecisionThousand(
               sdk
                 .toBig(calcTradeParams.amountBOut)

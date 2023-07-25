@@ -142,6 +142,7 @@ export type TradeCalcProData<T> = {
   marketPrice?: string
   marketRatePrice?: string
   isChecked?: boolean
+  minimumConverted?: string
 }
 
 /**
