@@ -1,4 +1,4 @@
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 import { Box, Link, Typography } from '@mui/material'
 import { AccountStatus, subMenuNFT, SUBMIT_PANEL_AUTO_CLOSE } from '@loopring-web/common-resources'
 import React from 'react'
@@ -27,7 +27,6 @@ export const NFTPage = () => {
   let match: any = useRouteMatch('/NFT/:item')
   const selected = match?.params?.item ?? 'assetsNFT'
   const { account } = useAccount()
-  const history = useHistory()
   const [showUnknownCollection, setShowUnknownCollection] = React.useState(false)
   const { updateHadUnknownCollection } = onchainHashInfo.useOnChainInfo()
   const [open, setOpen] = React.useState(false)
@@ -95,7 +94,7 @@ export const NFTPage = () => {
       <Toast
         alertText={
           <Typography component={'span'}>
-            <Trans i18nKey={'errorHadUnknownCollectionDes'} ns={'error'}>
+            <Trans i18nKey={'errorHadUnknownCollectionDes'} ns={['error']}>
               As the creator, you will be able to generate collection information for those NFT
               minted earlier that belong to nowhere. And once done, the other people holding your
               NFT will be able to view those NFT with proper collection information via loopring.io
@@ -104,7 +103,7 @@ export const NFTPage = () => {
                 display={'inline-flex'}
                 target='_self'
                 rel='noopener noreferrer'
-                href={history.replace('/nft/importLegacyCollection')}
+                href={'/#/nft/importLegacyCollection'}
                 paddingLeft={1 / 2}
               >
                 GO

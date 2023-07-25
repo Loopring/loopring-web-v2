@@ -9,10 +9,10 @@ import {
   MoreIcon,
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
-import { TFunction } from 'i18next'
 import { useOpenModals, useSettings, useToggle } from '../../../../stores'
 import { AmmPanelType } from '../../../tradePanel'
 import { RawDataAssetsItem } from '../AssetsTable'
+import { useTranslation } from 'react-i18next'
 
 const GridStyled = styled(Grid)`
   .MuiGrid-item {
@@ -28,11 +28,8 @@ export type ActionProps = {
   isInvest: boolean
   onSend: (token: string, isToL1: boolean) => void
   onReceive: (token: string) => void
-  // onShowDeposit: (token: string) => void;
-  // onShowTransfer: (token: string) => void;
-  // onShowWithdraw: (token: string) => void;
+
   getMarketArrayListCallback: (token: string) => string[]
-  t: TFunction
   isLeverageETH: boolean
 }
 const ActionPopContent = React.memo(
@@ -49,10 +46,10 @@ const ActionPopContent = React.memo(
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
-    t,
     isLeverageETH
   }: ActionProps) => {
     const history = useHistory()
+    const { t } = useTranslation(['table', 'common'])
     const { setShowAmm } = useOpenModals()
     const { toggle } = useToggle()
     const _allowTrade = {
@@ -168,8 +165,8 @@ const ActionPopContent = React.memo(
 const ActionMemo = React.memo((props: ActionProps) => {
   const { isMobile } = useSettings()
   const history = useHistory()
+  const { t } = useTranslation(['common', 'table'])
   const {
-    t,
     allowTrade,
     tokenValue,
     onSend,
@@ -309,7 +306,7 @@ export default ActionMemo
 
 export const LockedMemo = React.memo(
   (
-    props: RawDataAssetsItem & {
+    props: Omit<RawDataAssetsItem, 'smallBalance' | 'tokenValueDollar'> & {
       hideAssets?: boolean
       onTokenLockHold?: (item: any) => void
       tokenLockDetail?:

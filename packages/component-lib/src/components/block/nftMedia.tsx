@@ -26,6 +26,7 @@ import {
 import { NFT_IMAGE_SIZES } from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
 import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
 // import "@google/model-viewer";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
@@ -357,7 +358,7 @@ export const CollectionHadUnknown = withTranslation('common')(
                 variant={'contained'}
                 size={'large'}
                 color={'primary'}
-                href={'/nft/importLegacyCollection'}
+                href={'/#/nft/importLegacyCollection'}
               >
                 {t('labelGo')}
               </Button>
