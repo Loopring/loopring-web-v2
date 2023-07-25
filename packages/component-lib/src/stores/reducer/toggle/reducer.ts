@@ -34,6 +34,7 @@ const initialState: ToggleState = {
     orbiter: ['ETH'],
   },
   CIETHInvest: { enable: true },
+  whiteList: {},
 }
 
 export const toggleSlice: Slice<ToggleState> = createSlice<

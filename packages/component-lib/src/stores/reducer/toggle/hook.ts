@@ -4,6 +4,7 @@ import { updateToggleStatus } from './reducer'
 import React from 'react'
 import { AccountStatus, MapChainId, SagaStatus } from '@loopring-web/common-resources'
 import { store } from '@loopring-web/core'
+import _ from 'lodash'
 
 export function useToggle() {
   const toggle: ToggleState = useSelector((state: any) => state.toggle)
@@ -11,13 +12,8 @@ export function useToggle() {
   const [newToggle, setToggle] = React.useState(toggle)
   const dispatch = useDispatch()
   React.useEffect(() => {
-    const {
-      account,
-      toggle,
-      settings: { defaultNetwork },
-    } = store.getState()
-    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-
+    const { account, toggle: _toggle, system } = store.getState()
+    const network = MapChainId[system.chainId] ?? MapChainId[1]
     if (
       accountStatus == SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED &&
@@ -25,6 +21,7 @@ export function useToggle() {
       toggle?.whiteList[network?.toUpperCase()] &&
       toggle?.whiteList[network?.toUpperCase()]
     ) {
+      const toggle = _.cloneDeep(_toggle)
       toggle?.whiteList[network?.toUpperCase()].forEach((item: string) => {
         // @ts-ignore
         const has = item?.superUserAddress?.find(

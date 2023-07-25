@@ -107,43 +107,38 @@ export async function toggleCheck(
       }),
     )
   } else if (dexToggleUrl && chainId === sdk.ChainId.MAINNET) {
-    const [toggle, _whiteListRes] = await Promise.all([
-      dexToggleUrl ? fetch(dexToggleUrl) : Promise.resolve(undefined),
-      whiteList ? fetch(whiteList) : Promise.resolve(undefined),
+    Promise.all([
+      dexToggleUrl
+        ? fetch(dexToggleUrl).then((response) => (response?.ok ? response.json() : {}))
+        : Promise.resolve(undefined),
+      whiteList
+        ? fetch(whiteList).then((response) => (response?.ok ? response.json() : {}))
+        : Promise.resolve(undefined),
     ])
-      .then(([response, whiteList]) => {
-        const responses: [any, any] = [{}, {}]
-        if (response?.ok) {
-          responses[0] = response.json()
-        }
-        if (whiteList?.ok) {
-          responses[1] = whiteList.json()
-        }
-        return responses
+      .then(([toggle, _whiteListRes]) => {
+        store.dispatch(
+          updateToggleStatus({
+            order: { enable: true, reason: undefined },
+            joinAmm: { enable: true, reason: undefined },
+            exitAmm: { enable: true, reason: undefined },
+            transfer: { enable: true, reason: undefined },
+            transferNFT: { enable: true, reason: undefined },
+            defi: { enable: true, reason: undefined },
+            deposit: { enable: true, reason: undefined },
+            depositNFT: { enable: true, reason: undefined },
+            withdraw: { enable: true, reason: undefined },
+            withdrawNFT: { enable: true, reason: undefined },
+            mintNFT: { enable: true, reason: undefined },
+            deployNFT: { enable: true, reason: undefined },
+            updateAccount: { enable: true, reason: undefined },
+            LRCStackInvest: { enable: true, reason: undefined },
+            redPacketNFTV1: { enable: true, reason: undefined },
+            claim: { enable: true, reason: undefined },
+            ...toggle,
+            whiteList: _whiteListRes,
+          }),
+        )
       })
       .catch(() => [{}, {}])
-
-    store.dispatch(
-      updateToggleStatus({
-        order: { enable: true, reason: undefined },
-        joinAmm: { enable: true, reason: undefined },
-        exitAmm: { enable: true, reason: undefined },
-        transfer: { enable: true, reason: undefined },
-        transferNFT: { enable: true, reason: undefined },
-        defi: { enable: true, reason: undefined },
-        deposit: { enable: true, reason: undefined },
-        depositNFT: { enable: true, reason: undefined },
-        withdraw: { enable: true, reason: undefined },
-        withdrawNFT: { enable: true, reason: undefined },
-        mintNFT: { enable: true, reason: undefined },
-        deployNFT: { enable: true, reason: undefined },
-        updateAccount: { enable: true, reason: undefined },
-        LRCStackInvest: { enable: true, reason: undefined },
-        redPacketNFTV1: { enable: true, reason: undefined },
-        claim: { enable: true, reason: undefined },
-        ...toggle,
-        whiteList: _whiteListRes,
-      }),
-    )
   }
 }
