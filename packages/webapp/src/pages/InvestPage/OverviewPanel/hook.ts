@@ -1,5 +1,5 @@
 import { makeInvestRow, useInvestTokenTypeMap, useWalletLayer2 } from '@loopring-web/core'
-import { RowInvest } from '@loopring-web/component-lib'
+import { RowInvest, useToggle } from '@loopring-web/component-lib'
 import { SagaStatus } from '@loopring-web/common-resources'
 import React from 'react'
 
@@ -12,6 +12,7 @@ export function useOverview<R extends RowInvest>() {
   const [myMapLoading, setMyMapLoading] = React.useState(false)
 
   const [myRawData, setMyRawData] = React.useState<R[]>([])
+
   // const [myFilteredData, setMyFilteredData] = React.useState<R[]>(rawData);
 
   const filterData = (rawData: R[], value: string) => {
