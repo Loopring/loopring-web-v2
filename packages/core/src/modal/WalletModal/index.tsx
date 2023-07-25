@@ -430,7 +430,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(
                 ...rest,
               }}
               providerName={connectProvider}
-              NetWorkItems={NetWorkItems}
+              // NetWorkItems={NetWorkItems}
               btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />
           ),
@@ -447,7 +447,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(
                 ...rest,
               }}
               providerName={connectProvider}
-              NetWorkItems={NetWorkItems}
+              // NetWorkItems={NetWorkItems}
               btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />
           ),
@@ -462,7 +462,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(
                 ...rest,
               }}
               providerName={connectProvider}
-              NetWorkItems={NetWorkItems}
+              // NetWorkItems={NetWorkItems}
               btnInfo={{ btnTxt: 'labelRetry', callback: onRetry }}
             />
           ),
