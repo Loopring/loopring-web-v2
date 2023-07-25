@@ -750,7 +750,7 @@ export const AddAssetListMap = {
     AddAssetList.FromOtherL2.key,
     AddAssetList.FromOtherL1.key,
     AddAssetList.FromExchange.key,
-    AddAssetList.FromAnotherNet.key,
+    // AddAssetList.FromAnotherNet.key,
   ],
 }
 export const SendAssetListMap = {
@@ -763,7 +763,7 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
-    // SendAssetList.SendAssetToAnotherNet.key,
+    SendAssetList.SendAssetToAnotherNet.key,
   ],
   GOERLI: [
     SendAssetList.SendAssetToMyL1.key,
