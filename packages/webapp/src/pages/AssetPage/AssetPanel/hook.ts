@@ -36,8 +36,6 @@ import {
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
-
-import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {

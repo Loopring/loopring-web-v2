@@ -1,4 +1,4 @@
-import { useRouteMatch } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Box, Link, Typography } from '@mui/material'
 import { AccountStatus, subMenuNFT, SUBMIT_PANEL_AUTO_CLOSE } from '@loopring-web/common-resources'
 import React from 'react'
@@ -27,6 +27,7 @@ export const NFTPage = () => {
   let match: any = useRouteMatch('/NFT/:item')
   const selected = match?.params?.item ?? 'assetsNFT'
   const { account } = useAccount()
+  const history = useHistory()
   const [showUnknownCollection, setShowUnknownCollection] = React.useState(false)
   const { updateHadUnknownCollection } = onchainHashInfo.useOnChainInfo()
   const [open, setOpen] = React.useState(false)
@@ -103,7 +104,7 @@ export const NFTPage = () => {
                 display={'inline-flex'}
                 target='_self'
                 rel='noopener noreferrer'
-                href={'/nft/importLegacyCollection'}
+                href={history.replace('/nft/importLegacyCollection')}
                 paddingLeft={1 / 2}
               >
                 GO
