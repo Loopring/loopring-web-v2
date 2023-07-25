@@ -176,7 +176,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     // onShowDeposit,
     // onShowTransfer,
     // onShowWithdraw,
-    isLeverageETH
+    isLeverageETH,
   } = props
   const popoverProps: PopoverWrapProps = {
     type: PopoverType.click,
