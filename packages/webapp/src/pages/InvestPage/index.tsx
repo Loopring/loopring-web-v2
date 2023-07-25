@@ -4,9 +4,11 @@ import { Box, Tab, Tabs, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
 import {
+  ComingSoonPanel,
   ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
   useSettings,
+  useToggle,
 } from '@loopring-web/component-lib'
 import React from 'react'
 import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
@@ -111,6 +113,9 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
     confirmDualInvest: confirmDualInvestFun,
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
   } = confirmation.useConfirmation()
+  const {
+    toggle: { CIETHInvest },
+  } = useToggle()
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(
     'hidden' as 'hidden' | 'all' | 'USDCOnly',
   )
@@ -159,7 +164,6 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         setIsShowTab(false)
         return
       case InvestRouter[InvestType.Overview]:
-      case '':
       default:
         setTabIndex(InvestType.Overview)
         setIsShowTab(true)
@@ -218,7 +222,12 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Stack && (
           <StackTradePanel setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest} />
         )}
-        {tabIndex === InvestType.LeverageETH && <LeverageETHPanel />}
+        {tabIndex === InvestType.LeverageETH &&
+          (!CIETHInvest.enable && CIETHInvest.reason === 'no view' ? (
+            <ComingSoonPanel />
+          ) : (
+            <LeverageETHPanel />
+          ))}
       </Box>
 
       <ConfirmInvestDualRisk
