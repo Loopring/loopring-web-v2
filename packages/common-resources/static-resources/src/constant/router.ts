@@ -765,7 +765,7 @@ export const AddAssetListMap = {
     AddAssetList.FromOtherL2.key,
     AddAssetList.FromOtherL1.key,
     AddAssetList.FromExchange.key,
-    AddAssetList.FromAnotherNet.key,
+    // AddAssetList.FromAnotherNet.key,
   ],
 }
 export const SendAssetListMap = {
