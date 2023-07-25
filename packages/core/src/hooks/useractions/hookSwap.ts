@@ -1333,8 +1333,9 @@ export const useSwap = <
         const minimumConverted = calcTradeParams?.output
           ? getValuePrecisionThousand(
               sdk
-                .toBig(calcTradeParams.output)
+                .toBig(calcTradeParams.amountBOut)
                 .times(sdk.toBig(1).minus(sdk.toBig(slippage).div('10000')))
+                .div('1e' + tokenMap[minSymbol].decimals)
                 .toString(),
               tokenMap[minSymbol].precision,
               tokenMap[minSymbol].precision,
