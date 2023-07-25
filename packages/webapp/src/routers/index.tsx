@@ -1,6 +1,6 @@
 import { Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
-import { Box, Container } from '@mui/material'
+import { Box, Container, Link } from '@mui/material'
 import Header from 'layouts/header'
 import { QuotePage } from 'pages/QuotePage'
 import { SwapPage } from 'pages/SwapPage'
@@ -21,6 +21,7 @@ import { LoadingPage } from '../pages/LoadingPage'
 import { LandPage } from '../pages/LandPage'
 import {
   ErrorMap,
+  GUARDIAN_URL,
   MapChainId,
   RouterAllowIndex,
   RouterMainKey,
@@ -126,7 +127,7 @@ const WrapModal = () => {
       <ModalGroup
         assetsRawData={assetsRawData}
         depositProps={depositProps}
-        isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '') ? true : false}
+        isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '')}
       />
       <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
     </>
@@ -332,6 +333,20 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </ContentWrap>
         </Route>
 
+        <Route
+          path={['/guardian', '/guardian/*']}
+          component={() => (
+            <>
+              <Header isHideOnScroll={true} isLandPage />
+              <ErrorPage
+                {...ErrorMap.GUARDIAN_ROUTER_ERROR}
+                components={{
+                  a: <Link target='_blank' rel='noopener noreferrer' href={GUARDIAN_URL} />,
+                }}
+              />
+            </>
+          )}
+        />
         <Route
           path={['/error/:messageKey', '/error']}
           component={() => (
