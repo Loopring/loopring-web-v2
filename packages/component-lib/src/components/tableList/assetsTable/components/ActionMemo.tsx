@@ -49,7 +49,6 @@ const ActionPopContent = React.memo(
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
-    isLeverageETH
   }: ActionProps) => {
     const history = useHistory()
     const { t } = useTranslation(['tables', 'common'])
