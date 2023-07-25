@@ -47,7 +47,7 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       const rest = action.payload
       Reflect.ownKeys(state).forEach((key) => {
         if (rest.hasOwnProperty(key) && rest[key.toString()] !== undefined) {
-          state[key.toString()] = rest[key.toString()]
+          state[key.toString()] = rest[key.toString()] as any
         }
       })
     },

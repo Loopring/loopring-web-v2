@@ -66,7 +66,11 @@ export function resetLayer2Data() {
 
 const LoopFrozenFlag = true
 
-export async function toggleCheck(chainId?: sdk.ChainId, dexToggleUrl?: string) {
+export async function toggleCheck(
+  chainId?: sdk.ChainId,
+  dexToggleUrl?: string,
+  whiteList?: string,
+) {
   if (chainId === undefined) {
     const system = store.getState().system
     chainId = (system.chainId ?? sdk.ChainId.MAINNET) as sdk.ChainId
@@ -103,13 +107,21 @@ export async function toggleCheck(chainId?: sdk.ChainId, dexToggleUrl?: string) 
       }),
     )
   } else if (dexToggleUrl && chainId === sdk.ChainId.MAINNET) {
-    const toggle = await fetch(dexToggleUrl ?? '')
-      .then((response) => {
-        if (response.ok) {
-          return response.json()
+    const [toggle, _whiteListRes] = await Promise.all([
+      dexToggleUrl ? fetch(dexToggleUrl) : Promise.resolve(undefined),
+      whiteList ? fetch(whiteList) : Promise.resolve(undefined),
+    ])
+      .then(([response, whiteList]) => {
+        const responses: [any, any] = [{}, {}]
+        if (response?.ok) {
+          responses[0] = response.json()
         }
+        if (whiteList?.ok) {
+          responses[1] = whiteList.json()
+        }
+        return responses
       })
-      .catch(() => ({}))
+      .catch(() => [{}, {}])
 
     store.dispatch(
       updateToggleStatus({
@@ -130,6 +142,7 @@ export async function toggleCheck(chainId?: sdk.ChainId, dexToggleUrl?: string) 
         redPacketNFTV1: { enable: true, reason: undefined },
         claim: { enable: true, reason: undefined },
         ...toggle,
+        whiteList: _whiteListRes,
       }),
     )
   }
