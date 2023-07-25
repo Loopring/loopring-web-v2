@@ -68,7 +68,7 @@ export const ConnectFailed = ({ NetWorkItems, providerName, ...props }: PanelPro
     providerName: undefined,
     iconType: IconType.FailedIcon,
     describe1: props.t('labelFailedConnect'),
-    describe1: NetWorkItems ? <>{NetWorkItems}</> : '',
+    describe2: NetWorkItems ? <>{NetWorkItems}</> : '',
   }
   return <ConnectBase {...propsPatch} {...props} />
 }
@@ -77,7 +77,7 @@ export const ConnectReject = ({ NetWorkItems, providerName, ...props }: PanelPro
     providerName: undefined,
     iconType: IconType.RefuseIcon,
     describe1: props.t('labelRejectConnect'),
-    describe1: NetWorkItems ? <>{NetWorkItems}</> : '',
+    describe2: NetWorkItems ? <>{NetWorkItems}</> : '',
   }
   return <ConnectBase {...propsPatch} {...props} />
 }
