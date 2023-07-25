@@ -15,7 +15,7 @@ import {
 // import * as sdk from "@loopring-web/loopring-sdk";
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
-import { Exchange, WalletSite } from './setting'
+import { Exchange, ExchangeIO, WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -31,6 +31,7 @@ export const BANXA_URLS = {
   5: 'https://loopring.banxa-sandbox.com',
 }
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
+export const LOOPRING_DOC = 'https://docs.loopring.io'
 
 //
 //
@@ -477,7 +478,6 @@ export const FOOTER_LIST_MAP = {
   Support: [
     {
       linkName: 'Feedback', //❤️ Submit a Request
-      // linkHref: 'https://loopring.io/#/newticket'
       linkHref: FEED_BACK_LINK,
     },
     {
@@ -490,7 +490,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'Guardian',
-      linkHref: 'https://loopring.io/#/guardian',
+      linkHref: `${ExchangeIO}/#/guardian`,
     },
   ],
   Developers: [
@@ -501,7 +501,7 @@ export const FOOTER_LIST_MAP = {
 
     {
       linkName: 'APIs', //APIs
-      linkHref: 'https://docs.loopring.io/en/',
+      linkHref: `${LOOPRING_DOC}/en/`,
     },
     {
       linkName: 'L2Explorer', //Layer2 Explorer
