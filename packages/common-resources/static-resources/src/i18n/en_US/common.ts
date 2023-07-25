@@ -794,7 +794,7 @@ export default {
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
   labelMintFeeChoose: 'Select payment token',
-  labelLayerSwapUnderstand: 'Acknowledge and understand the risk',
+  labelLayerSwapUnderstand: 'I understand and acknowledge the risk',
   labelIUnderStand: 'I Understand',
   labelLayerSwapUnderstandDes:
     'LayerSwap is a 3rd party App service provider to help move tokens from exchange to {{loopringL2}} directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
@@ -1732,7 +1732,7 @@ export default {
     'If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the {{l2Symbol}} account.',
   labelAnotherNetworkDes:
     '<0>Orbiter.finance</0> is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <2>TOS</2>.',
-  labelAnotherNetworkUnderstand: 'Acknowledge and understand the risk',
+  labelAnotherNetworkUnderstand: 'I understand and acknowledge the risk',
   labelReferralImageDes: 'Scan code to register',
   labelReferralImageCode: 'Code: {{code}}',
   labelInvite: 'Invite Friends',
