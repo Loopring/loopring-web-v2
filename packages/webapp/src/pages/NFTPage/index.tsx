@@ -94,7 +94,7 @@ export const NFTPage = () => {
       <Toast
         alertText={
           <Typography component={'span'}>
-            <Trans i18nKey={'errorHadUnknownCollectionDes'} ns={'error'}>
+            <Trans i18nKey={'errorHadUnknownCollectionDes'} ns={['error']}>
               As the creator, you will be able to generate collection information for those NFT
               minted earlier that belong to nowhere. And once done, the other people holding your
               NFT will be able to view those NFT with proper collection information via loopring.io
@@ -103,7 +103,7 @@ export const NFTPage = () => {
                 display={'inline-flex'}
                 target='_self'
                 rel='noopener noreferrer'
-                href={'/nft/importLegacyCollection'}
+                href={'/#/nft/importLegacyCollection'}
                 paddingLeft={1 / 2}
               >
                 GO

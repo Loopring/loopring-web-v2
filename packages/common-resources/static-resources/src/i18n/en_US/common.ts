@@ -1731,7 +1731,7 @@ export default {
   labelAddAssetTitleAnotherNetDesActive:
     'If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the {{l2Symbol}} account.',
   labelAnotherNetworkDes:
-    'Orbiter.finance is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
+    '<0>Orbiter.finance</0> is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
   labelAnotherNetworkUnderstand: 'Acknowledge and understand the risk',
   labelReferralImageDes: 'Scan code to register',
   labelReferralImageCode: 'Code: {{code}}',
@@ -1801,4 +1801,9 @@ export default {
   labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
   labelGo: 'Go',
+  labelAnotherNetworkDes2:
+    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address.',
+  labelAnotherNetworkDes3:
+    'If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address; else you will lose that asset for ever.',
+  labelRiskReminder: 'Risk Reminder',
 }

@@ -33,6 +33,7 @@ import {
   Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  RiskIcon,
   SoursURL,
   TradeDefi,
   TradeProType,
@@ -1098,16 +1099,25 @@ export const AnotherNetworkNotice = withTranslation('common', {
         setAgree(false)
       }
     }, [open])
-    const { setShowAnotherNetworkNotice } = useOpenModals()
+
+    const {
+      setShowAnotherNetworkNotice,
+      modals: { isShowAnotherNetwork },
+    } = useOpenModals()
     return (
       <DialogStyle
         open={open}
         onClose={() => setShowAnotherNetworkNotice({ isShow: false })}
         aria-describedby='alert-dialog-slide-description'
       >
-        <DialogTitle> {t('labelInformation')}</DialogTitle>
+        <DialogTitle sx={{ marginBottom: 2, display: 'inline-flex', alignItems: 'center' }}>
+          <RiskIcon htmlColor={'var(--color-warning)'} fontSize={'large'} />
+          <Typography component={'span'} color={'var(--color-warning)'} variant={'h5'} paddingX={1}>
+            {t('labelRiskReminder')}
+          </Typography>
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-slide-description'>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
             <Trans
               i18nKey={'labelAnotherNetworkDes'}
               tOptions={{
@@ -1119,9 +1129,11 @@ export const AnotherNetworkNotice = withTranslation('common', {
                 ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
-              LayerSwap is a 3rd party App service provider to help move tokens from exchange to
-              Loopring L2 directly. If you have any concerns regarding their service, please check
-              out their
+              <Typography component={'span'} color={'textPrimary'}>
+                Orbiter.finance
+              </Typography>
+              is a 3rd party App service provider to help move tokens from exchange to Loopring L2
+              directly. If you have any concerns regarding their service, please check out their
               <Link
                 target='_blank'
                 rel='noopener noreferrer'
@@ -1132,6 +1144,40 @@ export const AnotherNetworkNotice = withTranslation('common', {
               .
             </Trans>
           </DialogContentText>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
+            <Trans
+              i18nKey={'labelAnotherNetworkDes2'}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+            >
+              Note: Please ensure to check out the "Change Account" option and input the recipient's
+              address carefully. If you want to send token to network other than l1ChainName, the
+              recipient address must be different than the sender address.
+            </Trans>
+          </DialogContentText>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
+            <Trans
+              i18nKey={'labelAnotherNetworkDes3'}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+            >
+              If you want to send token to network other than l1ChainName, the recipient address
+              must be different than the sender address; else you will lose that asset for ever.
+            </Trans>
+          </DialogContentText>
+
           <MuiFormControlLabel
             control={
               <Checkbox
@@ -1153,7 +1199,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
             size={'small'}
             disabled={!agree}
             onClick={() => {
-              window.open(`https://www.orbiter.finance/?source=Ethereum&dest=Loopring`)
+              window.open(isShowAnotherNetwork?.info?.url)
               window.opener = null
               setShowAnotherNetworkNotice({ isShow: false })
             }}

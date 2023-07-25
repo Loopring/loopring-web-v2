@@ -60,6 +60,7 @@ const tradeLeverageETHSlice: Slice<TradeLeverageETHStatus<IBData<R>>> = createSl
         maxFeeBips,
         miniSellVol,
         lastInput,
+        withdrawFeeBips
       } = action.payload
       if (market !== undefined && market !== state.tradeLeverageETH.market && type) {
         // @ts-ignore
@@ -118,6 +119,9 @@ const tradeLeverageETHSlice: Slice<TradeLeverageETHStatus<IBData<R>>> = createSl
       }
       if (withdrawPrice) {
         state.tradeLeverageETH.withdrawPrice = withdrawPrice
+      }
+      if (withdrawFeeBips) {
+        state.tradeLeverageETH.withdrawFeeBips = withdrawFeeBips
       }
     },
   },

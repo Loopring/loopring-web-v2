@@ -36,7 +36,9 @@ import {
   walletLayer2Service,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
-import { useTradeLeverageETH } from '../../stores'
+import { useTradeLeverageETH } from '../../stores/router/tradeLeverageETH'
+import BigNumber from 'bignumber.js'
+
 
 export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   isJoin = true,
@@ -394,6 +396,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           feeRaw: _feeInfo?.feeRaw.toString(),
           depositPrice: marketInfo?.depositPrice ?? '0',
           withdrawPrice: marketInfo?.withdrawPrice ?? '0',
+          withdrawFeeBips: marketInfo?.extra.withdrawFeeBips 
         })
         myLog('resetDefault defi clearTrade', deFiCalcDataInit, marketInfo)
       } else {
@@ -544,6 +547,28 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           sellTokenId: tradeLeverageETH.sellToken?.tokenId ?? 0,
         }
         const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+        let maxFeeBips
+        let fee
+        if (isJoin) {
+          fee = tradeLeverageETH.feeRaw
+          maxFeeBips = tradeLeverageETH.maxFeeBips <= 5 ? 5 : tradeLeverageETH.maxFeeBips
+        } else {
+          const feeBip = Number(
+            sdk
+              .toBig(tradeLeverageETH.feeRaw)
+              .times('10000')
+              .div(tradeLeverageETH.buyVol)
+              .toFixed(0, BigNumber.ROUND_CEIL),
+          )
+          maxFeeBips = sdk.toBig(
+            tradeLeverageETH.withdrawFeeBips ?? 0
+          ).plus(feeBip).toNumber()
+          fee = sdk.toBig(tradeLeverageETH.withdrawFeeBips ?? 0)
+            .times(tradeLeverageETH.buyVol )
+            .div('10000')
+            .plus(tradeLeverageETH.feeRaw)
+            .toString()
+        }
         const request: sdk.DefiOrderRequest = {
           exchange: exchangeInfo.exchangeAddress,
           storageId: storageId.orderId,
@@ -557,10 +582,10 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
             volume: tradeLeverageETH.buyVol,
           },
           validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips: tradeLeverageETH.maxFeeBips <= 5 ? 5 : tradeLeverageETH.maxFeeBips,
+          maxFeeBips: maxFeeBips,
           fillAmountBOrS: false,
           action: isJoin ? sdk.DefiAction.Deposit : sdk.DefiAction.Withdraw,
-          fee: tradeLeverageETH.feeRaw,
+          fee: fee,
           type: tradeLeverageETH.type,
           taker: '',
           eddsaSignature: '',
@@ -736,6 +761,11 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     }
   }, [isJoin, market])
   myLog('isLoading', isLoading)
+  const extraWithdrawFee = sdk.toBig( tradeLeverageETH.withdrawFeeBips ?? 0)
+    .times(tradeLeverageETH.buyVol) 
+    .div('10000')
+    .div('1e' + tradeLeverageETH.sellToken.decimals)
+    .toString()
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,
@@ -769,6 +799,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       tokenBuy: tokenMap[coinBuySymbol],
       btnStatus,
       accStatus: account.readyState,
+      extraWithdrawFee: extraWithdrawFee,
     }
   }, [
     isStoB,
@@ -789,6 +820,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     coinSellSymbol,
     coinBuySymbol,
     btnStatus,
+    extraWithdrawFee
   ]) // as ForceWithdrawProps<any, any>;
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,

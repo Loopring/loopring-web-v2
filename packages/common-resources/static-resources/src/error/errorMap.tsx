@@ -322,6 +322,10 @@ export const ErrorMap = {
     id: 'PROVIDER_ERROR_UNKNOWN',
     messageKey: 'errorProviderErrorUnknown',
   },
+  GUARDIAN_ROUTER_ERROR: {
+    id: 'GUARDIAN_ROUTER_ERROR',
+    messageKey: 'errorGuardianRouterError',
+  },
   ERROR_SWITCH_ETHEREUM: {
     id: 'ERROR_SWITCH_ETHEREUM',
     messageKey: 'errorSwitchEthereum',
@@ -369,6 +373,7 @@ export enum UIERROR_CODE {
   ERROR_RAMP_NO_INSTANCE = 700100,
   ERROR_OFF_RAMP_EXPIRED = 700101,
   ERROR_WALLECTCONNECT_MANUALLY_CLOSE = 700201,
+  ERROR_GAMESTOP_NO_CHAIN_CHANGE = 700202,
   ERROR_DUAL_EXPIRED = 115003,
   ERROR_REDPACKET_CLAIMED = 113002,
   ERROR_REDPACKET_CLAIM_OUT = 113006,

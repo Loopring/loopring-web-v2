@@ -28,8 +28,8 @@ export type ActionProps = {
   isInvest: boolean
   onSend: (token: string, isToL1: boolean) => void
   onReceive: (token: string) => void
+
   getMarketArrayListCallback: (token: string) => string[]
-  t?: TFunction
   isLeverageETH: boolean
 }
 const ActionPopContent = React.memo(
@@ -46,7 +46,7 @@ const ActionPopContent = React.memo(
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
-    isLeverageETH,
+    isLeverageETH
   }: ActionProps) => {
     const history = useHistory()
     const { t } = useTranslation(['table', 'common'])

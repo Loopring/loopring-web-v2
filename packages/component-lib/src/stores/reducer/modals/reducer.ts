@@ -299,10 +299,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
       }
     },
-    setShowAnotherNetworkNotice(state, action: PayloadAction<{ isShow: boolean }>) {
-      const { isShow } = action.payload
+    setShowAnotherNetworkNotice(state, action: PayloadAction<{ isShow: boolean; info: any }>) {
+      const { isShow, info } = action.payload
       state.isShowAnotherNetwork = {
         isShow,
+        info,
       }
     },
     setShowTradeIsFrozen(

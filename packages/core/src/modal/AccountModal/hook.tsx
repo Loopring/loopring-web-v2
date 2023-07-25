@@ -581,7 +581,10 @@ export function useAccountModalForUI({
                     }),
                   },
                 })
-                setShowAnotherNetworkNotice({ isShow: true })
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Ethereum&dest=Loopring' },
+                })
               },
             }
         }
@@ -652,8 +655,12 @@ export function useAccountModalForUI({
                 setShowAccount({
                   isShow: false,
                 })
-                window.open('https://www.orbiter.finance/?source=Loopring&dest=Ethereum')
-                window.opener = null
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Loopring&dest=Ethereum' },
+                })
+                // window.open('https://www.orbiter.finance/?source=Loopring&dest=Ethereum')
+                // window.opener = null
               },
             }
         }
