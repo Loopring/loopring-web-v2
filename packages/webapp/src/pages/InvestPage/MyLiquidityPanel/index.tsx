@@ -202,8 +202,8 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const leverageETHAssets = assetsRawData.filter((o) => {
       return (
-        marketCoins?.includes(o.name) &&
-        o.token.type !== TokenType.lp &&
+        marketCoins &&
+        marketCoins.includes(o.name) &&
         (hideSmallBalances ? !o.smallBalance : true)
       )
     })
