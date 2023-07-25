@@ -490,7 +490,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'Guardian',
-      linkHref: './#/guardian',
+      linkHref: 'https://loopring.io/#/guardian',
     },
   ],
   Developers: [

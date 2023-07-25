@@ -14,7 +14,6 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
 import { useSettings } from '../../stores'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { Button } from '../basic-lib'
 
 const LinkStyle = styled(Link)`
   color: var(--color-text-secondary);

@@ -125,7 +125,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [open, setOpen] = React.useState(false)
   //TODO: CarouselItem
-  const [images, setImages] = React.useState<[]>([])
+  const [images, setImages] = React.useState<any[]>([])
 
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
@@ -200,7 +200,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
 
-            setImages(images)
+            // setImages(images)
           }
           // canvas.toBlob((blob) => {
           // const a = document.createElement('a')
@@ -335,13 +335,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
       direction={'right'}
     >
       <Container>
-        {/*<ShareModal*/}
-        {/*  onClick={() => onDownloadImage()}*/}
-        {/*  open={open}*/}
-        {/*  loading={false}*/}
-        {/*  onClose={() => setOpen(false)}*/}
-        {/*  imageList={images}*/}
-        {/*/>*/}
         <Box className={'bg'} marginY={3} display={'flex'}>
           <Box width={isMobile ? '100%' : '65%'}>
             <Typography
