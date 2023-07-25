@@ -1657,7 +1657,7 @@ export default {
   labelLimitStopPriceLabel: 'Stop Price / Trigger Price',
   labelLimitStopPriceContent:
     'When the current asset price reaches the given stop price, the Stop-Limit order is executed to buy or sell the asset at the given limit price or better.',
-  labelLimitLimitPriceLabel: 'Limit Price',
+  labelLimitLimitPriceLabel: 'Limit Price / Buy Price',
   labelLimitLimitPriceContent:
     'The selected (or potentially better) price that the Stop-Limit order is executed at.',
   labelLimitAmountLabel: 'Amount',
