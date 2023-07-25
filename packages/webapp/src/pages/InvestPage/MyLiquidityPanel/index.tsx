@@ -54,12 +54,13 @@ import {
   useAmmActivityMap,
   useDualMap,
   useModalData,
+  useDefiMap,
   useUserRewards,
   useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
-  useDefiMap,
+  volumeToCount,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
@@ -148,7 +149,7 @@ const MyLiquidity: any = withTranslation('common')(
       hideSmallBalances,
       // dualList,
     })
-    const { marketLeverageCoins: marketCoins } = useDefiMap()
+    const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
 
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
@@ -201,16 +202,15 @@ const MyLiquidity: any = withTranslation('common')(
         }
     const lidoAssets = assetsRawData.filter((o) => {
       return (
-        o.token.type !== TokenType.single &&
+        ethStakingCoins?.includes(o.name) &&
         o.token.type !== TokenType.lp &&
         (hideSmallBalances ? !o.smallBalance : true)
       )
     })
     const leverageETHAssets = assetsRawData.filter((o) => {
       return (
+        marketCoins &&
         marketCoins.includes(o.name) &&
-        o.token.type !== TokenType.single &&
-        o.token.type !== TokenType.lp &&
         (hideSmallBalances ? !o.smallBalance : true)
       )
     })

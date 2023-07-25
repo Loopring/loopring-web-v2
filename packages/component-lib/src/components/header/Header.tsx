@@ -50,7 +50,6 @@ import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import { useTheme } from '@emotion/react'
 import _ from 'lodash'
 import { useSettings } from '../../stores'
-import * as sdk from '@loopring-web/loopring-sdk'
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
@@ -80,17 +79,6 @@ const HeaderStyled = styled(AppBar)`
     border-radius: 0;
 
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
-    }
-
-    &.testNet {
-      .beta {
-        color: var(--color-warning);
-        font-size: 9px;
-
-        &.dev {
-          color: var(--color-success);
-        }
-      }
     }
   }
 `
@@ -138,7 +126,7 @@ const LogoStyle = styled(Typography)`
   }
 ` as typeof Typography
 
-export const LoopringLogo = () => {
+export const LoopringLogo = React.memo(() => {
   return (
     <LogoStyle variant='h6' component='h1' marginRight={4}>
       <IconButton
@@ -154,7 +142,7 @@ export const LoopringLogo = () => {
       </IconButton>
     </LogoStyle>
   )
-}
+})
 
 const ToolBarItem = ({
   buttonComponent,
@@ -446,8 +434,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       // }, [themeMode, setTheme]);
 
       const isMaintaining = false
-      const { isDevToggle, setIsDevToggle } = useSettings()
-
       const displayDesktop = React.useMemo(() => {
         return (
           <ToolBarStyled>
@@ -458,18 +444,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
               alignItems={'stretch'}
               flexDirection={'row'} //!isMobile ? "row" : "column"}
             >
-              {process.env?.REACT_APP_TEST_ENV && chainId !== sdk.ChainId.MAINNET ? (
-                <Button
-                  variant={'text'}
-                  size={'small'}
-                  className={isDevToggle ? 'dev beta' : 'beta'}
-                  onClick={() => setIsDevToggle(!isDevToggle)}
-                >
-                  Beta
-                </Button>
-              ) : (
-                ''
-              )}
               <LoopringLogo />
               {!isLandPage
                 ? getDrawerChoices({
@@ -540,7 +514,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
         )
         // @ts-ignore
         const pair = match?.params?.pair ?? 'LRC-ETH'
-
         return (
           <ToolBarStyled>
             <Box
@@ -550,18 +523,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
               alignItems={'stretch'}
               flexDirection={'row'} //!isMobile ? "row" : "column"}
             >
-              {process.env?.REACT_APP_TEST_ENV && chainId !== sdk.ChainId.MAINNET ? (
-                <Button
-                  variant={'text'}
-                  size={'small'}
-                  className={isDevToggle ? 'dev beta' : 'beta'}
-                  onClick={() => setIsDevToggle(!isDevToggle)}
-                >
-                  B
-                </Button>
-              ) : (
-                ''
-              )}
               <Typography display={'inline-flex'} alignItems={'center'}>
                 <LoopringLogoIcon
                   fontSize={'large'}
@@ -704,11 +665,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       }
 
       return (
-        <HeaderStyled
-          elevation={4}
-          ref={ref}
-          className={`${rest?.className} ` + process.env?.REACT_APP_TEST_ENV ? 'testNet' : ''}
-        >
+        <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
           {isWrap ? (
             <Container style={paddingStyle} className={'wrap'} maxWidth='lg'>
               {isMobile ? displayMobile : displayDesktop}

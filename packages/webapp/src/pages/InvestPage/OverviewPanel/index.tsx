@@ -54,8 +54,6 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
     { ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4] },
   ]
-  // myLog(investAdviceList[1].banner);
-  console.log('investAdviceList', investAdviceList[4])
   return (
     <>
       <WrapperStyled marginBottom={3}>

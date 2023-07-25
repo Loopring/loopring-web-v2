@@ -398,7 +398,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           toggleCheck(chainId, process.env.REACT_APP_DEX_TOGGLE),
         ])
         if (_exchangeInfo[chainId]) {
-          LoopringAPI.exchangeAPI.getExchangeInfo().then(({ exchangeInfo }: any) => {
+          LoopringAPI.exchangeAPI.getExchangeInfo().then(async ({ exchangeInfo }: any) => {
             window.localStorage.setItem(
               'exchangeInfo',
               JSON.stringify({
@@ -406,7 +406,14 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
                 [exchangeInfo.chainId]: exchangeInfo,
               }),
             )
-            window.location.reload()
+            if (
+              _exchangeInfo[exchangeInfo.chainId]?.exchangeAddress?.toLowerCase() !==
+              exchangeInfo?.exchangeAddress?.toLowerCase()
+            ) {
+              await sdk.sleep(500)
+              window.location.reload()
+            }
+
             myLog('exchangeInfo from service')
           })
         }
