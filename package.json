@@ -99,7 +99,8 @@
     "build-guardian": "cd packages/web-guardian; yarn build",
     "build_dev": "cd ./packages/webapp; yarn build_dev",
     "deploy": "cd ./packages/webapp; yarn deploy",
-    "deploy:ipfs": "cd ./packages/webapp; yarn deploy:ipfs"
+    "deploy:ipfs": "cd ./packages/webapp; yarn deploy:ipfs",
+    "sass": "node-sass packages/web-wallet/public/*.scss packages/web-wallet/public/*.css"
   },
   "browserslist": {
     "production": [
