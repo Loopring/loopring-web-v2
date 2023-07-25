@@ -27,6 +27,7 @@ import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
 import { usePopup } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
+import { toBig } from '@loopring-web/loopring-sdk'
 
 const GridStyle = styled(Grid)`
   ul {
@@ -62,6 +63,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   market,
   title,
   isLeverageETH,
+  extraWithdrawFee,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -227,6 +229,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       { floor: true },
     )} ${tokenBuy.symbol}`
   const { setShowRETHStakignPopup, setShowWSTETHStakignPopup } = usePopup()
+  
+  const fee = isJoin 
+    ? (deFiCalcData?.fee ? deFiCalcData?.fee + ` ${tokenBuy.symbol}` : EmptyValueTag)
+    : (deFiCalcData?.fee ? toBig(extraWithdrawFee ?? '0').plus(deFiCalcData.fee).toString() + ` ${tokenBuy.symbol}` : EmptyValueTag)
 
   return (
     <Grid
@@ -373,7 +379,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 {t('labelTradingFee')}
               </Typography>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {deFiCalcData?.fee ? deFiCalcData.fee + ` ${tokenBuy.symbol}` : EmptyValueTag}
+                {fee}
               </Typography>
             </Grid>
           </Grid>

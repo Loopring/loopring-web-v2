@@ -209,6 +209,20 @@ export const useMarket = <C extends { [key: string]: any }>({
         false,
         { floor: true },
       )
+      const minimumConverted = calcTradeParams?.amountBOut
+        ? getValuePrecisionThousand(
+            sdk
+              .toBig(calcTradeParams?.amountBOut)
+              .times(sdk.toBig(1).minus(sdk.toBig(slippage).div('10000')))
+              .div('1e' + tokenMap[minSymbol].decimals)
+              .toString(),
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            false,
+            { floor: true },
+          )
+        : undefined
       const priceImpactObj = getPriceImpactInfo(calcTradeParams, account.readyState)
       const [sell, buy] =
         _tradeData.type === TradeProType.sell ? ['base', 'quote'] : ['quote', 'base']
@@ -270,6 +284,7 @@ export const useMarket = <C extends { [key: string]: any }>({
           minimumReceived: !minimumReceived?.toString().startsWith('-')
             ? minimumReceived
             : undefined,
+          minimumConverted: minimumConverted,
           priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
           priceImpactColor: priceImpactObj?.priceImpactColor,
           isNotMatchMarketPrice,

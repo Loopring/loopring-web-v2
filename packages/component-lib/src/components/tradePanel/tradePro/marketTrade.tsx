@@ -141,6 +141,12 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
             tradeType === TradeProType.buy ? tradeData.base.belong : tradeData.quote.belong
           }`
         : EmptyValueTag
+    const minimumConverted =
+      tradeCalcProData && tradeCalcProData.minimumConverted
+        ? `${tradeCalcProData.minimumConverted}  ${
+            tradeType === TradeProType.buy ? tradeData.base.belong : tradeData.quote.belong
+          }`
+        : EmptyValueTag
 
     return (
       <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
@@ -272,7 +278,7 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
                     alignItems={'center'}
                   >
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {' ' + t('swapFeeS')}
+                    {' ' + t('labelTradingFeeEst')}
                   </Typography>
                 </Tooltip>
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -387,11 +393,11 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
                     alignItems={'center'}
                   >
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {' ' + t('swapMinReceiveS')}
+                    {' ' + t('labelSwapMinConverted')}
                   </Typography>
                 </Tooltip>
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                  {minimumReceived !== EmptyValueTag ? minimumReceived : EmptyValueTag}
+                  {minimumConverted !== EmptyValueTag ? minimumConverted : EmptyValueTag}
                 </Typography>
               </Grid>
             </Grid>
