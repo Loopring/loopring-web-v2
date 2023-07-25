@@ -37,7 +37,6 @@ export const ExchangeIO = 'https://loopring.io'
 export const Exchange = 'https://loopring.io/#/'
 export const WalletSite = 'https://wallet.loopring.io'
 
-
 export const YEAR_PROMATE = 'YYYY'
 export const DAY_FORMAT = 'MM/DD'
 export const MINUTE_FORMAT = 'HH:mm'

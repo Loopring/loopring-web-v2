@@ -5,21 +5,20 @@ import {
   L2MyLiquidityIcon,
   MintIcon,
   ProfileIcon,
-  RecordIcon,
   RewardIcon,
   // RewardIcon,
   SecurityIcon,
   VipIcon,
-  WaitApproveIcon,
 } from '../svg'
 // import * as sdk from "@loopring-web/loopring-sdk";
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
-import { Exchange, ExchangeIO, WalletSite } from './setting'
+import { Exchange, WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
 export const SoursURL = 'https://static.loopring.io/assets/'
+export const GUARDIAN_URL = 'https://guardian.loopring.io'
 export const LoopringIPFSSite = 'ipfs.loopring.io'
 export const LoopringIPFSSiteProtocol = 'https'
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`
@@ -413,34 +412,6 @@ export const subMenuNFT = {
     },
   ],
 }
-export const subMenuGuardian = {
-  assetsGroup: [
-    {
-      icon: AssetsIcon,
-      router: { path: '/guardian/guardian-protected' },
-      label: {
-        id: 'guardian-protected',
-        i18nKey: 'labelWalletProtect',
-      },
-    },
-    {
-      icon: WaitApproveIcon,
-      router: { path: '/guardian/guardian-validation-info' },
-      label: {
-        id: 'guardian-validation',
-        i18nKey: 'labelWalletValidation',
-      },
-    },
-    {
-      icon: RecordIcon,
-      router: { path: '/guardian/guardian-history' },
-      label: {
-        id: 'guardian-history',
-        i18nKey: 'labelWalletHistory',
-      },
-    },
-  ],
-}
 export const FOOTER_LIST_MAP = {
   About: [
     {
@@ -490,7 +461,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'Guardian',
-      linkHref: `${ExchangeIO}/#/guardian`,
+      linkHref: GUARDIAN_URL,
     },
   ],
   Developers: [
