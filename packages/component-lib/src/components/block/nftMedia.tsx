@@ -307,6 +307,7 @@ export const CollectionHadUnknown = withTranslation('common')(
   }) => {
     const { mode } = useTheme()
     const { isMobile } = useSettings()
+    const history = useHistory()
     return (
       <Modal
         open={open}
@@ -358,7 +359,10 @@ export const CollectionHadUnknown = withTranslation('common')(
                 variant={'contained'}
                 size={'large'}
                 color={'primary'}
-                href={'/#/nft/importLegacyCollection'}
+                onClick={() => {
+                  history.replace('/nft/importLegacyCollection')
+                  onClose()
+                }}
               >
                 {t('labelGo')}
               </Button>
