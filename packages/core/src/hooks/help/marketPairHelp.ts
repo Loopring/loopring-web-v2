@@ -71,13 +71,11 @@ export const dexSwapDependAsync = ({
   market,
   level = 0,
   limit,
-  //TODO
   tokenMap,
 }: {
   market: MarketType
   level?: number
   limit?: number
-  //TODO
   tokenMap?: any
 }): Promise<{
   depth: sdk.DepthData | undefined

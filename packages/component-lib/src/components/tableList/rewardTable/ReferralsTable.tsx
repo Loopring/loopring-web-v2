@@ -1,16 +1,22 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
-import { EmptyValueTag, globalSetup, RowConfig } from '@loopring-web/common-resources'
+import {
+  EmptyValueTag,
+  getShortAddr,
+  globalSetup,
+  RowConfig,
+  YEAR_DAY_FORMAT,
+} from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps } from '@mui/material'
+import { Box, BoxProps, Typography } from '@mui/material'
 import moment from 'moment'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export type ReferralsRow = sdk.ReferStatistic & {
+export type ReferralsRow = sdk.ReferDownsides & {
   amount: { unit: string; value: string }
 }
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
@@ -103,30 +109,25 @@ export const ReferralsTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignLeft',
           cellClass: 'textAlignLeft',
           formatter: ({ row }) => {
-            const renderValue = Number.isFinite(row.createdAt)
-              ? moment(new Date(row['time']), 'YYYYMMDDHHMM').fromNow()
-              : EmptyValueTag
             return (
-              <div className='rdg-cell-value textAlignRight'>
-                <span>{renderValue}</span>
-              </div>
+              <>
+                {Number.isFinite(row.startAt)
+                  ? moment(new Date(row.startAt), 'YYYYMMDDHHMM').format(YEAR_DAY_FORMAT)
+                  : EmptyValueTag}
+              </>
             )
           },
         },
         {
           key: 'referee',
           name: t('labelReferralsTableReferee'),
-          headerCellClass: 'textAlignRight',
-          cellClass: 'textAlignRight',
-          formatter: ({ row, column }) => {
-            const value = row[column.key]
-            const renderValue = Number.isFinite(value)
-              ? moment(new Date(row['time']), 'YYYYMMDDHHMM').fromNow()
-              : EmptyValueTag
+          headerCellClass: 'textAlignCenter',
+          cellClass: 'textAlignCenter',
+          formatter: ({ row }) => {
             return (
-              <div className='rdg-cell-value textAlignRight'>
-                <span>{renderValue}</span>
-              </div>
+              <Typography component={'span'} color={'inherit'} title={row.address}>
+                {getShortAddr(row.address)}
+              </Typography>
             )
           },
         },
@@ -136,9 +137,11 @@ export const ReferralsTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignRight',
           cellClass: 'textAlignRight',
           formatter: ({ row }) => {
-            const renderValue = `${row.amount} LRC`
-            // const renderValue = `${getValuePrecisionThousand(valueFrom, undefined, undefined, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo, precisionTo)} ${keyTo}`
-            return <div className='rdg-cell-value'>{renderValue}</div>
+            return (
+              <>
+                {row.amount?.value} {row.amount?.unit}
+              </>
+            )
           },
         },
       ],

@@ -25,6 +25,7 @@ import { Box, Button, Checkbox, Grid, Tab, Tabs, Typography } from '@mui/materia
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import {
+  AssetTabIndex,
   BackIcon,
   CheckBoxIcon,
   CheckedIcon,
@@ -176,7 +177,7 @@ export const RedPacketMarketPanel = ({ setToastOpen }: { setToastOpen: (props: a
           size={'medium'}
           sx={{ color: 'var(--color-text-secondary)' }}
           color={'inherit'}
-          onClick={() => history.push('/l2assets/assets/RedPacket')}
+          onClick={() => history.push(`/l2assets/assets/${AssetTabIndex.RedPacket}`)}
         >
           {t('labelRedPacketMarkets')}
         </Button>

@@ -326,6 +326,22 @@ export const ErrorMap = {
     id: 'GUARDIAN_ROUTER_ERROR',
     messageKey: 'errorGuardianRouterError',
   },
+  ERROR_SWITCH_ETHEREUM: {
+    id: 'ERROR_SWITCH_ETHEREUM',
+    messageKey: 'errorSwitchEthereum',
+  },
+  ERROR_NO_GAMESTOP_EXTENSION: {
+    id: 'ERROR_NO_GAMESTOP_EXTENSION',
+    messageKey: 'errorNoGamestopExtension',
+  },
+  ERROR_ETHEREUM_NOT_METAMASK: {
+    id: 'ERROR_ETHEREUM_NOT_METAMASK',
+    messageKey: 'errorEthereumNotMetamask',
+  },
+  ERROR_GAMESTOP_NO_CHAIN_CHANGE: {
+    id: 'ERROR_GAMESTOP_NO_CHAIN_CHANGE',
+    messageKey: 'errorGamestopNoChainChange',
+  },
 }
 
 export enum UIERROR_CODE {
@@ -362,6 +378,9 @@ export enum UIERROR_CODE {
   ERROR_REDPACKET_CLAIMED = 113002,
   ERROR_REDPACKET_CLAIM_OUT = 113006,
   ERROR_REDPACKET_CLAIM_TIMEOUT = 113000,
+  ERROR_SWITCH_ETHEREUM = 700202,
+  ERROR_NO_GAMESTOP_EXTENSION = 700203,
+  ERROR_ETHEREUM_NOT_METAMASK = 700204,
 }
 
 export type ErrorObject = {
@@ -398,6 +417,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   700024: ErrorMap.ERROR_REDPACKET_EMPTY,
   700100: ErrorMap.ERROR_RAMP_NO_INSTANCE,
   700101: ErrorMap.ERROR_OFF_RAMP_EXPIRED,
+  700202: ErrorMap.ERROR_SWITCH_ETHEREUM,
+  700203: ErrorMap.ERROR_NO_GAMESTOP_EXTENSION,
+  700204: ErrorMap.ERROR_ETHEREUM_NOT_METAMASK,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

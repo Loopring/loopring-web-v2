@@ -35,8 +35,6 @@ import {
   Button,
   ReferralsTable,
   RefundTable,
-  // ShareModal,
-  // CarouselItem,
   Toast,
   ToastType,
   useSettings,
@@ -123,10 +121,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const { t } = useTranslation(['common', 'layout'])
   const { defaultNetwork, isMobile } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const [open, setOpen] = React.useState(false)
-  //TODO: CarouselItem
-  const [images, setImages] = React.useState<any[]>([])
-
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
     referralBanners: {
@@ -252,9 +246,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
       const image = new Image()
       image.crossOrigin = 'true'
       image.src = item
-      // const download = () => {
-      //
-      // };
       image.onload = function () {
         context.clearRect(0, 0, width, width)
         context.drawImage(image, 0, 0, width, height)
@@ -285,8 +276,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
     },
     isLoading: false,
     submitCallback: async () => {
-      // setOpen(true)
-      // Carousel
       onDownloadImage()
     },
   })
@@ -805,5 +794,4 @@ const ReferView = () => {
 }
 export const ReferralRewardsPanel = () => {
   return <ReferView />
-  // <ViewAccountTemplate activeViewTemplate={<ReferView />} />;
 }

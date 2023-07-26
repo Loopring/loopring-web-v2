@@ -106,8 +106,7 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
               isFromContact,
               contact,
               onClickContact: () => {
-                setPanelIndex(3) // todo handle tradeMenuList
-                // rest.handleOnAddressChange(address)
+                setPanelIndex(3)
               },
             }}
           />

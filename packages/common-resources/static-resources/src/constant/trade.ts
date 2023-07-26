@@ -491,6 +491,7 @@ export enum TRADE_TYPE {
 export enum CLAIM_TYPE {
   redPacket = 'redPacket',
   lrcStaking = 'lrcStaking',
+  allToken = 'allToken',
 }
 export type BanxaOrder = {
   id: string
