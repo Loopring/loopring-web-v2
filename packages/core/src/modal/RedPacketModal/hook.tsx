@@ -962,7 +962,6 @@ export function useRedPacketModal() {
               } else {
                 redpacketService.onSuccess(() => {
                   redPacketDetailCall({ offset: 0 })
-                  info.refreshCallback && info.refreshCallback()
                 })
                 setShowClaimWithdraw({
                   isShow: true,
@@ -1154,7 +1153,6 @@ export function useRedPacketModal() {
           } else {
             redpacketService.onSuccess(() => {
               redPacketBlindBoxDetailCall({ offset: 0 })
-              info.refreshCallback && info.refreshCallback()
             })
             setShowClaimWithdraw({
               isShow: true,
