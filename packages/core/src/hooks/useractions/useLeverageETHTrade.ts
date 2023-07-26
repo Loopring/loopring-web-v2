@@ -73,6 +73,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
   const { exchangeInfo, allowTrade } = useSystem()
   const { tradeLeverageETH, updateTradeLeverageETH, resetTradeLeverageETH } = useTradeLeverageETH()
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals()
+  console.log('deFiWrapProps', tradeLeverageETH)
 
   const { toggle } = useToggle()
   const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
@@ -218,7 +219,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         // @ts-ignore
         _deFiCalcData = {
           ..._deFiCalcData,
-          fee: _oldTradeDefi.fee,
           coinSell:
             type === DeFiChgType.coinSell
               ? tradeData
@@ -768,7 +768,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     .div('10000')
     .div('1e' + tradeLeverageETH.sellToken.decimals)
     .toString()
-  const apr = defiMarketMap && defiMarketMap[market]?.apy
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,
@@ -803,7 +802,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       btnStatus,
       accStatus: account.readyState,
       extraWithdrawFee: extraWithdrawFee,
-      apr,
     }
   }, [
     isStoB,
@@ -825,7 +823,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     coinBuySymbol,
     btnStatus,
     extraWithdrawFee,
-    apr,
   ]) // as ForceWithdrawProps<any, any>;
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,
