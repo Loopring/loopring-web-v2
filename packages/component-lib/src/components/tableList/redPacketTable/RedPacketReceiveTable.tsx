@@ -228,9 +228,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                 <Button
                   onClick={(e) => {
                     e.stopPropagation()
-                    onClaimItem(row.rawData, () => {
-                      handlePageChange({ page })
-                    })
+                    onClaimItem(row.rawData)
                   }}
                 >
                   {t('labelBlindBoxCalim')}
@@ -347,9 +345,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                       <Button
                         onClick={(e) => {
                           e.stopPropagation()
-                          onClaimItem(row.rawData, () => {
-                            handlePageChange({ page })
-                          })
+                          onClaimItem(row.rawData)
                         }}
                       >
                         {t('labelBlindBoxCalim')}

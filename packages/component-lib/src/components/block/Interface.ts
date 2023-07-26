@@ -177,7 +177,6 @@ export type RedPacketBlindBoxDetailProps = {
         isNFT: false
       }
   onClickClaim?: () => void
-  onClickClaim2?: () => void
   onCloseOpenModal?: () => void
   onClickClaimDetailBack?: () => void
   description: string

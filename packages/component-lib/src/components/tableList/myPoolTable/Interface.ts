@@ -7,6 +7,7 @@ import {
   RowConfig,
 } from '@loopring-web/common-resources'
 import { Currency, LoopringMap, TokenInfo } from '@loopring-web/loopring-sdk'
+import { EarningsDetail } from '../rewardTable'
 
 export type MyPoolRow<R> = MyAmmLP<R> & {
   ammDetail: AmmDetail<R>
@@ -20,6 +21,10 @@ export type Method<R> = {
 
 export type MyPoolTableProps<R> = {
   rawData: R[]
+  totalAMMClaims?: {
+    detail: EarningsDetail[]
+    totalDollar: string
+  }
   account: Account
   title: string | (() => JSX.Element) | JSX.Element
   totalDollar?: string | number | undefined
