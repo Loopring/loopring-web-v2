@@ -24,7 +24,6 @@ import {
   leverageETHAdvice,
 } from '@loopring-web/common-resources'
 import { useAccount, useNotify } from '@loopring-web/core'
-import { BtradeSwapPage } from '../../BtradeSwapPage'
 
 const WrapperStyled = styled(Box)`
   flex: 1;

@@ -180,8 +180,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     requestType: undefined as any,
   })
   const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const transferValue = store.getState()._router_modalData.transferValue
     updateTransferData({
-      memo: e.target.value
+      ...transferValue,
+      memo: e.target.value,
     })
   }, [])
 
@@ -274,6 +276,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         balance: walletMap[symbol]?.count,
         tradeValue: undefined,
         address: '*',
+        memo: '',
       })
     } else {
       if (!transferValue.belong && walletMap) {
@@ -288,6 +291,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               fee: feeInfo,
               balance: walletInfo?.count,
               address: '*',
+              memo: '',
             })
             break
           }
@@ -300,6 +304,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           tradeValue: undefined,
           balance: walletInfo?.count,
           address: info?.isToMyself ? account.accAddress : '*',
+          memo: '',
         })
       } else {
         updateTransferData({
@@ -308,12 +313,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           tradeValue: undefined,
           balance: undefined,
           address: info?.isToMyself ? account.accAddress : '*',
+          memo: '',
         })
       }
     }
-    updateTransferData({
-      memo: ""
-    })
+
     if (contactAddress) {
       setAddress(contactAddress)
     } else {
@@ -744,7 +748,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
     isAddressCheckLoading,
     addrStatus,
-    memo: transferValue.memo ?? "",
+    memo: transferValue.memo ?? '',
     handleOnMemoChange,
     handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
       checkActiveFeeIsEnough({

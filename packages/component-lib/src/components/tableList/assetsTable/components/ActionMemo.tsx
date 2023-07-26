@@ -46,10 +46,9 @@ const ActionPopContent = React.memo(
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
-    isLeverageETH
   }: ActionProps) => {
     const history = useHistory()
-    const { t } = useTranslation(['table', 'common'])
+    const { t } = useTranslation(['tables', 'common'])
     const { setShowAmm } = useOpenModals()
     const { toggle } = useToggle()
     const _allowTrade = {
@@ -165,7 +164,7 @@ const ActionPopContent = React.memo(
 const ActionMemo = React.memo((props: ActionProps) => {
   const { isMobile } = useSettings()
   const history = useHistory()
-  const { t } = useTranslation(['common', 'table'])
+  const { t } = useTranslation('tables')
   const {
     allowTrade,
     tokenValue,
@@ -246,7 +245,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                       history.push(`/invest/defi/${tokenValue}-null/invest`)
                     }}
                   >
-                    {t('labelDefiInvest')}
+                    {t('labelDefiSubscribe')}
                   </Button>
                 </Grid>
                 <Grid item>

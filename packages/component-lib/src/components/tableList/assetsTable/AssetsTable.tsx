@@ -451,7 +451,7 @@ export const AssetsTable = withTranslation('tables')(
                 market: renderMarket,
                 onReceive,
                 onSend,
-                isLeverageETH,
+                isLeverageETH: isLeverageETH ? true : false,
               }}
             />
           )

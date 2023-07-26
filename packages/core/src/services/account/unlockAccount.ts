@@ -4,6 +4,7 @@ import { accountServices } from './accountServices'
 import { myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
+import { nextAccountStatus } from '../../stores/account/reducer'
 
 export async function unlockAccount() {
   myLog('unlockAccount starts')
@@ -20,7 +21,7 @@ export async function unlockAccount() {
     LoopringAPI.walletAPI &&
     accounStore.nonce !== undefined
   ) {
-    let walletType, account
+    let walletType, account: any
     try {
       const connectName = (ConnectProviders[accounStore.connectName] ??
         accounStore.connectName) as unknown as sdk.ConnectorNames
@@ -80,6 +81,29 @@ export async function unlockAccount() {
           isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
           isContract: walletType?.isContract,
         })
+        if (account?.accountId) {
+          LoopringAPI.nftAPI
+            ?.getHadUnknownCollection({
+              accountId: account.accountId,
+            })
+            .then((_response: boolean) => {
+              if ((_response as sdk.RESULT_INFO)?.code) {
+                // console.error(_response)
+                return
+              }
+              if (account && account.accountId === store.getState().account.accountId) {
+                store.dispatch(
+                  nextAccountStatus({
+                    ...store.getState().account,
+                    hasUnknownCollection: _response,
+                  }),
+                )
+              }
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        }
       } else {
         throw response
       }

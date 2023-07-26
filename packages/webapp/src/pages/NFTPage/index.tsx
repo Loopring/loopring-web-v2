@@ -1,6 +1,11 @@
 import { useRouteMatch } from 'react-router-dom'
 import { Box, Link, Typography } from '@mui/material'
-import { AccountStatus, subMenuNFT, SUBMIT_PANEL_AUTO_CLOSE } from '@loopring-web/common-resources'
+import {
+  AccountStatus,
+  SagaStatus,
+  subMenuNFT,
+  SUBMIT_PANEL_AUTO_CLOSE,
+} from '@loopring-web/common-resources'
 import React from 'react'
 import { onchainHashInfo, store, useAccount, ViewAccountTemplate } from '@loopring-web/core'
 import { MyNFTPanel } from './MyNFT'
@@ -26,7 +31,7 @@ export const BoxStyle = styled(Box)`
 export const NFTPage = () => {
   let match: any = useRouteMatch('/NFT/:item')
   const selected = match?.params?.item ?? 'assetsNFT'
-  const { account } = useAccount()
+  const { account, status: accountStatus } = useAccount()
   const [showUnknownCollection, setShowUnknownCollection] = React.useState(false)
   const { updateHadUnknownCollection } = onchainHashInfo.useOnChainInfo()
   const [open, setOpen] = React.useState(false)
@@ -55,21 +60,26 @@ export const NFTPage = () => {
     }
   }, [selected])
   React.useEffect(() => {
-    if (account?.hasUnknownCollection && account.readyState === AccountStatus.ACTIVATED) {
+    if (accountStatus === SagaStatus.UNSET) {
       const {
+        account,
         system: { chainId },
         localStore: { chainHashInfos },
       } = store.getState()
-      const showHadUnknownCollection = chainHashInfos[chainId]?.showHadUnknownCollection
-      if (
-        !(showHadUnknownCollection && showHadUnknownCollection[account?.accAddress?.toLowerCase()])
-      ) {
-        setOpen(true)
-      } else {
-        // setShowUnknownCollection(true)
+      if (account?.hasUnknownCollection && account.readyState === AccountStatus.ACTIVATED) {
+        const showHadUnknownCollection = chainHashInfos[chainId]?.showHadUnknownCollection
+        if (
+          !(
+            showHadUnknownCollection && showHadUnknownCollection[account?.accAddress?.toLowerCase()]
+          )
+        ) {
+          setOpen(true)
+        } else {
+          // setShowUnknownCollection(true)
+        }
       }
     }
-  }, [account?.readyState])
+  }, [accountStatus, account?.hasUnknownCollection])
 
   const activeViewTemplate = React.useMemo(
     () => (
