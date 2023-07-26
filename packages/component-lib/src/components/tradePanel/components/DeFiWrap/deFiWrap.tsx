@@ -443,7 +443,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   color={'var(--color-warning)'}
                 >
                   <Typography component={'span'} variant={'inherit'} color={'inherit'}>
-                    <Trans i18nKey={'labelDefiMaxBalance'} tOptions={{ maxValue }}>
+                    <Trans i18nKey={'labelDefiMaxBalanceLeverage'} tOptions={{ maxValue }}>
                       Loopring rebalance pool can't satisfy your complete request. You can only
                       redeem {{ maxValue }} now. For the remaining investment, you can choose one of
                       the approaches
