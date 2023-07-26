@@ -1809,4 +1809,8 @@ export default {
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
   labelDefiSubscribe: 'Subscribe',
+  labelDefiMaxBalance1Leverage:
+    '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
+  labelDefiNoBalanceLeverage:
+    '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
 }

@@ -374,12 +374,22 @@ export const subMenuInvest = [
     icon: L2MyLiquidityIcon,
     router: { path: '/invest/leverageETH' },
     label: {
-      id: 'todo',
+      id: 'leverageeth',
       i18nKey: 'labelInvestLeverageETH',
       description: 'labelInvestLeverageETHDes',
     },
   },
 ]
+export const defiMarkets = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
+  GOERLI: ['RETH-ETH'],
+}
+export const leverageETHMarkets = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['CIETH-ETH'],
+  GOERLI: ['WSTETH-ETH'],
+}
 
 export const subMenuNFT = {
   NFTGroup: [

@@ -52,12 +52,17 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   const { notifyMap } = useNotify()
   const showLoading = filteredData && !filteredData.length
   const history = useHistory()
+  const {
+    toggle: { CIETHInvest },
+  } = useToggle()
   const investAdviceList = [
     { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
     { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
     { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
-    { ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4] },
+    ...(!CIETHInvest.enable && CIETHInvest.reason === 'no view'
+      ? []
+      : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4] }]),
   ]
   return (
     <>

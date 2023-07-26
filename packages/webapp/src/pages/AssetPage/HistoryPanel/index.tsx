@@ -283,6 +283,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             />
           ) : currentTab === RecordTabIndex.DefiRecords ? (
             <DefiTxsTable
+              key={"defi"}
               {...{
                 rawData: defiList,
                 pagination: {
@@ -445,6 +446,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             </Box>
           ) : currentTab === RecordTabIndex.leverageETHRecords ? (
             <DefiTxsTable
+              key={"leverage"}
               {...{
                 rawData: leverageETHList,
                 pagination: {
