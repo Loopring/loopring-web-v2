@@ -374,7 +374,7 @@ export const subMenuInvest = [
     icon: L2MyLiquidityIcon,
     router: { path: '/invest/leverageETH' },
     label: {
-      id: 'todo',
+      id: 'leverageeth',
       i18nKey: 'labelInvestLeverageETH',
       description: 'labelInvestLeverageETHDes',
     },
