@@ -1,5 +1,5 @@
 import { makeInvestRow, useInvestTokenTypeMap, useWalletLayer2 } from '@loopring-web/core'
-import { RowInvest } from '@loopring-web/component-lib'
+import { RowInvest, useToggle } from '@loopring-web/component-lib'
 import { SagaStatus } from '@loopring-web/common-resources'
 import React from 'react'
 
