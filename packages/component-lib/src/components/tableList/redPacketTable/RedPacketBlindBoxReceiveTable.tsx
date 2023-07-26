@@ -26,7 +26,7 @@ import {
   RawDataRedPacketBlindBoxReceivesItem,
   RedPacketBlindBoxReceiveTableProps,
 } from './Interface'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FormatterProps } from 'react-data-grid'
 import _, { random } from 'lodash'
 import moment from 'moment'
@@ -34,6 +34,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { ColumnCoinDeep } from '../assetsTable'
 import TextTooltip from './textTooltip'
 import { useTheme } from '@emotion/react'
+import { redpacketService } from '@loopring-web/core'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -414,6 +415,16 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
+    
+    const subject = React.useMemo(() => redpacketService.onRefresh(), [])
+    React.useEffect(() => {
+      const subscription = subject.subscribe(() => {
+        updateData({page})
+      })
+      return () => {
+        subscription.unsubscribe()
+      }
+    }, [subject, page])
 
     return (
       <TableWrapperStyled>

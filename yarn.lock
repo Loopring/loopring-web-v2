@@ -4554,7 +4554,7 @@
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-"@loopring-web/web3-provider@^1.4.11":
+"@loopring-web/web3-provider@^1.4.7":
   version "1.4.11"
   resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.4.11.tgz#07a2dcf264c6e006b7be14e4d3f1dd511ab8d214"
   integrity sha512-Foecdny4RJEgP2ecBeUer/wh/FlJ8RgGpv3k2fMDco+fa9h4Kc4Mk/Qgn1/UiuR9Szi1oM0GS3bYsiGHIHYk9A==

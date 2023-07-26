@@ -789,6 +789,17 @@ export function useRedPacketModal() {
     }
   }, [step, isShow])
 
+  const redpacketSubject = React.useMemo(() => redpacketService.onSuccess(), [])
+  React.useEffect(() => {
+    const subscription = redpacketSubject.subscribe(() => {
+      redPacketDetailCall({ offset: 0 })
+      redpacketService.refresh()
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [redpacketSubject])
+
   const redPacketDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string
@@ -960,9 +971,7 @@ export function useRedPacketModal() {
             .then((response) => {
               if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
               } else {
-                redpacketService.onSuccess(() => {
-                  redPacketDetailCall({ offset: 0 })
-                })
+                
                 setShowClaimWithdraw({
                   isShow: true,
                   claimToken: {
@@ -1065,6 +1074,7 @@ export function useRedPacketModal() {
       const tokenInfo = !detail.luckyToken.isNft
         ? tokenMap[idIndex[detail.luckyToken.tokenId]]
         : undefined
+      
       return {
         sender: _info.sender?.ens ? _info.sender?.ens : getShortAddr(_info.sender?.address),
         memo: _info.info.memo,
@@ -1151,9 +1161,6 @@ export function useRedPacketModal() {
           )
           if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           } else {
-            redpacketService.onSuccess(() => {
-              redPacketBlindBoxDetailCall({ offset: 0 })
-            })
             setShowClaimWithdraw({
               isShow: true,
               claimToken: {

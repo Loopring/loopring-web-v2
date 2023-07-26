@@ -3,7 +3,6 @@ import {
   amountStrCallback,
   amountStrNFTCallback,
   LoopringAPI,
-  redpacketService,
   useAccount,
   useTokenMap,
 } from '@loopring-web/core'
@@ -523,14 +522,12 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
     [accountId, apiKey, setToastOpen, t, idIndex],
   )
   //TODO subscribe RefreshService here
+  
 
   const onItemClick = async (
     item: sdk.LuckyTokenBlindBoxItemReceive,
     pageInfo?: { offset: number; limit: number; filter: any },
   ) => {
-    redpacketService.onRefresh(() => {
-      getRedPacketReceiveList(pageInfo)
-    })
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,
