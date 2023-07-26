@@ -1808,4 +1808,5 @@ export default {
     'If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address; else you will lose that asset for ever.',
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
+  labelDefiSubscribe: 'Subscribe',
 }
