@@ -798,7 +798,7 @@ export function useRedPacketModal() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [redpacketSubject])
+  }, [])
 
   const redPacketDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {

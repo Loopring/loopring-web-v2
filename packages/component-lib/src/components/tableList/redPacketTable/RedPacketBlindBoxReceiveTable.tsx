@@ -415,16 +415,20 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
+
+    const onRefresh = React.useCallback(() => {
+      updateData({page})
+    }, [page])
     
     const subject = React.useMemo(() => redpacketService.onRefresh(), [])
     React.useEffect(() => {
       const subscription = subject.subscribe(() => {
-        updateData({page})
+        onRefresh()
       })
       return () => {
         subscription.unsubscribe()
       }
-    }, [subject, page])
+    }, [])
 
     return (
       <TableWrapperStyled>
