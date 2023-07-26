@@ -11,6 +11,7 @@ import {
   LoadingBlock,
   ConfirmInvestDefiRisk,
   ToastType,
+  useToggle,
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -81,6 +82,13 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     confirmedLeverageETHInvest,
     confirmation: { confirmedLeverageETHInvest: confirmed },
   } = confirmation.useConfirmation()
+  const {
+    toggle: {
+      CIETHInvest: {
+        enable
+      }
+    }
+  } = useToggle()
 
   const {
     confirmationNeeded,
@@ -108,6 +116,11 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()
   const isJoin = match?.params?.isJoin?.toUpperCase() !== 'Redeem'.toUpperCase()
+  React.useEffect(() => {
+    setConfirmedDefiInvest({
+      isShow: enable ? !confirmed : false,
+    })
+  }, [confirmed, enable])
 
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
