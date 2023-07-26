@@ -53,7 +53,6 @@ export const accountServices = {
       },
     })
   },
-
   sendUpdateAccStatusAndReset: (readyState: AccountStatus, accountId: number = -1) => {
     store.dispatch(
       updateAccountStatus({
@@ -129,13 +128,8 @@ export const accountServices = {
   },
   sendActiveAccountDeposit: () => {},
   sendAccountSigned: ({
-    // accountId,
     apiKey,
-    // frozen,
     eddsaKey,
-    // isReset,
-    // keySeed,
-    // nonce,
     isInCounterFactualStatus,
     isContract,
   }: {
