@@ -816,7 +816,7 @@ export default {
   labelNFTProperties: 'Properties',
   labelNFTDescription2: 'Description',
   labelForceWithdrawNotAvailable:
-    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{symbolL2}} to {{symbolL1}} anymore',
+    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1Symbol}} anymore',
   labelForceWithdrawNoToken: 'No token is detected from this address to operate',
   labelForceWithdrawBtn: 'Force Withdraw',
   labelInvestDefiTitle: 'ETH Staking',
@@ -830,13 +830,13 @@ export default {
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n' +
     'You can choose one of the following approaches for the remaining amount:',
   labelDefiMaxBalance1:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalance:
     '<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>' +
     '<span>You can choose one of the following approaches for the remaining amount:</span>',
   labelDefiNoBalanceList:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
@@ -1765,12 +1765,15 @@ export default {
   labelRedpacketStandard: 'Standard',
   labelLayer2HistoryleverageETHRecords: 'Leverage ETH',
   labelSwapMinConverted: 'Minimum Converted',
-  labelSwapMinConvertedTooltip: 'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
+  labelSwapMinConvertedTooltip:
+    'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
   labelNetworkFee: 'Network Fee',
   labelTradingFee: 'Trading Fee',
   labelTradingFeeEst: 'Trading Fee(est.)',
-  labelStopStopPriceDes: 'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
-  labelStopPriceDes: 'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
+  labelStopStopPriceDes:
+    'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
+  labelStopPriceDes:
+    'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
   labelDefiSubscribe: 'Subscribe',
 }
