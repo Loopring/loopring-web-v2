@@ -37,7 +37,10 @@ const initialState: ToggleState = {
   whiteList: {},
 }
 
-export const toggleSlice: Slice<ToggleState> = createSlice<ToggleState, SliceCaseReducers<ToggleState>>({
+export const toggleSlice: Slice<ToggleState> = createSlice<
+  ToggleState,
+  SliceCaseReducers<ToggleState>
+>({
   name: 'toggle',
   initialState: initialState,
   reducers: {
