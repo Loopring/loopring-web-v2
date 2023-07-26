@@ -196,41 +196,6 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
         })
       }
     }
-    // if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING) {
-
-    // }
-    // if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
-    //   setShowRedPacket({
-    //     isShow: true,
-    //     info: {
-    //       ...item,
-    //       hash: item.hash,
-    //     },
-    //     step: RedPacketViewStep.OpenPanel,
-    //   });
-    // } else {
-    //   if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-    //     setShowRedPacket({
-    //       isShow: true,
-    //       info: {
-    //         ...item,
-    //         hash: item.hash,
-    //       },
-    //       step: RedPacketViewStep.BlindBoxDetail,
-    //     });
-    //   } else {
-    //     setShowRedPacket({
-    //       isShow: true,
-    //       info: {
-    //         ...item,
-    //         hash: item.hash,
-    //       },
-    //       step: RedPacketViewStep.DetailPanel,
-    //     });
-
-    //   }
-
-    // }
   }
 
   return {
@@ -240,19 +205,13 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
     showLoading,
     getMyRedPacketRecordTxList,
     myRedPacketRecordTotal,
-    // pagination,
-    // updateTickersUI,
   }
 }
 
 export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketReceivesItem>({
   setToastOpen,
-}: // showActionableRecords
-// tabType,
-{
+}: {
   setToastOpen: (props: any) => void
-  // showActionableRecords: boolean
-  // tabType: TabTokenTypeIndex;
 }) => {
   const { t } = useTranslation(['error'])
 
@@ -412,8 +371,6 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
           luckyTokenHash: item.luckyToken.hash,
         },
         claimType: CLAIM_TYPE.redPacket,
-        // TODO  successCallback remove
-        // successCallback: successCallback,
       })
     }
   }
@@ -522,10 +479,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
     [accountId, apiKey, setToastOpen, t, idIndex],
   )
 
-  const onItemClick = async (
-    item: sdk.LuckyTokenBlindBoxItemReceive,
-    pageInfo?: { offset: number; limit: number; filter: any },
-  ) => {
+  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,

@@ -50,7 +50,7 @@ import { Box } from '@mui/material'
 import { getIPFSString } from '../../utils'
 import { NFT_IMAGE_SIZES, toBig } from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router'
-import { ClaimCommands, claimServices } from '../../services'
+import { ClaimCommands, claimServices, redpacketService } from '../../services'
 
 export function useRedPacketModal() {
   const ref = React.createRef()
@@ -688,6 +688,7 @@ export function useRedPacketModal() {
                   } as any,
                   account.apiKey,
                 )
+                redpacketService.refresh()
               } else {
                 setBlindBoxType('Lottery Started')
               }
@@ -987,9 +988,11 @@ export function useRedPacketModal() {
       switch (step) {
         case RedPacketViewStep.DetailPanel:
           redPacketDetailCall({ offset: 0 })
+          redpacketService.refresh()
           break
         case RedPacketViewStep.BlindBoxDetail:
           redPacketBlindBoxDetailCall({ offset: 0 })
+          redpacketService.refresh()
           if (wonPrizeInfo && wonPrizeInfo.isNFT) {
             setShowRedPacket({ isShow: false })
           }
