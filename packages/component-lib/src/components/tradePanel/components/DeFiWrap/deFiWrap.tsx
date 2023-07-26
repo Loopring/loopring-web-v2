@@ -327,7 +327,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             order: 'right',
             inputData: deFiCalcData ? deFiCalcData.coinSell : ({} as any),
             coinMap: {},
-            coinPrecision: tokenSell.precision,
+            coinPrecision: tokenSell && tokenSell.precision,
           }}
         />
         <Box alignSelf={'center'} marginY={1}>

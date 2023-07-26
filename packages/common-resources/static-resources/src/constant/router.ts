@@ -387,7 +387,7 @@ export const defiMarkets = {
 }
 export const leverageETHMarkets = {
   TAIKO: [] as string[],
-  ETHEREUM: ['CiETH-ETH'],
+  ETHEREUM: ['CIETH-ETH'],
   GOERLI: ['WSTETH-ETH'],
 }
 
