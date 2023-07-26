@@ -218,6 +218,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   }, [isJoin, t, btnInfo])
 
   const maxValue =
+    tokenBuy &&
     tokenBuy.symbol &&
     maxBuyVol &&
     `${getValuePrecisionThousand(
@@ -228,7 +229,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       false,
       { floor: true },
     )} ${tokenBuy.symbol}`
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup } = usePopup()
+  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
   
   const fee = isJoin 
     ? (deFiCalcData?.fee ? deFiCalcData?.fee + ` ${tokenBuy.symbol}` : EmptyValueTag)
@@ -266,7 +267,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             color={'inherit'}
             sx={{ marginLeft: 1, cursor: 'pointer' }}
             onClick={() => {
-              if (market === 'RETH-ETH') {
+              if (isLeverageETH) {
+                setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
+              } else if (market === 'RETH-ETH') {
                 setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
               } else if (market === 'WSTETH-ETH') {
                 setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
@@ -336,7 +339,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             order: 'right',
             inputData: deFiCalcData ? deFiCalcData.coinBuy : ({} as any),
             coinMap: {},
-            coinPrecision: tokenBuy.precision,
+            coinPrecision: tokenBuy && tokenBuy.precision,
           }}
         />
       </Grid>
