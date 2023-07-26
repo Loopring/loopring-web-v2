@@ -1776,4 +1776,8 @@ export default {
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
   labelDefiSubscribe: 'Subscribe',
+  labelDefiMaxBalance1Leverage:
+    '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
+  labelDefiNoBalanceLeverage:
+    '<span>Loopring will set up the pool soon. Please come back later to subscribe. </span>',
 }

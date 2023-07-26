@@ -78,6 +78,7 @@ export const TradePanel = ({
           }
         }}
         open={confirmShowNoBalance}
+        isLeverage
       />
     </>
   )

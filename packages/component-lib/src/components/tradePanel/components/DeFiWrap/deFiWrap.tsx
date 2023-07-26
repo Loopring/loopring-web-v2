@@ -445,21 +445,38 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                     marginTop={1}
                   >
                     <ul>
-                      <Trans
-                        i18nKey={'labelDefiMaxBalance1'}
-                        components={{ li: <li /> }}
-                        tOptions={{
-                          symbol: baseSymbol,
-                          type,
-                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                        }}
-                      >
-                        <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
-                        <li>Wait some time for Loopring to seto for redeem</li>
-                      </Trans>
+                      {isLeverageETH ? (
+                        <Trans
+                          i18nKey={'labelDefiMaxBalance1Leverage'}
+                          components={{ li: <li /> }}
+                          tOptions={{
+                            symbol: baseSymbol,
+                            type,
+                            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                          }}
+                        >
+                          <li>Wait some time for Loopring to seto for redeem</li>
+                        </Trans>
+                      ) : (
+                        <Trans
+                          i18nKey={'labelDefiMaxBalance1'}
+                          components={{ li: <li /> }}
+                          tOptions={{
+                            symbol: baseSymbol,
+                            type,
+                            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                          }}
+                        >
+                          <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
+                          <li>Wait some time for Loopring to seto for redeem</li>
+                        </Trans>
+                      )}
                     </ul>
                   </Typography>
                 </Typography>
