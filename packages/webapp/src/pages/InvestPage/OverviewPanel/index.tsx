@@ -18,7 +18,7 @@ import {
   stakeAdvice,
   leverageETHAdvice,
 } from '@loopring-web/common-resources'
-import { useAccount, useNotify } from '@loopring-web/core'
+import { useAccount, useNotify, useToggle } from '@loopring-web/core'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
