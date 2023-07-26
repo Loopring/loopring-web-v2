@@ -9,7 +9,7 @@ export function useRewardsTable(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount()
-  const { totalClaims, errorMessage, status: userRewardsStatus, getUserRewards } = useUserRewards()
+  const { totalClaims, status: userRewardsStatus, getUserRewards } = useUserRewards()
   const subject = React.useMemo(() => claimServices.onSocket(), [])
 
   const { t } = useTranslation(['error'])
@@ -21,10 +21,8 @@ export function useRewardsTable(setToastOpen: (state: any) => void) {
     setShowLoading(true)
     try {
       myLog('totalClaims', totalClaims)
-      if (errorMessage) {
-      } else {
-        setClaimList(Reflect.ownKeys(totalClaims).map((key) => totalClaims[key]))
-      }
+      // myLog('totalClaims', list)
+      setClaimList(Reflect.ownKeys(totalClaims).map((key) => totalClaims[key]))
     } catch (error) {
       let errorItem
       if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
@@ -38,6 +36,7 @@ export function useRewardsTable(setToastOpen: (state: any) => void) {
         content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
       })
     }
+
     setShowLoading(false)
   }, [accountId, totalClaims, apiKey, setToastOpen, t])
   React.useEffect(() => {
@@ -64,8 +63,6 @@ export function useRewardsTable(setToastOpen: (state: any) => void) {
   return {
     claimList,
     showLoading,
-    errorMessage,
     getRewardsTableList,
-    getUserRewards,
   }
 }
