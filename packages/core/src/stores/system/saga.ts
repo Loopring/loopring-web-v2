@@ -374,7 +374,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
         const _exchangeInfo = JSON.parse(window.localStorage.getItem('exchangeInfo') ?? '{}')
-        ;[{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] = await Promise.all([
+        ;;[{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] = await Promise.all([
           _exchangeInfo[chainId]
             ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
             : LoopringAPI.exchangeAPI.getExchangeInfo().then(({ exchangeInfo }) => {
@@ -395,7 +395,11 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
               legal: (result as any)?.raw_data?.legal ?? { enable: false },
             }
           }),
-          toggleCheck(chainId, process.env.REACT_APP_DEX_TOGGLE),
+          toggleCheck(
+            chainId,
+            process.env.REACT_APP_DEX_TOGGLE,
+            process.env.REACT_APP_DEX_WHITELIST,
+          ),
         ])
         if (_exchangeInfo[chainId]) {
           LoopringAPI.exchangeAPI.getExchangeInfo().then(async ({ exchangeInfo }: any) => {
