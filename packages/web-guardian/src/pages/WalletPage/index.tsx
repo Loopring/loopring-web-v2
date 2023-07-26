@@ -21,7 +21,6 @@ import {
 import { Box, Button, Link, Tooltip, Typography } from '@mui/material'
 import { GuardianStep, QRCodePanel, useSettings } from '@loopring-web/component-lib'
 import { BtnConnectL1, useAccount } from '@loopring-web/core'
-import { useRouteMatch } from 'react-router-dom'
 import { useHebaoMain } from './hook'
 import { ModalLock } from './modal'
 import { WalletHistory } from './WalletHistory'
