@@ -42,6 +42,7 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
       state.rewardU = action.payload.rewardU
       state.feeU = action.payload.feeU
       state.myAmmLPMap = action.payload.myAmmLPMap
+      state.totalClaims = action.payload.totalClaims
       if (action.payload.__timer__) {
         state.__timer__ = action.payload.__timer__
       }
