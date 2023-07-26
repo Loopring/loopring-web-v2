@@ -16,6 +16,7 @@ import {
   L1L2_NAME_DEFINED,
   MapChainId,
   RedPacketIcon,
+  RewardIcon,
   TableType,
   TransferIcon,
   UNIX_TIMESTAMP_FORMAT,
@@ -279,11 +280,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
             const hasSymbol =
               row.side.toLowerCase() === sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? ''
-                : // t("labelForceWithdrawTotalDes", {
-                //     address: getShortAddr(row.withdrawalInfo?.recipient),
-                //     symbol: row.symbol,
-                //   })
-                row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER // TransactionTradeTypes.transfer
+                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER // TransactionTradeTypes.transfer
                 ? row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
                   ? '+'
                   : '-'
@@ -296,6 +293,8 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 : row.side.toLowerCase() === sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN
                 ? '+'
                 : row.side.toLowerCase() === sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
+                ? '+'
+                : row.side.toLowerCase() === sdk.UserTxTypes.UNIFIED_CLAIM
                 ? '+'
                 : ''
 
@@ -368,6 +367,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                   ]
                 : [
                     sdk.UserTxTypes.L2_STAKING,
+                    sdk.UserTxTypes.UNIFIED_CLAIM,
                     sdk.UserTxTypes.DUAL_INVESTMENT,
                     sdk.UserTxTypes.SEND_LUCKY_TOKEN,
                     sdk.UserTxTypes.TRANSFER,
@@ -396,6 +396,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
             if (
               [
                 sdk.UserTxTypes.L2_STAKING,
+                sdk.UserTxTypes.UNIFIED_CLAIM,
                 sdk.UserTxTypes.DUAL_INVESTMENT,
                 sdk.UserTxTypes.SEND_LUCKY_TOKEN,
                 sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN,
@@ -518,6 +519,8 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 ? '+'
                 : row.side.toLowerCase() === sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN
                 ? '+'
+                : row.side.toLowerCase() === sdk.UserTxTypes.UNIFIED_CLAIM
+                ? '+'
                 : ''
             const sideIcon =
               row.side.toLowerCase() === sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW ? (
@@ -526,10 +529,12 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 <DepositIcon fontSize={'inherit'} />
               ) : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER ? (
                 <TransferIcon fontSize={'inherit'} />
-              ) : row.side.toLowerCase() === 'send_lucky_token' ? (
+              ) : row.side.toLowerCase() === sdk.UserTxTypes.SEND_LUCKY_TOKEN ? (
                 <RedPacketIcon fontSize={'inherit'} />
-              ) : row.side.toLowerCase() === 'withdraw_lucky_token' ? (
+              ) : row.side.toLowerCase() === sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN ? (
                 <RedPacketIcon fontSize={'inherit'} />
+              ) : row.side.toLowerCase() === sdk.UserTxTypes.UNIFIED_CLAIM ? (
+                <RewardIcon fontSize={'inherit'} />
               ) : (
                 <WithdrawIcon fontSize={'inherit'} />
               )

@@ -1777,11 +1777,11 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
                   variant={'body2'}
                   marginTop={2}
                   display={'block'}
-                  color={'textThird'}
+                  color={'var(--color-text-third)'}
                 >
                   It is important to note that users can't redeem wstETH for ETH until phase 2 of
                   Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges
-                  at market prices.{' '}
+                  at market prices.
                 </Typography>
                 <Typography
                   whiteSpace={'pre-line'}
@@ -1789,7 +1789,7 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
                   variant={'body2'}
                   marginTop={2}
                   display={'block'}
-                  color={'textThird'}
+                  color={'var(--color-text-third)'}
                 >
                   Loopring will provide a pool to allow users to trade wstETH for ETH directly on
                   Layer 2. The pool will rebalance periodically when it reaches a specific
@@ -2139,7 +2139,7 @@ export const ConfirmInvestLRCStakeRisk = withTranslation('common')(
                 variant={'body2'}
                 marginTop={2}
                 display={'block'}
-                color={'textThird'}
+                color={'var(--color-text-third)'}
               >
                 The staked LRC will be locked in Loopring L2, meaning it cannot be used for other
                 purposes. You may redeem your LRC at any time; however, doing so before the 90-day

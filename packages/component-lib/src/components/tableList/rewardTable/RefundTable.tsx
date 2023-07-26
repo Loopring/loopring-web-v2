@@ -1,7 +1,12 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
-import { EmptyValueTag, globalSetup, RowConfig } from '@loopring-web/common-resources'
+import {
+  EmptyValueTag,
+  globalSetup,
+  RowConfig,
+  YEAR_DAY_FORMAT,
+} from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
 import { Box, BoxProps } from '@mui/material'
 import moment from 'moment'
@@ -103,13 +108,12 @@ export const RefundTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignLeft',
           cellClass: 'textAlignLeft',
           formatter: ({ row }) => {
-            const renderValue = Number.isFinite(row.startAt)
-              ? moment(new Date(row['time']), 'YYYYMMDDHHMM').fromNow()
-              : EmptyValueTag
             return (
-              <div className='rdg-cell-value textAlignRight'>
-                <span>{renderValue}</span>
-              </div>
+              <>
+                {Number.isFinite(row.startAt)
+                  ? moment(new Date(row.startAt), 'YYYYMMDDHHMM').format(YEAR_DAY_FORMAT)
+                  : EmptyValueTag}
+              </>
             )
           },
         },
@@ -119,10 +123,11 @@ export const RefundTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignRight',
           cellClass: 'textAlignRight',
           formatter: ({ row }) => {
-            // const value = row[column.key];
-            const renderValue = `${row.amount} LRC`
-            // const renderValue = `${getValuePrecisionThousand(valueFrom, undefined, undefined, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo, precisionTo)} ${keyTo}`
-            return <div className='rdg-cell-value'>{renderValue}</div>
+            return (
+              <>
+                {row.amount?.value} {row.amount?.unit}
+              </>
+            )
           },
         },
       ],

@@ -3,11 +3,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Box, Tab, Tabs, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
-import {
-  ConfirmInvestDualRisk,
-  ConfirmInvestLRCStakeRisk,
-  useSettings,
-} from '@loopring-web/component-lib'
+import { ConfirmInvestDualRisk, ConfirmInvestLRCStakeRisk } from '@loopring-web/component-lib'
 import React from 'react'
 import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
 import MyLiquidityPanel from './MyLiquidityPanel'
@@ -159,7 +155,6 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         setIsShowTab(false)
         return
       case InvestRouter[InvestType.Overview]:
-      case '':
       default:
         setTabIndex(InvestType.Overview)
         setIsShowTab(true)

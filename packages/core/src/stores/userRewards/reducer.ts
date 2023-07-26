@@ -6,6 +6,7 @@ import { makeSummaryMyAmm } from '../../hooks'
 const initialState: UserRewardsStates<{ [key: string]: any }> = {
   userRewardsMap: undefined,
   myAmmLPMap: undefined,
+  totalClaims: {},
   rewardU: '',
   feeU: '',
   status: 'PENDING',
