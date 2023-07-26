@@ -843,13 +843,13 @@ export default {
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n' +
     'You can choose one of the following approaches for the remaining amount:',
   labelDefiMaxBalance1:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalance:
     '<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>' +
     '<span>You can choose one of the following approaches for the remaining amount:</span>',
   labelDefiNoBalanceList:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
