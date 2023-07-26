@@ -165,8 +165,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const nftTransferValue = store.getState()._router_modalData.nftTransferValue
     updateNFTTransferData({
-      memo: e.target.value
+      ...nftTransferValue,
+      memo: e.target.value,
     })
   }, [])
   const checkBtnStatus = React.useCallback(() => {
@@ -493,7 +495,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             },
             apiKey,
           )
-          
+
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,
@@ -645,7 +647,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   }, [realAddr, isShow, contacts])
   const nftTransferProps: TransferProps<R, T> = {
     handleOnMemoChange,
-    memo: nftTransferValue.memo ?? "",
+    memo: nftTransferValue.memo ?? '',
     type: TRADE_TYPE.NFT,
     addressDefault: address,
     realAddr,

@@ -27,13 +27,17 @@ import {
   ToastType,
   TransactionStatus,
   useOpenModals,
+  useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE, GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import {
   AccountStatus,
   BTRDE_PRE,
+  defiMarkets,
   getValuePrecisionThousand,
+  leverageETHMarkets,
+  MapChainId,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
@@ -330,11 +334,15 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   const [defiTotal, setDefiTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
   const { accountId, apiKey } = store.getState().account
+
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
   const getDefiTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        //TODO... YAO filter 掉 leverage
+        const markets = defiMarkets[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -342,6 +350,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
+            markets: markets.join(',')
           } as any,
           apiKey,
         )
@@ -1136,16 +1145,14 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
   const [showLoading, setShowLoading] = React.useState(true)
   const { marketLeverageArray } = useDefiMap()
   const { accountId, apiKey } = store.getState().account
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const getLeverageETHTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        // const markets = await LoopringAPI.defiAPI.getDefiMarkets({})
-        // const arr = toArray(markets?.markets)
-        // @ts-ignore
-        // const marketArr = arr
-        //   .filter((market) => market.extra && market.extra.isLeverage)
-        //   .map((market) => market.market)
+        
+        const markets = leverageETHMarkets[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -1153,8 +1160,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            //TDOO 可扩展性？？？？
-            marktes: marketLeverageArray?.join(','),
+            markets: markets.join(',')
           } as any,
           apiKey,
         )

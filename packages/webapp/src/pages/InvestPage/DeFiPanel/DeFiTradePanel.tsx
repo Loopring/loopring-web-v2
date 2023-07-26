@@ -72,6 +72,7 @@ export const DeFiTradePanel = ({
             deFiWrapProps?.onRefreshData(true, true)
           }
         }}
+        isLeverage={false}
         open={confirmShowNoBalance}
       />
     </>
