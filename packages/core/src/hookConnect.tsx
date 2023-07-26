@@ -389,18 +389,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         props?.opts?.error?.code === UIERROR_CODE.ERROR_WALLECTCONNECT_MANUALLY_CLOSE
       ) {
         setShowConnect({ isShow: false })
-        // setShowConnect({
-        //   isShow: true,
-        //   step: WalletConnectStep.RejectConnect,
-        // });
       } else {
-        // setShowConnect({
-        //   isShow: true,
-        //   step: WalletConnectStep.FailedConnect,
-        //   error: {
-        //     ...props.opts.error,
-        //   } as sdk.RESULT_INFO,
-        // })
       }
     },
     [
