@@ -18,64 +18,12 @@ import {
 import { TextField } from './style'
 
 export const DateTextField = styled(TextField)`
-  // && .MuiOutlinedInput-root.MuiInputBase-adornedEnd {
-  //
-  // }
-
   && .date-range-adornment {
     .MuiIconButton-edgeEnd {
       height: var(--btn-icon-size);
       width: var(--btn-icon-size);
     }
   }
-
-  //position: relative;
-  //
-  //&& .MuiInputBase-input {
-  //  padding-right: 1rem;
-  //  position: relative;
-  //  padding-right: 0px;
-  //  cursor: pointer;
-  //  pointer-events: none;
-  //}
-  //
-  //.MuiIconButton-label {
-  //  width: 100%;
-  //  display: flex;
-  //  align-items: baseline;
-  //  justify-content: inherit;
-  //}
-  //
-  //.MuiIconButton-edgeEnd, .MuiInputAdornment-positionEnd {
-  //  position: absolute;
-  //  left: 0;
-  //  right: 0;
-  //  bottom: 0;
-  //  top: 1px;
-  //  padding: 0;
-  //  height: auto;
-  //  //text-indent: -.4rem;
-  //  margin-left: -.4rem;
-  //  //padding-right: .4rem;
-  //  width: 100%;
-  //  display: flex;
-  //  justify-content: flex-end;
-  //  align-items: center;
-  //
-  //  & svg {
-  //    font-size: 1.8rem;
-  //    color:var(--color-text-primary)
-  //  }
-  //
-  //}
-  //
-  //.MuiInputAdornment-positionEnd.date-range-adornment {
-  //  pointer-events: none;
-  //  cursor: pointer;
-  //  top: 2px;
-  //  margin-left: -.8rem;
-  //
-  //}
 `
 
 // const DateRangeDelimiterStyled = styled(DateRangeDelimiter)`
