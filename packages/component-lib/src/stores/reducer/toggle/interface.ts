@@ -34,4 +34,6 @@ export type ToggleState = {
   CIETHInvest: { enable: boolean; reason?: string }
   [key: string]: { enable?: boolean; reason?: string; [key: string]: any }
   whiteList: any
+  // @ts-ignore
+  isSupperUser: any
 }
