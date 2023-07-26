@@ -12,7 +12,7 @@ import {
   ConfirmInvestDefiRisk,
   ToastType,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { BackIcon, TOAST_TIME } from '@loopring-web/common-resources'
 
@@ -81,10 +81,28 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     confirmedLeverageETHInvest,
     confirmation: { confirmedLeverageETHInvest: confirmed },
   } = confirmation.useConfirmation()
-  const [_confirmedDefiInvest, setConfirmedDefiInvest] = React.useState<{
+
+  const {
+    confirmationNeeded,
+    showLeverageETHPopup,
+    setShowLeverageETHPopup
+  } = usePopup()
+  const _confirmedDefiInvest = {
+    isShow: showLeverageETHPopup,
+    type: 'CiETH',
+    confirmationNeeded,
+  }
+  const setConfirmedDefiInvest = ({
+    isShow,
+  }: {
     isShow: boolean
-    type?: 'CiETH'
-  }>({ isShow: !confirmed, type: 'CiETH' })
+  }) => {
+    if (isShow) {
+      setShowLeverageETHPopup({ show: true, confirmationNeeded: true })
+    } else {
+      setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
+    }
+  }
   const match: any = useRouteMatch('/invest/leverageETH/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
@@ -149,7 +167,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
           handleClose={() => setServerUpdate(false)}
         />
         <ConfirmInvestDefiRisk
-          confirmationNeeded={false}
+          confirmationNeeded={confirmationNeeded}
           open={_confirmedDefiInvest.isShow}
           type={_confirmedDefiInvest.type as any}
           handleClose={(_e, isAgree) => {

@@ -1772,4 +1772,5 @@ export default {
   labelStopStopPriceDes: 'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
   labelStopPriceDes: 'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
+  labelDefiSubscribe: 'Subscribe',
 }
