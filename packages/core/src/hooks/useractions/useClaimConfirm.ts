@@ -15,7 +15,7 @@ import { AccountStep, ClaimProps, useOpenModals } from '@loopring-web/component-
 import { useBtnStatus } from '../common'
 import React from 'react'
 import { volumeToCount } from '../help'
-import { redpacketService, useChargeFees, useWalletLayer2Socket, walletLayer2Service } from '../../services'
+import { useChargeFees, useWalletLayer2Socket, walletLayer2Service } from '../../services'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
 import { LoopringAPI } from '../../api_wrapper'
@@ -223,7 +223,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
             throw response
           }
-          redpacketService.success()
 
           setShowAccount({
             isShow: true,

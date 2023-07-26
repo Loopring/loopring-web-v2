@@ -789,17 +789,6 @@ export function useRedPacketModal() {
     }
   }, [step, isShow])
 
-  const redpacketSubject = React.useMemo(() => redpacketService.onSuccess(), [])
-  React.useEffect(() => {
-    const subscription = redpacketSubject.subscribe(() => {
-      redPacketDetailCall({ offset: 0 })
-      redpacketService.refresh()
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-
   const redPacketDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string
