@@ -130,5 +130,5 @@ export default {
   labelReferralReward: 'Referrals Reward',
   // labelDepositNFTDes:"Receive NFT"
   labelInvestLeverageETH: 'Cian Leveraged ETH',
-  labelInvestLeverageETHDes: 'Earn CiETH staking ETH',
+  labelInvestLeverageETHDes: 'Gain high APY via aggressive strategy',
 }
