@@ -384,20 +384,20 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
     const onRefresh = React.useCallback(() => {
-      updateData({
-        page,
-        filter: { isNft: tokenType === TokenType.nft }
-      })
+      if (tokenType === TokenType.nft) {
+        updateData({
+          page,
+          filter: { isNft: tokenType === TokenType.nft }
+        })
+      }
     }, [page, tokenType])
     const subject = React.useMemo(() => redpacketService.onRefresh(), [])
     React.useEffect(() => {
-      if (tokenType === TokenType.nft) {
-        const subscription = subject.subscribe(() => {
-          onRefresh()
-        })
-        return () => {
-          subscription.unsubscribe()
-        }
+      const subscription = subject.subscribe(() => {
+        onRefresh()
+      })
+      return () => {
+        subscription.unsubscribe()
       }
     }, [])
 
