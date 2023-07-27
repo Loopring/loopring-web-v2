@@ -36,8 +36,7 @@ import {
   BTRDE_PRE,
   defiMarkets,
   getValuePrecisionThousand,
-  leverageETHMarkets,
-  leverageETHTypes,
+  leverageETHConfig,
   MapChainId,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
@@ -1152,8 +1151,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        
-        const types = leverageETHTypes[network]
+        const types = leverageETHConfig.types[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,

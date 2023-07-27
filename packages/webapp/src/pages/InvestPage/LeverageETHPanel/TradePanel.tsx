@@ -59,7 +59,7 @@ export const TradePanel = ({
             market={market}
             isJoin={isJoin}
             type={leverageETHAdvice.project}
-            title={t('labelLeverageETHTitle')}
+            title={t('labelLeverageETHStaking')}
             {...(deFiWrapProps as any)}
           />
         </Box>

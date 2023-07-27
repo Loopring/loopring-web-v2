@@ -1815,5 +1815,8 @@ export default {
   labelDefiNoBalanceLeverage:
     '<span>CIAN pool is drained out in Loopring Layer 2 thus can\'t fulfill your redemption request currently. The rebalance will happen soon. Please come back later to try again. \nYou can also withdraw CIETH to L1 account, then access https://vault.cian.app/vaults to proceed directly.</span>',
   labelDefiMaxBalanceLeverage:
-    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults'
+    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
+  labelLeverageETHStaking: 'Leverage ETH Staking',
+  labelLeverageETHBack: 'Cian Leverage ETH Staking',
+  labelInvestType_LEVERAGEETH: 'Leverage ETH',
 }
