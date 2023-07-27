@@ -268,7 +268,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({ t }: WithT
                         component={'span'}
                         paddingLeft={1}
                       >
-                        {item.toString() + (index + 1 != length ? ', ' : '')}
+                        {item.toString() + (index + 1 != toggle?.isSupperUser?.length ? ', ' : '')}
                       </Typography>
                     )
                   })}
