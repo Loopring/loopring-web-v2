@@ -1812,7 +1812,9 @@ export default {
   labelDefiMaxBalance1Leverage:
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
-    '<span>Loopring will set up the pool soon. Please come back later to subscribe. </span>',
+    '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
+  labelDefiMaxBalanceLeverage:
+    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
   labelFunctionList: 'Function List:',
   labelSuperUserTitle: 'Super User',
 }
