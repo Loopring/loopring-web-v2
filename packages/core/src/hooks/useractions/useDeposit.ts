@@ -64,6 +64,7 @@ export const useDeposit = <
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
   const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem()
   const { defaultNetwork } = useSettings()
+
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const {
@@ -79,14 +80,18 @@ export const useDeposit = <
     isAddressCheckLoading: toIsAddressCheckLoading,
   } = useAddressCheck()
   React.useEffect(() => {
+    const { defaultNetwork } = store.getState().settings
     if (
       isToAddressEditable == false &&
       LoopringAPI?.__chainId__ &&
       AvaiableNetwork.includes(LoopringAPI?.__chainId__.toString()) &&
+      defaultNetwork == LoopringAPI?.__chainId__ &&
       opts?.owner &&
       opts?.owner !== ''
     ) {
       setToAddress(opts?.owner)
+    } else if (defaultNetwork !== LoopringAPI?.__chainId__) {
+      setToAddress('')
     }
   }, [opts?.owner, isToAddressEditable, LoopringAPI?.__chainId__])
   React.useEffect(() => {
@@ -216,7 +221,19 @@ export const useDeposit = <
         } else {
           newValue.toAddress = ''
         }
+      } else if (
+        !newValue.toAddress &&
+        isToAddressEditable == false &&
+        opts?.owner &&
+        opts?.owner !== ''
+      ) {
+        if (realToAddress) {
+          newValue.toAddress = realToAddress
+        } else {
+          setToAddress(opts?.owner)
+        }
       }
+
       if (data.to === 'button') {
         if (walletLayer1 && data?.tradeData?.belong) {
           const walletInfo = walletLayer1[data.tradeData.belong]
@@ -227,10 +244,11 @@ export const useDeposit = <
           }
         }
       }
+      myLog('DepositData', newValue)
       updateDepositData(newValue)
       return Promise.resolve()
     },
-    [setToAddress, updateDepositData, isToAddressEditable, walletLayer1],
+    [setToAddress, updateDepositData, realToAddress, isToAddressEditable, walletLayer1],
   )
   const handleClear = React.useCallback(() => {
     if (isAllowInputToAddress && !isToAddressEditable) {
@@ -261,7 +279,6 @@ export const useDeposit = <
         }
       }, L1_UPDATE)
       if (_symbol && walletLayer1) {
-        // updateDepositData();
         updateData = {
           belong: _symbol as any,
           balance: walletLayer1[_symbol]?.count ?? 0,
