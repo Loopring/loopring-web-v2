@@ -567,7 +567,7 @@ export default {
   labelL2toL2Memo: 'Memo (Optional)',
   labelL2toL2MemoPlaceholder: 'Please input the memo',
   labelL2toL2FeeChoose: 'Select payment token',
-  labelL2toL2Fee: 'Fee',
+  labelL2toL2Fee: 'Network Fee',
   labelL2toL2FeeNotEnough: 'Insufficient balance',
   labelL2toL2FeeFastNotAllowEnough: 'Please choose Standard!',
   labelL2toL2LinkRecent: 'Recent send history',
@@ -802,7 +802,7 @@ export default {
   labelForceWithdrawFailed: 'Force withdraw has failed!',
   labelForceWithdrawSubmit: 'Force withdraw has been submitted',
   labelForceWithdrawToken: 'Token Amount',
-  labelForceWithdrawFee: 'Fee',
+  labelForceWithdrawFee: 'Network Fee',
   labelForceWithdrawEnterToken: 'Select Token',
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
@@ -816,7 +816,7 @@ export default {
   labelNFTProperties: 'Properties',
   labelNFTDescription2: 'Description',
   labelForceWithdrawNotAvailable:
-    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{symbolL2}} to {{symbolL1}} anymore',
+    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1Symbol}} anymore',
   labelForceWithdrawNoToken: 'No token is detected from this address to operate',
   labelForceWithdrawBtn: 'Force Withdraw',
   labelInvestDefiTitle: 'ETH Staking',
@@ -830,13 +830,13 @@ export default {
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n' +
     'You can choose one of the following approaches for the remaining amount:',
   labelDefiMaxBalance1:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalance:
     '<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>' +
     '<span>You can choose one of the following approaches for the remaining amount:</span>',
   labelDefiNoBalanceList:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
@@ -1186,7 +1186,7 @@ export default {
   labelSmallOrderAlertLine2: 'Please review the fee before confirming.',
   labelSmallOrderAlertLine3: 'Trading Fee:',
   labelSmallOrderAlertLine4: 'Fee ratio:',
-  labelSmallOrderAlertLine5: 'Minimum Received:',
+  labelSmallOrderAlertLine5: 'Minimum Converted:',
   labelSwapSecondConfirmTitle: 'Confirm Swap',
   labelSwapSettingTitle: 'Settings',
   labelSwapSettingSecondConfirm: 'Second confirmation',
@@ -1634,14 +1634,14 @@ export default {
   labelStopLimitConfirm: 'Confirm',
   labelBtradeSwapPending: 'Pending',
   labelStopLimitTitle: 'Stop-Limit',
-  labelStopPrice: 'Limit Price',
-  labelStopStopPrice: 'Stop Price',
+  labelStopPrice: 'Limit / Buy Price',
+  labelStopStopPrice: 'Stop / Trigger Price',
   labelStopLimitWhatIs: "What's Stop-Limit?",
   labelStopLimitMinMax: 'Min {{minValue}} - Max {{maxValue}}',
   labelLimitStopPriceMinMax: 'Stop Price Range {{arg}}',
   labelLimitMainContent:
     'A Stop-Limit order is a limit order with a limit price and a stop price. When the stop price is reached, the limit order will be placed on the order book. Once the limit price is reached, the limit order will be executed.',
-  labelLimitStopPriceLabel: 'Stop Price',
+  labelLimitStopPriceLabel: 'Stop Price / Trigger Price',
   labelLimitStopPriceContent:
     'When the current asset price reaches the given stop price, the Stop-Limit order is executed to buy or sell the asset at the given limit price or better.',
   labelLimitLimitPriceLabel: 'Limit Price',
@@ -1763,4 +1763,23 @@ export default {
   labelRedPacketBlindboxReceived2: 'Received',
   labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
+  labelLayer2HistoryleverageETHRecords: 'Leverage ETH',
+  labelSwapMinConverted: 'Minimum Converted',
+  labelSwapMinConvertedTooltip:
+    'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
+  labelNetworkFee: 'Network Fee',
+  labelTradingFee: 'Trading Fee',
+  labelTradingFeeEst: 'Trading Fee(est.)',
+  labelStopStopPriceDes:
+    'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
+  labelStopPriceDes:
+    'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
+  labelStopPriceSell: 'Limit / Sell Price',
+  labelDefiSubscribe: 'Subscribe',
+  labelDefiMaxBalance1Leverage:
+    '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
+  labelDefiNoBalanceLeverage:
+    '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
+    labelDefiMaxBalanceLeverage:
+    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults'
 }

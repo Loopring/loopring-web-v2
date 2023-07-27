@@ -6,6 +6,9 @@ const initialState: Required<DefiMapStates> = {
   marketArray: [],
   marketCoins: [],
   marketMap: {},
+  marketLeverageMap: {},
+  marketLeverageCoins: [],
+  marketLeverageArray: [],
   __timer__: -1,
   status: SagaStatus.PENDING,
   errorMessage: null,
@@ -29,6 +32,9 @@ const defiMapSlice: Slice = createSlice({
         state.marketArray = defiMap.marketArray
         state.marketCoins = defiMap.marketCoins
         state.marketMap = defiMap.marketMap
+        state.marketLeverageMap = defiMap.marketLeverageMap
+        state.marketLeverageCoins = defiMap.marketLeverageCoins
+        state.marketLeverageArray = defiMap.marketLeverageArray
         // , marketCoins, marketMap
         // state.marketArray = { ...state, ...defiMap };
       }

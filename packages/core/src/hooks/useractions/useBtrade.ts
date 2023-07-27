@@ -904,6 +904,7 @@ export const useBtradeSwap = <
         let stob: string | undefined = undefined
         let btos: string | undefined = undefined
         let minimumReceived
+        let minimumConverted: string | undefined = undefined
         let sellMinAmtInfo = undefined
         let sellMaxAmtInfo = undefined
         let sellMaxL2AmtInfo = undefined
@@ -1038,6 +1039,17 @@ export const useBtradeSwap = <
                 undefined,
               )
             : 0
+          minimumConverted = calcDexOutput?.amountB
+            ? getValuePrecisionThousand(
+                sdk
+                  .toBig(calcDexOutput?.amountB)
+                  .times(sdk.toBig(1).minus(sdk.toBig(slippage).div('10000')))
+                  .toString(),
+                buyToken.precision,
+                buyToken.precision,
+                undefined,
+              )
+            : undefined
           _tradeData[isAtoB ? 'buy' : 'sell'].tradeValue =
             !_tradeData[isAtoB ? 'sell' : 'buy'].tradeValue &&
             _tradeData[isAtoB ? 'sell' : 'buy'].tradeValue != '0'
@@ -1108,6 +1120,7 @@ export const useBtradeSwap = <
             undefined,
             false,
           ),
+          minimumConverted
         }
 
         setTradeCalcData((state) => {

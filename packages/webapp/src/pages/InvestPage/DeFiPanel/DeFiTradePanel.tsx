@@ -8,6 +8,7 @@ import {
 } from '@loopring-web/component-lib'
 import { Box } from '@mui/material'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const DeFiTradePanel = ({
   isJoin,
@@ -37,8 +38,9 @@ export const DeFiTradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
 
+  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+  const { t } = useTranslation()
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (
@@ -53,6 +55,7 @@ export const DeFiTradePanel = ({
             market={market}
             isJoin={isJoin}
             type={DEFI_ADVICE_MAP[tokenBase].project}
+            title={t('labelInvestDefiTitle')}
             {...(deFiWrapProps as any)}
           />
         </Box>
@@ -69,6 +72,7 @@ export const DeFiTradePanel = ({
             deFiWrapProps?.onRefreshData(true, true)
           }
         }}
+        isLeverage={false}
         open={confirmShowNoBalance}
       />
     </>

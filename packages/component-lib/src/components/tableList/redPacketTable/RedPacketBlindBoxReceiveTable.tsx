@@ -414,7 +414,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-
     return (
       <TableWrapperStyled>
         <TableStyled

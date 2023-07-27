@@ -139,7 +139,8 @@ export const useHebaoMain = <
       const _guardiansList: G[] = guardian?.guardiansArray
         ? guardian.guardiansArray.reduce((prev: G[], approve: G) => {
             const _protector = protector.protectorArray?.find(
-              ({ address: pAddress }: any) => pAddress === approve.address,
+              ({ address: pAddress }: any) =>
+                pAddress?.toLowerCase() === approve?.address?.toLowerCase(),
             )
             if (_protector) {
               // @ts-ignore

@@ -15,8 +15,7 @@ const StyleBox = styled(Box)`
   //}
 ` as typeof Box
 
-export const ErrorPage = ({ messageKey }: ErrorObject) => {
-  const { t } = useTranslation('error')
+export const ErrorPage = ({ messageKey, arg, components }: ErrorObject) => {
   const message = `labelConnectUs`
   return (
     <>
@@ -35,7 +34,12 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
           {/*<StyleBox>*/}
           <Box textAlign={'center'} position={'relative'} left={128} top={-64}>
             <Typography component={'h2'} variant={'h3'} whiteSpace={'pre-line'}>
-              {t(messageKey)}
+              <Trans
+                i18nKey={messageKey}
+                tOptions={arg ? { ...arg } : undefined}
+                ns={['error', 'common']}
+                components={components ? { ...components } : undefined}
+              />
             </Typography>
             <Typography
               marginY={2}

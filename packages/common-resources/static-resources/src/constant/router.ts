@@ -5,12 +5,10 @@ import {
   L2MyLiquidityIcon,
   MintIcon,
   ProfileIcon,
-  RecordIcon,
   RewardIcon,
   // RewardIcon,
   SecurityIcon,
   VipIcon,
-  WaitApproveIcon,
 } from '../svg'
 // import * as sdk from "@loopring-web/loopring-sdk";
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
@@ -20,6 +18,7 @@ import { Exchange, WalletSite } from './setting'
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
 export const SoursURL = 'https://static.loopring.io/assets/'
+export const GUARDIAN_URL = 'https://guardian.loopring.io'
 export const LoopringIPFSSite = 'ipfs.loopring.io'
 export const LoopringIPFSSiteProtocol = 'https'
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`
@@ -31,6 +30,7 @@ export const BANXA_URLS = {
   5: 'https://loopring.banxa-sandbox.com',
 }
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
+export const LOOPRING_DOC = 'https://docs.loopring.io'
 
 //
 //
@@ -370,7 +370,36 @@ export const subMenuInvest = [
       description: 'labelInvestStakeLRCDes',
     },
   },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: '/invest/leverageETH' },
+    label: {
+      id: 'leverageeth',
+      i18nKey: 'labelInvestLeverageETH',
+      description: 'labelInvestLeverageETHDes',
+    },
+  },
 ]
+export const defiMarkets = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
+  GOERLI: ['RETH-ETH'],
+}
+export const leverageETHMarkets = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['CIETH-ETH'],
+  GOERLI: ['WSTETH-ETH'],
+}
+export const leverageETHCoins = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['CIETH'],
+  GOERLI: ['WSTETH'],
+}
+export const leverageETHTypes = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['cian'],
+  GOERLI: ['lido'],
+}
 
 export const subMenuNFT = {
   NFTGroup: [
@@ -399,34 +428,6 @@ export const subMenuNFT = {
         id: 'collection',
         i18nKey: 'labelMyCollection',
         description: 'labelMyCollectionDes',
-      },
-    },
-  ],
-}
-export const subMenuGuardian = {
-  assetsGroup: [
-    {
-      icon: AssetsIcon,
-      router: { path: '/guardian/guardian-protected' },
-      label: {
-        id: 'guardian-protected',
-        i18nKey: 'labelWalletProtect',
-      },
-    },
-    {
-      icon: WaitApproveIcon,
-      router: { path: '/guardian/guardian-validation-info' },
-      label: {
-        id: 'guardian-validation',
-        i18nKey: 'labelWalletValidation',
-      },
-    },
-    {
-      icon: RecordIcon,
-      router: { path: '/guardian/guardian-history' },
-      label: {
-        id: 'guardian-history',
-        i18nKey: 'labelWalletHistory',
       },
     },
   ],
@@ -468,7 +469,6 @@ export const FOOTER_LIST_MAP = {
   Support: [
     {
       linkName: 'Feedback', //❤️ Submit a Request
-      // linkHref: 'https://loopring.io/#/newticket'
       linkHref: FEED_BACK_LINK,
     },
     {
@@ -481,7 +481,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'Guardian',
-      linkHref: './#/guardian',
+      linkHref: GUARDIAN_URL,
     },
   ],
   Developers: [
@@ -492,7 +492,7 @@ export const FOOTER_LIST_MAP = {
 
     {
       linkName: 'APIs', //APIs
-      linkHref: 'https://docs.loopring.io/en/',
+      linkHref: `${LOOPRING_DOC}/en/`,
     },
     {
       linkName: 'L2Explorer', //Layer2 Explorer
@@ -637,6 +637,17 @@ export const stakeAdvice: InvestAdvice = {
   desI18n: 'labelInvestStakeLRCDes',
   enable: true,
 }
+export const leverageETHAdvice: InvestAdvice = {
+  type: InvestMapType.LEVERAGEETH,
+  router: '/invest/leverageETH',
+  notification: '',
+  banner: SoursURL + 'images/icon-leverage-ETH.svg',
+  titleI18n: 'labelInvestLeverageETH',
+  desI18n: 'labelInvestLeverageETH',
+  enable: true,
+  project: 'TODO Pool',
+  market: 'CIETH-ETH',
+}
 
 export enum RecordTabIndex {
   Transactions = 'Transactions',
@@ -648,12 +659,14 @@ export enum RecordTabIndex {
   SideStakingRecords = 'SideStakingRecords',
   BtradeSwapRecords = 'BtradeSwapRecords',
   StopLimitRecords = 'StopLimitRecords',
+  leverageETHRecords = 'leverageETHRecords',
 }
 
 export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',
   RedPacket = 'RedPacket',
+  Rewards = 'Rewards',
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
@@ -721,6 +734,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.DualRecords,
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
   ],
   GOERLI: [
     RecordTabIndex.Transactions,
@@ -732,6 +746,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.DualRecords,
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
   ],
 }
 
@@ -747,7 +762,7 @@ export const AddAssetListMap = {
     AddAssetList.FromOtherL2.key,
     AddAssetList.FromOtherL1.key,
     AddAssetList.FromExchange.key,
-    // AddAssetList.FromAnotherNet.key,
+    AddAssetList.FromAnotherNet.key,
   ],
   GOERLI: [
     AddAssetList.FromMyL1.key,
@@ -768,7 +783,7 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
-    // SendAssetList.SendAssetToAnotherNet.key,
+    SendAssetList.SendAssetToAnotherNet.key,
   ],
   GOERLI: [
     SendAssetList.SendAssetToMyL1.key,

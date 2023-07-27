@@ -120,6 +120,7 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   &:focus-visible {
     outline: 0;
   }
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;

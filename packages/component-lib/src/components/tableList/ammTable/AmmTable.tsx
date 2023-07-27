@@ -149,7 +149,7 @@ const getColumnModeAssets = (
   },
   {
     key: 'fee',
-    name: t('labelAmmFee'),
+    name: t('labelTxNetworkFee'),
     headerCellClass: 'textAlignRight',
     formatter: ({ row }) => {
       const { key, value } = row['fee']
@@ -191,7 +191,7 @@ const getColumnModeMobileAssets = (
         alignItems={'center'}
       >
         <span>{t('labelAmmSide')}</span>
-        <span>{t('labelAmmLpTokenAmount') + '/' + t('labelAmmFee')}</span>
+        <span>{t('labelAmmLpTokenAmount') + '/' + t('labelTxNetworkFee')}</span>
       </Typography>
     ),
     formatter: ({ row }) => {

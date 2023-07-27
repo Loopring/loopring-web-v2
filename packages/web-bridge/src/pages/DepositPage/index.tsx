@@ -23,11 +23,9 @@ import {
   WalletConnectL1Btn,
 } from '@loopring-web/component-lib'
 import {
-  accountReducer,
   accountStaticCallBack,
   btnClickMap,
   btnConnectL1kMap,
-  store,
   useAccount,
   useSelectNetwork,
 } from '@loopring-web/core'

@@ -322,6 +322,10 @@ export const ErrorMap = {
     id: 'PROVIDER_ERROR_UNKNOWN',
     messageKey: 'errorProviderErrorUnknown',
   },
+  GUARDIAN_ROUTER_ERROR: {
+    id: 'GUARDIAN_ROUTER_ERROR',
+    messageKey: 'errorGuardianRouterError',
+  },
 }
 
 export enum UIERROR_CODE {

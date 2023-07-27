@@ -172,8 +172,7 @@ const ToolBarItem = ({
         return <BtnSetting {...props} />
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />
-      // case ButtonComponentsMap.TestNet:
-      //   return <BtnNetworkSwitch {...props} />;
+
       case ButtonComponentsMap.WalletConnect:
         return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} />
       default:
@@ -251,6 +250,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       const theme = useTheme()
       const location = useLocation()
       const match = useRouteMatch('/:l1/:l2?/:pair?')
+
       const _headerToolBarData = isLandPage
         ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
             if ((key as unknown as ButtonComponentsMap) !== ButtonComponentsMap.WalletConnect) {
@@ -315,11 +315,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                   _obj[key].reduce(
                     (prev: JSX.Element[], props: HeaderMenuItemInterface, l2Index: number) => {
                       const { label, child, status } = props
-                      // const selectedFlag = new RegExp(label.id, "ig").test(
-                      //   selected.split("/")[1]
-                      //     ? selected.split("/")[1]
-                      //     : selected
-                      // );
+
                       if (status === HeaderMenuTabStatus.hidden) {
                         return prev
                       } else {
@@ -341,13 +337,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                           new RegExp(label.id?.toLowerCase(), 'ig').test(
                             match?.params[LAYERMAP[layer + 1]],
                           )
-                        // myLog(
-                        //   "match?.params[LAYERMAP[layer + 1]]",
-                        //   match?.params[LAYERMAP[layer + 1]],
-                        //   layer,
-                        //   label.id,
-                        //   selectFlag
-                        // );
                         return [
                           ...prev,
                           <HeadMenuItem
@@ -370,7 +359,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                               style: { textDecoration: 'none' },
                               key: key.toString() + '-' + layer + l2Index,
                             }}
-                            // onClick={handleListKeyDown ? handleListKeyDown : ""}
                           />,
                         ]
                       }
@@ -446,7 +434,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       // }, [themeMode, setTheme]);
 
       const isMaintaining = false
-
       const displayDesktop = React.useMemo(() => {
         return (
           <ToolBarStyled>

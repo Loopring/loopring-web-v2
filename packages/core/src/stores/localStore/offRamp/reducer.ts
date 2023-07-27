@@ -34,7 +34,6 @@ const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
     //       (prev, address) => {
     //         if (state[chainId][address.toString()]) {
     //         }
-    //         //TODO
     //         return prev;
     //       },
     //

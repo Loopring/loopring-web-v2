@@ -32,7 +32,7 @@ import {
   useWalletLayer2,
   useWalletLayer2Socket,
   walletLayer2Service,
-} from '@loopring-web/core'
+} from '../../index'
 
 import {
   AccountStatus,
@@ -48,7 +48,6 @@ import {
   SDK_ERROR_MAP_TO_UI,
   SwapTradeCalcData,
   TradeBtnStatus,
-  TradeCalcData,
   WalletMap,
 } from '@loopring-web/common-resources'
 import {
@@ -90,7 +89,7 @@ export const useSwap = <
   path: string
 }) => {
   //High: No not Move!!!!!!
-  const { realPair, realMarket } = usePairMatch({ path })
+  const { realMarket } = usePairMatch({ path })
   const { t } = useTranslation(['common', 'error'])
   const history = useHistory()
   const refreshRef = React.createRef()
@@ -231,7 +230,7 @@ export const useSwap = <
       myLog('hookSwap: Market change getAmount', market)
     }
   }
-  const [{ market, tradePair, isMarketInit }, setIsMarketStatus] = React.useState<{
+  const [{ market, isMarketInit }, setIsMarketStatus] = React.useState<{
     market: MarketType
     tradePair?: MarketType
     isMarketInit?: boolean
@@ -298,7 +297,7 @@ export const useSwap = <
 
     const { calcTradeParams } = pageTradeLite
 
-    if (!sellToken || !buyToken || !calcTradeParams) {
+    if (!sellToken || !buyToken || !calcTradeParams || !storageId.orderId) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -427,6 +426,7 @@ export const useSwap = <
     sellMinAmt,
     isMarketInit,
     isSwapLoading,
+    storageId.orderId,
   ])
   /*** Btn related function ***/
   const swapFunc = React.useCallback(async () => {
@@ -704,6 +704,7 @@ export const useSwap = <
       tokenMap[tradeCalcData.coinSell] &&
       LoopringAPI.userAPI
     ) {
+      // setStorageId({} as any)
       const storageId = await LoopringAPI.userAPI.getNextStorageId(
         {
           accountId: account.accountId,
@@ -711,7 +712,17 @@ export const useSwap = <
         },
         account.apiKey,
       )
-      setStorageId(storageId)
+      if ((storageId as sdk.RESULT_INFO).code) {
+        setToastOpen({
+          open: true,
+          content: 'error: getStorageId',
+          type: ToastType.error,
+        })
+      } else {
+        setStorageId(storageId)
+      }
+    } else {
+      setStorageId({} as any)
     }
   }, [tradeCalcData?.coinSell, account, tokenMap])
   React.useEffect(() => {
@@ -720,10 +731,17 @@ export const useSwap = <
       // walletLayer2Callback()
       if (account.readyState === AccountStatus.ACTIVATED) {
         getAmount({ market })
-        getStorageId()
       }
     }
   }, [accountStatus, market])
+  React.useEffect(() => {
+    if (accountStatus === SagaStatus.UNSET) {
+      const account = store.getState().account
+      if (account.readyState === AccountStatus.ACTIVATED && tradeCalcData?.coinSell) {
+        getStorageId()
+      }
+    }
+  }, [accountStatus, tradeCalcData?.coinSell])
 
   const walletLayer2Callback = React.useCallback(async () => {
     // let walletMap: WalletMap<any> | undefined = undefined
@@ -865,7 +883,6 @@ export const useSwap = <
         setTradeCalcData(_tradeCalcData)
         setTradeData((state) => {
           const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
-
           return {
             ...(state ?? {}),
             sell: {
@@ -1313,6 +1330,20 @@ export const useSwap = <
           false,
           { floor: true },
         )
+        const minimumConverted = calcTradeParams?.amountBOut
+          ? getValuePrecisionThousand(
+              sdk
+                .toBig(calcTradeParams.amountBOut)
+                .times(sdk.toBig(1).minus(sdk.toBig(slippage).div('10000')))
+                .div('1e' + tokenMap[minSymbol].decimals)
+                .toString(),
+              tokenMap[minSymbol].precision,
+              tokenMap[minSymbol].precision,
+              tokenMap[minSymbol].precision,
+              false,
+              { floor: true },
+            )
+          : undefined
 
         const priceImpactObj = getPriceImpactInfo(calcTradeParams, account.readyState)
         let _tradeCalcData: CAD & { [key: string]: any } = {
@@ -1324,6 +1355,7 @@ export const useSwap = <
           fee: totalFee,
           feeTakerRate,
           tradeCost,
+          minimumConverted
         } as CAD
         _tradeData[isAtoB ? 'buy' : 'sell'].tradeValue = getShowStr(calcTradeParams?.output)
 

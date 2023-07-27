@@ -27,6 +27,7 @@ import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
 import { usePopup } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
+import { toBig } from '@loopring-web/loopring-sdk'
 
 const GridStyle = styled(Grid)`
   ul {
@@ -60,6 +61,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   maxSellVol,
   maxBuyVol,
   market,
+  title,
+  isLeverageETH,
+  extraWithdrawFee,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -214,6 +218,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   }, [isJoin, t, btnInfo])
 
   const maxValue =
+    tokenBuy &&
     tokenBuy.symbol &&
     maxBuyVol &&
     `${getValuePrecisionThousand(
@@ -224,7 +229,22 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       false,
       { floor: true },
     )} ${tokenBuy.symbol}`
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup } = usePopup()
+  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
+  
+  const fee = isJoin
+    ? deFiCalcData?.fee
+      ? deFiCalcData?.fee + ` ${tokenBuy.symbol}`
+      : EmptyValueTag
+    : deFiCalcData?.fee
+    ? getValuePrecisionThousand(
+        toBig(extraWithdrawFee ?? '0').plus(deFiCalcData.fee),
+        tokenBuy.precision,
+        tokenBuy.precision,
+        tokenBuy.precision,
+        false,
+        { floor: true },
+      ) + ` ${tokenBuy.symbol}`
+    : EmptyValueTag
 
   return (
     <Grid
@@ -252,13 +272,15 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           alignItems={'center'}
           alignSelf={'self-start'}
         >
-          {t('labelInvestDefiTitle')}
+          {title}
           <HelpIcon
             fontSize={'large'}
             color={'inherit'}
             sx={{ marginLeft: 1, cursor: 'pointer' }}
             onClick={() => {
-              if (market === 'RETH-ETH') {
+              if (isLeverageETH) {
+                setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
+              } else if (market === 'RETH-ETH') {
                 setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
               } else if (market === 'WSTETH-ETH') {
                 setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
@@ -271,7 +293,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           <Typography display={'inline-block'} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/l2assets/history/${RecordTabIndex.DefiRecords}?market=${market}`)
+                if (isLeverageETH) {
+                  history.push('/l2assets/history/leverageETHRecords')
+                } else {
+                  history.push(`/l2assets/history/${RecordTabIndex.DefiRecords}?market=${market}`)
+                }
               }}
               sx={{ backgroundColor: 'var(--field-opacity)' }}
               className={'switch outlined'}
@@ -301,7 +327,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             order: 'right',
             inputData: deFiCalcData ? deFiCalcData.coinSell : ({} as any),
             coinMap: {},
-            coinPrecision: tokenSell.precision,
+            coinPrecision: tokenSell && tokenSell.precision,
           }}
         />
         <Box alignSelf={'center'} marginY={1}>
@@ -324,7 +350,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             order: 'right',
             inputData: deFiCalcData ? deFiCalcData.coinBuy : ({} as any),
             coinMap: {},
-            coinPrecision: tokenBuy.precision,
+            coinPrecision: tokenBuy && tokenBuy.precision,
           }}
         />
       </Grid>
@@ -364,10 +390,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               marginTop={1 / 2}
             >
               <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                {t('labelDefiFee')}
+                {t('labelTradingFee')}
               </Typography>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {deFiCalcData?.fee ? deFiCalcData.fee + ` ${tokenBuy.symbol}` : EmptyValueTag}
+                {fee}
               </Typography>
             </Grid>
           </Grid>
@@ -417,7 +443,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   color={'var(--color-warning)'}
                 >
                   <Typography component={'span'} variant={'inherit'} color={'inherit'}>
-                    <Trans i18nKey={'labelDefiMaxBalance'} tOptions={{ maxValue }}>
+                    <Trans i18nKey={'labelDefiMaxBalanceLeverage'} tOptions={{ maxValue }}>
                       Loopring rebalance pool can't satisfy your complete request. You can only
                       redeem {{ maxValue }} now. For the remaining investment, you can choose one of
                       the approaches
@@ -430,21 +456,38 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                     marginTop={1}
                   >
                     <ul>
-                      <Trans
-                        i18nKey={'labelDefiMaxBalance1'}
-                        components={{ li: <li /> }}
-                        tOptions={{
-                          symbol: baseSymbol,
-                          type,
-                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                        }}
-                      >
-                        <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
-                        <li>Wait some time for Loopring to seto for redeem</li>
-                      </Trans>
+                      {isLeverageETH ? (
+                        <Trans
+                          i18nKey={'labelDefiMaxBalance1Leverage'}
+                          components={{ li: <li /> }}
+                          tOptions={{
+                            symbol: baseSymbol,
+                            type,
+                            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                          }}
+                        >
+                          <li>Wait some time for Loopring to seto for redeem</li>
+                        </Trans>
+                      ) : (
+                        <Trans
+                          i18nKey={'labelDefiMaxBalance1'}
+                          components={{ li: <li /> }}
+                          tOptions={{
+                            symbol: baseSymbol,
+                            type,
+                            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                          }}
+                        >
+                          <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
+                          <li>Wait some time for Loopring to seto for redeem</li>
+                        </Trans>
+                      )}
                     </ul>
                   </Typography>
                 </Typography>

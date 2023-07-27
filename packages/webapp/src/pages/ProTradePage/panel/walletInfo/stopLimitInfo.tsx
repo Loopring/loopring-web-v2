@@ -30,7 +30,7 @@ export const StopLimitInfo = withTranslation('common')(({ t }: WithTranslation) 
             {t('labelLimitStopPriceLabel')}
           </Typography>
           <Typography component={'p'} variant={'body1'} color={'textSecondary'} marginTop={1}>
-            {t('labelLimitStopPriceContent')}
+            {t('labelStopStopPriceDes')}
           </Typography>
         </Box>
         <Box display={'flex'} flexDirection={'column'} marginTop={2}>
@@ -38,7 +38,7 @@ export const StopLimitInfo = withTranslation('common')(({ t }: WithTranslation) 
             {t('labelLimitLimitPriceLabel')}
           </Typography>
           <Typography component={'p'} variant={'body1'} color={'textSecondary'} marginTop={1}>
-            {t('labelLimitLimitPriceContent')}
+            {t('labelStopPriceDes')}
           </Typography>
         </Box>
         <Box display={'flex'} flexDirection={'column'} marginTop={2}>
