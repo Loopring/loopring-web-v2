@@ -33,6 +33,7 @@ import {
   Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  RiskIcon,
   SoursURL,
   TradeDefi,
   TradeProType,
@@ -1098,16 +1099,25 @@ export const AnotherNetworkNotice = withTranslation('common', {
         setAgree(false)
       }
     }, [open])
-    const { setShowAnotherNetworkNotice } = useOpenModals()
+
+    const {
+      setShowAnotherNetworkNotice,
+      modals: { isShowAnotherNetwork },
+    } = useOpenModals()
     return (
       <DialogStyle
         open={open}
         onClose={() => setShowAnotherNetworkNotice({ isShow: false })}
         aria-describedby='alert-dialog-slide-description'
       >
-        <DialogTitle> {t('labelInformation')}</DialogTitle>
+        <DialogTitle sx={{ marginBottom: 2, display: 'inline-flex', alignItems: 'center' }}>
+          <RiskIcon htmlColor={'var(--color-warning)'} fontSize={'large'} />
+          <Typography component={'span'} color={'var(--color-warning)'} variant={'h5'} paddingX={1}>
+            {t('labelRiskReminder')}
+          </Typography>
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-slide-description'>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
             <Trans
               i18nKey={'labelAnotherNetworkDes'}
               tOptions={{
@@ -1119,9 +1129,11 @@ export const AnotherNetworkNotice = withTranslation('common', {
                 ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
-              LayerSwap is a 3rd party App service provider to help move tokens from exchange to
-              Loopring L2 directly. If you have any concerns regarding their service, please check
-              out their
+              <Typography component={'span'} color={'textPrimary'}>
+                Orbiter.finance
+              </Typography>
+              is a 3rd party App service provider to help move tokens from exchange to Loopring L2
+              directly. If you have any concerns regarding their service, please check out their
               <Link
                 target='_blank'
                 rel='noopener noreferrer'
@@ -1132,6 +1144,40 @@ export const AnotherNetworkNotice = withTranslation('common', {
               .
             </Trans>
           </DialogContentText>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
+            <Trans
+              i18nKey={'labelAnotherNetworkDes2'}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+            >
+              Note: Please ensure to check out the "Change Account" option and input the recipient's
+              address carefully. If you want to send token to network other than l1ChainName, the
+              recipient address must be different than the sender address.
+            </Trans>
+          </DialogContentText>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
+            <Trans
+              i18nKey={'labelAnotherNetworkDes3'}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+            >
+              If you want to send token to network other than l1ChainName, the recipient address
+              must be different than the sender address; else you will lose that asset for ever.
+            </Trans>
+          </DialogContentText>
+
           <MuiFormControlLabel
             control={
               <Checkbox
@@ -1153,7 +1199,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
             size={'small'}
             disabled={!agree}
             onClick={() => {
-              window.open(`https://www.orbiter.finance/?source=Ethereum&dest=Loopring`)
+              window.open(isShowAnotherNetwork?.info?.url)
               window.opener = null
               setShowAnotherNetworkNotice({ isShow: false })
             }}
@@ -1454,12 +1500,14 @@ export const ConfirmDefiNOBalance = withTranslation('common')(
     market,
     type,
     handleClose,
+    isLeverage
   }: WithTranslation & {
     open: boolean
     type: symbol
     market: `${string}-${string}`
     isJoin: boolean
     handleClose: (event: any) => void
+    isLeverage: boolean
   }) => {
     // @ts-ignore
     const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i)
@@ -1484,7 +1532,10 @@ export const ConfirmDefiNOBalance = withTranslation('common')(
               </Typography>
             ) : (
               <Typography component={'span'} display={'flex'} flexDirection={'column'}>
-                <Trans i18nKey={'labelDefiNoBalance'} components={{ span: <span /> }}>
+                <Trans
+                  i18nKey={isLeverage ? 'labelDefiNoBalanceLeverage' : 'labelDefiNoBalance'}
+                  components={{ span: <span /> }}
+                >
                   <Typography component={'span'} marginBottom={3}>
                     Loopring rebalance pool can't satisfy your complete request now.
                   </Typography>
@@ -1492,29 +1543,31 @@ export const ConfirmDefiNOBalance = withTranslation('common')(
                     For the remaining investment, you can choose one of the approaches.
                   </Typography>
                 </Trans>
-                <List sx={{ marginTop: 1 }}>
-                  <Trans
-                    i18nKey={'labelDefiNoBalanceList'}
-                    components={{ li: <li /> }}
-                    tOptions={{
-                      symbol: baseSymbol,
-                      type,
-                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
-                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                    }}
-                  >
-                    <ListItem style={{ marginBottom: 0 }}>
-                      Withdraw WSTETH to L1 and trade through CRV or LIDO directly
-                    </ListItem>
-                    <ListItem style={{ marginBottom: 0 }}>
-                      Wait some time for Loopring to setup the rebalance pool again, then revist the
-                      page for redeem
-                    </ListItem>
-                  </Trans>
-                </List>
+                {!isLeverage && (
+                  <List sx={{ marginTop: 1 }}>
+                    <Trans
+                      i18nKey={'labelDefiNoBalanceList'}
+                      components={{ li: <li /> }}
+                      tOptions={{
+                        symbol: baseSymbol,
+                        type,
+                        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      }}
+                    >
+                      <ListItem style={{ marginBottom: 0 }}>
+                        Withdraw WSTETH to L1 and trade through CRV or LIDO directly
+                      </ListItem>
+                      <ListItem style={{ marginBottom: 0 }}>
+                        Wait some time for Loopring to setup the rebalance pool again, then revist
+                        the page for redeem
+                      </ListItem>
+                    </Trans>
+                  </List>
+                )}
               </Typography>
             )}
           </DialogContentText>
@@ -1593,7 +1646,7 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
     confirmationNeeded,
   }: WithTranslation & {
     open: boolean
-    type: 'WSETH' | 'RETH'
+    type: 'WSETH' | 'RETH' | 'CiETH'
     confirmationNeeded: boolean
     handleClose: (event: any, isAgree?: boolean) => void
   }) => {
@@ -1676,6 +1729,23 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
                 reflect ETH staking rewards earned.
               </Typography>
             </Trans>
+            {type === 'CiETH' && (
+              <Trans
+                i18nKey={'labelDefiWithdrawFee'}
+                components={{
+                  p: (
+                    <Typography
+                      whiteSpace={'pre-line'}
+                      component={'span'}
+                      variant={'body1'}
+                      display={'block'}
+                      marginBottom={1}
+                      color={'textSecondary'}
+                    />
+                  ),
+                }}
+              />
+            )}
           </DialogContentText>
           {confirmationNeeded && (
             <MuiFormControlLabel
@@ -1694,47 +1764,49 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
             />
           )}
         </DialogContent>
-        <DialogContent>
-          <DialogContentText id='alert-dialog-defiRisk2'>
-            <Trans
-              i18nKey={`label${type}DefiRisk2`}
-              tOptions={{
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-              }}
-            >
-              <Typography
-                whiteSpace={'pre-line'}
-                component={'span'}
-                variant={'body2'}
-                marginTop={2}
-                display={'block'}
-                color={'textThird'}
+        {type !== 'CiETH' && (
+          <DialogContent>
+            <DialogContentText id='alert-dialog-defiRisk2'>
+              <Trans
+                i18nKey={`label${type}DefiRisk2`}
+                tOptions={{
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                }}
               >
-                It is important to note that users can't redeem wstETH for ETH until phase 2 of
-                Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges
-                at market prices.{' '}
-              </Typography>
-              <Typography
-                whiteSpace={'pre-line'}
-                component={'span'}
-                variant={'body2'}
-                marginTop={2}
-                display={'block'}
-                color={'textThird'}
-              >
-                Loopring will provide a pool to allow users to trade wstETH for ETH directly on
-                Layer 2. The pool will rebalance periodically when it reaches a specific threshold.
-                If there is not enough inventory on Layer 2, user can always withdraw their wstETH
-                tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.
-              </Typography>
-            </Trans>
-          </DialogContentText>
-        </DialogContent>
+                <Typography
+                  whiteSpace={'pre-line'}
+                  component={'span'}
+                  variant={'body2'}
+                  marginTop={2}
+                  display={'block'}
+                  color={'textThird'}
+                >
+                  It is important to note that users can't redeem wstETH for ETH until phase 2 of
+                  Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges
+                  at market prices.{' '}
+                </Typography>
+                <Typography
+                  whiteSpace={'pre-line'}
+                  component={'span'}
+                  variant={'body2'}
+                  marginTop={2}
+                  display={'block'}
+                  color={'textThird'}
+                >
+                  Loopring will provide a pool to allow users to trade wstETH for ETH directly on
+                  Layer 2. The pool will rebalance periodically when it reaches a specific
+                  threshold. If there is not enough inventory on Layer 2, user can always withdraw
+                  their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.
+                </Typography>
+              </Trans>
+            </DialogContentText>
+          </DialogContent>
+        )}
         <DialogActions>
           <Button
             variant={'contained'}

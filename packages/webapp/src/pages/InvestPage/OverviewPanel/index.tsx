@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useOverview } from './hook'
 
-import { useSettings, InvestOverviewTable } from '@loopring-web/component-lib'
+import { useSettings, InvestOverviewTable, useToggle } from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
@@ -16,6 +16,7 @@ import {
   dualAdvice,
   myLog,
   stakeAdvice,
+  leverageETHAdvice,
 } from '@loopring-web/common-resources'
 import { useAccount, useNotify } from '@loopring-web/core'
 
@@ -46,18 +47,24 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   const { notifyMap } = useNotify()
   const showLoading = filteredData && !filteredData.length
   const history = useHistory()
+  const {
+    toggle: { CIETHInvest },
+  } = useToggle()
   const investAdviceList = [
     { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
     { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
     { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
+    ...(!CIETHInvest.enable && CIETHInvest.reason === 'no view'
+      ? []
+      : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4] }]),
   ]
-  // myLog(investAdviceList[1].banner);
   return (
     <>
       <WrapperStyled marginBottom={3}>
         <Grid container spacing={2} padding={3}>
           {investAdviceList.map((item, index) => {
+            console.log('item.titleI18n', item.titleI18n)
             return (
               <Grid item xs={12} md={4} lg={3} key={item.type + index}>
                 <Card onClick={() => history.push(item.router)}>

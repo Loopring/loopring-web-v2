@@ -581,7 +581,10 @@ export function useAccountModalForUI({
                     }),
                   },
                 })
-                setShowAnotherNetworkNotice({ isShow: true })
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Ethereum&dest=Loopring' },
+                })
               },
             }
         }
@@ -652,8 +655,12 @@ export function useAccountModalForUI({
                 setShowAccount({
                   isShow: false,
                 })
-                window.open('https://www.orbiter.finance/?source=Loopring&dest=Ethereum')
-                window.opener = null
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Loopring&dest=Ethereum' },
+                })
+                // window.open('https://www.orbiter.finance/?source=Loopring&dest=Ethereum')
+                // window.opener = null
               },
             }
         }
@@ -2705,7 +2712,7 @@ export function useAccountModalForUI({
               callback: (_e?: any) => {
                 activeAccountProps.onResetClick({
                   isReset: true,
-                  isFirstTime: false,
+                  isNotFirstTime: false,
                 })
               },
             }}
@@ -2818,7 +2825,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: t('labelTryAnother'),
               callback: (_e?: any) => {
-                activeAccountProps.onResetClick({ isFirstTime: false })
+                activeAccountProps.onResetClick({ isNotFirstTime: true })
                 // goUpdateAccount({ isFirstTime: false });
               },
             }}

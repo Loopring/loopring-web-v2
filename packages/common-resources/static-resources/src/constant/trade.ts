@@ -65,6 +65,7 @@ export type TxInfo = {
 
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] }
+  showHadUnknownCollection: { [key: string]: boolean }
 }
 
 export interface NFTHashInfo {
@@ -332,6 +333,7 @@ export const enum InvestMapType {
   STAKE = 'STAKE',
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
+  LEVERAGEETH = 'LEVERAGEETH',
   // BTradeInvest = "BTradeInvest",
 }
 
@@ -394,6 +396,7 @@ export type TradeDefi<C> = {
   request?: sdk.DefiOrderRequest
   defiBalances?: { [key: string]: string }
   lastInput?: DeFiChgType
+  withdrawFeeBips?: number
 }
 export type TradeStake<C> = {
   sellToken: sdk.TokenInfo

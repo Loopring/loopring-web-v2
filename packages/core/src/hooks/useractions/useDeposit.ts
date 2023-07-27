@@ -115,13 +115,12 @@ export const useDeposit = <
   )
   const updateBtnStatus = React.useCallback(() => {
     resetBtnInfo()
-
     if (
       (!isAllowInputToAddress || //toIsLoopringAddress &&
-        (realToAddress &&
+        (((realToAddress && (toAddressStatus as AddressError) === AddressError.NoError) ||
+          (opts?.owner && opts?.owner.startsWith('0x') && !depositValue.addressError)) &&
           !!depositValue.toAddress &&
-          depositValue.toAddress.trim() !== '' &&
-          (toAddressStatus as AddressError) === AddressError.NoError)) &&
+          depositValue.toAddress.trim() !== '')) &&
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
@@ -160,7 +159,6 @@ export const useDeposit = <
   }, [
     resetBtnInfo,
     isAllowInputToAddress,
-    // toIsLoopringAddress,
     realToAddress,
     toAddressStatus,
     depositValue.toAddress,
@@ -174,6 +172,7 @@ export const useDeposit = <
     isNewAccount,
     setLabelAndParams,
     enableBtn,
+    opts?.owner,
   ])
 
   React.useEffect(() => {

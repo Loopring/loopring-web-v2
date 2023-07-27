@@ -15,17 +15,23 @@ export type ToggleState = {
   WSTETHInvest: { enable: boolean; reason?: string }
   RETHInvest: { enable: boolean; reason?: string }
   dualInvest: { enable: boolean; reason?: string }
+  leverageETHInvest: { enable: boolean; reason?: string }
   collectionNFT: { enable: boolean; reason?: string }
   claim: { enable: boolean; reason?: string }
   redPacketNFTV1: { enable: boolean; reason?: string }
   LRCStackInvest: { enable: boolean; reason?: string }
   BTradeInvest: { enable: boolean; reason?: string }
   StopLimit: { enable: boolean; reason?: string }
+  // @ts-ignore
   send: {
     orbiter: string[]
   }
+  // @ts-ignore
   receive: {
     layerSwap: string[]
     orbiter: string[]
   }
+  CIETHInvest: { enable: boolean; reason?: string }
+  [key: string]: { enable?: boolean; reason?: string; [key: string]: any }
+  whiteList: any
 }

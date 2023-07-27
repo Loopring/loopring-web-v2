@@ -1,13 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
-import { ChainHashInfos, TxInfo } from '@loopring-web/common-resources'
+import { ChainHashInfos, NetworkMap, TxInfo } from '@loopring-web/common-resources'
 import { ChainId } from '@loopring-web/loopring-sdk'
-
-const initialState: ChainHashInfos = {
-  [ChainId.GOERLI]: { depositHashes: {} },
-  [ChainId.MAINNET]: { depositHashes: {} },
-  // withdrawHashes:{},
-}
 
 const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
   ChainHashInfos,
@@ -15,11 +9,19 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
   'chainHashInfos'
 >({
   name: 'chainHashInfos',
-  initialState,
+  initialState: Reflect.ownKeys(NetworkMap).reduce((prev, item) => {
+    prev[NetworkMap[item]?.chainId] = { depositHashes: {}, showHadUnknownCollection: {} }
+    return prev
+  }, {}),
   reducers: {
     // @ts-ignore
     clearAll(state: ChainHashInfos, _action: PayloadAction<undefined>) {
-      state = { ...initialState }
+      state = {
+        ...Reflect.ownKeys(NetworkMap).reduce((prev, item) => {
+          prev[NetworkMap[item]?.chainId] = { depositHashes: {}, showHadUnknownCollection: {} }
+          return prev
+        }, {}),
+      }
     },
     clearDepositHash(
       state: ChainHashInfos,
@@ -35,6 +37,24 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
     clearWithdrawHash(_state: ChainHashInfos) {
       // state[chainId].withdrawHashes = {}
     },
+    updateHadUnknownCollection(
+      state: ChainHashInfos,
+      action: PayloadAction<{
+        accountAddress: string
+        chainId: ChainId
+      }>,
+    ) {
+      const { accountAddress, chainId } = action.payload
+      if (!state[chainId] || !state[chainId].depositHashes) {
+        state[chainId] = { ...state[chainId], depositHashes: {}, showHadUnknownCollection: {} }
+      }
+      if (accountAddress) {
+        state[chainId].showHadUnknownCollection = {
+          ...state[chainId].showHadUnknownCollection,
+          [accountAddress]: true,
+        }
+      }
+    },
     updateDepositHash(
       state: ChainHashInfos,
       action: PayloadAction<{
@@ -45,7 +65,7 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
     ) {
       const { txInfo, accountAddress, chainId } = action.payload
       if (!state[chainId] || !state[chainId].depositHashes) {
-        state[chainId] = { ...state[chainId], depositHashes: {} }
+        state[chainId] = { ...state[chainId], depositHashes: {}, showHadUnknownCollection: {} }
       }
       if (accountAddress && txInfo) {
         if (!txInfo.status) {
@@ -86,4 +106,5 @@ export const {
   updateDepositHash,
   clearWithdrawHash,
   updateWithdrawHash,
+  updateHadUnknownCollection,
 } = OnChainHashInfoSlice.actions

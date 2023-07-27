@@ -18,6 +18,7 @@ const initialState: ToggleState = {
   collectionNFT: { enable: true },
   WSTETHInvest: { enable: true },
   RETHInvest: { enable: true },
+  leverageETHInvest: { enable: true },
   defiInvest: { enable: true },
   dualInvest: { enable: true },
   claim: { enable: true },
@@ -32,6 +33,8 @@ const initialState: ToggleState = {
     layerSwap: ['ETH', 'LRC', 'USDC'],
     orbiter: ['ETH'],
   },
+  CIETHInvest: { enable: true },
+  whiteList: {},
 }
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
@@ -42,107 +45,12 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
   initialState: initialState,
   reducers: {
     updateToggleStatus(state, action: PayloadAction<Partial<ToggleState>>) {
-      const {
-        order,
-        joinAmm,
-        exitAmm,
-        transfer,
-        transferNFT,
-        deposit,
-        depositNFT,
-        withdraw,
-        withdrawNFT,
-        mintNFT,
-        deployNFT,
-        updateAccount,
-        defiInvest,
-        WSTETHInvest,
-        RETHInvest,
-        dualInvest,
-        collectionNFT,
-        claim,
-        redPacketNFTV1,
-        LRCStackInvest,
-        BTradeInvest,
-        StopLimit,
-        send,
-        receive,
-      } = action.payload
-      if (order !== undefined) {
-        state.order = order
-      }
-
-      if (joinAmm !== undefined) {
-        state.joinAmm = joinAmm
-      }
-      if (exitAmm !== undefined) {
-        state.exitAmm = exitAmm
-      }
-      if (transfer !== undefined) {
-        state.transfer = transfer
-      }
-      if (transferNFT !== undefined) {
-        state.transferNFT = transferNFT
-      }
-      if (deposit !== undefined) {
-        state.deposit = deposit
-      }
-      if (depositNFT !== undefined) {
-        state.depositNFT = depositNFT
-      }
-      if (withdraw !== undefined) {
-        state.withdraw = withdraw
-      }
-      if (withdrawNFT !== undefined) {
-        state.withdrawNFT = withdrawNFT
-      }
-      if (mintNFT !== undefined) {
-        state.mintNFT = mintNFT
-      }
-      if (deployNFT !== undefined) {
-        state.deployNFT = deployNFT
-      }
-      if (updateAccount !== undefined) {
-        state.updateAccount = updateAccount
-      }
-
-      if (WSTETHInvest !== undefined) {
-        state.WSTETHInvest = WSTETHInvest
-      }
-      if (RETHInvest !== undefined) {
-        state.RETHInvest = RETHInvest
-      }
-      if (collectionNFT !== undefined) {
-        state.collectionNFT = collectionNFT
-      }
-      if (defiInvest !== undefined) {
-        state.defiInvest = defiInvest
-      }
-      if (claim !== undefined) {
-        state.claim = claim
-      }
-      if (dualInvest !== undefined) {
-        state.dualInvest = dualInvest
-      }
-      if (redPacketNFTV1 !== undefined) {
-        state.redPacketNFTV1 = redPacketNFTV1
-      }
-      if (LRCStackInvest !== undefined) {
-        state.LRCStackInvest = LRCStackInvest
-      }
-      if (StopLimit !== undefined) {
-        state.StopLimit = StopLimit
-      }
-
-      if (BTradeInvest !== undefined) {
-        state.BTradeInvest = BTradeInvest
-      }
-      if (send !== undefined) {
-        state.send = send
-      }
-      if (receive !== undefined) {
-        state.receive = receive
-      }
+      const rest = action.payload
+      Reflect.ownKeys(state).forEach((key) => {
+        if (rest.hasOwnProperty(key) && rest[key.toString()] !== undefined) {
+          state[key.toString()] = rest[key.toString()] as any
+        }
+      })
     },
   },
 })

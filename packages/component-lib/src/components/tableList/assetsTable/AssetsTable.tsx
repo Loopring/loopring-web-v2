@@ -130,6 +130,7 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
         row: any
       }
   hideAssets?: boolean
+  isLeverageETH?: boolean
 } & XOR<
   {
     hideInvestToken: boolean
@@ -322,9 +323,8 @@ export const AssetsTable = withTranslation('tables')(
         formatter: ({ row }) => {
           const token = row['token']
           const isLp = token.type === TokenType.lp
-          const isDefi = token.type === TokenType.defi
-          // const isDual = token.type === TokenType.dual;
           const tokenValue = token.value
+          const isDefi = token.type === TokenType.defi || tokenValue === "CIETH"
 
           const isToL1 = token.type !== TokenType.lp
 
@@ -335,7 +335,6 @@ export const AssetsTable = withTranslation('tables')(
           return (
             <ActionMemo
               {...{
-                t,
                 isInvest,
                 tokenValue,
                 getMarketArrayListCallback,
@@ -347,6 +346,7 @@ export const AssetsTable = withTranslation('tables')(
                 market: renderMarket,
                 onReceive,
                 onSend,
+                isLeverageETH: false,
               }}
             />
           )
@@ -406,7 +406,6 @@ export const AssetsTable = withTranslation('tables')(
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           return (
-            // @ts-ignore
             <LockedMemo
               {...{
                 ...row,
@@ -431,8 +430,8 @@ export const AssetsTable = withTranslation('tables')(
         formatter: ({ row }) => {
           const token = row['token']
           const isLp = token.type === TokenType.lp
-          const isDefi = token.type === TokenType.defi
           const tokenValue = token.value
+          const isDefi = token.type === TokenType.defi || tokenValue === "CIETH"
           const lpPairList = tokenValue.split('-')
           lpPairList.splice(0, 1)
           const lpPair = lpPairList.join('-')
@@ -440,7 +439,6 @@ export const AssetsTable = withTranslation('tables')(
           return (
             <ActionMemo
               {...{
-                t,
                 tokenValue,
                 getMarketArrayListCallback,
                 disableWithdrawList,
@@ -451,6 +449,7 @@ export const AssetsTable = withTranslation('tables')(
                 market: renderMarket,
                 onReceive,
                 onSend,
+                isLeverageETH: false
               }}
             />
           )

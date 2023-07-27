@@ -340,4 +340,6 @@ export default {
   labelReferralsTableTime: 'Time',
   labelRefundTableAmount: 'Refunds',
   labelRefundTableTime: 'Time',
+  labelTxNetworkFee: 'Network Fee',
+  labelTxTradingFee: 'Trading Fee',
 }

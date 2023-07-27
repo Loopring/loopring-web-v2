@@ -8,15 +8,19 @@ const getDefiMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined
   }
-
-  const {
-    markets: marketMap,
-    tokenArr: marketCoins,
-    marketArr: marketArray,
-  } = await LoopringAPI.defiAPI?.getDefiMarkets({
-    defiType: 'LIDO,ROCKETPOOL',
-  })
-
+  const chainId = store.getState().system.chainId
+  const [normal, leverage] = chainId === 1 ? ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
+  const [
+    { markets: marketMap, tokenArr: marketCoins, marketArr: marketArray },
+    { markets: marketLeverageMap, tokenArr: marketLeverageCoins, marketArr: marketLeverageArray },
+  ] = await Promise.all([
+    LoopringAPI.defiAPI?.getDefiMarkets({
+      defiType: normal,
+    }),
+    LoopringAPI.defiAPI?.getDefiMarkets({
+      defiType: leverage,
+    }),
+  ])
   let { __timer__ } = store.getState().invest.defiMap
   __timer__ = (() => {
     if (__timer__ && __timer__ !== -1) {
@@ -38,6 +42,9 @@ const getDefiMapApi = async () => {
       marketArray,
       marketCoins,
       marketMap,
+      marketLeverageMap,
+      marketLeverageCoins,
+      marketLeverageArray,
     },
     __timer__,
   }

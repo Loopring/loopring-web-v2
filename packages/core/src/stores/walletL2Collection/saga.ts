@@ -4,7 +4,6 @@ import { store, LoopringAPI } from '../../index'
 import {
   CustomError,
   ErrorMap,
-  myLog,
   CollectionLimit,
   L2CollectionFilter,
 } from '@loopring-web/common-resources'

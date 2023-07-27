@@ -5,6 +5,7 @@ import { RootState } from '../../index'
 import { PopupStates } from './interface'
 import {
   setShowLRCStakignPopup,
+  setShowLeverageETHPopup,
   setShowRETHStakignPopup,
   setShowWSTETHStakignPopup,
 } from './reducer'
@@ -13,6 +14,7 @@ export const usePopup = (): PopupStates & {
   setShowRETHStakignPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
   setShowWSTETHStakignPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
   setShowLRCStakignPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowLeverageETHPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
 } => {
   const popup: PopupStates = useSelector((state: RootState) => state.invest.popup)
   const dispatch = useDispatch()
@@ -28,6 +30,10 @@ export const usePopup = (): PopupStates & {
     ),
     setShowLRCStakignPopup: React.useCallback(
       (v) => dispatch(setShowLRCStakignPopup(v)),
+      [dispatch],
+    ),
+    setShowLeverageETHPopup: React.useCallback(
+      (v) => dispatch(setShowLeverageETHPopup(v)),
       [dispatch],
     ),
   }
