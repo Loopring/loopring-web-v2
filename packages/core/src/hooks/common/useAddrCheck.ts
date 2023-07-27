@@ -131,6 +131,7 @@ export const useAddressCheck = () => {
         clearTimeout(nodeTimer.current)
         nodeTimer.current = -1
       }
+      _address.current = ''
       setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
       myLog('address async', address, error)
       setRealAddr('')
