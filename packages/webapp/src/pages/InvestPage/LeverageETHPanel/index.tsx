@@ -135,7 +135,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             history.push(match?.params?.isJoin ? '/invest/balance' : '/invest/overview')
           }
         >
-          {t('labelLeverageETHTitle')}
+          {t('labelLeverageETHBack')}
           {/*<Typography color={"textPrimary"}></Typography>*/}
         </Button>
         <Button

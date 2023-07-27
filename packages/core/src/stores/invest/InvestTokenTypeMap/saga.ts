@@ -55,7 +55,7 @@ function calcDualApr(apr: [number, number], investItem: InvestItem): [start: num
 
 const getInvestMapApi = async () => {
   const { ammMap } = store.getState().amm.ammMap
-  const { marketMap: defiMarketMap } = store.getState().invest.defiMap
+  const { marketMap: defiMarketMap, marketLeverageMap } = store.getState().invest.defiMap
   const { marketMap: dualMarketMap } = store.getState().invest.dualMap
   const { marketMap: stakingMarketMap } = store.getState().invest.stakingMap
 
@@ -154,7 +154,6 @@ const getInvestMapApi = async () => {
     investTokenTypeMap = Object.keys(defiMarketMap).reduce((prev, key) => {
       const [, _coinA, coinB] = key.match(/(\w+)-(\w+)/i)
       const defiInfo = defiMarketMap[key]
-
       if (prev[coinB] && prev[coinB]) {
         let investItem = prev[coinB][InvestMapType.STAKE]
         if (investItem) {
@@ -181,6 +180,53 @@ const getInvestMapApi = async () => {
             type: InvestMapType.STAKE,
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.STAKE}`,
+            apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
+            durationType: InvestDuration.Flexible,
+            duration: '',
+          },
+        }
+      }
+      if (prev[coinB]?.detail && defiInfo.apy) {
+        prev[coinB].detail.apr = [
+          prev[coinB]?.detail?.apr[0] === 0
+            ? defiInfo.apy
+            : Math.min(defiInfo.apy, prev[coinB]?.detail?.apr[0]),
+          Math.max(defiInfo.apy, prev[coinB]?.detail?.apr[1]),
+        ]
+      }
+      return prev
+    }, investTokenTypeMap)
+  }
+  if (marketLeverageMap) {
+    investTokenTypeMap = Object.keys(marketLeverageMap).reduce((prev, key) => {
+      const [, _coinA, coinB] = key.match(/(\w+)-(\w+)/i)
+      const defiInfo = marketLeverageMap[key]
+      if (prev[coinB] && prev[coinB]) {
+        let investItem = prev[coinB][InvestMapType.LEVERAGEETH]
+        if (investItem) {
+          investItem.apr = calcDefiApr(defiInfo, investItem)
+        } else {
+          prev[coinB][InvestMapType.LEVERAGEETH] = {
+            type: InvestMapType.LEVERAGEETH,
+            // token: tokenMap[coinB],
+            i18nKey: `labelInvestType_${InvestMapType.LEVERAGEETH}`,
+            apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
+            durationType: InvestDuration.Flexible,
+            duration: '',
+          }
+        }
+      } else {
+        prev[coinB] = {
+          detail: {
+            token: tokenMap[coinB],
+            apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
+            durationType: InvestDuration.All,
+            duration: '',
+          },
+          [InvestMapType.LEVERAGEETH]: {
+            type: InvestMapType.LEVERAGEETH,
+            // token: tokenMap[coinB],
+            i18nKey: `labelInvestType_${InvestMapType.LEVERAGEETH}`,
             apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
             durationType: InvestDuration.Flexible,
             duration: '',
