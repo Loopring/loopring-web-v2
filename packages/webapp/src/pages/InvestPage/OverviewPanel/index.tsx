@@ -64,7 +64,6 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
       <WrapperStyled marginBottom={3}>
         <Grid container spacing={2} padding={3}>
           {investAdviceList.map((item, index) => {
-            console.log('item.titleI18n', item.titleI18n)
             return (
               <Grid item xs={12} md={4} lg={3} key={item.type + index}>
                 <Card onClick={() => history.push(item.router)}>
