@@ -6,9 +6,10 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   HiddenTag,
-  leverageETHCoins,
+
   MapChainId,
   MoreIcon,
+  leverageETHConfig
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { useOpenModals, useSettings, useToggle } from '../../../../stores'
@@ -87,7 +88,7 @@ const ActionPopContent = React.memo(
         })
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-    const coins = leverageETHCoins[network]
+    const coins = leverageETHConfig.coins[network]
     return (
       <Box borderRadius={'inherit'} minWidth={110}>
         {isMobile && tradeList.map((item) => <>{item}</>)}
@@ -208,7 +209,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
   } as PopoverWrapProps
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const coins = leverageETHCoins[network]
+  const coins = leverageETHConfig.coins[network]
   return (
     <GridStyled container spacing={1} justifyContent={'space-between'} alignItems={'center'}>
       {isMobile ? (

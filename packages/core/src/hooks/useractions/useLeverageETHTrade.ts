@@ -768,6 +768,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     .div('10000')
     .div('1e' + tradeLeverageETH.sellToken.decimals)
     .toString()
+  const apr = defiMarketMap && defiMarketMap[market]?.apy
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,
@@ -802,6 +803,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       btnStatus,
       accStatus: account.readyState,
       extraWithdrawFee: extraWithdrawFee,
+      apr
     }
   }, [
     isStoB,
@@ -822,7 +824,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     coinSellSymbol,
     coinBuySymbol,
     btnStatus,
-    extraWithdrawFee
+    extraWithdrawFee,
+    apr
   ]) // as ForceWithdrawProps<any, any>;
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,

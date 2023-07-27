@@ -1818,4 +1818,7 @@ export default {
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
   labelFunctionList: 'Function List:',
   labelSuperUserTitle: 'Super User',
+  labelLeverageETHStaking: 'Leverage ETH Staking',
+  labelLeverageETHBack: 'Cian Leverage ETH Staking',
+  labelInvestType_LEVERAGEETH: 'Leverage ETH',
 }
