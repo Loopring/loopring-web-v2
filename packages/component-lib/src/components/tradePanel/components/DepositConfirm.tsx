@@ -7,7 +7,6 @@ import { DepositViewProps } from './Interface'
 
 export const DepositConfirm = <
   T extends {
-    referAddress?: string
     toAddress?: string
     addressError?: { error: boolean; message?: string }
   } & IBData<I>,
