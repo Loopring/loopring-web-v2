@@ -388,6 +388,16 @@ export const leverageETHMarkets = {
   ETHEREUM: ['CIETH-ETH'],
   GOERLI: ['WSTETH-ETH'],
 }
+export const leverageETHCoins = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['CIETH'],
+  GOERLI: ['WSTETH'],
+}
+export const leverageETHTypes = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['cian'],
+  GOERLI: ['lido'],
+}
 
 export const subMenuNFT = {
   NFTGroup: [

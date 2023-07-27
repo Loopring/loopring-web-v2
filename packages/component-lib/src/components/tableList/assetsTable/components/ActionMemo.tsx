@@ -3,9 +3,13 @@ import { Box, Grid, ListItemText, MenuItem, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { Button, Popover, PopoverType, PopoverWrapProps } from '../../../basic-lib'
 import {
+  defiMarkets,
   EmptyValueTag,
   getValuePrecisionThousand,
   HiddenTag,
+  leverageETHCoins,
+  leverageETHMarkets,
+  MapChainId,
   MoreIcon,
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
@@ -46,6 +50,7 @@ const ActionPopContent = React.memo(
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
+    isLeverageETH
   }: ActionProps) => {
     const history = useHistory()
     const { t } = useTranslation(['tables', 'common'])
@@ -82,7 +87,9 @@ const ActionPopContent = React.memo(
           }
           return first === market
         })
-
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const coins = leverageETHCoins[network]
     return (
       <Box borderRadius={'inherit'} minWidth={110}>
         {isMobile && tradeList.map((item) => <>{item}</>)}
@@ -112,7 +119,7 @@ const ActionPopContent = React.memo(
               <ListItemText>{t('labelPoolTableRemoveLiquidity')}</ListItemText>
             </MenuItem>
           </>
-        ) : isDefi ? (
+        ) : (isDefi || isLeverageETH) ? (
           isInvest && !isMobile ? (
             <>
               {tradeList.map((item) => (
@@ -124,7 +131,11 @@ const ActionPopContent = React.memo(
               <MenuItem
                 disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
-                  history.push(`/invest/defi/${tokenValue}-null/invest`)
+                  if (coins.includes(tokenValue)) {
+                    history.push('/invest/leverageETH')
+                  } else {
+                    history.push(`/invest/defi/${tokenValue}-null/invest`)
+                  }
                 }}
               >
                 <ListItemText>{t('labelDefiInvest')}</ListItemText>
@@ -132,7 +143,11 @@ const ActionPopContent = React.memo(
               <MenuItem
                 disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
-                  history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                  if (coins.includes(tokenValue)) {
+                    history.push('/invest/leverageETH/redeem')
+                  } else {
+                    history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                  }
                 }}
               >
                 <ListItemText>{t('labelDefiRedeem')}</ListItemText>
@@ -198,7 +213,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     <GridStyled container spacing={1} justifyContent={'space-between'} alignItems={'center'}>
       {isMobile ? (
         <>
-          {((!isLp && allowTrade?.order?.enable) || isLp || isDefi) && (
+          {((!isLp && allowTrade?.order?.enable) || isLp || isDefi || isLeverageETH) && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>
@@ -245,7 +260,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                       history.push(`/invest/defi/${tokenValue}-null/invest`)
                     }}
                   >
-                    {t('labelDefiSubscribe')}
+                    {t('labelDefiInvest')}
                   </Button>
                 </Grid>
                 <Grid item>
@@ -291,7 +306,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
               <Popover {...{ ...popoverProps }} />
             </Grid>
           )}
-          {(isLp || isInvest) && (
+          {(isLp || isInvest || isLeverageETH) && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>
