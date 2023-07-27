@@ -22,7 +22,7 @@ import {
   UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
-import { connectProvides } from '@loopring-web/web3-provider'
+import { AvaiableNetwork, connectProvides } from '@loopring-web/web3-provider'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -65,6 +65,7 @@ export const useDeposit = <
   const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
   const {
     depositValue,
     updateDepositData,
@@ -78,10 +79,16 @@ export const useDeposit = <
     isAddressCheckLoading: toIsAddressCheckLoading,
   } = useAddressCheck()
   React.useEffect(() => {
-    if (isToAddressEditable == false && opts?.owner && opts?.owner !== '') {
+    if (
+      isToAddressEditable == false &&
+      LoopringAPI?.__chainId__ &&
+      AvaiableNetwork.includes(LoopringAPI?.__chainId__.toString()) &&
+      opts?.owner &&
+      opts?.owner !== ''
+    ) {
       setToAddress(opts?.owner)
     }
-  }, [opts?.owner, isToAddressEditable])
+  }, [opts?.owner, isToAddressEditable, LoopringAPI?.__chainId__])
   React.useEffect(() => {
     if (
       realToAddress &&
@@ -201,7 +208,7 @@ export const useDeposit = <
       let newValue = {
         ...oldValue,
       }
-      if (data?.tradeData.hasOwnProperty('toAddress')) {
+      if (data?.tradeData.hasOwnProperty('toAddress') && isToAddressEditable) {
         // @ts-ignore
         setToAddress(data?.tradeData?.toAddress)
         if (/^0x[a-fA-F0-9]{40}$/g.test(data?.tradeData?.toAddress ?? '')) {
@@ -223,7 +230,7 @@ export const useDeposit = <
       updateDepositData(newValue)
       return Promise.resolve()
     },
-    [setToAddress, updateDepositData, walletLayer1],
+    [setToAddress, updateDepositData, isToAddressEditable, walletLayer1],
   )
   const handleClear = React.useCallback(() => {
     if (isAllowInputToAddress && !isToAddressEditable) {
