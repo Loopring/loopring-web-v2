@@ -3,12 +3,10 @@ import { Box, Grid, ListItemText, MenuItem, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { Button, Popover, PopoverType, PopoverWrapProps } from '../../../basic-lib'
 import {
-  defiMarkets,
   EmptyValueTag,
   getValuePrecisionThousand,
   HiddenTag,
   leverageETHCoins,
-  leverageETHMarkets,
   MapChainId,
   MoreIcon,
 } from '@loopring-web/common-resources'
@@ -208,7 +206,9 @@ const ActionMemo = React.memo((props: ActionProps) => {
       horizontal: 'right',
     },
   } as PopoverWrapProps
-
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const coins = leverageETHCoins[network]
   return (
     <GridStyled container spacing={1} justifyContent={'space-between'} alignItems={'center'}>
       {isMobile ? (
@@ -257,7 +257,11 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     size={'small'}
                     color={'primary'}
                     onClick={() => {
-                      history.push(`/invest/defi/${tokenValue}-null/invest`)
+                      if (coins.includes(tokenValue)) {
+                        history.push('/invest/leverageETH')
+                      } else {
+                        history.push(`/invest/defi/${tokenValue}-null/invest`)
+                      }
                     }}
                   >
                     {t('labelDefiInvest')}
@@ -269,7 +273,12 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     size={'small'}
                     color={'primary'}
                     onClick={() => {
-                      history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                      if (coins.includes(tokenValue)) {
+                        history.push('/invest/leverageETH/redeem')
+                      } else {
+                        history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                      }
+                      
                     }}
                   >
                     {t('labelDefiRedeem')}
