@@ -56,7 +56,6 @@ export const useDeposit = <
   opts?: { token?: string | null; owner?: string | null },
 ) => {
   const subject = React.useMemo(() => depositServices.onSocket(), [])
-
   const { tokenMap, totalCoinMap } = useTokenMap()
   const { account } = useAccount()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
@@ -403,19 +402,9 @@ export const useDeposit = <
   const handleDeposit = React.useCallback(
     async (inputValue: any) => {
       myLog('handleDeposit:', inputValue)
-      // if (isNewAccount && inputValue.referAddress) {
-      //   setShowAccount({
-      //     isShow: true,
-      //     step: AccountStep.Deposit_Sign_WaitForRefer,
-      //     info: {
-      //       isAllowInputToAddress,
-      //     },
-      //   });
-      //   await signRefer();
-      // }
       const { readyState, connectName } = account
       let result = { code: ActionResultCode.NoError }
-
+      const { toAddress } = store.getState()._router_modalData.depositValue
       try {
         if (
           readyState !== AccountStatus.UN_CONNECT &&
@@ -424,7 +413,7 @@ export const useDeposit = <
           exchangeInfo?.exchangeAddress &&
           connectProvides.usedWeb3 &&
           LoopringAPI.exchangeAPI &&
-          (!isAllowInputToAddress || (isAllowInputToAddress && realToAddress))
+          toAddress
         ) {
           const tokenInfo = tokenMap[inputValue.belong]
           const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
@@ -523,7 +512,7 @@ export const useDeposit = <
               realChainId,
               nonce,
               isMetaMask,
-              isAllowInputToAddress ? realToAddress : account.accAddress,
+              toAddress,
             )
           } catch (error) {
             if (error instanceof Error) {
@@ -741,7 +730,7 @@ export const useDeposit = <
     toAddressStatus,
     toIsAddressCheckLoading,
     // toIsLoopringAddress,
-    realToAddress,
+    realToAddress: depositValue.toAddress,
     referIsAddressCheckLoading,
     referIsLoopringAddress,
     realReferAddress,
