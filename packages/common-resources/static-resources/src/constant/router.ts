@@ -625,7 +625,7 @@ export const leverageETHAdvice: InvestAdvice = {
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
-  desI18n: 'labelInvestLeverageETH',
+  desI18n: 'labelInvestLeverageETHDes',
   enable: true,
   project: 'TODO Pool',
   market: 'CIETH-ETH',
