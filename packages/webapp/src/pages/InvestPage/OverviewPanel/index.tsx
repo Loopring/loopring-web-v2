@@ -26,15 +26,20 @@ const WrapperStyled = styled(Box)`
   flex-direction: column;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
+  width: 100%;
+  overflow: hidden;
   .MuiCard-root {
-    padding: ${({ theme }) => 2 * theme.unit}px;
+    padding: ${({ theme }) => 4 * theme.unit}px;
     cursor: pointer;
-    background: var(--color-pop-bg);
+    background: var(--dark700);
+    border: 1px solid #262626;
+    width: ${({ theme }) => 35 * theme.unit}px;
     .MuiCardContent-root {
       padding: 0;
     }
     :hover {
       background: var(--color-box-hover);
+      box-shadow: 0px 4px 20px 0px black;
     }
   }
 `
@@ -64,49 +69,55 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
           Earn stable profits with professional asset management
         </Typography>
         <Button sx={{width: 18 * theme.unit}} variant={"contained"}>My Investment</Button>
-        <Grid container spacing={2} padding={3}>
+        <Box sx={{display: 'flex', overflowX: 'scroll'}}>
           {investAdviceList.map((item, index) => {
             return (
-              <Grid item xs={12} md={4} lg={3} key={item.type + index}>
-                <Card onClick={() => history.push(item.router)}>
-                  <CardContent>
-                    <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-                      <Avatar
-                        variant='circular'
-                        style={{
-                          height: 'var(--svg-size-huge)',
-                          width: 'var(--svg-size-huge)',
-                        }}
-                        src={item.banner}
-                      />
-                      <Box flex={1} display={'flex'} flexDirection={'column'} paddingLeft={1}>
-                        <Typography variant={'h5'}>
-                          {t(item.titleI18n, { ns: 'layout' })}
-                        </Typography>
-                        <Typography
-                          variant={'body2'}
-                          textOverflow={'ellipsis'}
-                          whiteSpace={'pre'}
-                          overflow={'hidden'}
-                          color={'var(--color-text-third)'}
-                        >
-                          {t(item.desI18n, { ns: 'layout' })}
-                        </Typography>
-                      </Box>
-                      <BackIcon
-                        fontSize={'small'}
-                        htmlColor={'var(--color-text-third)'}
-                        sx={{
-                          transform: 'rotate(180deg)',
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+              <Card onClick={() => history.push(item.router)}>
+                <CardContent>
+                  <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                    <Avatar
+                      variant='circular'
+                      style={{
+                        height: 'var(--svg-size-huge)',
+                        width: 'var(--svg-size-huge)',
+                      }}
+                      src={item.banner}
+                    />
+                    <Typography variant={'h5'}>
+                      {t(item.titleI18n, { ns: 'layout' })}
+                    </Typography>
+                    <Typography>todo APR</Typography>
+                    <Button fullWidth variant={'contained'}>{t("labelLiquidityDeposit")}</Button>
+                  </Box>
+                </CardContent>
+              </Card>
             )
           })}
-        </Grid>
+
+          {investAdviceList.map((item, index) => {
+            return (
+              <Card onClick={() => history.push(item.router)}>
+                <CardContent>
+                  <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                    <Avatar
+                      variant='circular'
+                      style={{
+                        height: 'var(--svg-size-huge)',
+                        width: 'var(--svg-size-huge)',
+                      }}
+                      src={item.banner}
+                    />
+                    <Typography variant={'h5'}>
+                      {t(item.titleI18n, { ns: 'layout' })}
+                    </Typography>
+                    <Typography>todo APR</Typography>
+                    <Button fullWidth variant={'contained'}>{t("labelLiquidityDeposit")}</Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </Box>
         {!!(account.readyState === AccountStatus.ACTIVATED) && (
           <>
             <Box display={'flex'} flexDirection={'column'}>
