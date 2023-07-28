@@ -228,7 +228,6 @@ export const useOpenModals = () => {
         state: ModalStatePlayLoad & {
           claimToken?: ClaimToken
           claimType?: CLAIM_TYPE
-          successCallback?: () => void
         },
       ) => {
         if (toggle.claim.enable) {
@@ -240,8 +239,13 @@ export const useOpenModals = () => {
       [dispatch],
     ),
     setShowConnect: React.useCallback(
-      (state: ModalStatePlayLoad & { step?: number; error?: RESULT_INFO }) =>
-        dispatch(setShowConnect(state)),
+      (
+        state: ModalStatePlayLoad & {
+          step?: number
+          error?: RESULT_INFO
+          info?: { [key: string]: any }
+        },
+      ) => dispatch(setShowConnect(state)),
       [dispatch],
     ),
     setShowIFrame: React.useCallback(

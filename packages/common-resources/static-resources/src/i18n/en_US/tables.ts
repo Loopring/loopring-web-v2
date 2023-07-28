@@ -343,4 +343,5 @@ export default {
   labelRefundTableTime: 'Time',
   labelTxNetworkFee: 'Network Fee',
   labelTxTradingFee: 'Trading Fee',
+  labelTypeUNIFIED_CLAIM: 'Claim Rewards',
 }

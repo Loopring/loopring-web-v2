@@ -14,7 +14,7 @@ import {
   useMyRedPacketReceiveTransaction,
   useMyRedPacketRecordTransaction,
 } from './hooks'
-import { BackIcon, TokenType } from '@loopring-web/common-resources'
+import { AssetTabIndex, BackIcon, TokenType } from '@loopring-web/common-resources'
 import { Box, Button, Checkbox, FormControlLabel, Tab, Tabs, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useNotify } from '@loopring-web/core'
@@ -221,7 +221,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
           color={'inherit'}
           onClick={() => {
             if (isUnClaimed) {
-              history.push('/l2assets/assets/RedPacket')
+              history.push(`/l2assets/assets/${AssetTabIndex.RedPacket}`)
             } else {
               history.push('/redPacket/markets')
             }
