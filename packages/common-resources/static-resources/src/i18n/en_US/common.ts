@@ -1796,7 +1796,7 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
-  labelClaimallToken: 'Reward token {{symbol}}',
+  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
