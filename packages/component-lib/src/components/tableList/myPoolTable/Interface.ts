@@ -21,10 +21,6 @@ export type Method<R> = {
 
 export type MyPoolTableProps<R> = {
   rawData: R[]
-  totalAMMClaims?: {
-    detail: EarningsDetail[]
-    totalDollar: string
-  }
   account: Account
   title: string | (() => JSX.Element) | JSX.Element
   totalDollar?: string | number | undefined
@@ -47,4 +43,10 @@ export type MyPoolTableProps<R> = {
   rowConfig?: typeof RowConfig
   setHideSmallBalances?: (value: boolean) => void
   hideAssets?: boolean
+  totalAMMClaims?: {
+    detail: EarningsDetail[]
+    totalDollar: string
+  }
+  rewardsAPIError?: any
+  getUserRewards?: () => void
 } & Method<R>

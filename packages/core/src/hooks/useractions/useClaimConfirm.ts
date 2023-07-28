@@ -80,7 +80,8 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
       const claimValue = store.getState()._router_modalData.claimValue
       if (
         (claimValue.tradeType === TRADE_TYPE.TOKEN &&
-          claimValue.claimType === CLAIM_TYPE.lrcStaking &&
+          (claimValue.claimType === CLAIM_TYPE.lrcStaking ||
+            claimValue.claimType === CLAIM_TYPE.allToken) &&
           feeProps.extraType === 3) ||
         (claimValue.tradeType === TRADE_TYPE.TOKEN &&
           claimType === CLAIM_TYPE.redPacket &&
@@ -117,6 +118,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           volume: claimToken.total,
           balance: Number(claimToken.total),
           claimType,
+          fee: feeInfo,
           luckyTokenHash: claimToken.luckyTokenHash,
         } as any)
       } else {
@@ -128,6 +130,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),
           claimType,
+          fee: feeInfo,
         })
       }
     } else {
@@ -524,7 +527,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
     },
     [setShowAccount],
   )
-  claimToken?.luckyTokenHash
   return {
     retryBtn,
     claimProps: {

@@ -1785,4 +1785,5 @@ export default {
   labelLeverageETHStaking: 'Leveraged ETH Staking',
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
+  labelRewardRefresh: 'Refresh',
 }

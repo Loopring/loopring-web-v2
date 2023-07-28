@@ -21,12 +21,12 @@ const defiMapSlice: Slice = createSlice({
       state.status = SagaStatus.PENDING
     },
     getDefiMapStatus(state, action: PayloadAction<DefiMapStates>) {
-      // @ts-ignore
-      if (action.error) {
+      if ((action.payload as any).error) {
         state.status = SagaStatus.ERROR
-        // @ts-ignore
-        state.errorMessage = action.error
+        state.errorMessage = (action.payload as any).error
+        return
       }
+      state.errorMessage = null
       const { __timer__, ...defiMap } = action.payload
       if (defiMap) {
         state.marketArray = defiMap.marketArray
