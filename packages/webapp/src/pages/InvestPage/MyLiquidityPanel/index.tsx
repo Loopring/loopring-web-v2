@@ -134,7 +134,6 @@ const MyLiquidity: any = withTranslation('common')(
       stakeShowLoading,
       stakingTotal,
       totalStakedRewards,
-      totalClaimableRewards,
       stakedSymbol,
     } = useOverview({
       ammActivityMap,
@@ -207,18 +206,25 @@ const MyLiquidity: any = withTranslation('common')(
         (hideSmallBalances ? !o.smallBalance : true)
       )
     })
-    
+
     const totalClaimableRewardsAmount =
-      totalClaimableRewards && totalClaimableRewards !== '0'
-        ? getValuePrecisionThousand(
-            sdk.toBig(totalClaimableRewards ?? 0).div('1e' + tokenMap[stakedSymbol].decimals),
+      rewardsAPIError || !totalClaims
+        ? '0'
+        : getValuePrecisionThousand(
+            sdk
+              .toBig(
+                totalClaims['LRC']?.find(
+                  (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.LRC_STAKING,
+                )?.amount ?? 0,
+              )
+              .div('1e' + tokenMap[stakedSymbol].decimals),
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             false,
             { floor: true, isAbbreviate: true },
           )
-        : '0'
+
     const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = rewardsAPIError
       ? { totalDollar: '0', detail: [] }
       : Reflect.ownKeys(totalClaims ?? {}).reduce(
@@ -540,7 +546,17 @@ const MyLiquidity: any = withTranslation('common')(
                         flexDirection={'row'}
                         alignItems={'center'}
                       >
-                        {totalClaimableRewardsAmount && totalClaimableRewardsAmount !== '0' ? (
+                        {rewardsAPIError ? (
+                          <Button
+                            onClick={() => {
+                              getUserRewards && getUserRewards()
+                            }}
+                            size={'small'}
+                            variant={'outlined'}
+                          >
+                            {t('labelRewardRefresh', { ns: 'common' })}
+                          </Button>
+                        ) : totalClaimableRewardsAmount !== '0' ? (
                           <>
                             <Typography component={'span'} display={'inline-flex'} paddingRight={2}>
                               {hideAssets
