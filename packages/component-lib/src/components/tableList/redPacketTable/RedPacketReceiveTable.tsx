@@ -1,14 +1,7 @@
 import styled from '@emotion/styled'
 import { Box, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
-import {
-  BoxNFT,
-  Button,
-  Column,
-  NftImageStyle,
-  Table,
-  TablePagination,
-} from '../../basic-lib'
+import { BoxNFT, Button, Column, NftImageStyle, Table, TablePagination } from '../../basic-lib'
 import {
   CoinInfo,
   globalSetup,
