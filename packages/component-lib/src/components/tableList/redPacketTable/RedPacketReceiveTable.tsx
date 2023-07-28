@@ -5,7 +5,6 @@ import {
   BoxNFT,
   Button,
   Column,
-  NftImage,
   NftImageStyle,
   Table,
   TablePagination,
