@@ -6,6 +6,7 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
+  SoursURL,
 } from '@loopring-web/common-resources'
 import { InputButtonProps, InputSize } from './Interface'
 import React from 'react'
@@ -38,6 +39,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     size = InputSize.middle,
     isHideError = false,
     fullwidth = false,
+    loading = false,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -235,8 +237,24 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             )}
           </ISBtn>
         </Grid>
-        <Grid item className={'input-wrap input-wrap-right'}>
+        <Grid item className={'input-wrap input-wrap-right'} sx={{ position: 'relative' }}>
+          {loading && (
+            <img
+              style={{
+                position: 'absolute',
+                transform: 'translate(50%, -50%)',
+                top: '50%',
+                right: '24px',
+              }}
+              className='loading-gif'
+              alt={'loading'}
+              width='24'
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+          )}
+
           <IInput
+            className={loading ? 'loading' : ''}
             ref={inputEle}
             autoComplete='off'
             onValueChange={_handleContChange}
@@ -245,7 +263,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             decimalSeparator='.'
             groupSeparator=','
             name={name}
-            disabled={!(!disabled || belong) || disableInputValue}
+            disabled={!(!disabled || belong) || disableInputValue || loading}
             placeholder={placeholderText}
             aria-placeholder={placeholderText}
             aria-label={belong}

@@ -4,7 +4,7 @@ import { WithdrawProps } from '../../tradePanel/Interface'
 import { IBData, TRADE_TYPE } from '@loopring-web/common-resources'
 import { TradeMenuList, useBasicTrade, WithdrawWrap } from '../../tradePanel/components'
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import _, { cloneDeep } from 'lodash'
 import { WithdrawConfirm } from '../../tradePanel/components/WithdrawConfirm'
 import { ContactSelection } from '../../tradePanel/components/ContactSelection'
 // import { getAllContacts } from "./TransferPanel";
@@ -32,11 +32,19 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
       type,
       walletMap,
     })
+    // const _onChangeEvent = _.debounce((_index: 0 | 1, { to, tradeData }: SwitchData<T>) => {
+    //   onChangeEvent(_index, { to, tradeData })
+    // }, globalSetup.wait)
 
     const [panelIndex, setPanelIndex] = React.useState(index + 1)
     const handleConfirm = (index: number) => {
       setPanelIndex(index)
     }
+    // React.useEffect(() => {
+    //   return () => {
+    //     _onChangeEvent.cancel()
+    //   }
+    // }, [])
     // const hanleConfirm = () => {};
     React.useEffect(() => {
       setPanelIndex(index + 1)
