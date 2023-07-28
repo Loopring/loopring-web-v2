@@ -43,6 +43,7 @@ export type DeFiWrapProps<T, I, ACD> = {
   title: string
   isLeverageETH?: boolean
   extraWithdrawFee?: string
+  apr?: string
 }
 
 export type DeFiSideType<R = RawDataDefiSideStakingItem> = {

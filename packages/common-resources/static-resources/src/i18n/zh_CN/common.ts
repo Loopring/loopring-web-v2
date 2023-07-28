@@ -1763,7 +1763,7 @@ export default {
   labelRedPacketBlindboxReceived2: 'Received',
   labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
-  labelLayer2HistoryleverageETHRecords: 'Leverage ETH',
+  labelLayer2HistoryleverageETHRecords: 'Leveraged ETH',
   labelSwapMinConverted: 'Minimum Converted',
   labelSwapMinConvertedTooltip:
     'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
@@ -1780,6 +1780,9 @@ export default {
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
     '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
-    labelDefiMaxBalanceLeverage:
-    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults'
+  labelDefiMaxBalanceLeverage:
+    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
+  labelLeverageETHStaking: 'Leveraged ETH Staking',
+  labelLeverageETHBack: 'Leveraged ETH Staking',
+  labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
 }
