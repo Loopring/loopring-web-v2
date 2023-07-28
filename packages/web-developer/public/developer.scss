@@ -743,11 +743,10 @@ footer {
     margin-top: 32px;
     flex-direction: column;
     align-items: center;
-    width: 310px;
-
     button {
       margin: 8px;
-      width: 80%;
+      max-width: 388px;
+      width: 100%;
     }
   }
 
@@ -811,6 +810,7 @@ footer {
 
     button {
       margin: 8px;
+      width: 100%;
     }
   }
   .banner {
