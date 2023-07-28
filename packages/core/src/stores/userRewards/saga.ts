@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
 
 import { LoopringAPI, makeClaimRewards, makeSummaryMyAmm, store } from '../../index'
-import { AccountStatus, myLog } from '@loopring-web/common-resources'
+import { AccountStatus } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 const getUserRewardsApi = async () => {
@@ -13,7 +13,7 @@ const getUserRewardsApi = async () => {
       _totalClaims = [],
       result: any = {}
     try {
-      ;[ammUserRewardMap, _totalClaims] = await Promise.all([
+      ;;[ammUserRewardMap, _totalClaims] = await Promise.all([
         LoopringAPI.ammpoolAPI
           .getAmmPoolUserRewards({
             owner: accountId,
@@ -23,7 +23,6 @@ const getUserRewardsApi = async () => {
               response &&
               ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
             ) {
-              // throw new CustomError(ErrorMap.ERROR_UNKNOWN)
               return {}
             }
             return response.ammUserRewardMap
@@ -36,16 +35,16 @@ const getUserRewardsApi = async () => {
             apiKey,
           )
           .then((response) => {
-            myLog('totalClaims', response)
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
               return []
             }
-            //TODO:
             // @ts-ignore
             return response?.raw_data?.data[0]?.items
+          })
+          .catch((error) => {
+            throw error
           }),
       ])
-      // myLog('totalClaims', _totalClaims)
       if (readyState === AccountStatus.ACTIVATED) {
         result = makeSummaryMyAmm({
           userRewardsMap: ammUserRewardMap,
@@ -58,7 +57,7 @@ const getUserRewardsApi = async () => {
         }
         return setInterval(async () => {
           store.dispatch(getUserRewards(undefined))
-        }, 300000 * 4)
+        }, 60000 * 4)
       })(__timer__)
       return {
         data: { userRewardsMap: ammUserRewardMap, totalClaims, ...result },
