@@ -51,6 +51,7 @@ import { getIPFSString } from '../../utils'
 import { NFT_IMAGE_SIZES, toBig } from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router'
 import { ClaimCommands, claimServices } from '../../services'
+import { redpacketService } from '../../services'
 
 export function useRedPacketModal() {
   const ref = React.createRef()
@@ -1060,6 +1061,7 @@ export function useRedPacketModal() {
       const tokenInfo = !detail.luckyToken.isNft
         ? tokenMap[idIndex[detail.luckyToken.tokenId]]
         : undefined
+
       return {
         sender: _info.sender?.ens ? _info.sender?.ens : getShortAddr(_info.sender?.address),
         memo: _info.info.memo,
