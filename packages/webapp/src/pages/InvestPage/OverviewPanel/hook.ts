@@ -1,16 +1,22 @@
 import { makeInvestRow, useInvestTokenTypeMap, useWalletLayer2 } from '@loopring-web/core'
-import { SagaStatus } from '@loopring-web/common-resources'
 import { RowInvest } from '@loopring-web/component-lib'
+import { SagaStatus, myLog } from '@loopring-web/common-resources'
 import React from 'react'
 
 export function useOverview<R extends RowInvest>() {
   const { investTokenTypeMap, status: investTokenTypeMapStatus } = useInvestTokenTypeMap()
+
   const { status: walletLayer2Status, walletLayer2 } = useWalletLayer2()
   const [filterValue, setFilterValue] = React.useState<string>('')
   const [rawData, setRawData] = React.useState<R[]>([])
   const [filteredData, setFilteredData] = React.useState<R[]>(rawData)
   const [myMapLoading, setMyMapLoading] = React.useState(false)
+
+
   const [myRawData, setMyRawData] = React.useState<R[]>([])
+  // const [myFilteredData, setMyFilteredData] = React.useState<R[]>(rawData);
+  myLog('rawData', filteredData)
+
   const filterData = (rawData: R[], value: string) => {
     return rawData.filter((item) => {
       const regx = new RegExp(value.toLowerCase(), 'ig')

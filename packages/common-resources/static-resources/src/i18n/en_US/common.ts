@@ -1816,9 +1816,9 @@ export default {
     '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
   labelDefiMaxBalanceLeverage:
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
+  labelLeverageETHStaking: 'Leveraged ETH Staking',
+  labelLeverageETHBack: 'Leveraged ETH Staking',
+  labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelFunctionList: 'Function List:',
   labelSuperUserTitle: 'Super User',
-  labelLeverageETHStaking: 'Leveraged ETH Staking',
-  labelLeverageETHBack: 'Cian Leveraged ETH Staking',
-  labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
 }
