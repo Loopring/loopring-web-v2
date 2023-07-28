@@ -36,7 +36,6 @@ export const TradePanel = ({
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
   })
-  console.log('deFiWrapProps', deFiWrapProps.deFiCalcData.coinSell)
   const { t } = useTranslation()
 
   const { isMobile } = useSettings()
@@ -60,7 +59,7 @@ export const TradePanel = ({
             market={market}
             isJoin={isJoin}
             type={leverageETHAdvice.project}
-            title={t('labelLeverageETHTitle')}
+            title={t('labelLeverageETHStaking')}
             {...(deFiWrapProps as any)}
           />
         </Box>

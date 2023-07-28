@@ -1780,4 +1780,9 @@ export default {
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
     '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
+  labelDefiMaxBalanceLeverage:
+    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
+  labelLeverageETHStaking: 'Leverage ETH Staking',
+  labelLeverageETHBack: 'Cian Leverage ETH Staking',
+  labelInvestType_LEVERAGEETH: 'Leverage ETH',
 }

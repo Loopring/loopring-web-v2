@@ -64,6 +64,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   title,
   isLeverageETH,
   extraWithdrawFee,
+  apr,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -245,7 +246,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         { floor: true },
       ) + ` ${tokenBuy.symbol}`
     : EmptyValueTag
-
+  
   return (
     <Grid
       className={deFiCalcData ? '' : 'loading'}
@@ -382,6 +383,22 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       <Grid item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
+            {isLeverageETH && (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                marginTop={1 / 2}
+              >
+                <Typography component={'p'} variant='body2' color={'textSecondary'}>
+                  {t('labelAPR')}
+                </Typography>
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                  {apr ? `${apr}%` : EmptyValueTag}
+                </Typography>
+              </Grid>
+            )}
             <Grid
               container
               justifyContent={'space-between'}
@@ -443,7 +460,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   color={'var(--color-warning)'}
                 >
                   <Typography component={'span'} variant={'inherit'} color={'inherit'}>
-                    <Trans i18nKey={'labelDefiMaxBalance'} tOptions={{ maxValue }}>
+                    <Trans i18nKey={'labelDefiMaxBalanceLeverage'} tOptions={{ maxValue }}>
                       Loopring rebalance pool can't satisfy your complete request. You can only
                       redeem {{ maxValue }} now. For the remaining investment, you can choose one of
                       the approaches
