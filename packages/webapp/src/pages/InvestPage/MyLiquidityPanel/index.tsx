@@ -212,6 +212,7 @@ const MyLiquidity: any = withTranslation('common')(
         marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
       )
     })
+    
     const totalClaimableRewardsAmount =
       totalClaimableRewards && totalClaimableRewards !== '0'
         ? getValuePrecisionThousand(
