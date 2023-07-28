@@ -1821,4 +1821,5 @@ export default {
   labelLeverageETHStaking: 'Leveraged ETH Staking',
   labelLeverageETHBack: 'Cian Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
+  labelRewardRefresh: 'Refresh',
 }
