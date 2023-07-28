@@ -22,7 +22,7 @@ import {
   UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
-import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
+import { AvaiableNetwork, connectProvides } from '@loopring-web/web3-provider'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -46,7 +46,6 @@ import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
 
 export const useDeposit = <
   T extends {
-    referAddress?: string
     toAddress?: string
     addressError?: { error: boolean; message?: string }
   } & IBData<I>,
@@ -56,28 +55,17 @@ export const useDeposit = <
   opts?: { token?: string | null; owner?: string | null },
 ) => {
   const subject = React.useMemo(() => depositServices.onSocket(), [])
-
   const { tokenMap, totalCoinMap } = useTokenMap()
   const { account } = useAccount()
+  const { walletLayer1, updateWalletLayer1, status: walletLayer1Status } = useWalletLayer1()
+  const { updateDepositHash } = useOnChainInfo()
+  const { t } = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
   const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem()
   const { defaultNetwork } = useSettings()
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
-  const {
-    realAddr: realToAddress,
-    setAddress: setToAddress,
-    addrStatus: toAddressStatus,
-    isAddressCheckLoading: toIsAddressCheckLoading,
-  } = useAddressCheck()
-  const {
-    realAddr: realReferAddress,
-    setAddress: setReferAddress,
-    addrStatus: referStatus,
-    isLoopringAddress: referIsLoopringAddress,
-    isAddressCheckLoading: referIsAddressCheckLoading,
-  } = useAddressCheck()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const {
     depositValue,
@@ -86,6 +74,40 @@ export const useDeposit = <
     activeAccountValue: { chargeFeeList },
   } = useModalData()
   const {
+    realAddr: realToAddress,
+    setAddress: setToAddress,
+    addrStatus: toAddressStatus,
+    isAddressCheckLoading: toIsAddressCheckLoading,
+  } = useAddressCheck()
+  React.useEffect(() => {
+    const { defaultNetwork } = store.getState().settings
+    if (
+      isToAddressEditable == false &&
+      LoopringAPI?.__chainId__ &&
+      AvaiableNetwork.includes(LoopringAPI?.__chainId__.toString()) &&
+      defaultNetwork == LoopringAPI?.__chainId__ &&
+      opts?.owner &&
+      opts?.owner !== ''
+    ) {
+      setToAddress(opts?.owner)
+    } else if (defaultNetwork !== LoopringAPI?.__chainId__) {
+      setToAddress('')
+    }
+  }, [opts?.owner, isToAddressEditable, LoopringAPI?.__chainId__])
+  React.useEffect(() => {
+    if (
+      realToAddress &&
+      realToAddress !== '' &&
+      (toAddressStatus as AddressError) === AddressError.NoError
+    ) {
+      updateDepositData({
+        ...depositValue,
+        toAddress: realToAddress,
+      })
+    }
+  }, [realToAddress])
+
+  const {
     modals: {
       isShowDeposit: { symbol, isShow },
     },
@@ -93,10 +115,6 @@ export const useDeposit = <
     setShowAccount,
   } = useOpenModals()
 
-  const { walletLayer1, updateWalletLayer1, status: walletLayer1Status } = useWalletLayer1()
-
-  const { updateDepositHash } = useOnChainInfo()
-  const { t } = useTranslation('common')
   const {
     btnStatus,
     btnInfo,
@@ -117,11 +135,10 @@ export const useDeposit = <
   const updateBtnStatus = React.useCallback(() => {
     resetBtnInfo()
     if (
-      (!isAllowInputToAddress || //toIsLoopringAddress &&
-        (((realToAddress && (toAddressStatus as AddressError) === AddressError.NoError) ||
-          (opts?.owner && opts?.owner.startsWith('0x') && !depositValue.addressError)) &&
-          !!depositValue.toAddress &&
-          depositValue.toAddress.trim() !== '')) &&
+      realToAddress &&
+      (toAddressStatus as AddressError) === AddressError.NoError &&
+      depositValue?.toAddress?.trim() !== '' &&
+      depositValue.toAddress == realToAddress &&
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
@@ -193,21 +210,30 @@ export const useDeposit = <
   const handlePanelEvent = React.useCallback(
     async (data: SwitchData<Partial<T>>, _switchType: 'Tomenu' | 'Tobutton') => {
       const oldValue = store.getState()._router_modalData.depositValue
-
       let newValue = {
         ...oldValue,
       }
-      if (data?.tradeData.hasOwnProperty('referAddress')) {
-        newValue.referAddress = data?.tradeData.referAddress
-        setReferAddress(newValue.referAddress ?? '')
+      if (data?.tradeData.hasOwnProperty('toAddress') && isToAddressEditable) {
+        // @ts-ignore
+        setToAddress(data?.tradeData?.toAddress)
+        if (/^0x[a-fA-F0-9]{40}$/g.test(data?.tradeData?.toAddress ?? '')) {
+          newValue.toAddress = data?.tradeData?.toAddress
+        } else {
+          newValue.toAddress = ''
+        }
+      } else if (
+        !newValue.toAddress &&
+        isToAddressEditable == false &&
+        opts?.owner &&
+        opts?.owner !== ''
+      ) {
+        if (realToAddress) {
+          newValue.toAddress = realToAddress
+        } else {
+          setToAddress(opts?.owner)
+        }
       }
-      if (data?.tradeData.hasOwnProperty('toAddress')) {
-        newValue.toAddress = data?.tradeData.toAddress
-        setToAddress(newValue.toAddress ?? '')
-      }
-      if (data?.tradeData.hasOwnProperty('addressError')) {
-        newValue.addressError = data?.tradeData.addressError
-      }
+
       if (data.to === 'button') {
         if (walletLayer1 && data?.tradeData?.belong) {
           const walletInfo = walletLayer1[data.tradeData.belong]
@@ -218,15 +244,11 @@ export const useDeposit = <
           }
         }
       }
+      myLog('DepositData', newValue)
       updateDepositData(newValue)
       return Promise.resolve()
-
-      // return new Promise<void>((resolve) => {
-      //
-      //   resolve();
-      // });
     },
-    [setReferAddress, setToAddress, updateDepositData, walletLayer1],
+    [setToAddress, updateDepositData, realToAddress, isToAddressEditable, walletLayer1],
   )
   const handleClear = React.useCallback(() => {
     if (isAllowInputToAddress && !isToAddressEditable) {
@@ -236,9 +258,7 @@ export const useDeposit = <
       {
         to: 'button',
         tradeData: {
-          referAddress: undefined,
           toAddress: undefined,
-          addressError: undefined,
         } as T,
       },
       'Tobutton',
@@ -259,7 +279,6 @@ export const useDeposit = <
         }
       }, L1_UPDATE)
       if (_symbol && walletLayer1) {
-        // updateDepositData();
         updateData = {
           belong: _symbol as any,
           balance: walletLayer1[_symbol]?.count ?? 0,
@@ -271,7 +290,6 @@ export const useDeposit = <
           const keyVal = keys[key] as any
           const walletInfo = walletLayer1[keyVal]
           if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
-            // updateDepositData();
             updateData = {
               belong: keyVal as any,
               tradeValue: undefined,
@@ -287,19 +305,8 @@ export const useDeposit = <
           tradeValue,
         }
       }
-
-      if (isAllowInputToAddress) {
-        if (opts?.owner) {
-          updateData = {
-            ...updateData,
-            toAddress: opts?.owner?.toLowerCase(),
-            addressError: undefined,
-          } as T
-          // setToAddress(opts?.owner?.toLowerCase());
-          setIsToAddressEditable(false)
-        } else {
-          setIsToAddressEditable(true)
-        }
+      if (isAllowInputToAddress && !(opts?.owner && opts?.owner?.startsWith('0x'))) {
+        setIsToAddressEditable(true)
       }
       handlePanelEvent(
         {
@@ -341,80 +348,12 @@ export const useDeposit = <
     }
   }, [isShow, isAllowInputToAddress])
 
-  const signRefer = React.useCallback(async () => {
-    if (
-      referIsLoopringAddress &&
-      realReferAddress &&
-      LoopringAPI.exchangeAPI &&
-      LoopringAPI.userAPI &&
-      exchangeInfo
-    ) {
-      try {
-        const refAccount = await LoopringAPI.exchangeAPI.getAccount({
-          owner: realReferAddress,
-        })
-        if (
-          (refAccount &&
-            ((refAccount as sdk.RESULT_INFO).code || (refAccount as sdk.RESULT_INFO).message)) ||
-          (refAccount.accInfo && !refAccount.accInfo?.accountId)
-        ) {
-          return
-        }
-        // const referId = refAccount.accInfo?.accountId;
-        let keySeed = sdk.GlobalAPI.KEY_MESSAGE.replace(
-          '${exchangeAddress}',
-          exchangeInfo.exchangeAddress,
-        ).replace('${nonce}', '0')
-        const eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3,
-          address: account.accAddress,
-          keySeed,
-          walletType: (ConnectProviders[account.connectName] ??
-            account.connectName) as unknown as sdk.ConnectorNames,
-          chainId: chainId as any,
-          accountId: account.accountId,
-        })
-
-        const response = await LoopringAPI.userAPI.SetReferrer(
-          {
-            address: account.accAddress,
-            referrer: refAccount.accInfo.accountId,
-            publicKeyX: eddsaKey.formatedPx,
-            publicKeyY: eddsaKey.formatedPy,
-          },
-          eddsaKey.sk,
-        )
-        myLog('setRefer generateKeyPair!!! referId:', refAccount.accInfo.accountId, response)
-      } catch (reason: any) {
-        sdk.dumpError400(reason)
-      }
-    }
-  }, [
-    account.accAddress,
-    account.accountId,
-    account.connectName,
-    chainId,
-    exchangeInfo,
-    realReferAddress,
-    referIsLoopringAddress,
-  ])
-
   const handleDeposit = React.useCallback(
     async (inputValue: any) => {
       myLog('handleDeposit:', inputValue)
-      // if (isNewAccount && inputValue.referAddress) {
-      //   setShowAccount({
-      //     isShow: true,
-      //     step: AccountStep.Deposit_Sign_WaitForRefer,
-      //     info: {
-      //       isAllowInputToAddress,
-      //     },
-      //   });
-      //   await signRefer();
-      // }
       const { readyState, connectName } = account
       let result = { code: ActionResultCode.NoError }
-
+      const { toAddress } = store.getState()._router_modalData.depositValue
       try {
         if (
           readyState !== AccountStatus.UN_CONNECT &&
@@ -423,7 +362,7 @@ export const useDeposit = <
           exchangeInfo?.exchangeAddress &&
           connectProvides.usedWeb3 &&
           LoopringAPI.exchangeAPI &&
-          (!isAllowInputToAddress || (isAllowInputToAddress && realToAddress))
+          toAddress
         ) {
           const tokenInfo = tokenMap[inputValue.belong]
           const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
@@ -522,7 +461,7 @@ export const useDeposit = <
               realChainId,
               nonce,
               isMetaMask,
-              isAllowInputToAddress ? realToAddress : account.accAddress,
+              toAddress,
             )
           } catch (error) {
             if (error instanceof Error) {
@@ -633,7 +572,6 @@ export const useDeposit = <
       exchangeInfo?.depositAddress,
       isAllowInputToAddress,
       setShowAccount,
-      signRefer,
       gasPrice,
       chainId,
       allowanceInfo?.needCheck,
@@ -657,23 +595,7 @@ export const useDeposit = <
   }, [depositValue, handleDeposit])
 
   const handleAddressError = React.useCallback(() => {
-    if (
-      referStatus &&
-      ((referStatus as AddressError) !== AddressError.NoError || !referIsLoopringAddress)
-    ) {
-      handlePanelEvent(
-        {
-          to: 'button',
-          tradeData: {
-            addressError: {
-              error: true,
-              message: !referIsLoopringAddress ? 'Not Loopring L2' : 'Invalid Address',
-            },
-          } as T,
-        },
-        'Tobutton',
-      )
-    } else if (toAddressStatus && (toAddressStatus as AddressError) !== AddressError.NoError) {
+    if (toAddressStatus && (toAddressStatus as AddressError) !== AddressError.NoError) {
       handlePanelEvent(
         {
           to: 'button',
@@ -697,10 +619,10 @@ export const useDeposit = <
         'Tobutton',
       )
     }
-  }, [referStatus, referIsLoopringAddress, toAddressStatus, handlePanelEvent])
+  }, [toAddressStatus, handlePanelEvent])
   React.useEffect(() => {
     handleAddressError()
-  }, [referStatus, toAddressStatus])
+  }, [toAddressStatus])
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
       myLog('subscription Deposit DepsitERC20')
@@ -739,12 +661,7 @@ export const useDeposit = <
     onDepositClick,
     toAddressStatus,
     toIsAddressCheckLoading,
-    // toIsLoopringAddress,
-    realToAddress,
-    referIsAddressCheckLoading,
-    referIsLoopringAddress,
-    realReferAddress,
-    referStatus,
+    realToAddress: depositValue.toAddress,
     isToAddressEditable,
   }
 

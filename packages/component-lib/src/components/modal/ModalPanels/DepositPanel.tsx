@@ -18,7 +18,6 @@ import { useSettings } from '../../../stores'
 export const DepositPanel = withTranslation('common', { withRef: true })(
   <
     T extends {
-      referAddress?: string
       toAddress?: string
       addressError?: { error: boolean; message: string }
     } & IBData<I>,
