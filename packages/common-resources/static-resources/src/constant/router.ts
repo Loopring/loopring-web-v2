@@ -6,11 +6,9 @@ import {
   MintIcon,
   ProfileIcon,
   RewardIcon,
-  // RewardIcon,
   SecurityIcon,
   VipIcon,
 } from '../svg'
-// import * as sdk from "@loopring-web/loopring-sdk";
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
 import { Exchange, WalletSite } from './setting'
@@ -374,12 +372,29 @@ export const subMenuInvest = [
     icon: L2MyLiquidityIcon,
     router: { path: '/invest/leverageETH' },
     label: {
-      id: 'todo',
+      id: 'leverageeth',
       i18nKey: 'labelInvestLeverageETH',
       description: 'labelInvestLeverageETHDes',
     },
   },
 ]
+export const defiMarkets = {
+  TAIKO: [] as string[],
+  ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
+  GOERLI: ['RETH-ETH'],
+}
+export const leverageETHConfig = {
+  coins: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['CIETH'],
+    GOERLI: ['WSTETH'],
+  },
+  types: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['cian'],
+    GOERLI: ['lido'],
+  },
+}
 
 export const subMenuNFT = {
   NFTGroup: [
