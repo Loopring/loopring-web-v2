@@ -176,7 +176,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       resultData.forEach((item) => {
         totalCurrentInvest.ammPoolDollar += Number(item.balanceU ?? 0)
       })
-      leverageETHCoinArray.forEach((defiCoinKey) => {
+      leverageETHCoinArray?.forEach((defiCoinKey) => {
         totalCurrentInvest.leverageETHDollar += Number(
           // @ts-ignore
           (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
