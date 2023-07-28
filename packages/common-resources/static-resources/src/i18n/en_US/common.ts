@@ -1233,7 +1233,7 @@ export default {
   labelwithdraw: 'Withdrawal',
   labelDeposit: 'Deposit',
   labelFiatAmount: 'Fiat Amount',
-  labelToMyL2: 'My {{loopringL2}} <1>({{address}})</1>',
+  labelToMyL2: 'My {{loopringL2}}',
   labelBanxaNotReady:
     'Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us',
   labelBanxaFailedForAPI: 'Please waiting a while, Banxa service is not available currently.',
@@ -1755,10 +1755,10 @@ export default {
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
   labelClaimTypeREFERER_FEE: 'Refunds Rewards',
-  labelClaimTypePROTOCOL_FEE: 'Dedicated AMM Incentive',
+  labelClaimTypePROTOCOL_FEE: 'AMM Pool Rewards',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
-  labelAMMClaimableEarnings: 'Dedicated AMM Incentive',
+  labelAMMClaimableEarnings: 'Protocol Fee Rewards',
   labelLayer2HistoryOrders: 'Order Records',
   labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
   labelLayer2HistoryDefiRecords: 'ETH Staking',
@@ -1776,15 +1776,15 @@ export default {
   labelRedPacketBlindboxReceived2: 'Received',
   labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
-  labelCiETHDefiRiskTitle: "What's Cian Leveraged ETH?",
+  labelCiETHDefiRiskTitle: "What's Cian Leverage ETH?",
   labelCiETHDefiRisk:
     '<p>CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform, where users could earn either through joining algorithmic strategy vaults or through building their own DeFi strategies using CIAN’s advanced automation tools.</p>' +
     "<p>The stETH/ETH leveraged staking strategy enables users to safely leverage stETH’s staking rewards. This strategy focuses on staking derivatives and protection/optimization tooling. By nature, this strategy is to use the user's asset as collateral to borrow ETH from lending platforms, then stake ETH in Lido to earn ETH staking interest. By utilizing tools like Flashloan, it actually adds leverage to users' ETH investment. If only there is a positive APY diff between the borrowing rate and ETH staking rate, there will be additional earnings from this strategy vs. standard ETH staking.</p>" +
     '<p>It is quite important to understand that, when using such leveraged strategy, it’s highly advised to intend on holding that position for a while. By doing so, users will give enough time for the high APY to cover their entry & exit costs.</p>\n',
   labelDefiWithdrawFee:
     '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
-  labelLeverageETHTitle: 'Leveraged ETH',
-  labelLayer2HistoryleverageETHRecords: 'Leveraged ETH',
+  labelLeverageETHTitle: 'Leverage ETH',
+  labelLayer2HistoryleverageETHRecords: 'Leverage ETH',
   labelSwapMinConverted: 'Minimum Converted',
   labelSwapMinConvertedTooltip:
     'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
@@ -1796,28 +1796,27 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
-  labelClaimallToken: 'My Rewards',
+  labelClaimallToken: 'Reward token {{symbol}}',
   labelConnecting: 'Connecting',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
   labelGo: 'Go',
   labelAnotherNetworkDes2:
-    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than ethereum, the recipient address must be different than the sender address; else you will lose that asset for ever.',
-  labelAnotherNetworkDes3: '',
+    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address.',
+  labelAnotherNetworkDes3:
+    'If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address; else you will lose that asset for ever.',
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
   labelDefiSubscribe: 'Subscribe',
+  
   labelDefiMaxBalance1Leverage:
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
     '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
   labelDefiMaxBalanceLeverage:
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
-  labelFunctionList: 'Function List:',
-  labelSuperUserTitle: 'Super User',
   labelLeverageETHStaking: 'Leveraged ETH Staking',
-  labelLeverageETHBack: 'Leveraged ETH Staking',
+  labelLeverageETHBack: 'Cian Leverage ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
-  labelRewardRefresh: 'Refresh',
 }
