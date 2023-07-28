@@ -7,6 +7,7 @@ import {
   RowConfig,
 } from '@loopring-web/common-resources'
 import { Currency, LoopringMap, TokenInfo } from '@loopring-web/loopring-sdk'
+import { EarningsDetail } from '../rewardTable'
 
 export type MyPoolRow<R> = MyAmmLP<R> & {
   ammDetail: AmmDetail<R>
@@ -42,4 +43,10 @@ export type MyPoolTableProps<R> = {
   rowConfig?: typeof RowConfig
   setHideSmallBalances?: (value: boolean) => void
   hideAssets?: boolean
+  totalAMMClaims?: {
+    detail: EarningsDetail[]
+    totalDollar: string
+  }
+  rewardsAPIError?: any
+  getUserRewards?: () => void
 } & Method<R>

@@ -5,7 +5,11 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useOverview } from './hook'
 
-import { useSettings, InvestOverviewTable, useToggle } from '@loopring-web/component-lib'
+import {
+  useSettings,
+  InvestOverviewTable,
+  useToggle,
+} from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
 import {
   BackIcon,

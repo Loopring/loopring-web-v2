@@ -5,7 +5,6 @@ import {
   AmmTable,
   BtradeSwapTable,
   Button,
-  ComingSoonPanel,
   DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
@@ -283,7 +282,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             />
           ) : currentTab === RecordTabIndex.DefiRecords ? (
             <DefiTxsTable
-              key={"defi"}
+              key={'defi'}
               {...{
                 rawData: defiList,
                 pagination: {
