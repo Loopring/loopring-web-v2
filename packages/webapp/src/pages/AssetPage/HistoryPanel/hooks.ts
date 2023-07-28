@@ -350,7 +350,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            markets: markets.join(',')
+            markets: markets.join(','),
           } as any,
           apiKey,
         )
