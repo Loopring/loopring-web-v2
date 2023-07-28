@@ -1355,7 +1355,7 @@ export const useSwap = <
           fee: totalFee,
           feeTakerRate,
           tradeCost,
-          minimumConverted
+          minimumConverted,
         } as CAD
         _tradeData[isAtoB ? 'buy' : 'sell'].tradeValue = getShowStr(calcTradeParams?.output)
 
