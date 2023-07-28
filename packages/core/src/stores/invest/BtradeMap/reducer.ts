@@ -22,8 +22,6 @@ const btradeMapSlice: Slice = createSlice({
       // @ts-ignore
       if (action.payload.error) {
         state.status = SagaStatus.ERROR
-        // @ts-ignore
-        // state.errorMessage = action.payload.error
       } else {
         const { ...btradeMap } = action.payload
         if (btradeMap) {
