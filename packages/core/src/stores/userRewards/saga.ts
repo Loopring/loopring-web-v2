@@ -13,7 +13,7 @@ const getUserRewardsApi = async () => {
       _totalClaims = [],
       result: any = {}
     try {
-      ;;[ammUserRewardMap, _totalClaims] = await Promise.all([
+      ;[ammUserRewardMap, _totalClaims] = await Promise.all([
         LoopringAPI.ammpoolAPI
           .getAmmPoolUserRewards({
             owner: accountId,
