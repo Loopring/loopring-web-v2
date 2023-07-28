@@ -25,6 +25,8 @@ import {
   LinkSharedIcon,
   MapChainId,
   myLog,
+  ProfileIndex,
+  ProfileKey,
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
@@ -43,6 +45,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useReferralsTable, useRefundTable } from './hook'
 import { useHistory } from 'react-router-dom'
+import { ErrorPage } from '../../ErrorPage'
 
 const BoxStyled = styled(Box)`
   ol {
@@ -251,9 +254,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
       const image = new Image()
       image.crossOrigin = 'true'
       image.src = item
-      // const download = () => {
-      //
-      // };
       image.onload = function () {
         context.clearRect(0, 0, width, width)
         context.drawImage(image, 0, 0, width, height)
@@ -471,345 +471,351 @@ const ReferView = () => {
   myLog('refundData', refundData, referralsData)
   return (
     <>
-      <Toast
-        alertText={t('labelCopyAddClip')}
-        open={copyToastOpen}
-        autoHideDuration={TOAST_TIME}
-        onClose={() => {
-          setCopyToastOpen(false)
-        }}
-        severity={ToastType.success}
-      />
-      <Toast
-        alertText={toastOpen?.content ?? ''}
-        open={toastOpen?.open ?? false}
-        autoHideDuration={TOAST_TIME}
-        onClose={closeToast}
-        severity={toastOpen.type}
-      />
-      <ReferHeader handleCopy={handleCopy} link={link} />
-      <Container>
-        <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-          <Typography component={'h3'} variant={'h4'} marginY={2}>
-            {t('labelReferralRules')}
-          </Typography>
-          <Tabs
-            sx={{ marginLeft: -1 }}
-            value={currentTab}
-            className={'MuiTabs-small'}
-            onChange={(_event, value) => {
-              setCurrentTab(value)
+      {ProfileIndex[network]?.includes(ProfileKey.referralrewards) ? (
+        <>
+          <Toast
+            alertText={t('labelCopyAddClip')}
+            open={copyToastOpen}
+            autoHideDuration={TOAST_TIME}
+            onClose={() => {
+              setCopyToastOpen(false)
             }}
-            aria-label='reward-rule-tabs'
-            variant='scrollable'
-          >
-            <Tab label={t('labelReferralMethod1')} value={ReferStep.method1} />
-            <Tab label={t('labelReferralMethod2')} value={ReferStep.method2} />
-          </Tabs>
-          <Box>
-            {currentTab === ReferStep.method1 && (
-              <ol>
-                <li>{t('labelReferralMethod1Step1')}</li>
-                <li>{t('labelReferralMethod1Step2')}</li>
-                <li>
-                  {t('labelReferralMethod1Step3', {
-                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                    loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
-                  })}
-                </li>
-                <li>{t('labelReferralMethod1Step4')}</li>
-              </ol>
-            )}
-            {currentTab === ReferStep.method2 && (
-              <ol>
-                <li>
-                  {' '}
-                  <Trans i18nKey={'labelReferralMethod2Step1'}>
-                    Access the website
-                    <Link href={linkExchange} target={'_blank'}>
-                      {ExchangeIO}
-                    </Link>
-                  </Trans>
-                </li>
-                <li>{t('labelReferralMethod2Step2')}</li>
-                <li>
-                  {t('labelReferralMethod2Step3', {
-                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                    loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
-                  })}
-                </li>
-                <li>{t('labelReferralMethod2Step4')}</li>
-              </ol>
-            )}
-          </Box>
+            severity={ToastType.success}
+          />
+          <Toast
+            alertText={toastOpen?.content ?? ''}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+            severity={toastOpen.type}
+          />
 
-          {account.readyState === AccountStatus.ACTIVATED && (
-            <>
-              <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-                <Typography component={'h3'} variant={'h4'} marginY={2}>
-                  {t('labelReferralMyReferrals')}
-                </Typography>
+          <ReferHeader handleCopy={handleCopy} link={link} />
+          <Container>
+            <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
+              <Typography component={'h3'} variant={'h4'} marginY={2}>
+                {t('labelReferralRules')}
+              </Typography>
+              <Tabs
+                sx={{ marginLeft: -1 }}
+                value={currentTab}
+                className={'MuiTabs-small'}
+                onChange={(_event, value) => {
+                  setCurrentTab(value)
+                }}
+                aria-label='reward-rule-tabs'
+                variant='scrollable'
+              >
+                <Tab label={t('labelReferralMethod1')} value={ReferStep.method1} />
+                <Tab label={t('labelReferralMethod2')} value={ReferStep.method2} />
+              </Tabs>
+              <Box>
+                {currentTab === ReferStep.method1 && (
+                  <ol>
+                    <li>{t('labelReferralMethod1Step1')}</li>
+                    <li>{t('labelReferralMethod1Step2')}</li>
+                    <li>
+                      {t('labelReferralMethod1Step3', {
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                      })}
+                    </li>
+                    <li>{t('labelReferralMethod1Step4')}</li>
+                  </ol>
+                )}
+                {currentTab === ReferStep.method2 && (
+                  <ol>
+                    <li>
+                      {' '}
+                      <Trans i18nKey={'labelReferralMethod2Step1'}>
+                        Access the website
+                        <Link href={linkExchange} target={'_blank'}>
+                          {ExchangeIO}
+                        </Link>
+                      </Trans>
+                    </li>
+                    <li>{t('labelReferralMethod2Step2')}</li>
+                    <li>
+                      {t('labelReferralMethod2Step3', {
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                        loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                      })}
+                    </li>
+                    <li>{t('labelReferralMethod2Step4')}</li>
+                  </ol>
+                )}
+              </Box>
 
-                <Box display={'flex'} flexDirection={'column'}>
-                  <Grid container marginY={2}>
-                    <Grid item md={4} xs={6}>
-                      <Typography
-                        component={'span'}
-                        color={'var(--color-text-third)'}
-                        variant={'body1'}
-                        paddingRight={isMobile ? '' : 2}
-                      >
-                        {t('labelReferralsTotalReferrals')}
-                        {referralsData.summary?.downsidesNum &&
-                        referralsData.summary?.downsidesNum != '0' ? (
-                          <Typography
-                            variant={'inherit'}
-                            component={'span'}
-                            color={'textPrimary'}
-                            paddingLeft={1}
-                          >
-                            {referralsData.summary?.downsidesNum}
-                          </Typography>
-                        ) : (
-                          EmptyValueTag
-                        )}
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      item
-                      md={4}
-                      xs={6}
-                      justifyContent={'space-evenly'}
-                      flexDirection={'column'}
-                      alignItems={'flex-end'}
-                      display={'flex '}
-                    >
-                      <Typography
-                        component={'span'}
-                        color={'var(--color-text-third)'}
-                        variant={'body1'}
-                        paddingRight={isMobile ? '' : 2}
-                      >
-                        {t('labelReferralsTotalEarning')}
-                        {referralsData.summary?.totalValue ? (
-                          <Typography
-                            variant={'inherit'}
-                            component={'span'}
-                            color={'textPrimary'}
-                            paddingLeft={1}
-                          >
-                            {referralsData.summary?.totalValue + ' LRC'}
-                          </Typography>
-                        ) : (
-                          EmptyValueTag
-                        )}
-                      </Typography>
-                    </Grid>
+              {account.readyState === AccountStatus.ACTIVATED && (
+                <>
+                  <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
+                    <Typography component={'h3'} variant={'h4'} marginY={2}>
+                      {t('labelReferralMyReferrals')}
+                    </Typography>
 
-                    <Grid
-                      item
-                      md={4}
-                      xs={12}
-                      flexDirection={'row'}
-                      alignItems={'center'}
-                      display={'flex'}
-                      paddingTop={isMobile ? 1 : ''}
-                      justifyContent={isMobile ? 'space-between' : 'flex-end'}
-                    >
-                      <Typography
-                        component={'span'}
-                        color={'var(--color-text-third)'}
-                        variant={'body1'}
-                        paddingRight={isMobile ? '' : 2}
-                      >
-                        {t('labelReferralsClaimEarning')}
-                        {referralsData.summary?.claimableValue ? (
+                    <Box display={'flex'} flexDirection={'column'}>
+                      <Grid container marginY={2}>
+                        <Grid item md={4} xs={6}>
                           <Typography
-                            paddingLeft={1}
-                            variant={'inherit'}
-                            component={'span'}
-                            color={'textPrimary'}
-                          >
-                            {referralsData.summary?.claimableValue + ' LRC'}
-                          </Typography>
-                        ) : (
-                          <Typography
-                            variant={'inherit'}
                             component={'span'}
                             color={'var(--color-text-third)'}
+                            variant={'body1'}
+                            paddingRight={isMobile ? '' : 2}
                           >
-                            {EmptyValueTag}
+                            {t('labelReferralsTotalReferrals')}
+                            {referralsData.summary?.downsidesNum &&
+                            referralsData.summary?.downsidesNum != '0' ? (
+                              <Typography
+                                variant={'inherit'}
+                                component={'span'}
+                                color={'textPrimary'}
+                                paddingLeft={1}
+                              >
+                                {referralsData.summary?.downsidesNum}
+                              </Typography>
+                            ) : (
+                              EmptyValueTag
+                            )}
                           </Typography>
-                        )}
-                      </Typography>
-                      {referralsData.summary?.claimableValue ? (
-                        <Button
-                          variant={'contained'}
-                          size={'small'}
-                          sx={{ marginLeft: 2 }}
-                          onClick={() => {
-                            history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
-                          }}
+                        </Grid>
+                        <Grid
+                          item
+                          md={4}
+                          xs={6}
+                          justifyContent={'space-evenly'}
+                          flexDirection={'column'}
+                          alignItems={'flex-end'}
+                          display={'flex '}
                         >
-                          {t('labelClaimBtn')}
-                        </Button>
-                      ) : (
-                        <></>
-                      )}
-                    </Grid>
-                  </Grid>
-                  <ReferralsTable
-                    {...{
-                      rawData: referralsData.record,
-                      pagination: {
-                        pageSize: 8,
-                        total: referralsData.recordTotal,
-                      },
-                      getList: referralsData.getReferralsTableList,
-                      showloading: referralsData.showLoading,
-                    }}
-                  />
-                </Box>
-              </BoxStyled>
-              <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
-                <Typography component={'h3'} variant={'h4'} marginY={2}>
-                  {t('labelReferralReferralsRefunds')}
-                </Typography>
-                <Grid container marginY={2}>
-                  <Grid item md={4} xs={6}>
-                    <Typography
-                      component={'span'}
-                      color={'var(--color-text-third)'}
-                      variant={'body1'}
-                      paddingRight={isMobile ? '' : 2}
-                    >
-                      {t('labelReferralsTotalTradeNumber')}
-                      {refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
-                        <Typography
-                          variant={'inherit'}
-                          component={'span'}
-                          color={'textPrimary'}
-                          paddingLeft={1}
-                        >
-                          {refundData.summary?.tradeNum}
-                        </Typography>
-                      ) : (
-                        EmptyValueTag
-                      )}
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    md={4}
-                    xs={6}
-                    justifyContent={'space-evenly'}
-                    flexDirection={'column'}
-                    alignItems={'flex-end'}
-                    display={'flex '}
-                  >
-                    <Typography
-                      component={'span'}
-                      color={'var(--color-text-third)'}
-                      variant={'body1'}
-                      paddingRight={isMobile ? '' : 2}
-                    >
-                      {t('labelReferralsTotalRefund')}
-                      {refundData.summary?.totalValue ? (
-                        <Typography
-                          variant={'inherit'}
-                          component={'span'}
-                          color={'textPrimary'}
-                          paddingLeft={1}
-                        >
-                          {refundData.summary?.totalValue + ' LRC'}
-                        </Typography>
-                      ) : (
-                        EmptyValueTag
-                      )}
-                    </Typography>
-                  </Grid>
+                          <Typography
+                            component={'span'}
+                            color={'var(--color-text-third)'}
+                            variant={'body1'}
+                            paddingRight={isMobile ? '' : 2}
+                          >
+                            {t('labelReferralsTotalEarning')}
+                            {referralsData.summary?.totalValue ? (
+                              <Typography
+                                variant={'inherit'}
+                                component={'span'}
+                                color={'textPrimary'}
+                                paddingLeft={1}
+                              >
+                                {referralsData.summary?.totalValue + ' LRC'}
+                              </Typography>
+                            ) : (
+                              EmptyValueTag
+                            )}
+                          </Typography>
+                        </Grid>
 
-                  <Grid
-                    item
-                    md={4}
-                    xs={12}
-                    flexDirection={'row'}
-                    alignItems={'center'}
-                    display={'flex'}
-                    paddingTop={isMobile ? 1 : ''}
-                    justifyContent={isMobile ? 'space-between' : 'flex-end'}
-                  >
-                    <Typography
-                      component={'span'}
-                      color={'var(--color-text-third)'}
-                      variant={'body1'}
-                      paddingRight={isMobile ? '' : 2}
-                    >
-                      {t('labelReferralsClaimRefund')}
-
-                      {refundData.summary?.claimableValue ? (
-                        <Typography
-                          variant={'inherit'}
-                          component={'span'}
-                          color={'textPrimary'}
-                          paddingLeft={1}
+                        <Grid
+                          item
+                          md={4}
+                          xs={12}
+                          flexDirection={'row'}
+                          alignItems={'center'}
+                          display={'flex'}
+                          paddingTop={isMobile ? 1 : ''}
+                          justifyContent={isMobile ? 'space-between' : 'flex-end'}
                         >
-                          {refundData.summary?.claimableValue + ' LRC'}
-                        </Typography>
-                      ) : (
+                          <Typography
+                            component={'span'}
+                            color={'var(--color-text-third)'}
+                            variant={'body1'}
+                            paddingRight={isMobile ? '' : 2}
+                          >
+                            {t('labelReferralsClaimEarning')}
+                            {referralsData.summary?.claimableValue ? (
+                              <Typography
+                                paddingLeft={1}
+                                variant={'inherit'}
+                                component={'span'}
+                                color={'textPrimary'}
+                              >
+                                {referralsData.summary?.claimableValue + ' LRC'}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant={'inherit'}
+                                component={'span'}
+                                color={'var(--color-text-third)'}
+                              >
+                                {EmptyValueTag}
+                              </Typography>
+                            )}
+                          </Typography>
+                          {referralsData.summary?.claimableValue ? (
+                            <Button
+                              variant={'contained'}
+                              size={'small'}
+                              sx={{ marginLeft: 2 }}
+                              onClick={() => {
+                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                              }}
+                            >
+                              {t('labelClaimBtn')}
+                            </Button>
+                          ) : (
+                            <></>
+                          )}
+                        </Grid>
+                      </Grid>
+                      <ReferralsTable
+                        {...{
+                          rawData: referralsData.record,
+                          pagination: {
+                            pageSize: 8,
+                            total: referralsData.recordTotal,
+                          },
+                          getList: referralsData.getReferralsTableList,
+                          showloading: referralsData.showLoading,
+                        }}
+                      />
+                    </Box>
+                  </BoxStyled>
+                  <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>
+                    <Typography component={'h3'} variant={'h4'} marginY={2}>
+                      {t('labelReferralReferralsRefunds')}
+                    </Typography>
+                    <Grid container marginY={2}>
+                      <Grid item md={4} xs={6}>
                         <Typography
-                          variant={'inherit'}
                           component={'span'}
                           color={'var(--color-text-third)'}
+                          variant={'body1'}
+                          paddingRight={isMobile ? '' : 2}
                         >
-                          {EmptyValueTag}
+                          {t('labelReferralsTotalTradeNumber')}
+                          {refundData.summary?.tradeNum && refundData.summary?.tradeNum != '0' ? (
+                            <Typography
+                              variant={'inherit'}
+                              component={'span'}
+                              color={'textPrimary'}
+                              paddingLeft={1}
+                            >
+                              {refundData.summary?.tradeNum}
+                            </Typography>
+                          ) : (
+                            EmptyValueTag
+                          )}
                         </Typography>
-                      )}
-                    </Typography>
-                    {refundData.summary?.claimableValue ? (
-                      <Button
-                        variant={'contained'}
-                        size={'small'}
-                        sx={{ marginLeft: 2 }}
-                        onClick={() => {
-                          history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
-                        }}
+                      </Grid>
+                      <Grid
+                        item
+                        md={4}
+                        xs={6}
+                        justifyContent={'space-evenly'}
+                        flexDirection={'column'}
+                        alignItems={'flex-end'}
+                        display={'flex '}
                       >
-                        {t('labelClaimBtn')}
-                      </Button>
-                    ) : (
-                      <></>
-                    )}
-                  </Grid>
-                </Grid>
-                <Box display={'flex'} flexDirection={'column'}>
-                  <RefundTable
-                    {...{
-                      rawData: refundData.record,
-                      pagination: {
-                        pageSize: 8,
-                        total: refundData.recordTotal,
-                      },
-                      getList: refundData.getRefundTableList,
-                      showloading: refundData.showLoading,
-                    }}
-                  />
-                </Box>
-              </BoxStyled>
-            </>
-          )}
-        </BoxStyled>
-      </Container>
+                        <Typography
+                          component={'span'}
+                          color={'var(--color-text-third)'}
+                          variant={'body1'}
+                          paddingRight={isMobile ? '' : 2}
+                        >
+                          {t('labelReferralsTotalRefund')}
+                          {refundData.summary?.totalValue ? (
+                            <Typography
+                              variant={'inherit'}
+                              component={'span'}
+                              color={'textPrimary'}
+                              paddingLeft={1}
+                            >
+                              {refundData.summary?.totalValue + ' LRC'}
+                            </Typography>
+                          ) : (
+                            EmptyValueTag
+                          )}
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        md={4}
+                        xs={12}
+                        flexDirection={'row'}
+                        alignItems={'center'}
+                        display={'flex'}
+                        paddingTop={isMobile ? 1 : ''}
+                        justifyContent={isMobile ? 'space-between' : 'flex-end'}
+                      >
+                        <Typography
+                          component={'span'}
+                          color={'var(--color-text-third)'}
+                          variant={'body1'}
+                          paddingRight={isMobile ? '' : 2}
+                        >
+                          {t('labelReferralsClaimRefund')}
+
+                          {refundData.summary?.claimableValue ? (
+                            <Typography
+                              variant={'inherit'}
+                              component={'span'}
+                              color={'textPrimary'}
+                              paddingLeft={1}
+                            >
+                              {refundData.summary?.claimableValue + ' LRC'}
+                            </Typography>
+                          ) : (
+                            <Typography
+                              variant={'inherit'}
+                              component={'span'}
+                              color={'var(--color-text-third)'}
+                            >
+                              {EmptyValueTag}
+                            </Typography>
+                          )}
+                        </Typography>
+                        {refundData.summary?.claimableValue ? (
+                          <Button
+                            variant={'contained'}
+                            size={'small'}
+                            sx={{ marginLeft: 2 }}
+                            onClick={() => {
+                              history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                            }}
+                          >
+                            {t('labelClaimBtn')}
+                          </Button>
+                        ) : (
+                          <></>
+                        )}
+                      </Grid>
+                    </Grid>
+                    <Box display={'flex'} flexDirection={'column'}>
+                      <RefundTable
+                        {...{
+                          rawData: refundData.record,
+                          pagination: {
+                            pageSize: 8,
+                            total: refundData.recordTotal,
+                          },
+                          getList: refundData.getRefundTableList,
+                          showloading: refundData.showLoading,
+                        }}
+                      />
+                    </Box>
+                  </BoxStyled>
+                </>
+              )}
+            </BoxStyled>
+          </Container>
+        </>
+      ) : (
+        <ErrorPage messageKey={'error404'} />
+      )}
     </>
   )
 }
 export const ReferralRewardsPanel = () => {
   return <ReferView />
-  // <ViewAccountTemplate activeViewTemplate={<ReferView />} />;
 }

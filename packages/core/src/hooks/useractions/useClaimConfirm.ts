@@ -15,7 +15,12 @@ import { AccountStep, ClaimProps, useOpenModals } from '@loopring-web/component-
 import { useBtnStatus } from '../common'
 import React from 'react'
 import { volumeToCount } from '../help'
-import { useChargeFees, useWalletLayer2Socket, walletLayer2Service } from '../../services'
+import {
+  useChargeFees,
+  useWalletLayer2Socket,
+  walletLayer2Service,
+  claimServices,
+} from '../../services'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
 import { LoopringAPI } from '../../api_wrapper'
@@ -23,7 +28,6 @@ import { isAccActivated } from './useCheckAccStatus'
 import Web3 from 'web3'
 import { getTimestampDaysLater } from '../../utils'
 import { DAYS } from '../../defs'
-import { claimServices } from '../../services/claimServices'
 
 export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }, I>() => {
   const { exchangeInfo, chainId } = useSystem()
@@ -223,7 +227,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
             throw response
           }
-
           setShowAccount({
             isShow: true,
             step: AccountStep.ClaimWithdraw_In_Progress,
@@ -549,12 +552,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
       claimType,
       isNFT: claimToken?.isNft ? true : false,
       nftIMGURL: claimToken?.nftTokenInfo?.metadata?.imageSize.original,
-      // luckyTokenHash: claimToken?.luckyTokenHash
-
-      // nftIMGURL: claimValue.tradeType === TRADE_TYPE.NFT
-      //   ? claimValue
-      //   : undefined
-      // true,
     } as any as ClaimProps<any, any>,
   }
 }

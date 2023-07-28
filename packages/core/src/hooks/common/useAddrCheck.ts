@@ -5,8 +5,7 @@ import { AddressError, globalSetup, myLog } from '@loopring-web/common-resources
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
-import { LoopringAPI, RootState, store, useAccount, useSystem } from '../../index'
-import { useSelector } from 'react-redux'
+import { LoopringAPI, store, useAccount, useSystem } from '../../index'
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>('')
@@ -132,6 +131,7 @@ export const useAddressCheck = () => {
         clearTimeout(nodeTimer.current)
         nodeTimer.current = -1
       }
+      _address.current = ''
       setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
       myLog('address async', address, error)
       setRealAddr('')
@@ -201,7 +201,6 @@ export const useAddressCheck = () => {
 }
 
 export const useAddressCheckWithContacts = (checkEOA: boolean) => {
-  const contacts = useSelector((state: RootState) => state.contacts.contacts)
   const [address, setAddress] = React.useState<string>('')
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()

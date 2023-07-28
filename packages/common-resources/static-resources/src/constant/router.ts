@@ -6,11 +6,9 @@ import {
   MintIcon,
   ProfileIcon,
   RewardIcon,
-  // RewardIcon,
   SecurityIcon,
   VipIcon,
 } from '../svg'
-// import * as sdk from "@loopring-web/loopring-sdk";
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
 import { Exchange, WalletSite } from './setting'
@@ -640,7 +638,7 @@ export const leverageETHAdvice: InvestAdvice = {
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
-  desI18n: 'labelInvestLeverageETHDes',
+  desI18n: 'labelInvestLeverageETH',
   enable: true,
   project: 'TODO Pool',
   market: 'CIETH-ETH',
@@ -748,7 +746,11 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
 }
 
 export const AddAssetListMap = {
-  TAIKO: [AddAssetList.FromMyL1.key, AddAssetList.FromOtherL2.key],
+  TAIKO: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.FromOtherL2.key,
+    // AddAssetList.FromExchange.key,
+  ],
   ETHEREUM: [
     AddAssetList.FromMyL1.key,
     AddAssetList.BuyWithCard.key,
@@ -791,7 +793,7 @@ export const AssetL2TabIndex = {
     AssetTabIndex.Tokens,
     AssetTabIndex.Invests,
     AssetTabIndex.RedPacket,
-    // AssetTabIndex.Rewards,
+    AssetTabIndex.Rewards,
   ],
   GOERLI: [
     AssetTabIndex.Tokens,

@@ -6,7 +6,7 @@ import {
   useAccount,
   useTokenMap,
 } from '@loopring-web/core'
-import React, { useEffect } from 'react'
+import React from 'react'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
   CLAIM_TYPE,
@@ -21,7 +21,6 @@ import {
   ToastType,
   useOpenModals,
 } from '@loopring-web/component-lib'
-import { url } from 'inspector'
 
 export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecordsItem>({
   setToastOpen,
@@ -197,41 +196,6 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
         })
       }
     }
-    // if (resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING) {
-
-    // }
-    // if (resposne?.detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM) {
-    //   setShowRedPacket({
-    //     isShow: true,
-    //     info: {
-    //       ...item,
-    //       hash: item.hash,
-    //     },
-    //     step: RedPacketViewStep.OpenPanel,
-    //   });
-    // } else {
-    //   if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
-    //     setShowRedPacket({
-    //       isShow: true,
-    //       info: {
-    //         ...item,
-    //         hash: item.hash,
-    //       },
-    //       step: RedPacketViewStep.BlindBoxDetail,
-    //     });
-    //   } else {
-    //     setShowRedPacket({
-    //       isShow: true,
-    //       info: {
-    //         ...item,
-    //         hash: item.hash,
-    //       },
-    //       step: RedPacketViewStep.DetailPanel,
-    //     });
-
-    //   }
-
-    // }
   }
 
   return {
@@ -241,19 +205,13 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
     showLoading,
     getMyRedPacketRecordTxList,
     myRedPacketRecordTotal,
-    // pagination,
-    // updateTickersUI,
   }
 }
 
 export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketReceivesItem>({
   setToastOpen,
-}: // showActionableRecords
-// tabType,
-{
+}: {
   setToastOpen: (props: any) => void
-  // showActionableRecords: boolean
-  // tabType: TabTokenTypeIndex;
 }) => {
   const { t } = useTranslation(['error'])
 
@@ -413,8 +371,6 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
           luckyTokenHash: item.luckyToken.hash,
         },
         claimType: CLAIM_TYPE.redPacket,
-        // TODO  successCallback remove
-        // successCallback: successCallback,
       })
     }
   }
@@ -522,16 +478,8 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
     },
     [accountId, apiKey, setToastOpen, t, idIndex],
   )
-  //TODO subscribe RefreshService here
 
-  const onItemClick = async (
-    item: sdk.LuckyTokenBlindBoxItemReceive,
-    pageInfo?: { offset: number; limit: number; filter: any },
-  ) => {
-    //TODO RefreshService
-    // const refreshCallback = () => {
-    //   getRedPacketReceiveList(pageInfo)
-    // }
+  const onItemClick = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
     setShowRedPacket({
       isShow: true,
       step: RedPacketViewStep.BlindBoxDetail,

@@ -25,9 +25,6 @@ const Styled = styled(Box)`
     align-content: space-between;
   }
 `
-// ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--color-box-secondary)',d_R:1/2, d_W: 1 })};
-
-// ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_W: 1 })};
 const suffix = '%'
 
 const InputStyled = styled(CurrencyInput)`

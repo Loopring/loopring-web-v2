@@ -6,6 +6,7 @@ import {
   getValuePrecisionThousand,
   HelpIcon,
   IBData,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -17,7 +18,7 @@ import {
 import { DeFiWrapProps } from './Interface'
 import { Trans, useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import { InputCoin } from '../../../basic-lib'
 import { ButtonStyle, IconButtonStyled } from '../Styled'
 import { CountDownIcon } from '../tool/Refresh'
@@ -391,9 +392,17 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                  {t('labelAPR')}
-                </Typography>
+                <Box display={"flex"} flexDirection={"row"} >
+                  <Typography marginRight={0.5} component={'p'} variant='body2' color={'textSecondary'}>
+                    {t('labelAPR')}
+                  </Typography>
+                  
+                  <Tooltip title={t('labelLRCStakeAPRTooltips')}>
+                    <span>
+                      <Info2Icon />
+                    </span>
+                  </Tooltip>
+                </Box>
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
                   {apr ? `${apr}%` : EmptyValueTag}
                 </Typography>
