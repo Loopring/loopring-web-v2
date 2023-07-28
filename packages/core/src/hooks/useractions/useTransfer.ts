@@ -53,8 +53,8 @@ import {
   volumeToCountAsBigNumber,
   useTokenPrices,
   useIsHebao,
-  useAddressCheckWithContacts,
   createImageFromInitials,
+  useAddressCheck,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
@@ -186,7 +186,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       memo: e.target.value,
     })
   }, [])
-
+  //TODO
   const {
     address,
     realAddr,
@@ -200,7 +200,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isContractAddress,
     loopringSmartWalletVersion,
     reCheck,
-  } = useAddressCheckWithContacts(true)
+  } = useAddressCheck(true)
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {

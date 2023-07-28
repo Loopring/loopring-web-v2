@@ -35,7 +35,7 @@ import {
   makeWalletLayer2,
   store,
   useAccount,
-  useAddressCheckWithContacts,
+  useAddressCheck,
   useBtnStatus,
   useChargeFees,
   useIsHebao,
@@ -139,7 +139,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isLoopringAddress,
     isAddressCheckLoading,
     loopringSmartWalletVersion,
-  } = useAddressCheckWithContacts(false)
+  } = useAddressCheck(false)
 
   React.useEffect(() => {
     // setSureIsAllowAddress(undefined);
