@@ -763,7 +763,7 @@ const resources = {
   en_US: {
     common: {
       labelNavZkRollupLayer2: 'zkRollup Layer 2',
-      labelNavWallet: 'Wallet Guardian',
+      labelNavWallet: 'Wallet APP',
       labelNavLanuch: 'Launch App',
       labelAbout: 'About',
       labelLoopringOrg: 'Loopring.org',
@@ -780,41 +780,29 @@ const resources = {
       labelVIPProgram: 'VIP Program',
       labelReferrals: 'Referrals',
       labelDevelopers: 'Developers',
+      labelDeveloper: 'Developer',
       labelSmartContracts: 'Smart Contracts',
       labelAPIs: 'APIs',
       labelLayer2Explorer: 'Layer 2 Explorer',
       labelBugBounty: 'Bug Bounty',
       labelSubgraph: 'Subgraph',
       labelFollowus: 'Follow us',
-      labelEthereumUnleashed: 'Ethereum Unleashed',
-      labelGatewayToEthereum: 'Your Gateway to Ethereum, DeFi, \n NFTs, and Financial Freedom',
-      labelIOS: 'iOS',
-      labelAndroid: 'Android',
-      labelGooglePlay: 'Google Play',
-      labelFeature1: 'Fast, Secure, and 100x \nLower Fees',
-      labelFeatureDes1:
-        'Experience DeFi as it should be - fast and affordable. Built with zkRollups,  Loopring provides instant transactions at 100x  lower fees than Ethereum without sacrificing any of its security.',
-      labelFeature2: 'Invest, Stake, and Earn',
-      labelFeatureDes2:
-        'Easily earn yield on your  crypto. Your funds never leave your wallet and can be accessed at any time.',
-      labelFeature3: 'Dual Investment',
-      labelFeatureDes3:
-        'Buy Low or Sell High. Get rewarded no matter which direction the market moves.',
-      labelFeature4: 'Buy Crypto on L2',
-      labelFeatureDes4:
-        'Use card, bank transfer, or Apple Pay without ever having to leave your wallet.',
-      labelFeature5: 'Your Personal Vault',
-      labelFeatureDes5:
-        'Forget seed phrases.  Choose people, institutions, and hardware you trust to be your Guardians. Set limits on daily  transfers or even lock your wallet if needed. You’re always in control.',
-      labelFeature6: 'Manage and Display \nYour NFT Collection',
-      labelFeatureDes6:
-        'Immerse yourself in the world of unique digital assets. Safeguard your growing collection, all while enjoying easy access to your favorite marketplaces.',
-      labelFeature7: 'Digital Red Packets',
-      labelFeatureDes7:
-        'Create memorable experiences for friends, family, and your community. Red Packets are perfect for gifts, social events, gaming rewards, airdrops, and more!',
-      labelFeatureDes8: 'Loopring Wallet',
-      labelFeatureDes8_2: 'Crypto exchange on the go',
+      labelDocumentation: 'Documentation',
+      labelLoopring: 'Loopring',
+      labelDeveloper1: 'Developer',
+      labelTitleDes:
+        'Our API, SDK, and step-by-step references to building, minting, and trading on Loopring',
       labelCopyRight: '© 2017 Loopring Technology Limited. All rights reserved.',
+      labelLearnMore: 'Learn More',
+      labelLoopringWalletDes: 'Your gateway to Ethereum, DeFi, NFTs, and Financial Freedom.',
+      labelDappDes:
+        'Explore the Loopring DEX, Earn, and NFT Management. Powered by zkRollups, experience instant transactions with 100x lower fees than Ethereum without sacrificing any of its security.',
+      labelGuardians: 'Set up Guardians for social recovery',
+      labelCloudbackup: 'Cloud backup',
+      label2FA: 'Two-Factor Authentication (2FA)',
+      labelActivate: 'How to connect a wallet and activate your Loopring account',
+      labelMintNFT: 'How to mint an NFT',
+      labelLoopringEarn: 'How to participate "Loopring Earn"',
     },
   },
   // zh_CN: {...zhCN},
@@ -824,6 +812,7 @@ const resources = {
 const initLng = 'en_US'
 console.log('en_US')
 const settingPersist = 'persist:settings'
+const basicUrl = 'https://static.loopring.io/assets/images/landPage/'
 ;(function init() {
   let searchParam = window.location.search
   const searchParams = new URLSearchParams(searchParam)
@@ -848,48 +837,18 @@ const settingPersist = 'persist:settings'
     }
   }
   const onColorChangeLoaded = (value = 'dark') => {
-    const basicUrl = 'https://static.loopring.io/assets/images/landPage/'
     const imageEnd = value !== 'light' ? '.png' : '_light' + '.png'
-    document
-      .getElementById('imageChang1')
-      .setAttribute('src', basicUrl + 'wallet_banner1' + imageEnd)
-    document
-      .getElementById('imageChang2')
-      .setAttribute('src', basicUrl + 'wallet_banner2' + imageEnd)
-    document
-      .getElementById('imageChang3')
-      .setAttribute('src', basicUrl + 'wallet_banner3' + imageEnd)
-    // document
-    //   .getElementById("imageChang4")
-    //   .setAttribute("src", basicUrl + "wallet_banner3" + imageEnd);
-    document
-      .getElementById('imageSection1')
-      .setAttribute('src', basicUrl + 'wallet_section1' + imageEnd)
-    document
-      .getElementById('imageSection2')
-      .setAttribute('src', basicUrl + 'wallet_section2' + imageEnd)
-    document
-      .getElementById('imageSection3')
-      .setAttribute('src', basicUrl + 'wallet_section3' + imageEnd)
-    document
-      .getElementById('imageSection4')
-      .setAttribute('src', basicUrl + 'wallet_section4' + imageEnd)
-    document
-      .getElementById('imageSection5')
-      .setAttribute('src', basicUrl + 'wallet_section5' + imageEnd)
-    document
-      .getElementById('imageSection6')
-      .setAttribute('src', basicUrl + 'wallet_section6' + imageEnd)
-    document
-      .getElementById('imageSection7' + '')
-      .setAttribute('src', basicUrl + 'wallet_section7' + imageEnd)
-    document.getElementById('bgContent').innerHTML =
-      value !== 'light'
-        ? svgGroup.blackSvg + svgGroup.darkSvgBG
-        : svgGroup.lightSvg + svgGroup.lightSvgBG
-    document.getElementById('changeColor').innerHTML =
-      value !== 'light' ? svgGroup.DarkIcon : svgGroup.LightIcon
-    document.getElementById('changeColor').setAttribute('data-theme', themeMode)
+
+    document.getElementById('bgContent').style = `
+    background:url(${basicUrl}api_bg.webp) center 104px no-repeat;
+     background-size:50%;
+    `
+    // value !== 'light'
+    //   ? svgGroup.blackSvg + svgGroup.darkSvgBG
+    //   : svgGroup.lightSvg + svgGroup.lightSvgBG
+    // document.getElementById('changeColor').innerHTML =
+    //   value !== 'light' ? svgGroup.DarkIcon : svgGroup.LightIcon
+    // document.getElementById('changeColor').setAttribute('data-theme', themeMode)
   }
 
   onColorChange(themeMode !== 'dark' ? 'light' : 'dark')
@@ -907,8 +866,10 @@ const settingPersist = 'persist:settings'
     i18next.changeLanguage('en_US')
   }
   const updateI18n = () => {
-    document.getElementById('labelNavZkRollupLayer2').innerHTML =
-      i18next.t('labelNavZkRollupLayer2')
+    // document.getElementById("labelNavZkRollupLayer2").innerHTML = i18next.t(
+    //   "labelNavZkRollupLayer2"
+    // );
+    document.getElementById('labelDeveloper').innerHTML = i18next.t('labelDeveloper')
     document.getElementById('labelNavWallet').innerHTML = i18next.t('labelNavWallet')
     document.getElementById('labelNavLanuch').innerHTML = i18next.t('labelNavLanuch')
     document.getElementById('labelAbout').innerHTML = i18next.t('labelAbout')
@@ -932,43 +893,33 @@ const settingPersist = 'persist:settings'
     document.getElementById('labelBugBounty').innerHTML = i18next.t('labelBugBounty')
     document.getElementById('labelSubgraph').innerHTML = i18next.t('labelSubgraph')
     document.getElementById('labelFollowus').innerHTML = i18next.t('labelFollowus')
-    document.getElementById('labelEthereumUnleashed').innerHTML =
-      i18next.t('labelEthereumUnleashed')
-    document.getElementById('labelGatewayToEthereum').innerHTML =
-      i18next.t('labelGatewayToEthereum')
-    document.getElementById('labelIOS').innerHTML = i18next.t('labelIOS')
-    document.getElementById('labelAndroid').innerHTML = i18next.t('labelAndroid')
-    document.getElementById('labelGooglePlay').innerHTML = i18next.t('labelGooglePlay')
-    document.getElementById('labelIOS2').innerHTML = i18next.t('labelIOS')
-    document.getElementById('labelAndroid2').innerHTML = i18next.t('labelAndroid')
-    document.getElementById('labelGooglePlay2').innerHTML = i18next.t('labelGooglePlay')
-    document.getElementById('labelFeature1').innerHTML = i18next.t('labelFeature1')
-    document.getElementById('labelFeatureDes1').innerHTML = i18next.t('labelFeatureDes1')
-    document.getElementById('labelFeature2').innerHTML = i18next.t('labelFeature2')
-    document.getElementById('labelFeatureDes2').innerHTML = i18next.t('labelFeatureDes2')
-    document.getElementById('labelFeature3').innerHTML = i18next.t('labelFeature3')
-    document.getElementById('labelFeatureDes3').innerHTML = i18next.t('labelFeatureDes3')
-    document.getElementById('labelFeature4').innerHTML = i18next.t('labelFeature4')
-    document.getElementById('labelFeatureDes4').innerHTML = i18next.t('labelFeatureDes4')
-    document.getElementById('labelFeature5').innerHTML = i18next.t('labelFeature5')
-    document.getElementById('labelFeatureDes5').innerHTML = i18next.t('labelFeatureDes5')
-    document.getElementById('labelFeature6').innerHTML = i18next.t('labelFeature6')
-    document.getElementById('labelFeatureDes6').innerHTML = i18next.t('labelFeatureDes6')
-    document.getElementById('labelFeature7').innerHTML = i18next.t('labelFeature7')
-    document.getElementById('labelFeatureDes7').innerHTML = i18next.t('labelFeatureDes7')
-    document.getElementById('labelFeatureDes8').innerHTML = i18next.t('labelFeatureDes8')
-    document.getElementById('labelFeatureDes8_2').innerHTML = i18next.t('labelFeatureDes8_2')
+    document.getElementById('labelLoopring').innerHTML = i18next.t('labelLoopring')
+    document.getElementById('labelDeveloper1').innerHTML = i18next.t('labelDeveloper1')
+    document.getElementById('labelTitleDes').innerHTML = i18next.t('labelTitleDes')
+
+    document.getElementById('labelDocumentation').innerHTML = i18next.t('labelDocumentation')
     document.getElementById('labelCopyRight').innerHTML = i18next.t('labelCopyRight')
+    document.getElementById('labelLearnMore').innerHTML = i18next.t('labelLearnMore')
+    document.getElementById('labelLearnMore2').innerHTML = i18next.t('labelLearnMore')
+    document.getElementById('labelLoopringWalletDes').innerHTML =
+      i18next.t('labelLoopringWalletDes')
+    document.getElementById('labelDappDes').innerHTML = i18next.t('labelDappDes')
+    document.getElementById('labelGuardians').innerHTML = i18next.t('labelGuardians')
+    document.getElementById('labelCloudbackup').innerHTML = i18next.t('labelCloudbackup')
+    document.getElementById('label2FA').innerHTML = i18next.t('label2FA')
+    document.getElementById('labelActivate').innerHTML = i18next.t('labelActivate')
+    document.getElementById('labelMintNFT').innerHTML = i18next.t('labelMintNFT')
+    document.getElementById('labelLoopringEarn').innerHTML = i18next.t('labelLoopringEarn')
   }
 
   const upLoadSvg = () => {
     document.getElementById('logSvg').innerHTML = svgGroup.logSvg
-    document.getElementById('iconIos').innerHTML = svgGroup.ios
-    document.getElementById('iconAndroid').innerHTML = svgGroup.android
-    document.getElementById('iconGooglePlay').innerHTML = svgGroup.googlePlay
-    document.getElementById('iconIos2').innerHTML = svgGroup.ios
-    document.getElementById('iconAndroid2').innerHTML = svgGroup.android
-    document.getElementById('iconGooglePlay2').innerHTML = svgGroup.googlePlay
+    // document.getElementById('iconIos').innerHTML = svgGroup.ios
+    // document.getElementById('iconAndroid').innerHTML = svgGroup.android
+    // document.getElementById('iconGooglePlay').innerHTML = svgGroup.googlePlay
+    // document.getElementById('iconIos2').innerHTML = svgGroup.ios
+    // document.getElementById('iconAndroid2').innerHTML = svgGroup.android
+    // document.getElementById('iconGooglePlay2').innerHTML = svgGroup.googlePlay
     document.getElementById('youtubeIcon').innerHTML = svgGroup.youtubeIcon
     document.getElementById('twitterIcon').innerHTML = svgGroup.twitterIcon
     document.getElementById('mediumIcon').innerHTML = svgGroup.mediumIcon
@@ -1006,38 +957,38 @@ const settingPersist = 'persist:settings'
     onlanguagechange(i18nLng)
     onColorChangeLoaded(themeMode)
 
-    const handleScroll = () => {
-      const imgs = document.getElementsByClassName('scroll-up-img')
-      for (let index = 0; index < imgs.length; index++) {
-        const img = imgs.item(index)
-        if (img.getBoundingClientRect().top < window.innerHeight) {
-          img.style.opacity = 1
-          img.style.transform = 'translateY(0)'
-        }
-      }
-    }
-    setTimeout(() => {
-      handleScroll()
-    }, 50)
+    // const handleScroll = () => {
+    //   const imgs = document.getElementsByClassName("scroll-up-img");
+    //   for (let index = 0; index < imgs.length; index++) {
+    //     const img = imgs.item(index);
+    //     if (img.getBoundingClientRect().top < window.innerHeight) {
+    //       img.style.opacity = 1;
+    //       img.style.transform = "translateY(0)";
+    //     }
+    //   }
+    // };
+    // setTimeout(() => {
+    //   handleScroll();
+    // }, 50);
+    //
+    // window.addEventListener("scroll", handleScroll);
+    // let clear = -1;
+    // var options = document.getElementsByName("slider"); //.options;
 
-    window.addEventListener('scroll', handleScroll)
-    let clear = -1
-    var options = document.getElementsByName('slider') //.options;
+    // function loopScroll() {
+    //   if (clear !== -1) {
+    //     clearTimeout(clear)
+    //   }
+    //   let i = [].slice.call(options).findIndex((item) => item.checked == true)
+    //   let next = i + 1
+    //   options[options.length - next > 0 ? next : 0].checked = true
+    //   clear = setTimeout(() => {
+    //     if (window.innerWidth < 768) {
+    //       loopScroll()
+    //     }
+    //   }, 3000)
+    // }
 
-    function loopScroll() {
-      if (clear !== -1) {
-        clearTimeout(clear)
-      }
-      let i = [].slice.call(options).findIndex((item) => item.checked == true)
-      let next = i + 1
-      options[options.length - next > 0 ? next : 0].checked = true
-      clear = setTimeout(() => {
-        if (window.innerWidth < 768) {
-          loopScroll()
-        }
-      }, 3000)
-    }
-
-    loopScroll()
+    // loopScroll()
   }
 })()
