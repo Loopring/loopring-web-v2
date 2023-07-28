@@ -6,11 +6,9 @@ import {
   MintIcon,
   ProfileIcon,
   RewardIcon,
-  // RewardIcon,
   SecurityIcon,
   VipIcon,
 } from '../svg'
-// import * as sdk from "@loopring-web/loopring-sdk";
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
 import { Exchange, WalletSite } from './setting'
@@ -391,11 +389,11 @@ export const leverageETHConfig = {
     ETHEREUM: ['CIETH'],
     GOERLI: ['WSTETH'],
   },
-  types : {
+  types: {
     TAIKO: [] as string[],
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
-  }
+  },
 }
 
 export const subMenuNFT = {
