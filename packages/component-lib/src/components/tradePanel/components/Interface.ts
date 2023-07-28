@@ -173,15 +173,11 @@ export type DepositExtendProps<T> = {
   isHideDes?: boolean
   allowTrade?: any
   toAddressStatus: AddressError
-  referStatus: AddressError
   isAllowInputToAddress?: boolean
   onDepositClick: (data: T) => void
   toIsAddressCheckLoading: boolean
   // toIsLoopringAddress: boolean;
   realToAddress?: string
-  referIsAddressCheckLoading: boolean
-  referIsLoopringAddress?: boolean
-  realReferAddress?: string
   handleClear: () => void
   isToAddressEditable: boolean
   onBack?: () => void
