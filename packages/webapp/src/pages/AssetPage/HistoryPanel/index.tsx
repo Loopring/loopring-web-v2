@@ -5,7 +5,6 @@ import {
   AmmTable,
   BtradeSwapTable,
   Button,
-  ComingSoonPanel,
   DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
