@@ -21,6 +21,7 @@ import { ColumnCoinDeep } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 import TextTooltip from './textTooltip'
 import { useTheme } from '@emotion/react'
+import { redpacketService } from '@loopring-web/core'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -220,9 +221,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                 <Button
                   onClick={(e) => {
                     e.stopPropagation()
-                    onClaimItem(row.rawData, () => {
-                      handlePageChange({ page })
-                    })
+                    onClaimItem(row.rawData)
                   }}
                 >
                   {t('labelBlindBoxCalim')}
@@ -339,9 +338,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                       <Button
                         onClick={(e) => {
                           e.stopPropagation()
-                          onClaimItem(row.rawData, () => {
-                            handlePageChange({ page })
-                          })
+                          onClaimItem(row.rawData)
                         }}
                       >
                         {t('labelBlindBoxCalim')}
@@ -378,6 +375,23 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
+    const onRefresh = React.useCallback(() => {
+      if (tokenType === TokenType.nft) {
+        updateData({
+          page,
+          filter: { isNft: tokenType === TokenType.nft },
+        })
+      }
+    }, [page, tokenType])
+    const subject = React.useMemo(() => redpacketService.onRefresh(), [])
+    React.useEffect(() => {
+      const subscription = subject.subscribe(() => {
+        onRefresh()
+      })
+      return () => {
+        subscription.unsubscribe()
+      }
+    }, [])
 
     return (
       <TableWrapperStyled>
@@ -387,9 +401,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
           currentheight={RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight}
           rowHeight={RowConfig.rowHeight}
           onRowClick={(_index: number, row: R) => {
-            onItemClick(row.rawData, () => {
-              handlePageChange({ page })
-            })
+            onItemClick(row.rawData)
           }}
           sortMethod={React.useCallback(
             (_sortedRows, sortColumn) => {

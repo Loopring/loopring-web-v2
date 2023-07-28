@@ -1796,7 +1796,7 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
-  labelClaimallToken: 'Reward token {{symbol}}',
+  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
@@ -1809,7 +1809,7 @@ export default {
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
   labelDefiSubscribe: 'Subscribe',
-  
+
   labelDefiMaxBalance1Leverage:
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
@@ -1819,4 +1819,5 @@ export default {
   labelLeverageETHStaking: 'Leveraged ETH Staking',
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
+  labelRewardRefresh: 'Refresh',
 }

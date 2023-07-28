@@ -54,30 +54,18 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     onCloseNFts,
   } = useClaimRedPacket(setToastOpen)
   const {
-    page,
     onItemClick: onItemNFTClick,
     redPacketNFTClaimList,
     showLoading: showNFTLoading,
     getClaimNFTRedPacket,
-    redPacketNFTClaimTotal,
   } = useClaimNFTRedPacket({ setToastOpen })
-  let match: any = useRouteMatch('/l2assets/assets/RedPacket/:item')
 
   React.useEffect(() => {
     if (getClaimRedPacket && walletLayer2Status === SagaStatus.UNSET) {
       getClaimRedPacket()
     }
   }, [walletLayer2Status])
-  //TODO:
-  const [pageSize, setPageSize] = React.useState(500)
 
-  React.useEffect(() => {
-    let height = container?.current?.offsetHeight
-    if (height) {
-      const pageSize = Math.floor(height / RowConfig.rowHeight) - 3
-      setPageSize(pageSize)
-    }
-  }, [container?.current?.offsetHeight])
   const { account } = useAccount()
   const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] = React.useState(
     undefined as number | undefined,

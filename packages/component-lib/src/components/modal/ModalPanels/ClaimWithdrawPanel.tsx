@@ -114,7 +114,7 @@ export const ClaimWithdrawPanel = withTranslation(['common', 'error'], {
             {t('labelRedPacketFrom')}
           </Typography>
           <Typography component={'span'} variant={'body1'} color={'var(--color-text-primary)'}>
-            {t(`labelClaim${claimType}`)}
+            {t(`labelClaim${claimType}`, { symbol: tradeData?.belong })}
           </Typography>
         </Grid>
 
