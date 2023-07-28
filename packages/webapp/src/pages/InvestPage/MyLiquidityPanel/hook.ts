@@ -57,7 +57,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   stakedSymbol: string
 } => {
   const { account, status: accountStatus } = useAccount()
-  const { getUserRewards } = useUserRewards()
   const { status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
   const { tokenMap } = useTokenMap()
   const { marketCoins: defiCoinArray, marketLeverageCoins: leverageETHCoinArray } = useDefiMap()
@@ -204,7 +203,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       walletLayer2Service.sendUserUpdate()
       const account = store.getState().account
       if (account.readyState == AccountStatus.ACTIVATED) {
-        getUserRewards()
         getStakingList({})
         makeDefiInvestReward().then((summaryDefiReward) => {
           if (mountedRef.current) {
