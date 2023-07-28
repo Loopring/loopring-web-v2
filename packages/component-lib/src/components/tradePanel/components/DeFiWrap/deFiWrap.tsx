@@ -6,6 +6,7 @@ import {
   getValuePrecisionThousand,
   HelpIcon,
   IBData,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -17,7 +18,7 @@ import {
 import { DeFiWrapProps } from './Interface'
 import { Trans, useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import { InputCoin } from '../../../basic-lib'
 import { ButtonStyle, IconButtonStyled } from '../Styled'
 import { CountDownIcon } from '../tool/Refresh'
@@ -64,6 +65,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   title,
   isLeverageETH,
   extraWithdrawFee,
+  apr,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -245,7 +247,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         { floor: true },
       ) + ` ${tokenBuy.symbol}`
     : EmptyValueTag
-
+  
   return (
     <Grid
       className={deFiCalcData ? '' : 'loading'}
@@ -382,6 +384,30 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       <Grid item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
+            {isLeverageETH && (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                marginTop={1 / 2}
+              >
+                <Box display={"flex"} flexDirection={"row"} >
+                  <Typography marginRight={0.5} component={'p'} variant='body2' color={'textSecondary'}>
+                    {t('labelAPR')}
+                  </Typography>
+                  
+                  <Tooltip title={t('labelLRCStakeAPRTooltips')}>
+                    <span>
+                      <Info2Icon />
+                    </span>
+                  </Tooltip>
+                </Box>
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                  {apr ? `${apr}%` : EmptyValueTag}
+                </Typography>
+              </Grid>
+            )}
             <Grid
               container
               justifyContent={'space-between'}

@@ -207,6 +207,7 @@ const MyLiquidity: any = withTranslation('common')(
         (hideSmallBalances ? !o.smallBalance : true)
       )
     })
+    
     const totalClaimableRewardsAmount =
       totalClaimableRewards && totalClaimableRewards !== '0'
         ? getValuePrecisionThousand(

@@ -342,6 +342,7 @@ export const InvestOpenType = [
   InvestMapType.STAKE,
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
+  InvestMapType.LEVERAGEETH,
   // InvestMapType.BTradeInvest,
 ]
 

@@ -385,20 +385,17 @@ export const defiMarkets = {
   ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
   GOERLI: ['RETH-ETH'],
 }
-export const leverageETHMarkets = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['CIETH-ETH'],
-  GOERLI: ['WSTETH-ETH'],
-}
-export const leverageETHCoins = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['CIETH'],
-  GOERLI: ['WSTETH'],
-}
-export const leverageETHTypes = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['cian'],
-  GOERLI: ['lido'],
+export const leverageETHConfig = {
+  coins: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['CIETH'],
+    GOERLI: ['WSTETH'],
+  },
+  types : {
+    TAIKO: [] as string[],
+    ETHEREUM: ['cian'],
+    GOERLI: ['lido'],
+  }
 }
 
 export const subMenuNFT = {
@@ -643,7 +640,7 @@ export const leverageETHAdvice: InvestAdvice = {
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
-  desI18n: 'labelInvestLeverageETHDes',
+  desI18n: 'labelInvestLeverageETH',
   enable: true,
   project: 'TODO Pool',
   market: 'CIETH-ETH',
