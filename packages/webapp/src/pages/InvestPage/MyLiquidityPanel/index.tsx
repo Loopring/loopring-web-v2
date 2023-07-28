@@ -211,7 +211,7 @@ const MyLiquidity: any = withTranslation('common')(
         : getValuePrecisionThousand(
             sdk
               .toBig(
-                totalClaims['LRC']?.find(
+                totalClaims['LRC']?.detail?.find(
                   (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.LRC_STAKING,
                 )?.amount ?? 0,
               )
