@@ -445,7 +445,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             </Box>
           ) : currentTab === RecordTabIndex.leverageETHRecords ? (
             <DefiTxsTable
-              key={"leverage"}
+              key={'leverage'}
               {...{
                 rawData: leverageETHList,
                 pagination: {
