@@ -134,13 +134,6 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
       tradeCalcProData && tradeCalcProData.tradeCost
         ? `${tradeCalcProData.tradeCost} ${tradeData.quote?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
         : EmptyValueTag
-    // const minimumReceived = tradeCalcProData && tradeCalcProData.minimumReceived ? tradeCalcProData.minimumReceived : EmptyValueTag
-    const minimumReceived =
-      tradeCalcProData && tradeCalcProData.minimumReceived
-        ? `${tradeCalcProData.minimumReceived}  ${
-            tradeType === TradeProType.buy ? tradeData.base.belong : tradeData.quote.belong
-          }`
-        : EmptyValueTag
     const minimumConverted =
       tradeCalcProData && tradeCalcProData.minimumConverted
         ? `${tradeCalcProData.minimumConverted}  ${
