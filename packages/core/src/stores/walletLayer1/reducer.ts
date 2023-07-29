@@ -20,11 +20,13 @@ const walletLayer1Slice: Slice = createSlice({
     },
     getWalletLayer1Status(state, action: PayloadAction<{ walletLayer1: WalletLayer1Map<object> }>) {
       // @ts-ignore
-      if (action.error) {
+      if (action.payload.error) {
         state.status = SagaStatus.ERROR
         // @ts-ignore
-        state.errorMessage = action.error
+        state.errorMessage = action.payload.error
+        return
       }
+      state.errorMessage = undefined
       state.walletLayer1 = { ...action.payload.walletLayer1 }
       state.status = SagaStatus.DONE
     },
