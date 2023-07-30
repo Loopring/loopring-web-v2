@@ -737,6 +737,7 @@ export const MyPoolTable = withTranslation('tables')(
               </Typography>
             ) : (
               <Button
+                sx={{ paddingRight: 3 }}
                 onClick={() => {
                   getUserRewards && getUserRewards()
                 }}
