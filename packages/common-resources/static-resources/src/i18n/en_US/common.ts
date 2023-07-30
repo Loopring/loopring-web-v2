@@ -1803,9 +1803,8 @@ export default {
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
   labelGo: 'Go',
   labelAnotherNetworkDes2:
-    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address.',
-  labelAnotherNetworkDes3:
-    'If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address; else you will lose that asset for ever.',
+    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than ethereum, the recipient address must be different than the sender address; else you will lose that asset for ever.',
+  labelAnotherNetworkDes3: '',
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
   labelDefiSubscribe: 'Subscribe',

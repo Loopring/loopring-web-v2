@@ -1161,22 +1161,22 @@ export const AnotherNetworkNotice = withTranslation('common', {
               recipient address must be different than the sender address.
             </Trans>
           </DialogContentText>
-          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
-            <Trans
-              i18nKey={'labelAnotherNetworkDes3'}
-              tOptions={{
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-              }}
-            >
-              If you want to send token to network other than l1ChainName, the recipient address
-              must be different than the sender address; else you will lose that asset for ever.
-            </Trans>
-          </DialogContentText>
+          {/*<DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>*/}
+          {/*  <Trans*/}
+          {/*    i18nKey={'labelAnotherNetworkDes3'}*/}
+          {/*    tOptions={{*/}
+          {/*      layer2: L1L2_NAME_DEFINED[network].layer2,*/}
+          {/*      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,*/}
+          {/*      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,*/}
+          {/*      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,*/}
+          {/*      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,*/}
+          {/*      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    If you want to send token to network other than l1ChainName, the recipient address*/}
+          {/*    must be different than the sender address; else you will lose that asset for ever.*/}
+          {/*  </Trans>*/}
+          {/*</DialogContentText>*/}
 
           <MuiFormControlLabel
             control={
@@ -1500,7 +1500,7 @@ export const ConfirmDefiNOBalance = withTranslation('common')(
     market,
     type,
     handleClose,
-    isLeverage
+    isLeverage,
   }: WithTranslation & {
     open: boolean
     type: symbol
