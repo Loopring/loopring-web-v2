@@ -165,7 +165,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
 
   const debounceCheck = _.debounce(
     async (address) => {
-      myLog('address sync', address)
+      myLog('address update sync', address)
       const found = store
         .getState()
         .contacts?.contacts?.find((contact) => contact.address === address)

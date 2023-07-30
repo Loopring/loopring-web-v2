@@ -273,6 +273,10 @@ export const IInput = styled(CurrencyInput)`
     color: var(--color-text-disable);
   }
 
+  .loading:disabled {
+    color: var(--color-text-primary);
+  }
+
   width: 100%;
   height: 100%;
   border: 0;

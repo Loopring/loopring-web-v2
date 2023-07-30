@@ -81,7 +81,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   >(undefined)
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] = React.useState<boolean>(false)
-
+  // const _updateWithdrawData = _.debounce((data) => {
+  //   const _withdrawValue = store.getState()._router_modalData.withdrawValue
+  //   updateWithdrawData({ ...data, ..._withdrawValue })
+  // }, globalSetup.wait)
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -108,11 +111,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       if (
         withdrawValue.withdrawType == _withdrawValue.withdrawType &&
         withdrawValue.belong == _withdrawValue.belong &&
-        ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
-          amount == _withdrawValue.tradeValue) ||
-          withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+        amount == _withdrawValue.tradeValue
+        // ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
+        //     amount == _withdrawValue.tradeValue ) ||
+        //   withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
       ) {
         updateWithdrawData({ ..._withdrawValue, fee })
+        // _updateWithdrawData({ ..._withdrawValue, fee })
       }
     },
   })
@@ -378,16 +383,20 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
   }, [isShow, accountStatus])
 
-  const _checkFeeIsEnough = _.debounce(() => {
-    const { tradeValue: amount, withdrawType } = store.getState()._router_modalData.withdrawValue
-    checkFeeIsEnough({
-      isRequiredAPI: true,
-      intervalTime: LIVE_FEE_TIMES,
-      amount,
-      requestType: withdrawType,
-      needAmountRefresh: withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-    })
-  }, globalSetup.wait)
+  const _checkFeeIsEnough = _.debounce(
+    () => {
+      const { tradeValue: amount, withdrawType } = store.getState()._router_modalData.withdrawValue
+      checkFeeIsEnough({
+        isRequiredAPI: true,
+        intervalTime: LIVE_FEE_TIMES,
+        amount,
+        requestType: withdrawType,
+        needAmountRefresh: withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
+      })
+    },
+    globalSetup.wait,
+    { leading: true, trailing: true },
+  )
 
   useWalletLayer2Socket({ walletLayer2Callback })
 
@@ -641,30 +650,40 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-  const {
-    account: { accountId, apiKey, accAddress },
-  } = useAccount()
   const theme = useTheme()
   const loadContacts = React.useCallback(async () => {
-    if (accountId === cachedForAccountId) return
+    const account = store.getState().account
+    if (account.accountId === cachedForAccountId) return
     updateContacts(undefined)
     try {
       const allContacts = await getAllContacts(
         0,
-        accountId,
-        apiKey,
-        accAddress,
+        account.accountId,
+        account.apiKey,
+        account.accAddress,
         theme.colorBase.warning,
       )
       updateContacts(allContacts)
-      updateAccountId(accountId)
+      updateAccountId(account.accountId)
     } catch (e) {
       updateContacts([])
     }
-  }, [cachedForAccountId, apiKey, accountId, accAddress])
+  }, [cachedForAccountId])
   React.useEffect(() => {
-    loadContacts()
-  }, [apiKey])
+    const account = store.getState().account
+    if (accountStatus == SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+      loadContacts()
+    }
+  }, [accountStatus])
+  // React.useEffect(() => {
+  //   _checkFeeIsEnough()
+  // }, [
+  //   // value effect fees
+  //   withdrawValue.withdrawType,
+  //   withdrawValue.tradeValue,
+  //   withdrawValue.belong,
+  // ])
+
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
@@ -730,12 +749,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         ..._withdrawValue,
         withdrawType: value,
       })
-      _checkFeeIsEnough.cancel()
+      // _checkFeeIsEnough.cancel()
       _checkFeeIsEnough()
     },
     handlePanelEvent: async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
-      Promise.resolve()
-
       if (data.to === 'button') {
         if (walletMap2 && data?.tradeData?.belong) {
           const walletInfo = walletMap2[data?.tradeData?.belong as string]
@@ -746,7 +763,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             balance: walletInfo?.count,
             address: '*',
           })
-          _checkFeeIsEnough.cancel()
+          // _checkFeeIsEnough.cancel()
           _checkFeeIsEnough()
         } else {
           updateWithdrawData({
