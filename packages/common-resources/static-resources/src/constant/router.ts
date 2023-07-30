@@ -372,16 +372,6 @@ export const leverageETHConfig = {
     GOERLI: ['lido'],
   },
 }
-export const leverageETHCoins = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['CIETH'],
-  GOERLI: ['WSTETH'],
-}
-export const leverageETHTypes = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['cian'],
-  GOERLI: ['lido'],
-}
 
 export const subMenuNFT = {
   NFTGroup: [
@@ -625,7 +615,7 @@ export const leverageETHAdvice: InvestAdvice = {
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
-  desI18n: 'labelInvestLeverageETHDes',
+  desI18n: 'labelInvestLeverageETH',
   enable: true,
   project: 'TODO Pool',
   market: 'CIETH-ETH',
