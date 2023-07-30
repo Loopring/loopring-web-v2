@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 
 import React from 'react'
@@ -10,6 +10,9 @@ import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
 import { useNotify, useSystem } from '@loopring-web/core'
 import { BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
+import { MaxWidthContainer } from '..'
+import { useTheme } from '@emotion/react'
+import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -40,50 +43,34 @@ export const PoolsPanel = withTranslation('common')(
     const { currency } = useSettings()
     const poolTableProps = useAmmMapUI()
     const { campaignTagConfig } = useNotify().notifyMap ?? {}
+    const theme = useTheme()
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1}>
-        <Box
-          marginBottom={2}
+        <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          alignItems={'center'}
+          background={theme.colorBase.dark}
         >
-          <Button
-            startIcon={<BackIcon fontSize={'small'} />}
-            variant={'text'}
-            size={'medium'}
-            sx={{ color: 'var(--color-text-secondary)' }}
-            color={'inherit'}
-            onClick={history.goBack}
-          >
-            {t('labelLiquidityPageTitle')}
-            {/*<Typography color={"textPrimary"}></Typography>*/}
-          </Button>
-          <Button
-            variant={'outlined'}
-            sx={{ marginLeft: 2 }}
-            onClick={() => history.push('/invest/balance/amm')}
-          >
-            {t('labelInvestMyAmm')}
-          </Button>
-        </Box>
-        <WrapperStyled flex={1} marginBottom={3}>
-          <StylePaper
-            display={'flex'}
-            flexDirection={'column'}
-            ref={container}
-            className={'table-divide'}
-          >
-            <PoolsTable
-              {...{
-                ...poolTableProps,
-                campaignTagConfig,
-                rowConfig: RowInvestConfig,
-                forexValue: forexMap[currency],
-              }}
-            />
-          </StylePaper>
-        </WrapperStyled>
+          <Box paddingY={7}>
+            <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+              AMM Pool
+            </Typography>
+            <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+              My Investment
+            </Button>
+          </Box>
+          <img src={SoursURL + 'images/earn-amm-title.svg'} />
+        </MaxWidthContainer>
+        <MaxWidthContainer>
+          <PoolsTable
+            {...{
+              ...poolTableProps,
+              campaignTagConfig,
+              rowConfig: RowInvestConfig,
+              forexValue: forexMap[currency],
+            }}
+          />
+        </MaxWidthContainer>
       </Box>
     )
   },

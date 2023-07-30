@@ -9,13 +9,15 @@ import {
   useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
-import { BackIcon, TOAST_TIME } from '@loopring-web/common-resources'
+import { BackIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
 import { ErrorPage } from '@loopring-web/web-bridge/src/pages/ErrorPage'
+import { MaxWidthContainer } from '..'
+import { useTheme } from '@emotion/react'
 
 export const StackTradePanel = ({
   setConfirmedLRCStakeInvestInvest,
@@ -42,6 +44,7 @@ export const StackTradePanel = ({
   React.useEffect(() => {
     setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
   }, [])
+  const theme = useTheme()
   return (
     <>
       <Toast
@@ -53,60 +56,82 @@ export const StackTradePanel = ({
       />
       {toggle?.LRCStackInvest.enable ? (
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-          <Box
-            marginBottom={2}
+          {false && (
+            <Box
+              marginBottom={2}
+              display={'flex'}
+              justifyContent={'space-between'}
+              alignItems={isMobile ? 'left' : 'center'}
+              flexDirection={isMobile ? 'column' : 'row'}
+            >
+              <Button
+                startIcon={<BackIcon fontSize={'small'} />}
+                variant={'text'}
+                size={'medium'}
+                sx={
+                  isMobile
+                    ? {
+                        color: 'var(--color-text-secondary)',
+                        justifyContent: 'left',
+                      }
+                    : { color: 'var(--color-text-secondary)' }
+                }
+                color={'inherit'}
+                onClick={() => history.push('/invest/overview')}
+              >
+                {t('labelInvestLRCStakingTitle')}
+              </Button>
+              <Button
+                variant={'outlined'}
+                size={'medium'}
+                onClick={() => history.push('/invest/balance/sideStake')}
+                sx={{ color: 'var(--color-text-secondary)' }}
+              >
+                {t('labelMyInvestLRCStaking')}
+              </Button>
+            </Box>
+          )}
+          <MaxWidthContainer
             display={'flex'}
             justifyContent={'space-between'}
-            alignItems={isMobile ? 'left' : 'center'}
-            flexDirection={isMobile ? 'column' : 'row'}
+            background={theme.colorBase.dark}
           >
-            <Button
-              startIcon={<BackIcon fontSize={'small'} />}
-              variant={'text'}
-              size={'medium'}
-              sx={
-                isMobile
-                  ? {
-                      color: 'var(--color-text-secondary)',
-                      justifyContent: 'left',
-                    }
-                  : { color: 'var(--color-text-secondary)' }
-              }
-              color={'inherit'}
-              onClick={() => history.push('/invest/overview')}
+            <Box paddingY={7}>
+              <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+                ETH Staking
+              </Typography>
+              <Typography marginBottom={3} color={'var(--color-text-third)'} variant={'h4'}>
+                一鍵質押 ETH，賺取高達 7% 年化收益，更可將其作為交易保證金
+              </Typography>
+              <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+                My Investment
+              </Button>
+            </Box>
+            <img src={SoursURL + 'images/earn-staking-title.svg'} />
+          </MaxWidthContainer>
+          <MaxWidthContainer marginTop={5}>
+            <StyleWrapper
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              flex={1}
             >
-              {t('labelInvestLRCStakingTitle')}
-            </Button>
-            <Button
-              variant={'outlined'}
-              size={'medium'}
-              onClick={() => history.push('/invest/balance/sideStake')}
-              sx={{ color: 'var(--color-text-secondary)' }}
-            >
-              {t('labelMyInvestLRCStaking')}
-            </Button>
-          </Box>
-          <StyleWrapper
-            display={'flex'}
-            flexDirection={'column'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flex={1}
-          >
-            {stakeWrapProps.deFiSideCalcData ? (
-              <Box
-                className={'hasLinerBg'}
-                display={'flex'}
-                style={styles}
-                justifyContent={'center'}
-                padding={5 / 2}
-              >
-                <DeFiSideWrap isJoin={isJoin} symbol={'LRC'} {...(stakeWrapProps as any)} />
-              </Box>
-            ) : (
-              <LoadingBlock />
-            )}
-          </StyleWrapper>
+              {stakeWrapProps.deFiSideCalcData ? (
+                <Box
+                  className={'hasLinerBg'}
+                  display={'flex'}
+                  style={styles}
+                  justifyContent={'center'}
+                  padding={5 / 2}
+                >
+                  <DeFiSideWrap isJoin={isJoin} symbol={'LRC'} {...(stakeWrapProps as any)} />
+                </Box>
+              ) : (
+                <LoadingBlock />
+              )}
+            </StyleWrapper>
+          </MaxWidthContainer>
         </Box>
       ) : (
         <ErrorPage messageKey={'errorBase'} />

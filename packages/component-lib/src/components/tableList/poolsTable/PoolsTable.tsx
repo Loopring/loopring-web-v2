@@ -574,26 +574,28 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
 
     return (
       <TableStyled flex={1} flexDirection={'column'} display={'flex'} isMobile={isMobile}>
-        {showFilter && (
-          <Box
-            marginBottom={3}
-            display={'inline-flex'}
-            flexDirection={'row'}
-            justifyContent={'flex-end'}
-            paddingX={3}
-            paddingTop={3}
-            alignItems={'center'}
-          >
-            <InputSearch
-              key={'search'}
-              className={'search'}
-              aria-label={'search'}
-              placeholder={t('labelFilter')}
-              value={filterValue}
-              onChange={(value: any) => handleFilterChange({ searchValue: value })}
-            />
-          </Box>
-        )}
+        <Box marginY={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          <Typography variant={'h1'}>All Products</Typography>
+          {showFilter && (
+            <Box
+              display={'inline-flex'}
+              flexDirection={'row'}
+              justifyContent={'center'}
+              paddingX={3}
+              alignItems={'center'}
+            >
+              <InputSearch
+                key={'search'}
+                className={'search'}
+                aria-label={'search'}
+                placeholder={t('labelFilter')}
+                value={filterValue}
+                onChange={(value: any) => handleFilterChange({ searchValue: value })}
+              />
+            </Box>
+          )}
+        </Box>
+
         <Table
           style={{
             height: (rawData.length + 1) * RowInvestConfig.rowHeight,

@@ -1,6 +1,6 @@
 import { useHistory, useRouteMatch } from 'react-router-dom'
 
-import { Box, Tab, Tabs, Typography } from '@mui/material'
+import { Box, BoxProps, Tab, Tabs, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
 import {
@@ -25,7 +25,29 @@ export enum InvestType {
   Dual = 4,
   Stack = 5,
 }
-
+export const MaxWidthContainer = (
+  props: {
+    children: React.ReactNode
+    background?: string
+  } & BoxProps,
+) => {
+  const { children, background, sx, ...otherProps } = props
+  return (
+    <Box sx={{ background }} display={'flex'} justifyContent={'center'}>
+      <Box
+        sx={{
+          width: '1200px',
+          maxWidth: '100%',
+          ...sx,
+        }}
+        paddingX={3}
+        {...otherProps}
+      >
+        {children}
+      </Box>
+    </Box>
+  )
+}
 export const InvestRouter = ['balance', 'ammpool', 'defi', 'overview', 'dual', 'stakelrc']
 export const BalanceTitle = () => {
   const { t } = useTranslation()

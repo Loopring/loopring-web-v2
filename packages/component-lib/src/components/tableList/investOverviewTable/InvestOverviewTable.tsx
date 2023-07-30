@@ -208,12 +208,6 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 width={'100%'}
                 sx={{ cursor: 'pointer' }}
               >
-                <Typography
-                  display={'inline-flex'}
-                  marginRight={1}
-                  component={'span'}
-                  color={'inherit'}
-                >{`${t('labelSelect')}`}</Typography>
                 <DropdownIconStyled status={row.isExpanded ? 'up' : 'down'} fontSize={'medium'} />
               </Typography>
             )
@@ -376,7 +370,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
             justifyContent={'space-between'}
             marginLeft={3}
           >
-            <Typography variant={'h5'}>{t('labelTitleOverviewToken', { ns: 'common' })}</Typography>
+            <Typography fontSize={"36px"} variant={'h1'}>{t('labelTitleOverviewAllPrd', { ns: 'common' })}</Typography>
             <TableFilterStyled>
               <Filter
                 {...{

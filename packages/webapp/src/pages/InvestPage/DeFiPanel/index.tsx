@@ -21,9 +21,12 @@ import {
   defiWSTETHAdvice,
   Info2Icon,
   MarketType,
+  SoursURL,
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
+import { MaxWidthContainer } from '..'
+import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`
   position: relative;
@@ -301,91 +304,88 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }) as MarketType
   const isJoin = match?.params?.isJoin?.toUpperCase() !== 'Redeem'.toUpperCase()
+  const theme = useTheme()
 
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-      <Box marginBottom={2} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-        <Button
-          startIcon={<BackIcon fontSize={'small'} />}
-          variant={'text'}
-          size={'medium'}
-          sx={{ color: 'var(--color-text-secondary)' }}
-          color={'inherit'}
-          onClick={() =>
-            history.push(
-              !_market
-                ? '/invest/overview'
-                : match?.params?.isJoin
-                ? '/invest/balance'
-                : '/invest/defi',
-            )
-          }
-        >
-          {t('labelInvestDefiTitle')}
-          {/*<Typography color={"textPrimary"}></Typography>*/}
-        </Button>
-        <Button
-          variant={'outlined'}
-          sx={{ marginLeft: 2 }}
-          onClick={() => history.push('/invest/balance/stake')}
-        >
-          {t('labelInvestMyDefi')}
-        </Button>
-      </Box>
-      <StyleWrapper
+      <MaxWidthContainer
         display={'flex'}
-        flexDirection={'column'}
-        justifyContent={'center'}
-        alignItems={'center'}
-        flex={1}
+        justifyContent={'space-between'}
+        background={theme.colorBase.dark}
       >
-        {marketArray?.length ? (
-          match?.params?.market && _market ? (
-            <DeFiTradePanel
-              market={_market}
-              isJoin={isJoin}
-              setServerUpdate={setServerUpdate}
-              setToastOpen={setToastOpen}
-            />
-          ) : (
-            <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
-          )
-        ) : (
-          <LoadingBlock />
-        )}
-        <Toast
-          alertText={toastOpen?.content ?? ''}
-          severity={toastOpen?.type ?? ToastType.success}
-          open={toastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-        />
+        <Box paddingY={7}>
+          <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+            ETH Staking
+          </Typography>
+          <Typography marginBottom={3} color={'var(--color-text-third)'} variant={'h4'}>
+            一鍵質押 ETH，賺取高達 7% 年化收益，更可將其作為交易保證金
+          </Typography>
+          <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+            My Investment
+          </Button>
+        </Box>
+        <img src={SoursURL + 'images/earn-staking-title.svg'} />
+      </MaxWidthContainer>
 
-        <ConfirmInvestDefiServiceUpdate
-          open={serverUpdate}
-          handleClose={() => setServerUpdate(false)}
-        />
-        <ConfirmInvestDefiRisk
-          open={_confirmedDefiInvest.isShow}
-          type={_confirmedDefiInvest.type as any}
-          confirmationNeeded={confirmationNeeded}
-          handleClose={(_e, isAgree) => {
-            if (!isAgree) {
+      <MaxWidthContainer>
+        <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
+          Choose the product you want
+        </Typography>
+        <StyleWrapper
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          flex={1}
+        >
+          {marketArray?.length ? (
+            match?.params?.market && _market ? (
+              <DeFiTradePanel
+                market={_market}
+                isJoin={isJoin}
+                setServerUpdate={setServerUpdate}
+                setToastOpen={setToastOpen}
+              />
+            ) : (
+              <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
+            )
+          ) : (
+            <LoadingBlock />
+          )}
+          <Toast
+            alertText={toastOpen?.content ?? ''}
+            severity={toastOpen?.type ?? ToastType.success}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
+
+          <ConfirmInvestDefiServiceUpdate
+            open={serverUpdate}
+            handleClose={() => setServerUpdate(false)}
+          />
+          <ConfirmInvestDefiRisk
+            open={_confirmedDefiInvest.isShow}
+            type={_confirmedDefiInvest.type as any}
+            confirmationNeeded={confirmationNeeded}
+            handleClose={(_e, isAgree) => {
+              if (!isAgree) {
+                setConfirmedDefiInvest({ isShow: false })
+              } else {
+                if (_confirmedDefiInvest.type === 'RETH') {
+                  confirmedRETHDefiInvestFun()
+                  history.push(defiRETHAdvice.router)
+                }
+                if (_confirmedDefiInvest.type === 'WSETH') {
+                  confirmedWSETHDefiInvestFun()
+                  history.push(defiWSTETHAdvice.router)
+                }
+              }
               setConfirmedDefiInvest({ isShow: false })
-            } else {
-              if (_confirmedDefiInvest.type === 'RETH') {
-                confirmedRETHDefiInvestFun()
-                history.push(defiRETHAdvice.router)
-              }
-              if (_confirmedDefiInvest.type === 'WSETH') {
-                confirmedWSETHDefiInvestFun()
-                history.push(defiWSTETHAdvice.router)
-              }
-            }
-            setConfirmedDefiInvest({ isShow: false })
-          }}
-        />
-      </StyleWrapper>
+            }}
+          />
+        </StyleWrapper>
+      </MaxWidthContainer>
     </Box>
   )
 })

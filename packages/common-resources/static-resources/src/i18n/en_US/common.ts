@@ -1778,4 +1778,5 @@ export default {
   labelRedpacketStandard: 'Standard',
   labelConnecting: 'Connecting',
   labelClaimallToken: 'Reward token {{symbol}}',
+  labelTitleOverviewAllPrd: 'All Products',
 }

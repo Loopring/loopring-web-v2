@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import {
   Box,
+  BoxProps,
   Button,
   Checkbox,
   FormControlLabel,
@@ -61,6 +62,8 @@ import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
+import { MaxWidthContainer } from '..'
+import { ColorBlack } from '@loopring-web/common-resources/static-resources/src/themes/css/color-lib'
 
 const StyleWrapper = styled(Grid)`
   position: relative;
@@ -68,6 +71,16 @@ const StyleWrapper = styled(Grid)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid
+
+const Tab = styled(Box)<{ selected: boolean }>`
+  background: ${({ selected, theme }) => `${selected ? theme.colorBase.primary : 'transparent'}`};
+  padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
+  border-radius: ${({ theme }) => 0.5 * theme.unit}px;
+  font-size: 16px;
+  line-height: 24px;
+  margin-right: ${({ theme }) => theme.unit}px;
+  cursor: pointer;
+`
 
 const MyLiquidity: any = withTranslation('common')(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
@@ -235,120 +248,85 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
+    type Tab = 'pools' | 'lido' | 'staking' | 'dual'
+    const tabToName = (tab: Tab) => {
+      const map: [Tab, string][] = [
+        ['pools' as Tab, 'AMM Pool'],
+        ['lido' as Tab, 'LRC Staking'],
+        ['staking' as Tab, 'ETH Staking'],
+        ['dual' as Tab, 'Dual Investment'],
+      ]
+      const found = map.find(ele => ele[0] === tab)
+      return found ? found[1] : undefined
+    }
+    
+    const [tab, setTab] = React.useState(undefined as Tab | undefined)
+    const visibaleTabs: Tab[] = [
+      ...(myPoolRow?.length > 0 ? ['pools' as Tab] : []),
+      ...(lidoAssets?.length > 0 ? ['lido' as Tab] : []),
+      ...(stakingList?.length > 0 ? ['staking' as Tab] : []),
+      ...(dualList?.length > 0 ? ['dual' as Tab] : []),
+    ]
+    myLog('visibaleTabs', visibaleTabs)
+    const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
+    myLog('visibaleTabs _tab', _tab)
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        <Box
-          position={'absolute'}
-          display={'flex'}
-          alignItems={'center'}
-          sx={
-            isHideTotal && !isMobile
-              ? {
-                  right: 2 * theme.unit,
-                  top: -42,
-                  zIndex: 99,
-                }
-              : {
-                  right: 2 * theme.unit,
-                  top: 2 * theme.unit,
-                  zIndex: 99,
-                }
-          }
-        >
-          <FormControlLabel
-            sx={{
-              marginRight: 2,
-              paddingRight: 0,
-              fontSize: isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1,
-            }}
-            control={
-              <Checkbox
-                checked={hideSmallBalances}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color='default'
-                onChange={(event) => {
-                  setHideSmallBalances(event.target.checked)
-                }}
-              />
-            }
-            label={t('labelHideSmallBalances', { ns: 'tables' })}
-          />
-          <Link
-            variant={'body1'}
-            target='_self'
-            rel='noopener noreferrer'
-            //?tokenSymbol=${market}
-            onClick={() => history.push(`/l2assets/history/${RecordTabIndex.AmmRecords}`)}
-            // href={"./#/layer2/history/ammRecords"}
-          >
-            {t('labelTransactionsLink')}
-          </Link>
-        </Box>
-        <StyleWrapper
-          container
-          className={'MuiPaper-elevation2'}
-          paddingY={3}
-          paddingX={4}
-          margin={0}
-          display={isHideTotal ? 'none' : 'flex'}
-        >
-          <Grid container spacing={2} alignItems={'flex-end'}>
-            <Grid item display={'flex'} flexDirection={'column'} sm={6} md={5}>
-              <Typography variant={fontSize.title} color={'textSecondary'}>
-                {t('labelTotalPositionValue')}
+        <MaxWidthContainer background={theme.colorBase.dark}>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+            <Box paddingY={7}>
+              <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
+                My Investments
               </Typography>
-              <Typography variant={fontSize.count} marginTop={1}>
-                {_summaryMyInvest
-                  ? PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      sdk
-                        .toBig(_summaryMyInvest)
-                        .times(forexMap[currency] ?? 0)
-                        .toString(),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true, floor: true },
-                    )
-                  : EmptyValueTag}
-              </Typography>
-            </Grid>
-            {/*<Grid item marginRight={6}>*/}
-            {/*  <Divider orientation={"vertical"} />*/}
-            {/*</Grid>*/}
-            {/*<Grid item display={"flex"} flexDirection={"column"} sm={3} md={4}>*/}
-            {/*  <Typography*/}
-            {/*    variant={fontSize.title2}*/}
-            {/*    component={"h3"}*/}
-            {/*    fontFamily={"Roboto"}*/}
-            {/*    color={"textSecondary"}*/}
-            {/*  >*/}
-            {/*    {t("labelFeeRewards")}*/}
-            {/*  </Typography>*/}
-            {/*  <Typography*/}
-            {/*    variant={fontSize.count2}*/}
-            {/*    marginTop={1}*/}
-            {/*    fontFamily={"Roboto"}*/}
-            {/*  >*/}
-            {/*    {summaryMyInvest?.feeU*/}
-            {/*      ? PriceTag[CurrencyToTag[currency]] +*/}
-            {/*        getValuePrecisionThousand(*/}
-            {/*          (summaryMyInvest.feeU || 0) **/}
-            {/*            (forexMap[currency] ?? 0),*/}
-            {/*          undefined,*/}
-            {/*          undefined,*/}
-            {/*          2,*/}
-            {/*          true,*/}
-            {/*          { isFait: true, floor: true }*/}
-            {/*        )*/}
-            {/*      : EmptyValueTag}*/}
-            {/*  </Typography>*/}
-            {/*</Grid>*/}
-          </Grid>
-        </StyleWrapper>
-        <Box marginBottom={3} flex={1}>
+
+              <Button  sx={{ width: 18 * theme.unit }} variant={'contained'}>
+                Transaction
+              </Button>
+            </Box>
+            <Box
+              sx={{ background: ColorBlack.dark900 }}
+              width={40 * theme.unit}
+              border={'1px solid'}
+              borderColor={ColorBlack.dark700}
+              borderRadius={0.5}
+              paddingX={3}
+              paddingY={4}
+              display={'flex'}
+              justifyContent={'space-between'}
+              marginRight={10}
+            >
+              <Box>
+                <Typography marginBottom={2} color={theme.colorBase.textThird} variant={'h6'}>
+                  Total invest
+                </Typography>
+                <Typography>
+                  {_summaryMyInvest
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        sdk
+                          .toBig(_summaryMyInvest)
+                          .times(forexMap[currency] ?? 0)
+                          .toString(),
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true, floor: true },
+                      )
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography color={theme.colorBase.textThird} marginBottom={2} variant={'h6'}>
+                  Total Earnings
+                </Typography>
+                <Typography>{'$326,45.00'}</Typography>
+              </Box>
+            </Box>
+          </Box>
+        </MaxWidthContainer>
+
+        <MaxWidthContainer marginBottom={3} marginTop={3}>
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
           !(stakingList?.length > 0) &&
@@ -374,7 +352,15 @@ const MyLiquidity: any = withTranslation('common')(
             </TableWrapStyled>
           ) : (
             <>
-              {myPoolRow?.length > 0 && (
+              <Box width={'100%'} display={'flex'}>
+                {visibaleTabs.map((tab) => (
+                  <Tab selected={tab === _tab} onClick={() => setTab(tab)}>
+                    {tabToName(tab)}
+                  </Tab>
+                ))}
+              </Box>
+
+              {_tab === 'pools' && (
                 <TableWrapStyled
                   ref={ammPoolRef}
                   className={`table-divide-short MuiPaper-elevation2`}
@@ -432,7 +418,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {stakingList?.length > 0 && (
+              {_tab === 'staking' && (
                 <TableWrapStyled
                   ref={sideStakeRef}
                   className={`table-divide-short MuiPaper-elevation2 min-height`}
@@ -561,7 +547,7 @@ const MyLiquidity: any = withTranslation('common')(
                   />
                 </TableWrapStyled>
               )}
-              {lidoAssets?.length > 0 && (
+              {_tab === 'lido' && (
                 <TableWrapStyled
                   ref={stakingRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
@@ -618,7 +604,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {dualList?.length > 0 && (
+              {_tab === 'dual' && (
                 <TableWrapStyled
                   ref={dualRef}
                   className={`table-divide-short MuiPaper-elevation2 min-height`}
@@ -704,7 +690,7 @@ const MyLiquidity: any = withTranslation('common')(
               )}
             </>
           )}
-        </Box>
+        </MaxWidthContainer>
         <Modal
           open={showRefreshError}
           onClose={(_e: any) => setShowRefreshError(false)}
