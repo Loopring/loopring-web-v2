@@ -3,7 +3,7 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React from 'react'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useExportAccountInfo, useResetAccount } from './hook'
-import { useOpenModals, useSettings } from '@loopring-web/component-lib'
+import { useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
 import { useAccount } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import {
@@ -33,6 +33,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({ t }: WithT
   const { setShowAccount } = useOpenModals()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { toggle } = useToggle()
 
   return (
     <StyledPaper container className={'MuiPaper-elevation2'} marginBottom={2}>
@@ -240,6 +241,41 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({ t }: WithT
               </Grid>
             </Box>
           </>
+        )}
+        <StyledDivider />
+        {toggle?.isSupperUser?.length && (
+          <Box component={'section'} display={'flex'} flexDirection={'column'} padding={5 / 2}>
+            <Grid
+              container
+              display={'flex'}
+              flexDirection={'row'}
+              justifyContent={'stretch'}
+              alignItems={'flex-start'}
+            >
+              <Grid item xs={7} display={'flex'} flexDirection={'column'}>
+                <Typography component={'h3'} variant={'h4'} marginBottom={1}>
+                  {t('labelSuperUserTitle')}
+                </Typography>
+                <Typography variant={'body1'} color={'text.secondary'} component={'p'}>
+                  {t('labelFunctionList', {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  })}
+                  {toggle?.isSupperUser?.map((item: any, index: number) => {
+                    return (
+                      <Typography
+                        variant={'body1'}
+                        color={'text.secondary'}
+                        component={'span'}
+                        paddingLeft={1}
+                      >
+                        {item.toString() + (index + 1 != toggle?.isSupperUser?.length ? ', ' : '')}
+                      </Typography>
+                    )
+                  })}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
         )}
       </Grid>
     </StyledPaper>

@@ -1819,4 +1819,7 @@ export default {
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
+    '<span>Loopring will set up the pool soon. Please come back later to subscribe. </span>',
+  labelFunctionList: 'Function List:',
+  labelSuperUserTitle: 'Super User',
 }
