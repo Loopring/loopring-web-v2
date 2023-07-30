@@ -8,7 +8,6 @@ import { useOverview } from './hook'
 import {
   useSettings,
   InvestOverviewTable,
-  ComingSoonPanel,
   useToggle,
 } from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'

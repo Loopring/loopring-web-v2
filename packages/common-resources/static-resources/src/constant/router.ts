@@ -389,11 +389,11 @@ export const leverageETHConfig = {
     ETHEREUM: ['CIETH'],
     GOERLI: ['WSTETH'],
   },
-  types : {
+  types: {
     TAIKO: [] as string[],
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
-  }
+  },
 }
 
 export const subMenuNFT = {

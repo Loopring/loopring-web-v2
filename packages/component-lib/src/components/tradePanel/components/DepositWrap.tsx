@@ -55,7 +55,8 @@ export const DepositWrap = <
   toAddressStatus,
   wait = globalSetup.wait,
   allowTrade,
-
+  toAddress,
+  handleAddressChange,
   ...rest
 }: DepositViewProps<T, I> & {
   accountReady?: AccountStatus
@@ -65,7 +66,6 @@ export const DepositWrap = <
   let { feeChargeOrder, isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [minFee, setMinFee] = React.useState<{ minFee: string } | undefined>(undefined)
-  const [_toAddress, setToAddress] = React.useState(tradeData.toAddress)
   const getDisabled = React.useMemo(() => {
     return disabled || depositBtnStatus === TradeBtnStatus.DISABLED
   }, [depositBtnStatus, disabled])
@@ -190,26 +190,17 @@ export const DepositWrap = <
           <Box display={isToAddressEditable ? 'inherit' : 'none'}>
             <TextField
               className={'text-address'}
-              value={_toAddress ? _toAddress : ''}
+              value={toAddress ?? ''}
               error={!!realToAddress && toAddressStatus !== AddressError.NoError}
               label={t('depositLabelTo')}
               disabled={!isToAddressEditable}
               placeholder={t('depositLabelPlaceholder')}
               onChange={(_event) => {
-                if (_event.target.value !== _toAddress) {
-                  const toAddress = _event.target.value
-                  setToAddress(() => {
-                    return toAddress
-                  })
-                  onChangeEvent(0, {
-                    tradeData: { toAddress } as T,
-                    to: 'button',
-                  })
-                }
+                handleAddressChange && handleAddressChange(_event.target.value)
               }}
               fullWidth={true}
             />
-            {!!tradeData.toAddress ? (
+            {toAddress ? (
               toIsAddressCheckLoading ? (
                 <LoadingIcon
                   width={24}
@@ -223,7 +214,6 @@ export const DepositWrap = <
                     style={{ top: '30px' }}
                     aria-label='Clear'
                     onClick={() => {
-                      setToAddress('')
                       handleClear()
                     }}
                   >
@@ -236,7 +226,7 @@ export const DepositWrap = <
             )}
 
             <Box marginLeft={1 / 2}>
-              {!!realToAddress && toAddressStatus !== AddressError.NoError ? (
+              {realToAddress && toAddressStatus !== AddressError.NoError ? (
                 <Typography
                   color={'var(--color-error)'}
                   variant={'body2'}
@@ -246,7 +236,7 @@ export const DepositWrap = <
                 >
                   {t('labelInvalidAddress')}
                 </Typography>
-              ) : tradeData.toAddress && realToAddress && !toIsAddressCheckLoading ? (
+              ) : toAddress && realToAddress && !toIsAddressCheckLoading ? (
                 <Typography
                   color={'var(--color-text-primary)'}
                   variant={'body2'}

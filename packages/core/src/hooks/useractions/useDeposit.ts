@@ -22,7 +22,7 @@ import {
   UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
-import { AvaiableNetwork, connectProvides } from '@loopring-web/web3-provider'
+import { connectProvides } from '@loopring-web/web3-provider'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -56,7 +56,7 @@ export const useDeposit = <
 ) => {
   const subject = React.useMemo(() => depositServices.onSocket(), [])
   const { tokenMap, totalCoinMap } = useTokenMap()
-  const { account } = useAccount()
+  const { account, status: accountStatus } = useAccount()
   const { walletLayer1, updateWalletLayer1, status: walletLayer1Status } = useWalletLayer1()
   const { updateDepositHash } = useOnChainInfo()
   const { t } = useTranslation('common')
@@ -66,7 +66,7 @@ export const useDeposit = <
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-
+  const [toInputAddress, setToInputAddress] = React.useState<string>('')
   const {
     depositValue,
     updateDepositData,
@@ -74,37 +74,22 @@ export const useDeposit = <
     activeAccountValue: { chargeFeeList },
   } = useModalData()
   const {
+    // address: toAddress,
     realAddr: realToAddress,
     setAddress: setToAddress,
     addrStatus: toAddressStatus,
     isAddressCheckLoading: toIsAddressCheckLoading,
   } = useAddressCheck()
+
   React.useEffect(() => {
-    const { defaultNetwork } = store.getState().settings
-    if (
-      isToAddressEditable == false &&
-      LoopringAPI?.__chainId__ &&
-      AvaiableNetwork.includes(LoopringAPI?.__chainId__.toString()) &&
-      defaultNetwork == LoopringAPI?.__chainId__ &&
-      opts?.owner &&
-      opts?.owner !== ''
-    ) {
-      setToAddress(opts?.owner)
-    } else if (defaultNetwork !== LoopringAPI?.__chainId__) {
-      setToAddress('')
-    }
-  }, [opts?.owner, isToAddressEditable, LoopringAPI?.__chainId__])
-  React.useEffect(() => {
-    if (
-      realToAddress &&
-      realToAddress !== '' &&
-      (toAddressStatus as AddressError) === AddressError.NoError
-    ) {
-      updateDepositData({
-        ...depositValue,
-        toAddress: realToAddress,
-      })
-    }
+    const depositValue = store.getState()._router_modalData.depositValue
+    handlePanelEvent(
+      {
+        to: 'button',
+        tradeData: depositValue as any,
+      },
+      'Tobutton',
+    )
   }, [realToAddress])
 
   const {
@@ -208,32 +193,11 @@ export const useDeposit = <
   ])
 
   const handlePanelEvent = React.useCallback(
-    async (data: SwitchData<Partial<T>>, _switchType: 'Tomenu' | 'Tobutton') => {
+    (data: SwitchData<Partial<T>>, _switchType: 'Tomenu' | 'Tobutton') => {
       const oldValue = store.getState()._router_modalData.depositValue
       let newValue = {
         ...oldValue,
       }
-      if (data?.tradeData.hasOwnProperty('toAddress') && isToAddressEditable) {
-        // @ts-ignore
-        setToAddress(data?.tradeData?.toAddress)
-        if (/^0x[a-fA-F0-9]{40}$/g.test(data?.tradeData?.toAddress ?? '')) {
-          newValue.toAddress = data?.tradeData?.toAddress
-        } else {
-          newValue.toAddress = ''
-        }
-      } else if (
-        !newValue.toAddress &&
-        isToAddressEditable == false &&
-        opts?.owner &&
-        opts?.owner !== ''
-      ) {
-        if (realToAddress) {
-          newValue.toAddress = realToAddress
-        } else {
-          setToAddress(opts?.owner)
-        }
-      }
-
       if (data.to === 'button') {
         if (walletLayer1 && data?.tradeData?.belong) {
           const walletInfo = walletLayer1[data.tradeData.belong]
@@ -244,109 +208,160 @@ export const useDeposit = <
           }
         }
       }
-      myLog('DepositData', newValue)
-      updateDepositData(newValue)
+
+      myLog('DepositData', { ...newValue, toAddress: realToAddress })
+      updateDepositData({ ...newValue, toAddress: realToAddress })
       return Promise.resolve()
     },
     [setToAddress, updateDepositData, realToAddress, isToAddressEditable, walletLayer1],
   )
+  const handleAddressChange = (value?: string) => {
+    const toAddress = store.getState()._router_modalData.depositValue.toAddress
+    setToAddress((state) => {
+      myLog('address update setToAddress', state, value, realToAddress, toAddressStatus)
+      if (
+        value &&
+        toIsAddressCheckLoading == false &&
+        realToAddress &&
+        realToAddress.startsWith('0x') &&
+        [value, toAddress].includes(realToAddress)
+      ) {
+        return state
+      } else if (value !== undefined) {
+        setToInputAddress(value)
+        return value
+      }
+      // else if () {
+      //   return data.tradeData.toAddress ?? ''
+      // }
+      else if (
+        state &&
+        !value &&
+        toAddressStatus !== AddressError.NoError &&
+        toIsAddressCheckLoading == false
+      ) {
+        sdk.sleep(100).then(() => {
+          setToAddress(state)
+        })
+        return ''
+      } else {
+        return state
+      }
+    })
+  }
   const handleClear = React.useCallback(() => {
     if (isAllowInputToAddress && !isToAddressEditable) {
       return
+    }
+    handleAddressChange('')
+  }, [isAllowInputToAddress, isToAddressEditable])
+
+  const walletLayer1Callback = React.useCallback(() => {
+    // const {
+    //   _router_modalData: { depositValue },
+    // } = store.getState()
+    let updateData = {} // = { ...depositValue }
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current)
+    }
+    if (!depositValue.belong && walletLayer1) {
+      const keys = Reflect.ownKeys(walletLayer1)
+      for (var key in keys) {
+        const keyVal = keys[key] as any
+        const walletInfo = walletLayer1[keyVal]
+        if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
+          updateData = {
+            // ...updateData,
+            belong: keyVal as any,
+            tradeValue: undefined,
+            balance: walletInfo?.count,
+          }
+          break
+        }
+      }
+    } else if (depositValue.belong && walletLayer1) {
+      updateData = {
+        // ...updateData,
+        belong: depositValue.belong,
+        balance: walletLayer1[depositValue.belong]?.count ?? 0,
+      }
+    }
+    if (isAllowInputToAddress && !(opts?.owner && opts?.owner?.startsWith('0x'))) {
+      setIsToAddressEditable(true)
+    }
+    handlePanelEvent(
+      {
+        to: 'button',
+        tradeData: updateData as any,
+      },
+      'Tobutton',
+    )
+    handleAddressChange()
+  }, [
+    depositValue.belong,
+    depositValue.tradeValue,
+    opts?.token,
+    opts?.owner,
+    symbol,
+    walletLayer1,
+    isAllowInputToAddress,
+    handlePanelEvent,
+    account.accAddress,
+    handleClear,
+  ])
+
+  React.useEffect(() => {
+    const { walletLayer1 } = store.getState()
+    if (walletLayer1Status == SagaStatus.UNSET) {
+      if (
+        walletLayer1.error
+        // &&
+        // ![AccountStatus.UN_CONNECT, AccountStatus.ERROR_NETWORK, 'unknown'].includes(
+        //   account.readyState,
+        // )
+      ) {
+        updateWalletLayer1()
+      } else {
+        walletLayer1Callback()
+      }
+    }
+  }, [walletLayer1Status])
+
+  const init = () => {
+    let tradeData: any = {
+      belong: opts?.token?.toUpperCase() ?? symbol,
+      tradeValue: !isShow ? undefined : depositValue.tradeValue,
+    }
+    updateWalletLayer1()
+    if (isToAddressEditable == false && opts?.owner && opts.owner !== '') {
+      handleAddressChange(opts.owner)
     }
     handlePanelEvent(
       {
         to: 'button',
         tradeData: {
-          toAddress: undefined,
-        } as T,
+          ...tradeData,
+        } as any,
       },
       'Tobutton',
     )
-  }, [handlePanelEvent, isAllowInputToAddress, isToAddressEditable])
-
-  const walletLayer1Callback = React.useCallback(
-    (isClean?: boolean) => {
-      const _symbol = isClean ? opts?.token?.toUpperCase() ?? symbol : depositValue.belong
-      const tradeValue = isClean ? undefined : depositValue.tradeValue
-      let updateData = {}
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current)
-      }
-      nodeTimer.current = setTimeout(() => {
-        if (store.getState().modals.isShowDeposit.isShow || isAllowInputToAddress) {
-          updateWalletLayer1()
-        }
-      }, L1_UPDATE)
-      if (_symbol && walletLayer1) {
-        updateData = {
-          belong: _symbol as any,
-          balance: walletLayer1[_symbol]?.count ?? 0,
-          tradeValue,
-        }
-      } else if (!depositValue.belong && walletLayer1) {
-        const keys = Reflect.ownKeys(walletLayer1)
-        for (var key in keys) {
-          const keyVal = keys[key] as any
-          const walletInfo = walletLayer1[keyVal]
-          if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
-            updateData = {
-              belong: keyVal as any,
-              tradeValue: undefined,
-              balance: walletInfo?.count,
-            }
-            break
-          }
-        }
-      } else if (depositValue.belong && walletLayer1) {
-        updateData = {
-          belong: depositValue.belong,
-          balance: walletLayer1[depositValue.belong]?.count ?? 0,
-          tradeValue,
-        }
-      }
-      if (isAllowInputToAddress && !(opts?.owner && opts?.owner?.startsWith('0x'))) {
-        setIsToAddressEditable(true)
-      }
-      handlePanelEvent(
-        {
-          to: 'button',
-          tradeData: updateData,
-        },
-        'Tobutton',
-      )
-    },
-    [
-      depositValue.belong,
-      depositValue.tradeValue,
-      opts?.token,
-      opts?.owner,
-      symbol,
-      walletLayer1,
-      isAllowInputToAddress,
-      handlePanelEvent,
-      account.accAddress,
-      handleClear,
-    ],
-  )
-
+  }
   React.useEffect(() => {
-    if (walletLayer1Status == SagaStatus.UNSET) {
-      walletLayer1Callback()
+    myLog('accountStatus,LoopringAPI?.__chainId__', LoopringAPI?.__chainId__, accountStatus)
+    if (accountStatus === SagaStatus.UNSET) {
+      init()
+      if (isShow || isAllowInputToAddress) {
+        nodeTimer.current = setTimeout(() => {
+          updateWalletLayer1()
+        }, L1_UPDATE)
+      }
     }
     return () => {
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer.current)
       }
     }
-  }, [walletLayer1Status])
-
-  React.useEffect(() => {
-    if (isShow || isAllowInputToAddress) {
-      walletLayer1Callback(true)
-      updateWalletLayer1()
-    }
-  }, [isShow, isAllowInputToAddress])
+  }, [accountStatus, isShow, isToAddressEditable])
 
   const handleDeposit = React.useCallback(
     async (inputValue: any) => {
@@ -594,35 +609,6 @@ export const useDeposit = <
     }
   }, [depositValue, handleDeposit])
 
-  const handleAddressError = React.useCallback(() => {
-    if (toAddressStatus && (toAddressStatus as AddressError) !== AddressError.NoError) {
-      handlePanelEvent(
-        {
-          to: 'button',
-          tradeData: {
-            addressError: {
-              error: true,
-              message: 'Invalid Address',
-            },
-          } as T,
-        },
-        'Tobutton',
-      )
-    } else {
-      handlePanelEvent(
-        {
-          to: 'button',
-          tradeData: {
-            addressError: undefined,
-          } as T,
-        },
-        'Tobutton',
-      )
-    }
-  }, [toAddressStatus, handlePanelEvent])
-  React.useEffect(() => {
-    handleAddressError()
-  }, [toAddressStatus])
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
       myLog('subscription Deposit DepsitERC20')
@@ -658,9 +644,11 @@ export const useDeposit = <
     walletMap: walletLayer1 as WalletMap<any>,
     depositBtnStatus: btnStatus,
     handlePanelEvent,
+    handleAddressChange,
     onDepositClick,
     toAddressStatus,
     toIsAddressCheckLoading,
+    toAddress: toInputAddress,
     realToAddress: depositValue.toAddress,
     isToAddressEditable,
   }

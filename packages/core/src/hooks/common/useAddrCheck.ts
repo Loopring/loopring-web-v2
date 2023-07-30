@@ -53,6 +53,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
           if (nodeTimer.current !== -1) {
             clearTimeout(nodeTimer.current as any)
           }
+          myLog('address update ', address)
           setIsAddressCheckLoading(true)
           const { realAddr, addressErr, isContract } = await checkAddr(address, web3)
           nodeTimer.current = setTimeout(() => {
@@ -128,7 +129,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
           }
           clearTimeout(nodeTimer.current)
           nodeTimer.current = -1
-          myLog('address async', address)
+          myLog('address update async', address, realAddr)
           setIsAddressCheckLoading(false)
         } else {
           throw Error('wrong address format')
@@ -142,7 +143,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
         nodeTimer.current = -1
       }
       setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
-      myLog('address async', address, error)
+      myLog('address update address async', address, error)
       setRealAddr('')
       _address.current = ''
       setIsLoopringAddress(false)
