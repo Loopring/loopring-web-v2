@@ -654,6 +654,17 @@ export const MyPoolTable = withTranslation('tables')(
           )}
           {totalAMMClaims ? (
             rewardsAPIError && getUserRewards ? (
+              <Button
+                sx={{ marginRight: 3 }}
+                onClick={() => {
+                  getUserRewards && getUserRewards()
+                }}
+                size={'small'}
+                variant={'outlined'}
+              >
+                {t('labelRewardRefresh', { ns: 'common' })}
+              </Button>
+            ) : (
               <Typography
                 paddingRight={3}
                 display={'flex'}
@@ -735,17 +746,6 @@ export const MyPoolTable = withTranslation('tables')(
                   </Typography>
                 )}
               </Typography>
-            ) : (
-              <Button
-                sx={{ paddingRight: 3 }}
-                onClick={() => {
-                  getUserRewards && getUserRewards()
-                }}
-                size={'small'}
-                variant={'outlined'}
-              >
-                {t('labelRewardRefresh', { ns: 'common' })}
-              </Button>
             )
           ) : (
             <></>
