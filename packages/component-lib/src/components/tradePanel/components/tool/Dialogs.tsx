@@ -1149,7 +1149,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
           <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
             <img
               width={'80%'}
-              src={`${SoursURL}images/orbiter_${theme.modal}.webp`}
+              src={`${SoursURL}images/orbiter_${theme.mode}.webp`}
               alt={'AppStore'}
             />
           </DialogContentText>
