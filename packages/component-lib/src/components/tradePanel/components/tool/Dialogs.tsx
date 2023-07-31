@@ -1146,11 +1146,14 @@ export const AnotherNetworkNotice = withTranslation('common', {
               .
             </Trans>
           </DialogContentText>
-          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
+          <DialogContentText
+            id='alert-dialog-slide-description'
+            sx={{ marginBottom: 2, display: 'flex', justifyContent: 'center' }}
+          >
             <img
-              width={'80%'}
+              width={'60%'}
               src={`${SoursURL}images/orbiter_${theme.mode}.webp`}
-              alt={'AppStore'}
+              alt={'orbiter'}
             />
           </DialogContentText>
           <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
