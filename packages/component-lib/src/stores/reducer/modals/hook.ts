@@ -13,6 +13,7 @@ import {
   setShowDual,
   setShowExportAccount,
   setShowFeeSetting,
+  setShowGlobalToast,
   setShowIFrame,
   setShowLayerSwapNotice,
   setShowNFTDeploy,
@@ -43,7 +44,7 @@ import {
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
-import { AmmPanelType } from '../../../components'
+import { AmmPanelType, ToastType } from '../../../components'
 
 export const useOpenModals = () => {
   const dispatch = useDispatch()
@@ -275,6 +276,16 @@ export const useOpenModals = () => {
     setShowSideStakingRedeem: React.useCallback(
       (state: ModalStatePlayLoad & { symbol?: string }) =>
         dispatch(setShowSideStakingRedeem(state)),
+      [dispatch],
+    ),
+    setShowGlobalToast: React.useCallback(
+      (state: {
+        isShow: boolean
+        info: {
+          content: string
+          type: ToastType
+        }
+      }) => dispatch(setShowGlobalToast(state)),
       [dispatch],
     ),
   }

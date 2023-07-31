@@ -82,6 +82,7 @@ const ContentWrapperStyled = styled(Box)`
   padding: 0 ${({ theme }) => theme.unit * 1}px;
   border-radius: ${({ theme }) => theme.unit / 2}px;
 `
+
 export const DetailRewardPanel = ({
   detailList,
   hideAssets = false,
@@ -111,7 +112,7 @@ export const DetailRewardPanel = ({
                 component={'span'}
                 color={'textSecondary'}
               >
-                {t(`labelClaimType${item.claimType}`)
+                {Reflect.ownKeys(sdk.CLAIM_TYPE)?.includes(item.claimType?.toUpperCase() ?? '')
                   ? t(`labelClaimType${item.claimType}`)
                   : item?.name
                   ? item?.name

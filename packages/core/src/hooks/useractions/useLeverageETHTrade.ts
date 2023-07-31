@@ -826,12 +826,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     btnStatus,
     extraWithdrawFee,
     apr,
-  ]) // as ForceWithdrawProps<any, any>;
+  ])
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,
-    // confirmShowNoBalance,
-    // setConfirmShowNoBalance,
-    // serverUpdate,
-    // setServerUpdate,
   }
 }
