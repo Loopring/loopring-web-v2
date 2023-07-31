@@ -20,6 +20,7 @@ export interface CoinInfo<R> {
   description?: string
   company: string
 }
+
 export interface WalletCoin<R> {
   belong: CoinKey<R>
   count: number
@@ -51,6 +52,7 @@ export enum TokenType {
   dual = 'dual',
   nft = 'nft',
 }
+
 export type PairMap<
   R extends { [key: string]: any },
   P = { coinA: CoinInfo<R>; coinB: CoinInfo<R> },
@@ -102,10 +104,12 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isShowBtradeAllow?: boolean
   minimumConverted: string | undefined
 }
+
 export enum BtradeType {
   Quantity = 'Quantity',
   Speed = 'Speed',
 }
+
 export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   isBtrade: true
   maxFeeBips: number
