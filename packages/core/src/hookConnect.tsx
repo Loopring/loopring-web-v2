@@ -41,7 +41,6 @@ import { useTranslation } from 'react-i18next'
 import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
-import EthereumProvider from '@walletconnect/ethereum-provider'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
