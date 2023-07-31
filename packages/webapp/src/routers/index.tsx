@@ -11,6 +11,7 @@ import {
   ModalCoinPairPanel,
   ModalGroup,
   ModalRedPacketPanel,
+  store,
   useDeposit,
   useOffFaitModal,
   useSystem,
@@ -99,11 +100,12 @@ const ContentWrap = ({
 }
 
 const WrapModal = () => {
-  const { depositProps } = useDeposit(false)
   const { assetsRawData } = useGetAssets()
   const location = useLocation()
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
+  const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
+
   const { open, actionEle, handleClose } = useOffFaitModal()
 
   const noticeSnacksElEs = React.useMemo(() => {

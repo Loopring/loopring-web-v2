@@ -22,6 +22,7 @@ import React from 'react'
 import { ConnectProviders } from '@loopring-web/web3-provider'
 import styled from '@emotion/styled'
 import { useOpenModals, useSettings } from '../../../../stores'
+import { useTheme } from '@emotion/react'
 
 import {
   Account,
@@ -1093,6 +1094,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
   }) => {
     const [agree, setAgree] = React.useState(false)
     const { defaultNetwork } = useSettings()
+    const theme = useTheme()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     React.useEffect(() => {
       if (!open) {
@@ -1144,6 +1146,16 @@ export const AnotherNetworkNotice = withTranslation('common', {
               .
             </Trans>
           </DialogContentText>
+          <DialogContentText
+            id='alert-dialog-slide-description'
+            sx={{ marginBottom: 2, display: 'flex', justifyContent: 'center' }}
+          >
+            <img
+              width={'60%'}
+              src={`${SoursURL}images/orbiter_${theme.mode}.webp`}
+              alt={'orbiter'}
+            />
+          </DialogContentText>
           <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
             <Trans
               i18nKey={'labelAnotherNetworkDes2'}
@@ -1161,6 +1173,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
               recipient address must be different than the sender address.
             </Trans>
           </DialogContentText>
+
           {/*<DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>*/}
           {/*  <Trans*/}
           {/*    i18nKey={'labelAnotherNetworkDes3'}*/}

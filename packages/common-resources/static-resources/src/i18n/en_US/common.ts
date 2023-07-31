@@ -1755,10 +1755,10 @@ export default {
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
   labelClaimTypeREFERER_FEE: 'Refunds Rewards',
-  labelClaimTypePROTOCOL_FEE: 'AMM Pool Rewards',
+  labelClaimTypePROTOCOL_FEE: 'Protocol Fee (AMM)',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
-  labelAMMClaimableEarnings: 'Protocol Fee Rewards',
+  labelAMMClaimableEarnings: 'Protocol Fee (AMM)',
   labelLayer2HistoryOrders: 'Order Records',
   labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
   labelLayer2HistoryDefiRecords: 'ETH Staking',
@@ -1808,7 +1808,6 @@ export default {
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
   labelDefiSubscribe: 'Subscribe',
-
   labelDefiMaxBalance1Leverage:
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
