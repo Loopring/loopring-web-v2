@@ -1,16 +1,18 @@
 import React, { useCallback } from 'react'
 
 import { connectProvides } from '@loopring-web/web3-provider'
-import { AddressError, globalSetup, myLog } from '@loopring-web/common-resources'
+import { AddressError, globalSetup, myLog, NetworkMap } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
 import { LoopringAPI, store, useAccount, useSystem } from '../../index'
+import { useSettings } from '@loopring-web/component-lib'
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>('')
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
+  const { defaultNetwork } = useSettings()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [realAddr, setRealAddr] = React.useState<string>('')
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(AddressError.NoError)
@@ -18,6 +20,9 @@ export const useAddressCheck = () => {
   const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false)
   const [isActiveAccount, setIsActiveAccount] = React.useState(false)
+  const [isAllowActiveAccount, setIsAllowActiveAccount] = React.useState(
+    undefined as boolean | undefined,
+  )
   const [isActiveAccountFee, setIsActiveAccountFee] = React.useState(false)
   const [isSameAddress, setIsSameAddress] = React.useState(false)
   const [isCFAddress, setIsCFAddress] = React.useState(false)
@@ -104,6 +109,17 @@ export const useAddressCheck = () => {
                   setIsLoopringAddress(false)
                   setIsActiveAccount(false)
                   setIsActiveAccountFee(false)
+                  if (
+                    realAddr &&
+                    (walletType as any)?.extra?.fromWallet &&
+                    (walletType as any)?.network &&
+                    NetworkMap[defaultNetwork].walletType === (walletType as any).network &&
+                    (walletType as any)?.extra?.fromWallet?.toLowerCase() === realAddr.toLowerCase()
+                  ) {
+                    setIsAllowActiveAccount(false)
+                  } else {
+                    setIsAllowActiveAccount(true)
+                  }
                 } else {
                   setIsLoopringAddress(true)
                   setIsActiveAccount(response.accInfo.nonce !== 0)
@@ -153,6 +169,7 @@ export const useAddressCheck = () => {
     setCheckAddaccountId(undefined)
     setIsLoopringAddress(false)
     setIsActiveAccount(false)
+    setIsAllowActiveAccount(true)
     setIsActiveAccountFee(false)
     setIsSameAddress(false)
     setIsCFAddress(false)
@@ -213,6 +230,11 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
   const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false)
   const [isActiveAccount, setIsActiveAccount] = React.useState(undefined as boolean | undefined)
+  const { defaultNetwork } = useSettings()
+  const [isAllowActiveAccount, setIsAllowActiveAccount] = React.useState(
+    undefined as boolean | undefined,
+  )
+
   const [isActiveAccountFee, setIsActiveAccountFee] = React.useState(false)
   const [isSameAddress, setIsSameAddress] = React.useState(false)
   const [isCFAddress, setIsCFAddress] = React.useState(false)
@@ -296,6 +318,17 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
                 setIsLoopringAddress(false)
                 setIsActiveAccount(false)
                 setIsActiveAccountFee(false)
+                if (
+                  realAddr &&
+                  (walletType as any)?.extra?.fromWallet &&
+                  (walletType as any)?.network &&
+                  NetworkMap[defaultNetwork].walletType === (walletType as any).network &&
+                  (walletType as any)?.extra?.fromWallet?.toLowerCase() === realAddr.toLowerCase()
+                ) {
+                  setIsAllowActiveAccount(false)
+                } else {
+                  setIsAllowActiveAccount(true)
+                }
               } else {
                 setIsLoopringAddress(true)
                 setIsActiveAccount(response.accInfo.nonce !== 0)
@@ -349,12 +382,11 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
       if (found && listNoCheckRequired.includes(found.addressType)) {
         setRealAddr(address)
         switch (found.addressType) {
-          case sdk.AddressType.LOOPRING_HEBAO_CF:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0: {
-            setIsCFAddress(found.addressType === sdk.AddressType.LOOPRING_HEBAO_CF)
+            setIsCFAddress(false)
             setIsContractAddress(true)
             setIsContract1XAddress(
               found.addressType === sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6 ||
@@ -379,6 +411,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
                   setIsLoopringAddress(false)
                   setIsActiveAccount(false)
                   setIsActiveAccountFee(false)
+                  setIsAllowActiveAccount(false)
                 } else {
                   setIsLoopringAddress(true)
                   setIsActiveAccount(response.accInfo.nonce !== 0)
@@ -458,6 +491,11 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
             }
             break
           }
+          case sdk.AddressType.LOOPRING_HEBAO_CF:
+            setIsCFAddress(true)
+            //TODO mayBe state will changed to a real wallet
+            check(address, connectProvides.usedWeb3)
+            break
         }
       } else {
         check(address, connectProvides.usedWeb3)
