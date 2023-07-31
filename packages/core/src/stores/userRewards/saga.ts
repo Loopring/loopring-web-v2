@@ -38,8 +38,7 @@ const getUserRewardsApi = async () => {
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
               return []
             }
-            // @ts-ignore
-            return response?.raw_data?.data[0]?.items
+            return response?.raw_data?.items ?? []
           })
           .catch((error) => {
             throw error
