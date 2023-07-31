@@ -238,7 +238,6 @@ export const RedPacketQRCode = ({
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>()
   const ref = React.useRef()
-  const colorConfig = RedPacketColorConfig[type]
   const qrCode = new QRCodeStyling({
     type: 'svg',
     width: 200,

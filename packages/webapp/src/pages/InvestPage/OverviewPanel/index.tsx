@@ -8,7 +8,6 @@ import { useOverview } from './hook'
 import {
   useSettings,
   InvestOverviewTable,
-  ComingSoonPanel,
   useToggle,
 } from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
@@ -52,19 +51,23 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   const { notifyMap } = useNotify()
   const showLoading = filteredData && !filteredData.length
   const history = useHistory()
+  const {
+    toggle: { CIETHInvest },
+  } = useToggle()
   const investAdviceList = [
     { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
     { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
     { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2] },
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
-    { ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4] },
+    ...(!CIETHInvest.enable && CIETHInvest.reason === 'no view'
+      ? []
+      : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4] }]),
   ]
   return (
     <>
       <WrapperStyled marginBottom={3}>
         <Grid container spacing={2} padding={3}>
           {investAdviceList.map((item, index) => {
-            console.log('item.titleI18n', item.titleI18n)
             return (
               <Grid item xs={12} md={4} lg={3} key={item.type + index}>
                 <Card onClick={() => history.push(item.router)}>

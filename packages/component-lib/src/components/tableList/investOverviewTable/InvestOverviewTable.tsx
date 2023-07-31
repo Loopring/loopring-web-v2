@@ -245,6 +245,9 @@ export const InvestOverviewTable = <R extends RowInvest>({
                       case InvestMapType.STAKELRC:
                         history.push(`/invest/stakelrc/${row.token.symbol}-null`)
                         return
+                      case InvestMapType.LEVERAGEETH:
+                        history.push(`/invest/leverageETH`)
+                        return
                     }
                   }}
                 >

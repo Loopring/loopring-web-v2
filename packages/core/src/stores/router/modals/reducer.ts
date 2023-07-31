@@ -401,7 +401,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       }
     },
     updateDepositData(state, action: PayloadAction<Partial<DepositData>>) {
-      const { belong, balance, tradeValue, referAddress, toAddress, addressError } = action.payload
+      const { belong, balance, tradeValue, toAddress, addressError } = action.payload
       state.lastStep = LAST_STEP.nftDeposit
       if (belong) {
         state.depositValue.belong = belong
@@ -411,7 +411,6 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         state.depositValue.balance = balance
       }
       state.depositValue.tradeValue = tradeValue
-      state.depositValue.referAddress = referAddress
       state.depositValue.toAddress = toAddress
       state.depositValue.addressError = addressError
     },

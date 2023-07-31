@@ -5,6 +5,7 @@ const initialState: PopupStates = {
   showRETHStakignPopup: false,
   showWSTETHStakignPopup: false,
   showLRCStakignPopup: false,
+  showLeverageETHPopup: false,
   confirmationNeeded: true,
 }
 const popupSlice: Slice = createSlice({
@@ -32,8 +33,15 @@ const popupSlice: Slice = createSlice({
       state.showLRCStakignPopup = action.payload.show
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
+    setShowLeverageETHPopup(
+      state: PopupStates,
+      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showLeverageETHPopup = action.payload.show
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
   },
 })
-const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLRCStakignPopup } =
+const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLRCStakignPopup, setShowLeverageETHPopup } =
   popupSlice.actions
-export { popupSlice, setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLRCStakignPopup }
+export { popupSlice, setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLRCStakignPopup, setShowLeverageETHPopup }

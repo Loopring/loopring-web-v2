@@ -173,19 +173,17 @@ export type DepositExtendProps<T> = {
   isHideDes?: boolean
   allowTrade?: any
   toAddressStatus: AddressError
-  referStatus: AddressError
   isAllowInputToAddress?: boolean
   onDepositClick: (data: T) => void
   toIsAddressCheckLoading: boolean
   // toIsLoopringAddress: boolean;
+  toAddress?: string
   realToAddress?: string
-  referIsAddressCheckLoading: boolean
-  referIsLoopringAddress?: boolean
-  realReferAddress?: string
   handleClear: () => void
   isToAddressEditable: boolean
   onBack?: () => void
   accountReady?: AccountStatus | undefined
+  handleAddressChange: (address: string) => void
 } & DepositInfoProps
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExtendProps<T>

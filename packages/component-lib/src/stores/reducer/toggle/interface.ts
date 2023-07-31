@@ -22,11 +22,18 @@ export type ToggleState = {
   LRCStackInvest: { enable: boolean; reason?: string }
   BTradeInvest: { enable: boolean; reason?: string }
   StopLimit: { enable: boolean; reason?: string }
+  // @ts-ignore
   send: {
     orbiter: string[]
   }
+  // @ts-ignore
   receive: {
     layerSwap: string[]
     orbiter: string[]
   }
+  CIETHInvest: { enable: boolean; reason?: string }
+  [key: string]: { enable?: boolean; reason?: string; [key: string]: any }
+  whiteList: any
+  // @ts-ignore
+  isSupperUser: any
 }

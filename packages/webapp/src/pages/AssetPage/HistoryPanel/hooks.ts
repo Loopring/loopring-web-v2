@@ -27,13 +27,17 @@ import {
   ToastType,
   TransactionStatus,
   useOpenModals,
+  useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE, GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import {
   AccountStatus,
   BTRDE_PRE,
+  defiMarkets,
   getValuePrecisionThousand,
+  leverageETHConfig,
+  MapChainId,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
@@ -1147,7 +1151,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        const markets = leverageETHMarkets[network]
+        const types = leverageETHConfig.types[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -1155,7 +1159,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            markets: markets.join(','),
+            types: types.join(','),
           } as any,
           apiKey,
         )
