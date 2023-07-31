@@ -25,7 +25,7 @@ packages/common-resources/static-resources/src/constant/router.ts
 #### navigation
 
 ```ts
-export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
+export const headerMenuDataMap: { [ key: string ]: HeaderMenuItemInterface[] } = {
   TAIKO: [
     {
       label: {
@@ -228,7 +228,7 @@ export const TokenPriceBase = {
 ### Record history
 
 ```ts
-export const RecordMap: { [key: string]: RecordTabIndex[] } = {
+export const RecordMap: { [ key: string ]: RecordTabIndex[] } = {
   TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
   ETHEREUM: [
     RecordTabIndex.Transactions,
@@ -253,4 +253,5 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.BtradeSwapRecords,
   ],
 }
+
 ```
