@@ -42,6 +42,8 @@ import { useHistory, useLocation } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import { modalContentBaseStyle } from '../../../styled'
 import * as sdk from '@loopring-web/loopring-sdk'
+import theme from 'echarts/types/src/theme/dark'
+import { useTheme } from '@emotion/react'
 
 const ModelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
@@ -1093,7 +1095,8 @@ export const AnotherNetworkNotice = withTranslation('common', {
   }) => {
     const [agree, setAgree] = React.useState(false)
     const { defaultNetwork } = useSettings()
-    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const theme = useTheme()
+    const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ]
     React.useEffect(() => {
       if (!open) {
         setAgree(false)
@@ -1145,15 +1148,20 @@ export const AnotherNetworkNotice = withTranslation('common', {
             </Trans>
           </DialogContentText>
           <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
+            <img
+              width={80 %}
+              src={`${SoursURL}images/orbiter_${theme.modal}.webp`}
+              alt={'AppStore'}
+            />
             <Trans
               i18nKey={'labelAnotherNetworkDes2'}
               tOptions={{
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                layer2: L1L2_NAME_DEFINED[ network ].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
               }}
             >
               Note: Please ensure to check out the "Change Account" option and input the recipient's
@@ -1161,6 +1169,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
               recipient address must be different than the sender address.
             </Trans>
           </DialogContentText>
+
           {/*<DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>*/}
           {/*  <Trans*/}
           {/*    i18nKey={'labelAnotherNetworkDes3'}*/}
