@@ -122,6 +122,8 @@ import {
   BtradeSwap_Pending,
   AMM_Pending,
   useSettings,
+  TOASTOPEN,
+  setShowGlobalToast,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -174,7 +176,6 @@ import {
   useReset,
   useStakeTradeExit,
   useSystem,
-  useToast,
   useTransfer,
   useVendor,
   useWalletLayer2,
@@ -238,16 +239,22 @@ export function useAccountModalForUI({
 
   const { exportAccountAlertText, exportAccountToastOpen, setExportAccountToastOpen } =
     useExportAccount()
-  const { toastOpen, setToastOpen, closeToast } = useToast()
 
   const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance()
   const { retryBtn: creatRedPacketRetryBtn } = useCreateRedPacket({
     assetsRawData,
     isShow: false,
   })
+  // const [toastOpen, setToastOpen] = React.useState<TOASTOPEN>({
+  //   open: false,
+  //   content: '',
+  //   type: ToastType.info,
+  // })
 
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
-    setCollectionToastOpen: setToastOpen,
+    setCollectionToastOpen: (info: TOASTOPEN) => {
+      setShowGlobalToast({ isShow: info.open, info: { ...info } })
+    },
   })
   const { vendorListBuy, banxaRef } = useVendor()
   // const { nftMintProps } = useNFTMint();
@@ -257,7 +264,7 @@ export function useAccountModalForUI({
   const { nftTransferProps } = useNFTTransfer()
   const { nftDeployProps } = useNFTDeploy()
   const { stakeWrapProps } = useStakeTradeExit({
-    setToastOpen,
+    setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
   })
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw()
   const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm()
@@ -719,7 +726,7 @@ export function useAccountModalForUI({
   }, [isShowAccount?.info, setShowAccount])
 
   const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
-    setToastOpen,
+    setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
     onDisconnect,
     isDepositing: !!chainInfos?.depositHashes[account?.accAddress]?.length,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
@@ -3181,7 +3188,6 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
-    setToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,
@@ -3191,8 +3197,6 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    toastOpen,
-    closeToast,
     // checkActiveStatusProps,
     // dualToastOpen,
   }
