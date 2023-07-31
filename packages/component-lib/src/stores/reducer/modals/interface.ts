@@ -62,7 +62,11 @@ export interface ModalState {
     type?: string
     messageKey?: string
   }
-  isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO }
+  isShowConnect: ModalStatePlayLoad & {
+    step: number
+    error?: RESULT_INFO
+    info?: { [key: string]: any }
+  }
   isShowAccount: ModalStatePlayLoad & {
     step: number
     error?: RESULT_INFO
@@ -75,4 +79,11 @@ export interface ModalState {
   isShowFeeSetting: ModalStatePlayLoad
   isShowIFrame: ModalStatePlayLoad & { url: string }
   isShowSideStakingRedeem: ModalStatePlayLoad & { symbol?: string }
+  isShowGlobalToast: {
+    isShow: boolean
+    info: {
+      content: string
+      type: ToastType
+    }
+  }
 }
