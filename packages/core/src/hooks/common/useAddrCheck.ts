@@ -7,12 +7,13 @@ import {
   myLog,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
+  NetworkMap,
 } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
 import { LoopringAPI, store, useAccount, useSystem } from '../../index'
-import { ToastType, useOpenModals } from '@loopring-web/component-lib'
+import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 
 export const useAddressCheck = (checkEOA: boolean = true) => {
@@ -20,6 +21,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
   const { t } = useTranslation()
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
+  const { defaultNetwork } = useSettings()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [realAddr, setRealAddr] = React.useState<string>('')
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(AddressError.NoError)
@@ -27,7 +29,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
   const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false)
   const [isActiveAccount, setIsActiveAccount] = React.useState(false)
-  const [isActiveAccountFee, setIsActiveAccountFee] = React.useState(false)
+  const [isActiveAccountFee, setIsActiveAccountFee] = React.useState<boolean | 'not allow'>(false)
   const [isSameAddress, setIsSameAddress] = React.useState(false)
   const [isCFAddress, setIsCFAddress] = React.useState(false)
   const [isContractAddress, setIsContractAddress] = React.useState(false)
@@ -42,7 +44,6 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
   } = useAccount()
 
   const check = React.useCallback(async (address: any, web3: any) => {
-    // if( address.math)
     try {
       if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
         if (
@@ -73,14 +74,21 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
               setIsContractAddress(isContract)
             }
             if (addressErr === AddressError.NoError) {
-              const [{ walletType }, response] = await Promise.all([
-                LoopringAPI.walletAPI.getWalletType({
-                  wallet: realAddr,
-                }),
-                LoopringAPI.exchangeAPI.getAccount({
-                  owner: realAddr,
-                }),
-              ])
+              const [{ walletType }, response, { contractType: _contractType }] = await Promise.all(
+                [
+                  LoopringAPI.walletAPI.getWalletType({
+                    wallet: realAddr,
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                  }),
+                  LoopringAPI.exchangeAPI.getAccount({
+                    owner: realAddr,
+                  }),
+                  LoopringAPI.walletAPI.getContractType({
+                    wallet: realAddr,
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                  }),
+                ],
+              )
               // for debounce & promise clean  (next user input sync function will cover by async)
               if (_address.current == address) {
                 if (walletType && walletType?.isInCounterFactualStatus) {
@@ -112,9 +120,22 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
                   response &&
                   ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
                 ) {
-                  setIsLoopringAddress(false)
-                  setIsActiveAccount(false)
-                  setIsActiveAccountFee(false)
+                  if (
+                    realAddr &&
+                    (_contractType as any)?.network &&
+                    (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
+                    (_contractType as any)?.extra?.fromWallet &&
+                    (_contractType as any)?.extra?.fromWallet?.toLowerCase() ===
+                      realAddr.toLowerCase()
+                  ) {
+                    setIsLoopringAddress(true)
+                    setIsActiveAccount(false)
+                    setIsActiveAccountFee('not allow')
+                  } else {
+                    setIsLoopringAddress(false)
+                    setIsActiveAccount(false)
+                    setIsActiveAccountFee(false)
+                  }
                 } else {
                   setIsLoopringAddress(true)
                   setIsActiveAccount(response.accInfo.nonce !== 0)

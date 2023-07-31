@@ -511,6 +511,7 @@ export type NetworkItemInfo = {
   RPC?: string
   link?: string
   isTest?: boolean | undefined
+  walletType: string
 }
 
 export const url_path = 'https://static.loopring.io/events'
