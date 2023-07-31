@@ -23,16 +23,9 @@ import { useSettings } from '../../../stores'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { Filter } from './components/Filter'
 import { AmmAPRDetail, AmmPairDetail, AmmRewardsDetail } from '../../block'
-import { ActionPopContent } from './components/ActionPop'
+import { ActionPopContent, DetailRewardPanel } from './components/ActionPop'
 import { CoinIcons } from '../assetsTable'
 import { useHistory } from 'react-router-dom'
-import { DetailRewardPanel } from '../rewardTable'
-
-export enum PoolTradeType {
-  add = 'add',
-  swap = 'swap',
-  remove = 'remove',
-}
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
@@ -717,24 +710,6 @@ export const MyPoolTable = withTranslation('tables')(
                       size={'small'}
                       onClick={() => {
                         history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
-                        // updateClaimData({
-                        //   belong: stakedSymbol,
-                        //   tradeValue: volumeToCount(
-                        //     stakedSymbol,
-                        //     totalClaimableRewards
-                        //   ),
-                        //   balance: volumeToCount(
-                        //     stakedSymbol,
-                        //     totalClaimableRewards
-                        //   ),
-                        //   volume: totalClaimableRewards,
-                        //   tradeType: TRADE_TYPE.TOKEN,
-                        //   claimType: CLAIM_TYPE.lrcStaking,
-                        // });
-                        // setShowClaimWithdraw({
-                        //   isShow: true,
-                        //   claimType: CLAIM_TYPE.lrcStaking,
-                        // });
                       }}
                     >
                       {t('labelClaimBtn', { ns: 'common' })}
