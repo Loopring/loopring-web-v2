@@ -180,39 +180,40 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     if (value !== defaultNetwork) {
       setDefaultNetwork(value)
     }
-    if (account.readyState !== AccountStatus.UN_CONNECT) {
-      // await walletServices.sendDisconnect();
-      setShowConnect({
-        isShow: true,
-        step: WalletConnectStep.CommonProcessing,
-      })
-      myLog(connectProvides)
-      try {
-        await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
-      } catch (error) {
-        const chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-        setDefaultNetwork(chainId ?? defaultNetwork)
-        if (
-          connectProvides?.usedWeb3 &&
-          (error as any)?.code == 4001 &&
-          window?.ethereum?.isConnected() &&
-          !(connectProvides?.usedProvide as EthereumProvider)?.isWalletConnect
-        ) {
-          setShowConnect({
-            isShow: true,
-            step: WalletConnectStep.RejectSwitchNetwork,
-          })
-          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        }
-
-        setShowConnect({
-          isShow: false,
-          step: WalletConnectStep.RejectSwitchNetwork,
-        })
-      }
-    } else {
-      networkUpdate()
-    }
+    networkUpdate()
+    // if (account.readyState !== AccountStatus.UN_CONNECT) {
+    //   // await walletServices.sendDisconnect();
+    //   setShowConnect({
+    //     isShow: true,
+    //     step: WalletConnectStep.CommonProcessing,
+    //   })
+    //   myLog(connectProvides)
+    //   try {
+    //     // await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
+    //   } catch (error) {
+    //     const chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+    //     setDefaultNetwork(chainId ?? defaultNetwork)
+    //     if (
+    //       connectProvides?.usedWeb3 &&
+    //       (error as any)?.code == 4001 &&
+    //       window?.ethereum?.isConnected() &&
+    //       !(connectProvides?.usedProvide as EthereumProvider)?.isWalletConnect
+    //     ) {
+    //       setShowConnect({
+    //         isShow: true,
+    //         step: WalletConnectStep.RejectSwitchNetwork,
+    //       })
+    //       await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+    //     }
+    //
+    //     setShowConnect({
+    //       isShow: false,
+    //       step: WalletConnectStep.RejectSwitchNetwork,
+    //     })
+    //   }
+    // } else {
+    //
+    // }
   }
 
   const NetWorkItems: JSX.Element = React.useMemo(() => {

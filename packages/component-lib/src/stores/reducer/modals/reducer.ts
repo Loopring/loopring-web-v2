@@ -58,6 +58,22 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   name: 'modals',
   initialState,
   reducers: {
+    setShowGlobalToast(
+      state,
+      action: PayloadAction<{
+        isShow: boolean
+        info: {
+          content: string
+          type: ToastType
+        }
+      }>,
+    ) {
+      const { isShow, info } = action.payload
+      state.isShowGlobalToast = {
+        isShow,
+        info,
+      }
+    },
     setNFTMetaNotReady(
       state,
       action: PayloadAction<{
@@ -387,4 +403,5 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
+  setShowGlobalToast,
 } = modalsSlice.actions
