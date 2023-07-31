@@ -8,9 +8,16 @@ import {
   TradeNFT,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { AmmPanelType } from '../../../components'
+import { AmmPanelType, ToastType } from '../../../components'
 
 const initialState: ModalState = {
+  isShowGlobalToast: {
+    isShow: false,
+    info: {
+      content: '',
+      type: ToastType.info,
+    },
+  },
   isShowNFTMetaNotReady: { isShow: false },
   isShowRedPacket: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },

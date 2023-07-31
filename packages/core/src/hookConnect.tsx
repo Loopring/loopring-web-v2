@@ -17,6 +17,9 @@ import {
 } from '@loopring-web/web3-provider'
 import {
   AccountStatus,
+  ChainETHEREUMIcon,
+  ChainGOERLIIcon,
+  ChainTAIKOIcon,
   DropDownIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
@@ -29,14 +32,13 @@ import {
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-
 import { accountReducer, useAccount } from './stores/account'
 import { useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { store, WalletConnectL2Btn } from './index'
 import { useTranslation } from 'react-i18next'
-import { Box, SelectChangeEvent, Typography } from '@mui/material'
+import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -44,32 +46,41 @@ import EthereumProvider from '@walletconnect/ethereum-provider'
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
     background: var(--field-opacity);
-    height: var(--input-height-large);
+    height: var(--row-height);
   }
 
-  // .MuiSelect-select {
-  //   padding-left: ${({ theme }) => theme.unit * 3}px;
-  // }
+  .MuiAvatar-root {
+    background: var(--color-white);
+    margin-right: ${({ theme }) => theme.unit}px;
+    width: 20px;
+    height: 20px;
 
-  &.test .MuiSelect-outlined span {
-    background: var(--network-bg);
+    svg {
+      width: 20px;
+      height: 20px;
+      right: -50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &.test .MuiSelect-outlined .label {
     display: inline-flex;
-    padding: 3px 4px;
-    border-radius: 4px;
-    color: var(--network-text);
 
     &:after {
+      color: var(--network-text);
       content: ' test';
       padding-left: 0.5em;
       display: inline-flex;
       font-size: var(body2);
-      color: inherit;
     }
   }
 
   .MuiSelect-outlined.MuiSelect-outlined {
     padding-right: ${({ theme }) => theme.unit * 3}px;
     padding-left: ${({ theme }) => theme.unit * 3}px;
+    display: inline-flex;
+    align-items: center;
   }
 
   &.mobile .MuiSelect-outlined.MuiSelect-outlined {
@@ -77,21 +88,43 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     padding-right: ${({ theme }) => theme.unit * 2}px;
   }
 
-  &.header.mobile {
-    padding-left: 0;
-    padding-right: 0;
-    position: relative;
+  &.header {
+    .MuiSelect-outlined {
+      //.MuiAvatar-root {
+      //  display: none;
+      //}
+    }
 
-    .MuiSelect-icon {
-      position: absolute;
-      top: 85%;
-      left: 50%;
-      transform: translateX(-50%);
+    &.mobile {
+      .MuiAvatar-root {
+        display: flex;
+      }
+
+      .label {
+        display: none;
+      }
+
+      padding-left: 0;
+      padding-right: ${({ theme }) => theme.unit * 4}px;
+      position: relative;
     }
   }
 ` as typeof OutlineSelect
 export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
-  &.provider-test {
+  .MuiAvatar-root {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    background: var(--color-white);
+    margin-right: ${({ theme }) => theme.unit}px;
+  }
+
+  &.provider-test .label {
     &:after {
       content: ' test';
       padding-left: 0.5em;
@@ -101,7 +134,31 @@ export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
     }
   }
 ` as typeof OutlineSelectItem
-
+const Icon = ({ label = '' }: { label: string }) => {
+  switch (label) {
+    case 'GOERLI':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainGOERLIIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    case 'ETHEREUM':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainETHEREUMIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    case 'TAIKO':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainTAIKOIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    default:
+      const child = label.split(' ')?.map((item) => item[0])
+      return <Avatar component={'span'} variant='circular' children={child} />
+  }
+}
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } = useSettings()
@@ -186,7 +243,10 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
                   value={id}
                   key={'viewNetwork' + NetworkMap[id] + index}
                 >
-                  <span>{t(NetworkMap[id].label)}</span>
+                  <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
+                    <Icon label={MapChainId[id]} />
+                    <span className={'label'}>{t(NetworkMap[id].label)}</span>
+                  </Typography>
                 </OutlineSelectItemStyle>,
               )
             }
@@ -293,10 +353,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     ({ opts, type }: { type: ProcessingType; opts: any }) => {
       if (type == ProcessingType.nextStep) {
         if (opts.step !== undefined && opts.step == ProcessingStep.showQrcode) {
-          store.dispatch(
-            //TODO:
-            accountReducer.updateAccountStatus({ qrCodeUrl: opts.QRcode }),
-          )
+          store.dispatch(accountReducer.updateAccountStatus({ qrCodeUrl: opts.QRcode }))
           setShowConnect({
             isShow: false,
           })
@@ -325,24 +382,14 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
       statusAccountUnset()
       setShowAccount({ isShow: false })
-      if (
+      if (props?.opts?.error?.code === -32002) {
+      } else if (
         props?.opts?.connectName === ConnectProviders.WalletConnect &&
         props?.opts?.error &&
         props?.opts?.error?.code === UIERROR_CODE.ERROR_WALLECTCONNECT_MANUALLY_CLOSE
       ) {
         setShowConnect({ isShow: false })
-        // setShowConnect({
-        //   isShow: true,
-        //   step: WalletConnectStep.RejectConnect,
-        // });
       } else {
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.FailedConnect,
-          error: {
-            ...props.opts.error,
-          } as sdk.RESULT_INFO,
-        })
       }
     },
     [

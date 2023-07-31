@@ -13,6 +13,7 @@ import {
   setShowDual,
   setShowExportAccount,
   setShowFeeSetting,
+  setShowGlobalToast,
   setShowIFrame,
   setShowLayerSwapNotice,
   setShowNFTDeploy,
