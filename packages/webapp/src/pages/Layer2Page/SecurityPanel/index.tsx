@@ -243,7 +243,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({ t }: WithT
           </>
         )}
         <StyledDivider />
-        {toggle?.isSupperUser?.length && (
+        {!!toggle?.isSupperUser?.length && (
           <Box component={'section'} display={'flex'} flexDirection={'column'} padding={5 / 2}>
             <Grid
               container
