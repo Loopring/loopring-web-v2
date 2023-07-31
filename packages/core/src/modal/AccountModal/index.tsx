@@ -158,7 +158,6 @@ export const ModalAccountInfo = withTranslation('common')(
           sideStackRedeemProps={sideStackRedeemProps as any}
           {...{ _height: 'var(--modal-height)', _width: 'var(--modal-width)' }}
         />
-
         <Toast
           alertText={t('labelCopyAddClip')}
           open={copyToastOpen}

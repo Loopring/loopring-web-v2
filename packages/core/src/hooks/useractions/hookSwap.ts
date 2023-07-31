@@ -1399,7 +1399,7 @@ export const useSwap = <
             marketPrice.toString(),
             tokenMap[_tradeData.buy.belong].precision,
             tokenMap[_tradeData.buy.belong].precision,
-            tokenMap[_tradeData.buy.belong].precision,
+            undefined,
           )
 
           _tradeCalcData.marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2)

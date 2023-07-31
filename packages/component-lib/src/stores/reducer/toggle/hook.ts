@@ -14,6 +14,8 @@ export function useToggle() {
   React.useEffect(() => {
     const { account, toggle: _toggle, system } = store.getState()
     const network = MapChainId[system.chainId] ?? MapChainId[1]
+    let isSupperUser = false,
+      list: any = []
     if (
       accountStatus == SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED &&
@@ -24,10 +26,10 @@ export function useToggle() {
       const toggle = _.cloneDeep(_toggle)
       toggle?.whiteList[network?.toUpperCase()].forEach((item: string) => {
         // @ts-ignore
-        const has = item?.superUserAddress?.find(
+        isSupperUser = item?.superUserAddress?.find(
           (addr: string) => addr?.toLowerCase() == account.accAddress?.toLowerCase(),
         )
-        if (has) {
+        if (isSupperUser) {
           // @ts-ignore
           item?.superUserFunction?.forEach((fn: string) => {
             const key: string | undefined = Reflect.ownKeys(toggle).find(
@@ -36,6 +38,7 @@ export function useToggle() {
             )
             if (key) {
               toggle[key] = { ...toggle[key], enable: true }
+              list.push(key)
             }
           })
         }
@@ -44,6 +47,7 @@ export function useToggle() {
         return {
           ...state,
           ...toggle,
+          isSupperUser: isSupperUser ? list : false,
         }
       })
     }

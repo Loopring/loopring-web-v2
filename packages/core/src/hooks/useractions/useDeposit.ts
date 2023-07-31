@@ -175,6 +175,7 @@ export const useDeposit = <
     isNewAccount,
     setLabelAndParams,
     enableBtn,
+    // account?.readyState,
     opts?.owner,
   ])
 
@@ -197,9 +198,7 @@ export const useDeposit = <
       const oldValue = store.getState()._router_modalData.depositValue
       let newValue = {
         ...oldValue,
-        toAddress: realToAddress,
       }
-
       if (data.to === 'button') {
         if (walletLayer1 && data?.tradeData?.belong) {
           const walletInfo = walletLayer1[data.tradeData.belong]
@@ -210,8 +209,9 @@ export const useDeposit = <
           }
         }
       }
-      myLog('DepositData', newValue)
-      updateDepositData(newValue)
+
+      myLog('DepositData', { ...newValue, toAddress: realToAddress })
+      updateDepositData({ ...newValue, toAddress: realToAddress })
       return Promise.resolve()
     },
     [setToAddress, updateDepositData, realToAddress, isToAddressEditable, walletLayer1],
