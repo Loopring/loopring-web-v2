@@ -1096,7 +1096,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
     const [agree, setAgree] = React.useState(false)
     const { defaultNetwork } = useSettings()
     const theme = useTheme()
-    const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ]
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     React.useEffect(() => {
       if (!open) {
         setAgree(false)
@@ -1149,19 +1149,19 @@ export const AnotherNetworkNotice = withTranslation('common', {
           </DialogContentText>
           <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
             <img
-              width={80 %}
+              width={'80%'}
               src={`${SoursURL}images/orbiter_${theme.modal}.webp`}
               alt={'AppStore'}
             />
             <Trans
               i18nKey={'labelAnotherNetworkDes2'}
               tOptions={{
-                layer2: L1L2_NAME_DEFINED[ network ].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
             >
               Note: Please ensure to check out the "Change Account" option and input the recipient's
