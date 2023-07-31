@@ -7,7 +7,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
 import { LoopringAPI, store, useAccount, useSystem } from '../../index'
 import { useSettings } from '@loopring-web/component-lib'
-import { NetworkWallet } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>('')
@@ -69,14 +68,14 @@ export const useAddressCheck = () => {
                 [
                   LoopringAPI.walletAPI.getWalletType({
                     wallet: realAddr,
-                    network: NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
                   }),
                   LoopringAPI.exchangeAPI.getAccount({
                     owner: realAddr,
                   }),
                   LoopringAPI.walletAPI.getContractType({
                     wallet: realAddr,
-                    network: NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
                   }),
                 ],
               )
