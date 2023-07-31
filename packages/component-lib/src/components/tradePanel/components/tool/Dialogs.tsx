@@ -22,6 +22,7 @@ import React from 'react'
 import { ConnectProviders } from '@loopring-web/web3-provider'
 import styled from '@emotion/styled'
 import { useOpenModals, useSettings } from '../../../../stores'
+import { useTheme } from '@emotion/react'
 
 import {
   Account,
@@ -42,8 +43,6 @@ import { useHistory, useLocation } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import { modalContentBaseStyle } from '../../../styled'
 import * as sdk from '@loopring-web/loopring-sdk'
-import theme from 'echarts/types/src/theme/dark'
-import { useTheme } from '@emotion/react'
 
 const ModelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
@@ -1153,6 +1152,8 @@ export const AnotherNetworkNotice = withTranslation('common', {
               src={`${SoursURL}images/orbiter_${theme.modal}.webp`}
               alt={'AppStore'}
             />
+          </DialogContentText>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
             <Trans
               i18nKey={'labelAnotherNetworkDes2'}
               tOptions={{
