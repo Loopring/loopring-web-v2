@@ -1210,7 +1210,7 @@ export function useRedPacketModal() {
                   tokenInfo!.precision,
                   false,
                 ),
-              total: getValuePrecisionThousand(
+              total: tokenInfo && getValuePrecisionThousand(
                 sdk
                   .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
                   .div('1e' + tokenInfo!.decimals),
