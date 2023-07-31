@@ -762,7 +762,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     }
   }, [isJoin, market])
   myLog('isLoading', isLoading)
-  const extraWithdrawFee = sdk.toBig( tradeLeverageETH.withdrawFeeBips ?? 0)
+  const extraWithdrawFee = sdk
+    .toBig(tradeLeverageETH.withdrawFeeBips ?? 0)
     .times(tradeLeverageETH.buyVol)
     .div('10000')
     .div('1e' + tradeLeverageETH.sellToken.decimals)
@@ -802,7 +803,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       btnStatus,
       accStatus: account.readyState,
       extraWithdrawFee: extraWithdrawFee,
-      apr
       apr,
     }
   }, [
