@@ -829,7 +829,7 @@ export default {
   labelNFTProperties: 'Properties',
   labelNFTDescription2: 'Description',
   labelForceWithdrawNotAvailable:
-    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{symbolL2}} to {{symbolL1}} anymore',
+    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1symbol}} anymore',
   labelForceWithdrawNoToken: 'No token is detected from this address to operate',
   labelForceWithdrawBtn: 'Force Withdraw',
   labelInvestDefiTitle: 'ETH Staking',
@@ -843,13 +843,13 @@ export default {
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n' +
     'You can choose one of the following approaches for the remaining amount:',
   labelDefiMaxBalance1:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalance:
     '<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>' +
     '<span>You can choose one of the following approaches for the remaining amount:</span>',
   labelDefiNoBalanceList:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
@@ -1755,10 +1755,10 @@ export default {
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
   labelClaimTypeREFERER_FEE: 'Refunds Rewards',
-  labelClaimTypePROTOCOL_FEE: 'AMM Pool Rewards',
+  labelClaimTypePROTOCOL_FEE: 'Protocol Fee(AMM)',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
-  labelAMMClaimableEarnings: 'Protocol Fee Rewards',
+  labelAMMClaimableEarnings: 'Protocol Fee(AMM)',
   labelLayer2HistoryOrders: 'Order Records',
   labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
   labelLayer2HistoryDefiRecords: 'ETH Staking',
@@ -1809,4 +1809,11 @@ export default {
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
   labelRewardRefresh: 'Refresh',
+  labelDefiSubscribe: 'Subscribe',
+  labelDefiMaxBalance1Leverage:
+    '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
+  labelDefiNoBalanceLeverage:
+    '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
+  labelDefiMaxBalanceLeverage:
+    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
 }
