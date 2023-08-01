@@ -88,7 +88,7 @@ export type TransferExtendProps<T, I, C> = {
   isSmartContractAddress?: boolean
   isAddressCheckLoading?: boolean
   isSameAddress?: boolean
-  isActiveAccountFee?: boolean
+  isActiveAccountFee?: boolean | 'not allow'
   addrStatus: AddressError
   onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>
   handleFeeChange: (value: C) => void
