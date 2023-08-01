@@ -114,8 +114,10 @@ export const useAddressCheck = () => {
                     realAddr &&
                     (_contractType as any)?.network &&
                     (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
-                    (_contractType as any)?.extra?.fromWallet &&
-                    (_contractType as any)?.extra?.fromWallet?.toLowerCase() ===
+                    (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
+                    (
+                      _contractType as any
+                    )?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
                       realAddr.toLowerCase()
                   ) {
                     setIsLoopringAddress(true)
@@ -280,20 +282,21 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
               setIsContractAddress(isContract)
             }
             if (addressErr === AddressError.NoError) {
-              const [{ walletType }, response, { contractType: _contractType, raw_data }] =
-                await Promise.all([
+              const [{ walletType }, response, { contractType: _contractType }] = await Promise.all(
+                [
                   LoopringAPI.walletAPI.getWalletType({
                     wallet: realAddr,
-                    network: NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
                   }),
                   LoopringAPI.exchangeAPI.getAccount({
                     owner: realAddr,
                   }),
                   LoopringAPI.walletAPI.getContractType({
                     wallet: realAddr,
-                    network: NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
                   }),
-                ])
+                ],
+              )
               // for debounce & promise clean  (next user input sync function will cover by async)
               if (_address.current == address) {
                 if (walletType && walletType?.isInCounterFactualStatus) {
@@ -329,8 +332,10 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
                     realAddr &&
                     (_contractType as any)?.network &&
                     (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
-                    (_contractType as any)?.extra?.fromWallet &&
-                    (_contractType as any)?.extra?.fromWallet?.toLowerCase() ===
+                    (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
+                    (
+                      _contractType as any
+                    )?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
                       realAddr.toLowerCase()
                   ) {
                     setIsLoopringAddress(true)
