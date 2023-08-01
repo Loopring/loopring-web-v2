@@ -6,13 +6,15 @@ import { cleanAccountStatus } from '../../stores/account/reducer'
 
 export const checkAccount = (
   newAccAddress: string,
-  chainId?: ChainId | undefined,
+  chainId: ChainId | undefined,
   // provider?: any
 ) => {
   const account = store.getState().account
+  const { defaultNetwork } = store.getState().settings
   if (
     account.accAddress === '' ||
-    account.accAddress.toLowerCase() !== newAccAddress.toLowerCase()
+    account.accAddress.toLowerCase() !== newAccAddress.toLowerCase() ||
+    defaultNetwork !== chainId
   ) {
     myLog('After connect >>,account part: diff account, clean layer2', account)
     store.dispatch(cleanAccountStatus(undefined))

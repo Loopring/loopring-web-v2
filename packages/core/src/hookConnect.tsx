@@ -257,7 +257,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       const accAddress = accounts[0]
       myLog('After connect >>,network part start: step1 networkUpdate')
       store.dispatch(updateAccountStatus({ _chainId: chainId }))
-      const networkFlag = await networkUpdate()
+      const networkFlag = await networkUpdate(chainId)
       const currentProvide = connectProvides.usedProvide
       myLog(
         'After connect >>,network part done: step2 check account,',

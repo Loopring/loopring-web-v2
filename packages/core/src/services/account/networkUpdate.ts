@@ -4,15 +4,21 @@ import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { AccountStatus, SagaStatus } from '@loopring-web/common-resources'
 import { updateAccountStatus } from '../../stores/account/reducer'
 import { updateSystem } from '../../stores/system/reducer'
-import { setDefaultNetwork } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
-export const networkUpdate = async (): Promise<boolean> => {
-  // const { _chainId: accountChainId, readyState } = store.getState().account
-  const { defaultNetwork: userSettingChainId } = store.getState().settings
+export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean> => {
+  let { _chainId: accountChainId, readyState } = store.getState().account
+  let { defaultNetwork: userSettingChainId } = store.getState().settings
   const { chainId: statusChainId, status: systemStatus } = store.getState().system
+  if (chainId) {
+    userSettingChainId = chainId as any
+  }
   if (statusChainId.toString() !== userSettingChainId.toString()) {
     if (AvaiableNetwork.includes(userSettingChainId.toString())) {
+      if (readyState !== AccountStatus.UN_CONNECT && userSettingChainId !== accountChainId) {
+        cleanLayer2()
+      }
       if (systemStatus !== SagaStatus.UNSET) {
         await sdk.sleep(0)
       }
@@ -24,34 +30,43 @@ export const networkUpdate = async (): Promise<boolean> => {
           // _chainId: userSettingChainId
         }),
       )
-      return true
-    }
 
-    store.dispatch(updateAccountStatus({ wrongChain: true }))
-    return false
+      return true
+    } else {
+      store.dispatch(updateAccountStatus({ wrongChain: true }))
+      goErrorNetWork()
+      return false
+    }
+  } else if (readyState !== AccountStatus.UN_CONNECT && userSettingChainId !== accountChainId) {
+    cleanLayer2()
+    return true
+  } else {
+    return true
   }
-  return true
-  // accountChainId
-  // if (readyState !== AccountStatus.UN_CONNECT) {
-  //   if (accountChainId !== undefined && AvaiableNetwork.includes(accountChainId.toString())) {
-  //     store.dispatch(updateAccountStatus({ wrongChain: false }))
-  //     store.dispatch(setDefaultNetwork(accountChainId))
-  //     console.log('connected: networkUpdate updateSetting', accountChainId)
-  //     if (statusChainId !== accountChainId) {
-  //       console.log('connected: networkUpdate updateSystem', accountChainId)
-  //       store.dispatch(updateSystem({ chainId: accountChainId }))
-  //       if (systemStatus == SagaStatus.UNSET || userSettingChainId !== accountChainId) {
-  //         cleanLayer2()
-  //       }
-  //     }
-  //     console.log('connected: networkUpdate')
-  //     return true
-  //   } else {
-  //     store.dispatch(updateAccountStatus({ wrongChain: true }))
-  //     goErrorNetWork()
-  //     return false
+
+  // if (chainId !== undefined){
+  //   if(AvaiableNetwork.includes(chainId.toString())){
+  //
   //   }
-  // } else {
+  //
+  //
+  //   store.dispatch(setDefaultNetwork(chainId))
+  //   console.log('connected: networkUpdate updateSetting', chainId)
+  //   if (statusChainId !== chainId) {
+  //     console.log('connected: networkUpdate updateSystem', chainId)
+  //     store.dispatch(updateSystem({ chainId: chainId }))
+  //     if (systemStatus == SagaStatus.UNSET || userSettingChainId !== chainId) {
+  //       cleanLayer2()
+  //     }
+  //   }
+  //   console.log('connected: networkUpdate')
+  //   return true
+  // }else{
+  //   if (readyState !== AccountStatus.UN_CONNECT) {
+  //
+  //   }else{
+  //
+  //   }
   //   if (statusChainId.toString() !== userSettingChainId.toString()) {
   //     if (AvaiableNetwork.includes(userSettingChainId.toString())) {
   //       if (systemStatus !== SagaStatus.UNSET) {
@@ -71,6 +86,6 @@ export const networkUpdate = async (): Promise<boolean> => {
   //     store.dispatch(updateAccountStatus({ wrongChain: true }))
   //     return false
   //   }
-  //   return true
+  //   return false
   // }
 }
