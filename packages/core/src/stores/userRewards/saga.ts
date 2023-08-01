@@ -7,7 +7,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 const getUserRewardsApi = async () => {
   const { accountId, apiKey, readyState } = store.getState().account
-  let { __timer__ } = store.getState().userRewardsMap
   if (LoopringAPI.ammpoolAPI && LoopringAPI.userAPI && accountId) {
     let ammUserRewardMap = {},
       _totalClaims = [],
@@ -38,6 +37,7 @@ const getUserRewardsApi = async () => {
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
               return []
             }
+            // @ts-ignore
             return response?.raw_data?.items ?? []
           })
           .catch((error) => {
@@ -50,6 +50,7 @@ const getUserRewardsApi = async () => {
         })
       }
       const totalClaims = makeClaimRewards(_totalClaims ?? [])
+      let { __timer__ } = store.getState().userRewardsMap
       __timer__ = ((__timer__) => {
         if (__timer__ && __timer__ !== -1) {
           clearInterval(__timer__)
@@ -66,6 +67,7 @@ const getUserRewardsApi = async () => {
       throw error
     }
   } else {
+    let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
       clearInterval(__timer__)
     }
