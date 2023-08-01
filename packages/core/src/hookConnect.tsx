@@ -175,6 +175,29 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     networkUpdate()
   }
 
+  const disable = React.useCallback(
+    (id: any) => {
+      myLog(connectName, ConnectProviders.WalletConnect)
+      if (connectName == ConnectProviders.GameStop.toString()) {
+        return ![1, 5].includes(Number(id))
+      } else if (
+        (connectProvides.usedProvide as any)?.session &&
+        (connectProvides.usedProvide as any)?.namespace
+      ) {
+        // @ts-ignore
+        const optionalChains = connectProvides.usedProvide?.session?.optionalNamespaces
+          ? (connectProvides.usedProvide as any)?.session?.optionalNamespaces[
+              (connectProvides.usedProvide as any).namespace
+            ]?.chains ?? []
+          : [`${(connectProvides.usedProvide as any).namespace}:${defaultNetwork}`]
+        return !optionalChains.includes(
+          `${(connectProvides.usedProvide as any).namespace}:${Number(id)}`,
+        )
+      }
+      return false
+    },
+    [connectName, connectProvides.usedProvide, defaultNetwork],
+  )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     return (
       <>
@@ -194,10 +217,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
             if (NetworkMap[id]) {
               prew.push(
                 <OutlineSelectItemStyle
-                  disabled={
-                    ![1, 5].includes(Number(id)) &&
-                    [ConnectProviders.GameStop].includes(connectName)
-                  }
+                  disabled={disable(id)}
                   className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
                   aria-label={NetworkMap[id].label}
                   value={id}
@@ -215,7 +235,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         </OutlineSelectStyle>
       </>
     )
-  }, [defaultNetwork, NetworkMap, connectName])
+  }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide])
   React.useEffect(() => {}, [])
 
   return {
