@@ -117,27 +117,28 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
                   setIsContract1XAddress(false)
                 }
                 if (
+                  realAddr &&
+                  (_contractType as any)?.network &&
+                  (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
+                  (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
+                  (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
+                    realAddr.toLowerCase()
+                ) {
+                  setIsLoopringAddress(true)
+                  setIsActiveAccount(
+                    response &&
+                      ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+                      ? false
+                      : response?.accInfo?.nonce !== 0,
+                  )
+                  setIsActiveAccountFee('not allow')
+                } else if (
                   response &&
                   ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
                 ) {
-                  if (
-                    realAddr &&
-                    (_contractType as any)?.network &&
-                    (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
-                    (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
-                    (
-                      _contractType as any
-                    )?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
-                      realAddr.toLowerCase()
-                  ) {
-                    setIsLoopringAddress(true)
-                    setIsActiveAccount(false)
-                    setIsActiveAccountFee('not allow')
-                  } else {
-                    setIsLoopringAddress(false)
-                    setIsActiveAccount(false)
-                    setIsActiveAccountFee(false)
-                  }
+                  setIsLoopringAddress(false)
+                  setIsActiveAccount(false)
+                  setIsActiveAccountFee(false)
                 } else {
                   setIsLoopringAddress(true)
                   setIsActiveAccount(response.accInfo.nonce !== 0)
