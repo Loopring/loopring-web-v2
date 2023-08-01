@@ -50,15 +50,15 @@ const getUserRewardsApi = async () => {
         })
       }
       const totalClaims = makeClaimRewards(_totalClaims ?? [])
-      let { __timer__ } = store.getState().userRewardsMap
-      __timer__ = ((__timer__) => {
-        if (__timer__ && __timer__ !== -1) {
-          clearInterval(__timer__)
-        }
-        return setInterval(async () => {
+      let __timer__ = (() => {
+        return setTimeout(() => {
+          let { __timer__ } = store.getState().userRewardsMap
+          if (__timer__ && __timer__ !== -1) {
+            clearTimeout(__timer__)
+          }
           store.dispatch(getUserRewards(undefined))
         }, 60000 * 4)
-      })(__timer__)
+      })()
       return {
         data: { userRewardsMap: ammUserRewardMap, totalClaims, ...result },
         __timer__,
@@ -69,7 +69,7 @@ const getUserRewardsApi = async () => {
   } else {
     let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     return Promise.resolve({ data: {}, __timer__: -1 })
   }
@@ -89,7 +89,7 @@ export function* getResetsSaga() {
     // @ts-ignore
     let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     yield put(getUserRewardsStatus({ userRewardsMap: [], __timer__: -1 }))
   } catch (err) {
