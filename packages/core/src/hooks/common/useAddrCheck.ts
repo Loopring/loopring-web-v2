@@ -124,8 +124,10 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
                     realAddr &&
                     (_contractType as any)?.network &&
                     (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
-                    (_contractType as any)?.extra?.fromWallet &&
-                    (_contractType as any)?.extra?.fromWallet?.toLowerCase() ===
+                    (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
+                    (
+                      _contractType as any
+                    )?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
                       realAddr.toLowerCase()
                   ) {
                     setIsLoopringAddress(true)
