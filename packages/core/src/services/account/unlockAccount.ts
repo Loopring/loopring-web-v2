@@ -1,7 +1,7 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { LoopringAPI, store } from '../../index'
 import { accountServices } from './accountServices'
-import { myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { myLog, ThemeType, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import { nextAccountStatus } from '../../stores/account/reducer'
@@ -11,17 +11,17 @@ export async function unlockAccount() {
   const accounStore = store.getState().account
   const { exchangeInfo, chainId } = store.getState().system
   accountServices.sendSign()
-  const { isMobile } = store.getState().settings
+  const { isMobile, themeMode } = store.getState().settings
   myLog('unlockAccount account:', accounStore)
-
   if (
     exchangeInfo &&
     LoopringAPI.userAPI &&
     LoopringAPI.exchangeAPI &&
     LoopringAPI.walletAPI &&
-    accounStore.nonce !== undefined
+    accounStore.nonce !== undefined &&
+    connectProvides?.usedWeb3
   ) {
-    let walletType, account: any
+    let walletType, account: any, _chainId: any
     try {
       const connectName = (ConnectProviders[accounStore.connectName] ??
         accounStore.connectName) as unknown as sdk.ConnectorNames
@@ -31,11 +31,12 @@ export async function unlockAccount() {
           : LoopringAPI.walletAPI.getWalletType({
               wallet: accounStore.accAddress,
             })
-      ;[{ accInfo: account }, { walletType }] = await Promise.all([
+      ;[{ accInfo: account }, { walletType }, _chainId] = await Promise.all([
         LoopringAPI.exchangeAPI.getAccount({
           owner: accounStore.accAddress,
         }),
         walletTypePromise,
+        connectProvides?.usedWeb3?.eth?.getChainId(),
       ])
         .then((response) => {
           if ((response[0] as sdk.RESULT_INFO)?.code) {
@@ -56,6 +57,12 @@ export async function unlockAccount() {
               '${exchangeAddress}',
               exchangeInfo.exchangeAddress,
             ).replace('${nonce}', (nonce - 1).toString())
+
+      // const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+      // debugger
+      if (Number(chainId) !== Number(_chainId)) {
+        await connectProvides.sendChainIdChange(chainId, themeMode === ThemeType.dark)
+      }
 
       const response = await LoopringAPI.userAPI.unLockAccount(
         {

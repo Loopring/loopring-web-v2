@@ -1194,15 +1194,17 @@ export function useRedPacketModal() {
                   tokenInfo!.precision,
                   false,
                 ),
-              total: tokenInfo && getValuePrecisionThousand(
-                sdk
-                  .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
-                  .div('1e' + tokenInfo!.decimals),
-                tokenInfo!.precision,
-                tokenInfo!.precision,
-                tokenInfo!.precision,
-                false,
-              ),
+              total:
+                tokenInfo &&
+                getValuePrecisionThousand(
+                  sdk
+                    .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
+                    .div('1e' + tokenInfo!.decimals),
+                  tokenInfo!.precision,
+                  tokenInfo!.precision,
+                  tokenInfo!.precision,
+                  false,
+                ),
               symbol: tokenInfo!.symbol,
               isNFT: false,
             },

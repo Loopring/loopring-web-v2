@@ -41,7 +41,6 @@ import {
   metaMaskCallback,
   RootState,
   useAccount,
-  useSelectNetwork,
   walletConnectCallback,
 } from '@loopring-web/core'
 import { useSelector } from 'react-redux'

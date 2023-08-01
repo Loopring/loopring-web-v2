@@ -27,8 +27,6 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
-  SUBMIT_PANEL_AUTO_CLOSE,
-  ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -41,7 +39,6 @@ import { useTranslation } from 'react-i18next'
 import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
-import EthereumProvider from '@walletconnect/ethereum-provider'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
@@ -161,60 +158,46 @@ const Icon = ({ label = '' }: { label: string }) => {
 }
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
-  const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } = useSettings()
-  const { setShowConnect } = useOpenModals()
+  const { defaultNetwork, setDefaultNetwork, isMobile } = useSettings()
   const {
     account: { connectName },
   } = useAccount()
   // const { account } = useAccount();
   React.useEffect(() => {
-    const account = store.getState().account
-    if (account.readyState === AccountStatus.UN_CONNECT) {
-      // const networkFlag =
-      networkUpdate()
-    }
+    // const account = store.getState().account
+    networkUpdate()
   }, [])
 
   const handleOnNetworkSwitch = async (value: sdk.ChainId) => {
-    const account = store.getState().account
     if (value !== defaultNetwork) {
       setDefaultNetwork(value)
     }
-    if (account.readyState !== AccountStatus.UN_CONNECT) {
-      // await walletServices.sendDisconnect();
-      setShowConnect({
-        isShow: true,
-        step: WalletConnectStep.CommonProcessing,
-      })
-      myLog(connectProvides)
-      try {
-        await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
-      } catch (error) {
-        const chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-        setDefaultNetwork(chainId ?? defaultNetwork)
-        if (
-          connectProvides?.usedWeb3 &&
-          (error as any)?.code == 4001 &&
-          window?.ethereum?.isConnected() &&
-          !(connectProvides?.usedProvide as EthereumProvider)?.isWalletConnect
-        ) {
-          setShowConnect({
-            isShow: true,
-            step: WalletConnectStep.RejectSwitchNetwork,
-          })
-          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        }
-
-        setShowConnect({
-          isShow: false,
-          step: WalletConnectStep.RejectSwitchNetwork,
-        })
-      }
-    } else {
-      networkUpdate()
-    }
+    networkUpdate()
   }
 
+  const disable = React.useCallback(
+    (id: any) => {
+      myLog(connectName, ConnectProviders.WalletConnect)
+      if (connectName == ConnectProviders.GameStop.toString()) {
+        return ![1, 5].includes(Number(id))
+      } else if (
+        (connectProvides.usedProvide as any)?.session &&
+        (connectProvides.usedProvide as any)?.namespace
+      ) {
+        // @ts-ignore
+        const optionalChains = connectProvides.usedProvide?.session?.optionalNamespaces
+          ? (connectProvides.usedProvide as any)?.session?.optionalNamespaces[
+              (connectProvides.usedProvide as any).namespace
+            ]?.chains ?? []
+          : [`${(connectProvides.usedProvide as any).namespace}:${defaultNetwork}`]
+        return !optionalChains.includes(
+          `${(connectProvides.usedProvide as any).namespace}:${Number(id)}`,
+        )
+      }
+      return false
+    },
+    [connectName, connectProvides.usedProvide, defaultNetwork],
+  )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     return (
       <>
@@ -234,10 +217,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
             if (NetworkMap[id]) {
               prew.push(
                 <OutlineSelectItemStyle
-                  disabled={
-                    ![1, 5].includes(Number(id)) &&
-                    [ConnectProviders.GameStop].includes(connectName)
-                  }
+                  disabled={disable(id)}
                   className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
                   aria-label={NetworkMap[id].label}
                   value={id}
@@ -255,7 +235,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         </OutlineSelectStyle>
       </>
     )
-  }, [defaultNetwork, NetworkMap, connectName])
+  }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide])
   React.useEffect(() => {}, [])
 
   return {
@@ -297,7 +277,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       const accAddress = accounts[0]
       myLog('After connect >>,network part start: step1 networkUpdate')
       store.dispatch(updateAccountStatus({ _chainId: chainId }))
-      const networkFlag = await networkUpdate()
+      const networkFlag = await networkUpdate(chainId)
       const currentProvide = connectProvides.usedProvide
       myLog(
         'After connect >>,network part done: step2 check account,',
