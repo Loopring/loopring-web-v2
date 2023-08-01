@@ -27,8 +27,6 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
-  SUBMIT_PANEL_AUTO_CLOSE,
-  ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -160,59 +158,21 @@ const Icon = ({ label = '' }: { label: string }) => {
 }
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
-  const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } = useSettings()
-  const { setShowConnect } = useOpenModals()
+  const { defaultNetwork, setDefaultNetwork, isMobile } = useSettings()
   const {
     account: { connectName },
   } = useAccount()
   // const { account } = useAccount();
   React.useEffect(() => {
-    const account = store.getState().account
-    if (account.readyState === AccountStatus.UN_CONNECT) {
-      // const networkFlag =
-      networkUpdate()
-    }
+    // const account = store.getState().account
+    networkUpdate()
   }, [])
 
   const handleOnNetworkSwitch = async (value: sdk.ChainId) => {
-    const account = store.getState().account
     if (value !== defaultNetwork) {
       setDefaultNetwork(value)
     }
     networkUpdate()
-    // if (account.readyState !== AccountStatus.UN_CONNECT) {
-    //   // await walletServices.sendDisconnect();
-    //   setShowConnect({
-    //     isShow: true,
-    //     step: WalletConnectStep.CommonProcessing,
-    //   })
-    //   myLog(connectProvides)
-    //   try {
-    //     // await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
-    //   } catch (error) {
-    //     const chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-    //     setDefaultNetwork(chainId ?? defaultNetwork)
-    //     if (
-    //       connectProvides?.usedWeb3 &&
-    //       (error as any)?.code == 4001 &&
-    //       window?.ethereum?.isConnected() &&
-    //       !(connectProvides?.usedProvide as EthereumProvider)?.isWalletConnect
-    //     ) {
-    //       setShowConnect({
-    //         isShow: true,
-    //         step: WalletConnectStep.RejectSwitchNetwork,
-    //       })
-    //       await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-    //     }
-    //
-    //     setShowConnect({
-    //       isShow: false,
-    //       step: WalletConnectStep.RejectSwitchNetwork,
-    //     })
-    //   }
-    // } else {
-    //
-    // }
   }
 
   const NetWorkItems: JSX.Element = React.useMemo(() => {

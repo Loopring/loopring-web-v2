@@ -8,49 +8,69 @@ import { setDefaultNetwork } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const networkUpdate = async (): Promise<boolean> => {
-  const { _chainId: accountChainId, readyState } = store.getState().account
+  // const { _chainId: accountChainId, readyState } = store.getState().account
   const { defaultNetwork: userSettingChainId } = store.getState().settings
   const { chainId: statusChainId, status: systemStatus } = store.getState().system
-  // accountChainId
-  if (readyState !== AccountStatus.UN_CONNECT) {
-    if (accountChainId !== undefined && AvaiableNetwork.includes(accountChainId.toString())) {
-      store.dispatch(updateAccountStatus({ wrongChain: false }))
-      store.dispatch(setDefaultNetwork(accountChainId))
-      console.log('connected: networkUpdate updateSetting', accountChainId)
-      if (statusChainId !== accountChainId) {
-        console.log('connected: networkUpdate updateSystem', accountChainId)
-        store.dispatch(updateSystem({ chainId: accountChainId }))
-        if (systemStatus == SagaStatus.UNSET || userSettingChainId !== accountChainId) {
-          cleanLayer2()
-        }
+  if (statusChainId.toString() !== userSettingChainId.toString()) {
+    if (AvaiableNetwork.includes(userSettingChainId.toString())) {
+      if (systemStatus !== SagaStatus.UNSET) {
+        await sdk.sleep(0)
       }
-      console.log('connected: networkUpdate')
+      console.log('unconnected: networkUpdate updateSystem', userSettingChainId)
+      store.dispatch(updateSystem({ chainId: userSettingChainId }))
+      store.dispatch(
+        updateAccountStatus({
+          wrongChain: false,
+          // _chainId: userSettingChainId
+        }),
+      )
       return true
-    } else {
-      store.dispatch(updateAccountStatus({ wrongChain: true }))
-      goErrorNetWork()
-      return false
     }
-  } else {
-    if (statusChainId.toString() !== userSettingChainId.toString()) {
-      if (AvaiableNetwork.includes(userSettingChainId.toString())) {
-        if (systemStatus !== SagaStatus.UNSET) {
-          await sdk.sleep(0)
-        }
-        console.log('unconnected: networkUpdate updateSystem', userSettingChainId)
-        store.dispatch(updateSystem({ chainId: userSettingChainId }))
-        store.dispatch(
-          updateAccountStatus({
-            wrongChain: false,
-            // _chainId: userSettingChainId
-          }),
-        )
-        return true
-      }
 
-      store.dispatch(updateAccountStatus({ wrongChain: true }))
-      return false
-    }
-    return true
+    store.dispatch(updateAccountStatus({ wrongChain: true }))
+    return false
   }
+  return true
+  // accountChainId
+  // if (readyState !== AccountStatus.UN_CONNECT) {
+  //   if (accountChainId !== undefined && AvaiableNetwork.includes(accountChainId.toString())) {
+  //     store.dispatch(updateAccountStatus({ wrongChain: false }))
+  //     store.dispatch(setDefaultNetwork(accountChainId))
+  //     console.log('connected: networkUpdate updateSetting', accountChainId)
+  //     if (statusChainId !== accountChainId) {
+  //       console.log('connected: networkUpdate updateSystem', accountChainId)
+  //       store.dispatch(updateSystem({ chainId: accountChainId }))
+  //       if (systemStatus == SagaStatus.UNSET || userSettingChainId !== accountChainId) {
+  //         cleanLayer2()
+  //       }
+  //     }
+  //     console.log('connected: networkUpdate')
+  //     return true
+  //   } else {
+  //     store.dispatch(updateAccountStatus({ wrongChain: true }))
+  //     goErrorNetWork()
+  //     return false
+  //   }
+  // } else {
+  //   if (statusChainId.toString() !== userSettingChainId.toString()) {
+  //     if (AvaiableNetwork.includes(userSettingChainId.toString())) {
+  //       if (systemStatus !== SagaStatus.UNSET) {
+  //         await sdk.sleep(0)
+  //       }
+  //       console.log('unconnected: networkUpdate updateSystem', userSettingChainId)
+  //       store.dispatch(updateSystem({ chainId: userSettingChainId }))
+  //       store.dispatch(
+  //         updateAccountStatus({
+  //           wrongChain: false,
+  //           // _chainId: userSettingChainId
+  //         }),
+  //       )
+  //       return true
+  //     }
+  //
+  //     store.dispatch(updateAccountStatus({ wrongChain: true }))
+  //     return false
+  //   }
+  //   return true
+  // }
 }

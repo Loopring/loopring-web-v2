@@ -1,14 +1,16 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { LoopringAPI, store } from '../../index'
 import { accountServices } from './accountServices'
-import { myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { myLog, ThemeType, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import { nextAccountStatus } from '../../stores/account/reducer'
+import { useTheme } from '@emotion/react'
 
 export async function unlockAccount() {
   myLog('unlockAccount starts')
   const accounStore = store.getState().account
+  const theme = useTheme()
   const { exchangeInfo, chainId } = store.getState().system
   accountServices.sendSign()
   const { isMobile } = store.getState().settings
@@ -56,6 +58,11 @@ export async function unlockAccount() {
               '${exchangeAddress}',
               exchangeInfo.exchangeAddress,
             ).replace('${nonce}', (nonce - 1).toString())
+
+      const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+      if (Number(chainId) !== Number(_chainId)) {
+        await connectProvides.sendChainIdChange(chainId, theme.mode === ThemeType.dark)
+      }
 
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
