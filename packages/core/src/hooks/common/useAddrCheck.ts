@@ -116,16 +116,17 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
                   setIsContract1XAddress(false)
                 }
 
+                // if (
+                //   raw_data &&
+                //   (raw_data as any)?.data[0]?.network &&
+                //   (raw_data as any)?.data[0]?.network !== NetworkMap[defaultNetwork].walletType
+                // ) {
+                //   setIsLoopringAddress(true)
+                //   setAddrStatus(AddressError.InvalidAddr)
+                //   setIsActiveAccount(false)
+                //   setIsActiveAccountFee('not allow')
+                // } else
                 if (
-                  raw_data &&
-                  (raw_data as any)?.data[0]?.network &&
-                  (raw_data as any)?.data[0]?.network !== NetworkMap[defaultNetwork].walletType
-                ) {
-                  setIsLoopringAddress(true)
-                  setAddrStatus(AddressError.InvalidAddr)
-                  setIsActiveAccount(false)
-                  setIsActiveAccountFee('not allow')
-                } else if (
                   realAddr &&
                   (_contractType as any)?.network &&
                   (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
