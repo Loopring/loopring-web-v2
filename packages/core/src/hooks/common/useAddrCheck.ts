@@ -64,8 +64,8 @@ export const useAddressCheck = () => {
               setIsContractAddress(isContract)
             }
             if (addressErr === AddressError.NoError) {
-              const [{ walletType }, response, { contractType: _contractType }] = await Promise.all(
-                [
+              const [{ walletType }, response, { contractType: _contractType, raw_data }] =
+                await Promise.all([
                   LoopringAPI.walletAPI.getWalletType({
                     wallet: realAddr,
                     network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
@@ -77,8 +77,7 @@ export const useAddressCheck = () => {
                     wallet: realAddr,
                     network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
                   }),
-                ],
-              )
+                ])
               // for debounce & promise clean  (next user input sync function will cover by async)
               if (_address.current == address) {
                 if (walletType && walletType?.isInCounterFactualStatus) {
@@ -108,6 +107,15 @@ export const useAddressCheck = () => {
                 }
 
                 if (
+                  raw_data &&
+                  (raw_data as any)?.data[0]?.network &&
+                  (raw_data as any)?.data[0]?.network !== NetworkMap[defaultNetwork].walletType
+                ) {
+                  setIsLoopringAddress(true)
+                  setAddrStatus(AddressError.InvalidAddr)
+                  setIsActiveAccount(false)
+                  setIsActiveAccountFee('not allow')
+                } else if (
                   realAddr &&
                   (_contractType as any)?.network &&
                   (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
@@ -284,8 +292,8 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
               setIsContractAddress(isContract)
             }
             if (addressErr === AddressError.NoError) {
-              const [{ walletType }, response, { contractType: _contractType }] = await Promise.all(
-                [
+              const [{ walletType }, response, { contractType: _contractType, raw_data }] =
+                await Promise.all([
                   LoopringAPI.walletAPI.getWalletType({
                     wallet: realAddr,
                     network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
@@ -297,8 +305,7 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
                     wallet: realAddr,
                     network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
                   }),
-                ],
-              )
+                ])
               // for debounce & promise clean  (next user input sync function will cover by async)
               if (_address.current == address) {
                 if (walletType && walletType?.isInCounterFactualStatus) {
@@ -326,7 +333,17 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
                 } else {
                   setIsContract1XAddress(false)
                 }
+
                 if (
+                  raw_data &&
+                  (raw_data as any)?.data[0]?.network &&
+                  (raw_data as any)?.data[0]?.network !== NetworkMap[defaultNetwork].walletType
+                ) {
+                  setIsLoopringAddress(true)
+                  setAddrStatus(AddressError.InvalidAddr)
+                  setIsActiveAccount(false)
+                  setIsActiveAccountFee('not allow')
+                } else if (
                   realAddr &&
                   (_contractType as any)?.network &&
                   (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
