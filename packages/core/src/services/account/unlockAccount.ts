@@ -15,7 +15,6 @@ export async function unlockAccount() {
   accountServices.sendSign()
   const { isMobile } = store.getState().settings
   myLog('unlockAccount account:', accounStore)
-
   if (
     exchangeInfo &&
     LoopringAPI.userAPI &&
