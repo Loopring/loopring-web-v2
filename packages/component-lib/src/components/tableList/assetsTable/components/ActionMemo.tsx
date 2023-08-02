@@ -6,10 +6,9 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   HiddenTag,
-
   MapChainId,
   MoreIcon,
-  leverageETHConfig
+  leverageETHConfig,
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { useOpenModals, useSettings, useToggle } from '../../../../stores'
@@ -49,7 +48,7 @@ const ActionPopContent = React.memo(
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
-    isLeverageETH
+    isLeverageETH,
   }: ActionProps) => {
     const history = useHistory()
     const { t } = useTranslation(['tables', 'common'])
@@ -118,7 +117,7 @@ const ActionPopContent = React.memo(
               <ListItemText>{t('labelPoolTableRemoveLiquidity')}</ListItemText>
             </MenuItem>
           </>
-        ) : (isDefi || isLeverageETH) ? (
+        ) : isDefi || isLeverageETH ? (
           isInvest && !isMobile ? (
             <>
               {tradeList.map((item) => (
@@ -279,7 +278,6 @@ const ActionMemo = React.memo((props: ActionProps) => {
                       } else {
                         history.push(`/invest/defi/${tokenValue}-null/redeem`)
                       }
-                      
                     }}
                   >
                     {t('labelDefiRedeem')}
