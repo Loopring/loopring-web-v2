@@ -50,7 +50,7 @@ export const Filter = withTranslation('tables', { withRef: true })(
           )}
         </Box>
 
-        <Box marginLeft={2} width={isMobile ? '40%' : 'initial'}>
+        <Box marginLeft={2} width={isMobile ? '60%' : 'initial'}>
           <InputSearch
             value={filter.searchValue}
             onChange={(value: any) => {

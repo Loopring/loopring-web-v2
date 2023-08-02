@@ -402,9 +402,9 @@ export const AmmRewardsDetail = withTranslation('tables')(
             marginLeft={10}
             lineHeight={'20px'}
           >
-            {extraRewards.length ? (
+            {extraRewards?.length ? (
               <>
-                {extraRewards.map((item: any, index: number) => {
+                {extraRewards?.map((item: any, index: number) => {
                   return (
                     <React.Fragment key={item.id + index}>
                       {item?.amount ? (

@@ -350,7 +350,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            markets: markets.join(',')
+            markets: markets.join(','),
           } as any,
           apiKey,
         )
@@ -1159,7 +1159,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            types: types.join(',')
+            types: types.join(','),
           } as any,
           apiKey,
         )

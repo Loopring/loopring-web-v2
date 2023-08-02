@@ -5,7 +5,11 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useOverview } from './hook'
 
-import { useSettings, InvestOverviewTable, useToggle } from '@loopring-web/component-lib'
+import {
+  useSettings,
+  InvestOverviewTable,
+  useToggle,
+} from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
@@ -64,7 +68,6 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
       <WrapperStyled marginBottom={3}>
         <Grid container spacing={2} padding={3}>
           {investAdviceList.map((item, index) => {
-            console.log('item.titleI18n', item.titleI18n)
             return (
               <Grid item xs={12} md={4} lg={3} key={item.type + index}>
                 <Card onClick={() => history.push(item.router)}>

@@ -1,9 +1,10 @@
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, Link, Typography } from '@mui/material'
+import { Box, Grid, InputAdornment, Link, TextField, Tooltip, Typography } from '@mui/material'
 import {
   EmptyValueTag,
   FeeInfo,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   TradeBtnStatus,
@@ -47,7 +48,7 @@ export const ResetWrap = <T extends FeeInfo>({
     const regex = /^[0-9\b]+$/
     if (e?.target?.value === '' || regex.test(e?.target.value)) {
       setValue(e.target.value)
-      if (e.target.value.length > 5) {
+      if (e.target.value.length >= 5) {
         setReferralCode(e.target.value)
       }
 

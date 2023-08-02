@@ -36,7 +36,6 @@ export const TradePanel = ({
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
   })
-  console.log('deFiWrapProps', deFiWrapProps.deFiCalcData.coinSell)
   const { t } = useTranslation()
 
   const { isMobile } = useSettings()

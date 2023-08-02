@@ -22,6 +22,7 @@ import React from 'react'
 import { ConnectProviders } from '@loopring-web/web3-provider'
 import styled from '@emotion/styled'
 import { useOpenModals, useSettings } from '../../../../stores'
+import { useTheme } from '@emotion/react'
 
 import {
   Account,
@@ -1093,6 +1094,7 @@ export const AnotherNetworkNotice = withTranslation('common', {
   }) => {
     const [agree, setAgree] = React.useState(false)
     const { defaultNetwork } = useSettings()
+    const theme = useTheme()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     React.useEffect(() => {
       if (!open) {
@@ -1144,6 +1146,16 @@ export const AnotherNetworkNotice = withTranslation('common', {
               .
             </Trans>
           </DialogContentText>
+          <DialogContentText
+            id='alert-dialog-slide-description'
+            sx={{ marginBottom: 2, display: 'flex', justifyContent: 'center' }}
+          >
+            <img
+              width={'60%'}
+              src={`${SoursURL}images/orbiter_${theme.mode}.webp`}
+              alt={'orbiter'}
+            />
+          </DialogContentText>
           <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
             <Trans
               i18nKey={'labelAnotherNetworkDes2'}
@@ -1161,22 +1173,23 @@ export const AnotherNetworkNotice = withTranslation('common', {
               recipient address must be different than the sender address.
             </Trans>
           </DialogContentText>
-          <DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>
-            <Trans
-              i18nKey={'labelAnotherNetworkDes3'}
-              tOptions={{
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-              }}
-            >
-              If you want to send token to network other than l1ChainName, the recipient address
-              must be different than the sender address; else you will lose that asset for ever.
-            </Trans>
-          </DialogContentText>
+
+          {/*<DialogContentText id='alert-dialog-slide-description' sx={{ marginBottom: 2 }}>*/}
+          {/*  <Trans*/}
+          {/*    i18nKey={'labelAnotherNetworkDes3'}*/}
+          {/*    tOptions={{*/}
+          {/*      layer2: L1L2_NAME_DEFINED[network].layer2,*/}
+          {/*      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,*/}
+          {/*      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,*/}
+          {/*      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,*/}
+          {/*      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,*/}
+          {/*      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    If you want to send token to network other than l1ChainName, the recipient address*/}
+          {/*    must be different than the sender address; else you will lose that asset for ever.*/}
+          {/*  </Trans>*/}
+          {/*</DialogContentText>*/}
 
           <MuiFormControlLabel
             control={
@@ -1500,7 +1513,7 @@ export const ConfirmDefiNOBalance = withTranslation('common')(
     market,
     type,
     handleClose,
-    isLeverage
+    isLeverage,
   }: WithTranslation & {
     open: boolean
     type: symbol
@@ -1784,11 +1797,11 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
                   variant={'body2'}
                   marginTop={2}
                   display={'block'}
-                  color={'textThird'}
+                  color={'var(--color-text-third)'}
                 >
                   It is important to note that users can't redeem wstETH for ETH until phase 2 of
                   Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges
-                  at market prices.{' '}
+                  at market prices.
                 </Typography>
                 <Typography
                   whiteSpace={'pre-line'}
@@ -1796,7 +1809,7 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
                   variant={'body2'}
                   marginTop={2}
                   display={'block'}
-                  color={'textThird'}
+                  color={'var(--color-text-third)'}
                 >
                   Loopring will provide a pool to allow users to trade wstETH for ETH directly on
                   Layer 2. The pool will rebalance periodically when it reaches a specific
@@ -2146,7 +2159,7 @@ export const ConfirmInvestLRCStakeRisk = withTranslation('common')(
                 variant={'body2'}
                 marginTop={2}
                 display={'block'}
-                color={'textThird'}
+                color={'var(--color-text-third)'}
               >
                 The staked LRC will be locked in Loopring L2, meaning it cannot be used for other
                 purposes. You may redeem your LRC at any time; however, doing so before the 90-day

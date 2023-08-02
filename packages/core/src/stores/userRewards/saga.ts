@@ -1,54 +1,75 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
 
-import { store, LoopringAPI, makeSummaryMyAmm } from '../../index'
-import { AccountStatus, CustomError, ErrorMap } from '@loopring-web/common-resources'
+import { LoopringAPI, makeClaimRewards, makeSummaryMyAmm, store } from '../../index'
+import { AccountStatus } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 const getUserRewardsApi = async () => {
-  const { accountId } = store.getState().account
-  let { __timer__ } = store.getState().userRewardsMap
-  if (LoopringAPI.ammpoolAPI && accountId) {
+  const { accountId, apiKey, readyState } = store.getState().account
+  if (LoopringAPI.ammpoolAPI && LoopringAPI.userAPI && accountId) {
     let ammUserRewardMap = {},
+      _totalClaims = [],
       result: any = {}
     try {
-      const response = await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({
-        owner: accountId,
-      })
-      if (
-        response &&
-        ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
-      ) {
-        throw new CustomError(ErrorMap.ERROR_UNKNOWN)
-      }
-      ammUserRewardMap = response.ammUserRewardMap
-
-      const { readyState } = store.getState().account
+      ;[ammUserRewardMap, _totalClaims] = await Promise.all([
+        LoopringAPI.ammpoolAPI
+          .getAmmPoolUserRewards({
+            owner: accountId,
+          })
+          .then((response) => {
+            if (
+              response &&
+              ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+            ) {
+              return {}
+            }
+            return response.ammUserRewardMap
+          }),
+        LoopringAPI.userAPI
+          .getUserTotalClaim(
+            {
+              accountId: accountId,
+            },
+            apiKey,
+          )
+          .then((response) => {
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+              return []
+            }
+            // @ts-ignore
+            return response?.raw_data?.items ?? []
+          })
+          .catch((error) => {
+            throw error
+          }),
+      ])
       if (readyState === AccountStatus.ACTIVATED) {
         result = makeSummaryMyAmm({
           userRewardsMap: ammUserRewardMap,
         })
       }
-
-      __timer__ = ((__timer__) => {
-        if (__timer__ && __timer__ !== -1) {
-          clearInterval(__timer__)
-        }
-        return setInterval(async () => {
+      const totalClaims = makeClaimRewards(_totalClaims ?? [])
+      let __timer__ = (() => {
+        return setTimeout(() => {
+          let { __timer__ } = store.getState().userRewardsMap
+          if (__timer__ && __timer__ !== -1) {
+            clearTimeout(__timer__)
+          }
           store.dispatch(getUserRewards(undefined))
-        }, 300000 * 4)
-      })(__timer__)
-    } catch (e) {
-      ammUserRewardMap = {}
-    }
-
-    return {
-      data: { userRewardsMap: ammUserRewardMap, ...result },
-      __timer__,
+        }, 60000 * 4)
+      })()
+      return {
+        data: { userRewardsMap: ammUserRewardMap, totalClaims, ...result },
+        __timer__,
+      }
+    } catch (error) {
+      throw error
     }
   } else {
+    let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     return Promise.resolve({ data: {}, __timer__: -1 })
   }
@@ -68,7 +89,7 @@ export function* getResetsSaga() {
     // @ts-ignore
     let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     yield put(getUserRewardsStatus({ userRewardsMap: [], __timer__: -1 }))
   } catch (err) {

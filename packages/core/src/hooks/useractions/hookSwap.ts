@@ -243,8 +243,8 @@ export const useSwap = <
     setTradeData((state) => {
       return {
         ...state,
-        sell: { ...state?.sell, tradeValue: 0 },
-        buy: { ...state?.buy, tradeValue: 0 },
+        sell: { ...state?.sell, tradeValue: undefined },
+        buy: { ...state?.buy, tradeValue: undefined },
         isChecked: undefined,
       } as T
     })
@@ -1355,7 +1355,7 @@ export const useSwap = <
           fee: totalFee,
           feeTakerRate,
           tradeCost,
-          minimumConverted
+          minimumConverted,
         } as CAD
         _tradeData[isAtoB ? 'buy' : 'sell'].tradeValue = getShowStr(calcTradeParams?.output)
 
@@ -1399,7 +1399,7 @@ export const useSwap = <
             marketPrice.toString(),
             tokenMap[_tradeData.buy.belong].precision,
             tokenMap[_tradeData.buy.belong].precision,
-            tokenMap[_tradeData.buy.belong].precision,
+            undefined,
           )
 
           _tradeCalcData.marketRatePrice = marketRatePrice.minus(1).times(100).toFixed(2)

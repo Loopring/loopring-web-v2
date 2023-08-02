@@ -123,7 +123,7 @@ export const ColumnCoinDeep = React.memo(
     }
   } & { isNotRequiredName?: boolean }) => {
     let tokenIcon: [any, any] = [undefined, undefined]
-    const [head, middle, tail] = token.simpleName.split('-')
+    const [head, middle, tail] = token?.simpleName?.split('-')
     const { coinJson } = useSettings()
     if (type === 'lp' && middle && tail) {
       tokenIcon =

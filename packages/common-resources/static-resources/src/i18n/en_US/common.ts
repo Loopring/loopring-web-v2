@@ -1755,10 +1755,10 @@ export default {
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
   labelClaimTypeREFERER_FEE: 'Refunds Rewards',
-  labelClaimTypePROTOCOL_FEE: 'AMM Pool Rewards',
+  labelClaimTypePROTOCOL_FEE: 'Dedicated AMM Incentive',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
-  labelAMMClaimableEarnings: 'Protocol Fee Rewards',
+  labelAMMClaimableEarnings: 'Dedicated AMM Incentive',
   labelLayer2HistoryOrders: 'Order Records',
   labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
   labelLayer2HistoryDefiRecords: 'ETH Staking',
@@ -1796,27 +1796,28 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
-  labelClaimallToken: 'Reward token {{symbol}}',
+  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
   labelGo: 'Go',
   labelAnotherNetworkDes2:
-    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address.',
-  labelAnotherNetworkDes3:
-    'If you want to send token to network other than {{l1ChainName}}, the recipient address must be different than the sender address; else you will lose that asset for ever.',
+    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than ethereum, the recipient address must be different than the sender address; else you will lose that asset for ever.',
+  labelAnotherNetworkDes3: '',
   labelRiskReminder: 'Risk Reminder',
   labelDefiRedeem: 'Redeem',
   labelDefiSubscribe: 'Subscribe',
-  
   labelDefiMaxBalance1Leverage:
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
     '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
   labelDefiMaxBalanceLeverage:
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
+  labelFunctionList: 'Function List:',
+  labelSuperUserTitle: 'Super User',
   labelLeverageETHStaking: 'Leveraged ETH Staking',
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
+  labelRewardRefresh: 'Refresh',
 }

@@ -1,9 +1,10 @@
 import React from 'react'
-import { Box, BoxProps, Grid, Typography } from '@mui/material'
+import { Box, BoxProps, Grid, Tooltip, Typography } from '@mui/material'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import { Button, Popover, PopoverPure, PopoverType, PopoverWrapProps } from '../../basic-lib'
 import { Column, Table } from '../../basic-lib/'
 import {
+  AssetTabIndex,
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -22,14 +23,9 @@ import { useSettings } from '../../../stores'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { Filter } from './components/Filter'
 import { AmmAPRDetail, AmmPairDetail, AmmRewardsDetail } from '../../block'
-import { ActionPopContent } from './components/ActionPop'
+import { ActionPopContent, DetailRewardPanel } from './components/ActionPop'
 import { CoinIcons } from '../assetsTable'
-
-export enum PoolTradeType {
-  add = 'add',
-  swap = 'swap',
-  remove = 'remove',
-}
+import { useHistory } from 'react-router-dom'
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
@@ -56,6 +52,16 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   }
 
   ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
+  .assetWrap & {
+    .titleSummary.mobile {
+      margin-top: ${({ theme }) => theme.unit * 5}px;
+      flex-direction: row;
+    }
+  }
+
+  .titleSummary.mobile {
+    flex-direction: row;
+  }
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element
 
 const PoolStyle = styled(Box)`
@@ -80,6 +86,7 @@ export const MyPoolTable = withTranslation('tables')(
     showFilter = true,
     rawData,
     title,
+    totalAMMClaims,
     handleWithdraw,
     handleDeposit,
     hideSmallBalances = false,
@@ -91,8 +98,11 @@ export const MyPoolTable = withTranslation('tables')(
     forexMap,
     rowConfig = RowConfig,
     hideAssets,
+    rewardsAPIError,
+    getUserRewards,
   }: MyPoolTableProps<R> & WithTranslation) => {
     const { isMobile, coinJson } = useSettings()
+    const history = useHistory()
 
     const getPopoverState = React.useCallback((label: string) => {
       return usePopupState({
@@ -167,7 +177,7 @@ export const MyPoolTable = withTranslation('tables')(
           headerCellClass: 'textAlignRightSortable',
           formatter: ({ row, rowIdx }) => {
             const APR =
-              typeof row?.ammDetail?.APR !== undefined && row.ammDetail.APR
+              typeof row?.ammDetail?.APR !== undefined && row?.ammDetail?.APR
                 ? row.ammDetail.APR
                 : EmptyValueTag
             const popoverState = getPopoverAprState(rowIdx.toString())
@@ -272,8 +282,8 @@ export const MyPoolTable = withTranslation('tables')(
                   }}
                 >
                   <AmmPairDetail
-                    coinA={coinAInfo.simpleName}
-                    coinB={coinBInfo.simpleName}
+                    coinA={coinAInfo?.simpleName}
+                    coinB={coinBInfo?.simpleName}
                     balanceA={balanceA}
                     balanceB={balanceB}
                   />
@@ -347,34 +357,36 @@ export const MyPoolTable = withTranslation('tables')(
                     horizontal: 'center',
                   }}
                 >
-                  <AmmRewardsDetail
-                    feeA={row.feeA24}
-                    feeB={row.feeB24}
-                    coinA={coinAInfo.simpleName}
-                    coinB={coinBInfo.simpleName}
-                    rewards={
-                      [
-                        ...(reward24
-                          ? [
-                              {
-                                tokenSymbol: rewardToken,
-                                amount: reward24,
-                              },
-                            ]
-                          : []),
-                        ...(reward224
-                          ? [
-                              {
-                                tokenSymbol: rewardToken2,
-                                amount: reward224,
-                              },
-                            ]
-                          : []),
-                      ] as any[]
-                    }
-                    extraRewards={extraRewards24}
-                    tokenMap={tokenMap}
-                  />
+                  {coinAInfo && (
+                    <AmmRewardsDetail
+                      feeA={row.feeA24}
+                      feeB={row.feeB24}
+                      coinA={coinAInfo.simpleName}
+                      coinB={coinBInfo.simpleName}
+                      rewards={
+                        [
+                          ...(reward24
+                            ? [
+                                {
+                                  tokenSymbol: rewardToken,
+                                  amount: reward24,
+                                },
+                              ]
+                            : []),
+                          ...(reward224
+                            ? [
+                                {
+                                  tokenSymbol: rewardToken2,
+                                  amount: reward224,
+                                },
+                              ]
+                            : []),
+                        ] as any[]
+                      }
+                      extraRewards={extraRewards24}
+                      tokenMap={tokenMap}
+                    />
+                  )}
                 </PopoverPure>
               </Box>
             )
@@ -441,15 +453,16 @@ export const MyPoolTable = withTranslation('tables')(
                 height={'100%'}
               >
                 <CoinIcons
+                  size={18}
                   type={TokenType.lp}
                   tokenIcon={[coinJson[row.ammDetail?.coinA], coinJson[row.ammDetail?.coinB]]}
                 />
                 <Typography
-                  variant={'inherit'}
+                  variant={'body2'}
                   color={'textPrimary'}
                   display={'flex'}
                   flexDirection={'column'}
-                  marginLeft={2}
+                  marginLeft={0}
                   component={'span'}
                   paddingRight={1}
                 >
@@ -516,14 +529,14 @@ export const MyPoolTable = withTranslation('tables')(
                         abbreviate: 3,
                       }) +
                       ' ' +
-                      coinAInfo.simpleName +
+                      coinAInfo?.simpleName +
                       `  +  ` +
                       getValuePrecisionThousand(balanceB, undefined, 2, 2, true, {
                         isAbbreviate: true,
                         abbreviate: 3,
                       }) +
                       ' ' +
-                      coinBInfo.simpleName}
+                      coinBInfo?.simpleName}
                 </Typography>
               </Box>
             )
@@ -591,6 +604,7 @@ export const MyPoolTable = withTranslation('tables')(
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
+            className={`titleSummary ${isMobile ? 'mobile' : ''}`}
             flexDirection={isMobile ? 'column' : 'row'}
           >
             <>{title}</>
@@ -606,25 +620,112 @@ export const MyPoolTable = withTranslation('tables')(
             )}
           </TableFilterStyled>
         }
-        {totalDollar !== undefined ? (
-          <Typography component={'h4'} variant={'h3'} marginX={3}>
-            {totalDollar
-              ? hideAssets
-                ? HiddenTag
-                : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    2,
-                    true,
-                    { isFait: true, floor: true },
-                  )
-              : EmptyValueTag}
-          </Typography>
-        ) : (
-          ''
-        )}
+        <Box
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          {totalDollar !== undefined ? (
+            <Typography component={'h4'} variant={'h3'} marginX={3}>
+              {totalDollar
+                ? hideAssets
+                  ? HiddenTag
+                  : PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
+                      undefined,
+                      undefined,
+                      2,
+                      true,
+                      { isFait: true, floor: true },
+                    )
+                : EmptyValueTag}
+            </Typography>
+          ) : (
+            ''
+          )}
+          {totalAMMClaims ? (
+            rewardsAPIError && getUserRewards ? (
+              <Button
+                sx={{ marginRight: 3 }}
+                onClick={() => {
+                  getUserRewards && getUserRewards()
+                }}
+                size={'small'}
+                variant={'outlined'}
+              >
+                {t('labelRewardRefresh', { ns: 'common' })}
+              </Button>
+            ) : (
+              <Typography
+                paddingRight={3}
+                display={'flex'}
+                flexDirection={'row'}
+                alignItems={'center'}
+              >
+                <Typography variant={'body1'} marginRight={2} component={'span'}>
+                  {t('labelAMMClaimableEarnings', { ns: 'common' })}
+                </Typography>
+
+                {totalAMMClaims.totalDollar !== '0' ? (
+                  <>
+                    <Tooltip
+                      componentsProps={{
+                        tooltip: {
+                          sx: {
+                            width: 'var(--mobile-full-panel-width)',
+                          },
+                        },
+                      }}
+                      className={'detailPanel'}
+                      title={<DetailRewardPanel detailList={totalAMMClaims.detail} />}
+                    >
+                      <Typography
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                        component={'span'}
+                        color={'textPrimary'}
+                        marginRight={2}
+                        sx={{
+                          textDecoration: 'underline dotted',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {hideAssets
+                          ? HiddenTag
+                          : PriceTag[CurrencyToTag[currency]] +
+                            getValuePrecisionThousand(
+                              sdk.toBig(totalAMMClaims.totalDollar).times(forexMap[currency] ?? 0),
+                              undefined,
+                              undefined,
+                              2,
+                              true,
+                              { isFait: true, floor: true },
+                            )}
+                      </Typography>
+                    </Tooltip>
+                    <Button
+                      variant={'contained'}
+                      size={'small'}
+                      onClick={() => {
+                        history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                      }}
+                    >
+                      {t('labelClaimBtn', { ns: 'common' })}
+                    </Button>
+                  </>
+                ) : (
+                  <Typography variant={'inherit'} component={'span'} color={'textPrimary'}>
+                    {EmptyValueTag}
+                  </Typography>
+                )}
+              </Typography>
+            )
+          ) : (
+            <></>
+          )}
+        </Box>
 
         <Table
           rowHeight={rowConfig.rowHeight}

@@ -18,7 +18,7 @@ export async function resetLayer12Data() {
   store.dispatch(resetwalletLayer2NFT(undefined))
   let toggle = {}
   if (
-    store.getState().system.chainId === sdk.ChainId.MAINNET &&
+    store.getState().system.chainId !== sdk.ChainId.GOERLI &&
     store.getState().system.dexToggleUrl
   ) {
     toggle = await fetch(store.getState().system.dexToggleUrl)
