@@ -31,8 +31,8 @@ const CheckboxStyled = styled(Checkbox)`
 
 const BoxContent = styled(Box)`
   .modalContent {
-    padding-right: ${({ theme }) => theme.unit * 7}px;
-    padding-left: ${({ theme }) => theme.unit * 7}px;
+    padding-right: ${({ theme }) => theme.unit * 5}px;
+    padding-left: ${({ theme }) => theme.unit * 5}px;
   }
 
   @media only screen and (max-width: 768px) {
