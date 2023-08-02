@@ -9,10 +9,10 @@ import { nextAccountStatus } from '../../stores/account/reducer'
 export async function unlockAccount() {
   myLog('unlockAccount starts')
   const accounStore = store.getState().account
-  const { exchangeInfo, chainId } = store.getState().system
-  accountServices.sendSign()
+  const { exchangeInfo } = store.getState().system
   const { isMobile, themeMode } = store.getState().settings
   myLog('unlockAccount account:', accounStore)
+  accountServices.sendSign()
   if (
     exchangeInfo &&
     LoopringAPI.userAPI &&
@@ -58,10 +58,10 @@ export async function unlockAccount() {
               exchangeInfo.exchangeAddress,
             ).replace('${nonce}', (nonce - 1).toString())
 
-      // const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-      // debugger
-      if (Number(chainId) !== Number(_chainId)) {
-        await connectProvides.sendChainIdChange(chainId, themeMode === ThemeType.dark)
+      const { defaultNetwork } = store.getState().settings
+      if (Number(defaultNetwork) !== Number(_chainId)) {
+        await connectProvides.sendChainIdChange(defaultNetwork, themeMode === ThemeType.dark)
+        _chainId = connectProvides?.usedWeb3?.eth?.getChainId()
       }
 
       const response = await LoopringAPI.userAPI.unLockAccount(
@@ -71,7 +71,7 @@ export async function unlockAccount() {
             address: account.owner,
             keySeed: msg,
             walletType: connectName,
-            chainId: Number(chainId),
+            chainId: Number(_chainId),
             accountId: Number(account.accountId),
             isMobile: isMobile,
           },
