@@ -311,23 +311,23 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
-        background={theme.colorBase.dark}
+        background={theme.colorBase.box}
       >
         <Box paddingY={7}>
           <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
             ETH Staking
           </Typography>
-          <Typography marginBottom={3} color={'var(--color-text-third)'} variant={'h4'}>
+          <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
             一鍵質押 ETH，賺取高達 7% 年化收益，更可將其作為交易保證金
           </Typography>
-          <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+          <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
             My Investment
           </Button>
         </Box>
         <img src={SoursURL + 'images/earn-staking-title.svg'} />
       </MaxWidthContainer>
 
-      <MaxWidthContainer>
+      <MaxWidthContainer background={theme.colorBase.boxSecondary}>
         <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
           Choose the product you want
         </Typography>

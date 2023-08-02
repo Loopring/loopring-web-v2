@@ -49,19 +49,19 @@ export const PoolsPanel = withTranslation('common')(
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={theme.colorBase.dark}
+          background={theme.colorBase.box}
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
               AMM Pool
             </Typography>
-            <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+            <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
               My Investment
             </Button>
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
-        <MaxWidthContainer>
+        <MaxWidthContainer background={theme.colorBase.boxSecondary}>
           <PoolsTable
             {...{
               ...poolTableProps,

@@ -45,15 +45,20 @@ const WrapperStyled = styled(Box)`
     padding: ${({ theme }) => 4 * theme.unit}px;
     cursor: pointer;
     background: var(--dark700);
-    border: 1px solid #262626;
+    border: 1px solid;
+    border-color: ${({ theme }) => theme.colorBase.border};
     width: ${({ theme }) => 35 * theme.unit}px;
     .MuiCardContent-root {
       padding: 0;
     }
+    box-shadow: none;
     :hover {
       background: var(--color-box-hover);
-      box-shadow: 0px 4px 20px 0px black;
+      box-shadow: ${({ theme }) => theme.colorBase.shadow};
     }
+  }
+  .scroll-view::-webkit-scrollbar {
+    display: none;
   }
 `
 
@@ -73,37 +78,41 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3] },
   ]
   const theme = useTheme()
+
+  
   return (
     <>
       <WrapperStyled marginBottom={3}>
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={theme.colorBase.dark}
+          background={theme.colorBase.box}
         >
           <Box paddingY={7}>
-            <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+            <Typography color={theme.colorBase.textPrimary} marginBottom={2} fontSize={'48px'} variant={'h1'}>
               Loopring Earn
             </Typography>
-            <Typography marginBottom={3} color={'var(--color-text-third)'} variant={'h4'}>
+            <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
               Earn stable profits with professional asset management
             </Typography>
-            <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+            <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
               My Investment
             </Button>
           </Box>
           <Box marginRight={5}>
-            <img src={SoursURL + 'images/earn-page-title.svg'} />
+            <img src={ SoursURL + theme.mode === 'dark' ? 'images/earn-page-title.svg' : 'images/earn-page-title-light.svg'} />
           </Box>
           
         </MaxWidthContainer>
-        <MaxWidthContainer marginTop={5} background={'var(--dark700)'}>
+        <MaxWidthContainer marginTop={5} background={theme.colorBase.boxSecondary}>
           <Box
             sx={{
               width: '100%',
               overflowX: 'scroll',
               maxWidth: 'lg',
+              paddingY: 3
             }}
+            className={'scroll-view'}
           >
             <Box sx={{ display: 'flex', width: 'fit-content' }}>
               {[...investAdviceList, ...investAdviceList].map((item, index) => {

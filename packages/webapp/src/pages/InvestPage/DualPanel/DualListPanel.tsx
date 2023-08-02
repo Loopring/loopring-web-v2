@@ -216,14 +216,14 @@ export const DualListPanel: any = withTranslation('common')(
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={theme.colorBase.dark}
+          background={theme.colorBase.box}
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
               Dual Investment
             </Typography>
             <Box display={'flex'} alignItems={'center'}>
-              <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+              <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
                 My Investment
               </Button>
               <Button sx={{ marginLeft: 1.5 }} variant={'contained'}>
@@ -242,7 +242,7 @@ export const DualListPanel: any = withTranslation('common')(
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
-        <MaxWidthContainer marginTop={5}>
+        <MaxWidthContainer background={theme.colorBase.boxSecondary} marginTop={5}>
           {beginnerMode ? (
             <BeginnerMode setConfirmDualInvest={setConfirmDualInvest} />
           ) : marketsIsLoading ? (

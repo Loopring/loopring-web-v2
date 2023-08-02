@@ -272,7 +272,7 @@ const MyLiquidity: any = withTranslation('common')(
     myLog('visibaleTabs _tab', _tab)
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        <MaxWidthContainer background={theme.colorBase.dark}>
+        <MaxWidthContainer background={theme.colorBase.box}>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Box paddingY={7}>
               <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
@@ -326,7 +326,7 @@ const MyLiquidity: any = withTranslation('common')(
           </Box>
         </MaxWidthContainer>
 
-        <MaxWidthContainer marginBottom={3} marginTop={3}>
+        <MaxWidthContainer marginBottom={3} marginTop={3} background={theme.colorBase.boxSecondary}>
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
           !(stakingList?.length > 0) &&

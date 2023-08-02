@@ -177,7 +177,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
 
   return (
     <Box flex={1} flexDirection={'column'} display={'flex'}>
-      <Box flex={1} component={'section'} marginTop={1} display={'flex'}>
+      <Box flex={1} component={'section'} display={'flex'}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
