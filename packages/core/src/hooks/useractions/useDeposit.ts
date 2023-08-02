@@ -227,15 +227,15 @@ export const useDeposit = <
         realToAddress.startsWith('0x') &&
         [value, toAddress].includes(realToAddress)
       ) {
-        return state
+        if (value.startsWith('0x') && toAddress?.startsWith('0x') && value !== toAddress) {
+          return value
+        } else {
+          return state
+        }
       } else if (value !== undefined) {
         setToInputAddress(value)
         return value
-      }
-      // else if () {
-      //   return data.tradeData.toAddress ?? ''
-      // }
-      else if (
+      } else if (
         state &&
         !value &&
         toAddressStatus !== AddressError.NoError &&
