@@ -180,8 +180,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
       myLog(connectName, ConnectProviders.WalletConnect)
       if (connectName == ConnectProviders.GameStop.toString()) {
         return ![1, 5].includes(Number(id))
-      }
-      else if (
+      } else if (
         (connectProvides.usedProvide as any)?.session &&
         (connectProvides.usedProvide as any)?.namespace
       ) {
