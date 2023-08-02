@@ -31,7 +31,7 @@ import {
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { accountReducer, useAccount } from './stores/account'
-import { useModalData } from './stores'
+import { resetDepositData, resetTransferData, resetWithdrawData, useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { store, WalletConnectL2Btn } from './index'
@@ -51,11 +51,13 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     margin-right: ${({ theme }) => theme.unit}px;
     width: 20px;
     height: 20px;
+    position: relative;
 
     svg {
-      width: 20px;
-      height: 20px;
-      right: -50%;
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
     }
@@ -156,24 +158,77 @@ const Icon = ({ label = '' }: { label: string }) => {
       return <Avatar component={'span'} variant='circular' children={child} />
   }
 }
+const onConnect = async (accAddress: string, chainId: any) => {
+  const {
+    settings: { defaultNetwork },
+    account: { readyState, accAddress: _accAddress },
+  } = store.getState()
+  if (
+    _accAddress?.toLowerCase() === accAddress?.toUpperCase() &&
+    defaultNetwork.toString() == chainId.toString() &&
+    [
+      AccountStatus.NO_ACCOUNT,
+      AccountStatus.DEPOSITING,
+      AccountStatus.NOT_ACTIVE,
+      AccountStatus.LOCKED,
+    ].includes(readyState as AccountStatus)
+  ) {
+    myLog('After connect >>,onChinId change')
+  } else {
+    myLog('After connect >>,network part start: step1 networkUpdate')
+    store.dispatch(updateAccountStatus({ _chainId: chainId }))
+    const networkFlag = await networkUpdate(chainId)
+    const currentProvide = connectProvides.usedProvide
+    myLog(
+      'After connect >>,network part done: step2 check account,',
+      connectProvides.usedWeb3,
+      currentProvide,
+    )
+
+    if (networkFlag) {
+      resetLayer12Data()
+      checkAccount(accAddress, chainId !== 'unknown' ? chainId : undefined)
+    }
+    store.dispatch(resetWithdrawData(undefined))
+    store.dispatch(resetTransferData(undefined))
+    store.dispatch(resetDepositData(undefined))
+  }
+}
+
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
-  const { defaultNetwork, setDefaultNetwork, isMobile } = useSettings()
+  const { defaultNetwork: _defaultNetwork, isMobile } = useSettings()
   const {
-    account: { connectName },
+    account: { connectName, accAddress, readyState },
   } = useAccount()
-  // const { account } = useAccount();
-  React.useEffect(() => {
-    // const account = store.getState().account
-    networkUpdate()
-  }, [])
+  const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>()
 
-  const handleOnNetworkSwitch = async (value: sdk.ChainId) => {
-    if (value !== defaultNetwork) {
-      setDefaultNetwork(value)
-    }
-    networkUpdate()
-  }
+  const handleOnNetworkSwitch = React.useCallback(
+    async (value: sdk.ChainId) => {
+      myLog('defaultNetwork', value)
+      const defaultNetwork = store.getState().settings
+      // @ts-ignore
+      if (Number(value) !== Number(defaultNetwork)) {
+        setDefaultNetwork(Number(value))
+        if (readyState !== AccountStatus.UN_CONNECT) {
+          onConnect(accAddress, value)
+        } else {
+          networkUpdate(Number(value))
+        }
+      }
+    },
+    [defaultNetwork, accAddress, readyState],
+  )
+  React.useEffect(() => {
+    setDefaultNetwork((state) => {
+      if (_defaultNetwork && state !== _defaultNetwork) {
+        networkUpdate()
+        return Number(_defaultNetwork)
+      } else {
+        return state
+      }
+    })
+  }, [_defaultNetwork])
 
   const disable = React.useCallback(
     (id: any) => {
@@ -199,40 +254,43 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     [connectName, connectProvides.usedProvide, defaultNetwork],
   )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
+    myLog('defaultNetwork NetWorkItems', defaultNetwork)
     return (
       <>
-        <OutlineSelectStyle
-          aria-label={NetworkMap[defaultNetwork]?.label}
-          IconComponent={DropDownIcon}
-          labelId='network-selected'
-          id='network-selected'
-          className={`${className} ${NetworkMap[defaultNetwork]?.isTest ? 'test ' : ''} ${
-            isMobile ? 'mobile' : ''
-          }`}
-          value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
-          autoWidth
-          onChange={(event: SelectChangeEvent<any>) => handleOnNetworkSwitch(event.target.value)}
-        >
-          {AvaiableNetwork.reduce((prew, id, index) => {
-            if (NetworkMap[id]) {
-              prew.push(
-                <OutlineSelectItemStyle
-                  disabled={disable(id)}
-                  className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
-                  aria-label={NetworkMap[id].label}
-                  value={id}
-                  key={'viewNetwork' + NetworkMap[id] + index}
-                >
-                  <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
-                    <Icon label={MapChainId[id]} />
-                    <span className={'label'}>{t(NetworkMap[id].label)}</span>
-                  </Typography>
-                </OutlineSelectItemStyle>,
-              )
-            }
-            return prew
-          }, [] as JSX.Element[])}
-        </OutlineSelectStyle>
+        {defaultNetwork && (
+          <OutlineSelectStyle
+            aria-label={NetworkMap[defaultNetwork]?.label}
+            IconComponent={DropDownIcon}
+            labelId='network-selected'
+            id='network-selected'
+            className={`${className} ${NetworkMap[defaultNetwork]?.isTest ? 'test ' : ''} ${
+              isMobile ? 'mobile' : ''
+            }`}
+            value={defaultNetwork}
+            autoWidth
+            onChange={(event: SelectChangeEvent<any>) => handleOnNetworkSwitch(event.target.value)}
+          >
+            {AvaiableNetwork.reduce((prew, id, index) => {
+              if (NetworkMap[id]) {
+                prew.push(
+                  <OutlineSelectItemStyle
+                    disabled={disable(id)}
+                    className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
+                    aria-label={NetworkMap[id].label}
+                    value={id}
+                    key={'viewNetwork' + NetworkMap[id] + index}
+                  >
+                    <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
+                      <Icon label={MapChainId[id]} />
+                      <span className={'label'}>{t(NetworkMap[id].label)}</span>
+                    </Typography>
+                  </OutlineSelectItemStyle>,
+                )
+              }
+              return prew
+            }, [] as JSX.Element[])}
+          </OutlineSelectStyle>
+        )}
       </>
     )
   }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide])
@@ -275,49 +333,14 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       chainId: sdk.ChainId | 'unknown'
     }) => {
       const accAddress = accounts[0]
-      const {
-        settings: { defaultNetwork },
-        account: { readyState, accAddress: _accAddress },
-      } = store.getState()
-      if (
-        (_accAddress?.toLowerCase() === accAddress?.toUpperCase() &&
-          defaultNetwork.toString() == chainId.toString(),
-        [
-          AccountStatus.NO_ACCOUNT,
-          AccountStatus.DEPOSITING,
-          AccountStatus.NOT_ACTIVE,
-          AccountStatus.LOCKED,
-        ].includes(readyState as AccountStatus))
-      ) {
-        myLog('After connect >>,onChinId change')
-      } else {
-        myLog('After connect >>,network part start: step1 networkUpdate')
-        store.dispatch(updateAccountStatus({ _chainId: chainId }))
-        const networkFlag = await networkUpdate(chainId)
-        const currentProvide = connectProvides.usedProvide
-        myLog(
-          'After connect >>,network part done: step2 check account,',
-          connectProvides.usedWeb3,
-          currentProvide,
-        )
-
-        if (networkFlag) {
-          resetLayer12Data()
-          checkAccount(accAddress, chainId !== 'unknown' ? chainId : undefined)
-        }
-
-        resetWithdrawData()
-        resetTransferData()
-        resetDepositData()
-
-        setShouldShow(false)
-        setShowConnect({
-          isShow: !!shouldShow ?? false,
-          step: WalletConnectStep.SuccessConnect,
-        })
-        await sdk.sleep(REFRESH_RATE)
-        setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect })
-      }
+      await onConnect(accAddress, chainId)
+      setShouldShow(false)
+      setShowConnect({
+        isShow: !!shouldShow ?? false,
+        step: WalletConnectStep.SuccessConnect,
+      })
+      await sdk.sleep(REFRESH_RATE)
+      setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect })
     },
     [
       resetWithdrawData,

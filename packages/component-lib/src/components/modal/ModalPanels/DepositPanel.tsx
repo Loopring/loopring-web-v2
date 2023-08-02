@@ -1,5 +1,5 @@
 import { DepositProps } from '../../tradePanel/Interface'
-import { withTranslation, WithTranslation } from 'react-i18next'
+import { Trans, withTranslation, WithTranslation } from 'react-i18next'
 import {
   CoinInfo,
   CoinMap,
@@ -14,6 +14,7 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import { DepositConfirm } from '../../tradePanel/components/DepositConfirm'
 import { useSettings } from '../../../stores'
+import { Typography } from '@mui/material'
 
 export const DepositPanel = withTranslation('common', { withRef: true })(
   <
@@ -91,14 +92,31 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
                 {...{
                   ...rest,
                   t,
-                  realToAddress: rest.isAllowInputToAddress
-                    ? rest.realToAddress
-                    : t('labelToMyL2', {
+                  realToAddress: rest.isAllowInputToAddress ? (
+                    rest.realToAddress
+                  ) : (
+                    <Trans
+                      i18nKey={'labelToMyL2WidthAddress'}
+                      tOptions={{
                         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
                         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
                         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                      }),
+                        address: rest.realToAddress,
+                      }}
+                    >
+                      My L2
+                      <Typography
+                        color={'var(--color-text-third)'}
+                        variant={'body2'}
+                        component={'span'}
+                        sx={{ opacity: 1 }}
+                        paddingLeft={1 / 2}
+                      >
+                        (address)
+                      </Typography>
+                    </Trans>
+                  ),
                   tradeData: switchData.tradeData,
                   onDepositClick,
                   handleConfirm,
