@@ -52,9 +52,15 @@ const WrapperStyled = styled(Box)`
       padding: 0;
     }
     box-shadow: none;
+    .hover-button {
+        background: ${({ theme }) => theme.colorBase.buttonInactive};
+      }
     :hover {
       background: var(--color-box-hover);
       box-shadow: ${({ theme }) => theme.colorBase.shadow};
+      .hover-button {
+        background: ${({ theme }) => theme.colorBase.primary};
+      }
     }
   }
   .scroll-view::-webkit-scrollbar {
@@ -89,20 +95,35 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
           background={theme.colorBase.box}
         >
           <Box paddingY={7}>
-            <Typography color={theme.colorBase.textPrimary} marginBottom={2} fontSize={'48px'} variant={'h1'}>
+            <Typography
+              color={theme.colorBase.textPrimary}
+              marginBottom={2}
+              fontSize={'48px'}
+              variant={'h1'}
+            >
               Loopring Earn
             </Typography>
             <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
               Earn stable profits with professional asset management
             </Typography>
-            <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
+            <Button
+              onClick={() => history.push('/invest/balance')}
+              sx={{ width: 18 * theme.unit }}
+              variant={'contained'}
+            >
               My Investment
             </Button>
           </Box>
           <Box marginRight={5}>
-            <img src={ SoursURL + theme.mode === 'dark' ? 'images/earn-page-title.svg' : 'images/earn-page-title-light.svg'} />
+            <img
+              src={
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'images/earn-page-title.svg'
+                  : 'images/earn-page-title-light.svg')
+              }
+            />
           </Box>
-          
         </MaxWidthContainer>
         <MaxWidthContainer marginTop={5} background={theme.colorBase.boxSecondary}>
           <Box
@@ -110,14 +131,14 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
               width: '100%',
               overflowX: 'scroll',
               maxWidth: 'lg',
-              paddingY: 3
+              paddingY: 3,
             }}
             className={'scroll-view'}
           >
             <Box sx={{ display: 'flex', width: 'fit-content' }}>
               {[...investAdviceList, ...investAdviceList].map((item, index) => {
                 return (
-                  <Card onClick={() => history.push(item.router)} sx={{marginRight: 2.5}}>
+                  <Card onClick={() => history.push(item.router)} sx={{ marginRight: 2.5 }}>
                     <CardContent>
                       <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
                         <Avatar
@@ -132,9 +153,16 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
                           {t(item.titleI18n, { ns: 'layout' })}
                         </Typography>
 
-                        <Typography variant={'h3'} marginTop={5}>21.2%-102.38%</Typography>
+                        <Typography variant={'h3'} marginTop={5}>
+                          21.2%-102.38%
+                        </Typography>
                         <Typography>APR</Typography>
-                        <Button sx={{marginTop: 2}} fullWidth variant={'contained'}>
+                        <Button
+                          className={'hover-button'}
+                          sx={{ marginTop: 2 }}
+                          fullWidth
+                          variant={'contained'}
+                        >
                           {t('labelLiquidityDeposit')}
                         </Button>
                       </Box>

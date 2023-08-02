@@ -67,6 +67,7 @@ export const ColorDarkDefault = Object.freeze({
   /********************CSS special button *******************/
   buttonPot: ColorBlack.light,
   buttonIcon: ColorBlack.light800,
+  buttonInactive: ColorBlack.dark800,
 
   /********************CSS shadow *******************/
   shadow: ` 0px 4px 4px ${hexToRGB(ColorBlack.dark700, '.25')}`,
@@ -135,6 +136,7 @@ export const ColorLightDefault = Object.freeze({
   /********************CSS special buttonr*******************/
   buttonPot: ColorBlack.light,
   buttonIcon: '#15162B',
+  buttonInactive: ColorBlack.light800,
   // box-shadow: 0px 4px 20px 0px #1D20231A;
 
   /********************CSS shadow *******************/

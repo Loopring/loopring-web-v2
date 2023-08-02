@@ -284,10 +284,10 @@ const MyLiquidity: any = withTranslation('common')(
               </Button>
             </Box>
             <Box
-              sx={{ background: ColorBlack.dark900 }}
+              sx={{ background: theme.colorBase.boxSecondary }}
               width={40 * theme.unit}
               border={'1px solid'}
-              borderColor={ColorBlack.dark700}
+              borderColor={ theme.colorBase.border }
               borderRadius={0.5}
               paddingX={3}
               paddingY={4}
