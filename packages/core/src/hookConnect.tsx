@@ -276,32 +276,49 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       chainId: sdk.ChainId | 'unknown'
     }) => {
       const accAddress = accounts[0]
-      myLog('After connect >>,network part start: step1 networkUpdate')
-      store.dispatch(updateAccountStatus({ _chainId: chainId }))
-      const networkFlag = await networkUpdate(chainId)
-      const currentProvide = connectProvides.usedProvide
-      myLog(
-        'After connect >>,network part done: step2 check account,',
-        connectProvides.usedWeb3,
-        currentProvide,
-      )
+      const {
+        settings: { defaultNetwork },
+        account: { readyState, accAddress: _accAddress },
+      } = store.getState()
+      if (
+        (_accAddress?.toLowerCase() === accAddress?.toUpperCase() &&
+          defaultNetwork.toString() == chainId.toString(),
+        [
+          AccountStatus.NO_ACCOUNT,
+          AccountStatus.DEPOSITING,
+          AccountStatus.NOT_ACTIVE,
+          AccountStatus.LOCKED,
+        ].includes(readyState as AccountStatus))
+      ) {
+        myLog('After connect >>,onChinId change')
+      } else {
+        myLog('After connect >>,network part start: step1 networkUpdate')
+        store.dispatch(updateAccountStatus({ _chainId: chainId }))
+        const networkFlag = await networkUpdate(chainId)
+        const currentProvide = connectProvides.usedProvide
+        myLog(
+          'After connect >>,network part done: step2 check account,',
+          connectProvides.usedWeb3,
+          currentProvide,
+        )
 
-      if (networkFlag) {
-        resetLayer12Data()
-        checkAccount(accAddress, chainId !== 'unknown' ? chainId : undefined)
+        if (networkFlag) {
+          resetLayer12Data()
+          checkAccount(accAddress, chainId !== 'unknown' ? chainId : undefined)
+        }
+
+        resetWithdrawData()
+        resetTransferData()
+        resetDepositData()
+
+        setShouldShow(false)
+        setShowConnect({
+          isShow: !!shouldShow ?? false,
+          step: WalletConnectStep.SuccessConnect,
+        })
+        await sdk.sleep(REFRESH_RATE)
+        setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect })
       }
-
-      resetWithdrawData()
-      resetTransferData()
-      resetDepositData()
-
-      setShouldShow(false)
-      setShowConnect({
-        isShow: !!shouldShow ?? false,
-        step: WalletConnectStep.SuccessConnect,
-      })
-      await sdk.sleep(REFRESH_RATE)
-      setShowConnect({ isShow: false, step: WalletConnectStep.SuccessConnect })
     },
     [
       resetWithdrawData,
