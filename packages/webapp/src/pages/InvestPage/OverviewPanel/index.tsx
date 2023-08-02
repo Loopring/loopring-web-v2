@@ -101,17 +101,17 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
               fontSize={'48px'}
               variant={'h1'}
             >
-              Loopring Earn
+              {t("labelInvestLoopringEarn")}
             </Typography>
             <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
-              Earn stable profits with professional asset management
+              {t("labelInvestLoopringEarnDes")}
             </Typography>
             <Button
               onClick={() => history.push('/invest/balance')}
               sx={{ width: 18 * theme.unit }}
               variant={'contained'}
             >
-              My Investment
+              {t("labelAssetInvests")}
             </Button>
           </Box>
           <Box marginRight={5}>
@@ -156,7 +156,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
                         <Typography variant={'h3'} marginTop={5}>
                           21.2%-102.38%
                         </Typography>
-                        <Typography>APR</Typography>
+                        <Typography>{t("labelAPR")}</Typography>
                         <Button
                           className={'hover-button'}
                           sx={{ marginTop: 2 }}

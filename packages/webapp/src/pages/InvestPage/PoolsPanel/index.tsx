@@ -53,10 +53,10 @@ export const PoolsPanel = withTranslation('common')(
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-              AMM Pool
+              {t("labelLiquidityPageTitle")}
             </Typography>
             <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-              My Investment
+              {t("labelInvestMyAmm")}
             </Button>
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />

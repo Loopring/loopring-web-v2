@@ -220,21 +220,21 @@ export const DualListPanel: any = withTranslation('common')(
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-              Dual Investment
+              {t("labelInvestDualTitle")}
             </Typography>
             <Box display={'flex'} alignItems={'center'}>
               <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-                My Investment
+                {t("labelInvestMyDual")}
               </Button>
               <Button sx={{ marginLeft: 1.5 }} variant={'contained'}>
-                Tutorial
+                {t("labelInvestDualTutorial")}
               </Button>
               <FormControlLabel
                 labelPlacement={'start'}
                 control={<Switch checked={beginnerMode} onChange={onToggleBeginnerMode} />}
                 label={
                   <Typography marginLeft={1.5} variant={'h5'}>
-                    Beginner Mode
+                    {t("labelInvestDualBeginerMode")}
                   </Typography>
                 }
               />

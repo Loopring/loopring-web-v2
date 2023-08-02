@@ -575,7 +575,7 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
     return (
       <TableStyled flex={1} flexDirection={'column'} display={'flex'} isMobile={isMobile}>
         <Box marginY={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-          <Typography variant={'h1'}>All Products</Typography>
+          <Typography variant={'h1'}>{t("labelTitleOverviewAllPrd")}</Typography>
           {showFilter && (
             <Box
               display={'inline-flex'}

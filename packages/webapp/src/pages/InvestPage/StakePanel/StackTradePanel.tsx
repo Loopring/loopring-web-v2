@@ -98,13 +98,13 @@ export const StackTradePanel = ({
           >
             <Box paddingY={7}>
               <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-                ETH Staking
+                {t("labelInvestLRCTitle")}
               </Typography>
               <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
-                一鍵質押 ETH，賺取高達 7% 年化收益，更可將其作為交易保證金
+                {t("labelInvestLRCDes")}
               </Typography>
               <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-                My Investment
+                {t("labelMyInvestLRCStaking")}
               </Button>
             </Box>
             <img src={SoursURL + 'images/earn-staking-title.svg'} />
