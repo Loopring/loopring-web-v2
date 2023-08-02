@@ -1,7 +1,7 @@
-import { cleanLayer2, goErrorNetWork, store } from '../../index'
+import { accountServices, cleanLayer2, goErrorNetWork, store } from '../../index'
 
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
-import { AccountStatus, SagaStatus } from '@loopring-web/common-resources'
+import { AccountStatus, myLog, SagaStatus } from '@loopring-web/common-resources'
 import { updateAccountStatus } from '../../stores/account/reducer'
 import { updateSystem } from '../../stores/system/reducer'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -9,35 +9,19 @@ import { ChainId } from '@loopring-web/loopring-sdk'
 import { setDefaultNetwork } from '@loopring-web/component-lib'
 
 export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean> => {
-  let { _chainId: accountChainId, readyState } = store.getState().account
   let { defaultNetwork } = store.getState().settings
-  const { chainId: statusChainId, status: systemStatus } = store.getState().system
-  let userSettingChainId
-  if (chainId) {
-    userSettingChainId = chainId as any
-  } else {
-    userSettingChainId = defaultNetwork
-  }
-
-  if (statusChainId.toString() !== userSettingChainId.toString()) {
-    if (AvaiableNetwork.includes(userSettingChainId.toString())) {
+  const { status: systemStatus } = store.getState().system
+  myLog('chainId,defaultNetwork', chainId, defaultNetwork)
+  const { _chainId: accountChainId, accAddress, readyState } = store.getState().account
+  if (chainId && chainId !== defaultNetwork) {
+    let _chainId = Number(chainId)
+    if (AvaiableNetwork.includes(_chainId.toString())) {
+      store.dispatch(setDefaultNetwork(_chainId))
       if (systemStatus !== SagaStatus.UNSET) {
         await sdk.sleep(0)
       }
-      console.log('unconnected: networkUpdate updateSystem', userSettingChainId)
-      store.dispatch(updateSystem({ chainId: userSettingChainId }))
-      store.dispatch(
-        updateAccountStatus({
-          wrongChain: false,
-        }),
-      )
-      if (
-        readyState !== AccountStatus.UN_CONNECT &&
-        chainId &&
-        Number(defaultNetwork) !== Number(chainId)
-      ) {
-        store.dispatch(setDefaultNetwork(Number(chainId)))
-        store.dispatch(updateSystem({ chainId: Number(chainId) }))
+      store.dispatch(updateSystem({ chainId: Number(_chainId) }))
+      if (readyState !== AccountStatus.UN_CONNECT && Number(accountChainId) !== chainId) {
         store.dispatch(
           updateAccountStatus({
             wrongChain: false,
@@ -45,12 +29,27 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
         )
         cleanLayer2()
         await sdk.sleep(0)
-        return true
-      } else if (
-        readyState !== AccountStatus.UN_CONNECT &&
-        accountChainId &&
-        Number(defaultNetwork) !== Number(accountChainId)
-      ) {
+        accountServices.sendCheckAccount(accAddress, accountChainId as any)
+      }
+      return true
+    } else {
+      store.dispatch(updateAccountStatus({ wrongChain: true }))
+      goErrorNetWork()
+      return false
+    }
+  } else {
+    if (AvaiableNetwork.includes(defaultNetwork.toString())) {
+      if (systemStatus !== SagaStatus.UNSET) {
+        await sdk.sleep(0)
+      }
+      store.dispatch(updateSystem({ chainId: defaultNetwork }))
+      store.dispatch(
+        updateAccountStatus({
+          wrongChain: false,
+        }),
+      )
+      if (defaultNetwork !== accountChainId) {
+        myLog('chainId,defaultNetwork', accountChainId, defaultNetwork)
         cleanLayer2()
       }
       return true
@@ -59,21 +58,5 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
       goErrorNetWork()
       return false
     }
-  } else if (chainId && Number(defaultNetwork) !== Number(chainId)) {
-    store.dispatch(setDefaultNetwork(Number(chainId)))
-    store.dispatch(updateSystem({ chainId }))
-    store.dispatch(
-      updateAccountStatus({
-        wrongChain: false,
-      }),
-    )
-    await sdk.sleep(0)
-    cleanLayer2()
-    return true
-  } else if (readyState !== AccountStatus.UN_CONNECT && userSettingChainId !== accountChainId) {
-    cleanLayer2()
-    return true
-  } else {
-    return true
   }
 }
