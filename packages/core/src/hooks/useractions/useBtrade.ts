@@ -1076,7 +1076,7 @@ export const useBtradeSwap = <
             undefined,
             false,
           ),
-          minimumConverted
+          minimumConverted,
         }
 
         setTradeCalcData((state) => {

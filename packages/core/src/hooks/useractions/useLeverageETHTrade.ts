@@ -40,14 +40,14 @@ import { useTradeLeverageETH } from '../../stores/router/tradeLeverageETH'
 import BigNumber from 'bignumber.js'
 
 export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
-                                                                                           isJoin = true,
-                                                                                           market,
-                                                                                           setToastOpen,
-                                                                                           setServerUpdate,
-                                                                                           setConfirmShowNoBalance,
-                                                                                           confirmShowLimitBalance,
-                                                                                           setConfirmShowLimitBalance,
-                                                                                         }: {
+  isJoin = true,
+  market,
+  setToastOpen,
+  setServerUpdate,
+  setConfirmShowNoBalance,
+  confirmShowLimitBalance,
+  setConfirmShowLimitBalance,
+}: {
   market: string
   isJoin: boolean
   setServerUpdate: (state: any) => void
@@ -95,7 +95,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         account.readyState === AccountStatus.ACTIVATED &&
         tokenMap
       ) {
-        const feeToken: sdk.TokenInfo = tokenMap[ coinBuySymbol ]
+        const feeToken: sdk.TokenInfo = tokenMap[coinBuySymbol]
 
         const request: sdk.GetOffchainFeeAmtRequest = {
           accountId: account.accountId,
@@ -105,7 +105,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
 
         const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
-        const feeRaw = fees[ coinBuySymbol ] ? fees[ coinBuySymbol ].fee : '0'
+        const feeRaw = fees[coinBuySymbol] ? fees[coinBuySymbol].fee : '0'
         const fee = sdk
           .toBig(feeRaw)
           .div('1e' + feeToken.decimals)
@@ -132,15 +132,15 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
 
   const handleOnchange = _.debounce(
     ({
-       tradeData,
-       type,
-       _tradeDefi = {},
-     }: {
+      tradeData,
+      type,
+      _tradeDefi = {},
+    }: {
       type: DeFiChgType
       tradeData: T
       _tradeDefi?: Partial<TradeDefi<T>>
     }) => {
-      const marketInfo = defiMarketMap[ market ]
+      const marketInfo = defiMarketMap[market]
       const tradeLeverageETH = store.getState()._router_tradeLeverageETH.tradeLeverageETH
       let _deFiCalcData: DeFiCalcData<T> =
         tradeLeverageETH.deFiCalcData as unknown as DeFiCalcData<T>
@@ -157,17 +157,17 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         tradeData &&
         _oldTradeDefi.defiBalances &&
         coinBuySymbol &&
-        _oldTradeDefi?.defiBalances[ coinBuySymbol ]
+        _oldTradeDefi?.defiBalances[coinBuySymbol]
       ) {
         const inputValue =
           type === DeFiChgType.coinSell
             ? {
-              sellAmount: tradeData?.tradeValue?.toString() ?? '0',
-            }
+                sellAmount: tradeData?.tradeValue?.toString() ?? '0',
+              }
             : {
-              buyAmount: tradeData?.tradeValue?.toString() ?? '0',
-            }
-        const buyTokenBalanceVol: string = _oldTradeDefi?.defiBalances[ coinBuySymbol ] ?? ''
+                buyAmount: tradeData?.tradeValue?.toString() ?? '0',
+              }
+        const buyTokenBalanceVol: string = _oldTradeDefi?.defiBalances[coinBuySymbol] ?? ''
 
         calcValue = sdk.calcDefi({
           isJoin,
@@ -175,8 +175,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           ...inputValue,
           feeVol: _oldTradeDefi.feeRaw,
           marketInfo,
-          tokenSell: tokenMap[ coinSellSymbol ],
-          tokenBuy: tokenMap[ coinBuySymbol ],
+          tokenSell: tokenMap[coinSellSymbol],
+          tokenBuy: tokenMap[coinBuySymbol],
           buyTokenBalanceVol,
         })
 
@@ -196,24 +196,24 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           tradeData?.tradeValue === undefined
             ? undefined
             : getValuePrecisionThousand(
-              sdk.toBig(calcValue?.sellVol ?? 0).div('1e' + tokenMap[ coinSellSymbol ]?.decimals),
-              tokenMap[ coinSellSymbol ].precision,
-              tokenMap[ coinSellSymbol ].precision,
-              tokenMap[ coinSellSymbol ].precision,
-              false,
-              { floor: false },
-            ).replaceAll(sdk.SEP, '')
+                sdk.toBig(calcValue?.sellVol ?? 0).div('1e' + tokenMap[coinSellSymbol]?.decimals),
+                tokenMap[coinSellSymbol].precision,
+                tokenMap[coinSellSymbol].precision,
+                tokenMap[coinSellSymbol].precision,
+                false,
+                { floor: false },
+              ).replaceAll(sdk.SEP, '')
         const buyAmount =
           tradeData?.tradeValue === undefined
             ? undefined
             : getValuePrecisionThousand(
-              sdk.toBig(calcValue?.buyVol ?? 0).div('1e' + tokenMap[ coinBuySymbol ]?.decimals),
-              tokenMap[ coinBuySymbol ].precision,
-              tokenMap[ coinBuySymbol ].precision,
-              tokenMap[ coinBuySymbol ].precision,
-              true,
-              { floor: true },
-            ).replaceAll(sdk.SEP, '')
+                sdk.toBig(calcValue?.buyVol ?? 0).div('1e' + tokenMap[coinBuySymbol]?.decimals),
+                tokenMap[coinBuySymbol].precision,
+                tokenMap[coinBuySymbol].precision,
+                tokenMap[coinBuySymbol].precision,
+                true,
+                { floor: true },
+              ).replaceAll(sdk.SEP, '')
 
         // @ts-ignore
         _deFiCalcData = {
@@ -265,7 +265,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         tradeLeverageETH.feeRaw,
         'buy market balance',
         //@ts-ignore
-        defiMarketMap && defiMarketMap[ market ]?.baseVolume,
+        defiMarketMap && defiMarketMap[market]?.baseVolume,
       )
       if (
         tradeLeverageETH?.sellVol === undefined ||
@@ -290,10 +290,10 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk
               .toBig(tradeLeverageETH?.miniSellVol ?? 0)
-              .div('1e' + tokenMap[ coinSellSymbol ]?.decimals),
-            tokenMap[ coinSellSymbol ].precision,
-            tokenMap[ coinSellSymbol ].precision,
-            tokenMap[ coinSellSymbol ].precision,
+              .div('1e' + tokenMap[coinSellSymbol]?.decimals),
+            tokenMap[coinSellSymbol].precision,
+            tokenMap[coinSellSymbol].precision,
+            tokenMap[coinSellSymbol].precision,
             false,
             { floor: false, isAbbreviate: true },
           )} ${coinSellSymbol}`,
@@ -315,7 +315,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       let walletMap: any = {}
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i) ?? []
       const defiMarketMap = store.getState().invest.defiMap?.marketLeverageMap
-      const marketInfo = defiMarketMap[ market ]
+      const marketInfo = defiMarketMap[market]
       let deFiCalcDataInit: Partial<DeFiCalcData<any>> = {
         ...tradeLeverageETH.deFiCalcData,
         coinSell: {
@@ -339,9 +339,9 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       let _feeInfo = feeInfo
         ? feeInfo
         : {
-          fee: tradeLeverageETH.fee,
-          feeRaw: tradeLeverageETH.feeRaw,
-        }
+            fee: tradeLeverageETH.fee,
+            feeRaw: tradeLeverageETH.feeRaw,
+          }
 
       if (account.readyState === AccountStatus.ACTIVATED) {
         if (clearTrade) {
@@ -349,8 +349,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         }
         walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
 
-        deFiCalcDataInit.coinSell.balance = walletMap[ coinSellSymbol ]?.count
-        deFiCalcDataInit.coinBuy.balance = walletMap[ coinBuySymbol ]?.count
+        deFiCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count
+        deFiCalcDataInit.coinBuy.balance = walletMap[coinBuySymbol]?.count
       }
 
       myLog(
@@ -379,8 +379,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           isStoB,
           sellVol: '0',
           buyVol: '0',
-          sellToken: tokenMap[ coinSellSymbol ],
-          buyToken: tokenMap[ coinBuySymbol ],
+          sellToken: tokenMap[coinSellSymbol],
+          buyToken: tokenMap[coinBuySymbol],
           deFiCalcData: {
             ...deFiCalcDataInit,
             AtoB,
@@ -388,8 +388,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
             fee: feeInfo?.fee?.toString() ?? '',
           } as DeFiCalcData<T>,
           defiBalances: {
-            [ baseSymbol ]: marketInfo?.baseVolume ?? '',
-            [ quoteSymbol ]: marketInfo?.quoteVolume ?? '',
+            [baseSymbol]: marketInfo?.baseVolume ?? '',
+            [quoteSymbol]: marketInfo?.quoteVolume ?? '',
           } as any,
           fee: _feeInfo?.fee.toString(),
           feeRaw: _feeInfo?.feeRaw.toString(),
@@ -402,8 +402,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         const type = tradeLeverageETH.lastInput ?? DeFiChgType.coinSell
         const _tradeDefi = {
           defiBalances: {
-            [ baseSymbol ]: marketInfo?.baseVolume ?? '',
-            [ quoteSymbol ]: marketInfo?.quoteVolume ?? '',
+            [baseSymbol]: marketInfo?.baseVolume ?? '',
+            [quoteSymbol]: marketInfo?.quoteVolume ?? '',
           } as any,
           fee: _feeInfo?.fee.toString(),
           feeRaw: _feeInfo?.feeRaw.toString(),
@@ -411,8 +411,8 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           withdrawPrice: marketInfo?.withdrawPrice ?? '0',
         }
         const tradeData = {
-          ...deFiCalcDataInit[ type ],
-          tradeValue: tradeLeverageETH.deFiCalcData[ type ]?.tradeValue ?? undefined,
+          ...deFiCalcDataInit[type],
+          tradeValue: tradeLeverageETH.deFiCalcData[type]?.tradeValue ?? undefined,
         }
         handleOnchange({ tradeData, type, _tradeDefi })
       }
@@ -455,10 +455,10 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         if ((defiMapInfo as sdk.RESULT_INFO).code || (defiMapInfo as sdk.RESULT_INFO).message) {
           setServerUpdate(true)
         } else {
-          let status: any = defiMapInfo.markets[ market ]?.status ?? 0
+          let status: any = defiMapInfo.markets[market]?.status ?? 0
           status = ('00000000' + status.toString(2)).split('')
 
-          if (!(isJoin ? status[ status.length - 2 ] === '1' : status[ status.length - 4 ] === '1')) {
+          if (!(isJoin ? status[status.length - 2] === '1' : status[status.length - 4] === '1')) {
             setServerUpdate(true)
           }
         }
@@ -490,19 +490,19 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       ...(tradeLeverageETH?.deFiCalcData ?? {}),
     }
     if (tradeLeverageETH.deFiCalcData) {
-      tradeValue = tradeLeverageETH?.deFiCalcData[ type ]?.tradeValue ?? undefined
+      tradeValue = tradeLeverageETH?.deFiCalcData[type]?.tradeValue ?? undefined
     }
-    if (deFiCalcDataInit[ type ]?.belong) {
+    if (deFiCalcDataInit[type]?.belong) {
       let walletMap: any
       if (account.readyState === AccountStatus.ACTIVATED) {
         walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
         deFiCalcDataInit.coinSell = {
           belong: coinSellSymbol,
-          balance: walletMap[ coinSellSymbol ]?.count,
+          balance: walletMap[coinSellSymbol]?.count,
         }
         deFiCalcDataInit.coinBuy = {
           belong: coinBuySymbol,
-          balance: walletMap[ coinBuySymbol ]?.count,
+          balance: walletMap[coinBuySymbol]?.count,
         }
       } else {
         deFiCalcDataInit.coinSell = {
@@ -515,7 +515,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         }
       }
       const tradeData = {
-        ...deFiCalcDataInit[ type ],
+        ...deFiCalcDataInit[type],
         tradeValue,
       }
       myLog('resetDefault Defi walletLayer2Callback', tradeData)
@@ -600,7 +600,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           account.apiKey,
         )
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-          const errorItem = SDK_ERROR_MAP_TO_UI[ (response as sdk.RESULT_INFO)?.code ?? 700001 ]
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
           throw new CustomErrorWithCode(errorItem)
         } else {
           setToastOpen({
@@ -653,10 +653,10 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
 
     if (
       (account.readyState === AccountStatus.ACTIVATED &&
-      tokenMap &&
-      exchangeInfo &&
-      account.eddsaKey?.sk,
-        tradeLeverageETH.buyVol)
+        tokenMap &&
+        exchangeInfo &&
+        account.eddsaKey?.sk,
+      tradeLeverageETH.buyVol)
     ) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true })
@@ -698,15 +698,15 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         setConfirmShowLimitBalance(true)
         const type = DeFiChgType.coinSell
         const tradeValue = getValuePrecisionThousand(
-          sdk.toBig(tradeLeverageETH?.maxSellVol).div('1e' + tokenMap[ coinSellSymbol ]?.decimals),
-          tokenMap[ coinSellSymbol ].precision,
-          tokenMap[ coinSellSymbol ].precision,
-          tokenMap[ coinSellSymbol ].precision,
+          sdk.toBig(tradeLeverageETH?.maxSellVol).div('1e' + tokenMap[coinSellSymbol]?.decimals),
+          tokenMap[coinSellSymbol].precision,
+          tokenMap[coinSellSymbol].precision,
+          tokenMap[coinSellSymbol].precision,
           false,
           { floor: true },
         ).replaceAll(sdk.SEP, '')
         // @ts-ignore
-        const oldTrade = (tradeLeverageETH?.deFiCalcData[ type ] ?? {}) as unknown as T
+        const oldTrade = (tradeLeverageETH?.deFiCalcData[type] ?? {}) as unknown as T
         handleOnchange({
           tradeData: {
             ...oldTrade,
@@ -768,7 +768,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     .div('10000')
     .div('1e' + tradeLeverageETH.sellToken.decimals)
     .toString()
-  const apr = defiMarketMap && defiMarketMap[ market ]?.apy
+  const apr = defiMarketMap && defiMarketMap[market]?.apy
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,
@@ -794,12 +794,12 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
         ...tradeLeverageETH.deFiCalcData,
       },
       maxBuyVol: tradeLeverageETH.defiBalances
-        ? tradeLeverageETH.defiBalances[ coinBuySymbol ]
+        ? tradeLeverageETH.defiBalances[coinBuySymbol]
         : undefined,
       maxSellVol: tradeLeverageETH.maxSellVol,
       confirmShowLimitBalance,
-      tokenSell: tokenMap[ coinSellSymbol ],
-      tokenBuy: tokenMap[ coinBuySymbol ],
+      tokenSell: tokenMap[coinSellSymbol],
+      tokenBuy: tokenMap[coinBuySymbol],
       btnStatus,
       accStatus: account.readyState,
       extraWithdrawFee: extraWithdrawFee,
@@ -826,8 +826,12 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     btnStatus,
     extraWithdrawFee,
     apr,
-  ])
+  ]) // as ForceWithdrawProps<any, any>;
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,
+    // confirmShowNoBalance,
+    // setConfirmShowNoBalance,
+    // serverUpdate,
+    // setServerUpdate,
   }
 }
