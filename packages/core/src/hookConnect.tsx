@@ -51,11 +51,13 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     margin-right: ${({ theme }) => theme.unit}px;
     width: 20px;
     height: 20px;
+    position: relative;
 
     svg {
-      width: 20px;
-      height: 20px;
-      right: -50%;
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
     }
@@ -280,14 +282,14 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
         account: { readyState, accAddress: _accAddress },
       } = store.getState()
       if (
-        (_accAddress?.toLowerCase() === accAddress?.toUpperCase() &&
-          defaultNetwork.toString() == chainId.toString(),
+        _accAddress?.toLowerCase() === accAddress?.toUpperCase() &&
+        defaultNetwork.toString() == chainId.toString() &&
         [
           AccountStatus.NO_ACCOUNT,
           AccountStatus.DEPOSITING,
           AccountStatus.NOT_ACTIVE,
           AccountStatus.LOCKED,
-        ].includes(readyState as AccountStatus))
+        ].includes(readyState as AccountStatus)
       ) {
         myLog('After connect >>,onChinId change')
       } else {
