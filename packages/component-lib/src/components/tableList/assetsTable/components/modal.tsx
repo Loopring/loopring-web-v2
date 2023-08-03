@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { Box, Typography } from '@mui/material'
+import { Box, Link, Typography } from '@mui/material'
 import { useSettings } from '../../../../stores'
 import { LoadingBlock } from '../../../block'
+import { CoinIcons } from './CoinIcons'
 
 const ContentWrapperStyled = styled(Box)`
   position: absolute;
@@ -38,7 +39,24 @@ export const LockDetailPanel = ({
       }
 }) => {
   const { t } = useTranslation()
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
+
+  const token = tokenLockDetail?.row?.token
+
+  let tokenIcon: [any, any] = [undefined, undefined]
+  if (token) {
+    const [head, middle, tail] = token?.value?.split('-')
+    if (token.type === 'lp' && middle && tail) {
+      tokenIcon =
+        coinJson[middle] && coinJson[tail]
+          ? [coinJson[middle], coinJson[tail]]
+          : [undefined, undefined]
+    }
+    if (token.type !== 'lp' && head && head !== 'lp') {
+      tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
+    }
+  }
+
   return (
     <ContentWrapperStyled width={'var(--mobile-full-panel-width)'}>
       <HeaderStyled
@@ -47,7 +65,20 @@ export const LockDetailPanel = ({
         justifyContent={'center'}
       >
         <Typography variant={'h4'} display={'flex'} justifyContent={'center'}>
-          {t('labelLocketInfo', { symbol: tokenLockDetail?.row?.token?.value })}
+          {token && <CoinIcons type={token.type} tokenIcon={tokenIcon} size={28} />}
+          <Typography
+            variant={'inherit'}
+            color={'textPrimary'}
+            display={'flex'}
+            flexDirection={'column'}
+            marginLeft={2}
+            component={'span'}
+            paddingRight={1}
+          >
+            <Typography variant={'inherit'} component={'span'} className={'next-coin'}>
+              {t('labelLocketInfo', { symbol: token?.value })}
+            </Typography>
+          </Typography>
         </Typography>
       </HeaderStyled>
       <Box borderRadius={'inherit'} minWidth={110} paddingBottom={2}>
@@ -69,14 +100,20 @@ export const LockDetailPanel = ({
                 >
                   {t(item.key)}
                 </Typography>
-                <Typography
+
+                <Link
                   display={'inline-flex'}
                   alignItems={'center'}
-                  component={'span'}
-                  color={'textPrimary'}
+                  color={'inherit'}
+                  variant={'body1'}
+                  style={{
+                    textDecoration: 'underline dotted',
+                    // color: 'var(--color-text-secondary)',
+                  }}
+                  href={item.link}
                 >
                   {item.value}
-                </Typography>
+                </Link>
               </Box>
             )
           })
