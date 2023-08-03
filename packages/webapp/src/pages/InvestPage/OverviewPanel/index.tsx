@@ -136,7 +136,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             className={'scroll-view'}
           >
             <Box sx={{ display: 'flex', width: 'fit-content' }}>
-              {[...investAdviceList, ...investAdviceList].map((item, index) => {
+              {investAdviceList.map((item, index) => {
                 return (
                   <Card onClick={() => history.push(item.router)} sx={{ marginRight: 2.5 }}>
                     <CardContent>
