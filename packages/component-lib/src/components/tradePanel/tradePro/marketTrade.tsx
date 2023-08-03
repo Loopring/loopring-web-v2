@@ -134,10 +134,9 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
       tradeCalcProData && tradeCalcProData.tradeCost
         ? `${tradeCalcProData.tradeCost} ${tradeData.quote?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
         : EmptyValueTag
-    // const minimumReceived = tradeCalcProData && tradeCalcProData.minimumReceived ? tradeCalcProData.minimumReceived : EmptyValueTag
-    const minimumReceived =
-      tradeCalcProData && tradeCalcProData.minimumReceived
-        ? `${tradeCalcProData.minimumReceived}  ${
+    const minimumConverted =
+      tradeCalcProData && tradeCalcProData.minimumConverted
+        ? `${tradeCalcProData.minimumConverted}  ${
             tradeType === TradeProType.buy ? tradeData.base.belong : tradeData.quote.belong
           }`
         : EmptyValueTag
@@ -272,7 +271,7 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
                     alignItems={'center'}
                   >
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {' ' + t('swapFeeS')}
+                    {' ' + t('labelTradingFeeEst')}
                   </Typography>
                 </Tooltip>
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -387,11 +386,11 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
                     alignItems={'center'}
                   >
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {' ' + t('swapMinReceiveS')}
+                    {' ' + t('labelSwapMinConverted')}
                   </Typography>
                 </Tooltip>
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                  {minimumReceived !== EmptyValueTag ? minimumReceived : EmptyValueTag}
+                  {minimumConverted !== EmptyValueTag ? minimumConverted : EmptyValueTag}
                 </Typography>
               </Grid>
             </Grid>

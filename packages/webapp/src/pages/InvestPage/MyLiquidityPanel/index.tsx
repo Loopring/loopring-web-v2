@@ -15,7 +15,6 @@ import {
   AmmPanelType,
   AssetsTable,
   DefiStakingTable,
-  DetailRewardPanel,
   DualAssetTable,
   DualDetail,
   EarningsDetail,
@@ -30,6 +29,7 @@ import {
   AssetTabIndex,
   CheckBoxIcon,
   CheckedIcon,
+  CLAIM_TYPE,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
@@ -51,11 +51,12 @@ import {
   useAccount,
   useAmmActivityMap,
   useDualMap,
+  useDefiMap,
+  useUserRewards,
   useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
-  useUserRewards,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
@@ -85,10 +86,11 @@ const MyLiquidity: any = withTranslation('common')(
     let match: any = useRouteMatch('/invest/balance/:type')
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
-    const { totalClaims } = useUserRewards()
+    const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
 
     const ammPoolRef = React.useRef(null)
     const stakingRef = React.useRef(null)
+    const leverageETHRef = React.useRef(null)
     const dualRef = React.useRef(null)
     const sideStakeRef = React.useRef(null)
 
@@ -132,7 +134,6 @@ const MyLiquidity: any = withTranslation('common')(
       stakeShowLoading,
       stakingTotal,
       totalStakedRewards,
-      totalClaimableRewards,
       stakedSymbol,
     } = useOverview({
       ammActivityMap,
@@ -140,6 +141,8 @@ const MyLiquidity: any = withTranslation('common')(
       hideSmallBalances,
       // dualList,
     })
+    const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
+
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
@@ -191,37 +194,50 @@ const MyLiquidity: any = withTranslation('common')(
         }
     const lidoAssets = assetsRawData.filter((o) => {
       return (
-        o.token.type !== TokenType.single &&
+        ethStakingCoins?.includes(o.name) &&
         o.token.type !== TokenType.lp &&
         (hideSmallBalances ? !o.smallBalance : true)
       )
     })
+    const leverageETHAssets = assetsRawData.filter((o) => {
+      return (
+        marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
+      )
+    })
+
     const totalClaimableRewardsAmount =
-      totalClaimableRewards && totalClaimableRewards !== '0'
-        ? getValuePrecisionThousand(
-            sdk.toBig(totalClaimableRewards ?? 0).div('1e' + tokenMap[stakedSymbol].decimals),
+      rewardsAPIError || !totalClaims
+        ? '0'
+        : getValuePrecisionThousand(
+            sdk
+              .toBig(
+                totalClaims['LRC']?.detail?.find(
+                  (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.LRC_STAKING,
+                )?.amount ?? 0,
+              )
+              .div('1e' + tokenMap[stakedSymbol].decimals),
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             false,
             { floor: true, isAbbreviate: true },
           )
-        : '0'
-    const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = Reflect.ownKeys(
-      totalClaims ?? {},
-    ).reduce(
-      (prev, key) => {
-        const item = totalClaims[key]?.detail?.find(
-          (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.PROTOCOL_FEE,
+
+    const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = rewardsAPIError
+      ? { totalDollar: '0', detail: [] }
+      : Reflect.ownKeys(totalClaims ?? {}).reduce(
+          (prev, key) => {
+            const item = totalClaims[key]?.detail?.find(
+              (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.PROTOCOL_FEE,
+            )
+            if (item && item.amount !== '0') {
+              prev.detail.push({ ...item })
+              prev.totalDollar = sdk.toBig(item.tokenValueDollar).plus(prev.totalDollar).toString()
+            }
+            return prev
+          },
+          { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
         )
-        if (item && item.amount !== '0') {
-          prev.detail.push({ ...item })
-          prev.totalDollar = sdk.toBig(item.tokenValueDollar).plus(prev.totalDollar).toString()
-        }
-        return prev
-      },
-      { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
-    )
     const dualStakeDollar = dualOnInvestAsset
       ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
           const price = tokenPrices[idIndex[cur.tokenId]]
@@ -286,9 +302,7 @@ const MyLiquidity: any = withTranslation('common')(
             variant={'body1'}
             target='_self'
             rel='noopener noreferrer'
-            //?tokenSymbol=${market}
             onClick={() => history.push(`/l2assets/history/${RecordTabIndex.AmmRecords}`)}
-            // href={"./#/layer2/history/ammRecords"}
           >
             {t('labelTransactionsLink')}
           </Link>
@@ -359,6 +373,7 @@ const MyLiquidity: any = withTranslation('common')(
         <Box marginBottom={3} flex={1}>
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
+          !(leverageETHAssets?.length > 0) &&
           !(stakingList?.length > 0) &&
           !(dualList?.length > 0) ? (
             <TableWrapStyled
@@ -382,7 +397,7 @@ const MyLiquidity: any = withTranslation('common')(
             </TableWrapStyled>
           ) : (
             <>
-              {myPoolRow?.length > 0 && (
+              {(myPoolRow?.length > 0 || filter?.searchValue !== '') && (
                 <TableWrapStyled
                   ref={ammPoolRef}
                   className={`table-divide-short MuiPaper-elevation2`}
@@ -394,6 +409,8 @@ const MyLiquidity: any = withTranslation('common')(
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                     <MyPoolTable
                       totalAMMClaims={totalAMMClaims}
+                      rewardsAPIError={rewardsAPIError}
+                      getUserRewards={getUserRewards}
                       forexMap={forexMap as any}
                       title={
                         <Typography
@@ -527,7 +544,17 @@ const MyLiquidity: any = withTranslation('common')(
                         flexDirection={'row'}
                         alignItems={'center'}
                       >
-                        {totalClaimableRewardsAmount && totalClaimableRewardsAmount !== '0' ? (
+                        {rewardsAPIError ? (
+                          <Button
+                            onClick={() => {
+                              getUserRewards && getUserRewards()
+                            }}
+                            size={'small'}
+                            variant={'outlined'}
+                          >
+                            {t('labelRewardRefresh', { ns: 'common' })}
+                          </Button>
+                        ) : totalClaimableRewardsAmount !== '0' ? (
                           <>
                             <Typography component={'span'} display={'inline-flex'} paddingRight={2}>
                               {hideAssets
@@ -622,6 +649,64 @@ const MyLiquidity: any = withTranslation('common')(
                         forexMap: forexMap as any,
                         isInvest: true,
                         hideAssets,
+                        ...rest,
+                      }}
+                    />
+                  </Grid>
+                </TableWrapStyled>
+              )}
+              {!!(leverageETHAssets?.length > 0) && (
+                <TableWrapStyled
+                  ref={leverageETHRef}
+                  className={`table-divide-short MuiPaper-elevation2 ${
+                    leverageETHAssets?.length > 0 ? 'min-height' : ''
+                  }`}
+                  marginTop={2}
+                  paddingY={2}
+                  paddingX={0}
+                  flex={1}
+                >
+                  <Grid item xs={12}>
+                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
+                      {t('labelLeverageETHTitle')}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
+                    {summaryMyInvest?.leverageETHDollar !== undefined ? (
+                      <Typography component={'h4'} variant={'h3'} marginX={3}>
+                        {summaryMyInvest?.leverageETHDollar
+                          ? hideAssets
+                            ? HiddenTag
+                            : PriceTag[CurrencyToTag[currency]] +
+                              getValuePrecisionThousand(
+                                sdk
+                                  .toBig(summaryMyInvest?.leverageETHDollar)
+                                  .times(forexMap[currency] ?? 0),
+                                undefined,
+                                undefined,
+                                2,
+                                true,
+                                { isFait: true, floor: true },
+                              )
+                          : EmptyValueTag}
+                      </Typography>
+                    ) : (
+                      ''
+                    )}
+                    <AssetsTable
+                      {...{
+                        disableWithdrawList,
+                        rawData: leverageETHAssets,
+                        showFilter: false,
+                        allowTrade,
+                        onSend,
+                        onReceive,
+                        getMarketArrayListCallback: getTokenRelatedMarketArray, // todo change logic
+                        rowConfig: RowInvestConfig,
+                        forexMap: forexMap as any,
+                        isInvest: true,
+                        hideAssets,
+                        isLeverageETH: true,
                         ...rest,
                       }}
                     />

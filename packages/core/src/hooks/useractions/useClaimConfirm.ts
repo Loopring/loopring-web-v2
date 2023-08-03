@@ -15,7 +15,12 @@ import { AccountStep, ClaimProps, useOpenModals } from '@loopring-web/component-
 import { useBtnStatus } from '../common'
 import React from 'react'
 import { volumeToCount } from '../help'
-import { useChargeFees, useWalletLayer2Socket, walletLayer2Service } from '../../services'
+import {
+  useChargeFees,
+  useWalletLayer2Socket,
+  walletLayer2Service,
+  claimServices,
+} from '../../services'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
 import { LoopringAPI } from '../../api_wrapper'
@@ -38,7 +43,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
     setShowAccount,
     setShowClaimWithdraw,
     modals: {
-      isShowClaimWithdraw: { claimToken, isShow, claimType, successCallback },
+      isShowClaimWithdraw: { claimToken, isShow, claimType },
       isShowAccount: { info },
     },
   } = useOpenModals()
@@ -75,7 +80,8 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
       const claimValue = store.getState()._router_modalData.claimValue
       if (
         (claimValue.tradeType === TRADE_TYPE.TOKEN &&
-          claimValue.claimType === CLAIM_TYPE.lrcStaking &&
+          (claimValue.claimType === CLAIM_TYPE.lrcStaking ||
+            claimValue.claimType === CLAIM_TYPE.allToken) &&
           feeProps.extraType === 3) ||
         (claimValue.tradeType === TRADE_TYPE.TOKEN &&
           claimType === CLAIM_TYPE.redPacket &&
@@ -112,8 +118,8 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           volume: claimToken.total,
           balance: Number(claimToken.total),
           claimType,
+          fee: feeInfo,
           luckyTokenHash: claimToken.luckyTokenHash,
-          successCallback,
         } as any)
       } else {
         const token = tokenMap[idIndex[claimToken.tokenId]]
@@ -124,7 +130,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           volume: claimToken.total,
           balance: volumeToCount(token.symbol, claimToken.total),
           claimType,
-          successCallback,
+          fee: feeInfo,
         })
       }
     } else {
@@ -224,8 +230,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
             throw response
           }
-          claimValue.successCallback && claimValue.successCallback()
-
           setShowAccount({
             isShow: true,
             step: AccountStep.ClaimWithdraw_In_Progress,
@@ -237,6 +241,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               symbol: claimValue.belong,
             },
           })
+          claimServices.claimSuccess({ type: claimValue.claimType })
           if (isHWAddr) {
             myLog('......try to set isHWAddr', isHWAddr)
             updateHW({ wallet: account.accAddress, isHWAddr })
@@ -253,6 +258,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isHardwareWallet)
+        claimServices.claimFailed({ type: claimValue.claimType, error: { ...e, code } })
         switch (code) {
           case sdk.ConnectorError.NOT_SUPPORT_ERROR:
             setShowAccount({
@@ -521,7 +527,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
     },
     [setShowAccount],
   )
-  claimToken?.luckyTokenHash
   return {
     retryBtn,
     claimProps: {
@@ -549,12 +554,6 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
       claimType,
       isNFT: claimToken?.isNft ? true : false,
       nftIMGURL: claimToken?.nftTokenInfo?.metadata?.imageSize.original,
-      // luckyTokenHash: claimToken?.luckyTokenHash
-
-      // nftIMGURL: claimValue.tradeType === TRADE_TYPE.NFT
-      //   ? claimValue
-      //   : undefined
-      // true,
     } as any as ClaimProps<any, any>,
   }
 }

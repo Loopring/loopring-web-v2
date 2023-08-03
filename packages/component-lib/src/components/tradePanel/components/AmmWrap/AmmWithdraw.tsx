@@ -475,7 +475,7 @@ export const AmmWithdrawWrap = <
               marginTop={1 / 2}
             >
               <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                {t('swapFee')}
+                {t('labelNetworkFee')}
               </Typography>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
                 {ammCalcData?.fee && ammCalcData?.fee != '0'

@@ -17,7 +17,6 @@ import {
 } from '@loopring-web/component-lib'
 import { createImageFromInitials } from './genAvatar'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { AddressType, RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
 import { SDK_ERROR_MAP_TO_UI } from '@loopring-web/common-resources'
 import { connectProvides } from '@loopring-web/web3-provider'
@@ -29,7 +28,7 @@ import { useLocation } from 'react-router-dom'
 export type Contact = {
   name: string
   address: string
-  addressType?: AddressType
+  addressType?: sdk.AddressType
   // id: string
 }
 type Network = 'L1' | 'L2'
@@ -47,7 +46,7 @@ type DisplayContact = {
   address: string
   avatarURL: string
   editing: boolean
-  addressType: AddressType
+  addressType: sdk.AddressType
 }
 const getAllContacts = async (
   offset: number,
@@ -69,7 +68,7 @@ const getAllContacts = async (
       apiKey,
     )
     const displayContacts = response.contacts
-      .filter((contact) => contact.addressType !== AddressType.OFFICIAL)
+      .filter((contact) => contact.addressType !== sdk.AddressType.OFFICIAL)
       .map((contact) => {
         return {
           name: contact.contactName,
@@ -180,7 +179,7 @@ export const useContact = () => {
   }, [])
 
   const onClickSend = React.useCallback(
-    (address: string, name: string, addressType: AddressType) => {
+    (address: string, name: string, addressType: sdk.AddressType) => {
       setSendInfo({
         open: true,
         selected: {
@@ -239,7 +238,7 @@ export const useContact = () => {
               type: 'Edit',
             })
           } else {
-            throw (response.resultInfo as RESULT_INFO).message
+            throw (response.resultInfo as sdk.RESULT_INFO).message
           }
         })
         .catch((e) => {
@@ -299,7 +298,7 @@ export const useContact = () => {
               selected: undefined,
             })
           } else {
-            throw (response.resultInfo as RESULT_INFO).message
+            throw (response.resultInfo as sdk.RESULT_INFO).message
           }
         })
         .catch((e) => {
@@ -335,21 +334,21 @@ export const useContact = () => {
               wallet: address,
             })
             .then((response2) => {
-              let addressType: AddressType | undefined = undefined
+              let addressType: sdk.AddressType | undefined = undefined
               if (response2.walletType?.loopringWalletContractVersion) {
-                const map: [string, AddressType][] = [
-                  ['V2_1_0', AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
-                  ['V2_0_0', AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
-                  ['V1_2_0', AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
-                  ['V1_1_6', AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+                const map: [string, sdk.AddressType][] = [
+                  ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+                  ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+                  ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+                  ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
                 ]
                 addressType = map.find(
                   (x) => x[0] === response2.walletType?.loopringWalletContractVersion,
                 )![1]
               } else if (response2.walletType?.isInCounterFactualStatus) {
-                addressType = AddressType.LOOPRING_HEBAO_CF
+                addressType = sdk.AddressType.LOOPRING_HEBAO_CF
               } else if (response2.walletType?.isContract) {
-                addressType = AddressType.CONTRACT
+                addressType = sdk.AddressType.CONTRACT
               }
               if (addressType) {
                 return LoopringAPI.contactAPI
@@ -398,7 +397,7 @@ export const useContact = () => {
             setAddOpen(false)
             callBack(true)
           } else {
-            throw (response.resultInfo as RESULT_INFO).message
+            throw (response.resultInfo as sdk.RESULT_INFO).message
           }
         })
         .catch((e) => {

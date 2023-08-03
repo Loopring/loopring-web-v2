@@ -52,7 +52,7 @@ export const AssetPanel = withTranslation('common')(
     const { forexMap } = useSystem()
     const { isMobile, defaultNetwork } = useSettings()
     const match: any = useRouteMatch('/l2assets/:assets?/:item?')
-    const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>()
+    const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
     const handleTabChange = (value: AssetTabIndex) => {
       if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
@@ -81,8 +81,8 @@ export const AssetPanel = withTranslation('common')(
       }
     }
     React.useEffect(() => {
-      handleTabChange(match?.params.item ?? AssetTabIndex.Tokens)
-    }, [match?.params.item, defaultNetwork])
+      handleTabChange(match?.params?.item)
+    }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
 
     return (

@@ -242,9 +242,9 @@ export const SwapTradeWrap = <
       ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
 
-  const minimumReceived =
-    tradeCalcData && tradeCalcData.minimumReceived
-      ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
+  const minimumConverted =
+    tradeCalcData && tradeCalcData.minimumConverted
+      ? `${tradeCalcData.minimumConverted}  ${tradeData.buy?.belong}`
       : EmptyValueTag
   const { isMobile } = useSettings()
 
@@ -446,7 +446,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapFee')}
+                  {' ' + t('labelTradingFeeEst')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -486,7 +486,7 @@ export const SwapTradeWrap = <
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('labelSwapMinReceiveTooltips').toString()} placement={'top'}>
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
                 <Typography
                   component={'p'}
                   variant='body2'
@@ -495,11 +495,11 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapMinReceive')}
+                  {' ' + t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumReceived}
+                {minimumConverted}
               </Typography>
             </Grid>
             <Grid
@@ -606,7 +606,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapFee')}
+                  {' ' + t('labelTradingFeeEst')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -623,7 +623,7 @@ export const SwapTradeWrap = <
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('labelBtradeMinReceiveTooltips').toString()} placement={'top'}>
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
                 <Typography
                   component={'p'}
                   variant='body2'
@@ -632,11 +632,11 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {t('swapMinReceive')}
+                  {t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumReceived}
+                {minimumConverted}
               </Typography>
             </Grid>
 

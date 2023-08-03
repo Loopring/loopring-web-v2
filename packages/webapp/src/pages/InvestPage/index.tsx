@@ -4,9 +4,11 @@ import { Box, Tab, Tabs, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
 import {
+  ComingSoonPanel,
   ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
   useSettings,
+  useToggle,
 } from '@loopring-web/component-lib'
 import React from 'react'
 import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
@@ -16,6 +18,7 @@ import { DeFiPanel } from './DeFiPanel'
 import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
+import LeverageETHPanel from './LeverageETHPanel'
 
 export enum InvestType {
   MyBalance = 0,
@@ -24,9 +27,18 @@ export enum InvestType {
   Overview = 3,
   Dual = 4,
   Stack = 5,
+  LeverageETH = 6,
 }
 
-export const InvestRouter = ['balance', 'ammpool', 'defi', 'overview', 'dual', 'stakelrc']
+export const InvestRouter = [
+  'balance',
+  'ammpool',
+  'defi',
+  'overview',
+  'dual',
+  'stakelrc',
+  'leverageETH',
+]
 export const BalanceTitle = () => {
   const { t } = useTranslation()
   return (
@@ -101,6 +113,9 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
     confirmDualInvest: confirmDualInvestFun,
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
   } = confirmation.useConfirmation()
+  const {
+    toggle: { CIETHInvest },
+  } = useToggle()
   const [confirmDualInvest, setConfirmDualInvest] = React.useState(
     'hidden' as 'hidden' | 'all' | 'USDCOnly',
   )
@@ -144,8 +159,11 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         setTabIndex(InvestType.Stack)
         setIsShowTab(false)
         return
+      case InvestRouter[InvestType.LeverageETH]:
+        setTabIndex(InvestType.LeverageETH)
+        setIsShowTab(false)
+        return
       case InvestRouter[InvestType.Overview]:
-      case '':
       default:
         setTabIndex(InvestType.Overview)
         setIsShowTab(true)
@@ -177,6 +195,11 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
               value={InvestType.DeFi}
               label={<DefiTitle />}
             />
+            <Tab
+              sx={{ visibility: 'hidden', width: 0 }}
+              value={InvestType.LeverageETH}
+              label={<>todo</>}
+            />
           </Tabs>
         </Box>
       )}
@@ -199,6 +222,12 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Stack && (
           <StackTradePanel setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest} />
         )}
+        {tabIndex === InvestType.LeverageETH &&
+          (!CIETHInvest.enable && CIETHInvest.reason === 'no view' ? (
+            <ComingSoonPanel />
+          ) : (
+            <LeverageETHPanel />
+          ))}
       </Box>
 
       <ConfirmInvestDualRisk

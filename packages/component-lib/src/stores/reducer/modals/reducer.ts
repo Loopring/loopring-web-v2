@@ -299,10 +299,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
       }
     },
-    setShowAnotherNetworkNotice(state, action: PayloadAction<{ isShow: boolean }>) {
-      const { isShow } = action.payload
+    setShowAnotherNetworkNotice(state, action: PayloadAction<{ isShow: boolean; info: any }>) {
+      const { isShow, info } = action.payload
       state.isShowAnotherNetwork = {
         isShow,
+        info,
       }
     },
     setShowTradeIsFrozen(
@@ -326,16 +327,14 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         ModalStatePlayLoad & {
           claimToken: ClaimToken
           claimType: CLAIM_TYPE
-          successCallback?: () => void
         }
       >,
     ) {
-      const { isShow, claimToken, claimType, successCallback } = action.payload
+      const { isShow, claimToken, claimType } = action.payload
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
         claimType,
-        successCallback,
       }
     },
     setShowSideStakingRedeem(

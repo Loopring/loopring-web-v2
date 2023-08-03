@@ -205,7 +205,7 @@ const getColumnModeAssets = (
       },
       {
         key: 'fee',
-        name: t('labelTradeFee'),
+        name: t('labelTxTradingFee'),
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           const { key, value } = row['fee']
@@ -267,7 +267,7 @@ const getColumnModeAssets = (
       },
       {
         key: 'fee',
-        name: t('labelTradeFee'),
+        name: t('labelTxTradingFee'),
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           const { key, value } = row['fee']
@@ -332,7 +332,7 @@ const getColumnModeMobileAssets = (
       : []),
     {
       key: 'side',
-      name: t('labelTradeSide') + '/' + t('labelTradeFee'),
+      name: t('labelTradeSide') + '/' + t('labelTxTradingFee'),
       headerCellClass: 'textAlignRight',
       formatter: ({ row }) => {
         // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')

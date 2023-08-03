@@ -32,7 +32,6 @@ export const useAddressCheck = () => {
   } = useAccount()
 
   const check = React.useCallback(async (address: any, web3: any) => {
-    // if( address.math)
     try {
       if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
         if (
@@ -43,6 +42,7 @@ export const useAddressCheck = () => {
           if (nodeTimer.current !== -1) {
             clearTimeout(nodeTimer.current as any)
           }
+          myLog('address update ', address)
           setIsAddressCheckLoading(true)
           const { realAddr, addressErr, isContract } = await checkAddr(address, web3)
           nodeTimer.current = setTimeout(() => {
@@ -118,7 +118,7 @@ export const useAddressCheck = () => {
           }
           clearTimeout(nodeTimer.current)
           nodeTimer.current = -1
-          myLog('address async', address)
+          myLog('address update async', address, realAddr)
           setIsAddressCheckLoading(false)
         } else {
           throw Error('wrong address format')
@@ -131,8 +131,9 @@ export const useAddressCheck = () => {
         clearTimeout(nodeTimer.current)
         nodeTimer.current = -1
       }
+      _address.current = ''
       setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
-      myLog('address async', address, error)
+      myLog('address update address async', address, error)
       setRealAddr('')
       setIsLoopringAddress(false)
     }
@@ -140,7 +141,7 @@ export const useAddressCheck = () => {
 
   const debounceCheck = _.debounce(
     (address) => {
-      myLog('address sync', address)
+      myLog('address update ', address)
       check(address, connectProvides.usedWeb3)
     },
     globalSetup.wait,
@@ -162,7 +163,7 @@ export const useAddressCheck = () => {
 
   React.useEffect(() => {
     // myLog("checkAddress", address, _address.current, isAddressCheckLoading);
-    myLog('current address', _address.current, address)
+    myLog('address update', _address.current, address)
     if (_address.current !== address) {
       if (isAddressCheckLoading == true) {
         initAddresss()

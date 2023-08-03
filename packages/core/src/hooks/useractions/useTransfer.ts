@@ -129,7 +129,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       },
     },
   } = useOpenModals()
-  const [memo, setMemo] = React.useState('')
   const { tokenMap, totalCoinMap } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId, forexMap } = useSystem()
@@ -181,7 +180,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     requestType: undefined as any,
   })
   const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemo(e.target.value)
+    const transferValue = store.getState()._router_modalData.transferValue
+    updateTransferData({
+      ...transferValue,
+      memo: e.target.value,
+    })
   }, [])
 
   const {
@@ -273,6 +276,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         balance: walletMap[symbol]?.count,
         tradeValue: undefined,
         address: '*',
+        memo: '',
       })
     } else {
       if (!transferValue.belong && walletMap) {
@@ -287,6 +291,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               fee: feeInfo,
               balance: walletInfo?.count,
               address: '*',
+              memo: '',
             })
             break
           }
@@ -299,6 +304,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           tradeValue: undefined,
           balance: walletInfo?.count,
           address: info?.isToMyself ? account.accAddress : '*',
+          memo: '',
         })
       } else {
         updateTransferData({
@@ -307,10 +313,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           tradeValue: undefined,
           balance: undefined,
           address: info?.isToMyself ? account.accAddress : '*',
+          memo: '',
         })
       }
     }
-    setMemo('')
+
     if (contactAddress) {
       setAddress(contactAddress)
     } else {
@@ -741,7 +748,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
     isAddressCheckLoading,
     addrStatus,
-    memo,
+    memo: transferValue.memo ?? '',
     handleOnMemoChange,
     handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
       checkActiveFeeIsEnough({

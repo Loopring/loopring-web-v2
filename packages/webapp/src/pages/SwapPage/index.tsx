@@ -9,7 +9,6 @@ import {
   Toast,
   ToastType,
 } from '@loopring-web/component-lib'
-import { useSwap } from './hookSwap'
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -17,7 +16,7 @@ import {
   SoursURL,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
-import { useNotify } from '@loopring-web/core'
+import { useNotify, useSwap } from '@loopring-web/core'
 import React from 'react'
 
 export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation) => {

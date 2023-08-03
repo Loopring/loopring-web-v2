@@ -11,9 +11,9 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.5.14",
+    "@loopring-web/loopring-sdk": "3.5.18",
     "@loopring-web/recharts": "^2.0.10",
-    "@loopring-web/web3-provider": "^1.4.10",
+    "@loopring-web/web3-provider": "^1.4.7",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.6.2",
     "@ramp-network/ramp-instant-sdk": "^4.0.4",
@@ -99,7 +99,8 @@
     "build-guardian": "cd packages/web-guardian; yarn build",
     "build_dev": "cd ./packages/webapp; yarn build_dev",
     "deploy": "cd ./packages/webapp; yarn deploy",
-    "deploy:ipfs": "cd ./packages/webapp; yarn deploy:ipfs"
+    "deploy:ipfs": "cd ./packages/webapp; yarn deploy:ipfs",
+    "sass": "node-sass packages/web-wallet/public/*.scss packages/web-wallet/public/*.css"
   },
   "browserslist": {
     "production": [

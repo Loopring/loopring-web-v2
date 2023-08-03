@@ -66,4 +66,7 @@ export default {
   errorSwitchEthereum: 'wallet switch Ethereum Chain is not allowed',
   errorEthereumNotMetamask: 'Global ethereum is not MetaMask',
   errorGamestopNoChainChange: 'Gamestop extension no switch Ethereum Chain method',
+  errorHadUnknownCollectionDes:
+    'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. <1>Go</1>',
+  errorGuardianRouterError: 'Oops! Guardian site moved to <a>guardian.loopring.io</a>.',
 }

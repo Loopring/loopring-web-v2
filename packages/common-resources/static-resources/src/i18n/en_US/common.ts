@@ -580,7 +580,7 @@ export default {
   labelL2toL2Memo: 'Memo (Optional)',
   labelL2toL2MemoPlaceholder: 'Please input the memo',
   labelL2toL2FeeChoose: 'Select payment token',
-  labelL2toL2Fee: 'Fee',
+  labelL2toL2Fee: 'Network Fee',
   labelL2toL2FeeNotEnough: 'Insufficient balance',
   labelL2toL2FeeFastNotAllowEnough: 'Please choose Standard!',
   labelL2toL2LinkRecent: 'Recent send history',
@@ -794,7 +794,7 @@ export default {
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
   labelMintFeeChoose: 'Select payment token',
-  labelLayerSwapUnderstand: 'Acknowledge and understand the risk',
+  labelLayerSwapUnderstand: 'I understand and acknowledge the risk',
   labelIUnderStand: 'I Understand',
   labelLayerSwapUnderstandDes:
     'LayerSwap is a 3rd party App service provider to help move tokens from exchange to {{loopringL2}} directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
@@ -815,7 +815,7 @@ export default {
   labelForceWithdrawFailed: 'Force withdraw has failed!',
   labelForceWithdrawSubmit: 'Force withdraw has been submitted',
   labelForceWithdrawToken: 'Token Amount',
-  labelForceWithdrawFee: 'Fee',
+  labelForceWithdrawFee: 'Network Fee',
   labelForceWithdrawEnterToken: 'Select Token',
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
@@ -829,7 +829,7 @@ export default {
   labelNFTProperties: 'Properties',
   labelNFTDescription2: 'Description',
   labelForceWithdrawNotAvailable:
-    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{symbolL2}} to {{symbolL1}} anymore',
+    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1symbol}} anymore',
   labelForceWithdrawNoToken: 'No token is detected from this address to operate',
   labelForceWithdrawBtn: 'Force Withdraw',
   labelInvestDefiTitle: 'ETH Staking',
@@ -843,13 +843,13 @@ export default {
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n' +
     'You can choose one of the following approaches for the remaining amount:',
   labelDefiMaxBalance1:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalance:
     '<span>It is not possible for the Loopring pool to fulfil your complete request at the moment.</span>' +
     '<span>You can choose one of the following approaches for the remaining amount:</span>',
   labelDefiNoBalanceList:
-    '<li>Withdraw {{symbol}} to {{symbolL1}} and trade through 1Inch or {{type}}, etc...</li>' +
+    '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiMaxBalanceJoin:
     "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
@@ -1199,7 +1199,7 @@ export default {
   labelSmallOrderAlertLine2: 'Please review the fee before confirming.',
   labelSmallOrderAlertLine3: 'Trading Fee:',
   labelSmallOrderAlertLine4: 'Fee ratio:',
-  labelSmallOrderAlertLine5: 'Minimum Received:',
+  labelSmallOrderAlertLine5: 'Minimum Converted:',
   labelSwapSecondConfirmTitle: 'Confirm Swap',
   labelSwapSettingTitle: 'Settings',
   labelSwapSettingSecondConfirm: 'Second confirmation',
@@ -1647,14 +1647,14 @@ export default {
   labelStopLimitConfirm: 'Confirm',
   labelBtradeSwapPending: 'Pending',
   labelStopLimitTitle: 'Stop-Limit',
-  labelStopPrice: 'Limit Price',
-  labelStopStopPrice: 'Stop Price',
+  labelStopPrice: 'Limit / Buy Price',
+  labelStopStopPrice: 'Stop / Trigger Price',
   labelStopLimitWhatIs: "What's Stop-Limit?",
   labelStopLimitMinMax: 'Min {{minValue}} - Max {{maxValue}}',
   labelLimitStopPriceMinMax: 'Stop Price Range {{arg}}',
   labelLimitMainContent:
     'A Stop-Limit order is a limit order with a limit price and a stop price. When the stop price is reached, the limit order will be placed on the order book. Once the limit price is reached, the limit order will be executed.',
-  labelLimitStopPriceLabel: 'Stop Price',
+  labelLimitStopPriceLabel: 'Stop Price / Trigger Price',
   labelLimitStopPriceContent:
     'When the current asset price reaches the given stop price, the Stop-Limit order is executed to buy or sell the asset at the given limit price or better.',
   labelLimitLimitPriceLabel: 'Limit Price',
@@ -1731,8 +1731,8 @@ export default {
   labelAddAssetTitleAnotherNetDesActive:
     'If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the {{l2Symbol}} account.',
   labelAnotherNetworkDes:
-    'Orbiter.finance is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
-  labelAnotherNetworkUnderstand: 'Acknowledge and understand the risk',
+    '<0>Orbiter.finance</0> is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <2>TOS</2>.',
+  labelAnotherNetworkUnderstand: 'I understand and acknowledge the risk',
   labelReferralImageDes: 'Scan code to register',
   labelReferralImageCode: 'Code: {{code}}',
   labelInvite: 'Invite Friends',
@@ -1755,10 +1755,10 @@ export default {
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
   labelClaimTypeREFERER_FEE: 'Refunds Rewards',
-  labelClaimTypePROTOCOL_FEE: 'AMM Pool Rewards',
+  labelClaimTypePROTOCOL_FEE: 'Dedicated AMM Incentive',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
-  labelAMMClaimableEarnings: 'Protocol Fee Rewards',
+  labelAMMClaimableEarnings: 'Dedicated AMM Incentive',
   labelLayer2HistoryOrders: 'Order Records',
   labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
   labelLayer2HistoryDefiRecords: 'ETH Staking',
@@ -1776,10 +1776,49 @@ export default {
   labelRedPacketBlindboxReceived2: 'Received',
   labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
+  labelCiETHDefiRiskTitle: "What's Cian Leveraged ETH?",
+  labelCiETHDefiRisk:
+    '<p>CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform, where users could earn either through joining algorithmic strategy vaults or through building their own DeFi strategies using CIAN’s advanced automation tools.</p>' +
+    "<p>The stETH/ETH leveraged staking strategy enables users to safely leverage stETH’s staking rewards. This strategy focuses on staking derivatives and protection/optimization tooling. By nature, this strategy is to use the user's asset as collateral to borrow ETH from lending platforms, then stake ETH in Lido to earn ETH staking interest. By utilizing tools like Flashloan, it actually adds leverage to users' ETH investment. If only there is a positive APY diff between the borrowing rate and ETH staking rate, there will be additional earnings from this strategy vs. standard ETH staking.</p>" +
+    '<p>It is quite important to understand that, when using such leveraged strategy, it’s highly advised to intend on holding that position for a while. By doing so, users will give enough time for the high APY to cover their entry & exit costs.</p>\n',
+  labelDefiWithdrawFee:
+    '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
+  labelLeverageETHTitle: 'Leveraged ETH',
+  labelLayer2HistoryleverageETHRecords: 'Leveraged ETH',
+  labelSwapMinConverted: 'Minimum Converted',
+  labelSwapMinConvertedTooltip:
+    'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
+  labelNetworkFee: 'Network Fee',
+  labelTradingFee: 'Trading Fee',
+  labelTradingFeeEst: 'Trading Fee(est.)',
+  labelStopStopPriceDes:
+    'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
+  labelStopPriceDes:
+    'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
+  labelStopPriceSell: 'Limit / Sell Price',
+  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
-  labelClaimallToken: 'Reward token {{symbol}}',
-  labelImportLegacyCollection: 'Import Collection for Legacy NFT',
-  labelImportLegacyCollectionDes:
+  labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
+  labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
-  labelImportLegacyCollectionBtn: 'Go',
+  labelGo: 'Go',
+  labelAnotherNetworkDes2:
+    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than ethereum, the recipient address must be different than the sender address; else you will lose that asset for ever.',
+  labelAnotherNetworkDes3: '',
+  labelRiskReminder: 'Risk Reminder',
+  labelDefiRedeem: 'Redeem',
+  labelDefiSubscribe: 'Subscribe',
+  labelDefiMaxBalance1Leverage:
+    '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
+  labelDefiNoBalanceLeverage:
+    '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
+  labelDefiMaxBalanceLeverage:
+    'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
+  labelFunctionList: 'Function List:',
+  labelSuperUserTitle: 'Super User',
+  labelLeverageETHStaking: 'Leveraged ETH Staking',
+  labelLeverageETHBack: 'Leveraged ETH Staking',
+  labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
+  labelRewardRefresh: 'Refresh',
+  labelToMyL2WidthAddress: 'My {{loopringL2}} <1>({{address}})</1>',
 }

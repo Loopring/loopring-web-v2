@@ -40,6 +40,10 @@ export type DeFiWrapProps<T, I, ACD> = {
   btnStatus?: keyof typeof TradeBtnStatus | undefined
   accStatus?: AccountStatus
   type: string
+  title: string
+  isLeverageETH?: boolean
+  extraWithdrawFee?: string
+  apr?: string
 }
 
 export type DeFiSideType<R = RawDataDefiSideStakingItem> = {

@@ -17,6 +17,7 @@ import { useContactAdd } from './hooks'
 import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources'
 import { useTheme } from '@emotion/react'
 import { isAddress } from 'ethers/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 interface AddDialogProps {
   addOpen: boolean
@@ -33,8 +34,6 @@ export const Add: React.FC<AddDialogProps> = ({
 }) => {
   const theme = useTheme()
   const {
-    // adLoading,
-    // setAddLoading,
     addShowInvalidAddress,
     addAddress,
     onChangeAddress,
@@ -42,27 +41,8 @@ export const Add: React.FC<AddDialogProps> = ({
     onChangeName,
     addButtonDisable,
     displayEnsResolvedAddress,
-    // submitAddingContact,
-    // toastStatus,
-    // setToastStatus
   } = useContactAdd()
-  const { t } = useranslation()
-  // web3.eth.ens
-  //             .getAddress(address)
-  //             .then((addressResovled: string) => {
-  //               myLog("addressResovled:", addressResovled);
-  //               resolve({
-  //                 realAddr: addressResovled,
-  //                 addressErr: AddressError.NoError,
-  //               });
-  //             })
-  //             .catch((e: any) => {
-  //               myLog("ens catch", e);
-  //               resolve({
-  //                 realAddr: "",
-  //                 addressErr: AddressError.InvalidAddr,
-  //               });
-  //             });
+  const { t } = useTranslation()
 
   return (
     <div>
