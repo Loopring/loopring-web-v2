@@ -664,6 +664,11 @@ export enum AssetTabIndex {
   Rewards = 'Rewards',
 }
 
+export enum TabOrderIndex {
+  orderOpenTable = 'orderOpenTable',
+  orderHistoryTable = 'orderHistoryTable',
+}
+
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
   TAIKO: [
     {

@@ -26,9 +26,12 @@ import {
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
+  InvestAssetRouter,
   myLog,
   PriceTag,
+  RecordTabIndex,
   SagaStatus,
+  TabOrderIndex,
   TokenType,
   TradeBtnStatus,
   YEAR_DAY_FORMAT,
@@ -386,23 +389,75 @@ export const useGetAssets = (): AssetPanelProps & {
 
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
         } else {
-          setTokenLockDetail({
-            list: response.lockRecord.map((item) => {
-              const amount = sdk
-                .toBig(item.amount)
-                .div('1e' + tokenMap[_item.name].decimals)
-                .toString()
-              return {
-                key: `label${item.lockTag}`,
+          setTokenLockDetail(() => {
+            // @ts-ignore
+            const sum: { key: string; value: string; link: string }[] = response.lockRecord.reduce(
+              // @ts-ignore
+              (prev, record) => {
+                const amount = sdk
+                  .toBig(record.amount)
+                  .div('1e' + tokenMap[_item.name].decimals)
+                  .toString()
+                prev[0] = {
+                  ...prev[0],
+                  value: sdk.toBig(prev[0].value?.replaceAll(sdk.SEP, '')).minus(amount).toString(),
+                }
+                let link = ''
+                switch (record.lockTag) {
+                  case sdk.LOCK_TYPE.DUAL_CURRENCY:
+                    link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
+                    break
+                  case sdk.LOCK_TYPE.DUAL_BASE:
+                    link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
+                    break
+                  case sdk.LOCK_TYPE.L2STAKING:
+                    link = `/#/invest/balance/${InvestAssetRouter.STAKELRC}`
+                    break
+                  case sdk.LOCK_TYPE.BTRADE:
+                    link = `/#/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${_item.name}`
+                    break
+                  case sdk.LOCK_TYPE.STOP_LIMIT:
+                    link = `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}?market=${_item.name}`
+                    break
+                }
+                prev.push({
+                  key: `label${record.lockTag}`,
+                  value: getValuePrecisionThousand(
+                    amount,
+                    tokenMap[_item.name].precision,
+                    tokenMap[_item.name].precision,
+                    undefined,
+                  ),
+                  link,
+                })
+                return prev
+              },
+              [
+                {
+                  key: `labelMarketOrderUnfilled`,
+                  value: _item.locked ?? '0',
+                  link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}?market=${_item.name}`,
+                },
+              ] as { key: string; value: string; link: string }[],
+            )
+            if (_item.locked && sdk.toBig(sum[0].value).gt(0)) {
+              sum[0] = {
+                ...sum[0],
                 value: getValuePrecisionThousand(
-                  amount,
+                  sum[0].value,
                   tokenMap[_item.name].precision,
                   tokenMap[_item.name].precision,
                   undefined,
                 ),
               }
-            }),
-            row: _item,
+            } else {
+              sum.shift()
+            }
+
+            return {
+              list: sum,
+              row: _item,
+            }
           })
         }
       }
