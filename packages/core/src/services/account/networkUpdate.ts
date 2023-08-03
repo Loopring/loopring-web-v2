@@ -18,7 +18,7 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
     if (AvaiableNetwork.includes(_chainId.toString())) {
       store.dispatch(setDefaultNetwork(_chainId))
       if (systemStatus !== SagaStatus.UNSET) {
-        await sdk.sleep(0)
+        await sdk.sleep(10)
       }
       store.dispatch(updateSystem({ chainId: Number(_chainId) }))
       if (readyState !== AccountStatus.UN_CONNECT && Number(accountChainId) !== chainId) {
@@ -28,7 +28,7 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
           }),
         )
         cleanLayer2()
-        await sdk.sleep(0)
+        await sdk.sleep(10)
         accountServices.sendCheckAccount(accAddress, accountChainId as any)
       }
       return true
@@ -40,7 +40,7 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
   } else {
     if (AvaiableNetwork.includes(defaultNetwork.toString())) {
       if (systemStatus !== SagaStatus.UNSET) {
-        await sdk.sleep(0)
+        await sdk.sleep(10)
       }
       store.dispatch(updateSystem({ chainId: defaultNetwork }))
       store.dispatch(

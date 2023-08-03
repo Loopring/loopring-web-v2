@@ -289,7 +289,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-      myLog('useEffect nftTransferValue.address:', nftTransferValue.address)
+      // myLog('useEffect nftTransferValue.address:', nftTransferValue.address)
       setAddress(nftTransferValue.address ? nftTransferValue.address : '')
     }
   }, [setAddress, nftTransferValue.address, accountStatus, account.readyState])
