@@ -377,10 +377,12 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
 
   &.addAsset,
   &.sendAsset {
+
     white-space: pre;
     font-size: ${({ theme }) => theme.fontDefault.h5};
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-direction: row;
+    height: ${({ theme }) => theme.unit * 8}px;
 
     &.isMobile {
       font-size: ${({ theme }) => theme.fontDefault.h6};
@@ -422,7 +424,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
 
   &:hover {
     background: var(--provider-hover);
-    border-color: var(--opacity);
+    border-color: var(--color-border-select);
     color: var(--color-text-button-select);
   }
 

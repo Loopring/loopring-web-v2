@@ -57,6 +57,7 @@ export const ModalAccountInfo = withTranslation('common')(
       exportAccountProps,
       // dualTradeProps,
       sideStackRedeemProps,
+      
       copyToastOpen,
       openQRCode,
       accountList,

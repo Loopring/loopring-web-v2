@@ -75,4 +75,5 @@ export interface ModalState {
   isShowFeeSetting: ModalStatePlayLoad
   isShowIFrame: ModalStatePlayLoad & { url: string }
   isShowSideStakingRedeem: ModalStatePlayLoad & { symbol?: string }
+  isShowFeeSelect: ModalStatePlayLoad
 }

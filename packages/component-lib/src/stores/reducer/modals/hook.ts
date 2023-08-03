@@ -12,6 +12,7 @@ import {
   setShowDeposit,
   setShowDual,
   setShowExportAccount,
+  setShowFeeSelect,
   setShowFeeSetting,
   setShowIFrame,
   setShowLayerSwapNotice,
@@ -275,6 +276,11 @@ export const useOpenModals = () => {
     setShowSideStakingRedeem: React.useCallback(
       (state: ModalStatePlayLoad & { symbol?: string }) =>
         dispatch(setShowSideStakingRedeem(state)),
+      [dispatch],
+    ),
+    setShowFeeSelect: React.useCallback(
+      (state: ModalStatePlayLoad) =>
+        dispatch(setShowFeeSelect(state)),
       [dispatch],
     ),
   }

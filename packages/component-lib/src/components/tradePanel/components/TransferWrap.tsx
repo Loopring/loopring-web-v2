@@ -14,6 +14,7 @@ import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 import {
   AddressError,
   AlertIcon,
+  BackIcon,
   CheckBoxIcon,
   CheckedIcon,
   CloseIcon,
@@ -50,6 +51,11 @@ import { NFTInput } from './BasicANFTTrade'
 import { FeeToggle } from './tool/FeeList'
 import { useSettings } from '../../../stores'
 import { TransferAddressType } from './AddressType'
+import styled from '@emotion/styled'
+
+const BackIconStyled = styled(BackIcon)`
+  transform: rotate(180deg);
+`
 
 export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   t,
@@ -478,7 +484,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 <IconButton
                   color={'inherit'}
                   size={'large'}
-                  aria-label='Clear'
                   onClick={() => {
                     onClickContact!()
                   }}
@@ -487,6 +492,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 </IconButton>
               </InputAdornment>
             ),
+            
           }}
         />
         <Box marginLeft={1 / 2}>{view}</Box>
@@ -529,6 +535,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               variant={'body1'}
               color={'var(--color-text-secondary)'}
               marginBottom={1}
+              justifyContent={'space-between'}
             >
               <Typography component={'span'} color={'inherit'} minWidth={28}>
                 {t('labelL2toL2Fee')}：
@@ -543,8 +550,10 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + ' ' + feeInfo.belong
                   : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                {isFeeNotEnough.isOnLoading ? (
+                <BackIconStyled fontSize={'medium'} />
+
+                {/* TODO handle isOnLoading, isFeeNotEnough */}                
+                {/* {(isFeeNotEnough.isOnLoading) ? (
                   <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
                     {t('labelFeeCalculating')}
                   </Typography>
@@ -554,7 +563,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                       {t('labelL2toL2FeeNotEnough')}
                     </Typography>
                   )
-                )}
+                )} */}
               </Box>
             </Typography>
             {dropdownStatus === 'up' && (

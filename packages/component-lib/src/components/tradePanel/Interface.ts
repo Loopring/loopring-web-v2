@@ -215,4 +215,11 @@ export type ModalPanelProps = {
   _width?: number | string
 }
 
+export type FeeSelectProps = {
+  chargeFeeTokenList: FeeInfo[]
+  handleToggleChange: (value: FeeInfo) => void
+  feeInfo: FeeInfo
+  disableNoToken?: boolean
+}
+
 export * from './components/Interface'

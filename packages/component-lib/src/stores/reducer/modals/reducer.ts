@@ -45,6 +45,7 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
+  isShowFeeSelect: { isShow: false },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -347,6 +348,17 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
+    setShowFeeSelect(
+      state,
+      action: PayloadAction<{
+        isShow: boolean
+      }>,
+    ) {
+      const { isShow } = action.payload
+      state.isShowFeeSelect = {
+        isShow
+      }
+    },
   },
 })
 export const {
@@ -380,4 +392,5 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
+  setShowFeeSelect
 } = modalsSlice.actions

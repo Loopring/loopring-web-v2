@@ -25,6 +25,7 @@ import {
   useSettings,
   WithdrawPanel,
   WithdrawProps,
+  FeeSelect
 } from '../..'
 import {
   Account,
@@ -184,6 +185,7 @@ export const ModalPanel = <
     setShowClaimWithdraw,
     setShowCollectionAdvance,
     setShowSideStakingRedeem,
+    setShowFeeSelect
     // setShowDual,
   } = useOpenModals()
   const {
@@ -202,6 +204,7 @@ export const ModalPanel = <
     isShowAnotherNetwork,
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
+    isShowFeeSelect
     // isShowDual,
   } = modals
   const theme = useTheme()
@@ -471,6 +474,16 @@ export const ModalPanel = <
           >
             <DeFiStackRedeemWrap isJoin={false} {...(sideStackRedeemProps as any)} />
           </Box>
+        }
+      />
+      <Modal
+        // open
+        // ={isShowFeeSelect.isShow}
+        onClose={() => {
+          setShowFeeSelect({ isShow: false })
+        }}
+        content={
+          <FeeSelect />
         }
       />
     </>
