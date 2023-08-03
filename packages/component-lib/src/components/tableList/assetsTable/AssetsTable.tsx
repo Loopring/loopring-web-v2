@@ -324,7 +324,7 @@ export const AssetsTable = withTranslation('tables')(
           const token = row['token']
           const isLp = token.type === TokenType.lp
           const tokenValue = token.value
-          const isDefi = token.type === TokenType.defi || tokenValue === "CIETH"
+          const isDefi = token.type === TokenType.defi || tokenValue === 'CIETH'
 
           const isToL1 = token.type !== TokenType.lp
 
@@ -431,7 +431,7 @@ export const AssetsTable = withTranslation('tables')(
           const token = row['token']
           const isLp = token.type === TokenType.lp
           const tokenValue = token.value
-          const isDefi = token.type === TokenType.defi || tokenValue === "CIETH"
+          const isDefi = token.type === TokenType.defi || tokenValue === 'CIETH'
           const lpPairList = tokenValue.split('-')
           lpPairList.splice(0, 1)
           const lpPair = lpPairList.join('-')
@@ -449,7 +449,7 @@ export const AssetsTable = withTranslation('tables')(
                 market: renderMarket,
                 onReceive,
                 onSend,
-                isLeverageETH: false
+                isLeverageETH: false,
               }}
             />
           )
@@ -474,7 +474,9 @@ export const AssetsTable = withTranslation('tables')(
           </Box>
         )}
         <Modal open={modalState} onClose={() => setModalState(false)}>
-          <LockDetailPanel tokenLockDetail={tokenLockDetail} />
+          <>
+            <LockDetailPanel tokenLockDetail={tokenLockDetail} />
+          </>
         </Modal>
         <Table
           className={isInvest ? 'investAsset' : ''}

@@ -60,8 +60,15 @@ export async function unlockAccount() {
 
       const { defaultNetwork } = store.getState().settings
       if (Number(defaultNetwork) !== Number(_chainId)) {
-        await connectProvides.sendChainIdChange(defaultNetwork, themeMode === ThemeType.dark)
-        _chainId = connectProvides?.usedWeb3?.eth?.getChainId()
+        try {
+          await connectProvides.sendChainIdChange(defaultNetwork, themeMode === ThemeType.dark)
+        } catch (error) {
+          throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+        }
+        _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+        if (Number(defaultNetwork) !== Number(_chainId)) {
+          throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+        }
       }
 
       const response = await LoopringAPI.userAPI.unLockAccount(
