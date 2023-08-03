@@ -154,8 +154,6 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     },
     [history, search],
   )
-  RecordTabIndex.Orders
-
   React.useEffect(() => {
     let height = container?.current?.offsetHeight
     if (height) {
