@@ -1,7 +1,7 @@
 body {
   background: var(--color-global-Bg);
   font-family: Roboto, Helvetica, Arial, '华文细黑', 'Microsoft YaHei', '微软雅黑', SimSun, '宋体',
-    Heiti, '黑体', sans-serif;
+  Heiti, '黑体', sans-serif;
   user-drag: none;
   user-select: none;
 }
@@ -494,8 +494,7 @@ footer {
     /*border-radius: 0px;*/
     /*text-indent: -999999em;*/
     background: var(--color-logo);
-    -webkit-mask: url(https://static.loopring.io/assets/svg/loopring.svg) center center / contain
-      space;
+    -webkit-mask: url(https://static.loopring.io/assets/svg/loopring.svg) center center / contain space;
     width: 40px;
     height: 40px;
     margin-left: 8px;
@@ -614,15 +613,15 @@ footer {
       right: calc(-1 * var(--borderWidth));
       bottom: calc(-1 * var(--borderWidth));
       background: linear-gradient(
-        60deg,
-        #f79533,
-        #f37055,
-        #ef4e7b,
-        #a166ab,
-        #5073b8,
-        #1098ad,
-        #07b39b,
-        #6fba82
+                      60deg,
+                      #f79533,
+                      #f37055,
+                      #ef4e7b,
+                      #a166ab,
+                      #5073b8,
+                      #1098ad,
+                      #07b39b,
+                      #6fba82
       );
       border-radius: calc(2 * var(--borderWidth));
       z-index: -1;

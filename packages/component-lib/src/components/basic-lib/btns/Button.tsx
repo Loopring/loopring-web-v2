@@ -350,6 +350,7 @@ const QRStyle = styled(Box)`
     position: relative;
     //z-index: 10;
   }
+
   &:after {
     pointer-events: none;
     content: "";
