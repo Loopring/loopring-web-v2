@@ -254,11 +254,9 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         (connectProvides.usedProvide as any)?.namespace
       ) {
         // @ts-ignore
-        const optionalChains = connectProvides.usedProvide?.session?.optionalNamespaces
-          ? (connectProvides.usedProvide as any)?.session?.optionalNamespaces[
-              (connectProvides.usedProvide as any).namespace
-            ]?.chains ?? []
-          : [`${(connectProvides.usedProvide as any).namespace}:${defaultNetwork}`]
+        const optionalChains = connectProvides.usedProvide?.session?.namespaces[
+          (connectProvides.usedProvide as any).namespace
+        ]?.chains ?? [`${(connectProvides.usedProvide as any).namespace}:${defaultNetwork}`]
         return !optionalChains.includes(
           `${(connectProvides.usedProvide as any).namespace}:${Number(id)}`,
         )
