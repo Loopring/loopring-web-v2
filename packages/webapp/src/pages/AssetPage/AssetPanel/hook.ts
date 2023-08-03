@@ -383,7 +383,7 @@ export const useGetAssets = (): AssetPanelProps & {
               sdk.LOCK_TYPE.L2STAKING,
               sdk.LOCK_TYPE.STOP_LIMIT,
             ].join(','),
-          },
+          } as any,
           account.apiKey,
         )
 
@@ -414,10 +414,10 @@ export const useGetAssets = (): AssetPanelProps & {
                     link = `/#/invest/balance/${InvestAssetRouter.STAKELRC}`
                     break
                   case sdk.LOCK_TYPE.BTRADE:
-                    link = `/#/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${_item.name}`
+                    link = `/#/l2assets/history/${RecordTabIndex.BtradeSwapRecords}`
                     break
                   case sdk.LOCK_TYPE.STOP_LIMIT:
-                    link = `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}?market=${_item.name}`
+                    link = `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
                     break
                 }
                 prev.push({
@@ -436,7 +436,7 @@ export const useGetAssets = (): AssetPanelProps & {
                 {
                   key: `labelMarketOrderUnfilled`,
                   value: _item.locked ?? '0',
-                  link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}?market=${_item.name}`,
+                  link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
                 },
               ] as { key: string; value: string; link: string }[],
             )
