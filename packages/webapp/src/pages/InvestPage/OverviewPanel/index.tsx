@@ -53,12 +53,14 @@ const WrapperStyled = styled(Box)`
     }
     box-shadow: none;
     .hover-button {
-        background: ${({ theme }) => theme.colorBase.buttonInactive};
-      }
+      background: ${({ theme }) => theme.colorBase.buttonInactive};
+      color: ${({ theme }) => theme.colorBase.textPrimary};
+    }
     :hover {
       background: var(--color-box-hover);
       box-shadow: ${({ theme }) => theme.colorBase.shadow};
       .hover-button {
+        color: ${({ theme }) => theme.colorBase.textButton};;
         background: ${({ theme }) => theme.colorBase.primary};
       }
     }
@@ -153,7 +155,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
                           {t(item.titleI18n, { ns: 'layout' })}
                         </Typography>
 
-                        <Typography variant={'h3'} marginTop={5}>
+                        <Typography variant={'h3'} marginTop={5} >
                           21.2%-102.38%
                         </Typography>
                         <Typography>{t("labelAPR")}</Typography>
