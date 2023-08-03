@@ -348,7 +348,7 @@ export const useDeposit = <
     )
   }
   React.useEffect(() => {
-    myLog('accountStatus,LoopringAPI?.__chainId__', LoopringAPI?.__chainId__, accountStatus)
+    // myLog('accountStatus,LoopringAPI?.__chainId__', LoopringAPI?.__chainId__, accountStatus)
     if (accountStatus === SagaStatus.UNSET) {
       init()
       if (isShow || isAllowInputToAddress) {

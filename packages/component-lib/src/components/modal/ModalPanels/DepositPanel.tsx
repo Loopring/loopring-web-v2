@@ -96,7 +96,7 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
                     rest.realToAddress
                   ) : (
                     <Trans
-                      i18nKey={'labelToMyL2'}
+                      i18nKey={'labelToMyL2WidthAddress'}
                       tOptions={{
                         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -110,6 +110,7 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
                         color={'var(--color-text-third)'}
                         variant={'body2'}
                         component={'span'}
+                        sx={{ opacity: 1 }}
                         paddingLeft={1 / 2}
                       >
                         (address)
