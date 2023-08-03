@@ -383,7 +383,7 @@ export const useGetAssets = (): AssetPanelProps & {
               sdk.LOCK_TYPE.L2STAKING,
               sdk.LOCK_TYPE.STOP_LIMIT,
             ].join(','),
-          },
+          } as any,
           account.apiKey,
         )
 
