@@ -1,8 +1,14 @@
-import { DAYS, getTimestampDaysLater, LoopringAPI, store, EddsaKey } from '../../index'
+import {
+  DAYS,
+  getTimestampDaysLater,
+  LoopringAPI,
+  store,
+  EddsaKey,
+  callSwitchChain,
+} from '../../index'
 import { ChainIdExtends, FeeInfo, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import * as sdk from '@loopring-web/loopring-sdk'
-import Web3 from 'web3'
 
 export async function activateAccount({
   isHWAddr,
@@ -53,13 +59,22 @@ export async function activateAccount({
     system.exchangeInfo.exchangeAddress,
   ).replace('${nonce}', accInfo.nonce.toString())
 
-  if (feeInfo?.belong && feeInfo.feeRaw) {
+  if (feeInfo?.belong && feeInfo.feeRaw && connectProvides.usedWeb3) {
     const feeToken = tokenMap[feeInfo.belong]
     const tokenId = feeToken.tokenId
     const fee = feeInfo.feeRaw
+    const _chainId = await connectProvides.usedWeb3.eth.getChainId()
     try {
+      await callSwitchChain(_chainId)
+    } catch (error: any) {
+      throw error
+    }
+    myLog('switchChain Error')
+
+    try {
+      await callSwitchChain(_chainId)
       eddsaKey = await sdk.generateKeyPair({
-        web3: connectProvides.usedWeb3 as unknown as Web3,
+        web3: connectProvides.usedWeb3,
         address: accInfo.owner,
         keySeed,
         walletType: (ConnectProviders[connectName] ?? connectName) as unknown as sdk.ConnectorNames,
