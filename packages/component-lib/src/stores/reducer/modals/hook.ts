@@ -42,7 +42,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { OffchainFeeReqType, OffchainNFTFeeReqType, RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
 import { AmmPanelType } from '../../../components'
 
@@ -279,8 +279,15 @@ export const useOpenModals = () => {
       [dispatch],
     ),
     setShowFeeSelect: React.useCallback(
-      (state: ModalStatePlayLoad) =>
-        dispatch(setShowFeeSelect(state)),
+      (
+        state: ModalStatePlayLoad & {
+          requestType?:
+            | OffchainFeeReqType
+            | OffchainNFTFeeReqType
+            | 'UPDATE_ACCOUNT_BY_NEW'
+            | 'TRANSFER_ACTIVE'
+        },
+      ) => dispatch(setShowFeeSelect(state)),
       [dispatch],
     ),
   }

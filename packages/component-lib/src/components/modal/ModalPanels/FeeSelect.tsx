@@ -79,7 +79,7 @@ const Option = (props: OptionType) => {
 }
 
 export const FeeSelect = (props: FeeSelectProps) => {
-  const { chargeFeeTokenList, disableNoToken, feeInfo: selectedFeeInfo } = props
+  const { chargeFeeTokenList, disableNoToken, feeInfo: selectedFeeInfo, handleToggleChange } = props
 
   return (
     <BoxStyled
@@ -100,6 +100,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
               disabled={disableNoToken && !feeInfo.hasToken}
               marginBottom={2}
               checked={selectedFeeInfo.belong == feeInfo.belong}
+              onClick={() => handleToggleChange(feeInfo)}
             >
               <Box display={'flex'}>
                 <CoinIcon size={32} symbol={feeInfo.belong} />

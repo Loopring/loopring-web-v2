@@ -98,6 +98,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
   isFromContact,
   onClickContact,
   loopringSmartWalletVersion,
+  onClickFee,
   // addressType,
   ...rest
 }: TransferViewProps<T, I, C> &
@@ -545,7 +546,8 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 display={'flex'}
                 alignItems={'center'}
                 style={{ cursor: 'pointer' }}
-                onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
+                onClick={() => onClickFee()}
+                // onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + ' ' + feeInfo.belong

@@ -107,7 +107,8 @@ export const useFeeSelect = <R extends IBData<T>, T>() => {
     },
     setShowFeeSelect
   } = useOpenModals()
-  const tokenMap = useTokenMap()
+  const { updateTransferData } = useModalData()
+
   // tokenMap.tokenMap
   const {
     chargeFeeTokenList,
@@ -118,17 +119,15 @@ export const useFeeSelect = <R extends IBData<T>, T>() => {
     // resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    // updateData: ({ fee, requestType }) => {
-    //   let _requestType = feeWithActive
-    //     ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
-    //     : sdk.OffchainFeeReqType.TRANSFER
-    //   if (_requestType === requestType) {
-    //     const transferValue = store.getState()._router_modalData.transferValue
-    //     updateTransferData({ ...transferValue, fee })
-    //   }
-    // },
-    //   [feeWithActive]
-    // ),
+    updateData: ({ fee, requestType }) => {
+      // let _requestType = feeWithActive
+      //   ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+      //   : sdk.OffchainFeeReqType.TRANSFER
+      if (requestType === sdk.OffchainFeeReqType.TRANSFER) {
+        const transferValue = store.getState()._router_modalData.transferValue
+        updateTransferData({ ...transferValue, fee })
+      }
+    },
   })
 
   myLog('chargeFeeTokenList', chargeFeeTokenList)
@@ -136,7 +135,10 @@ export const useFeeSelect = <R extends IBData<T>, T>() => {
   const feeSelectProps: FeeSelectProps = {
     chargeFeeTokenList,
     feeInfo,
-    handleToggleChange: handleFeeChange
+    handleToggleChange: (feeInfo) => {
+      handleFeeChange(feeInfo)
+      setShowFeeSelect({isShow: false})
+    } 
   }
 
   return {

@@ -60,6 +60,7 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useContacts } from '../../stores/contacts/hooks'
+import { useFeeSelect } from './useFeeSelect'
 
 const checkIsHebao = (accountAddress: string) =>
   LoopringAPI.walletAPI!.getWalletType({
@@ -115,7 +116,7 @@ export const getAllContacts = async (
 }
 
 export const useTransfer = <R extends IBData<T>, T>() => {
-  const { setShowAccount, setShowTransfer } = useOpenModals()
+  const { setShowAccount, setShowTransfer, setShowFeeSelect } = useOpenModals()
 
   const {
     modals: {
@@ -152,7 +153,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
-    feeInfo,
+    // feeInfo,
     checkFeeIsEnough,
     resetIntervalTime,
   } = useChargeFees({
@@ -171,6 +172,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     //   [feeWithActive]
     // ),
   })
+  const { feeSelectProps: {feeInfo} } = useFeeSelect()
   const {
     chargeFeeTokenList: activeAccountFeeList,
     checkFeeIsEnough: checkActiveFeeIsEnough,
@@ -707,7 +709,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     onTransferClick,
     handlePanelEvent,
     handleFeeChange,
-    feeInfo,
+    feeInfo: transferValue.fee,
     handleSureItsLayer2: (sure) => {
       const found = exWalletToAddressMapFn(sure)!
       const contact = contacts?.find((x) => x.address === realAddr)
@@ -808,6 +810,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       : undefined,
     loopringSmartWalletVersion,
     contacts,
+    onClickFee: () => {
+      setShowFeeSelect({
+        isShow: true,
+        requestType: sdk.OffchainFeeReqType.TRANSFER
+      })
+    },
+
   }
 
   return {

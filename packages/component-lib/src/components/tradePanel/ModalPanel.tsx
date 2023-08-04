@@ -482,8 +482,7 @@ export const ModalPanel = <
         }
       />
       <Modal
-        open
-        // ={isShowFeeSelect.isShow}
+        open={isShowFeeSelect.isShow}
         onClose={() => {
           setShowFeeSelect({ isShow: false })
         }}
