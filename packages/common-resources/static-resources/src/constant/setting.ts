@@ -105,6 +105,7 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
       chainId: index.toString(),
       // RPC: process.env[`REACT_APP_RPC_URL_${item}`] ?? "",
       isTest: isTest ? true : false,
+      walletType: name,
     }
     return { NetworkMap, ChainTests, MapChainId, ChainIdExtends }
   },
@@ -115,11 +116,13 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         label: 'Ethereum',
         chainId: '1',
         isTest: false,
+        walletType: 'Ethereum',
       },
       5: {
         label: 'Görli',
         chainId: '5',
         isTest: true,
+        walletType: 'Ethereum',
       },
     },
     ChainTests: [5],

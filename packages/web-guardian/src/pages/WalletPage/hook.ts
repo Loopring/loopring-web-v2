@@ -23,20 +23,20 @@ import { connectProvides } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
 // import { AvaiableNetwork } from '@loopring-web/web3-provider'
 //
-// export enum TxGuardianHistoryType {
-//   ADD_GUARDIAN = 51,
-//   GUARDIAN_CONFIRM_ADDITION = 52,
-//   GUARDIAN_REJECT_ADDITION = 53,
-//   GUARDIAN_APPROVE = 54,
-//   APPROVE_RECOVER = 55, // RECOVER  16
-//   APPROVE_TRANSFER = 56, // APPROVE TRANSFER 18
-//   APPROVE_TOKEN_APPROVE = 57, // 23
-//   ADD_GUARDIAN_WA = 58, // 34
-//   REMOVE_GUARDIAN_WA = 59, // 35
-//   UNLOCK_WALLET_WA = 60, // 37
-//   RESET_GUARDIANS_WA = 61, // 200
-//   CALL_CONTRACT_WA = 62,
-// }
+export enum TxGuardianHistoryType {
+  ADD_GUARDIAN = 51,
+  GUARDIAN_CONFIRM_ADDITION = 52,
+  GUARDIAN_REJECT_ADDITION = 53,
+  GUARDIAN_APPROVE = 54,
+  APPROVE_RECOVER = 55, // RECOVER  16
+  APPROVE_TRANSFER = 56, // APPROVE TRANSFER 18
+  APPROVE_TOKEN_APPROVE = 57, // 23
+  ADD_GUARDIAN_WA = 58, // 34
+  REMOVE_GUARDIAN_WA = 59, // 35
+  UNLOCK_WALLET_WA = 60, // 37
+  RESET_GUARDIANS_WA = 61, // 200
+  CALL_CONTRACT_WA = 62,
+}
 
 export enum TxHebaoAction {
   Approve,
