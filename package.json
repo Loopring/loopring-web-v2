@@ -92,7 +92,7 @@
     "reset_proxy": "npm config set proxy=http://127.0.0.1:1087; yarn reset",
     "dev": "cd ./packages/webapp; yarn dev",
     "dev-bridge": "cd packages/web-bridge; yarn dev",
-    "dev-guardia": "cd packages/web-guardian; yarn dev",
+    "dev-guardian": "cd packages/web-guardian; yarn dev",
     "build": "cd ./packages/webapp; yarn build",
     "build-sb": "cd ./packages/component-lib; npm run build",
     "build-bridge": "cd packages/web-bridge; yarn build",
