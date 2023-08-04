@@ -114,6 +114,7 @@ const initialDepositState: DepositData = {
   belong: undefined,
   tradeValue: 0,
   balance: 0,
+  toAddress: undefined,
 }
 
 export const initialTradeNFT = {

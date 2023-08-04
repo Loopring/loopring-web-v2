@@ -28,6 +28,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   ActionResultCode,
   BIGO,
+  callSwitchChain,
   DepositCommands,
   depositServices,
   LoopringAPI,
@@ -228,7 +229,14 @@ export const useDeposit = <
         [value, toAddress].includes(realToAddress)
       ) {
         if (value.startsWith('0x') && toAddress?.startsWith('0x') && value !== toAddress) {
-          return value
+          if (value === state) {
+            sdk.sleep(0).then(() => {
+              setToAddress(state)
+            })
+            return ''
+          } else {
+            return value
+          }
         } else {
           return state
         }
@@ -241,7 +249,7 @@ export const useDeposit = <
         toAddressStatus !== AddressError.NoError &&
         toIsAddressCheckLoading == false
       ) {
-        sdk.sleep(100).then(() => {
+        sdk.sleep(0).then(() => {
           setToAddress(state)
         })
         return ''
@@ -387,7 +395,9 @@ export const useDeposit = <
 
           const realGasPrice = gasPrice ?? 30
 
-          const _chainId = chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
+          const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+          //chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
+          await callSwitchChain(_chainId)
 
           let nonce = 0
 
@@ -461,7 +471,7 @@ export const useDeposit = <
 
           myLog('before deposit:', chainId, connectName, isMetaMask)
 
-          const realChainId = chainId === 'unknown' ? 1 : chainId
+          // const realChainId = chainId === 'unknown' ? 1 : chainId
           let response
           try {
             //response = { result: "xxxxxxxx" };
@@ -474,7 +484,7 @@ export const useDeposit = <
               fee,
               realGasPrice,
               gasLimit,
-              realChainId,
+              _chainId,
               nonce,
               isMetaMask,
               toAddress,
