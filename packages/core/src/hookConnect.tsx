@@ -27,6 +27,7 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
+  ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -192,6 +193,19 @@ const onDisConnect = async () => {
   store.dispatch(resetWithdrawData(undefined))
   store.dispatch(resetTransferData(undefined))
   store.dispatch(resetDepositData(undefined))
+}
+export const callSwitchChain = async (_chainId: string | number) => {
+  const { defaultNetwork, themeMode } = store.getState().settings
+  if (Number(defaultNetwork) !== Number(_chainId)) {
+    try {
+      await connectProvides.sendChainIdChange(defaultNetwork, themeMode === ThemeType.dark)
+    } catch (error) {
+      throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+    }
+    if (Number(defaultNetwork) !== Number(await connectProvides?.usedWeb3?.eth?.getChainId())) {
+      throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+    }
+  }
 }
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
