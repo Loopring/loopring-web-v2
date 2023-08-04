@@ -88,9 +88,15 @@ import { useTheme } from '@emotion/react'
 
 
 export const useFeeSelect = <R extends IBData<T>, T>() => {
+  
+  // const 
+  
+  
   const {
     modals: {
       isShowFeeSelect: {
+        requestType,
+
         // symbol,
         // isShow,
         // info,
@@ -101,14 +107,40 @@ export const useFeeSelect = <R extends IBData<T>, T>() => {
     },
     setShowFeeSelect
   } = useOpenModals()
+  const tokenMap = useTokenMap()
+  // tokenMap.tokenMap
+  const {
+    chargeFeeTokenList,
+    // isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    // checkFeeIsEnough,
+    // resetIntervalTime,
+  } = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.TRANSFER,
+    // updateData: ({ fee, requestType }) => {
+    //   let _requestType = feeWithActive
+    //     ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+    //     : sdk.OffchainFeeReqType.TRANSFER
+    //   if (_requestType === requestType) {
+    //     const transferValue = store.getState()._router_modalData.transferValue
+    //     updateTransferData({ ...transferValue, fee })
+    //   }
+    // },
+    //   [feeWithActive]
+    // ),
+  })
+
+  myLog('chargeFeeTokenList', chargeFeeTokenList)
   
-  const withdrawProps: FeeSelectProps = {
-    
-    
+  const feeSelectProps: FeeSelectProps = {
+    chargeFeeTokenList,
+    feeInfo,
+    handleToggleChange: handleFeeChange
   }
 
   return {
-    withdrawProps,
+    feeSelectProps,
     // retryBtn,
   }
 }

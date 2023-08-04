@@ -5,7 +5,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO, AddressType } from '@loopring-web/loopring-sdk'
+import { RESULT_INFO, AddressType, OffchainFeeReqType, OffchainNFTFeeReqType } from '@loopring-web/loopring-sdk'
 import { AmmPanelType } from '../../../components'
 
 export enum ModalType {
@@ -75,5 +75,11 @@ export interface ModalState {
   isShowFeeSetting: ModalStatePlayLoad
   isShowIFrame: ModalStatePlayLoad & { url: string }
   isShowSideStakingRedeem: ModalStatePlayLoad & { symbol?: string }
-  isShowFeeSelect: ModalStatePlayLoad
+  isShowFeeSelect: ModalStatePlayLoad & {
+    requestType : 
+    | OffchainFeeReqType
+    | OffchainNFTFeeReqType
+    | 'UPDATE_ACCOUNT_BY_NEW'
+    | 'TRANSFER_ACTIVE'
+  }
 }

@@ -25,7 +25,8 @@ import {
   useSettings,
   WithdrawPanel,
   WithdrawProps,
-  FeeSelect
+  FeeSelect,
+  FeeSelectProps
 } from '../..'
 import {
   Account,
@@ -34,6 +35,7 @@ import {
   IBData,
   TRADE_TYPE,
   TradeNFT,
+  myLog,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
@@ -144,6 +146,7 @@ export const ModalPanel = <
   assetsData,
   account,
   baseURL,
+  feeSelectProps,
   ...rest
 }: {
   _width?: number | string
@@ -168,7 +171,9 @@ export const ModalPanel = <
   exportAccountProps: any
   account: Account
   setExportAccountToastOpen: any
+  feeSelectProps: FeeSelectProps
 }) => {
+  myLog('asjdlkasjdlkasjdlkjaskl', feeSelectProps)
   const { isMobile } = useSettings()
   const {
     modals,
@@ -477,13 +482,13 @@ export const ModalPanel = <
         }
       />
       <Modal
-        // open
+        open
         // ={isShowFeeSelect.isShow}
         onClose={() => {
           setShowFeeSelect({ isShow: false })
         }}
         content={
-          <FeeSelect />
+          <FeeSelect {...feeSelectProps}/>
         }
       />
     </>
