@@ -79,18 +79,10 @@ const TableStyled = styled(Table)`
   }
 ` as any
 const ContentWrapperStyled = styled(Box)`
-  // position: absolute;
-  // top: 45%;
-  // left: 50%;
-  // transform: translate(-50%, -50%);
-  // // min-width: ${({ theme }) => theme.unit * 87.5}px;
-  // // height: 60%;
-  //background-color: var(--color-pop-bg);
-  // box-shadow: 0px ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit / 2}px
-  //   rgba(0, 0, 0, 0.25);
   padding: 0 ${({ theme }) => theme.unit * 1}px;
   border-radius: ${({ theme }) => theme.unit / 2}px;
 `
+
 export const DetailRewardPanel = ({
   detailList,
   hideAssets = false,
@@ -120,7 +112,7 @@ export const DetailRewardPanel = ({
                 component={'span'}
                 color={'textSecondary'}
               >
-                {t(`labelClaimType${item.claimType}`)
+                {Reflect.ownKeys(sdk.CLAIM_TYPE)?.includes(item.claimType?.toUpperCase() ?? '')
                   ? t(`labelClaimType${item.claimType}`)
                   : item?.name
                   ? item?.name
