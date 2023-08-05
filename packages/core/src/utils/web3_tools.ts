@@ -7,8 +7,6 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import ms from 'ms.macro'
-
 import { utils } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError, myLog } from '@loopring-web/common-resources'
@@ -23,7 +21,7 @@ export function getLibrary(provider: any): Web3Provider {
       ? parseInt(provider.chainId)
       : 'any',
   )
-  library.pollingInterval = ms`15s`
+  library.pollingInterval = 15000
 
   return library
 }

@@ -256,10 +256,10 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
         open={openQRCode}
         onClose={() => onOpenAdd(false)}
         title={
-          <Typography component={'p'} textAlign={'center'} marginBottom={1}>
+          <Typography component={'span'} textAlign={'center'} marginBottom={1}>
             <Typography
               color={'var(--color-text-primary)'}
-              component={'p'}
+              component={'span'}
               variant={'h4'}
               marginBottom={2}
               display={'flex'}
@@ -275,7 +275,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             </Typography>
             <Typography
               color={'var(--color-text-secondary)'}
-              component={'p'}
+              component={'span'}
               variant={'body1'}
               marginBottom={2}
             >

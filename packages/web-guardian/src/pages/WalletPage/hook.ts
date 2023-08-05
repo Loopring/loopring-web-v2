@@ -439,7 +439,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress),
             await connectProvides.usedWeb3.eth.getChainId(),
           ])
-          callSwitchChain(_chainId)
+          await callSwitchChain(_chainId)
           const params: sdk.LockHebaoHebaoParam = {
             web3: connectProvides.usedWeb3 as any,
             from: account.accAddress,
