@@ -222,6 +222,16 @@ export const useDeposit = <
     if (isToAddressEditable == false && opts?.owner && opts.owner !== '') {
       value = opts.owner
     }
+    const makeForceFresh = (state: string, value: string) => {
+      if (value === state) {
+        sdk.sleep(0).then(() => {
+          setToAddress(state)
+        })
+        return ''
+      } else {
+        return value
+      }
+    }
     setToAddress((state) => {
       myLog('address update setToAddress', state, value, realToAddress, toAddressStatus)
       if (
@@ -231,38 +241,14 @@ export const useDeposit = <
         realToAddress.startsWith('0x') &&
         [value, toAddress].includes(realToAddress)
       ) {
-        if (value.startsWith('0x') && toAddress?.startsWith('0x') && value !== toAddress) {
-          if (value === state) {
-            sdk.sleep(0).then(() => {
-              setToAddress(state)
-            })
-            return ''
-          } else {
-            return value
-          }
-        } else {
-          return state
-        }
+        return makeForceFresh(state, value)
       } else if (value !== undefined) {
         setToInputAddress(value)
-        if (value === state) {
-          sdk.sleep(0).then(() => {
-            setToAddress(state)
-          })
-          return ''
-        } else {
-          return value
-        }
-      } else if (
-        state &&
-        !value &&
-        toAddressStatus !== AddressError.NoError &&
-        toIsAddressCheckLoading == false
-      ) {
-        sdk.sleep(0).then(() => {
-          setToAddress(state)
-        })
-        return ''
+        return makeForceFresh(state, value)
+      } else if (toInputAddress !== '') {
+        return makeForceFresh(state, toInputAddress)
+      } else if (toIsAddressCheckLoading == false) {
+        return makeForceFresh(state, state)
       } else {
         return state
       }
@@ -347,7 +333,7 @@ export const useDeposit = <
   }, [walletLayer1Status])
 
   const init = () => {
-    if (chainId === defaultNetwork) {
+    if (chainId === defaultNetwork && baseURL) {
       let tradeData: any = {
         belong: opts?.token?.toUpperCase() ?? symbol,
         tradeValue: !isShow ? undefined : depositValue.tradeValue,
