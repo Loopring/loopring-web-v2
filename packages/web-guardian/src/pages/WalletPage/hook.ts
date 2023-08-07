@@ -102,8 +102,9 @@ export const useHebaoMain = <
               account.apiKey,
             )
             .then((protector) => {
-              protector.protectorArray.map((props) => {
+              protector?.protectorArray?.map((props) => {
                 if (
+                  layer1ActionHistory &&
                   layer1ActionHistory[defaultNetwork] &&
                   layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock] &&
                   layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock][props.address] &&
@@ -129,7 +130,7 @@ export const useHebaoMain = <
               network: networkName,
             })
             .then((guardian) => {
-              guardian?.guardiansArray.map((ele) => {
+              guardian?.guardiansArray?.map((ele) => {
                 ele.businessDataJson = JSON.parse(ele.businessDataJson ?? '')
                 return ele
               })
