@@ -201,6 +201,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     loopringSmartWalletVersion,
     reCheck,
   } = useAddressCheck(true)
+  myLog('isInvalidAddressOrENS asdjalksj', addrStatus)
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
