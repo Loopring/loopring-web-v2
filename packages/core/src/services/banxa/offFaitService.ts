@@ -1,5 +1,6 @@
 import { store } from '../../stores'
 import {
+  myLog,
   OffRampHashItem,
   OffRampHashItemObj,
   OffRampStatus,
@@ -141,6 +142,8 @@ export const offFaitService = {
           : {}),
         ...(order?.account_reference ? { account_reference: order?.account_reference } : {}),
       }
+      //TODO: move to myLog when test finished
+      console.log('banxa orderId', order.id)
       if (
         order.status === 'waitingPayment' ||
         order.status === 'pendingPayment' ||
