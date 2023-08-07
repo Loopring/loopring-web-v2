@@ -47,7 +47,6 @@ import { LoopringTheme, ThemeKeys } from '../interface'
 
 export { unit }
 export const getTheme = (themeMode: ThemeKeys, _isMobile = false): LoopringTheme => {
-  // @ts-ignore
   const colorBase: typeof ColorDarkDefault =
     themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault
   const theme = createTheme({
@@ -209,5 +208,5 @@ export const getTheme = (themeMode: ThemeKeys, _isMobile = false): LoopringTheme
       fontDefault,
       colorBase: themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault,
     },
-  } as LoopringTheme
+  }
 }
