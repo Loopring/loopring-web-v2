@@ -102,25 +102,33 @@ export const useHebaoMain = <
               account.apiKey,
             )
             .then((protector) => {
-              protector?.protectorArray?.map((props) => {
-                if (
-                  layer1ActionHistory &&
-                  layer1ActionHistory[defaultNetwork] &&
-                  layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock] &&
-                  layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock][props.address] &&
-                  props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
-                ) {
-                  props.lockStatus = sdk.HEBAO_LOCK_STATUS.LOCK_WAITING
-                } else {
-                  clearOneItem({
-                    chainId: defaultNetwork as sdk.ChainId,
-                    uniqueId: props.address,
-                    domain: Layer1Action?.GuardianLock,
-                  })
-                }
+              if ((protector as sdk.RESULT_INFO)?.code) {
+                throw protector
+              }
+              try {
+                protector?.protectorArray?.map((props) => {
+                  if (
+                    layer1ActionHistory &&
+                    layer1ActionHistory[defaultNetwork] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock][props.address] &&
+                    props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
+                  ) {
+                    props.lockStatus = sdk.HEBAO_LOCK_STATUS.LOCK_WAITING
+                  } else {
+                    clearOneItem({
+                      chainId: defaultNetwork as sdk.ChainId,
+                      uniqueId: props.address,
+                      domain: Layer1Action?.GuardianLock,
+                    })
+                  }
 
-                return props
-              })
+                  return props
+                })
+              } catch (error) {
+                throw error
+              }
+
               return protector
             }),
           // api/wallet/v3/operationLogs
@@ -130,10 +138,17 @@ export const useHebaoMain = <
               network: networkName,
             })
             .then((guardian) => {
-              guardian?.guardiansArray?.map((ele) => {
-                ele.businessDataJson = JSON.parse(ele.businessDataJson ?? '')
-                return ele
-              })
+              if ((guardian as sdk.RESULT_INFO)?.code) {
+                throw protector
+              }
+              try {
+                guardian?.guardiansArray?.map((ele) => {
+                  ele.businessDataJson = JSON.parse(ele.businessDataJson ?? '')
+                  return ele
+                })
+              } catch (error) {
+                throw error
+              }
               return guardian
             }),
           LoopringAPI.walletAPI.getHebaoOperationLogs({
@@ -145,7 +160,8 @@ export const useHebaoMain = <
           }),
         ])
           .catch((error) => {
-            console.log('error', error)
+            //TODO: move to myLog when test finised
+            console.log('guardianConfig error', error)
             setIsLoading(false)
           })
           .finally(() => {
