@@ -6,7 +6,7 @@ import {
   TradeNFT,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO, AddressType } from '@loopring-web/loopring-sdk'
-import { AmmPanelType } from '../../../components'
+import { AmmPanelType, ToastType } from '../../../components'
 
 export enum ModalType {
   transfer = 'transfer',
@@ -62,7 +62,11 @@ export interface ModalState {
     type?: string
     messageKey?: string
   }
-  isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO }
+  isShowConnect: ModalStatePlayLoad & {
+    step: number
+    error?: RESULT_INFO
+    info?: { [key: string]: any }
+  }
   isShowAccount: ModalStatePlayLoad & {
     step: number
     error?: RESULT_INFO
@@ -75,4 +79,11 @@ export interface ModalState {
   isShowFeeSetting: ModalStatePlayLoad
   isShowIFrame: ModalStatePlayLoad & { url: string }
   isShowSideStakingRedeem: ModalStatePlayLoad & { symbol?: string }
+  isShowGlobalToast: {
+    isShow: boolean
+    info: {
+      content: string
+      type: ToastType
+    }
+  }
 }

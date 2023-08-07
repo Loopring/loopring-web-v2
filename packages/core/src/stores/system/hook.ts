@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { updateSystem } from './reducer'
+import { updateSystem, statusUnset } from './reducer'
 import { System, SystemStatus } from './interface'
 import React from 'react'
-import { statusUnset } from '../Amm/AmmMap/reducer'
 
 export function useSystem(): SystemStatus & {
   updateSystem: (system: Partial<System>) => void
