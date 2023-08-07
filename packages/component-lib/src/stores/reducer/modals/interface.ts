@@ -62,7 +62,11 @@ export interface ModalState {
     type?: string
     messageKey?: string
   }
-  isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO }
+  isShowConnect: ModalStatePlayLoad & {
+    step: number
+    error?: RESULT_INFO
+    info?: { [key: string]: any }
+  }
   isShowAccount: ModalStatePlayLoad & {
     step: number
     error?: RESULT_INFO

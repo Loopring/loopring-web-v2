@@ -305,7 +305,7 @@ export default {
   labelRedPacketSenderAddress: 'Sender Address',
   // labelRecordAction: "Action",
   labelBtradeSwapType: 'Type',
-  labelBtradeSwapFee: 'Fee',
+  labelBtradeSwapFee: 'Trading Fee',
   labelBtradeSwapTime: 'Time',
   labelBtradeSwapPrice: 'Price',
   labelBtradeSwapSettled: 'Settled',
@@ -342,4 +342,5 @@ export default {
   labelRefundTableTime: 'Time',
   labelTxNetworkFee: 'Network Fee',
   labelTxTradingFee: 'Trading Fee',
+  labelTypeUNIFIED_CLAIM: 'Claim Rewards',
 }

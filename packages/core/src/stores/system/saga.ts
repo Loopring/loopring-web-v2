@@ -361,8 +361,8 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         etherscanBaseUrl =
           sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
       }
-
       LoopringAPI.userAPI?.setBaseUrl(baseURL)
+      LoopringAPI.luckTokenAPI?.setBaseUrl(baseURL)
       LoopringAPI.exchangeAPI?.setBaseUrl(baseURL)
       LoopringAPI.globalAPI?.setBaseUrl(baseURL)
       LoopringAPI.ammpoolAPI?.setBaseUrl(baseURL)
@@ -371,6 +371,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       LoopringAPI.nftAPI?.setBaseUrl(baseURL)
       LoopringAPI.delegate?.setBaseUrl(baseURL)
       LoopringAPI.defiAPI?.setBaseUrl(baseURL)
+      LoopringAPI.contactAPI?.setBaseUrl(baseURL)
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
         const _exchangeInfo = JSON.parse(window.localStorage.getItem('exchangeInfo') ?? '{}')

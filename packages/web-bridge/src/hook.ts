@@ -8,7 +8,7 @@ import {
   useTokenPrices,
 } from '@loopring-web/core'
 import { ChainId } from '@loopring-web/loopring-sdk'
-import { SagaStatus, ThemeType } from '@loopring-web/common-resources'
+import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
 import {
   ConnectProviders,
   ConnectProvides,
