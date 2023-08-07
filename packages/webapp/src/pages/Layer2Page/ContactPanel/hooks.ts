@@ -536,7 +536,7 @@ export const useContactAdd = () => {
 }
 
 export const useContactSend = () => {
-  const [sendNetwork, setSendNetwork] = React.useState('L1' as Network)
+  const [sendNetwork, setSendNetwork] = React.useState('L2' as Network)
   const { setShowTransfer, setShowWithdraw } = useOpenModals()
   const submitSendingContact = React.useCallback(
     (contact: Contact, network: Network, onClose: () => void) => {
