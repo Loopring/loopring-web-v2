@@ -335,7 +335,9 @@ export const useContact = () => {
             })
             .then((response2) => {
               let addressType: sdk.AddressType | undefined = undefined
-              if (response2.walletType?.loopringWalletContractVersion) {
+              if (response2.walletType?.isInCounterFactualStatus) {
+                addressType = sdk.AddressType.LOOPRING_HEBAO_CF
+              } else if (response2.walletType?.loopringWalletContractVersion) {
                 const map: [string, sdk.AddressType][] = [
                   ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
                   ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
@@ -345,8 +347,6 @@ export const useContact = () => {
                 addressType = map.find(
                   (x) => x[0] === response2.walletType?.loopringWalletContractVersion,
                 )![1]
-              } else if (response2.walletType?.isInCounterFactualStatus) {
-                addressType = sdk.AddressType.LOOPRING_HEBAO_CF
               } else if (response2.walletType?.isContract) {
                 addressType = sdk.AddressType.CONTRACT
               }
@@ -401,6 +401,7 @@ export const useContact = () => {
           }
         })
         .catch((e) => {
+          debugger
           if (e === 'contact already existed') {
             callBack(false)
             setToastInfo({

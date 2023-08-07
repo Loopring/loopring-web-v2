@@ -666,7 +666,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       updateContacts(allContacts)
       updateAccountId(account.accountId)
     } catch (e) {
-      updateContacts([])
+      
     }
   }, [cachedForAccountId])
   React.useEffect(() => {
