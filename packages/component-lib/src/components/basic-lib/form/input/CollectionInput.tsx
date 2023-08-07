@@ -25,7 +25,7 @@ import {
 import React, { useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { TextField } from '../../../basic-lib'
 
 const SizeCss = {
