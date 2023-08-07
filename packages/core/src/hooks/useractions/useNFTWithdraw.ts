@@ -105,6 +105,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isCFAddress,
     isContract1XAddress,
     isAddressCheckLoading,
+    loopringSmartWalletVersion
   } = useAddressCheck()
   const isNotAvailableAddress = isContract1XAddress ? 'isContract1XAddress' : undefined
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
@@ -581,6 +582,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isFeeNotEnough,
     isLoopringAddress: true,
     contacts,
+    loopringSmartWalletVersion
   } as WithdrawProps<any, any>
 
   return {
