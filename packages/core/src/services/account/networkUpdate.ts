@@ -28,7 +28,6 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
           }),
         )
         cleanLayer2()
-        await sdk.sleep(10)
         accountServices.sendCheckAccount(accAddress, accountChainId as any)
       }
       return true
