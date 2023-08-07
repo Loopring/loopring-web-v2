@@ -145,7 +145,7 @@ export const useHebaoMain = <
           }),
         ])
           .catch((error) => {
-            myLog(error)
+            console.log('error', error)
             setIsLoading(false)
           })
           .finally(() => {
