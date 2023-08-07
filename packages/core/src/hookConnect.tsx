@@ -211,7 +211,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const { defaultNetwork: _defaultNetwork, isMobile } = useSettings()
   const {
-    account: { connectName, accAddress },
+    account: { connectName },
   } = useAccount()
   const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>()
 
@@ -222,17 +222,8 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
       setDefaultNetwork((state) => {
         if (Number(value) !== Number(state)) {
           if (account.readyState !== AccountStatus.UN_CONNECT) {
-            if (connectProvides?.usedWeb3) {
-              // connectProvides
-              //   .sendChainIdChange(value, themeMode === ThemeType.dark)
-              //   .then(() => {
-              //     onConnect(accAddress, value)
-              //   })
-              //   .catch((error) => {
-              //     onConnect(accAddress, value)
-              //     throw error
-              //   })
-              onConnect(accAddress, value)
+            if (connectProvides?.usedWeb3 && connectProvides.usedProvide) {
+              onConnect(account.accAddress, value)
             } else {
               onDisConnect()
               return state
@@ -243,7 +234,6 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         }
         return value
       })
-      // @ts-ignore
     },
     [defaultNetwork],
   )
