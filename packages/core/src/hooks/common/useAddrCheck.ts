@@ -12,7 +12,7 @@ import {
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
-import { LoopringAPI, store, useAccount, useSystem } from '../../index'
+import { LoopringAPI, store, useAccount, useContacts, useIsHebao, useSystem } from '../../index'
 import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 
@@ -40,8 +40,10 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
   const { setShowGlobalToast } = useOpenModals()
 
   const {
-    account: { accAddress },
+    account: { accAddress, apiKey, accountId },
   } = useAccount()
+  const { isHebao } = useIsHebao();
+  const { updateContacts, contacts } = useContacts();
 
   const check = React.useCallback(async (address: any, web3: any) => {
     try {
@@ -105,6 +107,37 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
                     isLoopringSmartWallet: true,
                     version: walletType.loopringWalletContractVersion,
                   })
+                  const found = contacts?.find((contact) => contact.address === address)
+                  if (found && found.addressType === sdk.AddressType.UNKNOWN_ADDRESS && isHebao) {
+                    const map: [string, sdk.AddressType][] = [
+                      ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+                      ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+                      ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+                      ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+                    ]
+                    const addressType = map.find(
+                      (x) => x[0] === walletType?.loopringWalletContractVersion,
+                    )![1]
+
+                    LoopringAPI.contactAPI?.updateContact({
+                      contactAddress: found.address,
+                      isHebao,
+                      accountId: accountId,
+                      addressType: addressType,
+                      contactName: found.name,
+                    }, apiKey).then(() => {
+                      updateContacts(
+                        contacts?.map((x) => {
+                          if (x.address === realAddr && found) {
+                            return { ...x, addressType }
+                          } else {
+                            return x
+                          }
+                        }),
+                      )
+                    })
+                  }
+                  
                 } else {
                   setLoopringSmartWalletVersion({
                     isLoopringSmartWallet: false,
