@@ -22,7 +22,7 @@ import {
   Toast,
   ToastType,
 } from '../../../index'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
