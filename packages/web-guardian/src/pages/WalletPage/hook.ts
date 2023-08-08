@@ -109,8 +109,10 @@ export const useHebaoMain = <
                   if (
                     layer1ActionHistory &&
                     layer1ActionHistory[defaultNetwork] &&
-                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock] &&
-                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock][props.address] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock][
+                      props.address
+                    ] &&
                     props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
                   ) {
                     props.lockStatus = sdk.HEBAO_LOCK_STATUS.LOCK_WAITING

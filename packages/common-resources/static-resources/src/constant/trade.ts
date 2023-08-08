@@ -72,7 +72,6 @@ export interface NFTHashInfo {
   nftDataHashes: { [key: string]: Required<TxInfo> }
 }
 
-// export type GuardianLock
 export enum Layer1Action {
   GuardianLock = 'GuardianLock',
   NFTDeploy = 'NFTDeploy',
@@ -494,6 +493,7 @@ export enum CLAIM_TYPE {
   lrcStaking = 'lrcStaking',
   allToken = 'allToken',
 }
+
 export type BanxaOrder = {
   id: string
   account_id: string
