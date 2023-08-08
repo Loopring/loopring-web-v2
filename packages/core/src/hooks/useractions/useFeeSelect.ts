@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { AccountStep, SwitchData, useOpenModals, FeeSelectProps } from '@loopring-web/component-lib'
@@ -110,13 +110,17 @@ export const useFeeSelect = <R extends IBData<T>, T>() => {
   const { updateTransferData } = useModalData()
 
   // tokenMap.tokenMap
+  // const checkFeeIsEnough = () => {
+
+  // }
+  // const resetIntervalTime =
   const {
     chargeFeeTokenList,
     // isFeeNotEnough,
     handleFeeChange,
     feeInfo,
-    // checkFeeIsEnough,
-    // resetIntervalTime,
+    checkFeeIsEnough,
+    resetIntervalTime,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
     updateData: ({ fee, requestType }) => {
@@ -129,6 +133,11 @@ export const useFeeSelect = <R extends IBData<T>, T>() => {
       }
     },
   })
+  React.useEffect(() => {
+    
+
+
+  }, [])
 
   myLog('chargeFeeTokenList', chargeFeeTokenList)
   

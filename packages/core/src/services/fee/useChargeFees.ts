@@ -21,6 +21,7 @@ import {
   store,
   useWalletLayer2,
 } from '../../index'
+import { FeeCommands, feeServices } from './feeService'
 
 const INTERVAL_TIME = (() => 900000)()
 export function useChargeFees({
@@ -528,6 +529,18 @@ export function useChargeFees({
     account.readyState,
     walletLayer2Status,
   ])
+
+  React.useEffect(() => {
+    const subject = feeServices.onSocket()
+    const subscription = subject.subscribe((info) => {
+      if (info.status == FeeCommands.ResetIntervalTime) {
+        setIntervalTime(intervalTime)
+      } else if (info.status == FeeCommands.CheckFeeIsEnough) {
+        checkFeeIsEnough(info.data)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   return {
     chargeFeeTokenList,

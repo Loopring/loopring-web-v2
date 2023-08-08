@@ -61,6 +61,7 @@ import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/co
 import { useTheme } from '@emotion/react'
 import { useContacts } from '../../stores/contacts/hooks'
 import { useFeeSelect } from './useFeeSelect'
+import { feeServices } from '@loopring-web/core'
 
 const checkIsHebao = (accountAddress: string) =>
   LoopringAPI.walletAPI!.getWalletType({
@@ -153,9 +154,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
-    // feeInfo,
-    checkFeeIsEnough,
-    resetIntervalTime,
   } = useChargeFees({
     requestType: feeWithActive
       ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
@@ -262,10 +260,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
-      checkFeeIsEnough()
+      feeServices.checkFeeIsEnough()
+      // checkFeeIsEnough()
       return
     }
-    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
+    feeServices.checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
+    // checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     // checkActiveFeeIsEnough({
     //   isRequiredAPI: true,
     //   intervalTime: LIVE_FEE_TIMES,
@@ -326,7 +326,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       setAddress('')
     }
   }, [
-    checkFeeIsEnough,
     symbol,
     walletMap,
     updateTransferData,
@@ -344,14 +343,15 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     ) {
       resetDefault()
     } else {
-      resetIntervalTime()
+      
+      feeServices.resetIntervalTime()
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
         requestType: undefined as any,
       })
     }
     return () => {
-      resetIntervalTime()
+      feeServices.resetIntervalTime()
       setAddress('')
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
@@ -444,7 +444,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
           default:
             if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
-              checkFeeIsEnough({
+              feeServices.checkFeeIsEnough({
                 isRequiredAPI: true,
                 requestType: feeWithActive
                   ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
@@ -478,7 +478,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       setShowTransfer,
       resetTransferData,
       updateHW,
-      checkFeeIsEnough,
     ],
   )
 
@@ -769,7 +768,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           // flag = true;
           setFeeWithActive((state) => {
             if (state !== false) {
-              checkFeeIsEnough({
+              feeServices.checkFeeIsEnough({
                 isRequiredAPI: true,
                 requestType: sdk.OffchainFeeReqType.TRANSFER,
               })
@@ -787,13 +786,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleOnFeeWithActive: (value: boolean) => {
       setFeeWithActive(value)
       if (value && !isActiveAccountFee) {
-        checkFeeIsEnough({
+        feeServices.checkFeeIsEnough({
           isRequiredAPI: true,
 
           requestType: sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
         })
       } else {
-        checkFeeIsEnough({
+        feeServices.checkFeeIsEnough({
           isRequiredAPI: true,
           requestType: sdk.OffchainFeeReqType.TRANSFER,
         })
