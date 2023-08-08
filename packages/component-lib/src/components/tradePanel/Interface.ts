@@ -10,6 +10,8 @@ import {
   TradeBaseType,
   TradeCalcProData,
   TradeProType,
+  WithdrawType,
+  WithdrawTypes,
 } from '@loopring-web/common-resources'
 import {
   BasicACoinTradeHookProps,
@@ -218,8 +220,15 @@ export type ModalPanelProps = {
 export type FeeSelectProps = {
   chargeFeeTokenList: FeeInfo[]
   handleToggleChange: (value: FeeInfo) => void
-  feeInfo: FeeInfo
+  feeInfo?: FeeInfo
   disableNoToken?: boolean
+  open: boolean
+  onClose: () => void
+  withdrawInfos?: {
+    types: Partial<WithdrawTypes>
+    type: WithdrawType
+    onChangeType: (w: WithdrawType) => void
+  }
 }
 
 export * from './components/Interface'

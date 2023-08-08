@@ -83,7 +83,7 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
   }
 ` as (props: { _height?: number | string; _width?: number | string } & BoxProps) => JSX.Element
 
-const Modal = withTranslation('common')(
+export const Modal = withTranslation('common')(
   ({
     open,
     onClose,

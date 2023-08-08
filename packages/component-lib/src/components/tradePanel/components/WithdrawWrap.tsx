@@ -31,8 +31,9 @@ import {
   TOAST_TIME,
   TradeBtnStatus,
   WALLET_TYPE,
+  WithdrawType,
 } from '@loopring-web/common-resources'
-import { DropdownIconStyled, FeeTokenItemWrapper, PopoverPure, Toast, ToastType } from '../..'
+import { DropdownIconStyled, FeeSelect, FeeTokenItemWrapper, PopoverPure, Toast, ToastType } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
@@ -126,9 +127,9 @@ export const WithdrawWrap = <
   }
 
   const _handleWithdrawTypeChange = React.useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    (e: WithdrawType) => {
       if (handleWithdrawTypeChange) {
-        handleWithdrawTypeChange(e.target?.value as any)
+        handleWithdrawTypeChange(e)
       }
     },
     [handleWithdrawTypeChange],
@@ -184,6 +185,7 @@ export const WithdrawWrap = <
     : isContractAddress
     ? WALLET_TYPE.OtherSmart
     : WALLET_TYPE.EOA
+  console.log('chargeFeeTokenList', chargeFeeTokenList.map(x=>[x.belong,x.fee]))
 
   return (
     <Grid
@@ -462,7 +464,26 @@ export const WithdrawWrap = <
                 )}
               </Box>
             </Typography>
-            {dropdownStatus === 'up' && (
+            <FeeSelect
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={(feeInfo) => {
+                handleToggleChange(feeInfo as C)
+                setDropdownStatus('down')
+              }}
+              feeInfo={feeInfo}
+              open={dropdownStatus === 'up'}
+              onClose={() => {
+                setDropdownStatus('down')
+              }}
+              withdrawInfos={{
+                types: withdrawTypes,
+                type: withdrawType,
+                onChangeType(w) {
+                  _handleWithdrawTypeChange(w)
+                },
+              }}
+            />
+            {/* {dropdownStatus === 'up' && (
               <FeeTokenItemWrapper padding={2}>
                 <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
                   {t('labelL2toL2FeeChoose')}
@@ -495,7 +516,7 @@ export const WithdrawWrap = <
                   </RadioGroup>
                 </Box>
               </FeeTokenItemWrapper>
-            )}
+            )} */}
           </>
         )}
       </Grid>

@@ -154,6 +154,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
+    checkFeeIsEnough,
+    resetIntervalTime
   } = useChargeFees({
     requestType: feeWithActive
       ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
@@ -260,12 +262,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
-      feeServices.checkFeeIsEnough()
-      // checkFeeIsEnough()
+      // feeServices.checkFeeIsEnough()
+      checkFeeIsEnough()
       return
     }
-    feeServices.checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
-    // checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
+    // feeServices.checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     // checkActiveFeeIsEnough({
     //   isRequiredAPI: true,
     //   intervalTime: LIVE_FEE_TIMES,
@@ -344,14 +346,14 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       resetDefault()
     } else {
       
-      feeServices.resetIntervalTime()
+      resetIntervalTime()
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
         requestType: undefined as any,
       })
     }
     return () => {
-      feeServices.resetIntervalTime()
+      resetIntervalTime()
       setAddress('')
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
@@ -444,7 +446,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
           default:
             if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
-              feeServices.checkFeeIsEnough({
+              checkFeeIsEnough({
                 isRequiredAPI: true,
                 requestType: feeWithActive
                   ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
@@ -768,7 +770,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           // flag = true;
           setFeeWithActive((state) => {
             if (state !== false) {
-              feeServices.checkFeeIsEnough({
+              checkFeeIsEnough({
                 isRequiredAPI: true,
                 requestType: sdk.OffchainFeeReqType.TRANSFER,
               })
@@ -786,13 +788,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleOnFeeWithActive: (value: boolean) => {
       setFeeWithActive(value)
       if (value && !isActiveAccountFee) {
-        feeServices.checkFeeIsEnough({
+        checkFeeIsEnough({
           isRequiredAPI: true,
 
           requestType: sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
         })
       } else {
-        feeServices.checkFeeIsEnough({
+        checkFeeIsEnough({
           isRequiredAPI: true,
           requestType: sdk.OffchainFeeReqType.TRANSFER,
         })

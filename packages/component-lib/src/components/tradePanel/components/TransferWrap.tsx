@@ -39,6 +39,7 @@ import {
 import {
   Button,
   DropdownIconStyled,
+  FeeSelect,
   FeeTokenItemWrapper,
   TextField,
   Toast,
@@ -117,7 +118,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
     label: t('labelL2toL2EnterToken'),
   }
 
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
 
   const popupState = usePopupState({
     variant: 'popover',
@@ -546,8 +547,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 display={'flex'}
                 alignItems={'center'}
                 style={{ cursor: 'pointer' }}
-                onClick={() => onClickFee()}
-                // onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
+                onClick={() => setShowFeeModal((prev) => !prev)}
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + ' ' + feeInfo.belong
@@ -568,7 +568,18 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 )} */}
               </Box>
             </Typography>
-            {dropdownStatus === 'up' && (
+            <FeeSelect
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={(fee: FeeInfo) => {
+                handleToggleChange(fee as C)
+                setShowFeeModal(false)
+              }}
+              feeInfo={feeInfo as FeeInfo}
+              open={showFeeModal }
+              onClose={() => {setShowFeeModal(false)}}
+            />
+
+            {/* {dropdownStatus === 'up' && (
               <FeeTokenItemWrapper padding={2}>
                 <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
                   {t('labelL2toL2FeeChoose')}
@@ -579,7 +590,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                   feeInfo={feeInfo}
                 />
               </FeeTokenItemWrapper>
-            )}
+            )} */}
           </>
         )}
       </Grid>

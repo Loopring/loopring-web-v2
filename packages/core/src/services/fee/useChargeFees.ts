@@ -530,17 +530,17 @@ export function useChargeFees({
     walletLayer2Status,
   ])
 
-  React.useEffect(() => {
-    const subject = feeServices.onSocket()
-    const subscription = subject.subscribe((info) => {
-      if (info.status == FeeCommands.ResetIntervalTime) {
-        setIntervalTime(intervalTime)
-      } else if (info.status == FeeCommands.CheckFeeIsEnough) {
-        checkFeeIsEnough(info.data)
-      }
-    })
-    return () => subscription.unsubscribe()
-  }, [])
+  // React.useEffect(() => {
+  //   const subject = feeServices.onSocket()
+  //   const subscription = subject.subscribe((info) => {
+  //     if (info.status == FeeCommands.ResetIntervalTime) {
+  //       setIntervalTime(intervalTime)
+  //     } else if (info.status == FeeCommands.CheckFeeIsEnough) {
+  //       checkFeeIsEnough(info.data)
+  //     }
+  //   })
+  //   return () => subscription.unsubscribe()
+  // }, [])
 
   return {
     chargeFeeTokenList,
