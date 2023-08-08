@@ -26,6 +26,7 @@
     "cids": "^1.1.9",
     "dompurify": "^2.4.0",
     "dotenv": "^8.2.0",
+    "crypto-js": "4.1.1",
     "dotenv-webpack": "^7.0.3",
     "easy-template-string": "^1.0.1",
     "echarts": "^5.2.2",
