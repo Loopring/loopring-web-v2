@@ -526,43 +526,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            {/* <Typography
-              component={'span'}
-              display={'flex'}
-              flexWrap={'wrap'}
-              alignItems={'center'}
-              variant={'body1'}
-              color={'var(--color-text-secondary)'}
-              marginBottom={1}
-              justifyContent={'space-between'}
-            >
-              <Typography component={'span'} color={'inherit'} minWidth={28}>
-                {t('labelL2toL2Fee')}:
-              </Typography>
-              <Box
-                component={'span'}
-                display={'flex'}
-                alignItems={'center'}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setShowFeeModal((prev) => !prev)}
-              >
-                {isFeeNotEnough.isFeeNotEnough ? (
-                  <Typography component={'span'} color={'var(--color-error)'}>
-                    {t('labelL2toL2FeeNotEnough')}
-                  </Typography>
-                ) : isFeeNotEnough.isOnLoading ? (
-                  <LoadingIcon
-                    fontSize={'medium'}
-                    htmlColor={'var(--color-text-primary)'}
-                  ></LoadingIcon>
-                ) : feeInfo && feeInfo.belong && feeInfo.fee ? (
-                  feeInfo.fee + ' ' + feeInfo.belong
-                ) : (
-                  EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag
-                )}
-                <BackIconStyled fontSize={'medium'} />
-              </Box>
-            </Typography> */}
             <FeeSelect
               chargeFeeTokenList={chargeFeeTokenList}
               handleToggleChange={(fee: FeeInfo) => {
@@ -578,19 +541,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               feeLoading={isFeeNotEnough.isOnLoading}
               onClickFee={() => setShowFeeModal((prev) => !prev)}
             />
-
-            {/* {dropdownStatus === 'up' && (
-              <FeeTokenItemWrapper padding={2}>
-                <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                  {t('labelL2toL2FeeChoose')}
-                </Typography>
-                <FeeToggle
-                  chargeFeeTokenList={chargeFeeTokenList}
-                  handleToggleChange={handleToggleChange}
-                  feeInfo={feeInfo}
-                />
-              </FeeTokenItemWrapper>
-            )} */}
           </>
         )}
       </Grid>
