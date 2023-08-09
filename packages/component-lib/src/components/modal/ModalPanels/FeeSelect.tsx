@@ -73,7 +73,10 @@ export const FeeSelect = (props: FeeSelectProps) => {
     onClickFee,
     isFeeNotEnough,
     feeLoading,
-    isFastWithdrawAmountLimit
+    isFastWithdrawAmountLimit,
+    floatLeft,
+    middleContent,
+    feeNotEnoughContent
   } = props
 
   const {t} = useTranslation()
@@ -87,9 +90,14 @@ export const FeeSelect = (props: FeeSelectProps) => {
         variant={'body1'}
         color={'var(--color-text-secondary)'}
         marginBottom={1}
-        justifyContent={'space-between'}
+        justifyContent={floatLeft ? 'left' : 'space-between'}
       >
-        <Typography component={'span'} color={'inherit'} minWidth={28}>
+        <Typography
+          marginRight={floatLeft ? 1 : 0}
+          component={'span'}
+          color={'inherit'}
+          minWidth={28}
+        >
           {t('labelL2toL2Fee')}:
         </Typography>
         <Box
@@ -100,9 +108,13 @@ export const FeeSelect = (props: FeeSelectProps) => {
           onClick={() => onClickFee()}
         >
           {isFeeNotEnough ? (
-            <Typography component={'span'} color={'var(--color-error)'}>
-              {t('labelL2toL2FeeNotEnough')}
-            </Typography>
+            feeNotEnoughContent ? (
+              feeNotEnoughContent
+            ) : (
+              <Typography component={'span'} color={'var(--color-error)'}>
+                {t('labelL2toL2FeeNotEnough')}
+              </Typography>
+            )
           ) : feeLoading ? (
             <LoadingIcon fontSize={'medium'} htmlColor={'var(--color-text-primary)'}></LoadingIcon>
           ) : isFastWithdrawAmountLimit ? (
@@ -117,6 +129,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
           <BackIconStyled fontSize={'medium'} />
         </Box>
       </Typography>
+      {middleContent}
       <Modal
         open={open}
         onClose={() => {
@@ -181,37 +194,3 @@ export const FeeSelect = (props: FeeSelectProps) => {
     </>
   )
 }
-
-// export const FeeSelect = <C extends FeeInfo>({
-//   chargeFeeTokenList,
-//   handleToggleChange,
-//   feeInfo,
-//   disableNoToken = false,
-// }: {
-//   chargeFeeTokenList: Array<C>
-//   handleToggleChange: (value: C) => void
-//   feeInfo: C
-//   disableNoToken?: boolean
-// }) => {
-//   return (
-//     <MuToggleButtonGroupStyle
-//       size={'small'}
-//       value={chargeFeeTokenList.findIndex((ele) => feeInfo?.belong === ele.belong)}
-//       exclusive
-//       onChange={(_e, value: number) => {
-//         handleToggleChange(chargeFeeTokenList[value])
-//       }}
-//     >
-//       {chargeFeeTokenList?.map((feeInfo, index) => (
-//         <ToggleButton
-//           key={feeInfo.belong + index}
-//           value={index}
-//           aria-label={feeInfo.belong}
-//           disabled={disableNoToken && !feeInfo.hasToken}
-//         >
-//           {feeInfo.belong}
-//         </ToggleButton>
-//       ))}
-//     </MuToggleButtonGroupStyle>
-//   )
-// }

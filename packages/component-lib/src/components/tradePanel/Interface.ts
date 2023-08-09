@@ -40,7 +40,7 @@ import {
   TradeMarketInfoProps,
   TradeProBaseEventProps,
 } from './tradePro/Interface'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { TOASTOPEN } from '../toast'
 
 export type SwapTradeData<T> = {
@@ -233,6 +233,9 @@ export type FeeSelectProps = {
     type: WithdrawType
     onChangeType: (w: WithdrawType) => void
   }
+  floatLeft?: boolean
+  middleContent?: ReactNode
+  feeNotEnoughContent?: ReactNode
 }
 
 export * from './components/Interface'
