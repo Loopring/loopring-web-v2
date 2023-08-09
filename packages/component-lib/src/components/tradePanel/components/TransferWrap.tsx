@@ -54,9 +54,7 @@ import { useSettings } from '../../../stores'
 import { TransferAddressType } from './AddressType'
 import styled from '@emotion/styled'
 
-const BackIconStyled = styled(BackIcon)`
-  transform: rotate(180deg);
-`
+
 
 export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   t,
@@ -494,7 +492,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 </IconButton>
               </InputAdornment>
             ),
-            
           }}
         />
         <Box marginLeft={1 / 2}>{view}</Box>
@@ -529,7 +526,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            <Typography
+            {/* <Typography
               component={'span'}
               display={'flex'}
               flexWrap={'wrap'}
@@ -540,7 +537,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               justifyContent={'space-between'}
             >
               <Typography component={'span'} color={'inherit'} minWidth={28}>
-                {t('labelL2toL2Fee')}：
+                {t('labelL2toL2Fee')}:
               </Typography>
               <Box
                 component={'span'}
@@ -549,25 +546,23 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 style={{ cursor: 'pointer' }}
                 onClick={() => setShowFeeModal((prev) => !prev)}
               >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + ' ' + feeInfo.belong
-                  : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <BackIconStyled fontSize={'medium'} />
-
-                {/* TODO handle isOnLoading, isFeeNotEnough */}                
-                {/* {(isFeeNotEnough.isOnLoading) ? (
-                  <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                    {t('labelFeeCalculating')}
+                {isFeeNotEnough.isFeeNotEnough ? (
+                  <Typography component={'span'} color={'var(--color-error)'}>
+                    {t('labelL2toL2FeeNotEnough')}
                   </Typography>
+                ) : isFeeNotEnough.isOnLoading ? (
+                  <LoadingIcon
+                    fontSize={'medium'}
+                    htmlColor={'var(--color-text-primary)'}
+                  ></LoadingIcon>
+                ) : feeInfo && feeInfo.belong && feeInfo.fee ? (
+                  feeInfo.fee + ' ' + feeInfo.belong
                 ) : (
-                  isFeeNotEnough.isFeeNotEnough && (
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                      {t('labelL2toL2FeeNotEnough')}
-                    </Typography>
-                  )
-                )} */}
+                  EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag
+                )}
+                <BackIconStyled fontSize={'medium'} />
               </Box>
-            </Typography>
+            </Typography> */}
             <FeeSelect
               chargeFeeTokenList={chargeFeeTokenList}
               handleToggleChange={(fee: FeeInfo) => {
@@ -575,8 +570,13 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 setShowFeeModal(false)
               }}
               feeInfo={feeInfo as FeeInfo}
-              open={showFeeModal }
-              onClose={() => {setShowFeeModal(false)}}
+              open={showFeeModal}
+              onClose={() => {
+                setShowFeeModal(false)
+              }}
+              isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+              feeLoading={isFeeNotEnough.isOnLoading}
+              onClickFee={() => setShowFeeModal((prev) => !prev)}
             />
 
             {/* {dropdownStatus === 'up' && (

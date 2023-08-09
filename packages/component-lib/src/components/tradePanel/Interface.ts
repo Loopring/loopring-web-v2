@@ -224,6 +224,10 @@ export type FeeSelectProps = {
   disableNoToken?: boolean
   open: boolean
   onClose: () => void
+  onClickFee: () => void
+  feeLoading: boolean
+  isFeeNotEnough: boolean
+  isFastWithdrawAmountLimit?: boolean
   withdrawInfos?: {
     types: Partial<WithdrawTypes>
     type: WithdrawType

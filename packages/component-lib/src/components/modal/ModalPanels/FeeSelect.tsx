@@ -1,39 +1,19 @@
 import {
   Box,
   BoxProps,
-  FormControlLabel,
-  Modal as MuiModal,
-  Radio,
-  ToggleButton,
-  Tooltip,
   Typography,
-  useTheme,
 } from '@mui/material'
 import styled from '@emotion/styled'
-import { MenuBtnStyled } from '../../styled'
-import { SendAssetProps } from './Interface'
-import { TransProps, TranslationProps, WithTranslation, useTranslation, withTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import {
-  AnotherIcon,
   BackIcon,
-  ExchangeAIcon,
-  IncomingIcon,
-  Info2Icon,
-  L1L2_NAME_DEFINED,
-  L1l2Icon,
-  L2l2Icon,
-  MapChainId,
-  OutputIcon,
+  EmptyValueTag,
+  LoadingIcon,
   RoundCheckIcon,
   RoundCircle,
-  WithdrawType,
-  myLog,
 } from '@loopring-web/common-resources'
-import { useSettings, useToggle } from '../../../stores'
 import { FeeSelectProps, Modal } from '../../../components/tradePanel'
-import { CoinIcon, RadioGroupStyle } from '../../../components/basic-lib'
-import React from 'react'
-import { WithdrawData } from '@loopring-web/core'
+import { CoinIcon } from '../../../components/basic-lib'
 
 const BoxStyled = styled(Box)`` as typeof Box
 
@@ -51,6 +31,7 @@ const OptionStyled = styled(Box)<{ checked?: boolean }>`
 `
 
 type OptionType = { checked?: boolean; disabled?: boolean } & BoxProps
+
 const Option = (props: OptionType) => {
   const { checked, children, ...otherProps } = props
   return (
@@ -75,38 +56,10 @@ const FeeTypeStyled = styled(Box)<{ checked?: boolean }>`
   cursor: pointer;
   margin-right: ${({ theme }) => 2 * theme.unit}px;
 `
-// type FeeTypeType = BoxProps
-// const FeeType = (props: FeeTypeType) => {
-//   const { content } = props
-//   return (
-//     <FeeTypeStyled>
-//       {content}
-//     </FeeTypeStyled>
-//   )
-// }
 
-{/* <Box marginTop={1}>
-                  <RadioGroup
-                    aria-label='withdraw'
-                    name='withdraw'
-                    value={withdrawType}
-                    onChange={(e) => {
-                      _handleWithdrawTypeChange(e)
-                    }}
-                  >
-                    {Object.keys(withdrawTypes).map((key) => {
-                      return (
-                        <FormControlLabel
-                          key={key}
-                          disabled={isFeeNotEnough.isOnLoading}
-                          value={key.toString()}
-                          control={<Radio />}
-                          label={`${t('withdrawTypeLabel' + withdrawTypes[key])}`}
-                        />
-                      )
-                    })}
-                  </RadioGroup>
-                </Box> */}
+const BackIconStyled = styled(BackIcon)`
+  transform: rotate(180deg);
+`
 
 export const FeeSelect = (props: FeeSelectProps) => {
   const {
@@ -116,70 +69,116 @@ export const FeeSelect = (props: FeeSelectProps) => {
     feeInfo: selectedFeeInfo,
     handleToggleChange,
     onClose,
-    withdrawInfos
-    // withdrawTypes,
-    
+    withdrawInfos,
+    onClickFee,
+    isFeeNotEnough,
+    feeLoading,
+    isFastWithdrawAmountLimit
   } = props
 
-
   const {t} = useTranslation()
-
   return (
-    <Modal
-      open={open}
-      onClose={() => {
-        onClose()
-      }}
-      content={
-        <BoxStyled
-          flex={1}
+    <>
+      <Typography
+        component={'span'}
+        display={'flex'}
+        flexWrap={'wrap'}
+        alignItems={'center'}
+        variant={'body1'}
+        color={'var(--color-text-secondary)'}
+        marginBottom={1}
+        justifyContent={'space-between'}
+      >
+        <Typography component={'span'} color={'inherit'} minWidth={28}>
+          {t('labelL2toL2Fee')}:
+        </Typography>
+        <Box
+          component={'span'}
           display={'flex'}
           alignItems={'center'}
-          justifyContent={'space-between'}
-          flexDirection={'column'}
-          width={'var(--modal-width)'}
+          style={{ cursor: 'pointer' }}
+          onClick={() => onClickFee()}
         >
-          <Typography marginBottom={3} variant={'h3'}>
-            Fee
-          </Typography>
+          {isFeeNotEnough ? (
+            <Typography component={'span'} color={'var(--color-error)'}>
+              {t('labelL2toL2FeeNotEnough')}
+            </Typography>
+          ) : feeLoading ? (
+            <LoadingIcon fontSize={'medium'} htmlColor={'var(--color-text-primary)'}></LoadingIcon>
+          ) : isFastWithdrawAmountLimit ? (
+            <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
+              {t('labelL2toL2FeeFastNotAllowEnough')}
+            </Typography>
+          ) : selectedFeeInfo && selectedFeeInfo.belong && selectedFeeInfo.fee ? (
+            selectedFeeInfo.fee + ' ' + selectedFeeInfo.belong
+          ) : (
+            EmptyValueTag + ' ' + selectedFeeInfo?.belong ?? EmptyValueTag
+          )}
+          <BackIconStyled fontSize={'medium'} />
+        </Box>
+      </Typography>
+      <Modal
+        open={open}
+        onClose={() => {
+          onClose()
+        }}
+        content={
+          <BoxStyled
+            flex={1}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+            flexDirection={'column'}
+            width={'var(--modal-width)'}
+          >
+            <Typography marginBottom={3} variant={'h3'}>
+              Fee
+            </Typography>
 
-          <Box width={'100%'} paddingX={5} marginBottom={10}>
-            {withdrawInfos && <Box marginBottom={3} display={'flex'}>
-              {Object.keys(withdrawInfos.types).map((key) => {
-                const type = Number(key)
+            <Box width={'100%'} paddingX={5} marginBottom={10}>
+              {withdrawInfos && (
+                <Box marginBottom={3} display={'flex'}>
+                  {Object.keys(withdrawInfos.types).map((key) => {
+                    const type = Number(key)
+                    return (
+                      <FeeTypeStyled
+                        onClick={() => {
+                          withdrawInfos.onChangeType(Number(key))
+                        }}
+                        checked={withdrawInfos.type === type}
+                        key={key}
+                      >
+                        <Typography>{t('withdrawTypeLabel' + withdrawInfos.types[key])}</Typography>
+                      </FeeTypeStyled>
+                    )
+                  })}
+                </Box>
+              )}
+              {chargeFeeTokenList.map((feeInfo, index) => {
                 return (
-                  <FeeTypeStyled onClick={() => {
-                    withdrawInfos.onChangeType(Number(key))
-                  }} checked={withdrawInfos.type === type} key={key}>
-                    <Typography>{t('withdrawTypeLabel' + withdrawInfos.types[key])}</Typography>
-                  </FeeTypeStyled>
+                  <Option
+                    disabled={disableNoToken && !feeInfo.hasToken}
+                    marginBottom={2}
+                    checked={selectedFeeInfo?.belong == feeInfo.belong}
+                    onClick={() => handleToggleChange(feeInfo)}
+                  >
+                    <Box display={'flex'}>
+                      <CoinIcon size={32} symbol={feeInfo.belong} />
+                      <Box marginLeft={1}>
+                        <Typography>{feeInfo.belong}</Typography>
+                        <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
+                          Available: {feeInfo.fee} Pay: {feeInfo.fee}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Option>
                 )
               })}
-            </Box>}
-            {chargeFeeTokenList.map((feeInfo, index) => {
-              return (
-                <Option
-                  disabled={disableNoToken && !feeInfo.hasToken}
-                  marginBottom={2}
-                  checked={selectedFeeInfo?.belong == feeInfo.belong}
-                  onClick={() => handleToggleChange(feeInfo)}
-                >
-                  <Box display={'flex'}>
-                    <CoinIcon size={32} symbol={feeInfo.belong} />
-                    <Box marginLeft={1}>
-                      <Typography>{feeInfo.belong}</Typography>
-                      <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                        Available: {feeInfo.fee} Pay: {feeInfo.fee}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Option>
-              )
-            })}
-          </Box>
-        </BoxStyled>
-      }
-    />
+            </Box>
+          </BoxStyled>
+        }
+      />
+    </>
   )
 }
 

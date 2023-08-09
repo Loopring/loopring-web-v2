@@ -420,7 +420,7 @@ export const WithdrawWrap = <
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            <Typography
+            {/* <Typography
               component={'span'}
               display={'flex'}
               flexWrap={'wrap'}
@@ -447,11 +447,11 @@ export const WithdrawWrap = <
                   {t(`labelL2toL1${withdrawTypes[withdrawType]}`)}
                 </Typography>
                 <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                {isFeeNotEnough.isOnLoading ? (
+                {false ? (
                   <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
                     {t('labelFeeCalculating')}
                   </Typography>
-                ) : isFeeNotEnough.isFeeNotEnough ? (
+                ) : false ? (
                   <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
                     {t('labelL2toL2FeeNotEnough')}
                   </Typography>
@@ -463,7 +463,7 @@ export const WithdrawWrap = <
                   )
                 )}
               </Box>
-            </Typography>
+            </Typography> */}
             <FeeSelect
               chargeFeeTokenList={chargeFeeTokenList}
               handleToggleChange={(feeInfo) => {
@@ -482,6 +482,10 @@ export const WithdrawWrap = <
                   _handleWithdrawTypeChange(w)
                 },
               }}
+              onClickFee={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
+              feeLoading={isFeeNotEnough.isOnLoading}
+              isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+              isFastWithdrawAmountLimit={isFastWithdrawAmountLimit}
             />
             {/* {dropdownStatus === 'up' && (
               <FeeTokenItemWrapper padding={2}>
