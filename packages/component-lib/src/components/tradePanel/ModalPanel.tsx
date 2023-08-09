@@ -143,6 +143,7 @@ export const ModalPanel = <
   sideStackRedeemProps,
   assetsData,
   account,
+  baseURL,
   ...rest
 }: {
   _width?: number | string
@@ -186,6 +187,7 @@ export const ModalPanel = <
     setShowSideStakingRedeem,
     // setShowDual,
   } = useOpenModals()
+
   const {
     isShowTransfer,
     isShowWithdraw,
