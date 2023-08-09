@@ -3,8 +3,7 @@ import { AmmMapStates } from './interface'
 import React from 'react'
 import { getAmmMap, statusUnset, updateRealTimeAmmMap } from './reducer'
 import { RootState } from '../../index'
-import { LoopringMap } from '@loopring-web/loopring-sdk'
-import { AmmPoolStat } from '@loopring-web/loopring-sdk/dist/defs'
+import { LoopringMap, AmmPoolStat } from '@loopring-web/loopring-sdk'
 
 export const useAmmMap = <
   R extends { [key: string]: any },

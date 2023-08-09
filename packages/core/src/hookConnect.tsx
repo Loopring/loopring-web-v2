@@ -17,6 +17,9 @@ import {
 } from '@loopring-web/web3-provider'
 import {
   AccountStatus,
+  ChainETHEREUMIcon,
+  ChainGOERLIIcon,
+  ChainTAIKOIcon,
   DropDownIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
@@ -24,52 +27,60 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
-  SUBMIT_PANEL_AUTO_CLOSE,
   ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-
 import { accountReducer, useAccount } from './stores/account'
-import { useModalData } from './stores'
+import { resetDepositData, resetTransferData, resetWithdrawData, useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { store, WalletConnectL2Btn } from './index'
 import { useTranslation } from 'react-i18next'
-import { Box, SelectChangeEvent, Typography } from '@mui/material'
+import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
-import EthereumProvider from '@walletconnect/ethereum-provider'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
     background: var(--field-opacity);
-    height: var(--input-height-large);
+    height: var(--row-height);
   }
 
-  // .MuiSelect-select {
-  //   padding-left: ${({ theme }) => theme.unit * 3}px;
-  // }
+  .MuiAvatar-root {
+    background: var(--color-white);
+    margin-right: ${({ theme }) => theme.unit}px;
+    width: 20px;
+    height: 20px;
+    position: relative;
 
-  &.test .MuiSelect-outlined span {
-    background: var(--network-bg);
+    svg {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &.test .MuiSelect-outlined .label {
     display: inline-flex;
-    padding: 3px 4px;
-    border-radius: 4px;
-    color: var(--network-text);
 
     &:after {
+      color: var(--network-text);
       content: ' test';
       padding-left: 0.5em;
       display: inline-flex;
       font-size: var(body2);
-      color: inherit;
     }
   }
 
   .MuiSelect-outlined.MuiSelect-outlined {
     padding-right: ${({ theme }) => theme.unit * 3}px;
     padding-left: ${({ theme }) => theme.unit * 3}px;
+    display: inline-flex;
+    align-items: center;
   }
 
   &.mobile .MuiSelect-outlined.MuiSelect-outlined {
@@ -77,21 +88,43 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
     padding-right: ${({ theme }) => theme.unit * 2}px;
   }
 
-  &.header.mobile {
-    padding-left: 0;
-    padding-right: 0;
-    position: relative;
+  &.header {
+    .MuiSelect-outlined {
+      //.MuiAvatar-root {
+      //  display: none;
+      //}
+    }
 
-    .MuiSelect-icon {
-      position: absolute;
-      top: 85%;
-      left: 50%;
-      transform: translateX(-50%);
+    &.mobile {
+      .MuiAvatar-root {
+        display: flex;
+      }
+
+      .label {
+        display: none;
+      }
+
+      padding-left: 0;
+      padding-right: ${({ theme }) => theme.unit * 4}px;
+      position: relative;
     }
   }
 ` as typeof OutlineSelect
 export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
-  &.provider-test {
+  .MuiAvatar-root {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    background: var(--color-white);
+    margin-right: ${({ theme }) => theme.unit}px;
+  }
+
+  &.provider-test .label {
     &:after {
       content: ' test';
       padding-left: 0.5em;
@@ -101,101 +134,182 @@ export const OutlineSelectItemStyle = styled(OutlineSelectItem)`
     }
   }
 ` as typeof OutlineSelectItem
-
+const Icon = ({ label = '' }: { label: string }) => {
+  switch (label) {
+    case 'GOERLI':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainGOERLIIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    case 'ETHEREUM':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainETHEREUMIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    case 'TAIKO':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <ChainTAIKOIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    default:
+      const child = label.split(' ')?.map((item) => item[0])
+      return <Avatar component={'span'} variant='circular' children={child} />
+  }
+}
+const onConnect = async (accAddress: string, chainId: any) => {
+  const {
+    settings: { defaultNetwork },
+    account: { readyState, accAddress: _accAddress },
+  } = store.getState()
+  if (
+    _accAddress?.toLowerCase() === accAddress?.toUpperCase() &&
+    defaultNetwork.toString() == chainId.toString() &&
+    [
+      AccountStatus.NO_ACCOUNT,
+      AccountStatus.DEPOSITING,
+      AccountStatus.NOT_ACTIVE,
+      AccountStatus.LOCKED,
+    ].includes(readyState as AccountStatus)
+  ) {
+    myLog('After connect >>,onChinId change')
+  } else {
+    myLog('After connect >>,network part start: step1 networkUpdate')
+    store.dispatch(updateAccountStatus({ _chainId: chainId }))
+    const networkFlag = await networkUpdate(chainId)
+    if (networkFlag) {
+      resetLayer12Data()
+      checkAccount(accAddress, chainId !== 'unknown' ? chainId : undefined)
+    }
+    store.dispatch(resetWithdrawData(undefined))
+    store.dispatch(resetTransferData(undefined))
+    store.dispatch(resetDepositData(undefined))
+  }
+}
+const onDisConnect = async () => {
+  resetLayer12Data()
+  store.dispatch(resetWithdrawData(undefined))
+  store.dispatch(resetTransferData(undefined))
+  store.dispatch(resetDepositData(undefined))
+}
+export const callSwitchChain = async (_chainId: string | number) => {
+  const { defaultNetwork, themeMode } = store.getState().settings
+  if (Number(defaultNetwork) !== Number(_chainId)) {
+    try {
+      await connectProvides.sendChainIdChange(defaultNetwork, themeMode === ThemeType.dark)
+    } catch (error) {
+      throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+    }
+    if (Number(defaultNetwork) !== Number(await connectProvides?.usedWeb3?.eth?.getChainId())) {
+      throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+    }
+  }
+}
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
-  const { defaultNetwork, setDefaultNetwork, themeMode, isMobile } = useSettings()
-  const { setShowConnect } = useOpenModals()
+  const { defaultNetwork: _defaultNetwork, isMobile } = useSettings()
   const {
     account: { connectName },
   } = useAccount()
-  // const { account } = useAccount();
-  React.useEffect(() => {
-    const account = store.getState().account
-    if (account.readyState === AccountStatus.UN_CONNECT) {
-      // const networkFlag =
-      networkUpdate()
-    }
-  }, [])
+  const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>()
 
-  const handleOnNetworkSwitch = async (value: sdk.ChainId) => {
-    const account = store.getState().account
-    if (value !== defaultNetwork) {
-      setDefaultNetwork(value)
-    }
-    if (account.readyState !== AccountStatus.UN_CONNECT) {
-      // await walletServices.sendDisconnect();
-      setShowConnect({
-        isShow: true,
-        step: WalletConnectStep.CommonProcessing,
-      })
-      myLog(connectProvides)
-      try {
-        await connectProvides.sendChainIdChange(value, themeMode === ThemeType.dark)
-      } catch (error) {
-        const chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-        setDefaultNetwork(chainId ?? defaultNetwork)
-        if (
-          connectProvides?.usedWeb3 &&
-          (error as any)?.code == 4001 &&
-          window?.ethereum?.isConnected() &&
-          !(connectProvides?.usedProvide as EthereumProvider)?.isWalletConnect
-        ) {
-          setShowConnect({
-            isShow: true,
-            step: WalletConnectStep.RejectSwitchNetwork,
-          })
-          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+  const handleOnNetworkSwitch = React.useCallback(
+    async (value: sdk.ChainId) => {
+      myLog('defaultNetwork', value)
+      const account = store.getState().account
+      setDefaultNetwork((state) => {
+        if (Number(value) !== Number(state)) {
+          if (account.readyState !== AccountStatus.UN_CONNECT) {
+            if (connectProvides?.usedWeb3 && connectProvides.usedProvide) {
+              onConnect(account.accAddress, value)
+            } else {
+              onDisConnect()
+              return state
+            }
+          } else {
+            networkUpdate(Number(value))
+          }
         }
-
-        setShowConnect({
-          isShow: false,
-          step: WalletConnectStep.RejectSwitchNetwork,
-        })
+        return value
+      })
+    },
+    [defaultNetwork],
+  )
+  React.useEffect(() => {
+    setDefaultNetwork((state) => {
+      if (_defaultNetwork && state !== _defaultNetwork) {
+        networkUpdate()
+        return Number(_defaultNetwork)
+      } else {
+        return state
       }
-    } else {
-      networkUpdate()
-    }
-  }
+    })
+  }, [_defaultNetwork])
 
+  const disable = React.useCallback(
+    (id: any) => {
+      myLog(connectName, ConnectProviders.WalletConnect)
+      if (connectName == ConnectProviders.GameStop.toString()) {
+        return ![1, 5].includes(Number(id))
+      } else if (
+        (connectProvides.usedProvide as any)?.session &&
+        (connectProvides.usedProvide as any)?.namespace
+      ) {
+        // @ts-ignore
+        const optionalChains = connectProvides.usedProvide?.session?.namespaces[
+          (connectProvides.usedProvide as any).namespace
+        ]?.chains ?? [`${(connectProvides.usedProvide as any).namespace}:${defaultNetwork}`]
+        return !optionalChains.includes(
+          `${(connectProvides.usedProvide as any).namespace}:${Number(id)}`,
+        )
+      }
+      return false
+    },
+    [connectName, connectProvides.usedProvide, defaultNetwork],
+  )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
+    myLog('defaultNetwork NetWorkItems', defaultNetwork)
     return (
       <>
-        <OutlineSelectStyle
-          aria-label={NetworkMap[defaultNetwork]?.label}
-          IconComponent={DropDownIcon}
-          labelId='network-selected'
-          id='network-selected'
-          className={`${className} ${NetworkMap[defaultNetwork]?.isTest ? 'test ' : ''} ${
-            isMobile ? 'mobile' : ''
-          }`}
-          value={!defaultNetwork ? sdk.ChainId.MAINNET : defaultNetwork}
-          autoWidth
-          onChange={(event: SelectChangeEvent<any>) => handleOnNetworkSwitch(event.target.value)}
-        >
-          {AvaiableNetwork.reduce((prew, id, index) => {
-            if (NetworkMap[id]) {
-              prew.push(
-                <OutlineSelectItemStyle
-                  disabled={
-                    ![1, 5].includes(Number(id)) &&
-                    [ConnectProviders.GameStop].includes(connectName)
-                  }
-                  className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
-                  aria-label={NetworkMap[id].label}
-                  value={id}
-                  key={'viewNetwork' + NetworkMap[id] + index}
-                >
-                  <span>{t(NetworkMap[id].label)}</span>
-                </OutlineSelectItemStyle>,
-              )
-            }
-            return prew
-          }, [] as JSX.Element[])}
-        </OutlineSelectStyle>
+        {defaultNetwork && (
+          <OutlineSelectStyle
+            aria-label={NetworkMap[defaultNetwork]?.label}
+            IconComponent={DropDownIcon}
+            labelId='network-selected'
+            id='network-selected'
+            className={`${className} ${NetworkMap[defaultNetwork]?.isTest ? 'test ' : ''} ${
+              isMobile ? 'mobile' : ''
+            }`}
+            value={defaultNetwork}
+            autoWidth
+            onChange={(event: SelectChangeEvent<any>) => handleOnNetworkSwitch(event.target.value)}
+          >
+            {AvaiableNetwork.reduce((prew, id, index) => {
+              if (NetworkMap[id]) {
+                prew.push(
+                  <OutlineSelectItemStyle
+                    disabled={disable(id)}
+                    className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
+                    aria-label={NetworkMap[id].label}
+                    value={id}
+                    key={'viewNetwork' + NetworkMap[id] + index}
+                  >
+                    <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
+                      <Icon label={MapChainId[id]} />
+                      <span className={'label'}>{t(NetworkMap[id].label)}</span>
+                    </Typography>
+                  </OutlineSelectItemStyle>,
+                )
+              }
+              return prew
+            }, [] as JSX.Element[])}
+          </OutlineSelectStyle>
+        )}
       </>
     )
-  }, [defaultNetwork, NetworkMap, connectName])
+  }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide])
   React.useEffect(() => {}, [])
 
   return {
@@ -235,25 +349,7 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
       chainId: sdk.ChainId | 'unknown'
     }) => {
       const accAddress = accounts[0]
-      myLog('After connect >>,network part start: step1 networkUpdate')
-      store.dispatch(updateAccountStatus({ _chainId: chainId }))
-      const networkFlag = await networkUpdate()
-      const currentProvide = connectProvides.usedProvide
-      myLog(
-        'After connect >>,network part done: step2 check account,',
-        connectProvides.usedWeb3,
-        currentProvide,
-      )
-
-      if (networkFlag) {
-        resetLayer12Data()
-        checkAccount(accAddress, chainId !== 'unknown' ? chainId : undefined)
-      }
-
-      resetWithdrawData()
-      resetTransferData()
-      resetDepositData()
-
+      await onConnect(accAddress, chainId)
       setShouldShow(false)
       setShowConnect({
         isShow: !!shouldShow ?? false,
@@ -274,29 +370,19 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const handleAccountDisconnect = React.useCallback(
     async ({ reason, code }: { reason?: string; code?: number }) => {
-      // const {};
-
       myLog('handleAccountDisconnect:', account, reason, code)
       resetAccount({ shouldUpdateProvider: true })
       setStateAccount(SagaStatus.PENDING)
-      resetLayer12Data()
-
-      resetWithdrawData()
-      resetTransferData()
-      resetDepositData()
-      // await sleep(REFRESH_RATE)
+      onDisConnect()
     },
-    [account, resetAccount, resetDepositData, resetTransferData, resetWithdrawData],
+    [account],
   )
 
   const handleProcessing = React.useCallback(
     ({ opts, type }: { type: ProcessingType; opts: any }) => {
       if (type == ProcessingType.nextStep) {
         if (opts.step !== undefined && opts.step == ProcessingStep.showQrcode) {
-          store.dispatch(
-            //TODO:
-            accountReducer.updateAccountStatus({ qrCodeUrl: opts.QRcode }),
-          )
+          store.dispatch(accountReducer.updateAccountStatus({ qrCodeUrl: opts.QRcode }))
           setShowConnect({
             isShow: false,
           })
@@ -325,24 +411,14 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
       statusAccountUnset()
       setShowAccount({ isShow: false })
-      if (
+      if (props?.opts?.error?.code === -32002) {
+      } else if (
         props?.opts?.connectName === ConnectProviders.WalletConnect &&
         props?.opts?.error &&
         props?.opts?.error?.code === UIERROR_CODE.ERROR_WALLECTCONNECT_MANUALLY_CLOSE
       ) {
         setShowConnect({ isShow: false })
-        // setShowConnect({
-        //   isShow: true,
-        //   step: WalletConnectStep.RejectConnect,
-        // });
       } else {
-        setShowConnect({
-          isShow: true,
-          step: WalletConnectStep.FailedConnect,
-          error: {
-            ...props.opts.error,
-          } as sdk.RESULT_INFO,
-        })
       }
     },
     [

@@ -12,7 +12,6 @@ export function useOverview<R extends RowInvest>() {
   const [filteredData, setFilteredData] = React.useState<R[]>(rawData)
   const [myMapLoading, setMyMapLoading] = React.useState(false)
 
-
   const [myRawData, setMyRawData] = React.useState<R[]>([])
   const filterData = (rawData: R[], value: string) => {
     return rawData.filter((item) => {

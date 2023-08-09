@@ -781,7 +781,7 @@ export default {
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
   labelMintFeeChoose: 'Select payment token',
-  labelLayerSwapUnderstand: 'Acknowledge and understand the risk',
+  labelLayerSwapUnderstand: 'I understand and acknowledge the risk',
   labelIUnderStand: 'I Understand',
   labelLayerSwapUnderstandDes:
     'LayerSwap is a 3rd party App service provider to help move tokens from exchange to {{loopringL2}} directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
@@ -816,7 +816,7 @@ export default {
   labelNFTProperties: 'Properties',
   labelNFTDescription2: 'Description',
   labelForceWithdrawNotAvailable:
-    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1Symbol}} anymore',
+    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1symbol}} anymore',
   labelForceWithdrawNoToken: 'No token is detected from this address to operate',
   labelForceWithdrawBtn: 'Force Withdraw',
   labelInvestDefiTitle: 'ETH Staking',
@@ -1718,8 +1718,8 @@ export default {
   labelAddAssetTitleAnotherNetDesActive:
     'If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the {{l2Symbol}} account.',
   labelAnotherNetworkDes:
-    'Orbiter.finance is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
-  labelAnotherNetworkUnderstand: 'Acknowledge and understand the risk',
+    '<0>Orbiter.finance</0> is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <2>TOS</2>.',
+  labelAnotherNetworkUnderstand: 'I understand and acknowledge the risk',
   labelReferralImageDes: 'Scan code to register',
   labelReferralImageCode: 'Code: {{code}}',
   labelInvite: 'Invite Friends',

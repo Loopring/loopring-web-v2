@@ -8,9 +8,16 @@ import {
   TradeNFT,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { AmmPanelType } from '../../../components'
+import { AmmPanelType, ToastType } from '../../../components'
 
 const initialState: ModalState = {
+  isShowGlobalToast: {
+    isShow: false,
+    info: {
+      content: '',
+      type: ToastType.info,
+    },
+  },
   isShowNFTMetaNotReady: { isShow: false },
   isShowRedPacket: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },
@@ -52,6 +59,22 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   name: 'modals',
   initialState,
   reducers: {
+    setShowGlobalToast(
+      state,
+      action: PayloadAction<{
+        isShow: boolean
+        info: {
+          content: string
+          type: ToastType
+        }
+      }>,
+    ) {
+      const { isShow, info } = action.payload
+      state.isShowGlobalToast = {
+        isShow,
+        info,
+      }
+    },
     setNFTMetaNotReady(
       state,
       action: PayloadAction<{
@@ -392,5 +415,6 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
-  setShowFeeSelect
+  setShowFeeSelect,
+  setShowGlobalToast,
 } = modalsSlice.actions
