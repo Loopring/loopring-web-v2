@@ -37,7 +37,6 @@ export function useAccount() {
   )
 
   const addressShort = getShortAddr(account.accAddress)
-  
 
   return {
     account,

@@ -156,7 +156,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
     >
       <Box maxWidth={'480px'} padding={5}>
         <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
-          Address Type
+          {t("labelL2toL1AddressType")}
         </Typography>
         {desMenuItem}
         {walletListFn(detectedWalletType).map(
@@ -242,7 +242,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
     >
       <Box maxWidth={'480px'} padding={5}>
         <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
-          Address Type
+          {t("labelL2toL1AddressType")}
         </Typography>
         <MenuItemStyle disabled={true} value={-1}>
           <Typography component={'span'}>{t('labelExchangeTypeDes')}</Typography>

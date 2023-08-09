@@ -145,7 +145,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
             width={'var(--modal-width)'}
           >
             <Typography marginBottom={3} variant={'h3'}>
-              Fee
+              {t("labelFee")}
             </Typography>
 
             <Box width={'100%'} paddingX={5} marginBottom={10}>
@@ -180,7 +180,10 @@ export const FeeSelect = (props: FeeSelectProps) => {
                       <Box marginLeft={1}>
                         <Typography>{feeInfo.belong}</Typography>
                         <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                          Available: {feeInfo.fee} Pay: {feeInfo.fee}
+                          {t("labelFeeAvailablePay", {
+                            available:feeInfo.fee,
+                            pay:feeInfo.fee
+                          })}
                         </Typography>
                       </Box>
                     </Box>

@@ -14,7 +14,6 @@ import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 import {
   AddressError,
   AlertIcon,
-  BackIcon,
   CheckBoxIcon,
   CheckedIcon,
   CloseIcon,
@@ -38,9 +37,7 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  DropdownIconStyled,
   FeeSelect,
-  FeeTokenItemWrapper,
   TextField,
   Toast,
   ToastType,
@@ -49,10 +46,8 @@ import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
-import { FeeToggle } from './tool/FeeList'
 import { useSettings } from '../../../stores'
 import { TransferAddressType } from './AddressType'
-import styled from '@emotion/styled'
 
 
 

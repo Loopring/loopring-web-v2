@@ -10,7 +10,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useSystem } from '@loopring-web/core'
 import { useAccountModalForUI } from './hook'
-import { Account, AssetsRawDataItem, TOAST_TIME, myLog } from '@loopring-web/common-resources'
+import { Account, AssetsRawDataItem, TOAST_TIME } from '@loopring-web/common-resources'
 
 export const ModalAccountInfo = withTranslation('common')(
   ({
@@ -58,7 +58,6 @@ export const ModalAccountInfo = withTranslation('common')(
       exportAccountProps,
       // dualTradeProps,
       sideStackRedeemProps,
-      
       copyToastOpen,
       openQRCode,
       accountList,
@@ -67,8 +66,6 @@ export const ModalAccountInfo = withTranslation('common')(
       onBackSend,
       // toastOpen,
       // closeToast,
-      feeSelectProps
-
     } = useAccountModalForUI({
       t,
       assetsRawData,
@@ -159,7 +156,6 @@ export const ModalAccountInfo = withTranslation('common')(
           setExportAccountToastOpen={setExportAccountToastOpen}
           account={account}
           sideStackRedeemProps={sideStackRedeemProps as any}
-          feeSelectProps={feeSelectProps}
           {...{ _height: 'var(--modal-height)', _width: 'var(--modal-width)' }}
         />
         <Toast

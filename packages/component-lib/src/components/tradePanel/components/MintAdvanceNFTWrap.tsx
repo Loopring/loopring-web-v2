@@ -903,20 +903,20 @@ export const MintAdvanceNFTWrap = <
                     ) : (
                       <>
                         <FeeSelect
-                      chargeFeeTokenList={chargeFeeTokenList}
-                      handleToggleChange={(fee: FeeInfo) => {
-                        handleToggleChange(fee as C)
-                        setShowFeeModal(false)
-                      }}
-                      feeInfo={feeInfo as FeeInfo}
-                      open={showFeeModal}
-                      onClose={() => {
-                        setShowFeeModal(false)
-                      }}
-                      isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
-                      feeLoading={isFeeNotEnough.isOnLoading}
-                      onClickFee={() => setShowFeeModal((prev) => !prev)}
-                    />
+                          chargeFeeTokenList={chargeFeeTokenList}
+                          handleToggleChange={(fee: FeeInfo) => {
+                            handleToggleChange(fee as C)
+                            setShowFeeModal(false)
+                          }}
+                          feeInfo={feeInfo as FeeInfo}
+                          open={showFeeModal}
+                          onClose={() => {
+                            setShowFeeModal(false)
+                          }}
+                          isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+                          feeLoading={isFeeNotEnough.isOnLoading}
+                          onClickFee={() => setShowFeeModal((prev) => !prev)}
+                        />
                       </>
                     )}
                   </Box>

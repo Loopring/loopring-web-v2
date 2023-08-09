@@ -60,8 +60,6 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useContacts } from '../../stores/contacts/hooks'
-import { useFeeSelect } from './useFeeSelect'
-import { feeServices } from '@loopring-web/core'
 
 const checkIsHebao = (accountAddress: string) =>
   LoopringAPI.walletAPI!.getWalletType({
@@ -117,7 +115,7 @@ export const getAllContacts = async (
 }
 
 export const useTransfer = <R extends IBData<T>, T>() => {
-  const { setShowAccount, setShowTransfer, setShowFeeSelect } = useOpenModals()
+  const { setShowAccount, setShowTransfer } = useOpenModals()
 
   const {
     modals: {
@@ -154,8 +152,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
+    feeInfo,
     checkFeeIsEnough,
-    resetIntervalTime
+    resetIntervalTime,
   } = useChargeFees({
     requestType: feeWithActive
       ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
@@ -172,7 +171,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     //   [feeWithActive]
     // ),
   })
-  const { feeSelectProps: {feeInfo} } = useFeeSelect()
   const {
     chargeFeeTokenList: activeAccountFeeList,
     checkFeeIsEnough: checkActiveFeeIsEnough,
@@ -262,11 +260,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
-      // feeServices.checkFeeIsEnough()
       checkFeeIsEnough()
       return
     }
-    // feeServices.checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     // checkActiveFeeIsEnough({
     //   isRequiredAPI: true,
@@ -328,6 +324,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       setAddress('')
     }
   }, [
+    checkFeeIsEnough,
     symbol,
     walletMap,
     updateTransferData,
@@ -345,7 +342,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     ) {
       resetDefault()
     } else {
-      
       resetIntervalTime()
       checkActiveFeeIsEnough({
         isRequiredAPI: true,
@@ -480,6 +476,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       setShowTransfer,
       resetTransferData,
       updateHW,
+      checkFeeIsEnough,
     ],
   )
 
@@ -710,7 +707,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     onTransferClick,
     handlePanelEvent,
     handleFeeChange,
-    feeInfo: transferValue.fee,
+    feeInfo,
     handleSureItsLayer2: (sure) => {
       const found = exWalletToAddressMapFn(sure)!
       const contact = contacts?.find((x) => x.address === realAddr)

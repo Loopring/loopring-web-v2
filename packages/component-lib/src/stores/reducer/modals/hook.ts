@@ -279,18 +279,6 @@ export const useOpenModals = () => {
         dispatch(setShowSideStakingRedeem(state)),
       [dispatch],
     ),
-    setShowFeeSelect: React.useCallback(
-      (
-        state: ModalStatePlayLoad & {
-          requestType?:
-            | OffchainFeeReqType
-            | OffchainNFTFeeReqType
-            | 'UPDATE_ACCOUNT_BY_NEW'
-            | 'TRANSFER_ACTIVE'
-        },
-      ) => dispatch(setShowFeeSelect(state)),
-      [dispatch],
-    ),
     setShowGlobalToast: React.useCallback(
       (state: {
         isShow: boolean

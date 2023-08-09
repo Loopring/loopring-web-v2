@@ -185,7 +185,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router-dom'
 import { ImportRedPacket } from './components/QRCodeScanner'
 import { useClaimConfirm } from '../../hooks/useractions/useClaimConfirm'
-import { useFeeSelect } from '../../hooks/useractions/useFeeSelect'
 
 export function useAccountModalForUI({
   t,
@@ -275,7 +274,6 @@ export function useAccountModalForUI({
 
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount()
-  const { feeSelectProps } = useFeeSelect()
 
   const [openQRCode, setOpenQRCode] = useState(false)
 
@@ -3199,7 +3197,6 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    feeSelectProps
     // checkActiveStatusProps,
     // dualToastOpen,
   }

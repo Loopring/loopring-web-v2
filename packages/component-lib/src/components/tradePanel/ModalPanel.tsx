@@ -25,8 +25,6 @@ import {
   useSettings,
   WithdrawPanel,
   WithdrawProps,
-  FeeSelect,
-  FeeSelectProps
 } from '../..'
 import {
   Account,
@@ -145,8 +143,6 @@ export const ModalPanel = <
   sideStackRedeemProps,
   assetsData,
   account,
-  baseURL,
-  feeSelectProps,
   ...rest
 }: {
   _width?: number | string
@@ -171,9 +167,7 @@ export const ModalPanel = <
   exportAccountProps: any
   account: Account
   setExportAccountToastOpen: any
-  feeSelectProps: FeeSelectProps
 }) => {
-  myLog('asjdlkasjdlkasjdlkjaskl', feeSelectProps)
   const { isMobile } = useSettings()
   const {
     modals,
@@ -190,7 +184,6 @@ export const ModalPanel = <
     setShowClaimWithdraw,
     setShowCollectionAdvance,
     setShowSideStakingRedeem,
-    setShowFeeSelect
     // setShowDual,
   } = useOpenModals()
   const {
@@ -208,9 +201,7 @@ export const ModalPanel = <
     isShowLayerSwapNotice,
     isShowAnotherNetwork,
     isShowClaimWithdraw,
-    isShowSideStakingRedeem,
-    isShowFeeSelect
-    // isShowDual,
+    isShowSideStakingRedeem
   } = modals
   const theme = useTheme()
   return (
@@ -479,15 +470,6 @@ export const ModalPanel = <
           >
             <DeFiStackRedeemWrap isJoin={false} {...(sideStackRedeemProps as any)} />
           </Box>
-        }
-      />
-      <Modal
-        open={isShowFeeSelect.isShow}
-        onClose={() => {
-          setShowFeeSelect({ isShow: false })
-        }}
-        content={
-          <FeeSelect {...feeSelectProps}/>
         }
       />
     </>
