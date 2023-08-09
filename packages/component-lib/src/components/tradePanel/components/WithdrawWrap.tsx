@@ -294,6 +294,7 @@ export const WithdrawWrap = <
         {!isToMyself ? (
           <>
             <TextField
+              size={'large'}
               className={'text-address'}
               value={addressDefault}
               error={!!(isNotAvailableAddress || isInvalidAddressOrENS)}

@@ -444,6 +444,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
       <Grid item alignSelf={'stretch'} position={'relative'}>
         <TextField
+          size={'large'}
           className={'text-address'}
           value={addressDefault}
           error={!!(isInvalidAddressOrENS || isSameAddress)}
@@ -461,7 +462,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               <InputAdornment
                 style={{
                   cursor: 'pointer',
-                  paddingRight: '0',
+                  paddingRight: '4px'
                 }}
                 position='end'
               >
@@ -513,6 +514,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
       <Grid item alignSelf={'stretch'} position={'relative'}>
         <TextField
+          size={'large'}
           value={memo}
           label={t('labelL2toL2Memo')}
           placeholder={t('labelL2toL2MemoPlaceholder')}

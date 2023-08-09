@@ -19,13 +19,12 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
       size == 'large'
         ? `
       height:var(--input-height-large);
-      font-size:2rem;
+      font-size:1.5rem;
       .MuiInputAdornment-root{
        svg{
-        height:var(--btn-icon-size);
-        width: var(--btn-icon-size);
+        height:var(--btn-icon-size-medium);
+        width: var(--btn-icon-size-medium);
        }
-       
       }
     `
         : ``};
@@ -44,7 +43,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
     .MuiSelect-nativeInput + svg {
       position: absolute;
       right: 0.4rem;
-      top: ${({ theme }) => theme.unit}px;
+      right: ${({  size }) => size === 'large' ? 1 : 0.4}rem;
+      top: ${({ theme, size }) => size === 'large' ? 2 * theme.unit : theme.unit}px;
       color: var(--color-text-secondary);
     }
 

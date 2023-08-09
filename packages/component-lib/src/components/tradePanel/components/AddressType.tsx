@@ -137,6 +137,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
   // const walletType = WALLET_TYPE.EOA
   return (
     <TextField
+      size={'large'}
       select
       disabled={disabled}
       fullWidth
@@ -151,8 +152,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
           walletListFn(detectedWalletType).find((item) => item.value === selectedValue)?.label ??
           '',
       }}
-      label={t('labelL2toL2AddressType')}
-      // inputProps={{}}
+      label={<Typography color={'var(--color-text-third)'}>{t('labelL2toL1AddressType')}</Typography>}
     >
       <Box maxWidth={'480px'} padding={5}>
         <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
@@ -223,6 +223,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
 
   return (
     <TextField
+      size={'large'}
       select
       disabled={disabled}
       fullWidth
@@ -237,8 +238,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
           walletListFn(detectedWalletType).find((item) => item.value === selectedValue)?.label ??
           '',
       }}
-      label={t('labelL2toL1AddressType')}
-      // inputProps={{}}
+      label={<Typography color={'var(--color-text-third)'}>{t('labelL2toL1AddressType')}</Typography>}
     >
       <Box maxWidth={'480px'} padding={5}>
         <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
