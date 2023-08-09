@@ -55,7 +55,7 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
       <Box marginBottom={3} marginTop={-1} display={'flex'} alignItems={'center'}>
         <Typography component={'h3'} variant={isMobile ? 'h4' : 'h3'} whiteSpace={'pre'} marginRight={1}>
           {t('labelSendAssetTitle', {
-            // symbol,
+            symbol,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
           })}
         </Typography>

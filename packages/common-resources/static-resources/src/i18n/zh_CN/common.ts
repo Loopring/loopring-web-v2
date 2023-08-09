@@ -689,7 +689,7 @@ export default {
   labelL1toL2From: 'From',
   labelL1toL2TO: 'To {{loopringL2}}',
   labelAddAssetTitle: 'Add {{loopringL2}} {{symbol}} assets',
-  labelSendAssetTitle: '{{loopringL2}} Send',
+  labelSendAssetTitle: 'Send {{loopringL2}} {{symbol}} assets',
   labelAddAssetHowto: 'How would you like to add {{loopringL2}} assets?',
   labelAddAssetTitleActive: 'Add assets & Activate',
   labelFromMyL1: 'From my {{l1Symbol}} account',
