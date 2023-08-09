@@ -250,13 +250,13 @@ export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
 export const ammDisableList = ['Liquidity']
 
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
-  {
-    label: {
-      id: 'Landing-page',
-      i18nKey: 'labelZkRollupLayer2',
-    },
-    router: { path: Exchange },
-  },
+  // {
+  //   label: {
+  //     id: 'Landing-page',
+  //     i18nKey: 'labelZkRollupLayer2',
+  //   },
+  //   router: { path: Exchange },
+  // },
   {
     label: {
       id: 'wallet',

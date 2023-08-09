@@ -1820,5 +1820,5 @@ export default {
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
-  labelToMyL2WidthAddress: 'My {{loopringL2}} <1>({{address}})</1>',
+  labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
 }
