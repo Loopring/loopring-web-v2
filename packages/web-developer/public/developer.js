@@ -866,9 +866,9 @@ const basicUrl = 'https://static.loopring.io/assets/images/landPage/'
     i18next.changeLanguage('en_US')
   }
   const updateI18n = () => {
-    document.getElementById('labelNavZkRollupLayer2').innerHTML =
-      i18next.t('labelNavZkRollupLayer2')
-    document.getElementById('labelDeveloper').innerHTML = i18next.t('labelDeveloper')
+    // document.getElementById('labelNavZkRollupLayer2').innerHTML =
+    //   i18next.t('labelNavZkRollupLayer2')
+    // document.getElementById('labelDeveloper').innerHTML = i18next.t('labelDeveloper')
     document.getElementById('labelNavWallet').innerHTML = i18next.t('labelNavWallet')
     document.getElementById('labelNavLanuch').innerHTML = i18next.t('labelNavLanuch')
     document.getElementById('labelAbout').innerHTML = i18next.t('labelAbout')

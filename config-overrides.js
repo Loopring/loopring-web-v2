@@ -13,33 +13,37 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ASSET_PATH = process.env.ASSET_PATH || '/'
 // const rewireLess = require('react-app-rewire-less')
 
-const { alias } = require('react-app-rewire-alias')
+// const { alias } = require('react-app-rewire-alias')
 
 const path = require('path')
 
-const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const gitRevisionPlugin = new GitRevisionPlugin()
+// const GitRevisionPlugin = require('git-revision-webpack-plugin')
+// const gitRevisionPlugin = new GitRevisionPlugin()
 const direct = './'
 const packagesPath = './packages'
 // Deployment on Heroku
 // During Heroku builds, the SOURCE_VERSION and STACK environment variables are set:
-var onHeroku = process.env.SOURCE_VERSION && process.env.STACK
+// var onHeroku = process.env.SOURCE_VERSION && process.env.STACK
 // If we're on Heroku, we don't have access to the .git directory so we can't
 // rely on git commands to get the version. What we *do* have during Heroku
 // builds is a SOURCE_VERSION env with the git SHA of the commit being built,
 // so we can use that instead to generate the version file.
-function getCommitHash() {
-  try {
-    return onHeroku ? process.env.SOURCE_VERSION : gitRevisionPlugin.commithash()
-  } catch (error) {
-    return ''
-  }
-}
+// function getCommitHash() {
+//   try {
+//     return onHeroku ? process.env.SOURCE_VERSION : gitRevisionPlugin.commithash()
+//   } catch (error) {
+//     return ''
+//   }
+// }
 
-console.log(__dirname)
+// console.log(__dirname)
 
 exports = module.exports = override(
-  addWebpackAlias({}),
+  // addWebpackAlias({
+  //   '@material-ui/core/Menu': path.resolve(__dirname, 'node_modules', '@mui/material/Menu'),
+  //   '@material-ui/core': path.resolve(__dirname, 'node_modules', '@mui/material'),
+  //   '@material-ui/core/Popover': path.resolve(__dirname, 'node_modules', '@mui/material/Popover'),
+  // }),
   addWebpackPlugin(
     new CopyWebpackPlugin({
       patterns: [
@@ -53,7 +57,6 @@ exports = module.exports = override(
   ),
   addWebpackPlugin(
     new webpack.DefinePlugin({
-      'process.env.COMMITHASH': JSON.stringify(getCommitHash()),
       'process.env.TIME':
         '"' + new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }) + '/SH"',
     }),
@@ -88,9 +91,19 @@ exports = module.exports = override(
 
   (config) => {
     config.output.publicPath = ASSET_PATH
-    console.log(path.resolve(__dirname, packagesPath, 'common-resources', 'assets/'))
-    console.log('-----> enter config!!!!!!!', process.env.NODE_ENV)
-
+    // config.resolve.fallback =   Object.assign(config.resolve.fallback??{}, {
+    //   "stream": false,
+    //   "crypto": false,
+    //   // 'crypto-js':require.resolve('crypto-js'),
+    //   'crypto-js/sha256' : require.resolve('crypto-js/sha256'),
+    //   // 'crypto-js':require.resolve("crypto-js")
+    //   // "stream": require.resolve("stream-browserify"),
+    //   // "assert": require.resolve("assert"),
+    //   "http": require.resolve("stream-http"),
+    //   "https": require.resolve("https-browserify"),
+    //   // "os": require.resolve("os-browserify"),
+    //   // "url": require.resolve("url")
+    // })
     const setConfig = (index) => {
       let babelLoader = config.module.rules[1].oneOf[index]
       console.log(
@@ -101,10 +114,10 @@ exports = module.exports = override(
         // babelLoader.options.plugins
       )
 
-      babelLoader.include = babelLoader.include.replace(/\/web.*\/src/, '')
+      // babelLoader.include = babelLoader.include.replace(/\/web.*\/src/, '')
 
       babelLoader.include = [
-        babelLoader.include,
+        path.resolve(__dirname, packagesPath),
         ...[
           path.resolve(
             __dirname,
