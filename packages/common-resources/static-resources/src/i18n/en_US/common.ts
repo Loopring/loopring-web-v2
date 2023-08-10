@@ -1233,7 +1233,7 @@ export default {
   labelwithdraw: 'Withdrawal',
   labelDeposit: 'Deposit',
   labelFiatAmount: 'Fiat Amount',
-  labelToMyL2: 'My {{loopringL2}} <1>({{address}})</1>',
+  labelToMyL2: 'My {{loopringL2}}',
   labelBanxaNotReady:
     'Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us',
   labelBanxaFailedForAPI: 'Please waiting a while, Banxa service is not available currently.',
@@ -1811,7 +1811,7 @@ export default {
   labelDefiMaxBalance1Leverage:
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiNoBalanceLeverage:
-    '<span>CIAN pool is drained out in Loopring Layer 2 thus can\'t fulfill your redemption request currently. The rebalance will happen soon. Please come back later to try again. \nYou can also withdraw CIETH to L1 account, then access https://vault.cian.app/vaults to proceed directly.</span>',
+    '<span>Loopring will set up the pool soon. Please come back later to redeem.</span>',
   labelDefiMaxBalanceLeverage:
     'It is not possible for the Loopring pool to fulfil your complete request at the moment. You can choose withdraw ciETH https://vault.cian.app/vaults',
   labelFunctionList: 'Function List:',

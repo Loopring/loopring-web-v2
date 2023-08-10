@@ -372,16 +372,6 @@ export const leverageETHConfig = {
     GOERLI: ['lido'],
   },
 }
-export const leverageETHCoins = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['CIETH'],
-  GOERLI: ['WSTETH'],
-}
-export const leverageETHTypes = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['cian'],
-  GOERLI: ['lido'],
-}
 
 export const subMenuNFT = {
   NFTGroup: [

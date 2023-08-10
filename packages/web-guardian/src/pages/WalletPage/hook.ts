@@ -161,8 +161,7 @@ export const useHebaoMain = <
           }),
         ])
           .catch((error) => {
-            //TODO: move to myLog when test finished
-            console.log('guardianConfig error', error)
+            myLog('guardianConfig error', error)
             setIsLoading(false)
           })
           .finally(() => {

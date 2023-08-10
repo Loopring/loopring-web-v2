@@ -264,7 +264,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                       }
                     }}
                   >
-                    {t('labelDefiSubscribe')}
+                    {t('labelDefiInvest')}
                   </Button>
                 </Grid>
                 <Grid item>
