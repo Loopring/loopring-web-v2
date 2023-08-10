@@ -829,7 +829,7 @@ export const ProfileIndex = {
     ProfileKey.forcewithdraw,
     ProfileKey.vip,
     ProfileKey.contact,
-    // ProfileKey.referralrewards
+    ProfileKey.referralrewards,
   ],
   GOERLI: [
     ProfileKey.security,
