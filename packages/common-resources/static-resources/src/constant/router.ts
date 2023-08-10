@@ -11,7 +11,7 @@ import {
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
-import { Exchange, WalletSite } from './setting'
+import { WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -250,13 +250,6 @@ export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
 export const ammDisableList = ['Liquidity']
 
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
-  // {
-  //   label: {
-  //     id: 'Landing-page',
-  //     i18nKey: 'labelZkRollupLayer2',
-  //   },
-  //   router: { path: Exchange },
-  // },
   {
     label: {
       id: 'wallet',
@@ -264,22 +257,6 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
     },
     router: { path: WalletSite },
   },
-  // {
-  //   label: {
-  //     id: "bridge",
-  //     i18nKey: "labelBridge",
-  //     description: "labelBridgeDes",
-  //   },
-  //   router: { path: "https://loopring.io/#/" },
-  // },
-  // {
-  //   label: {
-  //     id: "guardian",
-  //     i18nKey: "labelGuardian",
-  //     description: "labelGuardianDes",
-  //   },
-  //   router: { path: "https://loopring.io/#/" },
-  // },
 ]
 export const subMenuLayer2 = {
   assetsGroup: [
