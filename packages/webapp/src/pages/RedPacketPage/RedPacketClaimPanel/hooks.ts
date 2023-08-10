@@ -24,7 +24,7 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TokenType,
 } from '@loopring-web/common-resources'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 
 export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   setToastOpen: (props: any) => void,

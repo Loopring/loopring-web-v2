@@ -178,7 +178,7 @@ export type DepositExtendProps<T> = {
   toIsAddressCheckLoading: boolean
   // toIsLoopringAddress: boolean;
   toAddress?: string
-  realToAddress?: string
+  realToAddress?: string | JSX.Element
   handleClear: () => void
   isToAddressEditable: boolean
   onBack?: () => void

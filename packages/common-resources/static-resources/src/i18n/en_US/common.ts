@@ -1233,7 +1233,7 @@ export default {
   labelwithdraw: 'Withdrawal',
   labelDeposit: 'Deposit',
   labelFiatAmount: 'Fiat Amount',
-  labelToMyL2: 'My {{loopringL2}}',
+  labelToMyL2: 'My {{loopringL2}} <1>({{address}})</1>',
   labelBanxaNotReady:
     'Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us',
   labelBanxaFailedForAPI: 'Please waiting a while, Banxa service is not available currently.',
@@ -1755,10 +1755,10 @@ export default {
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
   labelClaimTypeREFERER_FEE: 'Refunds Rewards',
-  labelClaimTypePROTOCOL_FEE: 'Protocol Fee (AMM)',
+  labelClaimTypePROTOCOL_FEE: 'Dedicated AMM Incentive',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
-  labelAMMClaimableEarnings: 'Protocol Fee (AMM)',
+  labelAMMClaimableEarnings: 'Dedicated AMM Incentive',
   labelLayer2HistoryOrders: 'Order Records',
   labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
   labelLayer2HistoryDefiRecords: 'ETH Staking',
@@ -1820,4 +1820,5 @@ export default {
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
+  labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
 }

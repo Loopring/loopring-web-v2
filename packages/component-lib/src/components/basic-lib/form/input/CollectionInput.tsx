@@ -22,10 +22,10 @@ import {
   Toast,
   ToastType,
 } from '../../../index'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { TextField } from '../../../basic-lib'
 
 const SizeCss = {
@@ -102,9 +102,12 @@ export const CollectionInput = <Co extends CollectionMeta>({
   const { t } = useTranslation('common')
   const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
   const { onPageChange, collectionList, isLoading: isLoadingCollectionList } = collectionListProps
-  const history = useHistory()
   const noCollectionAndSelected = collectionList.length === 0 && collection === undefined
   myLog('collectionList', collectionListProps.collectionList)
+  const history = useHistory()
+  const pushRoute = React.useCallback((route: string) => {
+    history.push(route)
+  }, [])
   return (
     <Box display={'flex'} flexDirection={'column'} width={fullWidth ? '100%' : width}>
       <Box width={'100%'}>
@@ -177,7 +180,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
         >
           <MenuItem
             onClick={() => {
-              history.push('/nft/addCollection')
+              pushRoute('/nft/addCollection')
             }}
           >
             {t('labelNFTCreateCollection')}
@@ -349,7 +352,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
             <Button
               variant={'contained'}
               onClick={() => {
-                history.push('/nft/addCollection')
+                pushRoute('/nft/addCollection')
               }}
             >
               {t('labelNFTCreateCollection')}

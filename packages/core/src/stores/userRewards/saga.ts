@@ -7,7 +7,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 const getUserRewardsApi = async () => {
   const { accountId, apiKey, readyState } = store.getState().account
-  let { __timer__ } = store.getState().userRewardsMap
   if (LoopringAPI.ammpoolAPI && LoopringAPI.userAPI && accountId) {
     let ammUserRewardMap = {},
       _totalClaims = [],
@@ -38,6 +37,7 @@ const getUserRewardsApi = async () => {
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
               return []
             }
+            // @ts-ignore
             return response?.raw_data?.items ?? []
           })
           .catch((error) => {
@@ -50,14 +50,15 @@ const getUserRewardsApi = async () => {
         })
       }
       const totalClaims = makeClaimRewards(_totalClaims ?? [])
-      __timer__ = ((__timer__) => {
-        if (__timer__ && __timer__ !== -1) {
-          clearInterval(__timer__)
-        }
-        return setInterval(async () => {
+      let __timer__ = (() => {
+        return setTimeout(() => {
+          let { __timer__ } = store.getState().userRewardsMap
+          if (__timer__ && __timer__ !== -1) {
+            clearTimeout(__timer__)
+          }
           store.dispatch(getUserRewards(undefined))
         }, 60000 * 4)
-      })(__timer__)
+      })()
       return {
         data: { userRewardsMap: ammUserRewardMap, totalClaims, ...result },
         __timer__,
@@ -66,8 +67,9 @@ const getUserRewardsApi = async () => {
       throw error
     }
   } else {
+    let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     return Promise.resolve({ data: {}, __timer__: -1 })
   }
@@ -87,7 +89,7 @@ export function* getResetsSaga() {
     // @ts-ignore
     let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     yield put(getUserRewardsStatus({ userRewardsMap: [], __timer__: -1 }))
   } catch (err) {

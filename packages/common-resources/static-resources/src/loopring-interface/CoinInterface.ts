@@ -1,8 +1,7 @@
 import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constant'
 import * as sdk from '@loopring-web/loopring-sdk'
 import React from 'react'
-import { AmmPoolInfoV3, TickerData } from '@loopring-web/loopring-sdk'
-import { AmmPoolStat } from '@loopring-web/loopring-sdk/dist/defs'
+import { AmmPoolInfoV3, TickerData, AmmPoolStat } from '@loopring-web/loopring-sdk'
 
 export type CoinKey<R> = keyof R
 export type PairKey<P> = keyof P
