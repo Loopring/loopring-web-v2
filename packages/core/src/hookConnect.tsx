@@ -27,6 +27,7 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
+  ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -178,13 +179,6 @@ const onConnect = async (accAddress: string, chainId: any) => {
     myLog('After connect >>,network part start: step1 networkUpdate')
     store.dispatch(updateAccountStatus({ _chainId: chainId }))
     const networkFlag = await networkUpdate(chainId)
-    const currentProvide = connectProvides.usedProvide
-    myLog(
-      'After connect >>,network part done: step2 check account,',
-      connectProvides.usedWeb3,
-      currentProvide,
-    )
-
     if (networkFlag) {
       resetLayer12Data()
       checkAccount(accAddress, chainId !== 'unknown' ? chainId : undefined)
@@ -194,30 +188,54 @@ const onConnect = async (accAddress: string, chainId: any) => {
     store.dispatch(resetDepositData(undefined))
   }
 }
-
+const onDisConnect = async () => {
+  resetLayer12Data()
+  store.dispatch(resetWithdrawData(undefined))
+  store.dispatch(resetTransferData(undefined))
+  store.dispatch(resetDepositData(undefined))
+}
+export const callSwitchChain = async (_chainId: string | number) => {
+  const { defaultNetwork, themeMode } = store.getState().settings
+  if (Number(defaultNetwork) !== Number(_chainId)) {
+    try {
+      await connectProvides.sendChainIdChange(defaultNetwork, themeMode === ThemeType.dark)
+    } catch (error) {
+      throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+    }
+    if (Number(defaultNetwork) !== Number(await connectProvides?.usedWeb3?.eth?.getChainId())) {
+      throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
+    }
+  }
+}
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const { defaultNetwork: _defaultNetwork, isMobile } = useSettings()
   const {
-    account: { connectName, accAddress, readyState },
+    account: { connectName },
   } = useAccount()
   const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>()
 
   const handleOnNetworkSwitch = React.useCallback(
     async (value: sdk.ChainId) => {
       myLog('defaultNetwork', value)
-      const defaultNetwork = store.getState().settings
-      // @ts-ignore
-      if (Number(value) !== Number(defaultNetwork)) {
-        setDefaultNetwork(Number(value))
-        if (readyState !== AccountStatus.UN_CONNECT) {
-          onConnect(accAddress, value)
-        } else {
-          networkUpdate(Number(value))
+      const account = store.getState().account
+      setDefaultNetwork((state) => {
+        if (Number(value) !== Number(state)) {
+          if (account.readyState !== AccountStatus.UN_CONNECT) {
+            if (connectProvides?.usedWeb3 && connectProvides.usedProvide) {
+              onConnect(account.accAddress, value)
+            } else {
+              onDisConnect()
+              return state
+            }
+          } else {
+            networkUpdate(Number(value))
+          }
         }
-      }
+        return value
+      })
     },
-    [defaultNetwork, accAddress, readyState],
+    [defaultNetwork],
   )
   React.useEffect(() => {
     setDefaultNetwork((state) => {
@@ -240,11 +258,9 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         (connectProvides.usedProvide as any)?.namespace
       ) {
         // @ts-ignore
-        const optionalChains = connectProvides.usedProvide?.session?.optionalNamespaces
-          ? (connectProvides.usedProvide as any)?.session?.optionalNamespaces[
-              (connectProvides.usedProvide as any).namespace
-            ]?.chains ?? []
-          : [`${(connectProvides.usedProvide as any).namespace}:${defaultNetwork}`]
+        const optionalChains = connectProvides.usedProvide?.session?.namespaces[
+          (connectProvides.usedProvide as any).namespace
+        ]?.chains ?? [`${(connectProvides.usedProvide as any).namespace}:${defaultNetwork}`]
         return !optionalChains.includes(
           `${(connectProvides.usedProvide as any).namespace}:${Number(id)}`,
         )
@@ -354,19 +370,12 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
 
   const handleAccountDisconnect = React.useCallback(
     async ({ reason, code }: { reason?: string; code?: number }) => {
-      // const {};
-
       myLog('handleAccountDisconnect:', account, reason, code)
       resetAccount({ shouldUpdateProvider: true })
       setStateAccount(SagaStatus.PENDING)
-      resetLayer12Data()
-
-      resetWithdrawData()
-      resetTransferData()
-      resetDepositData()
-      // await sleep(REFRESH_RATE)
+      onDisConnect()
     },
-    [account, resetAccount, resetDepositData, resetTransferData, resetWithdrawData],
+    [account],
   )
 
   const handleProcessing = React.useCallback(

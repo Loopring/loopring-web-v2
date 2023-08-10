@@ -1,7 +1,7 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { LoopringAPI, store } from '../../index'
+import { callSwitchChain, LoopringAPI, store } from '../../index'
 import { accountServices } from './accountServices'
-import { myLog, ThemeType, UIERROR_CODE } from '@loopring-web/common-resources'
+import { myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import { nextAccountStatus } from '../../stores/account/reducer'
@@ -9,10 +9,10 @@ import { nextAccountStatus } from '../../stores/account/reducer'
 export async function unlockAccount() {
   myLog('unlockAccount starts')
   const accounStore = store.getState().account
-  const { exchangeInfo, chainId } = store.getState().system
-  accountServices.sendSign()
-  const { isMobile, themeMode } = store.getState().settings
+  const { exchangeInfo } = store.getState().system
+  const { isMobile } = store.getState().settings
   myLog('unlockAccount account:', accounStore)
+  accountServices.sendSign()
   if (
     exchangeInfo &&
     LoopringAPI.userAPI &&
@@ -58,11 +58,7 @@ export async function unlockAccount() {
               exchangeInfo.exchangeAddress,
             ).replace('${nonce}', (nonce - 1).toString())
 
-      // const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-      // debugger
-      if (Number(chainId) !== Number(_chainId)) {
-        await connectProvides.sendChainIdChange(chainId, themeMode === ThemeType.dark)
-      }
+      await callSwitchChain(_chainId)
 
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
@@ -71,7 +67,7 @@ export async function unlockAccount() {
             address: account.owner,
             keySeed: msg,
             walletType: connectName,
-            chainId: Number(chainId),
+            chainId: Number(_chainId),
             accountId: Number(account.accountId),
             isMobile: isMobile,
           },
