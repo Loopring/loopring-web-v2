@@ -1684,10 +1684,10 @@ export default {
   labelStopLimitWaitingTrigger:
     'The limit order is not placed until the stop price has been triggered.',
   labelStopLimitCurrentlyInsufficient: 'Currently insufficient',
-  labelDUAL_CURRENCY: 'Dual Investment',
-  labelDUAL_BASE: 'Dual Investment',
+  labelDUAL_CURRENCY: 'DUAL CURRENCY',
+  labelDUAL_BASE: 'DUAL BASE',
   labelBTRADE: 'Block Trade',
-  labelL2STAKING: 'LRC Staking',
+  labelL2STAKING: 'Staking',
   labelSTOP_LIMIT: 'Stop-Limit',
   labelAMMPending: 'Pending',
   labelAMMTitle: 'AMM Investment',
@@ -1822,4 +1822,16 @@ export default {
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
+  labelRiskAgree: 'Proceed Anyway',
+  labelRiskCancel: 'Cancel',
+  labelExpectedSettlementPrice: 'Expected Settlement Price',
+  labelCurrentMarketPrice: 'Current Market Price',
+  labelPriceVariance: 'Price Variance',
+  labelImpactExtraNewGreat:
+    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap Continue to confirm you understand and acknowledge the risk.',
+  labelPriceImpact: 'Price Impact',
+  labelPriceImpactDes:
+    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <2>‘AGREE’</2> and tap ‘Proceed Anyway’ to confirm again.',
+  labelRiskAgree: 'Proceed Anyway',
+  labelRiskCancel: 'Cancel',
 }
