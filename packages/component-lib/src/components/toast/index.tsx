@@ -19,7 +19,7 @@ export enum ToastType {
 }
 export type TOASTOPEN = {
   open: boolean
-  content: Element | string
+  content: JSX.Element | string
   type: ToastType
 }
 export type TOSTOBJECT = {
