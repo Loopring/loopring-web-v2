@@ -41,7 +41,7 @@ export const ModalLock = withTranslation('common')(
     }['bivarianceHack']
   } & WithTranslation) => {
     const { etherscanBaseUrl } = useSystem()
-    const backToLockAccountBtnInfo = () => {
+    const backToLockAccountBtnInfo = React.useMemo(() => {
       return {
         btnTxt: 'labelRetry',
         callback: () => {
@@ -53,8 +53,8 @@ export const ModalLock = withTranslation('common')(
           })
         },
       }
-    }
-    const backToRejectBtnInfo = () => {
+    }, [])
+    const backToRejectBtnInfo = React.useMemo(() => {
       return {
         btnTxt: 'labelRetry',
         callback: () => {
@@ -66,8 +66,8 @@ export const ModalLock = withTranslation('common')(
           })
         },
       }
-    }
-    const backToApproveBtnInfo = () => {
+    }, [])
+    const backToApproveBtnInfo = React.useMemo(() => {
       return {
         btnTxt: 'labelRetry',
         callback: () => {
@@ -79,7 +79,7 @@ export const ModalLock = withTranslation('common')(
           })
         },
       }
-    }
+    }, [])
 
     const closeBtnInfo = React.useMemo(() => {
       return {
