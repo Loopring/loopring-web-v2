@@ -67,15 +67,15 @@ export const useHebaoMain = <
       operationLogList: [],
       guardianConfig: {},
     })
-  const [openHebao, setOpenHebao] = React.useState<{
-    isShow: boolean
-    step: GuardianStep
-    options?: any
-  }>({
-    isShow: false,
-    step: GuardianStep.LockAccount_WaitForAuth,
-    options: undefined,
-  })
+  // const [openHebao, setOpenHebao] = React.useState<{
+  //   isShow: boolean
+  //   step: GuardianStep
+  //   options?: any
+  // }>({
+  //   isShow: false,
+  //   step: GuardianStep.LockAccount_WaitForAuth,
+  //   options: undefined,
+  // })
   const { clearOneItem } = layer1Store.useLayer1Store()
   // const { chainId } = useSystem()
   const [isLoading, setIsLoading] = React.useState(false)
@@ -220,9 +220,9 @@ export const useHebaoMain = <
     protectList,
     guardiansList,
     guardianConfig,
-    openHebao,
+    // openHebao,
     operationLogList,
-    setOpenHebao,
+    // setOpenHebao,
     isLoading,
     setIsLoading,
     loadData,
@@ -258,7 +258,7 @@ export const useAction = ({
     handleOpenModal({
       step: GuardianStep.Approve_WaitForAuth,
       options: {
-        approveRetry: () => {
+        lockRetry: () => {
           submitApprove(code, selected)
         },
       },
@@ -316,6 +316,9 @@ export const useAction = ({
             step: GuardianStep.Approve_Failed,
             options: {
               error: response,
+              lockRetry: () => {
+                submitApprove(code, selected)
+              },
             },
           })
         } else {
@@ -331,6 +334,9 @@ export const useAction = ({
           step: GuardianStep.Approve_Failed,
           options: {
             error: errorItem ? t(errorItem.messageKey, { ns: 'error' }) : error.message,
+            lockRetry: () => {
+              submitApprove(code, selected)
+            },
           },
         })
       }
@@ -344,7 +350,7 @@ export const useAction = ({
     handleOpenModal({
       step: GuardianStep.Reject_WaitForAuth,
       options: {
-        approveRetry: () => {
+        lockRetry: () => {
           handleReject(guardian)
         },
       },
@@ -372,6 +378,9 @@ export const useAction = ({
             step: GuardianStep.Reject_Failed,
             options: {
               error: response,
+              lockRetry: () => {
+                handleReject(guardian)
+              },
             },
           })
         } else {
@@ -387,6 +396,9 @@ export const useAction = ({
           step: GuardianStep.Approve_Failed,
           options: {
             error: errorItem ? t(errorItem.messageKey, { ns: 'error' }) : error.message,
+            lockRetry: () => {
+              handleReject(guardian)
+            },
           },
         })
       }
@@ -486,6 +498,10 @@ export const useHebaoProtector = <T extends sdk.Protector>({
               step: GuardianStep.LockAccount_Failed,
               options: {
                 error: errorItem ? t(errorItem.messageKey) : error.message,
+                lockRetry: () => {
+                  onLock(item)
+                },
+                lockRetryParams: item,
               },
             })
           } else {
@@ -505,7 +521,13 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           sdk.dumpError400(reason)
           handleOpenModal({
             step: GuardianStep.LockAccount_User_Denied,
-            options: { error: reason.message },
+            options: {
+              error: reason.message,
+              lockRetry: () => {
+                onLock(item)
+              },
+              lockRetryParams: item,
+            },
           })
         }
       }
