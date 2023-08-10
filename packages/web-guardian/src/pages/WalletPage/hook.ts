@@ -274,9 +274,9 @@ export const useAction = ({
         ])
 
         await callSwitchChain(_chainId)
-        let isContract1XAddress = undefined,
-          guardianModuleAddress = undefined,
-          guardians = undefined
+        let isContract1XAddress: any = undefined,
+          guardianModuleAddress: any = undefined,
+          guardians: any = undefined
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
           isContract1XAddress = true
           const walletModule = guardianConfig?.supportContracts?.find((item: any) => {
@@ -431,6 +431,15 @@ export const useHebaoProtector = <T extends sdk.Protector>({
     : sdk.NetworkWallet[network]
   const onLock = React.useCallback(
     async (item: T) => {
+      handleOpenModal({
+        step: GuardianStep.LockAccount_WaitForAuth,
+        options: {
+          lockRetry: () => {
+            onLock(item)
+          },
+          lockRetryParams: item,
+        },
+      })
       const config = guardianConfig.actionGasSettings.find(
         (item: any) => item.action === 'META_TX_LOCK_WALLET_WA',
       )
