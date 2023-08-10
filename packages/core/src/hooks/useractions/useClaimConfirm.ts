@@ -53,19 +53,19 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
     claimValue.tradeType === TRADE_TYPE.TOKEN
       ? claimType === CLAIM_TYPE.lrcStaking || claimType === CLAIM_TYPE.allToken
         ? {
-          requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
-          extraType: 3,
-        }
+            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+            extraType: 3,
+          }
         : {
-          requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
-          extraType: 2,
-        }
+            requestType: sdk.OffchainFeeReqType.EXTRA_TYPES,
+            extraType: 2,
+          }
       : {
-        requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
-        tokenAddress: claimValue?.tokenAddress,
-        extraType: 2,
-        isNFT: true,
-      }
+          requestType: sdk.OffchainNFTFeeReqType.EXTRA_TYPES,
+          tokenAddress: claimValue?.tokenAddress,
+          extraType: 2,
+          isNFT: true,
+        }
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -122,9 +122,9 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           luckyTokenHash: claimToken.luckyTokenHash,
         } as any)
       } else {
-        const token = tokenMap[ idIndex[ claimToken.tokenId ] ]
+        const token = tokenMap[idIndex[claimToken.tokenId]]
         updateClaimData({
-          belong: idIndex[ claimToken.tokenId ],
+          belong: idIndex[claimToken.tokenId],
           tradeType: TRADE_TYPE.TOKEN,
           tradeValue: volumeToCount(token.symbol, claimToken.total),
           volume: claimToken.total,
@@ -178,7 +178,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 request: request as sdk.OriginLuckTokenWithdrawsRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === 'unknown' ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[ connectName ] ??
+                walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -195,7 +195,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 request: request as sdk.OriginClaimRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === 'unknown' ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[ connectName ] ??
+                walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -212,7 +212,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 request: request as sdk.OriginStakeClaimRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
                 chainId: chainId === 'unknown' ? 1 : chainId,
-                walletType: (ConnectProvidersSignMap[ connectName ] ??
+                walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
@@ -294,9 +294,9 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 msg: e?.message,
                 ...(e instanceof Error
                   ? {
-                    message: e?.message,
-                    stack: e?.stack,
-                  }
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
                   : e ?? {}),
               },
             })
@@ -328,7 +328,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             isShow: true,
             step: AccountStep.ClaimWithdraw_WaitForAuth,
           })
-          const feeToken = tokenMap[ claimValue.fee.belong ]
+          const feeToken = tokenMap[claimValue.fee.belong]
           const feeRaw = claimValue.fee.feeRaw ?? claimValue.fee.__raw__?.feeRaw ?? 0
           const fee = sdk.toBig(feeRaw)
 
@@ -340,7 +340,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             }
             amount = claimValue.volume
           } else {
-            token = tokenMap[ claimValue?.belong ]
+            token = tokenMap[claimValue?.belong]
             amount = claimValue.volume
           }
 
@@ -351,7 +351,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             },
             apiKey,
           )
-          let brokerType = undefined
+          let brokerType: any = undefined
           switch (claimValue.claimType) {
             case CLAIM_TYPE.redPacket:
               brokerType = 2
@@ -366,8 +366,8 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
           })
           let request:
             | (sdk.OriginLuckTokenWithdrawsRequestV3 & {
-            luckyTokenHash?: string
-          })
+                luckyTokenHash?: string
+              })
             | sdk.OriginStakeClaimRequestV3 = {} as any
 
           if (claimValue.claimType === CLAIM_TYPE.redPacket) {
@@ -458,9 +458,9 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               message: e.message,
               ...(e instanceof Error
                 ? {
-                  message: e?.message,
-                  stack: e?.stack,
-                }
+                    message: e?.message,
+                    stack: e?.stack,
+                  }
                 : e ?? {}),
             } as sdk.RESULT_INFO,
           })
@@ -539,9 +539,9 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
         balance: claimValue?.belong,
         tradeValueView: getValuePrecisionThousand(
           claimValue?.tradeValue,
-          tokenMap[ claimValue?.belong?.toString() ?? '' ]?.precision,
-          tokenMap[ claimValue?.belong?.toString() ?? '' ]?.precision,
-          tokenMap[ claimValue?.belong?.toString() ?? '' ]?.precision,
+          tokenMap[claimValue?.belong?.toString() ?? '']?.precision,
+          tokenMap[claimValue?.belong?.toString() ?? '']?.precision,
+          tokenMap[claimValue?.belong?.toString() ?? '']?.precision,
           false,
         ),
       },
