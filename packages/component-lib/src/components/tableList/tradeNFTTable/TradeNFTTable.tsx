@@ -511,7 +511,7 @@ export const TradeNFTTable = withTranslation('tables')(
     const handleFilterChange = React.useCallback(
       ({ type = filterType, date = [null, null] }) => {
         setFilterType(type)
-        setFilterDate(date)
+        setFilterDate(date as any)
         updateData({
           tableType: TableType.filter,
           currFilterType: type,
