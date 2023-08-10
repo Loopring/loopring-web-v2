@@ -1684,10 +1684,10 @@ export default {
   labelStopLimitWaitingTrigger:
     'The limit order is not placed until the stop price has been triggered.',
   labelStopLimitCurrentlyInsufficient: 'Currently insufficient',
-  labelDUAL_CURRENCY: 'Dual Investment',
-  labelDUAL_BASE: 'Dual Investment',
+  labelDUAL_CURRENCY: 'DUAL CURRENCY',
+  labelDUAL_BASE: 'DUAL BASE',
   labelBTRADE: 'Block Trade',
-  labelL2STAKING: 'LRC Staking',
+  labelL2STAKING: 'Staking',
   labelSTOP_LIMIT: 'Stop-Limit',
   labelAMMPending: 'Pending',
   labelAMMTitle: 'AMM Investment',
