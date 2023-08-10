@@ -45,11 +45,11 @@ export const ModalLock = withTranslation('common')(
       return {
         btnTxt: 'labelRetry',
         callback: () => {
-          setOpenHebao(({ options }) => {
+          setOpenHebao(({ options, ...rest }) => {
             if (options && options.lockRetry && options.lockRetryParams) {
               options.lockRetry(options.lockRetryParams)
             }
-            return { step: GuardianStep.LockAccount_WaitForAuth }
+            return { ...rest, step: GuardianStep.LockAccount_WaitForAuth, options }
           })
         },
       }
@@ -58,11 +58,11 @@ export const ModalLock = withTranslation('common')(
       return {
         btnTxt: 'labelRetry',
         callback: () => {
-          setOpenHebao(({ options }) => {
+          setOpenHebao(({ options, ...rest }) => {
             if (options && options.lockRetry && options.lockRetryParams) {
               options.lockRetry(options.lockRetryParams)
             }
-            return { step: GuardianStep.Reject_WaitForAuth }
+            return { ...rest, step: GuardianStep.Reject_WaitForAuth, options }
           })
         },
       }
@@ -71,11 +71,11 @@ export const ModalLock = withTranslation('common')(
       return {
         btnTxt: 'labelRetry',
         callback: () => {
-          setOpenHebao(({ options }) => {
+          setOpenHebao(({ options, ...rest }) => {
             if (options && options.lockRetry && options.lockRetryParams) {
               options.lockRetry(options.lockRetryParams)
             }
-            return { step: GuardianStep.Approve_WaitForAuth }
+            return { ...rest, step: GuardianStep.Approve_WaitForAuth, isShow: true, options }
           })
         },
       }
