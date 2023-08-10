@@ -53,7 +53,7 @@ export function useOverview<R extends RowInvest>() {
     }
   }, [investTokenTypeMapStatus, investTokenTypeMap])
   const getMyInvestTokenMap = React.useCallback(() => {
-    if (walletLayer2 && walletLayer2 !== {}) {
+    if (walletLayer2 && Reflect.ownKeys(walletLayer2 ?? {}).length > 0) {
       const _rawData = Object.keys(walletLayer2)
         .reduce((prev, key) => {
           if (investTokenTypeMap && investTokenTypeMap[key]) {
