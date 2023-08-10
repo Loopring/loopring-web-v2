@@ -627,6 +627,7 @@ export type RedPacketHashItems = {
   [key: TX_HASH]: {
     claim: string
     luckToken: sdk.LuckyTokenItemForReceive
+    blindboxClaimed: any
   }
 }
 export type RedPacketHashInfo = {

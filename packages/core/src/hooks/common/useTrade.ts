@@ -499,11 +499,11 @@ export function makeLimitReq({
   const buyUserOrderInfo =
     tokenAmtMap && tokenAmtMap[buy] ? tokenAmtMap[buy].userOrderInfo : undefined
 
-  let baseVol = undefined
-  let quoteVol = undefined
+  let baseVol: any = undefined
+  let quoteVol: any = undefined
 
-  let baseVolShow = undefined
-  let quoteVolShow = undefined
+  let baseVolShow: any = undefined
+  let quoteVolShow: any = undefined
 
   if (amountBase !== undefined) {
     baseVolShow = amountBase
@@ -747,12 +747,12 @@ export function usePlaceOrder() {
       const { tokenAmtMap, feeBips } = getTokenAmtMap(params)
       const { tickerMap } = store.getState().tickerMap
       myLog('makeLimitReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
-      let sellUserOrderInfo = undefined,
-        buyUserOrderInfo = undefined,
-        minOrderInfo = undefined,
-        calcTradeParams = undefined,
-        stopLimitRequest = undefined,
-        stopSide = undefined
+      let sellUserOrderInfo: any = undefined,
+        buyUserOrderInfo: any = undefined,
+        minOrderInfo: any = undefined,
+        calcTradeParams: any = undefined,
+        stopLimitRequest: any = undefined,
+        stopSide: any = undefined
 
       if (exchangeInfo && params?.depth?.symbol && params.quote && tickerMap) {
         const ticker = tickerMap[params.depth.symbol]
@@ -775,7 +775,6 @@ export function usePlaceOrder() {
           'stopLimitPrice',
           params.stopLimitPrice,
         )
-
         const fullParams: T = {
           ...params,
           exchangeAddress: exchangeInfo.exchangeAddress,
