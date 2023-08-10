@@ -87,8 +87,6 @@
     "clean": "yarn autoclean --force",
     "docker": "cd ./packages/webapp; yarn build; cd devops docker-compose build",
     "boot": "echo y | lerna clean; sleep 1; lerna bootstrap --force-local",
-    "up_old": "rm -rf ./packages/component-lib/src/assets ./packages/webapp/src/assets; sleep 1; cp -rf ./packages/assets ./packages/component-lib/src ; cp -rf ./packages/assets ./packages/webapp/src ; echo y | lerna clean; yarn",
-    "reset_old": "rm -rf node_modules/ yarn.lock ./packages/component-lib/src/assets ./packages/webapp/src/assets; sleep 1; cp -rf ./packages/assets ./packages/component-lib/src; cp -rf ./packages/assets ./packages/webapp/src; echo y | lerna clean; yarn",
     "up": "echo y | lerna clean; yarn",
     "up2": "yarn unlink \"loopring-sdk'\"; echo y | lerna clean; yarn",
     "reset": "npm config delete proxy; rm -rf node_modules/ yarn.lock; echo y | lerna clean; yarn",

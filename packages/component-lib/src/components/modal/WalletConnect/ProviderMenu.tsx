@@ -80,7 +80,7 @@ export const ProviderMenu = ({
     localStorage.setItem('userTermsAgreed', String(state))
   }, [])
   const _handleSelect = React.useCallback(
-    (event, key: string, handleSelect?: (event: React.MouseEvent, key: string) => void) => {
+    (event: any, key: string, handleSelect?: (event: React.MouseEvent, key: string) => void) => {
       if (handleSelect && checkboxValue) {
         handleSelect(event, key)
         setIsShake(false)

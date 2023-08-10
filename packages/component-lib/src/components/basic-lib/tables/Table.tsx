@@ -201,7 +201,7 @@ export const generateColumns = <Row, SR>({
   columnsRaw,
   t,
 }: {
-  columnsRaw: readonly Column<Row, SR>[]
+  columnsRaw: Column<Row, SR>[]
   [key: string]: any
 } & WithT): RdgColumn<Row, SR>[] => {
   const columns: Column<Row, SR>[] = columnsRaw.reduce(
