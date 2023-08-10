@@ -27,6 +27,7 @@ export const ModalLock = withTranslation('common')(
     t,
     options,
     handleOpenModal,
+    setOpenHebao,
     ...rest
   }: {
     open: boolean
@@ -34,47 +35,51 @@ export const ModalLock = withTranslation('common')(
     handleOpenModal: (props: { step: GuardianStep; options?: any }) => void
     onBack?: () => void
     options: any
+    setOpenHebao: (state: any) => void
     onClose: {
       bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void
     }['bivarianceHack']
   } & WithTranslation) => {
     const { etherscanBaseUrl } = useSystem()
     const backToLockAccountBtnInfo = React.useMemo(() => {
-      const _options = options
       return {
         btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.LockAccount_WaitForAuth })
-          if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams)
-          }
+          setOpenHebao(({ options, ...rest }) => {
+            if (options && options.lockRetry && options.lockRetryParams) {
+              options.lockRetry(options.lockRetryParams)
+            }
+            return { ...rest, step: GuardianStep.LockAccount_WaitForAuth, options }
+          })
         },
       }
-    }, [handleOpenModal, options])
+    }, [])
     const backToRejectBtnInfo = React.useMemo(() => {
-      const _options = options
       return {
         btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.Reject_WaitForAuth })
-          if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams)
-          }
+          setOpenHebao(({ options, ...rest }) => {
+            if (options && options.lockRetry && options.lockRetryParams) {
+              options.lockRetry(options.lockRetryParams)
+            }
+            return { ...rest, step: GuardianStep.Reject_WaitForAuth, options }
+          })
         },
       }
-    }, [handleOpenModal, options])
+    }, [])
     const backToApproveBtnInfo = React.useMemo(() => {
-      const _options = options
       return {
         btnTxt: 'labelRetry',
         callback: () => {
-          handleOpenModal({ step: GuardianStep.Approve_WaitForAuth })
-          if (_options && _options.lockRetry && _options.lockRetryParams) {
-            _options.lockRetry(_options.lockRetryParams)
-          }
+          setOpenHebao(({ options, ...rest }) => {
+            if (options && options.lockRetry && options.lockRetryParams) {
+              options.lockRetry(options.lockRetryParams)
+            }
+            return { ...rest, step: GuardianStep.Approve_WaitForAuth, isShow: true, options }
+          })
         },
       }
-    }, [handleOpenModal, options])
+    }, [])
 
     const closeBtnInfo = React.useMemo(() => {
       return {
@@ -102,7 +107,7 @@ export const ModalLock = withTranslation('common')(
         [GuardianStep.LockAccount_User_Denied]: {
           view: (
             <LockAccount_User_Denied
-              btnInfo={backToLockAccountBtnInfo}
+              btnInfo={backToLockAccountBtnInfo as any}
               {...{
                 ...rest,
                 t,
@@ -146,7 +151,7 @@ export const ModalLock = withTranslation('common')(
         [GuardianStep.Approve_User_Denied]: {
           view: (
             <Approve_User_Denied
-              btnInfo={backToApproveBtnInfo}
+              btnInfo={backToApproveBtnInfo as any}
               {...{
                 ...rest,
                 t,
@@ -191,7 +196,7 @@ export const ModalLock = withTranslation('common')(
         [GuardianStep.Reject_User_Denied]: {
           view: (
             <Reject_User_Denied
-              btnInfo={backToRejectBtnInfo}
+              btnInfo={backToRejectBtnInfo as any}
               {...{
                 ...rest,
                 t,

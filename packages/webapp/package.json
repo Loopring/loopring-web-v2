@@ -21,9 +21,16 @@
     "snarkjs": "0.1.20",
     "web-vitals": "^0.2.4"
   },
+  "dependencies": {
+    "@loopring-web/common-resources": "1.0.0",
+    "@loopring-web/component-lib": "1.0.0",
+    "@loopring-web/core": "1.0.0",
+    "react-scripts": "4.0.3",
+    "cross-env": "^7.0.3"
+  },
   "resolutions": {
-    "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.0"
+    "@types/react": "^18.2.19",
+    "@types/react-dom": "^18.2.7"
   },
   "build": {
     "files": [

@@ -105,10 +105,20 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
                         address: rest.realToAddress,
                       }}
                     >
-                      My L2
+                      <Typography
+                        color={'inherit'}
+                        variant={'body1'}
+                        display={'flex'}
+                        component={'span'}
+                        sx={{ opacity: 1 }}
+                        paddingLeft={1 / 2}
+                      >
+                        My L2
+                      </Typography>
                       <Typography
                         color={'var(--color-text-third)'}
                         variant={'body2'}
+                        display={'flex'}
                         component={'span'}
                         sx={{ opacity: 1 }}
                         paddingLeft={1 / 2}

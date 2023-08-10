@@ -1,5 +1,6 @@
 import { toBig } from '@loopring-web/loopring-sdk'
 import BigNumber from 'bignumber.js'
+
 export const DOT = '.'
 
 export function abbreviateNumber(value: number, precision?: number) {
@@ -196,7 +197,7 @@ export const getValuePrecisionThousand = (
     }
   }
   if (result.isGreaterThan(1)) {
-    let formattedValue = null
+    let formattedValue: any = null
     if (floor === true) {
       formattedValue = getFloatFloor(result, fixed || minDigit)
     }

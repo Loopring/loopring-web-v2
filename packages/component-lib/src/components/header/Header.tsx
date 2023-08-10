@@ -532,25 +532,16 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
               </Typography>
             </Box>
             <Box display={'flex'} alignItems={'center'}>
-              {isLandPage ? (
+              {isLandPage && headerMenuLandingData[0] ? (
                 <>
-                  {location.pathname === '/wallet' ? (
+                  {
                     <NodeMenuItem
                       {...{ ...headerMenuLandingData[0], ...rest, t }}
-                      handleListKeyDown={() =>
-                        history.push(
-                          headerMenuLandingData[0].router?.pathName?.replace('${pair}', pair) ?? '',
-                        )
-                      }
-                    />
-                  ) : (
-                    <NodeMenuItem
-                      {...{ ...headerMenuLandingData[1], ...rest, t }}
                       handleListKeyDown={() => {
-                        window.location.href = headerMenuLandingData[1].router!.path
+                        window.location.href = headerMenuLandingData[0].router!.path
                       }}
                     />
-                  )}
+                  }
 
                   {getMenuButtons({
                     toolbarList: _headerToolBarData,

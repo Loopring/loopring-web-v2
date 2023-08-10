@@ -72,7 +72,6 @@ export interface NFTHashInfo {
   nftDataHashes: { [key: string]: Required<TxInfo> }
 }
 
-// export type GuardianLock
 export enum Layer1Action {
   GuardianLock = 'GuardianLock',
   NFTDeploy = 'NFTDeploy',
@@ -628,6 +627,7 @@ export type RedPacketHashItems = {
   [key: TX_HASH]: {
     claim: string
     luckToken: sdk.LuckyTokenItemForReceive
+    blindboxClaimed: any
   }
 }
 export type RedPacketHashInfo = {

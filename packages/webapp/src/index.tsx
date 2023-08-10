@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { store, persistor, TimeoutCheckProvider, firebaseProps } from '@loopring-web/core'
@@ -71,7 +71,8 @@ const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
   return <ProviderComposer providers={providers}>{children}</ProviderComposer>
 })
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root') as HTMLElement)
+root.render(
   <ProviderApp>
     <ReactReduxFirebaseProvider {...firebaseProps}>
       <ProviderThen>
@@ -79,7 +80,6 @@ ReactDOM.render(
       </ProviderThen>
     </ReactReduxFirebaseProvider>
   </ProviderApp>,
-  document.getElementById('root'),
 )
 
 // If you want to start measuring performance in your app, pass a function

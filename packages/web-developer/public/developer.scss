@@ -561,6 +561,8 @@ footer {
           display: inline-flex;
           flex-direction: row;
           align-items: center;
+          text-align: left;
+          line-height: 1.2em;
         }
       }
     }
@@ -743,6 +745,7 @@ footer {
     margin-top: 32px;
     flex-direction: column;
     align-items: center;
+
     button {
       margin: 8px;
       max-width: 388px;

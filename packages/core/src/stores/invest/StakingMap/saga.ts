@@ -82,6 +82,7 @@ export function* stakingMapInitSaga() {
 }
 
 export function* stakingMapSyncSaga() {
+  // @ts-ignore
   yield all([takeLatest(updateDefiSyncMap, getDefiSyncSaga)])
 }
 

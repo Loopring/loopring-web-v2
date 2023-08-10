@@ -155,7 +155,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
       let images: any[] = []
       imageList?.referralBanners?.en.forEach((item, index) => {
         const canvas: HTMLCanvasElement = document.createElement('canvas')
-        let _default = undefined
+        let _default: any = undefined
         if (imageList?.position?.code[index]) {
           _default = imageList?.position?.code[index]
         } else {
@@ -223,7 +223,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const onDownloadImage = () => {
     imageList?.referralBanners?.en.map((item, index) => {
       const canvas: HTMLCanvasElement = document.createElement('canvas')
-      let _default = undefined
+      let _default: any = undefined
       if (imageList?.position?.code[index]) {
         _default = imageList?.position?.code[index]
       } else {

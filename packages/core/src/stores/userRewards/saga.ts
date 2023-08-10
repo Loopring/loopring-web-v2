@@ -2,12 +2,11 @@ import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
 
 import { LoopringAPI, makeClaimRewards, makeSummaryMyAmm, store } from '../../index'
-import { AccountStatus, myLog } from '@loopring-web/common-resources'
+import { AccountStatus } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 const getUserRewardsApi = async () => {
   const { accountId, apiKey, readyState } = store.getState().account
-  let { __timer__ } = store.getState().userRewardsMap
   if (LoopringAPI.ammpoolAPI && LoopringAPI.userAPI && accountId) {
     let ammUserRewardMap = {},
       _totalClaims = [],
@@ -23,7 +22,6 @@ const getUserRewardsApi = async () => {
               response &&
               ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
             ) {
-              // throw new CustomError(ErrorMap.ERROR_UNKNOWN)
               return {}
             }
             return response.ammUserRewardMap
@@ -36,30 +34,31 @@ const getUserRewardsApi = async () => {
             apiKey,
           )
           .then((response) => {
-            myLog('totalClaims', response)
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
               return []
             }
-            //TODO:
             // @ts-ignore
-            return response?.raw_data?.data[0]?.items
+            return response?.raw_data?.items ?? []
+          })
+          .catch((error) => {
+            throw error
           }),
       ])
-      // myLog('totalClaims', _totalClaims)
       if (readyState === AccountStatus.ACTIVATED) {
         result = makeSummaryMyAmm({
           userRewardsMap: ammUserRewardMap,
         })
       }
       const totalClaims = makeClaimRewards(_totalClaims ?? [])
-      __timer__ = ((__timer__) => {
-        if (__timer__ && __timer__ !== -1) {
-          clearInterval(__timer__)
-        }
-        return setInterval(async () => {
+      let __timer__ = (() => {
+        return setTimeout(() => {
+          let { __timer__ } = store.getState().userRewardsMap
+          if (__timer__ && __timer__ !== -1) {
+            clearTimeout(__timer__)
+          }
           store.dispatch(getUserRewards(undefined))
-        }, 300000 * 4)
-      })(__timer__)
+        }, 60000 * 4)
+      })()
       return {
         data: { userRewardsMap: ammUserRewardMap, totalClaims, ...result },
         __timer__,
@@ -68,8 +67,9 @@ const getUserRewardsApi = async () => {
       throw error
     }
   } else {
+    let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     return Promise.resolve({ data: {}, __timer__: -1 })
   }
@@ -89,7 +89,7 @@ export function* getResetsSaga() {
     // @ts-ignore
     let { __timer__ } = store.getState().userRewardsMap
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
     yield put(getUserRewardsStatus({ userRewardsMap: [], __timer__: -1 }))
   } catch (err) {

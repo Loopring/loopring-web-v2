@@ -397,7 +397,7 @@ const MyLiquidity: any = withTranslation('common')(
             </TableWrapStyled>
           ) : (
             <>
-              {myPoolRow?.length > 0 && (
+              {(myPoolRow?.length > 0 || filter?.searchValue !== '') && (
                 <TableWrapStyled
                   ref={ammPoolRef}
                   className={`table-divide-short MuiPaper-elevation2`}

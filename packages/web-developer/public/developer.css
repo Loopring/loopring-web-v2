@@ -495,6 +495,8 @@ footer .group #labelFollowus {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
+  text-align: left;
+  line-height: 1.2em;
 }
 
 .img-container {
@@ -537,9 +539,11 @@ footer .group #labelFollowus {
     padding: 0 16px;
     margin: 0 auto;
   }
+
   .cardBtnGroup {
     margin-top: 32px;
   }
+
   .carousel-container {
     display: flex;
     overflow: hidden;
@@ -549,6 +553,7 @@ footer .group #labelFollowus {
     justify-content: center;
     margin-top: 40px;
   }
+
   #logo {
     min-width: auto;
     /*border-radius: 0px;*/
@@ -559,93 +564,115 @@ footer .group #labelFollowus {
     height: 40px;
     margin-left: 8px;
   }
+
   h3.Typography-root {
     font-size: var(--h4);
     text-align: center;
   }
+
   h3 ~ p.Typography-root {
     font-size: var(--body);
     white-space: initial;
   }
+
   header ul li:first-child {
     display: none;
   }
+
   .downLoadBtnGroup {
     flex-direction: column;
     justify-content: space-between;
     height: 192px;
     margin-left: 0;
   }
+
   .downLoadBtnGroup button {
     margin-left: 0;
   }
+
   footer .footerWallet .wrap {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
   }
+
   footer .downLoadBtnGroup {
     margin-top: 24px;
   }
+
   footer .content {
     flex-direction: column;
   }
+
   footer .followUs .footerContentList ul {
     width: 320px;
   }
+
   #LoopringDeveloperBox {
     font-size: 36px;
     margin-top: 32px;
     width: 100%;
   }
+
   #logSvg {
     display: none;
   }
+
   .sectionFull {
     align-items: flex-start;
     justify-content: center;
     height: initial;
     margin: 80px 0;
   }
+
   .sectionFull .wrap {
     flex-direction: column-reverse !important;
   }
+
   .carousel-container {
     --size-image: 0.5;
   }
+
   #bgContent #bgAlphaBg {
     display: none;
   }
+
   #bgContent #bgAlpha {
     position: absolute;
     pointer-events: none;
     transform: translate(-30%, -20%) rotate(13deg) scale(0.5);
   }
+
   .sectionDetail {
     min-width: 340px;
     height: 492px;
     width: 100%;
     max-width: 480px;
   }
+
   .sectionDetail ul {
     min-width: 340px;
     width: 100%;
     max-width: 480px;
   }
+
   .banner {
     flex-direction: column;
     align-items: center;
   }
+
   .banner .right-part {
     margin-left: 0px;
     margin-top: 24px;
     align-self: initial;
   }
+
   .cardBtnGroup {
     margin-top: 32px;
     flex-direction: column;
     align-items: center;
   }
+
   .cardBtnGroup button {
     margin: 8px;
     max-width: 388px;
@@ -684,48 +711,59 @@ footer .group #labelFollowus {
     width: 522px;
     font-size: 56px;
   }
+
   .carousel-container {
     --size-image: 0.7;
     margin-top: 40px;
   }
+
   .cardBtnGroup {
     margin-top: 32px;
     flex-direction: column;
     align-items: center;
   }
+
   .cardBtnGroup button {
     margin: 8px;
     width: 100%;
   }
+
   .banner {
     flex-direction: column;
     align-items: center;
   }
+
   .banner .right-part {
     margin-left: 0px;
     align-self: initial;
   }
+
   #labelTitleDes {
     font-size: var(--h5);
     text-align: center;
   }
+
   h3.Typography-root {
     font-size: var(--h1);
     margin: 80px 0 40px 0;
   }
+
   h3 ~ p.Typography-root {
     color: var(--color-text-third);
     font-size: var(--h5);
   }
+
   .banner {
     flex-direction: column;
     align-items: center;
   }
+
   .banner .right-part {
     margin-left: 0px;
     align-self: initial;
   }
 }
+
 @keyframes boxShow {
   0% {
     box-shadow: 0 5px 15px rgba(247, 149, 51, 0.4), 0 10px 30px rgba(243, 112, 85, 0.2);
@@ -740,6 +778,7 @@ footer .group #labelFollowus {
     box-shadow: 0 5px 15px rgba(7, 179, 155, 0.4), 0 10px 30px rgba(111, 186, 130, 0.2);
   }
 }
+
 @keyframes animatedgradient {
   0% {
     background-position: 0% 50%;

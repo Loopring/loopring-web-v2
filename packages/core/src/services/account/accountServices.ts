@@ -210,11 +210,11 @@ export const accountServices = {
       data: undefined,
     })
 
-    if (_chainId && _chainId !== LoopringAPI.__chainId__) {
-      LoopringAPI.InitApi(_chainId as sdk.ChainId)
-    }
-
-    if (ethAddress && LoopringAPI.exchangeAPI) {
+    if (
+      ethAddress &&
+      LoopringAPI.exchangeAPI &&
+      ((_chainId && LoopringAPI?.__chainId__?.toString() == _chainId.toString()) || !_chainId)
+    ) {
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
         owner: ethAddress,
       })
@@ -224,6 +224,7 @@ export const accountServices = {
           account.accountId !== -1 ||
           account.accAddress.toLowerCase() !== ethAddress.toLowerCase()
         ) {
+          myLog('-------sendCheckAccount sendNoAccount!')
           accountServices.sendNoAccount(ethAddress)
         }
       } else {
@@ -239,16 +240,16 @@ export const accountServices = {
               ...accInfo,
             })
           } else {
-            myLog('-------need unlockAccount!')
+            myLog('-------sendCheckAccount need unlockAccount!', accInfo)
             accountServices.sendAccountLock(accInfo)
           }
         } else {
-          myLog('unexpected accInfo:', accInfo)
+          myLog('-------sendCheckAccount  unexpected accInfo:', accInfo)
           throw Error('unexpected accinfo:' + accInfo)
         }
       }
     } else {
-      myLog('unexpected no ethAddress:' + ethAddress)
+      myLog('-------sendCheckAccount unexpected no ethAddress:' + ethAddress)
       store.dispatch(
         updateAccountStatus({
           accAddress: ethAddress,

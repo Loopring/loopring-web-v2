@@ -185,7 +185,7 @@ export const useGetAssets = (): AssetPanelProps & {
       const tokenKeys = Object.keys(tokenMap)
       let data: any[] = []
       tokenKeys.forEach((key, _index) => {
-        let item = undefined
+        let item: any = undefined
         const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key)
         if (assetsMap[key]) {
           const tokenInfo = assetsMap[key]
