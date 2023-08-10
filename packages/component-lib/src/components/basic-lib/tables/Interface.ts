@@ -7,13 +7,16 @@ import {
 } from 'react-data-grid'
 // import { XOR } from '../../../types/lib';
 
-export type DataGridProps<R, SR> = Omit<RdgDataGridProps<R, SR>, 'rows' | 'columns'> &
+export type DataGridProps<R extends { [key: string]: any }, SR> = Omit<
+  RdgDataGridProps<R, SR>,
+  'rows' | 'columns'
+> &
   TableProps<R, unknown>
 export type Column<R, SR> = RdgColumns<R, SR> & {
   [key: string]: any
 }
 
-export type TableProps<R extends { [key: string]: any }, SR> = {
+export type TableProps<R extends any, SR> = {
   rawData: any
   columnMode: readonly Column<R, unknown>[]
   generateRows: (rawData: any, ...rest: any[]) => Array<R>
@@ -22,7 +25,7 @@ export type TableProps<R extends { [key: string]: any }, SR> = {
     t,
     ...rest
   }: {
-    columnsRaw: readonly Column<R, SR>[]
+    columnsRaw: Column<R, SR>[]
     [key: string]: any
   } & WithT) => Array<RdgColumns<R>>
   // rows: any;
