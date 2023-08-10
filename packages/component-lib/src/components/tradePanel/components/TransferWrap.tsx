@@ -38,6 +38,7 @@ import {
 import {
   Button,
   FeeSelect,
+  InputSize,
   TextField,
   Toast,
   ToastType,
@@ -109,6 +110,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
   const inputButtonDefaultProps = {
     label: t('labelL2toL2EnterToken'),
+    size: InputSize.middle
   }
 
   const [showFeeModal, setShowFeeModal] = React.useState(false)
@@ -416,7 +418,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               walletMap,
               tradeData,
               coinMap,
-              inputNFTDefaultProps: { label: '' },
+              inputNFTDefaultProps: { label: '', size: InputSize.middle },
               inputNFTRef: inputBtnRef,
             } as any)}
           />

@@ -991,7 +991,6 @@ export const MintAdvanceNFTWrap = <
     walletMap,
     chargeFeeTokenList,
     feeInfo,
-    dropdownStatus,
     isFeeNotEnough.isOnLoading,
     isFeeNotEnough.isFeeNotEnough,
     handleToggleChange,
