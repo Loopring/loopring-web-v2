@@ -30,7 +30,7 @@ import {
   WALLET_TYPE,
   WithdrawType,
 } from '@loopring-web/common-resources'
-import { FeeSelect, PopoverPure, Toast, ToastType } from '../..'
+import { FeeSelect, InputSize, PopoverPure, Toast, ToastType } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
@@ -264,7 +264,7 @@ export const WithdrawWrap = <
               walletMap,
               tradeData,
               coinMap,
-              inputNFTDefaultProps: { label: '' },
+              inputNFTDefaultProps: { label: '', size: InputSize.middle },
               inputNFTRef: inputBtnRef,
             } as any)}
           />
