@@ -961,7 +961,7 @@ export const InformationForAccountFrozen = withTranslation('common', {
     const { setShowTradeIsFrozen } = useOpenModals()
     return (
       <DialogStyle
-        open={open}
+        open={open}h
         onClose={() => setShowTradeIsFrozen({ isShow: false })}
         aria-describedby='alert-dialog-slide-description'
       >
@@ -969,7 +969,7 @@ export const InformationForAccountFrozen = withTranslation('common', {
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
             {messageKey === 'labelNoticeForForAccountFrozen' ? (
-              <Trans i18nKey={messageKey} tOptions={{ type: t('label' + type).toLowerCase() }}>
+              <Trans i18nKey={messageKey} tOptions={{ type: t('label' + type?.toLowerCase()) }}>
                 please waiting a while, {{ type }} is on updating.
               </Trans>
             ) : (
