@@ -1743,7 +1743,7 @@ export default {
   labelReferralsClaimRefund: 'Claimable Refunds ',
   labelReferralsTotalTradeNumber: 'Total Trade Number ',
   labelReferralCode: 'Referral Code (Optional) <1>\uFE61</1>',
-  labelReferralToolTip: 'Enter referral code to enjoy a three-month discount on transfer fees.',
+  labelReferralToolTip: 'Enter referral code to enjoy a discount on  transfer fees.',
   labelBtradeRefresh: 'Refresh',
   labelArgNoEnough: 'Insufficient {{arg}} balance',
   WalletConnectV1: 'WalletConnect Legacy',
