@@ -1822,4 +1822,5 @@ export default {
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
+  labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
 }
