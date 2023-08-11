@@ -297,7 +297,7 @@ export const useSwap = <
 
     const { calcTradeParams } = pageTradeLite
 
-    if (!sellToken || !buyToken || !calcTradeParams || !storageId.orderId) {
+    if (!sellToken || !buyToken || !calcTradeParams || storageId.orderId !== undefined) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
