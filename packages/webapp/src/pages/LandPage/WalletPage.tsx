@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next'
 import { ContainerStyle, ContainerStyled, TitleTypography } from './style'
 import { useSettings } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { useHistory } from 'react-router'
 
 // const LinkStyle = styled(Link)`
 //   color: var(--color-button-select);

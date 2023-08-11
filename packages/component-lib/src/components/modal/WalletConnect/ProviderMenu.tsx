@@ -11,6 +11,7 @@ import { ProviderMenuProps } from './Interface'
 import {
   CheckBoxIcon,
   CheckedIcon,
+  ConvertToIcon,
   GatewayItem,
   LOOPRING_DOCUMENT,
   myLog,
@@ -30,8 +31,8 @@ const CheckboxStyled = styled(Checkbox)`
 
 const BoxContent = styled(Box)`
   .modalContent {
-    padding-right: ${({ theme }) => theme.unit * 7}px;
-    padding-left: ${({ theme }) => theme.unit * 7}px;
+    padding-right: ${({ theme }) => theme.unit * 5}px;
+    padding-left: ${({ theme }) => theme.unit * 5}px;
   }
 
   @media only screen and (max-width: 768px) {
@@ -43,11 +44,12 @@ const BoxContent = styled(Box)`
 `
 const BoxStyle = styled(Box)`
   ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_R: 1 / 2, d_W: 0 })};
-  background: var(--provider-agree);
+  //background: var(--provider-agree);
 
   .MuiFormControlLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.h6};
     align-items: flex-start;
+    margin-right: 0;
 
     .MuiTypography-root {
       padding: ${({ theme }) => theme.unit}px 0;
@@ -61,6 +63,7 @@ export const ProviderMenu = ({
   termUrl,
   handleSelect,
   NetWorkItems,
+  status,
   providerName = loopringProvider.ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
   const { isMobile, defaultNetwork } = useSettings()
@@ -105,6 +108,7 @@ export const ProviderMenu = ({
     },
     [providerName],
   )
+  const loadingGif = './static/loading-1.gif'
   // const  !==  loopringProvider.ConnectProviders.Unknown
   return (
     <BoxContent
@@ -113,16 +117,85 @@ export const ProviderMenu = ({
       alignItems={'center'}
       justifyContent={'space-between'}
       flexDirection={'column'}
+      paddingBottom={4}
       // sx={{ marginTop: "-40px" }}
     >
       <Typography
         component={'h3'}
         variant={isMobile ? 'h4' : 'h3'}
         whiteSpace={'pre'}
-        marginBottom={3}
+        marginBottom={2}
       >
         {t('labelConnectWallet')}
       </Typography>
+      {NetWorkItems && (
+        <Box display={'flex'} justifyContent={'center'} marginBottom={3}>
+          {NetWorkItems}
+        </Box>
+      )}
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'center'}
+        flex={1}
+        alignItems={'stretch'}
+        alignSelf={'stretch'}
+        className='modalContent'
+        marginBottom={3}
+        // paddingX={isMobile ? 7 : 10}
+      >
+        {gatewayList.map((item: GatewayItem) => (
+          <Box key={item.key} marginTop={1.5}>
+            <MenuBtnStyled
+              variant={'outlined'}
+              size={'large'}
+              disabled={
+                item.key == loopringProvider.ConnectProviders.GameStop &&
+                ![1, 5].includes(Number(defaultNetwork))
+              }
+              loadingbg={'var(--field-opacity)'}
+              loading={status === 'processing' && isProvider(item.key) ? 'true' : 'false'}
+              className={`${isMobile ? 'isMobile' : ''} ${
+                isProvider(item.key) ? 'selected provider ' : 'provider'
+              }`}
+              fullWidth
+              onClick={(e) => {
+                _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect)
+              }}
+              endIcon={
+                status === 'processing' && isProvider(item.key) ? (
+                  <Typography
+                    display={'flex'}
+                    component={'span'}
+                    alignItems={'center'}
+                    color={'var(--color-text-third)'}
+                    variant={'body2'}
+                    className={'loading'}
+                  >
+                    <img src={loadingGif} height={24} />
+                    <Typography component={'span'} variant={'inherit'}>
+                      {t('labelConnecting')}
+                    </Typography>
+                  </Typography>
+                ) : (
+                  <ConvertToIcon fontSize={'medium'} color={'inherit'} />
+                )
+              }
+            >
+              <Typography
+                color={'inherit'}
+                component={'span'}
+                display={'inline-flex'}
+                fontSize={'inherit'}
+                alignItems={'center'}
+              >
+                <img src={item.imgSrc} alt={item.key} height={36} />
+                <span> {t(item.keyi18n)}</span>
+              </Typography>
+            </MenuBtnStyled>
+          </Box>
+        ))}
+      </Box>
       <Box
         display={'flex'}
         flexDirection={'column'}
@@ -134,7 +207,7 @@ export const ProviderMenu = ({
         // paddingX={isMobile ? 7 : 10}
       >
         <BoxStyle
-          paddingX={5 / 3}
+          // paddingX={5 / 3}
           display={'flex'}
           flexDirection={'row'}
           justifyContent={'stretch'}
@@ -171,44 +244,6 @@ export const ProviderMenu = ({
             }
           />
         </BoxStyle>
-      </Box>
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        justifyContent={'center'}
-        flex={1}
-        alignItems={'stretch'}
-        alignSelf={'stretch'}
-        className='modalContent'
-        marginTop={3}
-        // paddingX={isMobile ? 7 : 10}
-        paddingBottom={4}
-      >
-        <Box display={'flex'} justifyContent={'center'}>
-          {NetWorkItems}
-        </Box>
-        {gatewayList.map((item: GatewayItem) => (
-          <Box key={item.key} marginTop={1.5}>
-            <MenuBtnStyled
-              variant={'outlined'}
-              size={'large'}
-              disabled={
-                item.key == loopringProvider.ConnectProviders.GameStop &&
-                ![1, 5].includes(Number(defaultNetwork))
-              }
-              className={`${isMobile ? 'isMobile' : ''} ${
-                isProvider(item.key) ? 'selected provider ' : 'provider'
-              }`}
-              fullWidth
-              endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
-              onClick={(e) => {
-                _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect)
-              }}
-            >
-              {t(item.keyi18n)}
-            </MenuBtnStyled>
-          </Box>
-        ))}
       </Box>
     </BoxContent>
   )

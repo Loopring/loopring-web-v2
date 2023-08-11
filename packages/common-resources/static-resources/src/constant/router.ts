@@ -11,7 +11,7 @@ import {
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
-import { Exchange, WalletSite } from './setting'
+import { WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -252,34 +252,11 @@ export const ammDisableList = ['Liquidity']
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: 'Landing-page',
-      i18nKey: 'labelZkRollupLayer2',
-    },
-    router: { path: Exchange },
-  },
-  {
-    label: {
       id: 'wallet',
       i18nKey: 'labelWallet',
     },
     router: { path: WalletSite },
   },
-  // {
-  //   label: {
-  //     id: "bridge",
-  //     i18nKey: "labelBridge",
-  //     description: "labelBridgeDes",
-  //   },
-  //   router: { path: "https://loopring.io/#/" },
-  // },
-  // {
-  //   label: {
-  //     id: "guardian",
-  //     i18nKey: "labelGuardian",
-  //     description: "labelGuardianDes",
-  //   },
-  //   router: { path: "https://loopring.io/#/" },
-  // },
 ]
 export const subMenuLayer2 = {
   assetsGroup: [
@@ -638,7 +615,7 @@ export const leverageETHAdvice: InvestAdvice = {
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
-  desI18n: 'labelInvestLeverageETH',
+  desI18n: 'labelInvestLeverageETHDes',
   enable: true,
   project: 'TODO Pool',
   market: 'CIETH-ETH',
@@ -662,6 +639,11 @@ export enum AssetTabIndex {
   Invests = 'Invests',
   RedPacket = 'RedPacket',
   Rewards = 'Rewards',
+}
+
+export enum TabOrderIndex {
+  orderOpenTable = 'orderOpenTable',
+  orderHistoryTable = 'orderHistoryTable',
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {

@@ -49,7 +49,7 @@ import { useRedPacketHistory } from '../../stores/localStore/redPacket'
 import { Box } from '@mui/material'
 import { getIPFSString } from '../../utils'
 import { NFT_IMAGE_SIZES, toBig } from '@loopring-web/loopring-sdk'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { ClaimCommands, claimServices, redpacketService } from '../../services'
 
 export function useRedPacketModal() {
@@ -1192,7 +1192,7 @@ export function useRedPacketModal() {
                   tokenInfo!.precision,
                   false,
                 ),
-              total: getValuePrecisionThousand(
+              total: tokenInfo && getValuePrecisionThousand(
                 sdk
                   .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
                   .div('1e' + tokenInfo!.decimals),

@@ -118,19 +118,6 @@ export const banxaService = {
       // modals:{isShowAccount}
     } = store.getState()
 
-    // let banxa: any = undefined;
-    // try {
-    //   // @ts-ignore
-    //   banxa = new window.Banxa(
-    //     "loopring",
-    //     chainId == ChainId.GOERLI ? "sandbox" : ""
-    //   );
-    // } catch (e) {
-    //   banxaService.banxaEnd({
-    //     reason: OrderENDReason.BanxaNotReady,
-    //     data: "Banxa SKD is not ready",
-    //   });
-    // }
     store.dispatch(setShowAccount({ isShow: false, info: { isBanxaLaunchLoading: true } }))
     if (
       offRampHistory[chainId][account.accAddress] &&
@@ -138,12 +125,6 @@ export const banxaService = {
       offRampHistory[chainId][account.accAddress][VendorProviders.Banxa]['pending'] &&
       offRampHistory[chainId][account.accAddress][VendorProviders.Banxa]['pending'].checkout_iframe
     ) {
-      // const url =
-      //   offRampHistory[chainId][account.accAddress][VendorProviders.Banxa][
-      //     "pending"
-      //   ].checkout_iframe;
-      // myLog("iframeBanxaTarget checkout_iframe", url);
-      // banxa.generateIframe("#iframeBanxaTarget", url, false);
     } else {
       banxaService.banxaStart(true)
     }
