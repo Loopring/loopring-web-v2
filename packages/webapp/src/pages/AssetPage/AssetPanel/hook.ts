@@ -12,11 +12,13 @@ import {
   useTokenPrices,
   useWalletLayer2,
   useWalletLayer2Socket,
+  volumeToCount,
   volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
   AccountStep,
   AssetTitleProps,
+  TransactionTradeViews,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
@@ -233,6 +235,8 @@ export const useGetAssets = (): AssetPanelProps & {
             smallBalance: isSmallBalance,
             tokenValueDollar,
             name: tokenInfo.token,
+            withdrawAmount: withdrawAmount?.toString(),
+            depositAmount: depositAmount?.toString(),
           }
         } else {
           item = {
@@ -251,6 +255,8 @@ export const useGetAssets = (): AssetPanelProps & {
             tokenValueDollar: 0,
             name: key,
             tokenValueYuan: 0,
+            withdrawAmount: 0,
+            depositAmount: 0,
           }
         }
         if (item) {
@@ -435,9 +441,31 @@ export const useGetAssets = (): AssetPanelProps & {
               [
                 {
                   key: `labelMarketOrderUnfilled`,
-                  value: _item.locked ?? '0',
+                  value: sdk
+                    .toBig(_item.locked ?? '0')
+                    .minus(_item?.withdrawAmount ?? 0)
+                    .minus(_item?.depositAmount ?? 0)
+                    .toString(),
                   link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
                 },
+                ...(sdk.toBig(_item?.depositAmount ?? 0).gt(0)
+                  ? [
+                      {
+                        key: `labelDepositPending`,
+                        value: sdk.toBig(_item?.depositAmount ?? '0').toString(),
+                        link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
+                      },
+                    ]
+                  : []),
+                ...(sdk.toBig(_item?.withdrawAmount ?? 0).gt(0)
+                  ? [
+                      {
+                        key: `labelWithDrawPending`,
+                        value: sdk.toBig(_item?.withdrawAmount ?? '0').toString(),
+                        link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
+                      },
+                    ]
+                  : []),
               ] as { key: string; value: string; link: string }[],
             )
             if (_item.locked && sdk.toBig(sum[0].value).gt(0)) {

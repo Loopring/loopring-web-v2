@@ -69,4 +69,6 @@ export type AssetsRawDataItem = {
   smallBalance: boolean
   tokenValueDollar: number
   name: string
+  withdrawAmount?: string
+  depositAmount?: string
 }
