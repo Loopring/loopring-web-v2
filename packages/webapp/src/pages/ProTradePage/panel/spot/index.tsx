@@ -19,7 +19,7 @@ import {
   TOAST_TIME,
   TradeProType,
 } from '@loopring-web/common-resources'
-import { usePageTradePro, useTokenMap } from '@loopring-web/core'
+import { PriceLevel, ShowWitchAle3t1, usePageTradePro, useTokenMap } from '@loopring-web/core'
 import { useMarket } from './hookMarket'
 import { useLimit } from './hookLimit'
 import { Box, Divider, Tab, Tabs, Typography } from '@mui/material'
@@ -68,8 +68,8 @@ export const SpotView = withTranslation('common')(
     } = useLimit({ market, resetTradeCalcData })
 
     const {
-      alertOpen,
-      confirmOpen,
+      // alertOpen,
+      // confirmOpen,
       toastOpen,
       closeToast,
       marketTradeData,
@@ -80,9 +80,13 @@ export const SpotView = withTranslation('common')(
       resetMarketData,
       marketBtnClick,
       isMarketLoading,
-      priceAlertCallBack,
-      smallOrderAlertCallBack,
-      smallOrderAlertOpen,
+      showAlert,
+      handleConfirm,
+      handleClose,
+      priceLevel,
+      // priceAlertCallBack,
+      // smallOrderAlertCallBack,
+      // smallOrderAlertOpen,
     } = useMarket({ market, resetTradeCalcData })
     const onTabChange = React.useCallback(
       (_e, value) => {
@@ -242,26 +246,69 @@ export const SpotView = withTranslation('common')(
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}
         />
+        {/*<AlertImpact*/}
+        {/*  value={priceImpact}*/}
+        {/*  open={alertOpen}*/}
+        {/*  handleClose={priceAlertCallBack(false)}*/}
+        {/*  handleConfirm={priceAlertCallBack(true)}*/}
+        {/*  variance={}*/}
+        {/*  marketPrice={}*/}
+        {/*  settlementPrice={}*/}
+        {/*  symbol={}*/}
+        {/*  // handleClose={() => priceAlertCallBack(false)}*/}
+        {/*  // handleConfirm={() => priceAlertCallBack(true)}*/}
+        {/* */}
+        {/*  // value={priceImpact}*/}
+        {/*/>*/}
         <AlertImpact
-          handleClose={() => priceAlertCallBack(false)}
-          handleConfirm={() => priceAlertCallBack(true)}
-          open={alertOpen}
-          value={priceImpact}
+          open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+          handleClose={handleClose}
+          handleConfirm={handleConfirm}
+          variance={priceImpact}
+          marketPrice={tradeCalcData?.marketPrice ?? ''}
+          settlementPrice={tradeCalcData?.StoB ?? ''}
+          symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
         />
         <ConfirmImpact
-          handleClose={() => priceAlertCallBack(false)}
-          handleConfirm={() => priceAlertCallBack(true)}
-          open={confirmOpen}
-          value={priceImpact}
+          open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.ConfirmImpact}
+          handleClose={handleClose}
+          handleConfirm={handleConfirm}
+          priceImpact={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2)}
+          color={'var(--color-error)'} //priceLevel.priceImpactColor
+          shouldInputAgree={priceLevel.priceLevel === PriceLevel.Lv2}
         />
         <SmallOrderAlert
-          handleClose={() => smallOrderAlertCallBack(false)}
-          handleConfirm={() => smallOrderAlertCallBack(true)}
-          open={smallOrderAlertOpen}
+          open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.SmallPrice}
+          handleClose={handleClose}
+          handleConfirm={handleConfirm}
           estimatedFee={estimatedFee}
           feePercentage={feePercentage}
           minimumReceived={minimumReceived}
+          symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
         />
+        {/*<ConfirmImpact*/}
+        {/*  value={}*/}
+        {/*  open={}*/}
+        {/*  handleClose={}*/}
+        {/*  handleConfirm={}*/}
+        {/*  priceImpact={}*/}
+        {/*  symbol={}*/}
+        {/*  color={}*/}
+        {/*  shouldInputAgree={}*/}
+        {/*  // handleClose={() => priceAlertCallBack(false)}*/}
+        {/*  // handleConfirm={() => priceAlertCallBack(true)}*/}
+        {/*  // open={confirmOpen}*/}
+        {/*  // value={priceImpact}*/}
+        {/*/>*/}
+        {/*<SmallOrderAlert*/}
+        {/*  open={smallOrderAlertOpen}*/}
+        {/*  handleClose={() => smallOrderAlertCallBack(false)}*/}
+        {/*  handleConfirm={() => smallOrderAlertCallBack(true)}*/}
+        {/*  estimatedFee={estimatedFee}*/}
+        {/*  feePercentage={feePercentage}*/}
+        {/*  minimumReceived={minimumReceived}*/}
+        {/*  symbol={}*/}
+        {/*/>*/}
         <AlertLimitPrice
           handleClose={limitSubmit}
           open={limitAlertOpen}

@@ -16,7 +16,13 @@ import {
   SoursURL,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
-import { useNotify, useSwap } from '@loopring-web/core'
+import {
+  getPriceImpactInfo,
+  PriceLevel,
+  ShowWitchAle3t1,
+  useNotify,
+  useSwap,
+} from '@loopring-web/core'
 import React from 'react'
 
 export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation) => {
@@ -31,21 +37,27 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
     closeToast,
     should15sRefresh,
     market,
-    alertOpen,
-    confirmOpen,
     refreshRef,
-    isSwapLoading,
     pageTradeLite,
+    isSwapLoading,
     toPro,
     isMarketInit,
     isMobile,
-    priceAlertCallBack,
-    smallOrderAlertCallBack,
-    secondConfirmationCallBack,
-    smallOrderAlertOpen,
-    secondConfirmationOpen,
     setToastOpen,
+    showAlert,
+    handleConfirm,
+    handleClose,
+    priceLevel,
+    // alertOpen,
+    // confirmOpen,
+    // pageTradeLite,
+    // priceAlertCallBack,
+    // smallOrderAlertCallBack,
+    // secondConfirmationCallBack,
+    // smallOrderAlertOpen,
+    // secondConfirmationOpen,
   } = useSwap({ path: '/trade/lite' })
+
   const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
   const { campaignTagConfig } = useNotify().notifyMap ?? {}
   const estimatedFee =
@@ -75,6 +87,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
     tradeCalcData && tradeCalcData.tradeCost && tradeData
       ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
+
   const fromSymbol = tradeData?.sell.belong ?? EmptyValueTag
   const fromAmount = tradeData?.sell.tradeValue?.toString() ?? EmptyValueTag
   const toSymbol = tradeData?.buy.belong ?? EmptyValueTag
@@ -84,7 +97,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
       ? `${tradeData.slippage}`
       : '0.1'
     : EmptyValueTag
-  myLog('isMarketInit', isMarketInit)
+  myLog('useSwap', showAlert)
   return (
     <Box
       display={'flex'}
@@ -144,31 +157,35 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         onClose={closeToast}
       />
       <AlertImpact
-        handleClose={() => priceAlertCallBack(false)}
-        handleConfirm={() => priceAlertCallBack(true)}
-        open={alertOpen}
-        value={(getValuePrecisionThousand(pageTradeLite?.priceImpactObj?.value, 2) + '%') as any}
+        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+        handleClose={handleClose}
+        handleConfirm={handleConfirm}
+        variance={tradeCalcData?.marketRatePrice ?? ''}
+        marketPrice={tradeCalcData?.marketPrice ?? ''}
+        settlementPrice={tradeCalcData?.StoB ?? ''}
+        symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
       />
       <ConfirmImpact
-        handleClose={() => priceAlertCallBack(false)}
-        handleConfirm={() => priceAlertCallBack(true)}
-        open={confirmOpen}
-        value={(getValuePrecisionThousand(pageTradeLite?.priceImpactObj?.value, 2) + '%') as any}
+        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.ConfirmImpact}
+        handleClose={handleClose}
+        handleConfirm={handleConfirm}
+        priceImpact={getValuePrecisionThousand(pageTradeLite?.priceImpactObj?.value, 2)}
+        color={'var(--color-error)'} //priceLevel.priceImpactColor
+        shouldInputAgree={priceLevel.priceLevel === PriceLevel.Lv2}
       />
       <SmallOrderAlert
-        handleClose={() => smallOrderAlertCallBack(false)}
-        handleConfirm={() => smallOrderAlertCallBack(true)}
-        open={smallOrderAlertOpen}
+        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.SmallPrice}
+        handleClose={handleClose}
+        handleConfirm={handleConfirm}
         estimatedFee={estimatedFee}
         feePercentage={feePercentage}
         minimumReceived={minimumReceived}
+        symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
       />
       <SwapSecondConfirmation
-        handleClose={() => {
-          secondConfirmationCallBack(false)
-        }}
-        handleConfirm={() => secondConfirmationCallBack(true)}
-        open={secondConfirmationOpen}
+        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.SwapSecondConfirmation}
+        handleClose={handleClose}
+        handleConfirm={handleConfirm}
         fromSymbol={fromSymbol}
         fromAmount={fromAmount}
         toSymbol={toSymbol}

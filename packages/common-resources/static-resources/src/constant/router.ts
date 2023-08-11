@@ -464,7 +464,7 @@ export const FOOTER_LIST_MAP = {
 
     {
       linkName: 'APIs', //APIs
-      linkHref: `${LOOPRING_DOC}/en/`,
+      linkHref: `${LOOPRING_DOC}`,
     },
     {
       linkName: 'L2Explorer', //Layer2 Explorer

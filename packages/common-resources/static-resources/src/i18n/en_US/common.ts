@@ -49,8 +49,8 @@ export default {
   depositLabelPlaceholder: 'address, Account ID or ENS',
   withdrawDescription:
     'Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the {{l1ChainName}} gas price exceeds 500 GWei.）',
-  withdrawTypeLabelFast: 'Fast ~15 seconds',
-  withdrawTypeLabelStandard: 'Standard ~25 minutes',
+  withdrawTypeLabelFast: 'Fast (15 seconds at the earliest)',
+  withdrawTypeLabelStandard: 'Standard (about 25 minutes)',
   labelConnectWallet: 'Connect wallet',
 
   labelCustomer: 'Custom',
@@ -1743,7 +1743,7 @@ export default {
   labelReferralsClaimRefund: 'Claimable Refunds ',
   labelReferralsTotalTradeNumber: 'Total Trade Number ',
   labelReferralCode: 'Referral Code (Optional) <1>\uFE61</1>',
-  labelReferralToolTip: 'Enter referral code to enjoy a three-month discount on transfer fees.',
+  labelReferralToolTip: 'Enter referral code to enjoy a discount on  transfer fees.',
   labelBtradeRefresh: 'Refresh',
   labelArgNoEnough: 'Insufficient {{arg}} balance',
   WalletConnectV1: 'WalletConnect Legacy',
@@ -1822,8 +1822,22 @@ export default {
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
+  labelRiskAgree: 'Proceed Anyway',
+  labelRiskCancel: 'Cancel',
+  labelExpectedSettlementPrice: 'Expected Settlement Price',
+  labelCurrentMarketPrice: 'Current Market Price',
+  labelPriceVariance: 'Price Variance',
+  labelImpactExtraNewGreat:
+    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap Continue to confirm you understand and acknowledge the risk.',
+  labelPriceImpact: 'Price Impact',
+  labelPriceImpactDes1:
+    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <t>‘AGREE’</t> and tap ‘Proceed Anyway’ to confirm again.',
+  labelPriceImpactDes2:
+    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
+  labelLargePriceVariance: 'Large Price Variance',
+  labelHighPriceImpacTitle: 'High Price Impact Detected',
   labelFeeAvailablePay: 'Available: {{available}} Pay: {{pay}}',
 }
