@@ -22,8 +22,8 @@ export const inputHeightLarge = () => css`
 
   .MuiInputAdornment-root {
     svg {
-      height: var(--btn-icon-size);
-      width: var(--btn-icon-size);
+      height: var(--btn-icon-size-large);
+      width: var(--btn-icon-size-large);
     }
   }
 `
