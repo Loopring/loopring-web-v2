@@ -16,7 +16,8 @@ import { useTheme } from '@emotion/react'
 import { useSettings } from '../../../stores'
 
 const BoxStyled = styled(Box)`
-  background: var(--color-global-bg);
+  //background: var(--color-global-bg);
+  background:var(--color-box-hover);
   position: relative;
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */

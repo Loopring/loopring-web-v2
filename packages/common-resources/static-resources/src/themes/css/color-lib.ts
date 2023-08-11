@@ -18,6 +18,7 @@ export const GrayBlack = {
   gray600: '#141414',
   gray700: '#000000',
   gray800: '#141414',
+  gray900: '#000000',
 }
 export const GrayLight = {
   gray100: '#000000',
@@ -28,6 +29,7 @@ export const GrayLight = {
   gray600: '#FAFAFA',
   gray700: '#FFFFFF',
   gray800: '#FFFFFF',
+  gray900:  "#FAFAFA"
 }
 
 export const ColorDarkDefault = Object.freeze({
@@ -47,23 +49,22 @@ export const ColorDarkDefault = Object.freeze({
   textButton: GrayBlack.gray100,
   textButtonSelect: GrayBlack.gray100,
   textDisable: `${hexToRGB(GrayBlack.gray100, '0.45')}`,
-  border: '#49527D',
+  border: GrayBlack.gray400,
   borderHover: GrayBlack.gray100,
   borderDark: GrayBlack.gray400,
   borderSelect: GrayBlack.gray100,
   borderDisable: '#383C5C',
   borderDisable2: '#2D2F4B',
   tag: '#6787FF',
-  box: GrayBlack.gray700, //"#2D2F4B",
+  popBg: GrayBlack.gray500, //ColorBlack.dark800,
+  box: GrayBlack.gray800, //"#2D2F4B",
+  boxSecondary: GrayBlack.gray500,
   boxHover: `${hexToRGB(GrayBlack.gray100, '0.05')}`,
-  popBg: GrayBlack.gray700, //ColorBlack.dark800,
-
-  boxLinear: `linear-gradient(194.79deg, ${GrayBlack.gray500} 17.96%, ${GrayBlack.gray400} 44.29%, ${GrayBlack.gray300} 96.93%)`,
-  globalBg: GrayBlack.gray800, // "#1F2034",
+  boxLinear: `linear-gradient(194.79deg, ${GrayBlack.gray800} 17.96%, ${GrayBlack.gray800} 44.29%, ${GrayBlack.gray600} 96.93%)`,
+  globalBg: GrayBlack.gray900, // "#1F2034",
   globalBgOpacity: `${hexToRGB('#1F2034', '0.5')}`,
   fieldOpacity: `${hexToRGB(GrayBlack.gray100, '0.1')}`,
   divide: GrayBlack.gray300,
-  boxSecondary: GrayBlack.gray500,
   boxEnhance:`${hexToRGB(GrayBlack.gray100, '0.1')}`,
   mask: `${hexToRGB(GrayBlack.gray700, '0.68')}`,
   tableHeaderBg: '#393f64',

@@ -135,7 +135,7 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
 `
 export const ModelPanelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
-  background: var(--color-global-bg);
+  background: var(--color-box);
 ` as typeof Box
 
 export const SwitchPanelStyled: any = styled(Box)<
@@ -364,7 +364,6 @@ export const shake = css`
     }
   }
 `
-const loadingGif = './static/loading.gif'
 
 export const MenuBtnStyled = styled(Button)<ButtonProps>`
   font-size: ${({ theme }) => theme.fontDefault.body1};

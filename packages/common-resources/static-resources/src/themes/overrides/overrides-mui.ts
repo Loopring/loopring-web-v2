@@ -307,6 +307,7 @@ export const MuiPaper = ({
         borderRadius: pxToRem(8),
         backgroundImage: 'none',
         backgroundColor: colorBase.popBg,
+        border:`.5px solid ${colorBase.border}`,
         '&.MuiPopover-paper': {
           backgroundImage: 'none',
           boxShadow: colorBase.shadowHover,
