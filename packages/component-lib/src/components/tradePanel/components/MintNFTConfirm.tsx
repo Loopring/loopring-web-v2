@@ -24,10 +24,9 @@ import {
   Table,
   TextareaAutosizeStyled,
 } from '../../basic-lib'
-import { DropdownIconStyled, FeeTokenItemWrapper } from './Styled'
 import styled from '@emotion/styled'
-import { FeeToggle } from './tool/FeeList'
 import { useSettings } from '../../../stores'
+import { FeeSelect } from '../../../components/modal'
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -73,7 +72,7 @@ export const MintNFTConfirm = <
 }: NFTMintViewProps<ME, MI, I, C>) => {
   const { t, ...rest } = useTranslation(['common'])
   const { isMobile } = useSettings()
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
   const getDisabled = React.useMemo(() => {
     return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED
   }, [disabled, nftMintBtnStatus])
@@ -196,68 +195,21 @@ export const MintNFTConfirm = <
                   <Typography>{t('labelFeeCalculating')}</Typography>
                 ) : (
                   <>
-                    <Typography
-                      component={'span'}
-                      display={'flex'}
-                      flexWrap={'wrap'}
-                      alignItems={'center'}
-                      variant={'body1'}
-                      color={'var(--color-text-secondary)'}
-                      marginBottom={1}
-                    >
-                      <Typography component={'span'} color={'inherit'} minWidth={28}>
-                        {t('labelL2toL2Fee')}：
-                      </Typography>
-                      <Box
-                        component={'span'}
-                        display={'flex'}
-                        alignItems={'center'}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-                      >
-                        {feeInfo && feeInfo.belong && feeInfo.fee
-                          ? feeInfo.fee + ' ' + feeInfo.belong
-                          : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                        <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                        {isFeeNotEnough.isOnLoading ? (
-                          <Typography
-                            color={'var(--color-warning)'}
-                            marginLeft={1}
-                            component={'span'}
-                          >
-                            {t('labelFeeCalculating')}
-                          </Typography>
-                        ) : (
-                          isFeeNotEnough.isFeeNotEnough && (
-                            <Typography
-                              marginLeft={1}
-                              component={'span'}
-                              color={'var(--color-error)'}
-                            >
-                              {t('labelL2toL2FeeNotEnough')}
-                            </Typography>
-                          )
-                        )}
-                      </Box>
-                    </Typography>
-                    {dropdownStatus === 'up' && (
-                      <FeeTokenItemWrapper padding={2}>
-                        <Typography
-                          component={'span'}
-                          variant={'body2'}
-                          color={'textSecondary'}
-                          marginRight={2}
-                          marginBottom={1}
-                        >
-                          {t('labelL2toL2FeeChoose')}
-                        </Typography>
-                        <FeeToggle
-                          chargeFeeTokenList={chargeFeeTokenList}
-                          handleToggleChange={handleToggleChange}
-                          feeInfo={feeInfo}
-                        />
-                      </FeeTokenItemWrapper>
-                    )}
+                    <FeeSelect
+                      chargeFeeTokenList={chargeFeeTokenList}
+                      handleToggleChange={(fee: FeeInfo) => {
+                        handleToggleChange(fee as C)
+                        setShowFeeModal(false)
+                      }}
+                      feeInfo={feeInfo as FeeInfo}
+                      open={showFeeModal}
+                      onClose={() => {
+                        setShowFeeModal(false)
+                      }}
+                      isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+                      feeLoading={isFeeNotEnough.isOnLoading}
+                      onClickFee={() => setShowFeeModal((prev) => !prev)}
+                    />
                   </>
                 )}
               </Grid>

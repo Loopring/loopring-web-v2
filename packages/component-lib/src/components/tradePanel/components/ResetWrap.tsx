@@ -1,19 +1,17 @@
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, InputAdornment, Link, TextField, Tooltip, Typography } from '@mui/material'
+import { Grid, Link, Typography } from '@mui/material'
 import {
   EmptyValueTag,
   FeeInfo,
-  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { Button } from '../../basic-lib'
 import { ResetViewProps } from './Interface'
-import { DropdownIconStyled, FeeTokenItemWrapper } from './Styled'
-import { FeeToggle } from './tool/FeeList'
 import { useSettings } from '../../../stores'
+import { FeeSelect } from '../../../components/modal'
 
 export const ResetWrap = <T extends FeeInfo>({
   t,
@@ -29,7 +27,7 @@ export const ResetWrap = <T extends FeeInfo>({
   isReset = false,
   handleFeeChange,
 }: ResetViewProps<T> & WithTranslation) => {
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
   const { referralCode, setReferralCode } = useSettings()
   const [value, setValue] = React.useState(referralCode)
   const { isMobile, defaultNetwork } = useSettings()
@@ -109,104 +107,83 @@ export const ResetWrap = <T extends FeeInfo>({
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            <Typography
-              component={'span'}
-              display={'flex'}
-              alignItems={'center'}
-              variant={'body1'}
-              color={'var(--color-text-secondary)'}
-              marginBottom={1}
-            >
-              {t('labelL2toL2Fee')}：
-              <Box
-                component={'span'}
-                display={'flex'}
-                alignItems={'center'}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-              >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + ' ' + feeInfo.belong
-                  : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
 
-                {isFeeNotEnough.isOnLoading ? (
-                  <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                    {t('labelFeeCalculating')}
-                  </Typography>
-                ) : (
-                  isFeeNotEnough.isFeeNotEnough && (
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                      {isNewAccount && goToDeposit ? (
-                        <Trans i18nKey={'labelActiveAccountFeeNotEnough'}>
-                          Insufficient balance
-                          <Link
-                            onClick={() => {
-                              goToDeposit()
-                            }}
-                            variant={'body2'}
-                          >
-                            Add assets
-                          </Link>
-                        </Trans>
-                      ) : (
-                        t('labelL2toL2FeeNotEnough')
-                      )}
+            <FeeSelect
+              disableNoToken={true}
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={(fee: FeeInfo) => {
+                handleToggleChange(fee as T)
+                setShowFeeModal(false)
+              }}
+              feeInfo={feeInfo}
+              open={showFeeModal}
+              onClose={() => {
+                setShowFeeModal(false)
+              }}
+              middleContent={
+                <>
+                  {isNewAccount && feeInfo?.fee?.toString() == '0' ? (
+                    <Typography color={'var(--color-success)'} marginLeft={1} component={'span'}>
+                      {t('labelFriendsPayActivation', {
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      })}
                     </Typography>
-                  )
-                )}
-              </Box>
-            </Typography>
-            {isNewAccount && feeInfo?.fee?.toString() == '0' ? (
-              <Typography color={'var(--color-success)'} marginLeft={1} component={'span'}>
-                {t('labelFriendsPayActivation', {
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                })}
-              </Typography>
-            ) : (
-              ''
-            )}
-            {isNewAccount && (
-              <Typography
-                component={'span'}
-                display={'flex'}
-                alignItems={'center'}
-                variant={'body1'}
-                color={'var(--color-text-secondary)'}
-                marginTop={1}
-                marginBottom={1}
-              >
-                {t('labelYourBalance', {
-                  balance:
-                    walletMap && feeInfo && feeInfo.belong && walletMap[feeInfo.belong]
-                      ? walletMap[feeInfo.belong]?.count + ' ' + feeInfo.belong
-                      : EmptyValueTag + ' ' + (feeInfo && feeInfo?.belong),
-                  layer2: L1L2_NAME_DEFINED[network].layer2,
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                })}
-              </Typography>
-            )}
-            {dropdownStatus === 'up' && (
-              <FeeTokenItemWrapper padding={2}>
-                <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                  {isNewAccount ? t('labelActiveEnterToken') : t('labelL2toL2FeeChoose')}
+                  ) : (
+                    ''
+                  )}
+                  {isNewAccount && (
+                    <Typography
+                      component={'span'}
+                      display={'flex'}
+                      alignItems={'center'}
+                      variant={'body1'}
+                      color={'var(--color-text-secondary)'}
+                      marginTop={1}
+                      marginBottom={1}
+                    >
+                      {t('labelYourBalance', {
+                        balance:
+                          walletMap && feeInfo && feeInfo.belong && walletMap[feeInfo.belong]
+                            ? walletMap[feeInfo.belong]?.count + ' ' + feeInfo.belong
+                            : EmptyValueTag + ' ' + (feeInfo && feeInfo?.belong),
+                        layer2: L1L2_NAME_DEFINED[network].layer2,
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      })}
+                    </Typography>
+                  )}
+                </>
+              }
+              isFeeNotEnough={isFeeNotEnough && isFeeNotEnough.isFeeNotEnough}
+              feeLoading={isFeeNotEnough && isFeeNotEnough.isOnLoading}
+              onClickFee={() => setShowFeeModal((prev) => !prev)}
+              feeNotEnoughContent={
+                <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
+                  {isNewAccount && goToDeposit ? (
+                    <Trans i18nKey={'labelActiveAccountFeeNotEnough'}>
+                      Insufficient balance
+                      <Link
+                        onClick={() => {
+                          goToDeposit()
+                        }}
+                        variant={'body2'}
+                      >
+                        Add assets
+                      </Link>
+                    </Trans>
+                  ) : (
+                    t('labelL2toL2FeeNotEnough')
+                  )}
                 </Typography>
-                <FeeToggle
-                  disableNoToken={true}
-                  chargeFeeTokenList={chargeFeeTokenList}
-                  handleToggleChange={handleToggleChange}
-                  feeInfo={feeInfo}
-                />
-              </FeeTokenItemWrapper>
-            )}
+              }
+            />
           </>
         )}
       </Grid>

@@ -36,3 +36,4 @@ export * from './CreateRedPacketPanel'
 
 export * from './ClaimWithdraw'
 export * from './RedPacket'
+export * from './FeeSelect'

@@ -71,7 +71,7 @@ export type TransferInfoProps<C> = {
   chargeFeeTokenList: Array<C>
   activeAccountPrice: string | undefined
   // activeAccountFeeList?: Array<C>;
-  feeInfo: C
+  feeInfo: C | undefined
   isFeeNotEnough: {
     isFeeNotEnough: boolean
     isOnLoading: boolean
@@ -105,6 +105,7 @@ export type TransferExtendProps<T, I, C> = {
   onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
   contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
+  onClickFee: () => void
 } & TransferInfoProps<C>
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> = TransferExtendProps<T, I, C> &

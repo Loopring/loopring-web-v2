@@ -33,6 +33,7 @@ import {
   IBData,
   TRADE_TYPE,
   TradeNFT,
+  myLog,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
@@ -80,7 +81,7 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
   }
 ` as (props: { _height?: number | string; _width?: number | string } & BoxProps) => JSX.Element
 
-const Modal = withTranslation('common')(
+export const Modal = withTranslation('common')(
   ({
     open,
     onClose,
@@ -186,6 +187,7 @@ export const ModalPanel = <
     setShowSideStakingRedeem,
     // setShowDual,
   } = useOpenModals()
+
   const {
     isShowTransfer,
     isShowWithdraw,
@@ -201,8 +203,7 @@ export const ModalPanel = <
     isShowLayerSwapNotice,
     isShowAnotherNetwork,
     isShowClaimWithdraw,
-    isShowSideStakingRedeem,
-    // isShowDual,
+    isShowSideStakingRedeem
   } = modals
   const theme = useTheme()
   return (

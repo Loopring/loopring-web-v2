@@ -49,8 +49,8 @@ export default {
   depositLabelPlaceholder: 'address, Account ID or ENS',
   withdrawDescription:
     'Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the {{l1ChainName}} gas price exceeds 500 GWei.）',
-  withdrawTypeLabelFast: 'Fast (15 seconds at the earliest)',
-  withdrawTypeLabelStandard: 'Standard (about 25 minutes)',
+  withdrawTypeLabelFast: 'Fast ~15 seconds',
+  withdrawTypeLabelStandard: 'Standard ~25 minutes',
   labelConnectWallet: 'Connect wallet',
 
   labelCustomer: 'Custom',
@@ -1825,4 +1825,5 @@ export default {
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
+  labelFeeAvailablePay: 'Available: {{available}} Pay: {{pay}}',
 }
