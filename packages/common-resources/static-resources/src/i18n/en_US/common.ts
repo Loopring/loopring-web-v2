@@ -1830,10 +1830,13 @@ export default {
   labelImpactExtraNewGreat:
     'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap Continue to confirm you understand and acknowledge the risk.',
   labelPriceImpact: 'Price Impact',
-  labelPriceImpactDes:
-    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <2>‘AGREE’</2> and tap ‘Proceed Anyway’ to confirm again.',
+  labelPriceImpactDes1:
+    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <t>‘AGREE’</t> and tap ‘Proceed Anyway’ to confirm again.',
+  labelPriceImpactDes2:
+    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelLargePriceVariance: 'Large Price Variance',
+  labelHighPriceImpacTitle: 'High Price Impact Detected',
 }

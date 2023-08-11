@@ -80,8 +80,11 @@ const RiskStyle = styled(Dialog)`
     }
   }
 
-  //.main-icon {
-  //}
+  .MuiDialogActions-root {
+    > :not(:first-of-type) {
+      margin-left: 0px !important;
+    }
+  }
 
   .titleContent {
     margin: ${({ theme }) => 2 * theme.unit}px 0 0 0;
@@ -121,7 +124,7 @@ export const RiskComponent = ({
   infos?: RiskInformation[]
   description?: JSX.Element[]
   checkElement?: JSX.Element
-  isAgree?: boolean // if mutiple when all aggress set true
+  isAgree?: boolean // if mutiple when all aggree set true
   confirmLabel?: string
   cancelLabel?: string
   title: string | JSX.Element | (() => JSX.Element)
@@ -192,13 +195,20 @@ export const RiskComponent = ({
         sx={{
           display: 'flex',
           justifyContent: 'stretch',
+          flexDirection: 'column',
+          alignItems: 'stretch',
         }}
       >
-        {checkElement}
+        {checkElement && (
+          <Box marginBottom={2} display={'flex'}>
+            {checkElement}
+          </Box>
+        )}
         <Box
           display={'flex'}
           justifyContent={'space-between'}
           width={'100%'}
+          className={'action-btn'}
           flexDirection={'row'}
           alignItems={'center'}
         >
@@ -206,8 +216,7 @@ export const RiskComponent = ({
             <Button
               variant={'contained'}
               size={'medium'}
-              onClick={(_) => handleConfirm()}
-              disabled={!isAgree}
+              onClick={(_) => handleClose()}
               color={'primary'}
               fullWidth
             >
@@ -219,8 +228,9 @@ export const RiskComponent = ({
               sx={{ height: '4rem' }}
               variant={'outlined'}
               size={'medium'}
+              disabled={!isAgree}
               fullWidth
-              onClick={(_) => handleClose()}
+              onClick={(_) => handleConfirm()}
             >
               {t(confirmLabel)}
             </Button>
@@ -410,7 +420,7 @@ export const AlertImpact = ({
 
   return (
     <RiskComponent
-      title={t('LabelLargePriceVariance')}
+      title={t('labelLargePriceVariance')}
       open={open}
       infos={label}
       description={[
@@ -444,7 +454,7 @@ export const ConfirmImpact = ({
   const [agree, setAgree] = React.useState('')
 
   React.useEffect(() => {
-    if (!open) {
+    if (open) {
       setAgree(shouldInputAgree ? '' : 'AGREE')
     }
   }, [open, shouldInputAgree])
@@ -452,42 +462,46 @@ export const ConfirmImpact = ({
   const label: RiskInformation[] = [
     {
       label: t('labelPriceImpact'),
-      value: `${priceImpact}`,
+      value: `${priceImpact}%`,
       color: color,
     },
   ]
 
   return (
     <RiskComponent
-      title={t('labelImpactTitle')}
+      title={t('labelHighPriceImpacTitle')}
       open={open}
       infos={label}
       description={[
-        <Trans i18nKey={'labelPriceImpactDes'} tOptions={{ value: priceImpact }}>
+        <Trans
+          i18nKey={shouldInputAgree ? 'labelPriceImpactDes1' : 'labelPriceImpactDes2'}
+          tOptions={{ value: priceImpact }}
+          components={{
+            t: <Typography component={'span'} color={'textPrimary'} />,
+          }}
+        >
           This trade will affect the pool price by more than {priceImpact}%，which is too high. It
           may result in significant slippage and potential losses. If you acknowledge the risk and
-          wish to proceed, type the
-          <Typography component={'span'} color={'textSecondary'}>
-            ‘AGREE’
-          </Typography>
-          and tap ‘Proceed Anyway’ to confirm again.
+          wish to proceed, type the ‘AGREE’ and tap ‘Proceed Anyway’ to confirm again.
         </Trans>,
       ]}
       isAgree={agree === 'AGREE'}
       handleClose={handleClose}
       handleConfirm={handleConfirm}
       checkElement={
-        <TextField
-          autoFocus
-          value={agree}
-          onChange={(event) => {
-            setAgree(event.target.value)
-          }}
-          margin='dense'
-          id='agree'
-          type='text'
-          fullWidth
-        />
+        shouldInputAgree ? (
+          <TextField
+            autoFocus
+            value={agree}
+            onChange={(event) => {
+              setAgree(event.target.value)
+            }}
+            margin='dense'
+            id='agree'
+            type='text'
+            fullWidth
+          />
+        ) : undefined
       }
     />
   )

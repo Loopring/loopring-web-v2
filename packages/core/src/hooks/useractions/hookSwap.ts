@@ -1543,6 +1543,6 @@ export const useSwap = <
         return state
       })
     },
-    priceLevel: getPriceImpactInfo(tradeCalcData.calcTradeParams, account.readyState),
+    priceLevel: getPriceImpactInfo(pageTradeLite.calcTradeParams, account.readyState),
   }
 }
