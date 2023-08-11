@@ -56,7 +56,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
   const result = React.useCallback(async () => {
     if (LoopringAPI.exchangeAPI) {
       const { timestamp, tradeVolume, totalUserNum, tradeNum, layerTwoLockedVolume } =
-        await LoopringAPI.exchangeAPI.getProtocolPortrait()
+        await LoopringAPI.exchangeAPI.getProtocolPortrait<any>()
       setValue({
         timestamp,
         tradeVolume,

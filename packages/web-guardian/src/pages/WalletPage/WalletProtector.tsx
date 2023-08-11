@@ -143,10 +143,6 @@ export const WalletProtector = ({
                 status={lockStatus}
                 onClickLock={() => {
                   onLock(x)
-                  handleOpenModal({
-                    step: GuardianStep.LockAccount_WaitForAuth,
-                    options: { lockRetry: onLock, lockRetryParams: x },
-                  })
                 }}
               />
             </Box>

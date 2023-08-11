@@ -67,15 +67,15 @@ export const useHebaoMain = <
       operationLogList: [],
       guardianConfig: {},
     })
-  const [openHebao, setOpenHebao] = React.useState<{
-    isShow: boolean
-    step: GuardianStep
-    options?: any
-  }>({
-    isShow: false,
-    step: GuardianStep.LockAccount_WaitForAuth,
-    options: undefined,
-  })
+  // const [openHebao, setOpenHebao] = React.useState<{
+  //   isShow: boolean
+  //   step: GuardianStep
+  //   options?: any
+  // }>({
+  //   isShow: false,
+  //   step: GuardianStep.LockAccount_WaitForAuth,
+  //   options: undefined,
+  // })
   const { clearOneItem } = layer1Store.useLayer1Store()
   // const { chainId } = useSystem()
   const [isLoading, setIsLoading] = React.useState(false)
@@ -161,8 +161,7 @@ export const useHebaoMain = <
           }),
         ])
           .catch((error) => {
-            //TODO: move to myLog when test finished
-            console.log('guardianConfig error', error)
+            myLog('guardianConfig error', error)
             setIsLoading(false)
           })
           .finally(() => {
@@ -221,9 +220,9 @@ export const useHebaoMain = <
     protectList,
     guardiansList,
     guardianConfig,
-    openHebao,
+    // openHebao,
     operationLogList,
-    setOpenHebao,
+    // setOpenHebao,
     isLoading,
     setIsLoading,
     loadData,
@@ -259,7 +258,7 @@ export const useAction = ({
     handleOpenModal({
       step: GuardianStep.Approve_WaitForAuth,
       options: {
-        approveRetry: () => {
+        lockRetry: () => {
           submitApprove(code, selected)
         },
       },
@@ -275,9 +274,9 @@ export const useAction = ({
         ])
 
         await callSwitchChain(_chainId)
-        let isContract1XAddress = undefined,
-          guardianModuleAddress = undefined,
-          guardians = undefined
+        let isContract1XAddress: any = undefined,
+          guardianModuleAddress: any = undefined,
+          guardians: any = undefined
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
           isContract1XAddress = true
           const walletModule = guardianConfig?.supportContracts?.find((item: any) => {
@@ -317,6 +316,9 @@ export const useAction = ({
             step: GuardianStep.Approve_Failed,
             options: {
               error: response,
+              lockRetry: () => {
+                submitApprove(code, selected)
+              },
             },
           })
         } else {
@@ -332,6 +334,9 @@ export const useAction = ({
           step: GuardianStep.Approve_Failed,
           options: {
             error: errorItem ? t(errorItem.messageKey, { ns: 'error' }) : error.message,
+            lockRetry: () => {
+              submitApprove(code, selected)
+            },
           },
         })
       }
@@ -345,7 +350,7 @@ export const useAction = ({
     handleOpenModal({
       step: GuardianStep.Reject_WaitForAuth,
       options: {
-        approveRetry: () => {
+        lockRetry: () => {
           handleReject(guardian)
         },
       },
@@ -373,6 +378,9 @@ export const useAction = ({
             step: GuardianStep.Reject_Failed,
             options: {
               error: response,
+              lockRetry: () => {
+                handleReject(guardian)
+              },
             },
           })
         } else {
@@ -388,6 +396,9 @@ export const useAction = ({
           step: GuardianStep.Approve_Failed,
           options: {
             error: errorItem ? t(errorItem.messageKey, { ns: 'error' }) : error.message,
+            lockRetry: () => {
+              handleReject(guardian)
+            },
           },
         })
       }
@@ -432,6 +443,15 @@ export const useHebaoProtector = <T extends sdk.Protector>({
     : sdk.NetworkWallet[network]
   const onLock = React.useCallback(
     async (item: T) => {
+      handleOpenModal({
+        step: GuardianStep.LockAccount_WaitForAuth,
+        options: {
+          lockRetry: () => {
+            onLock(item)
+          },
+          lockRetryParams: item,
+        },
+      })
       const config = guardianConfig.actionGasSettings.find(
         (item: any) => item.action === 'META_TX_LOCK_WALLET_WA',
       )
@@ -478,6 +498,10 @@ export const useHebaoProtector = <T extends sdk.Protector>({
               step: GuardianStep.LockAccount_Failed,
               options: {
                 error: errorItem ? t(errorItem.messageKey) : error.message,
+                lockRetry: () => {
+                  onLock(item)
+                },
+                lockRetryParams: item,
               },
             })
           } else {
@@ -497,7 +521,13 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           sdk.dumpError400(reason)
           handleOpenModal({
             step: GuardianStep.LockAccount_User_Denied,
-            options: { error: reason.message },
+            options: {
+              error: reason.message,
+              lockRetry: () => {
+                onLock(item)
+              },
+              lockRetryParams: item,
+            },
           })
         }
       }

@@ -71,6 +71,7 @@ export function* dualMapInitSaga() {
 }
 
 export function* dualMapSyncSaga() {
+  // @ts-ignore
   yield all([takeLatest(updateDualSyncMap, getDualSyncSaga)])
 }
 

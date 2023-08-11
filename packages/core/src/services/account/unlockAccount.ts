@@ -89,8 +89,8 @@ export async function unlockAccount() {
             ?.getHadUnknownCollection({
               accountId: account.accountId,
             })
-            .then((_response: boolean) => {
-              if ((_response as sdk.RESULT_INFO)?.code) {
+            .then((_response) => {
+              if ((_response as unknown as sdk.RESULT_INFO)?.code) {
                 // console.error(_response)
                 return
               }

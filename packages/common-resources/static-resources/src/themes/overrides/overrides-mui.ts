@@ -1,6 +1,7 @@
 import { borderFunc, pxToRem, unit } from './utils'
 import { ComponentsOverrides } from '@mui/material'
 import { fontDefault } from '../css/global'
+import { myLog } from '../../utils'
 
 export const radius = 4
 export const checkBoxSize = 18
@@ -381,7 +382,9 @@ export const MuiInputLabel = ({
 export const MuiInputBase = ({
   colorBase,
   themeMode,
+  ...rest
 }: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
+  myLog('size', rest)
   return {
     styleOverrides: {
       root: {

@@ -69,6 +69,7 @@ function* tickersSaga() {
 }
 
 function* tickerSyncSaga() {
+  // @ts-ignore
   yield all([takeLatest(updateTicker, tickerMakeMap)])
 }
 

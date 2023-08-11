@@ -13,18 +13,16 @@ export type Column<R, SR> = RdgColumns<R, SR> & {
   [key: string]: any
 }
 
-export type TableProps<R extends { [key: string]: any }, SR> = {
+export type TableProps<R, SR> = {
   rawData: any
-  columnMode: readonly Column<R, unknown>[]
+  columnMode: Column<R, unknown>[]
   generateRows: (rawData: any, ...rest: any[]) => Array<R>
-  generateColumns: ({
-    columnsRaw,
-    t,
-    ...rest
-  }: {
-    columnsRaw: readonly Column<R, SR>[]
-    [key: string]: any
-  } & WithT) => Array<RdgColumns<R>>
+  generateColumns: (
+    props: {
+      columnsRaw: Column<R, unknown>[]
+      [key: string]: any
+    } & WithT,
+  ) => Array<RdgColumns<R>>
   // rows: any;
   columns?: readonly Column<R, unknown>[]
   setRows?: () => any
