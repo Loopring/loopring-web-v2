@@ -751,7 +751,7 @@ export const ConfirmLinkCopy = withTranslation('common', {
           <List sx={{ marginTop: 2 }}>
             <ListItem>
               <Trans i18nKey={'labelOpenInWalletDetailLi1'}>
-                Open your wallet app and paste the url in its internal dapp browser
+                Open your wallet app and paste the url in its internal Dapp browser
               </Trans>
             </ListItem>
             <ListItem>
