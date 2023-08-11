@@ -1,5 +1,5 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { LoopringAPI, store } from '../../index'
+import { callSwitchChain, LoopringAPI, store } from '../../index'
 import { accountServices } from './accountServices'
 import { myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -9,19 +9,19 @@ import { nextAccountStatus } from '../../stores/account/reducer'
 export async function unlockAccount() {
   myLog('unlockAccount starts')
   const accounStore = store.getState().account
-  const { exchangeInfo, chainId } = store.getState().system
-  accountServices.sendSign()
+  const { exchangeInfo } = store.getState().system
   const { isMobile } = store.getState().settings
   myLog('unlockAccount account:', accounStore)
-
+  accountServices.sendSign()
   if (
     exchangeInfo &&
     LoopringAPI.userAPI &&
     LoopringAPI.exchangeAPI &&
     LoopringAPI.walletAPI &&
-    accounStore.nonce !== undefined
+    accounStore.nonce !== undefined &&
+    connectProvides?.usedWeb3
   ) {
-    let walletType, account: any
+    let walletType, account: any, _chainId: any
     try {
       const connectName = (ConnectProviders[accounStore.connectName] ??
         accounStore.connectName) as unknown as sdk.ConnectorNames
@@ -31,11 +31,12 @@ export async function unlockAccount() {
           : LoopringAPI.walletAPI.getWalletType({
               wallet: accounStore.accAddress,
             })
-      ;[{ accInfo: account }, { walletType }] = await Promise.all([
+      ;[{ accInfo: account }, { walletType }, _chainId] = await Promise.all([
         LoopringAPI.exchangeAPI.getAccount({
           owner: accounStore.accAddress,
         }),
         walletTypePromise,
+        connectProvides?.usedWeb3?.eth?.getChainId(),
       ])
         .then((response) => {
           if ((response[0] as sdk.RESULT_INFO)?.code) {
@@ -57,6 +58,8 @@ export async function unlockAccount() {
               exchangeInfo.exchangeAddress,
             ).replace('${nonce}', (nonce - 1).toString())
 
+      await callSwitchChain(_chainId)
+
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
           keyPair: {
@@ -64,7 +67,7 @@ export async function unlockAccount() {
             address: account.owner,
             keySeed: msg,
             walletType: connectName,
-            chainId: Number(chainId),
+            chainId: Number(_chainId),
             accountId: Number(account.accountId),
             isMobile: isMobile,
           },
@@ -86,8 +89,8 @@ export async function unlockAccount() {
             ?.getHadUnknownCollection({
               accountId: account.accountId,
             })
-            .then((_response: boolean) => {
-              if ((_response as sdk.RESULT_INFO)?.code) {
+            .then((_response) => {
+              if ((_response as unknown as sdk.RESULT_INFO)?.code) {
                 // console.error(_response)
                 return
               }

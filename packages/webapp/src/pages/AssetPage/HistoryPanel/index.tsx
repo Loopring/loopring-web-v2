@@ -43,13 +43,9 @@ import {
   RecordTabIndex,
   RowConfig,
   TOAST_TIME,
+  TabOrderIndex,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
-
-enum TabOrderIndex {
-  orderOpenTable = 'orderOpenTable',
-  orderHistoryTable = 'orderHistoryTable',
-}
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -78,6 +74,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     txsTotal,
     showLoading: showTxsLoading,
     getUserTxnList,
+    searchValue,
   } = useGetTxs(setToastOpen)
   const {
     userTrades,
@@ -158,7 +155,6 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     },
     [history, search],
   )
-
   React.useEffect(() => {
     let height = container?.current?.offsetHeight
     if (height) {
@@ -230,6 +226,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               {...{
                 etherscanBaseUrl,
                 rawData: txTableData,
+                searchValue,
                 pagination: {
                   pageSize: pageSize,
                   total: txsTotal,

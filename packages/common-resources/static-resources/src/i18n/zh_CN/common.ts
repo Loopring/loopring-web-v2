@@ -781,7 +781,7 @@ export default {
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
   labelMintFeeChoose: 'Select payment token',
-  labelLayerSwapUnderstand: 'Acknowledge and understand the risk',
+  labelLayerSwapUnderstand: 'I understand and acknowledge the risk',
   labelIUnderStand: 'I Understand',
   labelLayerSwapUnderstandDes:
     'LayerSwap is a 3rd party App service provider to help move tokens from exchange to {{loopringL2}} directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
@@ -816,7 +816,7 @@ export default {
   labelNFTProperties: 'Properties',
   labelNFTDescription2: 'Description',
   labelForceWithdrawNotAvailable:
-    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1Symbol}} anymore',
+    '{{loopringL2}} account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its {{l2Symbol}} to {{l1symbol}} anymore',
   labelForceWithdrawNoToken: 'No token is detected from this address to operate',
   labelForceWithdrawBtn: 'Force Withdraw',
   labelInvestDefiTitle: 'ETH Staking',
@@ -1671,10 +1671,10 @@ export default {
   labelStopLimitWaitingTrigger:
     'The limit order is not placed until the stop price has been triggered.',
   labelStopLimitCurrentlyInsufficient: 'Currently insufficient',
-  labelDUAL_CURRENCY: 'DUAL CURRENCY',
-  labelDUAL_BASE: 'DUAL BASE',
+  labelDUAL_CURRENCY: 'Dual Investment',
+  labelDUAL_BASE: 'Dual Investment',
   labelBTRADE: 'Block Trade',
-  labelL2STAKING: 'Staking',
+  labelL2STAKING: 'LRC Staking',
   labelSTOP_LIMIT: 'Stop-Limit',
   labelAMMPending: 'Pending',
   labelAMMTitle: 'AMM Investment',
@@ -1718,8 +1718,8 @@ export default {
   labelAddAssetTitleAnotherNetDesActive:
     'If you have transferred tokens from another network, please wait. Once you receive the assets, you can manually activate the {{l2Symbol}} account.',
   labelAnotherNetworkDes:
-    'Orbiter.finance is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <1>TOS</1>.',
-  labelAnotherNetworkUnderstand: 'Acknowledge and understand the risk',
+    '<0>Orbiter.finance</0> is a 3rd party service provider to help move tokens between various {{l1ChainName}} {{l1Symbol}} and {{l2Symbol}} networks. If you have any concerns regarding their service, please check out their <2>TOS</2>.',
+  labelAnotherNetworkUnderstand: 'I understand and acknowledge the risk',
   labelReferralImageDes: 'Scan code to register',
   labelReferralImageCode: 'Code: {{code}}',
   labelInvite: 'Invite Friends',
@@ -1730,7 +1730,7 @@ export default {
   labelReferralsClaimRefund: 'Claim Refunds ',
   labelReferralsTotalTradeNumber: 'Total Trade Number ',
   labelReferralCode: 'Referral Code (Optional) <1>\uFE61</1>',
-  labelReferralToolTip: 'Enter referral code to enjoy a three-month discount on transfer fees.',
+  labelReferralToolTip: 'Enter referral code to enjoy a discount on  transfer fees.',
   labelBtradeRefresh: 'Refresh',
   labelArgNoEnough: 'Insufficient {{arg}} balance',
   WalletConnectV1: 'WalletConnect Legacy',
@@ -1742,10 +1742,10 @@ export default {
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
   labelClaimTypeREFERER_FEE: 'Refunds Rewards',
-  labelClaimTypePROTOCOL_FEE: 'AMM Pool Rewards',
+  labelClaimTypePROTOCOL_FEE: 'Dedicated AMM Incentive',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
-  labelAMMClaimableEarnings: 'Protocol Fee Rewards',
+  labelAMMClaimableEarnings: 'Dedicated AMM Incentive',
   labelLayer2HistoryOrders: 'Order Records',
   labelLayer2HistoryStopLimitRecords: 'Stop-Limit Records',
   labelLayer2HistoryDefiRecords: 'ETH Staking',
@@ -1756,13 +1756,21 @@ export default {
   labelRedPacketTimeRangeBlindboxDesERC20:
     'The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received tokens',
   labelBlindBoxExpirationExplainationForTokenBlindbox:
-    "'If the recipients of the Tokens Red Packets do not open their received Tokens, the Tokens will be forfeited and sent back to the Sender's wallet.'",
+    "If the recipients of the Tokens Red Packets do not open their received Tokens, the Tokens will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxRecieved: 'Received {{deliverdGiftsAmount}}/{{totalGiftsAmount}}',
   labelBlindBoxClaimHint: 'You can visit Assets > Red Packets to claim your rewards.',
   labelRedPacketBlindboxReceived1: 'ERC20 Blind Box',
   labelRedPacketBlindboxReceived2: 'Received',
   labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
+  labelCiETHDefiRiskTitle: "What's Cian Leveraged ETH?",
+  labelCiETHDefiRisk:
+    '<p>CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform, where users could earn either through joining algorithmic strategy vaults or through building their own DeFi strategies using CIAN’s advanced automation tools.</p>' +
+    "<p>The stETH/ETH leveraged staking strategy enables users to safely leverage stETH’s staking rewards. This strategy focuses on staking derivatives and protection/optimization tooling. By nature, this strategy is to use the user's asset as collateral to borrow ETH from lending platforms, then stake ETH in Lido to earn ETH staking interest. By utilizing tools like Flashloan, it actually adds leverage to users' ETH investment. If only there is a positive APY diff between the borrowing rate and ETH staking rate, there will be additional earnings from this strategy vs. standard ETH staking.</p>" +
+    '<p>It is quite important to understand that, when using such leveraged strategy, it’s highly advised to intend on holding that position for a while. By doing so, users will give enough time for the high APY to cover their entry & exit costs.</p>\n',
+  labelDefiWithdrawFee:
+    '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
+  labelLeverageETHTitle: 'Leveraged ETH',
   labelLayer2HistoryleverageETHRecords: 'Leveraged ETH',
   labelSwapMinConverted: 'Minimum Converted',
   labelSwapMinConvertedTooltip:
@@ -1775,6 +1783,17 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
+  labelClaimallToken: 'My Rewards',
+  labelConnecting: 'Connecting',
+  labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
+  labelHadUnknownCollectionDes:
+    'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
+  labelGo: 'Go',
+  labelAnotherNetworkDes2:
+    'Note: Please ensure to check out the "Change Account" option and input the recipient\'s address carefully. If you want to send token to network other than ethereum, the recipient address must be different than the sender address; else you will lose that asset for ever.',
+  labelAnotherNetworkDes3: '',
+  labelRiskReminder: 'Risk Reminder',
+  labelDefiRedeem: 'Redeem',
   labelDefiSubscribe: 'Subscribe',
   labelDefiMaxBalance1Leverage:
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
@@ -1788,4 +1807,5 @@ export default {
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
+  labelToMyL2WidthAddress: 'My {{loopringL2}} <1>({{address}})</1>',
 }

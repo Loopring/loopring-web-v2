@@ -305,7 +305,7 @@ export default {
   labelRedPacketSenderAddress: 'Sender Address',
   // labelRecordAction: "Action",
   labelBtradeSwapType: 'Type',
-  labelBtradeSwapFee: 'Fee',
+  labelBtradeSwapFee: 'Trading Fee',
   labelBtradeSwapTime: 'Time',
   labelBtradeSwapPrice: 'Price',
   labelBtradeSwapSettled: 'Settled',
@@ -319,10 +319,10 @@ export default {
   labelBtradePending: 'Pending',
   labelBtradeSwapFailed: 'Filled',
   labelStopLimitStopPrice: 'Trigger Condition',
-  labelDUAL_CURRENCY: 'DUAL CURRENCY',
-  labelDUAL_BASE: 'DUAL BASE',
+  labelDUAL_CURRENCY: 'Dual Investment',
+  labelDUAL_BASE: 'Dual Investment',
   labelBTRADE: 'Block Trade',
-  labelL2STAKING: 'Staking',
+  labelL2STAKING: 'LRC Staking',
   labelSTOP_LIMIT: 'Stop-Limit',
   labelStopLimitTriggered:
     'Triggered: The limit order has been submitted to the order book.\n Time: {{time}}',
@@ -342,4 +342,5 @@ export default {
   labelRefundTableTime: 'Time',
   labelTxNetworkFee: 'Network Fee',
   labelTxTradingFee: 'Trading Fee',
+  labelTypeUNIFIED_CLAIM: 'Claim Rewards',
 }

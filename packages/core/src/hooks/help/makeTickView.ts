@@ -43,7 +43,7 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
   const { forexMap } = store.getState().system
   const { tokenPrices } = store.getState().tokenPrices
 
-  return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
+  return Reflect.ownKeys(tickerMap).reduce((prev: TickerMap<R>, key) => {
     const item = tickerMap[key as any]
     if (item && item.quote && forexMap && tokenPrices[item.quote]) {
       const price = tokenPrices[item.quote]
@@ -68,7 +68,7 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
         reward: 0,
         rewardToken: '',
         __rawTicker__: item,
-      } as Ticker
+      } as unknown as Ticker
     }
     return prev
   }, {} as TickerMap<R>)

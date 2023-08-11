@@ -31,8 +31,8 @@ const CheckboxStyled = styled(Checkbox)`
 
 const BoxContent = styled(Box)`
   .modalContent {
-    padding-right: ${({ theme }) => theme.unit * 7}px;
-    padding-left: ${({ theme }) => theme.unit * 7}px;
+    padding-right: ${({ theme }) => theme.unit * 5}px;
+    padding-left: ${({ theme }) => theme.unit * 5}px;
   }
 
   @media only screen and (max-width: 768px) {
@@ -80,7 +80,7 @@ export const ProviderMenu = ({
     localStorage.setItem('userTermsAgreed', String(state))
   }, [])
   const _handleSelect = React.useCallback(
-    (event, key: string, handleSelect?: (event: React.MouseEvent, key: string) => void) => {
+    (event: any, key: string, handleSelect?: (event: React.MouseEvent, key: string) => void) => {
       if (handleSelect && checkboxValue) {
         handleSelect(event, key)
         setIsShake(false)
@@ -128,9 +128,11 @@ export const ProviderMenu = ({
       >
         {t('labelConnectWallet')}
       </Typography>
-      <Box display={'flex'} justifyContent={'center'} marginBottom={3}>
-        {NetWorkItems}
-      </Box>
+      {NetWorkItems && (
+        <Box display={'flex'} justifyContent={'center'} marginBottom={3}>
+          {NetWorkItems}
+        </Box>
+      )}
       <Box
         display={'flex'}
         flexDirection={'column'}

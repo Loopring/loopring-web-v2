@@ -1,15 +1,8 @@
 import styled from '@emotion/styled'
-import { Box, Link, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
-import { BoxNFT, Column, NftImage, NftImageStyle, Table, TablePagination } from '../../basic-lib'
-import {
-  CoinInfo,
-  getValuePrecisionThousand,
-  globalSetup,
-  myLog,
-  RowConfig,
-  TokenType,
-} from '@loopring-web/common-resources'
+import { BoxNFT, Column, NftImageStyle, Table, TablePagination } from '../../basic-lib'
+import { CoinInfo, globalSetup, myLog, RowConfig, TokenType } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 

@@ -143,7 +143,7 @@ const getAmmMapApi = async <R extends { [key: string]: any }>({ ammpools }: GetA
   const { idIndex, coinMap } = store.getState().tokenMap
   let ammPoolStats: any = {}
   try {
-    ammPoolStats = (await LoopringAPI.ammpoolAPI?.getAmmPoolStats()).ammPoolStats
+    ammPoolStats = (await LoopringAPI.ammpoolAPI?.getAmmPoolStats())?.ammPoolStats ?? {}
   } catch (e) {
     // throw e;
   }
@@ -276,6 +276,7 @@ export function* updateRealTimeSaga({ payload }: any) {
 }
 
 export function* ammMapInitSaga() {
+  // @ts-ignore
   yield all([takeLatest(getAmmMap, getPostsSaga)])
 }
 

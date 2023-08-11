@@ -824,14 +824,8 @@ const resources = {
 const initLng = 'en_US'
 console.log('en_US')
 const settingPersist = 'persist:settings'
+let referralcodeStr = ''
 ;(function init() {
-  let searchParam = window.location.search
-  const searchParams = new URLSearchParams(searchParam)
-  if (searchParams.get('referralcode')) {
-    const referralcode = searchParams.get('referralcode')
-    document.getElementById('logo').innerHTML =
-      'https://loopring.io/#/?referralcode=' + referralcode
-  }
   let themeMode = 'dark'
   let settingPersistJson = localStorage.getItem(settingPersist)
   let settings = JSON.parse(settingPersistJson ? settingPersistJson : '{}')
@@ -1005,7 +999,18 @@ const settingPersist = 'persist:settings'
     upLoadSvg()
     onlanguagechange(i18nLng)
     onColorChangeLoaded(themeMode)
-
+    let searchParam = window.location.search
+    const searchParams = new URLSearchParams(searchParam)
+    if (searchParams.get('referralcode')) {
+      const referralcode = searchParams.get('referralcode')
+      document
+        .getElementById('logo')
+        .setAttribute('href', 'https://loopring.io/#/?referralcode=' + referralcode)
+      document
+        .getElementById('labelNavLanuch')
+        .setAttribute('href', 'https://loopring.io/#/?referralcode=' + referralcode)
+      referralcodeStr
+    }
     const handleScroll = () => {
       const imgs = document.getElementsByClassName('scroll-up-img')
       for (let index = 0; index < imgs.length; index++) {

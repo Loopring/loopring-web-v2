@@ -106,10 +106,12 @@ export function* cleanAccountSaga({
 }
 
 function* accountSage() {
+  // @ts-ignore
   yield all([takeLatest(updateAccountStatus, accountUpdateSaga)])
 }
 
 function* accountRestSage() {
+  // @ts-ignore
   yield all([takeLatest(cleanAccountStatus, cleanAccountSaga)])
 }
 

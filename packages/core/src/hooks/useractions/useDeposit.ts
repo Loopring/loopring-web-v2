@@ -28,6 +28,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   ActionResultCode,
   BIGO,
+  callSwitchChain,
   DepositCommands,
   depositServices,
   LoopringAPI,
@@ -62,7 +63,7 @@ export const useDeposit = <
   const { t } = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
-  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL } = useSystem()
+  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus } = useSystem()
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -218,6 +219,19 @@ export const useDeposit = <
   )
   const handleAddressChange = (value?: string) => {
     const toAddress = store.getState()._router_modalData.depositValue.toAddress
+    if (isToAddressEditable == false && opts?.owner && opts.owner !== '') {
+      value = opts.owner
+    }
+    const makeForceFresh = (state: string, value: string) => {
+      if (value === state) {
+        sdk.sleep(0).then(() => {
+          setToAddress(state)
+        })
+        return ''
+      } else {
+        return value
+      }
+    }
     setToAddress((state) => {
       myLog('address update setToAddress', state, value, realToAddress, toAddressStatus)
       if (
@@ -227,24 +241,14 @@ export const useDeposit = <
         realToAddress.startsWith('0x') &&
         [value, toAddress].includes(realToAddress)
       ) {
-        if (value.startsWith('0x') && toAddress?.startsWith('0x') && value !== toAddress) {
-          return value
-        } else {
-          return state
-        }
+        return makeForceFresh(state, value)
       } else if (value !== undefined) {
         setToInputAddress(value)
-        return value
-      } else if (
-        state &&
-        !value &&
-        toAddressStatus !== AddressError.NoError &&
-        toIsAddressCheckLoading == false
-      ) {
-        sdk.sleep(100).then(() => {
-          setToAddress(state)
-        })
-        return ''
+        return makeForceFresh(state, value)
+      } else if (toInputAddress !== '') {
+        return makeForceFresh(state, toInputAddress)
+      } else if (toIsAddressCheckLoading == false) {
+        return makeForceFresh(state, state)
       } else {
         return state
       }
@@ -329,27 +333,28 @@ export const useDeposit = <
   }, [walletLayer1Status])
 
   const init = () => {
-    let tradeData: any = {
-      belong: opts?.token?.toUpperCase() ?? symbol,
-      tradeValue: !isShow ? undefined : depositValue.tradeValue,
+    if (chainId === defaultNetwork && baseURL) {
+      let tradeData: any = {
+        belong: opts?.token?.toUpperCase() ?? symbol,
+        tradeValue: !isShow ? undefined : depositValue.tradeValue,
+      }
+      updateWalletLayer1()
+      handleAddressChange()
+
+      handlePanelEvent(
+        {
+          to: 'button',
+          tradeData: {
+            ...tradeData,
+          } as any,
+        },
+        'Tobutton',
+      )
     }
-    updateWalletLayer1()
-    if (isToAddressEditable == false && opts?.owner && opts.owner !== '') {
-      handleAddressChange(opts.owner)
-    }
-    handlePanelEvent(
-      {
-        to: 'button',
-        tradeData: {
-          ...tradeData,
-        } as any,
-      },
-      'Tobutton',
-    )
   }
   React.useEffect(() => {
-    myLog('accountStatus,LoopringAPI?.__chainId__', LoopringAPI?.__chainId__, accountStatus)
-    if (accountStatus === SagaStatus.UNSET) {
+    // myLog('accountStatus,LoopringAPI?.__chainId__', LoopringAPI?.__chainId__, accountStatus)
+    if (accountStatus === SagaStatus.UNSET && systemStatus === SagaStatus.UNSET) {
       init()
       if (isShow || isAllowInputToAddress) {
         nodeTimer.current = setTimeout(() => {
@@ -362,7 +367,7 @@ export const useDeposit = <
         clearTimeout(nodeTimer.current)
       }
     }
-  }, [accountStatus, isShow, isToAddressEditable])
+  }, [accountStatus, isShow, isToAddressEditable, systemStatus])
 
   const handleDeposit = React.useCallback(
     async (inputValue: any) => {
@@ -387,7 +392,9 @@ export const useDeposit = <
 
           const realGasPrice = gasPrice ?? 30
 
-          const _chainId = chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
+          const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+          //chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
+          await callSwitchChain(_chainId)
 
           let nonce = 0
 
@@ -461,7 +468,7 @@ export const useDeposit = <
 
           myLog('before deposit:', chainId, connectName, isMetaMask)
 
-          const realChainId = chainId === 'unknown' ? 1 : chainId
+          // const realChainId = chainId === 'unknown' ? 1 : chainId
           let response
           try {
             //response = { result: "xxxxxxxx" };
@@ -474,7 +481,7 @@ export const useDeposit = <
               fee,
               realGasPrice,
               gasLimit,
-              realChainId,
+              _chainId,
               nonce,
               isMetaMask,
               toAddress,

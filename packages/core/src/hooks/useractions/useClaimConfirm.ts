@@ -351,7 +351,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             },
             apiKey,
           )
-          let brokerType = undefined
+          let brokerType: any = undefined
           switch (claimValue.claimType) {
             case CLAIM_TYPE.redPacket:
               brokerType = 2

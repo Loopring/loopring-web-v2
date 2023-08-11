@@ -1,7 +1,6 @@
 import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constant'
 import * as sdk from '@loopring-web/loopring-sdk'
 import React from 'react'
-
 export type CoinKey<R> = keyof R
 export type PairKey<P> = keyof P
 
@@ -18,6 +17,7 @@ export interface CoinInfo<R> {
   description?: string
   company: string
 }
+
 export interface WalletCoin<R> {
   belong: CoinKey<R>
   count: number
@@ -512,6 +512,7 @@ export type NetworkItemInfo = {
   RPC?: string
   link?: string
   isTest?: boolean | undefined
+  walletType: string
 }
 
 export const url_path = 'https://static.loopring.io/events'
