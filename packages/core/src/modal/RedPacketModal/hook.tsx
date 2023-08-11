@@ -1015,7 +1015,7 @@ export function useRedPacketModal() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [subject])
+  }, [subject, successCallback])
   const redPacketBlindBoxDetailProps = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount?: string
