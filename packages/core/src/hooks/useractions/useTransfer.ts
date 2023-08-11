@@ -808,13 +808,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       : undefined,
     loopringSmartWalletVersion,
     contacts,
-    onClickFee: () => {
-      setShowFeeSelect({
-        isShow: true,
-        requestType: sdk.OffchainFeeReqType.TRANSFER
-      })
-    },
-
   }
 
   return {

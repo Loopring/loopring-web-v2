@@ -79,13 +79,6 @@ export interface ModalState {
   isShowFeeSetting: ModalStatePlayLoad
   isShowIFrame: ModalStatePlayLoad & { url: string }
   isShowSideStakingRedeem: ModalStatePlayLoad & { symbol?: string }
-  isShowFeeSelect: ModalStatePlayLoad & {
-    requestType : 
-    | OffchainFeeReqType
-    | OffchainNFTFeeReqType
-    | 'UPDATE_ACCOUNT_BY_NEW'
-    | 'TRANSFER_ACTIVE'
-  }
   isShowGlobalToast: {
     isShow: boolean
     info: {

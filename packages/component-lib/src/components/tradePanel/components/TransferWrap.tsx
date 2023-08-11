@@ -93,7 +93,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
   isFromContact,
   onClickContact,
   loopringSmartWalletVersion,
-  onClickFee,
   // addressType,
   ...rest
 }: TransferViewProps<T, I, C> &
