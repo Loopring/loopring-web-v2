@@ -1,7 +1,11 @@
 import { Box, Button, Grid, Typography } from '@mui/material'
 import React from 'react'
 import styled from '@emotion/styled/'
-import { DropDownIcon, getValuePrecisionThousand } from '@loopring-web/common-resources'
+import {
+  DropDownIcon,
+  getValuePrecisionThousand,
+  LOOPRING_DOC,
+} from '@loopring-web/common-resources'
 import { withTranslation } from 'react-i18next'
 import { Card } from './Card'
 import { useHistory } from 'react-router-dom'
@@ -374,7 +378,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 <Button
                   target='_blank'
                   rel='noopener noreferrer'
-                  href='https://docs.loopring.io/en/'
+                  href={LOOPRING_DOC}
                   fullWidth={true}
                   size={'large'}
                   variant={'contained'}
