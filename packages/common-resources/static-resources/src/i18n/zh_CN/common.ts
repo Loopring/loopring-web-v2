@@ -1809,4 +1809,5 @@ export default {
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: 'My {{loopringL2}} <1>({{address}})</1>',
   labelFeeAvailablePay: 'Available: {{available}} Pay: {{pay}}',
+  labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
 }
