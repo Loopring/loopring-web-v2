@@ -6,7 +6,6 @@ import {
   Grid,
   InputAdornment,
   Link,
-  OutlinedInput,
   Tab,
   Tabs,
   Typography,
@@ -42,6 +41,7 @@ import {
   Toast,
   ToastType,
   useSettings,
+  OutlinedInput,
 } from '@loopring-web/component-lib'
 import { useReferralsTable, useRefundTable } from './hook'
 import { useHistory } from 'react-router-dom'
@@ -363,7 +363,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
               <>
                 <Box paddingTop={1} width={isMobile ? '100%' : '70%'}>
                   <OutlinedInput
-                    size={'medium'}
+                    size={'large'}
                     className={'copy'}
                     placeholder={'copy'}
                     value={link}
@@ -384,7 +384,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
                 </Box>
                 <Box paddingTop={1} width={isMobile ? '100%' : '70%'}>
                   <OutlinedInput
-                    size={'medium'}
+                    size={'large'}
                     className={'copy'}
                     placeholder={'copy'}
                     value={account.accountId}
@@ -395,7 +395,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
                       <InputAdornment position='start'>
                         <Typography
                           color={'var(--color-text-third)'}
-                          variant={'body1'}
+                          variant={'h2'}
+                          display={'inline-flex'}
+                          width={36}
+                          textAlign={'center'}
                           component={'span'}
                           paddingX={1 / 2}
                         >
@@ -452,7 +455,6 @@ const ReferView = () => {
   const refundData = useRefundTable(setToastOpen)
   const referralsData = useReferralsTable(setToastOpen)
   const [currentTab, setCurrentTab] = React.useState(ReferStep.method1)
-  const [copyToastOpen, setCopyToastOpen] = React.useState(false)
   const link = `${WalletSite}?referralcode=${account.accountId}`
   const linkExchange = `${Exchange}?referralcode=${account.accountId}`
   const history = useHistory()
@@ -461,12 +463,21 @@ const ReferView = () => {
     switch (selected) {
       case 'id':
         copyToClipBoard(account?.accountId?.toString())
+        setToastOpen({
+          open: true,
+          type: ToastType.success,
+          content: t('labelCopyCodeClip'),
+        })
         break
       case 'link':
         copyToClipBoard(link)
+        setToastOpen({
+          open: true,
+          type: ToastType.success,
+          content: t('labelCopyAddClip'),
+        })
         break
     }
-    setCopyToastOpen(true)
   }
   myLog('refundData', refundData, referralsData)
   return (
@@ -474,22 +485,12 @@ const ReferView = () => {
       {ProfileIndex[network]?.includes(ProfileKey.referralrewards) ? (
         <>
           <Toast
-            alertText={t('labelCopyAddClip')}
-            open={copyToastOpen}
-            autoHideDuration={TOAST_TIME}
-            onClose={() => {
-              setCopyToastOpen(false)
-            }}
-            severity={ToastType.success}
-          />
-          <Toast
             alertText={toastOpen?.content ?? ''}
             open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME}
             onClose={closeToast}
             severity={toastOpen.type}
           />
-
           <ReferHeader handleCopy={handleCopy} link={link} />
           <Container>
             <BoxStyled marginTop={2} paddingY={2} paddingX={0} flex={1}>

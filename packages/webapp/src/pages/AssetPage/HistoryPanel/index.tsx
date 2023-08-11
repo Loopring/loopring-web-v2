@@ -74,6 +74,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     txsTotal,
     showLoading: showTxsLoading,
     getUserTxnList,
+    searchValue,
   } = useGetTxs(setToastOpen)
   const {
     userTrades,
@@ -225,6 +226,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               {...{
                 etherscanBaseUrl,
                 rawData: txTableData,
+                searchValue,
                 pagination: {
                   pageSize: pageSize,
                   total: txsTotal,

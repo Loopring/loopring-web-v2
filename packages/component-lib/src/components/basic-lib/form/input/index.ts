@@ -13,4 +13,5 @@ export {
   TextareaAutosizeStyled,
   InputSearchWrapperStyled,
   RadioGroupStyle,
+  OutlinedInput,
 } from './style'
