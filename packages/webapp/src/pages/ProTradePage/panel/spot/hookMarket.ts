@@ -645,6 +645,7 @@ export const useMarket = <C extends { [key: string]: any }>({
   // )
   const { showAlert, confirmed, setShowWhich, setConfirmed } = useAlert()
   const doShowAlert = () => {
+    const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
     const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams, account.readyState)
     myLog('hookSwap:---- swapCalculatorCallback priceLevel:', priceLevel)
     setConfirmed((state) => {
@@ -740,6 +741,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     handleClose: () => {
       setShowWhich((state) => ({ ...state, isShow: false }))
       setConfirmed([false, false])
+      setIsMarketLoading(false)
     },
     handleConfirm: () => {
       if (showAlert.step == 1 && confirmed[1] == false) {

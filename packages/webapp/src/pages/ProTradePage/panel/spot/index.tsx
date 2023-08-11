@@ -264,10 +264,10 @@ export const SpotView = withTranslation('common')(
           open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
           handleClose={handleClose}
           handleConfirm={handleConfirm}
-          variance={priceImpact}
+          variance={tradeCalcData?.marketRatePrice??''}
           marketPrice={tradeCalcData?.marketPrice ?? ''}
           settlementPrice={tradeCalcData?.StoB ?? ''}
-          symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
+          symbol={`${tradeCalcData?.coinBase}/${tradeCalcData?.coinQuote}`}
         />
         <ConfirmImpact
           open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.ConfirmImpact}
@@ -286,29 +286,7 @@ export const SpotView = withTranslation('common')(
           minimumReceived={minimumReceived}
           symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
         />
-        {/*<ConfirmImpact*/}
-        {/*  value={}*/}
-        {/*  open={}*/}
-        {/*  handleClose={}*/}
-        {/*  handleConfirm={}*/}
-        {/*  priceImpact={}*/}
-        {/*  symbol={}*/}
-        {/*  color={}*/}
-        {/*  shouldInputAgree={}*/}
-        {/*  // handleClose={() => priceAlertCallBack(false)}*/}
-        {/*  // handleConfirm={() => priceAlertCallBack(true)}*/}
-        {/*  // open={confirmOpen}*/}
-        {/*  // value={priceImpact}*/}
-        {/*/>*/}
-        {/*<SmallOrderAlert*/}
-        {/*  open={smallOrderAlertOpen}*/}
-        {/*  handleClose={() => smallOrderAlertCallBack(false)}*/}
-        {/*  handleConfirm={() => smallOrderAlertCallBack(true)}*/}
-        {/*  estimatedFee={estimatedFee}*/}
-        {/*  feePercentage={feePercentage}*/}
-        {/*  minimumReceived={minimumReceived}*/}
-        {/*  symbol={}*/}
-        {/*/>*/}
+
         <AlertLimitPrice
           handleClose={limitSubmit}
           open={limitAlertOpen}
