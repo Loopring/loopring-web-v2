@@ -1,9 +1,10 @@
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
-import { Grid, Link, Typography } from '@mui/material'
+import { Grid, InputAdornment, Link, TextField, Tooltip, Typography } from '@mui/material'
 import {
   EmptyValueTag,
   FeeInfo,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   TradeBtnStatus,

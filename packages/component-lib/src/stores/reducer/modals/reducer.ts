@@ -52,7 +52,6 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
-  isShowFeeSelect: { isShow: false },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -370,18 +369,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
         symbol,
       }
-    },
-    setShowFeeSelect(
-      state,
-      action: PayloadAction<{
-        isShow: boolean
-      }>,
-    ) {
-      const { isShow } = action.payload
-      state.isShowFeeSelect = {
-        isShow
-      }
-    },
+    }
   },
 })
 export const {
