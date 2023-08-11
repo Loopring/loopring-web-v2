@@ -165,7 +165,7 @@ export const RiskComponent = ({
                   ) : (
                     <React.Fragment> {label}</React.Fragment>
                   )}
-                  <Typography color={color} component={'span'}>
+                  <Typography color={color} component={'span'} textAlign={'right'}>
                     {value}
                   </Typography>
                 </Box>
@@ -514,8 +514,8 @@ export const SmallOrderAlert = ({
   estimatedFee,
   feePercentage,
   minimumReceived,
-  symbol,
-}: {
+}: // symbol,
+{
   open: boolean
   handleClose: () => void
   handleConfirm: () => void
@@ -528,12 +528,12 @@ export const SmallOrderAlert = ({
   const label: RiskInformation[] = [
     {
       label: t('labelSmallOrderAlertLine3'),
-      value: `${estimatedFee} ${symbol}`,
+      value: `${estimatedFee}`,
       color: 'var(--color-text-primary)',
     },
     {
       label: t('labelSmallOrderAlertLine5'),
-      value: `${minimumReceived} ${symbol}`,
+      value: `${minimumReceived}`,
       color: 'var(--color-text-primary)',
     },
     {
