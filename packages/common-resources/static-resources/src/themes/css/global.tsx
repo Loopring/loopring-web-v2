@@ -30,6 +30,8 @@ export const colorBase = ({ theme }: any) => css`
     --gray600: ${theme.mode == ThemeType.dark ? GrayBlack.gray600 : GrayLight.gray600};
     --gray700: ${theme.mode == ThemeType.dark ? GrayBlack.gray700 : GrayLight.gray700};
     --gray800: ${theme.mode == ThemeType.dark ? GrayBlack.gray800 : GrayLight.gray800};
+    --gray900: ${theme.mode == ThemeType.dark ? GrayBlack.gray900 : GrayLight.gray900};
+
     --color-primary: ${theme.colorBase.primary};
     --color-primary-hover: ${theme.colorBase.primaryHover};
     --color-primary-pressed: ${theme.colorBase.primaryPressed};
@@ -67,6 +69,7 @@ export const colorBase = ({ theme }: any) => css`
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
     --color-mask: ${theme.colorBase.mask};
+    --color-box-enhance: ${theme.colorBase.boxEnhance};
     --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};
     --color-logo: ${theme.colorBase.logo};

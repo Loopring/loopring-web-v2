@@ -1,8 +1,6 @@
-import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { WithTranslation, withTranslation } from 'react-i18next'
 import { MarketTradeData, TradeMarketProps } from '../Interface'
 import {
-  CheckBoxIcon,
-  CheckedIcon,
   CoinInfo,
   CoinKey,
   CoinMap,
@@ -17,15 +15,7 @@ import {
   TradeCalcProData,
   TradeProType,
 } from '@loopring-web/common-resources'
-import {
-  Box,
-  Checkbox,
-  FormControlLabel as MuiFormControlLabel,
-  Grid,
-  Tab,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, Grid, Tab, Tooltip, Typography } from '@mui/material'
 import { BtnPercentage, InputCoin, LinkActionStyle, PopoverPure } from '../../basic-lib'
 import { useCommon } from './hookCommon'
 import { ButtonStyle, TabsStyle } from '../components/Styled'
@@ -400,56 +390,56 @@ export const MarketTrade = withTranslation('common', { withRef: true })(
             {/*  marketRatePrice*/}
             {/*  */}
             {/*</Grid>*/}
-            {tradeCalcProData.isNotMatchMarketPrice && (
-              <Grid item marginBottom={1}>
-                <MuiFormControlLabel
-                  sx={{ alignItems: 'flex-start' }}
-                  control={
-                    <Checkbox
-                      checked={tradeCalcProData?.isChecked ? true : false}
-                      onChange={() => {
-                        onChangeEvent(
-                          {
-                            ...tradeData,
-                            isChecked: !tradeCalcProData?.isChecked,
-                          },
-                          tradeCalcProData?.lastStepAt === TradeBaseType.quote
-                            ? TradeBaseType.quote
-                            : TradeBaseType.base,
-                        )
-                      }}
-                      checkedIcon={<CheckedIcon />}
-                      icon={<CheckBoxIcon />}
-                      color='default'
-                    />
-                  }
-                  label={
-                    <Typography variant={'body2'}>
-                      <Trans
-                        i18nKey={'labelExpectSettlementPrice'}
-                        interpolation={{ escapeValue: false }}
-                        tOptions={{
-                          // ,symbolBuy
-                          symbolSell: tradeData.base.belong,
-                          symbolBuy: tradeData.quote.belong,
-                          stob:
-                            tradeType === TradeProType.sell
-                              ? tradeCalcProData.StoB
-                              : tradeCalcProData.BtoS,
-                          marketPrice: tradeCalcProData.marketPrice,
-                          marketRatePrice: tradeCalcProData.marketRatePrice,
-                        }}
-                      >
-                        The expected settlement price from this order is symbol = value, while the
-                        current market price from a trusted oracle is symbol= marketPrice. There is
-                        marketRatePrice% variance observed. Please acknowledge the risk if you still
-                        want to continue.
-                      </Trans>
-                    </Typography>
-                  }
-                />
-              </Grid>
-            )}
+            {/*{tradeCalcProData.isNotMatchMarketPrice && (*/}
+            {/*  <Grid item marginBottom={1}>*/}
+            {/*    <MuiFormControlLabel*/}
+            {/*      sx={{ alignItems: 'flex-start' }}*/}
+            {/*      control={*/}
+            {/*        <Checkbox*/}
+            {/*          checked={tradeCalcProData?.isChecked ? true : false}*/}
+            {/*          onChange={() => {*/}
+            {/*            onChangeEvent(*/}
+            {/*              {*/}
+            {/*                ...tradeData,*/}
+            {/*                isChecked: !tradeCalcProData?.isChecked,*/}
+            {/*              },*/}
+            {/*              tradeCalcProData?.lastStepAt === TradeBaseType.quote*/}
+            {/*                ? TradeBaseType.quote*/}
+            {/*                : TradeBaseType.base,*/}
+            {/*            )*/}
+            {/*          }}*/}
+            {/*          checkedIcon={<CheckedIcon />}*/}
+            {/*          icon={<CheckBoxIcon />}*/}
+            {/*          color='default'*/}
+            {/*        />*/}
+            {/*      }*/}
+            {/*      label={*/}
+            {/*        <Typography variant={'body2'}>*/}
+            {/*          <Trans*/}
+            {/*            i18nKey={'labelExpectSettlementPrice'}*/}
+            {/*            interpolation={{ escapeValue: false }}*/}
+            {/*            tOptions={{*/}
+            {/*              // ,symbolBuy*/}
+            {/*              symbolSell: tradeData.base.belong,*/}
+            {/*              symbolBuy: tradeData.quote.belong,*/}
+            {/*              stob:*/}
+            {/*                tradeType === TradeProType.sell*/}
+            {/*                  ? tradeCalcProData.StoB*/}
+            {/*                  : tradeCalcProData.BtoS,*/}
+            {/*              marketPrice: tradeCalcProData.marketPrice,*/}
+            {/*              marketRatePrice: tradeCalcProData.marketRatePrice,*/}
+            {/*            }}*/}
+            {/*          >*/}
+            {/*            The expected settlement price from this order is symbol = value, while the*/}
+            {/*            current market price from a trusted oracle is symbol= marketPrice. There is*/}
+            {/*            marketRatePrice% variance observed. Please acknowledge the risk if you still*/}
+            {/*            want to continue.*/}
+            {/*          </Trans>*/}
+            {/*        </Typography>*/}
+            {/*      }*/}
+            {/*    />*/}
+            {/*  </Grid>*/}
+            {/*)}*/}
           </Grid>
         </Box>
         <Box paddingTop={2} paddingX={2}>
