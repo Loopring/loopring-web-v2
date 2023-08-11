@@ -545,7 +545,7 @@ export const SmallOrderAlert = ({
 
   return (
     <RiskComponent
-      title={t('labelWarning')}
+      title={t('labelSmallOrderAlertLine')}
       open={open}
       infos={label}
       handleClose={handleClose}
