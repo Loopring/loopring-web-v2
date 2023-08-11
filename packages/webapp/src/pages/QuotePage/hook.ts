@@ -19,7 +19,6 @@ import {
   useTokenPrices,
 } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
-import { useMarket } from '../ProTradePage/panel/spot/hookMarket'
 
 export function useTickList<C extends { [key: string]: string }>() {
   const [tickList, setTickList] = React.useState<any>([])
