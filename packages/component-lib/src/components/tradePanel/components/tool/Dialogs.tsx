@@ -961,7 +961,7 @@ export const InformationForAccountFrozen = withTranslation('common', {
     const { setShowTradeIsFrozen } = useOpenModals()
     return (
       <DialogStyle
-        open={open}h
+        open={open}
         onClose={() => setShowTradeIsFrozen({ isShow: false })}
         aria-describedby='alert-dialog-slide-description'
       >
