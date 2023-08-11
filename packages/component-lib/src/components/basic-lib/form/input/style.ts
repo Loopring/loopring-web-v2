@@ -18,7 +18,7 @@ import { css } from '@emotion/react'
 
 export const inputHeightLarge = () => css`
   height: var(--input-height-large);
-  font-size: 1.6rem;
+  font-size: 1.5rem;
 
   .MuiInputAdornment-root {
     svg {
