@@ -413,7 +413,7 @@ export const AlertImpact = ({
     },
     {
       label: t('labelPriceVariance'),
-      value: `${variance} %`,
+      value: `${variance}%`,
       color: 'var(--color-error)',
     },
   ]
