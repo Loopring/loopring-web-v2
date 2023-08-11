@@ -270,7 +270,7 @@ export const SpotView = withTranslation('common')(
           symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
         />
         <ConfirmImpact
-          open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+          open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.ConfirmImpact}
           handleClose={handleClose}
           handleConfirm={handleConfirm}
           priceImpact={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2)}
@@ -278,7 +278,7 @@ export const SpotView = withTranslation('common')(
           shouldInputAgree={priceLevel.priceLevel === PriceLevel.Lv2}
         />
         <SmallOrderAlert
-          open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+          open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.SmallPrice}
           handleClose={handleClose}
           handleConfirm={handleConfirm}
           estimatedFee={estimatedFee}

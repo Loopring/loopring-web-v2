@@ -1,8 +1,6 @@
 import { myLog } from './log_tools'
 
 export async function copyToClipBoard(text: string) {
-  //复制到剪切板
-
   if (document.execCommand) {
     var textarea = document.createElement('textarea')
     document.body.appendChild(textarea)

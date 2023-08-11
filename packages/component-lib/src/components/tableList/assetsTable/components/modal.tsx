@@ -4,6 +4,7 @@ import { Box, Link, Typography } from '@mui/material'
 import { useSettings } from '../../../../stores'
 import { LoadingBlock } from '../../../block'
 import { CoinIcons } from './CoinIcons'
+import { L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
 
 const ContentWrapperStyled = styled(Box)`
   position: absolute;
@@ -39,8 +40,8 @@ export const LockDetailPanel = ({
       }
 }) => {
   const { t } = useTranslation()
-  const { isMobile, coinJson } = useSettings()
-
+  const { isMobile, coinJson, defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const token = tokenLockDetail?.row?.token
 
   let tokenIcon: [any, any] = [undefined, undefined]
@@ -76,7 +77,14 @@ export const LockDetailPanel = ({
             paddingRight={1}
           >
             <Typography variant={'inherit'} component={'span'} className={'next-coin'}>
-              {t('labelLocketInfo', { symbol: token?.value })}
+              {t('labelLocketInfo', {
+                symbol: token?.value,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              })}
             </Typography>
           </Typography>
         </Typography>
@@ -98,7 +106,13 @@ export const LockDetailPanel = ({
                   component={'span'}
                   color={'textSecondary'}
                 >
-                  {t(item.key)}
+                  {t(item.key, {
+                    l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  })}
                 </Typography>
 
                 <Link

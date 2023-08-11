@@ -330,7 +330,7 @@ export const useSwap = <
 
     const { calcTradeParams } = pageTradeLite
 
-    if (!sellToken || !buyToken || !calcTradeParams || !storageId.orderId) {
+    if (!sellToken || !buyToken || !calcTradeParams || storageId?.orderId == undefined) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -629,46 +629,6 @@ export const useSwap = <
     updatePageTradeLite,
   ])
 
-  // const priceAlertCallBack = React.useCallback(
-  //   (confirm: boolean) => {
-  //     if (confirm) {
-  //
-  //       setAlertOpen(false)
-  //       setConfirmOpen(false)
-  //     } else {
-  //       setAlertOpen(false)
-  //       setConfirmOpen(false)
-  //       setIsSwapLoading(false)
-  //     }
-  //   },
-  //   [showSwapSecondConfirmation, isSmallOrder],
-  // )
-  // const smallOrderAlertCallBack = React.useCallback(
-  //   (confirm: boolean) => {
-  //     if (confirm) {
-  //       setIsSwapLoading(true)
-  //       swapFunc()
-  //       setSmallOrderAlertOpen(false)
-  //     } else {
-  //       setSmallOrderAlertOpen(false)
-  //       setIsSwapLoading(false)
-  //     }
-  //   },
-  //   [swapFunc],
-  // )
-  // const secondConfirmationCallBack = React.useCallback(
-  //   (confirm: boolean) => {
-  //     if (confirm) {
-  //       setIsSwapLoading(true)
-  //       swapFunc()
-  //       setSecondConfirmationOpen(false)
-  //     } else {
-  //       setSecondConfirmationOpen(false)
-  //       setIsSwapLoading(false)
-  //     }
-  //   },
-  //   [swapFunc],
-  // )
   const { showAlert, confirmed, setShowWhich, setConfirmed } = useAlert()
 
   const doShowAlert = () => {
@@ -1570,6 +1530,7 @@ export const useSwap = <
     handleClose: () => {
       setShowWhich((state) => ({ ...state, isShow: false }))
       setConfirmed([false, false])
+      setIsSwapLoading(false)
     },
     handleConfirm: () => {
       if (showAlert.step == 1 && confirmed[1] == false) {
@@ -1583,40 +1544,5 @@ export const useSwap = <
       })
     },
     priceLevel: getPriceImpactInfo(tradeCalcData.calcTradeParams, account.readyState),
-
-    // confirmed,
-    // alertOpen,
-    // confirmOpen,
-    // pageTradeLite,
-    // priceAlertCallBack,
-    // smallOrderAlertCallBack,
-    // secondConfirmationCallBack,
-    // smallOrderAlertOpen,
-    // secondConfirmationOpen,
-    // isMarketInit,
-    // toastOpen,
-    // closeToast,
-    // tradeCalcData,
-    // tradeData,
-    // onSwapClick,
-    // swapBtnI18nKey,
-    // swapBtnStatus,
-    // handleSwapPanelEvent,
-    // should15sRefresh,
-    // refreshRef,
-    // alertOpen,
-    // confirmOpen,
-    // swapFunc,
-    // pageTradeLite,
-    // isSwapLoading,
-    // market,
-    // toPro,
-    // isMobile,
-    // priceAlertCallBack,
-    // smallOrderAlertCallBack,
-    // secondConfirmationCallBack,
-    // smallOrderAlertOpen,
-    // secondConfirmationOpen,
-    // setToastOpen,
   }
 }

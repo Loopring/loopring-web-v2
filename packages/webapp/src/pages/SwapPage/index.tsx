@@ -97,7 +97,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
       ? `${tradeData.slippage}`
       : '0.1'
     : EmptyValueTag
-  myLog('isMarketInit', isMarketInit)
+  myLog('useSwap', showAlert)
   return (
     <Box
       display={'flex'}
@@ -166,7 +166,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
       />
       <ConfirmImpact
-        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.ConfirmImpact}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
         priceImpact={getValuePrecisionThousand(pageTradeLite?.priceImpactObj?.value, 2)}
@@ -174,7 +174,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         shouldInputAgree={priceLevel.priceLevel === PriceLevel.Lv2}
       />
       <SmallOrderAlert
-        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.SmallPrice}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
         estimatedFee={estimatedFee}
@@ -183,7 +183,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
       />
       <SwapSecondConfirmation
-        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+        open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.SwapSecondConfirmation}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
         fromSymbol={fromSymbol}

@@ -47,14 +47,52 @@ import * as sdk from '@loopring-web/loopring-sdk'
 //   background: ${({ theme }) => theme.colorBase.box};
 // ` as typeof Box
 const RiskStyle = styled(Dialog)`
-  .main-icon {
+  .MuiPaper-root {
+    width: var(--modal-width);
+    background: var(--color-box);
   }
 
+  .MuiDialogTitle-root {
+    margin: ${({ theme }) => 5 * theme.unit}px 0 ${({ theme }) => 1 * theme.unit}px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+  }
+
+  .infomation {
+    ul {
+      background: var(--color-box-enhance);
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+      padding: 0 ${({ theme }) => 2 * theme.unit}px;
+      ${({ theme }) => theme.border.defaultFrame({ c_key: 'rgba(0,0,0,0)', d_R: 0.5 })};
+
+      li {
+        height: var(--row-height);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        // padding: ${({ theme }) => 1 * theme.unit}px ${({ theme }) => 2 * theme.unit}px;
+      }
+    }
+  }
+
+  //.main-icon {
+  //}
+
   .titleContent {
+    margin: ${({ theme }) => 2 * theme.unit}px 0 0 0;
   }
 
   .detail {
+    margin: 0 0 ${({ theme }) => 2 * theme.unit}px 0;
+
     .des {
+      font-size: ${({ theme }) => theme.fontDefault.body1};
+      color: var(--color-text-secondary);
     }
   }
 `
@@ -70,6 +108,7 @@ export const RiskComponent = ({
   infos,
   description,
   checkElement,
+  hasNoIcon = false,
   isAgree = true,
   confirmLabel = 'labelRiskAgree',
   cancelLabel = 'labelRiskCancel',
@@ -78,8 +117,9 @@ export const RiskComponent = ({
   open: boolean
   handleClose: () => void
   handleConfirm: () => void
+  hasNoIcon?: boolean
   infos?: RiskInformation[]
-  description: JSX.Element[]
+  description?: JSX.Element[]
   checkElement?: JSX.Element
   isAgree?: boolean // if mutiple when all aggress set true
   confirmLabel?: string
@@ -88,17 +128,24 @@ export const RiskComponent = ({
 }) => {
   const { t } = useTranslation('common')
   const size = 60
+  // myLog('title', title)
   return (
     <RiskStyle open={open} onClose={(_) => handleClose()}>
       <DialogTitle>
         <>
-          <RiskAlertIcon className={'main-icon'} width={size} height={size} />
+          {!hasNoIcon && (
+            <RiskAlertIcon
+              sx={{ width: size, height: size }}
+              fontSize={'inherit'}
+              className={'main-icon'}
+            />
+          )}
           {typeof title === 'string' ? (
             <Typography variant={'h4'} component={'span'} className={'titleContent'}>
               {title}
             </Typography>
           ) : (
-            { title }
+            <> {title}</>
           )}
         </>
       </DialogTitle>
@@ -108,9 +155,13 @@ export const RiskComponent = ({
             {infos.map(({ label, value, color }, index) => {
               return (
                 <Box component='li' key={index}>
-                  <Typography component={'span'} color={'var(--color-primary)'}>
-                    {label}
-                  </Typography>
+                  {typeof label === 'string' ? (
+                    <Typography component={'span'} color={'var(--color-text-secondary)'}>
+                      {label}
+                    </Typography>
+                  ) : (
+                    <React.Fragment> {label}</React.Fragment>
+                  )}
                   <Typography color={color} component={'span'}>
                     {value}
                   </Typography>
@@ -125,26 +176,56 @@ export const RiskComponent = ({
         {description &&
           description.map((item, index) => {
             return (
-              <Box className={'des'} marginTop={1} key={index}>
+              <Typography
+                color={'inherit'}
+                component={'div'}
+                className={'des'}
+                marginTop={1}
+                key={index}
+              >
                 {item}
-              </Box>
+              </Typography>
             )
           })}
       </DialogContent>
-      <DialogActions>
+      <DialogActions
+        sx={{
+          display: 'flex',
+          justifyContent: 'stretch',
+        }}
+      >
         {checkElement}
-        <Button
-          variant={'contained'}
-          size={'small'}
-          onClick={(_) => handleConfirm()}
-          disabled={!isAgree}
-          color={'primary'}
+        <Box
+          display={'flex'}
+          justifyContent={'space-between'}
+          width={'100%'}
+          flexDirection={'row'}
+          alignItems={'center'}
         >
-          {t(cancelLabel)}
-        </Button>
-        <Button variant={'outlined'} size={'medium'} onClick={(_) => handleClose()}>
-          {t(confirmLabel)}
-        </Button>
+          <Box width={'48%'}>
+            <Button
+              variant={'contained'}
+              size={'medium'}
+              onClick={(_) => handleConfirm()}
+              disabled={!isAgree}
+              color={'primary'}
+              fullWidth
+            >
+              {t(cancelLabel)}
+            </Button>
+          </Box>
+          <Box width={'48%'}>
+            <Button
+              sx={{ height: '4rem' }}
+              variant={'outlined'}
+              size={'medium'}
+              fullWidth
+              onClick={(_) => handleClose()}
+            >
+              {t(confirmLabel)}
+            </Button>
+          </Box>
+        </Box>
       </DialogActions>
     </RiskStyle>
   )
@@ -323,7 +404,7 @@ export const AlertImpact = ({
     {
       label: t('labelPriceVariance'),
       value: `${variance} %`,
-      color: 'var(--color-text-primary)',
+      color: 'var(--color-error)',
     },
   ]
 
@@ -434,16 +515,16 @@ export const SmallOrderAlert = ({
     {
       label: t('labelSmallOrderAlertLine3'),
       value: `${estimatedFee} ${symbol}`,
-      color: 'var(--color-error)',
-    },
-    {
-      label: t('labelSmallOrderAlertLine4'),
-      value: `${feePercentage}%`,
-      color: 'var(--color-error)',
+      color: 'var(--color-text-primary)',
     },
     {
       label: t('labelSmallOrderAlertLine5'),
       value: `${minimumReceived} ${symbol}`,
+      color: 'var(--color-text-primary)',
+    },
+    {
+      label: t('labelSmallOrderAlertLine4'),
+      value: `${feePercentage}%`,
       color: 'var(--color-error)',
     },
   ]
@@ -453,7 +534,6 @@ export const SmallOrderAlert = ({
       title={t('labelWarning')}
       open={open}
       infos={label}
-      description={[<Trans i18nKey={'labelSmallOrderAlertLine1'} />]}
       handleClose={handleClose}
       handleConfirm={handleConfirm}
     />
@@ -506,7 +586,7 @@ export const SwapSecondConfirmation = withTranslation('common')(
             placement={'top'}
           >
             <Typography
-              component={'p'}
+              component={'span'}
               variant='body2'
               color={'textSecondary'}
               display={'inline-flex'}
@@ -524,7 +604,7 @@ export const SwapSecondConfirmation = withTranslation('common')(
         label: (
           <Tooltip title={t('labelSwapPriceImpactTooltips').toString()} placement={'top'}>
             <Typography
-              component={'p'}
+              component={'span'}
               variant='body2'
               color={'textSecondary'}
               display={'inline-flex'}
@@ -542,7 +622,7 @@ export const SwapSecondConfirmation = withTranslation('common')(
         label: (
           <Tooltip title={t('labelSwapMinReceiveTooltips').toString()} placement={'top'}>
             <Typography
-              component={'p'}
+              component={'span'}
               variant='body2'
               color={'textSecondary'}
               display={'inline-flex'}
@@ -560,7 +640,7 @@ export const SwapSecondConfirmation = withTranslation('common')(
         label: (
           <Tooltip title={t('labelSwapToleranceTooltips').toString()} placement={'top'}>
             <Typography
-              component={'p'}
+              component={'span'}
               variant='body2'
               color={'textSecondary'}
               display={'inline-flex'}
@@ -575,46 +655,46 @@ export const SwapSecondConfirmation = withTranslation('common')(
         color: 'var(--color-text-primary)',
       },
     ]
+
     return (
       <RiskComponent
-        title={() => {
-          return (
-            <Box>
-              <Typography variant={'h3'} textAlign={'center'} marginTop={-2}>
-                {t('labelSwapSecondConfirmTitle')}
-              </Typography>
-              <Box
-                display={'flex'}
-                marginTop={5}
-                marginBottom={5}
-                alignItems={'center'}
-                justifyContent={'center'}
-              >
-                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} width={'45%'}>
-                  <CoinIcon symbol={fromSymbol} size={48} />
-                  <Typography marginTop={2} marginBottom={1} color={'var(--color-text-secondary)'}>
-                    {t('labelFrom')}
-                  </Typography>
-                  <Typography>
-                    {fromAmount} {fromSymbol}
-                  </Typography>
-                </Box>
-                <Box display={'flex'} justifyContent={'center'} width={'10%'}>
-                  <Typography variant={'h4'}>{'\u2192'}</Typography>
-                </Box>
-                <Box width={'45%'} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-                  <CoinIcon symbol={toSymbol} size={48} />
-                  <Typography marginTop={2} marginBottom={1} color={'textSecondary'}>
-                    {t('labelTo')}
-                  </Typography>
-                  <Typography>
-                    {toAmount} {toSymbol}
-                  </Typography>
-                </Box>
+        hasNoIcon={true}
+        title={
+          <Box
+            key={'title'}
+            width={'100%'}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'center'}
+          >
+            <Typography component={'span'} variant={'h3'} textAlign={'center'}>
+              {t('labelSwapSecondConfirmTitle')}
+            </Typography>
+            <Box display={'flex'} marginY={2} alignItems={'center'} justifyContent={'center'}>
+              <Box display={'flex'} flexDirection={'column'} alignItems={'center'} width={'45%'}>
+                <CoinIcon symbol={fromSymbol} size={42} />
+                <Typography marginTop={1.5} marginBottom={1} color={'var(--color-text-secondary)'}>
+                  {t('labelFrom')}
+                </Typography>
+                <Typography>
+                  {fromAmount} {fromSymbol}
+                </Typography>
+              </Box>
+              <Box display={'flex'} justifyContent={'center'} width={'10%'}>
+                <Typography variant={'h4'}>{'\u2192'}</Typography>
+              </Box>
+              <Box width={'45%'} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                <CoinIcon symbol={toSymbol} size={42} />
+                <Typography marginTop={1.5} marginBottom={1} color={'textSecondary'}>
+                  {t('labelTo')}
+                </Typography>
+                <Typography>
+                  {toAmount} {toSymbol}
+                </Typography>
               </Box>
             </Box>
-          )
-        }}
+          </Box>
+        }
         open={open}
         infos={infos}
         description={[<Trans i18nKey={'labelSmallOrderAlertLine1'} />]}
@@ -707,7 +787,7 @@ export const ConfirmLinkCopy = withTranslation('common', {
           <List sx={{ marginTop: 2 }}>
             <ListItem>
               <Trans i18nKey={'labelOpenInWalletDetailLi1'}>
-                Open your wallet app and paste the url in its internal dapp browser
+                Open your wallet app and paste the url in its internal Dapp browser
               </Trans>
             </ListItem>
             <ListItem>
