@@ -181,7 +181,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
                         <Typography>{feeInfo.belong}</Typography>
                         <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
                           {t("labelFeeAvailablePay", {
-                            available: feeInfo.count,
+                            available: feeInfo.count ? feeInfo.count : "0.00",
                             pay: feeInfo.fee
                           })}
                         </Typography>
