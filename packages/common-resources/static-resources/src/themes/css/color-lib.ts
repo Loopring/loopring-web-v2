@@ -115,7 +115,7 @@ export const ColorLightDefault = Object.freeze({
   textSecondary: GrayLight.gray200,
   textThird: GrayLight.gray300,
   textButton: GrayLight.gray600,
-  textButtonSelect: GrayLight.gray800,
+  textButtonSelect: '#3B5AF4',
   textDisable: `${hexToRGB(GrayLight.gray100, '0.25')}`,
   border: GrayLight.gray300,
   borderHover: GrayLight.gray100,
