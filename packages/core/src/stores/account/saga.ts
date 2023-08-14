@@ -1,5 +1,11 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
-import { cleanAccountStatus, nextAccountStatus, updateAccountStatus } from './reducer'
+import {
+  cleanAccountStatus,
+  nextAccountStatus,
+  nextAccountSyncStatus,
+  statusUnset,
+  updateAccountStatus
+} from './reducer'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { Account, AccountStatus } from '@loopring-web/common-resources'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
@@ -105,14 +111,31 @@ export function* cleanAccountSaga({
   }
 }
 
+export function* accountUpdateSyncSaga({ payload }: PayloadAction<Account>) {
+  try {
+    yield put(
+      nextAccountStatus({
+        ...payload,
+      }),
+    )
+  } catch (err) {
+    yield put(nextAccountStatus({ error: err }))
+  }
+}
+
 function* accountSage() {
   // @ts-ignore
   yield all([takeLatest(updateAccountStatus, accountUpdateSaga)])
 }
+function* accountSyncSage() {
+  // @ts-ignore
+  yield all([takeLatest(nextAccountSyncStatus, accountUpdateSyncSaga,statusUnset)])
+}
+
 
 function* accountRestSage() {
   // @ts-ignore
   yield all([takeLatest(cleanAccountStatus, cleanAccountSaga)])
 }
 
-export const accountFork = [fork(accountSage), fork(accountRestSage)]
+export const accountFork = [fork(accountSage), fork(accountRestSage),fork(accountSyncSage)]

@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Box, Button, Grid } from '@mui/material'
-import { AccountFull, AccountStatus, gatewayList } from '@loopring-web/common-resources'
+import { AccountFull, AccountStatus, gatewayList, SagaStatus } from '@loopring-web/common-resources'
 import {
   ModalWalletConnect,
   ProviderMenu,
@@ -34,7 +34,7 @@ const accountState: AccountFull = {
     ...account,
     _chainId: 1,
   },
-  status: 'DONE',
+  status: SagaStatus.DONE,
   resetAccount: () => undefined,
   updateAccount: () => undefined,
 }
@@ -42,64 +42,71 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
   return (
     <>
       <Grid item xs={3}>
-        <WalletConnectBtn accountState={accountState} handleClick={() => undefined} />
+        <WalletConnectBtn accountState={accountState} handleClick={() => undefined}  NetWorkItems={<></>} isShowOnUnConnect/>
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
+          isShowOnUnConnect
           accountState={{
             ...accountState,
             account: { ...account, readyState: AccountStatus.NO_ACCOUNT },
           }}
           handleClick={() => undefined}
-        />
+          NetWorkItems={<></>}/>
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
+          isShowOnUnConnect
           accountState={{
             ...accountState,
             account: { ...account, readyState: AccountStatus.DEPOSITING },
           }}
           handleClick={() => undefined}
-        />
+          NetWorkItems={<></>}/>
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
+          isShowOnUnConnect
           accountState={{
             ...accountState,
             account: { ...account, readyState: AccountStatus.NOT_ACTIVE },
           }}
           handleClick={() => undefined}
-        />
+          NetWorkItems={<></>}/>
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
+          isShowOnUnConnect
           accountState={{
             ...accountState,
             account: { ...account, readyState: AccountStatus.ACTIVATED },
           }}
           handleClick={() => undefined}
-        />
+          NetWorkItems={<></>}/>
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
+          isShowOnUnConnect
           accountState={{
             ...accountState,
             account: { ...account, readyState: AccountStatus.ERROR_NETWORK },
           }}
           handleClick={() => undefined}
-        />
+          NetWorkItems={<></>}/>
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
+          isShowOnUnConnect
           accountState={{
             ...accountState,
             account: { ...account, readyState: AccountStatus.LOCKED },
           }}
           handleClick={() => undefined}
-        />
+          NetWorkItems={<></>}/>
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
+          isShowOnUnConnect
           accountState={{
             ...accountState,
             account: {
@@ -109,7 +116,7 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             },
           }}
           handleClick={() => undefined}
-        />
+          NetWorkItems={<></>}/>
       </Grid>
     </>
   )
