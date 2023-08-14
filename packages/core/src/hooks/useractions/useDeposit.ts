@@ -414,7 +414,7 @@ export const useDeposit = <
                 },
               })
 
-              nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
+              nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
 
               nonceInit = true
 
@@ -463,7 +463,7 @@ export const useDeposit = <
           })
 
           if (!nonceInit) {
-            nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
+            nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
           }
 
           myLog('before deposit:', chainId, connectName, isMetaMask)

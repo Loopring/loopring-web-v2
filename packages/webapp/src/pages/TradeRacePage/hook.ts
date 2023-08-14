@@ -3,7 +3,6 @@ import { languageMap, myLog, url_path, url_test_path } from '@loopring-web/commo
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Config_INFO_URL, EventData } from './interface'
-import { setInterval } from 'timers'
 import { useSystem } from '@loopring-web/core'
 import moment from 'moment'
 
@@ -199,19 +198,26 @@ export const useTradeRace = () => {
           seconds: ('0' + Math.floor((difference / 1000) % 60).toString()).slice(-2),
         })
       }
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout)
+      }
+      nodeTimer.current = setTimeout(calculateTimeLeft, 1000)
+
     }
+
   }, [eventData, eventStatus])
-  React.useEffect(() => {
-    if (eventStatus) {
-      if (nodeTimer.current !== -1) {
-        clearInterval(nodeTimer.current as NodeJS.Timeout)
+  React
+    .useEffect(() => {
+      if (eventStatus) {
+        if (nodeTimer.current !== -1) {
+          clearTimeout(nodeTimer.current as NodeJS.Timeout)
+        }
+        calculateTimeLeft()
       }
-      nodeTimer.current = setInterval(calculateTimeLeft, 1000)
-    }
-    return () => {
-      if (nodeTimer.current !== -1) {
-        clearInterval(nodeTimer.current as NodeJS.Timeout)
-      }
+      return () => {
+        if (nodeTimer.current !== -1) {
+          clearTimeout(nodeTimer.current as NodeJS.Timeout)
+        }
     }
   }, [eventStatus])
 

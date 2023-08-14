@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Typography } from '@mui/material'
 import React from 'react'
-import styled from '@emotion/styled/'
+import styled from '@emotion/styled'
 import {
   DropDownIcon,
   getValuePrecisionThousand,
