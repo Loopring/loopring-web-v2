@@ -127,7 +127,7 @@ const StyledHeaderMenuSub = styled(Menu)<MenuProps>`
     color: var(--color-text-third);
 
     ul {
-      ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--color-border)',d_W:1, d_R: 0.5 })};
+      box-shadow: inset 0.5px var(--color-border);
       background: var(--color-box-pop);
       padding: 0;
       //.layer-sub {
