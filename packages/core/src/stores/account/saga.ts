@@ -7,7 +7,7 @@ import {
   updateAccountStatus
 } from './reducer'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { Account, AccountStatus } from '@loopring-web/common-resources'
+import { Account, AccountStatus, myLog } from '@loopring-web/common-resources'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { AccountInfo, WalletType } from '@loopring-web/loopring-sdk'
 import { store } from '../index'
@@ -111,12 +111,16 @@ export function* cleanAccountSaga({
   }
 }
 
-export function* accountUpdateSyncSaga({ payload }: PayloadAction<Account>) {
+export function* accountUpdateSyncSaga(action: PayloadAction<Account>) {
   try {
+    myLog('accountUpdateSyncSaga', action.payload, action)
     yield put(
       nextAccountStatus({
-        ...payload,
+        ...action?.payload,
       }),
+    )
+    yield put(
+      statusUnset({}),
     )
   } catch (err) {
     yield put(nextAccountStatus({ error: err }))
@@ -129,7 +133,7 @@ function* accountSage() {
 }
 function* accountSyncSage() {
   // @ts-ignore
-  yield all([takeLatest(nextAccountSyncStatus, accountUpdateSyncSaga,statusUnset)])
+  yield all([takeLatest(nextAccountSyncStatus, accountUpdateSyncSaga)])
 }
 
 
