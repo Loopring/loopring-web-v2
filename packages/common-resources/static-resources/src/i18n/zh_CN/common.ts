@@ -1741,7 +1741,7 @@ export default {
   labelAssetRewards: 'Rewards',
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
-  labelClaimTypeREFERER_FEE: 'Refunds Rewards',
+  labelClaimTypeREFERER_FEE: 'Referee Refunds',
   labelClaimTypePROTOCOL_FEE: 'Dedicated AMM Incentive',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
