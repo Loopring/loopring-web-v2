@@ -361,7 +361,6 @@ export const DepositWrap = <
                 >
                   L1 Account checking request was rejected or some unknown error occurred, please
                   <a>Retry</a>
-
                 </Trans>): (
                   <Trans
                     i18nKey={'labelInvalidAddressClick'}
