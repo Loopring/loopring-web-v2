@@ -4,7 +4,7 @@ import { SagaStatus } from '@loopring-web/common-resources'
 
 const initialState: WalletLayer1States = {
   walletLayer1: undefined,
-  status: 'DONE',
+  status: SagaStatus.DONE,
   errorMessage: null,
 }
 const walletLayer1Slice: Slice = createSlice({

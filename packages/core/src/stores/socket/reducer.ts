@@ -4,7 +4,7 @@ import { SocketMap } from './interface'
 
 const initialState: StateBase & { socket: SocketMap } = {
   socket: {},
-  status: 'UNSET',
+  status: SagaStatus.UNSET,
   errorMessage: null,
 }
 const socketSlice: Slice<StateBase & { socket: SocketMap }> = createSlice({
