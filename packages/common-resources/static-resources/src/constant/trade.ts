@@ -313,14 +313,6 @@ export type AddressItemType<T> = {
   maxWidth?: string | number
 }
 
-// export enum AddressItemType<T> = {
-//   value: T;
-//   label: string;
-//   description: string;
-//   disabled?: boolean;
-//   maxWidth?: string | number;
-// };
-
 export const defaultSlipage = 0.1
 export const defaultBlockTradeSlipage = 0.1
 
@@ -333,6 +325,15 @@ export const enum InvestMapType {
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
   LEVERAGEETH = 'LEVERAGEETH',
+  // BTradeInvest = "BTradeInvest",
+}
+
+export const enum InvestAssetRouter {
+  AMM = 'amm',
+  STAKE = 'stake',
+  DUAL = 'dual',
+  STAKELRC = 'sideStake',
+  LEVERAGEETH = 'leverageeth',
   // BTradeInvest = "BTradeInvest",
 }
 
@@ -626,6 +627,7 @@ export type RedPacketHashItems = {
   [key: TX_HASH]: {
     claim: string
     luckToken: sdk.LuckyTokenItemForReceive
+    blindboxClaimed: any
   }
 }
 export type RedPacketHashInfo = {

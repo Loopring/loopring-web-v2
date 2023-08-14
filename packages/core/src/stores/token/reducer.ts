@@ -12,7 +12,7 @@ const initialState: TokenMapStates<object> = {
   tokenMap: {},
   marketMap: {},
   idIndex: {},
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
 }
 const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({

@@ -751,7 +751,7 @@ export const ConfirmLinkCopy = withTranslation('common', {
           <List sx={{ marginTop: 2 }}>
             <ListItem>
               <Trans i18nKey={'labelOpenInWalletDetailLi1'}>
-                Open your wallet app and paste the url in its internal dapp browser
+                Open your wallet app and paste the url in its internal Dapp browser
               </Trans>
             </ListItem>
             <ListItem>
@@ -969,7 +969,7 @@ export const InformationForAccountFrozen = withTranslation('common', {
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
             {messageKey === 'labelNoticeForForAccountFrozen' ? (
-              <Trans i18nKey={messageKey} tOptions={{ type: t('label' + type).toLowerCase() }}>
+              <Trans i18nKey={messageKey} tOptions={{ type: t('label' + type?.toLowerCase()) }}>
                 please waiting a while, {{ type }} is on updating.
               </Trans>
             ) : (

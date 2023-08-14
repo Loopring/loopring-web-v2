@@ -9,7 +9,7 @@ const initialState: UserRewardsStates<{ [key: string]: any }> = {
   totalClaims: {},
   rewardU: '',
   feeU: '',
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
   __timer__: -1,
 }

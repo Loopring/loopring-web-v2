@@ -9,7 +9,7 @@ const initialState: Required<AmmActivityMapStates> = {
   groupByRuleType: {},
   groupByActivityStatus: {},
   groupByRuleTypeAndStatus: {},
-  status: 'PENDING',
+  status:SagaStatus.PENDING,
   errorMessage: null,
 }
 const ammActivityMapSlice: Slice = createSlice({

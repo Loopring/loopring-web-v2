@@ -10,7 +10,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer1Status,
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1()
-  const { account, status: accountStatus, statusUnset: accountUnset, updateAccount } = useAccount()
+  const { account, status: accountStatus, updateAccount } = useAccount()
 
   const callBack = React.useCallback(async () => {
     switch (account.readyState) {

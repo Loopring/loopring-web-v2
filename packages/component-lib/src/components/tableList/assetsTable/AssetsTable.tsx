@@ -107,6 +107,7 @@ export type RawDataAssetsItem = {
 
 export type AssetsTableProps<R = RawDataAssetsItem> = {
   rawData: R[]
+  searchValue?: string
   isInvest?: boolean
   pagination?: {
     pageSize: number
@@ -163,11 +164,12 @@ export const AssetsTable = withTranslation('tables')(
       hideAssets,
       onTokenLockHold,
       tokenLockDetail,
+      searchValue,
       ...rest
     } = props
 
     const [filter, setFilter] = React.useState({
-      searchValue: '',
+      searchValue: searchValue ?? '',
     })
     const [totalData, setTotalData] = React.useState<RawDataAssetsItem[]>(rawData)
     const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>(rawData)
@@ -175,7 +177,7 @@ export const AssetsTable = withTranslation('tables')(
     const { language, isMobile, coinJson, currency } = useSettings()
     const [modalState, setModalState] = React.useState(false)
     const resetTableData = React.useCallback(
-      (viewData) => {
+      (viewData: any) => {
         setViewData(viewData)
         setTableHeight(rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight)
       },
@@ -207,7 +209,7 @@ export const AssetsTable = withTranslation('tables')(
     }, [totalData, filter, hideInvestToken, hideSmallBalances])
 
     const handleFilterChange = React.useCallback(
-      (filter) => {
+      (filter: any) => {
         setFilter(filter)
       },
       [setFilter],

@@ -44,6 +44,7 @@ import {
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
+import { useLocation } from 'react-router-dom'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -64,6 +65,8 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount()
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
   const { tokenMap } = store.getState().tokenMap
   const { t } = useTranslation(['error'])
   const [txs, setTxs] = React.useState<RawDataTransactionItem[]>([])
@@ -140,6 +143,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
   return {
     txs,
     txsTotal,
+    searchValue: searchParams?.get('searchValue'),
     showLoading,
     getUserTxnList,
   }
@@ -626,7 +630,7 @@ export const useOrderList = ({
   )
 
   const cancelOrder = React.useCallback(
-    async ({ orderHash, clientOrderId }) => {
+    async ({ orderHash, clientOrderId }: any) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
         await LoopringAPI.userAPI.cancelOrder(
           {

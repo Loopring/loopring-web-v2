@@ -6,10 +6,18 @@ export enum ThemeType {
   light = 'light',
 }
 
-declare module '@mui/material/TextField' {
+declare module '@mui/material' {
   interface TextFieldPropsSizeOverrides {
     large: true
   }
+
+  interface InputBasePropsSizeOverrides {
+    large: true
+  }
+
+  // interface InputBasePropsSizeOverrides {
+  //   large: true
+  // }
 }
 export type ThemeKeys = keyof typeof ThemeType
 export type LoopringTheme = Theme & {

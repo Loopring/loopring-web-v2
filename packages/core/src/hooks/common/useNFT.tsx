@@ -116,7 +116,7 @@ export const useNFTListDeep = <T extends Partial<NFTWholeINFO>>() => {
         delete meta['tokenId']
       }
 
-      if (meta && meta !== {} && (meta.name || meta.image)) {
+      if (meta && Reflect.ownKeys(meta ?? {}).length > 0 && (meta.name || meta.image)) {
         tokenInfo = Object.assign(metadata_tokenId !== undefined ? { metadata_tokenId } : {}, {
           ...tokenInfo,
           ...(meta as any),

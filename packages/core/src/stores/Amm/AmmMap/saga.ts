@@ -276,6 +276,7 @@ export function* updateRealTimeSaga({ payload }: any) {
 }
 
 export function* ammMapInitSaga() {
+  // @ts-ignore
   yield all([takeLatest(getAmmMap, getPostsSaga)])
 }
 

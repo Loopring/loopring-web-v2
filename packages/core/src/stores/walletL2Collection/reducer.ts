@@ -6,7 +6,7 @@ const initialState: WalletL2CollectionStates<CollectionMeta> = {
   walletL2Collection: [],
   total: 0,
   legacyContract: [],
-  status: 'DONE',
+  status: SagaStatus.DONE,
   errorMessage: null,
   page: -1,
 }

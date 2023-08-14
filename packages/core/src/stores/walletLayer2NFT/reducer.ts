@@ -6,7 +6,7 @@ const initialState: WalletLayer2NFTStates = {
   walletLayer2NFT: [],
   collection: undefined,
   total: 0,
-  status: 'DONE',
+  status: SagaStatus.DONE,
   errorMessage: null,
   page: -1,
 }

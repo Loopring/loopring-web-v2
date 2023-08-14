@@ -140,6 +140,7 @@ export function* BtradeMapInitSaga() {
 }
 
 export function* BtradeMapSyncSaga() {
+  // @ts-ignore
   yield all([takeLatest(updateBtradeSyncMap, getBtradeSyncSaga)])
 }
 
