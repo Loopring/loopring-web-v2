@@ -74,10 +74,10 @@ export async function activateAccount({
     try {
       await callSwitchChain(_chainId)
       eddsaKey = await sdk.generateKeyPair({
-        web3: connectProvides.usedWeb3,
+        web3: connectProvides.usedWeb3 as any,
         address: accInfo.owner,
         keySeed,
-        walletType: (ConnectProviders[connectName] ?? connectName) as unknown as sdk.ConnectorNames,
+        walletType: (ConnectProviders[ connectName ] ?? connectName) as unknown as sdk.ConnectorNames,
         chainId: system.chainId as any,
         counterFactualInfo: counterFactualInfo ?? undefined,
       })
