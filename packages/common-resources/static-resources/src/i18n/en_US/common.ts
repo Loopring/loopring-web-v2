@@ -1825,4 +1825,5 @@ export default {
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
+  labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
 }

@@ -82,7 +82,7 @@ export const useHeader = () => {
   })
 
   React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET) {
+    if ([SagaStatus.UNSET,SagaStatus.DONE].includes(accountStatus)) {
       const account = store.getState().account
       setHeaderToolBarData((headerToolBarData) => {
         headerToolBarData[ButtonComponentsMap.WalletConnect] = {
@@ -99,7 +99,7 @@ export const useHeader = () => {
         return headerToolBarData
       })
     }
-  }, [accountStatus, account.readyState])
+  }, [accountStatus, account?.readyState])
   const { notifyMap } = useNotify()
   return {
     headerToolBarData,
