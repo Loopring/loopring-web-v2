@@ -37,8 +37,8 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  DropdownIconStyled,
-  FeeTokenItemWrapper,
+  FeeSelect,
+  InputSize,
   TextField,
   Toast,
   ToastType,
@@ -47,9 +47,10 @@ import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
-import { FeeToggle } from './tool/FeeList'
 import { useSettings } from '../../../stores'
 import { TransferAddressType } from './AddressType'
+
+
 
 export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   t,
@@ -108,9 +109,10 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
   const inputButtonDefaultProps = {
     label: t('labelL2toL2EnterToken'),
+    size: InputSize.middle
   }
 
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
 
   const popupState = usePopupState({
     variant: 'popover',
@@ -415,7 +417,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               walletMap,
               tradeData,
               coinMap,
-              inputNFTDefaultProps: { label: '' },
+              inputNFTDefaultProps: { label: '', size: InputSize.middle },
               inputNFTRef: inputBtnRef,
             } as any)}
           />
@@ -438,6 +440,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
       <Grid item alignSelf={'stretch'} position={'relative'}>
         <TextField
+          size={'large'}
           className={'text-address'}
           value={addressDefault}
           error={!!(isInvalidAddressOrENS || isSameAddress)}
@@ -455,7 +458,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               <InputAdornment
                 style={{
                   cursor: 'pointer',
-                  paddingRight: '0',
+                  paddingRight: '4px'
                 }}
                 position='end'
               >
@@ -478,7 +481,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 <IconButton
                   color={'inherit'}
                   size={'large'}
-                  aria-label='Clear'
                   onClick={() => {
                     onClickContact!()
                   }}
@@ -508,6 +510,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
       <Grid item alignSelf={'stretch'} position={'relative'}>
         <TextField
+          size={'large'}
           value={memo}
           label={t('labelL2toL2Memo')}
           placeholder={t('labelL2toL2MemoPlaceholder')}
@@ -521,54 +524,21 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            <Typography
-              component={'span'}
-              display={'flex'}
-              flexWrap={'wrap'}
-              alignItems={'center'}
-              variant={'body1'}
-              color={'var(--color-text-secondary)'}
-              marginBottom={1}
-            >
-              <Typography component={'span'} color={'inherit'} minWidth={28}>
-                {t('labelL2toL2Fee')}：
-              </Typography>
-              <Box
-                component={'span'}
-                display={'flex'}
-                alignItems={'center'}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-              >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + ' ' + feeInfo.belong
-                  : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                {isFeeNotEnough.isOnLoading ? (
-                  <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                    {t('labelFeeCalculating')}
-                  </Typography>
-                ) : (
-                  isFeeNotEnough.isFeeNotEnough && (
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                      {t('labelL2toL2FeeNotEnough')}
-                    </Typography>
-                  )
-                )}
-              </Box>
-            </Typography>
-            {dropdownStatus === 'up' && (
-              <FeeTokenItemWrapper padding={2}>
-                <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                  {t('labelL2toL2FeeChoose')}
-                </Typography>
-                <FeeToggle
-                  chargeFeeTokenList={chargeFeeTokenList}
-                  handleToggleChange={handleToggleChange}
-                  feeInfo={feeInfo}
-                />
-              </FeeTokenItemWrapper>
-            )}
+            <FeeSelect
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={(fee: FeeInfo) => {
+                handleToggleChange(fee as C)
+                setShowFeeModal(false)
+              }}
+              feeInfo={feeInfo as FeeInfo}
+              open={showFeeModal}
+              onClose={() => {
+                setShowFeeModal(false)
+              }}
+              isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+              feeLoading={isFeeNotEnough.isOnLoading}
+              onClickFee={() => setShowFeeModal((prev) => !prev)}
+            />
           </>
         )}
       </Grid>

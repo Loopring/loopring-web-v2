@@ -71,7 +71,7 @@ export type TransferInfoProps<C> = {
   chargeFeeTokenList: Array<C>
   activeAccountPrice: string | undefined
   // activeAccountFeeList?: Array<C>;
-  feeInfo: C
+  feeInfo: C | undefined
   isFeeNotEnough: {
     isFeeNotEnough: boolean
     isOnLoading: boolean
