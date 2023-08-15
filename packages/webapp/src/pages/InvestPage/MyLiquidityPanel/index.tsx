@@ -1,12 +1,8 @@
 import styled from '@emotion/styled'
 import {
   Box,
-  BoxProps,
   Button,
-  Checkbox,
-  FormControlLabel,
   Grid,
-  Link,
   Modal,
   Typography,
 } from '@mui/material'
@@ -16,7 +12,6 @@ import {
   AmmPanelType,
   AssetsTable,
   DefiStakingTable,
-  DetailRewardPanel,
   DualAssetTable,
   DualDetail,
   EarningsDetail,
@@ -29,8 +24,6 @@ import {
 } from '@loopring-web/component-lib'
 import {
   AssetTabIndex,
-  CheckBoxIcon,
-  CheckedIcon,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
@@ -39,7 +32,6 @@ import {
   HiddenTag,
   myLog,
   PriceTag,
-  RecordTabIndex,
   RowInvestConfig,
   STAKING_INVEST_LIMIT,
   TokenType,
@@ -63,16 +55,11 @@ import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { MaxWidthContainer } from '..'
+import { Tab } from './interface'
 
-const StyleWrapper = styled(Grid)`
-  position: relative;
-  width: 100%;
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-` as typeof Grid
 
 const Tab = styled(Box)<{ selected: boolean }>`
-  background: ${({ selected, theme }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
+  background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
   padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
   border-radius: ${({ theme }) => 0.5 * theme.unit}px;
   font-size: 16px;
@@ -82,7 +69,7 @@ const Tab = styled(Box)<{ selected: boolean }>`
 `
 
 const MyLiquidity: any = withTranslation('common')(
-  <R extends { [key: string]: any }, I extends { [key: string]: any }>({
+  ({
     t,
     isHideTotal,
     hideAssets,
@@ -112,7 +99,7 @@ const MyLiquidity: any = withTranslation('common')(
       useGetAssets()
     const { account } = useAccount()
     const history = useHistory()
-    const { currency, hideSmallBalances, setHideSmallBalances } = useSettings()
+    const { currency, hideSmallBalances } = useSettings()
     const { setShowAmm } = useOpenModals()
     const {
       dualList,
@@ -186,19 +173,6 @@ const MyLiquidity: any = withTranslation('common')(
 
     const theme = useTheme()
     const { isMobile } = useSettings()
-    const fontSize: any = isMobile
-      ? {
-          title: 'body1',
-          count: 'h5',
-          title2: 'body1',
-          count2: 'h5',
-        }
-      : {
-          title: 'body1',
-          count: 'h1',
-          title2: 'body1',
-          count2: 'h5',
-        }
     const lidoAssets = assetsRawData.filter((o) => {
       return (
         o.token.type !== TokenType.single &&
@@ -247,7 +221,6 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
-    type Tab = 'pools' | 'lido' | 'staking' | 'dual'
     const tabToName = (tab: Tab) => {
       const map: [Tab, string][] = [
         ['pools' as Tab, t('labelLiquidityPageTitle')],
