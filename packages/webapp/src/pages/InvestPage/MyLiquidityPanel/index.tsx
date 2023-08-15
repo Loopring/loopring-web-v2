@@ -238,10 +238,11 @@ const MyLiquidity: any = withTranslation('common')(
     myLog('visibaleTabs', visibaleTabs)
     const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
     myLog('visibaleTabs _tab', _tab)
+    
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         <MaxWidthContainer background={'var(--color-box)'}>
-          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          <Box display={'flex'} justifyContent={'space-between'} flexDirection={isMobile ? 'column' : 'row'} alignItems={isMobile ? 'start' : 'center'}>
             <Box paddingY={7}>
               <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
                 {t('labelInvestBalanceTitle')}
@@ -260,6 +261,7 @@ const MyLiquidity: any = withTranslation('common')(
               display={'flex'}
               justifyContent={'space-between'}
               marginRight={10}
+              marginBottom={isMobile ? 7 : 0}
             >
               <Box>
                 <Typography marginBottom={2} color={'var(--color-text-third)'} variant={'h6'}>
