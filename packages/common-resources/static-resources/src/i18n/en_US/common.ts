@@ -1779,10 +1779,10 @@ export default {
   labelConnecting: 'Connecting',
   labelClaimallToken: 'Reward token {{symbol}}',
   labelTitleOverviewAllPrd: 'All Products',
-  labelInvestDefiDes: '一鍵質押 ETH，賺取高達 7% 年化收益，更可將其作為交易保證金',
+  labelInvestDefiDes: 'Earn ETH staking rewards',
   labelInvestChoseProduct: 'Choose the product you want',
   labelInvestTotalEarnings: 'Total Earnings',
   labelInvestLoopringEarn: 'Loopring Earn',
   labelInvestLoopringEarnDes: 'Earn stable profits with professional asset management',
-  labelInvestLRCDes: '一鍵質押 ETH，賺取高達 7% 年化收益，更可將其作為交易保證金',
+  labelInvestLRCDes: 'Earn LRC staking rewards',
 }

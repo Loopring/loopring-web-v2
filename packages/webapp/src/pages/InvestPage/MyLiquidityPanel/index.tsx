@@ -261,8 +261,7 @@ const MyLiquidity: any = withTranslation('common')(
             <Box
               sx={{ background: 'var(--color-box-secondary)' }}
               width={'var(--earning-banner-width)'}
-              border={'1px solid'}
-              borderColor={'var(--color-border)'}
+              border={'1px solid var(--color-border)'}
               borderRadius={0.5}
               paddingX={3}
               paddingY={4}
