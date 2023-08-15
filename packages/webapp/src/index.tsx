@@ -20,6 +20,7 @@ import VConsole from 'vconsole'
 if (process.env.REACT_APP_VER) {
   console.log('VER:', process.env.REACT_APP_VER)
 }
+window.global = window;
 
 function onLongPress(element: any, callback: () => void) {
   let timer: NodeJS.Timeout | -1 = -1
