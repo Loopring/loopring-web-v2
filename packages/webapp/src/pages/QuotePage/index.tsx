@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from '@emotion/styled/macro'
+import styled from '@emotion/styled
 
 import { InputSearch, QuoteTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'

@@ -27,7 +27,7 @@ import {
   WalletInfo,
 } from './panel'
 import { boxLiner, useSettings } from '@loopring-web/component-lib'
-import styled from '@emotion/styled/'
+import styled from '@emotion/styled'
 import { usePageTradePro } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 
