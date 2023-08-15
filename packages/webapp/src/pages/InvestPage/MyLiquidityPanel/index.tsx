@@ -30,6 +30,8 @@ import {
   FailedIcon,
   getValuePrecisionThousand,
   HiddenTag,
+  InvestTab,
+  investTabs,
   myLog,
   PriceTag,
   RowInvestConfig,
@@ -55,7 +57,6 @@ import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { MaxWidthContainer } from '..'
-import { Tab } from './interface'
 
 
 const Tab = styled(Box)<{ selected: boolean }>`
@@ -221,27 +222,18 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
-    const _summaryMyInvest = sdk
-      .toBig(dualStakeDollar ?? 0)
-      .plus(summaryMyInvest.rewardU ?? 0)
-      .toString()
-    const tabToName = (tab: Tab) => {
-      const map: [Tab, string][] = [
-        ['pools' as Tab, t('labelLiquidityPageTitle')],
-        ['lido' as Tab, t('labelInvestLRCTitle')],
-        ['staking' as Tab, t('labelInvestDefiTitle')],
-        ['dual' as Tab, t('labelInvestDualTitle')],
-      ]
-      const found = map.find(ele => ele[0] === tab)
-      return found ? found[1] : undefined
+    const tabToName = (tab: InvestTab) => {
+      const found = investTabs.find(_tab => _tab.tab === tab)
+      return found
+        ? t(found.label)
+        : undefined
     }
-    
-    const [tab, setTab] = React.useState(undefined as Tab | undefined)
-    const visibaleTabs: Tab[] = [
-      ...(myPoolRow?.length > 0 ? ['pools' as Tab] : []),
-      ...(lidoAssets?.length > 0 ? ['lido' as Tab] : []),
-      ...(stakingList?.length > 0 ? ['staking' as Tab] : []),
-      ...(dualList?.length > 0 ? ['dual' as Tab] : []),
+    const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
+    const visibaleTabs: InvestTab[] = [
+      ...(myPoolRow?.length > 0 ? ['pools' as InvestTab] : []),
+      ...(lidoAssets?.length > 0 ? ['lido' as InvestTab] : []),
+      ...(stakingList?.length > 0 ? ['staking' as InvestTab] : []),
+      ...(dualList?.length > 0 ? ['dual' as InvestTab] : []),
     ]
     myLog('visibaleTabs', visibaleTabs)
     const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
