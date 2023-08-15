@@ -26,7 +26,7 @@ import {
 import { Box, Divider, MenuItem, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import { usePageTradePro, useSystem, useTokenMap, useTokenPrices } from '@loopring-web/core'
-import styled from '@emotion/styled/'
+import styled from '@emotion/styled'
 import { TextField } from '@loopring-web/component-lib'
 export enum TabMarketIndex {
   Orderbook = 'Orderbook',
