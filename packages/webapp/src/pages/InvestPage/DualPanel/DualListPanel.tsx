@@ -116,7 +116,7 @@ export const DualListPanel: any = withTranslation('common')(
     const marketsIsLoading = status === 'PENDING'
 
     return (
-      <Box display={'flex'} flexDirection={'column'} flex={1} >
+      <Box display={'flex'} flexDirection={'column'} flex={1}>
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
@@ -124,21 +124,32 @@ export const DualListPanel: any = withTranslation('common')(
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-              {t("labelInvestDualTitle")}
+              {t('labelInvestDualTitle')}
             </Typography>
             <Box display={'flex'} alignItems={'center'}>
-              <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-                {t("labelInvestMyDual")}
+              <Button
+                onClick={() => history.push('/invest/balance')}
+                sx={{ width: 18 * theme.unit }}
+                variant={'contained'}
+              >
+                {t('labelInvestMyDual')}
               </Button>
-              <Button sx={{ marginLeft: 1.5 }} variant={'contained'}>
-                {t("labelInvestDualTutorial")}
+              <Button
+                onClick={() => {
+                  window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')
+                  window.opener = null
+                }}
+                sx={{ marginLeft: 1.5 }}
+                variant={'contained'}
+              >
+                {t('labelInvestDualTutorial')}
               </Button>
               <FormControlLabel
                 labelPlacement={'start'}
                 control={<Switch checked={beginnerMode} onChange={onToggleBeginnerMode} />}
                 label={
                   <Typography marginLeft={1.5} variant={'h5'}>
-                    {t("labelInvestDualBeginerMode")}
+                    {t('labelInvestDualBeginerMode')}
                   </Typography>
                 }
               />
@@ -146,7 +157,11 @@ export const DualListPanel: any = withTranslation('common')(
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
-        <MaxWidthContainer background={theme.colorBase.boxSecondary} minHeight={'70vh'} paddingY={5}>
+        <MaxWidthContainer
+          background={theme.colorBase.boxSecondary}
+          minHeight={'70vh'}
+          paddingY={5}
+        >
           {beginnerMode ? (
             <BeginnerMode setConfirmDualInvest={setConfirmDualInvest} />
           ) : marketsIsLoading ? (
