@@ -221,6 +221,10 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
+    const _summaryMyInvest = sdk
+      .toBig(dualStakeDollar ?? 0)
+      .plus(summaryMyInvest.rewardU ?? 0)
+      .toString()
     const tabToName = (tab: Tab) => {
       const map: [Tab, string][] = [
         ['pools' as Tab, t('labelLiquidityPageTitle')],
@@ -248,15 +252,15 @@ const MyLiquidity: any = withTranslation('common')(
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Box paddingY={7}>
               <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
-                {t("labelInvestBalanceTitle")}
+                {t('labelInvestBalanceTitle')}
               </Typography>
-              <Button  sx={{ width: 18 * theme.unit }} variant={'contained'}>
-                {t("labelTxnDetailHeader")}
+              <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+                {t('labelTxnDetailHeader')}
               </Button>
             </Box>
             <Box
-              sx={{ background: 'var(--color-box-secondary)'  }}
-              width={40 * theme.unit}
+              sx={{ background: 'var(--color-box-secondary)' }}
+              width={'var(--earning-banner-width)'}
               border={'1px solid'}
               borderColor={'var(--color-border)'}
               borderRadius={0.5}
@@ -268,7 +272,7 @@ const MyLiquidity: any = withTranslation('common')(
             >
               <Box>
                 <Typography marginBottom={2} color={'var(--color-text-third)'} variant={'h6'}>
-                  {t("labelTotalPositionValue")}
+                  {t('labelTotalPositionValue')}
                 </Typography>
                 <Typography>
                   {_summaryMyInvest
@@ -289,9 +293,21 @@ const MyLiquidity: any = withTranslation('common')(
               </Box>
               <Box>
                 <Typography color={'var(--color-text-third)'} marginBottom={2} variant={'h6'}>
-                  {t("labelInvestTotalEarnings")}
+                  {t('labelInvestTotalEarnings')}
                 </Typography>
-                <Typography>{'$326,45.00'}</Typography>
+                <Typography>
+                  {summaryMyInvest.rewardU
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        summaryMyInvest.rewardU,
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true, floor: true },
+                      )
+                    : EmptyValueTag}
+                </Typography>
               </Box>
             </Box>
           </Box>
