@@ -8,21 +8,12 @@
     "@loopring-web/common-resources": "1.0.0",
     "@loopring-web/component-lib": "1.0.0",
     "@loopring-web/core": "1.0.0",
-    "@manaflair/redux-batch": "^1.0.0",
-    "clipboard": "^2.0.8",
-    "ethers": "^5.5.4",
-    "export-from-json": "^1.4.0",
-    "lodash": "^4.17.20",
-    "ms.macro": "^2.0.0",
-    "react-device-detect": "^1.17.0",
-    "react-router-dom": "^5.2.0",
-    "redux-saga": "^1.1.3",
-    "snarkjs": "0.1.20",
-    "web-vitals": "^0.2.4"
+    "react-scripts": "5.0.1",
+    "cross-env": "^7.0.3"
   },
   "resolutions": {
-    "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.0"
+    "@types/react": "^18.2.19",
+    "@types/react-dom": "^18.2.7"
   },
   "build": {
     "files": [
@@ -38,9 +29,9 @@
   "main": "./public/electron.js",
   "homepage": ".",
   "scripts": {
-    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && git rev-parse --short HEAD; REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production react-app-rewired build",
-    "dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development react-app-rewired start",
-    "build_dev": "REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development react-app-rewired build"
+    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && git rev-parse --short HEAD; REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production craco build",
+    "dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development craco start",
+    "build_dev": "REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development craco build"
   },
   "browserslist": {
     "production": [

@@ -1,16 +1,18 @@
 import React, { useCallback } from 'react'
 
 import { connectProvides } from '@loopring-web/web3-provider'
-import { AddressError, globalSetup, myLog } from '@loopring-web/common-resources'
+import { AddressError, globalSetup, myLog, NetworkMap } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
 import { LoopringAPI, store, useAccount, useSystem } from '../../index'
+import { useSettings } from '@loopring-web/component-lib'
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>('')
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
+  const { defaultNetwork } = useSettings()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [realAddr, setRealAddr] = React.useState<string>('')
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(AddressError.NoError)
@@ -18,7 +20,7 @@ export const useAddressCheck = () => {
   const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false)
   const [isActiveAccount, setIsActiveAccount] = React.useState(false)
-  const [isActiveAccountFee, setIsActiveAccountFee] = React.useState(false)
+  const [isActiveAccountFee, setIsActiveAccountFee] = React.useState<boolean | 'not allow'>(false)
   const [isSameAddress, setIsSameAddress] = React.useState(false)
   const [isCFAddress, setIsCFAddress] = React.useState(false)
   const [isContractAddress, setIsContractAddress] = React.useState(false)
@@ -32,7 +34,6 @@ export const useAddressCheck = () => {
   } = useAccount()
 
   const check = React.useCallback(async (address: any, web3: any) => {
-    // if( address.math)
     try {
       if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
         if (
@@ -43,6 +44,7 @@ export const useAddressCheck = () => {
           if (nodeTimer.current !== -1) {
             clearTimeout(nodeTimer.current as any)
           }
+          myLog('address update ', address)
           setIsAddressCheckLoading(true)
           const { realAddr, addressErr, isContract } = await checkAddr(address, web3)
           nodeTimer.current = setTimeout(() => {
@@ -62,14 +64,20 @@ export const useAddressCheck = () => {
               setIsContractAddress(isContract)
             }
             if (addressErr === AddressError.NoError) {
-              const [{ walletType }, response] = await Promise.all([
-                LoopringAPI.walletAPI.getWalletType({
-                  wallet: realAddr,
-                }),
-                LoopringAPI.exchangeAPI.getAccount({
-                  owner: realAddr,
-                }),
-              ])
+              const [{ walletType }, response, { contractType: _contractType, raw_data }] =
+                await Promise.all([
+                  LoopringAPI.walletAPI.getWalletType({
+                    wallet: realAddr,
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                  }),
+                  LoopringAPI.exchangeAPI.getAccount({
+                    owner: realAddr,
+                  }),
+                  LoopringAPI.walletAPI.getContractType({
+                    wallet: realAddr,
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                  }),
+                ])
               // for debounce & promise clean  (next user input sync function will cover by async)
               if (_address.current == address) {
                 if (walletType && walletType?.isInCounterFactualStatus) {
@@ -97,7 +105,33 @@ export const useAddressCheck = () => {
                 } else {
                   setIsContract1XAddress(false)
                 }
+
                 if (
+                  raw_data &&
+                  (raw_data as any)?.data[0]?.network &&
+                  (raw_data as any)?.data[0]?.network !== NetworkMap[defaultNetwork].walletType
+                ) {
+                  setIsLoopringAddress(true)
+                  setAddrStatus(AddressError.InvalidAddr)
+                  setIsActiveAccount(false)
+                  setIsActiveAccountFee('not allow')
+                } else if (
+                  realAddr &&
+                  (_contractType as any)?.network &&
+                  (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
+                  (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
+                  (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
+                    realAddr.toLowerCase()
+                ) {
+                  setIsLoopringAddress(true)
+                  setIsActiveAccount(
+                    response &&
+                      ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+                      ? false
+                      : response?.accInfo?.nonce !== 0,
+                  )
+                  setIsActiveAccountFee('not allow')
+                } else if (
                   response &&
                   ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
                 ) {
@@ -118,7 +152,7 @@ export const useAddressCheck = () => {
           }
           clearTimeout(nodeTimer.current)
           nodeTimer.current = -1
-          myLog('address async', address)
+          myLog('address update async', address, realAddr)
           setIsAddressCheckLoading(false)
         } else {
           throw Error('wrong address format')
@@ -131,8 +165,9 @@ export const useAddressCheck = () => {
         clearTimeout(nodeTimer.current)
         nodeTimer.current = -1
       }
+      _address.current = ''
       setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
-      myLog('address async', address, error)
+      myLog('address update address async', address, error)
       setRealAddr('')
       setIsLoopringAddress(false)
     }
@@ -140,7 +175,7 @@ export const useAddressCheck = () => {
 
   const debounceCheck = _.debounce(
     (address) => {
-      myLog('address sync', address)
+      myLog('address update ', address)
       check(address, connectProvides.usedWeb3)
     },
     globalSetup.wait,
@@ -162,7 +197,7 @@ export const useAddressCheck = () => {
 
   React.useEffect(() => {
     // myLog("checkAddress", address, _address.current, isAddressCheckLoading);
-    myLog('current address', _address.current, address)
+    myLog('address update', _address.current, address)
     if (_address.current !== address) {
       if (isAddressCheckLoading == true) {
         initAddresss()
@@ -212,7 +247,8 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
   const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false)
   const [isActiveAccount, setIsActiveAccount] = React.useState(undefined as boolean | undefined)
-  const [isActiveAccountFee, setIsActiveAccountFee] = React.useState(false)
+  const { defaultNetwork } = useSettings()
+  const [isActiveAccountFee, setIsActiveAccountFee] = React.useState<boolean | 'not allow'>(false)
   const [isSameAddress, setIsSameAddress] = React.useState(false)
   const [isCFAddress, setIsCFAddress] = React.useState(false)
   const [isContractAddress, setIsContractAddress] = React.useState(false)
@@ -225,107 +261,145 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
     account: { accAddress },
   } = useAccount()
 
-  const check = React.useCallback(
-    async (address: any, web3: any) => {
-      // if( address.math)
-      try {
-        if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
-          if (
-            /^0x[a-fA-F0-9]{40}$/g.test(address) ||
-            /.*\.eth$/gi.test(address) ||
-            (/^\d{5,8}$/g.test(address) && Number(address) > 10000)
-          ) {
-            if (nodeTimer.current !== -1) {
-              clearTimeout(nodeTimer.current)
-            }
-            setIsAddressCheckLoading(true)
-            const { realAddr, addressErr, isContract } = await checkAddr(address, web3)
-            nodeTimer.current = setTimeout(() => {
+  const check = React.useCallback(async (address: any, web3: any) => {
+    try {
+      if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
+        if (
+          /^0x[a-fA-F0-9]{40}$/g.test(address) ||
+          /.*\.eth$/gi.test(address) ||
+          (/^\d{5,8}$/g.test(address) && Number(address) > 10000)
+        ) {
+          if (nodeTimer.current !== -1) {
+            clearTimeout(nodeTimer.current as any)
+          }
+          myLog('address update ', address)
+          setIsAddressCheckLoading(true)
+          const { realAddr, addressErr, isContract } = await checkAddr(address, web3)
+          nodeTimer.current = setTimeout(() => {
+            if (_address.current == address) {
               _address.current = ''
               setAddrStatus(AddressError.TimeOut)
               setRealAddr('')
               setIsAddressCheckLoading(false)
-            }, 6000)
+            }
+          }, 6000)
 
+          // for debounce & promise clean   (next user input sync function will cover by async)
+          if (_address.current == address) {
             setRealAddr(realAddr)
             setAddrStatus(addressErr)
             if (isContract) {
               setIsContractAddress(isContract)
             }
-            //realAddr !== "" || (address !== "" && address.startsWith("0x"))
             if (addressErr === AddressError.NoError) {
-              const [{ walletType }, response] = await Promise.all([
-                LoopringAPI.walletAPI.getWalletType({
-                  wallet: realAddr, //realAddr != "" ? realAddr : address,
-                }),
-                LoopringAPI.exchangeAPI.getAccount({
-                  owner: realAddr, //realAddr != "" ? realAddr : address,
-                }),
-              ])
+              const [{ walletType }, response, { contractType: _contractType, raw_data }] =
+                await Promise.all([
+                  LoopringAPI.walletAPI.getWalletType({
+                    wallet: realAddr,
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                  }),
+                  LoopringAPI.exchangeAPI.getAccount({
+                    owner: realAddr,
+                  }),
+                  LoopringAPI.walletAPI.getContractType({
+                    wallet: realAddr,
+                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+                  }),
+                ])
+              // for debounce & promise clean  (next user input sync function will cover by async)
+              if (_address.current == address) {
+                if (walletType && walletType?.isInCounterFactualStatus) {
+                  setIsCFAddress(true)
+                } else {
+                  setIsCFAddress(false)
+                }
+                if (walletType && walletType.isContract) {
+                  setIsContractAddress(true)
+                } else {
+                  setIsContractAddress(false)
+                }
+                if (walletType && walletType.loopringWalletContractVersion !== '') {
+                  setLoopringSmartWalletVersion({
+                    isLoopringSmartWallet: true,
+                    version: walletType.loopringWalletContractVersion,
+                  })
+                } else {
+                  setLoopringSmartWalletVersion({
+                    isLoopringSmartWallet: false,
+                  })
+                }
+                if (walletType && walletType.loopringWalletContractVersion?.startsWith('V1_')) {
+                  setIsContract1XAddress(true)
+                } else {
+                  setIsContract1XAddress(false)
+                }
 
-              if (walletType && walletType?.isInCounterFactualStatus) {
-                setIsCFAddress(true)
-              } else {
-                setIsCFAddress(false)
-              }
-              if (walletType && walletType.isContract) {
-                setIsContractAddress(true)
-              } else {
-                setIsContractAddress(false)
-              }
-              if (walletType && walletType.loopringWalletContractVersion !== '') {
-                setLoopringSmartWalletVersion({
-                  isLoopringSmartWallet: true,
-                  version: walletType.loopringWalletContractVersion,
-                })
-              } else {
-                setLoopringSmartWalletVersion({
-                  isLoopringSmartWallet: false,
-                })
-              }
-              if (walletType && walletType.loopringWalletContractVersion?.startsWith('V1_')) {
-                setIsContract1XAddress(true)
-              } else {
-                setIsContract1XAddress(false)
-              }
-              if (
-                response &&
-                ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
-              ) {
-                setIsLoopringAddress(false)
-                setIsActiveAccount(false)
-                setIsActiveAccountFee(false)
-              } else {
-                setIsLoopringAddress(true)
-                setIsActiveAccount(response.accInfo.nonce !== 0)
-                setIsActiveAccountFee(
-                  response.accInfo.nonce === 0 &&
-                    /FirstUpdateAccountPaid/gi.test(response.accInfo.tags ?? ''),
-                )
-                setCheckAddaccountId(response.accInfo.accountId)
+                if (
+                  raw_data &&
+                  (raw_data as any)?.data[0]?.network &&
+                  (raw_data as any)?.data[0]?.network !== NetworkMap[defaultNetwork].walletType
+                ) {
+                  setIsLoopringAddress(true)
+                  setAddrStatus(AddressError.InvalidAddr)
+                  setIsActiveAccount(false)
+                  setIsActiveAccountFee('not allow')
+                } else if (
+                  realAddr &&
+                  (_contractType as any)?.network &&
+                  (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
+                  (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
+                  (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
+                    realAddr.toLowerCase()
+                ) {
+                  setIsLoopringAddress(true)
+                  setIsActiveAccount(
+                    response &&
+                      ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+                      ? false
+                      : response?.accInfo?.nonce !== 0,
+                  )
+                  setIsActiveAccountFee('not allow')
+                } else if (
+                  response &&
+                  ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+                ) {
+                  setIsLoopringAddress(false)
+                  setIsActiveAccount(false)
+                  setIsActiveAccountFee(false)
+                } else {
+                  setIsLoopringAddress(true)
+                  setIsActiveAccount(response.accInfo.nonce !== 0)
+                  setIsActiveAccountFee(
+                    response.accInfo.nonce === 0 &&
+                      /FirstUpdateAccountPaid/gi.test(response.accInfo.tags ?? ''),
+                  )
+                  setCheckAddaccountId(response.accInfo.accountId)
+                }
               }
             }
-            clearTimeout(nodeTimer.current)
-            nodeTimer.current = -1
-            setIsAddressCheckLoading(false)
-          } else {
-            throw Error('wrong address format')
           }
-        } else {
-          throw Error('No API address')
-        }
-      } catch (error) {
-        if (nodeTimer.current !== -1) {
           clearTimeout(nodeTimer.current)
           nodeTimer.current = -1
+          myLog('address update async', address, realAddr)
+          setIsAddressCheckLoading(false)
+        } else {
+          throw Error('wrong address format')
         }
-        setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
-        setRealAddr('')
-        setIsLoopringAddress(false)
+      } else {
+        throw Error('No API address')
       }
-    },
-    [setRealAddr, setAddrStatus],
-  )
+    } catch (error) {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current)
+        nodeTimer.current = -1
+      }
+      _address.current = ''
+      setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
+      myLog('address update address async', address, error)
+      setRealAddr('')
+      setIsLoopringAddress(false)
+    }
+  }, [])
 
   const debounceCheck = _.debounce(
     async (address) => {
@@ -348,12 +422,11 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
       if (found && listNoCheckRequired.includes(found.addressType)) {
         setRealAddr(address)
         switch (found.addressType) {
-          case sdk.AddressType.LOOPRING_HEBAO_CF:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0: {
-            setIsCFAddress(found.addressType === sdk.AddressType.LOOPRING_HEBAO_CF)
+            setIsCFAddress(false)
             setIsContractAddress(true)
             setIsContract1XAddress(
               found.addressType === sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6 ||
@@ -457,6 +530,11 @@ export const useAddressCheckWithContacts = (checkEOA: boolean) => {
             }
             break
           }
+          case sdk.AddressType.LOOPRING_HEBAO_CF:
+            //TODO  setIsCFAddress(true)  CF WALLET MAY change TYPE so need update Contact info
+            //TODO mayBe state will changed to a real wallet
+            check(address, connectProvides.usedWeb3)
+            break
         }
       } else {
         check(address, connectProvides.usedWeb3)

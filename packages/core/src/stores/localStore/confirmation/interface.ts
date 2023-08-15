@@ -7,4 +7,5 @@ export interface Confirmation {
   showDualBeginnerHelp: boolean
   confirmedLRCStakeInvest: boolean
   confirmedBtradeSwap: boolean
+  confirmedLeverageETHInvest: boolean
 }

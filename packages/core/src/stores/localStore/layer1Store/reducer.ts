@@ -52,10 +52,12 @@ const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
       }>,
     ) {
       const { domain, uniqueId, chainId } = action.payload
-      if (state[chainId][domain] && state[chainId][domain][uniqueId]) {
-        // Reflect.ownKeys(state[chainId][domain]).findIndex()
-        delete state[chainId][domain][uniqueId]
-      }
+      try {
+        if (state[chainId] && state[chainId][domain] && state[chainId][domain][uniqueId]) {
+          // Reflect.ownKeys(state[chainId][domain]).findIndex()
+          delete state[chainId][domain][uniqueId]
+        }
+      } catch (e) {}
     },
     setOneItem(
       state,

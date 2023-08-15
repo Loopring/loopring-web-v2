@@ -5,7 +5,6 @@ import {
   AmmTable,
   BtradeSwapTable,
   Button,
-  ComingSoonPanel,
   DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
@@ -32,6 +31,7 @@ import {
   useDualTransaction,
   useGetAmmRecord,
   useGetDefiRecord,
+  useGetLeverageETHRecord,
   useGetTrades,
   useGetTxs,
   useOrderList,
@@ -43,13 +43,9 @@ import {
   RecordTabIndex,
   RowConfig,
   TOAST_TIME,
+  TabOrderIndex,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
-
-enum TabOrderIndex {
-  orderOpenTable = 'orderOpenTable',
-  orderHistoryTable = 'orderHistoryTable',
-}
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -78,6 +74,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     txsTotal,
     showLoading: showTxsLoading,
     getUserTxnList,
+    searchValue,
   } = useGetTxs(setToastOpen)
   const {
     userTrades,
@@ -127,6 +124,12 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     getSideStakingTxList,
     sideStakingTotal,
   } = useDefiSideRecord(setToastOpen)
+  const {
+    leverageETHList,
+    showLoading: showLeverageETHLoading,
+    getLeverageETHTxList,
+    leverageETHTotal,
+  } = useGetLeverageETHRecord(setToastOpen)
 
   const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
   const { etherscanBaseUrl } = useSystem()
@@ -152,7 +155,6 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     },
     [history, search],
   )
-
   React.useEffect(() => {
     let height = container?.current?.offsetHeight
     if (height) {
@@ -224,6 +226,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               {...{
                 etherscanBaseUrl,
                 rawData: txTableData,
+                searchValue,
                 pagination: {
                   pageSize: pageSize,
                   total: txsTotal,
@@ -276,6 +279,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             />
           ) : currentTab === RecordTabIndex.DefiRecords ? (
             <DefiTxsTable
+              key={'defi'}
               {...{
                 rawData: defiList,
                 pagination: {
@@ -370,62 +374,56 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             </Box>
           ) : currentTab === RecordTabIndex.StopLimitRecords ? (
             <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
-              {!StopLimit.enable && StopLimit.reason === 'no view' ? (
-                <>
-                  <ComingSoonPanel />
-                </>
-              ) : (
-                <>
-                  <Box marginBottom={2} marginLeft={3}>
-                    <Tabs
-                      value={currentOrderTab}
-                      onChange={(_event, value) => {
-                        setCurrentOrderTab(value)
-                        history.replace(
-                          `/l2assets/history/${
-                            RecordTabIndex.StopLimitRecords
-                          }/${value}?${search.replace('?', '')}`,
-                        )
-                      }}
-                      aria-label='l2-history-tabs'
-                      variant='scrollable'
-                    >
-                      <Tab
-                        label={t('labelOrderTableOpenOrder')}
-                        value={TabOrderIndex.orderOpenTable}
-                      />
-                      <Tab
-                        label={t('labelOrderTableOrderHistory')}
-                        value={TabOrderIndex.orderHistoryTable}
-                      />
-                    </Tabs>
-                  </Box>
-
-                  <OrderHistoryTable
-                    {...{
-                      pagination:
-                        currentOrderTab === TabOrderIndex.orderOpenTable
-                          ? undefined
-                          : {
-                              pageSize: pageSize - 1,
-                              total: totalNumStopLimit,
-                            },
-                      isStopLimit: true,
-                      rawData: stopLimitRawData,
-                      showFilter: true,
-                      getOrderList: getStopLimitOrderList,
-                      marketArray: orderRaw,
-                      showDetailLoading: false,
-                      userOrderDetailList,
-                      getUserOrderDetailTradeList,
-                      ...rest,
-                      showLoading: showLoadingStopLimit,
-                      isOpenOrder: currentOrderTab === TabOrderIndex.orderOpenTable,
-                      cancelOrder: cancelOrderStopLimit,
+              <>
+                <Box marginBottom={2} marginLeft={3}>
+                  <Tabs
+                    value={currentOrderTab}
+                    onChange={(_event, value) => {
+                      setCurrentOrderTab(value)
+                      history.replace(
+                        `/l2assets/history/${
+                          RecordTabIndex.StopLimitRecords
+                        }/${value}?${search.replace('?', '')}`,
+                      )
                     }}
-                  />
-                </>
-              )}
+                    aria-label='l2-history-tabs'
+                    variant='scrollable'
+                  >
+                    <Tab
+                      label={t('labelOrderTableOpenOrder')}
+                      value={TabOrderIndex.orderOpenTable}
+                    />
+                    <Tab
+                      label={t('labelOrderTableOrderHistory')}
+                      value={TabOrderIndex.orderHistoryTable}
+                    />
+                  </Tabs>
+                </Box>
+
+                <OrderHistoryTable
+                  {...{
+                    pagination:
+                      currentOrderTab === TabOrderIndex.orderOpenTable
+                        ? undefined
+                        : {
+                            pageSize: pageSize - 1,
+                            total: totalNumStopLimit,
+                          },
+                    isStopLimit: true,
+                    rawData: stopLimitRawData,
+                    showFilter: true,
+                    getOrderList: getStopLimitOrderList,
+                    marketArray: orderRaw,
+                    showDetailLoading: false,
+                    userOrderDetailList,
+                    getUserOrderDetailTradeList,
+                    ...rest,
+                    showLoading: showLoadingStopLimit,
+                    isOpenOrder: currentOrderTab === TabOrderIndex.orderOpenTable,
+                    cancelOrder: cancelOrderStopLimit,
+                  }}
+                />
+              </>
             </Box>
           ) : currentTab === RecordTabIndex.BtradeSwapRecords ? (
             <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
@@ -442,6 +440,22 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                 onItemClick={onDetail}
               />
             </Box>
+          ) : currentTab === RecordTabIndex.leverageETHRecords ? (
+            <DefiTxsTable
+              key={'leverage'}
+              {...{
+                rawData: leverageETHList,
+                pagination: {
+                  pageSize: pageSize,
+                  total: leverageETHTotal,
+                },
+                getDefiTxList: getLeverageETHTxList,
+                showloading: showLeverageETHLoading,
+                ...rest,
+              }}
+              tokenMap={tokenMap}
+              idIndex={idIndex}
+            />
           ) : (
             <></>
           )}

@@ -11,6 +11,7 @@ type WalletLayer1Map<R extends { [key: string]: any }> = {
 const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
   const { accAddress } = store.getState().account
   const { tokenMap, addressIndex } = store.getState().tokenMap
+
   if (tokenMap && LoopringAPI.exchangeAPI && accAddress) {
     const [{ tokenBalances: tokenBalancesObj }, { ethBalance }] = await Promise.all([
       // @ts-ignore
@@ -29,7 +30,7 @@ const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
       tokenBalances.set(item.address.toLowerCase(), item.value)
     })
     // const tokenBalances = new Map(Object.entries(tokenBalancesObj));
-    tokenBalances.set(tokenMap['ETH'].address as unknown as sdk.TokenAddress, ethBalance)
+    tokenBalances.set(tokenMap['ETH']?.address as unknown as sdk.TokenAddress, ethBalance)
     let walletLayer1
     if (tokenBalances.size) {
       walletLayer1 = Array.from(tokenBalances.keys()).reduce((prev, item) => {

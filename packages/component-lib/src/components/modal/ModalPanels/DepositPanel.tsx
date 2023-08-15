@@ -1,5 +1,5 @@
 import { DepositProps } from '../../tradePanel/Interface'
-import { withTranslation, WithTranslation } from 'react-i18next'
+import { Trans, withTranslation, WithTranslation } from 'react-i18next'
 import {
   CoinInfo,
   CoinMap,
@@ -14,11 +14,11 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import { DepositConfirm } from '../../tradePanel/components/DepositConfirm'
 import { useSettings } from '../../../stores'
+import { Typography } from '@mui/material'
 
 export const DepositPanel = withTranslation('common', { withRef: true })(
   <
     T extends {
-      referAddress?: string
       toAddress?: string
       addressError?: { error: boolean; message: string }
     } & IBData<I>,
@@ -92,14 +92,41 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
                 {...{
                   ...rest,
                   t,
-                  realToAddress: rest.isAllowInputToAddress
-                    ? rest.realToAddress
-                    : t('labelToMyL2', {
+                  realToAddress: rest.isAllowInputToAddress ? (
+                    rest.realToAddress
+                  ) : (
+                    <Trans
+                      i18nKey={'labelToMyL2WidthAddress'}
+                      tOptions={{
                         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
                         l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
                         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                      }),
+                        address: rest.realToAddress,
+                      }}
+                    >
+                      <Typography
+                        color={'inherit'}
+                        variant={'body1'}
+                        display={'flex'}
+                        component={'span'}
+                        sx={{ opacity: 1 }}
+                        paddingLeft={1 / 2}
+                      >
+                        My L2
+                      </Typography>
+                      <Typography
+                        color={'var(--color-text-third)'}
+                        variant={'body2'}
+                        display={'flex'}
+                        component={'span'}
+                        sx={{ opacity: 1 }}
+                        paddingLeft={1 / 2}
+                      >
+                        (address)
+                      </Typography>
+                    </Trans>
+                  ),
                   tradeData: switchData.tradeData,
                   onDepositClick,
                   handleConfirm,

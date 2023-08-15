@@ -1,18 +1,9 @@
 import styled from '@emotion/styled'
 import { Box, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
-import {
-  BoxNFT,
-  Button,
-  Column,
-  NftImage,
-  NftImageStyle,
-  Table,
-  TablePagination,
-} from '../../basic-lib'
+import { BoxNFT, Button, Column, NftImageStyle, Table, TablePagination } from '../../basic-lib'
 import {
   CoinInfo,
-  DAY_MINUTE_FORMAT,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
@@ -28,12 +19,13 @@ import {
 } from './Interface'
 import React from 'react'
 import { FormatterProps } from 'react-data-grid'
-import _, { random } from 'lodash'
+import _ from 'lodash'
 import moment from 'moment'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ColumnCoinDeep } from '../assetsTable'
 import TextTooltip from './textTooltip'
 import { useTheme } from '@emotion/react'
+import { redpacketService } from '@loopring-web/core'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -414,6 +406,20 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
+
+    const onRefresh = React.useCallback(() => {
+      updateData({ page })
+    }, [page])
+
+    const subject = React.useMemo(() => redpacketService.onRefresh(), [])
+    React.useEffect(() => {
+      const subscription = subject.subscribe(() => {
+        onRefresh()
+      })
+      return () => {
+        subscription.unsubscribe()
+      }
+    }, [subject])
 
     return (
       <TableWrapperStyled>

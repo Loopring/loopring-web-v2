@@ -46,10 +46,6 @@ export const makeClaimRewards = <R = EarningsRow>(totalClaims: sdk.ClaimItem[]) 
         const tokenValueDollar = amountStr?.times(tokenPrices[tokenInfo.symbol])
         return {
           ..._claimable,
-          //TODO:1
-          // amount: 1000000000,
-          //TODO:1
-          // amountStr: volumeToCount(tokenInfo?.symbol, 1000000000)?.toString(),
           amountStr: amountStr?.toString(),
           tokenValueDollar: tokenValueDollar?.toString(),
           token: tokenInfo.symbol,
@@ -254,6 +250,7 @@ export type SummaryMyInvest = {
   stakeETHDollar?: Value
   stakeLRCDollar?: Value
   dualStakeDollar?: Value
+  leverageETHDollar?: Value
 }
 export const makeSummaryMyAmm = <C extends { [key: string]: any }>({
   userRewardsMap,

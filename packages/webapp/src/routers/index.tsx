@@ -1,6 +1,6 @@
 import { Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
-import { Box, Container } from '@mui/material'
+import { Box, Container, Link } from '@mui/material'
 import Header from 'layouts/header'
 import { QuotePage } from 'pages/QuotePage'
 import { SwapPage } from 'pages/SwapPage'
@@ -11,6 +11,7 @@ import {
   ModalCoinPairPanel,
   ModalGroup,
   ModalRedPacketPanel,
+  store,
   useDeposit,
   useOffFaitModal,
   useSystem,
@@ -21,6 +22,7 @@ import { LoadingPage } from '../pages/LoadingPage'
 import { LandPage } from '../pages/LandPage'
 import {
   ErrorMap,
+  GUARDIAN_URL,
   MapChainId,
   RouterAllowIndex,
   RouterMainKey,
@@ -98,11 +100,12 @@ const ContentWrap = ({
 }
 
 const WrapModal = () => {
-  const { depositProps } = useDeposit(false)
   const { assetsRawData } = useGetAssets()
   const location = useLocation()
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
+  const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
+
   const { open, actionEle, handleClose } = useOffFaitModal()
 
   const noticeSnacksElEs = React.useMemo(() => {
@@ -126,7 +129,7 @@ const WrapModal = () => {
       <ModalGroup
         assetsRawData={assetsRawData}
         depositProps={depositProps}
-        isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '') ? true : false}
+        isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '')}
       />
       <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
     </>
@@ -268,11 +271,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           {state === 'PENDING' || !marketArray.length || !Object.keys(tickerMap ?? {}).length ? (
             <LoadingBlock />
           ) : RouterAllowIndex[network]?.includes(RouterMainKey.stoplimit) ? (
-            StopLimit.enable == false && StopLimit.reason === 'no view' ? (
-              <ComingSoonPanel />
-            ) : (
-              <StopLimitPage />
-            )
+            <StopLimitPage />
           ) : (
             <ErrorPage {...ErrorMap.TRADE_404} />
           )}
@@ -284,11 +283,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
         <Route path={RouterPath.btrade}>
           <ContentWrap state={state} value={RouterMainKey.btrade}>
-            {!BTradeInvest.enable && BTradeInvest.reason === 'no view' ? (
-              <ComingSoonPanel />
-            ) : (
-              <BtradeSwapPage />
-            )}
+            <BtradeSwapPage />
           </ContentWrap>
         </Route>
         <Route exact path={[RouterPath.fiat, RouterPath.fiat + '/*']}>
@@ -332,6 +327,20 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </ContentWrap>
         </Route>
 
+        <Route
+          path={['/guardian', '/guardian/*']}
+          component={() => (
+            <>
+              <Header isHideOnScroll={true} isLandPage />
+              <ErrorPage
+                {...ErrorMap.GUARDIAN_ROUTER_ERROR}
+                components={{
+                  a: <Link target='_blank' rel='noopener noreferrer' href={GUARDIAN_URL} />,
+                }}
+              />
+            </>
+          )}
+        />
         <Route
           path={['/error/:messageKey', '/error']}
           component={() => (

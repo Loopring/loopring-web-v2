@@ -341,7 +341,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   swapData: {
                     tradeData,
                     type,
-                    to, //TODO 'button',
+                    to,
                   },
                 }}
               />

@@ -4,7 +4,7 @@
     "jsx": "react-jsx",
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": true,  
     "baseUrl": "./static-resources/src",
     "rootDir": "./static-resources"
   },

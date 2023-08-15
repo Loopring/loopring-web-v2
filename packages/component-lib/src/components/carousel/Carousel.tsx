@@ -108,18 +108,18 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
       transition: opacity 1s ease-in-out;
     }
 
-  input:checked + .slide-container .carousel-controls label {
-    display: block;
-  }
+    input:checked + .slide-container .carousel-controls label {
+      display: block;
+    }
 
-  ${({ imageList }) => {
-    let label: string = imageList.reduce((prev, _, index) => {
-      prev += `input#img-${index + 1}:checked ~ .carousel-dots label#img-dot-${index + 1},`
-      return prev
-    }, '' as string)
-    label += `{ opacity: 1;}`
-    return label
-  }}
+    ${({ imageList }) => {
+      let label: string = imageList.reduce((prev, _, index) => {
+        prev += `input#img-${index + 1}:checked ~ .carousel-dots label#img-dot-${index + 1},`
+        return prev
+      }, '' as string)
+      label += `{ opacity: 1;}`
+      return label
+    }}
     //input#img-1:checked ~ .carousel-dots label#img-dot-1,
     //input#img-2:checked ~ .carousel-dots label#img-dot-2,
     //input#img-3:checked ~ .carousel-dots label#img-dot-3,
@@ -128,7 +128,8 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
     //input#img-6:checked ~ .carousel-dots label#img-dot-6 {
     //  opacity: 1;
     //}
-  input:checked + .slide-container .nav label {
+
+    input:checked + .slide-container .nav label {
       display: block;
     }
   }

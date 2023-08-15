@@ -33,9 +33,9 @@ const initialState: SettingsState = {
   proLayout: layoutConfigs[0].layouts,
   stopLimitLayout: stopLimitLayoutConfigs[0].layouts,
   swapSecondConfirmation: true,
-  isShowTestToggle: false,
   defaultNetwork: ChainId.MAINNET,
   referralCode: '',
+  isDevToggle: false,
 }
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
@@ -55,9 +55,8 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
     setDefaultNetwork(state, action: PayloadAction<sdk.ChainId>) {
       state.defaultNetwork = action.payload
     },
-
-    setIsShowTestToggle(state, action: PayloadAction<boolean>) {
-      state.isShowTestToggle = action.payload
+    setIsDevToggle(state, action: PayloadAction<boolean>) {
+      state.isDevToggle = action.payload
     },
     setTheme(state, action: PayloadAction<ThemeKeys>) {
       // localStore.setItem('ThemeType',action.payload)
@@ -217,8 +216,8 @@ export const {
   setHideSmallBalances,
   setIsMobile,
   setSwapSecondConfirmation,
-  setIsShowTestToggle,
   setDefaultNetwork,
   setReferralCode,
+  setIsDevToggle,
 } = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

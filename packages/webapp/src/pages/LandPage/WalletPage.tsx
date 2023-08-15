@@ -1,12 +1,11 @@
 import { Box, Grid, Link, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
-import styled from '@emotion/styled/'
+import styled from '@emotion/styled'
 import { LandPageHeightConfig, SoursURL } from '@loopring-web/common-resources'
 import { withTranslation } from 'react-i18next'
 import { ContainerStyle, ContainerStyled, TitleTypography } from './style'
 import { useSettings } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { useHistory } from 'react-router'
 
 // const LinkStyle = styled(Link)`
 //   color: var(--color-button-select);

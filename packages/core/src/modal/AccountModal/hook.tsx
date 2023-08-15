@@ -122,6 +122,8 @@ import {
   BtradeSwap_Pending,
   AMM_Pending,
   useSettings,
+  TOASTOPEN,
+  setShowGlobalToast,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -174,7 +176,6 @@ import {
   useReset,
   useStakeTradeExit,
   useSystem,
-  useToast,
   useTransfer,
   useVendor,
   useWalletLayer2,
@@ -238,16 +239,22 @@ export function useAccountModalForUI({
 
   const { exportAccountAlertText, exportAccountToastOpen, setExportAccountToastOpen } =
     useExportAccount()
-  const { toastOpen, setToastOpen, closeToast } = useToast()
 
   const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance()
   const { retryBtn: creatRedPacketRetryBtn } = useCreateRedPacket({
     assetsRawData,
     isShow: false,
   })
+  // const [toastOpen, setToastOpen] = React.useState<TOASTOPEN>({
+  //   open: false,
+  //   content: '',
+  //   type: ToastType.info,
+  // })
 
   const { collectionAdvanceProps } = useCollectionAdvanceMeta({
-    setCollectionToastOpen: setToastOpen,
+    setCollectionToastOpen: (info: TOASTOPEN) => {
+      setShowGlobalToast({ isShow: info.open, info: { ...info } })
+    },
   })
   const { vendorListBuy, banxaRef } = useVendor()
   // const { nftMintProps } = useNFTMint();
@@ -257,7 +264,7 @@ export function useAccountModalForUI({
   const { nftTransferProps } = useNFTTransfer()
   const { nftDeployProps } = useNFTDeploy()
   const { stakeWrapProps } = useStakeTradeExit({
-    setToastOpen,
+    setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
   })
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw()
   const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm()
@@ -581,7 +588,10 @@ export function useAccountModalForUI({
                     }),
                   },
                 })
-                setShowAnotherNetworkNotice({ isShow: true })
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Ethereum&dest=Loopring' },
+                })
               },
             }
         }
@@ -652,8 +662,12 @@ export function useAccountModalForUI({
                 setShowAccount({
                   isShow: false,
                 })
-                window.open('https://www.orbiter.finance/?source=Loopring&dest=Ethereum')
-                window.opener = null
+                setShowAnotherNetworkNotice({
+                  isShow: true,
+                  info: { url: 'https://www.orbiter.finance/?source=Loopring&dest=Ethereum' },
+                })
+                // window.open('https://www.orbiter.finance/?source=Loopring&dest=Ethereum')
+                // window.opener = null
               },
             }
         }
@@ -712,7 +726,7 @@ export function useAccountModalForUI({
   }, [isShowAccount?.info, setShowAccount])
 
   const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
-    setToastOpen,
+    setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
     onDisconnect,
     isDepositing: !!chainInfos?.depositHashes[account?.accAddress]?.length,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
@@ -2705,7 +2719,7 @@ export function useAccountModalForUI({
               callback: (_e?: any) => {
                 activeAccountProps.onResetClick({
                   isReset: true,
-                  isFirstTime: false,
+                  isNotFirstTime: false,
                 })
               },
             }}
@@ -2818,7 +2832,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: t('labelTryAnother'),
               callback: (_e?: any) => {
-                activeAccountProps.onResetClick({ isFirstTime: false })
+                activeAccountProps.onResetClick({ isNotFirstTime: true })
                 // goUpdateAccount({ isFirstTime: false });
               },
             }}
@@ -3174,7 +3188,6 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
-    setToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,
@@ -3184,8 +3197,6 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    toastOpen,
-    closeToast,
     // checkActiveStatusProps,
     // dualToastOpen,
   }

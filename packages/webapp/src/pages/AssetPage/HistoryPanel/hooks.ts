@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import {
   LoopringAPI,
   makeDualOrderedItem,
   store,
   tradeItemToTableDataItem,
   useAccount,
+  useDefiMap,
   useDualMap,
   useTokenMap,
   useWalletLayer2,
@@ -26,20 +27,24 @@ import {
   ToastType,
   TransactionStatus,
   useOpenModals,
+  useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE, GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import {
   AccountStatus,
   BTRDE_PRE,
+  defiMarkets,
   getValuePrecisionThousand,
+  leverageETHConfig,
+  MapChainId,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
-import { cloneDeep } from 'lodash'
+import { useLocation } from 'react-router-dom'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -60,11 +65,13 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount()
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
   const { tokenMap } = store.getState().tokenMap
   const { t } = useTranslation(['error'])
-  const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
-  const [txsTotal, setTxsTotal] = useState(0)
-  const [showLoading, setShowLoading] = useState(false)
+  const [txs, setTxs] = React.useState<RawDataTransactionItem[]>([])
+  const [txsTotal, setTxsTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
 
   const getTxnStatus = (status: string) =>
     status === ''
@@ -77,7 +84,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
       ? TransactionStatus.received
       : TransactionStatus.failed
 
-  const getUserTxnList = useCallback(
+  const getUserTxnList = React.useCallback(
     async ({ tokenSymbol, start, end, limit, offset, types }: TxsFilterProps) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         setShowLoading(true)
@@ -136,6 +143,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
   return {
     txs,
     txsTotal,
+    searchValue: searchParams?.get('searchValue'),
     showLoading,
     getUserTxnList,
   }
@@ -330,10 +338,15 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   const [defiTotal, setDefiTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
   const { accountId, apiKey } = store.getState().account
+
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
   const getDefiTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const markets = defiMarkets[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -341,6 +354,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
+            markets: markets.join(','),
           } as any,
           apiKey,
         )
@@ -445,7 +459,6 @@ export const useOrderList = ({
   const [totalNum, setTotalNum] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(false)
   const [showDetailLoading, setShowDetailLoading] = React.useState(false)
-  // const [openOrderList, setOpenOrderList] = React.useState<OrderHistoryRawDataItem[]>([])
   const {
     account: { accountId, apiKey, readyState },
   } = useAccount()
@@ -617,7 +630,7 @@ export const useOrderList = ({
   )
 
   const cancelOrder = React.useCallback(
-    async ({ orderHash, clientOrderId }) => {
+    async ({ orderHash, clientOrderId }: any) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
         await LoopringAPI.userAPI.cancelOrder(
           {
@@ -868,8 +881,6 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
     getDualTxList,
     dualTotal,
     dualMarketMap,
-    // pagination,
-    // updateTickersUI,
   }
 }
 
@@ -877,7 +888,6 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
   setToastOpen: (props: any) => void,
 ) => {
   const { t } = useTranslation(['error'])
-
   const [btradeOrderData, setBtradeOrderData] = React.useState<R[]>([])
   const [totalNum, setTotalNum] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(false)
@@ -1129,5 +1139,61 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
     },
     totalNum,
     showLoading,
+  }
+}
+
+export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
+  const { t } = useTranslation(['error'])
+  const [leverageETHList, setLeverageETHRecordList] = React.useState<sdk.UserDefiTxsHistory[]>([])
+  const [leverageETHTotal, setLeverageETHTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(true)
+  const { marketLeverageArray } = useDefiMap()
+  const { accountId, apiKey } = store.getState().account
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const getLeverageETHTxList = React.useCallback(
+    async ({ start, end, offset, limit }: any) => {
+      setShowLoading(true)
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const types = leverageETHConfig.types[network]
+        const response = await LoopringAPI.defiAPI.getDefiTransaction(
+          {
+            accountId,
+            offset,
+            start,
+            end,
+            limit,
+            types: types.join(','),
+          } as any,
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+          setToastOpen({
+            open: true,
+            type: ToastType.error,
+            content:
+              'error : ' + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
+          })
+        } else {
+          // @ts-ignore
+          const result = (response as any).userDefiTxs
+          setLeverageETHRecordList(result)
+          setShowLoading(false)
+          setLeverageETHTotal((response as any).totalNum)
+        }
+      }
+      setShowLoading(false)
+    },
+    [accountId, apiKey, setToastOpen, t],
+  )
+
+  return {
+    leverageETHList,
+    showLoading,
+    getLeverageETHTxList,
+    leverageETHTotal,
   }
 }

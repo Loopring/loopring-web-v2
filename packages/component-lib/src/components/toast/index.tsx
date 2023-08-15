@@ -138,7 +138,7 @@ export const NoticePanelSnackBar = ({
   return (
     <>
       {noticeSnacksElEs.map((item, index) => {
-        return <React.Fragment key={index}>{item}</React.Fragment>
+        return <React.Fragment key={index}>{item as any}</React.Fragment>
       })}
     </>
   )

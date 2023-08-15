@@ -1,5 +1,6 @@
 import { store } from '../../stores'
 import {
+  myLog,
   OffRampHashItem,
   OffRampHashItemObj,
   OffRampStatus,
@@ -62,17 +63,20 @@ export const offFaitService = {
           })
           return [...prev, ajxa]
         }, [])
-        Promise.all(promise as Promise<any>[]).then((result) => {
-          result.forEach(({ data }: any) => {
-            if (data?.order) {
-              offFaitService.banxaCheckStatus({ data: data?.order })
-            }
+
+        Promise.all(promise as Promise<any>[])
+          .then((result) => {
+            result.forEach(({ data }: any) => {
+              if (data?.order) {
+                offFaitService.banxaCheckStatus({ data: data?.order })
+              }
+            })
           })
-        })
+          .catch(() => {})
 
         __timer__ = setTimeout(() => {
           offFaitService.backendCheckStart()
-        }, 600000)
+        }, 120000)
       }
     }
   },
@@ -141,6 +145,7 @@ export const offFaitService = {
           : {}),
         ...(order?.account_reference ? { account_reference: order?.account_reference } : {}),
       }
+      myLog('banxa orderId', order.id)
       if (
         order.status === 'waitingPayment' ||
         order.status === 'pendingPayment' ||
@@ -152,6 +157,7 @@ export const offFaitService = {
             status: OffRampStatus.watingForCreateOrder,
           } as OffRampHashItem),
         )
+        myLog('watingForCreateOrder')
       } else if (order.status === 'paymentReceived' || order.status === 'inProgress') {
         store.dispatch(
           updateOffRampHash({

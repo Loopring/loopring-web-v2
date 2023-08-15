@@ -824,17 +824,11 @@ const resources = {
 const initLng = 'en_US'
 console.log('en_US')
 const settingPersist = 'persist:settings'
+let referralcodeStr = ''
 ;(function init() {
-  let searchParam = window.location.search
-  const searchParams = new URLSearchParams(searchParam)
-  if (searchParams.get('referralcode')) {
-    const referralcode = searchParams.get('referralcode')
-    document.getElementById('logo').innerHTML =
-      'https://loopring.io/#/?referralcode=' + referralcode
-    // let settings = JSON.parse(localStorage.getItem(settingPersist) ?? "{}");
-  }
   let themeMode = 'dark'
-  let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {})
+  let settingPersistJson = localStorage.getItem(settingPersist)
+  let settings = JSON.parse(settingPersistJson ? settingPersistJson : '{}')
   if (settings.themeMode && JSON.parse(settings.themeMode)) {
     themeMode = JSON.parse(settings.themeMode)
   }
@@ -900,7 +894,8 @@ const settingPersist = 'persist:settings'
   }
   // Language now english only
   const onlanguagechange = (value) => {
-    let settings = JSON.parse(localStorage.getItem(settingPersist) ?? {})
+    let settingPersistJson = localStorage.getItem(settingPersist)
+    let settings = JSON.parse(settingPersistJson ? settingPersistJson : '{}')
     settings.language = value
     window.localStorage.setItem(settingPersist, JSON.stringify(settings))
     i18next.changeLanguage('en_US')
@@ -1004,7 +999,18 @@ const settingPersist = 'persist:settings'
     upLoadSvg()
     onlanguagechange(i18nLng)
     onColorChangeLoaded(themeMode)
-
+    let searchParam = window.location.search
+    const searchParams = new URLSearchParams(searchParam)
+    if (searchParams.get('referralcode')) {
+      const referralcode = searchParams.get('referralcode')
+      document
+        .getElementById('logo')
+        .setAttribute('href', 'https://loopring.io/#/?referralcode=' + referralcode)
+      document
+        .getElementById('labelNavLanuch')
+        .setAttribute('href', 'https://loopring.io/#/?referralcode=' + referralcode)
+      referralcodeStr
+    }
     const handleScroll = () => {
       const imgs = document.getElementsByClassName('scroll-up-img')
       for (let index = 0; index < imgs.length; index++) {

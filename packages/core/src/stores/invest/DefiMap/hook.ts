@@ -7,7 +7,7 @@ import { DefiMapStates } from './interface'
 export const useDefiMap = (): DefiMapStates & {
   getDefiMap: () => void
   statusUnset: () => void
-  updateDefiSyncMap: (props: { defiMap: DefiMap }) => void
+  updateDefiSyncMap: (props: { defiMap: Partial<DefiMap> }) => void
 } => {
   const defiMap: DefiMapStates = useSelector((state: RootState) => state.invest.defiMap)
   const dispatch = useDispatch()
@@ -16,7 +16,7 @@ export const useDefiMap = (): DefiMapStates & {
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
     getDefiMap: React.useCallback(() => dispatch(getDefiMap(undefined)), [dispatch]),
     updateDefiSyncMap: React.useCallback(
-      ({ defiMap }: { defiMap: DefiMap }) => dispatch(getDefiMap(defiMap)),
+      ({ defiMap }: { defiMap: Partial<DefiMap> }) => dispatch(getDefiMap(defiMap)),
       [dispatch],
     ),
   }

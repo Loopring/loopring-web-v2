@@ -57,6 +57,7 @@ export function useOffFaitModal() {
     )
   }, [offBanxaValue])
   const handleShowUI = React.useCallback((props: OffOderUIItem) => {
+    myLog('banxaService.KYCDone')
     updateOffBanxaData({ order: props.order })
     if (/trade\/fiat\/sell\?orderId/gi.test(window.location.href ?? '')) {
       banxaService.KYCDone()

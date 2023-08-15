@@ -107,7 +107,7 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
 
     const sortMethod = React.useCallback(
       (_sortedRows, sortColumn) => {
-        let _rawData = []
+        let _rawData: T[] = []
         switch (sortColumn) {
           case 'pools':
             _rawData = rawData.sort((a, b) => {

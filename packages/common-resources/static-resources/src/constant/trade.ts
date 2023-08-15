@@ -65,13 +65,13 @@ export type TxInfo = {
 
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] }
+  showHadUnknownCollection: { [key: string]: boolean }
 }
 
 export interface NFTHashInfo {
   nftDataHashes: { [key: string]: Required<TxInfo> }
 }
 
-// export type GuardianLock
 export enum Layer1Action {
   GuardianLock = 'GuardianLock',
   NFTDeploy = 'NFTDeploy',
@@ -313,14 +313,6 @@ export type AddressItemType<T> = {
   maxWidth?: string | number
 }
 
-// export enum AddressItemType<T> = {
-//   value: T;
-//   label: string;
-//   description: string;
-//   disabled?: boolean;
-//   maxWidth?: string | number;
-// };
-
 export const defaultSlipage = 0.1
 export const defaultBlockTradeSlipage = 0.1
 
@@ -332,6 +324,16 @@ export const enum InvestMapType {
   STAKE = 'STAKE',
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
+  LEVERAGEETH = 'LEVERAGEETH',
+  // BTradeInvest = "BTradeInvest",
+}
+
+export const enum InvestAssetRouter {
+  AMM = 'amm',
+  STAKE = 'stake',
+  DUAL = 'dual',
+  STAKELRC = 'sideStake',
+  LEVERAGEETH = 'leverageeth',
   // BTradeInvest = "BTradeInvest",
 }
 
@@ -340,6 +342,7 @@ export const InvestOpenType = [
   InvestMapType.STAKE,
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
+  InvestMapType.LEVERAGEETH,
   // InvestMapType.BTradeInvest,
 ]
 
@@ -394,6 +397,7 @@ export type TradeDefi<C> = {
   request?: sdk.DefiOrderRequest
   defiBalances?: { [key: string]: string }
   lastInput?: DeFiChgType
+  withdrawFeeBips?: number
 }
 export type TradeStake<C> = {
   sellToken: sdk.TokenInfo
@@ -488,7 +492,9 @@ export enum TRADE_TYPE {
 export enum CLAIM_TYPE {
   redPacket = 'redPacket',
   lrcStaking = 'lrcStaking',
+  allToken = 'allToken',
 }
+
 export type BanxaOrder = {
   id: string
   account_id: string
@@ -621,6 +627,7 @@ export type RedPacketHashItems = {
   [key: TX_HASH]: {
     claim: string
     luckToken: sdk.LuckyTokenItemForReceive
+    blindboxClaimed: any
   }
 }
 export type RedPacketHashInfo = {

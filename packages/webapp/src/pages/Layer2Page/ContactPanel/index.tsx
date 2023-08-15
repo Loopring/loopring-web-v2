@@ -6,7 +6,7 @@ import { Add } from './add'
 import { Delete } from './delete'
 import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AddressType } from '@loopring-web/loopring-sdk'
 import React from 'react'
@@ -260,8 +260,10 @@ export const ContractPanel = () => {
       />
       <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
       <Box display={'flex'} justifyContent={'space-between'}>
-        <Typography variant={'h2'}>{t('labelContacts')}</Typography>
-        <Box display={'flex'}>
+        <Typography variant={'h2'} paddingRight={2}>
+          {t('labelContacts')}
+        </Typography>
+        <Box display={'flex'} alignItems={'center'}>
           <InputSearch
             value={searchValue}
             onChange={(e) => {

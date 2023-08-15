@@ -88,7 +88,7 @@ export type TransferExtendProps<T, I, C> = {
   isSmartContractAddress?: boolean
   isAddressCheckLoading?: boolean
   isSameAddress?: boolean
-  isActiveAccountFee?: boolean
+  isActiveAccountFee?: boolean | 'not allow'
   addrStatus: AddressError
   onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>
   handleFeeChange: (value: C) => void
@@ -140,7 +140,7 @@ export type ResetInfoProps<C> = {
 >
 
 export type ResetExtendProps<C> = {
-  onResetClick: (props: { isFirstTime?: boolean; isReset?: boolean }) => void
+  onResetClick: (props: { isNotFirstTime?: boolean; isReset?: boolean }) => void
 } & ResetInfoProps<C>
 
 export type ResetViewProps<C extends FeeInfo> = ResetExtendProps<C>
@@ -173,19 +173,17 @@ export type DepositExtendProps<T> = {
   isHideDes?: boolean
   allowTrade?: any
   toAddressStatus: AddressError
-  referStatus: AddressError
   isAllowInputToAddress?: boolean
   onDepositClick: (data: T) => void
   toIsAddressCheckLoading: boolean
   // toIsLoopringAddress: boolean;
-  realToAddress?: string
-  referIsAddressCheckLoading: boolean
-  referIsLoopringAddress?: boolean
-  realReferAddress?: string
+  toAddress?: string
+  realToAddress?: string | JSX.Element
   handleClear: () => void
   isToAddressEditable: boolean
   onBack?: () => void
   accountReady?: AccountStatus | undefined
+  handleAddressChange: (address: string) => void
 } & DepositInfoProps
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExtendProps<T>

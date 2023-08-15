@@ -38,7 +38,7 @@ import Web3 from 'web3'
 import { isAccActivated } from './useCheckAccStatus'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useRedPacketConfig } from '../../stores/redPacket'
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import moment from 'moment'
 
 export const useCreateRedPacket = <

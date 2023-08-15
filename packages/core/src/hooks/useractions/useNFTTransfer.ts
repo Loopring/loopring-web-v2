@@ -62,7 +62,6 @@ import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/co
 import { useContacts } from '../../stores/contacts/hooks'
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
-  const [memo, setMemo] = React.useState('')
   const {
     setShowAccount,
     setShowNFTTransfer,
@@ -166,7 +165,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemo(e.target.value)
+    const nftTransferValue = store.getState()._router_modalData.nftTransferValue
+    updateNFTTransferData({
+      ...nftTransferValue,
+      memo: e.target.value,
+    })
   }, [])
   const checkBtnStatus = React.useCallback(() => {
     if (
@@ -286,7 +289,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-      myLog('useEffect nftTransferValue.address:', nftTransferValue.address)
+      // myLog('useEffect nftTransferValue.address:', nftTransferValue.address)
       setAddress(nftTransferValue.address ? nftTransferValue.address : '')
     }
   }, [setAddress, nftTransferValue.address, accountStatus, account.readyState])
@@ -311,9 +314,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           const response = await LoopringAPI.userAPI?.submitNFTInTransfer(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as any,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProviders[connectName] ??
+              walletType: (ConnectProviders[ connectName ] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
@@ -492,6 +495,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             },
             apiKey,
           )
+
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,
@@ -643,7 +647,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   }, [realAddr, isShow, contacts])
   const nftTransferProps: TransferProps<R, T> = {
     handleOnMemoChange,
-    memo,
+    memo: nftTransferValue.memo ?? '',
     type: TRADE_TYPE.NFT,
     addressDefault: address,
     realAddr,

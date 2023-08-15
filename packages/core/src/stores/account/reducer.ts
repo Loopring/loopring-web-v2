@@ -17,10 +17,11 @@ const initialState: AccountState = {
   keyNonce: undefined,
   connectName: ConnectProviders.Unknown,
   _chainId: 1,
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
   frozen: false,
   __timer__: -1,
+  hasUnknownCollection: undefined,
 }
 
 const accountSlice: Slice<AccountState> = createSlice<
@@ -33,10 +34,14 @@ const accountSlice: Slice<AccountState> = createSlice<
     updateAccountStatus(state) {
       state.status = SagaStatus.PENDING
     },
+    nextAccountSyncStatus(state) {
+      state.status = SagaStatus.PENDING
+    },
     changeShowModel(state, action: PayloadAction<{ _userOnModel: boolean | undefined }>) {
       const { _userOnModel } = action.payload
       state._userOnModel = _userOnModel
     },
+
     nextAccountStatus(state, action: PayloadAction<Partial<Account>>) {
       // @ts-ignore
       if (action.error) {
@@ -65,6 +70,7 @@ const accountSlice: Slice<AccountState> = createSlice<
           isCFAddress,
           isContract,
           __timer__,
+          // hasUnknownCollection,
         } = action.payload
         if (_accountIdNotActive) {
           state._accountIdNotActive = _accountIdNotActive
@@ -110,6 +116,9 @@ const accountSlice: Slice<AccountState> = createSlice<
         if (__timer__ !== undefined) {
           state.__timer__ = __timer__
         }
+        if (action.payload.hasOwnProperty('hasUnknownCollection')) {
+          state.hasUnknownCollection = action.payload.hasUnknownCollection
+        }
         state.isInCounterFactualStatus = isInCounterFactualStatus
         state.isContract1XAddress = isContract1XAddress
         state.isContractAddress = isContractAddress
@@ -133,9 +142,9 @@ const accountSlice: Slice<AccountState> = createSlice<
 export default accountSlice
 export const {
   updateAccountStatus,
-  // restAccountStatus,
   changeShowModel,
   cleanAccountStatus,
   nextAccountStatus,
   statusUnset,
+  nextAccountSyncStatus,
 } = accountSlice.actions

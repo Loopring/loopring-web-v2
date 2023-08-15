@@ -751,6 +751,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
       tokenBuy: tokenMap[coinBuySymbol],
       btnStatus,
       accStatus: account.readyState,
+      withdrawFeeBips: tradeDefi.withdrawFeeBips,
     }
   }, [
     isStoB,

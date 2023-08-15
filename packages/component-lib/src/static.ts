@@ -18,6 +18,7 @@ import { ConnectProviders } from '@loopring-web/web3-provider'
 import { Currency, DUAL_TYPE, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 
 export const account: Account = {
+  hasUnknownCollection: true,
   __timer__: -1,
   frozen: false,
   accAddress: 'xxxxxxxxxxxxxxxxxxx',

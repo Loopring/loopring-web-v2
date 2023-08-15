@@ -24,6 +24,8 @@ import {
 } from '@loopring-web/component-lib'
 import {
   AssetTabIndex,
+  CheckBoxIcon,
+  CheckedIcon,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
@@ -46,11 +48,12 @@ import {
   useAccount,
   useAmmActivityMap,
   useDualMap,
+  useDefiMap,
+  useUserRewards,
   useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
-  useUserRewards,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
@@ -74,19 +77,22 @@ const MyLiquidity: any = withTranslation('common')(
     t,
     isHideTotal,
     hideAssets,
+    className,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
+    className?: string
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
   }) => {
     let match: any = useRouteMatch('/invest/balance/:type')
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
-    const { totalClaims } = useUserRewards()
+    const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
 
     const ammPoolRef = React.useRef(null)
     const stakingRef = React.useRef(null)
+    const leverageETHRef = React.useRef(null)
     const dualRef = React.useRef(null)
     const sideStakeRef = React.useRef(null)
 
@@ -130,7 +136,6 @@ const MyLiquidity: any = withTranslation('common')(
       stakeShowLoading,
       stakingTotal,
       totalStakedRewards,
-      totalClaimableRewards,
       stakedSymbol,
     } = useOverview({
       ammActivityMap,
@@ -138,6 +143,8 @@ const MyLiquidity: any = withTranslation('common')(
       hideSmallBalances,
       // dualList,
     })
+    const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
+
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
@@ -176,37 +183,50 @@ const MyLiquidity: any = withTranslation('common')(
     const { isMobile } = useSettings()
     const lidoAssets = assetsRawData.filter((o) => {
       return (
-        o.token.type !== TokenType.single &&
+        ethStakingCoins?.includes(o.name) &&
         o.token.type !== TokenType.lp &&
         (hideSmallBalances ? !o.smallBalance : true)
       )
     })
+    const leverageETHAssets = assetsRawData.filter((o) => {
+      return (
+        marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
+      )
+    })
+
     const totalClaimableRewardsAmount =
-      totalClaimableRewards && totalClaimableRewards !== '0'
-        ? getValuePrecisionThousand(
-            sdk.toBig(totalClaimableRewards ?? 0).div('1e' + tokenMap[stakedSymbol].decimals),
+      rewardsAPIError || !totalClaims
+        ? '0'
+        : getValuePrecisionThousand(
+            sdk
+              .toBig(
+                totalClaims['LRC']?.detail?.find(
+                  (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.LRC_STAKING,
+                )?.amount ?? 0,
+              )
+              .div('1e' + tokenMap[stakedSymbol].decimals),
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             tokenMap[stakedSymbol].precision,
             false,
             { floor: true, isAbbreviate: true },
           )
-        : '0'
-    const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = Reflect.ownKeys(
-      totalClaims ?? {},
-    ).reduce(
-      (prev, key) => {
-        const item = totalClaims[key]?.detail?.find(
-          (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.PROTOCOL_FEE,
+
+    const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = rewardsAPIError
+      ? { totalDollar: '0', detail: [] }
+      : Reflect.ownKeys(totalClaims ?? {}).reduce(
+          (prev, key) => {
+            const item = totalClaims[key]?.detail?.find(
+              (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.PROTOCOL_FEE,
+            )
+            if (item && item.amount !== '0') {
+              prev.detail.push({ ...item })
+              prev.totalDollar = sdk.toBig(item.tokenValueDollar).plus(prev.totalDollar).toString()
+            }
+            return prev
+          },
+          { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
         )
-        if (item && item.amount !== '0') {
-          prev.detail.push({ ...item })
-          prev.totalDollar = sdk.toBig(item.tokenValueDollar).plus(prev.totalDollar).toString()
-        }
-        return prev
-      },
-      { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
-    )
     const dualStakeDollar = dualOnInvestAsset
       ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
           const price = tokenPrices[idIndex[cur.tokenId]]
@@ -309,6 +329,7 @@ const MyLiquidity: any = withTranslation('common')(
         <MaxWidthContainer marginBottom={3} marginTop={3} background={'var(--color-box-secondary)'}>
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
+          !(leverageETHAssets?.length > 0) &&
           !(stakingList?.length > 0) &&
           !(dualList?.length > 0) ? (
             <TableWrapStyled
@@ -352,11 +373,13 @@ const MyLiquidity: any = withTranslation('common')(
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                     <MyPoolTable
                       totalAMMClaims={totalAMMClaims}
+                      rewardsAPIError={rewardsAPIError}
+                      getUserRewards={getUserRewards}
                       forexMap={forexMap as any}
                       title={
                         <Typography
                           variant={'h5'}
-                          marginBottom={isMobile ? 3 : 0}
+                          // marginBottom={isMobile ? 3 : 0}
                           // paddingLeft={3}
                         >
                           {t('labelMyAmm')}
@@ -408,7 +431,7 @@ const MyLiquidity: any = withTranslation('common')(
                   flex={1}
                 >
                   <Grid container>
-                    <Grid item xs={6}>
+                    <Grid item md={6} xs={12}>
                       <Typography variant={'h5'} marginBottom={2} marginX={3}>
                         {t('labelInvestType_LRCSTAKE')}
                       </Typography>
@@ -436,10 +459,11 @@ const MyLiquidity: any = withTranslation('common')(
                     </Grid>
                     <Grid
                       item
-                      xs={3}
+                      md={3}
+                      xs={6}
                       justifyContent={'space-evenly'}
                       flexDirection={'column'}
-                      alignItems={'flex-end'}
+                      alignItems={isMobile ? 'flex-start' : 'flex-end'}
                       display={'flex '}
                     >
                       <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
@@ -467,7 +491,8 @@ const MyLiquidity: any = withTranslation('common')(
 
                     <Grid
                       item
-                      xs={3}
+                      md={3}
+                      xs={6}
                       justifyContent={'space-evenly'}
                       flexDirection={'column'}
                       alignItems={'flex-end'}
@@ -483,7 +508,17 @@ const MyLiquidity: any = withTranslation('common')(
                         flexDirection={'row'}
                         alignItems={'center'}
                       >
-                        {totalClaimableRewardsAmount && totalClaimableRewardsAmount !== '0' ? (
+                        {rewardsAPIError ? (
+                          <Button
+                            onClick={() => {
+                              getUserRewards && getUserRewards()
+                            }}
+                            size={'small'}
+                            variant={'outlined'}
+                          >
+                            {t('labelRewardRefresh', { ns: 'common' })}
+                          </Button>
+                        ) : totalClaimableRewardsAmount !== '0' ? (
                           <>
                             <Typography component={'span'} display={'inline-flex'} paddingRight={2}>
                               {hideAssets

@@ -47,4 +47,10 @@ export type MyPoolTableProps<R> = {
   rowConfig?: typeof RowConfig
   setHideSmallBalances?: (value: boolean) => void
   hideAssets?: boolean
+  totalAMMClaims?: {
+    detail: EarningsDetail[]
+    totalDollar: string
+  }
+  rewardsAPIError?: any
+  getUserRewards?: () => void
 } & Method<R>

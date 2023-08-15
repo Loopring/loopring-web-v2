@@ -2,8 +2,8 @@ import { SwapTradeData } from '../../Interface'
 import {
   BtradeTradeCalcData,
   BtradeType,
-  CheckBoxIcon,
-  CheckedIcon,
+  // CheckBoxIcon,
+  // CheckedIcon,
   CoinInfo,
   CoinMap,
   defaultSlipage,
@@ -21,16 +21,7 @@ import {
 } from '@loopring-web/common-resources'
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
-import {
-  Box,
-  Checkbox,
-  FormControlLabel as MuiFormControlLabel,
-  Grid,
-  Tooltip,
-  Typography,
-  Link,
-  Tab,
-} from '@mui/material'
+import { Box, Grid, Tooltip, Typography, Link, Tab } from '@mui/material'
 import { InputButton } from '../../../basic-lib'
 
 import { SwapTradeProps } from './Interface'
@@ -242,9 +233,9 @@ export const SwapTradeWrap = <
       ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
 
-  const minimumReceived =
-    tradeCalcData && tradeCalcData.minimumReceived
-      ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}`
+  const minimumConverted =
+    tradeCalcData && tradeCalcData.minimumConverted
+      ? `${tradeCalcData.minimumConverted}  ${tradeData.buy?.belong}`
       : EmptyValueTag
   const { isMobile } = useSettings()
 
@@ -446,7 +437,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapFee')}
+                  {' ' + t('labelTradingFeeEst')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -486,7 +477,7 @@ export const SwapTradeWrap = <
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('labelSwapMinReceiveTooltips').toString()} placement={'top'}>
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
                 <Typography
                   component={'p'}
                   variant='body2'
@@ -495,11 +486,11 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapMinReceive')}
+                  {' ' + t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumReceived}
+                {minimumConverted}
               </Typography>
             </Grid>
             <Grid
@@ -533,51 +524,51 @@ export const SwapTradeWrap = <
               </Typography>
             </Grid>
           </Grid>
-          {(tradeCalcData as SCD).isNotMatchMarketPrice && (
-            <Grid item marginBottom={1}>
-              <MuiFormControlLabel
-                sx={{ alignItems: 'flex-start' }}
-                control={
-                  <Checkbox
-                    checked={(tradeCalcData as SCD)?.isChecked ? true : false}
-                    onChange={() => {
-                      onChangeEvent(0, {
-                        tradeData: {
-                          ...tradeData,
-                          isChecked: !(tradeCalcData as SCD)?.isChecked,
-                        } as SwapTradeData<T>,
-                        type: (tradeCalcData as SCD)?.lastStepAt ?? 'sell',
-                        to: 'button',
-                      })
-                    }}
-                    checkedIcon={<CheckedIcon />}
-                    icon={<CheckBoxIcon />}
-                    color='default'
-                  />
-                }
-                label={
-                  <Typography variant={'body2'}>
-                    <Trans
-                      i18nKey={'labelExpectSettlementPrice'}
-                      interpolation={{ escapeValue: false }}
-                      tOptions={{
-                        symbolSell: tradeData.sell?.belong,
-                        symbolBuy: tradeData.buy?.belong,
-                        stob: tradeCalcData.StoB,
-                        marketPrice: (tradeCalcData as SCD).marketPrice,
-                        marketRatePrice: (tradeCalcData as SCD).marketRatePrice,
-                      }}
-                    >
-                      The expected settlement price from this order is symbol = value, while the
-                      current market price from a trusted oracle is symbol= marketPrice. There is
-                      marketRatePrice% variance observed. Please acknowledge the risk if you still
-                      want to continue.
-                    </Trans>
-                  </Typography>
-                }
-              />
-            </Grid>
-          )}
+          {/*{(tradeCalcData as SCD).isNotMatchMarketPrice && (*/}
+          {/*  <Grid item marginBottom={1}>*/}
+          {/*    <MuiFormControlLabel*/}
+          {/*      sx={{ alignItems: 'flex-start' }}*/}
+          {/*      control={*/}
+          {/*        <Checkbox*/}
+          {/*          checked={(tradeCalcData as SCD)?.isChecked ? true : false}*/}
+          {/*          onChange={() => {*/}
+          {/*            onChangeEvent(0, {*/}
+          {/*              tradeData: {*/}
+          {/*                ...tradeData,*/}
+          {/*                isChecked: !(tradeCalcData as SCD)?.isChecked,*/}
+          {/*              } as SwapTradeData<T>,*/}
+          {/*              type: (tradeCalcData as SCD)?.lastStepAt ?? 'sell',*/}
+          {/*              to: 'button',*/}
+          {/*            })*/}
+          {/*          }}*/}
+          {/*          checkedIcon={<CheckedIcon />}*/}
+          {/*          icon={<CheckBoxIcon />}*/}
+          {/*          color='default'*/}
+          {/*        />*/}
+          {/*      }*/}
+          {/*      label={*/}
+          {/*        <Typography variant={'body2'}>*/}
+          {/*          <Trans*/}
+          {/*            i18nKey={'labelExpectSettlementPrice'}*/}
+          {/*            interpolation={{ escapeValue: false }}*/}
+          {/*            tOptions={{*/}
+          {/*              symbolSell: tradeData.sell?.belong,*/}
+          {/*              symbolBuy: tradeData.buy?.belong,*/}
+          {/*              stob: tradeCalcData.StoB,*/}
+          {/*              marketPrice: (tradeCalcData as SCD).marketPrice,*/}
+          {/*              marketRatePrice: (tradeCalcData as SCD).marketRatePrice,*/}
+          {/*            }}*/}
+          {/*          >*/}
+          {/*            The expected settlement price from this order is symbol = value, while the*/}
+          {/*            current market price from a trusted oracle is symbol= marketPrice. There is*/}
+          {/*            marketRatePrice% variance observed. Please acknowledge the risk if you still*/}
+          {/*            want to continue.*/}
+          {/*          </Trans>*/}
+          {/*        </Typography>*/}
+          {/*      }*/}
+          {/*    />*/}
+          {/*  </Grid>*/}
+          {/*)}*/}
         </>
       )}
 
@@ -606,7 +597,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapFee')}
+                  {' ' + t('labelTradingFeeEst')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -623,7 +614,7 @@ export const SwapTradeWrap = <
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('labelBtradeMinReceiveTooltips').toString()} placement={'top'}>
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
                 <Typography
                   component={'p'}
                   variant='body2'
@@ -632,11 +623,11 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {t('swapMinReceive')}
+                  {t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumReceived}
+                {minimumConverted}
               </Typography>
             </Grid>
 

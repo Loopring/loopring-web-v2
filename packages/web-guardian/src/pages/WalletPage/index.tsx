@@ -20,19 +20,16 @@ import {
 } from '@loopring-web/common-resources'
 import { Box, Button, Link, Tooltip, Typography } from '@mui/material'
 import { GuardianStep, QRCodePanel, useSettings } from '@loopring-web/component-lib'
-import { BtnConnectL1, useAccount, useSystem } from '@loopring-web/core'
-import { useRouteMatch } from 'react-router-dom'
+import { BtnConnectL1, useAccount } from '@loopring-web/core'
 import { useHebaoMain } from './hook'
 import { ModalLock } from './modal'
 import { WalletHistory } from './WalletHistory'
 import { WalletValidationInfo } from './WalletValidationInfo'
 import { WalletProtector } from './WalletProtector'
-import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { walletServices } from '@loopring-web/web3-provider'
 import { GuardianModal } from './GuardianModal'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { ChainId } from '@loopring-web/loopring-sdk'
 
 const WrongStatusStyled = styled(Box)`
   display: flex;
@@ -140,7 +137,6 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI'].includes(network)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]
-  let match = useRouteMatch('/guardian/:item')
   const [openQRCode, setOpenQRCode] = React.useState(false)
   const onOpenAdd = React.useCallback((open: boolean) => {
     setOpenQRCode(open)
@@ -159,19 +155,26 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
     setShowLockWallet(open)
   }, [])
 
-  // @ts-ignore
-  const selected = match?.params?.item ?? 'myProtected'
   const {
     protectList,
     guardiansList,
     guardianConfig,
-    openHebao,
+    // openHebao,
     operationLogList,
-    setOpenHebao,
+    // setOpenHebao,
     loadData,
     loopringSmartContractWallet,
     nonLoopringSmartContractWallet,
   } = useHebaoMain()
+  const [openHebao, setOpenHebao] = React.useState<{
+    isShow: boolean
+    step: GuardianStep
+    options?: any
+  }>({
+    isShow: false,
+    step: GuardianStep.LockAccount_WaitForAuth,
+    options: undefined,
+  })
   const handleOpenModal = ({ step, options }: { step: GuardianStep; options?: any }) => {
     setOpenHebao((state) => {
       state.isShow = true
@@ -262,10 +265,10 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
         open={openQRCode}
         onClose={() => onOpenAdd(false)}
         title={
-          <Typography component={'p'} textAlign={'center'} marginBottom={1}>
+          <Typography component={'span'} textAlign={'center'} marginBottom={1}>
             <Typography
               color={'var(--color-text-primary)'}
-              component={'p'}
+              component={'span'}
               variant={'h4'}
               marginBottom={2}
               display={'flex'}
@@ -281,7 +284,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             </Typography>
             <Typography
               color={'var(--color-text-secondary)'}
-              component={'p'}
+              component={'span'}
               variant={'body1'}
               marginBottom={2}
             >
@@ -407,6 +410,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
         options={openHebao.options ?? {}}
         open={openHebao.isShow}
         step={openHebao.step}
+        setOpenHebao={setOpenHebao}
         handleOpenModal={handleOpenModal}
         onClose={() => {
           setOpenHebao({

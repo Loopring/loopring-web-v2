@@ -12,11 +12,13 @@ import {
   useTokenPrices,
   useWalletLayer2,
   useWalletLayer2Socket,
+  volumeToCount,
   volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
   AccountStep,
   AssetTitleProps,
+  TransactionTradeViews,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
@@ -26,9 +28,12 @@ import {
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
+  InvestAssetRouter,
   myLog,
   PriceTag,
+  RecordTabIndex,
   SagaStatus,
+  TabOrderIndex,
   TokenType,
   TradeBtnStatus,
   YEAR_DAY_FORMAT,
@@ -36,8 +41,6 @@ import {
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
-
-import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
@@ -184,7 +187,7 @@ export const useGetAssets = (): AssetPanelProps & {
       const tokenKeys = Object.keys(tokenMap)
       let data: any[] = []
       tokenKeys.forEach((key, _index) => {
-        let item = undefined
+        let item: any = undefined
         const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key)
         if (assetsMap[key]) {
           const tokenInfo = assetsMap[key]
@@ -232,6 +235,8 @@ export const useGetAssets = (): AssetPanelProps & {
             smallBalance: isSmallBalance,
             tokenValueDollar,
             name: tokenInfo.token,
+            withdrawAmount: withdrawAmount?.toString(),
+            depositAmount: depositAmount?.toString(),
           }
         } else {
           item = {
@@ -250,6 +255,8 @@ export const useGetAssets = (): AssetPanelProps & {
             tokenValueDollar: 0,
             name: key,
             tokenValueYuan: 0,
+            withdrawAmount: 0,
+            depositAmount: 0,
           }
         }
         if (item) {
@@ -382,29 +389,103 @@ export const useGetAssets = (): AssetPanelProps & {
               sdk.LOCK_TYPE.L2STAKING,
               sdk.LOCK_TYPE.STOP_LIMIT,
             ].join(','),
-          },
+          } as any,
           account.apiKey,
         )
 
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
         } else {
-          setTokenLockDetail({
-            list: response.lockRecord.map((item) => {
-              const amount = sdk
-                .toBig(item.amount)
-                .div('1e' + tokenMap[_item.name].decimals)
-                .toString()
-              return {
-                key: `label${item.lockTag}`,
+          setTokenLockDetail(() => {
+            // @ts-ignore
+            const sum: { key: string; value: string; link: string }[] = response.lockRecord.reduce(
+              // @ts-ignore
+              (prev, record) => {
+                const amount = sdk
+                  .toBig(record.amount)
+                  .div('1e' + tokenMap[_item.name].decimals)
+                  .toString()
+                prev[0] = {
+                  ...prev[0],
+                  value: sdk.toBig(prev[0].value?.replaceAll(sdk.SEP, '')).minus(amount).toString(),
+                }
+                let link = ''
+                switch (record.lockTag) {
+                  case sdk.LOCK_TYPE.DUAL_CURRENCY:
+                    link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
+                    break
+                  case sdk.LOCK_TYPE.DUAL_BASE:
+                    link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
+                    break
+                  case sdk.LOCK_TYPE.L2STAKING:
+                    link = `/#/invest/balance/${InvestAssetRouter.STAKELRC}`
+                    break
+                  case sdk.LOCK_TYPE.BTRADE:
+                    link = `/#/l2assets/history/${RecordTabIndex.BtradeSwapRecords}`
+                    break
+                  case sdk.LOCK_TYPE.STOP_LIMIT:
+                    link = `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
+                    break
+                }
+                prev.push({
+                  key: `label${record.lockTag}`,
+                  value: getValuePrecisionThousand(
+                    amount,
+                    tokenMap[_item.name].precision,
+                    tokenMap[_item.name].precision,
+                    undefined,
+                  ),
+                  link,
+                })
+                return prev
+              },
+              [
+                {
+                  key: `labelMarketOrderUnfilled`,
+                  value: sdk
+                    .toBig(_item.locked ?? '0')
+                    .minus(_item?.withdrawAmount ?? 0)
+                    .minus(_item?.depositAmount ?? 0)
+                    .toString(),
+                  link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
+                },
+                ...(sdk.toBig(_item?.depositAmount ?? 0).gt(0)
+                  ? [
+                      {
+                        key: `labelDepositPending`,
+                        value: sdk.toBig(_item?.depositAmount ?? '0').toString(),
+                        link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
+                      },
+                    ]
+                  : []),
+                ...(sdk.toBig(_item?.withdrawAmount ?? 0).gt(0)
+                  ? [
+                      {
+                        key: `labelWithDrawPending`,
+                        value: sdk.toBig(_item?.withdrawAmount ?? '0').toString(),
+                        link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
+                      },
+                    ]
+                  : []),
+              ] as { key: string; value: string; link: string }[],
+            )
+            if (_item.locked && sdk.toBig(sum[0].value).gt(0)) {
+              sum[0] = {
+                ...sum[0],
                 value: getValuePrecisionThousand(
-                  amount,
+                  sum[0].value,
                   tokenMap[_item.name].precision,
                   tokenMap[_item.name].precision,
                   undefined,
                 ),
               }
-            }),
-            row: _item,
+            } else {
+              sum.shift()
+            }
+
+            return {
+              list: sum,
+              row: _item,
+            }
           })
         }
       }

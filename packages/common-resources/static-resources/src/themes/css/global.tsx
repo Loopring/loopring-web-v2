@@ -5,7 +5,8 @@ import InterMedium from '../fonts/english/Inter-Medium.ttf'
 // @ts-ignore
 // import GilroyMedium from '../fonts/english/DINCondensed.ttf';
 
-import { ColorDarkDefault, ColorLightDefault, hexToRGB } from './color-lib'
+import { ColorDarkDefault, ColorLightDefault, GrayBlack, GrayLight, hexToRGB } from './color-lib'
+import { ThemeType } from '../interface'
 
 export const fontDefault = {
   h1: '3.8rem',
@@ -21,6 +22,16 @@ export const fontDefault = {
 export const refreshTime = 15
 export const colorBase = ({ theme }: any) => css`
   html {
+    --gray100: ${theme.mode == ThemeType.dark ? GrayBlack.gray100 : GrayLight.gray100};
+    --gray200: ${theme.mode == ThemeType.dark ? GrayBlack.gray200 : GrayLight.gray200};
+    --gray300: ${theme.mode == ThemeType.dark ? GrayBlack.gray300 : GrayLight.gray300};
+    --gray400: ${theme.mode == ThemeType.dark ? GrayBlack.gray400 : GrayLight.gray400};
+    --gray500: ${theme.mode == ThemeType.dark ? GrayBlack.gray500 : GrayLight.gray500};
+    --gray600: ${theme.mode == ThemeType.dark ? GrayBlack.gray600 : GrayLight.gray600};
+    --gray700: ${theme.mode == ThemeType.dark ? GrayBlack.gray700 : GrayLight.gray700};
+    --gray800: ${theme.mode == ThemeType.dark ? GrayBlack.gray800 : GrayLight.gray800};
+    --gray900: ${theme.mode == ThemeType.dark ? GrayBlack.gray900 : GrayLight.gray900};
+
     --color-primary: ${theme.colorBase.primary};
     --color-primary-hover: ${theme.colorBase.primaryHover};
     --color-primary-pressed: ${theme.colorBase.primaryPressed};
@@ -58,6 +69,7 @@ export const colorBase = ({ theme }: any) => css`
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
     --color-mask: ${theme.colorBase.mask};
+    --color-box-enhance: ${theme.colorBase.boxEnhance};
     --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};
     --color-logo: ${theme.colorBase.logo};
@@ -219,7 +231,6 @@ export const globalCss = ({ theme }: any) => css`
     --header-submenu-item-width: 250px;
     --desktop-max-width: 1200px;
     --desktop-min-width: 1024px;
-    --input-height-large: 48px;
     --btn-Input-small-height: 32px;
     --btn-medium-height: 40px;
     //--btn-max-width: 160px;
@@ -278,6 +289,9 @@ export const globalCss = ({ theme }: any) => css`
     --modal-min-width: 340px;
     --carousel-dot-size: 14px;
     --earning-banner-width: 320px;
+    --provider-btn-height: 56px;
+    --input-height-large: 48px;
+    --input-height-huge: 56px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;

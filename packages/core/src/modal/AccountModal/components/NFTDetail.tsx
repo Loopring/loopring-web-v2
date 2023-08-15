@@ -59,8 +59,7 @@ import { sanitize } from 'dompurify'
 import { StylePaper } from '../../../component'
 import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { useHistory } from 'react-router'
-
+import { useHistory } from 'react-router-dom'
 enum NFTDetailTab {
   Detail = 'Detail',
   Property = 'Property',

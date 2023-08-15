@@ -53,7 +53,6 @@ export type ClaimData = {
   tradeType: TRADE_TYPE
   claimType: CLAIM_TYPE
   __request__: sdk.OriginLuckTokenWithdrawsRequestV3 | undefined
-  successCallback?: () => void
 } & XOR<
   {
     tradeType: TRADE_TYPE.TOKEN
@@ -70,7 +69,6 @@ export type DepositData = {
   belong: string | undefined
   tradeValue: number | undefined
   balance: number | undefined
-  referAddress?: string
   toAddress?: string
   addressError?: { error: boolean; message?: string | undefined }
 }

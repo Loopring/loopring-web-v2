@@ -1,7 +1,6 @@
 import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constant'
 import * as sdk from '@loopring-web/loopring-sdk'
 import React from 'react'
-
 export type CoinKey<R> = keyof R
 export type PairKey<P> = keyof P
 
@@ -18,6 +17,7 @@ export interface CoinInfo<R> {
   description?: string
   company: string
 }
+
 export interface WalletCoin<R> {
   belong: CoinKey<R>
   count: number
@@ -84,6 +84,7 @@ export interface TradeCalcData<T> {
   lastStepAt?: 'sell' | 'buy'
   isBtrade: undefined | boolean
   totalQuota: string
+  minimumConverted: string | undefined
 }
 
 export type SwapTradeCalcData<T> = TradeCalcData<T> & {
@@ -98,6 +99,7 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   tradeCost?: string
   isBtrade: undefined | false
   isShowBtradeAllow?: boolean
+  minimumConverted: string | undefined
 }
 
 export enum BtradeType {
@@ -141,6 +143,7 @@ export type TradeCalcProData<T> = {
   marketPrice?: string
   marketRatePrice?: string
   isChecked?: boolean
+  minimumConverted?: string
 }
 
 /**
@@ -509,6 +512,7 @@ export type NetworkItemInfo = {
   RPC?: string
   link?: string
   isTest?: boolean | undefined
+  walletType: string
 }
 
 export const url_path = 'https://static.loopring.io/events'

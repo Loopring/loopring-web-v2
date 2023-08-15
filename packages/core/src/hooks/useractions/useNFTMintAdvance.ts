@@ -310,7 +310,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
       }
 
       if (data.hasOwnProperty('tokenAddress')) {
-        let collectionMeta = undefined
+        let collectionMeta: any = undefined
         setIsNFTCheckLoading(true)
         setIsNotAvailableTokenAddress(undefined)
         if (data.tokenAddress === '') {

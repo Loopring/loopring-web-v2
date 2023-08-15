@@ -238,7 +238,6 @@ export const RedPacketQRCode = ({
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>()
   const ref = React.useRef()
-  const colorConfig = RedPacketColorConfig[type]
   const qrCode = new QRCodeStyling({
     type: 'svg',
     width: 200,
@@ -1495,7 +1494,6 @@ export const RedPacketBlindBoxDetail = ({
   showOpenLottery,
   wonPrizeInfo,
   onClickClaim,
-  onClickClaim2,
   onCloseOpenModal,
   onClickClaimDetailBack,
   description,
@@ -1603,7 +1601,7 @@ export const RedPacketBlindBoxDetail = ({
           {t("labelClaimBtn")}
         </Button> */}
             {wonPrizeInfo && wonPrizeInfo.isNFT && (
-              <Button variant={'contained'} fullWidth onClick={onClickClaim2}>
+              <Button variant={'contained'} fullWidth onClick={onClickClaim}>
                 {t('labelClaimBtn')}
               </Button>
             )}

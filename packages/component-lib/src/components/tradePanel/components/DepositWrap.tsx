@@ -23,8 +23,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 export const DepositWrap = <
   T extends {
     accountReady?: AccountStatus
-
-    referAddress?: string
     toAddress?: string
     addressError?: { error: boolean; message?: string }
   } & IBData<I>,
@@ -53,15 +51,12 @@ export const DepositWrap = <
   toIsAddressCheckLoading,
   // toIsLoopringAddress,
   realToAddress,
-  referIsAddressCheckLoading,
-  referIsLoopringAddress,
-  realReferAddress,
   isToAddressEditable,
   toAddressStatus,
-  referStatus,
   wait = globalSetup.wait,
   allowTrade,
-
+  toAddress,
+  handleAddressChange,
   ...rest
 }: DepositViewProps<T, I> & {
   accountReady?: AccountStatus
@@ -71,7 +66,6 @@ export const DepositWrap = <
   let { feeChargeOrder, isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [minFee, setMinFee] = React.useState<{ minFee: string } | undefined>(undefined)
-  const [_toAddress, setToAddress] = React.useState(tradeData.toAddress)
   const getDisabled = React.useMemo(() => {
     return disabled || depositBtnStatus === TradeBtnStatus.DISABLED
   }, [depositBtnStatus, disabled])
@@ -196,26 +190,17 @@ export const DepositWrap = <
           <Box display={isToAddressEditable ? 'inherit' : 'none'}>
             <TextField
               className={'text-address'}
-              value={_toAddress ? _toAddress : ''}
-              error={toAddressStatus !== AddressError.NoError}
+              value={toAddress ?? ''}
+              error={!!realToAddress && toAddressStatus !== AddressError.NoError}
               label={t('depositLabelTo')}
               disabled={!isToAddressEditable}
               placeholder={t('depositLabelPlaceholder')}
               onChange={(_event) => {
-                if (_event.target.value !== _toAddress) {
-                  const toAddress = _event.target.value
-                  setToAddress(() => {
-                    return toAddress
-                  })
-                  onChangeEvent(0, {
-                    tradeData: { toAddress } as T,
-                    to: 'button',
-                  })
-                }
+                handleAddressChange && handleAddressChange(_event.target.value)
               }}
               fullWidth={true}
             />
-            {!!tradeData.toAddress ? (
+            {toAddress ? (
               toIsAddressCheckLoading ? (
                 <LoadingIcon
                   width={24}
@@ -229,7 +214,6 @@ export const DepositWrap = <
                     style={{ top: '30px' }}
                     aria-label='Clear'
                     onClick={() => {
-                      setToAddress('')
                       handleClear()
                     }}
                   >
@@ -240,8 +224,9 @@ export const DepositWrap = <
             ) : (
               ''
             )}
+
             <Box marginLeft={1 / 2}>
-              {toAddressStatus !== AddressError.NoError ? (
+              {realToAddress && toAddressStatus !== AddressError.NoError ? (
                 <Typography
                   color={'var(--color-error)'}
                   variant={'body2'}
@@ -251,7 +236,7 @@ export const DepositWrap = <
                 >
                   {t('labelInvalidAddress')}
                 </Typography>
-              ) : tradeData.toAddress && realToAddress && !toIsAddressCheckLoading ? (
+              ) : toAddress && realToAddress && !toIsAddressCheckLoading ? (
                 <Typography
                   color={'var(--color-text-primary)'}
                   variant={'body2'}
@@ -266,92 +251,148 @@ export const DepositWrap = <
               )}
             </Box>
           </Box>
-          {!isToAddressEditable && (
-            <>
-              {!realToAddress ? (
+          {!isToAddressEditable &&
+            (!realToAddress ? (
+              <Box>
+                <Typography color={'var(--color-text-third)'} variant={'body1'}>
+                  {t('labelBridgeSendTo')}
+                </Typography>
+                <Typography
+                  display={'inline-flex'}
+                  variant={tradeData.toAddress?.startsWith('0x') ? 'body2' : 'body1'}
+                  style={{ wordBreak: 'break-all' }}
+                  color={'textSecondary'}
+                >
+                  {tradeData.toAddress}
+                </Typography>
+              </Box>
+            ) : toIsAddressCheckLoading ? (
+              <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                <img
+                  className='loading-gif'
+                  alt={'loading'}
+                  width='36'
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
+              </Box>
+            ) : realToAddress && toAddressStatus !== AddressError.NoError ? (
+              <Typography variant={'body1'} color={'var(--color-warning)'}>
+                {toAddressStatus === AddressError.ENSResolveFailed ? (
+                  <>{t('labelENSShouldConnect')}</>
+                ) : (
+                  <Trans
+                    i18nKey={'labelInvalidAddressClick'}
+                    tOptions={{
+                      way: t(`labelPayLoopringL2`, {
+                        layer2: L1L2_NAME_DEFINED[network].layer2,
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      }),
+                      token: 'ERC20 ',
+                    }}
+                  >
+                    Invalid Wallet Address, Pay Loopring L2 of ERC20 is disabled!
+                    <Link
+                      alignItems={'center'}
+                      display={'inline-flex'}
+                      href={Bridge}
+                      target={'_blank'}
+                      rel={'noopener noreferrer'}
+                      color={'textSecondary'}
+                    >
+                      Click to input another receive address
+                    </Link>
+                    ,
+                  </Trans>
+                )}
+              </Typography>
+            ) : (
+              <>
                 <Box>
-                  <Typography color={'var(--color-text-third)'} variant={'body1'}>
-                    {t('labelBridgeSendTo')}
+                  <Typography color={'var(--color-text-third)'} minWidth={40}>
+                    {t('labelReceiveAddress')}
                   </Typography>
                   <Typography
                     display={'inline-flex'}
-                    variant={tradeData.toAddress?.startsWith('0x') ? 'body2' : 'body1'}
+                    variant={'body2'}
                     style={{ wordBreak: 'break-all' }}
+                    whiteSpace={'pre-line'}
                     color={'textSecondary'}
                   >
-                    {tradeData.toAddress}
+                    {realToAddress}
                   </Typography>
                 </Box>
-              ) : toIsAddressCheckLoading ? (
-                <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                  <img
-                    className='loading-gif'
-                    alt={'loading'}
-                    width='36'
-                    src={`${SoursURL}images/loading-line.gif`}
-                  />
-                </Box>
-              ) : realToAddress ? (
-                <>
-                  <Box>
-                    <Typography color={'var(--color-text-third)'} minWidth={40}>
-                      {t('labelReceiveAddress')}
-                    </Typography>
-                    <Typography
-                      display={'inline-flex'}
-                      variant={'body2'}
-                      style={{ wordBreak: 'break-all' }}
-                      whiteSpace={'pre-line'}
-                      color={'textSecondary'}
-                    >
-                      {realToAddress}
-                    </Typography>
-                  </Box>
-                </>
-              ) : (
-                !!tradeData.toAddress &&
-                toAddressStatus !== AddressError.NoError && (
-                  <Typography variant={'body1'} color={'var(--color-warning)'}>
-                    {/*This is wrong address, I want input address*/}
-                    {toAddressStatus === AddressError.ENSResolveFailed ? (
-                      <>{t('labelENSShouldConnect')}</>
-                    ) : (
-                      <Trans
-                        i18nKey={'labelInvalidAddressClick'}
-                        tOptions={{
-                          way: t(`labelPayLoopringL2`, {
-                            layer2: L1L2_NAME_DEFINED[network].layer2,
-                            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                          }),
-                          token: 'ERC20 ',
-                        }}
-                      >
-                        Invalid Wallet Address, Pay Loopring L2 of ERC20 is disabled!
-                        <Link
-                          alignItems={'center'}
-                          display={'inline-flex'}
-                          href={Bridge}
-                          target={'_blank'}
-                          rel={'noopener noreferrer'}
-                          color={'textSecondary'}
-                        >
-                          Click to input another receive address
-                        </Link>
-                        ,
-                      </Trans>
-                    )}
-                  </Typography>
-                )
-              )}
-            </>
-          )}
+              </>
+            ))}
         </Grid>
       ) : (
-        <></>
+        <>
+
+          {toAddress && toAddressStatus !== AddressError.NoError ? (
+            <Typography variant={'body1'} color={'textSecondary'}>
+              {toAddressStatus === AddressError.ENSResolveFailed ? (
+                <>{t('labelENSShouldConnect')}</>
+              ):toAddressStatus === AddressError.TimeOut?
+                (<Trans
+                  i18nKey={'labelTimeoutAddressClick'}
+                  tOptions={{
+                    layer2: L1L2_NAME_DEFINED[ network ].layer2,
+                    l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                    loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
+                  }}
+                  components={{
+                    a: <Link
+                      alignItems={'center'}
+                      display={'inline-flex'}
+                      target={'_blank'}
+                      onClick={()=>{
+                        handleAddressChange && handleAddressChange(toAddress??'')
+                      }}
+                      rel={'noopener noreferrer'}
+                      color={'textPrimary'}
+                    />
+                  }}
+                >
+                  L1 Account checking request was rejected or some unknown error occurred, please
+                  <a>Retry</a>
+                </Trans>): (
+                  <Trans
+                    i18nKey={'labelInvalidAddressClick'}
+                    tOptions={{
+                      way: t(`labelPayLoopringL2`, {
+                        layer2: L1L2_NAME_DEFINED[ network ].layer2,
+                        l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
+                      }),
+                      token: 'ERC20 ',
+                    }}
+                  >
+                    Invalid Wallet Address, Pay Loopring L2 of ERC20 is disabled!
+                    <Link
+                      alignItems={'center'}
+                      display={'inline-flex'}
+                      href={Bridge}
+                      target={'_blank'}
+                      rel={'noopener noreferrer'}
+                      color={'textSecondary'}
+                    >
+                      Click to input another receive address
+                    </Link>
+                    ,
+                  </Trans>
+                )}
+            </Typography>
+          ):<></>}
+        </>
       )}
 
       <Grid item marginTop={2} alignSelf={'stretch'}>

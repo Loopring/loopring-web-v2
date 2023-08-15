@@ -9,13 +9,16 @@
       "es2017",
       "es2020"
     ],
+    "files": [
+      "./node_modules/@types/node/index.d.ts"
+    ],
     "module": "commonjs",
     "jsx": "react-jsx",
     "sourceMap": true,
     "allowJs": true,
     "composite": true,
     "keyofStringsOnly": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,

@@ -13,10 +13,8 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
-  // useWalletLayer2,
   useWalletLayer2Socket,
   walletLayer2Service,
-  // volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
   AccountStatus,
@@ -28,6 +26,7 @@ import {
   STAKING_INVEST_LIMIT,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { pickBy, toArray } from 'lodash'
 // import { walletServices } from "@loopring-web/web3-provider";
 
 export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
@@ -58,13 +57,13 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   stakedSymbol: string
 } => {
   const { account, status: accountStatus } = useAccount()
-  const { getUserRewards } = useUserRewards()
   const { status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
-  const { tokenMap, idIndex } = useTokenMap()
-  const { marketCoins: defiCoinArray } = useDefiMap()
+  const { tokenMap } = useTokenMap()
+  const { marketCoins: defiCoinArray, marketLeverageCoins: leverageETHCoinArray } = useDefiMap()
+
   const { status: ammMapStatus, ammMap } = useAmmMap()
   const { tokenPrices } = useTokenPrices()
-  const { status: stakingMapStatus, marketMap: stakingMap } = useStakingMap()
+  const { marketMap: stakingMap } = useStakingMap()
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<Partial<SummaryMyInvest>>({})
   const [filter, setFilter] = React.useState({
@@ -135,7 +134,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }
       resetTableData(resultData)
     }
-  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray])
+  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray, leverageETHCoinArray])
   const handleFilterChange = React.useCallback(
     (filter) => {
       setFilter(filter)
@@ -161,6 +160,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       let totalCurrentInvest = {
         ammPoolDollar: 0,
         stakeETHDollar: 0,
+        leverageETHDollar: 0,
         // dualStakeDollar: summaryDefiReward,
       }
       const { walletMap: _walletMap } = makeWalletLayer2({ needFilterZero: false })
@@ -175,6 +175,13 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       resultData.forEach((item) => {
         totalCurrentInvest.ammPoolDollar += Number(item.balanceU ?? 0)
       })
+      leverageETHCoinArray?.forEach((defiCoinKey) => {
+        totalCurrentInvest.leverageETHDollar += Number(
+          // @ts-ignore
+          (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
+            tokenPrices[defiCoinKey] ?? 0,
+        )
+      })
       setSummaryMyInvest((state) => {
         return {
           ...state,
@@ -182,7 +189,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
           investDollar: sdk
             .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
             .plus(totalCurrentInvest.stakeETHDollar ?? 0)
-            // .plus(totalCurrentInvest.dualStakeDollar ?? 0)
+            .plus(totalCurrentInvest.leverageETHDollar ?? 0)
             .plus(state.stakeLRCDollar ?? 0)
             .toString(),
         }
@@ -196,7 +203,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       walletLayer2Service.sendUserUpdate()
       const account = store.getState().account
       if (account.readyState == AccountStatus.ACTIVATED) {
-        getUserRewards()
         getStakingList({})
         makeDefiInvestReward().then((summaryDefiReward) => {
           if (mountedRef.current) {
@@ -286,6 +292,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
                 .toBig(state.ammPoolDollar ?? 0)
                 .plus(state.dualStakeDollar ?? 0)
                 .plus(state.stakeETHDollar ?? 0)
+                .plus(state.leverageETHDollar ?? 0)
                 .plus(totalDollar ?? 0)
                 .toString(),
             }

@@ -9,7 +9,7 @@ const initialState: UserRewardsStates<{ [key: string]: any }> = {
   totalClaims: {},
   rewardU: '',
   feeU: '',
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
   __timer__: -1,
 }
@@ -32,13 +32,13 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
       state.myAmmLPMap = myAmmLPMap
     },
     getUserRewardsStatus(state, action: PayloadAction<UserRewardsStates<any>>) {
-      // @ts-ignore
-      if (action.error) {
+      if ((action.payload as any).error) {
         state.status = SagaStatus.ERROR
-        // @ts-ignore
-        state.errorMessage = action.error
+        state.errorMessage = (action.payload as any).error
+        return
       }
-      state.userRewardsMap = action.payload.userRewardsMap //{...state.userRewardsMap, ...action.payload.userRewardsMap};
+      state.errorMessage = null
+      state.userRewardsMap = action.payload.userRewardsMap
       state.rewardU = action.payload.rewardU
       state.feeU = action.payload.feeU
       state.myAmmLPMap = action.payload.myAmmLPMap
@@ -54,5 +54,5 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
   },
 })
 export { userRewardsMapSlice }
-export const { getUserRewards, resetUserRewards, getUserRewardsStatus, statusUnset, getUserAMM } =
+export const { getUserRewards, resetUserRewards, getUserRewardsStatus, statusUnset } =
   userRewardsMapSlice.actions
