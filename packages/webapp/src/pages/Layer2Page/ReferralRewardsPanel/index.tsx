@@ -34,8 +34,10 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
+  CarouselItem,
   ReferralsTable,
   RefundTable,
+  ShareModal,
   Toast,
   ToastType,
   useSettings,
@@ -120,10 +122,13 @@ const ReferHeader = <R extends ImageReferralBanner>({
   isActive?: boolean
   handleCopy: (selected: 'id' | 'link') => void
 }) => {
-  const { account } = useAccount()
-  const { t } = useTranslation(['common', 'layout'])
-  const { defaultNetwork, isMobile } = useSettings()
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const {account} = useAccount()
+  const {t} = useTranslation(['common', 'layout'])
+  const {defaultNetwork, isMobile} = useSettings()
+  const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ]
+  const [open, setOpen] = React.useState(false)
+  const [images, setImages] = React.useState<CarouselItem[]>([])
+
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
     referralBanners: {
@@ -131,7 +136,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
     },
     lng: ['en'],
     position: {
-      code: { default: [48, 30, 230, 64, '#000000', 630, 880] },
+      code: {default: [48, 30, 230, 64, '#000000', 630, 880]},
     },
   })
   // const [images, setImages] = React.useState<JSX.Element[]>([]);
@@ -191,11 +196,25 @@ const ReferHeader = <R extends ImageReferralBanner>({
           context.fillText(label, lebelX, lebelY)
           context.font = '44px Roboto'
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
+
           // myLog('imageUrl createObjectURL', canvas.toDataURL())
-          images.push({ imageUrl: canvas.toDataURL(), size: [width / 2, height / 2] })
+          images.push({imageUrl: canvas.toDataURL(), size: [width / 2, height / 2]})
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
+
+            setImages(images)
           }
+          // canvas.toBlob((blob) => {
+          // const a = document.createElement('a')
+          // // @ts-ignore
+          // a.download = (item ?? '/').split('/')?.pop()
+          // a.style.display = 'none'
+          // // @ts-ignore
+          // a.href = URL.createObjectURL(blob)
+          // document.body.appendChild(a)
+          // a.click()
+          // document.body.removeChild(a)
+          // }, 'image/png')
         }
       })
     },
@@ -265,7 +284,9 @@ const ReferHeader = <R extends ImageReferralBanner>({
     },
     isLoading: false,
     submitCallback: async () => {
-      onDownloadImage()
+      setOpen(true)
+      // Carousel
+      // onDownloadImage();
     },
   })
 
@@ -313,12 +334,19 @@ const ReferHeader = <R extends ImageReferralBanner>({
       direction={'right'}
     >
       <Container>
+        <ShareModal
+          onClick={() => onDownloadImage()}
+          open={open}
+          loading={false}
+          onClose={() => setOpen(false)}
+          imageList={images}
+        />
         <Box className={'bg'} marginY={3} display={'flex'}>
           <Box width={isMobile ? '100%' : '65%'}>
             <Typography
               component={'h1'}
               variant={isMobile ? 'h4' : 'h2'}
-              sx={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}
+              sx={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}
             >
               {t('labelReferTitle')}
             </Typography>

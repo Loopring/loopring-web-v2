@@ -4,7 +4,7 @@ import { CarouselItem } from './Interface'
 import { myLog, SoursURL } from '@loopring-web/common-resources'
 import React from 'react'
 
-const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
+const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[], preStr: string }>`
   &.carousel {
     //margin-left: 15%;
     //margin-right: 15%;
@@ -34,7 +34,7 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
   }
 
   .slide-container {
-    display: block;
+    display: none;
     position: absolute;
   }
 
@@ -47,32 +47,47 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
   }
 
   .carousel-controls {
+    position: absolute;
+    top: 0; //50%;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    font-size: ${({ theme }) => theme.fontDefault.body1};
+    color: var(--color-text-primary);
+    height: 100%;
+    //transform: translateY(-50%);
+    label {
+      display: none;
       position: absolute;
-      top: 0;
+      padding: 0 ${({ theme }) => 2 * theme.unit}px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      cursor: pointer;
+      font-size: var(--svg-size-huge);
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+
+      &:nth-child(1) {
+        justify-content: left;
+      }
+
+      &:nth-child(2) {
+        justify-content: right;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .prev-slide {
+      width: 30%;
+      text-align: left;
       left: 0;
-      right: 0;
-      z-index: 999;
-      font-size: ${({ theme }) => theme.fontDefault.body1};
-      color: var(--color-text-primary);
-      label {
-        display: none;
-        position: absolute;
-        padding: 0 ${({ theme }) => 2 * theme.unit}px;
-        opacity: 0;
-        transition: opacity 0.2s;
-        cursor: pointer;
+    }
 
-        &:hover {
-          opacity: 1;
-        }
-      }
-      .prev-slide {
-        width: 30%;
-        text-align: left;
-        left: 0;
-      }
-
-      .next-slide {
+    .next-slide {
         width: 30%;
         text-align: right;
         right: 0;
@@ -92,55 +107,57 @@ const StyleBox = styled(Box)<BoxProps & { imageList: CarouselItem[] }>`
       text-align: center;
     }
 
-    .carousel-dots .carousel-dot {
-      display: inline-block;
-      width: var(--carousel-dot-size);
-      height: var(--carousel-dot-size);
-      border-radius: 50%;
-      background-color: #fff;
-      opacity: 0.5;
-      margin: 10px;
-    }
-
-    input:checked + .slide-container .slide-image {
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity 1s ease-in-out;
-    }
-
-    input:checked + .slide-container .carousel-controls label {
-      display: block;
-    }
-
-    ${({ imageList }) => {
-      let label: string = imageList.reduce((prev, _, index) => {
-        prev += `input#img-${index + 1}:checked ~ .carousel-dots label#img-dot-${index + 1},`
-        return prev
-      }, '' as string)
-      label += `{ opacity: 1;}`
-      return label
-    }}
-    //input#img-1:checked ~ .carousel-dots label#img-dot-1,
-    //input#img-2:checked ~ .carousel-dots label#img-dot-2,
-    //input#img-3:checked ~ .carousel-dots label#img-dot-3,
-    //input#img-4:checked ~ .carousel-dots label#img-dot-4,
-    //input#img-5:checked ~ .carousel-dots label#img-dot-5,
-    //input#img-6:checked ~ .carousel-dots label#img-dot-6 {
-    //  opacity: 1;
-    //}
-
-    input:checked + .slide-container .nav label {
-      display: block;
-    }
+  .carousel-dots .carousel-dot {
+    display: inline-block;
+    width: var(--carousel-dot-size);
+    height: var(--carousel-dot-size);
+    border-radius: 50%;
+    background-color: #fff;
+    opacity: 0.5;
+    margin: 10px;
   }
-` as (props: BoxProps & { imageList: CarouselItem[] }) => JSX.Element
+
+  input:checked + .slide-container {
+    display: block;
+  }
+
+  input:checked + .slide-container .slide-image {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 1s ease-in-out;
+  }
+
+  input:checked + .slide-container .carousel-controls label {
+    //display: block;
+    display: inline-flex;
+  }
+
+  ${({imageList, preStr}) => {
+    let label: string = imageList.reduce((prev, _, index) => {
+      prev += `input#${preStr}${index + 1}:checked ~ .carousel-dots label#${preStr}dot-${index + 1},`
+      return prev
+    }, '' as string)
+    label += `{ opacity: 1;}`
+    return label
+  }}
+  input:checked + .slide-container .nav label {
+    display: block;
+  }
+}
+` as (props: BoxProps & { imageList: CarouselItem[], preStr: string }) => JSX.Element
 
 export const Carousel = ({
-  loading,
-  imageList,
-}: {
+                           loading,
+                           imageList,
+                           preStr = 'img-',
+                           selected,
+                           handleSelected
+                         }: {
   loading: boolean
   imageList: CarouselItem[]
+  selected: number
+  preStr?: string,
+  handleSelected: (id: number) => void
 }) => {
   myLog('imageList', imageList)
   return (
@@ -156,18 +173,20 @@ export const Carousel = ({
           <img className='loading-gif' width='36' src={`${SoursURL}images/loading-line.gif`} />
         </Box>
       ) : (
-        <StyleBox className='carousel' imageList={imageList}>
+        <StyleBox preStr={preStr} className='carousel' imageList={imageList}>
           <Box component={'ul'} className='slides'>
             {imageList.map((item, index) => {
               return (
                 <React.Fragment key={index}>
-                  <input type='radio' name='radio-buttons' id={`img-${index + 1}`} checked />
+                  <input type='radio'
+                         name='radio-buttons'
+                         id={`${preStr}${index + 1}`} checked={selected == index}/>
                   <Box
                     component={'li'}
                     className='slide-container'
                     sx={{
-                      height: item?.size[1],
-                      width: item?.size[0],
+                      height: item?.size[ 1 ],
+                      width: item?.size[ 0 ],
                     }}
                   >
                     <Box className='slide-image'>
@@ -182,14 +201,23 @@ export const Carousel = ({
                     </Box>
                     <Box className='carousel-controls'>
                       <label
-                        htmlFor={`img-${index == 0 ? imageList.length : index}`}
+                        onClick={
+                          () => {
+                            handleSelected(selected === 0 ? imageList.length - 1 : selected - 1)
+                          }
+                        }
+                        // htmlFor={`${preStr}${index == 0 ? imageList.length : index}`}
                         className='prev-slide'
                       >
                         <span>&lsaquo;</span>
                       </label>
 
                       <label
-                        htmlFor={`img-${index + 1 > imageList.length ? 1 : index + 1}`}
+                        onClick={
+                          () => {
+                            handleSelected(selected === imageList.length - 1 ? 0 : selected + 1)
+                          }
+                        }
                         className='next-slide'
                       >
                         <span>&rsaquo;</span>
@@ -203,13 +231,17 @@ export const Carousel = ({
             <Box className='carousel-dots'>
               {imageList.map((_, index) => {
                 return (
-                  <React.Fragment key={index}>
-                    <label
-                      htmlFor={`img-${index + 1}`}
-                      className='carousel-dot'
-                      id={`img-dot-${index + 1}`}
-                    />
-                  </React.Fragment>
+                  <label
+                    key={index}
+                    onClick={
+                      () => {
+                        handleSelected(index)
+                      }
+                    }
+                    // htmlFor={`${preStr}${index + 1}`}
+                    className='carousel-dot'
+                    id={`${preStr}dot-${index + 1}`}
+                  />
                 )
               })}
             </Box>

@@ -1840,6 +1840,7 @@ export default {
     'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
-   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
+  labelDownloadShared: 'Download',
+  labelShareReferralCode: 'Share to',
 }

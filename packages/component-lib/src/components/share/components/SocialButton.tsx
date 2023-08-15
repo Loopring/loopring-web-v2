@@ -1,50 +1,45 @@
 import {
   SOCIAL_COMPONENT_MAP,
-  SOCIAL_NAME_MAP,
-  SOCIAL_WITH_TITLE,
+  // SOCIAL_NAME_KEYS,
+  // SOCIAL_WITH_TITLE,
 } from '@loopring-web/common-resources'
+import { SocialButtonProps } from '../Interface';
+import { Avatar } from '@mui/material';
 
 //
-function getExtraSocialProps({
-  message,
-  socialEnum,
-}: {
-  message: string
-  socialEnum: SOCIAL_NAME_MAP
-}) {
-  if (!message) return {}
+// function getExtraSocialProps({
+//   message,
+//   socialEnum,
+// }: {
+//   message: string
+//   socialEnum: SOCIAL_NAME_KEYS
+// }) {
+//   if (!message) return {}
+//
+//   if (SOCIAL_WITH_TITLE.has(socialEnum)) {
+//     return { title: message }
+//   }
+//
+//   if (socialEnum === SOCIAL_NAME_KEYS.Facebook) {
+//     return { quote: message }
+//   }
+//
+//   return { body: message }
+// }
 
-  if (SOCIAL_WITH_TITLE.has(socialEnum)) {
-    return { title: message }
-  }
-
-  if (socialEnum === SOCIAL_NAME_MAP.Facebook) {
-    return { quote: message }
-  }
-
-  return { body: message }
-}
-
-export const SocialButton = ({ url, message, size, socialEnum, sendShareEvent, imageUrl }: any) => {
-  const { SocialNetworkName, SocialComponent, SocialIcon } = SOCIAL_COMPONENT_MAP[socialEnum]
-  const additionalProps = getExtraSocialProps({ message, socialEnum })
-
-  /* Pinterest requires imageUrl for the "media" prop, but
-   * it might not be loaded yet */
-
+export const SocialButton = ({size, socialEnum, sendShareEvent}: SocialButtonProps) => {
+  const {SocialNetworkName, SocialIcon} = SOCIAL_COMPONENT_MAP[ socialEnum ]
   return (
-    <SocialComponent
-      url={url}
+    <Avatar
+      variant={'rounded'}
+      // sx={{background:}}
       className={`shareSocialButton shareSocialButton--${SocialNetworkName}`}
-      media={imageUrl}
-      onClick={() => sendShareEvent(socialEnum)}
-      {...additionalProps}
-    >
+      onClick={() => sendShareEvent(socialEnum)}>
       <SocialIcon
         round
         size={size}
         className={`shareSocialIcon shareSocialIcon--${SocialNetworkName}`}
       />
-    </SocialComponent>
+    </Avatar>
   )
 }

@@ -1,11 +1,16 @@
 import styled from '@emotion/styled'
 import { ShareProps } from './Interface'
-import { Box, Modal } from '@mui/material'
-import { SoursURL } from '@loopring-web/common-resources'
+import { Box, IconButton, Modal, Typography } from '@mui/material'
+import {
+  DownloadIcon,
+  SOCIAL_NAME_KEYS,
+  SoursURL
+} from '@loopring-web/common-resources'
 import { SocialButton } from './components/SocialButton'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Button, ModalCloseButton } from '../basic-lib'
+import { ModalCloseButton } from '../basic-lib'
 import { Carousel, CarouselItem } from '../carousel'
+import React from 'react';
 
 const StyleBox = styled(Box)`
   .shareContainer {
@@ -21,15 +26,17 @@ const StyleBox = styled(Box)`
   }
 
   .shareSocialButton {
+    background-color: initial;
+    cursor: pointer;
   }
 
   .shareSocialIcon {
   }
 `
 
-export const Share = ({ social, title, loading, imageUrl, size, sendShareEvent }: ShareProps) => {
+export const Share = ({social, loading, size, direction = 'row'}: ShareProps) => {
   return (
-    <StyleBox>
+    <StyleBox display={'flex'}>
       {loading ? (
         <Box
           flex={1}
@@ -50,18 +57,15 @@ export const Share = ({ social, title, loading, imageUrl, size, sendShareEvent }
           {/*<div className={'shareLabel'}>*/}
           {/*  <FormattedMessage id='store/store-components.share.label' />*/}
           {/*</div>*/}
-          <Box className={'shareButtons'}>
+          <Box className={'shareButtons'} display={'flex'} flexDirection={direction}>
             {Object.keys(social).map(
               (socialNetwork, index) =>
-                social[socialNetwork] && (
+                social[ socialNetwork ] && (
                   <SocialButton
                     key={index}
-                    imageUrl={imageUrl}
-                    url={window.location && window.location.href}
-                    message={title}
-                    socialEnum={socialNetwork}
+                    socialEnum={social[ socialNetwork ].socialEnum}
                     size={size}
-                    sendShareEvent={sendShareEvent}
+                    sendShareEvent={social[ socialNetwork ].sendShareEvent}
                   />
                 ),
             )}
@@ -90,9 +94,23 @@ const BoxStyle = styled(Box)`
     margin-top: 0;
     //transform: translateY(-50%) translateX(-50%);
     //left: 50%;
-    top: ${({ theme }) => 2 * theme.unit}px;
-    right: ${({ theme }) => 1 * theme.unit}px;
+    top: ${({theme}) => 2 * theme.unit}px;
+    right: ${({theme}) => 1 * theme.unit}px;
   }
+
+  .shareSocialButton {
+    margin: 0 ${({theme}) => 1 / 2 * theme.unit}px;
+  }
+
+  .btn {
+    margin: 0 ${({theme}) => 1 / 2 * theme.unit}px;
+    background: var(--color-primary);
+
+    &:hover {
+      background: var(--color-primary);
+    }
+  }
+
 `
 export const ShareModal = withTranslation('common')(
   ({
@@ -112,8 +130,16 @@ export const ShareModal = withTranslation('common')(
     loading: boolean
     imageList: CarouselItem[]
   }) => {
-    // const ref = React.useRef()
-    // const { language } = useSettings();
+
+    const [selected, setSelected] = React.useState<number>(0)
+    const sendShareEvent = (SOCIAL_NAME: SOCIAL_NAME_KEYS) => {
+      switch (SOCIAL_NAME) {
+        case  SOCIAL_NAME_KEYS.Facebook:
+        case  SOCIAL_NAME_KEYS.Twitter:
+        case  SOCIAL_NAME_KEYS.WhatsApp:
+      }
+
+    }
     return (
       <Modal
         open={open}
@@ -123,33 +149,70 @@ export const ShareModal = withTranslation('common')(
       >
         <BoxStyle
           className={'MuiPaper-elevation2'}
-          width={'var(--modal-width)'}
-          height={'80vh'}
+          // width={'var(--modal-width)'}
+          // height={'80vh'}
           minHeight={'var(--modal-height)'}
           // height={`calc(100vh - ${HEADER_HEIGHT}px)`}
           position={'absolute'}
           display={'flex'}
+          flexDirection={'column'}
           top='50%'
           left='50%'
           sx={{
             transform: 'translateY(-50%) translateX(-50%)',
           }}
         >
-          <ModalCloseButton className='btn-close' onClose={onClose} {...{ ...rest, t }} />
+          <ModalCloseButton className='btn-close' onClose={onClose} {...{...rest, t}} />
+          <Typography textAlign={'center'}
+                      paddingTop={3} component={'h5'} variant={'h4'} color={'textPrimary'}>
+            {t('labelShareReferralCode')}
+          </Typography>
           <Box
-            alignItems={'center'}
+            alignItems={'stretch'}
             display={'flex'}
+            paddingX={4}
             flex={1}
             width={'100%'}
             flexDirection={'column'}
             paddingY={3}
             overflow={'scroll'}
           >
-            {/*<Typography component={'h4'} variant={'h5'} color={'textSecondary'} marginBottom={2}>*/}
-            {/*  {t('labelShare')}*/}
-            {/*</Typography>*/}
-            <Carousel loading={loading} imageList={imageList} />
-            <Button onClick={onClick}>{t('labelDownload')}</Button>
+            <Carousel selected={selected} loading={loading} imageList={imageList} handleSelected={setSelected}/>
+            <Box display={'flex'}
+                 flexDirection={'row'}
+                 justifyContent={'center'}
+                 alignItems={'center'}>
+              <Share
+                imageUrl={imageList[ selected ]?.imageUrl ?? ''}
+                loading={loading}
+                size={36}
+                social={{
+                  [ SOCIAL_NAME_KEYS.Facebook ]: {
+                    socialEnum: SOCIAL_NAME_KEYS.Facebook,
+                    sendShareEvent,
+                  },
+                  [ SOCIAL_NAME_KEYS.Twitter ]: {
+                    socialEnum: SOCIAL_NAME_KEYS.Twitter,
+                    sendShareEvent,
+                  },
+                  [ SOCIAL_NAME_KEYS.WhatsApp ]: {
+                    socialEnum: SOCIAL_NAME_KEYS.WhatsApp,
+                    sendShareEvent,
+                  },
+
+                } as any}
+              />
+              <IconButton
+                className={'btn'}
+
+                size={'large'} onClick={onClick}>
+                <DownloadIcon htmlColor={'var(--color-text-button)'}/>
+              </IconButton>
+              {/*<Button*/}
+              {/*  variant={'contained'}*/}
+              {/*  size={'small'} onClick={onClick}>{t('labelDownloadShared')}</Button>*/}
+            </Box>
+
           </Box>
         </BoxStyle>
       </Modal>
