@@ -1,11 +1,10 @@
-import { EmptyValueTag, FeeInfo, TradeBtnStatus, TradeNFT } from '@loopring-web/common-resources'
+import { FeeInfo, TradeBtnStatus, TradeNFT } from '@loopring-web/common-resources'
 import { NFTDeployViewProps } from './Interface'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { Box, Grid, Link, Toolbar, Typography } from '@mui/material'
 import { Button, ModalBackButton } from '../../basic-lib'
-import { DropdownIconStyled, FeeTokenItemWrapper } from './Styled'
-import { FeeToggle } from './tool/FeeList'
+import { FeeSelect } from '../../../components/modal'
 
 export const DeployNFTWrap = <
   T extends TradeNFT<I, any> & { broker: string },
@@ -26,7 +25,7 @@ export const DeployNFTWrap = <
   assetsData = [],
 }: NFTDeployViewProps<T, I, C>) => {
   const { t } = useTranslation(['common'])
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
 
   const getDisabled = React.useMemo(() => {
     if (disabled || nftDeployBtnStatus === TradeBtnStatus.DISABLED) {
@@ -159,55 +158,21 @@ export const DeployNFTWrap = <
               <Typography>{t('labelFeeCalculating')}</Typography>
             ) : (
               <>
-                <Typography
-                  component={'span'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  variant={'body1'}
-                  color={'var(--color-text-secondary)'}
-                  marginBottom={1}
-                >
-                  {t('labelL2toL2Fee')}：
-                  <Box
-                    component={'span'}
-                    display={'flex'}
-                    alignItems={'center'}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-                  >
-                    {feeInfo && feeInfo.belong && feeInfo.fee
-                      ? feeInfo.fee + ' ' + feeInfo.belong
-                      : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                    <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                    {isFeeNotEnough.isOnLoading ? (
-                      <Typography marginLeft={1} component={'span'} color={'var(--color-warning)'}>
-                        {t('labelFeeCalculating')}
-                      </Typography>
-                    ) : (
-                      isFeeNotEnough.isFeeNotEnough && (
-                        <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                          {t('labelL2toL2FeeNotEnough')}
-                        </Typography>
-                      )
-                    )}
-                  </Box>
-                </Typography>
-                {dropdownStatus === 'up' && (
-                  <FeeTokenItemWrapper padding={2}>
-                    <Typography
-                      variant={'body2'}
-                      color={'var(--color-text-third)'}
-                      marginBottom={1}
-                    >
-                      {t('labelActiveEnterToken')}
-                    </Typography>
-                    <FeeToggle
-                      chargeFeeTokenList={chargeFeeTokenList}
-                      handleToggleChange={handleToggleChange}
-                      feeInfo={feeInfo}
-                    />
-                  </FeeTokenItemWrapper>
-                )}
+                <FeeSelect
+                  chargeFeeTokenList={chargeFeeTokenList}
+                  handleToggleChange={(fee: FeeInfo) => {
+                    handleToggleChange(fee as C)
+                    setShowFeeModal(false)
+                  }}
+                  feeInfo={feeInfo as FeeInfo}
+                  open={showFeeModal}
+                  onClose={() => {
+                    setShowFeeModal(false)
+                  }}
+                  isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+                  feeLoading={isFeeNotEnough.isOnLoading}
+                  onClickFee={() => setShowFeeModal((prev) => !prev)}
+                />
               </>
             )}
           </Grid>

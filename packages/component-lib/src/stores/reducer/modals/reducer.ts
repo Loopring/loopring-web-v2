@@ -369,7 +369,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
         symbol,
       }
-    },
+    }
   },
 })
 export const {
@@ -403,5 +403,6 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
+  setShowFeeSelect,
   setShowGlobalToast,
 } = modalsSlice.actions

@@ -91,7 +91,7 @@ export const AddAsset = ({
         alignItems={'stretch'}
         alignSelf={'stretch'}
         className='modalContent'
-        paddingX={isMobile ? 7 : 10}
+        paddingX={isMobile ? 4 : 5}
         paddingBottom={4}
       >
         <Typography component={'p'} variant={'body1'} color={'textSecondary'} marginBottom={1}>

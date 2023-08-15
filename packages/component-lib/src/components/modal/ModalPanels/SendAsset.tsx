@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Tooltip, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { MenuBtnStyled } from '../../styled'
 import { SendAssetProps } from './Interface'
@@ -8,6 +8,7 @@ import {
   BackIcon,
   ExchangeAIcon,
   IncomingIcon,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   L1l2Icon,
   L2l2Icon,
@@ -51,22 +52,19 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
       flexDirection={'column'}
       width={'var(--modal-width)'}
     >
-      <Typography
-        component={'h3'}
-        variant={isMobile ? 'h4' : 'h3'}
-        whiteSpace={'pre'}
-        marginBottom={3}
-        marginTop={-1}
-      >
-        {t('labelSendAssetTitle', {
-          symbol,
-          loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
-          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-        })}
-      </Typography>
+      <Box marginBottom={3} marginTop={-1} display={'flex'} alignItems={'center'}>
+        <Typography component={'h3'} variant={isMobile ? 'h4' : 'h3'} whiteSpace={'pre'} marginRight={1}>
+          {t('labelSendAssetTitle', {
+            symbol,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          })}
+        </Typography>
+        <Tooltip title={<>{t('labelSendAssetHowto')}</>}>
+          <span>
+            <Info2Icon fontSize={'large'} htmlColor={'var(--color-text-third)'} />
+          </span>
+        </Tooltip>
+      </Box>
       <Box
         display={'flex'}
         flexDirection={'column'}
@@ -75,12 +73,9 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
         alignItems={'stretch'}
         alignSelf={'stretch'}
         className='modalContent'
-        paddingX={isMobile ? 7 : 10}
+        paddingX={isMobile ? 4 : 5}
         paddingBottom={4}
       >
-        <Typography component={'p'} variant={'body1'} color={'textSecondary'} marginBottom={1}>
-          {t('labelSendAssetHowto')}
-        </Typography>
         <Box flex={1} flexDirection={'column'}>
           {sendAssetList.reduce((prev, item) => {
             if (
@@ -89,7 +84,7 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
               !['SendAssetToAnotherNet'].includes(item.key)
             ) {
               prev.push(
-                <Box key={item.key} marginTop={1.5}>
+                <Box key={item.key} marginTop={2}>
                   <MenuBtnStyled
                     variant={'outlined'}
                     size={'large'}

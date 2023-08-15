@@ -1,15 +1,12 @@
 import { Trans, WithTranslation } from 'react-i18next'
-import React, { ChangeEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { bindHover } from 'material-ui-popup-state/es'
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 import {
   Box,
-  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
-  Radio,
-  RadioGroup,
   Typography,
 } from '@mui/material'
 import {
@@ -31,13 +28,13 @@ import {
   TOAST_TIME,
   TradeBtnStatus,
   WALLET_TYPE,
+  WithdrawType,
 } from '@loopring-web/common-resources'
-import { DropdownIconStyled, FeeTokenItemWrapper, PopoverPure, Toast, ToastType } from '../..'
+import { FeeSelect, InputSize, PopoverPure, Toast, ToastType } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
-import { FeeToggle } from './tool/FeeList'
 import { WithdrawAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -126,9 +123,9 @@ export const WithdrawWrap = <
   }
 
   const _handleWithdrawTypeChange = React.useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    (e: WithdrawType) => {
       if (handleWithdrawTypeChange) {
-        handleWithdrawTypeChange(e.target?.value as any)
+        handleWithdrawTypeChange(e)
       }
     },
     [handleWithdrawTypeChange],
@@ -267,7 +264,7 @@ export const WithdrawWrap = <
               walletMap,
               tradeData,
               coinMap,
-              inputNFTDefaultProps: { label: '' },
+              inputNFTDefaultProps: { label: '', size: InputSize.middle },
               inputNFTRef: inputBtnRef,
             } as any)}
           />
@@ -292,6 +289,7 @@ export const WithdrawWrap = <
         {!isToMyself ? (
           <>
             <TextField
+              size={'large'}
               className={'text-address'}
               value={addressDefault}
               error={!!(isNotAvailableAddress || isInvalidAddressOrENS)}
@@ -418,84 +416,29 @@ export const WithdrawWrap = <
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            <Typography
-              component={'span'}
-              display={'flex'}
-              flexWrap={'wrap'}
-              alignItems={'center'}
-              variant={'body1'}
-              color={'var(--color-text-secondary)'}
-              marginBottom={1}
-            >
-              <Typography component={'span'} color={'inherit'} minWidth={28}>
-                {t('labelL2toL2Fee')}：
-              </Typography>
-              <Box
-                component={'span'}
-                display={'flex'}
-                overflow={'hidden'}
-                alignItems={'center'}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-              >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + ' ' + feeInfo.belong
-                  : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <Typography marginLeft={1} color={'var(--color-text-secondary)'}>
-                  {t(`labelL2toL1${withdrawTypes[withdrawType]}`)}
-                </Typography>
-                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                {isFeeNotEnough.isOnLoading ? (
-                  <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                    {t('labelFeeCalculating')}
-                  </Typography>
-                ) : isFeeNotEnough.isFeeNotEnough ? (
-                  <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                    {t('labelL2toL2FeeNotEnough')}
-                  </Typography>
-                ) : (
-                  isFastWithdrawAmountLimit && (
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                      {t('labelL2toL2FeeFastNotAllowEnough')}
-                    </Typography>
-                  )
-                )}
-              </Box>
-            </Typography>
-            {dropdownStatus === 'up' && (
-              <FeeTokenItemWrapper padding={2}>
-                <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                  {t('labelL2toL2FeeChoose')}
-                </Typography>
-                <FeeToggle
-                  chargeFeeTokenList={chargeFeeTokenList}
-                  handleToggleChange={handleToggleChange}
-                  feeInfo={feeInfo}
-                />
-                <Box marginTop={1}>
-                  <RadioGroup
-                    aria-label='withdraw'
-                    name='withdraw'
-                    value={withdrawType}
-                    onChange={(e) => {
-                      _handleWithdrawTypeChange(e)
-                    }}
-                  >
-                    {Object.keys(withdrawTypes).map((key) => {
-                      return (
-                        <FormControlLabel
-                          key={key}
-                          disabled={isFeeNotEnough.isOnLoading}
-                          value={key.toString()}
-                          control={<Radio />}
-                          label={`${t('withdrawTypeLabel' + withdrawTypes[key])}`}
-                        />
-                      )
-                    })}
-                  </RadioGroup>
-                </Box>
-              </FeeTokenItemWrapper>
-            )}
+            <FeeSelect
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={(feeInfo) => {
+                handleToggleChange(feeInfo as C)
+                setDropdownStatus('down')
+              }}
+              feeInfo={feeInfo}
+              open={dropdownStatus === 'up'}
+              onClose={() => {
+                setDropdownStatus('down')
+              }}
+              withdrawInfos={{
+                types: withdrawTypes,
+                type: withdrawType,
+                onChangeType(w) {
+                  _handleWithdrawTypeChange(w)
+                },
+              }}
+              onClickFee={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
+              feeLoading={isFeeNotEnough.isOnLoading}
+              isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+              isFastWithdrawAmountLimit={isFastWithdrawAmountLimit}
+            />
           </>
         )}
       </Grid>
