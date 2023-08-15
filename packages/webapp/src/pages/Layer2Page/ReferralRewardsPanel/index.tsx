@@ -191,25 +191,11 @@ const ReferHeader = <R extends ImageReferralBanner>({
           context.fillText(label, lebelX, lebelY)
           context.font = '44px Roboto'
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
-
           // myLog('imageUrl createObjectURL', canvas.toDataURL())
           images.push({ imageUrl: canvas.toDataURL(), size: [width / 2, height / 2] })
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
-
-            // setImages(images)
           }
-          // canvas.toBlob((blob) => {
-          // const a = document.createElement('a')
-          // // @ts-ignore
-          // a.download = (item ?? '/').split('/')?.pop()
-          // a.style.display = 'none'
-          // // @ts-ignore
-          // a.href = URL.createObjectURL(blob)
-          // document.body.appendChild(a)
-          // a.click()
-          // document.body.removeChild(a)
-          // }, 'image/png')
         }
       })
     },
