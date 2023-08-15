@@ -1754,7 +1754,7 @@ export default {
   labelAssetRewards: 'Rewards',
   labelClaimTypeREBATE_FEE: 'Maker Order Rewards',
   labelClaimTypeRECOMMENDER_FEE: 'Referral Rewards',
-  labelClaimTypeREFERER_FEE: 'Refunds Rewards',
+  labelClaimTypeREFERER_FEE: 'Referee Refunds',
   labelClaimTypePROTOCOL_FEE: 'Dedicated AMM Incentive',
   labelClaimTypeLRC_STAKING: 'LRC Staking Rewards',
   labelClaimOtherRewards: 'Other Rewards',
@@ -1839,4 +1839,7 @@ export default {
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
+  labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
+  labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
+  labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
 }

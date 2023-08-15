@@ -689,7 +689,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       setShowSupport({ isShow: true })
       setIsMarketLoading(false)
     } else if (!order.enable) {
-      setShowTradeIsFrozen({ isShow: true, type: 'Limit' })
+      setShowTradeIsFrozen({ isShow: true, type: 'Market' })
       setIsMarketLoading(false)
     } else {
       doShowAlert()

@@ -12,7 +12,7 @@ const initialState: SystemStatus = {
   gasPrice: -1,
   forexMap: {} as ForexMap<any>,
   __timer__: -1,
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
   allowTrade: {
     defiInvest: { enable: false },

@@ -18,12 +18,12 @@ import { css } from '@emotion/react'
 
 export const inputHeightLarge = () => css`
   height: var(--input-height-large);
-  font-size: 2rem;
+  font-size: 1.5rem;
 
   .MuiInputAdornment-root {
     svg {
-      height: var(--btn-icon-size);
-      width: var(--btn-icon-size);
+      height: var(--btn-icon-size-large);
+      width: var(--btn-icon-size-large);
     }
   }
 `

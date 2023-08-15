@@ -6,7 +6,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 const initialState: AmountStates = {
   amountMap: undefined,
   __timerMap__: undefined,
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
 }
 export type AmountMap = sdk.LoopringMap<sdk.TokenAmount>
