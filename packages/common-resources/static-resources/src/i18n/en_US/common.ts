@@ -1848,4 +1848,5 @@ export default {
     'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
+  labelLeverageETHStakingDes: 'Gain higher APY aggressively',
 }

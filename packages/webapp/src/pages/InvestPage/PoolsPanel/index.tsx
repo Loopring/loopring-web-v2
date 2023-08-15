@@ -61,7 +61,7 @@ export const PoolsPanel = withTranslation('common')(
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
-        <MaxWidthContainer background={'var(--color-box-secondary)'}>
+        <MaxWidthContainer minHeight={'70vh'} background={'var(--color-box-secondary)'}>
           <PoolsTable
             {...{
               ...poolTableProps,

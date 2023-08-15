@@ -307,7 +307,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const theme = useTheme()
 
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+    <Box display={'flex'} flexDirection={'column'} flex={1}>
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
@@ -327,7 +327,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         <img src={SoursURL + 'images/earn-staking-title.svg'} />
       </MaxWidthContainer>
 
-      <MaxWidthContainer background={'var(--color-box-secondary)'}>
+      <MaxWidthContainer minHeight={'80vh'} background={'var(--color-box-secondary)'}>
         <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
           {t("labelInvestChoseProduct")}
         </Typography>

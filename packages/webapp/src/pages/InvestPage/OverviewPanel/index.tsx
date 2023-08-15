@@ -61,11 +61,12 @@ const WrapperStyled = styled(Box)`
       background: var(--color-box-hover);
       box-shadow: var(--color-shadow);
       .hover-button {
-        color: var(--color-text-button)};
+        color: var(--color-text-button);
         background: var(--color-primary);
       }
     }
   }
+
   .scroll-view::-webkit-scrollbar {
     display: none;
   }
@@ -97,7 +98,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   
   return (
     <>
-      <WrapperStyled marginBottom={3}>
+      <WrapperStyled >
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
@@ -134,7 +135,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             />
           </Box>
         </MaxWidthContainer>
-        <MaxWidthContainer marginTop={5} background={'var(--color-box-secondary)'}>
+        <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={'var(--color-box-secondary)'}>
           <Box
             sx={{
               width: '100%',
@@ -147,7 +148,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             <Box sx={{ display: 'flex', width: 'fit-content' }}>
               {investAdviceList.map((item, index) => {
                 return (
-                  <Card onClick={() => history.push(item.router)} sx={{ marginRight: 2.5 }}>
+                  <Card key={item.type} onClick={() => history.push(item.router)} sx={{ marginRight: 2.5 }}>
                     <CardContent>
                       <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
                         <Avatar

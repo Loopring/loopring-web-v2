@@ -116,103 +116,7 @@ export const DualListPanel: any = withTranslation('common')(
     const marketsIsLoading = status === 'PENDING'
 
     return (
-      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-        {false && (
-          <Box
-            marginBottom={2}
-            display={'flex'}
-            justifyContent={'space-between'}
-            alignItems={isMobile ? 'left' : 'center'}
-            flexDirection={isMobile ? 'column' : 'row'}
-          >
-            <Button
-              startIcon={<BackIcon fontSize={'small'} />}
-              variant={'text'}
-              size={'medium'}
-              sx={
-                isMobile
-                  ? {
-                      color: 'var(--color-text-secondary)',
-                      justifyContent: 'left',
-                    }
-                  : { color: 'var(--color-text-secondary)' }
-              }
-              color={'inherit'}
-              onClick={() => history.push('/invest/overview')}
-            >
-              {t('labelInvestDualTitle')}
-            </Button>
-            <Box
-              display={'flex'}
-              flexDirection={'row'}
-              marginTop={isMobile ? 2 : 'inherit'}
-              width={isMobile ? '100%' : 'initial'}
-              justifyContent={'space-between'}
-            >
-              {!isMobile && (
-                <NoMaxWidthTooltip
-                  open={showBeginnerModeHelp}
-                  componentsProps={{
-                    arrow: { style: { color: theme.colorBase.popBg } },
-                  }}
-                  title={
-                    <Box marginX={4} marginY={2.5} display={'flex'} alignItems={'center'}>
-                      <Box marginRight={2.5}>
-                        <HelpIcon fontSize={'large'} />
-                      </Box>
-                      <Box>
-                        <Typography color={theme.colorBase.textSecondary}>
-                          {t('labelInvestDualBeginerModeDesLine1')}
-                        </Typography>
-                        <Typography color={theme.colorBase.textSecondary}>
-                          {t('labelInvestDualBeginerModeDesLine2')}
-                        </Typography>
-                      </Box>
-                      <TopRightButton
-                        size={'large'}
-                        aria-label={t('labelClose')}
-                        color={'inherit'}
-                        onClick={() => {
-                          onShowBeginnerModeHelp(false)
-                        }}
-                      >
-                        <CloseIcon />
-                      </TopRightButton>
-                    </Box>
-                  }
-                  arrow
-                >
-                  <FormControlLabel
-                    control={<Switch checked={beginnerMode} onChange={onToggleBeginnerMode} />}
-                    label={
-                      <Typography variant={'h6'} marginLeft={1}>
-                        {t('labelInvestDualBeginerMode')}
-                      </Typography>
-                    }
-                  />
-                </NoMaxWidthTooltip>
-              )}
-              <Button
-                startIcon={<HelpIcon fontSize={'large'} />}
-                variant={'text'}
-                onClick={() => {
-                  window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')
-                  window.opener = null
-                }}
-                sx={{ color: 'var(--color-text-secondary)' }}
-              >
-                {t('labelInvestDualTutorial')}
-              </Button>
-              <Button
-                variant={'outlined'}
-                sx={{ marginLeft: 2 }}
-                onClick={() => history.push('/invest/balance/dual')}
-              >
-                {t('labelInvestMyDual')}
-              </Button>
-            </Box>
-          </Box>
-        )}
+      <Box display={'flex'} flexDirection={'column'} flex={1} >
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
@@ -242,7 +146,7 @@ export const DualListPanel: any = withTranslation('common')(
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
-        <MaxWidthContainer background={theme.colorBase.boxSecondary} marginTop={5}>
+        <MaxWidthContainer background={theme.colorBase.boxSecondary} minHeight={'70vh'} paddingY={5}>
           {beginnerMode ? (
             <BeginnerMode setConfirmDualInvest={setConfirmDualInvest} />
           ) : marketsIsLoading ? (

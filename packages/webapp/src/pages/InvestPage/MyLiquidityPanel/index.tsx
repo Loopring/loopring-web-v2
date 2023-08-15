@@ -326,7 +326,7 @@ const MyLiquidity: any = withTranslation('common')(
           </Box>
         </MaxWidthContainer>
 
-        <MaxWidthContainer marginBottom={3} marginTop={3} background={'var(--color-box-secondary)'}>
+        <MaxWidthContainer marginBottom={3} marginTop={3} minHeight={'80vh'} background={'var(--color-box-secondary)'} >
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
           !(leverageETHAssets?.length > 0) &&
@@ -421,7 +421,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {_tab === 'staking' && (
+              {_tab === 'lido' && (
                 <TableWrapStyled
                   ref={sideStakeRef}
                   className={`table-divide-short MuiPaper-elevation2 min-height`}
@@ -562,7 +562,7 @@ const MyLiquidity: any = withTranslation('common')(
                   />
                 </TableWrapStyled>
               )}
-              {_tab === 'lido' && (
+              {_tab === 'staking' && (
                 <TableWrapStyled
                   ref={stakingRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
