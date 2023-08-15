@@ -94,13 +94,13 @@ export const StackTradePanel = ({
           <MaxWidthContainer
             display={'flex'}
             justifyContent={'space-between'}
-            background={theme.colorBase.box}
+            background={'var(--color-box)'}
           >
             <Box paddingY={7}>
               <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
                 {t("labelInvestLRCTitle")}
               </Typography>
-              <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
+              <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
                 {t("labelInvestLRCDes")}
               </Typography>
               <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
@@ -109,7 +109,7 @@ export const StackTradePanel = ({
             </Box>
             <img src={SoursURL + 'images/earn-staking-title.svg'} />
           </MaxWidthContainer>
-          <MaxWidthContainer background={theme.colorBase.boxSecondary} marginTop={5}>
+          <MaxWidthContainer background={'var(--color-box-secondary)'} marginTop={5}>
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}

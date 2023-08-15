@@ -46,22 +46,22 @@ const WrapperStyled = styled(Box)`
     cursor: pointer;
     background: var(--dark700);
     border: 1px solid;
-    border-color: ${({ theme }) => theme.colorBase.border};
+    border-color: var(--color-border);
     width: ${({ theme }) => 35 * theme.unit}px;
     .MuiCardContent-root {
       padding: 0;
     }
     box-shadow: none;
     .hover-button {
-      background: ${({ theme }) => theme.colorBase.buttonInactive};
-      color: ${({ theme }) => theme.colorBase.textPrimary};
+      background: var(--color-button-inactive);
+      color: var(--color-text-primary);
     }
     :hover {
       background: var(--color-box-hover);
-      box-shadow: ${({ theme }) => theme.colorBase.shadow};
+      box-shadow: var(--color-shadow);
       .hover-button {
-        color: ${({ theme }) => theme.colorBase.textButton};;
-        background: ${({ theme }) => theme.colorBase.primary};
+        color: var(--color-text-button)};
+        background: var(--color-primary);
       }
     }
   }
@@ -94,18 +94,18 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={theme.colorBase.box}
+          background={'var(--color-box)'}
         >
           <Box paddingY={7}>
             <Typography
-              color={theme.colorBase.textPrimary}
+              color={'var(--color-text-primary)'}
               marginBottom={2}
               fontSize={'48px'}
               variant={'h1'}
             >
               {t("labelInvestLoopringEarn")}
             </Typography>
-            <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
+            <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
               {t("labelInvestLoopringEarnDes")}
             </Typography>
             <Button
@@ -127,7 +127,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             />
           </Box>
         </MaxWidthContainer>
-        <MaxWidthContainer marginTop={5} background={theme.colorBase.boxSecondary}>
+        <MaxWidthContainer marginTop={5} background={'var(--color-box-secondary)'}>
           <Box
             sx={{
               width: '100%',

@@ -311,13 +311,13 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
-        background={theme.colorBase.box}
+        background={'var(--color-box)'}
       >
         <Box paddingY={7}>
           <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
             {t("labelInvestDefiTitle")}
           </Typography>
-          <Typography marginBottom={3} color={theme.colorBase.textSecondary} variant={'h4'}>
+          <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
             {t("labelInvestDefiDes")}
           </Typography>
           <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
@@ -327,7 +327,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         <img src={SoursURL + 'images/earn-staking-title.svg'} />
       </MaxWidthContainer>
 
-      <MaxWidthContainer background={theme.colorBase.boxSecondary}>
+      <MaxWidthContainer background={'var(--color-box-secondary)'}>
         <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
           {t("labelInvestChoseProduct")}
         </Typography>

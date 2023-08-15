@@ -63,7 +63,6 @@ import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { MaxWidthContainer } from '..'
-import { ColorBlack } from '@loopring-web/common-resources/static-resources/src/themes/css/color-lib'
 
 const StyleWrapper = styled(Grid)`
   position: relative;
@@ -73,7 +72,7 @@ const StyleWrapper = styled(Grid)`
 ` as typeof Grid
 
 const Tab = styled(Box)<{ selected: boolean }>`
-  background: ${({ selected, theme }) => `${selected ? theme.colorBase.primary : 'transparent'}`};
+  background: ${({ selected, theme }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
   padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
   border-radius: ${({ theme }) => 0.5 * theme.unit}px;
   font-size: 16px;
@@ -272,7 +271,7 @@ const MyLiquidity: any = withTranslation('common')(
     myLog('visibaleTabs _tab', _tab)
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        <MaxWidthContainer background={theme.colorBase.box}>
+        <MaxWidthContainer background={'var(--color-box)'}>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Box paddingY={7}>
               <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
@@ -283,10 +282,10 @@ const MyLiquidity: any = withTranslation('common')(
               </Button>
             </Box>
             <Box
-              sx={{ background: theme.colorBase.boxSecondary }}
+              sx={{ background: 'var(--color-box-secondary)'  }}
               width={40 * theme.unit}
               border={'1px solid'}
-              borderColor={ theme.colorBase.border }
+              borderColor={'var(--color-border)'}
               borderRadius={0.5}
               paddingX={3}
               paddingY={4}
@@ -295,7 +294,7 @@ const MyLiquidity: any = withTranslation('common')(
               marginRight={10}
             >
               <Box>
-                <Typography marginBottom={2} color={theme.colorBase.textThird} variant={'h6'}>
+                <Typography marginBottom={2} color={'var(--color-text-third)'} variant={'h6'}>
                   {t("labelTotalPositionValue")}
                 </Typography>
                 <Typography>
@@ -316,7 +315,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Typography>
               </Box>
               <Box>
-                <Typography color={theme.colorBase.textThird} marginBottom={2} variant={'h6'}>
+                <Typography color={'var(--color-text-third)'} marginBottom={2} variant={'h6'}>
                   {t("labelInvestTotalEarnings")}
                 </Typography>
                 <Typography>{'$326,45.00'}</Typography>
@@ -325,7 +324,7 @@ const MyLiquidity: any = withTranslation('common')(
           </Box>
         </MaxWidthContainer>
 
-        <MaxWidthContainer marginBottom={3} marginTop={3} background={theme.colorBase.boxSecondary}>
+        <MaxWidthContainer marginBottom={3} marginTop={3} background={'var(--color-box-secondary)'}>
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
           !(stakingList?.length > 0) &&
