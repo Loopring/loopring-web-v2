@@ -149,7 +149,7 @@ export const ShareModal = withTranslation('common')(
             shareOnTwitter(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs, link)
             break
           case  SOCIAL_NAME_KEYS.Email:
-            shareViaEmail(message, imageList[ selected ].imageUrl)
+            shareViaEmail(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs, imageList[ selected ].width, imageList[ selected ].height)
             break
           case 'download':
             shareDownload(imageList[ selected ].name ?? 'LoopringReferral.png', imageList[ selected ].imageUrl)
