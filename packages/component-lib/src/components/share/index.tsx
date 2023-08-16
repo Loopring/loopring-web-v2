@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { ShareProps } from './Interface'
 import { Box, IconButton, Modal, Typography } from '@mui/material'
 import {
-  DownloadIcon, shareDownload, shareOnFacebook, shareOnTwitter, shareViaEmail,
+  DownloadIcon, ExchangeIO, shareDownload, shareOnFacebook, shareOnTwitter, shareViaEmail,
   SOCIAL_NAME_KEYS,
   SoursURL
 } from '@loopring-web/common-resources'
@@ -11,7 +11,7 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { ModalCloseButton } from '../basic-lib'
 import { Carousel, CarouselItem } from '../carousel'
 import React from 'react';
-import { IpfsProvides, useIPFS } from '@loopring-web/core';
+import { IpfsProvides } from '@loopring-web/core';
 
 const StyleBox = styled(Box)`
   .shareContainer {
@@ -124,6 +124,7 @@ export const ShareModal = withTranslation('common')(
     onClick,
      message = '',
      ipfsProvides,
+     link = ExchangeIO,
     ...rest
   }: WithTranslation & {
     open: boolean
@@ -134,6 +135,7 @@ export const ShareModal = withTranslation('common')(
     imageList: CarouselItem[]
     message: string
     ipfsProvides: IpfsProvides,
+    link,
   }) => {
 
     const [selected, setSelected] = React.useState<number>(0)
@@ -141,10 +143,10 @@ export const ShareModal = withTranslation('common')(
       if (imageList[ selected ]) {
         switch (SOCIAL_NAME) {
           case  SOCIAL_NAME_KEYS.Facebook:
-            shareOnFacebook(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs)
+            shareOnFacebook(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs, link)
             break
           case  SOCIAL_NAME_KEYS.Twitter:
-            shareOnTwitter(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs)
+            shareOnTwitter(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs, link)
             break
           case  SOCIAL_NAME_KEYS.Email:
             shareViaEmail(message, imageList[ selected ].imageUrl)

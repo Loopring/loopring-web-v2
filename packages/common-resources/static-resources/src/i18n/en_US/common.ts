@@ -1843,5 +1843,5 @@ export default {
   labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
   labelDownloadShared: 'Download',
   labelShareReferralCode: 'Share to',
-  labelShareMessage: "Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/invite?ref={{code}}"
+  labelShareMessage: "Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}"
 }

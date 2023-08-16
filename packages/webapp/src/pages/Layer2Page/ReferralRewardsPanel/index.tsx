@@ -354,6 +354,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
           onClose={() => setOpen(false)}
           imageList={images}
           ipfsProvides={ipfsProvides}
+          link={ExchangeIO + `?referralcode=${account?.accountId}`}
         />
         <Box className={'bg'} marginY={3} display={'flex'}>
           <Box width={isMobile ? '100%' : '65%'}>

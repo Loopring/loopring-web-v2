@@ -73,14 +73,14 @@ export const SOCIAL_LIST = [
 // ])
 
 
-export const shareOnTwitter = async (message: string, image: string, ipfs?: IPFSHTTPClient, _url: string = ExchangeIO) => {
+export const shareOnTwitter = async (message: string, image: string, ipfs?: IPFSHTTPClient, url: string = ExchangeIO) => {
   let ipfsUrl = ''
   if (ipfs) {
     const {cid} = await ipfs.add(Buffer.from(image.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''), 'base64'))
     ipfsUrl = `${IPFS_LOOPRING_SITE}${cid}`;
   }
   myLog('ipfsUrl', ipfsUrl)
-  const tweetText = encodeURIComponent(`${message}\n\nImage: ${ipfsUrl}`);
+  const tweetText = encodeURIComponent(`${message}\n\nImage: ${ipfsUrl}\n\nWebsite: ${url}`);
   const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
   window.open(twitterUrl, '_blank');
 };
