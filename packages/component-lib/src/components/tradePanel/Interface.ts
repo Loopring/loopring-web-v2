@@ -10,6 +10,8 @@ import {
   TradeBaseType,
   TradeCalcProData,
   TradeProType,
+  WithdrawType,
+  WithdrawTypes,
 } from '@loopring-web/common-resources'
 import {
   BasicACoinTradeHookProps,
@@ -38,7 +40,7 @@ import {
   TradeMarketInfoProps,
   TradeProBaseEventProps,
 } from './tradePro/Interface'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { TOASTOPEN } from '../toast'
 
 export type SwapTradeData<T> = {
@@ -213,6 +215,27 @@ export type ModalPanelProps = {
   content: JSX.Element
   _height?: number | string
   _width?: number | string
+}
+
+export type FeeSelectProps = {
+  chargeFeeTokenList: FeeInfo[]
+  handleToggleChange: (value: FeeInfo) => void
+  feeInfo?: FeeInfo
+  disableNoToken?: boolean
+  open: boolean
+  onClose: () => void
+  onClickFee: () => void
+  feeLoading: boolean
+  isFeeNotEnough: boolean
+  isFastWithdrawAmountLimit?: boolean
+  withdrawInfos?: {
+    types: Partial<WithdrawTypes>
+    type: WithdrawType
+    onChangeType: (w: WithdrawType) => void
+  }
+  floatLeft?: boolean
+  middleContent?: ReactNode
+  feeNotEnoughContent?: ReactNode
 }
 
 export * from './components/Interface'

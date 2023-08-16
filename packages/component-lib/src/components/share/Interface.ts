@@ -1,27 +1,16 @@
-export type SocialButtonProps = {
-  url: string
-  /** Social Network Enum */
-  socialEnum: string
-  /** Message to be shared */
-  message?: string
-  /** Button size in pixels */
-  size?: number
+import { SOCIAL_NAME_KEYS } from '@loopring-web/common-resources';
 
-  imageUrl?: string
-  /** Function that sends share event to analytics */
-  sendShareEvent: () => void
+export type SocialButtonProps = {
+  /** Social Network Enum */
+  socialEnum: SOCIAL_NAME_KEYS
+  size?: number
+  sendShareEvent: (key: SOCIAL_NAME_KEYS) => void
 }
 
 export type ShareProps = {
-  /** Social Networks configuration */
-  social: SocialButtonProps
+  social: { [key in Partial<SOCIAL_NAME_KEYS>]: SocialButtonProps }
   size: number
-  /** share URL title */
-  title: string
-  /** Indcates if the component should render the Content Loader */
   loading: boolean
-
   imageUrl: string
-  /** Function that sends share event to analytics */
-  sendShareEvent: () => {}
+  direction?: 'row' | 'column'
 }

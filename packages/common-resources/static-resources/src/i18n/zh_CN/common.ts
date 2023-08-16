@@ -1809,11 +1809,13 @@ export default {
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
+  labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelLeverageETHStakingDes: 'Gain higher APY aggressively',
 }

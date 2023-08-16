@@ -202,7 +202,6 @@ export const useTradeRace = () => {
         clearTimeout(nodeTimer.current as NodeJS.Timeout)
       }
       nodeTimer.current = setTimeout(calculateTimeLeft, 1000)
-
     }
 
   }, [eventData, eventStatus])

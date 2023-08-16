@@ -49,8 +49,8 @@ export default {
   depositLabelPlaceholder: 'address, Account ID or ENS',
   withdrawDescription:
     'Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the {{l1ChainName}} gas price exceeds 500 GWei.）',
-  withdrawTypeLabelFast: 'Fast (15 seconds at the earliest)',
-  withdrawTypeLabelStandard: 'Standard (about 25 minutes)',
+  withdrawTypeLabelFast: 'Fast ~15 seconds',
+  withdrawTypeLabelStandard: 'Standard ~25 minutes',
   labelConnectWallet: 'Connect wallet',
 
   labelCustomer: 'Custom',
@@ -1849,4 +1849,8 @@ export default {
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
   labelLeverageETHStakingDes: 'Gain higher APY aggressively',
+  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
+  labelDownloadShared: 'Download',
+  labelShareReferralCode: 'Share to',
+  labelShareMessage: "Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}"
 }
