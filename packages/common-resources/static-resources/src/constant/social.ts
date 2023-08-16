@@ -100,18 +100,19 @@ export const shareOnFacebook = async (message: string, image: string, ipfs?: IPF
   window.open(facebookUrl, '_blank');
 }
 
-export const shareViaEmail = async (message: string, image: string, ipfs?: IPFSHTTPClient, width = '315', height = '440') => {
+export const shareViaEmail = async (message: string, image: string, ipfs?: IPFSHTTPClient, _width = '315', _height = '440') => {
   const emailSubject = encodeURIComponent("Join me at Loopring and earn exclusive rewards");
-  let ipfsUrl = ''
-  if (ipfs) {
-    const {cid} = await ipfs.add(Buffer.from(image.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''), 'base64'))
-    ipfsUrl = `${IPFS_LOOPRING_SITE}${cid}`;
-  }
-  myLog('ipfsUrl', ipfsUrl)
+  // let ipfsUrl = ''
+  // if (ipfs) {
+  //   const {cid} = await ipfs.add(Buffer.from(image.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''), 'base64'))
+  //   ipfsUrl = `${IPFS_LOOPRING_SITE}${cid}`;
+  // }
+  // myLog('ipfsUrl', ipfsUrl)
+  // </br> <img src="${ipfsUrl}" alt="" width="${width}" height="${height}" />
   const emailBody = encodeURIComponent(
-    ` <img src="${ipfsUrl}" alt="" width="${width}" height="${height}" />`
+    `${message}`
   );
-  const mailtoUrl = `mailto:?subject=${emailSubject}&body=${encodeURIComponent(message)}${emailBody}`;
+  const mailtoUrl = `mailto:?subject=${emailSubject}&body=${emailBody}`;
   window.open(mailtoUrl, '_blank');
 };
 
