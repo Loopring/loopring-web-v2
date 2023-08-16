@@ -206,7 +206,6 @@ export const Carousel = ({
                             handleSelected(selected === 0 ? imageList.length - 1 : selected - 1)
                           }
                         }
-                        // htmlFor={`${preStr}${index == 0 ? imageList.length : index}`}
                         className='prev-slide'
                       >
                         <span>&lsaquo;</span>
@@ -238,7 +237,6 @@ export const Carousel = ({
                         handleSelected(index)
                       }
                     }
-                    // htmlFor={`${preStr}${index + 1}`}
                     className='carousel-dot'
                     id={`${preStr}dot-${index + 1}`}
                   />

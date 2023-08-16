@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { ShareProps } from './Interface'
 import { Box, IconButton, Modal, Typography } from '@mui/material'
 import {
-  DownloadIcon,
+  DownloadIcon, shareDownload, shareOnFacebook, shareOnTwitter, shareViaEmail,
   SOCIAL_NAME_KEYS,
   SoursURL
 } from '@loopring-web/common-resources'
@@ -11,6 +11,7 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { ModalCloseButton } from '../basic-lib'
 import { Carousel, CarouselItem } from '../carousel'
 import React from 'react';
+import { IpfsProvides, useIPFS } from '@loopring-web/core';
 
 const StyleBox = styled(Box)`
   .shareContainer {
@@ -121,6 +122,8 @@ export const ShareModal = withTranslation('common')(
     imageList,
     className = '',
     onClick,
+     message = '',
+     ipfsProvides,
     ...rest
   }: WithTranslation & {
     open: boolean
@@ -129,14 +132,28 @@ export const ShareModal = withTranslation('common')(
     className?: string
     loading: boolean
     imageList: CarouselItem[]
+    message: string
+    ipfsProvides: IpfsProvides,
   }) => {
 
     const [selected, setSelected] = React.useState<number>(0)
-    const sendShareEvent = (SOCIAL_NAME: SOCIAL_NAME_KEYS) => {
-      switch (SOCIAL_NAME) {
-        case  SOCIAL_NAME_KEYS.Facebook:
-        case  SOCIAL_NAME_KEYS.Twitter:
-        case  SOCIAL_NAME_KEYS.WhatsApp:
+    const sendShareEvent = (SOCIAL_NAME: SOCIAL_NAME_KEYS | 'download') => {
+      if (imageList[ selected ]) {
+        switch (SOCIAL_NAME) {
+          case  SOCIAL_NAME_KEYS.Facebook:
+            shareOnFacebook(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs)
+            break
+          case  SOCIAL_NAME_KEYS.Twitter:
+            shareOnTwitter(message, imageList[ selected ].imageUrl, ipfsProvides.ipfs)
+            break
+          case  SOCIAL_NAME_KEYS.Email:
+            shareViaEmail(message, imageList[ selected ].imageUrl)
+            break
+          case 'download':
+            shareDownload(imageList[ selected ].name ?? 'LoopringReferral.png', imageList[ selected ].imageUrl)
+            break
+        }
+
       }
 
     }
@@ -177,7 +194,9 @@ export const ShareModal = withTranslation('common')(
             paddingY={3}
             overflow={'scroll'}
           >
-            <Carousel selected={selected} loading={loading} imageList={imageList} handleSelected={setSelected}/>
+            <Carousel selected={selected} loading={loading} imageList={imageList} handleSelected={
+              setSelected
+            }/>
             <Box display={'flex'}
                  flexDirection={'row'}
                  justifyContent={'center'}
@@ -196,7 +215,7 @@ export const ShareModal = withTranslation('common')(
                     sendShareEvent,
                   },
                   [ SOCIAL_NAME_KEYS.WhatsApp ]: {
-                    socialEnum: SOCIAL_NAME_KEYS.WhatsApp,
+                    socialEnum: SOCIAL_NAME_KEYS.Email,
                     sendShareEvent,
                   },
 
@@ -204,8 +223,9 @@ export const ShareModal = withTranslation('common')(
               />
               <IconButton
                 className={'btn'}
-
-                size={'large'} onClick={onClick}>
+                size={'large'} onClick={() => {
+                sendShareEvent('download')
+              }}>
                 <DownloadIcon htmlColor={'var(--color-text-button)'}/>
               </IconButton>
               {/*<Button*/}

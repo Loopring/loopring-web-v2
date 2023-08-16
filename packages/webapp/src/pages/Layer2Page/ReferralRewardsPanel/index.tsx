@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useAccount, useSubmitBtn, useToast } from '@loopring-web/core'
+import { useAccount, useIPFS, useSubmitBtn, useToast } from '@loopring-web/core'
 import {
   AccountStatus,
   AssetTabIndex,
@@ -128,7 +128,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ]
   const [open, setOpen] = React.useState(false)
   const [images, setImages] = React.useState<CarouselItem[]>([])
-
+  const [loading, setLoading] = React.useState(true)
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
     referralBanners: {
@@ -139,16 +139,33 @@ const ReferHeader = <R extends ImageReferralBanner>({
       code: {default: [48, 30, 230, 64, '#000000', 630, 880]},
     },
   })
+  const {btnStatus, onBtnClick, btnLabel} = useSubmitBtn({
+    availableTradeCheck: () => {
+      return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+    },
+    isLoading: loading,
+    submitCallback: async () => {
+      setOpen(true)
+      // Carousel
+      // onDownloadImage();
+    },
+  })
   // const [images, setImages] = React.useState<JSX.Element[]>([]);
   React.useEffect(() => {
     fetch(`${url_path}/referral/information.json`)
       .then((response) => response.json())
       .then((result) => {
         if (result.referralBanners) {
-          setImageList(result)
-          renderImage(result)
+          try {
+            setImageList(result)
+            renderImage(result)
+          } catch (error) {
+            setLoading(false)
+          }
         }
-      })
+      }).catch(() => {
+      setLoading(false)
+    })
   }, [])
   const renderImage = React.useCallback(
     (imageList: R) => {
@@ -198,7 +215,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
 
           // myLog('imageUrl createObjectURL', canvas.toDataURL())
-          images.push({imageUrl: canvas.toDataURL(), size: [width / 2, height / 2]})
+          images.push({imageUrl: canvas.toDataURL(), size: [width / 2, height / 2], name: (item ?? '/').split('/')?.pop()})
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
 
@@ -217,6 +234,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
           // }, 'image/png')
         }
       })
+      setLoading(false)
     },
     [imageList, account],
   )
@@ -278,16 +296,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
       }
     })
   }
-  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
-    availableTradeCheck: () => {
-      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
-    },
-    isLoading: false,
-    submitCallback: async () => {
-      setOpen(true)
-      // Carousel
-      // onDownloadImage();
-    },
+
+  const {ipfsProvides} = useIPFS({
+    handleSuccessUpload: () => undefined,
+    handleFailedUpload: () => undefined,
   })
 
   const label = React.useMemo(() => {
@@ -337,9 +349,11 @@ const ReferHeader = <R extends ImageReferralBanner>({
         <ShareModal
           onClick={() => onDownloadImage()}
           open={open}
-          loading={false}
+          message={t("labelShareMessage", {code: account?.accountId})}
+          loading={btnStatus === TradeBtnStatus.LOADING}
           onClose={() => setOpen(false)}
           imageList={images}
+          ipfsProvides={ipfsProvides}
         />
         <Box className={'bg'} marginY={3} display={'flex'}>
           <Box width={isMobile ? '100%' : '65%'}>
