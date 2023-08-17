@@ -117,6 +117,7 @@ export const WithdrawWrap = <
   }, [disabled, withdrawBtnStatus])
   const inputButtonDefaultProps = {
     label: t('labelL2toL1EnterToken'),
+    loading: isFeeNotEnough.isOnLoading,
   }
 
   const handleToggleChange = (value: C) => {
@@ -278,6 +279,7 @@ export const WithdrawWrap = <
               type,
               t,
               disabled,
+              // loading:isFeeNotEnough.isOnLoading,
               walletMap,
               tradeData,
               coinMap,

@@ -5,7 +5,6 @@ import { AddressType } from '@loopring-web/loopring-sdk'
 export type DisplayContact = {
   name: string
   address: string
-  avatarURL: string
   editing: boolean
   addressType: AddressType
 }

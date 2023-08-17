@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   LoopringAPI,
   RootState,
@@ -14,11 +14,12 @@ import {
   ToastType,
   TransactionStatus,
   useOpenModals,
+  useSettings,
 } from '@loopring-web/component-lib'
 import { createImageFromInitials } from './genAvatar'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
-import { SDK_ERROR_MAP_TO_UI } from '@loopring-web/common-resources'
+import { NetworkMap, SDK_ERROR_MAP_TO_UI, myLog } from '@loopring-web/common-resources'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { debounce, uniqBy } from 'lodash'
 import { useSelector } from 'react-redux'
@@ -44,7 +45,6 @@ const checkIsHebao = (accountAddress: string) =>
 type DisplayContact = {
   name: string
   address: string
-  avatarURL: string
   editing: boolean
   addressType: sdk.AddressType
 }
@@ -73,7 +73,6 @@ const getAllContacts = async (
         return {
           name: contact.contactName,
           address: contact.contactAddress,
-          avatarURL: createImageFromInitials(32, contact.contactName, color),
           editing: false,
           addressType: contact.addressType,
         } as DisplayContact
@@ -315,6 +314,7 @@ export const useContact = () => {
     [apiKey, contacts],
   )
   const [addLoading, setAddLoading] = React.useState(false)
+  const { defaultNetwork } = useSettings()
   const submitAddContact = React.useCallback(
     async (address: string, name: string, callBack: (success: boolean) => void) => {
       setAddLoading(true)
@@ -325,6 +325,7 @@ export const useContact = () => {
           isHebao,
           contactAddress: address,
           contactName: name,
+          network: NetworkMap[defaultNetwork].walletType
         },
         apiKey,
       )
@@ -335,7 +336,9 @@ export const useContact = () => {
             })
             .then((response2) => {
               let addressType: sdk.AddressType | undefined = undefined
-              if (response2.walletType?.loopringWalletContractVersion) {
+              if (response2.walletType?.isInCounterFactualStatus) {
+                addressType = sdk.AddressType.LOOPRING_HEBAO_CF
+              } else if (response2.walletType?.loopringWalletContractVersion) {
                 const map: [string, sdk.AddressType][] = [
                   ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
                   ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
@@ -345,8 +348,6 @@ export const useContact = () => {
                 addressType = map.find(
                   (x) => x[0] === response2.walletType?.loopringWalletContractVersion,
                 )![1]
-              } else if (response2.walletType?.isInCounterFactualStatus) {
-                addressType = sdk.AddressType.LOOPRING_HEBAO_CF
               } else if (response2.walletType?.isContract) {
                 addressType = sdk.AddressType.CONTRACT
               }
@@ -401,6 +402,7 @@ export const useContact = () => {
           }
         })
         .catch((e) => {
+          debugger
           if (e === 'contact already existed') {
             callBack(false)
             setToastInfo({
@@ -492,22 +494,48 @@ export const useContactAdd = () => {
   const [ensResolvedAddress, setEnsResolvedAddress] = useState(
     undefined as undefined | false | string,
   )
-  const addButtonDisable = (!utils.isAddress(addAddress) && !ensResolvedAddress) || addName === ''
-  const debounceCheckEns = debounce((input: string) => {
-    ;(connectProvides.usedWeb3
-      ? connectProvides.usedWeb3.eth.ens.getAddress(input)
-      : Promise.reject('no web3')
-    )
-      .then((addressResovled: string) => {
-        setEnsResolvedAddress(addressResovled)
-      })
-      .catch((e) => {
-        setEnsResolvedAddress(false)
-      })
-  }, 100)
+  const [asyncCheckInvalid, setAsyncCheckInvalid] = React.useState(true)
+  const addButtonDisable =
+    (!utils.isAddress(addAddress) && !ensResolvedAddress) || addName === '' || asyncCheckInvalid
+  const ref = useRef<(input: string) => void>()
+  const { defaultNetwork } = useSettings()
+  useEffect(() => {
+    ref.current = debounce((input: string) => {
+      ;(connectProvides.usedWeb3
+        ? connectProvides.usedWeb3.eth.ens.getAddress(input)
+        : Promise.reject('no web3')
+      )
+        .then((addressResovled: string) => {
+          setEnsResolvedAddress(addressResovled)
+        })
+        .catch((e) => {
+          setEnsResolvedAddress(false)
+        })
+      setAsyncCheckInvalid(true)
+      LoopringAPI.walletAPI
+        ?.getWalletType({
+          wallet: input,
+          network: sdk.NetworkWallet[NetworkMap[defaultNetwork].walletType],
+        })
+        .then((response) => {
+          const raw_data = response.raw_data
+          if (raw_data) {
+            setAsyncCheckInvalid(
+              response.walletType?.isContract &&
+                !response.walletType?.isInCounterFactualStatus &&
+                !response.walletType?.loopringWalletContractVersion
+                ? true
+                : false,
+            )
+          } else {
+            setAsyncCheckInvalid(true)
+          }
+        })
+    }, 500)
+  }, [setEnsResolvedAddress, setAsyncCheckInvalid])
 
   const onChangeAddress = React.useCallback((input: string) => {
-    debounceCheckEns(input)
+    ref.current && ref.current(input)
     setAddAddress(input)
   }, [])
   const addShowInvalidAddress =
@@ -535,7 +563,7 @@ export const useContactAdd = () => {
 }
 
 export const useContactSend = () => {
-  const [sendNetwork, setSendNetwork] = React.useState('L1' as Network)
+  const [sendNetwork, setSendNetwork] = React.useState('L2' as Network)
   const { setShowTransfer, setShowWithdraw } = useOpenModals()
   const submitSendingContact = React.useCallback(
     (contact: Contact, network: Network, onClose: () => void) => {

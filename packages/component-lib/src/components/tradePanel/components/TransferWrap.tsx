@@ -495,7 +495,11 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
       <Grid item alignSelf={'stretch'} position={'relative'}>
         <TransferAddressType
           detectedWalletType={detectedWalletType!}
-          selectedValue={sureItsLayer2}
+          selectedValue={
+            detectedWalletType === WALLET_TYPE.Loopring && sureItsLayer2 === undefined
+              ? WALLET_TYPE.Loopring
+              : sureItsLayer2
+          }
           handleSelected={handleSureItsLayer2}
           disabled={
             isSameAddress ||

@@ -53,8 +53,8 @@ import {
   volumeToCountAsBigNumber,
   useTokenPrices,
   useIsHebao,
-  useAddressCheckWithContacts,
   createImageFromInitials,
+  useAddressCheck,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
@@ -70,7 +70,6 @@ const checkIsHebao = (accountAddress: string) =>
 type DisplayContact = {
   name: string
   address: string
-  avatarURL: string
   editing: boolean
   addressType: sdk.AddressType
 }
@@ -99,7 +98,6 @@ export const getAllContacts = async (
         return {
           name: contact.contactName,
           address: contact.contactAddress,
-          avatarURL: createImageFromInitials(32, contact.contactName, color),
           editing: false,
           addressType: contact.addressType,
         } as DisplayContact
@@ -186,7 +184,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       memo: e.target.value,
     })
   }, [])
-
+  //TODO
   const {
     address,
     realAddr,
@@ -200,7 +198,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isContractAddress,
     loopringSmartWalletVersion,
     reCheck,
-  } = useAddressCheckWithContacts(true)
+  } = useAddressCheck(true)
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
@@ -686,11 +684,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         accAddress,
         theme.colorBase.warning,
       )
-      updateContacts
       updateContacts(allContacts)
       updateAccountId(accountId)
     } catch (e) {
-      updateContacts([])
+      
     }
   }, [cachedForAccountId, apiKey, accountId, accAddress])
   React.useEffect(() => {

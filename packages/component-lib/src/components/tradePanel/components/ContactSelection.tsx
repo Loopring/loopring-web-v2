@@ -1,10 +1,9 @@
-import { Avatar, Box, Grid, InputAdornment, OutlinedInput, Typography } from '@mui/material'
-import { SearchIcon, CloseIcon, SoursURL } from '@loopring-web/common-resources'
+import { Avatar, Box, BoxProps, InputAdornment, OutlinedInput, Typography } from '@mui/material'
+import { SearchIcon, CloseIcon, SoursURL, hexToRGB } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useEffect, useState } from 'react'
-import { createImageFromInitials } from '@loopring-web/core'
+import { useState } from 'react'
 import { AddressType } from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
 
@@ -12,13 +11,38 @@ type SingleContactProps = {
   editing: boolean
   name: string
   address: string
-  avatarURL: string
   onSelect: (address: string) => void
   hidden: boolean
 }
 
+const AvatarContainer = styled(Box)`
+  background-color: white;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+`
+const getInitials = (name: string) => {
+  let initials
+  const nameSplit = name.split(' ')
+  const nameLength = nameSplit.length
+  if (nameLength > 1) {
+    initials = nameSplit[0].substring(0, 1) + nameSplit[nameLength - 1].substring(0, 1)
+  } else if (nameLength === 1) {
+    initials = nameSplit[0].substring(0, 1)
+  } else return
+
+  return initials.toUpperCase()
+}
+// @ts-ignore
+export const InitialNameAvatar = ({name, ...rest}: {name: string} & BoxProps) => {
+  const theme = useTheme() 
+  return <AvatarContainer {...rest}>
+    <Avatar sx={{bgcolor: hexToRGB(theme.colorBase.warning, 0.5), color: theme.colorBase.warning, fontSize: '16px' }}>{getInitials(name)}</Avatar>
+  </AvatarContainer>
+}
+
 export const SingleContact = (props: SingleContactProps) => {
-  const { editing, name, address, avatarURL, hidden, onSelect } = props
+  const { editing, name, address, hidden, onSelect } = props
   return (
     <Box
       style={{ cursor: 'pointer' }}
@@ -28,10 +52,9 @@ export const SingleContact = (props: SingleContactProps) => {
       onClick={() => {
         onSelect(address)
       }}
-      // onCl
     >
       <Box display={'flex'}>
-        <Avatar sizes={'32px'} src={avatarURL}></Avatar>
+        <InitialNameAvatar name={name}></InitialNameAvatar>
         <Box marginLeft={1}>
           {editing ? (
             <OutlinedInput size={'small'} value={name} />
@@ -76,7 +99,6 @@ export const ContactSelection = (props: ContactSelectionProps) => {
       return {
         name: contact.name,
         address: contact.address,
-        avatarURL: createImageFromInitials(32, contact.name, theme.colorBase.warning)!,
         editing: false,
         addressType: contact.addressType,
       }
@@ -132,7 +154,6 @@ export const ContactSelection = (props: ContactSelectionProps) => {
                   key={contact.address}
                   name={contact.name}
                   address={contact.address}
-                  avatarURL={contact.avatarURL}
                   editing={false}
                   onSelect={onSelect}
                   hidden={contact.addressType === AddressType.OFFICIAL}
