@@ -78,12 +78,14 @@ const MyLiquidity: any = withTranslation('common')(
     isHideTotal,
     hideAssets,
     className,
+    noHeader,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
     className?: string
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
-    hideAssets?: boolean
+    hideAssets?: boolean,
+    noHeader?: boolean,
   }) => {
     let match: any = useRouteMatch('/invest/balance/:type')
     const { search } = useLocation()
@@ -261,13 +263,24 @@ const MyLiquidity: any = withTranslation('common')(
     
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        <MaxWidthContainer background={'var(--color-box)'}>
-          <Box display={'flex'} justifyContent={'space-between'} flexDirection={isMobile ? 'column' : 'row'} alignItems={isMobile ? 'start' : 'center'}>
+        {!noHeader && <MaxWidthContainer background={'var(--color-box)'}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            flexDirection={isMobile ? 'column' : 'row'}
+            alignItems={isMobile ? 'start' : 'center'}
+          >
             <Box paddingY={7}>
               <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
                 {t('labelInvestBalanceTitle')}
               </Typography>
-              <Button sx={{ width: 18 * theme.unit }} variant={'contained'}>
+              <Button
+                onClick={() => {
+                  history.push('/l2assets/history/Transactions')
+                }}
+                sx={{ width: 18 * theme.unit }}
+                variant={'contained'}
+              >
                 {t('labelTxnDetailHeader')}
               </Button>
             </Box>
@@ -324,9 +337,14 @@ const MyLiquidity: any = withTranslation('common')(
               </Box>
             </Box>
           </Box>
-        </MaxWidthContainer>
+        </MaxWidthContainer>}
 
-        <MaxWidthContainer marginBottom={3} marginTop={3} minHeight={'80vh'} background={'var(--color-box-secondary)'} >
+        <MaxWidthContainer
+          marginBottom={3}
+          marginTop={3}
+          minHeight={'80vh'}
+          background={'var(--color-box-secondary)'}
+        >
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
           !(leverageETHAssets?.length > 0) &&
