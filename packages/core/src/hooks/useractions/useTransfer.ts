@@ -70,7 +70,6 @@ const checkIsHebao = (accountAddress: string) =>
 type DisplayContact = {
   name: string
   address: string
-  avatarURL: string
   editing: boolean
   addressType: sdk.AddressType
 }
@@ -99,7 +98,6 @@ export const getAllContacts = async (
         return {
           name: contact.contactName,
           address: contact.contactAddress,
-          avatarURL: createImageFromInitials(32, contact.contactName, color),
           editing: false,
           addressType: contact.addressType,
         } as DisplayContact
@@ -686,7 +684,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         accAddress,
         theme.colorBase.warning,
       )
-      updateContacts
       updateContacts(allContacts)
       updateAccountId(accountId)
     } catch (e) {

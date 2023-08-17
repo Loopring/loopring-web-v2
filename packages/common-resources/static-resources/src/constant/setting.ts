@@ -115,11 +115,13 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         label: 'Ethereum',
         chainId: '1',
         isTest: false,
+        walletType: 'ETHEREUM'
       },
       5: {
         label: 'Görli',
         chainId: '5',
         isTest: true,
+        walletType: 'ETHEREUM'
       },
     },
     ChainTests: [5],

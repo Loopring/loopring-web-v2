@@ -16,7 +16,7 @@ import { LoopringAPI, store, useAccount, useContacts, useIsHebao, useSystem } fr
 import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 
-export const useAddressCheck = (checkEOA: boolean = true) => {
+export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const [address, setAddress] = React.useState<string>('')
   const { t } = useTranslation()
   const _address = React.useRef<string>('')
@@ -43,7 +43,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
     account: { accAddress, apiKey, accountId },
   } = useAccount()
   const { isHebao } = useIsHebao();
-  const { updateContacts, contacts } = useContacts();
+  const { updateContacts } = useContacts();
 
   const check = React.useCallback(async (address: any, web3: any) => {
     try {
@@ -107,37 +107,6 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
                     isLoopringSmartWallet: true,
                     version: walletType.loopringWalletContractVersion,
                   })
-                  const found = contacts?.find((contact) => contact.address === address)
-                  if (found && found.addressType === sdk.AddressType.UNKNOWN_ADDRESS && isHebao) {
-                    const map: [string, sdk.AddressType][] = [
-                      ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
-                      ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
-                      ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
-                      ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
-                    ]
-                    const addressType = map.find(
-                      (x) => x[0] === walletType?.loopringWalletContractVersion,
-                    )![1]
-
-                    LoopringAPI.contactAPI?.updateContact({
-                      contactAddress: found.address,
-                      isHebao,
-                      accountId: accountId,
-                      addressType: addressType,
-                      contactName: found.name,
-                    }, apiKey).then(() => {
-                      updateContacts(
-                        contacts?.map((x) => {
-                          if (x.address === realAddr && found) {
-                            return { ...x, addressType }
-                          } else {
-                            return x
-                          }
-                        }),
-                      )
-                    })
-                  }
-                  
                 } else {
                   setLoopringSmartWalletVersion({
                     isLoopringSmartWallet: false,
@@ -247,7 +216,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
         sdk.AddressType.EXCHANGE_HUOBI,
         sdk.AddressType.EXCHANGE_COINBASE,
         sdk.AddressType.CONTRACT,
-      ].concat(checkEOA ? [sdk.AddressType.EOA] : [])
+      ].concat(checkLayer2Status ? [sdk.AddressType.EOA] : [])
       if (found && listNoCheckRequired.includes(found.addressType)) {
         setRealAddr(address)
         switch (found.addressType) {
@@ -256,7 +225,53 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0: {
-            setIsCFAddress(found.addressType === sdk.AddressType.LOOPRING_HEBAO_CF)
+            if (found.addressType === sdk.AddressType.LOOPRING_HEBAO_CF) {
+              // recheck CF Wallet
+              const walletTypeResponse = await LoopringAPI.walletAPI?.getWalletType({
+                wallet: realAddr,
+                network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
+              })
+              setIsCFAddress(
+                walletTypeResponse?.walletType?.isInCounterFactualStatus ? true : false,
+              )
+              if (
+                !walletTypeResponse?.walletType?.isInCounterFactualStatus &&
+                walletTypeResponse?.walletType?.loopringWalletContractVersion
+              ) {
+                const map: [string, sdk.AddressType][] = [
+                  ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+                  ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+                  ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+                  ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+                ]
+                const addressType = map.find(
+                  (x) => x[0] === walletTypeResponse?.walletType?.loopringWalletContractVersion,
+                )![1]
+                await LoopringAPI.contactAPI?.updateContact(
+                  {
+                    contactAddress: found.address,
+                    isHebao: isHebao ? true : false,
+                    accountId: accountId,
+                    contactName: found.name,
+                    addressType: addressType,
+                  },
+                  apiKey,
+                )
+                const contacts = store.getState().contacts?.contacts
+                updateContacts(
+                  contacts?.map((contact) => {
+                    if (contact.address === found.address) {
+                      return { ...contact, addressType: addressType }
+                    } else {
+                      return contact
+                    }
+                  }),
+                )
+              }
+            } else {
+              setIsCFAddress(false)
+            }
+            
             setIsContractAddress(true)
             setIsContract1XAddress(
               found.addressType === sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6 ||
@@ -267,7 +282,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
               version: undefined,
             })
             setAddrStatus(AddressError.NoError)
-            if (checkEOA) {
+            if (checkLayer2Status) {
               try {
                 const response = await LoopringAPI.exchangeAPI?.getAccount({
                   owner: address, //realAddr != "" ? realAddr : address,
@@ -332,7 +347,7 @@ export const useAddressCheck = (checkEOA: boolean = true) => {
               isLoopringSmartWallet: false,
             })
             setAddrStatus(AddressError.NoError)
-            if (checkEOA) {
+            if (checkLayer2Status) {
               setIsAddressCheckLoading(true)
               try {
                 const response = await LoopringAPI.exchangeAPI?.getAccount({
