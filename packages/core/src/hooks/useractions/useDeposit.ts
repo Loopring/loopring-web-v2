@@ -272,6 +272,11 @@ export const useDeposit = <
         }
         if (!depositValue.belong && walletLayer1) {
             const keys = Reflect.ownKeys(walletLayer1)
+            updateData = {
+                belong: 'ETH',
+                tradeValue: undefined,
+                balance: 0,
+            }
             for (var key in keys) {
                 const keyVal = keys[key] as any
                 const walletInfo = walletLayer1[keyVal]
