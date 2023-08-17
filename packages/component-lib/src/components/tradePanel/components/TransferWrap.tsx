@@ -31,7 +31,7 @@ import {
   MapChainId,
   myLog,
   NFTWholeINFO,
-  TOAST_TIME,
+  TOAST_TIME, TRADE_TYPE,
   TradeBtnStatus,
   WALLET_TYPE,
 } from '@loopring-web/common-resources'
@@ -39,6 +39,7 @@ import {
   Button,
   DropdownIconStyled,
   FeeTokenItemWrapper,
+  GridWrapStyle,
   TextField,
   Toast,
   ToastType,
@@ -332,8 +333,8 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
   ])
 
   return (
-    <Grid
-      className={walletMap ? 'transfer-wrap' : 'loading'}
+      <GridWrapStyle
+          className={(type == TRADE_TYPE.TOKEN && !tradeData?.belong) ? 'loading transfer-wrap' : 'transfer-wrap'}
       container
       paddingLeft={isMobile ? 2 : 5 / 2}
       paddingRight={isMobile ? 2 : 5 / 2}
@@ -615,6 +616,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
         }}
         severity={ToastType.success}
       />
-    </Grid>
+      </GridWrapStyle>
   )
 }

@@ -226,7 +226,11 @@ export function useAccountModalForUI({
     nftWithdrawValue,
     nftDeployValue,
     transferValue,
+
     withdrawValue,
+    resetTransferData,
+    resetWithdrawData,
+    resetDepositData,
     forceWithdrawValue,
     claimValue,
   } = useModalData()
@@ -460,6 +464,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetDepositData()
+                }
                 setShowDeposit({
                   isShow: true,
                   symbol: isShowAccount?.info?.symbol,
@@ -623,6 +630,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetTransferData()
+                }
                 setShowTransfer({
                   isShow: true,
                   symbol: isShowAccount?.info?.symbol,
@@ -637,6 +647,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetWithdrawData()
+                }
                 setShowWithdraw({
                   isShow: true,
                   info: { isToMyself: true },
@@ -652,6 +665,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetWithdrawData()
+                }
                 setShowWithdraw({
                   isShow: true,
                   info: { isToMyself: false },

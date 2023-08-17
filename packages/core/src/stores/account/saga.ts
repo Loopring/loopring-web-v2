@@ -24,7 +24,7 @@ const getAccount = async (): Promise<{
   if (frozen === LoopFrozenFlag) {
     __timer__ = ((__timer__) => {
       if (__timer__ && __timer__ !== -1) {
-        clearTimeout(__timer__)
+        clearTimeout(__timer__ as any)
       }
       return setTimeout(() => {
         store.dispatch(updateAccountStatus({ frozen: account.frozen }))
@@ -42,7 +42,7 @@ const getAccount = async (): Promise<{
   ])
 
   if (__timer__ && __timer__ !== -1) {
-    clearTimeout(__timer__)
+    clearTimeout(__timer__ as any)
   }
   return {
     account,

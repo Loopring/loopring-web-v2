@@ -573,7 +573,7 @@ export const useContactSend = () => {
           address: contact.address,
           name: contact.name,
           addressType: contact.addressType,
-          symbol: 'ETH',
+            // symbol: 'ETH',
           info: {
             onCloseCallBack: onClose,
           },
@@ -584,7 +584,7 @@ export const useContactSend = () => {
           address: contact.address,
           name: contact.name,
           addressType: contact.addressType,
-          symbol: 'ETH',
+            // symbol: 'ETH',
           info: {
             onCloseCallBack: onClose,
           },

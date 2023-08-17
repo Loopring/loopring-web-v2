@@ -13,7 +13,7 @@ import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
 import {
   AssetL2TabIndex,
   AssetTabIndex,
-  MapChainId,
+  MapChainId, myLog,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import RewardsPanel from '../RewardsPanel'
@@ -84,7 +84,7 @@ export const AssetPanel = withTranslation('common')(
       handleTabChange(match?.params?.item)
     }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
-
+    myLog('assetsRawData')
     return (
       <>
         {!isMobile && (

@@ -1,7 +1,6 @@
 import { Trans, WithTranslation } from 'react-i18next'
 import React, { ChangeEvent, useState } from 'react'
-import { bindHover } from 'material-ui-popup-state/es'
-import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
+import { bindPopper, usePopupState, bindHover } from 'material-ui-popup-state/hooks'
 import {
   Box,
   FormControlLabel,
@@ -28,11 +27,11 @@ import {
   LoadingIcon,
   MapChainId,
   NFTWholeINFO,
-  TOAST_TIME,
+  TOAST_TIME, TRADE_TYPE,
   TradeBtnStatus,
   WALLET_TYPE,
 } from '@loopring-web/common-resources'
-import { DropdownIconStyled, FeeTokenItemWrapper, PopoverPure, Toast, ToastType } from '../..'
+import { DropdownIconStyled, FeeTokenItemWrapper, PopoverPure, Toast, ToastType, GridWrapStyle } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
@@ -187,8 +186,8 @@ export const WithdrawWrap = <
     : WALLET_TYPE.EOA
 
   return (
-    <Grid
-      className={walletMap ? '' : 'loading'}
+      <GridWrapStyle
+          className={(type == TRADE_TYPE.TOKEN && !tradeData?.belong) ? 'loading withdraw-wrap' : 'withdraw-wrap'}
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -535,6 +534,6 @@ export const WithdrawWrap = <
         }}
         severity={ToastType.success}
       />
-    </Grid>
+      </GridWrapStyle>
   )
 }

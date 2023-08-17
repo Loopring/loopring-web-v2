@@ -17,6 +17,7 @@ import {
 import React from 'react'
 import { connectProvides } from '@loopring-web/web3-provider'
 import * as sdk from '@loopring-web/loopring-sdk'
+import Web3 from 'web3';
 
 export function isAccActivated() {
   return store.getState().account.readyState === AccountStatus.ACTIVATED
@@ -111,7 +112,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   const init = React.useCallback(async () => {
     setKnowDisable(true)
     try {
-      const isContract = await sdk.isContract(connectProvides.usedWeb3, account.accAddress)
+      const isContract = await sdk.isContract(connectProvides.usedWeb3 as unknown as Web3, account.accAddress)
       setIsAddressContract(isContract)
       updateWalletLayer2()
     } catch (error: any) {

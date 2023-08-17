@@ -1,9 +1,7 @@
 import React from 'react'
-
 import * as sdk from '@loopring-web/loopring-sdk'
-
+import Web3 from 'web3'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-
 import {
   AccountStep,
   SwitchData,
@@ -279,21 +277,30 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     } else {
       if (!transferValue.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap)
+        let objInit = {
+          belong: 'LRC',
+          tradeValue: undefined,
+          fee: feeInfo,
+          balance: 0,
+          address: '*',
+          memo: '',
+        }
         for (let key in keys) {
           const keyVal = keys[key]
           const walletInfo = walletMap[keyVal]
           if (sdk.toBig(walletInfo.count).gt(0)) {
-            updateTransferData({
+            objInit = {
               belong: keyVal as any,
               tradeValue: undefined,
               fee: feeInfo,
               balance: walletInfo?.count,
               address: '*',
               memo: '',
-            })
+            }
             break
           }
         }
+        updateTransferData(objInit)
       } else if (transferValue.belong && walletMap) {
         const walletInfo = walletMap[transferValue.belong]
         updateTransferData({
@@ -374,7 +381,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           const response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
