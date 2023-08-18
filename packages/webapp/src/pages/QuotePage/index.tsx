@@ -71,8 +71,6 @@ export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslat
 
       <TableWrapStyled
         ref={tableRef as any}
-        marginTop={1}
-        marginBottom={3}
         paddingBottom={1}
         flex={1}
         className={'MuiPaper-elevation2'}
