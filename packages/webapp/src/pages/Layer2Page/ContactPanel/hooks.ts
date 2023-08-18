@@ -118,7 +118,7 @@ export const useContact = () => {
       }
     : undefined
   const getContacts = useCallback(async () => {
-    if (cachedForAccountId === accountId) return
+    if (cachedForAccountId === accountId && (contacts && contacts?.length > 0)) return
     if (!apiKey || accountId == -1) return
     // if (contacts && contacts.length > 0) return // Not refetch contacts if contacts were fetched and 'useCache' is true
     updateContacts(undefined)

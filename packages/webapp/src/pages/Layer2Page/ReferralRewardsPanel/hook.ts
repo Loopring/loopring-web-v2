@@ -9,8 +9,6 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from '@loopring-web/common-resources'
-import { GetReferStatisticReason } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
-
 export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
@@ -84,7 +82,7 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
         ?.getReferStatistic<sdk.ReferStatistic>(
           {
             accountId: accountId.toString(),
-            reason: GetReferStatisticReason.Recommender,
+            reason: sdk.GetReferStatisticReason.Recommender,
           },
           apiKey,
         )
@@ -213,7 +211,7 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
         ?.getReferStatistic<sdk.ReferStatistic>(
           {
             accountId: accountId.toString(),
-            reason: GetReferStatisticReason.Invited,
+            reason: sdk.GetReferStatisticReason.Invited,
           },
           apiKey,
         )
