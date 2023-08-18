@@ -46,8 +46,6 @@ export type AssetPanelProps<R = AssetsRawDataItem> = {
     onSend: any
     onReceive: any
     marketArray: any
-    // userAssets: any
-    // getUserAssets: any
     hideInvestToken: any
     allowTrade: any
     setHideL2Assets: (value: boolean) => void
@@ -57,13 +55,6 @@ export type AssetPanelProps<R = AssetsRawDataItem> = {
     getTokenRelatedMarketArray: any
     hideSmallBalances: any
     assetBtnStatus: TradeBtnStatus
-    // onTokenLockHold: (item: R) => void
-    // tokenLockDetail:
-    //     | undefined
-    //     | {
-    //     list: any[]
-    //     row: any
-    // }
 }
 export const useGetAssets = (): AssetPanelProps & {
     assetTitleProps: any
@@ -78,8 +69,6 @@ export const useGetAssets = (): AssetPanelProps & {
     const {status: tokenPriceStatus} = useTokenPrices()
     const {btnStatus: assetBtnStatus, enableBtn, setLoadingBtn} = useBtnStatus()
     const {setShowAccount} = useOpenModals()
-
-
     const {
         themeMode,
         currency,
