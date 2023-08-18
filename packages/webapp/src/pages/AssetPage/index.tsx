@@ -18,7 +18,6 @@ export const AssetPage = () => {
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
-  const assetAction = useAssetAction()
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
       case 'history':
@@ -28,7 +27,7 @@ export const AssetPage = () => {
         return (
           <AssetPanel
             assetTitleProps={assetTitleProps}
-            assetPanelProps={{...assetPanelProps, ...assetAction, assetBtnStatus}}
+            assetPanelProps={{...assetPanelProps, assetBtnStatus}}
           />
         )
     }
@@ -47,7 +46,7 @@ export const AssetPage = () => {
           {isMobile && (
             <AssetTitleMobile
               assetBtnStatus={assetBtnStatus}
-              {...{...assetTitleProps, ...assetTitleMobileExtendProps, ...assetAction}}
+              {...{...assetTitleProps, ...assetTitleMobileExtendProps}}
             />
           )}
           {layer2Router}
