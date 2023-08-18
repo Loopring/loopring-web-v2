@@ -154,7 +154,7 @@ export const DepositWrap = <
 
   return (
       <GridWrapStyle
-          className={!tradeData?.belong ? 'loading deposit-wrap' : 'deposit-wrap'}
+          className={'deposit-wrap'}
       container
       paddingTop={isMobile ? 1 : '0'}
       paddingLeft={5 / 2}

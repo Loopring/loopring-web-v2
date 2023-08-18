@@ -215,6 +215,7 @@ export const globalCss = ({ theme }: any) => css`
     --delay: calc(var(--auto-refresh-duration) / 2);
     --header-row-height: 44px;
     --header-height: 64px;
+    --min-height: 350px;
     --header-submenu-item-height: 52px;
     --header-submenu-item-width: 250px;
     --desktop-max-width: 1200px;

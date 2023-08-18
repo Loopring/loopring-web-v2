@@ -9,7 +9,7 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from '@loopring-web/common-resources'
-import { GetReferStatisticReason } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
+import { GetReferStatisticReason } from '@loopring-web/loopring-sdk'
 
 export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void) {
   const {

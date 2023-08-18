@@ -49,7 +49,6 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _ from 'lodash'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useContacts } from '../../stores/contacts/hooks'
-import { useTheme } from '@emotion/react'
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
@@ -659,7 +658,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-  const theme = useTheme()
   const loadContacts = React.useCallback(async () => {
     const account = store.getState().account
     if (account.accountId === cachedForAccountId) return
@@ -670,7 +668,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         account.accountId,
         account.apiKey,
         account.accAddress,
-        theme.colorBase.warning,
       )
       updateContacts(allContacts)
       updateAccountId(account.accountId)

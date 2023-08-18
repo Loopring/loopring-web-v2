@@ -270,7 +270,7 @@ export type DefaultProps<T, I> = {
   selectNFTDisabled?: boolean
 } & (
   | {
-      type?: TRADE_TYPE.TOKEN
+  type: TRADE_TYPE.TOKEN
       coinMap: CoinMap<I, CoinInfo<I>>
       walletMap: WalletMap<I, WalletCoin<I>>
     }

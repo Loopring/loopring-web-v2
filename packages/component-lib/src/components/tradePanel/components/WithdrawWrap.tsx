@@ -26,7 +26,7 @@ import {
   L1L2_NAME_DEFINED,
   LoadingIcon,
   MapChainId,
-  NFTWholeINFO,
+  NFTWholeINFO, SoursURL,
   TOAST_TIME, TRADE_TYPE,
   TradeBtnStatus,
   WALLET_TYPE,
@@ -187,7 +187,7 @@ export const WithdrawWrap = <
 
   return (
       <GridWrapStyle
-          className={(type == TRADE_TYPE.TOKEN && !tradeData?.belong) ? 'loading withdraw-wrap' : 'withdraw-wrap'}
+          className={'withdraw-wrap'}
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
