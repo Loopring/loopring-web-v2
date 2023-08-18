@@ -224,7 +224,6 @@ export const useGetAssets = (): AssetPanelProps & {
     React.useEffect(() => {
         const account = store.getState().account;
         if (account.readyState === AccountStatus.ACTIVATED) {
-            // walletLayer2Service.sendUserUpdate()
             sendSocketTopic({[WsTopicType.account]: true})
             myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
             setLoadingBtn()
@@ -237,12 +236,12 @@ export const useGetAssets = (): AssetPanelProps & {
         }
     }, [accountStatus])
     React.useEffect(() => {
-        if (tokenPriceStatus === SagaStatus.UNSET ||
-            walletL2Status === SagaStatus.UNSET || assetsRawData.length) {
+        if (tokenPriceStatus === SagaStatus.UNSET &&
+            walletL2Status === SagaStatus.UNSET &&
+            assetsRawData.length && assetBtnStatus !== TradeBtnStatus.AVAILABLE) {
             enableBtn()
         }
-    }, [walletL2Status, assetsRawData, tokenPriceStatus])
-
+    }, [walletL2Status, assetsRawData, tokenPriceStatus, assetBtnStatus])
     const walletLayer2Callback = React.useCallback(() => {
         startWorker()
     }, [])
