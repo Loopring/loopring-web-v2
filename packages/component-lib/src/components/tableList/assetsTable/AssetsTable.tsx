@@ -21,6 +21,7 @@ import ActionMemo, { LockedMemo } from './components/ActionMemo'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { XOR } from '../../../types/lib'
 import { LockDetailPanel } from './components/modal'
+import _ from 'lodash';
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -167,24 +168,37 @@ export const AssetsTable = withTranslation('tables')(
       searchValue,
       ...rest
     } = props
-
+      const gridRef = React.useRef(null);
+      const prevScrollTop = React.useRef(0);
+      // const container = React.useRef<HTMLDivElement>(null)
     const [filter, setFilter] = React.useState({
       searchValue: searchValue ?? '',
     })
-    const [totalData, setTotalData] = React.useState<RawDataAssetsItem[]>(rawData)
-    const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>(rawData)
-    const [tableHeight, setTableHeight] = React.useState(props.tableHeight)
+      const [pageSize, setPageSize] = React.useState(8)
+      // const totalData = rawData;
+      const [page, setPage] = React.useState(1);
+      const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>([])
     const { language, isMobile, coinJson, currency } = useSettings()
     const [modalState, setModalState] = React.useState(false)
-    const resetTableData = React.useCallback(
-      (viewData: any) => {
-        setViewData(viewData)
-        setTableHeight(rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight)
-      },
-      [setViewData, setTableHeight, rowConfig],
-    )
-    const updateData = React.useCallback(() => {
-      let resultData = totalData && !!totalData.length ? totalData : []
+      React.useEffect(() => {
+          // let height = gridRef?.current?.offsetHeight
+          let height = gridRef?.current?.element?.parentElement?.offsetHeight
+          if (height) {
+              const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
+              setPageSize((size >= 8 ? size : 8) * 2)
+          } else {
+              setPageSize(16)
+          }
+      }, [gridRef?.current])
+      const handleScroll = _.debounce(() => {
+          // const currentScrollTop = gridRef?.current?.scrollTop;
+          const currentScrollTop = window.scrollY;
+          if (currentScrollTop > prevScrollTop.current) {
+              setPage((prevPage) => prevPage + 1);
+          }
+      }, 200);
+      const updateData = React.useCallback((page) => {
+          let resultData = rawData && !!rawData.length ? [...rawData] : []
       // if (filter.hideSmallBalance) {
       if (hideSmallBalances) {
         resultData = resultData.filter((o) => !o.smallBalance)
@@ -198,15 +212,25 @@ export const AssetsTable = withTranslation('tables')(
           o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
         )
       }
-      resetTableData(resultData)
-    }, [totalData, filter, hideSmallBalances, hideInvestToken, resetTableData])
+          setViewData(resultData.slice(0, pageSize * page))
+          // resetTableData(resultData)
+      }, [rawData, filter, hideSmallBalances, hideInvestToken])
 
     React.useEffect(() => {
-      setTotalData(rawData)
-    }, [rawData])
+        updateData(page)
+    }, [rawData, page])
     React.useEffect(() => {
-      updateData()
-    }, [totalData, filter, hideInvestToken, hideSmallBalances])
+        updateData(1)
+        return () => {
+            handleScroll.cancel()
+        }
+    }, [filter, hideInvestToken, hideSmallBalances])
+      React.useEffect(() => {
+          window.addEventListener('scroll', handleScroll);
+          return () => {
+              window.removeEventListener('scroll', handleScroll);
+          };
+      }, []);
 
     const handleFilterChange = React.useCallback(
       (filter: any) => {
@@ -355,7 +379,7 @@ export const AssetsTable = withTranslation('tables')(
         },
       },
     ]
-    const getColumnMobileAssets = (t: TFunction, allowTrade?: any): Column<Row, unknown>[] => [
+      const getColumnMobileAssets = (t: TFunction, allowTrade?: any): Column<RawDataAssetsItem, unknown>[] => [
       {
         key: 'token',
         name: t('labelToken'),
@@ -481,19 +505,22 @@ export const AssetsTable = withTranslation('tables')(
           </>
         </Modal>
         <Table
-          className={isInvest ? 'investAsset' : ''}
-          {...{ ...rest, t }}
-          style={{ height: tableHeight }}
-          rowHeight={rowConfig.rowHeight}
-          headerRowHeight={rowConfig.rowHeaderHeight}
-          rawData={viewData}
-          generateRows={(rowData: any) => rowData}
-          generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
-          showloading={isLoading}
-          columnMode={
-            isMobile ? getColumnMobileAssets(t, allowTrade) : getColumnModeAssets(t, allowTrade)
-          }
+            ref={gridRef}
+            className={isInvest ? 'investAsset' : ''}
+            {...{...rest, t}}
+            style={{height: rowConfig.rowHeaderHeight + rawData.length * rowConfig.rowHeight}}
+            rowHeight={rowConfig.rowHeight}
+            headerRowHeight={rowConfig.rowHeaderHeight}
+            rawData={viewData}
+            generateRows={(rowData: any) => rowData}
+            generateColumns={({columnsRaw}: any) => columnsRaw as Column<any, unknown>[]}
+            showloading={isLoading}
+            // onScroll={handleScroll}
+            columnMode={
+                isMobile ? getColumnMobileAssets(t, allowTrade) : getColumnModeAssets(t, allowTrade)
+            }
         />
+
       </TableWrap>
     )
   },

@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import { Trans, WithTranslation } from 'react-i18next'
 
 import { WithT } from 'i18next'
-import React from 'react'
+import React, { ForwardedRef } from 'react'
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './'
 import { EmptyDefault } from '../empty'
 import { RowConfig, SoursURL } from '@loopring-web/common-resources'
@@ -238,7 +238,7 @@ export type ExtraTableProps = {
   showloading?: boolean
 }
 
-export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps) => {
+export const Table = React.forwardRef(<R, SR>(props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps, ref: ForwardedRef<any>) => {
   const {
     EmptyRowsRenderer,
     generateRows,
@@ -310,6 +310,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     <TableWrapperStyled showloading={!!showloading ? 'true' : 'false'}>
       <DataGridStyled
         {...rest}
+        ref={ref}
         onScroll={onScroll}
         columns={loopringColumns as any}
         style={style}
@@ -355,3 +356,4 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     </TableWrapperStyled>
   )
 }
+)
