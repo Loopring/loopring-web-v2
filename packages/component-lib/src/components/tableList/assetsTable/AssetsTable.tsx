@@ -6,14 +6,14 @@ import { Column, Table } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TablePaddingX } from '../../styled'
 import {
-  CurrencyToTag,
-  ForexMap,
-  getValuePrecisionThousand,
-  HiddenTag,
-  MarketType,
-  PriceTag,
-  RowConfig,
-  TokenType,
+    CurrencyToTag,
+    ForexMap,
+    getValuePrecisionThousand,
+    HiddenTag,
+    MarketType,
+    PriceTag,
+    RowConfig,
+    TokenType,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons'
@@ -65,28 +65,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
 ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element
 
-interface Row {
-  token: {
-    type: TokenType
-    value: string
-  }
-  amount: string
-  available: string
-  locked: string
-  filterColumn?: string
-  tradePairList?: {
-    first: string
-    last: string
-  }[]
-  cellExpend?: {
-    value: string
-    children: []
-    isExpanded: boolean
-  }
-  children?: Row[]
-  isExpanded?: boolean
-  format?: any
-}
+
 
 export type TradePairItem = {
   first: string
@@ -175,13 +154,14 @@ export const AssetsTable = withTranslation('tables')(
       searchValue: searchValue ?? '',
     })
       const [pageSize, setPageSize] = React.useState(8)
-      // const totalData = rawData;
+      const [{total, hasMore}, setTotal] = React.useState({total: 0, hasMore: false});
       const [page, setPage] = React.useState(1);
       const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>([])
     const { language, isMobile, coinJson, currency } = useSettings()
     const [modalState, setModalState] = React.useState(false)
       React.useEffect(() => {
           // let height = gridRef?.current?.offsetHeight
+          // @ts-ignore
           let height = gridRef?.current?.element?.parentElement?.offsetHeight
           if (height) {
               const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
@@ -212,6 +192,11 @@ export const AssetsTable = withTranslation('tables')(
           o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
         )
       }
+          if (pageSize * page >= resultData.length) {
+              setTotal({total: resultData.length, hasMore: false})
+          } else {
+              setTotal({total: pageSize * (page + 1 / 2), hasMore: true})
+          }
           setViewData(resultData.slice(0, pageSize * page))
           // resetTableData(resultData)
       }, [rawData, filter, hideSmallBalances, hideInvestToken])
@@ -483,7 +468,8 @@ export const AssetsTable = withTranslation('tables')(
       },
     ]
 
-    return (
+
+      return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
           <Box marginX={2}>
@@ -508,7 +494,7 @@ export const AssetsTable = withTranslation('tables')(
             ref={gridRef}
             className={isInvest ? 'investAsset' : ''}
             {...{...rest, t}}
-            style={{height: rowConfig.rowHeaderHeight + rawData.length * rowConfig.rowHeight}}
+            style={{height: rowConfig.rowHeaderHeight + total * rowConfig.rowHeight}}
             rowHeight={rowConfig.rowHeight}
             headerRowHeight={rowConfig.rowHeaderHeight}
             rawData={viewData}
@@ -517,11 +503,24 @@ export const AssetsTable = withTranslation('tables')(
             showloading={isLoading}
             // onScroll={handleScroll}
             columnMode={
-                isMobile ? getColumnMobileAssets(t, allowTrade) : getColumnModeAssets(t, allowTrade)
+                (isMobile ? getColumnMobileAssets(t, allowTrade) : getColumnModeAssets(t, allowTrade)) as any
             }
         />
-
+          {hasMore && (<Typography
+              variant={'body1'}
+              display={'inline-flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              color={"var(--color-primary)"} textAlign={'center'} paddingY={1}>
+              <img
+                  alt={'loading'}
+                  className='loading-gif'
+                  width='16'
+                  src={`./static/loading-1.gif`}
+                  style={{paddingRight: 1, display: 'inline-block'}}
+              />{t('labelLoadingMore')}</Typography>)}
       </TableWrap>
     )
   },
 )
+
