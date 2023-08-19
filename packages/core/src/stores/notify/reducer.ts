@@ -4,7 +4,7 @@ import { SagaStatus } from '@loopring-web/common-resources'
 
 const initialState: NotifyStates = {
   notifyMap: undefined,
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
 }
 

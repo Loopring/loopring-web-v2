@@ -215,11 +215,11 @@ export const globalCss = ({ theme }: any) => css`
     --delay: calc(var(--auto-refresh-duration) / 2);
     --header-row-height: 44px;
     --header-height: 64px;
+    --min-height: 350px;
     --header-submenu-item-height: 52px;
     --header-submenu-item-width: 250px;
     --desktop-max-width: 1200px;
     --desktop-min-width: 1024px;
-    --input-height-large: 48px;
     --btn-Input-small-height: 32px;
     --btn-medium-height: 40px;
     //--btn-max-width: 160px;
@@ -278,6 +278,8 @@ export const globalCss = ({ theme }: any) => css`
     --modal-min-width: 340px;
     --carousel-dot-size: 14px;
     --provider-btn-height: 56px;
+    --input-height-large: 48px;
+    --input-height-huge: 56px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;

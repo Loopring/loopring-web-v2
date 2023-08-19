@@ -1,6 +1,8 @@
 {
   "plugins": ["react-hooks"],
-  "extends": ["react-app", "react-app/jest"],
+  "extends": [
+    "react-app"
+  ],
   "overrides": [
     {
       "files": ["**/*.tsx", "**/*.ts"],

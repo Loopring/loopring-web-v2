@@ -1,5 +1,5 @@
 import React from 'react'
-
+import Web3 from 'web3'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { AccountStep, SwitchData, useOpenModals, WithdrawProps } from '@loopring-web/component-lib'
 import {
@@ -49,7 +49,6 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _ from 'lodash'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useContacts } from '../../stores/contacts/hooks'
-import { useTheme } from '@emotion/react'
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
@@ -309,21 +308,30 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     } else {
       if (!withdrawValue.belong && walletMap2) {
         const keys = Reflect.ownKeys(walletMap2)
+        let objInit = {
+          fee: feeInfo,
+          belong: 'LRC',
+          tradeValue: undefined,
+          balance: 0,
+          address: info?.isToMyself ? account.accAddress : '*',
+          withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+        }
         for (let key in keys) {
           const keyVal = keys[key]
           const walletInfo = walletMap2[keyVal]
           if (sdk.toBig(walletInfo.count).gt(0)) {
-            updateWithdrawData({
+            objInit = {
               fee: feeInfo,
               belong: keyVal as any,
               tradeValue: undefined,
               balance: walletInfo?.count,
               address: info?.isToMyself ? account.accAddress : '*',
               withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-            })
+            }
             break
           }
         }
+        updateWithdrawData(objInit)
       } else if (withdrawValue.belong && walletMap2) {
         const walletInfo = walletMap2[withdrawValue.belong]
         updateWithdrawData({
@@ -416,7 +424,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           const response = await LoopringAPI.userAPI.submitOffchainWithdraw(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === 'unknown' ? 1 : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
@@ -650,7 +658,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-  const theme = useTheme()
   const loadContacts = React.useCallback(async () => {
     const account = store.getState().account
     if (account.accountId === cachedForAccountId) return
@@ -661,12 +668,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         account.accountId,
         account.apiKey,
         account.accAddress,
-        theme.colorBase.warning,
       )
       updateContacts(allContacts)
       updateAccountId(account.accountId)
     } catch (e) {
-      updateContacts([])
+      
     }
   }, [cachedForAccountId])
   React.useEffect(() => {

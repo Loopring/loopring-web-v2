@@ -15,7 +15,7 @@ import {
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
 import { Box, Grid, Link, Typography } from '@mui/material'
-import { Button, DepositTitle, IconClearStyled, TextField, useSettings } from '../../../index'
+import { Button, DepositTitle, GridWrapStyle, IconClearStyled, TextField, useSettings } from '../../../index'
 import { DepositViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -153,8 +153,8 @@ export const DepositWrap = <
   }, [isNewAccount, chargeFeeTokenList, tradeData, t, feeChargeOrder])
 
   return (
-    <Grid
-      className={walletMap ? 'depositWrap' : 'depositWrap loading'}
+      <GridWrapStyle
+          className={'deposit-wrap'}
       container
       paddingTop={isMobile ? 1 : '0'}
       paddingLeft={5 / 2}
@@ -329,7 +329,70 @@ export const DepositWrap = <
             ))}
         </Grid>
       ) : (
-        <></>
+        <>
+
+          {toAddress && toAddressStatus !== AddressError.NoError ? (
+            <Typography variant={'body1'} color={'textSecondary'}>
+              {toAddressStatus === AddressError.ENSResolveFailed ? (
+                <>{t('labelENSShouldConnect')}</>
+              ):toAddressStatus === AddressError.TimeOut?
+                (<Trans
+                  i18nKey={'labelTimeoutAddressClick'}
+                  tOptions={{
+                    layer2: L1L2_NAME_DEFINED[ network ].layer2,
+                    l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                    loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
+                  }}
+                  components={{
+                    a: <Link
+                      alignItems={'center'}
+                      display={'inline-flex'}
+                      target={'_blank'}
+                      onClick={()=>{
+                        handleAddressChange && handleAddressChange(toAddress??'')
+                      }}
+                      rel={'noopener noreferrer'}
+                      color={'textPrimary'}
+                    />
+                  }}
+                >
+                  L1 Account checking request was rejected or some unknown error occurred, please
+                  <a>Retry</a>
+                </Trans>): (
+                  <Trans
+                    i18nKey={'labelInvalidAddressClick'}
+                    tOptions={{
+                      way: t(`labelPayLoopringL2`, {
+                        layer2: L1L2_NAME_DEFINED[ network ].layer2,
+                        l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
+                      }),
+                      token: 'ERC20 ',
+                    }}
+                  >
+                    Invalid Wallet Address, Pay Loopring L2 of ERC20 is disabled!
+                    <Link
+                      alignItems={'center'}
+                      display={'inline-flex'}
+                      href={Bridge}
+                      target={'_blank'}
+                      rel={'noopener noreferrer'}
+                      color={'textSecondary'}
+                    >
+                      Click to input another receive address
+                    </Link>
+                    ,
+                  </Trans>
+                )}
+            </Typography>
+          ):<></>}
+        </>
       )}
 
       <Grid item marginTop={2} alignSelf={'stretch'}>
@@ -359,6 +422,6 @@ export const DepositWrap = <
           {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`depositLabelBtn`)}
         </Button>
       </Grid>
-    </Grid>
+      </GridWrapStyle>
   )
 }

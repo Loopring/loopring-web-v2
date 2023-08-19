@@ -7,6 +7,7 @@ import {
   useAccount,
   useSystem,
 } from '@loopring-web/core'
+import Web3 from 'web3'
 
 import {
   Layer1Action,
@@ -21,8 +22,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { GuardianStep, useSettings } from '@loopring-web/component-lib'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
-// import { AvaiableNetwork } from '@loopring-web/web3-provider'
-//
+
 export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
   GUARDIAN_CONFIRM_ADDITION = 52,
@@ -68,15 +68,15 @@ export const useHebaoMain = <
       operationLogList: [],
       guardianConfig: {},
     })
-  const [openHebao, setOpenHebao] = React.useState<{
-    isShow: boolean
-    step: GuardianStep
-    options?: any
-  }>({
-    isShow: false,
-    step: GuardianStep.LockAccount_WaitForAuth,
-    options: undefined,
-  })
+  // const [openHebao, setOpenHebao] = React.useState<{
+  //   isShow: boolean
+  //   step: GuardianStep
+  //   options?: any
+  // }>({
+  //   isShow: false,
+  //   step: GuardianStep.LockAccount_WaitForAuth,
+  //   options: undefined,
+  // })
   const { clearOneItem } = layer1Store.useLayer1Store()
   // const { chainId } = useSystem()
   const [isLoading, setIsLoading] = React.useState(false)
@@ -102,24 +102,35 @@ export const useHebaoMain = <
               account.apiKey,
             )
             .then((protector) => {
-              protector.protectorArray.map((props) => {
-                if (
-                  layer1ActionHistory[defaultNetwork] &&
-                  layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock] &&
-                  layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock][props.address] &&
-                  props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
-                ) {
-                  props.lockStatus = sdk.HEBAO_LOCK_STATUS.LOCK_WAITING
-                } else {
-                  clearOneItem({
-                    chainId: defaultNetwork as sdk.ChainId,
-                    uniqueId: props.address,
-                    domain: Layer1Action?.GuardianLock,
-                  })
-                }
+              if ((protector as sdk.RESULT_INFO)?.code) {
+                throw protector
+              }
+              try {
+                protector?.protectorArray?.map((props) => {
+                  if (
+                    layer1ActionHistory &&
+                    layer1ActionHistory[defaultNetwork] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock][
+                      props.address
+                    ] &&
+                    props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
+                  ) {
+                    props.lockStatus = sdk.HEBAO_LOCK_STATUS.LOCK_WAITING
+                  } else {
+                    clearOneItem({
+                      chainId: defaultNetwork as sdk.ChainId,
+                      uniqueId: props.address,
+                      domain: Layer1Action?.GuardianLock,
+                    })
+                  }
 
-                return props
-              })
+                  return props
+                })
+              } catch (error) {
+                throw error
+              }
+
               return protector
             }),
           // api/wallet/v3/operationLogs
@@ -129,10 +140,17 @@ export const useHebaoMain = <
               network: networkName,
             })
             .then((guardian) => {
-              guardian?.guardiansArray.map((ele) => {
-                ele.businessDataJson = JSON.parse(ele.businessDataJson ?? '')
-                return ele
-              })
+              if ((guardian as sdk.RESULT_INFO)?.code) {
+                throw protector
+              }
+              try {
+                guardian?.guardiansArray?.map((ele) => {
+                  ele.businessDataJson = JSON.parse(ele.businessDataJson ?? '')
+                  return ele
+                })
+              } catch (error) {
+                throw error
+              }
               return guardian
             }),
           LoopringAPI.walletAPI.getHebaoOperationLogs({
@@ -144,7 +162,7 @@ export const useHebaoMain = <
           }),
         ])
           .catch((error) => {
-            myLog(error)
+            myLog('guardianConfig error', error)
             setIsLoading(false)
           })
           .finally(() => {
@@ -203,9 +221,9 @@ export const useHebaoMain = <
     protectList,
     guardiansList,
     guardianConfig,
-    openHebao,
+    // openHebao,
     operationLogList,
-    setOpenHebao,
+    // setOpenHebao,
     isLoading,
     setIsLoading,
     loadData,
@@ -241,7 +259,7 @@ export const useAction = ({
     handleOpenModal({
       step: GuardianStep.Approve_WaitForAuth,
       options: {
-        approveRetry: () => {
+        lockRetry: () => {
           submitApprove(code, selected)
         },
       },
@@ -257,9 +275,9 @@ export const useAction = ({
         ])
 
         await callSwitchChain(_chainId)
-        let isContract1XAddress = undefined,
-          guardianModuleAddress = undefined,
-          guardians = undefined
+        let isContract1XAddress: any = undefined,
+          guardianModuleAddress: any = undefined,
+          guardians: any = undefined
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
           isContract1XAddress = true
           const walletModule = guardianConfig?.supportContracts?.find((item: any) => {
@@ -281,7 +299,7 @@ export const useAction = ({
           {
             request: request,
             guardian: selected,
-            web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
             chainId: _chainId,
             eddsaKey: '',
             apiKey: '',
@@ -299,6 +317,9 @@ export const useAction = ({
             step: GuardianStep.Approve_Failed,
             options: {
               error: response,
+              lockRetry: () => {
+                submitApprove(code, selected)
+              },
             },
           })
         } else {
@@ -314,6 +335,9 @@ export const useAction = ({
           step: GuardianStep.Approve_Failed,
           options: {
             error: errorItem ? t(errorItem.messageKey, { ns: 'error' }) : error.message,
+            lockRetry: () => {
+              submitApprove(code, selected)
+            },
           },
         })
       }
@@ -327,7 +351,7 @@ export const useAction = ({
     handleOpenModal({
       step: GuardianStep.Reject_WaitForAuth,
       options: {
-        approveRetry: () => {
+        lockRetry: () => {
           handleReject(guardian)
         },
       },
@@ -343,7 +367,7 @@ export const useAction = ({
         }
         const response = await LoopringAPI.walletAPI.rejectHebao({
           request,
-          web3: connectProvides.usedWeb3,
+            web3: connectProvides.usedWeb3 as unknown as Web3,
           address: account.accAddress,
           chainId: _chainId as any,
           guardiaContractAddress: guardian.address,
@@ -355,6 +379,9 @@ export const useAction = ({
             step: GuardianStep.Reject_Failed,
             options: {
               error: response,
+              lockRetry: () => {
+                handleReject(guardian)
+              },
             },
           })
         } else {
@@ -370,6 +397,9 @@ export const useAction = ({
           step: GuardianStep.Approve_Failed,
           options: {
             error: errorItem ? t(errorItem.messageKey, { ns: 'error' }) : error.message,
+            lockRetry: () => {
+              handleReject(guardian)
+            },
           },
         })
       }
@@ -414,6 +444,15 @@ export const useHebaoProtector = <T extends sdk.Protector>({
     : sdk.NetworkWallet[network]
   const onLock = React.useCallback(
     async (item: T) => {
+      handleOpenModal({
+        step: GuardianStep.LockAccount_WaitForAuth,
+        options: {
+          lockRetry: () => {
+            onLock(item)
+          },
+          lockRetryParams: item,
+        },
+      })
       const config = guardianConfig.actionGasSettings.find(
         (item: any) => item.action === 'META_TX_LOCK_WALLET_WA',
       )
@@ -441,7 +480,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           ])
           await callSwitchChain(_chainId)
           const params: sdk.LockHebaoHebaoParam = {
-            web3: connectProvides.usedWeb3 as any,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
             from: account.accAddress,
             contractAddress: isVersion1 ? guardianModule : item.address,
             wallet: item.address,
@@ -460,6 +499,10 @@ export const useHebaoProtector = <T extends sdk.Protector>({
               step: GuardianStep.LockAccount_Failed,
               options: {
                 error: errorItem ? t(errorItem.messageKey) : error.message,
+                lockRetry: () => {
+                  onLock(item)
+                },
+                lockRetryParams: item,
               },
             })
           } else {
@@ -479,7 +522,13 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           sdk.dumpError400(reason)
           handleOpenModal({
             step: GuardianStep.LockAccount_User_Denied,
-            options: { error: reason.message },
+            options: {
+              error: reason.message,
+              lockRetry: () => {
+                onLock(item)
+              },
+              lockRetryParams: item,
+            },
           })
         }
       }

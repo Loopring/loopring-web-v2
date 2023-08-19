@@ -32,7 +32,6 @@ import {
   WALLET_TYPE,
   WalletCoin,
   WalletMap,
-  WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
 
@@ -88,7 +87,6 @@ export type TransferExtendProps<T, I, C> = {
   isSmartContractAddress?: boolean
   isAddressCheckLoading?: boolean
   isSameAddress?: boolean
-  // false when not pay it and show the checkbox for pay the fee
   isActiveAccountFee?: boolean | 'not allow'
   addrStatus: AddressError
   onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>
@@ -211,7 +209,7 @@ export type WithdrawExtendProps<T, I, C> = {
     | 'isLoopringAddress'
     | 'isSameAddress'
     | undefined
-  withdrawType: WithdrawType
+  withdrawType: sdk.OffchainFeeReqType
   withdrawTypes?: Partial<WithdrawTypes>
   realAddr?: string
   isAddressCheckLoading: boolean
@@ -223,7 +221,7 @@ export type WithdrawExtendProps<T, I, C> = {
   disableWithdrawList?: string[]
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void
   handleFeeChange: (value: C) => void
-  handleWithdrawTypeChange: (value: WithdrawType) => void
+  handleWithdrawTypeChange: (value: sdk.OffchainFeeReqType) => void
   handleOnAddressChange: (value: string | undefined | I, isContactSelection?: boolean) => void
   wait?: number
   onBack?: () => void
@@ -272,7 +270,7 @@ export type DefaultProps<T, I> = {
   selectNFTDisabled?: boolean
 } & (
   | {
-      type?: TRADE_TYPE.TOKEN
+  type: TRADE_TYPE.TOKEN
       coinMap: CoinMap<I, CoinInfo<I>>
       walletMap: WalletMap<I, WalletCoin<I>>
     }

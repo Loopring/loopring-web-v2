@@ -43,6 +43,7 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useContacts } from '../../stores'
+import Web3 from 'web3';
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
@@ -105,6 +106,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isCFAddress,
     isContract1XAddress,
     isAddressCheckLoading,
+    loopringSmartWalletVersion
   } = useAddressCheck()
   const isNotAvailableAddress = isContract1XAddress ? 'isContract1XAddress' : undefined
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
@@ -231,7 +233,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
           const response = await LoopringAPI.userAPI.submitNFTWithdraw(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === 'unknown' ? 1 : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
@@ -551,7 +553,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
         handleNFTWithdraw(tradeData, realAddr ? realAddr : address)
       }
     },
-    handleWithdrawTypeChange: () => {},
+    handleWithdrawTypeChange: () => {
+    },
     handlePanelEvent: async (data: SwitchData<R>) => {
       return new Promise((res: any) => {
         if (data.to === 'button') {
@@ -581,7 +584,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isFeeNotEnough,
     isLoopringAddress: true,
     contacts,
-  } as WithdrawProps<any, any>
+    loopringSmartWalletVersion
+  }  as unknown as WithdrawProps<any, any>
 
   return {
     nftWithdrawProps,

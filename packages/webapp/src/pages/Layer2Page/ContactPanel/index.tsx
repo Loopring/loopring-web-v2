@@ -6,12 +6,13 @@ import { Add } from './add'
 import { Delete } from './delete'
 import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AddressType } from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
+import { InitialNameAvatar } from '@loopring-web/component-lib/src/components/tradePanel/components/ContactSelection'
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
@@ -139,7 +140,7 @@ export const ContractPanel = () => {
       <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={'scroll'}>
         {contacts &&
           contacts.map((data) => {
-            const { editing, name, address, avatarURL, addressType } = data
+            const { editing, name, address, addressType } = data
             return (
               <Box
                 key={address}
@@ -148,7 +149,7 @@ export const ContractPanel = () => {
                 justifyContent={'space-between'}
               >
                 <Box display={'flex'}>
-                  <Avatar sizes={'32px'} src={avatarURL}></Avatar>
+                  <InitialNameAvatar name={name} />
                   <Box marginLeft={1}>
                     {editing ? (
                       <OutlinedInput

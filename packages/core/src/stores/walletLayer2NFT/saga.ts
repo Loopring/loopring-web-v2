@@ -101,6 +101,7 @@ export function* getPostsSaga({
 }
 
 export function* walletLayer2NFTSaga() {
+  // @ts-ignore
   yield all([takeLatest(updateWalletLayer2NFT, getPostsSaga)])
 }
 

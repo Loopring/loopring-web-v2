@@ -17,7 +17,7 @@ const initialState: AccountState = {
   keyNonce: undefined,
   connectName: ConnectProviders.Unknown,
   _chainId: 1,
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
   frozen: false,
   __timer__: -1,
@@ -34,10 +34,14 @@ const accountSlice: Slice<AccountState> = createSlice<
     updateAccountStatus(state) {
       state.status = SagaStatus.PENDING
     },
+    nextAccountSyncStatus(state) {
+      state.status = SagaStatus.PENDING
+    },
     changeShowModel(state, action: PayloadAction<{ _userOnModel: boolean | undefined }>) {
       const { _userOnModel } = action.payload
       state._userOnModel = _userOnModel
     },
+
     nextAccountStatus(state, action: PayloadAction<Partial<Account>>) {
       // @ts-ignore
       if (action.error) {
@@ -138,9 +142,10 @@ const accountSlice: Slice<AccountState> = createSlice<
 export default accountSlice
 export const {
   updateAccountStatus,
-  // restAccountStatus,
+    // restAccountStatus,
   changeShowModel,
   cleanAccountStatus,
   nextAccountStatus,
   statusUnset,
+  nextAccountSyncStatus,
 } = accountSlice.actions

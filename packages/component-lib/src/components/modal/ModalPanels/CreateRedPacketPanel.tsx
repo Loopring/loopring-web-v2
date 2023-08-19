@@ -8,7 +8,6 @@ import {
   NFTWholeINFO,
   RedPacketOrderData,
   RedPacketOrderType,
-  TRADE_TYPE,
 } from '@loopring-web/common-resources'
 import {
   HorizontalLabelPositionBelowStepper,

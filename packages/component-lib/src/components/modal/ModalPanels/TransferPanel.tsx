@@ -1,11 +1,12 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { ModalBackButton, SwitchPanel, SwitchPanelProps } from '../../basic-lib'
-import { IBData, TRADE_TYPE } from '@loopring-web/common-resources'
+import { IBData, SoursURL, TRADE_TYPE } from '@loopring-web/common-resources'
 import React from 'react'
 import { TransferProps } from '../../tradePanel'
 import { TradeMenuList, TransferWrap, useBasicTrade } from '../../tradePanel/components'
 import { TransferConfirm } from '../../tradePanel/components/TransferConfirm'
 import { ContactSelection } from '../../tradePanel/components/ContactSelection'
+import { Box } from '@mui/material';
 
 export const TransferPanel = withTranslation(['common', 'error'], {
   withRef: true,
@@ -193,6 +194,20 @@ export const TransferPanel = withTranslation(['common', 'error'], {
       panelList: [confirmPanel, tradePanel, tokenSelectionPanel, contactSelectionPanel],
     }
 
-    return <SwitchPanel {...{ ...rest, ...props }} />
+      return (type == TRADE_TYPE.TOKEN && !switchData.tradeData?.belong) ? <Box
+          flex={1}
+          height={"var(--min-height)"}
+          width={"var(--modal-min-width)"}
+          justifyContent={'center'}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'center'}
+      >
+          <img
+              className='loading-gif'
+              alt={'loading'}
+              width='60'
+              src={`${SoursURL}images/loading-line.gif`}
+          /></Box> : <SwitchPanel {...{...rest, ...props}} />
   },
 ) as <T, I>(props: TransferProps<T, I> & React.RefAttributes<any>) => JSX.Element

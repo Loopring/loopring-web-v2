@@ -297,7 +297,7 @@ export const useSwap = <
 
     const { calcTradeParams } = pageTradeLite
 
-    if (!sellToken || !buyToken || !calcTradeParams || !storageId.orderId) {
+    if (!sellToken || !buyToken || !calcTradeParams || storageId?.orderId == undefined) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -1049,16 +1049,16 @@ export const useSwap = <
           )
           .times(100)
           .toString()
-        let totalFee = undefined
-        let feeTakerRate = undefined
-        let feeBips = undefined
-        let takerRate = undefined
-        let buyMinAmtInfo = undefined
-        let sellMinAmtInfo = undefined
-        let tradeCost = undefined
-        let basePrice = undefined
-        let tradePrice = undefined
-        let maxFeeBips = MAPFEEBIPS
+        let totalFee: any = undefined
+        let feeTakerRate: any = undefined
+        let feeBips: any = undefined
+        let takerRate: any = undefined
+        let buyMinAmtInfo: any = undefined
+        let sellMinAmtInfo: any = undefined
+        let tradeCost: any = undefined
+        let basePrice: any = undefined
+        let tradePrice: any = undefined
+        let maxFeeBips: any = MAPFEEBIPS
 
         if (amountMap && amountMap[market as string] && ammMap) {
           myLog(`hookSwap: amountMap[${market}]:`, amountMap[market as string])

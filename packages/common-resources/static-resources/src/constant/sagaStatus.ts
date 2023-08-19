@@ -8,6 +8,6 @@ export enum SagaStatus {
 }
 
 export type StateBase = {
-  status: keyof typeof SagaStatus
+  status:  SagaStatus
   errorMessage?: ErrorObject | null
 }

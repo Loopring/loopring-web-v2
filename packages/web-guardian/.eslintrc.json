@@ -1,7 +1,9 @@
 {
   "parser": "@typescript-eslint/parser",
   "plugins": ["react-hooks", "@typescript-eslint"],
-  "extends": ["react-app", "react-app/jest"],
+  "extends": [
+    "react-app"
+  ],
   "overrides": [
     {
       "files": ["**/*.tsx", "**/*.ts"],

@@ -802,7 +802,7 @@ const resources = {
       label2FA: 'Two-Factor Authentication (2FA)',
       labelActivate: 'How to connect a wallet and activate your Loopring account',
       labelMintNFT: 'How to mint an NFT',
-      labelLoopringEarn: 'How to participate "Loopring Earn"',
+      labelLoopringEarn: 'How to participate in "Loopring Earn"',
     },
   },
   // zh_CN: {...zhCN},
@@ -814,13 +814,6 @@ console.log('en_US')
 const settingPersist = 'persist:settings'
 const basicUrl = 'https://static.loopring.io/assets/images/landPage/'
 ;(function init() {
-  let searchParam = window.location.search
-  const searchParams = new URLSearchParams(searchParam)
-  if (searchParams.get('referralcode')) {
-    const referralcode = searchParams.get('referralcode')
-    document.getElementById('logo').innerHTML =
-      'https://loopring.io/#/?referralcode=' + referralcode
-  }
   let themeMode = 'dark'
   let settingPersistJson = localStorage.getItem(settingPersist)
   let settings = JSON.parse(settingPersistJson ? settingPersistJson : '{}')
@@ -866,9 +859,9 @@ const basicUrl = 'https://static.loopring.io/assets/images/landPage/'
     i18next.changeLanguage('en_US')
   }
   const updateI18n = () => {
-    document.getElementById('labelNavZkRollupLayer2').innerHTML =
-      i18next.t('labelNavZkRollupLayer2')
-    document.getElementById('labelDeveloper').innerHTML = i18next.t('labelDeveloper')
+    // document.getElementById('labelNavZkRollupLayer2').innerHTML =
+    //   i18next.t('labelNavZkRollupLayer2')
+    // document.getElementById('labelDeveloper').innerHTML = i18next.t('labelDeveloper')
     document.getElementById('labelNavWallet').innerHTML = i18next.t('labelNavWallet')
     document.getElementById('labelNavLanuch').innerHTML = i18next.t('labelNavLanuch')
     document.getElementById('labelAbout').innerHTML = i18next.t('labelAbout')
@@ -895,7 +888,6 @@ const basicUrl = 'https://static.loopring.io/assets/images/landPage/'
     document.getElementById('labelLoopring').innerHTML = i18next.t('labelLoopring')
     document.getElementById('labelDeveloper1').innerHTML = i18next.t('labelDeveloper1')
     document.getElementById('labelTitleDes').innerHTML = i18next.t('labelTitleDes')
-
     document.getElementById('labelDocumentation').innerHTML = i18next.t('labelDocumentation')
     document.getElementById('labelCopyRight').innerHTML = i18next.t('labelCopyRight')
     document.getElementById('labelLearnMore').innerHTML = i18next.t('labelLearnMore')
