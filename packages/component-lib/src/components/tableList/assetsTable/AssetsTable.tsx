@@ -199,7 +199,7 @@ export const AssetsTable = withTranslation('tables')(
           }
           setViewData(resultData.slice(0, pageSize * page))
           // resetTableData(resultData)
-      }, [rawData, filter, hideSmallBalances, hideInvestToken])
+      }, [rawData, filter, hideSmallBalances, hideInvestToken, pageSize])
 
     React.useEffect(() => {
         updateData(page)
