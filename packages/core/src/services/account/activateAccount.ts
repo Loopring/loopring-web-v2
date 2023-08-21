@@ -78,7 +78,7 @@ export async function activateAccount({
           web3: connectProvides.usedWeb3 as unknown as Web3,
         address: accInfo.owner,
         keySeed,
-        walletType: (ConnectProviders[connectName] ?? connectName) as unknown as sdk.ConnectorNames,
+        walletType: (ConnectProviders[ connectName ] ?? connectName) as unknown as sdk.ConnectorNames,
         chainId: system.chainId as any,
         counterFactualInfo: counterFactualInfo ?? undefined,
       })

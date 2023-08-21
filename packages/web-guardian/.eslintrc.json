@@ -1,12 +1,18 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["react-hooks", "@typescript-eslint"],
+  "plugins": [
+    "react-hooks",
+    "@typescript-eslint"
+  ],
   "extends": [
     "react-app"
   ],
   "overrides": [
     {
-      "files": ["**/*.tsx", "**/*.ts"],
+      "files": [
+        "**/*.tsx",
+        "**/*.ts"
+      ],
       "rules": {
         "import/no-anonymous-default-export": "off",
         "@typescript-eslint/no-unused-vars": "off",
