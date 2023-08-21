@@ -211,19 +211,17 @@ export const useGetAssets = (): AssetPanelProps & {
     }
     const startWorker = _.debounce(getAssetsRawData, globalSetup.wait);
     React.useEffect(() => {
-        const account = store.getState().account;
         if (account.readyState === AccountStatus.ACTIVATED) {
             sendSocketTopic({[WsTopicType.account]: true})
             myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
             setLoadingBtn()
-        } else {
-            socketEnd()
         }
-        return () => {
-            socketEnd()
-            startWorker.cancel()
-        }
-    }, [accountStatus])
+      return () => {
+        socketEnd()
+        startWorker.cancel()
+      }
+    }, [account.readyState])
+  
     React.useEffect(() => {
         if (tokenPriceStatus === SagaStatus.UNSET &&
             walletL2Status === SagaStatus.UNSET &&

@@ -39,7 +39,7 @@ function* mySaga() {
     ...amountForks,
     ...notifyForks,
     ...layer1ActionHistoryForks,
-      ...contractsForks,
+    ...contractsForks,
   ])
 }
 

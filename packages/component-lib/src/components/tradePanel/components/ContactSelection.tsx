@@ -3,9 +3,9 @@ import { SearchIcon, CloseIcon, SoursURL, hexToRGB } from '@loopring-web/common-
 import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useState } from 'react'
-import { AddressType } from '@loopring-web/loopring-sdk'
+import React, { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
+import * as sdk from '@loopring-web/loopring-sdk';
 
 type SingleContactProps = {
   editing: boolean
@@ -34,12 +34,12 @@ const getInitials = (name: string) => {
   return initials.toUpperCase()
 }
 // @ts-ignore
-export const InitialNameAvatar = ({name, ...rest}: {name: string} & BoxProps) => {
-  const theme = useTheme() 
+export const InitialNameAvatar = React.memo(({name, ...rest}: { name: string } & BoxProps) => {
+  const theme = useTheme()
   return <AvatarContainer {...rest}>
     <Avatar sx={{bgcolor: hexToRGB(theme.colorBase.warning, 0.5), color: theme.colorBase.warning, fontSize: '16px' }}>{getInitials(name)}</Avatar>
   </AvatarContainer>
-}
+}) as ({name, ...rest}: { name: string } & BoxProps) => JSX.Element
 
 export const SingleContact = (props: SingleContactProps) => {
   const { editing, name, address, hidden, onSelect } = props
@@ -79,40 +79,54 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void
-  contacts:
-    | {
-        name: string
-        address: string
-        addressType: AddressType
-      }[]
-    | undefined
+  // contacts:
+  //   | {
+  //       name: string
+  //       address: string
+  //       addressType: AddressType
+  //     }[]
+  //   | undefined
   scrollHeight: string
-}
+} & Pick<sdk.GetContactsResponse, 'contacts'>
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
   const { onSelect, contacts, scrollHeight } = props
   const { isMobile } = useSettings()
   const theme = useTheme()
-  const displayContacts =
-    contacts &&
-    contacts.map((contact) => {
-      return {
-        name: contact.name,
-        address: contact.address,
-        editing: false,
-        addressType: contact.addressType,
-      }
-    })
+  // const displayContacts =
+  //   contacts &&
+  //   contacts.map((contact) => {
+  //     return {
+  //       name: contact.contactName,
+  //       address: contact.contactAddress,
+  //       editing: false,
+  //       addressType: contact.addressType,
+  //     }
+  //   })
+  const [filterContacts, setFilterContacts] = React.useState(contacts ?? [])
+  const [inputValue, setInputValue] = React.useState('')
+  const handleOnFiler = (value: string) => {
+    setInputValue(value)
+    let _contacts = contacts;
+    if (value && contacts) {
+      _contacts = contacts.filter((contact) => {
+        return inputValue
+          ? contact.contactAddress.toLowerCase().includes(inputValue.toLowerCase()) ||
+          contact.contactName.toLowerCase().includes(inputValue.toLowerCase())
+          : true
+      })
+    }
+    setFilterContacts(_contacts)
+  }
 
-  const [inputValue, setInputValue] = useState('')
-  const filteredContacts =
-    displayContacts &&
-    displayContacts.filter((contact) => {
-      return inputValue
-        ? contact.address.toLowerCase().includes(inputValue.toLowerCase()) ||
-            contact.name.toLowerCase().includes(inputValue.toLowerCase())
-        : true
-    })
+  // const filteredContacts =
+  //   contacts &&  inputValue
+  //   contacts.filter((contact) => {
+  //     return inputValue
+  //       ? contact.contactAddress.toLowerCase().includes(inputValue.toLowerCase()) ||
+  //           contact.contactName.toLowerCase().includes(inputValue.toLowerCase())
+  //       : true
+  //   })
   const { t } = useTranslation()
 
   const normalView = (
@@ -138,7 +152,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
               htmlColor={'var(--color-text-third)'}
               style={{ visibility: inputValue ? 'visible' : 'hidden' }}
               onClick={() => {
-                setInputValue('')
+                handleOnFiler('')
               }}
             />
           }
@@ -147,16 +161,16 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           }}
         ></OutlinedInput>
         <Box overflow={'scroll'} height={scrollHeight}>
-          {filteredContacts &&
-            filteredContacts.map((contact) => {
+          {filterContacts &&
+            filterContacts.map((contact) => {
               return (
                 <SingleContact
-                  key={contact.address}
-                  name={contact.name}
-                  address={contact.address}
+                  key={contact.contactAddress}
+                  name={contact.contactName}
+                  address={contact.contactAddress}
                   editing={false}
                   onSelect={onSelect}
-                  hidden={contact.addressType === AddressType.OFFICIAL}
+                  hidden={contact.addressType === sdk.AddressType.OFFICIAL}
                 />
               )
             })}

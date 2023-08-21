@@ -2,9 +2,6 @@ import { createSlice, PayloadAction, Slice, SliceCaseReducers } from '@reduxjs/t
 import { SagaStatus } from '@loopring-web/common-resources';
 import { ContactsState } from './interface';
 
-
-
-
 const initialState: ContactsState = {
   contacts: [],
   status: SagaStatus.PENDING,
@@ -40,8 +37,11 @@ export const contactsSlice: Slice<ContactsState> = createSlice<
       }
       state.status = SagaStatus.DONE
     },
+    statusUnset: (state) => {
+      state.status = SagaStatus.UNSET
+    },
 
   },
 })
 export default contactsSlice
-export const {updateContacts, getContractsStatus, reset} = contactsSlice.actions
+export const {updateContacts, getContactsStatus, statusUnset, reset} = contactsSlice.actions

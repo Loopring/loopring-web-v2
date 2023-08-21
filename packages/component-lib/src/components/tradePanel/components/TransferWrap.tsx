@@ -37,7 +37,7 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  FeeSelect,
+  FeeSelect, GridWrapStyle,
   InputSize,
   TextField,
   Toast,
@@ -480,7 +480,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                   color={'inherit'}
                   size={'large'}
                   onClick={() => {
-                    onClickContact!()
+                    onClickContact()
                   }}
                 >
                   <ContactIcon />

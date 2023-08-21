@@ -12,7 +12,7 @@ import {
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
-import { LoopringAPI, store, useAccount, useContacts, useIsHebao, useSystem } from '../../index'
+import { LoopringAPI, store, useAccount, useContacts, useSystem } from '../../index'
 import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 
@@ -38,11 +38,9 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     undefined as { isLoopringSmartWallet: boolean; version?: string } | undefined,
   )
   const { setShowGlobalToast } = useOpenModals()
-
   const {
     account: { accAddress, apiKey, accountId },
   } = useAccount()
-  const { isHebao } = useIsHebao();
   const { updateContacts } = useContacts();
 
   const check = React.useCallback(async (address: any, web3: any) => {
@@ -203,7 +201,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       myLog('address update sync', address)
       const found = store
         .getState()
-        .contacts?.contacts?.find((contact) => contact.address === address)
+        .contacts?.contacts?.find((contact) => contact.contactAddress === address)
       const listNoCheckRequired = [
         sdk.AddressType.LOOPRING_HEBAO_CF,
         sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6,
@@ -249,10 +247,12 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                 )![1]
                 await LoopringAPI.contactAPI?.updateContact(
                   {
-                    contactAddress: found.address,
-                    isHebao: isHebao ? true : false,
+                    // contactAddress: found.xaddress,
+                    // isHebao: isHebao ? true : false,
+                    // contactName: found.name,
+                    ...found,
+                    isHebao: true,
                     accountId: accountId,
-                    contactName: found.name,
                     addressType: addressType,
                   },
                   apiKey,

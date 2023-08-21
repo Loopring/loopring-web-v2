@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
-import { updateContacts, getContractsStatus } from './reducer'
+import { updateContacts, getContactsStatus } from './reducer'
 
 import { LoopringAPI, store } from '../../index'
 import * as sdk from '@loopring-web/loopring-sdk';
@@ -43,12 +43,12 @@ import * as sdk from '@loopring-web/loopring-sdk';
 //   return recursiveLoad(offset)
 // }
 const getContractsApi = async ({limit = 100}: { limit?: number }) => {
-    const {isContract, accountId, apiKey} = store.getState().account
+    const {isContractAddress, isCFAddress, accountId, apiKey} = store.getState().account
     let contacts: any[] = []
     if (apiKey && LoopringAPI.contactAPI && accountId) {
         const response = await LoopringAPI.contactAPI?.getContacts(
             {
-                isHebao: !!isContract,
+                isHebao: !!(isContractAddress || isCFAddress),
                 accountId,
                 limit,
                 offset: 0,
@@ -67,7 +67,7 @@ const getContractsApi = async ({limit = 100}: { limit?: number }) => {
             for (let i = 1; i <= response.total / limit; i++) {
                 more.push(LoopringAPI.contactAPI.getContacts(
                     {
-                        isHebao: !!isContract,
+                        isHebao: !!(isContractAddress || isCFAddress),
                         accountId,
                         limit,
                         offset: i * limit,
@@ -93,9 +93,9 @@ const getContractsApi = async ({limit = 100}: { limit?: number }) => {
 export function* getPostsSaga() {
     try {
         const {contacts} = yield call(getContractsApi, {})
-        yield put(getContractsStatus({contacts}))
+        yield put(getContactsStatus({contacts}))
     } catch (err) {
-        yield put(getContractsStatus({error: err}))
+        yield put(getContactsStatus({error: err}))
     }
 }
 

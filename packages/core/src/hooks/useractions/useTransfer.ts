@@ -52,7 +52,6 @@ import {
   LAST_STEP,
   volumeToCountAsBigNumber,
   useTokenPrices,
-  useIsHebao,
   useAddressCheck,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
@@ -601,10 +600,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
   }, [isActiveAccount, realAddr])
 
-  const {isHebao} = useIsHebao()
-  // const contacts = useSelector((state: RootState) => state.contacts.contacts);
-  // const dispatch = useDispatch();
-  // const { contacts } = useContacts()
+  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
   React.useEffect(() => {
     const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
     if (isShow === false) {
@@ -615,24 +611,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-
-  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
-  // const theme = useTheme()
-  // const loadContacts = React.useCallback(async () => {
-  //   if (accountId === cachedForAccountId) return
-  //   updateContacts(undefined)
-  //   try {
-  //
-  //   } catch (e) {
-  //     updateContacts([])
-  //   }
-  // }, [cachedForAccountId, apiKey, accountId, accAddress])
   React.useEffect(() => {
     if (contactsErrorMessage) {
       updateContacts()
     }
   }, [])
   const transferProps: TransferProps<any, any> = {
+    contacts,
     type: TRADE_TYPE.TOKEN,
     addressDefault: address,
     realAddr,
@@ -647,12 +632,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handleSureItsLayer2: (sure) => {
       const found = exWalletToAddressMapFn(sure)!
       const contact = contacts?.find((x) => x.contactAddress === realAddr)
-      if (isHebao !== undefined && contact) {
+      if (!account.isContractAddress && contact) {
         LoopringAPI.contactAPI
             ?.updateContact(
                 {
                   contactAddress: realAddr,
-                  isHebao,
+                  isHebao: !!(account.isContractAddress || account.isCFAddress),
                   accountId: account.accountId,
                   addressType: found,
                   contactName: contact.contactName,
@@ -734,7 +719,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           addressType: contactAddressType!,
         }
         : undefined,
-    loopringSmartWalletVersion,
+    loopringSmartWalletVersion
     // contacts,
   }
 

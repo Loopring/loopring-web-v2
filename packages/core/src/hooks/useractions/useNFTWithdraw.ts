@@ -499,29 +499,22 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     sureIsAllowAddress,
     handleSureIsAllowAddress: (value) => {
       const found = exWalletToAddressMapFn(value)
-      const contact = contacts?.find((x) => x.address === realAddr)
-      if (isHebao !== undefined && contact) {
+      // const found = map.find(x => x[0] === value)![1]
+      const contact = contacts?.find((x) => x.contactAddress === realAddr)
+      if (!account?.isContractAddress && contact) {
         LoopringAPI.contactAPI
           ?.updateContact(
             {
               contactAddress: realAddr,
-              isHebao,
+              isHebao: !!(account.isContractAddress || account.isCFAddress),
               accountId: account.accountId,
               addressType: found,
-              contactName: contact.name,
+              contactName: contact.contactName,
             },
             account.apiKey,
           )
           .then(() => {
-            updateContacts(
-              contacts?.map((x) => {
-                if (x.address === realAddr && found) {
-                  return { ...x, addressType: found }
-                } else {
-                  return x
-                }
-              }),
-            )
+            updateContacts()
           })
       }
       setSureIsAllowAddress(value)

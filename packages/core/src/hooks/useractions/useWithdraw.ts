@@ -27,7 +27,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   BIGO,
   DAYS,
-  getAllContacts,
   getTimestampDaysLater,
   isAccActivated,
   LAST_STEP,
@@ -38,7 +37,6 @@ import {
   useAddressCheck,
   useBtnStatus,
   useChargeFees,
-  useIsHebao,
   useModalData,
   useSystem,
   useTokenMap,
@@ -641,15 +639,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount],
   )
-  const { isHebao } = useIsHebao()
-  const {
-    contacts,
-    currentAccountId: cachedForAccountId,
-    updateContacts,
-    updateAccountId,
-  } = useContacts()
+  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
+
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.address === realAddr)?.addressType
+    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
     if (isShow === false) {
       setSureIsAllowAddress(undefined)
     } else if (addressType !== undefined) {
@@ -658,29 +651,17 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-  const loadContacts = React.useCallback(async () => {
-    const account = store.getState().account
-    if (account.accountId === cachedForAccountId) return
-    updateContacts(undefined)
-    try {
-      const allContacts = await getAllContacts(
-        0,
-        account.accountId,
-        account.apiKey,
-        account.accAddress,
-      )
-      updateContacts(allContacts)
-      updateAccountId(account.accountId)
-    } catch (e) {
-      
-    }
-  }, [cachedForAccountId])
   React.useEffect(() => {
-    const account = store.getState().account
-    if (accountStatus == SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-      loadContacts()
+    if (contactsErrorMessage) {
+      updateContacts()
     }
-  }, [accountStatus])
+  }, [])
+  // React.useEffect(() => {
+  //   const account = store.getState().account
+  //   if (accountStatus == SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+  //     loadContacts()
+  //   }
+  // }, [accountStatus])
   // React.useEffect(() => {
   //   _checkFeeIsEnough()
   // }, [
@@ -715,29 +696,21 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
       const found = exWalletToAddressMapFn(value)
       // const found = map.find(x => x[0] === value)![1]
-      const contact = contacts?.find((x) => x.address === realAddr)
-      if (isHebao !== undefined && contact) {
+      const contact = contacts?.find((x) => x.contactAddress === realAddr)
+      if (!account?.isContractAddress && contact) {
         LoopringAPI.contactAPI
           ?.updateContact(
             {
               contactAddress: realAddr,
-              isHebao,
+              isHebao: !!(account.isContractAddress || account.isCFAddress),
               accountId: account.accountId,
               addressType: found,
-              contactName: contact.name,
+              contactName: contact.contactName,
             },
             account.apiKey,
           )
           .then(() => {
-            updateContacts(
-              contacts?.map((x) => {
-                if (x.address === realAddr && found) {
-                  return { ...x, addressType: found }
-                } else {
-                  return x
-                }
-              }),
-            )
+            updateContacts()
           })
       }
       setSureIsAllowAddress(value)

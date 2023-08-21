@@ -635,10 +635,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount],
   )
-  const { isHebao } = useIsHebao()
   const { contacts, updateContacts } = useContacts()
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.address === realAddr)?.addressType
+    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
     if (isShow === false) {
       setSureItsLayer2(undefined)
     } else if (addressType !== undefined) {
@@ -655,30 +654,20 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.nftTransfer,
     handleSureItsLayer2: (sure: WALLET_TYPE | EXCHANGE_TYPE) => {
       const found = exWalletToAddressMapFn(sure)!
-      const contact = contacts?.find((x) => x.address === realAddr)
-      if (isHebao !== undefined && contact) {
+      const contact = contacts?.find((x) => x.contactAddress === realAddr)
+      if (!account.isContractAddress && contact) {
         LoopringAPI.contactAPI
           ?.updateContact(
             {
               contactAddress: realAddr,
-              isHebao,
+              isHebao: !!(account.isContractAddress || account.isCFAddress),
               accountId: account.accountId,
               addressType: found,
-              contactName: contact.name,
+              contactName: contact.contactName,
             },
             account.apiKey,
           )
-          .then(() => {
-            updateContacts(
-              contacts?.map((x) => {
-                if (x.address === realAddr) {
-                  return { ...x, addressType: found }
-                } else {
-                  return x
-                }
-              }),
-            )
-          })
+        updateContacts()
       }
       setSureItsLayer2(sure)
     },
