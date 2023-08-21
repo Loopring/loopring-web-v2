@@ -420,7 +420,7 @@ const getColumnModeMobileAssets = (
             <Typography variant={'body1'} component={'span'}>
               {`${renderValue} ${feeTokenSymbol}`}
             </Typography>
-            <Typography color={'textThird'} variant={'body2'} component={'span'}>
+            <Typography color={'var(--color-text-third)'} variant={'body2'} component={'span'}>
               {time}
             </Typography>
           </Box>
@@ -511,7 +511,7 @@ export const TradeNFTTable = withTranslation('tables')(
     const handleFilterChange = React.useCallback(
       ({ type = filterType, date = [null, null] }) => {
         setFilterType(type)
-        setFilterDate(date)
+        setFilterDate(date as any)
         updateData({
           tableType: TableType.filter,
           currFilterType: type,

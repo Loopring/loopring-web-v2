@@ -4,6 +4,7 @@ import {
   AmmUserRewardMap,
   LoopringMap,
   toBig,
+  TokenInfo,
 } from '@loopring-web/loopring-sdk'
 import {
   AmmActivity,
@@ -11,6 +12,7 @@ import {
   getValuePrecisionThousand,
   MyAmmLP,
   myError,
+  TokenType,
 } from '@loopring-web/common-resources'
 import {
   AmmDetailStore,
@@ -22,9 +24,59 @@ import {
 import BigNumber from 'bignumber.js'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount'
-import { coinMap } from '@loopring-web/component-lib'
+import { coinMap, EarningsRow } from '@loopring-web/component-lib'
 import _ from 'lodash'
 
+export const makeClaimRewards = <R = EarningsRow>(totalClaims: sdk.ClaimItem[]) => {
+  const { idIndex, tokenMap } = store.getState().tokenMap
+  const { tokenPrices } = store.getState().tokenPrices
+  const list = totalClaims.reduce((prev, _item) => {
+    let tokenValueDollar = 0,
+      amountStr: any
+    const item = {
+      ..._item,
+    }
+    const tokenInfo: TokenInfo = tokenMap[idIndex[item.tokenId]]
+    if (tokenInfo.symbol) {
+      let totalAmount = sdk.toBig(0)
+      // @ts-ignore
+      item.claimableInfo = item.claimable?.map((_claimable) => {
+        totalAmount.plus(_claimable.amount)
+        const amountStr = volumeToCountAsBigNumber(tokenInfo?.symbol, _claimable?.amount ?? 0)
+        const tokenValueDollar = amountStr?.times(tokenPrices[tokenInfo.symbol])
+        return {
+          ..._claimable,
+          amountStr: amountStr?.toString(),
+          tokenValueDollar: tokenValueDollar?.toString(),
+          token: tokenInfo.symbol,
+          precision: tokenInfo.precision,
+        }
+      })
+
+      //TODO:1
+      // @ts-ignore
+      amountStr = volumeToCountAsBigNumber(tokenInfo.symbol, _item.sum)
+      // amountStr = volumeToCountAsBigNumber(tokenInfo.symbol, 1000000000)
+      tokenValueDollar = amountStr?.times(tokenPrices[tokenInfo.symbol])
+      prev[tokenInfo.symbol] = {
+        token: {
+          type: TokenType.single,
+          value: tokenInfo.symbol,
+        },
+        detail: item.claimableInfo,
+        precision: tokenInfo.precision,
+        tokenValueDollar: tokenValueDollar.toString(),
+        amountStr: amountStr.toString(),
+        // @ts-ignore
+        amount: _item?.sum, //1000000000, //TODO:1 _item.sum,
+        rawData: item,
+      } as unknown as R
+      // prev.push()
+    }
+    return prev
+  }, {} as { [key: string]: R })
+  return list
+}
 export type AmmActivityViewMap<R, I> = {
   [key in keyof R]?: AmmActivity<I>[] | undefined
 }
@@ -359,12 +411,22 @@ const getRewardCalc = ({
 const getMyAmmInfo = <C>({ ammInfo, ammUserReward }: any) => {
   let rewards
   const { tokenPrices } = store.getState().tokenPrices
-  const { tokenMap } = store.getState().tokenMap
+  const { tokenMap, idIndex } = store.getState().tokenMap
   if (ammUserReward) {
     rewards = getRewardCalc({
       ammInfo,
       ammUserReward,
     })
+  }
+  let coinA, coinB
+  if (ammInfo.coinA) {
+    coinA = ammInfo.coinA
+    coinB = ammInfo.coinB
+  } else if (ammInfo.tokens && ammInfo.tokens.pooled) {
+    coinA = idIndex[ammInfo.tokens.pooled[0]]
+    coinB = idIndex[ammInfo.tokens.pooled[1]]
+  } else {
+    ;[, coinA, coinB] = ammInfo.market.match(/(\w+)(-\w+)?/i)
   }
   let balanceA, balanceB, balanceU
   const { walletMap } = makeWalletLayer2({ needFilterZero: false })
@@ -374,9 +436,7 @@ const getMyAmmInfo = <C>({ ammInfo, ammUserReward }: any) => {
     const ratio = sdk.toBig(walletMap['LP-' + ammInfo.market]?.count ?? 0).div(ammInfo.totalLPToken)
     balanceA = ratio.times(ammInfo.totalA)
     balanceB = ratio.times(ammInfo.totalB)
-    balanceU = balanceA
-      .times(tokenPrices[ammInfo.coinA])
-      .plus(balanceB.times(tokenPrices[ammInfo.coinB]))
+    balanceU = balanceA.times(tokenPrices[coinA]).plus(balanceB.times(tokenPrices[ammInfo.coinB]))
   }
 
   return {
@@ -385,15 +445,15 @@ const getMyAmmInfo = <C>({ ammInfo, ammUserReward }: any) => {
     balanceB: balanceB ? balanceB.toNumber() : undefined,
     balanceAStr: getValuePrecisionThousand(
       balanceA,
-      tokenMap[ammInfo.coinA].precision,
-      tokenMap[ammInfo.coinA].precision,
+      tokenMap[coinA].precision,
+      tokenMap[coinA].precision,
       undefined,
       false,
     ),
     balanceBStr: getValuePrecisionThousand(
       balanceB,
-      tokenMap[ammInfo.coinB].precision,
-      tokenMap[ammInfo.coinB].precision,
+      tokenMap[coinB].precision,
+      tokenMap[coinB].precision,
       undefined,
       false,
     ),

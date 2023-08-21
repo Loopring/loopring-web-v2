@@ -7,7 +7,6 @@ import {
   AssetsRawDataItem,
   CloseIcon,
   DropDownIcon,
-  EmptyValueTag,
   FeeInfo,
   globalSetup,
   IBData,
@@ -19,15 +18,13 @@ import {
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import {
-  DropdownIconStyled,
-  FeeTokenItemWrapper,
+  FeeSelect,
   ForceWithdrawViewProps,
   InputButtonDefaultProps,
   PopoverPure,
 } from '../..'
 import { Button, IconClearStyled, TextField, useSettings } from '../../../index'
 import { BasicACoinTrade } from './BasicACoinTrade'
-import { FeeToggle } from './tool/FeeList'
 import styled from '@emotion/styled'
 
 export const ListStyle = styled(List)`
@@ -93,7 +90,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
   }) => {
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
   const popupState = usePopupState({
     variant: 'popover',
     popupId: `popupId-withdraw`,
@@ -224,7 +221,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             error={
               realAddr !== '' &&
               isNotAvailableAddress &&
-              (walletMap != {} || walletMap !== undefined)
+              (walletMap !== undefined || Reflect.ownKeys(walletMap ?? {})?.length > 0)
             }
             placeholder={t('labelPleaseForceWithdrawAddress')}
             onChange={(event) => handleOnAddressChange(event?.target?.value)}
@@ -324,54 +321,21 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            <Typography
-              component={'span'}
-              display={'flex'}
-              flexWrap={'wrap'}
-              alignItems={'center'}
-              variant={'body1'}
-              color={'var(--color-text-secondary)'}
-              marginBottom={1}
-            >
-              <Typography component={'span'} color={'inherit'} minWidth={28}>
-                {t('labelL2toL2Fee')}：
-              </Typography>
-              <Box
-                component={'span'}
-                display={'flex'}
-                alignItems={'center'}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-              >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + ' ' + feeInfo.belong
-                  : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                {isFeeNotEnough.isOnLoading ? (
-                  <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                    {t('labelFeeCalculating')}
-                  </Typography>
-                ) : (
-                  isFeeNotEnough.isFeeNotEnough && (
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                      {t('labelL2toL2FeeNotEnough')}
-                    </Typography>
-                  )
-                )}
-              </Box>
-            </Typography>
-            {dropdownStatus === 'up' && (
-              <FeeTokenItemWrapper padding={2}>
-                <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                  {t('labelL2toL2FeeChoose')}
-                </Typography>
-                <FeeToggle
-                  chargeFeeTokenList={chargeFeeTokenList}
-                  handleToggleChange={handleToggleChange}
-                  feeInfo={feeInfo}
-                />
-              </FeeTokenItemWrapper>
-            )}
+            <FeeSelect
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={(fee: FeeInfo) => {
+                handleToggleChange(fee as C)
+                setShowFeeModal(false)
+              }}
+              feeInfo={feeInfo as FeeInfo}
+              open={showFeeModal}
+              onClose={() => {
+                setShowFeeModal(false)
+              }}
+              isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+              feeLoading={isFeeNotEnough.isOnLoading}
+              onClickFee={() => setShowFeeModal((prev) => !prev)}
+            />
           </>
         )}
       </Grid>

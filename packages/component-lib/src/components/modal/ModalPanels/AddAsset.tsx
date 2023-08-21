@@ -20,19 +20,19 @@ import { useSettings, useToggle } from '../../../stores'
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
     case 'IncomingIcon':
-      return <IncomingIcon color={'inherit'} sx={{ marginRight: 1 }} />
+      return <IncomingIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
     case 'CardIcon':
-      return <CardIcon color={'inherit'} sx={{ marginRight: 1 }} />
+      return <CardIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
     case 'L2l2Icon':
-      return <L2l2Icon color={'inherit'} sx={{ marginRight: 1 }} />
+      return <L2l2Icon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
     case 'L1l2Icon':
-      return <L1l2Icon color={'inherit'} sx={{ marginRight: 1 }} />
+      return <L1l2Icon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
     case 'ExchangeAIcon':
-      return <ExchangeAIcon color={'inherit'} sx={{ marginRight: 1 }} />
+      return <ExchangeAIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
     case 'OutputIcon':
-      return <OutputIcon color={'inherit'} sx={{ marginRight: 1 }} />
+      return <OutputIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
     case 'AnotherIcon':
-      return <AnotherIcon color={'inherit'} sx={{ marginRight: 1 }} />
+      return <AnotherIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
   }
 }
 export const AddAsset = ({
@@ -91,7 +91,7 @@ export const AddAsset = ({
         alignItems={'stretch'}
         alignSelf={'stretch'}
         className='modalContent'
-        paddingX={isMobile ? 7 : 10}
+        paddingX={isMobile ? 4 : 5}
         paddingBottom={4}
       >
         <Typography component={'p'} variant={'body1'} color={'textSecondary'} marginBottom={1}>

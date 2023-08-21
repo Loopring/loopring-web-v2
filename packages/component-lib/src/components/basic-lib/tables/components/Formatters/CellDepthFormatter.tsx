@@ -16,8 +16,6 @@ const StyleDepth = styled.div`
 
     &.rgb-depth-red {
       background: var(--color-error);
-      //background: ${({ theme, style }) =>
-        theme.colorBase[style === 'good' ? 'success' : 'error']};;
     }
   }
 `

@@ -21,10 +21,7 @@ import { useOpenModals } from '@loopring-web/component-lib'
 export const useHeader = () => {
   const accountTotal = useAccount()
   const { account, setShouldShow, status: accountStatus } = accountTotal
-  const { chainId, updateSystem } = useSystem()
-  // const { isTaikoTest, isShowTestToggle, setIsShowTestToggle } = useSettings();
-
-  const { setShowAccount } = useOpenModals()
+  const { chainId } = useSystem()
   const accountState = React.useMemo(() => {
     return { account }
   }, [account])

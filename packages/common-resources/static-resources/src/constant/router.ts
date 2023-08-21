@@ -6,14 +6,12 @@ import {
   MintIcon,
   ProfileIcon,
   RewardIcon,
-  // RewardIcon,
   SecurityIcon,
   VipIcon,
 } from '../svg'
-// import * as sdk from "@loopring-web/loopring-sdk";
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestMapType, SendAssetList } from './trade'
-import { Exchange, WalletSite } from './setting'
+import { WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -254,34 +252,11 @@ export const ammDisableList = ['Liquidity']
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: 'Landing-page',
-      i18nKey: 'labelZkRollupLayer2',
-    },
-    router: { path: Exchange },
-  },
-  {
-    label: {
       id: 'wallet',
       i18nKey: 'labelWallet',
     },
     router: { path: WalletSite },
   },
-  // {
-  //   label: {
-  //     id: "bridge",
-  //     i18nKey: "labelBridge",
-  //     description: "labelBridgeDes",
-  //   },
-  //   router: { path: "https://loopring.io/#/" },
-  // },
-  // {
-  //   label: {
-  //     id: "guardian",
-  //     i18nKey: "labelGuardian",
-  //     description: "labelGuardianDes",
-  //   },
-  //   router: { path: "https://loopring.io/#/" },
-  // },
 ]
 export const subMenuLayer2 = {
   assetsGroup: [
@@ -391,11 +366,11 @@ export const leverageETHConfig = {
     ETHEREUM: ['CIETH'],
     GOERLI: ['WSTETH'],
   },
-  types : {
+  types: {
     TAIKO: [] as string[],
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
-  }
+  },
 }
 
 export const subMenuNFT = {
@@ -489,7 +464,7 @@ export const FOOTER_LIST_MAP = {
 
     {
       linkName: 'APIs', //APIs
-      linkHref: `${LOOPRING_DOC}/en/`,
+      linkHref: `${LOOPRING_DOC}`,
     },
     {
       linkName: 'L2Explorer', //Layer2 Explorer
@@ -640,7 +615,7 @@ export const leverageETHAdvice: InvestAdvice = {
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
-  desI18n: 'labelInvestLeverageETH',
+  desI18n: 'labelInvestLeverageETHDes',
   enable: true,
   project: 'TODO Pool',
   market: 'CIETH-ETH',
@@ -664,6 +639,11 @@ export enum AssetTabIndex {
   Invests = 'Invests',
   RedPacket = 'RedPacket',
   Rewards = 'Rewards',
+}
+
+export enum TabOrderIndex {
+  orderOpenTable = 'orderOpenTable',
+  orderHistoryTable = 'orderHistoryTable',
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
@@ -791,8 +771,18 @@ export const SendAssetListMap = {
 }
 export const AssetL2TabIndex = {
   TAIKO: [AssetTabIndex.Tokens],
-  ETHEREUM: [AssetTabIndex.Tokens, AssetTabIndex.Invests, AssetTabIndex.RedPacket],
-  GOERLI: [AssetTabIndex.Tokens, AssetTabIndex.Invests, AssetTabIndex.RedPacket],
+  ETHEREUM: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+    AssetTabIndex.Rewards,
+  ],
+  GOERLI: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+    AssetTabIndex.Rewards,
+  ],
 }
 export const RouterAllowIndex = {
   TAIKO: [
@@ -839,7 +829,7 @@ export const ProfileIndex = {
     ProfileKey.forcewithdraw,
     ProfileKey.vip,
     ProfileKey.contact,
-    // ProfileKey.referralrewards
+    ProfileKey.referralrewards,
   ],
   GOERLI: [
     ProfileKey.security,

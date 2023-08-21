@@ -11,7 +11,7 @@ import { useMyNFT } from './useMyNFT'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { Tab, Tabs, Typography } from '@mui/material'
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 
 export type MyNFTListProps<NFT> = {
   collectionMeta: CollectionMeta | undefined

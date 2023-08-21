@@ -6,7 +6,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   AccountStatus,
   getValuePrecisionThousand,
-  myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from '@loopring-web/common-resources'

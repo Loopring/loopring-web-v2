@@ -377,10 +377,12 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
 
   &.addAsset,
   &.sendAsset {
+
     white-space: pre;
     font-size: ${({ theme }) => theme.fontDefault.h5};
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-direction: row;
+    height: ${({ theme }) => theme.unit * 8}px;
 
     &.isMobile {
       font-size: ${({ theme }) => theme.fontDefault.h6};
@@ -408,6 +410,44 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     justify-content: space-between;
     flex-direction: row;
     white-space: pre;
+    color: var(--color-text-primary);
+    height: var(--provider-btn-height);
+
+    &:hover {
+      outline: 1px solid var(--color-border-select);
+    }
+
+    &.Mui-disabled {
+      .MuiButton-endIcon {
+        color: var(--color-text-disable);
+      }
+    }
+
+    &.selected {
+      outline: 1px solid var(--color-border-select);
+
+      &:after {
+        display: none;
+      }
+    }
+
+    &.MuiButton-root {
+      ${
+        // @ts-ignore
+        ({ loading, loadingbg, t }) => {
+          return loading === 'true'
+            ? `
+           pointer-events: none;    
+         
+       `
+            : ''
+        }
+      }
+    }
+
+    .loading {
+      font-size: ${({ theme }) => theme.fontDefault.body2};
+    }
   }
 
   &.vendor {
@@ -422,7 +462,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
 
   &:hover {
     background: var(--provider-hover);
-    border-color: var(--opacity);
+    border-color: var(--color-border-select);
     color: var(--color-text-button-select);
   }
 

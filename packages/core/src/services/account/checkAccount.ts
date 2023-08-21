@@ -6,7 +6,7 @@ import { cleanAccountStatus } from '../../stores/account/reducer'
 
 export const checkAccount = (
   newAccAddress: string,
-  chainId?: ChainId | undefined,
+  chainId: ChainId | undefined,
   // provider?: any
 ) => {
   const account = store.getState().account

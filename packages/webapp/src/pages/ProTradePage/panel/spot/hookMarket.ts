@@ -24,8 +24,10 @@ import {
   LoopringAPI,
   PriceLevel,
   reCalcStoB,
+  ShowWitchAle3t1,
   store,
   useAccount,
+  useAlert,
   useAmount,
   usePageTradePro,
   usePlaceOrder,
@@ -50,13 +52,13 @@ export const useMarket = <C extends { [key: string]: any }>({
   const { tokenMap, marketArray, marketMap } = useTokenMap()
   const { tokenPrices } = useTokenPrices()
   const { tickerMap } = useTicker()
-  const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
-  const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
+  // const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
+  // const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { account } = useAccount()
   const { slippage, isMobile } = useSettings()
   const { exchangeInfo, allowTrade } = useSystem()
-
+  useAlert()
   const {
     toggle: { order },
   } = useToggle()
@@ -570,97 +572,137 @@ export const useMarket = <C extends { [key: string]: any }>({
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: '' }
       } else {
-        if (
-          pageTradePro?.tradeCalcProData?.isNotMatchMarketPrice &&
-          !pageTradePro?.tradeCalcProData?.isChecked
-        ) {
-          return {
-            label: '',
-            tradeBtnStatus: TradeBtnStatus.DISABLED,
-          }
-        } else {
-          return {
-            label: '',
-            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          }
+        return {
+          label: '',
+          tradeBtnStatus: TradeBtnStatus.AVAILABLE,
         }
+        // if (
+        //   pageTradePro?.tradeCalcProData?.isNotMatchMarketPrice &&
+        //   !pageTradePro?.tradeCalcProData?.isChecked
+        // ) {
+        //   return {
+        //     label: '',
+        //     tradeBtnStatus: TradeBtnStatus.DISABLED,
+        //   }
+        // } else {
+        //
+        // }
       }
     }
 
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
   }, [marketTradeData, marketSubmit])
-  const [smallOrderAlertOpen, setSmallOrderAlertOpen] = React.useState<boolean>(false)
-  const [secondConfirmationOpen, setSecondConfirmationOpen] = React.useState<boolean>(false)
+  // const [smallOrderAlertOpen, setSmallOrderAlertOpen] = React.useState<boolean>(false)
+  // const [secondConfirmationOpen, setSecondConfirmationOpen] = React.useState<boolean>(false)
   const isSmallOrder =
     marketTradeData && marketTradeData.quote.tradeValue
       ? tokenPrices[marketTradeData.quote.belong] * marketTradeData.quote.tradeValue < 100
       : false
-  const priceAlertCallBack = React.useCallback(
-    (confirm: boolean) => {
-      if (confirm) {
-        if (isSmallOrder) {
-          setSmallOrderAlertOpen(true)
-        } else {
-          setIsMarketLoading(true)
-          marketSubmit()
+  // const priceAlertCallBack = React.useCallback(
+  //   (confirm: boolean) => {
+  //     if (confirm) {
+  //       if (isSmallOrder) {
+  //         setSmallOrderAlertOpen(true)
+  //       } else {
+  //         setIsMarketLoading(true)
+  //         marketSubmit()
+  //       }
+  //       setAlertOpen(false)
+  //       setConfirmOpen(false)
+  //     } else {
+  //       setAlertOpen(false)
+  //       setConfirmOpen(false)
+  //       setIsMarketLoading(false)
+  //     }
+  //   },
+  //   [isSmallOrder],
+  // )
+  // const smallOrderAlertCallBack = React.useCallback(
+  //   (confirm: boolean) => {
+  //     if (confirm) {
+  //       setIsMarketLoading(true)
+  //       marketSubmit()
+  //       setSmallOrderAlertOpen(false)
+  //     } else {
+  //       setSmallOrderAlertOpen(false)
+  //       setIsMarketLoading(false)
+  //     }
+  //   },
+  //   [marketSubmit],
+  // )
+  // const secondConfirmationCallBack = React.useCallback(
+  //   (confirm: boolean) => {
+  //     if (confirm) {
+  //       setIsMarketLoading(true)
+  //       marketSubmit()
+  //       setSecondConfirmationOpen(false)
+  //     } else {
+  //       setSecondConfirmationOpen(false)
+  //       setIsMarketLoading(false)
+  //     }
+  //   },
+  //   [marketSubmit],
+  // )
+  const { showAlert, confirmed, setShowWhich, setConfirmed } = useAlert()
+  const doShowAlert = () => {
+    const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+    const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams, account.readyState)
+    myLog('hookSwap:---- swapCalculatorCallback priceLevel:', priceLevel)
+    setConfirmed((state) => {
+      if (isSmallOrder) {
+        state[1] = false
+      } else {
+        state[1] = true
+      }
+      setShowWhich(() => {
+        if (pageTradePro?.tradeCalcProData?.isNotMatchMarketPrice) {
+          return { isShow: true, step: 1, showWitch: ShowWitchAle3t1.AlertImpact }
+        } else if (priceLevel === PriceLevel.Lv1 || priceLevel === PriceLevel.Lv2) {
+          return { isShow: true, step: 1, showWitch: ShowWitchAle3t1.ConfirmImpact }
+        } else if (isSmallOrder) {
+          state[0] = true
+          return { isShow: true, step: 2, showWitch: ShowWitchAle3t1.SmallPrice }
         }
-        setAlertOpen(false)
-        setConfirmOpen(false)
-      } else {
-        setAlertOpen(false)
-        setConfirmOpen(false)
-        setIsMarketLoading(false)
-      }
-    },
-    [isSmallOrder],
-  )
-  const smallOrderAlertCallBack = React.useCallback(
-    (confirm: boolean) => {
-      if (confirm) {
-        setIsMarketLoading(true)
-        marketSubmit()
-        setSmallOrderAlertOpen(false)
-      } else {
-        setSmallOrderAlertOpen(false)
-        setIsMarketLoading(false)
-      }
-    },
-    [marketSubmit],
-  )
-  const secondConfirmationCallBack = React.useCallback(
-    (confirm: boolean) => {
-      if (confirm) {
-        setIsMarketLoading(true)
-        marketSubmit()
-        setSecondConfirmationOpen(false)
-      } else {
-        setSecondConfirmationOpen(false)
-        setIsMarketLoading(false)
-      }
-    },
-    [marketSubmit],
-  )
+        // else if (showSwapSecondConfirmation) {
+        //   return { isShow: true, step: 1, showWitch: ShowWitchAle3t1.SwapSecondConfirmation }
+        // }
+        else {
+          state[0] = true
+          return { isShow: false, step: 2, showWitch: '' }
+        }
+      })
+      return state
+    })
+  }
+  React.useEffect(() => {
+    if (confirmed[0] === true && confirmed[1] === true) {
+      marketSubmit()
+      setConfirmed([false, false])
+    }
+  }, [confirmed[0], confirmed[1]])
 
   const onSubmitBtnClick = React.useCallback(async () => {
     setIsMarketLoading(true)
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
-    const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams, account.readyState)
     // const isIpValid = true
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true })
       setIsMarketLoading(false)
     } else if (!order.enable) {
-      setShowTradeIsFrozen({ isShow: true, type: 'Limit' })
+      setShowTradeIsFrozen({ isShow: true, type: 'Market' })
       setIsMarketLoading(false)
-    } else if (priceLevel === PriceLevel.Lv1) {
-      setAlertOpen(true)
-    } else if (priceLevel === PriceLevel.Lv2) {
-      setConfirmOpen(true)
-    } else if (isSmallOrder) {
-      setSmallOrderAlertOpen(true)
     } else {
-      marketSubmit()
+      doShowAlert()
     }
+    // else if (priceLevel === PriceLevel.Lv1) {
+    //   setAlertOpen(true)
+    // } else if (priceLevel === PriceLevel.Lv2) {
+    //   setConfirmOpen(true)
+    // } else if (isSmallOrder) {
+    //   setSmallOrderAlertOpen(true)
+    // } else {
+    //   marketSubmit()
+    // }
   }, [allowTrade, account.readyState, isSmallOrder])
 
   const {
@@ -675,28 +717,44 @@ export const useMarket = <C extends { [key: string]: any }>({
     submitCallback: onSubmitBtnClick,
   })
   return {
-    alertOpen,
-    confirmOpen,
     toastOpen,
     closeToast,
-    isMarketLoading,
-    marketSubmit,
     marketTradeData,
-    resetMarketData: resetTradeData,
     onChangeMarketEvent,
-    tradeMarketBtnStatus,
     tradeMarketI18nKey,
-    marketBtnClick,
+    tradeMarketBtnStatus,
     tradeMarketBtnStyle: {
       ...tradeMarketBtnStyle,
       ...{ fontSize: isMobile ? '1.4rem' : '1.6rem' },
     },
-    smallOrderAlertCallBack,
-    secondConfirmationCallBack,
-    smallOrderAlertOpen,
-    secondConfirmationOpen,
+    resetMarketData: resetTradeData,
+    marketBtnClick,
+    isMarketLoading,
+    marketSubmit,
+    // smallOrderAlertCallBack,
+    // secondConfirmationCallBack,
+    // smallOrderAlertOpen,
+    // secondConfirmationOpen,
     setToastOpen,
-    priceAlertCallBack,
+    // priceAlertCallBack,
+    showAlert,
+    handleClose: () => {
+      setShowWhich((state) => ({ ...state, isShow: false }))
+      setConfirmed([false, false])
+      setIsMarketLoading(false)
+    },
+    handleConfirm: () => {
+      if (showAlert.step == 1 && confirmed[1] == false) {
+        setShowWhich(() => ({ step: 2, showWitch: ShowWitchAle3t1.SmallPrice, isShow: true }))
+      } else {
+        setShowWhich((state) => ({ ...state, isShow: false }))
+      }
+      setConfirmed((state) => {
+        state[showAlert.step - 1] = true
+        return state
+      })
+    },
+    priceLevel: getPriceImpactInfo(pageTradePro.calcTradeParams, account.readyState),
     // marketTicker,
   }
 }

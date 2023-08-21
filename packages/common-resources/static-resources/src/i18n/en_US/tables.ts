@@ -320,10 +320,10 @@ export default {
   labelBtradePending: 'Pending',
   labelBtradeSwapFailed: 'Filled',
   labelStopLimitStopPrice: 'Trigger Condition',
-  labelDUAL_CURRENCY: 'DUAL CURRENCY',
-  labelDUAL_BASE: 'DUAL BASE',
+  labelDUAL_CURRENCY: 'Dual',
+  labelDUAL_BASE: 'Dual',
   labelBTRADE: 'Block Trade',
-  labelL2STAKING: 'Staking',
+  labelL2STAKING: 'LRC Staking',
   labelSTOP_LIMIT: 'Stop-Limit',
   labelStopLimitTriggered:
     'Triggered: The limit order has been submitted to the order book.\n Time: {{time}}',
@@ -343,4 +343,5 @@ export default {
   labelRefundTableTime: 'Time',
   labelTxNetworkFee: 'Network Fee',
   labelTxTradingFee: 'Trading Fee',
+  labelTypeUNIFIED_CLAIM: 'Claim Rewards',
 }

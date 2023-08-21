@@ -1,6 +1,7 @@
 import { borderFunc, pxToRem, unit } from './utils'
 import { ComponentsOverrides } from '@mui/material'
 import { fontDefault } from '../css/global'
+import { myLog } from '../../utils'
 
 export const radius = 4
 export const checkBoxSize = 18
@@ -381,7 +382,9 @@ export const MuiInputLabel = ({
 export const MuiInputBase = ({
   colorBase,
   themeMode,
+  ...rest
 }: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
+  myLog('size', rest)
   return {
     styleOverrides: {
       root: {
@@ -393,8 +396,10 @@ export const MuiInputBase = ({
         backgroundColor: colorBase.box,
         border: borderFunc(themeMode).borderConfig({ c_key: colorBase.border }), //`1px solid ${colorBase.border}`,
         borderRadius: 4,
+        boxSizing: 'border-box',
+        height: pxToRem(32),
         '&.MuiInputBase-sizeSmall': {
-          height: '2.4rem',
+          height: pxToRem(32),
         },
         '&:not(.MuiFormControl-fullWidth)': {
           // width: 'var(--btn-min-width)',
@@ -447,7 +452,6 @@ export const MuiInputBase = ({
             top: '50%',
             transform: 'translateY(-50%)',
             position: 'absolute',
-            // pointerEvents: 'none',
             transition: 'fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
             // color: 'var(--color-text-secondary)'
           },
@@ -466,12 +470,11 @@ export const MuiInputBase = ({
         },
         ' .MuiOutlinedInput-input': {
           padding: 0,
-          height: pxToRem(24),
+          height: 'calc(3.2rem - .6rem)',
         },
         ' .MuiSelect-outlined': {
-          // padding: '.3rem 2.4rem .3rem .8rem',
-          height: pxToRem(24),
-          lineHeight: pxToRem(24),
+          height: 'calc(3.2rem - .6rem)',
+          lineHeight: 'calc(3.2rem - .6rem)',
           minWidth: 'auto',
         },
         ' .MuiSelect-icon': {

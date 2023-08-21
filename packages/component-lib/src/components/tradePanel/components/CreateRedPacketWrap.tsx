@@ -27,7 +27,6 @@ import {
   REDPACKET_ORDER_LIMIT,
   RedPacketOrderData,
   SoursURL,
-  TRADE_TYPE,
   TradeBtnStatus,
   GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
@@ -39,8 +38,6 @@ import { CreateRedPacketViewProps, RedPacketStep, SwitchData } from '../Interfac
 import { MenuBtnStyled } from '../../styled'
 import styled from '@emotion/styled'
 import { BasicACoinTrade } from './BasicACoinTrade'
-import { DropdownIconStyled, FeeTokenItemWrapper } from './Styled'
-import { FeeToggle } from './tool/FeeList'
 import { BtnMain } from './tool'
 import * as sdk from '@loopring-web/loopring-sdk'
 import moment from 'moment'
@@ -48,6 +45,7 @@ import { NFTInput } from './BasicANFTTrade'
 import { DateTimeRangePicker } from '../../datetimerangepicker'
 import BigNumber from 'bignumber.js'
 import { useNotify } from '@loopring-web/core'
+import { FeeSelect } from '../../../components'
 
 const StyledTextFiled = styled(TextField)``
 
@@ -141,7 +139,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled || btnStatus === TradeBtnStatus.DISABLED
     }, [disabled, btnStatus])
-    const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+    const [showFeeModal, setShowFeeModal] = React.useState(false)
     const inputBtnRef = React.useRef()
     const inputSplitRef = React.useRef()
     const isToken =
@@ -682,61 +680,22 @@ export const CreateRedPacketStepWrap = withTranslation()(
             <Typography component={'span'}>{t('labelFeeCalculating')}</Typography>
           ) : (
             <>
-              <Typography
-                component={'span'}
-                display={'flex'}
-                flexWrap={'wrap'}
-                alignItems={'center'}
-                variant={'body1'}
-                color={'var(--color-text-secondary)'}
-                marginBottom={1}
-              >
-                <Typography component={'span'} color={'inherit'} minWidth={28}>
-                  {t('labelL2toL2Fee')}：
-                </Typography>
-                <Box
-                  component={'span'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-                >
-                  {feeInfo && feeInfo.belong && feeInfo.fee
-                    ? feeInfo.fee + ' ' + feeInfo.belong
-                    : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                  <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                  {isFeeNotEnough?.isOnLoading ? (
-                    <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                      {t('labelFeeCalculating')}
-                    </Typography>
-                  ) : (
-                    isFeeNotEnough?.isFeeNotEnough && (
-                      <Typography component={'span'} marginLeft={1} color={'var(--color-error)'}>
-                        {t('labelL2toL2FeeNotEnough')}
-                      </Typography>
-                    )
-                  )}
-                </Box>
-              </Typography>
-              {dropdownStatus === 'up' && (
-                <FeeTokenItemWrapper padding={2}>
-                  <Box display={'flex'} flexDirection={'column'}>
-                    <Typography
-                      component={'span'}
-                      variant={'body2'}
-                      color={'var(--color-text-third)'}
-                      marginBottom={1}
-                    >
-                      {t('labelL2toL2FeeChoose')}
-                    </Typography>
-                    <FeeToggle
-                      chargeFeeTokenList={chargeFeeTokenList}
-                      handleToggleChange={handleToggleChange}
-                      feeInfo={feeInfo}
-                    />
-                  </Box>
-                </FeeTokenItemWrapper>
-              )}
+              <FeeSelect
+                chargeFeeTokenList={chargeFeeTokenList}
+                handleToggleChange={(fee: FeeInfo) => {
+                  handleToggleChange(fee as F)
+                  setShowFeeModal(false)
+                }}
+                feeInfo={feeInfo as FeeInfo}
+                open={showFeeModal}
+                onClose={() => {
+                  setShowFeeModal(false)
+                }}
+                isFeeNotEnough={isFeeNotEnough && isFeeNotEnough.isFeeNotEnough}
+                feeLoading={isFeeNotEnough && isFeeNotEnough.isOnLoading}
+                onClickFee={() => setShowFeeModal((prev) => !prev)}
+                floatLeft
+              />
             </>
           )}
         </Box>
@@ -759,7 +718,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
             justifyContent={'center'}
             variant={'body2'}
             component={'span'}
-            color={'textThird'}
+            color={'var(--color-text-third)'}
             width={'100%'}
             textAlign={'center'}
           >

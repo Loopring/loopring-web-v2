@@ -7,28 +7,33 @@ import {
   RadioGroup,
   TextareaAutosize,
   TextField as MuiTextField,
+  OutlinedInput as MuiOutlinedInput,
   TextFieldProps,
+  OutlinedInputProps,
 } from '@mui/material'
 import CurrencyInput from 'react-currency-input-field'
 
 import { InputSize } from './Interface'
+import { css } from '@emotion/react'
+
+export const inputHeightLarge = () => css`
+  height: var(--input-height-large);
+  font-size: 1.5rem;
+
+  .MuiInputAdornment-root {
+    svg {
+      height: var(--btn-icon-size-large);
+      width: var(--btn-icon-size-large);
+    }
+  }
+`
+export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
+  ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+`
 
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
-    ${({ size }) =>
-      size == 'large'
-        ? `
-      height:var(--input-height-large);
-      font-size:2rem;
-      .MuiInputAdornment-root{
-       svg{
-        height:var(--btn-icon-size);
-        width: var(--btn-icon-size);
-       }
-       
-      }
-    `
-        : ``};
+    ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
   }
 
   .MuiInputAdornment-root {
@@ -44,7 +49,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
     .MuiSelect-nativeInput + svg {
       position: absolute;
       right: 0.4rem;
-      top: ${({ theme }) => theme.unit}px;
+      right: ${({  size }) => size === 'large' ? 1 : 0.4}rem;
+      top: ${({ theme, size }) => size === 'large' ? 2 * theme.unit : theme.unit}px;
       color: var(--color-text-secondary);
     }
 
@@ -271,6 +277,10 @@ export const IInput = styled(CurrencyInput)`
 
   :disabled {
     color: var(--color-text-disable);
+  }
+
+  .loading:disabled {
+    color: var(--color-text-primary);
   }
 
   width: 100%;

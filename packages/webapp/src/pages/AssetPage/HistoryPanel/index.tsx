@@ -5,7 +5,6 @@ import {
   AmmTable,
   BtradeSwapTable,
   Button,
-  ComingSoonPanel,
   DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
@@ -44,13 +43,9 @@ import {
   RecordTabIndex,
   RowConfig,
   TOAST_TIME,
+  TabOrderIndex,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
-
-enum TabOrderIndex {
-  orderOpenTable = 'orderOpenTable',
-  orderHistoryTable = 'orderHistoryTable',
-}
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -79,6 +74,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     txsTotal,
     showLoading: showTxsLoading,
     getUserTxnList,
+    searchValue,
   } = useGetTxs(setToastOpen)
   const {
     userTrades,
@@ -159,7 +155,6 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     },
     [history, search],
   )
-
   React.useEffect(() => {
     let height = container?.current?.offsetHeight
     if (height) {
@@ -231,6 +226,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               {...{
                 etherscanBaseUrl,
                 rawData: txTableData,
+                searchValue,
                 pagination: {
                   pageSize: pageSize,
                   total: txsTotal,
@@ -283,7 +279,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             />
           ) : currentTab === RecordTabIndex.DefiRecords ? (
             <DefiTxsTable
-              key={"defi"}
+              key={'defi'}
               {...{
                 rawData: defiList,
                 pagination: {
@@ -446,7 +442,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             </Box>
           ) : currentTab === RecordTabIndex.leverageETHRecords ? (
             <DefiTxsTable
-              key={"leverage"}
+              key={'leverage'}
               {...{
                 rawData: leverageETHList,
                 pagination: {

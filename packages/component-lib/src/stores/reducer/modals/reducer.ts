@@ -8,9 +8,16 @@ import {
   TradeNFT,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { AmmPanelType } from '../../../components'
+import { AmmPanelType, ToastType } from '../../../components'
 
 const initialState: ModalState = {
+  isShowGlobalToast: {
+    isShow: false,
+    info: {
+      content: '',
+      type: ToastType.info,
+    },
+  },
   isShowNFTMetaNotReady: { isShow: false },
   isShowRedPacket: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },
@@ -51,6 +58,22 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   name: 'modals',
   initialState,
   reducers: {
+    setShowGlobalToast(
+      state,
+      action: PayloadAction<{
+        isShow: boolean
+        info: {
+          content: string
+          type: ToastType
+        }
+      }>,
+    ) {
+      const { isShow, info } = action.payload
+      state.isShowGlobalToast = {
+        isShow,
+        info,
+      }
+    },
     setNFTMetaNotReady(
       state,
       action: PayloadAction<{
@@ -259,13 +282,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow: boolean
         step?: number
         error?: RESULT_INFO
+        info?: { [key: string]: any }
       }>,
     ) {
-      const { isShow, step, error } = action.payload
+      const { isShow, step, error, info } = action.payload
       state.isShowConnect = {
         isShow,
         step: step ? step : 0,
         error: error ?? undefined,
+        info: info ?? undefined,
       }
     },
     setShowAccount(
@@ -325,16 +350,14 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         ModalStatePlayLoad & {
           claimToken: ClaimToken
           claimType: CLAIM_TYPE
-          successCallback?: () => void
         }
       >,
     ) {
-      const { isShow, claimToken, claimType, successCallback } = action.payload
+      const { isShow, claimToken, claimType } = action.payload
       state.isShowClaimWithdraw = {
         isShow,
         claimToken,
         claimType,
-        successCallback,
       }
     },
     setShowSideStakingRedeem(
@@ -346,7 +369,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
         symbol,
       }
-    },
+    }
   },
 })
 export const {
@@ -380,4 +403,6 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
+  setShowFeeSelect,
+  setShowGlobalToast,
 } = modalsSlice.actions

@@ -289,7 +289,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-      myLog('useEffect nftTransferValue.address:', nftTransferValue.address)
+      // myLog('useEffect nftTransferValue.address:', nftTransferValue.address)
       setAddress(nftTransferValue.address ? nftTransferValue.address : '')
     }
   }, [setAddress, nftTransferValue.address, accountStatus, account.readyState])
@@ -314,9 +314,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           const response = await LoopringAPI.userAPI?.submitNFTInTransfer(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as any,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProviders[connectName] ??
+              walletType: (ConnectProviders[ connectName ] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,

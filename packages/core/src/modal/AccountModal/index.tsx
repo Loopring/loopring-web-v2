@@ -32,11 +32,12 @@ export const ModalAccountInfo = withTranslation('common')(
   } & WithTranslation) => {
     const { baseURL } = useSystem()
     const {
-      modals: { isShowAccount },
+      modals: { isShowAccount, isShowGlobalToast },
       setShowAccount,
       setShowDeposit,
       setShowTransfer,
       setShowWithdraw,
+      setShowGlobalToast,
     } = useOpenModals()
     const {
       exportAccountAlertText,
@@ -63,8 +64,8 @@ export const ModalAccountInfo = withTranslation('common')(
       currentModal,
       onBackReceive,
       onBackSend,
-      toastOpen,
-      closeToast,
+      // toastOpen,
+      // closeToast,
     } = useAccountModalForUI({
       t,
       assetsRawData,
@@ -73,15 +74,16 @@ export const ModalAccountInfo = withTranslation('common')(
       isLayer1Only,
       ...rest,
     })
+    // const closeToast = React.useCallback(() => {
+    //   setToastOpen({
+    //     open: false,
+    //     content: '',
+    //     type: ToastType.info,
+    //   })
+    // }, [setToastOpen])
 
     return (
       <>
-        <Toast
-          alertText={toastOpen?.content ?? ''}
-          open={toastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-        />
         <Toast
           alertText={exportAccountAlertText as string}
           open={exportAccountToastOpen}
@@ -92,11 +94,19 @@ export const ModalAccountInfo = withTranslation('common')(
           severity={ToastType.success}
         />
         <Toast
-          alertText={toastOpen?.content ?? ''}
-          severity={toastOpen?.type ?? ToastType.success}
-          open={toastOpen?.open ?? false}
+          alertText={isShowGlobalToast?.info?.content ?? ''}
+          severity={isShowGlobalToast?.info?.type ?? ToastType.success}
+          open={isShowGlobalToast?.isShow ?? false}
           autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
+          onClose={() =>
+            setShowGlobalToast({
+              isShow: false,
+              info: {
+                content: '',
+                type: ToastType.info,
+              },
+            })
+          }
         />
 
         <ModalPanel
@@ -148,7 +158,6 @@ export const ModalAccountInfo = withTranslation('common')(
           sideStackRedeemProps={sideStackRedeemProps as any}
           {...{ _height: 'var(--modal-height)', _width: 'var(--modal-width)' }}
         />
-
         <Toast
           alertText={t('labelCopyAddClip')}
           open={copyToastOpen}

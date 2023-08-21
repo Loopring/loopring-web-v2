@@ -71,7 +71,7 @@ export type TransferInfoProps<C> = {
   chargeFeeTokenList: Array<C>
   activeAccountPrice: string | undefined
   // activeAccountFeeList?: Array<C>;
-  feeInfo: C
+  feeInfo: C | undefined
   isFeeNotEnough: {
     isFeeNotEnough: boolean
     isOnLoading: boolean
@@ -88,7 +88,7 @@ export type TransferExtendProps<T, I, C> = {
   isSmartContractAddress?: boolean
   isAddressCheckLoading?: boolean
   isSameAddress?: boolean
-  isActiveAccountFee?: boolean
+  isActiveAccountFee?: boolean | 'not allow'
   addrStatus: AddressError
   onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>
   handleFeeChange: (value: C) => void
@@ -177,11 +177,13 @@ export type DepositExtendProps<T> = {
   onDepositClick: (data: T) => void
   toIsAddressCheckLoading: boolean
   // toIsLoopringAddress: boolean;
-  realToAddress?: string
+  toAddress?: string
+  realToAddress?: string | JSX.Element
   handleClear: () => void
   isToAddressEditable: boolean
   onBack?: () => void
   accountReady?: AccountStatus | undefined
+  handleAddressChange: (address: string) => void
 } & DepositInfoProps
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExtendProps<T>

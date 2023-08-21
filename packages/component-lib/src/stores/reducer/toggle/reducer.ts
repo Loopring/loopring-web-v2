@@ -35,6 +35,7 @@ const initialState: ToggleState = {
   },
   CIETHInvest: { enable: true },
   whiteList: {},
+  isSupperUser: false as any,
 }
 
 export const toggleSlice: Slice<ToggleState> = createSlice<

@@ -44,6 +44,7 @@ import {
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
+import { useLocation } from 'react-router-dom'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -64,6 +65,8 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount()
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
   const { tokenMap } = store.getState().tokenMap
   const { t } = useTranslation(['error'])
   const [txs, setTxs] = React.useState<RawDataTransactionItem[]>([])
@@ -140,6 +143,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
   return {
     txs,
     txsTotal,
+    searchValue: searchParams?.get('searchValue'),
     showLoading,
     getUserTxnList,
   }
@@ -350,7 +354,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            markets: markets.join(',')
+            markets: markets.join(','),
           } as any,
           apiKey,
         )
@@ -626,7 +630,7 @@ export const useOrderList = ({
   )
 
   const cancelOrder = React.useCallback(
-    async ({ orderHash, clientOrderId }) => {
+    async ({ orderHash, clientOrderId }: any) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
         await LoopringAPI.userAPI.cancelOrder(
           {
@@ -1159,7 +1163,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-            types: types.join(',')
+            types: types.join(','),
           } as any,
           apiKey,
         )

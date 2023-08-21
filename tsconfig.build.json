@@ -1,14 +1,24 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext", "es2016", "es2017", "es2020"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "es2016",
+      "es2017",
+      "es2020"
+    ],
+    "files": [
+      "./node_modules/@types/node/index.d.ts"
+    ],
     "module": "commonjs",
     "jsx": "react-jsx",
     "sourceMap": true,
     "allowJs": true,
     "composite": true,
     "keyofStringsOnly": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -22,5 +32,8 @@
     "noEmit": true,
     "module": "esnext"
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
