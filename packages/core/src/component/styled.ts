@@ -41,7 +41,6 @@ export const TableWrapStyled = styled(Box)`
     .toolbar {
       padding: 0;
     }
-    background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit}px;
     .rdg {
       .rdg-header-row {

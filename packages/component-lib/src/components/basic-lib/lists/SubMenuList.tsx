@@ -130,7 +130,6 @@ export const SubMenuList = withTranslation(['layout', 'common'], {
         })
         return (
           <>
-            {' '}
             {subList ? (
               <div key={`group-${list}`}>
                 {subList}
