@@ -10,16 +10,13 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  DropdownIconStyled,
-  FeeToggle,
-  FeeTokenItemWrapper,
+  FeeSelect,
   RampViewProps,
   Toast,
   ToastType,
 } from '../../index'
 import { useSettings } from '../../../stores'
 import React from 'react'
-
 export const RampConfirm = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   tradeData,
   onTransferClick,
@@ -37,7 +34,7 @@ export const RampConfirm = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C ex
   const { isMobile } = useSettings()
   const { t } = useTranslation()
   const [open, setOpen] = React.useState(false)
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
       handleFeeChange(value)
@@ -123,54 +120,21 @@ export const RampConfirm = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C ex
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
           <>
-            <Typography
-              component={'span'}
-              display={'flex'}
-              flexWrap={'wrap'}
-              alignItems={'center'}
-              variant={'body1'}
-              color={'var(--color-text-secondary)'}
-              marginBottom={1}
-            >
-              <Typography component={'span'} color={'inherit'} minWidth={28}>
-                {t('labelL2toL2Fee')}：
-              </Typography>
-              <Box
-                component={'span'}
-                display={'flex'}
-                alignItems={'center'}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-              >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + ' ' + feeInfo.belong
-                  : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                {isFeeNotEnough.isOnLoading ? (
-                  <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                    {t('labelFeeCalculating')}
-                  </Typography>
-                ) : (
-                  isFeeNotEnough.isFeeNotEnough && (
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                      {t('labelL2toL2FeeNotEnough')}
-                    </Typography>
-                  )
-                )}
-              </Box>
-            </Typography>
-            {dropdownStatus === 'up' && (
-              <FeeTokenItemWrapper padding={2}>
-                <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                  {t('labelL2toL2FeeChoose')}
-                </Typography>
-                <FeeToggle
+            <FeeSelect
                   chargeFeeTokenList={chargeFeeTokenList}
-                  handleToggleChange={handleToggleChange}
-                  feeInfo={feeInfo}
+                  handleToggleChange={(fee: FeeInfo) => {
+                    handleToggleChange(fee as C)
+                    setShowFeeModal(false)
+                  }}
+                  feeInfo={feeInfo as FeeInfo}
+                  open={showFeeModal}
+                  onClose={() => {
+                    setShowFeeModal(false)
+                  }}
+                  isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+                  feeLoading={isFeeNotEnough.isOnLoading}
+                  onClickFee={() => setShowFeeModal((prev) => !prev)}
                 />
-              </FeeTokenItemWrapper>
-            )}
           </>
         )}
       </Grid>

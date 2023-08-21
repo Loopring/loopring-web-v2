@@ -37,9 +37,8 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  DropdownIconStyled,
-  FeeTokenItemWrapper,
-  GridWrapStyle,
+  FeeSelect,
+  InputSize,
   TextField,
   Toast,
   ToastType,
@@ -48,9 +47,10 @@ import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
-import { FeeToggle } from './tool/FeeList'
 import { useSettings } from '../../../stores'
 import { TransferAddressType } from './AddressType'
+
+
 
 export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   t,
@@ -108,9 +108,10 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
   const inputButtonDefaultProps = {
     label: t('labelL2toL2EnterToken'),
+    size: InputSize.middle
   }
 
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
 
   const popupState = usePopupState({
     variant: 'popover',
@@ -351,24 +352,24 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           justifyContent={'center'}
           alignItems={'center'}
           marginBottom={2}
-      >
-        <Typography
+        >
+          <Typography
             component={'h4'}
             variant={isMobile ? 'h4' : 'h3'}
             whiteSpace={'pre'}
             marginRight={1}
-        >
-          {t('labelL2toL2Title', {
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-          })}
-        </Typography>
-        <Info2Icon
+          >
+            {t('labelL2toL2Title', {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            })}
+          </Typography>
+          <Info2Icon
             {...bindHover(popupState)}
             fontSize={'large'}
             htmlColor={'var(--color-text-third)'}
-        />
-      </Box>
-      <PopoverPure
+          />
+        </Box>
+        <PopoverPure
           className={'arrow-center'}
           {...bindPopper(popupState)}
           anchorOrigin={{
@@ -379,9 +380,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
             vertical: 'top',
             horizontal: 'center',
           }}
-      >
-        <Typography padding={2} maxWidth={450} variant={'body1'} whiteSpace={'pre-line'}>
-          <Trans
+        >
+          <Typography padding={2} maxWidth={450} variant={'body1'} whiteSpace={'pre-line'}>
+            <Trans
               i18nKey='transferDescription'
               tOptions={{
                 l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
@@ -399,44 +400,45 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
       </PopoverPure>
     </Grid>
 
-    <Grid item alignSelf={'stretch'} position={'relative'}>
-      {type === 'NFT' ? (
+      <Grid item alignSelf={'stretch'} position={'relative'}>
+        {type === 'NFT' ? (
           <NFTInput
-              {...({
-                ...rest,
-                isThumb,
-                type,
-                onCopy,
-                t,
-                baseURL: baseURL ?? '',
-                getIPFSString: rest.getIPFSString ?? (() => '' as any),
-                disabled,
-                walletMap,
-                tradeData,
-                coinMap,
-                inputNFTDefaultProps: {label: ''},
-                inputNFTRef: inputBtnRef,
-              } as any)}
+            {...({
+              ...rest,
+              isThumb,
+              type,
+              onCopy,
+              t,
+              baseURL: baseURL ?? '',
+              getIPFSString: rest.getIPFSString ?? (() => '' as any),
+              disabled,
+              walletMap,
+              tradeData,
+              coinMap,
+              inputNFTDefaultProps: { label: '', size: InputSize.middle },
+              inputNFTRef: inputBtnRef,
+            } as any)}
           />
-      ) : (
+        ) : (
           <BasicACoinTrade
-              {...{
-                ...rest,
-                type,
-                t,
-                disabled,
-                walletMap,
-                tradeData,
-                coinMap,
-                inputButtonDefaultProps,
-                inputBtnRef: inputBtnRef,
-              }}
+            {...{
+              ...rest,
+              type,
+              t,
+              disabled,
+              walletMap,
+              tradeData,
+              coinMap,
+              inputButtonDefaultProps,
+              inputBtnRef: inputBtnRef,
+            }}
           />
-      )}
-    </Grid>
+        )}
+      </Grid>
 
-    <Grid item alignSelf={'stretch'} position={'relative'}>
-      <TextField
+      <Grid item alignSelf={'stretch'} position={'relative'}>
+        <TextField
+          size={'large'}
           className={'text-address'}
           value={addressDefault}
           error={!!(isInvalidAddressOrENS || isSameAddress)}
@@ -451,141 +453,104 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               paddingRight: '0',
             },
             endAdornment: isFromContact ? undefined : (
-                <InputAdornment
-                    style={{
-                      cursor: 'pointer',
-                      paddingRight: '0',
-                    }}
-                    position='end'
-                >
-                  {addressDefault !== '' ? (
-                      isAddressCheckLoading ? (
-                          <LoadingIcon width={24}/>
-                      ) : (
-                          <IconButton
-                              color={'inherit'}
-                              size={'small'}
-                              aria-label='Clear'
-                              onClick={() => handleOnAddressChange('')}
-                          >
-                            <CloseIcon/>
-                          </IconButton>
-                      )
+              <InputAdornment
+                style={{
+                  cursor: 'pointer',
+                  paddingRight: '4px'
+                }}
+                position='end'
+              >
+                {addressDefault !== '' ? (
+                  isAddressCheckLoading ? (
+                    <LoadingIcon width={24} />
                   ) : (
-                      ''
-                  )}
-                  <IconButton
+                    <IconButton
                       color={'inherit'}
-                      size={'large'}
+                      size={'small'}
                       aria-label='Clear'
-                      onClick={() => {
-                        onClickContact!()
-                      }}
-                  >
-                    <ContactIcon/>
-                  </IconButton>
-                </InputAdornment>
+                      onClick={() => handleOnAddressChange('')}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  )
+                ) : (
+                  ''
+                )}
+                <IconButton
+                  color={'inherit'}
+                  size={'large'}
+                  onClick={() => {
+                    onClickContact!()
+                  }}
+                >
+                  <ContactIcon />
+                </IconButton>
+              </InputAdornment>
             ),
           }}
-      />
-      <Box marginLeft={1 / 2}>{view}</Box>
-    </Grid>
+        />
+        <Box marginLeft={1 / 2}>{view}</Box>
+      </Grid>
 
-    <Grid item alignSelf={'stretch'} position={'relative'}>
-      <TransferAddressType
+      <Grid item alignSelf={'stretch'} position={'relative'}>
+        <TransferAddressType
           detectedWalletType={detectedWalletType!}
-          selectedValue={
-            detectedWalletType === WALLET_TYPE.Loopring && sureItsLayer2 === undefined
-                ? WALLET_TYPE.Loopring
-                : sureItsLayer2
-          }
+          selectedValue={sureItsLayer2}
           handleSelected={handleSureItsLayer2}
           disabled={
-              isSameAddress ||
-              isAddressCheckLoading ||
-              addrStatus !== AddressError.NoError ||
-              !realAddr
+            isSameAddress ||
+            isAddressCheckLoading ||
+            addrStatus !== AddressError.NoError ||
+            !realAddr
           }
-      />
-    </Grid>
+        />
+      </Grid>
 
-    <Grid item alignSelf={'stretch'} position={'relative'}>
-      <TextField
+      <Grid item alignSelf={'stretch'} position={'relative'}>
+        <TextField
+          size={'large'}
           value={memo}
           label={t('labelL2toL2Memo')}
           placeholder={t('labelL2toL2MemoPlaceholder')}
           onChange={handleOnMemoChange}
           fullWidth={true}
-      />
-    </Grid>
+        />
+      </Grid>
 
-    <Grid item alignSelf={'stretch'} position={'relative'}>
-      {!chargeFeeTokenList?.length ? (
+      <Grid item alignSelf={'stretch'} position={'relative'}>
+        {!chargeFeeTokenList?.length ? (
           <Typography>{t('labelFeeCalculating')}</Typography>
-      ) : (
+        ) : (
           <>
-            <Typography
-                component={'span'}
-                display={'flex'}
-                flexWrap={'wrap'}
-                alignItems={'center'}
-                variant={'body1'}
-                color={'var(--color-text-secondary)'}
-                marginBottom={1}
-            >
-              <Typography component={'span'} color={'inherit'} minWidth={28}>
-                {t('labelL2toL2Fee')}：
-              </Typography>
-              <Box
-                  component={'span'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  style={{cursor: 'pointer'}}
-                  onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-              >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                    ? feeInfo.fee + ' ' + feeInfo.belong
-                    : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                <DropdownIconStyled status={dropdownStatus} fontSize={'medium'}/>
-                {isFeeNotEnough.isOnLoading ? (
-                    <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                      {t('labelFeeCalculating')}
-                    </Typography>
-                ) : (
-                    isFeeNotEnough.isFeeNotEnough && (
-                        <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                          {t('labelL2toL2FeeNotEnough')}
-                        </Typography>
-                    )
-                )}
-              </Box>
-            </Typography>
-            {dropdownStatus === 'up' && (
-                <FeeTokenItemWrapper padding={2}>
-                  <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                    {t('labelL2toL2FeeChoose')}
-                  </Typography>
-                  <FeeToggle
-                      chargeFeeTokenList={chargeFeeTokenList}
-                      handleToggleChange={handleToggleChange}
-                      feeInfo={feeInfo}
-                  />
-                </FeeTokenItemWrapper>
-            )}
+            <FeeSelect
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={(fee: FeeInfo) => {
+                handleToggleChange(fee as C)
+                setShowFeeModal(false)
+              }}
+              feeInfo={feeInfo as FeeInfo}
+              open={showFeeModal}
+              onClose={() => {
+                setShowFeeModal(false)
+              }}
+              isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+              feeLoading={isFeeNotEnough.isOnLoading}
+              onClickFee={() => setShowFeeModal((prev) => !prev)}
+            />
           </>
-      )}
-    </Grid>
+        )}
+      </Grid>
 
-    <Grid item alignSelf={'stretch'} paddingBottom={0}>
-      {lastFailed && (
+      <Grid item alignSelf={'stretch'} paddingBottom={0}>
+        {lastFailed && (
           <Typography paddingBottom={1} textAlign={'center'} color={'var(--color-warning)'}>
             {t('labelConfirmAgainByFailedWithBalance', {
               symbol: type === 'NFT' ? 'NFT' : ` ${tradeData?.belong}` ?? EmptyValueTag,
               count: tradeData?.balance,
             })}
           </Typography>
-      )}
-      <Button
+        )}
+        <Button
           fullWidth
           variant={'contained'}
           size={'medium'}
@@ -595,17 +560,17 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           }}
           loading={!getDisabled && transferBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
           disabled={
-              getDisabled ||
-              transferBtnStatus === TradeBtnStatus.LOADING ||
-              isExchange ||
-              isOtherSmartWallet
+            getDisabled ||
+            transferBtnStatus === TradeBtnStatus.LOADING ||
+            isExchange ||
+            isOtherSmartWallet
           }
-      >
-        {t(transferI18nKey ?? `labelL2toL2Btn`)}
-      </Button>
-    </Grid>
+        >
+          {t(transferI18nKey ?? `labelL2toL2Btn`)}
+        </Button>
+      </Grid>
 
-    <Toast
+      <Toast
         alertText={t('labelCopyAddClip')}
         open={copyToastOpen}
         autoHideDuration={TOAST_TIME}
@@ -613,6 +578,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           setCopyToastOpen(false)
         }}
         severity={ToastType.success}
-    />
+      />
   </GridWrapStyle>
 }
