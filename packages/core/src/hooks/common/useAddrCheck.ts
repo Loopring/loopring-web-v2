@@ -257,16 +257,17 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   },
                   apiKey,
                 )
-                const contacts = store.getState().contacts?.contacts
-                updateContacts(
-                  contacts?.map((contact) => {
-                    if (contact.address === found.address) {
-                      return { ...contact, addressType: addressType }
-                    } else {
-                      return contact
-                    }
-                  }),
-                )
+                // const contacts = store.getState().contacts?.contacts
+                updateContacts()
+                // updateContacts(
+                //   contacts?.map((contact) => {
+                //     if (contact.address === found.address) {
+                //       return { ...contact, addressType: addressType }
+                //     } else {
+                //       return contact
+                //     }
+                //   }),
+                // )
               }
             } else {
               setIsCFAddress(false)

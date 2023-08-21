@@ -48,44 +48,6 @@ type DisplayContact = {
   editing: boolean
   addressType: sdk.AddressType
 }
-const getAllContacts = async (
-  offset: number,
-  accountId: number,
-  apiKey: string,
-  accountAddress: string,
-  color: string,
-) => {
-  const limit = 100
-  const recursiveLoad = async (offset: number): Promise<DisplayContact[]> => {
-    const isHebao = await checkIsHebao(accountAddress)
-    const response = await LoopringAPI.contactAPI!.getContacts(
-      {
-        isHebao,
-        accountId,
-        limit,
-        offset,
-      },
-      apiKey,
-    )
-    const displayContacts = response.contacts
-      .filter((contact) => contact.addressType !== sdk.AddressType.OFFICIAL)
-      .map((contact) => {
-        return {
-          name: contact.contactName,
-          address: contact.contactAddress,
-          editing: false,
-          addressType: contact.addressType,
-        } as DisplayContact
-      })
-    if (response.total > offset + limit) {
-      const rest = await recursiveLoad(offset + limit)
-      return displayContacts.concat(rest)
-    } else {
-      return displayContacts
-    }
-  }
-  return recursiveLoad(offset)
-}
 
 export const useContact = () => {
   const [addOpen, setAddOpen] = React.useState(false)
@@ -101,7 +63,7 @@ export const useContact = () => {
   const {
     account: { accountId, apiKey, accAddress },
   } = useAccount()
-  const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
+  // const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
   const { t } = useTranslation()
   const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
   const [loading, setLoading] = useState(false)
@@ -118,26 +80,26 @@ export const useContact = () => {
       }
     : undefined
   const getContacts = useCallback(async () => {
-    if (cachedForAccountId === accountId && (contacts && contacts?.length > 0)) return
+    // if (cachedForAccountId === accountId && (contacts && contacts?.length > 0)) return
     if (!apiKey || accountId == -1) return
     // if (contacts && contacts.length > 0) return // Not refetch contacts if contacts were fetched and 'useCache' is true
     updateContacts(undefined)
-    setLoading(true)
-    try {
-      const allContacts = await getAllContacts(
-        0,
-        accountId,
-        apiKey,
-        accAddress,
-        theme.colorBase.warning,
-      )
-      allContacts ? updateContacts(allContacts) : updateContacts([])
-      updateAccountId(accountId)
-    } catch {
-      updateContacts([])
-    }
-    setLoading(false)
-  }, [accountId, apiKey, contacts, cachedForAccountId])
+    // setLoading(true)
+    // try {
+    //   const allContacts = await getAllContacts(
+    //     0,
+    //     accountId,
+    //     apiKey,
+    //     accAddress,
+    //     theme.colorBase.warning,
+    //   )
+    //   allContacts ? updateContacts(allContacts) : updateContacts([])
+    //   updateAccountId(accountId)
+    // } catch {
+    //   updateContacts([])
+    // }
+    // setLoading(false)
+  }, [accountId, apiKey, contacts])
   useEffect(() => {
     getContacts()
   }, [apiKey])
@@ -377,19 +339,21 @@ export const useContact = () => {
               }
             })
           if (response === true) {
-            setLoading(true)
-            try {
-              const newContacts = await getAllContacts(
-                (total ?? 0) + 1,
-                accountId,
-                apiKey,
-                accAddress,
-                theme.colorBase.warning,
-              )
-              const all = contacts ? contacts.concat(newContacts) : newContacts
-              updateContacts(uniqBy(all, (contact) => contact.address))
-            } catch {}
-            setLoading(false)
+            updateContacts
+            // updateContacts
+            // setLoading(true)
+            // try {
+            //   const newContacts = await getAllContacts(
+            //     (total ?? 0) + 1,
+            //     accountId,
+            //     apiKey,
+            //     accAddress,
+            //     theme.colorBase.warning,
+            //   )
+            //   const all = contacts ? contacts.concat(newContacts) : newContacts
+            //   updateContacts(uniqBy(all, (contact) => contact.address))
+            // } catch {}
+            // setLoading(false)
             setToastInfo({
               open: true,
               isSuccess: true,

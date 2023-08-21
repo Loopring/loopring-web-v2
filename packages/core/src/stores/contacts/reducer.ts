@@ -1,22 +1,14 @@
-import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
-import { AddressType } from '@loopring-web/loopring-sdk'
+import { createSlice, PayloadAction, Slice, SliceCaseReducers } from '@reduxjs/toolkit'
+import { SagaStatus } from '@loopring-web/common-resources';
+import { ContactsState } from './interface';
 
-export type DisplayContact = {
-  name: string
-  address: string
-  editing: boolean
-  addressType: AddressType
-}
 
-export type ContactsState = {
-  contacts: DisplayContact[] | undefined
-  currentAccountId: number | undefined
-}
+
 
 const initialState: ContactsState = {
   contacts: [],
-  currentAccountId: undefined,
+  status: SagaStatus.PENDING,
+  __timer__: -1,
 }
 
 export const contactsSlice: Slice<ContactsState> = createSlice<
@@ -26,13 +18,30 @@ export const contactsSlice: Slice<ContactsState> = createSlice<
   name: 'contacts',
   initialState: initialState,
   reducers: {
-    updateContacts(state, action: PayloadAction<DisplayContact[]>) {
-      state.contacts = action.payload
+    updateContacts(state) {
+      state.status = SagaStatus.PENDING
     },
-    updateAccountId(state, action: PayloadAction<number>) {
-      state.currentAccountId = action.payload
+    reset(state) {
+      state = {
+        ...initialState,
+      }
+      state.status = SagaStatus.UNSET
     },
+    getContactsStatus(state, action: PayloadAction<ContactsState>) {
+      if ((action.payload as any).error) {
+        state.status = SagaStatus.ERROR
+        state.errorMessage = (action.payload as any).error
+        return
+      }
+      state.errorMessage = null
+      state.contacts = action.payload.contacts
+      if (action.payload.__timer__) {
+        state.__timer__ = action.payload.__timer__
+      }
+      state.status = SagaStatus.DONE
+    },
+
   },
 })
 export default contactsSlice
-export const { updateContacts, updateAccountId } = contactsSlice.actions
+export const {updateContacts, getContractsStatus, reset} = contactsSlice.actions
