@@ -128,7 +128,10 @@ import {
   WithdrawIcon,
   YoutubeIcon,
   ZoomIcon,
-  ContactIcon,
+  RiskAlertIcon,
+  RiskIcon,
+  AnotherIcon,
+  LinkSharedIcon,
 } from '@loopring-web/common-resources'
 
 const Styled = styled.div`
@@ -267,6 +270,10 @@ const listIcon = [
   <UploadedIcon />,
   <EditIcon />,
   <ConvertToIcon />,
+  <RiskAlertIcon />,
+  <RiskIcon />,
+  <AnotherIcon />,
+  <LinkSharedIcon />,
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {

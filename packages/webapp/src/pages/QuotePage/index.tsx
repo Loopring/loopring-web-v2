@@ -4,16 +4,9 @@ import styled from '@emotion/styled'
 import { InputSearch, QuoteTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { RowConfig } from '@loopring-web/common-resources'
-import { Box, Button, Container, Divider, Grid, Tab, Tabs } from '@mui/material'
+import { Box, Container, Divider, Grid, Tab, Tabs } from '@mui/material'
 import { useQuotePage } from './hook'
 import { TableWrapStyled, useAccount, useSystem } from '@loopring-web/core'
-import * as sdk from '@loopring-web/loopring-sdk'
-
-const RowStyled = styled(Grid)`
-  & .MuiGrid-root:not(:last-of-type) > div {
-    // margin-right: ${({ theme }) => theme.unit * 2}px;
-  }
-` as typeof Grid
 
 export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslation) => {
   const tableRef = React.useRef<HTMLDivElement>()

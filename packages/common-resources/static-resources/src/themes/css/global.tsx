@@ -2,9 +2,6 @@ import { css } from '@emotion/react'
 import reset from './reset'
 // @ts-ignore
 import InterMedium from '../fonts/english/Inter-Medium.ttf'
-// @ts-ignore
-// import GilroyMedium from '../fonts/english/DINCondensed.ttf';
-import DINCondensed from '../fonts/english/DINCondensed/363123_0_0.ttf'
 
 import { ColorDarkDefault, ColorLightDefault, hexToRGB } from './color-lib'
 
@@ -59,6 +56,7 @@ export const colorBase = ({ theme }: any) => css`
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
     --color-mask: ${theme.colorBase.mask};
+    --color-box-enhance: ${theme.colorBase.boxEnhance};
     --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};
     --color-logo: ${theme.colorBase.logo};
