@@ -77,6 +77,7 @@ export const colorBase = ({ theme }: any) => css`
     /********************Case for shadow*******************/
     --color-button-pot: ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
+    --color-button-inactive: ${theme.colorBase.buttonInactive};
 
     /********************CSS shadow *******************/
     --shadow: ${theme.colorBase.shadow};

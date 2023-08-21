@@ -261,8 +261,13 @@ const MyLiquidity: any = withTranslation('common')(
     
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        <MaxWidthContainer background={'var(--color-box)'}>
-          <Box display={'flex'} justifyContent={'space-between'} flexDirection={isMobile ? 'column' : 'row'} alignItems={isMobile ? 'start' : 'center'}>
+        <MaxWidthContainer height={272} alignItems={'center'} background={'var(--color-global-bg)'}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            flexDirection={isMobile ? 'column' : 'row'}
+            alignItems={isMobile ? 'start' : 'center'}
+          >
             <Box paddingY={7}>
               <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
                 {t('labelInvestBalanceTitle')}
@@ -326,7 +331,12 @@ const MyLiquidity: any = withTranslation('common')(
           </Box>
         </MaxWidthContainer>
 
-        <MaxWidthContainer marginBottom={3} marginTop={3} minHeight={'80vh'} background={'var(--color-box-secondary)'} >
+        <MaxWidthContainer
+          marginBottom={3}
+          marginTop={3}
+          minHeight={'80vh'}
+          background={'var(--color-box)'}
+        >
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
           !(leverageETHAssets?.length > 0) &&

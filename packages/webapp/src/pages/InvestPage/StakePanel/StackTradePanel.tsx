@@ -94,7 +94,9 @@ export const StackTradePanel = ({
           <MaxWidthContainer
             display={'flex'}
             justifyContent={'space-between'}
-            background={'var(--color-box)'}
+            background={'var(--color-global-bg)'}
+            height={272}
+            alignItems={'center'}
           >
             <Box paddingY={7}>
               <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
@@ -109,7 +111,7 @@ export const StackTradePanel = ({
             </Box>
             <img src={SoursURL + 'images/earn-staking-title.svg'} />
           </MaxWidthContainer>
-          <MaxWidthContainer minHeight={'80vh'} background={'var(--color-box-secondary)'} paddingY={5} >
+          <MaxWidthContainer minHeight={'80vh'} background={'var(--color-box)'} paddingY={5} >
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}

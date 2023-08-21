@@ -38,18 +38,17 @@ const TableStyled = styled(Box)<{ isMobile?: boolean; hasContent?: boolean } & B
       justify-content: flex-end;
       align-items: center;
     }
+    & > .rdg-row {
+      border-top: 1px solid var(--color-box-hover);
+    }
 
     & > .rdg-row.child_row {
-      background-color: var(--color-global-bg);
-      border-top: 1px solid var(--color-box-hover);
-      border-left: 1px solid var(--color-box-hover);
-      border-right: 1px solid var(--color-box-hover);
-
+      border-top: none;
       .rdg-cell:first-of-type {
         margin-left: ${({ theme }) => 2 * theme.unit}px;
       }
       &:hover {
-        background-color: var(--color-global-bg);
+        background-color: transparent;
       }
     }
     & > .rdg-row.child_row:first-of-type {
