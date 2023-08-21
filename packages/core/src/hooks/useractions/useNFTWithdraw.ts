@@ -31,7 +31,6 @@ import {
   useAddressCheck,
   useBtnStatus,
   useChargeFees,
-  useIsHebao,
   useModalData,
   useSystem,
   useTokenMap,
@@ -156,6 +155,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isNotAvailableAddress,
     sureIsAllowAddress,
   ])
+  const {updateContacts, contacts, errorMessage: contactsErrorMessage} = useContacts()
+
   const walletLayer2Callback = React.useCallback(() => {
     checkFeeIsEnough()
   }, [])
@@ -164,6 +165,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     if (info?.isRetry) {
       checkFeeIsEnough()
       return
+    }
+    if (contactsErrorMessage) {
+      updateContacts()
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     if (nftWithdrawValue.nftData) {
@@ -204,6 +208,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     account.accAddress,
     setAddress,
     contactAddress,
+    contactsErrorMessage,
   ])
 
   React.useEffect(() => {
@@ -481,10 +486,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount],
   )
-  const { isHebao } = useIsHebao()
-  const { updateContacts, contacts } = useContacts()
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.address === realAddr)?.addressType
+    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
     if (!isShow) {
       setSureIsAllowAddress(undefined)
     } else if (addressType !== undefined) {

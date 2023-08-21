@@ -45,7 +45,7 @@ import * as sdk from '@loopring-web/loopring-sdk';
 const getContractsApi = async ({limit = 100}: { limit?: number }) => {
     const {isContractAddress, isCFAddress, accountId, apiKey} = store.getState().account
     let contacts: any[] = []
-    if (apiKey && LoopringAPI.contactAPI && accountId) {
+  if (apiKey && LoopringAPI.contactAPI && accountId) {
         const response = await LoopringAPI.contactAPI?.getContacts(
             {
                 isHebao: !!(isContractAddress || isCFAddress),
@@ -61,6 +61,9 @@ const getContractsApi = async ({limit = 100}: { limit?: number }) => {
         ) {
             throw new Error((response as sdk.RESULT_INFO).message)
         }
+    if (store.getState().account.accountId !== accountId) {
+      return {contacts: []}
+    }
         contacts = response.contacts;
         if (response.total > limit) {
             let more: Promise<any>[] = [];

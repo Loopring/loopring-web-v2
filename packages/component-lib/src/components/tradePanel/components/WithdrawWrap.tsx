@@ -24,13 +24,13 @@ import {
   L1L2_NAME_DEFINED,
   LoadingIcon,
   MapChainId,
-  NFTWholeINFO, SoursURL,
-  TOAST_TIME, TRADE_TYPE,
+  NFTWholeINFO,
+  TOAST_TIME,
   TradeBtnStatus,
   WALLET_TYPE,
   WithdrawType,
 } from '@loopring-web/common-resources'
-import { FeeSelect, InputSize, PopoverPure, Toast, ToastType } from '../..'
+import { FeeSelect, GridWrapStyle, InputSize, PopoverPure, Toast, ToastType } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
@@ -43,54 +43,54 @@ export const WithdrawWrap = <
   I,
   C extends FeeInfo,
 >({
-  t,
-  disabled,
-  walletMap,
-  tradeData,
-  coinMap,
-  type,
-  withdrawI18nKey,
-  addressDefault,
-  accAddr,
-  isNotAvailableAddress,
-  withdrawTypes = { [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard' },
-  withdrawType,
-  chargeFeeTokenList = [],
-  feeInfo,
-  lastFailed,
-  handleConfirm,
-  isFeeNotEnough,
-  withdrawBtnStatus,
-  handleFeeChange,
-  handleWithdrawTypeChange,
-  handleOnAddressChange,
-  isAddressCheckLoading,
-  isCFAddress,
-  isLoopringAddress,
-  isContractAddress,
-  isFastWithdrawAmountLimit,
-  addrStatus,
-  disableWithdrawList = [],
-  wait = globalSetup.wait,
-  assetsData = [],
-  realAddr,
-  isThumb,
-  baseURL,
-  isToMyself = false,
-  sureIsAllowAddress,
-  handleSureIsAllowAddress,
-  contact,
-  isFromContact,
-  onClickContact,
-  loopringSmartWalletVersion,
-  ...rest
-}: WithdrawViewProps<T, I, C> &
+                                t,
+                                disabled,
+                                walletMap,
+                                tradeData,
+                                coinMap,
+                                type,
+                                withdrawI18nKey,
+                                addressDefault,
+                                accAddr,
+                                isNotAvailableAddress,
+                                withdrawTypes = {[ sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL ]: 'Standard'},
+                                withdrawType,
+                                chargeFeeTokenList = [],
+                                feeInfo,
+                                lastFailed,
+                                handleConfirm,
+                                isFeeNotEnough,
+                                withdrawBtnStatus,
+                                handleFeeChange,
+                                handleWithdrawTypeChange,
+                                handleOnAddressChange,
+                                isAddressCheckLoading,
+                                isCFAddress,
+                                isLoopringAddress,
+                                isContractAddress,
+                                isFastWithdrawAmountLimit,
+                                addrStatus,
+                                disableWithdrawList = [],
+                                wait = globalSetup.wait,
+                                assetsData = [],
+                                realAddr,
+                                isThumb,
+                                baseURL,
+                                isToMyself = false,
+                                sureIsAllowAddress,
+                                handleSureIsAllowAddress,
+                                contact,
+                                isFromContact,
+                                onClickContact,
+                                loopringSmartWalletVersion,
+                                ...rest
+                              }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
-    assetsData: AssetsRawDataItem[]
-    handleConfirm: (index: number) => void
-  }) => {
-  const { isMobile, defaultNetwork } = useSettings()
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  assetsData: AssetsRawDataItem[]
+  handleConfirm: (index: number) => void
+}) => {
+  const {isMobile, defaultNetwork} = useSettings()
+  const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ]
 
   const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
   const popupState = usePopupState({
@@ -126,7 +126,7 @@ export const WithdrawWrap = <
   const _handleWithdrawTypeChange = React.useCallback(
     (e: WithdrawType) => {
       if (handleWithdrawTypeChange) {
-        handleWithdrawTypeChange(e)
+        handleWithdrawTypeChange(e as any)
       }
     },
     [handleWithdrawTypeChange],
@@ -142,37 +142,37 @@ export const WithdrawWrap = <
     if (withdrawI18nKey) {
       const key = withdrawI18nKey.split('|')
       return t(
-        key[0],
-        key && key[1]
+        key[ 0 ],
+        key && key[ 1 ]
           ? {
-              arg: key[1],
-              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-            }
+            arg: key[ 1 ],
+            l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
+          }
           : {
-              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-            },
+            l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
+          },
       )
     } else {
       return t(
         (tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
-          (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
+        (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
           ? `labelSendL1DeployBtn`
           : `labelSendL1Btn`,
         {
-          layer2: L1L2_NAME_DEFINED[network].layer2,
-          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          layer2: L1L2_NAME_DEFINED[ network ].layer2,
+          l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
         },
       )
     }
@@ -180,12 +180,12 @@ export const WithdrawWrap = <
   const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet
     ? WALLET_TYPE.Loopring
     : isContractAddress
-    ? WALLET_TYPE.OtherSmart
-    : WALLET_TYPE.EOA
+      ? WALLET_TYPE.OtherSmart
+      : WALLET_TYPE.EOA
 
   return (
-      <GridWrapStyle
-          className={'withdraw-wrap'}
+    <GridWrapStyle
+      className={'withdraw-wrap'}
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -213,10 +213,10 @@ export const WithdrawWrap = <
           >
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
-              ? t('labelL2ToL1DeployTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
+              ? t('labelL2ToL1DeployTitle', {l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol})
               : isToMyself
-              ? t('labelL2ToMyL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
-              : t('labelL2ToOtherL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })}
+                ? t('labelL2ToMyL1Title', {l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol})
+                : t('labelL2ToOtherL1Title', {l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol})}
           </Typography>
           <Info2Icon
             {...bindHover(popupState)}
@@ -240,7 +240,7 @@ export const WithdrawWrap = <
             <Trans
               i18nKey='withdrawDescription'
               tOptions={{
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
               }}
             >
               Your withdrawal will be processed in the next batch, which usually takes 30 minutes to
@@ -265,7 +265,7 @@ export const WithdrawWrap = <
               walletMap,
               tradeData,
               coinMap,
-              inputNFTDefaultProps: { label: '', size: InputSize.middle },
+              inputNFTDefaultProps: {label: '', size: InputSize.middle},
               inputNFTRef: inputBtnRef,
             } as any)}
           />
@@ -297,9 +297,9 @@ export const WithdrawWrap = <
               placeholder={t('labelPleaseInputWalletAddress')}
               onChange={(event) => handleOnAddressChange(event?.target?.value)}
               label={t('labelL2toL1Address', {
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
               })}
-              SelectProps={{ IconComponent: DropDownIcon }}
+              SelectProps={{IconComponent: DropDownIcon}}
               fullWidth={true}
               InputProps={{
                 style: {
@@ -315,7 +315,7 @@ export const WithdrawWrap = <
                   >
                     {addressDefault !== '' ? (
                       isAddressCheckLoading ? (
-                        <LoadingIcon width={24} />
+                        <LoadingIcon width={24}/>
                       ) : (
                         <IconButton
                           color={'inherit'}
@@ -323,7 +323,7 @@ export const WithdrawWrap = <
                           aria-label='Clear'
                           onClick={() => handleOnAddressChange('')}
                         >
-                          <CloseIcon />
+                          <CloseIcon/>
                         </IconButton>
                       )
                     ) : (
@@ -337,7 +337,7 @@ export const WithdrawWrap = <
                         onClickContact!()
                       }}
                     >
-                      <ContactIcon />
+                      <ContactIcon/>
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -346,10 +346,10 @@ export const WithdrawWrap = <
           </>
         ) : (
           <Typography variant={'body2'} lineHeight={'20px'} color={'var(--color-text-third)'}>
-            {t('labelL2toL1MyAddress', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })}
+            {t('labelL2toL1MyAddress', {l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol})}
 
             {!!isAddressCheckLoading && (
-              <LoadingIcon width={24} style={{ top: 20, right: '8px', position: 'absolute' }} />
+              <LoadingIcon width={24} style={{top: 20, right: '8px', position: 'absolute'}}/>
             )}
           </Typography>
         )}
@@ -375,12 +375,12 @@ export const WithdrawWrap = <
               {t(`labelInvalid${isNotAvailableAddress}`, {
                 token: type === 'NFT' ? 'NFT' : tradeData.belong,
                 way: t(`labelL2toL1`, {
-                  layer2: L1L2_NAME_DEFINED[network].layer2,
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  layer2: L1L2_NAME_DEFINED[ network ].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[ network ].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[ network ].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[ network ].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[ network ].ethereumL1,
                 }),
               })}
             </Typography>
@@ -392,7 +392,7 @@ export const WithdrawWrap = <
                   variant={'body2'}
                   marginTop={1 / 4}
                   whiteSpace={'pre-line'}
-                  style={{ wordBreak: 'break-all' }}
+                  style={{wordBreak: 'break-all'}}
                 >
                   {realAddr}
                 </Typography>
@@ -430,7 +430,7 @@ export const WithdrawWrap = <
               }}
               withdrawInfos={{
                 types: withdrawTypes,
-                type: withdrawType,
+                type: withdrawType as any,
                 onChangeType(w) {
                   _handleWithdrawTypeChange(w)
                 },
@@ -477,6 +477,6 @@ export const WithdrawWrap = <
         }}
         severity={ToastType.success}
       />
-      </GridWrapStyle>
+    </GridWrapStyle>
   )
 }

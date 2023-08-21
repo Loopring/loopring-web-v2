@@ -36,7 +36,7 @@ import {
   useAccount,
   useAddressCheck,
   useBtnStatus,
-  useChargeFees,
+  useChargeFees, useContacts,
   useModalData,
   useSystem,
   useTokenMap,
@@ -46,7 +46,6 @@ import {
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _ from 'lodash'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
-import { useContacts } from '../../stores/contacts/hooks'
 
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
@@ -66,6 +65,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId } = useSystem()
+  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
 
   const { withdrawValue, updateWithdrawData, resetWithdrawData } = useModalData()
 
@@ -291,7 +291,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       checkFeeIsEnough()
       return
     }
-
+    if (contactsErrorMessage) {
+      updateContacts()
+    }
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({
@@ -639,7 +641,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount],
   )
-  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
 
   React.useEffect(() => {
     const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
@@ -651,11 +652,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-  React.useEffect(() => {
-    if (contactsErrorMessage) {
-      updateContacts()
-    }
-  }, [])
+
   // React.useEffect(() => {
   //   const account = store.getState().account
   //   if (accountStatus == SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {

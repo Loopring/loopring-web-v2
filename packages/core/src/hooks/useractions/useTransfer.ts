@@ -78,6 +78,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const {exchangeInfo, chainId, forexMap} = useSystem()
   const {currency} = useSettings()
   const {tokenPrices} = useTokenPrices()
+  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
 
   const {transferValue, updateTransferData, resetTransferData} = useModalData()
 
@@ -208,10 +209,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       return
     }
     checkFeeIsEnough({isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES})
-    // checkActiveFeeIsEnough({
-    //   isRequiredAPI: true,
-    //   intervalTime: LIVE_FEE_TIMES,
-    // });
+    if (contactsErrorMessage) {
+      updateContacts()
+    }
     if (symbol && walletMap) {
       myLog('resetDefault symbol:', symbol)
       updateTransferData({
@@ -276,6 +276,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     transferValue.belong,
     info?.isRetry,
     contactAddress,
+    contactsErrorMessage,
   ])
 
   React.useEffect(() => {
@@ -301,6 +302,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       })
     }
   }, [isShow])
+
 
   const {checkHWAddr, updateHW} = useWalletInfo()
 
@@ -600,7 +602,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
   }, [isActiveAccount, realAddr])
 
-  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
   React.useEffect(() => {
     const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
     if (isShow === false) {
@@ -611,11 +612,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-  React.useEffect(() => {
-    if (contactsErrorMessage) {
-      updateContacts()
-    }
-  }, [])
+
   const transferProps: TransferProps<any, any> = {
     contacts,
     type: TRADE_TYPE.TOKEN,

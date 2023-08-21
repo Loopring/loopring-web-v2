@@ -98,7 +98,6 @@ export const accountServices = {
           hasUnknownCollection: undefined,
         }
     store.dispatch(updateAccountStatus(updateInfo))
-
     store.dispatch(setShowTransfer({ isShow: false }))
     store.dispatch(setShowNFTTransfer({ isShow: false }))
     store.dispatch(setShowWithdraw({ isShow: false }))

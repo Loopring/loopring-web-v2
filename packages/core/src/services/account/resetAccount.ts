@@ -2,7 +2,7 @@ import { resetUserRewards } from '../../stores/userRewards/reducer'
 import { reset as resetWalletLayer1 } from '../../stores/walletLayer1/reducer'
 import { reset as resetWalletLayer2 } from '../../stores/walletLayer2/reducer'
 import { reset as resetwalletLayer2NFT } from '../../stores/walletLayer2NFT/reducer'
-import { reset as resetContracts } from '../../stores/contacts/reducer'
+import { reset as resetContacts } from '../../stores/contacts/reducer'
 
 import { resetAmount } from '../../stores/amount/reducer'
 import { store } from '../../stores'
@@ -17,7 +17,7 @@ export async function resetLayer12Data() {
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer1(undefined))
   store.dispatch(resetWalletLayer2(undefined))
-    store.dispatch(resetContracts(undefined))
+  store.dispatch(resetContacts(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
   let toggle = {}
   if (
@@ -64,8 +64,8 @@ export function resetLayer2Data() {
   store.dispatch(resetAmount(undefined))
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer2(undefined))
-    store.dispatch(resetContracts(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
+  store.dispatch(resetContacts(undefined))
 }
 
 const LoopFrozenFlag = true

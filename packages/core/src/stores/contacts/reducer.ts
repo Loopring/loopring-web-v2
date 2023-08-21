@@ -28,6 +28,7 @@ export const contactsSlice: Slice<ContactsState> = createSlice<
       if ((action.payload as any).error) {
         state.status = SagaStatus.ERROR
         state.errorMessage = (action.payload as any).error
+        state.contacts = []
         return
       }
       state.errorMessage = null

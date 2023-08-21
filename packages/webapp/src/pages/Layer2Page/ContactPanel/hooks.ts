@@ -296,10 +296,10 @@ export const useContact = () => {
         addressType = sdk.AddressType.CONTRACT
       }
       try {
-        const response = LoopringAPI.contactAPI?.createContact(
+        const response = await LoopringAPI.contactAPI?.createContact(
           {
             accountId,
-            isHebao: (isContractAddress || isCFAddress) ? true : false,
+            isHebao: !!(isContractAddress || isCFAddress),
             contactAddress: address,
             contactName: name,
             addressType,
@@ -314,6 +314,12 @@ export const useContact = () => {
           throw {code: ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)}
         }
         updateContacts()
+        setLoading(false)
+        setToastInfo({
+          open: true,
+          isSuccess: true,
+          type: 'Add',
+        })
       } catch (error) {
         setToastInfo({
           open: true,
@@ -321,6 +327,8 @@ export const useContact = () => {
           type: 'Add',
           customerText: t('labelContactsContactExisted'),
         })
+        setAddLoading(false)
+
       }
     },
     [apiKey, contacts, total],

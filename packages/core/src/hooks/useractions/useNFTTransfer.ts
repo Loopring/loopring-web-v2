@@ -45,7 +45,6 @@ import {
   useAddressCheck,
   useBtnStatus,
   useChargeFees,
-  useIsHebao,
   useModalData,
   useSystem,
   useTokenMap,
@@ -220,12 +219,17 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const walletLayer2Callback = React.useCallback(() => {
     checkFeeIsEnough()
   }, [])
+  const {contacts, updateContacts, errorMessage: contactsErrorMessage} = useContacts()
+
   useWalletLayer2WithNFTSocket({ walletLayer2Callback })
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
       checkFeeIsEnough()
       return
+    }
+    if (contactsErrorMessage) {
+      updateContacts()
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     // checkActiveFeeIsEnough({
@@ -265,6 +269,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     feeInfo,
     address,
     contactAddress,
+    contactsErrorMessage,
   ])
 
   React.useEffect(() => {
@@ -635,7 +640,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount],
   )
-  const { contacts, updateContacts } = useContacts()
   React.useEffect(() => {
     const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
     if (isShow === false) {
