@@ -1828,7 +1828,7 @@ export default {
   labelCurrentMarketPrice: 'Current Market Price',
   labelPriceVariance: 'Price Variance',
   labelImpactExtraNewGreat:
-    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap Continue to confirm you understand and acknowledge the risk.',
+    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelPriceImpact: 'Price Impact',
   labelPriceImpactDes1:
     'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <t>‘AGREE’</t> and tap ‘Proceed Anyway’ to confirm again.',
@@ -1842,4 +1842,6 @@ export default {
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
+
 }
