@@ -311,7 +311,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
-        background={'var(--color-box)'}
+        background={'var(--color-box-secondary)'}
       >
         <Box paddingY={7}>
           <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>

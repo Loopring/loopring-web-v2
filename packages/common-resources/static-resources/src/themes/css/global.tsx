@@ -68,6 +68,7 @@ export const colorBase = ({ theme }: any) => css`
     --field-opacity: ${theme.colorBase.fieldOpacity};
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
+    --color-box-third: ${theme.colorBase.boxThird};
     --color-mask: ${theme.colorBase.mask};
     --color-box-enhance: ${theme.colorBase.boxEnhance};
     --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
@@ -77,6 +78,7 @@ export const colorBase = ({ theme }: any) => css`
     /********************Case for shadow*******************/
     --color-button-pot: ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
+    --color-button-inactive: ${theme.colorBase.buttonInactive};
 
     /********************CSS shadow *******************/
     --shadow: ${theme.colorBase.shadow};

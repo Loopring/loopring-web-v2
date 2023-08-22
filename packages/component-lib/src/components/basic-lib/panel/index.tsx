@@ -85,6 +85,7 @@ export const CardStyleItem = styled(Card)<
     &.column .MuiCardContent-root {
       flex-direction: column;
     }
+    
 
     height: auto;
     display: flex;
@@ -95,7 +96,7 @@ export const CardStyleItem = styled(Card)<
     transition: none;
     ${({ theme }) =>
       theme.border.defaultFrame({
-        c_key: 'var(--field-opacity)',
+        c_key: 'var(--color-border)',
         d_R: 0.5,
       })};
 

@@ -120,7 +120,9 @@ export const DualListPanel: any = withTranslation('common')(
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={theme.colorBase.box}
+          background={'var(--color-box-secondary)'}
+          height={34 * theme.unit}
+          alignItems={'center'}
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
@@ -158,7 +160,7 @@ export const DualListPanel: any = withTranslation('common')(
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
         <MaxWidthContainer
-          background={theme.colorBase.boxSecondary}
+          background={'var(--color-box)'}
           minHeight={'70vh'}
           paddingY={5}
         >

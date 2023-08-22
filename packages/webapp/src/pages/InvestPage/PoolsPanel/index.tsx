@@ -49,7 +49,9 @@ export const PoolsPanel = withTranslation('common')(
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={'var(--color-box)'}
+          background={'var(--color-box-secondary)'}
+          height={34 * theme.unit}
+          alignItems={'center'}
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
@@ -61,7 +63,7 @@ export const PoolsPanel = withTranslation('common')(
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
-        <MaxWidthContainer minHeight={'70vh'} background={'var(--color-box-secondary)'}>
+        <MaxWidthContainer minHeight={'70vh'} background={'var(--color-box)'}>
           <PoolsTable
             {...{
               ...poolTableProps,

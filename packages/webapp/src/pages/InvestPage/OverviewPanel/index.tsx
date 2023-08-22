@@ -44,6 +44,7 @@ const WrapperStyled = styled(Box)`
   overflow: hidden;
   .MuiCard-root {
     padding: ${({ theme }) => 4 * theme.unit}px;
+    padding-top: ${({ theme }) => 6 * theme.unit}px;
     cursor: pointer;
     background: var(--dark700);
     border: 1px solid;
@@ -58,7 +59,7 @@ const WrapperStyled = styled(Box)`
       color: var(--color-text-primary);
     }
     :hover {
-      background: var(--color-box-hover);
+      /* background: var(--color-box-hover); */
       box-shadow: var(--color-shadow);
       .hover-button {
         color: var(--color-text-button);
@@ -102,7 +103,9 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={'var(--color-box)'}
+          background={'var(--color-box-secondary)'}
+          height={34 * theme.unit}
+          alignItems={'center'}
         >
           <Box paddingY={7}>
             <Typography
@@ -135,7 +138,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             />
           </Box>
         </MaxWidthContainer>
-        <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={'var(--color-box-secondary)'}>
+        <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={'var(--color-box)'}>
           <Box
             sx={{
               width: '100%',
@@ -159,7 +162,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
                           }}
                           src={item.banner}
                         />
-                        <Typography variant={'h5'}>
+                        <Typography marginTop={0.5} variant={'h5'}>
                           {t(item.titleI18n, { ns: 'layout' })}
                         </Typography>
 
