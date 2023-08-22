@@ -60,16 +60,7 @@ export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslat
   //   // sdk.getEddsakey();
   // };
   return (
-    <Box
-      display={'flex'} flexDirection={'column'} flex={1}>
-      {/*<Button*/}
-      {/*  onClick={() => {*/}
-      {/*    onTest();*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  test button*/}
-      {/*</Button>*/}
-
+    <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={3}>
       <TableWrapStyled
         ref={tableRef as any}
         paddingBottom={1}
