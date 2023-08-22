@@ -34,7 +34,9 @@ export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
     ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+    background-color: transparent;
   }
+  background-color: transparent;
 
   input::placeholder {
     color: var(--color-placeholder);

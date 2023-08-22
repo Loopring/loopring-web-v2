@@ -49,7 +49,7 @@ const WrapperStyled = styled(Box)`
     background: var(--dark700);
     border: 1px solid;
     border-color: var(--color-border);
-    width: ${({ theme }) => 35 * theme.unit}px;
+    width: ${({ theme }) => 34 * theme.unit}px;
     .MuiCardContent-root {
       padding: 0;
     }

@@ -33,6 +33,7 @@ export const Button = styled(MuButton)<ButtonProps>`
       cursor: pointer;
     }
     &.MuiButton-outlined {
+      background-color: transparent;
       :hover{
         border-color: var(--color-primary);
       }

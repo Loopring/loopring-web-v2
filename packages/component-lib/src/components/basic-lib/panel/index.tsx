@@ -123,7 +123,7 @@ export const CardStyleItem = styled(Card)<
 export const ImageUploadWrapper = styled(Box)`
   position: relative;
   width: 100%;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 
   .MuiFormControlLabel-root {

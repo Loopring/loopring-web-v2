@@ -6,7 +6,7 @@ import { useCollectionPanel } from './hook'
 import { BackIcon, TOAST_TIME } from '@loopring-web/common-resources'
 
 const StyledPaper = styled(Box)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 

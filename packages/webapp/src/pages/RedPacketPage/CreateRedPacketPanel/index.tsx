@@ -101,7 +101,7 @@ export const CreateRedPacketUIPanel = <
           {t('labelCreateRedPacketTitle')}
         </Button>
       </Box>
-      <StylePaper flex={1} display={'flex'} justifyContent={'center'}>
+      <StylePaper style={{backgroundColor: 'var(--color-pop-bg)'}} flex={1} display={'flex'} justifyContent={'center'}>
         {assetBtnStatus === TradeBtnStatus.LOADING ? (
           <LoadingBlock />
         ) : (
