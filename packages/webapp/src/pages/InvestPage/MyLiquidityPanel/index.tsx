@@ -261,7 +261,7 @@ const MyLiquidity: any = withTranslation('common')(
     
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        <MaxWidthContainer height={272} alignItems={'center'} background={'var(--color-global-bg)'}>
+        <MaxWidthContainer height={34 * theme.unit} alignItems={'center'} background={'var(--color-box-secondary)'}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}

@@ -49,8 +49,8 @@ export const PoolsPanel = withTranslation('common')(
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={'var(--color-global-bg)'}
-          height={272}
+          background={'var(--color-box-secondary)'}
+          height={34 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>

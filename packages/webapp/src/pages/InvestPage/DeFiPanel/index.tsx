@@ -20,7 +20,6 @@ import {
   defiRETHAdvice,
   defiWSTETHAdvice,
   Info2Icon,
-  Lalala,
   MarketType,
   SoursURL,
   TOAST_TIME,
@@ -312,11 +311,9 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
-        background={'var(--color-global-bg)'}
-        height={272}
-        alignItems={'center'}
+        background={'var(--color-box-secondary)'}
       >
-        <Box>
+        <Box paddingY={7}>
           <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
             {t("labelInvestDefiTitle")}
           </Typography>
@@ -327,14 +324,10 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
             {t("labelInvestMyAmm")}
           </Button>
         </Box>
-        <Lalala color={'black'} width={'240px!important'} height={'240px!important'} fontSize='240px'>
-
-        </Lalala>
-        
-        {/* <img src={SoursURL + 'images/earn-staking-title.svg'} /> */}
+        <img src={SoursURL + 'images/earn-staking-title.svg'} />
       </MaxWidthContainer>
 
-      <MaxWidthContainer minHeight={'80vh'} background={'var(--color-box)'}>
+      <MaxWidthContainer minHeight={'80vh'} background={'var(--color-box-secondary)'}>
         <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
           {t("labelInvestChoseProduct")}
         </Typography>
