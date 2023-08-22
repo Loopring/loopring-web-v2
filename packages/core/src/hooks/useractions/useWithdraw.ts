@@ -143,10 +143,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     loopringSmartWalletVersion,
   } = useAddressCheck(false)
 
-  React.useEffect(() => {
-    // setSureIsAllowAddress(undefined);
-  }, [realAddr])
-
   const isNotAvailableAddress =
     // isCFAddress
     // ? "isCFAddress"

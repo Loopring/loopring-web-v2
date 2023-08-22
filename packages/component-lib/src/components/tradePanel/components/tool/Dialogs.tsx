@@ -542,7 +542,6 @@ export const SmallOrderAlert = ({
       color: 'var(--color-error)',
     },
   ]
-
   return (
     <RiskComponent
       title={t('labelSmallOrderAlertLine')}
@@ -711,7 +710,6 @@ export const SwapSecondConfirmation = withTranslation('common')(
         }
         open={open}
         infos={infos}
-        description={[<Trans i18nKey={'labelSmallOrderAlertLine1'} />]}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
       />

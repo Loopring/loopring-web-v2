@@ -1841,4 +1841,11 @@ export default {
   labelHighPriceImpacTitle: 'High Price Impact Detected',
    labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
+  labelEOA: "EOA",
+  labelLoopring: "Loopring",
+  labelOtherSmart: "Other Smart",
+  labelBinance: "Binance",
+  labelHuobi: "Huobi",
+  labelOtherExchange: "Other Exchange",
+  labelContactsAddContact: 'Edit Contact',
 }

@@ -6,11 +6,13 @@ import styled from '@emotion/styled'
 import React, { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk';
+import { AddressTypeTag } from '../../basic-lib';
 
 type SingleContactProps = {
   editing: boolean
   name: string
   address: string
+  addressType?: sdk.AddressType
   onSelect: (address: string) => void
   hidden: boolean
 }
@@ -42,7 +44,8 @@ export const InitialNameAvatar = React.memo(({name, ...rest}: { name: string } &
 }) as ({name, ...rest}: { name: string } & any) => JSX.Element
 
 export const SingleContact = (props: SingleContactProps) => {
-  const { editing, name, address, hidden, onSelect } = props
+  const {editing, name, address, addressType, hidden, onSelect} = props
+
   return (
     <Box
       style={{ cursor: 'pointer' }}
@@ -55,14 +58,18 @@ export const SingleContact = (props: SingleContactProps) => {
     >
       <Box display={'flex'}>
         <InitialNameAvatar name={name}></InitialNameAvatar>
-        <Box marginLeft={1}>
+        <Typography marginLeft={1} component={'span'}>
           {editing ? (
             <OutlinedInput size={'small'} value={name} />
           ) : (
-            <Typography>{name}</Typography>
+            <>
+              <Typography component={'span'} display={'flex-inline'} paddingRight={1}>{name}</Typography>
+              {addressType && <AddressTypeTag addressType={addressType}/>}
+            </>
           )}
           <Typography>{address}</Typography>
-        </Box>
+        </Typography>
+
       </Box>
     </Box>
   )
@@ -137,7 +144,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           onChange={(e) => {
             handleOnFiler(e.target.value)
           }}
-        ></OutlinedInput>
+        />
         <Box overflow={'scroll'} height={scrollHeight}>
           {filterContacts &&
             filterContacts.map((contact) => {
@@ -146,6 +153,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
                   key={contact.contactAddress}
                   name={contact.contactName}
                   address={contact.contactAddress}
+                  addressType={contact.addressType}
                   editing={false}
                   onSelect={onSelect}
                   hidden={contact.addressType === sdk.AddressType.OFFICIAL}

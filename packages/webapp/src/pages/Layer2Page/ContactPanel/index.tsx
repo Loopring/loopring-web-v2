@@ -1,8 +1,8 @@
 import { Box, Button, IconButton, OutlinedInput, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
+import { AddressTypeTag, InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
 import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { Add } from './add'
+import { Add, EditContact } from './add'
 import { Delete } from './delete'
 import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
@@ -152,33 +152,40 @@ export const ContractPanel = () => {
                 <Box display={'flex'}>
                   <InitialNameAvatar name={data.contactName}/>
                   <Box marginLeft={1}>
-                    {selectAddress && selectAddress?.contactAddress && selectAddress?.contactAddress.toLowerCase() === data?.contactAddress.toLowerCase() ? (
-                      <OutlinedInput
-                        size={'small'}
-                        value={selectAddress.contactName}
-                        onChange={(e) => {
-                          setSelectAddress(state => {
-                            return {
-                              ...data,
-                              contactName: e.target.value,
-                            }
-                          })
-                        }}
-                        onBlur={() => {
-                          onEdit(selectAddress)
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.currentTarget.blur()
-                          }
-                        }}
-                      />
-                    ) : (
-                      <Typography>
-                        {data.contactName}
-                        <EditIcon onClick={() => setSelectAddress(data as ContactType)}/>
-                      </Typography>
-                    )}
+                    {/*{selectAddress && selectAddress?.contactAddress && selectAddress?.contactAddress.toLowerCase() === data?.contactAddress.toLowerCase() ? (*/}
+                    {/*  <OutlinedInput*/}
+                    {/*    size={'small'}*/}
+                    {/*    value={selectAddress.contactName}*/}
+                    {/*    onChange={(e) => {*/}
+                    {/*      setSelectAddress(state => {*/}
+                    {/*        return {*/}
+                    {/*          ...data,*/}
+                    {/*          contactName: e.target.value,*/}
+                    {/*        }*/}
+                    {/*      })*/}
+                    {/*    }}*/}
+                    {/*    onBlur={() => {*/}
+                    {/*      onEdit(selectAddress)*/}
+                    {/*    }}*/}
+                    {/*    onKeyDown={(e) => {*/}
+                    {/*      if (e.key === 'Enter') {*/}
+                    {/*        e.currentTarget.blur()*/}
+                    {/*      }*/}
+                    {/*    }}*/}
+                    {/*  />*/}
+                    {/*) : (*/}
+                    {/* */}
+                    {/*)}*/}
+                    <Typography component={'span'}>
+                      <Typography component={'span'} display={'flex-inline'}
+                                  paddingRight={1}>{data.contactName}</Typography>
+                      {data.addressType && <AddressTypeTag addressType={data.addressType}/>}
+                      <EditIcon onClick={() => {
+                        setAddOpen(true)
+                        setSelectAddress(data as ContactType)
+                      }
+                      }/>
+                    </Typography>
                     <Typography>
                       {data.contactAddress}
                       <IconButton
@@ -251,11 +258,19 @@ export const ContractPanel = () => {
         autoHideDuration={TOAST_TIME}
         onClose={() => onCloseToast()}
       />
-      <Add
+      <EditContact
         loading={addLoading}
-        submitAddingContact={(address, name, cb) => {
-          submitAddContact(address, name, cb)
+        submitContact={(item) => {
+          if (selectAddress) {
+            onEdit(item)
+            setSelectAddress(undefined)
+          } else {
+            submitAddContact(item)
+          }
+
         }}
+        isEdit={selectAddress ? {item: selectAddress} : false}
+
         addOpen={addOpen}
         setAddOpen={setAddOpen}
       />

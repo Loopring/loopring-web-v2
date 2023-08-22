@@ -1,4 +1,5 @@
-import { SvgIcon } from '@mui/material'
+import { SvgIcon, Chip } from '@mui/material'
+import * as sdk from '@loopring-web/loopring-sdk';
 
 export const NewTagIcon = () => (
   <SvgIcon
@@ -33,3 +34,30 @@ export const NewTagIcon = () => (
     />
   </SvgIcon>
 )
+
+
+export const AddressTypeTag = ({addressType}: { addressType: sdk.AddressType }) => {
+  switch (addressType) {
+    case sdk.AddressType.EOA:
+      return <Chip label={'labelEOA'} size="small" sx={
+        {backgroundColor: "var(--color-EOA-Bg)", color: "var(--color-EOA-Text)"}}/>
+    case sdk.AddressType.LOOPRING_HEBAO_CF:
+    case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6 :
+    case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0 :
+    case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0 :
+    case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0 :
+      return <Chip label={'labelLoopring'} size="small" sx={
+        {backgroundColor: "var(--color-Loopring-Bg)", color: "var(--color-Loopring-Text)"}}/>
+    case sdk.AddressType.EXCHANGE_BINANCE:
+      return <Chip label={'labelEOA'} size="small" sx={
+        {backgroundColor: "var(--color-Binance-Bg)", color: "var(--color-Binance-Text)"}}/>
+    case sdk.AddressType.EXCHANGE_HUOBI:
+      return <Chip label={'labelEOA'} size="small" sx={
+        {backgroundColor: "var(--color-Huobi-Bg)", color: "var(--color-Huobi-Text)"}}/>
+    case sdk.AddressType.EXCHANGE_OTHER:
+      return <Chip label={'labelEOA'} size="small" sx={
+        {backgroundColor: "var(--color-OtherExchange-Bg)", color: "var(--color-OtherExchange-Text)"}}/>
+    default :
+      return <></>
+  }
+}

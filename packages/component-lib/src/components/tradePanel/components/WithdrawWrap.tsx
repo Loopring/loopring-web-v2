@@ -35,7 +35,7 @@ import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
-import { WithdrawAddressType } from './AddressType'
+import { FullAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const WithdrawWrap = <
@@ -347,7 +347,6 @@ export const WithdrawWrap = <
         ) : (
           <Typography variant={'body2'} lineHeight={'20px'} color={'var(--color-text-third)'}>
             {t('labelL2toL1MyAddress', {l1Symbol: L1L2_NAME_DEFINED[ network ].l1Symbol})}
-
             {!!isAddressCheckLoading && (
               <LoadingIcon width={24} style={{top: 20, right: '8px', position: 'absolute'}}/>
             )}
@@ -403,7 +402,7 @@ export const WithdrawWrap = <
       </Grid>
       {!isToMyself && (
         <Grid item alignSelf={'stretch'} position={'relative'}>
-          <WithdrawAddressType
+          <FullAddressType
             detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}
             handleSelected={handleSureIsAllowAddress}
