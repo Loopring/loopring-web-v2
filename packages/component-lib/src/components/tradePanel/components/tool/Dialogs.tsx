@@ -602,7 +602,7 @@ export const AlertLimitPriceRisk = withTranslation('common')(
     return (
       <RiskComponent
         hasNoIcon={true}
-        title={t('labelImpactTitle')}
+        title={t('labelLimitImpactTitle')}
         open={open}
         infos={label}
         description={[
