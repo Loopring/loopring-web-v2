@@ -60,7 +60,8 @@ export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslat
   //   // sdk.getEddsakey();
   // };
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1}>
+    <Box
+      display={'flex'} flexDirection={'column'} flex={1}>
       {/*<Button*/}
       {/*  onClick={() => {*/}
       {/*    onTest();*/}
@@ -71,10 +72,9 @@ export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslat
 
       <TableWrapStyled
         ref={tableRef as any}
-        marginTop={1}
-        marginBottom={3}
         paddingBottom={1}
         flex={1}
+        bgcolor={'var(--color-box)'}
         className={'MuiPaper-elevation2'}
       >
         <Box display={'flex'} flexDirection={'column'}>
