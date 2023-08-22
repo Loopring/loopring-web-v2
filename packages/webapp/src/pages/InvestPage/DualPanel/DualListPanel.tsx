@@ -48,7 +48,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import { BeginnerMode } from './BeginnerMode'
-import { MaxWidthContainer } from '..'
+import { MaxWidthContainer, containerColors } from '..'
 
 const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -120,7 +120,7 @@ export const DualListPanel: any = withTranslation('common')(
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={'var(--color-box-secondary)'}
+          background={containerColors[0]}
           height={34 * theme.unit}
           alignItems={'center'}
         >
@@ -160,7 +160,7 @@ export const DualListPanel: any = withTranslation('common')(
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
         <MaxWidthContainer
-          background={'var(--color-box)'}
+          background={containerColors[1]}
           minHeight={'70vh'}
           paddingY={5}
         >

@@ -24,6 +24,7 @@ import {
 import React from 'react'
 
 const loadingSvg = SoursURL + 'svg/loading.svg'
+
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     line-height: 1em;
@@ -31,8 +32,15 @@ export const Button = styled(MuButton)<ButtonProps>`
     &:hover {
       cursor: pointer;
     }
+    &.MuiButton-outlined {
+      :hover{
+        border-color: var(--color-primary);
+      }
+    }
 
     &.MuiButton-root.Mui-disabled {
+      color: var(--color-text-button-disabled);
+      background-color: var(--color-button-disabled);
       ${({ loading, theme, loadingbg }) => {
   return loading === 'true'
     ? `

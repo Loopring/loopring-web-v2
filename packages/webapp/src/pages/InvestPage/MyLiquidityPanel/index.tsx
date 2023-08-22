@@ -59,7 +59,7 @@ import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
-import { MaxWidthContainer } from '..'
+import { MaxWidthContainer, containerColors } from '..'
 
 
 const Tab = styled(Box)<{ selected: boolean }>`
@@ -70,6 +70,7 @@ const Tab = styled(Box)<{ selected: boolean }>`
   line-height: 24px;
   margin-right: ${({ theme }) => theme.unit}px;
   cursor: pointer;
+  color: ${({ selected }) => `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`} ;
 `
 
 const MyLiquidity: any = withTranslation('common')(
@@ -263,7 +264,7 @@ const MyLiquidity: any = withTranslation('common')(
     
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        {!noHeader && <MaxWidthContainer height={34 * theme.unit} alignItems={'center'} background={'var(--color-box-secondary)'}>
+        {!noHeader && <MaxWidthContainer height={34 * theme.unit} alignItems={'center'} background={containerColors[0]}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}
@@ -338,12 +339,15 @@ const MyLiquidity: any = withTranslation('common')(
             </Box>
           </Box>
         </MaxWidthContainer>}
-
         <MaxWidthContainer
           marginBottom={3}
           marginTop={3}
           minHeight={'80vh'}
-          background={'var(--color-box-secondary)'}
+          background={noHeader ? 'var(--color-box-third)' : containerColors[1]}
+          containerProps={{
+            borderRadius: noHeader ? `${theme.unit}px` : 0,
+            marginTop: noHeader ? 1 : 0
+          }}
         >
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
@@ -382,7 +386,7 @@ const MyLiquidity: any = withTranslation('common')(
               {_tab === 'pools' && (
                 <TableWrapStyled
                   ref={ammPoolRef}
-                  className={`table-divide-short MuiPaper-elevation2`}
+                  className={`table-divide-short`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}
@@ -442,7 +446,7 @@ const MyLiquidity: any = withTranslation('common')(
               {_tab === 'lido' && (
                 <TableWrapStyled
                   ref={sideStakeRef}
-                  className={`table-divide-short MuiPaper-elevation2 min-height`}
+                  className={`table-divide-short min-height`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}
@@ -583,7 +587,7 @@ const MyLiquidity: any = withTranslation('common')(
               {_tab === 'staking' && (
                 <TableWrapStyled
                   ref={stakingRef}
-                  className={`table-divide-short MuiPaper-elevation2 ${
+                  className={`table-divide-short ${
                     lidoAssets?.length > 0 ? 'min-height' : ''
                   }`}
                   marginTop={2}
@@ -640,7 +644,7 @@ const MyLiquidity: any = withTranslation('common')(
               {_tab === 'dual' && (
                 <TableWrapStyled
                   ref={dualRef}
-                  className={`table-divide-short MuiPaper-elevation2 min-height`}
+                  className={`table-divide-short min-height`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}

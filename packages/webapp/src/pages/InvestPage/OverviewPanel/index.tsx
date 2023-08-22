@@ -32,7 +32,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useAccount, useNotify } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
-import { MaxWidthContainer } from '..'
+import { MaxWidthContainer, containerColors } from '..'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -103,7 +103,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={'var(--color-box-secondary)'}
+          background={containerColors[0]}
           height={34 * theme.unit}
           alignItems={'center'}
         >
@@ -138,7 +138,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             />
           </Box>
         </MaxWidthContainer>
-        <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={'var(--color-box)'}>
+        <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={containerColors[1]}>
           <Box
             sx={{
               width: '100%',

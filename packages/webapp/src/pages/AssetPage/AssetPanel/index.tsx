@@ -20,7 +20,7 @@ import RewardsPanel from '../RewardsPanel'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 
@@ -88,7 +88,7 @@ export const AssetPanel = withTranslation('common')(
     return (
       <>
         {!isMobile && (
-          <StyleTitlePaper paddingX={3} paddingY={5 / 2} className={'MuiPaper-elevation2'}>
+          <StyleTitlePaper paddingX={3} paddingY={5 / 2} >
             <AssetTitle
               {...{
                 t,
@@ -119,7 +119,6 @@ export const AssetPanel = withTranslation('common')(
             marginTop={1}
             marginBottom={2}
             ref={container}
-            className={'MuiPaper-elevation2'}
           >
             <Box className='tableWrapper table-divide-short'>
               <AssetsTable

@@ -10,7 +10,7 @@ import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
 import { useNotify, useSystem } from '@loopring-web/core'
 import { BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
-import { MaxWidthContainer } from '..'
+import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 import { SoursURL } from '@loopring-web/loopring-sdk'
 
@@ -49,7 +49,7 @@ export const PoolsPanel = withTranslation('common')(
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
-          background={'var(--color-box-secondary)'}
+          background={containerColors[0]}
           height={34 * theme.unit}
           alignItems={'center'}
         >
@@ -63,7 +63,7 @@ export const PoolsPanel = withTranslation('common')(
           </Box>
           <img src={SoursURL + 'images/earn-amm-title.svg'} />
         </MaxWidthContainer>
-        <MaxWidthContainer minHeight={'70vh'} background={'var(--color-box)'}>
+        <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]}>
           <PoolsTable
             {...{
               ...poolTableProps,

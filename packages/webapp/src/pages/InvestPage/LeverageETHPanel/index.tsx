@@ -16,7 +16,7 @@ import {
 import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { BackIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { MaxWidthContainer } from '..'
+import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`
@@ -119,7 +119,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
-        background={'var(--color-box-secondary)'}
+        background={containerColors[0]}
         height={34 * theme.unit}
         alignItems={'center'}
       >
@@ -140,7 +140,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
         </Box>
         <img src={SoursURL + 'images/earn-staking-title.svg'} />
       </MaxWidthContainer>
-      <MaxWidthContainer minHeight={'70vh'} background={'var(--color-box)'} paddingY={5}>
+      <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]} paddingY={5}>
         <StyleWrapper
           display={'flex'}
           flexDirection={'column'}

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
 import { ErrorPage } from '@loopring-web/web-bridge/src/pages/ErrorPage'
-import { MaxWidthContainer } from '..'
+import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 export const StackTradePanel = ({
@@ -94,7 +94,7 @@ export const StackTradePanel = ({
           <MaxWidthContainer
             display={'flex'}
             justifyContent={'space-between'}
-            background={'var(--color-box-secondary)'}
+            background={containerColors[0]}
             height={34 * theme.unit}
             alignItems={'center'}
           >
@@ -111,7 +111,7 @@ export const StackTradePanel = ({
             </Box>
             <img src={SoursURL + 'images/earn-staking-title.svg'} />
           </MaxWidthContainer>
-          <MaxWidthContainer minHeight={'80vh'} background={'var(--color-box)'} paddingY={5} >
+          <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]} paddingY={5} >
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}

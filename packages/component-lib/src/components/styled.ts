@@ -414,7 +414,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     height: var(--provider-btn-height);
 
     &:hover {
-      outline: 1px solid var(--color-border-select);
+      border: 1px solid var(--color-border-select);
     }
 
     &.Mui-disabled {
@@ -424,7 +424,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     }
 
     &.selected {
-      outline: 1px solid var(--color-border-select);
+      border: 1px solid var(--color-border-select);
 
       &:after {
         display: none;
@@ -461,9 +461,9 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
   }
 
   &:hover {
-    background: var(--provider-hover);
+    background: var(--opacity);
     border-color: var(--color-border-select);
-    color: var(--color-text-button-select);
+    color: var(--color-text-primary);
   }
 
   &.selected {

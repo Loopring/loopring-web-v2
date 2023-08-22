@@ -60,7 +60,7 @@ export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslat
   //   // sdk.getEddsakey();
   // };
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1} bgcolor={'var(--color-box)'} borderRadius={2}>
+    <Box display={'flex'} flexDirection={'column'} flex={1} bgcolor={'var(--color-box-third)'} borderRadius={2}>
       {/*<Button*/}
       {/*  onClick={() => {*/}
       {/*    onTest();*/}

@@ -29,15 +29,20 @@ export enum InvestType {
   Stack = 5,
   LeverageETH = 6,
 }
+export const containerColors = [
+  'var(--color-global-bg)',
+  'var(--color-pop-bg)',
+]
 export const MaxWidthContainer = (
   props: {
     children: React.ReactNode
     background?: string
+    containerProps?: BoxProps
   } & BoxProps,
 ) => {
-  const { children, background, sx, ...otherProps } = props
+  const { containerProps, children, background, sx, ...otherProps } = props
   return (
-    <Box sx={{ background }} display={'flex'} justifyContent={'center'}>
+    <Box sx={{ background }} display={'flex'} justifyContent={'center'} {...containerProps}>
       <Box
         sx={{
           width: '1200px',

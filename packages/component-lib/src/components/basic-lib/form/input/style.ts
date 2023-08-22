@@ -36,6 +36,11 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
     ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
   }
 
+  input::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
+  }
+
   .MuiInputAdornment-root {
     padding: 0 ${({ theme }) => theme.unit}px;
   }
@@ -272,7 +277,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-text-secondary);;
+    color: var(--color-placeholder);;
   }
 
   :disabled {

@@ -221,9 +221,8 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 component={'span'}
               >
                 <Button
-                  variant={'contained'}
-                  color={'primary'}
-                  size={'small'}
+                  variant={'outlined'}
+                  size={'medium'}  
                   onClick={(_e) => {
                     switch (row.type) {
                       case InvestMapType.AMM:

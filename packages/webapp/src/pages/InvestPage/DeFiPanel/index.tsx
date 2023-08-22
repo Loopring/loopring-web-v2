@@ -25,7 +25,7 @@ import {
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
-import { MaxWidthContainer } from '..'
+import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`
@@ -311,7 +311,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
-        background={'var(--color-box-secondary)'}
+        background={containerColors[0]}
       >
         <Box paddingY={7}>
           <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
@@ -327,7 +327,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         <img src={SoursURL + 'images/earn-staking-title.svg'} />
       </MaxWidthContainer>
 
-      <MaxWidthContainer minHeight={'80vh'} background={'var(--color-box-secondary)'}>
+      <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]}>
         <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
           {t("labelInvestChoseProduct")}
         </Typography>

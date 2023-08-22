@@ -47,10 +47,12 @@ export const colorBase = ({ theme }: any) => css`
     --color-text-third: ${theme.colorBase.textThird};
     --color-text-button: ${theme.colorBase.textButton};
     --color-text-button-select: ${theme.colorBase.textButtonSelect};
+    --color-text-button-disabled: ${theme.colorBase.textButtonDisabled};
     --color-text-disable: ${theme.colorBase.textDisable};
     --color-border: ${theme.colorBase.border};
     --color-border-hover: ${theme.colorBase.borderHover};
     --color-border-dark: ${theme.colorBase.borderDark};
+    --color-placeholder: ${theme.colorBase.placeholder};
     --color-border-select: ${theme.colorBase.borderSelect};
     --color-border-disable: ${theme.colorBase.borderDisable};
     --color-border-disable2: ${theme.colorBase.borderDisable2};
@@ -79,6 +81,8 @@ export const colorBase = ({ theme }: any) => css`
     --color-button-pot: ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
     --color-button-inactive: ${theme.colorBase.buttonInactive};
+    --color-button-disabled: ${theme.colorBase.buttonDisabled};
+    --color-button-outlined: ${theme.colorBase.buttonOutlined};
 
     /********************CSS shadow *******************/
     --shadow: ${theme.colorBase.shadow};

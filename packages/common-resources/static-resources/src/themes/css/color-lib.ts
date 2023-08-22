@@ -24,6 +24,16 @@ export const GrayBlack = {
   gray1100: '#292C33',
 }
 
+export const System = {
+  blue: '#446EFF',
+  green: '#00BBA8',
+  orange: '#FBA95C',
+  red: '#FF5677',
+  white: '#FFFFFF',
+  balck: '#000000',
+  optional: '#F0B90B'
+}
+
 export const GrayLight = {
   gray100: '#1A2947',
   gray200: '#5D667A',
@@ -39,26 +49,28 @@ export const GrayLight = {
 }
 
 export const ColorDarkDefault = Object.freeze({
-  primary: '#446EFF',
+  primary: System.blue,
   primaryHover: `${hexToRGB(GrayBlack.gray200, '0.2')}`,
   primaryPressed: '#2D49B2',
-  secondary: '#446EFF',
+  secondary: System.blue,
   secondaryHover: '#46A6FF',
   secondaryPressed: '#1064B2',
   disable: '#343754',
-  success: '#00BBA8',
-  warning: '#FBA95C',
-  error: '#FF5677',
+  success: System.green,
+  warning: System.orange,
+  error: System.red,
   textPrimary: GrayBlack.gray100,
   textSecondary: GrayBlack.gray200,
   textThird: GrayBlack.gray300,
-  textButton: GrayBlack.gray100,
+  textButton: System.white,
   textButtonSelect: GrayBlack.gray100,
+  textButtonDisabled: GrayBlack.gray400,
   textDisable: `${hexToRGB(GrayBlack.gray100, '0.45')}`,
   border: GrayBlack.gray500,
-  borderHover: GrayBlack.gray100,
+  borderHover: System.blue,
   borderDark: GrayBlack.gray400,
-  borderSelect: GrayBlack.gray100,
+  placeholder: GrayBlack.gray400,
+  borderSelect: System.blue,
   borderDisable: GrayBlack.gray300,
   borderDisable2: GrayBlack.gray200,
   tag: '#6787FF',
@@ -75,12 +87,14 @@ export const ColorDarkDefault = Object.freeze({
   boxEnhance:`${hexToRGB(GrayBlack.gray100, '0.1')}`,
   mask: `${hexToRGB('#000000', '0.4')}`,
   tableHeaderBg: '#393f64',
-  star: `#F0B90B`,
+  star: System.optional,
   logo: GrayBlack.gray100,
   /********************CSS special button *******************/
   buttonPot: GrayBlack.gray100,
   buttonIcon: GrayBlack.gray200,
   buttonInactive: GrayBlack.gray700,
+  buttonDisabled: GrayBlack.gray600,
+  buttonOutlined: GrayBlack.gray500,
 
   /********************CSS shadow *******************/
   shadow: ` 0px 4px 4px ${hexToRGB(GrayBlack.gray600, '.25')}`,
@@ -90,7 +104,7 @@ export const ColorDarkDefault = Object.freeze({
   shadow3: `0px 10px 20px ${hexToRGB(GrayBlack.gray600, '.15')}`,
 
   /********************Case for provider*******************/
-  white: GrayBlack.gray100,
+  white: System.white,
   dark: GrayBlack.gray700,
   opacity: `${hexToRGB(GrayBlack.gray700, '0')}`,
   providerBtn: `${hexToRGB(GrayBlack.gray100, '0.1')}`,
@@ -109,26 +123,28 @@ export const ColorDarkDefault = Object.freeze({
 
 export const ColorLightDefault = Object.freeze({
   ...ColorDarkDefault,
-  primary: '#446EFF',
+  primary: System.blue,
   primaryHover: `${hexToRGB(GrayLight.gray100, '0.2')}`,
   primaryPressed: '#293EAA',
-  secondary: '#446EFF',
+  secondary: System.blue,
   secondaryHover: '#46A6FF',
   secondaryPressed: '#1064B2',
   disable: '#F4F5F9',
-  success: '#00BBA8',
-  warning: '#FBA95C',
-  error: '#FF5677',
+  success: System.green,
+  warning: System.orange,
+  error: System.red,
   textPrimary: GrayLight.gray100,
   textSecondary: GrayLight.gray200,
   textThird: GrayLight.gray300,
-  textButton: GrayLight.gray600,
-  textButtonSelect: '#446EFF',
+  textButton: System.white,
+  textButtonSelect: System.blue,
+  textButtonDisabled: GrayLight.gray400,
   textDisable: `${hexToRGB(GrayLight.gray100, '0.25')}`,
   border: GrayLight.gray500,
-  borderHover: GrayLight.gray100,
+  borderHover: System.blue,
   borderDark: GrayLight.gray400,
-  borderSelect: GrayLight.gray100,
+  placeholder: GrayLight.gray400,
+  borderSelect: System.blue,
   borderDisable: GrayLight.gray300,
   borderDisable2: GrayLight.gray200,
   tag: '#6787FF',
@@ -146,12 +162,14 @@ export const ColorLightDefault = Object.freeze({
   boxThird: GrayLight.gray1000,
   mask: `${hexToRGB('#000000', '0.4')}`,
   tableHeaderBg: GrayLight.gray600,
-  star: `#F0B90B`,
-  logo: '#446EFF',
+  star: System.optional,
+  logo: System.blue,
   /********************CSS special buttonr*******************/
   buttonPot: GrayBlack.gray100,
   buttonIcon: '#15162B',
   buttonInactive: GrayLight.gray700,
+  buttonDisabled: GrayLight.gray600,
+  buttonOutlined: GrayLight.gray500,
   // box-shadow: 0px 4px 20px 0px #1D20231A;
 
   /********************CSS shadow *******************/
@@ -162,11 +180,11 @@ export const ColorLightDefault = Object.freeze({
   shadow3: `0px 10px 20px  ${hexToRGB('#5781EC', '0.1')}`,
 
   /********************Case for provider*******************/
-  white: GrayBlack.gray100,
+  white: System.white,
   dark: GrayBlack.gray700,
   opacity: `${hexToRGB(GrayBlack.gray100, '0')}`,
-  providerBtn: `${hexToRGB('#446EFF', '0.1')}`,
-  providerBtnHover: `${hexToRGB('#446EFF', '0.15')}`,
+  providerBtn: `${hexToRGB(System.blue, '0.1')}`,
+  providerBtnHover: `${hexToRGB(System.blue, '0.15')}`,
   providerApprove: `#F6F7FB`,
   boxNFTLabel: `${hexToRGB(GrayBlack.gray100, '0.58')}`,
   boxNFTBtn: `${hexToRGB(GrayBlack.gray700, '0.28')}`,
