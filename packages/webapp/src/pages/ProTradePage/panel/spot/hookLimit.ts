@@ -3,9 +3,9 @@ import {
   BIGO,
   getPriceImpactInfo,
   LoopringAPI,
-  PriceLevel,
+  PriceLevel, ShowWitchAle3t1,
   store,
-  useAccount,
+  useAccount, useAlert,
   usePageTradePro,
   usePlaceOrder,
   useSubmitBtn,
@@ -60,10 +60,11 @@ export const useLimit = <C extends { [key: string]: any }>({
 
   const { t } = useTranslation('common')
 
-  const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
-
+  // const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
   // @ts-ignore
   const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i)
+  // const [isMarketLoading, setIsMarketLoading] = React.useState(false)
+
   const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {}
   const marketPrecision = marketMap[market].precisionForPrice
   const tradePrice =
@@ -244,7 +245,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
       const { limitCalcTradeParams, request, tradeCalcProData } = pageTradePro
 
-      setAlertOpen(false)
+      // setAlertOpen(false)
 
       if (isAgree && LoopringAPI.userAPI && request) {
         try {
@@ -540,7 +541,32 @@ export const useLimit = <C extends { [key: string]: any }>({
     },
     [market, marketMap, t],
   )
-
+  const {showAlert, confirmed, setShowWhich, setConfirmed} = useAlert()
+  const doShowAlert = () => {
+    const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+    const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams, account.readyState)
+    myLog('hookSwap:---- swapCalculatorCallback priceLevel:', priceLevel)
+    setConfirmed((state) => {
+      state[ 1 ] = true
+      setShowWhich(() => {
+        if (pageTradePro?.tradeCalcProData?.isNotMatchMarketPrice) {
+          return {isShow: true, step: 1, showWitch: ShowWitchAle3t1.AlertImpact}
+        } else if (priceLevel === PriceLevel.Lv1 || priceLevel === PriceLevel.Lv2) {
+          return {isShow: true, step: 1, showWitch: ShowWitchAle3t1.ConfirmImpact}
+        } else {
+          state[ 0 ] = true
+          return {isShow: false, step: 2, showWitch: ''}
+        }
+      })
+      return state
+    })
+  }
+  React.useEffect(() => {
+    if (confirmed[ 0 ] === true && confirmed[ 1 ] === true) {
+      limitSubmit(undefined as any, true)
+      setConfirmed([false, false])
+    }
+  }, [confirmed[ 0 ], confirmed[ 1 ]])
   const onSubmitBtnClick = React.useCallback(async () => {
     setIsLimitLoading(true)
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
@@ -556,15 +582,17 @@ export const useLimit = <C extends { [key: string]: any }>({
       setShowTradeIsFrozen({ isShow: true, type: 'Limit' })
       setIsLimitLoading(false)
     } else {
-      switch (priceLevel) {
-        case PriceLevel.Lv1:
-          setAlertOpen(true)
-          break
-        default:
-          limitSubmit(undefined as any, true)
-          break
-      }
+      doShowAlert()
     }
+    // switch (priceLevel) {
+    //   case PriceLevel.Lv1:
+    //     setAlertOpen(true)
+    //     break
+    //   default:
+    //     limitSubmit(undefined as any, true)
+    //     break
+    // }
+    // }
   }, [
     account.readyState,
     allowTrade.order.enable,
@@ -625,20 +653,24 @@ export const useLimit = <C extends { [key: string]: any }>({
       ) {
         return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: '' }
       } else {
-        if (
-          pageTradePro?.tradeCalcProData.isNotMatchMarketPrice &&
-          !pageTradePro.tradeCalcProData.isChecked
-        ) {
-          return {
-            label: '',
-            tradeBtnStatus: TradeBtnStatus.DISABLED,
-          }
-        } else {
-          return {
-            label: '',
-            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          }
+        return {
+          label: '',
+          tradeBtnStatus: TradeBtnStatus.AVAILABLE,
         }
+        // if (
+        //   pageTradePro?.tradeCalcProData.isNotMatchMarketPrice &&
+        //   !pageTradePro.tradeCalcProData.isChecked
+        // ) {
+        //   return {
+        //     label: '',
+        //     tradeBtnStatus: TradeBtnStatus.DISABLED,
+        //   }
+        // } else {
+        //   return {
+        //     label: '',
+        //     tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+        //   }
+        // }
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
@@ -658,7 +690,7 @@ export const useLimit = <C extends { [key: string]: any }>({
     toastOpen,
     setToastOpen,
     closeToast,
-    limitAlertOpen: alertOpen,
+    // limitAlertOpen: alertOpen,
     resetLimitData: resetTradeData,
     isLimitLoading: false,
     limitTradeData,
@@ -674,6 +706,21 @@ export const useLimit = <C extends { [key: string]: any }>({
         fontSize: isMobile ? (tradeLimitI18nKey !== '' ? '1.2rem' : '1.4rem') : '1.6rem',
       },
     },
+    showAlert,
+    handleClose: () => {
+      setShowWhich((state) => ({...state, isShow: false}))
+      setConfirmed([false, false])
+      // setIsMarketLoading(false)
+    },
+    handleConfirm: () => {
+      setShowWhich((state) => ({...state, isShow: false}))
+      setConfirmed((state) => {
+        state[ showAlert.step - 1 ] = true
+        return state
+      })
+    },
+    priceLevel: getPriceImpactInfo(pageTradePro.calcTradeParams, account.readyState),
+
     // marketTicker,
   }
 }

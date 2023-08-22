@@ -58,7 +58,6 @@ export const useMarket = <C extends { [key: string]: any }>({
   const { account } = useAccount()
   const { slippage, isMobile } = useSettings()
   const { exchangeInfo, allowTrade } = useSystem()
-  useAlert()
   const {
     toggle: { order },
   } = useToggle()

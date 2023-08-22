@@ -2,7 +2,7 @@ import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import React from 'react'
 import {
   AlertImpact,
-  AlertLimitPrice,
+  AlertLimitPriceRisk,
   ConfirmImpact,
   LimitTrade,
   MarketTrade,
@@ -63,8 +63,12 @@ export const SpotView = withTranslation('common')(
       isLimitLoading,
       handlePriceError,
       resetLimitData,
-      limitAlertOpen,
+      // limitAlertOpen,
       limitSubmit,
+      showAlert,
+      handleConfirm,
+      handleClose,
+      priceLevel,
     } = useLimit({ market, resetTradeCalcData })
 
     const {
@@ -80,10 +84,10 @@ export const SpotView = withTranslation('common')(
       resetMarketData,
       marketBtnClick,
       isMarketLoading,
-      showAlert,
-      handleConfirm,
-      handleClose,
-      priceLevel,
+      showAlert: limitShowAlert,
+      handleConfirm: handleLimitConfirm,
+      handleClose: handleLimitClose,
+      // priceLevel,
       // priceAlertCallBack,
       // smallOrderAlertCallBack,
       // smallOrderAlertOpen,
@@ -287,14 +291,30 @@ export const SpotView = withTranslation('common')(
           symbol={`${tradeData?.sell?.belong}/${tradeData?.buy?.belong}`}
         />
 
-        <AlertLimitPrice
-          handleClose={limitSubmit}
-          open={limitAlertOpen}
+        <AlertLimitPriceRisk
+          open={limitShowAlert.isShow && limitShowAlert.showWitch === ShowWitchAle3t1.ConfirmImpact}
+          handleClose={handleLimitClose}
+          handleConfirm={handleLimitConfirm}
+          fromSymbol={tradeType === TradeProType.sell ? limitTradeData.base?.belong : limitTradeData.quote?.belong}
+          fromAmount={tradeType === TradeProType.sell ? limitTradeData.base?.tradeValue ?? '' : limitTradeData.quote?.tradeValue ?? ''}
+          toSymbol={tradeType === TradeProType.buy ? limitTradeData.base?.belong : limitTradeData.quote?.belong}
+          toAmount={tradeType === TradeProType.buy ? limitTradeData.base?.tradeValue ?? '' : limitTradeData.quote?.tradeValue ?? ''}
+          price={limitTradeData?.price?.tradeValue ?? ''}
+          priceSymbol={`${tradeCalcData?.coinBase}/${tradeCalcData?.coinQuote}`}
           value={
             pageTradePro.tradeType === TradeProType.buy
               ? 'labelPriceCompareGreat'
               : 'labelPriceCompareLess'
           }
+        />
+        <AlertImpact
+          open={limitShowAlert.isShow && limitShowAlert.showWitch === ShowWitchAle3t1.AlertImpact}
+          handleClose={handleLimitClose}
+          handleConfirm={handleLimitConfirm}
+          variance={tradeCalcData?.marketRatePrice ?? ''}
+          marketPrice={tradeCalcData?.marketPrice ?? ''}
+          settlementPrice={limitTradeData.price?.tradeValue?.toString() ?? ''}
+          symbol={`${tradeCalcData?.coinBase}/${tradeCalcData?.coinQuote}`}
         />
         <Box
           display={'flex'}
