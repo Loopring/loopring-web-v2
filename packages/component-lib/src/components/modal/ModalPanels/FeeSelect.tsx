@@ -11,13 +11,15 @@ import {
   LoadingIcon,
   RoundCheckIcon,
   RoundCircle,
+  myLog
 } from '@loopring-web/common-resources'
 import { FeeSelectProps, Modal } from '../../../components/tradePanel'
 import { CoinIcon } from '../../../components/basic-lib'
+import { OffchainFeeReqType, toBig } from '@loopring-web/loopring-sdk'
 
 const BoxStyled = styled(Box)`` as typeof Box
 
-const OptionStyled = styled(Box)<{ checked?: boolean }>`
+const OptionStyled = styled(Box)<{ checked?: boolean, disabled?: boolean }>`
   border: 1px solid;
   border-color: ${({ checked }) => (checked ? 'var(--color-primary)' : 'var(--color-border)')};
   width: 100%;
@@ -28,14 +30,15 @@ const OptionStyled = styled(Box)<{ checked?: boolean }>`
   min-height: ${({ theme }) => theme.unit * 8}px;
   align-items: center;
   cursor: pointer;
+  opacity: ${({ disabled }) => disabled ? '0.8' : '1'};
 `
 
 type OptionType = { checked?: boolean; disabled?: boolean } & BoxProps
 
 const Option = (props: OptionType) => {
-  const { checked, children, ...otherProps } = props
+  const { checked, disabled, children, ...otherProps } = props
   return (
-    <OptionStyled checked={checked} {...otherProps}>
+    <OptionStyled disabled={disabled} checked={checked} {...otherProps}>
       {children}
       {checked ? (
         <RoundCheckIcon fontSize={'large'} fill={'var(--color-primary)'} />
@@ -107,6 +110,15 @@ export const FeeSelect = (props: FeeSelectProps) => {
           style={{ cursor: 'pointer' }}
           onClick={() => onClickFee()}
         >
+          <Typography marginRight={0.5} color={'var(--color-text-second)'}>
+            {withdrawInfos &&
+              Object.keys(withdrawInfos.types).length > 1 &&
+              (withdrawInfos.type === OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
+                ? t('labelL2toL1Standard')
+                : withdrawInfos.type === OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
+                ? t('labelL2toL1Fast')
+                : '')}
+          </Typography>
           {isFeeNotEnough ? (
             feeNotEnoughContent ? (
               feeNotEnoughContent
@@ -145,7 +157,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
             width={'var(--modal-width)'}
           >
             <Typography marginBottom={3} variant={'h3'}>
-              {t("labelFee")}
+              {t('labelFee')}
             </Typography>
 
             <Box width={'100%'} paddingX={5} marginBottom={10}>
@@ -168,21 +180,43 @@ export const FeeSelect = (props: FeeSelectProps) => {
                 </Box>
               )}
               {chargeFeeTokenList.map((feeInfo, index) => {
+                const inefficient = !feeInfo.count ||
+                  toBig(feeInfo.count).isZero() ||
+                  toBig(feeInfo.count).lt(feeInfo.fee ?? '0')
+                const disabled = disableNoToken && !feeInfo.hasToken || inefficient
+                myLog('inefficient', feeInfo.belong,inefficient)
                 return (
                   <Option
-                    disabled={disableNoToken && !feeInfo.hasToken}
+                    disabled={disabled}
                     marginBottom={2}
                     checked={selectedFeeInfo?.belong == feeInfo.belong}
-                    onClick={() => handleToggleChange(feeInfo)}
+                    onClick={() => {
+                      if (!disabled) {
+                        handleToggleChange(feeInfo)
+                      }
+                    }}
                   >
                     <Box display={'flex'}>
                       <CoinIcon size={32} symbol={feeInfo.belong} />
                       <Box marginLeft={1}>
-                        <Typography>{feeInfo.belong}</Typography>
+                        <Typography>
+                          {feeInfo.belong}{' '}
+                          {feeInfo.discount && feeInfo.discount !== 1 && (
+                            <Typography
+                              marginLeft={0.5}
+                              component={'span'}
+                              borderRadius={0.5}
+                              paddingX={0.5}
+                              bgcolor={'var(--color-warning)'}
+                            >
+                              {Math.round((1 - feeInfo.discount) * 100)}% OFF
+                            </Typography>
+                          )}
+                        </Typography>
                         <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                          {t("labelFeeAvailablePay", {
-                            available: feeInfo.count ? feeInfo.count : "0.00",
-                            pay: feeInfo.fee
+                          {t('labelFeeAvailablePay', {
+                            available: feeInfo.count ? feeInfo.count : '0.00',
+                            pay: feeInfo.fee,
                           })}
                         </Typography>
                       </Box>

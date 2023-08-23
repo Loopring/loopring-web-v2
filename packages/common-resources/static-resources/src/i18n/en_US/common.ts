@@ -758,7 +758,7 @@ export default {
   labelMemo: 'Memo',
   labelAdvanceMint: 'Advance Create NFT',
   labelWalletTypeDes:
-    'Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ',
+    'Please confirm the address type again to ensure the assets are not mistakenly sent to the exchange address. ',
   labelWalletTypeOptions: '{{type}} Wallet',
   labelWalletTypeOtherSmart: 'Other Smart',
   labelWalletTypeLoopring: 'Loopring',

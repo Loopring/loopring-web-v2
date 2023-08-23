@@ -267,7 +267,7 @@ export function useChargeFees({
           }
           if (isSame && fees && feeChargeOrder) {
             const _chargeFeeTokenList = feeChargeOrder?.reduce((pre, item) => {
-              let { fee, token } = fees[item] ?? {}
+              let { fee, token, discount } = fees[item] ?? {}
               if (fee && token) {
                 const tokenInfo = tokenMap[token]
                 const tokenId = tokenInfo.tokenId
@@ -282,6 +282,7 @@ export function useChargeFees({
                   fee,
                   feeRaw,
                   hasToken: !!(walletMap && walletMap[token]),
+                  discount: discount as number,
                   __raw__: { fastWithDraw, feeRaw, tokenId },
                 }
                 pre.push(feeInfoTemplate)
