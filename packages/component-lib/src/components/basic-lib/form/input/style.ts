@@ -33,7 +33,7 @@ export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
 
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
-    ${({size}) => size?.toLowerCase() === 'large' && inputHeightLarge}
+    ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
   }
 
   .MuiInputAdornment-root {

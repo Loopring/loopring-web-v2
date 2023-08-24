@@ -758,7 +758,7 @@ export default {
   labelMemo: 'Memo',
   labelAdvanceMint: 'Advance Create NFT',
   labelWalletTypeDes:
-    'Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ',
+    'Please confirm the address type again to ensure the assets are not mistakenly sent to the exchange address. ',
   labelWalletTypeOptions: '{{type}} Wallet',
   labelWalletTypeOtherSmart: 'Other Smart',
   labelWalletTypeLoopring: 'Loopring',
@@ -1821,6 +1821,7 @@ export default {
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
+  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
   labelRiskAgree: 'Proceed Anyway',
   labelRiskCancel: 'Cancel',
@@ -1839,10 +1840,7 @@ export default {
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
-  labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
-  labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
-  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
 }
