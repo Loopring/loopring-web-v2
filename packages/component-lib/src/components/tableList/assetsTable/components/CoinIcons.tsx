@@ -41,8 +41,8 @@ export const CoinIcons = React.memo(
             <AvatarCoin
               imgx={coinAInfo.x}
               imgy={coinAInfo.y}
-              imgheight={coinAInfo.height}
-              imgwidth={coinAInfo.width}
+              imgheight={coinAInfo.h}
+              imgwidth={coinAInfo.w}
               size={size}
               variant='circular'
               alt={coinAInfo?.simpleName as string}

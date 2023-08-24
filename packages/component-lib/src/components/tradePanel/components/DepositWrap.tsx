@@ -15,7 +15,7 @@ import {
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
 import { Box, Grid, Link, Typography } from '@mui/material'
-import { Button, DepositTitle, IconClearStyled, TextField, useSettings } from '../../../index'
+import { Button, DepositTitle, GridWrapStyle, IconClearStyled, TextField, useSettings } from '../../../index'
 import { DepositViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -153,8 +153,8 @@ export const DepositWrap = <
   }, [isNewAccount, chargeFeeTokenList, tradeData, t, feeChargeOrder])
 
   return (
-    <Grid
-      className={walletMap ? 'depositWrap' : 'depositWrap loading'}
+      <GridWrapStyle
+          className={'deposit-wrap'}
       container
       paddingTop={isMobile ? 1 : '0'}
       paddingLeft={5 / 2}
@@ -422,6 +422,6 @@ export const DepositWrap = <
           {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`depositLabelBtn`)}
         </Button>
       </Grid>
-    </Grid>
+      </GridWrapStyle>
   )
 }
