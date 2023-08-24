@@ -38,6 +38,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     size = InputSize.middle,
     isHideError = false,
     fullwidth = false,
+      loading = false,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
