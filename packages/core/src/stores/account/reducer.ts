@@ -34,7 +34,7 @@ const accountSlice: Slice<AccountState> = createSlice<
     updateAccountStatus(state) {
       state.status = SagaStatus.PENDING
     },
-    nextAccountSyncStatus(state,_action: PayloadAction<Account>) {
+    nextAccountSyncStatus(state) {
       state.status = SagaStatus.PENDING
     },
     changeShowModel(state, action: PayloadAction<{ _userOnModel: boolean | undefined }>) {

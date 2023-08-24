@@ -34,6 +34,7 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   focusOnInput?: boolean
   name?: string
   fullwidth?: boolean
+    loading?: boolean
 } & XOR<
     { isShowCoinInfo?: true } & XOR<
       { isShowCoinIcon: true },

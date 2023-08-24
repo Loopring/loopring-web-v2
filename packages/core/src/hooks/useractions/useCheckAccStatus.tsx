@@ -111,7 +111,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   const init = React.useCallback(async () => {
     setKnowDisable(true)
     try {
-      const isContract = await sdk.isContract(connectProvides.usedWeb3, account.accAddress)
+      const isContract = await sdk.isContract(connectProvides.usedWeb3 as any, account.accAddress)
       setIsAddressContract(isContract)
       updateWalletLayer2()
     } catch (error: any) {

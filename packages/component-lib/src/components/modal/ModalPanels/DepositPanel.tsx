@@ -5,7 +5,7 @@ import {
   CoinMap,
   IBData,
   L1L2_NAME_DEFINED,
-  MapChainId,
+  MapChainId, SoursURL,
   TRADE_TYPE,
 } from '@loopring-web/common-resources'
 import { ModalBackButton, SwitchPanel, SwitchPanelProps } from '../../basic-lib'
@@ -14,7 +14,7 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import { DepositConfirm } from '../../tradePanel/components/DepositConfirm'
 import { useSettings } from '../../../stores'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 export const DepositPanel = withTranslation('common', { withRef: true })(
   <
@@ -232,7 +232,22 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
         },
       ],
     }
-    return <SwitchPanel {...{ ...rest, t, ...props }} />
+    return !switchData.tradeData?.belong ? <Box
+            height={"var(--min-height)"}
+            width={"var(--modal-width)"}
+            display={'flex'}
+            justifyContent={'center'}
+            flexDirection={'column'}
+            alignItems={'center'}
+        >
+          <img
+              className='loading-gif'
+              alt={'loading'}
+              width='60'
+              src={`${SoursURL}images/loading-line.gif`}
+          /></Box>
+        :
+        <SwitchPanel {...{...rest, t, ...props}} />
   },
 ) as <T, I>(props: DepositProps<T, I> & React.RefAttributes<any>) => JSX.Element
 

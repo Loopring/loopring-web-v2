@@ -20,6 +20,7 @@ import {
   makeWalletLayer2,
   store,
   useWalletLayer2,
+  useWalletLayer2Socket,
 } from '../../index'
 
 const INTERVAL_TIME = (() => 900000)()
@@ -107,6 +108,16 @@ export function useChargeFees({
   const [_intervalTime, setIntervalTime] = React.useState<number>(intervalTime)
   const { status: walletLayer2Status } = useWalletLayer2()
   const [requestType, setRequestType] = React.useState(_requestType)
+  // const [walletMap, setWalletMap] = React.useState(
+  //   makeWalletLayer2({ needFilterZero: true }).walletMap ?? ({} as WalletMap<any>),
+  // )
+  // const walletLayer2Callback = React.useCallback(() => {
+  //   const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
+  //   setWalletMap(walletMap)
+  // }, [])
+
+  // useWalletLayer2Socket({ walletLayer2Callback })
+
   const handleFeeChange = (_value: FeeInfo): void => {
     const walletMap =
       makeWalletLayer2({ needFilterZero: true, isActive: isActiveAccount }).walletMap ??
@@ -256,7 +267,7 @@ export function useChargeFees({
           }
           if (isSame && fees && feeChargeOrder) {
             const _chargeFeeTokenList = feeChargeOrder?.reduce((pre, item) => {
-              let { fee, token } = fees[item] ?? {}
+              let { fee, token, discount } = fees[item] ?? {}
               if (fee && token) {
                 const tokenInfo = tokenMap[token]
                 const tokenId = tokenInfo.tokenId
@@ -271,6 +282,7 @@ export function useChargeFees({
                   fee,
                   feeRaw,
                   hasToken: !!(walletMap && walletMap[token]),
+                  discount: discount as number,
                   __raw__: { fastWithDraw, feeRaw, tokenId },
                 }
                 pre.push(feeInfoTemplate)
@@ -370,7 +382,15 @@ export function useChargeFees({
                 }
               }
             })
-            setChargeFeeTokenList(_chargeFeeTokenList ?? [])
+            const _chargeFeeTokenListWithCount = _chargeFeeTokenList.map(feeInfo => {
+              return {
+                ...feeInfo,
+                count: walletMap[feeInfo.belong]?.count
+                  ? walletMap[feeInfo.belong]?.count 
+                  : undefined
+              } as FeeInfo
+            })
+            setChargeFeeTokenList(_chargeFeeTokenListWithCount ?? [])
           }
         } catch (reason: any) {
           // myLog("chargeFeeTokenList, error", reason);
@@ -392,7 +412,6 @@ export function useChargeFees({
     globalSetup.wait,
     { trailing: true },
   )
-
   const checkFeeIsEnough = async (
     props:
       | undefined

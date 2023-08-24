@@ -1,12 +1,13 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { ModalBackButton, SwitchPanel, SwitchPanelProps } from '../../basic-lib'
 import { WithdrawProps } from '../../tradePanel/Interface'
-import { IBData, TRADE_TYPE } from '@loopring-web/common-resources'
+import { IBData, SoursURL, TRADE_TYPE } from '@loopring-web/common-resources'
 import { TradeMenuList, useBasicTrade, WithdrawWrap } from '../../tradePanel/components'
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import _, { cloneDeep } from 'lodash'
 import { WithdrawConfirm } from '../../tradePanel/components/WithdrawConfirm'
 import { ContactSelection } from '../../tradePanel/components/ContactSelection'
+import { Box } from '@mui/material';
 // import { getAllContacts } from "./TransferPanel";
 
 export const WithdrawPanel = withTranslation(['common', 'error'], {
@@ -203,6 +204,20 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
       index: panelIndex, // show default show
       panelList: [confirmPanel, tradePanel, tokenSelectionPanel, contactSelectionPanel],
     }
-    return <SwitchPanel {...{ ...rest, ...props }} />
+      return (type == TRADE_TYPE.TOKEN && !switchData.tradeData?.belong) ? <Box
+              display={'flex'}
+              height={"var(--min-height)"}
+              width={"var(--modal-width)"}
+              justifyContent={'center'}
+              flexDirection={'column'}
+              alignItems={'center'}
+          >
+              <img
+                  className='loading-gif'
+                  alt={'loading'}
+                  width='60'
+                  src={`${SoursURL}images/loading-line.gif`}
+              /></Box>
+          : <SwitchPanel {...{...rest, ...props}} />
   },
 ) as <T, I>(props: WithdrawProps<T, I> & React.RefAttributes<any>) => JSX.Element

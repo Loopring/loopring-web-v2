@@ -39,14 +39,14 @@ import {
   TextField,
   TGItemData,
 } from '../../basic-lib'
-import { DropdownIconStyled, FeeTokenItemWrapper, IconClearStyled } from './Styled'
+import { IconClearStyled } from './Styled'
 import { NFTInput } from './BasicANFTTrade'
 import { CollectionMeta, DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
-import { FeeToggle } from './tool/FeeList'
 import { useSettings } from '../../../stores'
 import { Toast, ToastType } from '../../toast'
 import { BtnMain, HorizontalLabelPositionBelowStepper } from './tool'
+import { FeeSelect } from '../../../components/modal'
 
 export enum AdMethod {
   HasData = 'HasData',
@@ -131,7 +131,8 @@ export const MintAdvanceNFTWrap = <
     collectionListProps: { copyToastOpen },
   } = collectionInputProps
   const inputBtnRef = React.useRef()
-  const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
+  myLog('showFeeModal', showFeeModal)
   React.useEffect(() => {
     if (address !== tradeData?.tokenAddress && tradeData?.tokenAddress !== '') {
       setAddress(tradeData?.tokenAddress)
@@ -902,69 +903,21 @@ export const MintAdvanceNFTWrap = <
                       <Typography>{t('labelFeeCalculating')}</Typography>
                     ) : (
                       <>
-                        <Typography
-                          component={'span'}
-                          display={'flex'}
-                          flexWrap={'wrap'}
-                          alignItems={'center'}
-                          variant={'body1'}
-                          color={'var(--color-text-secondary)'}
-                          marginBottom={1}
-                        >
-                          <Typography component={'span'} color={'inherit'} minWidth={28}>
-                            {t('labelMintFee')}：
-                          </Typography>
-                          <Box
-                            component={'span'}
-                            display={'flex'}
-                            alignItems={'center'}
-                            style={{ cursor: 'pointer' }}
-                            onClick={() =>
-                              setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))
-                            }
-                          >
-                            {feeInfo && feeInfo.belong && feeInfo.fee
-                              ? feeInfo.fee + ' ' + feeInfo.belong
-                              : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                            <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                            {isFeeNotEnough.isOnLoading ? (
-                              <Typography
-                                color={'var(--color-warning)'}
-                                marginLeft={1}
-                                component={'span'}
-                              >
-                                {t('labelFeeCalculating')}
-                              </Typography>
-                            ) : (
-                              isFeeNotEnough.isFeeNotEnough && (
-                                <Typography
-                                  marginLeft={1}
-                                  component={'span'}
-                                  color={'var(--color-error)'}
-                                >
-                                  {t('labelMintFeeNotEnough')}
-                                </Typography>
-                              )
-                            )}
-                          </Box>
-                        </Typography>
-                        {dropdownStatus === 'up' && (
-                          <FeeTokenItemWrapper padding={2}>
-                            <Typography
-                              variant={'body2'}
-                              color={'var(--color-text-third)'}
-                              marginBottom={1}
-                              component={'span'}
-                            >
-                              {t('labelMintFeeChoose')}
-                            </Typography>
-                            <FeeToggle
-                              chargeFeeTokenList={chargeFeeTokenList}
-                              handleToggleChange={handleToggleChange}
-                              feeInfo={feeInfo}
-                            />
-                          </FeeTokenItemWrapper>
-                        )}
+                        <FeeSelect
+                          chargeFeeTokenList={chargeFeeTokenList}
+                          handleToggleChange={(fee: FeeInfo) => {
+                            handleToggleChange(fee as C)
+                            setShowFeeModal(false)
+                          }}
+                          feeInfo={feeInfo as FeeInfo}
+                          open={showFeeModal}
+                          onClose={() => {
+                            setShowFeeModal(false)
+                          }}
+                          isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+                          feeLoading={isFeeNotEnough.isOnLoading}
+                          onClickFee={() => setShowFeeModal((prev) => !prev)}
+                        />
                       </>
                     )}
                   </Box>
@@ -1039,7 +992,6 @@ export const MintAdvanceNFTWrap = <
     walletMap,
     chargeFeeTokenList,
     feeInfo,
-    dropdownStatus,
     isFeeNotEnough.isOnLoading,
     isFeeNotEnough.isFeeNotEnough,
     handleToggleChange,
@@ -1050,6 +1002,7 @@ export const MintAdvanceNFTWrap = <
     getIPFSString,
     nftMintBtnStatus,
     onNFTMintClick,
+    showFeeModal
   ])
 
   // @ts-ignore

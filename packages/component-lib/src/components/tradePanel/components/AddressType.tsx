@@ -1,28 +1,44 @@
-import { Box, MenuItem, Radio, Typography } from '@mui/material'
+import { Box, IconButton, MenuItem, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import React, { ForwardedRef } from 'react'
-import { AddressItemType, EXCHANGE_TYPE, WALLET_TYPE } from '@loopring-web/common-resources'
+import { AddressItemType, CloseIcon, EXCHANGE_TYPE, Info2Icon, RoundCheckIcon, RoundCircle, WALLET_TYPE, hexToRGB } from '@loopring-web/common-resources'
 import { MenuItemProps, TextField } from '../../basic-lib'
 import { useOpenModals } from '../../../stores'
 import { useAddressTypeLists } from './hook/useAddressType'
+import { useTheme } from '@emotion/react'
 
 const MenuItemStyle = styled(MenuItem)<MenuItemProps<any> & { maxWidth?: string | number }>`
-  display: flex;
-  flex-direction: column;
   height: auto;
-  justify-content: center;
-  align-items: flex-start;
-  max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : 'fit-content')};
-  .MuiTypography-root {
-    white-space: break-spaces;
-  }
-  //.MuiMenuItem-root {
-  //
-  //  display: flex;
-  //  flex-direction: ;
-  //}
+  max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : 'auto')};
+  border: 1px solid;
+  border-color: ${({ checked }) => (checked ? 'var(--color-primary)' : 'var(--color-border)')};
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-radius: ${({ theme }) => theme.unit}px;
+  padding: ${({ theme }) => 2 * theme.unit}px;
+  min-height: ${({ theme }) => theme.unit * 8}px;
+  align-items: center;
+  cursor: pointer;
+  flex-direction: row;
+  margin-top:  ${({ theme }) => 2 * theme.unit}px;
+
 ` as (props: MenuItemProps<any> & { maxWidth?: string | number }) => JSX.Element
+
+const WarningBoxStyled = styled(Box)`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-radius: ${({ theme }) => theme.unit}px;
+  padding: ${({ theme }) => 2 * theme.unit}px;
+  min-height: ${({ theme }) => theme.unit * 8}px;
+  align-items: center;
+  cursor: pointer;
+  flex-direction: row;
+  background: ${({ theme }) => hexToRGB(theme.colorBase.warning,0.2)};
+
+`
 
 export const WalletItemOptions = React.memo(
   React.forwardRef(
@@ -54,24 +70,22 @@ export const WalletItemOptions = React.memo(
             handleSelected(myValue)
           }}
         >
-          <Typography
-            width={'100%'}
-            component={'span'}
-            display={'inline-flex'}
-            alignItems={'center'}
-            justifyContent={'space-between'}
-          >
+          <Box width={'100%'} component={'span'}>
             <Typography color={'textPrimary'}>{label}</Typography>
-            <Radio size={'medium'} checked={selectedValue === myValue} disabled={disabled} />
-          </Typography>
-          <Typography
-            component={'span'}
-            whiteSpace={'pre-line'}
-            variant={'body2'}
-            color={'textSecondary'}
-          >
-            {description}
-          </Typography>
+            <Typography
+              component={'span'}
+              whiteSpace={'pre-line'}
+              variant={'body2'}
+              color={'textSecondary'}
+            >
+              {description}
+            </Typography>
+          </Box>
+          {selectedValue === myValue ? (
+            <RoundCheckIcon fontSize={'large'} fill={'var(--color-primary)'} />
+          ) : (
+            <RoundCircle fontSize={'large'} />
+          )}
         </MenuItemStyle>
       )
     },
@@ -90,11 +104,13 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
 }) => {
   const { t } = useTranslation('common')
   const { walletListFn } = useAddressTypeLists<T>()
+  const theme = useTheme()
   const desMenuItem = React.useMemo(() => {
     return (
-      <MenuItemStyle disabled={true} value={-1}>
-        <Typography component={'span'}>{t('labelWalletTypeDes')}</Typography>
-      </MenuItemStyle>
+      <WarningBoxStyled>
+        <Info2Icon fontSize={'large'} htmlColor={theme.colorBase.warning}></Info2Icon>
+        <Typography marginLeft={1} fontSize={'13px'} >{t('labelWalletTypeDes')}</Typography>
+      </WarningBoxStyled>
     )
   }, [t])
 
@@ -121,6 +137,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
   // const walletType = WALLET_TYPE.EOA
   return (
     <TextField
+      size={'large'}
       select
       disabled={disabled}
       fullWidth
@@ -135,10 +152,26 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
           walletListFn(detectedWalletType).find((item) => item.value === selectedValue)?.label ??
           '',
       }}
-      label={t('labelL2toL2AddressType')}
-      // inputProps={{}}
+      label={
+        <Typography color={'var(--color-text-third)'}>{t('labelL2toL1AddressType')}</Typography>
+      }
     >
-      <Box maxWidth={'470px'}>
+      <Box maxWidth={'480px'} padding={5}>
+        <IconButton
+          sx={{
+            position: 'absolute',
+            right: 20,
+            top: 20,
+          }}
+          size={'large'}
+          edge={'end'}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
+          {t('labelL2toL1AddressType')}
+        </Typography>
         {desMenuItem}
         {walletListFn(detectedWalletType).map(
           ({ value, label, description, disabled, maxWidth }) => (
@@ -204,6 +237,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
 
   return (
     <TextField
+      size={'large'}
       select
       disabled={disabled}
       fullWidth
@@ -218,10 +252,24 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
           walletListFn(detectedWalletType).find((item) => item.value === selectedValue)?.label ??
           '',
       }}
-      label={t('labelL2toL1AddressType')}
-      // inputProps={{}}
+      label={<Typography color={'var(--color-text-third)'}>{t('labelL2toL1AddressType')}</Typography>}
     >
-      <Box maxWidth={'470px'}>
+      <Box maxWidth={'480px'} padding={5}>
+        <IconButton
+          sx={{
+            position: 'absolute',
+            right: 20,
+            top: 20,
+          }}
+          size={'large'}
+          edge={'end'}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
+          {t("labelL2toL1AddressType")}
+        </Typography>
         <MenuItemStyle disabled={true} value={-1}>
           <Typography component={'span'}>{t('labelExchangeTypeDes')}</Typography>
         </MenuItemStyle>

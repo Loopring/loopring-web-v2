@@ -1,7 +1,6 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 
 import {
-  EmptyValueTag,
   FeeInfo,
   IBData,
   L1L2_NAME_DEFINED,
@@ -10,12 +9,13 @@ import {
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import React from 'react'
-import { ClaimProps, DropdownIconStyled, FeeToggle, FeeTokenItemWrapper } from '../../tradePanel'
+import { ClaimProps } from '../../tradePanel'
 import { Box, Grid, Typography } from '@mui/material'
 import { Button } from '../../basic-lib'
 import { useSettings } from '../../../stores'
 import { Toast, ToastType } from '../../toast'
 import { useTheme } from '@emotion/react'
+import { FeeSelect } from './FeeSelect'
 
 export const ClaimWithdrawPanel = withTranslation(['common', 'error'], {
   withRef: true,
@@ -38,7 +38,7 @@ export const ClaimWithdrawPanel = withTranslation(['common', 'error'], {
     const { isMobile, defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const [open, setOpen] = React.useState(false)
-    const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+    const [showFeeModal, setShowFeeModal] = React.useState(false)
     const handleToggleChange = (value: Fee) => {
       if (handleFeeChange) {
         handleFeeChange(value)
@@ -141,54 +141,21 @@ export const ClaimWithdrawPanel = withTranslation(['common', 'error'], {
             <Typography>{t('labelFeeCalculating')}</Typography>
           ) : (
             <>
-              <Typography
-                component={'span'}
-                display={'flex'}
-                flexWrap={'wrap'}
-                alignItems={'center'}
-                variant={'body1'}
-                color={'var(--color-text-secondary)'}
-                marginBottom={1}
-              >
-                <Typography component={'span'} color={'inherit'} minWidth={28}>
-                  {t('labelL2toL2Fee')}：
-                </Typography>
-                <Box
-                  component={'span'}
-                  display={'flex'}
-                  alignItems={'center'}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-                >
-                  {feeInfo && feeInfo.belong && feeInfo.fee
-                    ? feeInfo.fee + ' ' + feeInfo.belong
-                    : EmptyValueTag + ' ' + feeInfo?.belong ?? EmptyValueTag}
-                  <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                  {isFeeNotEnough.isOnLoading ? (
-                    <Typography color={'var(--color-warning)'} marginLeft={1} component={'span'}>
-                      {t('labelFeeCalculating')}
-                    </Typography>
-                  ) : (
-                    isFeeNotEnough.isFeeNotEnough && (
-                      <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                        {t('labelL2toL2FeeNotEnough')}
-                      </Typography>
-                    )
-                  )}
-                </Box>
-              </Typography>
-              {dropdownStatus === 'up' && (
-                <FeeTokenItemWrapper padding={2}>
-                  <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-                    {t('labelL2toL2FeeChoose')}
-                  </Typography>
-                  <FeeToggle
-                    chargeFeeTokenList={chargeFeeTokenList}
-                    handleToggleChange={handleToggleChange as any}
-                    feeInfo={feeInfo}
-                  />
-                </FeeTokenItemWrapper>
-              )}
+              <FeeSelect
+                chargeFeeTokenList={chargeFeeTokenList}
+                handleToggleChange={(fee: FeeInfo) => {
+                  handleToggleChange(fee as Fee)
+                  setShowFeeModal(false)
+                }}
+                feeInfo={feeInfo as FeeInfo}
+                open={showFeeModal}
+                onClose={() => {
+                  setShowFeeModal(false)
+                }}
+                isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
+                feeLoading={isFeeNotEnough.isOnLoading}
+                onClickFee={() => setShowFeeModal((prev) => !prev)}
+              />
             </>
           )}
         </Grid>
