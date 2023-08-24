@@ -1,8 +1,8 @@
-import { Avatar, Box, Button, IconButton, OutlinedInput, Typography } from '@mui/material'
+import { Box, Button, IconButton, OutlinedInput, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
+import { AddressTypeTag, InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
 import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { Add } from './add'
+import { Add, EditContact } from './add'
 import { Delete } from './delete'
 import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
@@ -12,6 +12,9 @@ import { AddressType } from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
+import { InitialNameAvatar } from '@loopring-web/component-lib/src/components/tradePanel/components/ContactSelection'
+import * as sdk from '@loopring-web/loopring-sdk';
+import { ContactType } from '@loopring-web/core';
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
@@ -54,10 +57,11 @@ export const ContractPanel = () => {
     contacts,
     searchValue,
     onChangeSearch,
-    onClickEditing,
+    // onClickEditing,
     onClickDelete,
-    onChangeInput,
-    onInputBlue,
+    onEdit,
+    selectAddress,
+    setSelectAddress,
     toastInfo,
 
     deleteInfo,
@@ -65,13 +69,11 @@ export const ContractPanel = () => {
 
     submitDeleteContact,
     deleteLoading,
-
     onClickSend,
     onCloseSend,
     sendInfo,
     onCloseToast,
     setToastInfo,
-
     pagination,
     onPageChange,
     loading,
@@ -139,44 +141,56 @@ export const ContractPanel = () => {
       <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={'scroll'}>
         {contacts &&
           contacts.map((data) => {
-            const { editing, name, address, avatarURL, addressType } = data
+            // const {  contactName, addressType,contactAddress,...rest } =
             return (
               <Box
-                key={address}
+                  key={data.contactAddress}
                 paddingY={2}
-                display={addressType === AddressType.OFFICIAL ? 'none' : 'flex'}
+                  display={data.addressType === AddressType.OFFICIAL ? 'none' : 'flex'}
                 justifyContent={'space-between'}
               >
                 <Box display={'flex'}>
-                  <Avatar sizes={'32px'} src={avatarURL}></Avatar>
+                  <InitialNameAvatar name={data.contactName}/>
                   <Box marginLeft={1}>
-                    {editing ? (
-                      <OutlinedInput
-                        size={'small'}
-                        value={name}
-                        onChange={(e) => {
-                          onChangeInput(address, e.target.value)
-                        }}
-                        onBlur={() => {
-                          onInputBlue(address)
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.currentTarget.blur()
-                          }
-                        }}
-                      />
-                    ) : (
-                      <Typography>
-                        {name}
-                        <EditIcon onClick={() => onClickEditing(address)} />
-                      </Typography>
-                    )}
+                    {/*{selectAddress && selectAddress?.contactAddress && selectAddress?.contactAddress.toLowerCase() === data?.contactAddress.toLowerCase() ? (*/}
+                    {/*  <OutlinedInput*/}
+                    {/*    size={'small'}*/}
+                    {/*    value={selectAddress.contactName}*/}
+                    {/*    onChange={(e) => {*/}
+                    {/*      setSelectAddress(state => {*/}
+                    {/*        return {*/}
+                    {/*          ...data,*/}
+                    {/*          contactName: e.target.value,*/}
+                    {/*        }*/}
+                    {/*      })*/}
+                    {/*    }}*/}
+                    {/*    onBlur={() => {*/}
+                    {/*      onEdit(selectAddress)*/}
+                    {/*    }}*/}
+                    {/*    onKeyDown={(e) => {*/}
+                    {/*      if (e.key === 'Enter') {*/}
+                    {/*        e.currentTarget.blur()*/}
+                    {/*      }*/}
+                    {/*    }}*/}
+                    {/*  />*/}
+                    {/*) : (*/}
+                    {/* */}
+                    {/*)}*/}
+                    <Typography component={'span'}>
+                      <Typography component={'span'} display={'flex-inline'}
+                                  paddingRight={1}>{data.contactName}</Typography>
+                      {data.addressType && <AddressTypeTag addressType={data.addressType}/>}
+                      <EditIcon onClick={() => {
+                        setAddOpen(true)
+                        setSelectAddress(data as ContactType)
+                      }
+                      }/>
+                    </Typography>
                     <Typography>
-                      {address}
+                      {data.contactAddress}
                       <IconButton
                         onClick={() => {
-                          navigator.clipboard.writeText(address)
+                          navigator.clipboard.writeText(data.contactAddress)
                           setToastInfo({
                             open: true,
                             isSuccess: true,
@@ -192,7 +206,7 @@ export const ContractPanel = () => {
                 <Box display={'flex'}>
                   <Box marginRight={2}>
                     <Button
-                      onClick={() => onClickSend(address, name, addressType)}
+                        onClick={() => onClickSend(data.contactAddress, data.contactName, data.addressType)}
                       variant={'contained'}
                       size={'small'}
                     >
@@ -204,7 +218,7 @@ export const ContractPanel = () => {
                       variant={'outlined'}
                       size={'medium'}
                       onClick={() => {
-                        history.push('/layer2/contact/transactions?contactAddress=' + address)
+                        history.push('/layer2/contact/transactions?contactAddress=' + data.contactAddress)
                       }}
                     >
                       {t('labelContactsTransactions')}
@@ -214,7 +228,7 @@ export const ContractPanel = () => {
                     variant={'outlined'}
                     size={'medium'}
                     onClick={() => {
-                      onClickDelete(address, name)
+                      onClickDelete(data.contactAddress, data.contactName)
                     }}
                   >
                     {t('labelContactsDeleteContactBtn')}
@@ -244,11 +258,19 @@ export const ContractPanel = () => {
         autoHideDuration={TOAST_TIME}
         onClose={() => onCloseToast()}
       />
-      <Add
+      <EditContact
         loading={addLoading}
-        submitAddingContact={(address, name, cb) => {
-          submitAddContact(address, name, cb)
+        submitContact={(item) => {
+          if (selectAddress) {
+            onEdit(item)
+            setSelectAddress(undefined)
+          } else {
+            submitAddContact(item)
+          }
+
         }}
+        isEdit={selectAddress ? {item: selectAddress} : false}
+
         addOpen={addOpen}
         setAddOpen={setAddOpen}
       />

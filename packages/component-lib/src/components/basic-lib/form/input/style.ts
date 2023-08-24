@@ -48,7 +48,6 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   && {
     .MuiSelect-nativeInput + svg {
       position: absolute;
-      right: 0.4rem;
       right: ${({size}) => size === 'large' ? 1 : 0.4}rem;
       top: ${({theme, size}) => size === 'large' ? 2 * theme.unit : theme.unit}px;
       color: var(--color-text-secondary);

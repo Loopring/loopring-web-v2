@@ -226,7 +226,11 @@ export function useAccountModalForUI({
     nftWithdrawValue,
     nftDeployValue,
     transferValue,
+
     withdrawValue,
+      resetTransferData,
+      resetWithdrawData,
+      resetDepositData,
     forceWithdrawValue,
     claimValue,
   } = useModalData()
@@ -437,6 +441,10 @@ export function useAccountModalForUI({
   }, [account.accAddress, chainInfos?.depositHashes])
   const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } = useOpenModals()
 
+    const disbaleList = account.isInCounterFactualStatus
+        ? [AddAssetList.FromMyL1.key]
+        : undefined
+
   const addAssetList: AddAssetItem[] = React.useMemo(
     () =>
       AddAssetListMap[network].map((item: string) => {
@@ -456,6 +464,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                  if (isShowAccount?.info?.symbol) {
+                      resetDepositData()
+                  }
                 setShowDeposit({
                   isShow: true,
                   symbol: isShowAccount?.info?.symbol,
@@ -619,6 +630,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                  if (isShowAccount?.info?.symbol) {
+                      resetTransferData()
+                  }
                 setShowTransfer({
                   isShow: true,
                   symbol: isShowAccount?.info?.symbol,
@@ -633,6 +647,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                  if (isShowAccount?.info?.symbol) {
+                      resetWithdrawData()
+                  }
                 setShowWithdraw({
                   isShow: true,
                   info: { isToMyself: true },
@@ -648,6 +665,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                  if (isShowAccount?.info?.symbol) {
+                      resetWithdrawData()
+                  }
                 setShowWithdraw({
                   isShow: true,
                   info: { isToMyself: false },
@@ -816,6 +836,7 @@ export function useAccountModalForUI({
             addAssetList={addAssetList}
             allowTrade={allowTrade}
             isNewAccount={depositProps.isNewAccount}
+            disbaleList={disbaleList}
           />
         ),
       },
@@ -3166,6 +3187,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     nftWithdrawValue,
     setShowActiveAccount,
+      disbaleList
   ])
 
   const currentModal = accountList[isShowAccount.step]

@@ -54,9 +54,16 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
     &.Mui-disabled{
       color: var(--color-text-disable)
     }
-    &.Mui-selected, &:hover, &.Mui-selected:hover {
+
+    &.Mui-selected, &.Mui-selected:hover {
       background: inherit;
       color: var(--color-text-button-select);
+      //color: var(--color-primary);
+    }
+
+    &:hover {
+      background: inherit;
+      color: var(--color-primary);
     }
 
     &.Mui-selected.Mui-focusVisible {
@@ -123,8 +130,8 @@ const StyledHeaderMenuSub = styled(Menu)<MenuProps>`
     color: var(--color-text-third);
 
     ul {
-      ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--opacity)', d_R: 0.5 })};
-      background: var(--color-pop-bg);
+      box-shadow: inset 0.5px var(--opacity);
+      background: var(--color-box-pop);
       padding: 0;
       //.layer-sub {
       //  height: var(--header-menu-list-height)
