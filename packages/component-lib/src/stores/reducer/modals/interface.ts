@@ -5,8 +5,8 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO, AddressType } from '@loopring-web/loopring-sdk'
-import { AmmPanelType, ToastType } from '../../../components'
+import { RESULT_INFO, AddressType, OffchainFeeReqType, OffchainNFTFeeReqType } from '@loopring-web/loopring-sdk'
+import { AmmPanelType,ToastType } from '../../../components'
 
 export enum ModalType {
   transfer = 'transfer',

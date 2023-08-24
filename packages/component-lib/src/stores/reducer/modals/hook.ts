@@ -12,6 +12,7 @@ import {
   setShowDeposit,
   setShowDual,
   setShowExportAccount,
+  setShowFeeSelect,
   setShowFeeSetting,
   setShowGlobalToast,
   setShowIFrame,
@@ -42,7 +43,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { OffchainFeeReqType, OffchainNFTFeeReqType, RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
 import { AmmPanelType, ToastType } from '../../../components'
 

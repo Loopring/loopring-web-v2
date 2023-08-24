@@ -37,6 +37,7 @@ export interface FeeInfo {
   feeRaw?: string | number
   token?: string
   hasToken?: boolean
+  count?: string
   __raw__: {
     fastWithDraw: string
     tokenId: number

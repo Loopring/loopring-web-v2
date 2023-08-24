@@ -1466,3 +1466,20 @@ export const RiskIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
+
+export const RoundCheckIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox='0 0 24 24' aria-hidden='true'>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2C6.477 2 2 6.477 2 12Z" fill={props.fill}/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2936 15.5353C10.903 15.9259 10.2698 15.9259 9.87921 15.5353L7.05042 12.7065C6.65995 12.316 6.65995 11.683 7.05042 11.2925C7.44088 10.902 8.07395 10.902 8.46442 11.2925L10.5864 13.4145L15.5354 8.46463C15.9259 8.07411 16.559 8.07408 16.9495 8.46457C17.3399 8.85501 17.3399 9.48804 16.9495 9.87851L11.2936 15.5353Z" fill="white"/>
+    </SvgIcon>
+  )
+}
+
+export const RoundCircle = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox='0 0 24 24' aria-hidden='true'>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M12.101 20.5C16.8655 20.5 20.702 16.6802 20.702 12C20.702 7.31976 16.8655 3.5 12.101 3.5C7.33655 3.5 3.5 7.31976 3.5 12C3.5 16.6802 7.33655 20.5 12.101 20.5ZM12.101 22C17.6796 22 22.202 17.5228 22.202 12C22.202 6.47715 17.6796 2 12.101 2C6.52238 2 2 6.47715 2 12C2 17.5228 6.52238 22 12.101 22Z" fill="#A3A8CA"/>
+    </SvgIcon>
+  )
+}
