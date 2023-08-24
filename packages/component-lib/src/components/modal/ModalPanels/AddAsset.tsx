@@ -40,6 +40,7 @@ export const AddAsset = ({
   addAssetList,
   allowTrade,
   isNewAccount = false,
+                           disbaleList
 }: AddAssetProps) => {
   const { t } = useTranslation('common')
   const { isMobile, defaultNetwork } = useSettings()
@@ -119,7 +120,8 @@ export const AddAsset = ({
                     fullWidth
                     disabled={
                       !!(item.enableKey && allowTrade[item.enableKey]?.enable === false) ||
-                      (isLp && lpDisaList.includes(item.key))
+                        (isLp && lpDisaList.includes(item.key)) ||
+                        disbaleList?.includes(item.key)
                     }
                     endIcon={<BackIcon sx={{ transform: 'rotate(180deg)' }} />}
                     onClick={(e) => {
