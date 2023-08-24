@@ -219,6 +219,7 @@ export interface AddAssetProps {
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean }
   }
+  disbaleList?: string[]
 }
 
 export interface SendAssetProps {
