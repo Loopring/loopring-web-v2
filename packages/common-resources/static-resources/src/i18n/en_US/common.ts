@@ -1822,9 +1822,27 @@ export default {
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
+  labelRiskAgree: 'Proceed Anyway',
+  labelRiskCancel: 'Cancel',
+  labelExpectedSettlementPrice: 'Expected Settlement Price',
+  labelCurrentMarketPrice: 'Current Market Price',
+  labelPriceVariance: 'Price Variance',
+  labelImpactExtraNewGreat:
+    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
+  labelPriceImpact: 'Price Impact',
+  labelPriceImpactDes1:
+    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <t>‘AGREE’</t> and tap ‘Proceed Anyway’ to confirm again.',
+  labelPriceImpactDes2:
+    'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
+  labelLargePriceVariance: 'Large Price Variance',
+  labelHighPriceImpacTitle: 'High Price Impact Detected',
+  labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
+  labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
+  labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
   labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
 }

@@ -64,6 +64,44 @@ import { useHistory } from 'react-router-dom'
 
 import BigNumber from 'bignumber.js'
 
+export enum ShowWitchAle3t1 {
+  AlertImpact = 'AlertImpact',
+  SwapSecondConfirmation = 'SwapSecondConfirmation',
+  ConfirmImpact = 'ConfirmImpact',
+  SmallPrice = 'SmallPrice',
+
+}
+
+export const useAlert = () => {
+  const [confirmed, setConfirmed] = React.useState<[boolean, boolean]>([false, false])
+  const [showAlert, setShowWhich] = React.useState<{
+    isShow: boolean
+    step: 1 | 2
+    showWitch: '' | ShowWitchAle3t1
+  }>({
+    isShow: false,
+    step: 1,
+    showWitch: '',
+  })
+  // React.useEffect(()=>{
+  //
+  //   setConfirmed(state=>{
+  //     return [state[0],!isSmallOrder]
+  //   })
+  // },[isSmallOrder])
+  // const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
+  // const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
+  // const [smallOrderAlertOpen, setSmallOrderAlertOpen] = React.useState<boolean>(false)
+  // const [secondConfirmationOpen, setSecondConfirmationOpen] = React.useState<boolean>(false)
+  //
+  return {
+    showAlert,
+    confirmed,
+    setShowWhich,
+    setConfirmed,
+  }
+}
+
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket()
   const { account } = useAccount()
@@ -141,10 +179,6 @@ export const useSwap = <
   }>({} as any)
   const { tokenPrices } = useTokenPrices()
 
-  const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
-  const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
-  const [smallOrderAlertOpen, setSmallOrderAlertOpen] = React.useState<boolean>(false)
-  const [secondConfirmationOpen, setSecondConfirmationOpen] = React.useState<boolean>(false)
   const showSwapSecondConfirmation = swapSecondConfirmation !== false
   const isSmallOrder =
     tradeData && tradeData.buy.tradeValue
@@ -397,17 +431,21 @@ export const useSwap = <
             }
           }
         } else {
-          if (tradeCalcData?.isNotMatchMarketPrice && !tradeCalcData?.isChecked) {
-            return {
-              label: undefined,
-              tradeBtnStatus: TradeBtnStatus.DISABLED,
-            }
-          } else {
-            return {
-              label: undefined,
-              tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-            }
+          return {
+            label: undefined,
+            tradeBtnStatus: TradeBtnStatus.AVAILABLE,
           }
+          // if (tradeCalcData?.isNotMatchMarketPrice && !tradeCalcData?.isChecked) {
+          //   return {
+          //     label: undefined,
+          //     tradeBtnStatus: TradeBtnStatus.DISABLED,
+          //   }
+          // } else {
+          //   return {
+          //     label: undefined,
+          //     tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+          //   }
+          // }
         }
       } else {
         return {
@@ -592,73 +630,64 @@ export const useSwap = <
     updatePageTradeLite,
   ])
 
-  const priceAlertCallBack = React.useCallback(
-    (confirm: boolean) => {
-      if (confirm) {
-        if (isSmallOrder) {
-          setSmallOrderAlertOpen(true)
+  const { showAlert, confirmed, setShowWhich, setConfirmed } = useAlert()
+
+  const doShowAlert = () => {
+    const { priceLevel } = getPriceImpactInfo(pageTradeLite.calcTradeParams, account.readyState)
+    myLog('hookSwap:---- swapCalculatorCallback priceLevel:', priceLevel)
+    setConfirmed((state) => {
+      if (isSmallOrder) {
+        state[1] = false
+      } else {
+        state[1] = true
+      }
+      setShowWhich(() => {
+        if (tradeCalcData?.isNotMatchMarketPrice) {
+          return { isShow: true, step: 1, showWitch: ShowWitchAle3t1.AlertImpact }
+        } else if (priceLevel === PriceLevel.Lv1 || priceLevel === PriceLevel.Lv2) {
+          return { isShow: true, step: 1, showWitch: ShowWitchAle3t1.ConfirmImpact }
+        } else if (isSmallOrder) {
+          state[0] = true
+          return { isShow: true, step: 2, showWitch: ShowWitchAle3t1.SmallPrice }
+        } else if (showSwapSecondConfirmation) {
+          return { isShow: true, step: 1, showWitch: ShowWitchAle3t1.SwapSecondConfirmation }
         } else {
-          setIsSwapLoading(true)
-          swapFunc()
+          state[0] = true
+          return { isShow: false, step: 2, showWitch: '' }
         }
-        setAlertOpen(false)
-        setConfirmOpen(false)
-      } else {
-        setAlertOpen(false)
-        setConfirmOpen(false)
-        setIsSwapLoading(false)
-      }
-    },
-    [showSwapSecondConfirmation, isSmallOrder],
-  )
-  const smallOrderAlertCallBack = React.useCallback(
-    (confirm: boolean) => {
-      if (confirm) {
-        setIsSwapLoading(true)
-        swapFunc()
-        setSmallOrderAlertOpen(false)
-      } else {
-        setSmallOrderAlertOpen(false)
-        setIsSwapLoading(false)
-      }
-    },
-    [swapFunc],
-  )
-  const secondConfirmationCallBack = React.useCallback(
-    (confirm: boolean) => {
-      if (confirm) {
-        setIsSwapLoading(true)
-        swapFunc()
-        setSecondConfirmationOpen(false)
-      } else {
-        setSecondConfirmationOpen(false)
-        setIsSwapLoading(false)
-      }
-    },
-    [swapFunc],
-  )
+      })
+      return state
+    })
+  }
+  React.useEffect(() => {
+    if (confirmed[0] === true && confirmed[1] === true) {
+      swapFunc()
+      setConfirmed([false, false])
+    }
+  }, [confirmed[0], confirmed[1]])
 
   const swapCalculatorCallback = React.useCallback(async () => {
-    const { priceLevel } = getPriceImpactInfo(pageTradeLite.calcTradeParams, account.readyState)
     setIsSwapLoading(true)
 
-    myLog('hookSwap:---- swapCalculatorCallback priceLevel:', priceLevel)
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true })
       setIsSwapLoading(false)
     } else if (!order.enable) {
       setShowTradeIsFrozen({ isShow: true, type: 'Swap' })
       setIsSwapLoading(false)
-    } else if (priceLevel === PriceLevel.Lv1) {
-      setAlertOpen(true)
-    } else if (priceLevel === PriceLevel.Lv2) {
-      setConfirmOpen(true)
-    } else if (isSmallOrder) {
-      setSmallOrderAlertOpen(true)
-    } else if (showSwapSecondConfirmation) {
-      setSecondConfirmationOpen(true)
     } else {
-      swapFunc()
+      doShowAlert()
+      // if (priceLevel === PriceLevel.Lv1) {
+      //   setAlertOpen(true)
+      // } else if (priceLevel === PriceLevel.Lv2) {
+      //   setConfirmOpen(true)
+      // } else if (isSmallOrder) {
+      //   setSmallOrderAlertOpen(true)
+      // } else if (showSwapSecondConfirmation) {
+      //   setSecondConfirmationOpen(true)
+      // } else {
+      //
+      // }
     }
   }, [
     pageTradeLite.calcTradeParams,
@@ -1479,30 +1508,42 @@ export const useSwap = <
   )
 
   return {
-    isMarketInit,
-    toastOpen,
-    closeToast,
     tradeCalcData,
     tradeData,
+    handleSwapPanelEvent,
     onSwapClick,
     swapBtnI18nKey,
     swapBtnStatus,
-    handleSwapPanelEvent,
+    toastOpen,
+    closeToast,
     should15sRefresh,
-    refreshRef,
-    alertOpen,
-    confirmOpen,
-    swapFunc,
-    pageTradeLite,
-    isSwapLoading,
     market,
+    refreshRef,
+    isSwapLoading,
     toPro,
+    isMarketInit,
     isMobile,
-    priceAlertCallBack,
-    smallOrderAlertCallBack,
-    secondConfirmationCallBack,
-    smallOrderAlertOpen,
-    secondConfirmationOpen,
     setToastOpen,
+    showAlert,
+    pageTradeLite,
+    // setShowWhich,
+    // setConfirmed,
+    handleClose: () => {
+      setShowWhich((state) => ({ ...state, isShow: false }))
+      setConfirmed([false, false])
+      setIsSwapLoading(false)
+    },
+    handleConfirm: () => {
+      if (showAlert.step == 1 && confirmed[1] == false) {
+        setShowWhich(() => ({ step: 2, showWitch: ShowWitchAle3t1.SmallPrice, isShow: true }))
+      } else {
+        setShowWhich((state) => ({ ...state, isShow: false }))
+      }
+      setConfirmed((state) => {
+        state[showAlert.step - 1] = true
+        return state
+      })
+    },
+    priceLevel: getPriceImpactInfo(pageTradeLite.calcTradeParams, account.readyState),
   }
 }
