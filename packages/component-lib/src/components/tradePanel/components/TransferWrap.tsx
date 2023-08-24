@@ -100,7 +100,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
     assetsData: any[]
     handleConfirm: (index: number) => void
   }) => {
-  contact
   const inputBtnRef = React.useRef()
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
