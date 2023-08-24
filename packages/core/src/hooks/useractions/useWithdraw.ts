@@ -268,11 +268,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
             })
           } else {
+            updateWithdrawData({ ...withdrawValue, withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL})
+            checkFeeIsEnough({ requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, isRequiredAPI: true})
             setWithdrawTypes({
               [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
             })
-            updateWithdrawData({ ...withdrawValue, withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL})
-            checkFeeIsEnough({requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL})
           }
         })
 

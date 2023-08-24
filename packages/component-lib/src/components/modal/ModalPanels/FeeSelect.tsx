@@ -30,7 +30,7 @@ const OptionStyled = styled(Box)<{ checked?: boolean, disabled?: boolean }>`
   min-height: ${({ theme }) => theme.unit * 8}px;
   align-items: center;
   cursor: pointer;
-  opacity: ${({ disabled }) => disabled ? '0.8' : '1'};
+  opacity: ${({ disabled }) => disabled ? '0.5' : '1'};
 `
 
 type OptionType = { checked?: boolean; disabled?: boolean } & BoxProps
@@ -111,8 +111,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
           onClick={() => onClickFee()}
         >
           <Typography marginRight={0.5} color={'var(--color-text-second)'}>
-            {withdrawInfos &&
-              Object.keys(withdrawInfos.types).length > 1 &&
+            {withdrawInfos && withdrawInfos.types &&
               (withdrawInfos.type === OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
                 ? t('labelL2toL1Standard')
                 : withdrawInfos.type === OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL

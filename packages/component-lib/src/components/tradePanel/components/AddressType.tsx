@@ -255,6 +255,18 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
       label={<Typography color={'var(--color-text-third)'}>{t('labelL2toL1AddressType')}</Typography>}
     >
       <Box maxWidth={'480px'} padding={5}>
+        <IconButton
+          sx={{
+            position: 'absolute',
+            right: 20,
+            top: 20,
+          }}
+          size={'large'}
+          edge={'end'}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
         <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
           {t("labelL2toL1AddressType")}
         </Typography>
