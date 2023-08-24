@@ -19,7 +19,7 @@ import { css } from '@emotion/react'
 export const inputHeightLarge = () => css`
   height: var(--input-height-large);
   font-size: 1.5rem;
-      font-size:1.5rem;
+
   .MuiInputAdornment-root {
     svg {
       height: var(--btn-icon-size-large);
@@ -33,11 +33,11 @@ export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
 
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
-    ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+    ${({size}) => size?.toLowerCase() === 'large' && inputHeightLarge}
   }
 
   .MuiInputAdornment-root {
-    padding: 0 ${({ theme }) => theme.unit}px;
+    padding: 0 ${({theme}) => theme.unit}px;
   }
 
   label + & {
@@ -49,8 +49,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
     .MuiSelect-nativeInput + svg {
       position: absolute;
       right: 0.4rem;
-      right: ${({  size }) => size === 'large' ? 1 : 0.4}rem;
-      top: ${({ theme, size }) => size === 'large' ? 2 * theme.unit : theme.unit}px;
+      right: ${({size}) => size === 'large' ? 1 : 0.4}rem;
+      top: ${({theme, size}) => size === 'large' ? 2 * theme.unit : theme.unit}px;
       color: var(--color-text-secondary);
     }
 
@@ -62,7 +62,7 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   &:focus {
-    ${({ theme }) => theme.border.defaultFrame({ c_key: 'focus', d_R: 0.5 })};
+    ${({theme}) => theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
     outline: transparent;
   }
 `

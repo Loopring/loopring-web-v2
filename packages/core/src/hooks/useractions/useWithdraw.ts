@@ -407,7 +407,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           const response = await LoopringAPI.userAPI.submitOffchainWithdraw(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as any,
               chainId: chainId === 'unknown' ? 1 : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,

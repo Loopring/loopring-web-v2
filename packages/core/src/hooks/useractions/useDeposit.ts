@@ -44,6 +44,7 @@ import {
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
+import Web3 from 'web3';
 
 export const useDeposit = <
   T extends {
@@ -414,13 +415,13 @@ export const useDeposit = <
                 },
               })
 
-              nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
+              nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
 
               nonceInit = true
 
               try {
                 await sdk.approveMax(
-                  connectProvides.usedWeb3,
+                    connectProvides.usedWeb3 as any,
                   account.accAddress,
                   tokenInfo.address,
                   exchangeInfo?.depositAddress,
@@ -463,7 +464,7 @@ export const useDeposit = <
           })
 
           if (!nonceInit) {
-            nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
+            nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
           }
 
           myLog('before deposit:', chainId, connectName, isMetaMask)
@@ -473,7 +474,7 @@ export const useDeposit = <
           try {
             //response = { result: "xxxxxxxx" };
             response = await sdk.deposit(
-              connectProvides.usedWeb3,
+                connectProvides.usedWeb3 as any,
               account.accAddress,
               exchangeInfo.exchangeAddress,
               tokenInfo,

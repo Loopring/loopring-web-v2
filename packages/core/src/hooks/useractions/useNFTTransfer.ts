@@ -314,7 +314,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           const response = await LoopringAPI.userAPI?.submitNFTInTransfer(
             {
               request,
-              web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as any,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,

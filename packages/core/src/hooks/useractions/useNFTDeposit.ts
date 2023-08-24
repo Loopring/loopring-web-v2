@@ -237,7 +237,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
           isShow: true,
           step: AccountStep.NFTDeposit_WaitForAuth,
         })
-        let nonce = (await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)) ?? 0
+        let nonce = (await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)) ?? 0
         if (!nftDepositValue.isApproved) {
           setShowAccount({
             isShow: true,

@@ -19,7 +19,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       case AccountStatus.LOCKED:
       case AccountStatus.NO_ACCOUNT:
       case AccountStatus.ACTIVATED:
-        // const provideAddr = await connectProvides.usedWeb3?.eth.getAccounts();
         if (
           walletLayer1Status !== SagaStatus.PENDING
           // && provideAddr[0].toLowerCase() === account.accAddress.toLowerCase()
