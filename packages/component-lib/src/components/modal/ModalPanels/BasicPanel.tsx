@@ -48,9 +48,9 @@ export interface PanelProps {
   }
   to?: string
   btnInfo?: {
-    btnTxt: any
+    btnTxt?: any
     param?: { [key: string]: string }
-    callback: (e?: any) => void
+    callback?: (e?: any) => void
   }
   providerName?: ConnectProviders | 'unknown' | undefined
   link?: {

@@ -4,7 +4,7 @@ import { accountServices } from './accountServices'
 import { myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
-import { nextAccountStatus } from '../../stores/account/reducer'
+import { nextAccountSyncStatus } from '../../stores/account/reducer'
 
 export async function unlockAccount() {
   myLog('unlockAccount starts')
@@ -89,14 +89,14 @@ export async function unlockAccount() {
             ?.getHadUnknownCollection({
               accountId: account.accountId,
             })
-            .then((_response: boolean) => {
-              if ((_response as sdk.RESULT_INFO)?.code) {
+            .then((_response) => {
+              if ((_response as unknown as sdk.RESULT_INFO)?.code) {
                 // console.error(_response)
                 return
               }
               if (account && account.accountId === store.getState().account.accountId) {
                 store.dispatch(
-                  nextAccountStatus({
+                  nextAccountSyncStatus({
                     ...store.getState().account,
                     hasUnknownCollection: _response,
                   }),

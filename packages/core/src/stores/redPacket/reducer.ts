@@ -5,7 +5,7 @@ import { CoinKey, SagaStatus } from '@loopring-web/common-resources'
 const initialState: Required<RedPacketConfigStates> = {
   redPacketConfigs: {},
   __timer__: -1,
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
 }
 const redPacketConfigsSlice: Slice = createSlice({

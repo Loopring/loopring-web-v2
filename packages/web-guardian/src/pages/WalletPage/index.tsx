@@ -159,13 +159,22 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
     protectList,
     guardiansList,
     guardianConfig,
-    openHebao,
+    // openHebao,
     operationLogList,
-    setOpenHebao,
+    // setOpenHebao,
     loadData,
     loopringSmartContractWallet,
     nonLoopringSmartContractWallet,
   } = useHebaoMain()
+  const [openHebao, setOpenHebao] = React.useState<{
+    isShow: boolean
+    step: GuardianStep
+    options?: any
+  }>({
+    isShow: false,
+    step: GuardianStep.LockAccount_WaitForAuth,
+    options: undefined,
+  })
   const handleOpenModal = ({ step, options }: { step: GuardianStep; options?: any }) => {
     setOpenHebao((state) => {
       state.isShow = true
@@ -401,6 +410,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
         options={openHebao.options ?? {}}
         open={openHebao.isShow}
         step={openHebao.step}
+        setOpenHebao={setOpenHebao}
         handleOpenModal={handleOpenModal}
         onClose={() => {
           setOpenHebao({

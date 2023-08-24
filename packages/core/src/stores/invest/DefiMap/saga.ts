@@ -72,7 +72,9 @@ export function* getDefiSyncSaga({ payload }: PayloadAction<{ defiMap: DefiMap }
 export function* defiMapInitSaga() {
   yield all([takeLatest(getDefiMap, getPostsSaga)])
 }
+
 export function* defiMapSyncSaga() {
+  // @ts-ignore
   yield all([takeLatest(updateDefiSyncMap, getDefiSyncSaga)])
 }
 

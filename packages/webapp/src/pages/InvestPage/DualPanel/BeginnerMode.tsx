@@ -143,7 +143,7 @@ export const BeginnerMode: any = withTranslation('common')(
                             selected ? theme.colorBase.textPrimary : theme.colorBase.textSecondary
                           }
                         >
-                          {tokenName}
+                          {tokenName.toString()}
                         </Typography>
                         <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
                           {t('labelDualBeginnerAPR', {

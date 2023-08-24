@@ -5,7 +5,7 @@ import { CollectionMeta, SagaStatus } from '@loopring-web/common-resources'
 const initialState: WalletL2NFTCollectionStates<CollectionMeta> = {
   walletL2NFTCollection: [],
   total: 0,
-  status: 'DONE',
+  status: SagaStatus.DONE,
   errorMessage: null,
   page: -1,
 }

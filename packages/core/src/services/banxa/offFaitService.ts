@@ -145,6 +145,7 @@ export const offFaitService = {
           : {}),
         ...(order?.account_reference ? { account_reference: order?.account_reference } : {}),
       }
+      myLog('banxa orderId', order.id)
       if (
         order.status === 'waitingPayment' ||
         order.status === 'pendingPayment' ||

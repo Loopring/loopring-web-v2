@@ -22,7 +22,7 @@ export async function activateAccount({
 }): Promise<EddsaKey> {
   // let result: ActionResult =;
   const system = store.getState().system
-  let eddsaKey = undefined //isReset ?  //: account.eddsaKey;
+  let eddsaKey: any = undefined //isReset ?  //: account.eddsaKey;
   const { tokenMap } = store.getState().tokenMap
   // const {} = store.getState().account;
   const {

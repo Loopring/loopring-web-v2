@@ -25,6 +25,7 @@ import {
   SoursURL,
   TokenType,
   UIERROR_CODE,
+  UpColor,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import { useAmmMap, useSystem, useTicker, useTokenMap, useUserRewards } from '../../../stores'
@@ -119,7 +120,7 @@ export const ChartAndInfoPanel = ({
 
   return (
     <BoxStyle
-      custom={{ chg: upColor as Uppercase<any> }}
+      custom={{ chg: upColor as UpColor }}
       flex={1}
       marginTop={3}
       display={'flex'}

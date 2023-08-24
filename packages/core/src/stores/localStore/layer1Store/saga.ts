@@ -55,6 +55,7 @@ export function* getPostsSaga({ payload }: PayloadAction<{ chainId: ChainId }>) 
 }
 
 function* Layer1Saga() {
+  // @ts-ignore
   yield all([takeLatest(circleUpdateLayer1ActionHistory, getPostsSaga)])
 }
 

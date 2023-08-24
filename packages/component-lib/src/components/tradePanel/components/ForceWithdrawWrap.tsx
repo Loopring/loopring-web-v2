@@ -221,7 +221,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             error={
               realAddr !== '' &&
               isNotAvailableAddress &&
-              (walletMap != {} || walletMap !== undefined)
+              (walletMap !== undefined || Reflect.ownKeys(walletMap ?? {})?.length > 0)
             }
             placeholder={t('labelPleaseForceWithdrawAddress')}
             onChange={(event) => handleOnAddressChange(event?.target?.value)}

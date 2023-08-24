@@ -856,16 +856,16 @@ export const useBtradeSwap = <
 
         let input: any = isAtoB ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue
         input = input === undefined || isNaN(Number(input)) ? 0 : Number(input)
-        let totalFee = undefined
+        let totalFee: any = undefined
         let stob: string | undefined = undefined
         let btos: string | undefined = undefined
-        let minimumReceived
+        let minimumReceived: any
         let minimumConverted: string | undefined = undefined
-        let sellMinAmtInfo = undefined
-        let sellMaxAmtInfo = undefined
-        let sellMaxL2AmtInfo = undefined
-        let totalFeeRaw = undefined
-        let totalQuote = undefined
+        let sellMinAmtInfo: any = undefined
+        let sellMaxAmtInfo: any = undefined
+        let sellMaxL2AmtInfo: any = undefined
+        let totalFeeRaw: any = undefined
+        let totalQuote: any = undefined
         let poolToVol: any = undefined
         const info: sdk.BTRADE_MARKET = marketMap[market] as sdk.BTRADE_MARKET
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS
