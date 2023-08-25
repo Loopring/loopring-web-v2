@@ -5,35 +5,54 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton, InputAdornment,
+  IconButton,
+  InputAdornment,
   Typography,
 } from '@mui/material'
 import {
   AddressError,
-  CloseIcon, EXCHANGE_TYPE,
-  LoadingIcon, myLog, NetworkMap,
-  TradeBtnStatus, WALLET_TYPE
+  CloseIcon,
+  EXCHANGE_TYPE,
+  LoadingIcon,
+  myLog,
+  NetworkMap,
+  TradeBtnStatus,
+  WALLET_TYPE,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import {
+  addressToExWalletMapFn,
   ContactType,
-  exWalletToAddressMapFn, LoopringAPI, store,
+  exWalletToAddressMapFn,
+  LoopringAPI,
+  store,
   useAddressCheck,
   useBtnStatus,
-  useContacts
-} from '@loopring-web/core';
-import { FullAddressType, TextField, Button, TOASTOPEN, ToastType, useSettings } from '@loopring-web/component-lib';
-import * as sdk from '@loopring-web/loopring-sdk';
+  useContacts,
+} from '@loopring-web/core'
+import {
+  FullAddressType,
+  TextField,
+  Button,
+  TOASTOPEN,
+  ToastType,
+  useSettings,
+} from '@loopring-web/component-lib'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 type EditItem = {
   item: ContactType
 }
-export const useContactAdd = ({isEdit, setToast, onClose}: {
+export const useContactAdd = ({
+  isEdit,
+  setToast,
+  onClose,
+}: {
   isEdit?: false | EditItem
-  onClose: () => void,
+  onClose: () => void
   setToast: (props: TOASTOPEN) => void
 }) => {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const {
     address,
     realAddr,
@@ -45,23 +64,24 @@ export const useContactAdd = ({isEdit, setToast, onClose}: {
     loopringSmartWalletVersion,
   } = useAddressCheck(false)
   // const [addLoading, setAddLoading] = React.useState(false)
-  const {contacts, status: contactStatus, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
+  const {
+    contacts,
+    status: contactStatus,
+    errorMessage: contactsErrorMessage,
+    updateContacts,
+  } = useContacts()
   const [addName, setAddName] = React.useState('')
   const [toastStatus, setToastStatus] = React.useState('Succuss' as 'Succuss' | 'Error' | 'Init')
-  const {btnStatus, enableBtn, disableBtn, setLoadingBtn} = useBtnStatus()
+  const { btnStatus, enableBtn, disableBtn, setLoadingBtn } = useBtnStatus()
   const [selectedAddressType, setSelectedAddressType] = React.useState<
-      WALLET_TYPE | EXCHANGE_TYPE | undefined
+    WALLET_TYPE | EXCHANGE_TYPE | undefined
   >(undefined)
   const allowToClickIsSure = React.useMemo(() => {
     return isAddressCheckLoading || addrStatus === AddressError.InvalidAddr || !realAddr
   }, [addrStatus, isAddressCheckLoading, realAddr])
   const mapContactAddressType = (): sdk.AddressType | undefined => {
     if (addressTypeISCFAddress) {
-      createContact = {
-        ...createContact,
-        // @ts-ignore
-        addressType: sdk.AddressType.LOOPRING_HEBAO_CF
-      }
+      return sdk.AddressType.LOOPRING_HEBAO_CF
     } else if (loopringSmartWalletVersion?.isLoopringSmartWallet) {
       const map: [string, sdk.AddressType][] = [
         ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
@@ -69,10 +89,8 @@ export const useContactAdd = ({isEdit, setToast, onClose}: {
         ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
         ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
       ]
-      const item = map.find(
-          (x) => x[0] === loopringSmartWalletVersion?.version
-      )
-      return item ? item[1] : ''
+      const item = map.find((x) => x[0] === loopringSmartWalletVersion?.version)
+      return item ? item[1] : undefined
     } else if (isContractAddress) {
       return sdk.AddressType.CONTRACT
     } else if (selectedAddressType) {
@@ -80,13 +98,13 @@ export const useContactAdd = ({isEdit, setToast, onClose}: {
     }
   }
   const autoSetWalletType = () => {
-    if (realAddr) {
+    if (realAddr && selectedAddressType == undefined) {
       const addressType = mapContactAddressType()
       if (addressType) {
-        const type = exWalletToAddressMapFn(addressType)
+        const type = addressToExWalletMapFn(addressType)
         onChangeAddressType(type)
       } else {
-        onChangeAddressType(undefined);
+        onChangeAddressType(undefined)
       }
     }
   }
@@ -96,32 +114,28 @@ export const useContactAdd = ({isEdit, setToast, onClose}: {
       return
     }
     disableBtn()
-  }, [
-    addrStatus,
-    realAddr,
-    addName,
-  ])
+  }, [addrStatus, realAddr, addName])
   React.useEffect(() => {
     if (realAddr) {
       autoSetWalletType()
     }
     disableBtn()
-  }, [
-    realAddr,
-  ])
+  }, [realAddr])
   React.useEffect(() => {
     myLog('item?.contactAddress', (isEdit as EditItem)?.item)
     if ((isEdit as EditItem)?.item?.contactAddress) {
       onChangeAddress((isEdit as EditItem)?.item.contactAddress)
       onChangeName((isEdit as EditItem)?.item.contactName)
-      onChangeAddressType((isEdit as EditItem)?.item?.addressType ?? undefined)
+      onChangeAddressType(
+        addressToExWalletMapFn((isEdit as EditItem)?.item?.addressType ?? undefined),
+      )
     }
   }, [(isEdit as EditItem)?.item?.contactAddress])
   const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet
-      ? WALLET_TYPE.Loopring
-      : isContractAddress
-          ? WALLET_TYPE.OtherSmart
-          : WALLET_TYPE.EOA
+    ? WALLET_TYPE.Loopring
+    : isContractAddress
+    ? WALLET_TYPE.OtherSmart
+    : WALLET_TYPE.EOA
   const onChangeAddress = React.useCallback((input: string) => {
     setAddress(input)
   }, [])
@@ -141,91 +155,81 @@ export const useContactAdd = ({isEdit, setToast, onClose}: {
     onClose()
   }
 
-  const {defaultNetwork} = useSettings()
+  const { defaultNetwork } = useSettings()
   // {contactAddress: address, contactName: name, addressType}: ContactType
 
-  const onSubmit = React.useCallback(
-      async () => {
-        setLoadingBtn()
-        const {accountId, apiKey, isContractAddress, isCFAddress} = store.getState().account
-        let createContact: sdk.CreateContactRequest | sdk.UpdateContactRequest = {
-          contactAddress: realAddr,
-          accountId,
-          contactName: addName,
-          isHebao: !!(isContractAddress || isCFAddress),
-          network: NetworkMap[defaultNetwork].walletType,
-        } as any
-        createContact = {
-          ...createContact,
-          // @ts-ignore
-          addressType: mapContactAddressType()
-        }
-
-        createContact = {
-          ...createContact,
-          // @ts-ignore
-          addressType: found,
-        }
-        if (isEdit) {
-          try {
-            const response = await LoopringAPI.contactAPI?.updateContact(
-                createContact,
-                apiKey,
-            )
-            if (
-                response &&
-                ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
-            ) {
-              throw {code: ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)}
-            }
-            setToast({
-              open: true,
-              type: ToastType.success,
-              content: t('labelContactsEditSuccess'),
-            })
-            restData()
-          } catch (error) {
-            //TODO: error code
-            setToast({
-              open: true,
-              type: ToastType.error,
-              content: t('labelContactsEditSuccess'),
-            })
-          }
-        } else {
-          try {
-            const response = await LoopringAPI.contactAPI?.createContact(
-                createContact as any,
-                apiKey,
-            )
-            if (
-                response &&
-                ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
-            ) {
-              throw {code: ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)}
-            }
-            // setLoading(false)
-            setToast({
-              open: true,
-              type: ToastType.success,
-              content: t('labelContactsAddSuccess'),
-            })
-            restData()
-          } catch (error) {
-            //TODO: error code
-            setToast({
-              open: true,
-              type: ToastType.error,
-              content: t('labelContactsContactExisted'),
-            })
-
+  const onSubmit = React.useCallback(async () => {
+    setLoadingBtn()
+    const { accountId, apiKey, isContractAddress, isCFAddress } = store.getState().account
+    let createContact: sdk.CreateContactRequest | sdk.UpdateContactRequest = {
+      contactAddress: realAddr,
+      accountId,
+      contactName: addName,
+      isHebao: !!(isContractAddress || isCFAddress),
+      network: NetworkMap[defaultNetwork].walletType,
+    } as any
+    createContact = {
+      ...createContact,
+      addressType: mapContactAddressType(),
+    }
+    if (isEdit) {
+      try {
+        const response = await LoopringAPI.contactAPI?.updateContact(createContact, apiKey)
+        if (
+          response &&
+          ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+        ) {
+          throw {
+            code: (response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message,
           }
         }
-      },
-      [contacts, loopringSmartWalletVersion],
-  )
+        setToast({
+          open: true,
+          type: ToastType.success,
+          content: t('labelContactsEditSuccess'),
+        })
+        restData()
+      } catch (error) {
+        //TODO: error code
+        setToast({
+          open: true,
+          type: ToastType.error,
+          content: t('labelContactsEditSuccess'),
+        })
+        enableBtn()
+      }
+    } else {
+      try {
+        const response = await LoopringAPI.contactAPI?.createContact(createContact as any, apiKey)
+        if (
+          response &&
+          ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+        ) {
+          throw {
+            code: (response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message,
+          }
+        }
+        // setLoading(false)
+        setToast({
+          open: true,
+          type: ToastType.success,
+          content: t('labelContactsAddSuccess'),
+        })
+        restData()
+      } catch (error) {
+        //TODO: error code
+        setToast({
+          open: true,
+          type: ToastType.error,
+          content: t('labelContactsContactExisted'),
+        })
+        enableBtn()
+      }
+    }
+  }, [contacts, loopringSmartWalletVersion, addName, realAddr])
 
   return {
+    restData,
     selectedAddressType,
     detectedWalletType,
     addressDefault: address,
@@ -245,29 +249,31 @@ export const useContactAdd = ({isEdit, setToast, onClose}: {
   }
 }
 
-
 interface AddDialogProps {
   addOpen: boolean
   setAddOpen: (open: boolean) => void
   // submitContact: () => void
   // loading: boolean
-  isEdit?: false | {
-    item: ContactType
-  }
-  onClose: () => void,
+  isEdit?:
+    | false
+    | {
+        item: ContactType
+      }
+  onClose: () => void
   setToast: (props: TOASTOPEN) => void
 }
 
 export const EditContact: React.FC<AddDialogProps> = ({
-                                                        setAddOpen,
-                                                        addOpen,
-                                                        // submitContact,
-                                                        // loading,
-                                                        isEdit = false,
-                                                        onClose,
-                                                        setToast,
-                                                      }) => {
+  setAddOpen,
+  addOpen,
+  // submitContact,
+  // loading,
+  isEdit = false,
+  onClose,
+  setToast,
+}) => {
   const {
+    restData,
     selectedAddressType,
     detectedWalletType,
     addressDefault,
@@ -281,24 +287,22 @@ export const EditContact: React.FC<AddDialogProps> = ({
     onChangeAddressType,
     btnStatus,
     addrStatus,
-    submitContact,// ,
-  } = useContactAdd({isEdit, onClose, setToast})
-  const {t} = useTranslation()
+    submitContact, // ,
+  } = useContactAdd({ isEdit, onClose, setToast })
+  const { t } = useTranslation()
   const getDisabled = React.useMemo(() => {
     return btnStatus === TradeBtnStatus.DISABLED
   }, [btnStatus])
 
   const isInvalidAddressOrENS =
-      !isAddressCheckLoading && addressDefault && addrStatus === AddressError.InvalidAddr
+    !isAddressCheckLoading && addressDefault && addrStatus === AddressError.InvalidAddr
   return (
     <div>
       <Dialog
         maxWidth={'lg'}
         open={addOpen}
         onClose={() => {
-          setAddOpen(false)
-          onChangeAddress('')
-          onChangeName('')
+          restData()
         }}
       >
         <DialogTitle>
@@ -306,7 +310,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
             {isEdit ? t('labelContactsEditContact') : t('labelContactsAddContact')}
           </Typography>
           <IconButton
-              size={'large'}
+            size={'large'}
             sx={{
               position: 'absolute',
               right: 8,
@@ -314,86 +318,84 @@ export const EditContact: React.FC<AddDialogProps> = ({
             }}
             color={'inherit'}
             onClick={() => {
-              setAddOpen(false)
-              onChangeAddress('')
-              onChangeName('')
+              restData()
             }}
           >
-            <CloseIcon/>
+            <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent style={{width: 'var(--modal-width)'}}>
+        <DialogContent style={{ width: 'var(--modal-width)' }}>
           <Box marginTop={4}>
             <Typography marginBottom={0.5} color={'var(--color-text-third)'}>
               {t('labelContactsAddressTitle')}
             </Typography>
             <>
               <TextField
-                  size={'large'}
-                  className={'text-address'}
-                  value={addressDefault}
-                  disabled={!!isEdit}
-                  error={!!(isInvalidAddressOrENS)}
-                  placeholder={t('labelPleaseInputWalletAddress')}
-                  onChange={(event) => handleOnAddressChange(event?.target?.value)}
-                  fullWidth={true}
-                  InputProps={{
-                    style: {
-                      paddingRight: '0',
-                    },
-                    endAdornment: (
-                        <InputAdornment
-                            style={{
-                              cursor: 'pointer',
-                              paddingRight: '.5em',
-                            }}
-                            position='end'
-                        >
-                          {addressDefault !== '' ? (
-                              isAddressCheckLoading ? (
-                                  <LoadingIcon width={24}/>
-                              ) : (
-                                  <IconButton
-                                      color={'inherit'}
-                                      aria-label='Clear'
-                                      onClick={() => handleOnAddressChange('')}
-                                  >
-                                    <CloseIcon/>
-                                  </IconButton>
-                              )
-                          ) : (
-                              ''
-                          )}
-                        </InputAdornment>
-                    ),
-                  }}
+                size={'large'}
+                className={'text-address'}
+                value={addressDefault}
+                disabled={!!isEdit}
+                error={!!isInvalidAddressOrENS}
+                placeholder={t('labelPleaseInputWalletAddress')}
+                onChange={(event) => handleOnAddressChange(event?.target?.value)}
+                fullWidth={true}
+                InputProps={{
+                  style: {
+                    paddingRight: '0',
+                  },
+                  endAdornment: (
+                    <InputAdornment
+                      style={{
+                        cursor: 'pointer',
+                        paddingRight: '.5em',
+                      }}
+                      position='end'
+                    >
+                      {addressDefault !== '' ? (
+                        isAddressCheckLoading ? (
+                          <LoadingIcon width={24} />
+                        ) : (
+                          <IconButton
+                            color={'inherit'}
+                            aria-label='Clear'
+                            onClick={() => handleOnAddressChange('')}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        )
+                      ) : (
+                        ''
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
               />
             </>
             <Box marginLeft={1 / 2}>
               {isInvalidAddressOrENS ? (
-                  <Typography
-                      color={'var(--color-error)'}
-                      variant={'body2'}
-                      marginTop={1 / 4}
-                      alignSelf={'stretch'}
-                      position={'relative'}
-                  >
-                    {t('labelInvalidAddress')}
+                <Typography
+                  color={'var(--color-error)'}
+                  variant={'body2'}
+                  marginTop={1 / 4}
+                  alignSelf={'stretch'}
+                  position={'relative'}
+                >
+                  {t('labelInvalidAddress')}
                 </Typography>
               ) : (
-                  <>
-                    {addressDefault && realAddr && !isAddressCheckLoading && (
-                        <Typography
-                            color={'var(--color-text-primary)'}
-                            variant={'body2'}
-                            marginTop={1 / 4}
-                            whiteSpace={'pre-line'}
-                            style={{wordBreak: 'break-all'}}
-                        >
-                          {realAddr.toLowerCase() === addressDefault.toLowerCase() ? '' : realAddr}
-                        </Typography>
-                    )}
-                  </>
+                <>
+                  {addressDefault && realAddr && !isAddressCheckLoading && (
+                    <Typography
+                      color={'var(--color-text-primary)'}
+                      variant={'body2'}
+                      marginTop={1 / 4}
+                      whiteSpace={'pre-line'}
+                      style={{ wordBreak: 'break-all' }}
+                    >
+                      {realAddr.toLowerCase() === addressDefault.toLowerCase() ? '' : realAddr}
+                    </Typography>
+                  )}
+                </>
               )}
             </Box>
           </Box>
@@ -402,46 +404,46 @@ export const EditContact: React.FC<AddDialogProps> = ({
               {t('labelContactsNameTitle')}
             </Typography>
             <TextField
-                size={'large'}
-                className={'text-address'}
+              size={'large'}
+              className={'text-address'}
               value={addName}
-                error={!!(isInvalidAddressOrENS)}
-                placeholder={t('labelContactsNameDes')}
+              error={!!isInvalidAddressOrENS}
+              placeholder={t('labelContactsNameDes')}
               onChange={(e) => {
                 onChangeName(e.target.value)
               }}
-                fullWidth={true}
-                InputProps={{
-                  style: {
-                    paddingRight: '0',
-                  },
-                  endAdornment: (
-                      <InputAdornment
-                          style={{
-                            cursor: 'pointer',
-                            paddingRight: '.5em',
-                            visibility: addName ? 'visible' : 'hidden'
-                          }}
-                          position='end'
-                      >
-                        <IconButton
-                            color={'inherit'}
-                            aria-label='Clear'
-                            onClick={() => onChangeName('')}
-                        >
-                          <CloseIcon cursor={'pointer'}/>
-                        </IconButton>
-                      </InputAdornment>
-                  )
-                }}
+              fullWidth={true}
+              InputProps={{
+                style: {
+                  paddingRight: '0',
+                },
+                endAdornment: (
+                  <InputAdornment
+                    style={{
+                      cursor: 'pointer',
+                      paddingRight: '.5em',
+                      visibility: addName ? 'visible' : 'hidden',
+                    }}
+                    position='end'
+                  >
+                    <IconButton
+                      color={'inherit'}
+                      aria-label='Clear'
+                      onClick={() => onChangeName('')}
+                    >
+                      <CloseIcon cursor={'pointer'} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Box>
           <Box marginTop={3}>
             <FullAddressType
-                detectedWalletType={detectedWalletType}
-                selectedValue={selectedAddressType}
-                handleSelected={onChangeAddressType}
-                disabled={allowToClickIsSure}
+              detectedWalletType={detectedWalletType}
+              selectedValue={selectedAddressType}
+              handleSelected={onChangeAddressType}
+              disabled={allowToClickIsSure}
             />
           </Box>
         </DialogContent>

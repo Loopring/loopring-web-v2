@@ -1,6 +1,12 @@
 import { Box, Button, IconButton, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { AddressTypeTag, InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
+import {
+  AddressTypeTag,
+  InputSearch,
+  TablePagination,
+  Toast,
+  ToastType,
+} from '@loopring-web/component-lib'
 import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
 import { EditContact } from './add'
 import { Delete } from './delete'
@@ -13,8 +19,8 @@ import React from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
 import { InitialNameAvatar } from '@loopring-web/component-lib/src/components/tradePanel/components/ContactSelection'
-import * as sdk from '@loopring-web/loopring-sdk';
-import { ContactType } from '@loopring-web/core';
+import * as sdk from '@loopring-web/loopring-sdk'
+import { ContactType } from '@loopring-web/core'
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
@@ -66,8 +72,8 @@ export const ContractPanel = () => {
     onClickSend,
     onCloseSend,
     sendInfo,
-      closeToast,
-      setToast,
+    closeToast,
+    setToast,
     pagination,
     onPageChange,
     showPagination,
@@ -77,7 +83,9 @@ export const ContractPanel = () => {
 
   const noContact = (
     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-        <Typography compontent={'span'} color={'var(--color-text-third)'}>{t('labelContactsNoContact')}</Typography>
+      <Typography variant={'body1'} compontent={'span'} color={'var(--color-text-third)'}>
+        {t('labelContactsNoContact')}
+      </Typography>
     </Box>
   )
 
@@ -89,52 +97,63 @@ export const ContractPanel = () => {
             // const {  contactName, addressType,contactAddress,...rest } =
             return (
               <Box
-                  key={data.contactAddress}
+                key={data.contactAddress}
                 paddingY={2}
-                  display={data.addressType === AddressType.OFFICIAL ? 'none' : 'flex'}
+                display={data.addressType === AddressType.OFFICIAL ? 'none' : 'flex'}
                 justifyContent={'space-between'}
               >
                 <Box display={'flex'}>
-                  <InitialNameAvatar name={data.contactName}/>
-                    <Typography component={'p'} marginLeft={1}>
-                        <Typography display={'inline-flex'} alignItems={'center'} component={'span'}
-                                    paddingRight={1}>
-                            <Typography display={'inline-flex'} paddingRight={1} component={'span'}>
-                                {data.contactName}
-                            </Typography>
-                      {data.addressType && <AddressTypeTag addressType={data.addressType}/>}
-                            <EditIcon
-                                sx={{
-                                    paddingLeft: 1
-                                }}
-                                fontSize={'large'}
-                                onClick={() => {
-                        setAddOpen(true)
-                        setSelectAddress(data as ContactType)
-                      }
-                      }/>
+                  <InitialNameAvatar name={data.contactName} />
+                  <Typography
+                    component={'p'}
+                    marginLeft={1}
+                    display={'flex'}
+                    flexDirection={'column'}
+                  >
+                    <Typography
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      component={'span'}
+                      paddingRight={1}
+                    >
+                      <Typography display={'inline-flex'} paddingRight={1} component={'span'}>
+                        {data.contactName}
+                      </Typography>
+                      {data.addressType && <AddressTypeTag addressType={data.addressType} />}
+                      <EditIcon
+                        sx={{
+                          paddingLeft: 1,
+                        }}
+                        fontSize={'large'}
+                        onClick={() => {
+                          setAddOpen(true)
+                          setSelectAddress(data as ContactType)
+                        }}
+                      />
                     </Typography>
-                        <Typography compontent={'span'}>
+                    <Typography component={'span'}>
                       {data.contactAddress}
                       <IconButton
                         onClick={() => {
                           navigator.clipboard.writeText(data.contactAddress)
-                            setToast({
+                          setToast({
                             open: true,
-                                type: ToastType.success,
-                                content: t('labelContactsCopySuccess')
+                            type: ToastType.success,
+                            content: t('labelContactsCopySuccess'),
                           })
                         }}
                       >
-                          <CopyIcon/>
+                        <CopyIcon />
                       </IconButton>
                     </Typography>
-                    </Typography>
+                  </Typography>
                 </Box>
                 <Box display={'flex'}>
                   <Box marginRight={2}>
                     <Button
-                        onClick={() => onClickSend(data.contactAddress, data.contactName, data.addressType)}
+                      onClick={() =>
+                        onClickSend(data.contactAddress, data.contactName, data.addressType)
+                      }
                       variant={'contained'}
                       size={'small'}
                     >
@@ -146,7 +165,9 @@ export const ContractPanel = () => {
                       variant={'outlined'}
                       size={'medium'}
                       onClick={() => {
-                        history.push('/layer2/contact/transactions?contactAddress=' + data.contactAddress)
+                        history.push(
+                          '/layer2/contact/transactions?contactAddress=' + data.contactAddress,
+                        )
                       }}
                     >
                       {t('labelContactsTransactions')}
@@ -177,33 +198,32 @@ export const ContractPanel = () => {
     </>
   )
 
-//     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-//     <img
-//   className='loading-gif'
-//   alt={'loading'}
-//   width='36'
-//   src={`${SoursURL}images/loading-line.gif`}
-//   />
-// </Box>
+  //     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+  //     <img
+  //   className='loading-gif'
+  //   alt={'loading'}
+  //   width='36'
+  //   src={`${SoursURL}images/loading-line.gif`}
+  //   />
+  // </Box>
   return (
     <ContactPageStyle className={'MuiPaper-elevation2'} paddingX={4} paddingY={3}>
-
       <Toast
-          alertText={toastInfo.content ?? ''}
-          severity={toastInfo?.type}
+        alertText={toastInfo.content ?? ''}
+        severity={toastInfo?.type}
         open={toastInfo.open}
         autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-          // onClose={closeToastL}
+        onClose={closeToast}
+        // onClose={closeToastL}
       />
       <EditContact
-          // loading={addLoading}
-        isEdit={selectAddress ? {item: selectAddress} : false}
+        // loading={addLoading}
+        isEdit={selectAddress ? { item: selectAddress } : false}
         addOpen={addOpen}
         setAddOpen={setAddOpen}
         onClose={() => {
-            setSelectAddress(undefined)
-            setAddOpen(false)
+          setSelectAddress(undefined)
+          setAddOpen(false)
         }}
         setToast={setToast}
       />
@@ -230,7 +250,7 @@ export const ContractPanel = () => {
               variant={'contained'}
               size={'small'}
               onClick={() => {
-                  setSelectAddress(undefined)
+                setSelectAddress(undefined)
                 setAddOpen(true)
               }}
             >
@@ -241,9 +261,7 @@ export const ContractPanel = () => {
       </Box>
       <Box className='table-divide'>
         <Line />
-        <Box>
-            {!contacts || contacts.length === 0 ? noContact : normalView}
-        </Box>
+        <Box>{!contacts || contacts.length === 0 ? noContact : normalView}</Box>
       </Box>
     </ContactPageStyle>
   )
