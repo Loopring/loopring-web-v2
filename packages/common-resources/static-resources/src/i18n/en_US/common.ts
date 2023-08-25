@@ -1842,7 +1842,7 @@ export default {
   labelHighPriceImpacTitle: 'High Price Impact Detected',
   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelEOA: "EOA",
-  labelLoopring: "Loopring",
+  labelLoopringWallet: "Loopring",
   labelOtherSmart: "Other Smart",
   labelBinance: "Binance",
   labelHuobi: "Huobi",

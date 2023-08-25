@@ -1,5 +1,8 @@
 import { SvgIcon, Chip } from '@mui/material'
 import * as sdk from '@loopring-web/loopring-sdk';
+import { useTranslation } from 'react-i18next';
+import styled from '@emotion/styled';
+import { fontDefault } from '@loopring-web/common-resources';
 
 export const NewTagIcon = () => (
   <SvgIcon
@@ -36,26 +39,35 @@ export const NewTagIcon = () => (
 )
 
 
+export const ChipStyle = styled(Chip)`
+  font-size: ${fontDefault.body2};
+  border-radius: ${({theme}) => `${theme.unit}`}px;
+  height: ${({theme}) => `${theme.unit * 5 / 2}`}px;;
+`
 export const AddressTypeTag = ({addressType}: { addressType: sdk.AddressType }) => {
+  const {t} = useTranslation('common')
   switch (addressType) {
     case sdk.AddressType.EOA:
-      return <Chip label={'labelEOA'} size="small" sx={
+      return <ChipStyle label={'labelEOA'} size="small" sx={
         {backgroundColor: "var(--color-EOA-Bg)", color: "var(--color-EOA-Text)"}}/>
     case sdk.AddressType.LOOPRING_HEBAO_CF:
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6 :
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0 :
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0 :
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0 :
-      return <Chip label={'labelLoopring'} size="small" sx={
+      return <ChipStyle label={t('labelLoopringWallet')} size="small" sx={
         {backgroundColor: "var(--color-Loopring-Bg)", color: "var(--color-Loopring-Text)"}}/>
+    case sdk.AddressType.CONTRACT :
+      return <ChipStyle label={t('labelOtherSmart')} size="small" sx={
+        {backgroundColor: "var(--color-OtherSmart-Bg)", color: "var(--color-OtherSmart-Text)"}}/>
     case sdk.AddressType.EXCHANGE_BINANCE:
-      return <Chip label={'labelEOA'} size="small" sx={
+      return <ChipStyle label={t('labelBinance')} size="small" sx={
         {backgroundColor: "var(--color-Binance-Bg)", color: "var(--color-Binance-Text)"}}/>
     case sdk.AddressType.EXCHANGE_HUOBI:
-      return <Chip label={'labelEOA'} size="small" sx={
+      return <ChipStyle label={t('labelHuobi')} size="small" sx={
         {backgroundColor: "var(--color-Huobi-Bg)", color: "var(--color-Huobi-Text)"}}/>
     case sdk.AddressType.EXCHANGE_OTHER:
-      return <Chip label={'labelEOA'} size="small" sx={
+      return <ChipStyle label={t('labelOtherExchange')} size="small" sx={
         {backgroundColor: "var(--color-OtherExchange-Bg)", color: "var(--color-OtherExchange-Text)"}}/>
     default :
       return <></>

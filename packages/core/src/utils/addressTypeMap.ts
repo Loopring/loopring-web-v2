@@ -13,6 +13,7 @@ const addressToExWalletMap: [AddressType, EXCHANGE_TYPE | WALLET_TYPE][] = [
   [AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0, WALLET_TYPE.Loopring],
   [AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0, WALLET_TYPE.Loopring],
   [AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0, WALLET_TYPE.Loopring],
+  [AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0, WALLET_TYPE.Loopring],
   [AddressType.CONTRACT, WALLET_TYPE.OtherSmart],
 ]
 export const addressToExWalletMapFn = (a: AddressType) => {

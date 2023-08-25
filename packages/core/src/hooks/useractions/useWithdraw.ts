@@ -18,7 +18,7 @@ import {
   TRADE_TYPE,
   UIERROR_CODE,
   WALLET_TYPE,
-  WalletMap,
+    WalletMap, WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
 
@@ -78,10 +78,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   >(undefined)
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] = React.useState<boolean>(false)
-  // const _updateWithdrawData = _.debounce((data) => {
-  //   const _withdrawValue = store.getState()._router_modalData.withdrawValue
-  //   updateWithdrawData({ ...data, ..._withdrawValue })
-  // }, globalSetup.wait)
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -312,7 +308,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           tradeValue: undefined,
           balance: 0,
           address: info?.isToMyself ? account.accAddress : '*',
-          withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
         }
         for (let key in keys) {
           const keyVal = keys[key]
@@ -741,11 +737,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           _checkFeeIsEnough()
         } else {
           updateWithdrawData({
-            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+              fee: undefined,
+              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
             belong: undefined,
             tradeValue: undefined,
             balance: undefined,
-            address: '*',
+              address: '*'
           })
         }
       }

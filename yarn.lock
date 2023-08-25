@@ -3470,10 +3470,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@loopring-web/loopring-sdk@3.5.20":
-  version "3.5.20"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.5.20.tgz#e574d849ad69a55afa37ae10f3f6f9b54073d2a7"
-  integrity sha512-CEi7wFur5fIQI9yq+oLQoA/I+VuiAwnWQ3FtU32QSaMkvAnpaGcFjtWNmJ3/QE7voylEC+ZZV+N8SJtvMlk3Bg==
+"@loopring-web/loopring-sdk@3.5.22":
+  version "3.5.22"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.5.22.tgz#56d22bd3f725baa5f37d8642b65ac891292eaf09"
+  integrity sha512-FgXO/u23Ioo3WnAKWdbiRNkywNRb67VFayi5N00rMR6zLYfKbl+HkiQzBq1ZhMcRYDuktCKUGg+g6QSOzUa7gA==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -3484,7 +3484,7 @@
     blake2b "^2.1.3"
     bn.js "^5.2.1"
     buffer "^6.0.3"
-    crypto-js "^4.0.0"
+    crypto-js "4.1.1"
     eth-sig-util "2.3.0"
     ethereumjs-abi "0.6.8"
     ethereumjs-util "5.2.0"
@@ -11551,7 +11551,7 @@ crypto-browserify@^3.11.0, crypto-browserify@^3.12.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-crypto-js@^4.0.0, crypto-js@^4.1.1:
+crypto-js@4.1.1, crypto-js@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
   integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==

@@ -1,8 +1,8 @@
-import { Box, Button, IconButton, OutlinedInput, Typography } from '@mui/material'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { AddressTypeTag, InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
 import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { Add, EditContact } from './add'
+import { EditContact } from './add'
 import { Delete } from './delete'
 import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
@@ -51,91 +51,36 @@ export const ContractPanel = () => {
   const {
     setAddOpen,
     addOpen,
-    addLoading,
-    submitAddContact,
-    // add,
+
     contacts,
     searchValue,
     onChangeSearch,
-    // onClickEditing,
     onClickDelete,
-    onEdit,
     selectAddress,
     setSelectAddress,
     toastInfo,
-
     deleteInfo,
     onCloseDelete,
-
     submitDeleteContact,
     deleteLoading,
     onClickSend,
     onCloseSend,
     sendInfo,
-    onCloseToast,
-    setToastInfo,
+      closeToast,
+      setToast,
     pagination,
     onPageChange,
-    loading,
     showPagination,
-    // onScroll
   } = useContact()
   const { t } = useTranslation()
-
-  let totastText = ''
-  if (toastInfo.customerText) {
-    totastText = toastInfo.customerText
-  } else if (toastInfo.isSuccess) {
-    switch (toastInfo.type) {
-      case 'Add':
-        totastText = t('labelContactsAddSuccess')
-        break
-      case 'Delete':
-        totastText = t('labelContactsDeleteSuccess')
-        break
-      case 'Edit':
-        totastText = t('labelContactsEditSuccess')
-        break
-      case 'Send':
-        totastText = t('labelContactsSendSuccess')
-        break
-      case 'Copy':
-        totastText = t('labelContactsCopySuccess')
-        break
-    }
-  } else {
-    switch (toastInfo.type) {
-      case 'Add':
-        totastText = t('labelContactsAddFailed')
-        break
-      case 'Delete':
-        totastText = t('labelContactsDeleteFailed')
-        break
-      case 'Edit':
-        totastText = t('labelContactsEditFailed')
-        break
-      case 'Send':
-        totastText = t('labelContactsSendFailed')
-        break
-    }
-  }
   const history = useHistory()
 
   const noContact = (
     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-      <Typography color={'var(--color-text-third)'}>{t('labelContactsNoContact')}</Typography>
+        <Typography compontent={'span'} color={'var(--color-text-third)'}>{t('labelContactsNoContact')}</Typography>
     </Box>
   )
-  const loadingView = (
-    <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-      <img
-        className='loading-gif'
-        alt={'loading'}
-        width='36'
-        src={`${SoursURL}images/loading-line.gif`}
-      />
-    </Box>
-  )
+
   const normalView = (
     <>
       <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={'scroll'}>
@@ -151,57 +96,40 @@ export const ContractPanel = () => {
               >
                 <Box display={'flex'}>
                   <InitialNameAvatar name={data.contactName}/>
-                  <Box marginLeft={1}>
-                    {/*{selectAddress && selectAddress?.contactAddress && selectAddress?.contactAddress.toLowerCase() === data?.contactAddress.toLowerCase() ? (*/}
-                    {/*  <OutlinedInput*/}
-                    {/*    size={'small'}*/}
-                    {/*    value={selectAddress.contactName}*/}
-                    {/*    onChange={(e) => {*/}
-                    {/*      setSelectAddress(state => {*/}
-                    {/*        return {*/}
-                    {/*          ...data,*/}
-                    {/*          contactName: e.target.value,*/}
-                    {/*        }*/}
-                    {/*      })*/}
-                    {/*    }}*/}
-                    {/*    onBlur={() => {*/}
-                    {/*      onEdit(selectAddress)*/}
-                    {/*    }}*/}
-                    {/*    onKeyDown={(e) => {*/}
-                    {/*      if (e.key === 'Enter') {*/}
-                    {/*        e.currentTarget.blur()*/}
-                    {/*      }*/}
-                    {/*    }}*/}
-                    {/*  />*/}
-                    {/*) : (*/}
-                    {/* */}
-                    {/*)}*/}
-                    <Typography component={'span'}>
-                      <Typography component={'span'} display={'flex-inline'}
-                                  paddingRight={1}>{data.contactName}</Typography>
+                    <Typography component={'p'} marginLeft={1}>
+                        <Typography display={'inline-flex'} alignItems={'center'} component={'span'}
+                                    paddingRight={1}>
+                            <Typography display={'inline-flex'} paddingRight={1} component={'span'}>
+                                {data.contactName}
+                            </Typography>
                       {data.addressType && <AddressTypeTag addressType={data.addressType}/>}
-                      <EditIcon onClick={() => {
+                            <EditIcon
+                                sx={{
+                                    paddingLeft: 1
+                                }}
+                                fontSize={'large'}
+                                onClick={() => {
                         setAddOpen(true)
                         setSelectAddress(data as ContactType)
                       }
                       }/>
                     </Typography>
-                    <Typography>
+                        <Typography compontent={'span'}>
                       {data.contactAddress}
                       <IconButton
                         onClick={() => {
                           navigator.clipboard.writeText(data.contactAddress)
-                          setToastInfo({
+                            setToast({
                             open: true,
-                            isSuccess: true,
-                            type: 'Copy',
+                                type: ToastType.success,
+                                content: t('labelContactsCopySuccess')
                           })
                         }}
                       >
-                        <CopyIcon></CopyIcon>
+                          <CopyIcon/>
                       </IconButton>
                     </Typography>
-                  </Box>
+                    </Typography>
                 </Box>
                 <Box display={'flex'}>
                   <Box marginRight={2}>
@@ -249,30 +177,35 @@ export const ContractPanel = () => {
     </>
   )
 
+//     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+//     <img
+//   className='loading-gif'
+//   alt={'loading'}
+//   width='36'
+//   src={`${SoursURL}images/loading-line.gif`}
+//   />
+// </Box>
   return (
     <ContactPageStyle className={'MuiPaper-elevation2'} paddingX={4} paddingY={3}>
+
       <Toast
-        alertText={totastText}
-        severity={toastInfo.isSuccess ? ToastType.success : ToastType.error}
+          alertText={toastInfo.content ?? ''}
+          severity={toastInfo?.type}
         open={toastInfo.open}
         autoHideDuration={TOAST_TIME}
-        onClose={() => onCloseToast()}
+          onClose={closeToast}
+          // onClose={closeToastL}
       />
       <EditContact
-        loading={addLoading}
-        submitContact={(item) => {
-          if (selectAddress) {
-            onEdit(item)
-            setSelectAddress(undefined)
-          } else {
-            submitAddContact(item)
-          }
-
-        }}
+          // loading={addLoading}
         isEdit={selectAddress ? {item: selectAddress} : false}
-
         addOpen={addOpen}
         setAddOpen={setAddOpen}
+        onClose={() => {
+            setSelectAddress(undefined)
+            setAddOpen(false)
+        }}
+        setToast={setToast}
       />
       <Delete
         deleteInfo={deleteInfo}
@@ -297,6 +230,7 @@ export const ContractPanel = () => {
               variant={'contained'}
               size={'small'}
               onClick={() => {
+                  setSelectAddress(undefined)
                 setAddOpen(true)
               }}
             >
@@ -308,7 +242,7 @@ export const ContractPanel = () => {
       <Box className='table-divide'>
         <Line />
         <Box>
-          {loading ? loadingView : !contacts || contacts.length === 0 ? noContact : normalView}
+            {!contacts || contacts.length === 0 ? noContact : normalView}
         </Box>
       </Box>
     </ContactPageStyle>
