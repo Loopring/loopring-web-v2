@@ -12,11 +12,15 @@ import {
 import {
   AddressError,
   CloseIcon,
+  CustomError,
+  ErrorMap,
   EXCHANGE_TYPE,
   LoadingIcon,
   myLog,
   NetworkMap,
+  SDK_ERROR_MAP_TO_UI,
   TradeBtnStatus,
+  UIERROR_CODE,
   WALLET_TYPE,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
@@ -39,6 +43,7 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { LoopringErrorCode } from '@loopring-web/loopring-sdk'
 
 type EditItem = {
   item: ContactType
@@ -63,7 +68,6 @@ export const useContactAdd = ({
     isAddressCheckLoading,
     loopringSmartWalletVersion,
   } = useAddressCheck(false)
-  // const [addLoading, setAddLoading] = React.useState(false)
   const {
     contacts,
     status: contactStatus,
@@ -71,7 +75,6 @@ export const useContactAdd = ({
     updateContacts,
   } = useContacts()
   const [addName, setAddName] = React.useState('')
-  const [toastStatus, setToastStatus] = React.useState('Succuss' as 'Succuss' | 'Error' | 'Init')
   const { btnStatus, enableBtn, disableBtn, setLoadingBtn } = useBtnStatus()
   const [selectedAddressType, setSelectedAddressType] = React.useState<
     WALLET_TYPE | EXCHANGE_TYPE | undefined
@@ -191,12 +194,34 @@ export const useContactAdd = ({
         })
         restData()
       } catch (error) {
-        //TODO: error code
-        setToast({
-          open: true,
-          type: ToastType.error,
-          content: t('labelContactsEditSuccess'),
-        })
+        const _error = LoopringAPI?.globalAPI?.genErr(error as unknown as any) ?? {}
+        error = {
+          ...((error as any) ?? {}),
+          ..._error,
+        }
+        if ((error as any)?.code == LoopringErrorCode.HTTP_ERROR) {
+          setToast({
+            open: true,
+            type: ToastType.error,
+            content: t(SDK_ERROR_MAP_TO_UI[UIERROR_CODE.TIME_OUT].messageKey, { ns: 'error' }),
+          })
+        } else if ((error as any)?.code) {
+          setToast({
+            open: true,
+            type: ToastType.error,
+            content: t(
+              SDK_ERROR_MAP_TO_UI[(error as any)?.code]?.messageKey ?? 'labelContactsEditFailed',
+              { ns: 'error' },
+            ),
+          })
+        } else {
+          setToast({
+            open: true,
+            type: ToastType.error,
+            content: t('labelContactsEditFailed'),
+          })
+        }
+
         enableBtn()
       }
     } else {
@@ -218,12 +243,33 @@ export const useContactAdd = ({
         })
         restData()
       } catch (error) {
-        //TODO: error code
-        setToast({
-          open: true,
-          type: ToastType.error,
-          content: t('labelContactsContactExisted'),
-        })
+        const _error = LoopringAPI?.globalAPI?.genErr(error as unknown as any) ?? {}
+        error = {
+          ...((error as any) ?? {}),
+          ..._error,
+        }
+        if ((error as any)?.code == LoopringErrorCode.HTTP_ERROR) {
+          setToast({
+            open: true,
+            type: ToastType.error,
+            content: t(SDK_ERROR_MAP_TO_UI[UIERROR_CODE.TIME_OUT].messageKey, { ns: 'error' }),
+          })
+        } else if ((error as any)?.code) {
+          setToast({
+            open: true,
+            type: ToastType.error,
+            content: t(
+              SDK_ERROR_MAP_TO_UI[(error as any)?.code]?.messageKey ?? 'labelContactsAddFailed',
+              { ns: 'error' },
+            ),
+          })
+        } else {
+          setToast({
+            open: true,
+            type: ToastType.error,
+            content: t('labelContactsAddFailed'),
+          })
+        }
         enableBtn()
       }
     }
@@ -244,8 +290,6 @@ export const useContactAdd = ({
     allowToClickIsSure,
     onChangeAddressType,
     btnStatus,
-    setToastStatus,
-    toastStatus,
     submitContact: onSubmit,
   }
 }
