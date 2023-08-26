@@ -57,7 +57,6 @@ export const ContractPanel = () => {
   const {
     setAddOpen,
     addOpen,
-
     contacts,
     searchValue,
     onChangeSearch,
@@ -83,7 +82,7 @@ export const ContractPanel = () => {
 
   const noContact = (
     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-      <Typography variant={'body1'} compontent={'span'} color={'var(--color-text-third)'}>
+      <Typography component={'span'} variant={'body1'} color={'var(--color-text-third)'}>
         {t('labelContactsNoContact')}
       </Typography>
     </Box>
@@ -197,15 +196,6 @@ export const ContractPanel = () => {
       )}
     </>
   )
-
-  //     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-  //     <img
-  //   className='loading-gif'
-  //   alt={'loading'}
-  //   width='36'
-  //   src={`${SoursURL}images/loading-line.gif`}
-  //   />
-  // </Box>
   return (
     <ContactPageStyle className={'MuiPaper-elevation2'} paddingX={4} paddingY={3}>
       <Toast
@@ -217,7 +207,6 @@ export const ContractPanel = () => {
         // onClose={closeToastL}
       />
       <EditContact
-        // loading={addLoading}
         isEdit={selectAddress ? { item: selectAddress } : false}
         addOpen={addOpen}
         setAddOpen={setAddOpen}
@@ -225,6 +214,7 @@ export const ContractPanel = () => {
           setSelectAddress(undefined)
           setAddOpen(false)
         }}
+        contacts={contacts}
         setToast={setToast}
       />
       <Delete

@@ -78,7 +78,6 @@ export const useContactAdd = ({
   >(undefined)
   const allowToClickIsSure = React.useMemo(() => {
     return isAddressCheckLoading || addrStatus === AddressError.InvalidAddr || !realAddr
-    c
   }, [addrStatus, isAddressCheckLoading, realAddr])
   const mapContactAddressType = (): sdk.AddressType | undefined => {
     if (addressTypeISCFAddress) {
@@ -261,6 +260,7 @@ interface AddDialogProps {
     | {
         item: ContactType
       }
+  contacts: ContactType[]
   onClose: () => void
   setToast: (props: TOASTOPEN) => void
 }
@@ -273,6 +273,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
   isEdit = false,
   onClose,
   setToast,
+  contacts,
 }) => {
   const {
     restData,
@@ -280,7 +281,6 @@ export const EditContact: React.FC<AddDialogProps> = ({
     detectedWalletType,
     addressDefault,
     isAddressCheckLoading,
-    onChangeAddress,
     addName,
     onChangeName,
     realAddr,
@@ -384,20 +384,33 @@ export const EditContact: React.FC<AddDialogProps> = ({
                 >
                   {t('labelInvalidAddress')}
                 </Typography>
+              ) : !isEdit &&
+                contacts?.find(
+                  (item) => item.contactAddress.toLowerCase() === realAddr.toLowerCase(),
+                ) ? (
+                <Typography
+                  color={'var(--color-error)'}
+                  variant={'body2'}
+                  marginTop={1 / 4}
+                  alignSelf={'stretch'}
+                  position={'relative'}
+                >
+                  {t('labelContactsContactExisted')}
+                </Typography>
               ) : (
-                <>
-                  {addressDefault && realAddr && !isAddressCheckLoading && (
-                    <Typography
-                      color={'var(--color-text-primary)'}
-                      variant={'body2'}
-                      marginTop={1 / 4}
-                      whiteSpace={'pre-line'}
-                      style={{ wordBreak: 'break-all' }}
-                    >
-                      {realAddr.toLowerCase() === addressDefault.toLowerCase() ? '' : realAddr}
-                    </Typography>
-                  )}
-                </>
+                addressDefault &&
+                realAddr &&
+                !isAddressCheckLoading && (
+                  <Typography
+                    color={'var(--color-text-primary)'}
+                    variant={'body2'}
+                    marginTop={1 / 4}
+                    whiteSpace={'pre-line'}
+                    style={{ wordBreak: 'break-all' }}
+                  >
+                    {realAddr.toLowerCase() === addressDefault.toLowerCase() ? '' : realAddr}
+                  </Typography>
+                )
               )}
             </Box>
           </Box>
@@ -409,7 +422,6 @@ export const EditContact: React.FC<AddDialogProps> = ({
               size={'large'}
               className={'text-address'}
               value={addName}
-              error={!!isInvalidAddressOrENS}
               placeholder={t('labelContactsNameDes')}
               onChange={(e) => {
                 onChangeName(e.target.value)
@@ -440,6 +452,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
               }}
             />
           </Box>
+
           <Box marginTop={3}>
             <FullAddressType
               detectedWalletType={detectedWalletType}
