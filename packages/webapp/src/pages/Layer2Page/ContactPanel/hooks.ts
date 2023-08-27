@@ -1,15 +1,20 @@
 import React, { useCallback, useState } from 'react'
 import {
-  ContactType, exWalletToAddressMapFn,
+  ContactType,
+  exWalletToAddressMapFn,
   LoopringAPI,
   store,
-  useAccount, useAddressCheck, useBtnStatus,
-    useContacts, useToast,
+  useAccount,
+  useAddressCheck,
+  useBtnStatus,
+  useContacts,
+  useToast,
   volumeToCount,
   volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
-    RawDataTransactionItem, TOASTOPEN,
+  RawDataTransactionItem,
+  TOASTOPEN,
   ToastType,
   TransactionStatus,
   useOpenModals,
@@ -18,16 +23,19 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
 import {
-  AddressError, EXCHANGE_TYPE,
+  AddressError,
+  EXCHANGE_TYPE,
   NetworkMap,
-  SDK_ERROR_MAP_TO_UI, WALLET_TYPE
+  SDK_ERROR_MAP_TO_UI,
+  WALLET_TYPE,
 } from '@loopring-web/common-resources'
 import { useLocation } from 'react-router-dom'
+import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export type Contact = {
   name: string
   address: string
-  addressType?: sdk.AddressType
+  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
   // id: string
 }
 type Network = 'L1' | 'L2'
@@ -53,14 +61,19 @@ export const useContact = () => {
   })
   const [searchValue, setSearchValue] = React.useState('')
   const {
-    account: {accountId, apiKey, accAddress, isContractAddress, isCFAddress},
+    account: { accountId, apiKey, accAddress, isContractAddress, isCFAddress },
   } = useAccount()
   // const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
   const [page, setPage] = useState(1)
   const pageSize = Math.floor(tableHeight / RowHeight)
-  const {contacts, status: contactStatus, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
+  const {
+    contacts,
+    status: contactStatus,
+    errorMessage: contactsErrorMessage,
+    updateContacts,
+  } = useContacts()
   const total = contacts?.length
   const pagination = total
     ? {
@@ -76,7 +89,7 @@ export const useContact = () => {
       updateContacts()
     }
   }, [])
-  const [selectAddress, setSelectAddress] = React.useState<ContactType | undefined>(undefined);
+  const [selectAddress, setSelectAddress] = React.useState<ContactType | undefined>(undefined)
 
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input)
@@ -114,7 +127,7 @@ export const useContact = () => {
   }, [])
 
   const onClickSend = React.useCallback(
-    (address: string, name: string, addressType: sdk.AddressType) => {
+    (address: string, name: string, addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys]) => {
       setSendInfo({
         open: true,
         selected: {
@@ -132,85 +145,84 @@ export const useContact = () => {
       selected: undefined,
     })
   }, [])
-    const {toastOpen, setToastOpen, closeToast} = useToast()
+  const { toastOpen, setToastOpen, closeToast } = useToast()
 
-    React.useEffect(() => {
-        if (contactsErrorMessage) {
-            updateContacts()
-        }
-    }, [])
+  React.useEffect(() => {
+    if (contactsErrorMessage) {
+      updateContacts()
+    }
+  }, [])
   const [deleteLoading, setDeleteLoading] = React.useState(false)
 
-    const onPageChange = React.useCallback((page: number) => {
-        setSearchValue('')
-        setPage(page)
+  const onPageChange = React.useCallback((page: number) => {
+    setSearchValue('')
+    setPage(page)
   }, [])
-    const showPagination = total !== undefined && searchValue === ''
+  const showPagination = total !== undefined && searchValue === ''
   const submitDeleteContact = React.useCallback(
-      async (address: string, name: string) => {
-          setDeleteLoading(true)
-          const {accountId, apiKey, isContractAddress, isCFAddress} = store.getState().account
-          LoopringAPI.contactAPI?.createContact(
+    async (address: string, name: string) => {
+      setDeleteLoading(true)
+      const { accountId, apiKey, isContractAddress, isCFAddress } = store.getState().account
+      LoopringAPI.contactAPI
+        ?.createContact(
+          {
+            accountId,
+            isHebao: isContractAddress || isCFAddress ? true : false,
+            contactAddress: address,
+            contactName: name,
+          },
+          apiKey,
+        )
+        .then((response) => {
+          if (response === true) {
+            updateContacts()
+            // updateContacts(contacts!.filter((contact) => contact.address !== address))
+            setToastOpen(
               {
-                  accountId,
-                  isHebao: (isContractAddress || isCFAddress) ? true : false,
-                  contactAddress: address,
-                  contactName: name,
+                open: true,
+                type: ToastType.success,
+                content: t('labelContactsDeleteSuccess'),
               },
-              apiKey,
-          )
-              .then((response) => {
-                  if (response === true) {
-                      updateContacts()
-                      // updateContacts(contacts!.filter((contact) => contact.address !== address))
-                      setToastOpen(
-                          {
-                              open: true,
-                              type: ToastType.success,
-                              content: t('labelContactsDeleteSuccess'),
-                          }
-                          //     {
-                          //   open: true,
-                          //   isSuccess: true,
-                          //   type: 'Delete',
-                          // }
-                      )
-                      setDeleteInfo({
-                          open: false,
-                          selected: undefined,
-                      })
-                  } else {
-                      throw (response.resultInfo as sdk.RESULT_INFO).message
-                  }
-              })
-              .catch((e) => {
-                  //   TODO
-                  setToastOpen(
-                      {
-                          open: true,
-                          type: ToastType.error,
-                          content: t('labelContactsDeleteFailed'),
-                      }
-                  )
-              })
-              .finally(() => {
-                  setDeleteLoading(false)
-              })
-      },
-      [contacts],
+              //     {
+              //   open: true,
+              //   isSuccess: true,
+              //   type: 'Delete',
+              // }
+            )
+            setDeleteInfo({
+              open: false,
+              selected: undefined,
+            })
+          } else {
+            throw (response.resultInfo as sdk.RESULT_INFO).message
+          }
+        })
+        .catch((e) => {
+          //   TODO
+          setToastOpen({
+            open: true,
+            type: ToastType.error,
+            content: t('labelContactsDeleteFailed'),
+          })
+        })
+        .finally(() => {
+          setDeleteLoading(false)
+        })
+    },
+    [contacts],
   )
   return {
     contacts:
       contacts &&
       (searchValue === ''
         ? contacts.slice(
-              (page - 1) * pageSize,
-              page * pageSize >= contacts.length ? contacts.length : page * pageSize,
+            (page - 1) * pageSize,
+            page * pageSize >= contacts.length ? contacts.length : page * pageSize,
           )
         : contacts.filter((contact) => {
             return (
-                contact.contactAddress.toLowerCase().includes(searchValue.toLowerCase()) ||
-                contact.contactName.toLowerCase().includes(searchValue.toLowerCase())
+              contact.contactAddress.toLowerCase().includes(searchValue.toLowerCase()) ||
+              contact.contactName.toLowerCase().includes(searchValue.toLowerCase())
             )
           })),
     selectAddress,
@@ -218,19 +230,19 @@ export const useContact = () => {
     onChangeSearch,
     onClearSearch,
     searchValue,
-      toastInfo: toastOpen,
-      setToast: setToastOpen,
-      closeToast,
+    toastInfo: toastOpen,
+    setToast: setToastOpen,
+    closeToast,
     onClickDelete,
     deleteInfo,
     onCloseDelete,
     submitDeleteContact,
-      deleteLoading,
+    deleteLoading,
 
     addOpen,
     setAddOpen,
-      // addLoading,
-      // submitAddContact,
+    // addLoading,
+    // submitAddContact,
 
     onClickSend,
     onCloseSend,
@@ -238,7 +250,7 @@ export const useContact = () => {
 
     pagination,
     onPageChange,
-      // loading,
+    // loading,
     showPagination,
     // onScroll
   }
@@ -246,7 +258,7 @@ export const useContact = () => {
 
 export const useContactSend = () => {
   const [sendNetwork, setSendNetwork] = React.useState('L2' as Network)
-  const {setShowTransfer, setShowWithdraw} = useOpenModals()
+  const { setShowTransfer, setShowWithdraw } = useOpenModals()
   const submitSendingContact = React.useCallback(
     (contact: Contact, network: Network, onClose: () => void) => {
       if (network === 'L1') {
@@ -295,32 +307,32 @@ type TxsFilterProps = {
 
 export function useContractRecord(setToastOpen: (state: any) => void) {
   const {
-    account: {accountId, apiKey},
+    account: { accountId, apiKey },
   } = useAccount()
-  const {tokenMap} = store.getState().tokenMap
-  const {t} = useTranslation(['error'])
+  const { tokenMap } = store.getState().tokenMap
+  const { t } = useTranslation(['error'])
   const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
   const [txsTotal, setTxsTotal] = useState(0)
   const [showLoading, setShowLoading] = useState(false)
-  const {search} = useLocation()
+  const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
 
   const getTxnStatus = (status: string) => {
     return status === ''
       ? TransactionStatus.processing
       : status === 'PROCESSED'
-            ? TransactionStatus.processed
-            : status === 'PROCESSING'
-                ? TransactionStatus.processing
-                : status === 'RECEIVED'
-                    ? TransactionStatus.received
-                    : TransactionStatus.failed
+      ? TransactionStatus.processed
+      : status === 'PROCESSING'
+      ? TransactionStatus.processing
+      : status === 'RECEIVED'
+      ? TransactionStatus.received
+      : TransactionStatus.failed
   }
 
   const getUserTxnList = useCallback(
-      async ({tokenSymbol, start, end, limit, offset}: TxsFilterProps) => {
+    async ({ tokenSymbol, start, end, limit, offset }: TxsFilterProps) => {
       // const address = routeMatch.params[0];
-        const tokenId = tokenSymbol ? tokenMap[tokenSymbol!].tokenId : undefined
+      const tokenId = tokenSymbol ? tokenMap[tokenSymbol!].tokenId : undefined
       const response = await LoopringAPI.userAPI!.getUserBills(
         {
           accountId,

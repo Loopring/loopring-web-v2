@@ -43,7 +43,7 @@ export const ChipStyle = styled(Chip)`
   border-radius: ${({ theme }) => `${theme.unit}`}px;
   height: ${({ theme }) => `${(theme.unit * 5) / 2}`}px;
 `
-export const AddressTypeTag = ({ addressType }: { addressType: sdk.AddressType }) => {
+export const AddressTypeTag = ({ addressType }: { addressType }) => {
   const { t } = useTranslation('common')
   switch (addressType) {
     case sdk.AddressType.EOA:
@@ -104,6 +104,7 @@ export const AddressTypeTag = ({ addressType }: { addressType: sdk.AddressType }
           }}
         />
       )
+    case sdk.AddressType.UNKNOWN_ADDRESS:
     default:
       return <></>
   }

@@ -7,12 +7,13 @@ import React, { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AddressTypeTag } from '../../basic-lib'
+import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 type SingleContactProps = {
   editing: boolean
   name: string
   address: string
-  addressType?: sdk.AddressType
+  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
   onSelect: (address: string) => void
   hidden: boolean
 }
@@ -88,7 +89,7 @@ export const SingleContact = (props: SingleContactProps) => {
               <Typography component={'span'} display={'flex-inline'} paddingRight={1}>
                 {name}
               </Typography>
-              {addressType && <AddressTypeTag addressType={addressType} />}
+              <AddressTypeTag addressType={addressType} />
             </>
           )}
           <Typography>{address}</Typography>

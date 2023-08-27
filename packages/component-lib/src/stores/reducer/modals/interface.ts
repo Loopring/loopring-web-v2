@@ -5,8 +5,9 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO, AddressType, OffchainFeeReqType, OffchainNFTFeeReqType } from '@loopring-web/loopring-sdk'
-import { AmmPanelType,ToastType } from '../../../components'
+import { RESULT_INFO, AddressType } from '@loopring-web/loopring-sdk'
+import { AmmPanelType, ToastType } from '../../../components'
+import { AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export enum ModalType {
   transfer = 'transfer',
@@ -26,7 +27,7 @@ export type Transaction = {
 export type Contact = {
   name?: string
   address?: string
-  addressType?: AddressType
+  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
 }
 
 export interface ModalState {

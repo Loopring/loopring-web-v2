@@ -44,6 +44,7 @@ import {
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringErrorCode } from '@loopring-web/loopring-sdk'
+import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 type EditItem = {
   item: ContactType
@@ -82,11 +83,11 @@ export const useContactAdd = ({
   const allowToClickIsSure = React.useMemo(() => {
     return isAddressCheckLoading || addrStatus === AddressError.InvalidAddr || !realAddr
   }, [addrStatus, isAddressCheckLoading, realAddr])
-  const mapContactAddressType = (): sdk.AddressType | undefined => {
+  const mapContactAddressType = (): (typeof sdk.AddressType)[sdk.AddressTypeKeys] | undefined => {
     if (addressTypeISCFAddress) {
       return sdk.AddressType.LOOPRING_HEBAO_CF
     } else if (loopringSmartWalletVersion?.isLoopringSmartWallet) {
-      const map: [string, sdk.AddressType][] = [
+      const map: [string, (typeof AddressType)[AddressTypeKeys]][] = [
         ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0 ?? 2004],
         ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
         ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],

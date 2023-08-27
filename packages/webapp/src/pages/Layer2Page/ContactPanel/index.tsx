@@ -29,6 +29,7 @@ import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
 import { ContactType } from '@loopring-web/core'
 import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
+import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
@@ -68,7 +69,11 @@ const ActionMemo = React.memo(
     onClickDelete,
   }: {
     data: ContactType
-    onClickSend: (contactAddress: string, contactName: string, addressType: sdk.AddressType) => void
+    onClickSend: (
+      contactAddress: string,
+      contactName: string,
+      addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys],
+    ) => void
     onClickDelete: (contactAddress: string, contactName: string) => void
   }) => {
     const history = useHistory()

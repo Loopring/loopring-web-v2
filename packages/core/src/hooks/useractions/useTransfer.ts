@@ -56,10 +56,10 @@ import {
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
-import { useContacts } from '../../stores/contacts/hooks'
+import { useContacts } from '../../stores'
 
 export const useTransfer = <R extends IBData<T>, T>() => {
-  const {setShowAccount, setShowTransfer} = useOpenModals()
+  const { setShowAccount, setShowTransfer } = useOpenModals()
 
   const {
     modals: {
@@ -73,24 +73,24 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       },
     },
   } = useOpenModals()
-  const {tokenMap, totalCoinMap} = useTokenMap()
-  const {account, status: accountStatus} = useAccount()
-  const {exchangeInfo, chainId, forexMap} = useSystem()
-  const {currency} = useSettings()
-  const {tokenPrices} = useTokenPrices()
-  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
+  const { tokenMap, totalCoinMap } = useTokenMap()
+  const { account, status: accountStatus } = useAccount()
+  const { exchangeInfo, chainId, forexMap } = useSystem()
+  const { currency } = useSettings()
+  const { tokenPrices } = useTokenPrices()
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
 
-  const {transferValue, updateTransferData, resetTransferData} = useModalData()
+  const { transferValue, updateTransferData, resetTransferData } = useModalData()
 
   const [walletMap, setWalletMap] = React.useState(
-      makeWalletLayer2({needFilterZero: true}).walletMap ?? ({} as WalletMap<R>),
+    makeWalletLayer2({ needFilterZero: true }).walletMap ?? ({} as WalletMap<R>),
   )
 
   const [sureItsLayer2, setSureItsLayer2] = React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(
-      undefined,
+    undefined,
   )
 
-  const {btnStatus, enableBtn, disableBtn} = useBtnStatus()
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const [feeWithActive, setFeeWithActive] = React.useState(false)
 
   const {
@@ -102,15 +102,15 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     resetIntervalTime,
   } = useChargeFees({
     requestType: feeWithActive
-        ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
-        : sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({fee, requestType}) => {
+      ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+      : sdk.OffchainFeeReqType.TRANSFER,
+    updateData: ({ fee, requestType }) => {
       let _requestType = feeWithActive
-          ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
-          : sdk.OffchainFeeReqType.TRANSFER
+        ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+        : sdk.OffchainFeeReqType.TRANSFER
       if (_requestType === requestType) {
         const transferValue = store.getState()._router_modalData.transferValue
-        updateTransferData({...transferValue, fee})
+        updateTransferData({ ...transferValue, fee })
       }
     },
     //   [feeWithActive]
@@ -124,13 +124,16 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isActiveAccount: true,
     requestType: undefined as any,
   })
-  const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const transferValue = store.getState()._router_modalData.transferValue
-    updateTransferData({
-      ...transferValue,
-      memo: e.target.value,
-    })
-  }, [])
+  const handleOnMemoChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const transferValue = store.getState()._router_modalData.transferValue
+      updateTransferData({
+        ...transferValue,
+        memo: e.target.value,
+      })
+    },
+    [updateTransferData],
+  )
   //TODO
   const {
     address,
@@ -153,16 +156,16 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       const tradeValue = sdk.toBig(transferValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
 
       if (
-          tradeValue &&
-          chargeFeeTokenList.length &&
-          !isFeeNotEnough.isFeeNotEnough &&
-          !isSameAddress &&
-          // !isAddressCheckLoading &&
-          sureItsLayer2 &&
-          transferValue.fee?.belong &&
-          tradeValue.gt(BIGO) &&
-          ((address && address.startsWith('0x')) || realAddr) &&
-          (addrStatus as AddressError) === AddressError.NoError
+        tradeValue &&
+        chargeFeeTokenList.length &&
+        !isFeeNotEnough.isFeeNotEnough &&
+        !isSameAddress &&
+        // !isAddressCheckLoading &&
+        sureItsLayer2 &&
+        transferValue.fee?.belong &&
+        tradeValue.gt(BIGO) &&
+        ((address && address.startsWith('0x')) || realAddr) &&
+        (addrStatus as AddressError) === AddressError.NoError
       ) {
         enableBtn()
         return
@@ -197,18 +200,18 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   ])
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2({needFilterZero: true}).walletMap ?? {}
+    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
     setWalletMap(walletMap)
   }, [])
 
-  useWalletLayer2Socket({walletLayer2Callback})
+  useWalletLayer2Socket({ walletLayer2Callback })
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
       checkFeeIsEnough()
       return
     }
-    checkFeeIsEnough({isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES})
+    checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     if (contactsErrorMessage) {
       updateContacts()
     }
@@ -268,22 +271,26 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       setAddress('')
     }
   }, [
+    info?.isRetry,
+    info?.isToMyself,
     checkFeeIsEnough,
+    contactsErrorMessage,
     symbol,
     walletMap,
+    contactAddress,
+    updateContacts,
     updateTransferData,
     feeInfo,
     transferValue.belong,
-    info?.isRetry,
-    contactAddress,
-    contactsErrorMessage,
+    account.accAddress,
+    setAddress,
   ])
 
   React.useEffect(() => {
     if (
-        isShow &&
-        accountStatus === SagaStatus.UNSET &&
-        account.readyState === AccountStatus.ACTIVATED
+      isShow &&
+      accountStatus === SagaStatus.UNSET &&
+      account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault()
     } else {
@@ -303,295 +310,293 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
   }, [isShow])
 
-
-  const {checkHWAddr, updateHW} = useWalletInfo()
+  const { checkHWAddr, updateHW } = useWalletInfo()
 
   const [lastRequest, setLastRequest] = React.useState<any>({})
 
   const processRequest = React.useCallback(
-      async (request: sdk.OriginTransferRequestV3, isNotHardwareWallet: boolean) => {
-        const {apiKey, connectName, eddsaKey} = account
+    async (request: sdk.OriginTransferRequestV3, isNotHardwareWallet: boolean) => {
+      const { apiKey, connectName, eddsaKey } = account
 
-        try {
-          if (connectProvides.usedWeb3 && LoopringAPI.userAPI && isAccActivated()) {
-            let isHWAddr = checkHWAddr(account.accAddress)
-            if (!isHWAddr && !isNotHardwareWallet) {
-              isHWAddr = true
-            }
-            setLastRequest({request})
-            const response = await LoopringAPI.userAPI.submitInternalTransfer(
-                {
-                  request,
-                  web3: connectProvides.usedWeb3 as any,
-                  chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-                  walletType: (ConnectProviders[connectName] ??
-                      connectName) as unknown as sdk.ConnectorNames,
-                  eddsaKey: eddsaKey.sk,
-                  apiKey,
-                  isHWAddr,
-                },
-                {
-                  accountId: account.accountId,
-                  counterFactualInfo: eddsaKey.counterFactualInfo,
-                },
-            )
-
-            myLog('submitInternalTransfer:', response)
-            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-              throw response
-            }
-            info?.onCloseCallBack && info?.onCloseCallBack()
-            setShowTransfer({isShow: false})
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_In_Progress,
-            })
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Transfer_Success,
-              info: {
-                hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-              },
-            })
-            if (isHWAddr) {
-              myLog('......try to set isHWAddr', isHWAddr)
-              updateHW({wallet: account.accAddress, isHWAddr})
-            }
-            resetTransferData()
-            walletLayer2Service.sendUserUpdate()
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-            if (
-                store.getState().modals.isShowAccount.isShow &&
-                store.getState().modals.isShowAccount.step == AccountStep.Transfer_Success
-            ) {
-              setShowAccount({isShow: false})
-            }
+      try {
+        if (connectProvides.usedWeb3 && LoopringAPI.userAPI && isAccActivated()) {
+          let isHWAddr = checkHWAddr(account.accAddress)
+          if (!isHWAddr && !isNotHardwareWallet) {
+            isHWAddr = true
           }
-        } catch (e: any) {
-          const code = sdk.checkErrorInfo(e, isNotHardwareWallet)
-          switch (code) {
-            case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-              setLastRequest({request})
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_First_Method_Denied,
-              })
-              break
-            case sdk.ConnectorError.USER_DENIED:
-            case sdk.ConnectorError.USER_DENIED_2:
-              setLastRequest({request})
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_User_Denied,
-              })
-              break
+          setLastRequest({ request })
+          const response = await LoopringAPI.userAPI.submitInternalTransfer(
+            {
+              request,
+              web3: connectProvides.usedWeb3 as any,
+              chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
+              walletType: (ConnectProviders[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
+              eddsaKey: eddsaKey.sk,
+              apiKey,
+              isHWAddr,
+            },
+            {
+              accountId: account.accountId,
+              counterFactualInfo: eddsaKey.counterFactualInfo,
+            },
+          )
 
-            default:
-              if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
-                checkFeeIsEnough({
-                  isRequiredAPI: true,
-                  requestType: feeWithActive
-                      ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
-                      : sdk.OffchainFeeReqType.TRANSFER,
-                })
-              }
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_Failed,
-                error: {
-                  code: UIERROR_CODE.UNKNOWN,
-                  msg: e?.message,
-                  ...(e instanceof Error
-                      ? {
-                        message: e?.message,
-                        stack: e?.stack,
-                      }
-                      : e ?? {}),
-                },
-              })
-
-              break
+          myLog('submitInternalTransfer:', response)
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response
+          }
+          info?.onCloseCallBack && info?.onCloseCallBack()
+          setShowTransfer({ isShow: false })
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_In_Progress,
+          })
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_Success,
+            info: {
+              hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+            },
+          })
+          if (isHWAddr) {
+            myLog('......try to set isHWAddr', isHWAddr)
+            updateHW({ wallet: account.accAddress, isHWAddr })
+          }
+          resetTransferData()
+          walletLayer2Service.sendUserUpdate()
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step == AccountStep.Transfer_Success
+          ) {
+            setShowAccount({ isShow: false })
           }
         }
-      },
-      [
-        account,
-        checkHWAddr,
-        chainId,
-        setShowAccount,
-        setShowTransfer,
-        resetTransferData,
-        updateHW,
-        checkFeeIsEnough,
-      ],
-  )
-
-  const onTransferClick = React.useCallback(
-      async (_transferValue, isFirstTime: boolean = true) => {
-        const {accountId, accAddress, readyState, apiKey, eddsaKey} = account
-        const transferValue = store.getState()._router_modalData.transferValue
-        if (
-            readyState === AccountStatus.ACTIVATED &&
-            tokenMap &&
-            LoopringAPI.userAPI &&
-            exchangeInfo &&
-            connectProvides.usedWeb3 &&
-            transferValue.address !== '*' &&
-            transferValue?.fee &&
-            transferValue?.fee.belong &&
-            transferValue.fee?.__raw__ &&
-            eddsaKey?.sk
-        ) {
-          try {
+      } catch (e: any) {
+        const code = sdk.checkErrorInfo(e, isNotHardwareWallet)
+        switch (code) {
+          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+            setLastRequest({ request })
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_WaitForAuth,
+              step: AccountStep.Transfer_First_Method_Denied,
             })
+            break
+          case sdk.ConnectorError.USER_DENIED:
+          case sdk.ConnectorError.USER_DENIED_2:
+            setLastRequest({ request })
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_User_Denied,
+            })
+            break
 
-            const sellToken = tokenMap[transferValue.belong as string]
-            const feeToken = tokenMap[transferValue.fee.belong]
-            const feeRaw = transferValue.fee.feeRaw ?? transferValue.fee.__raw__?.feeRaw ?? 0
-            const fee = sdk.toBig(feeRaw)
-            const balance = sdk.toBig(transferValue.balance ?? 0).times('1e' + sellToken.decimals)
-            const tradeValue = sdk
-                .toBig(transferValue.tradeValue ?? 0)
-                .times('1e' + sellToken.decimals)
-            const isExceedBalance =
-                feeToken.tokenId === sellToken.tokenId && tradeValue.plus(fee).gt(balance)
-            const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue
-            const transferVol = finalVol.toFixed(0, 0)
-
-            const storageId = await LoopringAPI.userAPI?.getNextStorageId(
-                {
-                  accountId,
-                  sellTokenId: sellToken.tokenId,
-                },
-                apiKey,
-            )
-            const req: sdk.OriginTransferRequestV3 = {
-              exchange: exchangeInfo.exchangeAddress,
-              payerAddr: accAddress,
-              payerId: accountId,
-              payeeAddr: realAddr ? realAddr : address,
-              payeeId: 0,
-              storageId: storageId?.offchainId,
-              payPayeeUpdateAccount: !isActiveAccountFee && feeWithActive,
-              token: {
-                tokenId: sellToken.tokenId,
-                volume: transferVol,
-              },
-              maxFee: {
-                tokenId: feeToken.tokenId,
-                volume: fee.toString(), // TEST: fee.toString(),
-              },
-              validUntil: getTimestampDaysLater(DAYS),
-              memo: transferValue.memo,
+          default:
+            if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
+              checkFeeIsEnough({
+                isRequiredAPI: true,
+                requestType: feeWithActive
+                  ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
+                  : sdk.OffchainFeeReqType.TRANSFER,
+              })
             }
-
-            myLog('transfer req:', req)
-
-            processRequest(req, isFirstTime)
-          } catch (e: any) {
-            // transfer failed
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_Failed,
               error: {
                 code: UIERROR_CODE.UNKNOWN,
-                message: e.message,
-              } as sdk.RESULT_INFO,
+                msg: e?.message,
+                ...(e instanceof Error
+                  ? {
+                      message: e?.message,
+                      stack: e?.stack,
+                    }
+                  : e ?? {}),
+              },
             })
-          }
-        } else {
-          return
+
+            break
         }
-      },
-      [
-        account,
-        tokenMap,
-        exchangeInfo,
-        setShowAccount,
-        realAddr,
-        address,
-        processRequest,
-        isActiveAccountFee,
-        feeWithActive,
-      ],
+      }
+    },
+    [
+      account,
+      checkHWAddr,
+      chainId,
+      info,
+      setShowTransfer,
+      setShowAccount,
+      resetTransferData,
+      updateHW,
+      checkFeeIsEnough,
+      feeWithActive,
+    ],
+  )
+
+  const onTransferClick = React.useCallback(
+    async (_transferValue, isFirstTime: boolean = true) => {
+      const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
+      const transferValue = store.getState()._router_modalData.transferValue
+      if (
+        readyState === AccountStatus.ACTIVATED &&
+        tokenMap &&
+        LoopringAPI.userAPI &&
+        exchangeInfo &&
+        connectProvides.usedWeb3 &&
+        transferValue.address !== '*' &&
+        transferValue?.fee &&
+        transferValue?.fee.belong &&
+        transferValue.fee?.__raw__ &&
+        eddsaKey?.sk
+      ) {
+        try {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_WaitForAuth,
+          })
+
+          const sellToken = tokenMap[transferValue.belong as string]
+          const feeToken = tokenMap[transferValue.fee.belong]
+          const feeRaw = transferValue.fee.feeRaw ?? transferValue.fee.__raw__?.feeRaw ?? 0
+          const fee = sdk.toBig(feeRaw)
+          const balance = sdk.toBig(transferValue.balance ?? 0).times('1e' + sellToken.decimals)
+          const tradeValue = sdk
+            .toBig(transferValue.tradeValue ?? 0)
+            .times('1e' + sellToken.decimals)
+          const isExceedBalance =
+            feeToken.tokenId === sellToken.tokenId && tradeValue.plus(fee).gt(balance)
+          const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue
+          const transferVol = finalVol.toFixed(0, 0)
+
+          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+            {
+              accountId,
+              sellTokenId: sellToken.tokenId,
+            },
+            apiKey,
+          )
+          const req: sdk.OriginTransferRequestV3 = {
+            exchange: exchangeInfo.exchangeAddress,
+            payerAddr: accAddress,
+            payerId: accountId,
+            payeeAddr: realAddr ? realAddr : address,
+            payeeId: 0,
+            storageId: storageId?.offchainId,
+            payPayeeUpdateAccount: !isActiveAccountFee && feeWithActive,
+            token: {
+              tokenId: sellToken.tokenId,
+              volume: transferVol,
+            },
+            maxFee: {
+              tokenId: feeToken.tokenId,
+              volume: fee.toString(), // TEST: fee.toString(),
+            },
+            validUntil: getTimestampDaysLater(DAYS),
+            memo: transferValue.memo,
+          }
+
+          myLog('transfer req:', req)
+
+          processRequest(req, isFirstTime)
+        } catch (e: any) {
+          // transfer failed
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_Failed,
+            error: {
+              code: UIERROR_CODE.UNKNOWN,
+              message: e.message,
+            } as sdk.RESULT_INFO,
+          })
+        }
+      } else {
+        return
+      }
+    },
+    [
+      account,
+      tokenMap,
+      exchangeInfo,
+      setShowAccount,
+      realAddr,
+      address,
+      processRequest,
+      isActiveAccountFee,
+      feeWithActive,
+    ],
   )
 
   const handlePanelEvent = React.useCallback(
-      async (data: SwitchData<R>) => {
-        return new Promise<void>((res: any) => {
-          if (data.to === 'button') {
-            if (walletMap && data?.tradeData?.belong) {
-              const walletInfo = walletMap[data?.tradeData?.belong as string]
-              updateTransferData({
-                belong: data.tradeData?.belong,
-                tradeValue: data.tradeData?.tradeValue,
-                balance: walletInfo ? walletInfo.count : 0,
-                address: '*',
-              })
-            } else {
-              updateTransferData({
-                belong: undefined,
-                tradeValue: undefined,
-                balance: undefined,
-                address: '*',
-              })
-            }
+    async (data: SwitchData<R>) => {
+      return new Promise<void>((res: any) => {
+        if (data.to === 'button') {
+          if (walletMap && data?.tradeData?.belong) {
+            const walletInfo = walletMap[data?.tradeData?.belong as string]
+            updateTransferData({
+              belong: data.tradeData?.belong,
+              tradeValue: data.tradeData?.tradeValue,
+              balance: walletInfo ? walletInfo.count : 0,
+              address: '*',
+            })
+          } else {
+            updateTransferData({
+              belong: undefined,
+              tradeValue: undefined,
+              balance: undefined,
+              address: '*',
+            })
           }
-          res()
-        })
-      },
-      [walletMap, updateTransferData],
+        }
+        res()
+      })
+    },
+    [walletMap, updateTransferData],
   )
 
   const retryBtn = React.useCallback(
-      (isHardwareRetry: boolean = false) => {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Transfer_WaitForAuth,
-        })
+    (isHardwareRetry: boolean = false) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.Transfer_WaitForAuth,
+      })
 
-        processRequest(lastRequest, !isHardwareRetry)
-      },
-      [lastRequest, processRequest, setShowAccount],
+      processRequest(lastRequest, !isHardwareRetry)
+    },
+    [lastRequest, processRequest, setShowAccount],
   )
   const activeAccountPrice = React.useMemo(() => {
     if (
-        realAddr !== '' &&
-        isActiveAccount == false &&
-        activeAccountFeeList.length &&
-        activeAccountFeeList[0] &&
-        tokenPrices &&
-        activeAccountFeeList[0].feeRaw
+      realAddr !== '' &&
+      isActiveAccount == false &&
+      activeAccountFeeList.length &&
+      activeAccountFeeList[0] &&
+      tokenPrices &&
+      activeAccountFeeList[0].feeRaw
     ) {
       const feeInfo: FeeInfo = activeAccountFeeList[0]
       const feeU: any =
-          volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
-              tokenPrices[feeInfo.belong],
-          ) ?? undefined
+        volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
+          tokenPrices[feeInfo.belong],
+        ) ?? undefined
 
       return feeU && currency && forexMap[currency]
-          ? '～' +
-          PriceTag[CurrencyToTag[currency]] +
-          getValuePrecisionThousand(
+        ? '～' +
+            PriceTag[CurrencyToTag[currency]] +
+            getValuePrecisionThousand(
               // @ts-ignore
               feeU * forexMap[currency],
               2,
               2,
               2,
               true,
-              {floor: true},
-          )
-          : EmptyValueTag
+              { floor: true },
+            )
+        : EmptyValueTag
     } else {
       return
     }
-    // return activeAccountFeeList?.find(
-    //   (item: any) => item.belong == feeInfo.belong
-    // );
-  }, [isActiveAccount, activeAccountFeeList, tokenPrices, currency])
+  }, [realAddr, isActiveAccount, activeAccountFeeList, tokenPrices, currency, forexMap])
 
   React.useEffect(() => {
     if (realAddr !== '' && isActiveAccount === false) {
@@ -601,17 +606,46 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       })
     }
   }, [isActiveAccount, realAddr])
-
+  const handleSureItsLayer2 = (sure) => {
+    const found = exWalletToAddressMapFn(sure)!
+    const contact = contacts?.find((x) => x.contactAddress === realAddr)
+    if (!account.isContractAddress && contact && contact.addressType !== sure) {
+      LoopringAPI.contactAPI
+        ?.updateContact(
+          {
+            contactAddress: realAddr,
+            isHebao: !!(account.isContractAddress || account.isCFAddress),
+            accountId: account.accountId,
+            addressType: found,
+            contactName: contact.contactName,
+          },
+          account.apiKey,
+        )
+        .then(() => {
+          updateContacts()
+          reCheck()
+        })
+    }
+    setSureItsLayer2(sure)
+  }
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
+    const { contacts } = store.getState().contacts
+    const addressType = contacts?.find(
+      (x) => x.contactAddress?.toLowerCase() === realAddr?.toLowerCase(),
+    )?.addressType
     if (isShow === false) {
       setSureItsLayer2(undefined)
     } else if (addressType !== undefined) {
       const found = addressType ? addressToExWalletMapFn(addressType) : undefined
-      setSureItsLayer2(found)
+      setSureItsLayer2((state) => {
+        if (state !== found) {
+          return found
+        } else {
+          return state
+        }
+      })
     }
-  }, [realAddr, isShow, contacts])
-
+  }, [realAddr, isShow])
 
   const transferProps: TransferProps<any, any> = {
     contacts,
@@ -626,28 +660,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handlePanelEvent,
     handleFeeChange,
     feeInfo,
-    handleSureItsLayer2: (sure) => {
-      const found = exWalletToAddressMapFn(sure)!
-      const contact = contacts?.find((x) => x.contactAddress === realAddr)
-      if (!account.isContractAddress && contact) {
-        LoopringAPI.contactAPI
-            ?.updateContact(
-                {
-                  contactAddress: realAddr,
-                  isHebao: !!(account.isContractAddress || account.isCFAddress),
-                  accountId: account.accountId,
-                  addressType: found,
-                  contactName: contact.contactName,
-                },
-                account.apiKey,
-            )
-            .then(() => {
-              updateContacts();
-              reCheck()
-            })
-      }
-      setSureItsLayer2(sure)
-    },
+    handleSureItsLayer2,
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.transfer,
     // isConfirmTransfer,
     sureItsLayer2,
@@ -710,13 +723,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSmartContractAddress: isContractAddress,
     isFromContact: contactAddress ? true : false,
     contact: contactAddress
-        ? {
+      ? {
           address: contactAddress,
           name: contactName!,
           addressType: contactAddressType!,
         }
-        : undefined,
-    loopringSmartWalletVersion
+      : undefined,
+    loopringSmartWalletVersion,
     // contacts,
   }
 
