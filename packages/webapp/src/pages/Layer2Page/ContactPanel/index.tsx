@@ -236,7 +236,7 @@ export const ContractPanel = () => {
                       <Typography display={'inline-flex'} paddingRight={1} component={'span'}>
                         {data.contactName}
                       </Typography>
-                      {data.addressType && <AddressTypeTag addressType={data.addressType} />}
+                      <AddressTypeTag addressType={data.addressType} />
                       <EditIcon
                         sx={{
                           paddingLeft: 1,

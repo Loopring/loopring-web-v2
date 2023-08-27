@@ -97,19 +97,6 @@ export const useContact = () => {
   const onClearSearch = React.useCallback(() => {
     setSearchValue('')
   }, [])
-  // const onClickEditing = React.useCallback(
-  //   (address: string) => {
-  //     // updateContacts(
-  //     //   contacts!.map((x) => {
-  //     //     return {
-  //     //       ...x,
-  //     //       editing: x.contactAddress === address,
-  //     //     }
-  //     //   }),
-  //     // )
-  //   },
-  //   [contacts],
-  // )
   const onClickDelete = React.useCallback((address: string, name: string) => {
     setDeleteInfo({
       open: true,
