@@ -7,7 +7,9 @@ import {
   myLog,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
-  NetworkMap, CustomError, ErrorMap,
+  NetworkMap,
+  CustomError,
+  ErrorMap,
 } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -15,11 +17,11 @@ import { checkAddr } from '../../utils'
 import { LoopringAPI, store, useAccount, useContacts, useSystem } from '../../index'
 import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
-import { LoopringErrorCode } from '@loopring-web/loopring-sdk';
+import { LoopringErrorCode } from '@loopring-web/loopring-sdk'
 
 export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const [address, setAddress] = React.useState<string>('')
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
   const { defaultNetwork } = useSettings()
@@ -37,11 +39,11 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const [loopringSmartWalletVersion, setLoopringSmartWalletVersion] = React.useState(
     undefined as { isLoopringSmartWallet: boolean; version?: string } | undefined,
   )
-  const {setShowGlobalToast} = useOpenModals()
+  const { setShowGlobalToast } = useOpenModals()
   const {
-    account: {accAddress, apiKey, accountId},
+    account: { accAddress, apiKey, accountId },
   } = useAccount()
-  const {updateContacts} = useContacts();
+  const { updateContacts } = useContacts()
 
   const check = React.useCallback(async (address: any, web3: any) => {
     try {
@@ -159,7 +161,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       }
     } catch (error) {
       error = {
-        ...error as any,
+        ...(error as any),
         ...LoopringAPI?.walletAPI?.genErr(error as any),
       }
       // @ts-ignore
@@ -181,9 +183,9 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         info: {
           type: ToastType.error,
           content: t(
-              SDK_ERROR_MAP_TO_UI[(error as any)?.code ?? UIERROR_CODE.ERROR_ADDRESS_CHECK_ERROR]
-                  ?.messageKey,
-              {ns: 'error'},
+            SDK_ERROR_MAP_TO_UI[(error as any)?.code ?? UIERROR_CODE.ERROR_ADDRESS_CHECK_ERROR]
+              ?.messageKey,
+            { ns: 'error' },
           ),
         },
       })
@@ -195,7 +197,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       myLog('address update sync', address)
       const found = store
         .getState()
-          .contacts?.contacts?.find((contact) => contact.contactAddress === address)
+        .contacts?.contacts?.find((contact) => contact.contactAddress === address)
       const listNoCheckRequired = [
         sdk.AddressType.LOOPRING_HEBAO_CF,
         sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6,
@@ -225,12 +227,10 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                 wallet: realAddr,
                 network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
               })
-              setIsCFAddress(
-                  !!walletTypeResponse?.walletType?.isInCounterFactualStatus,
-              )
+              setIsCFAddress(!!walletTypeResponse?.walletType?.isInCounterFactualStatus)
               if (
-                  !walletTypeResponse?.walletType?.isInCounterFactualStatus &&
-                  walletTypeResponse?.walletType?.loopringWalletContractVersion
+                !walletTypeResponse?.walletType?.isInCounterFactualStatus &&
+                walletTypeResponse?.walletType?.loopringWalletContractVersion
               ) {
                 const map: [string, sdk.AddressType][] = [
                   ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
@@ -239,39 +239,28 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
                   ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
                   ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
-
                 ]
                 const addressType = map.find(
-                    (x) => x[0] === walletTypeResponse?.walletType?.loopringWalletContractVersion,
+                  (x) => x[0] === walletTypeResponse?.walletType?.loopringWalletContractVersion,
                 )![1]
                 await LoopringAPI.contactAPI?.updateContact(
-                    {
-                      // contactAddress: found.xaddress,
-                      // isHebao: isHebao ? true : false,
-                      // contactName: found.name,
-                      ...found,
-                      isHebao: true,
-                      accountId: accountId,
-                      addressType: addressType,
-                    },
-                    apiKey,
+                  {
+                    // contactAddress: found.xaddress,
+                    // isHebao: isHebao ? true : false,
+                    // contactName: found.name,
+                    ...found,
+                    isHebao: true,
+                    accountId: accountId,
+                    addressType: addressType,
+                  },
+                  apiKey,
                 )
-                // const contacts = store.getState().contacts?.contacts
                 updateContacts()
-                // updateContacts(
-                //   contacts?.map((contact) => {
-                //     if (contact.address === found.address) {
-                //       return { ...contact, addressType: addressType }
-                //     } else {
-                //       return contact
-                //     }
-                //   }),
-                // )
               }
             } else {
               setIsCFAddress(false)
             }
-            
+
             setIsContractAddress(true)
             setIsContract1XAddress(
               found.addressType === sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6 ||

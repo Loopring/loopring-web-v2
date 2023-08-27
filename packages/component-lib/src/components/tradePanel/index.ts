@@ -28,4 +28,4 @@ export * from './components/BanxaConfirm'
 export * from './components/ImportRedPacketWrap'
 export * from './components/hook/useAddressType'
 export { FullAddressType } from './components/AddressType'
-
+export { InitialNameAvatar } from './components/ContactSelection'
