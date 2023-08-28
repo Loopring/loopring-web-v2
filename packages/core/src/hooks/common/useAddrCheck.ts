@@ -236,7 +236,6 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
                   ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
                   ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
-                  ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
                   ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
                   ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
                 ]
