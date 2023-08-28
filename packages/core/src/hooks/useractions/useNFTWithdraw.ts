@@ -31,6 +31,7 @@ import {
   useAddressCheck,
   useBtnStatus,
   useChargeFees,
+  useIsHebao,
   useModalData,
   useSystem,
   useTokenMap,
@@ -42,7 +43,6 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useContacts } from '../../stores'
-import Web3 from 'web3';
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
@@ -105,7 +105,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isCFAddress,
     isContract1XAddress,
     isAddressCheckLoading,
-    loopringSmartWalletVersion
   } = useAddressCheck()
   const isNotAvailableAddress = isContract1XAddress ? 'isContract1XAddress' : undefined
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
@@ -155,8 +154,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isNotAvailableAddress,
     sureIsAllowAddress,
   ])
-  const {updateContacts, contacts, errorMessage: contactsErrorMessage} = useContacts()
-
   const walletLayer2Callback = React.useCallback(() => {
     checkFeeIsEnough()
   }, [])
@@ -165,9 +162,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     if (info?.isRetry) {
       checkFeeIsEnough()
       return
-    }
-    if (contactsErrorMessage) {
-      updateContacts()
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     if (nftWithdrawValue.nftData) {
@@ -208,7 +202,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     account.accAddress,
     setAddress,
     contactAddress,
-    contactsErrorMessage,
   ])
 
   React.useEffect(() => {
@@ -238,7 +231,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
           const response = await LoopringAPI.userAPI.submitNFTWithdraw(
             {
               request,
-              web3: connectProvides.usedWeb3 as unknown as Web3,
+              web3: connectProvides.usedWeb3 as any,
               chainId: chainId === 'unknown' ? 1 : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
@@ -486,8 +479,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount],
   )
+  const { isHebao } = useIsHebao()
+  const { updateContacts, contacts } = useContacts()
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
+    const addressType = contacts?.find((x) => x.address === realAddr)?.addressType
     if (!isShow) {
       setSureIsAllowAddress(undefined)
     } else if (addressType !== undefined) {
@@ -502,22 +497,29 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     sureIsAllowAddress,
     handleSureIsAllowAddress: (value) => {
       const found = exWalletToAddressMapFn(value)
-      // const found = map.find(x => x[0] === value)![1]
-      const contact = contacts?.find((x) => x.contactAddress === realAddr)
-      if (!account?.isContractAddress && contact) {
+      const contact = contacts?.find((x) => x.address === realAddr)
+      if (isHebao !== undefined && contact) {
         LoopringAPI.contactAPI
           ?.updateContact(
             {
               contactAddress: realAddr,
-              isHebao: !!(account.isContractAddress || account.isCFAddress),
+              isHebao,
               accountId: account.accountId,
               addressType: found,
-              contactName: contact.contactName,
+              contactName: contact.name,
             },
             account.apiKey,
           )
           .then(() => {
-            updateContacts()
+            updateContacts(
+              contacts?.map((x) => {
+                if (x.address === realAddr && found) {
+                  return { ...x, addressType: found }
+                } else {
+                  return x
+                }
+              }),
+            )
           })
       }
       setSureIsAllowAddress(value)
@@ -549,8 +551,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
         handleNFTWithdraw(tradeData, realAddr ? realAddr : address)
       }
     },
-    handleWithdrawTypeChange: () => {
-    },
+    handleWithdrawTypeChange: () => {},
     handlePanelEvent: async (data: SwitchData<R>) => {
       return new Promise((res: any) => {
         if (data.to === 'button') {
@@ -580,8 +581,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isFeeNotEnough,
     isLoopringAddress: true,
     contacts,
-    loopringSmartWalletVersion
-  }  as unknown as WithdrawProps<any, any>
+  } as WithdrawProps<any, any>
 
   return {
     nftWithdrawProps,

@@ -79,6 +79,7 @@ export const MintNFTConfirm = <
   const [error, setError] = React.useState(false)
   const [src, setSrc] = React.useState(getIPFSString(metaData?.image, baseURL))
   React.useEffect(() => {
+    setError(false)
     setSrc(getIPFSString(metaData?.image ?? '', baseURL))
   }, [metaData?.image])
   const handleToggleChange = (value: C) => {

@@ -37,7 +37,7 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  FeeSelect, GridWrapStyle,
+  FeeSelect,
   InputSize,
   TextField,
   Toast,
@@ -100,6 +100,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
     assetsData: any[]
     handleConfirm: (index: number) => void
   }) => {
+  contact
   const inputBtnRef = React.useRef()
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -332,8 +333,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
     isAddressCheckLoading,
   ])
 
-  return <GridWrapStyle
-      className={'transfer-wrap'}
+  return (
+    <Grid
+      className={walletMap ? 'transfer-wrap' : 'loading'}
       container
       paddingLeft={isMobile ? 2 : 5 / 2}
       paddingRight={isMobile ? 2 : 5 / 2}
@@ -344,9 +346,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
       minWidth={240}
       spacing={2}
       flexWrap={'nowrap'}
-  >
-    <Grid item>
-      <Box
+    >
+      <Grid item>
+        <Box
           display={'flex'}
           flexDirection={'row'}
           justifyContent={'center'}
@@ -392,13 +394,13 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
                 ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               }}
-          >
-            Transfer to any valid Ethereum addresses instantly. Please make sure the recipient
-            address accepts Loopring layer-2 payments before you proceed.
-          </Trans>
-        </Typography>
-      </PopoverPure>
-    </Grid>
+            >
+              Transfer to any valid Ethereum addresses instantly. Please make sure the recipient
+              address accepts Loopring layer-2 payments before you proceed.
+            </Trans>
+          </Typography>
+        </PopoverPure>
+      </Grid>
 
       <Grid item alignSelf={'stretch'} position={'relative'}>
         {type === 'NFT' ? (
@@ -446,7 +448,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           placeholder={t('labelL2toL2AddressInput')}
           onChange={(event) => handleOnAddressChange(event?.target?.value)}
           disabled={!chargeFeeTokenList.length}
-          SelectProps={{IconComponent: DropDownIcon}}
+          SelectProps={{ IconComponent: DropDownIcon }}
           fullWidth={true}
           InputProps={{
             style: {
@@ -480,7 +482,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                   color={'inherit'}
                   size={'large'}
                   onClick={() => {
-                    onClickContact()
+                    onClickContact!()
                   }}
                 >
                   <ContactIcon />
@@ -579,5 +581,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
         }}
         severity={ToastType.success}
       />
-  </GridWrapStyle>
+    </Grid>
+  )
 }

@@ -745,7 +745,7 @@ export default {
   labelMemo: 'Memo',
   labelAdvanceMint: 'Advance Create NFT',
   labelWalletTypeDes:
-    'Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ',
+    'Please confirm the address type again to ensure the assets are not mistakenly sent to the exchange address. ',
   labelWalletTypeOptions: '{{type}} Wallet',
   labelWalletTypeOtherSmart: 'Other Smart',
   labelWalletTypeLoopring: 'Loopring',
@@ -1807,6 +1807,7 @@ export default {
   labelLeverageETHBack: 'Leveraged ETH Staking',
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
+  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelMarketOrderUnfilled: 'Market Order Unfilled',

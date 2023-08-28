@@ -9,17 +9,17 @@ import {
   Zoom,
 } from '@mui/material'
 import {
-  ButtonProps,
-  TGItemJSXInterface,
-  ToggleButtonGroupProps,
+    ButtonProps,
+    TGItemJSXInterface,
+    ToggleButtonGroupProps,
 } from './Interface'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import {
-  BackIcon,
-  CloseIcon,
-  QRIcon,
-  SoursURL,
+    BackIcon,
+    CloseIcon,
+    QRIcon,
+    SoursURL,
 } from '@loopring-web/common-resources'
 import React from 'react'
 
@@ -68,10 +68,10 @@ export const Button = styled(MuButton)<ButtonProps>`
 ` as (props: ButtonProps) => JSX.Element
 
 export function ScrollTop({
-                            // anchorTopRef,
-                            ...props
+                              // anchorTopRef,
+                              ...props
                           }: {
-  children: React.ReactElement;
+    children: React.ReactElement;
   // anchorTopRef?: React.Ref<any>;
 }) {
   const { children } = props
@@ -82,17 +82,17 @@ export function ScrollTop({
     threshold: 100,
   })
 
-  const scrollToTop = React.useCallback(
-    (event: React.MouseEvent<HTMLDivElement>) => {
-      const anchor =
-        (event.currentTarget as HTMLDivElement).parentElement || //.ownerDocument || document
-        document.querySelector('#back-to-top-anchor')
-      if (anchor) {
-        window.scrollTo(0, anchor?.offsetTop)
-      }
-    },
-    [],
-  )
+    const scrollToTop = React.useCallback(
+        (event: React.MouseEvent<HTMLDivElement>) => {
+            const anchor =
+                (event.currentTarget as HTMLDivElement).parentElement || //.ownerDocument || document
+                document.querySelector('#back-to-top-anchor')
+            if (anchor) {
+                window.scrollTo(0, anchor?.offsetTop)
+            }
+        },
+        [],
+    )
 
   return (
     <Zoom in={trigger}>
@@ -116,14 +116,14 @@ export function ScrollTop({
 
 export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
   ${({ theme, size }) =>
-  size !== 'small'
-    ? `
+          size !== 'small'
+                  ? `
       background: var(--color-box);
       padding: ${theme.unit / 2}px;
       padding-right: ${theme.unit / 4}px;
       box-shadow: var(--shadow3);
   `
-    : ``};
+                  : ``};
 
   .MuiToggleButton-sizeSmall {
     background: var(--color-box);
@@ -131,7 +131,7 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
     font-size: 1.2rem;
     margin-right: ${({ theme }) => theme.unit}px;
     border: ${({theme}) =>
-  theme.border.borderConfig({c_key: 'var(--color-border)'})};
+            theme.border.borderConfig({c_key: 'var(--color-border)'})};
     color: var(--color-text-secondary);
 
     &:not(:first-of-type),
@@ -144,11 +144,11 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       // color: var(--color-primary);
       color: var(--color-text-button-select);
       border: ${({theme}) =>
-  theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
+              theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
       background: var(--color-box);
       // &:not(:last-child), &:not(:first-of-type) {
-      //   border: ${({theme}) =>
-  theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+        //   border: ${({theme}) =>
+              theme.border.borderConfig({c_key: 'var(--color-primary)'})};
       // }
 
       &.Mui-selected,
@@ -157,10 +157,10 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
         background: var(--color-box);
         // color: var(--color-primary);
         color: var(--color-text-button-select);
-        // border: ${({theme}) =>
-  theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+          // border: ${({theme}) =>
+                theme.border.borderConfig({c_key: 'var(--color-primary)'})};
         border: ${({theme}) =>
-  theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
+                theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
       }
     }
 
@@ -177,24 +177,24 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       color: var(--color-text-button-select) !important;
       background: var(--color-box) !important;
       //background:  var(--color-disable);
-      // border: ${({theme}) =>
-  theme.border.borderConfig({c_key: 'var(--color-primary)'})}
+        // border: ${({theme}) =>
+              theme.border.borderConfig({c_key: 'var(--color-primary)'})}
       border: ${({theme}) =>
-  theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
+              theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
     }
   }
 ` as typeof MuToggleButtonGroup
 
 export const ToggleButtonGroup = withTranslation('common')(
   ({
-     t,
-     value,
-     // handleChange,
-     size = 'medium',
-     tgItemJSXs,
-     data,
-     exclusive,
-     onChange,
+       t,
+       value,
+       // handleChange,
+       size = 'medium',
+       tgItemJSXs,
+       data,
+       exclusive,
+       onChange,
    }: { t: TFunction } & ToggleButtonGroupProps) => {
     const _handleChange = React.useCallback(
       (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => {
@@ -217,27 +217,27 @@ export const ToggleButtonGroup = withTranslation('common')(
         exclusive={exclusive}
         onChange={_handleChange}
       >
-        {tgItemJSXs?.map(
-          ({
-             value,
-             JSX,
-             tlabel,
-             disabled,
-             key,
-             notWrap,
-           }: TGItemJSXInterface) =>
-            notWrap ? (
-              <Box key={key ? key : value}>{JSX}</Box>
-            ) : (
-              <ToggleButton
-                key={key ? key : value}
-                value={value}
-                aria-label={tlabel}
-                disabled={disabled}
-              >
-                {JSX}
-              </ToggleButton>
-            ),
+          {tgItemJSXs?.map(
+              ({
+                   value,
+                   JSX,
+                   tlabel,
+                   disabled,
+                   key,
+                   notWrap,
+               }: TGItemJSXInterface) =>
+                  notWrap ? (
+                      <Box key={key ? key : value}>{JSX}</Box>
+                  ) : (
+                      <ToggleButton
+                          key={key ? key : value}
+                          value={value}
+                          aria-label={tlabel}
+                          disabled={disabled}
+                      >
+                          {JSX}
+                      </ToggleButton>
+                  ),
         )}
       </MuToggleButtonGroupStyle>
     )
@@ -245,15 +245,15 @@ export const ToggleButtonGroup = withTranslation('common')(
 )
 
 export const ModalCloseButton = ({
-                                   onClose,
-                                   className = '',
-                                   closeIcon = <CloseIcon/>,
-                                   t,
+                                     onClose,
+                                     className = '',
+                                     closeIcon = <CloseIcon/>,
+                                     t,
                                  }: {
-  className?: string;
-  closeIcon?: JSX.Element;
+    className?: string;
+    closeIcon?: JSX.Element;
   onClose?: {
-    bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
+      bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
   }['bivarianceHack'];
 } & { t: TFunction }) => {
   return (
@@ -281,20 +281,20 @@ export const ModalCloseButton = ({
 }
 
 export const ModalCloseButtonPosition = ({
-                                           onClose,
-                                           className = '',
-                                           closeIcon = <CloseIcon/>,
-                                           t,
-                                           right,
-                                           top,
+                                             onClose,
+                                             className = '',
+                                             closeIcon = <CloseIcon/>,
+                                             t,
+                                             right,
+                                             top,
                                          }: {
-  className?: string;
-  closeIcon?: JSX.Element;
+    className?: string;
+    closeIcon?: JSX.Element;
   onClose?: {
-    bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
+      bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
   }['bivarianceHack'];
-  right?: number;
-  top?: number;
+    right?: number;
+    top?: number;
 } & { t: TFunction }) => {
   return (
     <Box
@@ -320,14 +320,14 @@ export const ModalCloseButtonPosition = ({
 }
 
 export const ModalBackButton = ({
-                                  onBack,
-                                  t,
-                                  marginTop = '-24px',
-                                  marginLeft = 1.5,
+                                    onBack,
+                                    t,
+                                    marginTop = '-24px',
+                                    marginLeft = 1.5,
                                 }: {
-  onBack?: () => void;
-  marginTop?: number | string;
-  marginLeft?: number | string;
+    onBack?: () => void;
+    marginTop?: number | string;
+    marginLeft?: number | string;
 } & Partial<WithTranslation>) => {
   return (
     <Box alignSelf={'flex-start'} marginTop={marginTop} marginLeft={marginLeft}>
@@ -362,19 +362,19 @@ const QRStyle = styled(Box)`
     left: -2px;
     //z-index: -1;
     background-image: ${({ theme }) => {
-  if (theme.mode === 'dark') {
-    return `url('${SoursURL}images/qr_code_dark.png')`
-  } else {
-    return `url('${SoursURL}images/qr_code_light.png')`
-  }
-}};
+      if (theme.mode === 'dark') {
+        return `url('${SoursURL}images/qr_code_dark.png')`
+      } else {
+        return `url('${SoursURL}images/qr_code_light.png')`
+      }
+    }};
   }
 ` as typeof Box
 export const QRButtonStyle = ({
-                                onQRClick,
-                                t,
+                                  onQRClick,
+                                  t,
                               }: {
-  onQRClick?: () => void;
+    onQRClick?: () => void;
 } & WithTranslation) => {
   return (
     <QRStyle

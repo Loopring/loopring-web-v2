@@ -7,7 +7,6 @@ import {
   useAccount,
   useSystem,
 } from '@loopring-web/core'
-import Web3 from 'web3'
 
 import {
   Layer1Action,
@@ -299,7 +298,7 @@ export const useAction = ({
           {
             request: request,
             guardian: selected,
-              web3: connectProvides.usedWeb3 as unknown as Web3,
+              web3: connectProvides.usedWeb3 as any,
             chainId: _chainId,
             eddsaKey: '',
             apiKey: '',
@@ -367,7 +366,7 @@ export const useAction = ({
         }
         const response = await LoopringAPI.walletAPI.rejectHebao({
           request,
-            web3: connectProvides.usedWeb3 as unknown as Web3,
+            web3: connectProvides.usedWeb3 as any,
           address: account.accAddress,
           chainId: _chainId as any,
           guardiaContractAddress: guardian.address,
@@ -480,7 +479,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           ])
           await callSwitchChain(_chainId)
           const params: sdk.LockHebaoHebaoParam = {
-              web3: connectProvides.usedWeb3 as unknown as Web3,
+            web3: connectProvides.usedWeb3 as any,
             from: account.accAddress,
             contractAddress: isVersion1 ? guardianModule : item.address,
             wallet: item.address,

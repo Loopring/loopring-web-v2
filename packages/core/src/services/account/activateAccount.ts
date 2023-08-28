@@ -6,7 +6,6 @@ import {
   EddsaKey,
   callSwitchChain,
 } from '../../index'
-import Web3 from 'web3'
 import { ChainIdExtends, FeeInfo, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -75,10 +74,10 @@ export async function activateAccount({
     try {
       await callSwitchChain(_chainId)
       eddsaKey = await sdk.generateKeyPair({
-          web3: connectProvides.usedWeb3 as unknown as Web3,
+        web3: connectProvides.usedWeb3 as any,
         address: accInfo.owner,
         keySeed,
-        walletType: (ConnectProviders[ connectName ] ?? connectName) as unknown as sdk.ConnectorNames,
+        walletType: (ConnectProviders[connectName] ?? connectName) as unknown as sdk.ConnectorNames,
         chainId: system.chainId as any,
         counterFactualInfo: counterFactualInfo ?? undefined,
       })

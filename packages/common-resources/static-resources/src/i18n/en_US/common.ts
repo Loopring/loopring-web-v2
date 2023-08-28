@@ -758,7 +758,7 @@ export default {
   labelMemo: 'Memo',
   labelAdvanceMint: 'Advance Create NFT',
   labelWalletTypeDes:
-    'Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ',
+    'Please confirm the address type again to ensure the assets are not mistakenly sent to the exchange address. ',
   labelWalletTypeOptions: '{{type}} Wallet',
   labelWalletTypeOtherSmart: 'Other Smart',
   labelWalletTypeLoopring: 'Loopring',
@@ -1821,6 +1821,7 @@ export default {
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
+  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
   labelRiskAgree: 'Proceed Anyway',
   labelRiskCancel: 'Cancel',
@@ -1828,7 +1829,7 @@ export default {
   labelCurrentMarketPrice: 'Current Market Price',
   labelPriceVariance: 'Price Variance',
   labelImpactExtraNewGreat:
-    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap Continue to confirm you understand and acknowledge the risk.',
+    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelPriceImpact: 'Price Impact',
   labelPriceImpactDes1:
     'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <t>‘AGREE’</t> and tap ‘Proceed Anyway’ to confirm again.',
@@ -1839,6 +1840,7 @@ export default {
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
-   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
-  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
+  labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
+  labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
 }
