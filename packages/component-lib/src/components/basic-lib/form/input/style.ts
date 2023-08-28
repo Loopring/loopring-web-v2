@@ -19,7 +19,7 @@ import { fontDefault } from '@loopring-web/common-resources';
 
 export const inputHeightLarge = () => css`
   height: var(--input-height-large);
-  font-size: ${fontDefault.h5}
+  font-size: 1.5rem;
 
   .MuiInputAdornment-root {
     svg {
@@ -49,8 +49,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   && {
     .MuiSelect-nativeInput + svg {
       position: absolute;
-      right: 0.4rem;
-      top: ${({ theme }) => theme.unit}px;
+      right: ${({ size }) => (size === 'large' ? 1 : 0.4)}rem;
+      top: ${({ theme, size }) => (size === 'large' ? 2 * theme.unit : theme.unit)}px;
       color: var(--color-text-secondary);
     }
 

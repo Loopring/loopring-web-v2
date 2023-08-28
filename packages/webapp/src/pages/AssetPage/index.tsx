@@ -6,8 +6,8 @@ import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { useAccount, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
-import { useGetAssets } from './AssetPanel/hook'
+import { store, useAccount, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
+import { useAssetAction, useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 
 export * from './HistoryPanel/hooks'
@@ -18,13 +18,6 @@ export const AssetPage = () => {
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
-  const { account } = useAccount()
-
-  React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
-      walletLayer2Service.sendUserUpdate()
-    }
-  }, [])
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
       case 'history':
@@ -34,7 +27,7 @@ export const AssetPage = () => {
         return (
           <AssetPanel
             assetTitleProps={assetTitleProps}
-            assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
+            assetPanelProps={{...assetPanelProps, assetBtnStatus}}
           />
         )
     }
@@ -53,7 +46,7 @@ export const AssetPage = () => {
           {isMobile && (
             <AssetTitleMobile
               assetBtnStatus={assetBtnStatus}
-              {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
+              {...{...assetTitleProps, ...assetTitleMobileExtendProps}}
             />
           )}
           {layer2Router}

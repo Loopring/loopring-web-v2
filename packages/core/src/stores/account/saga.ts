@@ -1,7 +1,13 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
-import { cleanAccountStatus, nextAccountStatus, updateAccountStatus } from './reducer'
+import {
+  cleanAccountStatus,
+  nextAccountStatus,
+  nextAccountSyncStatus,
+  statusUnset,
+  updateAccountStatus
+} from './reducer'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { Account, AccountStatus } from '@loopring-web/common-resources'
+import { Account, AccountStatus, myLog } from '@loopring-web/common-resources'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { AccountInfo, WalletType } from '@loopring-web/loopring-sdk'
 import { store } from '../index'
@@ -18,7 +24,7 @@ const getAccount = async (): Promise<{
   if (frozen === LoopFrozenFlag) {
     __timer__ = ((__timer__) => {
       if (__timer__ && __timer__ !== -1) {
-        clearTimeout(__timer__)
+        clearTimeout(__timer__ as any)
       }
       return setTimeout(() => {
         store.dispatch(updateAccountStatus({ frozen: account.frozen }))
@@ -36,7 +42,7 @@ const getAccount = async (): Promise<{
   ])
 
   if (__timer__ && __timer__ !== -1) {
-    clearTimeout(__timer__)
+    clearTimeout(__timer__ as any)
   }
   return {
     account,
@@ -105,14 +111,35 @@ export function* cleanAccountSaga({
   }
 }
 
+export function* accountUpdateSyncSaga(action: PayloadAction<Account>) {
+  try {
+    myLog('accountUpdateSyncSaga', action.payload, action)
+    yield put(
+      nextAccountStatus({
+        ...action?.payload,
+      }),
+    )
+    yield put(
+      statusUnset({}),
+    )
+  } catch (err) {
+    yield put(nextAccountStatus({ error: err }))
+  }
+}
+
 function* accountSage() {
   // @ts-ignore
   yield all([takeLatest(updateAccountStatus, accountUpdateSaga)])
 }
+function* accountSyncSage() {
+  // @ts-ignore
+  yield all([takeLatest(nextAccountSyncStatus, accountUpdateSyncSaga)])
+}
+
 
 function* accountRestSage() {
   // @ts-ignore
   yield all([takeLatest(cleanAccountStatus, cleanAccountSaga)])
 }
 
-export const accountFork = [fork(accountSage), fork(accountRestSage)]
+export const accountFork = [fork(accountSage), fork(accountRestSage),fork(accountSyncSage)]

@@ -6,7 +6,7 @@ import { LoopringMap, TickerData } from '@loopring-web/loopring-sdk'
 const initialState: Required<TickerStates> = {
   tickerMap: {},
   __timer__: -1,
-  status: 'PENDING',
+  status: SagaStatus.PENDING,
   errorMessage: null,
 }
 const tickerMapSlice: Slice = createSlice({

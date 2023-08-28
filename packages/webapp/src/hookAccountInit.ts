@@ -12,6 +12,7 @@ import {
   redPacketHistory,
   offFaitService,
   store,
+  useContacts,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -37,13 +38,15 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2()
-  const {
-    updateWalletL2Collection,
-    updateLegacyContracts,
-    resetL2Collection,
-    status: walletL2CollectionStatus,
-    statusUnset: walletL2CollectionstatusUnset,
-  } = useWalletL2Collection()
+    const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
+
+    const {
+      updateWalletL2Collection,
+      updateLegacyContracts,
+      resetL2Collection,
+      status: walletL2CollectionStatus,
+      statusUnset: walletL2CollectionstatusUnset,
+    } = useWalletL2Collection()
 
   const {
     updateWalletL2NFTCollection,
@@ -89,11 +92,11 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletL2Collection({ page: 1 })
           }
           updateLegacyContracts()
+          updateContacts()
           break
       }
     }
   }, [accountStatus, state, account.readyState])
-
   React.useEffect(() => {
     switch (walletLayer1Status) {
       case SagaStatus.ERROR:
@@ -118,6 +121,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [walletLayer2Status])
+
   React.useEffect(() => {
     switch (walletL2CollectionStatus) {
       case SagaStatus.ERROR:
@@ -167,4 +171,16 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [userRewardsStatus])
+  React.useEffect(() => {
+    switch (contactsStatus) {
+      case SagaStatus.ERROR:
+        contactsUnset()
+        break
+      case SagaStatus.DONE:
+        contactsUnset()
+        break
+      default:
+        break
+    }
+  }, [contactsStatus])
 }

@@ -25,7 +25,7 @@
     "@loopring-web/common-resources": "1.0.0",
     "@loopring-web/component-lib": "1.0.0",
     "@loopring-web/core": "1.0.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.1",
     "cross-env": "^7.0.3"
   },
   "resolutions": {
@@ -47,9 +47,9 @@
   "homepage": ".",
   "scripts": {
     "prettier": "prettier . --write",
-    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && git rev-parse --short HEAD; cross-env REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production  react-app-rewired build",
-    "dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development react-app-rewired start",
-    "build_dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && git rev-parse --short HEAD; cross-env REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development react-app-rewired build"
+    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && git rev-parse --short HEAD; cross-env REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production  craco build",
+    "dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development craco start",
+    "build_dev": "REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development craco build"
   },
   "browserslist": {
     "production": [

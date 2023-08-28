@@ -23,10 +23,7 @@ export const accountStaticCallBack = (
   }
 }
 const activeBtnLabelFn = function () {
-  // const { accAddress } = store.getState().account;
-  // myLog("goActiveAccount");
-  // const is_Contract = await isContract(connectProvides.usedWeb3, accAddress);
-  // is_Contract ? "labelNotAllowActive" :
+
   return `labelDepositAndActiveBtn`
 }
 

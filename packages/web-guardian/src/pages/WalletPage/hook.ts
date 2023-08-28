@@ -298,7 +298,7 @@ export const useAction = ({
           {
             request: request,
             guardian: selected,
-            web3: connectProvides.usedWeb3,
+              web3: connectProvides.usedWeb3 as any,
             chainId: _chainId,
             eddsaKey: '',
             apiKey: '',
@@ -366,7 +366,7 @@ export const useAction = ({
         }
         const response = await LoopringAPI.walletAPI.rejectHebao({
           request,
-          web3: connectProvides.usedWeb3,
+            web3: connectProvides.usedWeb3 as any,
           address: account.accAddress,
           chainId: _chainId as any,
           guardiaContractAddress: guardian.address,

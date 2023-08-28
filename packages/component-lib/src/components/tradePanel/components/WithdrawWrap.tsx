@@ -30,12 +30,12 @@ import {
   WALLET_TYPE,
   WithdrawType,
 } from '@loopring-web/common-resources'
-import { FeeSelect, InputSize, PopoverPure, Toast, ToastType } from '../..'
+import { FeeSelect, GridWrapStyle, InputSize, PopoverPure, Toast, ToastType } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
-import { WithdrawAddressType } from './AddressType'
+import { FullAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const WithdrawWrap = <
@@ -114,7 +114,7 @@ export const WithdrawWrap = <
   }, [disabled, withdrawBtnStatus])
   const inputButtonDefaultProps = {
     label: t('labelL2toL1EnterToken'),
-    loading: isFeeNotEnough.isOnLoading,
+    // loading: isFeeNotEnough.isOnLoading,
   }
 
   const handleToggleChange = (value: C) => {
@@ -126,7 +126,7 @@ export const WithdrawWrap = <
   const _handleWithdrawTypeChange = React.useCallback(
     (e: WithdrawType) => {
       if (handleWithdrawTypeChange) {
-        handleWithdrawTypeChange(e)
+        handleWithdrawTypeChange(e as any)
       }
     },
     [handleWithdrawTypeChange],
@@ -184,8 +184,8 @@ export const WithdrawWrap = <
     : WALLET_TYPE.EOA
 
   return (
-    <Grid
-      className={walletMap ? '' : 'loading'}
+      <GridWrapStyle
+          className={'withdraw-wrap'}
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -276,7 +276,6 @@ export const WithdrawWrap = <
               type,
               t,
               disabled,
-              // loading:isFeeNotEnough.isOnLoading,
               walletMap,
               tradeData,
               coinMap,
@@ -404,7 +403,7 @@ export const WithdrawWrap = <
       </Grid>
       {!isToMyself && (
         <Grid item alignSelf={'stretch'} position={'relative'}>
-          <WithdrawAddressType
+          <FullAddressType
             detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}
             handleSelected={handleSureIsAllowAddress}
@@ -431,7 +430,7 @@ export const WithdrawWrap = <
               }}
               withdrawInfos={{
                 types: withdrawTypes,
-                type: withdrawType,
+                type: withdrawType as any,
                 onChangeType(w) {
                   _handleWithdrawTypeChange(w)
                 },
@@ -478,6 +477,6 @@ export const WithdrawWrap = <
         }}
         severity={ToastType.success}
       />
-    </Grid>
+      </GridWrapStyle>
   )
 }

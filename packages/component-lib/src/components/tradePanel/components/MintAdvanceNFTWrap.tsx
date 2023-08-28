@@ -132,6 +132,7 @@ export const MintAdvanceNFTWrap = <
   } = collectionInputProps
   const inputBtnRef = React.useRef()
   const [showFeeModal, setShowFeeModal] = React.useState(false)
+  myLog('showFeeModal', showFeeModal)
   React.useEffect(() => {
     if (address !== tradeData?.tokenAddress && tradeData?.tokenAddress !== '') {
       setAddress(tradeData?.tokenAddress)
@@ -1001,6 +1002,7 @@ export const MintAdvanceNFTWrap = <
     getIPFSString,
     nftMintBtnStatus,
     onNFTMintClick,
+    showFeeModal
   ])
 
   // @ts-ignore

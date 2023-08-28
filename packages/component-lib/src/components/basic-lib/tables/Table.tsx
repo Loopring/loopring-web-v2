@@ -66,7 +66,7 @@ export const DataGridStyled = styled(DataGrid)`
       background: var(--color-box);
     }
 
-    min-height: 350px;
+    min-height: var(--min-height);
     color: var(--color-text-primary);
     //color: inherit;
     box-sizing: border-box;

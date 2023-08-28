@@ -102,13 +102,14 @@ export type TransferExtendProps<T, I, C> = {
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void
   contact?: { address: string; name: string; addressType: sdk.AddressType }
   isFromContact?: boolean
-  onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
-  contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
-} & TransferInfoProps<C>
+  // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
+} & Pick<sdk.GetContactsResponse, 'contacts'> & TransferInfoProps<C>
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> = TransferExtendProps<T, I, C> &
-  BasicACoinTradeViewProps<T, I>
+    BasicACoinTradeViewProps<T, I> & {
+  onClickContact: () => void
+}
 
 export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>
 export type BanxaViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C> & {
@@ -231,13 +232,15 @@ export type WithdrawExtendProps<T, I, C> = {
   handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => void
   contact?: { address: string; name: string; addressType?: sdk.AddressType }
   isFromContact?: boolean
-  onClickContact?: () => void
+  // onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
-  contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
-} & WithdrawInfoProps<C>
+  // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
+} & Pick<sdk.GetContactsResponse, 'contacts'> & WithdrawInfoProps<C>
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> = BasicACoinTradeViewProps<T, I> &
-  WithdrawExtendProps<T, I, C>
+    WithdrawExtendProps<T, I, C> & {
+  onClickContact: () => void
+}
 
 export type ForceWithdrawExtendProps<T, I, C> = {
   addressDefault: string
@@ -271,7 +274,7 @@ export type DefaultProps<T, I> = {
   selectNFTDisabled?: boolean
 } & (
   | {
-      type?: TRADE_TYPE.TOKEN
+  type: TRADE_TYPE.TOKEN
       coinMap: CoinMap<I, CoinInfo<I>>
       walletMap: WalletMap<I, WalletCoin<I>>
     }
