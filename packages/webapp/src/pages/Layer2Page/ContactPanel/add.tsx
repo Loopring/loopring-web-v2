@@ -13,6 +13,7 @@ import {
   AddressError,
   CloseIcon,
   EXCHANGE_TYPE,
+  HEBAO_CONTRACT_MAP,
   LoadingIcon,
   myLog,
   NetworkMap,
@@ -41,8 +42,6 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { LoopringErrorCode } from '@loopring-web/loopring-sdk'
-import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 type EditItem = {
   item: ContactType
@@ -81,36 +80,43 @@ export const useContactAdd = ({
   const allowToClickIsSure = React.useMemo(() => {
     return isAddressCheckLoading || addrStatus === AddressError.InvalidAddr || !realAddr
   }, [addrStatus, isAddressCheckLoading, realAddr])
-  const mapContactAddressType = (): (typeof sdk.AddressType)[sdk.AddressTypeKeys] | undefined => {
-    if (addressTypeISCFAddress) {
-      return sdk.AddressType.LOOPRING_HEBAO_CF
-    } else if (loopringSmartWalletVersion?.isLoopringSmartWallet) {
-      const map: [string, (typeof AddressType)[AddressTypeKeys]][] = [
-        ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
-        ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
-        ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
-        ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
-        ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
-      ]
-      const item = map.find((x) => x[0] === loopringSmartWalletVersion?.version)
-      return item ? item[1] : undefined
-    } else if (isContractAddress) {
-      return sdk.AddressType.CONTRACT
-    } else if (selectedAddressType) {
-      return exWalletToAddressMapFn(selectedAddressType)
-    }
-  }
-  const autoSetWalletType = () => {
-    if (realAddr && selectedAddressType == undefined) {
-      const addressType = mapContactAddressType()
-      if (addressType) {
-        const type = addressToExWalletMapFn(addressType)
-        onChangeAddressType(type)
-      } else {
-        onChangeAddressType(undefined)
+    const mapContactAddressType = React.useCallback(():
+      | (typeof sdk.AddressType)[sdk.AddressTypeKeys]
+      | undefined => {
+      if (addressTypeISCFAddress) {
+        return sdk.AddressType.LOOPRING_HEBAO_CF
+      } else if (loopringSmartWalletVersion?.isLoopringSmartWallet) {
+        const item = HEBAO_CONTRACT_MAP.find(
+          (item) => item[0] === loopringSmartWalletVersion?.version,
+        )
+        return item
+          ? item[1]
+          : /V2_/.test(loopringSmartWalletVersion?.version ?? '')
+          ? 2002
+          : undefined
+      } else if (isContractAddress) {
+        return sdk.AddressType.CONTRACT
+      } else if (selectedAddressType) {
+        return exWalletToAddressMapFn(selectedAddressType)
+      }
+    }, [
+      addressTypeISCFAddress,
+      loopringSmartWalletVersion?.isLoopringSmartWallet,
+      loopringSmartWalletVersion?.version,
+      isContractAddress,
+      selectedAddressType,
+    ])
+    const autoSetWalletType = () => {
+      if (realAddr && selectedAddressType == undefined) {
+        const addressType = mapContactAddressType()
+        if (addressType) {
+          const type = addressToExWalletMapFn(addressType)
+          onChangeAddressType(type)
+        } else {
+          onChangeAddressType(undefined)
+        }
       }
     }
-  }
   React.useEffect(() => {
     if (realAddr && addName) {
       enableBtn()
@@ -139,15 +145,16 @@ export const useContactAdd = ({
     : isContractAddress
     ? WALLET_TYPE.OtherSmart
     : WALLET_TYPE.EOA
-  const onChangeAddress = React.useCallback((input: string) => {
+  const onChangeAddress = (input: string) => {
     setAddress(input)
-  }, [])
-  const onChangeName = React.useCallback((input: string) => {
+  }
+  const onChangeName = (input: string) => {
     if (new TextEncoder().encode(input).length <= 48) {
       setAddName(input)
     }
-  }, [])
+  }
   const onChangeAddressType = (value: WALLET_TYPE | EXCHANGE_TYPE | undefined) => {
+    myLog(onChangeAddressType, 'value')
     setSelectedAddressType(value)
   }
   const restData = () => {
@@ -198,7 +205,7 @@ export const useContactAdd = ({
           ...((error as any) ?? {}),
           ..._error,
         }
-        if ((error as any)?.code == LoopringErrorCode.HTTP_ERROR) {
+        if ((error as any)?.code == sdk.LoopringErrorCode.HTTP_ERROR) {
           setToast({
             open: true,
             type: ToastType.error,
@@ -247,7 +254,7 @@ export const useContactAdd = ({
           ...((error as any) ?? {}),
           ..._error,
         }
-        if ((error as any)?.code == LoopringErrorCode.HTTP_ERROR) {
+        if ((error as any)?.code == sdk.LoopringErrorCode.HTTP_ERROR) {
           setToast({
             open: true,
             type: ToastType.error,
@@ -272,7 +279,18 @@ export const useContactAdd = ({
         enableBtn()
       }
     }
-  }, [contacts, loopringSmartWalletVersion, addName, realAddr])
+  }, [
+    setLoadingBtn,
+    realAddr,
+    addName,
+    defaultNetwork,
+    mapContactAddressType,
+    isEdit,
+    setToast,
+    t,
+    restData,
+    enableBtn,
+  ])
 
   return {
     restData,
@@ -400,13 +418,15 @@ export const EditContact: React.FC<AddDialogProps> = ({
                         isAddressCheckLoading ? (
                           <LoadingIcon width={24} />
                         ) : (
-                          <IconButton
-                            color={'inherit'}
-                            aria-label='Clear'
-                            onClick={() => handleOnAddressChange('')}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+                          !isEdit && (
+                            <IconButton
+                              color={'inherit'}
+                              aria-label='Clear'
+                              onClick={() => handleOnAddressChange('')}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          )
                         )
                       ) : (
                         ''
