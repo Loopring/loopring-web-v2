@@ -282,6 +282,18 @@ export const globalCss = ({ theme }: any) => css`
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
     }
+    --color-EOA-Text:#FBA95C;
+    --color-Loopring-Text:#4169FF;
+    --color-OtherSmart-Text: #979797;
+    --color-Binance-Text:#A25402;
+    --color-Huobi-Text:#199E5E;
+    --color-OtherExchange-Text:#BBC2F2;
+    --color-EOA-Bg:#FFFEDC;
+    --color-Loopring-Bg: #C9DBEF;
+    --color-OtherSmart-Bg:#D9D9D9;
+    --color-Binance-Bg:#FDE3C8;
+    --color-Huobi-Bg:#B1F4DD;
+    --color-OtherExchange-Bg:#9BA0B7;
   }
 
   select {

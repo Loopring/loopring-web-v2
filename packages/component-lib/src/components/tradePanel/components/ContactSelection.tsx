@@ -5,12 +5,15 @@ import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import React, { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
-import * as sdk from '@loopring-web/loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk'
+import { AddressTypeTag } from '../../basic-lib'
+import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 type SingleContactProps = {
   editing: boolean
   name: string
   address: string
+  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
   onSelect: (address: string) => void
   hidden: boolean
 }
@@ -34,15 +37,38 @@ const getInitials = (name: string) => {
   return initials.toUpperCase()
 }
 // @ts-ignore
-export const InitialNameAvatar = React.memo(({name, ...rest}: { name: string } & any) => {
-  const theme = useTheme()
-  return <AvatarContainer {...rest}>
-    <Avatar sx={{bgcolor: hexToRGB(theme.colorBase.warning, 0.5), color: theme.colorBase.warning, fontSize: '16px' }}>{getInitials(name)}</Avatar>
-  </AvatarContainer>
-}) as ({name, ...rest}: { name: string } & any) => JSX.Element
+export const InitialNameAvatar = React.memo(
+  ({
+    name,
+    ...rest
+  }: {
+    name: string
+  } & any) => {
+    const theme = useTheme()
+    return (
+      <AvatarContainer {...rest}>
+        <Avatar
+          sx={{
+            bgcolor: hexToRGB(theme.colorBase.warning, 0.5),
+            color: theme.colorBase.warning,
+            fontSize: '16px',
+          }}
+        >
+          {getInitials(name)}
+        </Avatar>
+      </AvatarContainer>
+    )
+  },
+) as ({
+  name,
+  ...rest
+}: {
+  name: string
+} & any) => JSX.Element
 
 export const SingleContact = (props: SingleContactProps) => {
-  const { editing, name, address, hidden, onSelect } = props
+  const { editing, name, address, addressType, hidden, onSelect } = props
+
   return (
     <Box
       style={{ cursor: 'pointer' }}
@@ -59,7 +85,12 @@ export const SingleContact = (props: SingleContactProps) => {
           {editing ? (
             <OutlinedInput size={'small'} value={name} />
           ) : (
-            <Typography>{name}</Typography>
+            <>
+              <Typography component={'span'} display={'flex-inline'} paddingRight={1}>
+                {name}
+              </Typography>
+              <AddressTypeTag addressType={addressType} />
+            </>
           )}
           <Typography>{address}</Typography>
         </Box>
@@ -97,10 +128,13 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   const [inputValue, setInputValue] = React.useState('')
   const handleOnFiler = (value: string) => {
     setInputValue(value)
-    let _contacts = contacts;
+    let _contacts = contacts
     if (value && contacts) {
       _contacts = contacts.filter((contact) => {
-        return contact.contactAddress.toLowerCase().includes(value.toLowerCase()) || contact.contactName.toLowerCase().includes(value.toLowerCase())
+        return (
+          contact.contactAddress.toLowerCase().includes(value.toLowerCase()) ||
+          contact.contactName.toLowerCase().includes(value.toLowerCase())
+        )
       })
     }
     setFilterContacts(_contacts)
@@ -137,7 +171,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
           onChange={(e) => {
             handleOnFiler(e.target.value)
           }}
-        ></OutlinedInput>
+        />
         <Box overflow={'scroll'} height={scrollHeight}>
           {filterContacts &&
             filterContacts.map((contact) => {
@@ -146,6 +180,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
                   key={contact.contactAddress}
                   name={contact.contactName}
                   address={contact.contactAddress}
+                  addressType={contact.addressType}
                   editing={false}
                   onSelect={onSelect}
                   hidden={contact.addressType === sdk.AddressType.OFFICIAL}

@@ -176,7 +176,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             response = await LoopringAPI.luckTokenAPI.sendLuckTokenWithdraws(
               {
                 request: request as sdk.OriginLuckTokenWithdrawsRequestV3,
-                web3: connectProvides.usedWeb3 as unknown as Web3,
+                web3: connectProvides.usedWeb3 as any,
                 chainId: chainId === 'unknown' ? 1 : chainId,
                 walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
@@ -193,7 +193,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             response = await LoopringAPI.userAPI?.sendTotalClaim(
               {
                 request: request as sdk.OriginClaimRequestV3,
-                web3: connectProvides.usedWeb3 as unknown as Web3,
+                web3: connectProvides.usedWeb3 as any,
                 chainId: chainId === 'unknown' ? 1 : chainId,
                 walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
@@ -210,7 +210,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             response = await LoopringAPI.defiAPI?.sendStakeClaim(
               {
                 request: request as sdk.OriginStakeClaimRequestV3,
-                web3: connectProvides.usedWeb3 as unknown as Web3,
+                web3: connectProvides.usedWeb3 as any,
                 chainId: chainId === 'unknown' ? 1 : chainId,
                 walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,

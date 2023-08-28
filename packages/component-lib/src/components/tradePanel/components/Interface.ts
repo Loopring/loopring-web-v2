@@ -32,6 +32,7 @@ import {
   WALLET_TYPE,
   WalletCoin,
   WalletMap,
+  WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
 
@@ -106,7 +107,7 @@ export type TransferExtendProps<T, I, C> = {
 } & Pick<sdk.GetContactsResponse, 'contacts'> & TransferInfoProps<C>
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> = TransferExtendProps<T, I, C> &
-  BasicACoinTradeViewProps<T, I> & {
+    BasicACoinTradeViewProps<T, I> & {
   onClickContact: () => void
 }
 
@@ -210,7 +211,7 @@ export type WithdrawExtendProps<T, I, C> = {
     | 'isLoopringAddress'
     | 'isSameAddress'
     | undefined
-  withdrawType: sdk.OffchainFeeReqType
+  withdrawType: WithdrawType
   withdrawTypes?: Partial<WithdrawTypes>
   realAddr?: string
   isAddressCheckLoading: boolean
@@ -222,7 +223,7 @@ export type WithdrawExtendProps<T, I, C> = {
   disableWithdrawList?: string[]
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void
   handleFeeChange: (value: C) => void
-  handleWithdrawTypeChange: (value: sdk.OffchainFeeReqType) => void
+  handleWithdrawTypeChange: (value: WithdrawType) => void
   handleOnAddressChange: (value: string | undefined | I, isContactSelection?: boolean) => void
   wait?: number
   onBack?: () => void
@@ -237,7 +238,7 @@ export type WithdrawExtendProps<T, I, C> = {
 } & Pick<sdk.GetContactsResponse, 'contacts'> & WithdrawInfoProps<C>
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> = BasicACoinTradeViewProps<T, I> &
-  WithdrawExtendProps<T, I, C> & {
+    WithdrawExtendProps<T, I, C> & {
   onClickContact: () => void
 }
 

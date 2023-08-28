@@ -11,9 +11,9 @@ import {
   useWalletL2Collection,
   redPacketHistory,
   offFaitService,
-  store, useContacts,
+  store,
+  useContacts,
 } from '@loopring-web/core'
-import { useContact } from './pages/Layer2Page/ContactPanel/hooks';
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state })
@@ -38,19 +38,15 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2()
-  const {
-    updateContacts,
-    status: contactsStatus,
-    statusUnset: contactsUnset,
-  } = useContacts()
+    const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
 
-  const {
-    updateWalletL2Collection,
-    updateLegacyContracts,
-    resetL2Collection,
-    status: walletL2CollectionStatus,
-    statusUnset: walletL2CollectionstatusUnset,
-  } = useWalletL2Collection()
+    const {
+      updateWalletL2Collection,
+      updateLegacyContracts,
+      resetL2Collection,
+      status: walletL2CollectionStatus,
+      statusUnset: walletL2CollectionstatusUnset,
+    } = useWalletL2Collection()
 
   const {
     updateWalletL2NFTCollection,

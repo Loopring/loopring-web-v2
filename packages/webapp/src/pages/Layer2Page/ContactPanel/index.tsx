@@ -1,20 +1,35 @@
-import { Box, Button, IconButton, OutlinedInput, Typography } from '@mui/material'
+import { Box, Button, Grid, IconButton, MenuItem, Popover, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
-import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { Add } from './add'
+import {
+  AddressTypeTag,
+  InputSearch,
+  TablePagination,
+  Toast,
+  ToastType,
+  useSettings,
+  InitialNameAvatar,
+} from '@loopring-web/component-lib'
+import * as sdk from '@loopring-web/loopring-sdk'
+
+import {
+  CopyIcon,
+  EditIcon,
+  getShortAddr,
+  MoreIcon,
+  TOAST_TIME,
+} from '@loopring-web/common-resources'
+import { EditContact } from './add'
 import { Delete } from './delete'
 import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AddressType } from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
-import { InitialNameAvatar } from '@loopring-web/component-lib/src/components/tradePanel/components/ContactSelection'
-import * as sdk from '@loopring-web/loopring-sdk';
-import { ContactType } from '@loopring-web/core';
+import { ContactType } from '@loopring-web/core'
+import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
+import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box);
@@ -47,185 +62,211 @@ export const ContactPage = () => {
   return <>{view}</>
 }
 
+const ActionMemo = React.memo(
+  <N = ContactType,>({
+    data,
+    onClickSend,
+    onClickDelete,
+  }: {
+    data: ContactType
+    onClickSend: (
+      contactAddress: string,
+      contactName: string,
+      addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys],
+    ) => void
+    onClickDelete: (contactAddress: string, contactName: string) => void
+  }) => {
+    const history = useHistory()
+    const { isMobile } = useSettings()
+    const { t } = useTranslation('common')
+    const popupState = usePopupState({
+      variant: 'popover',
+      popupId: 'contact-action',
+    })
+    const bindContent = bindMenu(popupState)
+    const bindAction = bindTrigger(popupState)
+
+    const items = React.useMemo(() => {
+      return <></>
+    }, [])
+    return (
+      <Grid item marginTop={1}>
+        {isMobile ? (
+          <>
+            <IconButton size={'large'} edge={'end'} {...{ ...bindAction }}>
+              <MoreIcon cursor={'pointer'} />
+            </IconButton>
+            <Popover
+              {...bindContent}
+              anchorReference='anchorEl'
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <Box borderRadius={'inherit'} minWidth={110}>
+                <MenuItem
+                  onClick={() =>
+                    onClickSend(data.contactAddress, data.contactName, data.addressType)
+                  }
+                >
+                  {t('labelContactsSend')}
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    history.push(
+                      '/layer2/contact/transactions?contactAddress=' + data.contactAddress,
+                    )
+                  }}
+                >
+                  {t('labelContactsTransactions')}
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    onClickDelete(data.contactAddress, data.contactName)
+                  }}
+                >
+                  {t('labelContactsDeleteContactBtn')}
+                </MenuItem>
+              </Box>
+            </Popover>
+          </>
+        ) : (
+          <>
+            <Button
+              onClick={() => onClickSend(data.contactAddress, data.contactName, data.addressType)}
+              variant={'contained'}
+              size={'small'}
+              sx={{ marginLeft: 1 }}
+            >
+              {t('labelContactsSend')}
+            </Button>
+            <Button
+              variant={'outlined'}
+              size={'medium'}
+              onClick={() => {
+                history.push('/layer2/contact/transactions?contactAddress=' + data.contactAddress)
+              }}
+              sx={{ marginLeft: 1 }}
+            >
+              {t('labelContactsTransactions')}
+            </Button>
+            <Button
+              variant={'outlined'}
+              size={'medium'}
+              onClick={() => {
+                onClickDelete(data.contactAddress, data.contactName)
+              }}
+              sx={{ marginLeft: 1 }}
+            >
+              {t('labelContactsDeleteContactBtn')}
+            </Button>
+          </>
+        )}
+      </Grid>
+    )
+  },
+)
 export const ContractPanel = () => {
   const {
     setAddOpen,
     addOpen,
-    addLoading,
-    submitAddContact,
-    // add,
     contacts,
     searchValue,
     onChangeSearch,
-    // onClickEditing,
     onClickDelete,
-    onEdit,
     selectAddress,
     setSelectAddress,
     toastInfo,
-
     deleteInfo,
     onCloseDelete,
-
     submitDeleteContact,
     deleteLoading,
     onClickSend,
     onCloseSend,
     sendInfo,
-    onCloseToast,
-    setToastInfo,
+    closeToast,
+    setToast,
     pagination,
     onPageChange,
-    loading,
     showPagination,
-    // onScroll
   } = useContact()
   const { t } = useTranslation()
 
-  let totastText = ''
-  if (toastInfo.customerText) {
-    totastText = toastInfo.customerText
-  } else if (toastInfo.isSuccess) {
-    switch (toastInfo.type) {
-      case 'Add':
-        totastText = t('labelContactsAddSuccess')
-        break
-      case 'Delete':
-        totastText = t('labelContactsDeleteSuccess')
-        break
-      case 'Edit':
-        totastText = t('labelContactsEditSuccess')
-        break
-      case 'Send':
-        totastText = t('labelContactsSendSuccess')
-        break
-      case 'Copy':
-        totastText = t('labelContactsCopySuccess')
-        break
-    }
-  } else {
-    switch (toastInfo.type) {
-      case 'Add':
-        totastText = t('labelContactsAddFailed')
-        break
-      case 'Delete':
-        totastText = t('labelContactsDeleteFailed')
-        break
-      case 'Edit':
-        totastText = t('labelContactsEditFailed')
-        break
-      case 'Send':
-        totastText = t('labelContactsSendFailed')
-        break
-    }
-  }
-  const history = useHistory()
-
   const noContact = (
     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-      <Typography color={'var(--color-text-third)'}>{t('labelContactsNoContact')}</Typography>
+      <Typography component={'span'} variant={'body1'} color={'var(--color-text-third)'}>
+        {t('labelContactsNoContact')}
+      </Typography>
     </Box>
   )
-  const loadingView = (
-    <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-      <img
-        className='loading-gif'
-        alt={'loading'}
-        width='36'
-        src={`${SoursURL}images/loading-line.gif`}
-      />
-    </Box>
-  )
+
+  const { isMobile } = useSettings()
+
   const normalView = (
     <>
       <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={'scroll'}>
         {contacts &&
           contacts.map((data) => {
-            // const {  contactName, addressType,contactAddress,...rest } =
             return (
               <Box
                 key={data.contactAddress}
                 paddingY={2}
-                display={data.addressType === AddressType.OFFICIAL ? 'none' : 'flex'}
+                display={data.addressType === sdk.AddressType.OFFICIAL ? 'none' : 'flex'}
                 justifyContent={'space-between'}
               >
                 <Box display={'flex'}>
-                  <InitialNameAvatar name={data.contactName}/>
-                  <Box marginLeft={1}>
-                    {selectAddress && selectAddress?.contactAddress && selectAddress?.contactAddress.toLowerCase() === data?.contactAddress.toLowerCase() ? (
-                      <OutlinedInput
-                        size={'small'}
-                        value={selectAddress.contactName}
-                        onChange={(e) => {
-                          setSelectAddress(state => {
-                            return {
-                              ...data,
-                              contactName: e.target.value,
-                            }
-                          })
+                  <InitialNameAvatar name={data.contactName} />
+                  <Typography
+                    component={'p'}
+                    marginLeft={1}
+                    display={'flex'}
+                    flexDirection={'column'}
+                  >
+                    <Typography
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      component={'span'}
+                      paddingRight={1}
+                    >
+                      <Typography display={'inline-flex'} paddingRight={1} component={'span'}>
+                        {data.contactName}
+                      </Typography>
+                      <AddressTypeTag addressType={data.addressType} />
+                      <EditIcon
+                        sx={{
+                          paddingLeft: 1,
                         }}
-                        onBlur={() => {
-                          onEdit(selectAddress)
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.currentTarget.blur()
-                          }
+                        fontSize={'large'}
+                        onClick={() => {
+                          setAddOpen(true)
+                          setSelectAddress(data as ContactType)
                         }}
                       />
-                    ) : (
-                      <Typography>
-                        {data.contactName}
-                        <EditIcon onClick={() => setSelectAddress(data as ContactType)}/>
-                      </Typography>
-                    )}
-                    <Typography>
-                      {data.contactAddress}
+                    </Typography>
+                    <Typography component={'span'} title={data.contactAddress}>
+                      {isMobile ? getShortAddr(data.contactAddress ?? '') : data.contactAddress}
                       <IconButton
                         onClick={() => {
                           navigator.clipboard.writeText(data.contactAddress)
-                          setToastInfo({
+                          setToast({
                             open: true,
-                            isSuccess: true,
-                            type: 'Copy',
+                            type: ToastType.success,
+                            content: t('labelContactsCopySuccess'),
                           })
                         }}
                       >
-                        <CopyIcon></CopyIcon>
+                        <CopyIcon />
                       </IconButton>
                     </Typography>
-                  </Box>
+                  </Typography>
                 </Box>
                 <Box display={'flex'}>
-                  <Box marginRight={2}>
-                    <Button
-                      onClick={() => onClickSend(data.contactAddress, data.contactName, data.addressType)}
-                      variant={'contained'}
-                      size={'small'}
-                    >
-                      {t('labelContactsSend')}
-                    </Button>
-                  </Box>
-                  <Box marginRight={2}>
-                    <Button
-                      variant={'outlined'}
-                      size={'medium'}
-                      onClick={() => {
-                        history.push('/layer2/contact/transactions?contactAddress=' + data.contactAddress)
-                      }}
-                    >
-                      {t('labelContactsTransactions')}
-                    </Button>
-                  </Box>
-                  <Button
-                    variant={'outlined'}
-                    size={'medium'}
-                    onClick={() => {
-                      onClickDelete(data.contactAddress, data.contactName)
-                    }}
-                  >
-                    {t('labelContactsDeleteContactBtn')}
-                  </Button>
+                  <ActionMemo data={data} onClickSend={onClickSend} onClickDelete={onClickDelete} />
                 </Box>
               </Box>
             )
@@ -241,23 +282,26 @@ export const ContractPanel = () => {
       )}
     </>
   )
-
   return (
     <ContactPageStyle className={'MuiPaper-elevation2'} paddingX={4} paddingY={3}>
       <Toast
-        alertText={totastText}
-        severity={toastInfo.isSuccess ? ToastType.success : ToastType.error}
+        alertText={toastInfo.content ?? ''}
+        severity={toastInfo?.type}
         open={toastInfo.open}
         autoHideDuration={TOAST_TIME}
-        onClose={() => onCloseToast()}
+        onClose={closeToast}
+        // onClose={closeToastL}
       />
-      <Add
-        loading={addLoading}
-        submitAddingContact={(address, name, cb) => {
-          submitAddContact(address, name, cb)
-        }}
+      <EditContact
+        isEdit={selectAddress ? { item: selectAddress } : false}
         addOpen={addOpen}
         setAddOpen={setAddOpen}
+        onClose={() => {
+          setSelectAddress(undefined)
+          setAddOpen(false)
+        }}
+        contacts={contacts}
+        setToast={setToast}
       />
       <Delete
         deleteInfo={deleteInfo}
@@ -282,6 +326,7 @@ export const ContractPanel = () => {
               variant={'contained'}
               size={'small'}
               onClick={() => {
+                setSelectAddress(undefined)
                 setAddOpen(true)
               }}
             >
@@ -292,9 +337,7 @@ export const ContractPanel = () => {
       </Box>
       <Box className='table-divide'>
         <Line />
-        <Box>
-          {loading ? loadingView : !contacts || contacts.length === 0 ? noContact : normalView}
-        </Box>
+        <Box>{!contacts || contacts.length === 0 ? noContact : normalView}</Box>
       </Box>
     </ContactPageStyle>
   )

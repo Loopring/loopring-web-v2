@@ -18,7 +18,7 @@ export const volumeToCountAsBigNumber = (
 ): BigNumber | undefined => {
   if (tokenMap && tokenMap[symbol] && typeof volumn !== 'undefined') {
     try {
-      return sdk.toBig(volumn).div('1e' + tokenMap[ symbol ].decimals)
+      return sdk.toBig(volumn).div('1e' + tokenMap[symbol].decimals)
     } catch (error: any) {
       throw error
     }

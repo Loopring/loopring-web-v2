@@ -202,7 +202,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
   )
 }
 
-export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
+export const FullAddressType = <T extends EXCHANGE_TYPE>({
   selectedValue,
   handleSelected,
   disabled,

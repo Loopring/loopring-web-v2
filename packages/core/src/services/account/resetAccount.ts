@@ -17,7 +17,7 @@ export async function resetLayer12Data() {
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer1(undefined))
   store.dispatch(resetWalletLayer2(undefined))
-  store.dispatch(resetContacts(undefined))
+    store.dispatch(resetContacts(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
   let toggle = {}
   if (
@@ -65,7 +65,7 @@ export function resetLayer2Data() {
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer2(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
-  store.dispatch(resetContacts(undefined))
+    store.dispatch(resetContacts(undefined))
 }
 
 const LoopFrozenFlag = true

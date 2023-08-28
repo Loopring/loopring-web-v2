@@ -47,25 +47,25 @@ import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
 import Web3 from 'web3';
 
 export const useDeposit = <
-  T extends {
-    toAddress?: string
-    addressError?: { error: boolean; message?: string }
-  } & IBData<I>,
-  I,
+    T extends {
+      toAddress?: string
+      addressError?: { error: boolean; message?: string }
+    } & IBData<I>,
+    I,
 >(
-  isAllowInputToAddress = false,
-  opts?: { token?: string | null; owner?: string | null },
+    isAllowInputToAddress = false,
+    opts?: { token?: string | null; owner?: string | null },
 ) => {
   const subject = React.useMemo(() => depositServices.onSocket(), [])
-  const { tokenMap, totalCoinMap } = useTokenMap()
-  const { account, status: accountStatus } = useAccount()
-  const { walletLayer1, updateWalletLayer1, status: walletLayer1Status } = useWalletLayer1()
-  const { updateDepositHash } = useOnChainInfo()
-  const { t } = useTranslation('common')
+  const {tokenMap, totalCoinMap} = useTokenMap()
+  const {account, status: accountStatus} = useAccount()
+  const {walletLayer1, updateWalletLayer1, status: walletLayer1Status} = useWalletLayer1()
+  const {updateDepositHash} = useOnChainInfo()
+  const {t} = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
-  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus } = useSystem()
-  const { defaultNetwork } = useSettings()
+  const {exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus} = useSystem()
+  const {defaultNetwork} = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [toInputAddress, setToInputAddress] = React.useState<string>('')
@@ -73,7 +73,7 @@ export const useDeposit = <
     depositValue,
     updateDepositData,
     resetDepositData,
-    activeAccountValue: { chargeFeeList },
+    activeAccountValue: {chargeFeeList},
   } = useModalData()
   const {
     // address: toAddress,
@@ -86,17 +86,17 @@ export const useDeposit = <
   React.useEffect(() => {
     const depositValue = store.getState()._router_modalData.depositValue
     handlePanelEvent(
-      {
-        to: 'button',
-        tradeData: depositValue as any,
-      },
-      'Tobutton',
+        {
+          to: 'button',
+          tradeData: depositValue as any,
+        },
+        'Tobutton',
     )
   }, [realToAddress])
 
   const {
     modals: {
-      isShowDeposit: { symbol, isShow },
+      isShowDeposit: {symbol, isShow},
     },
     setShowDeposit,
     setShowAccount,
@@ -112,32 +112,32 @@ export const useDeposit = <
     resetBtnInfo,
   } = useBtnStatus()
 
-  const { allowanceInfo } = useAllowances({
+  const {allowanceInfo} = useAllowances({
     owner: account.accAddress,
     symbol: depositValue.belong as string,
   })
   const isNewAccount = [AccountStatus.NO_ACCOUNT, AccountStatus.NOT_ACTIVE].includes(
-    account.readyState as any,
+      account.readyState as any,
   )
   const updateBtnStatus = React.useCallback(() => {
     resetBtnInfo()
     if (
-      realToAddress &&
-      (toAddressStatus as AddressError) === AddressError.NoError &&
-      depositValue?.toAddress?.trim() !== '' &&
-      depositValue.toAddress == realToAddress &&
-      depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
-      depositValue?.tradeValue &&
-      allowanceInfo &&
-      sdk.toBig(walletLayer1?.ETH?.count ?? 0).gt(BIGO) &&
-      sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
-      sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance ?? ''))
+        realToAddress &&
+        (toAddressStatus as AddressError) === AddressError.NoError &&
+        depositValue?.toAddress?.trim() !== '' &&
+        depositValue.toAddress == realToAddress &&
+        depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
+        depositValue?.tradeValue &&
+        allowanceInfo &&
+        sdk.toBig(walletLayer1?.ETH?.count ?? 0).gt(BIGO) &&
+        sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
+        sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance ?? ''))
     ) {
       myLog('walletLayer1?.ETH?.count', walletLayer1?.ETH?.count)
 
       const curValInWei = sdk
-        .toBig(depositValue?.tradeValue)
-        .times('1e' + allowanceInfo?.tokenInfo.decimals)
+          .toBig(depositValue?.tradeValue)
+          .times('1e' + allowanceInfo?.tokenInfo.decimals)
       if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
         myLog('!!---> set labelL1toL2NeedApprove!!!! belong:', depositValue.belong)
         setLabelAndParams('labelL1toL2NeedApprove', {
@@ -146,11 +146,11 @@ export const useDeposit = <
       }
 
       // NewAccountCheck
-      const index = chargeFeeList?.findIndex(({ belong }) => belong === depositValue.belong) ?? -1
+      const index = chargeFeeList?.findIndex(({belong}) => belong === depositValue.belong) ?? -1
       if (
-        isAllowInputToAddress ||
-        (isNewAccount && (index !== -1 || /dev|uat/gi.test(baseURL))) ||
-        !isNewAccount
+          isAllowInputToAddress ||
+          (isNewAccount && (index !== -1 || /dev|uat/gi.test(baseURL))) ||
+          !isNewAccount
       ) {
         enableBtn()
         return
@@ -196,27 +196,27 @@ export const useDeposit = <
   ])
 
   const handlePanelEvent = React.useCallback(
-    (data: SwitchData<Partial<T>>, _switchType: 'Tomenu' | 'Tobutton') => {
-      const oldValue = store.getState()._router_modalData.depositValue
-      let newValue = {
-        ...oldValue,
-      }
-      if (data.to === 'button') {
-        if (walletLayer1 && data?.tradeData?.belong) {
-          const walletInfo = walletLayer1[data.tradeData.belong]
-          newValue = {
-            ...newValue,
-            ...data.tradeData,
-            balance: walletInfo?.count,
+      (data: SwitchData<Partial<T>>, _switchType: 'Tomenu' | 'Tobutton') => {
+        const oldValue = store.getState()._router_modalData.depositValue
+        let newValue = {
+          ...oldValue,
+        }
+        if (data.to === 'button') {
+          if (walletLayer1 && data?.tradeData?.belong) {
+            const walletInfo = walletLayer1[data.tradeData.belong]
+            newValue = {
+              ...newValue,
+              ...data.tradeData,
+              balance: walletInfo?.count,
+            }
           }
         }
-      }
 
-      myLog('DepositData', { ...newValue, toAddress: realToAddress })
-      updateDepositData({ ...newValue, toAddress: realToAddress })
-      return Promise.resolve()
-    },
-    [setToAddress, updateDepositData, realToAddress, isToAddressEditable, walletLayer1],
+        myLog('DepositData', {...newValue, toAddress: realToAddress})
+        updateDepositData({...newValue, toAddress: realToAddress})
+        return Promise.resolve()
+      },
+      [setToAddress, updateDepositData, realToAddress, isToAddressEditable, walletLayer1],
   )
   const handleAddressChange = (value?: string) => {
     const toAddress = store.getState()._router_modalData.depositValue.toAddress
@@ -236,11 +236,11 @@ export const useDeposit = <
     setToAddress((state) => {
       myLog('address update setToAddress', state, value, realToAddress, toAddressStatus)
       if (
-        value &&
-        toIsAddressCheckLoading == false &&
-        realToAddress &&
-        realToAddress.startsWith('0x') &&
-        [value, toAddress].includes(realToAddress)
+          value &&
+          toIsAddressCheckLoading == false &&
+          realToAddress &&
+          realToAddress.startsWith('0x') &&
+          [value, toAddress].includes(realToAddress)
       ) {
         return makeForceFresh(state, value)
       } else if (value !== undefined) {
@@ -272,6 +272,11 @@ export const useDeposit = <
     }
     if (!depositValue.belong && walletLayer1) {
       const keys = Reflect.ownKeys(walletLayer1)
+      updateData = {
+        belong: 'ETH',
+        tradeValue: undefined,
+        balance: 0,
+      }
       for (var key in keys) {
         const keyVal = keys[key] as any
         const walletInfo = walletLayer1[keyVal]
@@ -296,11 +301,11 @@ export const useDeposit = <
       setIsToAddressEditable(true)
     }
     handlePanelEvent(
-      {
-        to: 'button',
-        tradeData: updateData as any,
-      },
-      'Tobutton',
+        {
+          to: 'button',
+          tradeData: updateData as any,
+        },
+        'Tobutton',
     )
     handleAddressChange()
   }, [
@@ -317,14 +322,14 @@ export const useDeposit = <
   ])
 
   React.useEffect(() => {
-    const { walletLayer1 } = store.getState()
+    const {walletLayer1} = store.getState()
     if (walletLayer1Status == SagaStatus.UNSET) {
       if (
-        walletLayer1.error
-        // &&
-        // ![AccountStatus.UN_CONNECT, AccountStatus.ERROR_NETWORK, 'unknown'].includes(
-        //   account.readyState,
-        // )
+          walletLayer1.error
+          // &&
+          // ![AccountStatus.UN_CONNECT, AccountStatus.ERROR_NETWORK, 'unknown'].includes(
+          //   account.readyState,
+          // )
       ) {
         updateWalletLayer1()
       } else {
@@ -343,13 +348,13 @@ export const useDeposit = <
       handleAddressChange()
 
       handlePanelEvent(
-        {
-          to: 'button',
-          tradeData: {
-            ...tradeData,
-          } as any,
-        },
-        'Tobutton',
+          {
+            to: 'button',
+            tradeData: {
+              ...tradeData,
+            } as any,
+          },
+          'Tobutton',
       )
     }
   }
@@ -371,240 +376,240 @@ export const useDeposit = <
   }, [accountStatus, isShow, isToAddressEditable, systemStatus])
 
   const handleDeposit = React.useCallback(
-    async (inputValue: any) => {
-      myLog('handleDeposit:', inputValue)
-      const { readyState, connectName } = account
-      let result = { code: ActionResultCode.NoError }
-      const { toAddress } = store.getState()._router_modalData.depositValue
-      try {
-        if (
-          readyState !== AccountStatus.UN_CONNECT &&
-          inputValue.tradeValue &&
-          tokenMap &&
-          exchangeInfo?.exchangeAddress &&
-          connectProvides.usedWeb3 &&
-          LoopringAPI.exchangeAPI &&
-          toAddress
-        ) {
-          const tokenInfo = tokenMap[inputValue.belong]
-          const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
-          const fee = 0
-          const isMetaMask = true
+      async (inputValue: any) => {
+        myLog('handleDeposit:', inputValue)
+        const {readyState, connectName} = account
+        let result = {code: ActionResultCode.NoError}
+        const {toAddress} = store.getState()._router_modalData.depositValue
+        try {
+          if (
+              readyState !== AccountStatus.UN_CONNECT &&
+              inputValue.tradeValue &&
+              tokenMap &&
+              exchangeInfo?.exchangeAddress &&
+              connectProvides.usedWeb3 &&
+              LoopringAPI.exchangeAPI &&
+              toAddress
+          ) {
+            const tokenInfo = tokenMap[inputValue.belong]
+            const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
+            const fee = 0
+            const isMetaMask = true
 
-          const realGasPrice = gasPrice ?? 30
+            const realGasPrice = gasPrice ?? 30
 
-          const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-          //chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
-          await callSwitchChain(_chainId)
+            const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
+            //chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
+            await callSwitchChain(_chainId)
 
-          let nonce = 0
+            let nonce = 0
 
-          let nonceInit = false
+            let nonceInit = false
 
-          if (allowanceInfo?.needCheck) {
-            const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
+            if (allowanceInfo?.needCheck) {
+              const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
 
-            if (curValInWei.gt(allowanceInfo.allowance)) {
-              myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
+              if (curValInWei.gt(allowanceInfo.allowance)) {
+                myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
 
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Deposit_Approve_WaitForAuth,
-                info: {
-                  isAllowInputToAddress,
-                },
-              })
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Deposit_Approve_WaitForAuth,
+                  info: {
+                    isAllowInputToAddress,
+                  },
+                })
 
-              nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
+                nonce = await sdk.getNonce(connectProvides.usedWeb3 as unknown as Web3, account.accAddress)
 
-              nonceInit = true
+                nonceInit = true
 
-              try {
-                await sdk.approveMax(
-                    connectProvides.usedWeb3 as any,
+                try {
+                  await sdk.approveMax(
+                      connectProvides.usedWeb3,
+                      account.accAddress,
+                      tokenInfo.address,
+                      exchangeInfo?.depositAddress,
+                      realGasPrice,
+                      gasLimit,
+                      _chainId,
+                      nonce,
+                      isMetaMask,
+                  )
+                  nonce += 1
+                } catch (error: any) {
+                  if (error instanceof Error) {
+                    throw {
+                      // Pull all enumerable properties, supporting properties on custom Errors
+                      ...error,
+                      // Explicitly pull Error's non-enumerable properties
+                      message: error.message,
+                      stack: error.stack,
+                      type: 'ApproveToken',
+                    }
+                  } else {
+                    throw {
+                      ...(error as any),
+                      type: 'ApproveToken',
+                    }
+                  }
+                }
+              } else {
+                myLog("allowance is enough! don't need approveMax!")
+              }
+            }
+
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Deposit_WaitForAuth,
+              info: {
+                to: isAllowInputToAddress ? realToAddress : null,
+                isAllowInputToAddress,
+              },
+            })
+
+            if (!nonceInit) {
+              nonce = await sdk.getNonce(connectProvides.usedWeb3 as unknown as Web3, account.accAddress)
+            }
+
+            myLog('before deposit:', chainId, connectName, isMetaMask)
+
+            // const realChainId = chainId === 'unknown' ? 1 : chainId
+            let response
+            try {
+              //response = { result: "xxxxxxxx" };
+              response = await sdk.deposit(
+                  connectProvides.usedWeb3,
                   account.accAddress,
-                  tokenInfo.address,
-                  exchangeInfo?.depositAddress,
+                  exchangeInfo.exchangeAddress,
+                  tokenInfo,
+                  inputValue.tradeValue,
+                  fee,
                   realGasPrice,
                   gasLimit,
                   _chainId,
                   nonce,
                   isMetaMask,
-                )
-                nonce += 1
-              } catch (error: any) {
-                if (error instanceof Error) {
-                  throw {
-                    // Pull all enumerable properties, supporting properties on custom Errors
-                    ...error,
-                    // Explicitly pull Error's non-enumerable properties
-                    message: error.message,
-                    stack: error.stack,
-                    type: 'ApproveToken',
-                  }
-                } else {
-                  throw {
-                    ...(error as any),
-                    type: 'ApproveToken',
-                  }
+                  toAddress,
+              )
+            } catch (error) {
+              if (error instanceof Error) {
+                throw {
+                  ...error,
+                  message: error.message,
+                  stack: error.stack,
+                  type: 'Deposit',
+                }
+              } else {
+                throw {
+                  ...(error as any),
+                  type: 'Deposit',
                 }
               }
-            } else {
-              myLog("allowance is enough! don't need approveMax!")
             }
-          }
 
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.Deposit_WaitForAuth,
-            info: {
-              to: isAllowInputToAddress ? realToAddress : null,
-              isAllowInputToAddress,
-            },
-          })
+            myLog('response:', response)
 
-          if (!nonceInit) {
-            nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
-          }
-
-          myLog('before deposit:', chainId, connectName, isMetaMask)
-
-          // const realChainId = chainId === 'unknown' ? 1 : chainId
-          let response
-          try {
-            //response = { result: "xxxxxxxx" };
-            response = await sdk.deposit(
-                connectProvides.usedWeb3 as any,
-              account.accAddress,
-              exchangeInfo.exchangeAddress,
-              tokenInfo,
-              inputValue.tradeValue,
-              fee,
-              realGasPrice,
-              gasLimit,
-              _chainId,
-              nonce,
-              isMetaMask,
-              toAddress,
-            )
-          } catch (error) {
-            if (error instanceof Error) {
-              throw {
-                ...error,
-                message: error.message,
-                stack: error.stack,
-                type: 'Deposit',
-              }
-            } else {
-              throw {
-                ...(error as any),
-                type: 'Deposit',
-              }
-            }
-          }
-
-          myLog('response:', response)
-
-          if (response) {
-            // Close Deposit panel...
-            setShowDeposit({ isShow: false })
-            resetDepositData()
-            updateWalletLayer1()
-            setShowAccount({
-              isShow: true,
-              info: {
-                to: isAllowInputToAddress ? realToAddress : null,
+            if (response) {
+              // Close Deposit panel...
+              setShowDeposit({isShow: false})
+              resetDepositData()
+              updateWalletLayer1()
+              setShowAccount({
+                isShow: true,
+                info: {
+                  to: isAllowInputToAddress ? realToAddress : null,
+                  symbol: tokenInfo.symbol,
+                  value: inputValue.tradeValue,
+                  hash: response.result,
+                  isAllowInputToAddress,
+                  isNewAccount,
+                },
+                step: AccountStep.Deposit_Submit,
+              })
+              updateDepositHash(response.result, account.accAddress, undefined, {
                 symbol: tokenInfo.symbol,
+                type: 'Deposit',
                 value: inputValue.tradeValue,
-                hash: response.result,
-                isAllowInputToAddress,
-                isNewAccount,
-              },
-              step: AccountStep.Deposit_Submit,
-            })
-            updateDepositHash(response.result, account.accAddress, undefined, {
-              symbol: tokenInfo.symbol,
-              type: 'Deposit',
-              value: inputValue.tradeValue,
-            })
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-            if (
-              store.getState().modals.isShowAccount.isShow &&
-              store.getState().modals.isShowAccount.step == AccountStep.Deposit_Submit
-            ) {
-              setShowAccount({ isShow: false })
+              })
+              await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+              if (
+                  store.getState().modals.isShowAccount.isShow &&
+                  store.getState().modals.isShowAccount.step == AccountStep.Deposit_Submit
+              ) {
+                setShowAccount({isShow: false})
+              }
+            } else {
+              throw {code: UIERROR_CODE.ERROR_NO_RESPONSE}
             }
           } else {
-            throw { code: UIERROR_CODE.ERROR_NO_RESPONSE }
+            throw {code: UIERROR_CODE.DATA_NOT_READY}
           }
-        } else {
-          throw { code: UIERROR_CODE.DATA_NOT_READY }
-        }
-      } catch (e) {
-        const { type, ..._error } = (e as any)?.message ? (e as any) : { type: '' }
-        const error = LoopringAPI?.exchangeAPI?.genErr(_error as any) ?? {
-          code: UIERROR_CODE.DATA_NOT_READY,
-        }
-        const code = sdk.checkErrorInfo(error, true)
-        switch (code) {
-          case sdk.ConnectorError.USER_DENIED:
-          case sdk.ConnectorError.USER_DENIED_2:
-            if (type === 'ApproveToken') {
+        } catch (e) {
+          const {type, ..._error} = (e as any)?.message ? (e as any) : {type: ''}
+          const error = LoopringAPI?.exchangeAPI?.genErr(_error as any) ?? {
+            code: UIERROR_CODE.DATA_NOT_READY,
+          }
+          const code = sdk.checkErrorInfo(error, true)
+          switch (code) {
+            case sdk.ConnectorError.USER_DENIED:
+            case sdk.ConnectorError.USER_DENIED_2:
+              if (type === 'ApproveToken') {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Deposit_Approve_Denied,
+                  info: {
+                    isAllowInputToAddress,
+                  },
+                })
+              } else {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Deposit_Denied,
+                  info: {
+                    isAllowInputToAddress,
+                  },
+                })
+              }
+              break
+            default:
               setShowAccount({
                 isShow: true,
-                step: AccountStep.Deposit_Approve_Denied,
+                step: AccountStep.Deposit_Failed,
                 info: {
                   isAllowInputToAddress,
                 },
-              })
-            } else {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Deposit_Denied,
-                info: {
-                  isAllowInputToAddress,
+                error: {
+                  ..._error,
+                  ...error,
+                  code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
                 },
               })
-            }
-            break
-          default:
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.Deposit_Failed,
-              info: {
-                isAllowInputToAddress,
-              },
-              error: {
-                ..._error,
-                ...error,
-                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
-              },
-            })
-            resetDepositData()
-            break
+              resetDepositData()
+              break
+          }
+          updateWalletLayer1()
         }
-        updateWalletLayer1()
-      }
 
-      return result
-    },
-    [
-      isNewAccount,
-      account,
-      tokenMap,
-      exchangeInfo?.exchangeAddress,
-      exchangeInfo?.depositAddress,
-      isAllowInputToAddress,
-      setShowAccount,
-      gasPrice,
-      chainId,
-      allowanceInfo?.needCheck,
-      allowanceInfo?.allowance,
-      realToAddress,
-      updateWalletLayer1,
-      resetDepositData,
-      updateDepositHash,
-    ],
+        return result
+      },
+      [
+        isNewAccount,
+        account,
+        tokenMap,
+        exchangeInfo?.exchangeAddress,
+        exchangeInfo?.depositAddress,
+        isAllowInputToAddress,
+        setShowAccount,
+        gasPrice,
+        chainId,
+        allowanceInfo?.needCheck,
+        allowanceInfo?.allowance,
+        realToAddress,
+        updateWalletLayer1,
+        resetDepositData,
+        updateDepositHash,
+      ],
   )
 
   const onDepositClick = React.useCallback(async () => {
@@ -636,9 +641,9 @@ export const useDeposit = <
   }, [subject])
 
   const title =
-    account.readyState === AccountStatus.NO_ACCOUNT
-      ? t('labelDepositTitleAndActive', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
-      : t('labelDepositTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
+      account.readyState === AccountStatus.NO_ACCOUNT
+          ? t('labelDepositTitleAndActive', {l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol})
+          : t('labelDepositTitle', {l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol})
   const depositProps: DepositProps<T, I> = {
     btnInfo,
     isNewAccount,

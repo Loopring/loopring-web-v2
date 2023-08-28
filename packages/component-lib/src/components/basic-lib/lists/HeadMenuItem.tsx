@@ -118,6 +118,7 @@ const StyledLayer2Item = styled(Box)<BoxProps<any>>`
   &:hover {
     //border-left-color: transparent;
     background: var(--opacity);
+
     h5 {
       color: var(--color-primary);
     }
@@ -129,7 +130,7 @@ const StyledHeaderMenuSub = styled(Menu)<MenuProps>`
     color: var(--color-text-third);
 
     ul {
-      box-shadow: inset 0.5px var(--color-border);
+      box-shadow: inset 0.5px var(--opacity);
       background: var(--color-box-pop);
       padding: 0;
       //.layer-sub {
@@ -159,7 +160,7 @@ const StyledTabBtn = styled(MenuItem)<MenuItemProps<any>>`
 
     &:hover {
       background-color: inherit;
-      color: var(--color-primary);
+
       svg {
         transform: rotate(180deg);
       }
