@@ -2,7 +2,7 @@ import { SvgIcon, Chip } from '@mui/material'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { fontDefault } from '@loopring-web/common-resources'
+import { fontDefault, myLog } from '@loopring-web/common-resources'
 
 export const NewTagIcon = () => (
   <SvgIcon
@@ -45,6 +45,7 @@ export const ChipStyle = styled(Chip)`
 `
 export const AddressTypeTag = ({ addressType }: { addressType }) => {
   const { t } = useTranslation('common')
+    myLog('addressType', addressType, sdk.AddressType)
   switch (addressType) {
     case sdk.AddressType.EOA:
       return (
@@ -59,6 +60,7 @@ export const AddressTypeTag = ({ addressType }: { addressType }) => {
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0:
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0:
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0:
+    case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0:
       return (
         <ChipStyle
           label={t('labelLoopringWallet')}

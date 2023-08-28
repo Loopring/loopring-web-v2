@@ -25,7 +25,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
 import { LoopringAPI } from '../../api_wrapper'
 import { isAccActivated } from './useCheckAccStatus'
-import Web3 from 'web3'
 import { getTimestampDaysLater } from '../../utils'
 import { DAYS } from '../../defs'
 

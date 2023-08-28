@@ -2,7 +2,7 @@ import React from 'react'
 import { InputSearch, QuoteTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { RowConfig } from '@loopring-web/common-resources'
-import { Box, Container, Divider, Grid, Tab, Tabs } from '@mui/material'
+import { Box, Container, Divider, Tab, Tabs } from '@mui/material'
 import { useQuotePage } from './hook'
 import { TableWrapStyled, useAccount, useSystem } from '@loopring-web/core'
 export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslation) => {
