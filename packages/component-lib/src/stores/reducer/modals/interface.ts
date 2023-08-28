@@ -5,9 +5,8 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO, AddressType } from '@loopring-web/loopring-sdk'
 import { AmmPanelType, ToastType } from '../../../components'
-import { AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
+import * as sdk from   '@loopring-web/loopring-sdk'
 
 export enum ModalType {
   transfer = 'transfer',
@@ -65,12 +64,12 @@ export interface ModalState {
   }
   isShowConnect: ModalStatePlayLoad & {
     step: number
-    error?: RESULT_INFO
+    error?:sdk.RESULT_INFO
     info?: { [key: string]: any }
   }
   isShowAccount: ModalStatePlayLoad & {
     step: number
-    error?: RESULT_INFO
+    error?: sdk.RESULT_INFO
     // info?: { [key: string]: any };
   }
   isShowRedPacket: ModalStatePlayLoad & {

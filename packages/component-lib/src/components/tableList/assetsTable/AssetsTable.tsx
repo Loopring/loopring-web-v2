@@ -147,38 +147,38 @@ export const AssetsTable = withTranslation('tables')(
       searchValue,
       ...rest
     } = props
-      const gridRef = React.useRef(null);
-      const prevScrollTop = React.useRef(0);
-      // const container = React.useRef<HTMLDivElement>(null)
+    const gridRef = React.useRef(null);
+    const prevScrollTop = React.useRef(0);
+    // const container = React.useRef<HTMLDivElement>(null)
     const [filter, setFilter] = React.useState({
       searchValue: searchValue ?? '',
     })
-      const [pageSize, setPageSize] = React.useState(8)
-      const [{total, hasMore}, setTotal] = React.useState({total: 0, hasMore: false});
-      const [page, setPage] = React.useState(1);
-      const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>([])
+    const [pageSize, setPageSize] = React.useState(8)
+    const [{total, hasMore}, setTotal] = React.useState({total: 0, hasMore: false});
+    const [page, setPage] = React.useState(1);
+    const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>([])
     const { language, isMobile, coinJson, currency } = useSettings()
     const [modalState, setModalState] = React.useState(false)
-      React.useEffect(() => {
-          // let height = gridRef?.current?.offsetHeight
-          // @ts-ignore
-          let height = gridRef?.current?.element?.parentElement?.offsetHeight
-          if (height) {
-              const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
-              setPageSize((size >= 8 ? size : 8) * 2)
-          } else {
-              setPageSize(16)
-          }
-      }, [gridRef?.current])
-      const handleScroll = _.debounce(() => {
-          // const currentScrollTop = gridRef?.current?.scrollTop;
-          const currentScrollTop = window.scrollY;
-          if (currentScrollTop > prevScrollTop.current) {
-              setPage((prevPage) => prevPage + 1);
-          }
-      }, 200);
-      const updateData = React.useCallback((page) => {
-          let resultData = rawData && !!rawData.length ? [...rawData] : []
+    React.useEffect(() => {
+      // let height = gridRef?.current?.offsetHeight
+      // @ts-ignore
+      let height = gridRef?.current?.element?.parentElement?.offsetHeight
+      if (height) {
+        const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
+        setPageSize((size >= 8 ? size : 8) * 2)
+      } else {
+        setPageSize(16)
+      }
+    }, [gridRef?.current])
+    const handleScroll = _.debounce(() => {
+      // const currentScrollTop = gridRef?.current?.scrollTop;
+      const currentScrollTop = window.scrollY;
+      if (currentScrollTop > prevScrollTop.current) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }, 200);
+    const updateData = React.useCallback((page) => {
+      let resultData = rawData && !!rawData.length ? [...rawData] : []
       // if (filter.hideSmallBalance) {
       if (hideSmallBalances) {
         resultData = resultData.filter((o) => !o.smallBalance)
@@ -192,30 +192,30 @@ export const AssetsTable = withTranslation('tables')(
           o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
         )
       }
-          if (pageSize * page >= resultData.length) {
-              setTotal({total: resultData.length, hasMore: false})
-          } else {
-              setTotal({total: pageSize * (page + 1 / 2), hasMore: true})
-          }
-          setViewData(resultData.slice(0, pageSize * page))
-          // resetTableData(resultData)
-      }, [rawData, filter, hideSmallBalances, hideInvestToken, pageSize])
+      if (pageSize * page >= resultData.length) {
+        setTotal({total: resultData.length, hasMore: false})
+      } else {
+        setTotal({total: pageSize * (page + 1 / 2), hasMore: true})
+      }
+      setViewData(resultData.slice(0, pageSize * page))
+      // resetTableData(resultData)
+    }, [rawData, filter, hideSmallBalances, hideInvestToken, pageSize])
 
     React.useEffect(() => {
-        updateData(page)
+      updateData(page)
     }, [rawData, page])
     React.useEffect(() => {
-        updateData(1)
-        return () => {
-            handleScroll.cancel()
-        }
+      updateData(1)
+      return () => {
+        handleScroll.cancel()
+      }
     }, [filter, hideInvestToken, hideSmallBalances])
-      React.useEffect(() => {
-          window.addEventListener('scroll', handleScroll);
-          return () => {
-              window.removeEventListener('scroll', handleScroll);
-          };
-      }, []);
+    React.useEffect(() => {
+      window.addEventListener('scroll', handleScroll);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }, []);
 
     const handleFilterChange = React.useCallback(
       (filter: any) => {
@@ -364,7 +364,7 @@ export const AssetsTable = withTranslation('tables')(
         },
       },
     ]
-      const getColumnMobileAssets = (t: TFunction, allowTrade?: any): Column<RawDataAssetsItem, unknown>[] => [
+    const getColumnMobileAssets = (t: TFunction, allowTrade?: any): Column<RawDataAssetsItem, unknown>[] => [
       {
         key: 'token',
         name: t('labelToken'),
@@ -502,22 +502,22 @@ export const AssetsTable = withTranslation('tables')(
           showloading={isLoading}
             // onScroll={handleScroll}
           columnMode={
-              (isMobile ? getColumnMobileAssets(t, allowTrade) : getColumnModeAssets(t, allowTrade)) as any
+            (isMobile ? getColumnMobileAssets(t, allowTrade) : getColumnModeAssets(t, allowTrade)) as any
           }
         />
-          {hasMore && (<Typography
-              variant={'body1'}
-              display={'inline-flex'}
-              justifyContent={'center'}
-              alignItems={'center'}
-              color={"var(--color-primary)"} textAlign={'center'} paddingY={1}>
-              <img
-                  alt={'loading'}
-                  className='loading-gif'
-                  width='16'
-                  src={`./static/loading-1.gif`}
-                  style={{paddingRight: 1, display: 'inline-block'}}
-              />{t('labelLoadingMore')}</Typography>)}
+        {hasMore && (<Typography
+            variant={'body1'}
+            display={'inline-flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            color={"var(--color-primary)"} textAlign={'center'} paddingY={1}>
+          <img
+              alt={'loading'}
+              className='loading-gif'
+              width='16'
+              src={`./static/loading-1.gif`}
+              style={{paddingRight: 1, display: 'inline-block'}}
+          />{t('labelLoadingMore')}</Typography>)}
       </TableWrap>
     )
   },
