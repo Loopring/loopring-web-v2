@@ -67,9 +67,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId } = useSystem()
-    const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
 
-    const { withdrawValue, updateWithdrawData, resetWithdrawData } = useModalData()
+  const { withdrawValue, updateWithdrawData, resetWithdrawData } = useModalData()
 
   const [walletMap2, setWalletMap2] = React.useState(
     makeWalletLayer2({ needFilterZero: true, _isToL1: true }).walletMap ?? ({} as WalletMap<R>),
@@ -264,14 +264,14 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
             })
           } else {
-              updateWithdrawData({
-                ...withdrawValue,
-                withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-              })
-              checkFeeIsEnough({
-                requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-                isRequiredAPI: true,
-              })
+            updateWithdrawData({
+              ...withdrawValue,
+              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+            })
+            checkFeeIsEnough({
+              requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+              isRequiredAPI: true,
+            })
             setWithdrawTypes({
               [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
             })
@@ -293,68 +293,68 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       checkFeeIsEnough()
       return
     }
-      if (contactsErrorMessage) {
-        updateContacts()
+    if (contactsErrorMessage) {
+      updateContacts()
+    }
+    if (symbol) {
+      if (walletMap2) {
+        updateWithdrawData({
+          fee: feeInfo,
+          belong: symbol as any,
+          balance: walletMap2[symbol]?.count,
+          tradeValue: undefined,
+          address: info?.isToMyself ? account.accAddress : '*',
+          withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+        })
       }
-      if (symbol) {
-        if (walletMap2) {
-          updateWithdrawData({
-            fee: feeInfo,
-            belong: symbol as any,
-            balance: walletMap2[symbol]?.count,
-            tradeValue: undefined,
-            address: info?.isToMyself ? account.accAddress : '*',
-            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-          })
+    } else {
+      if (!withdrawValue.belong && walletMap2) {
+        const keys = Reflect.ownKeys(walletMap2)
+        let objInit = {
+          fee: feeInfo,
+          belong: 'LRC',
+          tradeValue: undefined,
+          balance: 0,
+          address: info?.isToMyself ? account.accAddress : '*',
+          withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
         }
-      } else {
-        if (!withdrawValue.belong && walletMap2) {
-          const keys = Reflect.ownKeys(walletMap2)
-          let objInit = {
-            fee: feeInfo,
-            belong: 'LRC',
-            tradeValue: undefined,
-            balance: 0,
-            address: info?.isToMyself ? account.accAddress : '*',
-            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
-          }
-          for (let key in keys) {
-            const keyVal = keys[key]
-            const walletInfo = walletMap2[keyVal]
-            if (sdk.toBig(walletInfo.count).gt(0)) {
-              objInit = {
-                fee: feeInfo,
-                belong: keyVal as any,
-                tradeValue: undefined,
-                balance: walletInfo?.count,
-                address: info?.isToMyself ? account.accAddress : '*',
-                withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-              }
-              break
+        for (let key in keys) {
+          const keyVal = keys[key]
+          const walletInfo = walletMap2[keyVal]
+          if (sdk.toBig(walletInfo.count).gt(0)) {
+            objInit = {
+              fee: feeInfo,
+              belong: keyVal as any,
+              tradeValue: undefined,
+              balance: walletInfo?.count,
+              address: info?.isToMyself ? account.accAddress : '*',
+              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
             }
+            break
           }
-          updateWithdrawData(objInit)
-        } else if (withdrawValue.belong && walletMap2) {
-          const walletInfo = walletMap2[withdrawValue.belong]
-          updateWithdrawData({
-            fee: feeInfo,
-            belong: withdrawValue.belong,
-            tradeValue: undefined,
-            balance: walletInfo?.count,
-            address: info?.isToMyself ? account.accAddress : '*',
-            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-          })
-        } else {
-          updateWithdrawData({
-            fee: feeInfo,
-            belong: withdrawValue.belong,
-            tradeValue: undefined,
-            balance: undefined,
-            address: info?.isToMyself ? account.accAddress : '*',
-            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-          })
         }
+        updateWithdrawData(objInit)
+      } else if (withdrawValue.belong && walletMap2) {
+        const walletInfo = walletMap2[withdrawValue.belong]
+        updateWithdrawData({
+          fee: feeInfo,
+          belong: withdrawValue.belong,
+          tradeValue: undefined,
+          balance: walletInfo?.count,
+          address: info?.isToMyself ? account.accAddress : '*',
+          withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+        })
+      } else {
+        updateWithdrawData({
+          fee: feeInfo,
+          belong: withdrawValue.belong,
+          tradeValue: undefined,
+          balance: undefined,
+          address: info?.isToMyself ? account.accAddress : '*',
+          withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+        })
       }
+    }
     if (info?.isToMyself) {
       setAddress(account.accAddress)
     } else if (contactAddress) {
@@ -680,7 +680,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const found = exWalletToAddressMapFn(value)
       // const found = map.find(x => x[0] === value)![1]
       const contact = contacts?.find((x) => x.contactAddress === realAddr)
-        if (!account?.isContractAddress && contact) {
+      if (!account?.isContractAddress && contact) {
         LoopringAPI.contactAPI
           ?.updateContact(
             {
@@ -729,8 +729,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           _checkFeeIsEnough()
         } else {
           updateWithdrawData({
-              fee: undefined,
-              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
+            fee: undefined,
+            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
             belong: undefined,
             tradeValue: undefined,
             balance: undefined,

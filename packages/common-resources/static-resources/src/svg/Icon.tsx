@@ -1528,6 +1528,3 @@ export const DiscordSvg = () => (props: SvgIconProps) => {
     </svg>
   )
 }
-
-
-

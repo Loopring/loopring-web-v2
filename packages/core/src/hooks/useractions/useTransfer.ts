@@ -78,7 +78,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const { exchangeInfo, chainId, forexMap } = useSystem()
   const { currency } = useSettings()
   const { tokenPrices } = useTokenPrices()
-    const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
 
   const { transferValue, updateTransferData, resetTransferData } = useModalData()
 
@@ -606,132 +606,132 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       })
     }
   }, [isActiveAccount, realAddr])
-    const handleSureItsLayer2 = (sure) => {
-      const found = exWalletToAddressMapFn(sure)!
-      const contact = contacts?.find((x) => x.contactAddress === realAddr)
-      if (!account.isContractAddress && contact && contact.addressType !== sure) {
-        LoopringAPI.contactAPI
-          ?.updateContact(
-            {
-              contactAddress: realAddr,
-              isHebao: !!(account.isContractAddress || account.isCFAddress),
-              accountId: account.accountId,
-              addressType: found,
-              contactName: contact.contactName,
-            },
-            account.apiKey,
-          )
-          .then(() => {
-            updateContacts()
-            reCheck()
-          })
-      }
-      setSureItsLayer2(sure)
+  const handleSureItsLayer2 = (sure) => {
+    const found = exWalletToAddressMapFn(sure)!
+    const contact = contacts?.find((x) => x.contactAddress === realAddr)
+    if (!account.isContractAddress && contact && contact.addressType !== sure) {
+      LoopringAPI.contactAPI
+        ?.updateContact(
+          {
+            contactAddress: realAddr,
+            isHebao: !!(account.isContractAddress || account.isCFAddress),
+            accountId: account.accountId,
+            addressType: found,
+            contactName: contact.contactName,
+          },
+          account.apiKey,
+        )
+        .then(() => {
+          updateContacts()
+          reCheck()
+        })
     }
-    React.useEffect(() => {
-      const { contacts } = store.getState().contacts
-      const addressType = contacts?.find(
-        (x) => x.contactAddress?.toLowerCase() === realAddr?.toLowerCase(),
-      )?.addressType
-      if (isShow === false) {
-        setSureItsLayer2(undefined)
-      } else if (addressType !== undefined) {
-        const found = addressType ? addressToExWalletMapFn(addressType) : undefined
-        setSureItsLayer2((state) => {
-          if (state !== found) {
-            return found
-          } else {
-            return state
-          }
-        })
-      }
-    }, [realAddr, isShow])
-
-    const transferProps: TransferProps<any, any> = {
-      contacts,
-      type: TRADE_TYPE.TOKEN,
-      addressDefault: address,
-      realAddr,
-      tradeData: transferValue as any,
-      coinMap: totalCoinMap as CoinMap<T>,
-      walletMap: walletMap as WalletMap<T>,
-      transferBtnStatus: btnStatus,
-      onTransferClick,
-      handlePanelEvent,
-      handleFeeChange,
-      feeInfo,
-      handleSureItsLayer2,
-      lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.transfer,
-      // isConfirmTransfer,
-      sureItsLayer2,
-      chargeFeeTokenList,
-      activeAccountPrice,
-      isFeeNotEnough,
-      isLoopringAddress,
-      isSameAddress,
-      isAddressCheckLoading,
-      addrStatus,
-      memo: transferValue.memo ?? '',
-      handleOnMemoChange,
-      handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
-        checkActiveFeeIsEnough({
-          isRequiredAPI: true,
-          requestType: undefined as any,
-        })
-        setAddress((state) => {
-          if (isContactSelection) {
-            const contact = contacts?.find((x) => x.contactAddress === value)
-            const v = contact && addressToExWalletMapFn(contact.addressType)
-            v && setSureItsLayer2(v)
-          } else {
-            setSureItsLayer2(undefined)
-          }
-          if (state !== value || '') {
-            // flag = true;
-            setFeeWithActive((state) => {
-              if (state !== false) {
-                checkFeeIsEnough({
-                  isRequiredAPI: true,
-                  requestType: sdk.OffchainFeeReqType.TRANSFER,
-                })
-              }
-              return false
-            })
-          }
-
-          return value || ''
-        })
-      },
-      isActiveAccount,
-      isActiveAccountFee,
-      feeWithActive,
-      handleOnFeeWithActive: (value: boolean) => {
-        setFeeWithActive(value)
-        if (value && !isActiveAccountFee) {
-          checkFeeIsEnough({
-            isRequiredAPI: true,
-
-            requestType: sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
-          })
+    setSureItsLayer2(sure)
+  }
+  React.useEffect(() => {
+    const { contacts } = store.getState().contacts
+    const addressType = contacts?.find(
+      (x) => x.contactAddress?.toLowerCase() === realAddr?.toLowerCase(),
+    )?.addressType
+    if (isShow === false) {
+      setSureItsLayer2(undefined)
+    } else if (addressType !== undefined) {
+      const found = addressType ? addressToExWalletMapFn(addressType) : undefined
+      setSureItsLayer2((state) => {
+        if (state !== found) {
+          return found
         } else {
-          checkFeeIsEnough({
-            isRequiredAPI: true,
-            requestType: sdk.OffchainFeeReqType.TRANSFER,
+          return state
+        }
+      })
+    }
+  }, [realAddr, isShow])
+
+  const transferProps: TransferProps<any, any> = {
+    contacts,
+    type: TRADE_TYPE.TOKEN,
+    addressDefault: address,
+    realAddr,
+    tradeData: transferValue as any,
+    coinMap: totalCoinMap as CoinMap<T>,
+    walletMap: walletMap as WalletMap<T>,
+    transferBtnStatus: btnStatus,
+    onTransferClick,
+    handlePanelEvent,
+    handleFeeChange,
+    feeInfo,
+    handleSureItsLayer2,
+    lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.transfer,
+    // isConfirmTransfer,
+    sureItsLayer2,
+    chargeFeeTokenList,
+    activeAccountPrice,
+    isFeeNotEnough,
+    isLoopringAddress,
+    isSameAddress,
+    isAddressCheckLoading,
+    addrStatus,
+    memo: transferValue.memo ?? '',
+    handleOnMemoChange,
+    handleOnAddressChange: (value: any, isContactSelection?: boolean) => {
+      checkActiveFeeIsEnough({
+        isRequiredAPI: true,
+        requestType: undefined as any,
+      })
+      setAddress((state) => {
+        if (isContactSelection) {
+          const contact = contacts?.find((x) => x.contactAddress === value)
+          const v = contact && addressToExWalletMapFn(contact.addressType)
+          v && setSureItsLayer2(v)
+        } else {
+          setSureItsLayer2(undefined)
+        }
+        if (state !== value || '') {
+          // flag = true;
+          setFeeWithActive((state) => {
+            if (state !== false) {
+              checkFeeIsEnough({
+                isRequiredAPI: true,
+                requestType: sdk.OffchainFeeReqType.TRANSFER,
+              })
+            }
+            return false
           })
         }
-      },
-      isSmartContractAddress: isContractAddress,
-      isFromContact: contactAddress ? true : false,
-      contact: contactAddress
-        ? {
-            address: contactAddress,
-            name: contactName!,
-            addressType: contactAddressType!,
-          }
-        : undefined,
-      loopringSmartWalletVersion,
-      // contacts,
-    }
+
+        return value || ''
+      })
+    },
+    isActiveAccount,
+    isActiveAccountFee,
+    feeWithActive,
+    handleOnFeeWithActive: (value: boolean) => {
+      setFeeWithActive(value)
+      if (value && !isActiveAccountFee) {
+        checkFeeIsEnough({
+          isRequiredAPI: true,
+
+          requestType: sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT,
+        })
+      } else {
+        checkFeeIsEnough({
+          isRequiredAPI: true,
+          requestType: sdk.OffchainFeeReqType.TRANSFER,
+        })
+      }
+    },
+    isSmartContractAddress: isContractAddress,
+    isFromContact: contactAddress ? true : false,
+    contact: contactAddress
+      ? {
+          address: contactAddress,
+          name: contactName!,
+          addressType: contactAddressType!,
+        }
+      : undefined,
+    loopringSmartWalletVersion,
+    // contacts,
+  }
 
   return {
     retryBtn,

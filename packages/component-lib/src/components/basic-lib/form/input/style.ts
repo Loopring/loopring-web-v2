@@ -15,7 +15,7 @@ import CurrencyInput from 'react-currency-input-field'
 
 import { InputSize } from './Interface'
 import { css } from '@emotion/react'
-import { fontDefault } from '@loopring-web/common-resources';
+import { fontDefault } from '@loopring-web/common-resources'
 
 export const inputHeightLarge = () => css`
   height: var(--input-height-large);
