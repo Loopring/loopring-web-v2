@@ -1,8 +1,8 @@
 import { updateContacts, reset, statusUnset } from './reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import React from 'react'
-import { ContactsState } from './interface';
-import { RootState } from '../index';
+import { ContactsState } from './interface'
+import { RootState } from '../index'
 
 export const useContacts = (): ContactsState & {
   updateContacts: () => void

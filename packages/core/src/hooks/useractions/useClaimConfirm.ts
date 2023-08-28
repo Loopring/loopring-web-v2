@@ -375,7 +375,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               tokenId: token.tokenId,
               feeTokenId: feeToken.tokenId,
               amount: amount.toString(),
-              nftData: claimToken?.isNft ? claimToken.nftTokenInfo?.nftData : undefined,
+              nftData: token.type === 'ERC20' ? undefined : claimValue.nftData,
               claimer: accAddress,
               transfer: {
                 exchange: exchangeInfo.exchangeAddress,
@@ -393,7 +393,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 },
                 validUntil: getTimestampDaysLater(DAYS),
               },
-              luckyTokenHash: claimToken?.isNft ? claimToken?.luckyTokenHash : undefined,
+              luckyTokenHash: claimToken?.luckyTokenHash,
             }
           } else if (claimValue.claimType === CLAIM_TYPE.allToken) {
             request = {

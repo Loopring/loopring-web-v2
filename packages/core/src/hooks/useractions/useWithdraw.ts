@@ -18,7 +18,8 @@ import {
   TRADE_TYPE,
   UIERROR_CODE,
   WALLET_TYPE,
-    WalletMap, WithdrawType,
+  WalletMap,
+  WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
 
@@ -36,7 +37,8 @@ import {
   useAccount,
   useAddressCheck,
   useBtnStatus,
-  useChargeFees, useContacts,
+  useChargeFees,
+  useContacts,
   useModalData,
   useSystem,
   useTokenMap,
@@ -65,7 +67,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId } = useSystem()
-  const {contacts, errorMessage: contactsErrorMessage, updateContacts} = useContacts()
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
 
   const { withdrawValue, updateWithdrawData, resetWithdrawData } = useModalData()
 
@@ -104,10 +106,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       if (
         withdrawValue.withdrawType == _withdrawValue.withdrawType &&
         withdrawValue.belong == _withdrawValue.belong &&
-          amount == _withdrawValue.tradeValue
-          // ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
-          //     amount == _withdrawValue.tradeValue ) ||
-          //   withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+        amount == _withdrawValue.tradeValue
+        // ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
+        //     amount == _withdrawValue.tradeValue ) ||
+        //   withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
       ) {
         updateWithdrawData({ ..._withdrawValue, fee })
         // _updateWithdrawData({ ..._withdrawValue, fee })
@@ -262,8 +264,14 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
             })
           } else {
-            updateWithdrawData({ ...withdrawValue, withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL})
-            checkFeeIsEnough({ requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, isRequiredAPI: true})
+            updateWithdrawData({
+              ...withdrawValue,
+              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+            })
+            checkFeeIsEnough({
+              requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+              isRequiredAPI: true,
+            })
             setWithdrawTypes({
               [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
             })
@@ -308,7 +316,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           tradeValue: undefined,
           balance: 0,
           address: info?.isToMyself ? account.accAddress : '*',
-            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
+          withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
         }
         for (let key in keys) {
           const keyVal = keys[key]
@@ -386,18 +394,18 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   }, [isShow, accountStatus])
 
   const _checkFeeIsEnough = _.debounce(
-      () => {
-        const {tradeValue: amount, withdrawType} = store.getState()._router_modalData.withdrawValue
-        checkFeeIsEnough({
-          isRequiredAPI: true,
-          intervalTime: LIVE_FEE_TIMES,
-          amount,
-          requestType: withdrawType,
-          needAmountRefresh: withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-        })
-      },
-      globalSetup.wait,
-      {leading: true, trailing: true},
+    () => {
+      const { tradeValue: amount, withdrawType } = store.getState()._router_modalData.withdrawValue
+      checkFeeIsEnough({
+        isRequiredAPI: true,
+        intervalTime: LIVE_FEE_TIMES,
+        amount,
+        requestType: withdrawType,
+        needAmountRefresh: withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
+      })
+    },
+    globalSetup.wait,
+    { leading: true, trailing: true },
   )
 
   useWalletLayer2Socket({ walletLayer2Callback })
@@ -646,22 +654,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
   }, [realAddr, isShow, contacts])
 
-
-  // React.useEffect(() => {
-  //   const account = store.getState().account
-  //   if (accountStatus == SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-  //     loadContacts()
-  //   }
-  // }, [accountStatus])
-  // React.useEffect(() => {
-  //   _checkFeeIsEnough()
-  // }, [
-  //   // value effect fees
-  //   withdrawValue.withdrawType,
-  //   withdrawValue.tradeValue,
-  //   withdrawValue.belong,
-  // ])
-
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
     isLoopringAddress,
@@ -737,12 +729,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           _checkFeeIsEnough()
         } else {
           updateWithdrawData({
-              fee: undefined,
-              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
+            fee: undefined,
+            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
             belong: undefined,
             tradeValue: undefined,
             balance: undefined,
-              address: '*'
+            address: '*',
           })
         }
       }

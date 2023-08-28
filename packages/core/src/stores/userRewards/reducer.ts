@@ -22,7 +22,7 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
     },
     resetUserRewards(state, _action: PayloadAction<undefined>) {
         state = {
-            ...initialState,
+          ...initialState,
         }
         state.status = SagaStatus.UNSET
     },

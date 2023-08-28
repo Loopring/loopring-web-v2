@@ -11,7 +11,8 @@ import {
   NFTWholeINFO,
   RedPacketOrderData,
   TRADE_TYPE,
-    TradeNFT, WithdrawType,
+  TradeNFT,
+  WithdrawType,
 } from '@loopring-web/common-resources'
 import { WalletLayer2Map } from '../../walletLayer2'
 
@@ -21,7 +22,7 @@ export type WithdrawData<T = any> = IBData<T> & {
   // balance: number | undefined;
   address: string | undefined
   fee: FeeInfo | undefined
-    withdrawType: WithdrawType
+  withdrawType: WithdrawType
 }
 export type ForceWithdrawData = {
   belong: string | undefined
