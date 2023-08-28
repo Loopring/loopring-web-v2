@@ -10,6 +10,7 @@ import {
   NetworkMap,
   CustomError,
   ErrorMap,
+  HEBAO_CONTRACT_MAP,
 } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -17,7 +18,6 @@ import { checkAddr } from '../../utils'
 import { LoopringAPI, store, useAccount, useContacts, useSystem } from '../../index'
 import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
-import { LoopringErrorCode } from '@loopring-web/loopring-sdk'
 
 export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const [address, setAddress] = React.useState<string>('')
@@ -232,16 +232,9 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                 !walletTypeResponse?.walletType?.isInCounterFactualStatus &&
                 walletTypeResponse?.walletType?.loopringWalletContractVersion
               ) {
-                const map: [string, sdk.AddressType][] = [
-                  ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
-                  ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
-                  ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
-                  ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
-                  ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
-                ]
-                const addressType = map.find(
-                  (x) => x[0] === walletTypeResponse?.walletType?.loopringWalletContractVersion,
-                )![1]
+                  const addressType: number = HEBAO_CONTRACT_MAP.find(
+                    (x) => x[0] === walletTypeResponse?.walletType?.loopringWalletContractVersion,
+                  )![1]
                 await LoopringAPI.contactAPI?.updateContact(
                   {
                     // contactAddress: found.xaddress,
@@ -250,7 +243,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                     ...found,
                     isHebao: true,
                     accountId: accountId,
-                    addressType: addressType,
+                    addressType,
                   },
                   apiKey,
                 )
