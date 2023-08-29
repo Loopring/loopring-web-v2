@@ -1843,4 +1843,5 @@ export default {
   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
+  labelRedPacketViewType2: 'Exclusive',
 }

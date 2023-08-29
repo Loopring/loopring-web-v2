@@ -1370,6 +1370,7 @@ export default {
   labelRedPacketBtn: 'Shared',
   labelRedPacketViewType0: 'Public',
   labelRedPacketViewType1: 'Private',
+
   labelRedPacketViewTypeDetail0: 'public Red Packet',
   labelRedPacketViewTypeDetail1: 'private Red Packet',
   labelRedPacketStatusSUBMITTING: 'Submitting', // SUBMITTING = 0,
@@ -1815,4 +1816,5 @@ export default {
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelRedPacketViewType2: 'Exclusive',
 }

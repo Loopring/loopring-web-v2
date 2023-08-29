@@ -37,10 +37,18 @@ import {
 } from '@loopring-web/common-resources'
 
 export enum RedPacketStep {
-  TradeType,
-  ChooseType,
-  Main,
+  TradeType = 0,
+  ChooseType = 1,
+  Main = 2,
   NFTList = 3,
+  TargetChosse = 4,
+}
+export enum TargetRedPacketStep {
+  TargetChosse = 0,
+  TradeType = 1,
+  ChooseType = 2,
+  Main = 3,
+  NFTList = 4,
 }
 
 /**
@@ -623,6 +631,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   assetsData: AssetsRawDataItem[]
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
+  backToScope: () => void
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -636,7 +645,20 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
       selectNFT: NFT
     }
   > & {
-    setActiveStep: (step: RedPacketStep) => void
+    setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void
     activeStep: RedPacketStep
     tokenMap: { [key: string]: sdk.TokenInfo }
+    backToScope: () => void
+    onClickNext: () => void
   }
+
+
+export type TargetRedpacktSelectStepProps = {
+  redpacketCount: number
+  onClickCreateNew: () => void
+}
+
+export type TargetRedpacktInputAddressStepProps = {
+  redpacketCount: number
+  onClickCreateNew: () => void
+}

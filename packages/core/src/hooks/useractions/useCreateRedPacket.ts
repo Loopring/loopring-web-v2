@@ -195,7 +195,20 @@ export const useCreateRedPacket = <
           isNFT: false,
         } as unknown as T)
       } else if (!isToken) {
-        resetRedPacketOrder(value)
+        updateRedPacketOrder({
+          fee: feeInfo,
+          belong: undefined,
+          tradeValue: undefined,
+          balance: undefined,
+          giftNumbers: undefined,
+          memo: '',
+          numbers: undefined,
+          validSince: Date.now(),
+          validUntil: moment().add('days', 1).toDate().getTime(),
+          tradeType: value,
+          isNFT: true
+        } as unknown as T)
+        // resetRedPacketOrder(value)
       } else {
         updateRedPacketOrder({
           fee: feeInfo,
@@ -880,6 +893,25 @@ export const useCreateRedPacket = <
       }
     })()
   }, [location.search])
+
+
+  React.useEffect(() => {
+    (async () => {
+      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens({
+        statuses: [0, 1],
+        isAll: 0,
+        limit: 10,
+        offset: 0,
+      }, account.apiKey)
+      // debugger
+      
+      
+    })()
+    
+
+
+  }, [])
+  
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
