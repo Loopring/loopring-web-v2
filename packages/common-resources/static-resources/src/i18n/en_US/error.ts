@@ -75,4 +75,13 @@ export default {
   errorContactLimit: 'Unable to Add Contact,You have reached the maximum limit of 1500 contacts',
   errorContactOverLimit:
     'Unable to Add Contact,You have reached the maximum limit of 1500 contacts',
+  labelContactsAddSuccess: 'Add Contact Succeed',
+  labelContactsDeleteSuccess: 'Delete Contact Succeed',
+  labelContactsEditSuccess: 'Edit Contact Succeed',
+  labelContactsSendSuccess: 'Send Succeed',
+  labelContactsCopySuccess: 'Copied to Clipboard',
+  labelContactsAddFailed: 'Add Contact Failed',
+  labelContactsDeleteFailed: 'Delete Contact Failed',
+  labelContactsEditFailed: 'Edit Contact Failed',
+  labelContactsSendFailed: 'Send Failed',
 }

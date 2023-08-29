@@ -165,7 +165,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         ...LoopringAPI?.walletAPI?.genErr(error as any),
       }
       // @ts-ignore
-      if (_address.current == address && error?.code == LoopringErrorCode.HTTP_ERROR) {
+      if (_address?.current == address && error?.code == sdk.LoopringErrorCode.HTTP_ERROR) {
         _address.current = ''
         setAddrStatus(AddressError.TimeOut)
         setRealAddr('')
@@ -232,9 +232,9 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                 !walletTypeResponse?.walletType?.isInCounterFactualStatus &&
                 walletTypeResponse?.walletType?.loopringWalletContractVersion
               ) {
-                  const addressType: number = HEBAO_CONTRACT_MAP.find(
-                    (x) => x[0] === walletTypeResponse?.walletType?.loopringWalletContractVersion,
-                  )![1]
+                const addressType: number | string = HEBAO_CONTRACT_MAP.find(
+                  (x) => x[0] === walletTypeResponse?.walletType?.loopringWalletContractVersion,
+                )![1]
                 await LoopringAPI.contactAPI?.updateContact(
                   {
                     // contactAddress: found.xaddress,
@@ -243,7 +243,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                     ...found,
                     isHebao: true,
                     accountId: accountId,
-                    addressType,
+                    addressType: addressType as Number,
                   },
                   apiKey,
                 )
