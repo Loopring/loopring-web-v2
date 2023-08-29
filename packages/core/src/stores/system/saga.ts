@@ -28,6 +28,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
+import { setShowGlobalToast } from '@loopring-web/component-lib'
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: sdk.ChainId | 'unknown',
@@ -432,7 +433,12 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           raw_data: { enable: false },
           legal: { enable: false },
         }
-        throw new CustomError(ErrorMap.NO_SDK)
+        setShowGlobalToast({
+          isShow: true,
+          info: {
+            content: ErrorMap.NO_SDK,
+          },
+        })
       }
 
       // @ts-ignore
