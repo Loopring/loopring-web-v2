@@ -32,7 +32,7 @@ import { useBtnStatus } from '../common'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../api_wrapper'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
-import { getTimestampDaysLater } from '../../utils'
+import { getTimestampDaysLater, isAddress } from '../../utils'
 import { DAYS } from '../../defs'
 import Web3 from 'web3'
 import { isAccActivated } from './useCheckAccStatus'
@@ -787,6 +787,59 @@ export const useCreateRedPacket = <
       redPacketConfigs?.luckTokenAgents,
     ],
   )
+  const onSendTargetRedpacketClick = React.useCallback(
+    async () => {
+      const { readyState } = account
+      const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
+      // const _tradeData = calcNumberAndAmount()
+      // const isToken =
+      //   redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
+      //   (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
+
+      const getValidAddresses = (input:string) => {
+        return input.split('\n').filter(str => {
+          return isAddress(str)
+        })
+      }
+
+      if (
+        readyState === AccountStatus.ACTIVATED &&
+        LoopringAPI.luckTokenAPI &&
+        redPacketOrder.target?.redpacketHash &&
+        getValidAddresses(redPacketOrder.target?.addressListString).length > 0 &&
+        redPacketOrder.target?.addressListString
+      ) {
+        try {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.RedPacketSend_WaitForAuth,
+          })
+          const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget({
+            claimer: getValidAddresses(redPacketOrder.target?.redpacketHash),
+            hash: redPacketOrder.target?.redpacketHash,
+            notifyType: (redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot) ? 0 : 1,
+          }, account.apiKey)
+         
+        } catch (e: any) {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.RedPacketSend_Failed,
+            error: {
+              code: UIERROR_CODE.UNKNOWN,
+              message: e.message,
+            } as sdk.RESULT_INFO,
+          })
+        }
+      } else {
+        return
+      }
+    },
+    [
+      account.readyState,
+      redPacketOrder.target?.redpacketHash,
+      redPacketOrder.target?.addressListString
+    ],
+  )
 
   const handlePanelEvent = useCallback(
     async (data: SwitchData<Partial<T>>) => {
@@ -948,6 +1001,7 @@ export const useCreateRedPacket = <
       }
     },
     selectNFTDisabled: redPacketOrder.tradeType === RedPacketOrderType.FromNFT,
+    onSendTargetRedpacketClick
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }

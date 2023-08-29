@@ -632,6 +632,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
   backToScope: () => void
+  onSendTargetRedpacketClick: () => void
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -659,6 +660,10 @@ export type TargetRedpacktSelectStepProps = {
 }
 
 export type TargetRedpacktInputAddressStepProps = {
-  redpacketCount: number
-  onClickCreateNew: () => void
+  isRedDot: boolean
+  onChangeIsRedDot: (isRedDot: boolean) => void
+  onFileInput: (input: string) => void
+  addressListString: string
+  onClickSend: () => void
+  // onClickCreateNew: () => void
 }

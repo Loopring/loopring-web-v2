@@ -13,7 +13,14 @@ import {
   Typography,
 } from '@mui/material'
 import React from 'react'
-import { Button, CardStyleItem, InputButtonProps, InputCoin, NftImageStyle, TextField } from '../../basic-lib'
+import {
+  Button,
+  CardStyleItem,
+  InputButtonProps,
+  InputCoin,
+  NftImageStyle,
+  TextField,
+} from '../../basic-lib'
 import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import {
   BackIcon,
@@ -36,9 +43,18 @@ import {
   InfoIcon,
   HelpIcon,
   TokenType,
+  CheckBoxIcon,
+  CheckedIcon,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
-import { CreateRedPacketViewProps, RedPacketStep, SwitchData, TargetRedPacketStep, TargetRedpacktSelectStepProps } from '../Interface'
+import {
+  CreateRedPacketViewProps,
+  RedPacketStep,
+  SwitchData,
+  TargetRedPacketStep,
+  TargetRedpacktInputAddressStepProps,
+  TargetRedpacktSelectStepProps,
+} from '../Interface'
 import { MenuBtnStyled } from '../../styled'
 import styled from '@emotion/styled'
 import { BasicACoinTrade } from './BasicACoinTrade'
@@ -57,7 +73,6 @@ const StyledTextFiled = styled(TextField)``
 const RedPacketBoxStyle = styled(Box)`
   padding-top: ${({ theme }) => theme.unit}px;
   max-width: ${({ theme }) => 144 * theme.unit}px;
-
 
   .MuiFormGroup-root {
     align-items: flex-start;
@@ -458,34 +473,30 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 },
 
                 onChangeEvent: (_index: 0 | 1, { to, tradeData: newTradeData }: SwitchData<T>) => {
-
-                  
-                    if (_index === 1) {
-                      if (selectNFTDisabled) return
-                      handleOnDataChange({
-                        collectionInfo: undefined,
-                        tokenId: undefined,
-                        tradeValue: undefined,
-                        balance: undefined,
-                        nftData: undefined,
-                        belong: undefined,
-                        image: undefined,
-                      } as T)
-                      if (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET) {
-                        setActiveStep(TargetRedPacketStep.NFTList)
-                      } else {
-                        setActiveStep(RedPacketStep.NFTList)
-                      }
-                    } else if (to === 'button') {
-                      handleOnDataChange({
-                        tradeValue: newTradeData.tradeValue,
-                        belong: newTradeData.belong,
-                        balance: tradeData.balance,
-                        nftData: newTradeData.nftData,
-                      } as any)
+                  if (_index === 1) {
+                    if (selectNFTDisabled) return
+                    handleOnDataChange({
+                      collectionInfo: undefined,
+                      tokenId: undefined,
+                      tradeValue: undefined,
+                      balance: undefined,
+                      nftData: undefined,
+                      belong: undefined,
+                      image: undefined,
+                    } as T)
+                    if (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET) {
+                      setActiveStep(TargetRedPacketStep.NFTList)
+                    } else {
+                      setActiveStep(RedPacketStep.NFTList)
                     }
-
-                  
+                  } else if (to === 'button') {
+                    handleOnDataChange({
+                      tradeValue: newTradeData.tradeValue,
+                      belong: newTradeData.belong,
+                      balance: tradeData.balance,
+                      nftData: newTradeData.nftData,
+                    } as any)
+                  }
                 },
                 inputNFTDefaultProps: inputNFTButtonDefaultProps,
                 inputNFTRef: inputBtnRef,
@@ -960,7 +971,7 @@ export const CreateRedPacketStepType = withTranslation()(
             )
           })}
         </Box>
-        
+
         <Box
           width={'100%'}
           alignSelf={'stretch'}
@@ -1178,11 +1189,12 @@ export const CreateRedPacketStepTokenType = withTranslation()(
   },
 )
 
-const ScopeOption = styled(Box)<{selected?: boolean}>`
+const ScopeOption = styled(Box)<{ selected?: boolean }>`
   display: flex;
-  border: 1px solid ${({selected}) => selected ? 'var(--color-border-select)' : 'var(--color-border)'};
-  padding: ${({theme}) => 3 * theme.unit}px;
-  border-radius: ${({theme}) => theme.unit}px;
+  border: 1px solid
+    ${({ selected }) => (selected ? 'var(--color-border-select)' : 'var(--color-border)')};
+  padding: ${({ theme }) => 3 * theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
   width: 47%;
 `
 type CreateRedPacketScopeProps = {
@@ -1191,12 +1203,7 @@ type CreateRedPacketScopeProps = {
   onClickNext: () => void
 }
 export const CreateRedPacketScope = withTranslation()(
-  ({
-    selectedScope,
-    onClickNext,
-    onSelecteScope
-  } : CreateRedPacketScopeProps
-  ) => {
+  ({ selectedScope, onClickNext, onSelecteScope }: CreateRedPacketScopeProps) => {
     return (
       <Box display={'flex'} flexDirection={'column'} paddingX={8} paddingTop={4} paddingBottom={8}>
         <Box marginBottom={6}>
@@ -1211,7 +1218,10 @@ export const CreateRedPacketScope = withTranslation()(
             </Tooltip>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
-            <ScopeOption onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PUBLIC)} selected={selectedScope === sdk.LuckyTokenViewType.PUBLIC}>
+            <ScopeOption
+              onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PUBLIC)}
+              selected={selectedScope === sdk.LuckyTokenViewType.PUBLIC}
+            >
               <Box marginRight={0.5}>
                 <Typography>Plaza Public</Typography>
                 <Typography color={'var(--color-text-secondary)'}>
@@ -1221,7 +1231,10 @@ export const CreateRedPacketScope = withTranslation()(
               </Box>
               <ScopePublic color={'var(--color-text-secondary)'} />
             </ScopeOption>
-            <ScopeOption onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PRIVATE)} selected={selectedScope === sdk.LuckyTokenViewType.PRIVATE}>
+            <ScopeOption
+              onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PRIVATE)}
+              selected={selectedScope === sdk.LuckyTokenViewType.PRIVATE}
+            >
               <Box marginRight={0.5}>
                 <Typography>Plaza Public</Typography>
                 <Typography color={'var(--color-text-secondary)'}>
@@ -1245,7 +1258,10 @@ export const CreateRedPacketScope = withTranslation()(
             </Tooltip>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
-            <ScopeOption onClick={() => onSelecteScope(sdk.LuckyTokenViewType.TARGET)} selected={selectedScope === sdk.LuckyTokenViewType.TARGET}>
+            <ScopeOption
+              onClick={() => onSelecteScope(sdk.LuckyTokenViewType.TARGET)}
+              selected={selectedScope === sdk.LuckyTokenViewType.TARGET}
+            >
               <Box marginRight={0.5}>
                 <Typography>Plaza Public</Typography>
                 <Typography color={'var(--color-text-secondary)'}>
@@ -1274,11 +1290,12 @@ export const CreateRedPacketScope = withTranslation()(
   },
 )
 
-const TargetRedpacktOption = styled(Box)<{selected: boolean}>`
+const TargetRedpacktOption = styled(Box)<{ selected: boolean }>`
   display: flex;
-  border: 1px solid ${({selected}) => selected ? 'var(--color-border-select)' : 'var(--color-border)'};
-  padding: ${({theme}) => 2 * theme.unit}px;
-  border-radius: ${({theme}) => 0.5 * theme.unit}px;
+  border: 1px solid
+    ${({ selected }) => (selected ? 'var(--color-border-select)' : 'var(--color-border)')};
+  padding: ${({ theme }) => 2 * theme.unit}px;
+  border-radius: ${({ theme }) => 0.5 * theme.unit}px;
   width: 31%;
   margin-right: 2%;
   flex-direction: column;
@@ -1399,43 +1416,127 @@ export const TargetRedpacktSelectStep = (props: TargetRedpacktSelectStepProps) =
 }
 
 export const TargetRedpacktInputAddressStep = (props: TargetRedpacktInputAddressStepProps) => {
-  const { redpacketCount, onClickCreateNew } = props
+  const { isRedDot, addressListString, onChangeIsRedDot, onFileInput, onClickSend } = props
   const theme = useTheme()
-  const isNFT = false
-  const NFTImageSrc = 'https://static.loopring.io/assets/images/blindbox_dark.png'
-  const token = 'LRC'
-  const { coinJson } = useSettings()
 
   return (
     <RedPacketBoxStyle justifyContent={'left'} width={'100%'}>
-
       <Typography marginTop={4} marginBottom={0.5}>
         Exclusive Red Packet
       </Typography>
       <Typography color={'var(--color-text-secondary)'}>
-        For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.
-        Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.
+        For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while
+        standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include
+        Loopring, our partners, or other verified members. If you're interested in being
+        whitelisted, please contact us at support@loopring.io.
       </Typography>
-      <Box border={'1px solid var(--color-border)'}>
-        111
+      <Box borderRadius={1} paddingX={5} paddingY={3} border={'1px solid var(--color-border)'}>
+          <Typography height={theme.unit * 30}>{addressListString && addressListString.split('\n').map(str => <>{str} <br/></>)}</Typography>
+          
+        <Box display={'flex'} justifyContent={'right'}>
 
+          <FormControlLabel
+            control={
+              <input
+                onChange={(e) => {
+                  const reader = new FileReader()
+                  reader.onload = event => {
+                    onFileInput(event.target?.result ? (event.target.result as string) : '')
+                  }
+                  e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
+                }}
+                style={{ display: 'none' }}
+                id='file-upload'
+                type='file'
+              />
+            }
+            label={
+              <Button
+                onClick={(e) => {
+                  ;(e.currentTarget.parentNode as any).click()
+                }}
+                variant={'outlined'}
+              >
+                Text import
+              </Button>
+            }
+          />
+
+          {/* </Box> */}
+        </Box>
       </Box>
 
-      <Typography marginTop={5} marginBottom={0.5}>
-      Notification Display
+      <Typography variant={'h5'} marginTop={5} marginBottom={1.5}>
+        Notification Display
       </Typography>
-
-        
+      <Box display={'flex'}>
+        <Box width={'45%'} marginRight={'10%'}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isRedDot}
+                onChange={(_event: any, state: boolean) => {
+                  onChangeIsRedDot(true)
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={'Badge'}
+          />
+          <Box marginLeft={3}>
+            <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
+              Recipients are alerted via a badge next to the Red Packets category
+            </Typography>
+            <img src={SoursURL + 'images/target_option_red_dot.png'} />
+          </Box>
+        </Box>
+        <Box width={'45%'}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!isRedDot}
+                onChange={(_event: any, state: boolean) => {
+                  onChangeIsRedDot(false)
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={
+              <Typography display={'flex'} alignItems={'center'}>
+                <Typography marginRight={0.5}>Pop-up Notification</Typography>{' '}
+                <Tooltip
+                  title={`Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.`}
+                >
+                  <span>
+                    <Info2Icon />
+                  </span>
+                </Tooltip>{' '}
+              </Typography>
+            }
+          />
+          <Box marginLeft={3}>
+            <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
+              Recipients are alerted via a prominent display that highlights the contents of the Red
+              Packet. (Limited to whitelisted users)
+            </Typography>
+            <img src={SoursURL + 'images/target_option_pop.png'} />
+          </Box>
+        </Box>
+      </Box>
 
       <Box marginTop={20} display={'flex'} justifyContent={'center'}>
         <Box width={'440px'}>
           <BtnMain
             {...{
-              defaultLabel: 'Create New Red Packet',
+              defaultLabel: 'Prepare Red Packet',
               fullWidth: true,
               disabled: () => false,
               onClick: () => {
-                onClickCreateNew()
+                onClickSend()
               },
             }}
           />

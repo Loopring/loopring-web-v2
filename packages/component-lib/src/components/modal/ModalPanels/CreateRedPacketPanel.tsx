@@ -23,6 +23,7 @@ import {
   CreateRedPacketStepTokenType,
   CreateRedPacketStepType,
   CreateRedPacketStepWrap,
+  TargetRedpacktInputAddressStep,
   TargetRedpacktSelectStep,
 } from '../../tradePanel/components/CreateRedPacketWrap'
 import { Box, styled } from '@mui/material'
@@ -53,6 +54,7 @@ export const CreateRedPacketPanel = <
   assetsData,
   //@ts-ignore
   myNFTPanel,
+  onCreateRedPacketClick,
   ...rest
 }: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(['common', 'error'])
@@ -286,6 +288,35 @@ export const CreateRedPacketPanel = <
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     const isTarget = tradeData.type?.scope === LuckyTokenViewType.TARGET
     const commonPanels = [
+      {
+        key: 'selectTokenType',
+        element: (
+          <TargetRedpacktInputAddressStep
+            addressListString={tradeData.target?.addressListString ?? ''}
+            isRedDot={tradeData.target?.isRedDot !== undefined ? tradeData.target?.isRedDot : true}
+            onChangeIsRedDot={(isRedDot) => {
+              handleOnDataChange({
+                target: {
+                  ...tradeData.target,
+                  isRedDot,
+                }
+              } as any)
+            }}
+            onFileInput={(input) => {
+              handleOnDataChange({
+                target: {
+                  ...tradeData.target,
+                  addressListString: input,
+                }
+              } as any)
+            }}
+            onClickSend={
+              onCreateRedPacketClick()
+            }
+          />
+        ),
+        toolBarItem: undefined,
+      },
       {
         key: 'selectTokenType',
         element: (
