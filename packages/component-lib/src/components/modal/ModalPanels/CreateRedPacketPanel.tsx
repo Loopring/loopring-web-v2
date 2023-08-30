@@ -28,7 +28,7 @@ import {
 } from '../../tradePanel/components/CreateRedPacketWrap'
 import { Box, styled } from '@mui/material'
 import { LuckyTokenClaimType, LuckyTokenViewType } from '@loopring-web/loopring-sdk'
-import { useNotify } from '@loopring-web/core'
+import { LoopringAPI, useNotify } from '@loopring-web/core'
 
 const BoxStyle = styled(Box)`
   &.createRedPacket {
@@ -54,7 +54,11 @@ export const CreateRedPacketPanel = <
   assetsData,
   //@ts-ignore
   myNFTPanel,
-  onCreateRedPacketClick,
+  onSendTargetRedpacketClick,
+  targetRedPackets,
+  popRedPacket,
+  onClickViewTargetDetail,
+  onCloseRedpacketPop,
   ...rest
 }: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(['common', 'error'])
@@ -102,8 +106,11 @@ export const CreateRedPacketPanel = <
   }
 
   React.useEffect(() => {
+    
     if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
-      if (!isToken && tradeData.nftData && panelIndex === TargetRedPacketStep.NFTList) {
+      if (tradeData.target?.redpacketHash) {
+        setActiveStep(TargetRedPacketStep.TargetSend)
+      } else if (!isToken && tradeData.nftData && panelIndex === TargetRedPacketStep.NFTList) {
         setActiveStep(TargetRedPacketStep.Main)
       }
     } else {
@@ -111,7 +118,7 @@ export const CreateRedPacketPanel = <
         setActiveStep(RedPacketStep.Main)
       }
     }
-  }, [tradeData?.nftData, panelIndex, tradeType])
+  }, [tradeData?.nftData, panelIndex, tradeType, tradeData.target?.redpacketHash])
 
   const setActiveStep = React.useCallback((index: RedPacketStep | TargetRedPacketStep) => {
     if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
@@ -142,6 +149,9 @@ export const CreateRedPacketPanel = <
           break
         case TargetRedPacketStep.NFTList:
           setPanelIndex(4)
+          break
+        case TargetRedPacketStep.TargetSend:
+          setPanelIndex(5)
           break
       }
     } else {
@@ -291,35 +301,6 @@ export const CreateRedPacketPanel = <
       {
         key: 'selectTokenType',
         element: (
-          <TargetRedpacktInputAddressStep
-            addressListString={tradeData.target?.addressListString ?? ''}
-            isRedDot={tradeData.target?.isRedDot !== undefined ? tradeData.target?.isRedDot : true}
-            onChangeIsRedDot={(isRedDot) => {
-              handleOnDataChange({
-                target: {
-                  ...tradeData.target,
-                  isRedDot,
-                }
-              } as any)
-            }}
-            onFileInput={(input) => {
-              handleOnDataChange({
-                target: {
-                  ...tradeData.target,
-                  addressListString: input,
-                }
-              } as any)
-            }}
-            onClickSend={
-              onCreateRedPacketClick()
-            }
-          />
-        ),
-        toolBarItem: undefined,
-      },
-      {
-        key: 'selectTokenType',
-        element: (
           <CreateRedPacketStepTokenType
             {...({
               ...rest,
@@ -440,15 +421,70 @@ export const CreateRedPacketPanel = <
           {
             key: 'tradeMenuList',
             element: (
-              <TargetRedpacktSelectStep redpacketCount={0} onClickCreateNew={() => {
-                setActiveStep(TargetRedPacketStep.TradeType)
-              }} />
+              <TargetRedpacktSelectStep
+                onCloseRedpacketPop={onCloseRedpacketPop}
+                popRedPacket={popRedPacket}
+                onClickExclusiveRedpacket={(hash) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      redpacketHash: hash,
+                    }
+                  } as any)
+                  setActiveStep(TargetRedPacketStep.TargetSend)
+                }}
+                targetRedPackets={targetRedPackets}
+                onClickCreateNew={() => {
+                  setActiveStep(TargetRedPacketStep.TradeType)
+                }}
+                onClickViewDetail={(hash) => {
+                  onClickViewTargetDetail(hash)
+                  // const found = targetRedPackets.find(redPacket => {
+                  //   return redPacket.hash === hash
+                  // })
+                  
+                  // found
+                  // debugger
+
+                }}
+              />
             ),
             toolBarItem: undefined,
           },
           ...commonPanels,
-          tokenNFTSelectionPanel as any
-        ]
+          tokenNFTSelectionPanel as any,
+          {
+            key: 'selectTokenType',
+            element: (
+              <TargetRedpacktInputAddressStep
+                addressListString={tradeData.target?.addressListString ?? ''}
+                isRedDot={
+                  tradeData.target?.isRedDot !== undefined ? tradeData.target?.isRedDot : true
+                }
+                onChangeIsRedDot={(isRedDot) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      isRedDot,
+                    },
+                  } as any)
+                }}
+                onFileInput={(input) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      addressListString: input,
+                    },
+                  } as any)
+                }}
+                onClickSend={() => {
+                  onSendTargetRedpacketClick()
+                }}
+              />
+            ),
+            toolBarItem: undefined,
+          },
+        ],
       }
     } else {
       return {

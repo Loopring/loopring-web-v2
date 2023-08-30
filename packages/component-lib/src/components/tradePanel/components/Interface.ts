@@ -41,7 +41,6 @@ export enum RedPacketStep {
   ChooseType = 1,
   Main = 2,
   NFTList = 3,
-  TargetChosse = 4,
 }
 export enum TargetRedPacketStep {
   TargetChosse = 0,
@@ -49,6 +48,7 @@ export enum TargetRedPacketStep {
   ChooseType = 2,
   Main = 3,
   NFTList = 4,
+  TargetSend = 5,
 }
 
 /**
@@ -633,6 +633,10 @@ export type CreateRedPacketExtendsProps<T, F> = {
   privateChecked?: boolean
   backToScope: () => void
   onSendTargetRedpacketClick: () => void
+  targetRedPackets: sdk.LuckyTokenItemForReceive[]
+  popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  onClickViewTargetDetail: (hash: string) => void
+  onCloseRedpacketPop: () => void
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -655,8 +659,12 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
 
 
 export type TargetRedpacktSelectStepProps = {
-  redpacketCount: number
   onClickCreateNew: () => void
+  targetRedPackets: sdk.LuckyTokenItemForReceive[]
+  onClickExclusiveRedpacket: (hash: string) => void
+  onClickViewDetail: (hash: string) => void
+  onCloseRedpacketPop: () => void
+  popRedPacket: sdk.LuckTokenClaimDetail | undefined
 }
 
 export type TargetRedpacktInputAddressStepProps = {

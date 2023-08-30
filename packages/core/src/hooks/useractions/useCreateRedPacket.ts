@@ -525,75 +525,89 @@ export const useCreateRedPacket = <
             step: AccountStep.RedPacketSend_In_Progress,
           })
           await sdk.sleep(TOAST_TIME)
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.RedPacketSend_Success,
-            info: {
-              scope: request.type.scope,
-              hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-              shared:
-                request.type.scope == sdk.LuckyTokenViewType.PUBLIC
-                  ? () => {
-                      LoopringAPI.luckTokenAPI
-                        ?.getLuckTokenDetail(
-                          {
-                            hash: (response as sdk.TX_HASH_API).hash!,
-                          },
-                          apiKey,
-                        )
-                        .then((response) => {
-                          setShowAccount({ isShow: false })
-                          setShowRedPacket({
-                            isShow: true,
-                            info: {
-                              ...response.detail.luckyToken,
-                              // sender: account,
-                              // hash: (response as sdk.TX_HASH_API).hash,
-                            },
-                            step: RedPacketViewStep.QRCodePanel,
-                          })
-                        })
-                    }
-                  : undefined,
-            },
-          })
-
-          if (isHWAddr) {
-            myLog('......try to set isHWAddr', isHWAddr)
-            updateHW({ wallet: account.accAddress, isHWAddr })
-          }
-          walletLayer2Service.sendUserUpdate()
-          history.push(`/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`)
-          resetDefault(RedPacketOrderType.TOKEN)
-          if (
-            request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
-            (response as sdk.TX_HASH_API)?.hash
-          ) {
-            setShowAccount({ isShow: false })
-            const blindBoxRepspnse = (await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
-              {
-                hash: (response as sdk.TX_HASH_API).hash!,
-                showHelper: false,
-              },
-              apiKey,
-            )) as any
-            setShowRedPacket({
+          if (redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET) {
+            setShowAccount({
               isShow: true,
-              info: {
-                ...blindBoxRepspnse.raw_data.luckyToken,
-                hash: (response as sdk.TX_HASH_API).hash,
-              },
-              step: RedPacketViewStep.QRCodePanel,
+              step: AccountStep.RedPacketSend_Success,
             })
+            handleOnDataChange({
+              target: {
+                redpacketHash: (response as sdk.TX_HASH_API)?.hash
+              }
+            } as any)
           } else {
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.RedPacketSend_Success,
+              info: {
+                scope: request.type.scope,
+                hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+                shared:
+                  request.type.scope == sdk.LuckyTokenViewType.PUBLIC
+                    ? () => {
+                        LoopringAPI.luckTokenAPI
+                          ?.getLuckTokenDetail(
+                            {
+                              hash: (response as sdk.TX_HASH_API).hash!,
+                            },
+                            apiKey,
+                          )
+                          .then((response) => {
+                            setShowAccount({ isShow: false })
+                            setShowRedPacket({
+                              isShow: true,
+                              info: {
+                                ...response.detail.luckyToken,
+                                // sender: account,
+                                // hash: (response as sdk.TX_HASH_API).hash,
+                              },
+                              step: RedPacketViewStep.QRCodePanel,
+                            })
+                          })
+                      }
+                    : undefined,
+              },
+            })
+  
+            if (isHWAddr) {
+              myLog('......try to set isHWAddr', isHWAddr)
+              updateHW({ wallet: account.accAddress, isHWAddr })
+            }
+            walletLayer2Service.sendUserUpdate()
+            history.push(`/redpacket?redPacketHash=${(response as sdk.TX_HASH_API)?.hash}`)
+            resetDefault(RedPacketOrderType.TOKEN)
             if (
-              store.getState().modals.isShowAccount.isShow &&
-              store.getState().modals.isShowAccount.step == AccountStep.RedPacketSend_Success
+              request.type.scope == sdk.LuckyTokenViewType.PRIVATE &&
+              (response as sdk.TX_HASH_API)?.hash
             ) {
               setShowAccount({ isShow: false })
+              const blindBoxRepspnse = (await LoopringAPI.luckTokenAPI.getBlindBoxDetail(
+                {
+                  hash: (response as sdk.TX_HASH_API).hash!,
+                  showHelper: false,
+                },
+                apiKey,
+              )) as any
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...blindBoxRepspnse.raw_data.luckyToken,
+                  hash: (response as sdk.TX_HASH_API).hash,
+                },
+                step: RedPacketViewStep.QRCodePanel,
+              })
+            } else {
+              await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+              if (
+                store.getState().modals.isShowAccount.isShow &&
+                store.getState().modals.isShowAccount.step == AccountStep.RedPacketSend_Success
+              ) {
+                setShowAccount({ isShow: false })
+              }
             }
+            
           }
+          
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet)
@@ -791,10 +805,6 @@ export const useCreateRedPacket = <
     async () => {
       const { readyState } = account
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
-      // const _tradeData = calcNumberAndAmount()
-      // const isToken =
-      //   redPacketOrder.tradeType === RedPacketOrderType.TOKEN ||
-      //   (redPacketOrder.tradeType === RedPacketOrderType.BlindBox && !redPacketOrder.isNFT)
 
       const getValidAddresses = (input:string) => {
         return input.split('\n').filter(str => {
@@ -814,12 +824,26 @@ export const useCreateRedPacket = <
             isShow: true,
             step: AccountStep.RedPacketSend_WaitForAuth,
           })
-          const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget({
-            claimer: getValidAddresses(redPacketOrder.target?.redpacketHash),
-            hash: redPacketOrder.target?.redpacketHash,
-            notifyType: (redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot) ? 0 : 1,
-          }, account.apiKey)
-         
+          const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget(
+            {
+              claimer: getValidAddresses(redPacketOrder.target?.addressListString),
+              hash: redPacketOrder.target?.redpacketHash,
+              notifyType:
+                redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot
+                  ? 0
+                  : 1,
+            },
+            account.eddsaKey.sk,
+            account.apiKey,
+          )
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response
+          }
+          history.push(`/redpacket/markets`)
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.RedPacketSend_Success,
+          })
         } catch (e: any) {
           setShowAccount({
             isShow: true,
@@ -909,6 +933,7 @@ export const useCreateRedPacket = <
     },
     [processRequest, setShowAccount],
   )
+  
   const location = useLocation()
   React.useEffect(() => {
     ;(async () => {
@@ -948,22 +973,43 @@ export const useCreateRedPacket = <
   }, [location.search])
 
 
+  const [targetRedPackets, setTargetRedPackets] = React.useState([] as sdk.LuckyTokenItemForReceive[])
+  const [popRedPacket, setPopRedPacket] = React.useState(undefined as sdk.LuckTokenClaimDetail | undefined)
+
   React.useEffect(() => {
     (async () => {
-      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens({
-        statuses: [0, 1],
-        isAll: 0,
-        limit: 10,
-        offset: 0,
-      }, account.apiKey)
-      // debugger
-      
-      
+      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+        {
+          senderId: account.accountId,
+          scopes: '2',
+          modes: '0,1,2',
+          partitions: '0,1',
+          statuses: '2',
+          official: false,
+          offset: 0,
+          limit: 50,
+        } as any,
+        account.apiKey,
+      )
+      setTargetRedPackets(response ? response?.list : [])
     })()
-    
-
-
   }, [])
+
+  const onClickViewTargetDetail = React.useCallback(
+    async (hash: string) => {
+      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+        hash: hash,
+      }, account.apiKey)
+      setPopRedPacket(response?.detail)
+    },
+    [],
+  )
+  const onCloseRedpacketPop = React.useCallback(
+    async () => {
+      setPopRedPacket(undefined)
+    },
+    [],
+  )
   
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     tradeType: redPacketOrder.tradeType,
@@ -1001,7 +1047,11 @@ export const useCreateRedPacket = <
       }
     },
     selectNFTDisabled: redPacketOrder.tradeType === RedPacketOrderType.FromNFT,
-    onSendTargetRedpacketClick
+    onSendTargetRedpacketClick,
+    targetRedPackets,
+    popRedPacket,
+    onClickViewTargetDetail,
+    onCloseRedpacketPop
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }
