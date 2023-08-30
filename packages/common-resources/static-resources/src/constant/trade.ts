@@ -689,6 +689,11 @@ export type RedPacketOrderData<I> = {
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
 
+export type VaultJoinData<I = any> = {
+  __request__: any
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultJoinRequest>
+
 export enum TabTokenTypeIndex {
   ERC20 = 'ERC20',
   NFT = 'NFT',

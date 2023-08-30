@@ -2,8 +2,6 @@ import { SwapTradeData } from '../../Interface'
 import {
   BtradeTradeCalcData,
   BtradeType,
-  // CheckBoxIcon,
-  // CheckedIcon,
   CoinInfo,
   CoinMap,
   defaultSlipage,
@@ -18,6 +16,7 @@ import {
   ReverseIcon,
   SwapTradeCalcData,
   TradeBtnStatus,
+  VaultTradeCalcData,
 } from '@loopring-web/common-resources'
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
@@ -32,8 +31,7 @@ import { useHistory } from 'react-router-dom'
 export const SwapTradeWrap = <
   T extends IBData<I>,
   I,
-  TCD extends BtradeTradeCalcData<I>,
-  SCD extends SwapTradeCalcData<I>,
+  TCD extends BtradeTradeCalcData<I> | VaultTradeCalcData<I> | SwapTradeCalcData<I>,
 >({
   t,
   onChangeEvent,
@@ -49,7 +47,7 @@ export const SwapTradeWrap = <
   tokenSellProps,
   tokenBuyProps,
   ...rest
-}: SwapTradeProps<T, I, TCD | SCD> & WithTranslation) => {
+}: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef()
   const buyRef = React.useRef()
   const history = useHistory()
@@ -145,10 +143,6 @@ export const SwapTradeWrap = <
     handleOnClick,
     ...rest,
   } as any
-  // const popupState = usePopupState({
-  //   variant: "popover",
-  //   popupId: "slippagePop",
-  // });
   const label = React.useMemo(() => {
     myLog(swapBtnI18nKey, 'swapBtnI18nKey useMemo')
     if (swapBtnI18nKey) {
@@ -186,7 +180,12 @@ export const SwapTradeWrap = <
         })
       }
     } else {
-      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`, {
+      const label = (tradeCalcData as any)?.isBtrade
+        ? `labelBtradeSwapBtn`
+        : (tradeCalcData as any)?.isVault
+        ? `labelVaultSwapBtn`
+        : `swapBtn`
+      return t(label, {
         layer2: L1L2_NAME_DEFINED[network].layer2,
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
@@ -195,7 +194,7 @@ export const SwapTradeWrap = <
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       })
     }
-  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade, network])
+  }, [t, swapBtnI18nKey, network, tradeCalcData])
   const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
 
   const convertStr = _isStoB
@@ -205,13 +204,13 @@ export const SwapTradeWrap = <
     : `1${tradeData.buy?.belong} \u2248 ${
         tradeCalcData.BtoS && tradeCalcData.BtoS != 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
       } ${tradeData.sell?.belong}`
-  const priceImpactColor = (tradeCalcData as SCD)?.priceImpactColor
-    ? (tradeCalcData as SCD).priceImpactColor
+  const priceImpactColor = (tradeCalcData as any)?.priceImpactColor
+    ? (tradeCalcData as any).priceImpactColor
     : 'textPrimary'
   const priceImpact =
-    (tradeCalcData as SCD)?.priceImpact !== undefined
+    (tradeCalcData as any)?.priceImpact !== undefined
       ? getValuePrecisionThousand(
-          (tradeCalcData as SCD).priceImpact,
+          (tradeCalcData as any).priceImpact,
           undefined,
           undefined,
           2,
@@ -251,7 +250,7 @@ export const SwapTradeWrap = <
       flex={isMobile ? '1' : 'initial'}
       height={'100%'}
     >
-      {tradeCalcData.isBtrade && (
+      {(tradeCalcData as any)?.isBtrade && (
         <Box
           className={'tool-bar'}
           display={'flex'}
@@ -269,7 +268,7 @@ export const SwapTradeWrap = <
                     ...tradeData,
                     btradeType: value,
                   } as SwapTradeData<T>,
-                  type: (tradeCalcData as unknown as SCD)?.lastStepAt ?? 'sell',
+                  type: (tradeCalcData as unknown as any)?.lastStepAt ?? 'sell',
                   to: 'button',
                 })
               }
@@ -290,7 +289,7 @@ export const SwapTradeWrap = <
       )}
       <Grid
         item
-        marginTop={tradeCalcData.isBtrade ? 1 : 3}
+        marginTop={(tradeCalcData as any)?.isBtrade || (tradeCalcData as any)?.isVault ? 1 : 3}
         display={'flex'}
         alignSelf={'stretch'}
         justifyContent={'flex-start'}
@@ -352,7 +351,7 @@ export const SwapTradeWrap = <
                 : ({} as CoinMap<I, CoinInfo<I>>),
           }}
         />
-        {tradeCalcData.isBtrade ? (
+        {(tradeCalcData as any)?.isBtrade ? (
           <Typography
             variant={'body1'}
             display={'inline-flex'}
@@ -412,7 +411,7 @@ export const SwapTradeWrap = <
           )}
         </Typography>
       </Grid>
-      {!tradeCalcData.isBtrade && (
+      {!(tradeCalcData as any)?.isBtrade && !(tradeCalcData as any)?.isVault && (
         <>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
             <Grid
@@ -524,20 +523,20 @@ export const SwapTradeWrap = <
               </Typography>
             </Grid>
           </Grid>
-          {/*{(tradeCalcData as SCD).isNotMatchMarketPrice && (*/}
+          {/*{(tradeCalcData as any).isNotMatchMarketPrice && (*/}
           {/*  <Grid item marginBottom={1}>*/}
           {/*    <MuiFormControlLabel*/}
           {/*      sx={{ alignItems: 'flex-start' }}*/}
           {/*      control={*/}
           {/*        <Checkbox*/}
-          {/*          checked={(tradeCalcData as SCD)?.isChecked ? true : false}*/}
+          {/*          checked={(tradeCalcData as any)?.isChecked ? true : false}*/}
           {/*          onChange={() => {*/}
           {/*            onChangeEvent(0, {*/}
           {/*              tradeData: {*/}
           {/*                ...tradeData,*/}
-          {/*                isChecked: !(tradeCalcData as SCD)?.isChecked,*/}
+          {/*                isChecked: !(tradeCalcData as any)?.isChecked,*/}
           {/*              } as SwapTradeData<T>,*/}
-          {/*              type: (tradeCalcData as SCD)?.lastStepAt ?? 'sell',*/}
+          {/*              type: (tradeCalcData as any)?.lastStepAt ?? 'sell',*/}
           {/*              to: 'button',*/}
           {/*            })*/}
           {/*          }}*/}
@@ -555,8 +554,8 @@ export const SwapTradeWrap = <
           {/*              symbolSell: tradeData.sell?.belong,*/}
           {/*              symbolBuy: tradeData.buy?.belong,*/}
           {/*              stob: tradeCalcData.StoB,*/}
-          {/*              marketPrice: (tradeCalcData as SCD).marketPrice,*/}
-          {/*              marketRatePrice: (tradeCalcData as SCD).marketRatePrice,*/}
+          {/*              marketPrice: (tradeCalcData as any).marketPrice,*/}
+          {/*              marketRatePrice: (tradeCalcData as any).marketRatePrice,*/}
           {/*            }}*/}
           {/*          >*/}
           {/*            The expected settlement price from this order is symbol = value, while the*/}
@@ -572,7 +571,7 @@ export const SwapTradeWrap = <
         </>
       )}
 
-      {tradeCalcData.isBtrade && (
+      {(tradeCalcData as any)?.isBtrade && (
         <>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
             <Grid
@@ -686,7 +685,7 @@ export const SwapTradeWrap = <
           </ButtonStyle>
         </Grid>
       </Grid>
-      {!tradeCalcData.isBtrade && tradeCalcData.isShowBtradeAllow && (
+      {!(tradeCalcData as any)?.isBtrade && (tradeCalcData as any)?.isShowBtradeAllow && (
         <Grid
           item
           marginTop={3}

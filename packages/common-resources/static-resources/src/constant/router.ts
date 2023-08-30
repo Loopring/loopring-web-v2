@@ -185,6 +185,7 @@ export enum RouterPath {
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
+  vault = '/vault',
 }
 
 export enum RouterMainKey {
@@ -200,6 +201,7 @@ export enum RouterMainKey {
   layer2 = 'layer2',
   nft = 'nft',
   invest = 'invest',
+  vault = 'vault',
 }
 
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
@@ -246,6 +248,30 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
 ]
 
+export enum VaultKey {
+  VAULT_HOME = 'vaultHome',
+  VAULT_DASHBOARD = 'vaultDashboard',
+}
+
+export let vaultItemData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: VaultKey.VAULT_HOME,
+      i18nKey: 'labelVaultHome',
+      description: 'labelVaultHomeDescription',
+    },
+    router: { path: RouterPath.vault + '' },
+  },
+  {
+    label: {
+      id: VaultKey.VAULT_DASHBOARD,
+      i18nKey: 'labelVaultDashboard',
+      description: 'labelVaultDashboardDescription',
+    },
+    router: { path: RouterPath.vault + '/dashboard' },
+  },
+]
+
 export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
 export const ammDisableList = ['Liquidity']
 
@@ -269,16 +295,6 @@ export const subMenuLayer2 = {
       },
     },
   ],
-  // transactionsGroup: [
-  //   {
-  //     icon: L2HistoryIcon,
-  //     router: { path: "/layer2/history" },
-  //     label: {
-  //       id: "history",
-  //       i18nKey: "labelHistory",
-  //     },
-  //   },
-  // ],
   profileGroup: [
     {
       icon: ProfileIcon,
@@ -534,6 +550,14 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     router: { path: '/invest/overview' },
     status: HeaderMenuTabStatus.default,
     child: subMenuInvest,
+  },
+  {
+    label: {
+      id: 'vault',
+      i18nKey: 'labelVault',
+      description: 'labelVaultDescription',
+    },
+    child: vaultItemData,
   },
   {
     label: {
@@ -805,6 +829,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.vault,
   ],
   GOERLI: [
     RouterMainKey.lite,

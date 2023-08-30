@@ -1,5 +1,5 @@
 export * from './tradeLite'
-export * from './ammPage'
+export * from './amm'
 export * from './modals'
 export * from './tradePro'
 export * from './tradeDefi'

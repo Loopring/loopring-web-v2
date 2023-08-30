@@ -55,6 +55,7 @@ import { RedPacketPage } from '../pages/RedPacketPage'
 import { useTranslation } from 'react-i18next'
 import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
+import { VaultPage } from '../pages/VaultPage'
 
 const ContentWrap = ({
   children,
@@ -314,6 +315,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={[RouterPath.layer2, RouterPath.layer2 + '/*']}>
           <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
             <Layer2Page />
+          </ContentWrap>
+        </Route>
+
+        <Route exact path={[RouterPath.vault, RouterPath.vault + '/*']}>
+          <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
+            <VaultPage />
           </ContentWrap>
         </Route>
         <Route exact path={[RouterPath.nft, RouterPath.nft + '/*']}>

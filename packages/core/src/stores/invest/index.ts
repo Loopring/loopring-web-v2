@@ -13,6 +13,7 @@ import { investTokenTypeForks } from './InvestTokenTypeMap/saga'
 import { dualReducer } from './DualMap'
 import { dualMapFork } from './DualMap/saga'
 import { stakingMapFork } from './StakingMap/saga'
+import { vaultMapFork } from './VaultMap/saga'
 
 export const investReducer = combineReducers({
   defiMap: defiReducer.defiMapSlice.reducer,
@@ -28,6 +29,7 @@ export const investForks = [
   ...dualMapFork,
   ...stakingMapFork,
   ...btradeMapFork,
+  ...vaultMapFork,
 ]
 
 export * from './DefiMap'
