@@ -35,6 +35,7 @@ import {
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
+import { VaultJoinWrapProps } from './VaultWrap'
 
 export enum RedPacketStep {
   TradeType,
@@ -640,3 +641,14 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     activeStep: RedPacketStep
     tokenMap: { [key: string]: sdk.TokenInfo }
   }
+
+/**
+ * private props
+ */
+export type VaultJoinInfoProps = {
+  btnStatus?: keyof typeof TradeBtnStatus | undefined
+  title?: string
+  description?: string
+  chargeFeeTokenList?: FeeInfo[]
+  wait?: number
+} & BtnInfoProps

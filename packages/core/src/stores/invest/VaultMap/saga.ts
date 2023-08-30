@@ -1,23 +1,26 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getVaultMap, getVaultMapStatus, updateVaultSyncMap } from './reducer'
-import { VaultMap, store } from '../../index'
+import { store } from '../../index'
 import { LoopringAPI } from '../../../api_wrapper'
 import { PayloadAction } from '@reduxjs/toolkit'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { BTRDE_PRE, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { LocalStorageConfigKey, myLog } from '@loopring-web/common-resources'
+import { makeVault } from '../../../hooks'
+import { VaultMap } from './interface'
 
 const getVaultMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined
   }
   const { chainId } = store.getState().system
-  const vaultMapStorage = window.localStorage.getItem('vaultMarkets')
+  const vaultMapStorage = window.localStorage.getItem(LocalStorageConfigKey.vaultMarkets)
+  const vaultTokenMapStorage = window.localStorage.getItem(LocalStorageConfigKey.vaultTokenMap)
   let { __timer__ } = store.getState().invest.vaultMap
   __timer__ = (() => {
     if (__timer__ && __timer__ !== -1) {
-      clearInterval(__timer__)
+      clearTimeout(__timer__)
     }
-    return setInterval(async () => {
+    return setTimeout(async () => {
       if (!LoopringAPI.defiAPI) {
         return undefined
       }
@@ -26,98 +29,67 @@ const getVaultMapApi = async () => {
       store.dispatch(getVaultMap(undefined))
     }, 900000) //15*60*1000 //900000
   })()
-  let response,
-    marketCoins,
-    pairs: sdk.LoopringMap<sdk.TokenRelatedInfo>,
-    marketArray,
-    marketMap,
-    tradeMap
+
   try {
-    try {
-      response = await LoopringAPI.defiAPI?.getVaultMarkets()
-    } catch (error) {
-      throw { code: UIERROR_CODE.TIME_OUT, error: error }
-    }
-    if (!response || (response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-      throw (response as sdk.RESULT_INFO).message
-    }
-    let localStorageData: any[] = []
-
-    const reformat: any[] = (response.raw_data as sdk.BTRADE_MARKET[]).reduce((prev, ele) => {
-      if (/-/gi.test(ele.market) && ele.enabled) {
-        localStorageData.push({
-          ...ele,
-          vaultMarket: ele.market,
-          market: ele.market.replace(BTRDE_PRE, ''),
-          feeBips: undefined,
-          enabled: 'isFormLocal', //localStorageSetAs false
-          minAmount: {
-            base: undefined,
-            quote: undefined,
-          },
-          vaultAmount: {
-            base: undefined,
-            quote: undefined,
-          },
-          l2Amount: {
-            base: undefined,
-            quote: undefined,
-          },
-        })
-        return [
-          ...prev,
-          {
-            ...ele,
-            vaultMarket: ele.market,
-            market: ele.market.replace(BTRDE_PRE, ''),
-          } as sdk.BTRADE_MARKET,
-        ]
-      } else {
-        return prev
-      }
-    }, [] as sdk.BTRADE_MARKET[])
-    localStorage.setItem(
-      'vaultMarkets',
-      JSON.stringify({
-        ...(vaultMapStorage ? JSON.parse(vaultMapStorage) : {}),
-        [chainId]: localStorageData,
+    const [tokenMapRaw, marketRaw] = await Promise.all([
+      LoopringAPI.vaultAPI?.getVaultTokens().then((response) => {
+        if (
+          !response ||
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          throw (response as sdk.RESULT_INFO).message
+        } else {
+          let tokenListRaw = response.tokens
+          if (tokenListRaw) {
+            localStorage.setItem(
+              LocalStorageConfigKey.vaultTokenMap,
+              JSON.stringify({
+                ...(vaultTokenMapStorage ? JSON.parse(vaultTokenMapStorage) : {}),
+                [chainId]: tokenListRaw,
+              }),
+            )
+          }
+          return tokenListRaw
+        }
       }),
-    )
-
-    const res = sdk.makeMarkets({ markets: reformat })
-    marketMap = res.markets
-    pairs = res.pairs
-    marketArray = res.marketArr
-    marketCoins = res.tokenArr
-
-    tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
-      const tradePairs = pairs[key as string]?.tokenList?.sort()
-      prev[key] = {
-        ...pairs[key as string],
-        tradePairs,
-      }
-      return prev
-    }, {})
-
+      LoopringAPI.vaultAPI?.getVaultMarkets().then((response) => {
+        if (
+          !response ||
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          throw (response as sdk.RESULT_INFO).message
+        } else {
+          let localStorageData: any[] = []
+          localStorage.setItem(
+            LocalStorageConfigKey.vaultMarkets,
+            JSON.stringify({
+              ...(vaultMapStorage ? JSON.parse(vaultMapStorage) : {}),
+              [chainId]: localStorageData,
+            }),
+          )
+          // @ts-ignore
+          return response.markets as sdk.VaultMarket[]
+        }
+      }),
+    ])
+    const ressult = makeVault(tokenMapRaw as sdk.VaultToken[], marketRaw)
     return {
-      vaultMap: {
-        marketArray,
-        marketCoins,
-        marketMap,
-        tradeMap,
+      ...ressult,
+      raw_data: {
+        tokenMapRaw,
+        marketRaw,
       },
-      __timer__,
     }
-  } catch (e) {
-    throw { e, __timer__ }
+  } catch (error) {
+    throw error
   }
-
-  // const resultTokenMap = sdk.makeMarket(_tokenMap);
 }
 
 export function* getPostsSaga() {
   try {
-    const { vaultMap, __timer__ } = yield call(getVaultMapApi)
+    const { __timer__, ...vaultMap } = yield call(getVaultMapApi)
     yield put(getVaultMapStatus({ ...vaultMap, __timer__ }))
   } catch (err) {
     myLog('getVaultMapStatus', err)

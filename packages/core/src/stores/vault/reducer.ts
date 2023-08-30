@@ -1,30 +1,33 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { WalletLayer2Map, WalletLayer2States } from './interface'
+import { VaultLayer2Map, VaultLayer2States } from './interface'
 import { SagaStatus } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
-const initialState: WalletLayer2States = {
-  walletLayer2: undefined,
+const initialState: VaultLayer2States = {
+  vaultLayer2: undefined,
   status: SagaStatus.DONE,
   errorMessage: null,
+  vaultAccountInfo: undefined,
 }
-const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
-  name: 'walletLayer2',
+const vaultLayer2Slice: Slice<VaultLayer2States> = createSlice({
+  name: 'vaultLayer2',
   initialState,
   reducers: {
-    updateWalletLayer2(state) {
+    updateVaultLayer2(state) {
       state.status = SagaStatus.PENDING
     },
     reset(state) {
-      state.walletLayer2 = undefined
+      state.vaultLayer2 = undefined
       state.status = SagaStatus.UNSET
     },
     socketUpdateBalance(state) {
       state.status = SagaStatus.PENDING
     },
-    getWalletLayer2Status(
+    getVaultLayer2Status(
       state,
       action: PayloadAction<{
-        walletLayer2: WalletLayer2Map<object>
+        vaultLayer2: VaultLayer2Map<object>
+        vaultAccountInfo: sdk.VaultAccountInfo
       }>,
     ) {
       // @ts-ignore
@@ -33,7 +36,8 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
         // @ts-ignore
         state.errorMessage = action.error
       }
-      state.walletLayer2 = { ...action.payload.walletLayer2 }
+      state.vaultLayer2 = { ...action.payload.vaultLayer2 }
+      state.vaultAccountInfo = { ...action.payload.vaultAccountInfo }
       state.status = SagaStatus.DONE
     },
     statusUnset: (state) => {
@@ -41,11 +45,6 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
     },
   },
 })
-export { walletLayer2Slice }
-export const {
-  updateWalletLayer2,
-  socketUpdateBalance,
-  getWalletLayer2Status,
-  statusUnset,
-  reset,
-} = walletLayer2Slice.actions
+export { vaultLayer2Slice }
+export const { updateVaultLayer2, socketUpdateBalance, getVaultLayer2Status, statusUnset, reset } =
+  vaultLayer2Slice.actions

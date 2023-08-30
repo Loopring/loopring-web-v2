@@ -52,6 +52,9 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
+  isShowVaultExit: { isShow: false },
+  isShowVaultJoin: { isShow: false },
+  isShowVaultSwap: { isShow: false },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -369,7 +372,19 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
         symbol,
       }
-    }
+    },
+    setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad>) {
+      const { isShow } = action.payload
+      state.isShowVaultExit.isShow = isShow
+    },
+    setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad>) {
+      const { isShow } = action.payload
+      state.isShowVaultJoin.isShow = isShow
+    },
+    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
+      const { isShow } = action.payload
+      state.isShowVaultSwap.isShow = isShow
+    },
   },
 })
 export const {
@@ -403,6 +418,8 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
-  setShowFeeSelect,
   setShowGlobalToast,
+  setShowVaultExit,
+  setShowVaultJoin,
+  setShowVaultSwap,
 } = modalsSlice.actions

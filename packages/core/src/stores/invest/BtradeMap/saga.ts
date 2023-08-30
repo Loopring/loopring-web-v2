@@ -4,14 +4,19 @@ import { BtradeMap, store } from '../../index'
 import { LoopringAPI } from '../../../api_wrapper'
 import { PayloadAction } from '@reduxjs/toolkit'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { BTRDE_PRE, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import {
+  BTRDE_PRE,
+  LocalStorageConfigKey,
+  myLog,
+  UIERROR_CODE,
+} from '@loopring-web/common-resources'
 
 const getBtradeMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined
   }
   const { chainId } = store.getState().system
-  const btradeMapStorage = window.localStorage.getItem('btradeMarkets')
+  const btradeMapStorage = window.localStorage.getItem(LocalStorageConfigKey.btradeMarkets)
   let { __timer__ } = store.getState().invest.btradeMap
   __timer__ = (() => {
     if (__timer__ && __timer__ !== -1) {

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { TradeVault, TradeVaultStatus } from './interface'
 import { MAPFEEBIPS } from '../../../defs'
+import { VaultExitData, VaultJoinData } from '@loopring-web/common-resources'
 
 const initState: TradeVault = {
   market: undefined,
@@ -10,9 +11,13 @@ const initState: TradeVault = {
   },
   maxFeeBips: MAPFEEBIPS,
 } as unknown as TradeVault
+const initJoinState: VaultJoinData = {} as unknown as VaultJoinData
+const initExitState: VaultExitData = {} as unknown as VaultExitData
 const initialState: TradeVaultStatus = {
   // pageTradePro: initState,
   tradeVault: initState,
+  vaultJoinData: initJoinState,
+  vaultExitData: initExitState,
   __DAYS__: 30,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
@@ -23,6 +28,12 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
   reducers: {
     resetVaultSwap(state) {
       state.tradeVault = initState
+    },
+    resetVaultJoin(state) {
+      state.vaultJoinData = initJoinState
+    },
+    resetVaultExit(state) {
+      state.vaultExitData = initExitState
     },
     updateVaultTrade(state, action: PayloadAction<Partial<TradeVault>>) {
       const {
@@ -115,8 +126,15 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
         }
       }
     },
+    updateVaultJoin(state, action: PayloadAction<Partial<VaultJoinData>>) {
+      state.vaultJoinData
+    },
+    updateVaultExit(state, action: PayloadAction<Partial<VaultExitData>>) {
+      state.vaultExitData
+    },
   },
 })
 
 export { tradeVaultSlice }
-export const { resetVaultSwap, updateVaultTrade } = tradeVaultSlice.actions
+export const { resetVaultJoin, resetVaultExit, resetVaultSwap, updateVaultTrade, updateVaultExit } =
+  tradeVaultSlice.actions

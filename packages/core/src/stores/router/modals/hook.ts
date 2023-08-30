@@ -38,8 +38,8 @@ import {
   updateRedPacketOrder,
   updateClaimData,
   resetClaimData,
-  updateJoinVault,
-  resetJoinVault,
+  // updateJoinVault,
+  // resetJoinVault,
 } from './reducer'
 import {
   ActiveAccountData,
@@ -61,7 +61,6 @@ import {
   TradeNFT,
   RedPacketOrderData,
   RedPacketOrderType,
-  VaultJoinData,
 } from '@loopring-web/common-resources'
 import { RootState } from '../../index'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -148,6 +147,7 @@ export function useModalData(): {
   transferRampValue: TransferData
   resetTransferRampData: () => void
   updateTransferRampData: (transferData: RequireOne<TransferData, never>) => void
+
   transferBanxaValue: TransferData
   resetTransferBanxaData: () => void
   updateTransferBanxaData: (transferData: RequireOne<TransferData, never>) => void
@@ -160,9 +160,9 @@ export function useModalData(): {
   updateClaimData: (value: Partial<ClaimData>) => void
   resetClaimData: () => void
 
-  joinVault: Partial<VaultJoinData>
-  updateJoinVault: (value: Partial<VaultJoinData>) => void
-  resetJoinVault: () => void
+  // joinVault: Partial<VaultJoinData>
+  // updateJoinVault: (value: Partial<VaultJoinData>) => void
+  // resetJoinVault: () => void
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData,
@@ -375,14 +375,14 @@ export function useModalData(): {
     resetClaimData: React.useCallback(() => {
       dispatch(resetClaimData(undefined))
     }, [dispatch]),
-    updateJoinVault: React.useCallback(
-      (vaultJoinData: Partial<VaultJoinData>) => {
-        dispatch(updateJoinVault(vaultJoinData))
-      },
-      [dispatch],
-    ),
-    resetJoinVault: React.useCallback(() => {
-      dispatch(resetJoinVault(undefined))
-    }, [dispatch]),
+    // updateJoinVault: React.useCallback(
+    //   (vaultJoinData: Partial<VaultJoinData>) => {
+    //     dispatch(updateJoinVault(vaultJoinData))
+    //   },
+    //   [dispatch],
+    // ),
+    // resetJoinVault: React.useCallback(() => {
+    //   dispatch(resetJoinVault(undefined))
+    // }, [dispatch]),
   }
 }

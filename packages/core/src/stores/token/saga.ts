@@ -3,6 +3,7 @@ import { getTokenMap, getTokenMapStatus } from './reducer'
 import { GetTokenMapParams } from './interface'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { store } from '../index'
+import { LocalStorageConfigKey } from '@loopring-web/common-resources'
 
 const getTokenMapApi = async <R extends { [key: string]: any }>({
   tokensMap,
@@ -19,9 +20,11 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
   marketRaw,
 }: GetTokenMapParams<R>) => {
   const { chainId } = store.getState().system
-  const tokenChainMap = window.localStorage.getItem('tokenMap')
-  const disableWithdrawTokenListChain = window.localStorage.getItem('disableWithdrawTokenList')
-  const marketChain = window.localStorage.getItem('markets')
+  const tokenChainMap = window.localStorage.getItem(LocalStorageConfigKey.tokenMap)
+  const disableWithdrawTokenListChain = window.localStorage.getItem(
+    LocalStorageConfigKey.disableWithdrawTokenList,
+  )
+  const marketChain = window.localStorage.getItem(LocalStorageConfigKey.markets)
   // let coinMap: CoinMap<any, CoinInfo<any>> = {};
   // let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
   let tokenMap: any = tokensMap

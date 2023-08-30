@@ -16,6 +16,7 @@ import {
   useDualMap,
   useStakingMap,
   useBtradeMap,
+  useVaultMap,
 } from '@loopring-web/core'
 import { ChainId } from '@loopring-web/loopring-sdk'
 import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
@@ -79,6 +80,7 @@ export function useInit() {
   const { status: socketStatus, statusUnset: socketUnset } = useSocket()
   const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store()
   const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify()
+  const { status: vaultStatus, statusUnset: vaultStatusUnset } = useVaultMap()
 
   React.useEffect(() => {
     ;(async (account) => {
@@ -280,6 +282,20 @@ export function useInit() {
     }
   }, [notifyStatus])
 
+  React.useEffect(() => {
+    switch (vaultStatus) {
+      case SagaStatus.ERROR:
+        vaultStatusUnset()
+        break
+      case SagaStatus.DONE:
+        vaultStatusUnset()
+        break
+      default:
+        break
+    }
+  }, [vaultStatus])
+
+  // vaultStatus
   React.useEffect(() => {
     switch (defiMapStatus) {
       case SagaStatus.ERROR:
