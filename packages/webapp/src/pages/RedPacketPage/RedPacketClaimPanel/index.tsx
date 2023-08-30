@@ -90,7 +90,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
   const [exclusiveDialog, setExclusiveDialog] = React.useState(
-    'popUp' as 'hidden' | 'redDot' | 'popUp',
+    'hidden' as 'hidden' | 'redDot' | 'popUp',
   )
   const [exclusiveRedPackets, setExclusiveRedPackets] = React.useState(
     [] as LuckyTokenItemForReceive[],
@@ -273,9 +273,6 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           open={exclusiveDialog !== 'hidden'}
           onClose={() => {
             setExclusiveDialog('hidden')
-          }}
-          onFocus={() => {
-            console.log('dashdjkashkdhasjkdhaskhjk')
           }}
         >
           {exclusiveDialog === 'popUp' ? (
