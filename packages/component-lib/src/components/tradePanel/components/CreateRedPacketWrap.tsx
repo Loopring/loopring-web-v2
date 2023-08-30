@@ -870,7 +870,9 @@ export const CreateRedPacketStepType = withTranslation()(
           ? item.showInFromNFT
           : item.showInERC20) &&
         (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true),
-    )
+    ).filter((item) => {
+      return !(item.isBlindboxNFT && tradeData.type?.scope === sdk.LuckyTokenViewType.PUBLIC)
+    })
 
     return (
       <RedPacketBoxStyle
@@ -1025,13 +1027,14 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     btnInfo,
     backToScope,
     onClickNext,
+    showNFT,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tradeData' | 'tokenMap'> & WithTranslation) => {
     const { isMobile } = useSettings()
     const getDisabled = React.useMemo(() => {
       return disabled
     }, [disabled])
-    const showNFT = useNotify().notifyMap?.redPacket.showNFT
+    
     return (
       <RedPacketBoxStyle
         display={'flex'}
@@ -1075,8 +1078,8 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               </CardContent>
             </CardStyleItem>
           </Grid>
-          <Grid item xs={4} display={'flex'} marginBottom={2}>
-            {showNFT && (
+          {showNFT && (
+            <Grid item xs={4} display={'flex'} marginBottom={2}>
               <CardStyleItem
                 className={
                   tradeType === RedPacketOrderType.NFT
@@ -1105,41 +1108,37 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                   </Typography>
                 </CardContent>
               </CardStyleItem>
-            )}
-          </Grid>
+            </Grid>
+          )}
           <Grid item xs={4} display={'flex'} marginBottom={2}>
-            {showNFT && (
-              <CardStyleItem
-                className={
-                  tradeType === RedPacketOrderType.BlindBox
-                    ? 'btnCard column selected'
-                    : 'btnCard column'
-                }
-                sx={{ height: '100%' }}
-                onClick={() =>
-                  handleOnDataChange({ tradeType: RedPacketOrderType.BlindBox } as any)
-                }
-              >
-                <CardContent sx={{ alignItems: 'center' }}>
+            <CardStyleItem
+              className={
+                tradeType === RedPacketOrderType.BlindBox
+                  ? 'btnCard column selected'
+                  : 'btnCard column'
+              }
+              sx={{ height: '100%' }}
+              onClick={() => handleOnDataChange({ tradeType: RedPacketOrderType.BlindBox } as any)}
+            >
+              <CardContent sx={{ alignItems: 'center' }}>
+                <Typography component={'span'} display={'inline-flex'}>
                   <Typography component={'span'} display={'inline-flex'}>
-                    <Typography component={'span'} display={'inline-flex'}>
-                      <Avatar
-                        variant='rounded'
-                        style={{
-                          height: 'var(--redPacket-avatar)',
-                          width: 'var(--redPacket-avatar)',
-                        }}
-                        // src={sellData?.icon}
-                        src={SoursURL + 'images/redPacketBlindbox.png'}
-                      />
-                    </Typography>
+                    <Avatar
+                      variant='rounded'
+                      style={{
+                        height: 'var(--redPacket-avatar)',
+                        width: 'var(--redPacket-avatar)',
+                      }}
+                      // src={sellData?.icon}
+                      src={SoursURL + 'images/redPacketBlindbox.png'}
+                    />
                   </Typography>
-                  <Typography component={'span'} variant={'h5'} marginTop={2}>
-                    {t('labelRedpacketBlindBox')}
-                  </Typography>
-                </CardContent>
-              </CardStyleItem>
-            )}
+                </Typography>
+                <Typography component={'span'} variant={'h5'} marginTop={2}>
+                  {t('labelRedpacketBlindBox')}
+                </Typography>
+              </CardContent>
+            </CardStyleItem>
           </Grid>
         </Grid>
         <Box
@@ -1192,21 +1191,24 @@ const ScopeOption = styled(Box)<{ selected?: boolean }>`
   padding: ${({ theme }) => 3 * theme.unit}px;
   border-radius: ${({ theme }) => theme.unit}px;
   width: 47%;
+  cursor: pointer;
 `
 type CreateRedPacketScopeProps = {
   selectedScope: sdk.LuckyTokenViewType
   onSelecteScope: (scope: sdk.LuckyTokenViewType) => void
   onClickNext: () => void
+  showPalazaPublic: boolean
 }
 export const CreateRedPacketScope = withTranslation()(
   ({
     selectedScope,
     onClickNext,
     onSelecteScope,
+    showPalazaPublic,
     t,
   }: CreateRedPacketScopeProps & WithTranslation) => {
     return (
-      <Box display={'flex'} flexDirection={'column'} paddingX={8} paddingTop={4} paddingBottom={8}>
+      <Box width={'100%'} display={'flex'} flexDirection={'column'} paddingX={8} paddingTop={4} paddingBottom={8}>
         <Box marginBottom={6}>
           <Box display={'flex'} alignItems={'center'} marginBottom={2}>
             <Typography marginRight={0.5} variant={'h4'}>
@@ -1219,7 +1221,7 @@ export const CreateRedPacketScope = withTranslation()(
             </Tooltip>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
-            <ScopeOption
+            {showPalazaPublic && <ScopeOption
               onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PUBLIC)}
               selected={selectedScope === sdk.LuckyTokenViewType.PUBLIC}
             >
@@ -1230,7 +1232,7 @@ export const CreateRedPacketScope = withTranslation()(
                 </Typography>
               </Box>
               <ScopePublic color={'var(--color-text-secondary)'} />
-            </ScopeOption>
+            </ScopeOption>}
             <ScopeOption
               onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PRIVATE)}
               selected={selectedScope === sdk.LuckyTokenViewType.PRIVATE}

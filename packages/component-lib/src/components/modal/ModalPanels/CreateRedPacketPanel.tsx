@@ -69,7 +69,9 @@ export const CreateRedPacketPanel = <
     walletMap,
   } as any)
   const [panelIndex, setPanelIndex] = React.useState<RedPacketStep | TargetRedPacketStep>(
-    tradeType === RedPacketOrderType.FromNFT ? RedPacketStep.ChooseType : RedPacketStep.TradeType,
+    tradeType === RedPacketOrderType.FromNFT 
+      ? RedPacketStep.ChooseType 
+      : RedPacketStep.TradeType,
   )
 
   let steps: string[]
@@ -294,6 +296,7 @@ export const CreateRedPacketPanel = <
     (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT)
   const [showScope, setShowScope] = React.useState(true)
   const backToScope = () => setShowScope(true)
+  const notify = useNotify()
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     const isTarget = tradeData.type?.scope === LuckyTokenViewType.TARGET
     const commonPanels = [
@@ -316,6 +319,7 @@ export const CreateRedPacketPanel = <
                   setActiveStep(RedPacketStep.ChooseType)
                 }
               },
+              showNFT: notify.notifyMap?.redPacket.showNFT && tradeData.type?.scope !== LuckyTokenViewType.PUBLIC
             } as any)}
           />
         ),
@@ -520,6 +524,7 @@ export const CreateRedPacketPanel = <
     >
       {showScope ? (
         <CreateRedPacketScope
+          showPalazaPublic={tradeData.tradeType !== RedPacketOrderType.FromNFT}
           onClickNext={() => {
             setShowScope(false)
           }}
