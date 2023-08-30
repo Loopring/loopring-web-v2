@@ -42,6 +42,7 @@ import {
 } from './tradePro/Interface'
 import React, { ReactNode } from 'react'
 import { TOASTOPEN } from '../toast'
+import { VaultJoinBaseProps } from './components/VaultWrap'
 
 export type SwapTradeData<T> = {
   sell: T
@@ -237,5 +238,7 @@ export type FeeSelectProps = {
   middleContent?: ReactNode
   feeNotEnoughContent?: ReactNode
 }
+
+export type VaultJoinProps<T, I> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I>
 
 export * from './components/Interface'

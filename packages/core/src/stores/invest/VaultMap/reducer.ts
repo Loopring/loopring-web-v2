@@ -7,6 +7,11 @@ const initialState: Required<VaultMapStates> = {
   marketCoins: [],
   marketMap: {},
   tradeMap: {},
+  tokensMap: {},
+  coinMap: {},
+  idIndex: {},
+  // pairs:{},
+  addressIndex: {},
   __timer__: -1,
   status: SagaStatus.PENDING,
   errorMessage: null,
@@ -18,19 +23,23 @@ const vaultMapSlice: Slice = createSlice({
     getVaultMap(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING
     },
-    getVaultMapStatus(state, action: PayloadAction<VaultMapStates>) {
+    getVaultMapStatus(state, action: PayloadAction<VaultMapStates & { raw_data?: any }>) {
       // @ts-ignore
       if (action.payload.error) {
         state.status = SagaStatus.ERROR
       } else {
-        const { ...vaultMap } = action.payload
+        const vaultMap = action.payload
         if (vaultMap) {
           state.marketArray = vaultMap.marketArray
           state.marketCoins = vaultMap.marketCoins
           state.marketMap = vaultMap.marketMap
           state.tradeMap = vaultMap.tradeMap
-          // , marketCoins, marketMap
-          // state.marketArray = { ...state, ...VaultMap };
+          state.coinMap = vaultMap.coinMap
+          // state.pairs = vaultMap.pairs
+          state.idIndex = vaultMap.idIndex
+          state.addressIndex = vaultMap.addressIndex
+          state.tokensMap = vaultMap.tokensMap
+          state.raw_data = vaultMap?.raw_data ?? undefined
         }
 
         state.status = SagaStatus.DONE

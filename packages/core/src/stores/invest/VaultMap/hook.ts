@@ -7,16 +7,16 @@ import { VaultMap, VaultMapStates } from './interface'
 export const useVaultMap = (): VaultMapStates & {
   getVaultMap: () => void
   statusUnset: () => void
-  updateVaultSyncMap: (props: { btradeMap: VaultMap }) => void
+  updateVaultSyncMap: (props: { vaultMap: VaultMap }) => void
 } => {
-  const btradeMap: VaultMapStates = useSelector((state: RootState) => state.invest.btradeMap)
+  const vaultMap: VaultMapStates = useSelector((state: RootState) => state.invest.vaultMap)
   const dispatch = useDispatch()
   return {
-    ...btradeMap,
+    ...vaultMap,
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
     getVaultMap: React.useCallback(() => dispatch(getVaultMap(undefined)), [dispatch]),
     updateVaultSyncMap: React.useCallback(
-      ({ btradeMap }: { btradeMap: VaultMap }) => dispatch(getVaultMap(btradeMap)),
+      ({ vaultMap }: { vaultMap: VaultMap }) => dispatch(getVaultMap(vaultMap)),
       [dispatch],
     ),
   }

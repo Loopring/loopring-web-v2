@@ -1840,7 +1840,12 @@ export default {
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
-  labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelTimeoutAddressClick:
+    '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
+  labelVault: 'Vault',
+  labelVaultHome: 'Home',
+  labelVaultDashboard: 'Dashboard',
+  labelVaultRefresh: 'Refresh',
 }

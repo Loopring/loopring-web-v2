@@ -12,7 +12,7 @@ import {
   RedPacketOrderData,
   TRADE_TYPE,
   TradeNFT,
-  VaultJoinData,
+  // VaultJoinData,
   WithdrawType,
 } from '@loopring-web/common-resources'
 import { WalletLayer2Map } from '../../walletLayer2'
@@ -127,7 +127,7 @@ export type ModalDataStatus = {
     | undefined
   redPacketOrder: RedPacketOrderData<any>
   claimValue: ClaimData
-  joinVault: Partial<VaultJoinData>
+  // joinVault: Partial<VaultJoinData>
 }
 
 export enum LAST_STEP {

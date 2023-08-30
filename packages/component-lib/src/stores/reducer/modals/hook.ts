@@ -12,7 +12,6 @@ import {
   setShowDeposit,
   setShowDual,
   setShowExportAccount,
-  setShowFeeSelect,
   setShowFeeSetting,
   setShowGlobalToast,
   setShowIFrame,
@@ -33,6 +32,9 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowVaultJoin,
+  setShowVaultExit,
+  setShowVaultSwap,
 } from './reducer'
 
 import React from 'react'
@@ -43,7 +45,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { OffchainFeeReqType, OffchainNFTFeeReqType, RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
 import { AmmPanelType, ToastType } from '../../../components'
 
@@ -287,6 +289,18 @@ export const useOpenModals = () => {
           type: ToastType
         }
       }) => dispatch(setShowGlobalToast(state)),
+      [dispatch],
+    ),
+    setShowVaultExit: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultExit(state)),
+      [dispatch],
+    ),
+    setShowVaultJoin: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultJoin(state)),
+      [dispatch],
+    ),
+    setShowVaultSwap: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultSwap(state)),
       [dispatch],
     ),
   }

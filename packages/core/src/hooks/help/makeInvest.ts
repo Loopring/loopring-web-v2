@@ -1,7 +1,10 @@
-import { InvestMapType, InvestOpenType } from '@loopring-web/common-resources'
+import { InvestMapType, InvestOpenType, VaultMarketExtends } from '@loopring-web/common-resources'
 import { DepartmentRow, RowInvest } from '@loopring-web/component-lib'
 import { InvestTokenTypeMap, store } from '../../stores'
 import { LoopringAPI } from '../../api_wrapper'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { getBtradeMapStatus } from '../../stores/invest/BtradeMap/reducer'
+import { getVaultMapStatus } from '../../stores/invest/VaultMap/reducer'
 
 export const makeInvestRow = <R extends RowInvest>(
   investTokenTypeMap: InvestTokenTypeMap,
@@ -50,3 +53,113 @@ export const findDualMarket = (marketArray: string[], pairASymbol: string, pairB
     )
     return regExp.test(item)
   })
+
+export const makeBtrade = (btradeMarkets: any) => {
+  if (btradeMarkets) {
+    const {
+      markets: marketMap,
+      pairs,
+      marketArr: marketArray,
+      tokenArr: marketCoins,
+    } = sdk.makeMarkets({ markets: btradeMarkets })
+    const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
+      const tradePairs = pairs[key as string]?.tokenList?.sort()
+      prev[key] = {
+        ...pairs[key as string],
+        tradePairs,
+      }
+      return prev
+    }, {})
+    if (!marketArray?.length) {
+      store.dispatch(
+        getBtradeMapStatus({
+          marketArray,
+          marketCoins,
+          marketMap,
+          tradeMap,
+        }),
+      )
+    }
+  }
+}
+
+export const makeVault = (
+  vaultTokenMap: sdk.VaultToken[] | undefined,
+  vaultMarkets: sdk.VaultMarket[] | undefined,
+  enabled?: 'isFormLocal' | undefined,
+) => {
+  const {
+    idIndex: erc20IdIndex,
+    // tokenMap:erc20TokenMap
+  } = store.getState().tokenMap
+  if (vaultTokenMap && vaultMarkets && erc20IdIndex) {
+    const { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
+    const reformat: VaultMarketExtends[] = vaultMarkets.reduce((prev, ele) => {
+      // tokensMap[idIndex[ele.quoteTokenId]].tokenId
+      if (/-/gi.test(ele.market) && ele.enabled) {
+        prev.push({
+          ...ele,
+          enabled: enabled ?? ele.enabled,
+          vaultMarket: ele.market,
+          market: ele.market.replace(/(\w+)-(\w+)-(\w+)/, '$2-$3'),
+          originalBaseSymbol: erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId],
+          originalQuoteSymbol: erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId],
+        })
+        return prev
+      } else {
+        return prev as VaultMarketExtends[]
+      }
+    }, [] as VaultMarketExtends[])
+    const {
+      markets: marketMap,
+      pairs,
+      marketArr: marketArray,
+      tokenArr: marketCoins,
+    } = sdk.makeMarkets({ markets: reformat })
+    const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
+      const tradePairs = pairs[key as string]?.tokenList?.sort()
+      prev[key] = {
+        ...pairs[key as string],
+        tradePairs,
+      }
+      return prev
+    }, {})
+    if (enabled && enabled == 'isFormLocal') {
+      store.dispatch(
+        getVaultMapStatus({
+          marketArray,
+          marketCoins,
+          marketMap,
+          tradeMap,
+          coinMap,
+          pairs,
+          idIndex,
+          addressIndex,
+          tokensMap,
+        }),
+      )
+    } else {
+      return {
+        marketArray,
+        marketCoins,
+        marketMap,
+        tradeMap,
+        coinMap,
+        pairs,
+        idIndex,
+        addressIndex,
+      }
+    }
+  } else {
+    return {
+      marketMap: undefined,
+      pairs: undefined,
+      marketArray: undefined,
+      marketCoins: undefined,
+      tokensMap: undefined,
+      coinMap: undefined,
+      idIndex: undefined,
+      addressIndex: undefined,
+    }
+  }
+}

@@ -1,4 +1,9 @@
-import { VaultTradeCalcData, MarketType } from '@loopring-web/common-resources'
+import {
+  VaultTradeCalcData,
+  MarketType,
+  VaultJoinData,
+  VaultExitData,
+} from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { OrderInfoPatch } from '../tradePro'
 
@@ -25,6 +30,8 @@ export type TradeVault = {
 
 export type TradeVaultStatus = {
   tradeVault: TradeVault
+  vaultJoinData: VaultJoinData
+  vaultExitData: VaultExitData
   __DAYS__: 30
   __SUBMIT_LOCK_TIMER__: 1000
   __TOAST_AUTO_CLOSE_TIMER__: 3000

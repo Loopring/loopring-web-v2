@@ -689,11 +689,6 @@ export type RedPacketOrderData<I> = {
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
 
-export type VaultJoinData<I = any> = {
-  __request__: any
-} & Partial<IBData<I>> &
-  Partial<sdk.VaultJoinRequest>
-
 export enum TabTokenTypeIndex {
   ERC20 = 'ERC20',
   NFT = 'NFT',
@@ -726,3 +721,33 @@ export type AmmHistoryItem = {
   close: number
   timeStamp: number
 }
+
+export enum LocalStorageConfigKey {
+  tokenMap = 'tokenMap',
+  ammpools = 'ammpools',
+  markets = 'markets',
+  btradeMarkets = 'btradeMarkets',
+  vaultMarkets = 'vaultMarkets',
+  vaultTokenMap = 'vaultTokenMap',
+  exchangeInfo = 'exchangeInfo',
+  disableWithdrawTokenList = 'disableWithdrawTokenList',
+}
+
+export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
+  sdk.VaultMarket,
+  'enabled'
+> & {
+    vaultMarket: string
+    originalBaseSymbol: string
+    originalQuoteSymbol: string
+  }
+
+export type VaultJoinData<I = any> = {
+  __request__: any
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultJoinRequest>
+
+export type VaultExitData<I = any> = {
+  __request__: any
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultExitRequest>

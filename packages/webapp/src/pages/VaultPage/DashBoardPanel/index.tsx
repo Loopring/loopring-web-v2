@@ -1,26 +1,20 @@
 import { useHistory, useRouteMatch } from 'react-router-dom'
 
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 import React from 'react'
-import { ViewAccountTemplate } from '@loopring-web/core'
 
-import {
-  ProfileKey,
-  ProfileIndex,
-  MapChainId,
-  RouterPath,
-  VaultKey,
-  TradeBtnStatus,
-} from '@loopring-web/common-resources'
+import { TradeBtnStatus } from '@loopring-web/common-resources'
 import { Button, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import { useJoinVault } from '../useOpenVault'
+import { VaultAccountStatus } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
+import { useAccountInfo } from '../components/useAccountInfo'
 
 export const VaultDashBoardPanel = () => {
   const { t } = useTranslation()
   const history = useHistory()
-  const { joinBtnStatus, joinOnBtnClick, joinBtnLabel } = useJoinVault()
+  const { btnStatus, onBtnClick, btnLabel, vaultAccountInfo } = useAccountInfo()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Box component={'header'}>
@@ -40,16 +34,29 @@ export const VaultDashBoardPanel = () => {
         <Box>
           <Button
             size={'medium'}
-            onClick={joinOnBtnClick}
+            onClick={onBtnClick}
             loading={'false'}
             variant={'contained'}
             sx={{ minWidth: 'var(--walletconnect-width)' }}
-            disabled={
-              joinBtnStatus === TradeBtnStatus.DISABLED || joinBtnStatus === TradeBtnStatus.LOADING
-            }
+            disabled={btnStatus === TradeBtnStatus.DISABLED || btnStatus === TradeBtnStatus.LOADING}
           >
-            {joinBtnLabel}
+            {btnLabel}
           </Button>
+          {vaultAccountInfo?.accountStatus &&
+            [VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo.accountStatus) && (
+              <Button
+                size={'medium'}
+                onClick={onBtnClick}
+                loading={'false'}
+                variant={'contained'}
+                sx={{ minWidth: 'var(--walletconnect-width)' }}
+                disabled={
+                  btnStatus === TradeBtnStatus.DISABLED || btnStatus === TradeBtnStatus.LOADING
+                }
+              >
+                {btnLabel}
+              </Button>
+            )}
         </Box>
       </Box>
     </Box>
