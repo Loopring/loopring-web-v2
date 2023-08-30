@@ -686,9 +686,9 @@ export type RedPacketOrderData<I> = {
   fee: FeeInfo | undefined
   __request__: any
   target?: {
-    redpacketHash: string;
-    addressListString: string;
-    isRedDot: boolean;
+    redpacketHash: string
+    addressListString: string
+    isRedDot: boolean
   }
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &

@@ -47,12 +47,11 @@ import { useTheme } from '@emotion/react'
 
 const RedPacktButton = styled(Button)`
   background: ${RedPacketColorConfig.default.btnColor};
-  :hover{
+  :hover {
     background: ${RedPacketColorConfig.default.btnColor};
     opacity: 0.7;
   }
-  
-` 
+`
 
 export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) => {
   const container = React.useRef<HTMLDivElement>(null)
@@ -91,17 +90,18 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
   const [exclusiveDialog, setExclusiveDialog] = React.useState(
-    'popUp' as 'hidden' | 'redDot' | 'popUp'
+    'popUp' as 'hidden' | 'redDot' | 'popUp',
   )
-  const [exclusiveRedPackets, setExclusiveRedPackets] = React.useState([] as LuckyTokenItemForReceive[])
-  const {setShowRedPacket}= useOpenModals()
-  
+  const [exclusiveRedPackets, setExclusiveRedPackets] = React.useState(
+    [] as LuckyTokenItemForReceive[],
+  )
+  const { setShowRedPacket } = useOpenModals()
+
   const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
     setShowRedPacket({
       isShow: true,
       info: {
         ...redpacket,
-
       },
       step: RedPacketViewStep.OpenPanel,
     })
@@ -148,8 +148,8 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
       })
   }, [])
   const theme = useTheme()
-  const {coinJson} = useSettings()
-  const {idIndex} = useTokenMap()
+  const { coinJson } = useSettings()
+  const { idIndex } = useTokenMap()
   return (
     <Box
       flex={1}
@@ -192,7 +192,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         {exclusiveRedPackets.length > 0 && (
           <Box paddingX={2} paddingY={1} bgcolor={'var(--color-box-hover)'} borderRadius={0.5}>
             <Typography>
-              You have {exclusiveRedPackets.length} exclusive Red Packets.{' '}
+              {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}{' '}
               <Button
                 onClick={() => {
                   if (exclusiveRedPackets.length === 1) {
@@ -200,7 +200,6 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                       isShow: true,
                       info: {
                         ...exclusiveRedPackets[0],
-              
                       },
                       step: RedPacketViewStep.OpenPanel,
                     })
@@ -210,7 +209,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                 }}
                 variant={'text'}
               >
-                View Details {'>'}
+                {t('labelRedPacketExclusiveViewDetails')}
               </Button>{' '}
             </Typography>
           </Box>
@@ -275,6 +274,9 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           onClose={() => {
             setExclusiveDialog('hidden')
           }}
+          onFocus={() => {
+            console.log('dashdjkashkdhasjkdhaskhjk')
+          }}
         >
           {exclusiveDialog === 'popUp' ? (
             <DialogContent
@@ -290,7 +292,6 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                 color={'inherit'}
                 onClick={() => {
                   setExclusiveDialog('hidden')
-                  // onCloseNFts()
                 }}
               >
                 <CloseIcon />
@@ -325,28 +326,33 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                       <img width={64} src={SoursURL + 'images/target_airdrop_icon.svg'} />
                     </Box>
                     <Typography variant={'h5'} marginTop={2} color={'black'}>
-                      Congratulations!
+                      {t('labelRedPacketCongratulations')}
                     </Typography>
                     <Typography textAlign={'center'} marginTop={1} marginBottom={3} color={'black'}>
-                      You've received {exclusiveRedPackets.length} exclusive Red Packet!
+                      {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}
                     </Typography>
                   </Box>
                 </Box>
                 <Box marginX={3} marginTop={1.5}>
-                  <RedPacktButton onClick={() => {
-                    if (exclusiveRedPackets.length === 1) {
-                      setShowRedPacket({
-                        isShow: true,
-                        info: {
-                          ...exclusiveRedPackets[0],
-                        },
-                        step: RedPacketViewStep.OpenPanel,
-                      })
-                    } else {
-                      setExclusiveDialog('redDot')
-                    }
-                  }} sx={{ background: 'black' }} fullWidth variant={'contained'}>
-                    Open
+                  <RedPacktButton
+                    onClick={() => {
+                      if (exclusiveRedPackets.length === 1) {
+                        setShowRedPacket({
+                          isShow: true,
+                          info: {
+                            ...exclusiveRedPackets[0],
+                          },
+                          step: RedPacketViewStep.OpenPanel,
+                        })
+                      } else {
+                        setExclusiveDialog('redDot')
+                      }
+                    }}
+                    sx={{ background: 'black' }}
+                    fullWidth
+                    variant={'contained'}
+                  >
+                    {t('labelRedPacketOpen')}
                   </RedPacktButton>
                 </Box>
               </Box>
@@ -355,7 +361,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
             <>
               <DialogTitle>
                 <Typography variant={'h3'} marginTop={2} textAlign={'center'}>
-                  Exclusive Red Packets
+                  {t('labelExclusiveRedpacket')}
                 </Typography>
                 <IconButton
                   size={'large'}
@@ -372,7 +378,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                   <CloseIcon />
                 </IconButton>
               </DialogTitle>
-              <DialogContent  style={{ width: '480px', height: '480px' }}>
+              <DialogContent style={{ width: '480px', height: '480px' }}>
                 <Box marginTop={5} paddingX={4}>
                   {exclusiveRedPackets.map((redpacket) => (
                     <Box
@@ -410,9 +416,14 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                             : idIndex[redpacket.tokenId]}
                         </Typography>
                       </Box>
-                      <Button variant={'contained'} onClick={() => {
-                        onClickOpenExclusive(redpacket)
-                      }}>Open</Button>
+                      <Button
+                        variant={'contained'}
+                        onClick={() => {
+                          onClickOpenExclusive(redpacket)
+                        }}
+                      >
+                        {t('labelRedPacketOpen')}
+                      </Button>
                     </Box>
                   ))}
                 </Box>

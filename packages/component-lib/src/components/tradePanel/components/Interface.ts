@@ -657,7 +657,6 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     onClickNext: () => void
   }
 
-
 export type TargetRedpacktSelectStepProps = {
   onClickCreateNew: () => void
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
@@ -673,5 +672,4 @@ export type TargetRedpacktInputAddressStepProps = {
   onFileInput: (input: string) => void
   addressListString: string
   onClickSend: () => void
-  // onClickCreateNew: () => void
 }

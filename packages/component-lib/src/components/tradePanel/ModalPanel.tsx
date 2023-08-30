@@ -40,7 +40,6 @@ import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
-import { TargetRedpackt } from './components/TargetRedpacket'
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -475,26 +474,6 @@ export const ModalPanel = <
           </Box>
         }
       />
-      {/* <Modal
-        open
-        // ={isShowSideStakingRedeem.isShow}
-        contentClassName={'trade-wrap hasLinerBg'}
-        onClose={() => setShowSideStakingRedeem({ isShow: false })}
-        content={
-          <TargetRedpackt />
-
-          // <>111</>
-          // <Box
-          //   maxWidth='var(--modal-width)'
-          //   flex={1}
-          //   display={'flex'}
-          //   paddingX={5 / 2}
-          //   paddingBottom={5 / 2}
-          // >
-          //   <DeFiStackRedeemWrap isJoin={false} {...(sideStackRedeemProps as any)} />
-          // </Box>
-        }
-      /> */}
     </>
   )
 }

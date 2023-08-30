@@ -1,4 +1,3 @@
-import { SvgIcon, SvgIconProps } from "@mui/material"
 import { SVGProps } from "react"
 
 export const ScopePublic = (props: SVGProps<SVGSVGElement>) => {

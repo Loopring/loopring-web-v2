@@ -7,8 +7,6 @@ import {
   FormLabel,
   Grid,
   IconButton,
-  Radio,
-  RadioGroup,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -35,12 +33,10 @@ import {
   RedPacketOrderData,
   SoursURL,
   TradeBtnStatus,
-  GoodIcon,
   REDPACKET_ORDER_NFT_LIMIT,
   Info2Icon,
   RedPacketOrderType,
   ScopePublic,
-  InfoIcon,
   HelpIcon,
   TokenType,
   CheckBoxIcon,
@@ -67,7 +63,7 @@ import { NFTInput } from './BasicANFTTrade'
 import { DateTimeRangePicker } from '../../datetimerangepicker'
 import BigNumber from 'bignumber.js'
 import { useNotify, useTokenMap } from '@loopring-web/core'
-import { CoinIcons, ColumnCoinDeep, FeeSelect, Modal } from '../../../components'
+import { CoinIcons, FeeSelect, Modal } from '../../../components'
 import { useTheme } from '@emotion/react'
 
 const StyledTextFiled = styled(TextField)``
@@ -1146,7 +1142,6 @@ export const CreateRedPacketStepTokenType = withTranslation()(
             )}
           </Grid>
         </Grid>
-
         <Box
           width={'100%'}
           alignSelf={'stretch'}
@@ -1204,13 +1199,18 @@ type CreateRedPacketScopeProps = {
   onClickNext: () => void
 }
 export const CreateRedPacketScope = withTranslation()(
-  ({ selectedScope, onClickNext, onSelecteScope }: CreateRedPacketScopeProps) => {
+  ({
+    selectedScope,
+    onClickNext,
+    onSelecteScope,
+    t,
+  }: CreateRedPacketScopeProps & WithTranslation) => {
     return (
       <Box display={'flex'} flexDirection={'column'} paddingX={8} paddingTop={4} paddingBottom={8}>
         <Box marginBottom={6}>
           <Box display={'flex'} alignItems={'center'} marginBottom={2}>
             <Typography marginRight={0.5} variant={'h4'}>
-              Public Red Packet{' '}
+              {t('labelLuckyTokenViewTypePublic')}
             </Typography>
             <Tooltip title={'text'}>
               <Box>
@@ -1224,10 +1224,9 @@ export const CreateRedPacketScope = withTranslation()(
               selected={selectedScope === sdk.LuckyTokenViewType.PUBLIC}
             >
               <Box marginRight={0.5}>
-                <Typography>Plaza Public</Typography>
+                <Typography>{t('labelRedPacketPlazaPublic')}</Typography>
                 <Typography color={'var(--color-text-secondary)'}>
-                  In the red envelope square display & know the QR code users can participate in
-                  grabbing red envelopes
+                  {t('labelRedPacketPlazaPublicDes')}
                 </Typography>
               </Box>
               <ScopePublic color={'var(--color-text-secondary)'} />
@@ -1237,10 +1236,9 @@ export const CreateRedPacketScope = withTranslation()(
               selected={selectedScope === sdk.LuckyTokenViewType.PRIVATE}
             >
               <Box marginRight={0.5}>
-                <Typography>Plaza Public</Typography>
+                <Typography>{t('labelRedPacketQRPublic')}</Typography>
                 <Typography color={'var(--color-text-secondary)'}>
-                  In the red envelope square display & know the QR code users can participate in
-                  grabbing red envelopes
+                  {t('labelRedPacketQRPublicDes')}
                 </Typography>
               </Box>
               <ScopePublic color={'var(--color-text-secondary)'} />
@@ -1250,7 +1248,7 @@ export const CreateRedPacketScope = withTranslation()(
         <Box marginBottom={12}>
           <Box display={'flex'} alignItems={'center'} marginBottom={2}>
             <Typography marginRight={0.5} variant={'h4'}>
-              Private Red Packet{' '}
+              {t('labelLuckyTokenViewTypePrivate')}{' '}
             </Typography>
             <Tooltip title={'text'}>
               <Box>
@@ -1264,10 +1262,9 @@ export const CreateRedPacketScope = withTranslation()(
               selected={selectedScope === sdk.LuckyTokenViewType.TARGET}
             >
               <Box marginRight={0.5}>
-                <Typography>Plaza Public</Typography>
+                <Typography>{t('labelRedPacketExclusive')}</Typography>
                 <Typography color={'var(--color-text-secondary)'}>
-                  In the red envelope square display & know the QR code users can participate in
-                  grabbing red envelopes
+                  {t('labelRedPacketExclusiveDes')}
                 </Typography>
               </Box>
               <ScopePublic color={'var(--color-text-secondary)'} />
@@ -1305,9 +1302,16 @@ const TargetRedpacktOption = styled(Box)<{ selected: boolean }>`
 `
 
 export const TargetRedpacktSelectStep = (props: TargetRedpacktSelectStepProps) => {
-  const { onClickCreateNew, targetRedPackets, onClickExclusiveRedpacket, onClickViewDetail, popRedPacket, onCloseRedpacketPop } = props
+  const {
+    onClickCreateNew,
+    targetRedPackets,
+    onClickExclusiveRedpacket,
+    onClickViewDetail,
+    popRedPacket,
+    onCloseRedpacketPop,
+  } = props
   const theme = useTheme()
-  const { coinJson, isMobile} = useSettings()
+  const { coinJson, isMobile } = useSettings()
   const { idIndex } = useTokenMap()
   // popRedPacket = targetRedPackets[0]
   myLog('popRedPacket', popRedPacket)
@@ -1475,17 +1479,29 @@ export const TargetRedpacktSelectStep = (props: TargetRedpacktSelectStepProps) =
               </Box>
             </Box>
 
-            <Button onClick={() => {setShowReceipts(true)}} sx={{ marginBottom: 2 }} variant={'text'}>
+            <Button
+              onClick={() => {
+                setShowReceipts(true)
+              }}
+              sx={{ marginBottom: 2 }}
+              variant={'text'}
+            >
               Red Packet Recipients {'>'}
             </Button>
-            <Button onClick={() => {onCloseRedpacketPop()}} fullWidth variant={'contained'}>
+            <Button
+              onClick={() => {
+                onCloseRedpacketPop()
+              }}
+              fullWidth
+              variant={'contained'}
+            >
               Close
             </Button>
           </Box>
         }
       />
       <Modal
-        open={(popRedPacket && showReceipts) ? true : false}
+        open={popRedPacket && showReceipts ? true : false}
         onClose={() => {
           setShowReceipts(false)
         }}
@@ -1511,9 +1527,7 @@ export const TargetRedpacktSelectStep = (props: TargetRedpacktSelectStepProps) =
               width={'100%'}
               height={362}
             >
-              <Typography>
-                {popRedPacket && (popRedPacket as any).targets.join('\n')}
-              </Typography>
+              <Typography>{popRedPacket && (popRedPacket as any).targets.join('\n')}</Typography>
             </Box>
           </Box>
         }
@@ -1546,7 +1560,14 @@ export const TargetRedpacktInputAddressStep = (props: TargetRedpacktInputAddress
         Loopring, our partners, or other verified members. If you're interested in being
         whitelisted, please contact us at support@loopring.io.
       </Typography>
-      <Box marginTop={3} marginX={4} borderRadius={1} paddingX={5} paddingY={3} border={'1px solid var(--color-border)'}>
+      <Box
+        marginTop={3}
+        marginX={4}
+        borderRadius={1}
+        paddingX={5}
+        paddingY={3}
+        border={'1px solid var(--color-border)'}
+      >
         <Typography height={theme.unit * 30}>
           {addressListString &&
             addressListString.split('\n').map((str) => (
@@ -1648,7 +1669,7 @@ export const TargetRedpacktInputAddressStep = (props: TargetRedpacktInputAddress
         </Box>
       </Box>
 
-      <Box marginTop={10}  display={'flex'} justifyContent={'center'}>
+      <Box marginTop={10} display={'flex'} justifyContent={'center'}>
         <Box width={'440px'} marginBottom={4}>
           <BtnMain
             {...{

@@ -206,9 +206,8 @@ export const useCreateRedPacket = <
           validSince: Date.now(),
           validUntil: moment().add('days', 1).toDate().getTime(),
           tradeType: value,
-          isNFT: true
+          isNFT: true,
         } as unknown as T)
-        // resetRedPacketOrder(value)
       } else {
         updateRedPacketOrder({
           fee: feeInfo,
@@ -532,8 +531,8 @@ export const useCreateRedPacket = <
             })
             handleOnDataChange({
               target: {
-                redpacketHash: (response as sdk.TX_HASH_API)?.hash
-              }
+                redpacketHash: (response as sdk.TX_HASH_API)?.hash,
+              },
             } as any)
           } else {
             setShowAccount({
@@ -558,8 +557,6 @@ export const useCreateRedPacket = <
                               isShow: true,
                               info: {
                                 ...response.detail.luckyToken,
-                                // sender: account,
-                                // hash: (response as sdk.TX_HASH_API).hash,
                               },
                               step: RedPacketViewStep.QRCodePanel,
                             })
@@ -568,7 +565,7 @@ export const useCreateRedPacket = <
                     : undefined,
               },
             })
-  
+
             if (isHWAddr) {
               myLog('......try to set isHWAddr', isHWAddr)
               updateHW({ wallet: account.accAddress, isHWAddr })
@@ -605,9 +602,7 @@ export const useCreateRedPacket = <
                 setShowAccount({ isShow: false })
               }
             }
-            
           }
-          
         }
       } catch (e: any) {
         const code = sdk.checkErrorInfo(e, isNotHardwareWallet)
@@ -801,69 +796,66 @@ export const useCreateRedPacket = <
       redPacketConfigs?.luckTokenAgents,
     ],
   )
-  const onSendTargetRedpacketClick = React.useCallback(
-    async () => {
-      const { readyState } = account
-      const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
+  const onSendTargetRedpacketClick = React.useCallback(async () => {
+    const { readyState } = account
+    const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
 
-      const getValidAddresses = (input:string) => {
-        return input.split('\n').filter(str => {
-          return isAddress(str)
+    const getValidAddresses = (input: string) => {
+      return input.split('\n').filter((str) => {
+        return isAddress(str)
+      })
+    }
+
+    if (
+      readyState === AccountStatus.ACTIVATED &&
+      LoopringAPI.luckTokenAPI &&
+      redPacketOrder.target?.redpacketHash &&
+      getValidAddresses(redPacketOrder.target?.addressListString).length > 0 &&
+      redPacketOrder.target?.addressListString
+    ) {
+      try {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketSend_WaitForAuth,
+        })
+        const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget(
+          {
+            claimer: getValidAddresses(redPacketOrder.target?.addressListString),
+            hash: redPacketOrder.target?.redpacketHash,
+            notifyType:
+              redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot
+                ? 0
+                : 1,
+          },
+          account.eddsaKey.sk,
+          account.apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          throw response
+        }
+        history.push(`/redpacket/markets`)
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketSend_Success,
+        })
+      } catch (e: any) {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.RedPacketSend_Failed,
+          error: {
+            code: UIERROR_CODE.UNKNOWN,
+            message: e.message,
+          } as sdk.RESULT_INFO,
         })
       }
-
-      if (
-        readyState === AccountStatus.ACTIVATED &&
-        LoopringAPI.luckTokenAPI &&
-        redPacketOrder.target?.redpacketHash &&
-        getValidAddresses(redPacketOrder.target?.addressListString).length > 0 &&
-        redPacketOrder.target?.addressListString
-      ) {
-        try {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.RedPacketSend_WaitForAuth,
-          })
-          const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget(
-            {
-              claimer: getValidAddresses(redPacketOrder.target?.addressListString),
-              hash: redPacketOrder.target?.redpacketHash,
-              notifyType:
-                redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot
-                  ? 0
-                  : 1,
-            },
-            account.eddsaKey.sk,
-            account.apiKey,
-          )
-          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-            throw response
-          }
-          history.push(`/redpacket/markets`)
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.RedPacketSend_Success,
-          })
-        } catch (e: any) {
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.RedPacketSend_Failed,
-            error: {
-              code: UIERROR_CODE.UNKNOWN,
-              message: e.message,
-            } as sdk.RESULT_INFO,
-          })
-        }
-      } else {
-        return
-      }
-    },
-    [
-      account.readyState,
-      redPacketOrder.target?.redpacketHash,
-      redPacketOrder.target?.addressListString
-    ],
-  )
+    } else {
+      return
+    }
+  }, [
+    account.readyState,
+    redPacketOrder.target?.redpacketHash,
+    redPacketOrder.target?.addressListString,
+  ])
 
   const handlePanelEvent = useCallback(
     async (data: SwitchData<Partial<T>>) => {
@@ -933,7 +925,6 @@ export const useCreateRedPacket = <
     },
     [processRequest, setShowAccount],
   )
-  
   const location = useLocation()
   React.useEffect(() => {
     ;(async () => {
@@ -972,12 +963,15 @@ export const useCreateRedPacket = <
     })()
   }, [location.search])
 
-
-  const [targetRedPackets, setTargetRedPackets] = React.useState([] as sdk.LuckyTokenItemForReceive[])
-  const [popRedPacket, setPopRedPacket] = React.useState(undefined as sdk.LuckTokenClaimDetail | undefined)
+  const [targetRedPackets, setTargetRedPackets] = React.useState(
+    [] as sdk.LuckyTokenItemForReceive[],
+  )
+  const [popRedPacket, setPopRedPacket] = React.useState(
+    undefined as sdk.LuckTokenClaimDetail | undefined,
+  )
 
   React.useEffect(() => {
-    (async () => {
+    ;(async () => {
       const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
         {
           senderId: account.accountId,
@@ -995,22 +989,19 @@ export const useCreateRedPacket = <
     })()
   }, [])
 
-  const onClickViewTargetDetail = React.useCallback(
-    async (hash: string) => {
-      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+  const onClickViewTargetDetail = React.useCallback(async (hash: string) => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail(
+      {
         hash: hash,
-      }, account.apiKey)
-      setPopRedPacket(response?.detail)
-    },
-    [],
-  )
-  const onCloseRedpacketPop = React.useCallback(
-    async () => {
-      setPopRedPacket(undefined)
-    },
-    [],
-  )
-  
+      },
+      account.apiKey,
+    )
+    setPopRedPacket(response?.detail)
+  }, [])
+  const onCloseRedpacketPop = React.useCallback(async () => {
+    setPopRedPacket(undefined)
+  }, [])
+
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
@@ -1051,7 +1042,7 @@ export const useCreateRedPacket = <
     targetRedPackets,
     popRedPacket,
     onClickViewTargetDetail,
-    onCloseRedpacketPop
+    onCloseRedpacketPop,
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }
