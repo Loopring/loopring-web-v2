@@ -1301,388 +1301,397 @@ const TargetRedpacktOption = styled(Box)<{ selected: boolean }>`
   cursor: pointer;
 `
 
-export const TargetRedpacktSelectStep = (props: TargetRedpacktSelectStepProps) => {
-  const {
-    onClickCreateNew,
-    targetRedPackets,
-    onClickExclusiveRedpacket,
-    onClickViewDetail,
-    popRedPacket,
-    onCloseRedpacketPop,
-  } = props
-  const theme = useTheme()
-  const { coinJson, isMobile } = useSettings()
-  const { idIndex } = useTokenMap()
-  // popRedPacket = targetRedPackets[0]
-  myLog('popRedPacket', popRedPacket)
-  const [showReceipts, setShowReceipts] = React.useState(false)
+export const TargetRedpacktSelectStep = withTranslation()(
+  (props: TargetRedpacktSelectStepProps & WithTranslation) => {
+    const {
+      onClickCreateNew,
+      targetRedPackets,
+      onClickExclusiveRedpacket,
+      onClickViewDetail,
+      popRedPacket,
+      onCloseRedpacketPop,
+      t,
+    } = props
+    const theme = useTheme()
+    const { coinJson, isMobile } = useSettings()
+    const { idIndex } = useTokenMap()
+    const [showReceipts, setShowReceipts] = React.useState(false)
 
-  return (
-    <RedPacketBoxStyle
-      height={'100%'}
-      maxHeight={'480px'}
-      justifyContent={'left'}
-      width={'100%'}
-      maxWidth={1152}
-      paddingX={isMobile ? 2 : 5}
-      position={'absolute'}
-    >
-      <Box width={'100%'}>
-        <Typography marginTop={5} marginBottom={2}>
-          You have {targetRedPackets.length} exclusive Red Packets ready
-        </Typography>
-        <Box display={'flex'} flexWrap={'wrap'}>
-          {targetRedPackets &&
-            targetRedPackets.map((redpacket) => (
-              <TargetRedpacktOption
-                onClick={() => {
-                  onClickExclusiveRedpacket(redpacket.hash)
-                }}
-                selected={false}
-              >
-                <Box
-                  display={'flex'}
-                  marginBottom={1}
-                  justifyContent={'space-between'}
-                  alignItems={'start'}
-                >
-                  <Box display={'flex'}>
-                    {redpacket.isNft ? (
-                      <NftImageStyle
-                        src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
-                        style={{
-                          width: `${theme.unit * 4}px`,
-                          height: `${theme.unit * 4}px`,
-                          borderRadius: `${theme.unit * 0.5}px`,
-                        }}
-                      />
-                    ) : (
-                      <Box width={theme.unit * 4} height={theme.unit * 4}>
-                        <CoinIcons
-                          size={theme.unit * 4}
-                          type={TokenType.single}
-                          tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
-                        />
-                      </Box>
-                    )}
-                    <Box marginLeft={1}>
-                      <Typography>Blind Box NFT name</Typography>
-                      <Typography color={'var(--color-text-secondary)'}>Lucky</Typography>
-                    </Box>
-                  </Box>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onClickViewDetail(redpacket.hash)
-                    }}
-                    variant={'text'}
-                  >
-                    View Detail {'>'}
-                  </Button>
-                </Box>
-                <hr
-                  style={{ background: 'var(--color-border)', border: 'none', height: '0.5px' }}
-                />
-                <Box marginTop={1} marginLeft={5} display={'flex'} justifyContent={'space-between'}>
-                  <Typography color={'var(--color-text-secondary)'}>Sent / Max Limit</Typography>
-                  <Typography color={'var(--color-text-secondary)'}>
-                    {redpacket.tokenAmount.totalCount - redpacket.tokenAmount.remainCount} /{' '}
-                    {redpacket.tokenAmount.totalCount}
-                  </Typography>
-                </Box>
-              </TargetRedpacktOption>
-            ))}
-        </Box>
-      </Box>
-
-      <Box width={'100%'} marginTop={20} display={'flex'} justifyContent={'center'}>
-        <Box width={'440px'}>
-          <BtnMain
-            {...{
-              defaultLabel: 'Create New Red Packet',
-              fullWidth: true,
-              disabled: () => false,
-              onClick: () => {
-                onClickCreateNew()
-              },
-            }}
-          />
-        </Box>
-      </Box>
-      <Modal
-        open={popRedPacket ? true : false}
-        onClose={() => {
-          onCloseRedpacketPop()
-          // setShowReceipts(false)
-        }}
-        content={
-          <Box
-            flex={1}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'space-between'}
-            flexDirection={'column'}
-            width={'var(--modal-width)'}
-            padding={5}
-            paddingTop={2}
-          >
-            {popRedPacket?.luckyToken!.isNft ? (
-              <NftImageStyle
-                src={popRedPacket?.luckyToken.nftTokenInfo?.metadata?.imageSize['240-240']}
-                style={{
-                  width: `${theme.unit * 8}px`,
-                  height: `${theme.unit * 8}px`,
-                  borderRadius: `${theme.unit * 0.5}px`,
-                }}
-              />
-            ) : (
-              <Box width={theme.unit * 8} height={theme.unit * 8}>
-                <CoinIcons
-                  size={theme.unit * 8}
-                  type={TokenType.single}
-                  tokenIcon={[coinJson[idIndex[popRedPacket?.tokenId ?? 0]]]}
-                />
-              </Box>
-            )}
-            <Typography>20,000 LRC</Typography>
-            <Box marginTop={4} width={'100%'} marginBottom={10}>
-              {popRedPacket?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
-                <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
-                  <Typography color={'var(--color-text-secondary)'}>Gift Red Packet</Typography>
-                  <Typography>20,000 LRC</Typography>
-                </Box>
-              )}
-              <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
-                <Typography color={'var(--color-text-secondary)'}>
-                  Total Red Packets count
-                </Typography>
-                <Typography>{popRedPacket?.luckyToken.tokenAmount.totalCount}</Typography>
-              </Box>
-              <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
-                <Typography color={'var(--color-text-secondary)'}>Start Time</Typography>
-                <Typography>
-                  {moment(popRedPacket?.luckyToken.validSince).format(YEAR_DAY_MINUTE_FORMAT)}
-                </Typography>
-              </Box>
-              {popRedPacket?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
-                <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
-                  <Typography color={'var(--color-text-secondary)'}>Reveal Time</Typography>
-                  <Typography>
-                    {moment(popRedPacket?.luckyToken.validUntil).format(YEAR_DAY_MINUTE_FORMAT)}
-                  </Typography>
-                </Box>
-              )}
-              <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
-                <Typography color={'var(--color-text-secondary)'}>
-                  {popRedPacket?.luckyToken.info.memo}
-                </Typography>
-              </Box>
-            </Box>
-
-            <Button
-              onClick={() => {
-                setShowReceipts(true)
-              }}
-              sx={{ marginBottom: 2 }}
-              variant={'text'}
-            >
-              Red Packet Recipients {'>'}
-            </Button>
-            <Button
-              onClick={() => {
-                onCloseRedpacketPop()
-              }}
-              fullWidth
-              variant={'contained'}
-            >
-              Close
-            </Button>
-          </Box>
-        }
-      />
-      <Modal
-        open={popRedPacket && showReceipts ? true : false}
-        onClose={() => {
-          setShowReceipts(false)
-        }}
-        content={
-          <Box
-            flex={1}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'space-between'}
-            flexDirection={'column'}
-            width={'var(--modal-width)'}
-            padding={5}
-            paddingTop={2}
-            paddingBottom={9}
-          >
-            <Typography variant={'h3'}>Recipient List</Typography>
-            <Box
-              borderRadius={1}
-              bgcolor={'var(--field-opacity)'}
-              marginTop={3}
-              paddingX={3}
-              paddingY={2}
-              width={'100%'}
-              height={362}
-            >
-              <Typography>{popRedPacket && (popRedPacket as any).targets.join('\n')}</Typography>
-            </Box>
-          </Box>
-        }
-      />
-    </RedPacketBoxStyle>
-  )
-}
-
-export const TargetRedpacktInputAddressStep = (props: TargetRedpacktInputAddressStepProps) => {
-  const { isRedDot, addressListString, onChangeIsRedDot, onFileInput, onClickSend } = props
-  const theme = useTheme()
-  const { isMobile } = useSettings()
-
-  return (
-    <RedPacketBoxStyle
-      height={'100%'}
-      maxHeight={'480px'}
-      justifyContent={'left'}
-      maxWidth={1152}
-      paddingX={isMobile ? 2 : 5}
-      position={'absolute'}
-      width={'100%'}
-    >
-      <Typography marginTop={4} marginBottom={0.5}>
-        Exclusive Red Packet
-      </Typography>
-      <Typography color={'var(--color-text-secondary)'}>
-        For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while
-        standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include
-        Loopring, our partners, or other verified members. If you're interested in being
-        whitelisted, please contact us at support@loopring.io.
-      </Typography>
-      <Box
-        marginTop={3}
-        marginX={4}
-        borderRadius={1}
-        paddingX={5}
-        paddingY={3}
-        border={'1px solid var(--color-border)'}
+    return (
+      <RedPacketBoxStyle
+        height={'100%'}
+        maxHeight={'480px'}
+        justifyContent={'left'}
+        width={'100%'}
+        maxWidth={1152}
+        paddingX={isMobile ? 2 : 5}
+        position={'absolute'}
       >
-        <Typography height={theme.unit * 30}>
-          {addressListString &&
-            addressListString.split('\n').map((str) => (
-              <>
-                {str} <br />
-              </>
-            ))}
-        </Typography>
-
-        <Box display={'flex'} justifyContent={'right'}>
-          <FormControlLabel
-            control={
-              <input
-                onChange={(e) => {
-                  const reader = new FileReader()
-                  reader.onload = (event) => {
-                    onFileInput(event.target?.result ? (event.target.result as string) : '')
-                  }
-                  e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
-                }}
-                style={{ display: 'none' }}
-                id='file-upload'
-                type='file'
-              />
-            }
-            label={
-              <Button
-                onClick={(e) => {
-                  ;(e.currentTarget.parentNode as any).click()
-                }}
-                variant={'outlined'}
-              >
-                Text import
-              </Button>
-            }
-          />
-        </Box>
-      </Box>
-
-      <Typography variant={'h5'} marginTop={5} marginBottom={1.5}>
-        Notification Display
-      </Typography>
-      <Box display={'flex'}>
-        <Box width={'45%'} marginRight={'10%'}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={isRedDot}
-                onChange={(_event: any, state: boolean) => {
-                  onChangeIsRedDot(true)
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color='default'
-              />
-            }
-            label={'Badge'}
-          />
-          <Box marginLeft={3}>
-            <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
-              Recipients are alerted via a badge next to the Red Packets category
-            </Typography>
-            <img src={SoursURL + 'images/target_option_red_dot.png'} />
-          </Box>
-        </Box>
-        <Box width={'45%'}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={!isRedDot}
-                onChange={(_event: any, state: boolean) => {
-                  onChangeIsRedDot(false)
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color='default'
-              />
-            }
-            label={
-              <Typography display={'flex'} alignItems={'center'}>
-                <Typography marginRight={0.5}>Pop-up Notification</Typography>{' '}
-                <Tooltip
-                  title={`Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.`}
+        <Box width={'100%'}>
+          <Typography marginTop={5} marginBottom={2}>
+            {t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
+          </Typography>
+          <Box display={'flex'} flexWrap={'wrap'}>
+            {targetRedPackets &&
+              targetRedPackets.map((redpacket) => (
+                <TargetRedpacktOption
+                  onClick={() => {
+                    onClickExclusiveRedpacket(redpacket.hash)
+                  }}
+                  selected={false}
                 >
-                  <span>
-                    <Info2Icon />
-                  </span>
-                </Tooltip>{' '}
-              </Typography>
-            }
-          />
-          <Box marginLeft={3}>
-            <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
-              Recipients are alerted via a prominent display that highlights the contents of the Red
-              Packet. (Limited to whitelisted users)
-            </Typography>
-            <img src={SoursURL + 'images/target_option_pop.png'} />
+                  <Box
+                    display={'flex'}
+                    marginBottom={1}
+                    justifyContent={'space-between'}
+                    alignItems={'start'}
+                  >
+                    <Box display={'flex'}>
+                      {redpacket.isNft ? (
+                        <NftImageStyle
+                          src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
+                          style={{
+                            width: `${theme.unit * 4}px`,
+                            height: `${theme.unit * 4}px`,
+                            borderRadius: `${theme.unit * 0.5}px`,
+                          }}
+                        />
+                      ) : (
+                        <Box width={theme.unit * 4} height={theme.unit * 4}>
+                          <CoinIcons
+                            size={theme.unit * 4}
+                            type={TokenType.single}
+                            tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
+                          />
+                        </Box>
+                      )}
+                      <Box marginLeft={1}>
+                        <Typography>Blind Box NFT name</Typography>
+                        <Typography color={'var(--color-text-secondary)'}>Lucky</Typography>
+                      </Box>
+                    </Box>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onClickViewDetail(redpacket.hash)
+                      }}
+                      variant={'text'}
+                    >
+                      {t('labelRedPacketExclusiveViewDetails')}
+                    </Button>
+                  </Box>
+                  <hr
+                    style={{ background: 'var(--color-border)', border: 'none', height: '0.5px' }}
+                  />
+                  <Box
+                    marginTop={1}
+                    marginLeft={5}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                  >
+                    <Typography color={'var(--color-text-secondary)'}>
+                      {t('labelRedpacketSentMaxLimit')}
+                    </Typography>
+                    <Typography color={'var(--color-text-secondary)'}>
+                      {redpacket.tokenAmount.totalCount - redpacket.tokenAmount.remainCount} /{' '}
+                      {redpacket.tokenAmount.totalCount}
+                    </Typography>
+                  </Box>
+                </TargetRedpacktOption>
+              ))}
           </Box>
         </Box>
-      </Box>
 
-      <Box marginTop={10} display={'flex'} justifyContent={'center'}>
-        <Box width={'440px'} marginBottom={4}>
-          <BtnMain
-            {...{
-              defaultLabel: 'Prepare Red Packet',
-              fullWidth: true,
-              disabled: () => false,
-              onClick: () => {
-                onClickSend()
-              },
-            }}
-          />
+        <Box width={'100%'} marginTop={20} display={'flex'} justifyContent={'center'}>
+          <Box width={'440px'}>
+            <BtnMain
+              {...{
+                defaultLabel: 'labelRedpacketCreateNew',
+                fullWidth: true,
+                disabled: () => false,
+                onClick: () => {
+                  onClickCreateNew()
+                },
+              }}
+            />
+          </Box>
         </Box>
-      </Box>
-    </RedPacketBoxStyle>
-  )
-}
+        <Modal
+          open={popRedPacket ? true : false}
+          onClose={() => {
+            onCloseRedpacketPop()
+          }}
+          content={
+            <Box
+              flex={1}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
+              flexDirection={'column'}
+              width={'var(--modal-width)'}
+              padding={5}
+              paddingTop={2}
+            >
+              {popRedPacket?.luckyToken!.isNft ? (
+                <NftImageStyle
+                  src={popRedPacket?.luckyToken.nftTokenInfo?.metadata?.imageSize['240-240']}
+                  style={{
+                    width: `${theme.unit * 8}px`,
+                    height: `${theme.unit * 8}px`,
+                    borderRadius: `${theme.unit * 0.5}px`,
+                  }}
+                />
+              ) : (
+                <Box width={theme.unit * 8} height={theme.unit * 8}>
+                  <CoinIcons
+                    size={theme.unit * 8}
+                    type={TokenType.single}
+                    tokenIcon={[coinJson[idIndex[popRedPacket?.tokenId ?? 0]]]}
+                  />
+                </Box>
+              )}
+              <Typography>20,000 LRC</Typography>
+              <Box marginTop={4} width={'100%'} marginBottom={10}>
+                {popRedPacket?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
+                  <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
+                    <Typography color={'var(--color-text-secondary)'}>
+                      {t('labelRedpacketGiftRedPacket')}
+                    </Typography>
+                    <Typography>{popRedPacket.luckyToken.tokenAmount.giftCount}</Typography>
+                  </Box>
+                )}
+                <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
+                  <Typography color={'var(--color-text-secondary)'}>
+                    {t('labelRedpacketRedPacketscount')}
+                  </Typography>
+                  <Typography>{popRedPacket?.luckyToken.tokenAmount.totalCount}</Typography>
+                </Box>
+                <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
+                  <Typography color={'var(--color-text-secondary)'}>
+                    {t('labelBlindBoxStartTime')}
+                  </Typography>
+                  <Typography>
+                    {moment(popRedPacket?.luckyToken.validSince).format(YEAR_DAY_MINUTE_FORMAT)}
+                  </Typography>
+                </Box>
+                {popRedPacket?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
+                  <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
+                    <Typography color={'var(--color-text-secondary)'}>
+                      {t('labelRedpacketRevealTime')}
+                    </Typography>
+                    <Typography>
+                      {moment(popRedPacket?.luckyToken.validUntil).format(YEAR_DAY_MINUTE_FORMAT)}
+                    </Typography>
+                  </Box>
+                )}
+                <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
+                  <Typography color={'var(--color-text-secondary)'}>
+                    {popRedPacket?.luckyToken.info.memo}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Button
+                onClick={() => {
+                  setShowReceipts(true)
+                }}
+                sx={{ marginBottom: 2 }}
+                variant={'text'}
+              >
+                {t('labelRedpacketRecipients')}
+              </Button>
+              <Button
+                onClick={() => {
+                  onCloseRedpacketPop()
+                }}
+                fullWidth
+                variant={'contained'}
+              >
+                {t('labelClose')}
+              </Button>
+            </Box>
+          }
+        />
+        <Modal
+          open={popRedPacket && showReceipts ? true : false}
+          onClose={() => {
+            setShowReceipts(false)
+          }}
+          content={
+            <Box
+              flex={1}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
+              flexDirection={'column'}
+              width={'var(--modal-width)'}
+              padding={5}
+              paddingTop={2}
+              paddingBottom={9}
+            >
+              <Typography variant={'h3'}>{t('labelRedpacketRecipientList')}</Typography>
+              <Box
+                borderRadius={1}
+                bgcolor={'var(--field-opacity)'}
+                marginTop={3}
+                paddingX={3}
+                paddingY={2}
+                width={'100%'}
+                height={362}
+              >
+                <Typography>{popRedPacket && (popRedPacket as any).targets.join('\n')}</Typography>
+              </Box>
+            </Box>
+          }
+        />
+      </RedPacketBoxStyle>
+    )
+  },
+)
+
+export const TargetRedpacktInputAddressStep = withTranslation()(
+  (props: TargetRedpacktInputAddressStepProps & WithTranslation) => {
+    const { isRedDot, addressListString, onChangeIsRedDot, onFileInput, onClickSend, t } = props
+    const theme = useTheme()
+    const { isMobile } = useSettings()
+
+    return (
+      <RedPacketBoxStyle
+        height={'100%'}
+        maxHeight={'480px'}
+        justifyContent={'left'}
+        maxWidth={1152}
+        paddingX={isMobile ? 2 : 5}
+        position={'absolute'}
+        width={'100%'}
+      >
+        <Typography marginTop={4} marginBottom={0.5}>
+          {t('labelRedPacketExclusive')}
+        </Typography>
+        <Typography color={'var(--color-text-secondary)'}>
+          {t('labelExclusiveWhitelistDes')}
+        </Typography>
+        <Box
+          marginTop={3}
+          marginX={4}
+          borderRadius={1}
+          paddingX={5}
+          paddingY={3}
+          border={'1px solid var(--color-border)'}
+        >
+          <Typography height={theme.unit * 30}>
+            {addressListString &&
+              addressListString.split('\n').map((str) => (
+                <>
+                  {str} <br />
+                </>
+              ))}
+          </Typography>
+
+          <Box display={'flex'} justifyContent={'right'}>
+            <FormControlLabel
+              control={
+                <input
+                  onChange={(e) => {
+                    const reader = new FileReader()
+                    reader.onload = (event) => {
+                      onFileInput(event.target?.result ? (event.target.result as string) : '')
+                    }
+                    e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
+                  }}
+                  style={{ display: 'none' }}
+                  id='file-upload'
+                  type='file'
+                />
+              }
+              label={
+                <Button
+                  onClick={(e) => {
+                    ;(e.currentTarget.parentNode as any).click()
+                  }}
+                  variant={'outlined'}
+                >
+                  {t('labelRedpacketTextimport')}
+                </Button>
+              }
+            />
+          </Box>
+        </Box>
+
+        <Typography variant={'h5'} marginTop={5} marginBottom={1.5}>
+          {t('labelRedpacketNotificationDisplay')}
+        </Typography>
+        <Box display={'flex'}>
+          <Box width={'45%'} marginRight={'10%'}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isRedDot}
+                  onChange={(_event: any, state: boolean) => {
+                    onChangeIsRedDot(true)
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color='default'
+                />
+              }
+              label={'labelRedpacketBadge'}
+            />
+            <Box marginLeft={3}>
+              <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
+                {t('labelRedpacketRedDotDes')}
+              </Typography>
+              <img src={SoursURL + 'images/target_option_red_dot.png'} />
+            </Box>
+          </Box>
+          <Box width={'45%'}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={!isRedDot}
+                  onChange={(_event: any, state: boolean) => {
+                    onChangeIsRedDot(false)
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color='default'
+                />
+              }
+              label={
+                <Typography display={'flex'} alignItems={'center'}>
+                  <Typography marginRight={0.5}>{t('labelRedpacketPopUp')}</Typography>{' '}
+                  <Tooltip title={t('labelRedpacketPopUpTooltip')}>
+                    <span>
+                      <Info2Icon />
+                    </span>
+                  </Tooltip>{' '}
+                </Typography>
+              }
+            />
+            <Box marginLeft={3}>
+              <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
+                {t('labelRedpacketPopPpDes')}
+              </Typography>
+              <img src={SoursURL + 'images/target_option_pop.png'} />
+            </Box>
+          </Box>
+        </Box>
+
+        <Box marginTop={10} display={'flex'} justifyContent={'center'}>
+          <Box width={'440px'} marginBottom={4}>
+            <BtnMain
+              {...{
+                defaultLabel: 'labelRedpacketPrepareRedPacket',
+                fullWidth: true,
+                disabled: () => false,
+                onClick: () => {
+                  onClickSend()
+                },
+              }}
+            />
+          </Box>
+        </Box>
+      </RedPacketBoxStyle>
+    )
+  },
+)
