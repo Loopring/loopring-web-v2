@@ -1223,7 +1223,7 @@ export const CreateRedPacketScope = withTranslation()(
             <Typography marginRight={0.5} variant={'h4'}>
               {t('labelLuckyTokenViewTypePublic')}
             </Typography>
-            <Tooltip title={'text'}>
+            <Tooltip title={t('labelRedPacketPublicTooltip')}>
               <Box>
                 <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
               </Box>
@@ -1261,7 +1261,7 @@ export const CreateRedPacketScope = withTranslation()(
             <Typography marginRight={0.5} variant={'h4'}>
               {t('labelLuckyTokenViewTypePrivate')}{' '}
             </Typography>
-            <Tooltip title={'text'}>
+            <Tooltip title={t('labelRedPacketPrivateTooltip')}>
               <Box>
                 <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
               </Box>
@@ -1378,8 +1378,8 @@ export const TargetRedpacktSelectStep = withTranslation()(
                         </Box>
                       )}
                       <Box marginLeft={1}>
-                        <Typography>Blind Box NFT name</Typography>
-                        <Typography color={'var(--color-text-secondary)'}>Lucky</Typography>
+                        <Typography>{redpacket.isNft ? redpacket.nftTokenInfo?.metadata?.base.name : idIndex[redpacket.tokenId]}</Typography>
+                        <Typography color={'var(--color-text-secondary)'}>{redpacket.info.memo}</Typography>
                       </Box>
                     </Box>
                     <Button
@@ -1405,7 +1405,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
                       {t('labelRedpacketSentMaxLimit')}
                     </Typography>
                     <Typography color={'var(--color-text-secondary)'}>
-                      {redpacket.tokenAmount.totalCount - redpacket.tokenAmount.remainCount} /{' '}
+                      {redpacket.tokenAmount.totalCount - (redpacket.tokenAmount as any).remainTargetCount} /{' '}
                       {redpacket.tokenAmount.totalCount}
                     </Typography>
                   </Box>
@@ -1604,14 +1604,11 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
         <Modal
           open={showContactModal}
           onClose={() => {
-            // setDropdownStatus((prev) => (prev === "up" ? "down" : "up"));
             setShowContactModal(false)
           }}
           content={
             <Box
               display={'flex'}
-              // alignItems={'center'}
-              // justifyContent={'space-between'}
               flexDirection={'column'}
               width={'var(--modal-width)'}
               padding={5}

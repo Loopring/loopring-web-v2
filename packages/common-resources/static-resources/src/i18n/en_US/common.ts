@@ -1876,4 +1876,6 @@ export default {
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
   labelRedPacketChooseTarget: 'Create Red Packet',
   labelRedPacketRecipientList: 'Recipient List',
+  labelRedPacketPublicTooltip: 'Your Red Packet is public, and everyone can participate in claiming it.',
+  labelRedPacketPrivateTooltip: 'Your Red Packet is private, and only the addresses you specify can claim it.',
 }
