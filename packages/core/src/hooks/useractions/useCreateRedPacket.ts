@@ -801,7 +801,7 @@ export const useCreateRedPacket = <
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
 
     const getValidAddresses = (input: string) => {
-      return input.split('\n').filter((str) => {
+      return input.split(';').filter((str) => {
         return isAddress(str)
       })
     }

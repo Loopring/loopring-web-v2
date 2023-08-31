@@ -9,6 +9,7 @@ import {
   IconButton,
   Tooltip,
   Typography,
+  TextField as MuiTextField
 } from '@mui/material'
 import React from 'react'
 import {
@@ -16,6 +17,7 @@ import {
   CardStyleItem,
   InputButtonProps,
   InputCoin,
+  InputSearch,
   NftImageStyle,
   TextField,
 } from '../../basic-lib'
@@ -62,7 +64,7 @@ import moment from 'moment'
 import { NFTInput } from './BasicANFTTrade'
 import { DateTimeRangePicker } from '../../datetimerangepicker'
 import BigNumber from 'bignumber.js'
-import { useNotify, useTokenMap } from '@loopring-web/core'
+import { isAddress, useNotify, useTokenMap } from '@loopring-web/core'
 import { CoinIcons, FeeSelect, Modal } from '../../../components'
 import { useTheme } from '@emotion/react'
 
@@ -779,7 +781,11 @@ export const CreateRedPacketStepWrap = withTranslation()(
               color={'primary'}
               sx={{ height: 'var(--btn-medium-height)' }}
               onClick={() => {
-                setActiveStep(RedPacketStep.ChooseType)
+                if (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET) {
+                  setActiveStep(TargetRedPacketStep.ChooseType)
+                } else {
+                  setActiveStep(RedPacketStep.ChooseType)
+                }
                 handleOnDataChange({
                   numbers: undefined,
                   tradeValue: undefined,
@@ -1573,9 +1579,17 @@ export const TargetRedpacktSelectStep = withTranslation()(
 
 export const TargetRedpacktInputAddressStep = withTranslation()(
   (props: TargetRedpacktInputAddressStepProps & WithTranslation) => {
-    const { isRedDot, addressListString, onChangeIsRedDot, onFileInput, onClickSend, t } = props
+    const { contacts, isRedDot, addressListString, onChangeIsRedDot, onFileInput, onClickSend, onConfirm, t } = props
     const theme = useTheme()
     const { isMobile } = useSettings()
+    const [ showContactModal, setShowContactModal ] = React.useState(false)
+    const [ selectedAddresses, setSelectedAddresses ] = React.useState([] as string[])
+    const [ search, setSearch ] = React.useState('')
+    const getValidAddresses = (input: string) => {
+      return input.split(';').filter((str) => {
+        return isAddress(str)
+      })
+    }
 
     return (
       <RedPacketBoxStyle
@@ -1587,6 +1601,92 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
         position={'absolute'}
         width={'100%'}
       >
+        <Modal
+          open={showContactModal}
+          onClose={() => {
+            // setDropdownStatus((prev) => (prev === "up" ? "down" : "up"));
+            setShowContactModal(false)
+          }}
+          content={
+            <Box
+              display={'flex'}
+              // alignItems={'center'}
+              // justifyContent={'space-between'}
+              flexDirection={'column'}
+              width={'var(--modal-width)'}
+              padding={5}
+              paddingTop={2}
+            >
+              <Typography marginBottom={3} variant={'h4'}>
+                Contact import
+              </Typography>
+              <InputSearch
+                onChange={(e) => {
+                  setSearch(e as unknown as string)
+                }}
+                value={search}
+              />
+              <Box height={300} marginTop={2} marginBottom={2} overflow={'scroll'}>
+                {contacts
+                  ?.filter((contact) => {
+                    return search
+                      ? contact.address.toLowerCase().includes(search.toLowerCase()) ||
+                          contact.name.toLowerCase().includes(search.toLowerCase())
+                      : true
+                  })
+                  .map((contact) => {
+                    return (
+                      <Box
+                        marginBottom={2}
+                        key={contact.address}
+                        display={'flex'}
+                        alignItems={'start'}
+                        justifyContent={'space-between'}
+                      >
+                        <Box display={'flex'}>
+                          <Avatar sizes={'32px'} src={contact.avatarURL}></Avatar>
+                          <Box marginLeft={1}>
+                            <Typography>{contact.name}</Typography>
+                            <Typography variant={'body2'}>{contact.address}</Typography>
+                          </Box>
+                        </Box>
+                        <Checkbox
+                          onChange={() => {
+                            if (selectedAddresses.find((addr) => addr === contact.address)) {
+                              setSelectedAddresses(
+                                selectedAddresses.filter((addr) => addr !== contact.address),
+                              )
+                            } else {
+                              setSelectedAddresses([...selectedAddresses, contact.address])
+                            }
+                          }}
+                          checked={
+                            selectedAddresses.find((addr) => addr === contact.address)
+                              ? true
+                              : false
+                          }
+                        />
+                      </Box>
+                    )
+                  })}
+              </Box>
+              <Typography marginBottom={1}>Selected {selectedAddresses.length}</Typography>
+              <Box>
+                <Button
+                  onClick={() => {
+                    onConfirm(selectedAddresses)
+                    setShowContactModal(false)
+                  }}
+                  variant={'contained'}
+                  fullWidth
+                >
+                  Confirm
+                </Button>
+              </Box>
+            </Box>
+          }
+        />
+
         <Typography marginTop={4} marginBottom={0.5}>
           {t('labelRedPacketExclusive')}
         </Typography>
@@ -1601,16 +1701,25 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
           paddingY={3}
           border={'1px solid var(--color-border)'}
         >
-          <Typography height={theme.unit * 30}>
-            {addressListString &&
-              addressListString.split('\n').map((str) => (
-                <>
-                  {str} <br />
-                </>
-              ))}
-          </Typography>
-
-          <Box display={'flex'} justifyContent={'right'}>
+          <Box display={'flex'}>
+            <Typography width={'50%'} height={theme.unit * 30}>
+              {addressListString &&
+                addressListString.split(';').map((str) => (
+                  <>
+                    <Typography
+                      color={isAddress(str) ? 'var(--color-text-primary)' : 'var(--color-error)'}
+                      component={'span'}
+                    >
+                      {str}
+                    </Typography>{' '}
+                    ;<br />
+                  </>
+                ))}
+            </Typography>
+          </Box>
+          <Box display={'flex'} justifyContent={'space-between'}>
+            <Typography>Valid Addresses: {getValidAddresses(addressListString).length}</Typography>
+            <Box>
             <FormControlLabel
               control={
                 <input
@@ -1637,6 +1746,18 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 </Button>
               }
             />
+            <Button
+              onClick={(e) => {
+                setSelectedAddresses([])
+                setShowContactModal(true)
+              }}
+              variant={'outlined'}
+            >
+              {t('labelRedpacketContactImport')}
+            </Button>
+
+            </Box>
+            
           </Box>
         </Box>
 
@@ -1663,7 +1784,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
                 {t('labelRedpacketRedDotDes')}
               </Typography>
-              <img src={SoursURL + 'images/target_option_red_dot.png'} />
+              <img width={260} src={SoursURL + 'images/target_option_red_dot.png'} />
             </Box>
           </Box>
           <Box width={'45%'}>

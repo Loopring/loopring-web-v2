@@ -58,6 +58,7 @@ export const CreateRedPacketPanel = <
   popRedPacket,
   onClickViewTargetDetail,
   onCloseRedpacketPop,
+  contacts,
   ...rest
 }: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(['common', 'error'])
@@ -458,6 +459,7 @@ export const CreateRedPacketPanel = <
             key: 'selectTokenType',
             element: (
               <TargetRedpacktInputAddressStep
+                contacts={contacts}
                 addressListString={tradeData.target?.addressListString ?? ''}
                 isRedDot={
                   tradeData.target?.isRedDot !== undefined ? tradeData.target?.isRedDot : true
@@ -480,6 +482,14 @@ export const CreateRedPacketPanel = <
                 }}
                 onClickSend={() => {
                   onSendTargetRedpacketClick()
+                }}
+                onConfirm={(addressList) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      addressListString: addressList.join(';'),
+                    },
+                  } as any)
                 }}
               />
             ),

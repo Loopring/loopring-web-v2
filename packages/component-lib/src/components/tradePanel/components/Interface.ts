@@ -35,6 +35,7 @@ import {
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
+import { DisplayContact } from '@loopring-web/core/src/stores/contacts/reducer'
 
 export enum RedPacketStep {
   TradeType = 0,
@@ -637,6 +638,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
   onClickViewTargetDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
+  contacts?: DisplayContact[]
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -674,4 +676,6 @@ export type TargetRedpacktInputAddressStepProps = {
   onFileInput: (input: string) => void
   addressListString: string
   onClickSend: () => void
+  contacts?: DisplayContact[]
+  onConfirm: (list: string[]) => void
 }
