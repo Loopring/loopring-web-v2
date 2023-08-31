@@ -92,10 +92,16 @@ export const BtnNotification = ({
   notification,
   account,
   chainId,
+  onClickExclusiveredPacket,
+  showExclusiveRedpacket,
+  exclusiveRedpacketCount
 }: {
   notification: Notify
   account: Account
   chainId: sdk.ChainId
+  onClickExclusiveredPacket: () => void
+  showExclusiveRedpacket: boolean
+  exclusiveRedpacketCount: number
 }) => {
   const popupState = usePopupState({
     variant: 'popover',
@@ -133,7 +139,7 @@ export const BtnNotification = ({
           horizontal: 'center',
         }}
       >
-        <NotificationPanel notification={{ ...notification, account, chainId }} />
+        <NotificationPanel exclusiveRedpacketCount={exclusiveRedpacketCount} onClickExclusiveredPacket={onClickExclusiveredPacket} showExclusiveRedpacket={showExclusiveRedpacket} notification={{ ...notification, account, chainId }} />
       </PopoverPure>
     </Box>
   )

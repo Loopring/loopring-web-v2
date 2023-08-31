@@ -5,6 +5,7 @@ import React from 'react'
 import {
   getIPFSString,
   StylePaper,
+  useContacts,
   useCreateRedPacket,
   useNotify,
   useSystem,
@@ -85,6 +86,8 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === 'create',
   })
+  const {contacts} = useContacts()
+  
   // createRedPacketProps.disabled
 
   return (
@@ -123,6 +126,7 @@ export const CreateRedPacketUIPanel = <
                   }
                 />
               ) as any,
+              contacts
             }}
           />
         )}

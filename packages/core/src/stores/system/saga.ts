@@ -28,6 +28,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
+import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: sdk.ChainId | 'unknown',
@@ -244,6 +245,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(getDualMap(undefined))
   store.dispatch(getStakingMap(undefined))
   store.dispatch(getBtradeMap(undefined))
+  store.dispatch(getExclusiveRedpacket(undefined))
 
   yield all([
     take('defiMap/getDefiMapStatus'),

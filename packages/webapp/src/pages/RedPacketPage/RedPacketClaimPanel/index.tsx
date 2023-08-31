@@ -4,6 +4,7 @@ import {
   StylePaper,
   useAccount,
   useSystem,
+  useTargetRedPackets,
   useToast,
   useTokenMap,
   useWalletLayer2,
@@ -40,6 +41,7 @@ import {
   SagaStatus,
   TOAST_TIME,
   TokenType,
+  myLog,
 } from '@loopring-web/common-resources'
 import { LuckyTokenItemForReceive, SoursURL } from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
@@ -89,12 +91,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     undefined as number | undefined,
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
-  const [exclusiveDialog, setExclusiveDialog] = React.useState(
-    'hidden' as 'hidden' | 'redDot' | 'popUp',
-  )
-  const [exclusiveRedPackets, setExclusiveRedPackets] = React.useState(
-    [] as LuckyTokenItemForReceive[],
-  )
+  const {redPackets: exclusiveRedPackets,  setOpendPopup, setShowRedPacketsPopup, showPopup, openedRedPackets} = useTargetRedPackets()
   const { setShowRedPacket } = useOpenModals()
 
   const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
@@ -131,20 +128,6 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
       )
       .then((response) => {
         setBlindboxBalance(response.totalNum)
-      })
-    LoopringAPI.luckTokenAPI
-      ?.getLuckTokenUserLuckyTokenTargets(
-        {
-          statuses: [0],
-          offset: 0,
-          limit: 50,
-          isAll: 1,
-        },
-        account.apiKey,
-      )
-      .then((response) => {
-        const list = (response.raw_data as any).list as LuckyTokenItemForReceive[]
-        setExclusiveRedPackets(list)
       })
   }, [])
   const theme = useTheme()
@@ -189,7 +172,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         </Button>
       </Box>
       <StylePaper ref={container} flex={1} display={'flex'} flexDirection={'column'}>
-        {exclusiveRedPackets.length > 0 && (
+        {!openedRedPackets && exclusiveRedPackets && exclusiveRedPackets.length > 0 && (
           <Box paddingX={2} paddingY={1} bgcolor={'var(--color-box-hover)'} borderRadius={0.5}>
             <Typography>
               {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}{' '}
@@ -203,8 +186,10 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                       },
                       step: RedPacketViewStep.OpenPanel,
                     })
+                    setOpendPopup()
                   } else {
-                    setExclusiveDialog('redDot')
+                    setOpendPopup()
+                    setShowRedPacketsPopup(true)
                   }
                 }}
                 variant={'text'}
@@ -270,12 +255,12 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         </Dialog>
         <Dialog
           maxWidth={'md'}
-          open={exclusiveDialog !== 'hidden'}
+          open={showPopup}
           onClose={() => {
-            setExclusiveDialog('hidden')
+            setShowRedPacketsPopup(false)
           }}
         >
-          {exclusiveDialog === 'popUp' ? (
+          {false ? (
             <DialogContent
               sx={{ width: '480px', height: '480px', display: 'flex', justifyContent: 'center' }}
             >
@@ -288,7 +273,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                 }}
                 color={'inherit'}
                 onClick={() => {
-                  setExclusiveDialog('hidden')
+                  setShowRedPacketsPopup(false)
                 }}
               >
                 <CloseIcon />
@@ -326,14 +311,14 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                       {t('labelRedPacketCongratulations')}
                     </Typography>
                     <Typography textAlign={'center'} marginTop={1} marginBottom={3} color={'black'}>
-                      {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}
+                      {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets?.length })}
                     </Typography>
                   </Box>
                 </Box>
                 <Box marginX={3} marginTop={1.5}>
                   <RedPacktButton
                     onClick={() => {
-                      if (exclusiveRedPackets.length === 1) {
+                      if (exclusiveRedPackets && exclusiveRedPackets.length === 1) {
                         setShowRedPacket({
                           isShow: true,
                           info: {
@@ -341,8 +326,10 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                           },
                           step: RedPacketViewStep.OpenPanel,
                         })
+                        setOpendPopup()
                       } else {
-                        setExclusiveDialog('redDot')
+                        setShowRedPacketsPopup(true)
+                        setOpendPopup()
                       }
                     }}
                     sx={{ background: 'black' }}
@@ -369,7 +356,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                   }}
                   color={'inherit'}
                   onClick={() => {
-                    setExclusiveDialog('hidden')
+                    setShowRedPacketsPopup(false)
                   }}
                 >
                   <CloseIcon />
@@ -377,7 +364,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
               </DialogTitle>
               <DialogContent style={{ width: '480px', height: '480px' }}>
                 <Box marginTop={5} paddingX={4}>
-                  {exclusiveRedPackets.map((redpacket) => (
+                  {exclusiveRedPackets && exclusiveRedPackets.map((redpacket) => (
                     <Box
                       display={'flex'}
                       paddingX={2.5}
