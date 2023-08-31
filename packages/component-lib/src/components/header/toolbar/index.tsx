@@ -115,7 +115,7 @@ export const BtnNotification = ({
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {(notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 && (
+      {((notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 || showExclusiveRedpacket) && (
         <CircleIcon
           sx={{
             position: 'absolute',
