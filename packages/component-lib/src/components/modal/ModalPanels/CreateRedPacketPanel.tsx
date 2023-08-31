@@ -192,12 +192,16 @@ export const CreateRedPacketPanel = <
   React.useEffect(() => {
     setPanelIndex((state) => {
       if (state > 1) {
-        return index + 2
+        if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+          return index + 3
+        } else {
+          return index + 2
+        }
       } else {
         return state
       }
     })
-  }, [index])
+  }, [index, tradeData.type?.scope])
   // LP token should not exist in withdraw panel for now
   const getWalletMapWithoutLP = React.useCallback(() => {
     const clonedWalletMap = cloneDeep(walletMap ?? {})
@@ -504,6 +508,8 @@ export const CreateRedPacketPanel = <
     panelIndex,
     disabled,
     tradeData,
+    isToken,
+    tradeData.type?.scope
   ])
 
   let activeStep

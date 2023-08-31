@@ -1657,7 +1657,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   color='default'
                 />
               }
-              label={'labelRedpacketBadge'}
+              label={t('labelRedpacketBadge')}
             />
             <Box marginLeft={3}>
               <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
