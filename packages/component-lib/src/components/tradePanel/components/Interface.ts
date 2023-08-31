@@ -665,6 +665,7 @@ export type TargetRedpacktSelectStepProps = {
   onClickViewDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  backToScope: () => void
 }
 
 export type TargetRedpacktInputAddressStepProps = {

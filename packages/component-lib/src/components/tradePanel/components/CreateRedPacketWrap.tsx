@@ -992,7 +992,11 @@ export const CreateRedPacketStepType = withTranslation()(
                 if (tradeType === RedPacketOrderType.FromNFT) {
                   backToScope()
                 } else {
-                  setActiveStep(RedPacketStep.TradeType)
+                  if (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET) {
+                    setActiveStep(TargetRedPacketStep.TradeType)
+                  } else {
+                    setActiveStep(RedPacketStep.TradeType)
+                  }
                 }
               }}
             >
@@ -1017,7 +1021,6 @@ export const CreateRedPacketStepType = withTranslation()(
     )
   },
 )
-
 export const CreateRedPacketStepTokenType = withTranslation()(
   <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
     tradeType,
@@ -1312,6 +1315,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
       onClickViewDetail,
       popRedPacket,
       onCloseRedpacketPop,
+      backToScope,
       t,
     } = props
     const theme = useTheme()
@@ -1405,7 +1409,23 @@ export const TargetRedpacktSelectStep = withTranslation()(
         </Box>
 
         <Box width={'100%'} marginTop={20} display={'flex'} justifyContent={'center'}>
-          <Box width={'440px'}>
+          <Box width={'48%'} marginRight={'4%'}>
+            <Button
+              variant={'outlined'}
+              size={'medium'}
+              fullWidth
+              className={'step'}
+              startIcon={<BackIcon fontSize={'small'} />}
+              color={'primary'}
+              sx={{ height: 'var(--btn-medium-height)' }}
+              onClick={() => {
+                backToScope()
+              }}
+            >
+              {t(`labelMintBack`)}
+            </Button>
+          </Box>
+          <Box width={'48%'}>
             <BtnMain
               {...{
                 defaultLabel: 'labelRedpacketCreateNew',

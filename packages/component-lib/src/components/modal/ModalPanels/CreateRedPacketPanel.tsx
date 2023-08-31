@@ -80,15 +80,15 @@ export const CreateRedPacketPanel = <
       steps = [
         'labelRedPacketChoose', //Prepare NFT metadata
         'labelRedPacketMain', //labelADMint2
-        'labelRedPacketTODO2', //labelADMint2
+        'labelRedPacketRecipientList', //labelADMint2
       ]
     } else {
       steps = [
-        'labelRedPacketTODO1', //labelADMint2
+        'labelRedPacketChooseTarget', //labelADMint2
         'labelRedPacketTypeTokens', //labelADMint2
         'labelRedPacketChoose', //Prepare NFT metadata
         'labelRedPacketMain', //labelADMint2
-        'labelRedPacketTODO2', //labelADMint2
+        'labelRedPacketRecipientList', //labelADMint2
       ]
     }
   } else {
@@ -425,6 +425,7 @@ export const CreateRedPacketPanel = <
             key: 'tradeMenuList',
             element: (
               <TargetRedpacktSelectStep
+                backToScope={backToScope}
                 onCloseRedpacketPop={onCloseRedpacketPop}
                 popRedPacket={popRedPacket}
                 onClickExclusiveRedpacket={(hash) => {

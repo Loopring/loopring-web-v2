@@ -1845,4 +1845,6 @@ export default {
   labelRedpacketPopUpTooltip: 'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
   labelRedpacketPopPpDes: 'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
+  labelRedPacketChooseTarget: 'Create Red Packet',
+  labelRedPacketRecipientList: 'Recipient List',
 }
