@@ -72,7 +72,7 @@ type DisplayContact = {
   address: string
   avatarURL: string
   editing: boolean
-  addressType: sdk.AddressType
+  addressType: typeof sdk.AddressType
 }
 export const getAllContacts = async (
   offset: number,
@@ -264,10 +264,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       return
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
-    // checkActiveFeeIsEnough({
-    //   isRequiredAPI: true,
-    //   intervalTime: LIVE_FEE_TIMES,
-    // });
     if (symbol && walletMap) {
       myLog('resetDefault symbol:', symbol)
       updateTransferData({

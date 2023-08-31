@@ -1848,4 +1848,12 @@ export default {
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
   labelVaultRefresh: 'Refresh',
+  labelVaultAddBtn: 'Margin Call',
+  labelVaultJoinBtn: 'Open Position',
+  labelVaultRecord: 'Records',
+  labelEnterToken: 'Select Token',
+  labelVaultJoinBtn: 'Open position',
+  labelVaultExitBtn: 'Close position',
+  labelVaultAddBtn: 'Add position',
+  labelVaultLoadBtn: 'Load',
 }

@@ -239,6 +239,6 @@ export type FeeSelectProps = {
   feeNotEnoughContent?: ReactNode
 }
 
-export type VaultJoinProps<T, I> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I>
+export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>
 
 export * from './components/Interface'

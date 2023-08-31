@@ -69,7 +69,6 @@ export enum ShowWitchAle3t1 {
   SwapSecondConfirmation = 'SwapSecondConfirmation',
   ConfirmImpact = 'ConfirmImpact',
   SmallPrice = 'SmallPrice',
-
 }
 
 export const useAlert = () => {
@@ -435,17 +434,6 @@ export const useSwap = <
             label: undefined,
             tradeBtnStatus: TradeBtnStatus.AVAILABLE,
           }
-          // if (tradeCalcData?.isNotMatchMarketPrice && !tradeCalcData?.isChecked) {
-          //   return {
-          //     label: undefined,
-          //     tradeBtnStatus: TradeBtnStatus.DISABLED,
-          //   }
-          // } else {
-          //   return {
-          //     label: undefined,
-          //     tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          //   }
-          // }
         }
       } else {
         return {

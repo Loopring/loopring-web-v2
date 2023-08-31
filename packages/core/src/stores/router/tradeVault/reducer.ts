@@ -127,14 +127,20 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
       }
     },
     updateVaultJoin(state, action: PayloadAction<Partial<VaultJoinData>>) {
-      state.vaultJoinData
+      state.vaultJoinData = { ...action.payload }
     },
     updateVaultExit(state, action: PayloadAction<Partial<VaultExitData>>) {
-      state.vaultExitData
+      state.vaultExitData = { ...action.payload }
     },
   },
 })
 
 export { tradeVaultSlice }
-export const { resetVaultJoin, resetVaultExit, resetVaultSwap, updateVaultTrade, updateVaultExit } =
-  tradeVaultSlice.actions
+export const {
+  resetVaultJoin,
+  updateVaultJoin,
+  resetVaultExit,
+  resetVaultSwap,
+  updateVaultTrade,
+  updateVaultExit,
+} = tradeVaultSlice.actions

@@ -135,7 +135,7 @@ export const makeVault = (
           pairs,
           idIndex,
           addressIndex,
-          tokensMap,
+          tokenMap: tokensMap,
         }),
       )
     } else {
@@ -156,7 +156,7 @@ export const makeVault = (
       pairs: undefined,
       marketArray: undefined,
       marketCoins: undefined,
-      tokensMap: undefined,
+      tokenMap: undefined,
       coinMap: undefined,
       idIndex: undefined,
       addressIndex: undefined,

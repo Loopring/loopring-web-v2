@@ -5,24 +5,22 @@ import {
   SwitchPanelProps,
   VaultJoinProps,
 } from '@loopring-web/component-lib'
-import { WithTranslation } from 'react-i18next'
 import React from 'react'
 import { Box } from '@mui/material'
 import { TradeMenuList, useBasicTrade } from '../components'
-import { VaultJoinWrap } from '../components/VaultWrap/VaultJoin'
+import { VaultJoinWrap } from '../components/VaultWrap'
 import { VaultJoinConfirm } from '../components/VaultWrap'
+import { useTranslation } from 'react-i18next'
 
-export const VaultJoinPanel = <T extends IBData<I>, I, V = VaultJoinData>({
+export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, I>({
   onSubmitClick,
   btnStatus,
   walletMap = {},
   coinMap = {},
-  onBack, // onBack,
-  t,
+  _width,
   ...rest
-}: VaultJoinProps<T, I>) => {
-  // const { defaultNetwork } = useSettings()
-  // const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+}: VaultJoinProps<T, I, V>) => {
+  const { t, i18n } = useTranslation()
   const { onChangeEvent, index, switchData } = useBasicTrade({
     ...rest,
     type: TRADE_TYPE.TOKEN,
@@ -33,37 +31,9 @@ export const VaultJoinPanel = <T extends IBData<I>, I, V = VaultJoinData>({
   const handleConfirm = (index: number) => {
     setPanelIndex(index)
   }
-  // const hanleConfirm = () => {};
   React.useEffect(() => {
     setPanelIndex(index + 1)
   }, [index])
-
-  // const getFilteredWalletMap = React.useCallback(() => {
-  //   if (walletMap) {
-  //     const clonedWalletMap = cloneDeep(walletMap)
-  //     Object.values(clonedWalletMap).forEach((o: any) => {
-  //       if (o.belong && o.count && Number(o.count) === 0) {
-  //         delete clonedWalletMap[o.belong]
-  //       }
-  //     })
-  //     return clonedWalletMap
-  //   }
-  //   return {}
-  // }, [walletMap])
-
-  // const getFilteredCoinMap: any = React.useCallback(() => {
-  //   if (coinMap && getFilteredWalletMap()) {
-  //     const clonedCoinMap = cloneDeep(coinMap)
-  //     const remainList = {}
-  //     Object.keys(getFilteredWalletMap()).forEach((token) => {
-  //       if (clonedCoinMap[token]) {
-  //         remainList[token] = clonedCoinMap[token]
-  //       }
-  //     })
-  //     return remainList
-  //   }
-  //   return {}
-  // }, [coinMap, getFilteredWalletMap])
 
   const props: SwitchPanelProps<'tradeMenuList' | 'trade' | 'confirm'> = {
     index: panelIndex, // show default show
@@ -91,7 +61,6 @@ export const VaultJoinPanel = <T extends IBData<I>, I, V = VaultJoinData>({
               key={'trade'}
               {...{
                 ...rest,
-                t,
                 tradeData: switchData.tradeData,
                 onChangeEvent,
                 disabled: !!rest.disabled,
@@ -100,8 +69,6 @@ export const VaultJoinPanel = <T extends IBData<I>, I, V = VaultJoinData>({
                 btnStatus,
                 walletMap,
                 coinMap,
-                // allowTrade,
-                // accountReady,
               }}
             />
           ),
@@ -109,31 +76,14 @@ export const VaultJoinPanel = <T extends IBData<I>, I, V = VaultJoinData>({
             rest,
             switchData.tradeData,
             onChangeEvent,
+            onSubmitClick,
             // onDepositClick,
             btnStatus,
             walletMap,
             coinMap,
           ],
         ),
-        toolBarItem: React.useMemo(
-          () => (
-            <>
-              {onBack ? (
-                <ModalBackButton
-                  marginTop={0}
-                  marginLeft={-2}
-                  onBack={() => {
-                    onBack()
-                  }}
-                  {...rest}
-                />
-              ) : (
-                <></>
-              )}
-            </>
-          ),
-          [onBack],
-        ),
+        toolBarItem: React.useMemo(() => <></>, []),
       },
       {
         key: 'tradeMenuList',
@@ -159,7 +109,6 @@ export const VaultJoinPanel = <T extends IBData<I>, I, V = VaultJoinData>({
           [rest, onChangeEvent, switchData.tradeData, walletMap, coinMap],
         ),
         toolBarItem: undefined,
-        // toolBarItem: toolBarItemBack
       },
     ],
   }
@@ -180,6 +129,6 @@ export const VaultJoinPanel = <T extends IBData<I>, I, V = VaultJoinData>({
       />
     </Box>
   ) : (
-    <SwitchPanel {...{ ...rest, t, ...props }} />
+    <SwitchPanel {...{ ...rest, i18n, t, tReady: true, ...props }} />
   )
 }

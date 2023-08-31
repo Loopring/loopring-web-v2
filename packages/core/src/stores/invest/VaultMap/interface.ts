@@ -12,7 +12,7 @@ export type VaultMap = {
   // pairs: sdk.LoopringMap<sdk.TokenRelatedInfo>
   idIndex: LoopringMap<number>
   addressIndex: sdk.LoopringMap<TokenAddress>
-  tokensMap: sdk.LoopringMap<sdk.VaultToken>
+  tokenMap: sdk.LoopringMap<sdk.VaultToken>
 }
 
 export type VaultMapStates = VaultMap & {

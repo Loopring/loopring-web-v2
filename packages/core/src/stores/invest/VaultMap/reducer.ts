@@ -7,7 +7,7 @@ const initialState: Required<VaultMapStates> = {
   marketCoins: [],
   marketMap: {},
   tradeMap: {},
-  tokensMap: {},
+  tokenMap: {},
   coinMap: {},
   idIndex: {},
   // pairs:{},
@@ -38,7 +38,7 @@ const vaultMapSlice: Slice = createSlice({
           // state.pairs = vaultMap.pairs
           state.idIndex = vaultMap.idIndex
           state.addressIndex = vaultMap.addressIndex
-          state.tokensMap = vaultMap.tokensMap
+          state.tokenMap = vaultMap.tokenMap
           state.raw_data = vaultMap?.raw_data ?? undefined
         }
 

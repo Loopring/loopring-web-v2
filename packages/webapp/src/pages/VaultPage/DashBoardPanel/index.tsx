@@ -7,7 +7,6 @@ import React from 'react'
 import { TradeBtnStatus } from '@loopring-web/common-resources'
 import { Button, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
-import { useJoinVault } from '../useOpenVault'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 import { useAccountInfo } from '../components/useAccountInfo'
 

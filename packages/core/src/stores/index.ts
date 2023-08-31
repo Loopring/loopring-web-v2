@@ -62,6 +62,7 @@ import {
   pageTradeProSlice,
   redeemStakeSlice,
   tradeStakeSlice,
+  tradeVaultSlice,
 } from './router'
 import { firebaseReducer, ReactReduxFirebaseProviderProps } from 'react-redux-firebase'
 import firebase from 'firebase/compat/app'
@@ -173,6 +174,7 @@ const reducer = combineReducers({
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
   _router_tradeLeverageETH: tradeLeverageETHSlice.reducer,
+  _router_tradeVault: tradeVaultSlice.reducer,
 })
 
 export const store = configureStore({

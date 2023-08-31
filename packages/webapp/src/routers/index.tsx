@@ -17,6 +17,7 @@ import {
   useSystem,
   useTicker,
   useTokenMap,
+  useVaultMap,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
 import { LandPage } from '../pages/LandPage'
@@ -141,6 +142,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const { tickerMap } = useTicker()
+  const { tokenMap: vaultTokenMap } = useVaultMap()
+
   const { marketArray } = useTokenMap()
   const { setTheme, defaultNetwork, setReferralCode } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -320,7 +323,13 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
 
         <Route exact path={[RouterPath.vault, RouterPath.vault + '/*']}>
           <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
-            <VaultPage />
+            {state === 'PENDING' && tickerMap ? (
+              <LoadingBlock />
+            ) : RouterAllowIndex[network]?.includes(RouterMainKey.vault) ? (
+              <VaultPage />
+            ) : (
+              <ErrorPage {...ErrorMap.TRADE_404} />
+            )}
           </ContentWrap>
         </Route>
         <Route exact path={[RouterPath.nft, RouterPath.nft + '/*']}>

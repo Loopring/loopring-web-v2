@@ -1,6 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import React from 'react'
-import { RootState } from '../../index'
+import { store } from '../../index'
 import { getVaultMap, statusUnset } from './reducer'
 import { VaultMap, VaultMapStates } from './interface'
 
@@ -9,7 +9,8 @@ export const useVaultMap = (): VaultMapStates & {
   statusUnset: () => void
   updateVaultSyncMap: (props: { vaultMap: VaultMap }) => void
 } => {
-  const vaultMap: VaultMapStates = useSelector((state: RootState) => state.invest.vaultMap)
+  const vaultMap: VaultMapStates = store.getState().invest.vaultMap
+  //useSelector((state: RootState) => state.invest.vaultMap)
   const dispatch = useDispatch()
   return {
     ...vaultMap,

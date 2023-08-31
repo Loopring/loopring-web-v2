@@ -35,7 +35,6 @@ import {
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
-import { VaultJoinWrapProps } from './VaultWrap'
 
 export enum RedPacketStep {
   TradeType,
@@ -101,11 +100,11 @@ export type TransferExtendProps<T, I, C> = {
   onBack?: () => void
   memo: string
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void
-  contact?: { address: string; name: string; addressType: sdk.AddressType }
+  contact?: { address: string; name: string; addressType: typeof sdk.AddressType }
   isFromContact?: boolean
   onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
-  contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
+  contacts?: { address: string; name: string; addressType: typeof sdk.AddressType }[]
 } & TransferInfoProps<C>
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> = TransferExtendProps<T, I, C> &
@@ -230,11 +229,11 @@ export type WithdrawExtendProps<T, I, C> = {
   isToMyself?: boolean
   sureIsAllowAddress: WALLET_TYPE | EXCHANGE_TYPE | undefined
   handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => void
-  contact?: { address: string; name: string; addressType?: sdk.AddressType }
+  contact?: { address: string; name: string; addressType?: typeof sdk.AddressType }
   isFromContact?: boolean
   onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
-  contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
+  contacts?: { address: string; name: string; addressType: typeof sdk.AddressType }[]
 } & WithdrawInfoProps<C>
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> = BasicACoinTradeViewProps<T, I> &

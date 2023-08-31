@@ -1,4 +1,5 @@
 import {
+  CoinMap,
   CollectionMeta,
   DeFiCalcData,
   DeFiSideCalcData,
@@ -6,6 +7,7 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
+  WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'
@@ -743,7 +745,16 @@ export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
   }
 
 export type VaultJoinData<I = any> = {
-  __request__: any
+  walletMap: WalletMap<I>
+  coinMap: CoinMap<I>
+  vaultLayer2Map: WalletMap<I>
+  vaultSymbol?: string
+  request?: sdk.VaultJoinRequest
+  maxAmount: string
+  minAmount: string
+  isMerge: boolean
+  // isShouldClean:boolean
+  __request__: sdk.VaultJoinRequest
 } & Partial<IBData<I>> &
   Partial<sdk.VaultJoinRequest>
 

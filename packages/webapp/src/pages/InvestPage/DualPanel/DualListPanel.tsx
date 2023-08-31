@@ -2,7 +2,6 @@ import React from 'react'
 import styled from '@emotion/styled'
 import {
   Box,
-  Card,
   CardContent,
   FormControlLabel,
   Grid,

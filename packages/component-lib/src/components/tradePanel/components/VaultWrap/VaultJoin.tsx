@@ -1,4 +1,5 @@
 import {
+  CoinInfo,
   EmptyValueTag,
   IBData,
   L1L2_NAME_DEFINED,
@@ -6,22 +7,21 @@ import {
   TRADE_TYPE,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
-import { WithTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { VaultJoinWrapProps } from './Interface'
 import React from 'react'
 import { Grid, Typography } from '@mui/material'
 import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
+import { InputButtonDefaultProps } from '../Interface'
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V>({
-  t,
   disabled,
-  isStob,
   switchStobEvent,
   btnStatus,
   tradeData,
-  vaultAccountData,
+  vaultJoinData,
   btnI18nKey,
   onSubmitClick,
   onChangeEvent,
@@ -29,7 +29,8 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
   // coinAPrecision,
   // coinBPrecision,
   ...rest
-}: VaultJoinWrapProps<T, I, V> & WithTranslation) => {
+}: VaultJoinWrapProps<T, I, V>) => {
+  const { t, ...i18n } = useTranslation()
   const inputBtnRef = React.useRef()
   let { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -38,8 +39,8 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
     return disabled || btnStatus === TradeBtnStatus.DISABLED
   }, [btnStatus, disabled])
 
-  const inputButtonDefaultProps = {
-    label: t('depositLabelEnterToken'),
+  const inputButtonDefaultProps: InputButtonDefaultProps<I, CoinInfo<I>> = {
+    label: t('labelEnterToken'),
   }
   const label = React.useMemo(() => {
     if (btnI18nKey) {
@@ -64,7 +65,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
             },
       )
     } else {
-      return t(`labelAddLiquidityBtn`, {
+      return t(`labelVaultJoinBtn`, {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -76,13 +77,14 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
 
   return (
     <Grid
-      className={vaultAccountData ? '' : 'loading'}
+      className={vaultJoinData ? '' : 'loading'}
       container
       direction={'column'}
       justifyContent={'space-between'}
       alignItems={'center'}
       flex={1}
       height={'100%'}
+      paddingX={3}
     >
       <Grid
         item
@@ -96,17 +98,18 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
         <BasicACoinTrade
           {...{
             ...rest,
+            ...i18n,
             t,
             tradeData: tradeData as any,
             type: TRADE_TYPE.TOKEN,
             disabled,
-            onChangeEvent,
+            onChangeEvent: onChangeEvent as any,
             // walletMap,
             // tradeData,
             // coinMap,
             inputButtonDefaultProps,
             placeholderText: minFee?.minFee ? minFee.minFee : '0.00',
-            inputBtnRef: inputBtnRef,
+            inputBtnRef,
           }}
         />
       </Grid>
@@ -123,7 +126,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
               <Typography component={'p'} variant='body2' color={'textSecondary'}>
                 {t('labelLabel')}
               </Typography>
-              {vaultAccountData ? <></> : EmptyValueTag}
+              {vaultJoinData ? <></> : EmptyValueTag}
             </Grid>
 
             <Grid
@@ -136,7 +139,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
               <Typography component={'p'} variant='body2' color={'textSecondary'}>
                 {t('labelLabel')}
               </Typography>
-              {vaultAccountData ? <></> : EmptyValueTag}
+              {vaultJoinData ? <></> : EmptyValueTag}
             </Grid>
           </Grid>
           <Grid item>

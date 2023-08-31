@@ -1,78 +1,50 @@
 import React from 'react'
 import { useTokenMap, useVaultMap } from '@loopring-web/core'
-import {
-  Modal,
-  useOpenModals,
-  useSettings,
-  VaultExitPanel,
-  VaultJoinPanel,
-} from '@loopring-web/component-lib'
+import { Modal, useOpenModals, VaultExitPanel, VaultJoinPanel } from '@loopring-web/component-lib'
 import { useVaultJoin } from './useVaultJoin'
+import { useTheme } from '@emotion/react'
+import { TRADE_TYPE } from '@loopring-web/common-resources'
 
-export const ModalWrap = () => {
+export const ModalVaultWrap = () => {
   const { tokenMap } = useTokenMap()
-  const { getVaultMap, tokensMap: vaultTokenMao, idIndex: vaultIndex } = useVaultMap()
+  const { getVaultMap, tokenMap: vaultTokenMao, idIndex: vaultIndex } = useVaultMap()
+  const theme = useTheme()
   const {
     modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap },
     setShowVaultJoin,
     setShowVaultExit,
-    setShowVaultSwap,
   } = useOpenModals()
   const joinVaultProps = useVaultJoin()
   React.useEffect(() => {
     getVaultMap()
   }, [])
-  // const checkBtnStatus = React.useCallback(() => {
-  //   if (
-  //     tokenMap
-  //     // tokenMap &&
-  //     // nftTransferValue.fee?.belong &&
-  //     // nftTransferValue?.tradeValue &&
-  //     // chargeFeeTokenList.length &&
-  //     // !isFeeNotEnough.isFeeNotEnough &&
-  //     // !isSameAddress &&
-  //     // sureItsLayer2 &&
-  //     // sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
-  //     // sdk.toBig(nftTransferValue.tradeValue).lte(Number(nftTransferValue.balance) ?? 0) &&
-  //     // (addrStatus as AddressError) === AddressError.NoError &&
-  //     // realAddr
-  //   ) {
-  //     enableBtn()
-  //     // myLog('enableBtn')
-  //     return
-  //   }
-  //   disableBtn()
-  // }, [
-  //   tokenMap,
-  //   // nftTransferValue.fee?.belong,
-  //   // nftTransferValue.tradeValue,
-  //   // nftTransferValue.balance,
-  //   // chargeFeeTokenList.length,
-  //   // isFeeNotEnough,
-  //   // isSameAddress,
-  //   // sureItsLayer2,
-  //   // addrStatus,
-  //   // realAddr,
-  //   disableBtn,
-  //   enableBtn,
-  // ])
 
   return (
     <>
       <Modal
+        contentClassName={'trade-wrap'}
         open={isShowVaultJoin.isShow}
         onClose={() => {
           setShowVaultJoin({ isShow: false })
         }}
-        content={<VaultJoinPanel {...joinVaultProps} />}
-      ></Modal>
+        content={
+          <VaultJoinPanel
+            {...{
+              ...joinVaultProps,
+              type: TRADE_TYPE.TOKEN,
+              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              _height: `auto`,
+            }}
+          />
+        }
+      />
       <Modal
         open={isShowVaultExit.isShow}
         onClose={() => {
           setShowVaultExit({ isShow: false })
         }}
         content={<VaultExitPanel />}
-      ></Modal>
+      />
     </>
   )
 }

@@ -65,7 +65,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   const _disableWithdrawTokenList = JSON.parse(
     window.localStorage.getItem(LocalStorageConfigKey.disableWithdrawTokenList) ?? '{}',
   )[chainId]
-  let tokensMap,
+  let tokenMap,
     coinMap,
     totalCoinMap,
     idIndex,
@@ -83,7 +83,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   if (_tokenMap && _ammpools && _markets && _disableWithdrawTokenList) {
     myLog('tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList from local storge')
     const resultTokenMap = sdk.makeMarket(_tokenMap)
-    tokensMap = resultTokenMap.tokensMap
+    tokenMap = resultTokenMap.tokensMap
     coinMap = resultTokenMap.coinMap
     totalCoinMap = resultTokenMap.totalCoinMap
     idIndex = resultTokenMap.idIndex
@@ -98,7 +98,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
 
     store.dispatch(
       getTokenMap({
-        tokensMap,
+        tokenMap,
         coinMap,
         totalCoinMap,
         idIndex,
@@ -143,7 +143,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       ]: any) => {
         store.dispatch(
           getTokenMap({
-            tokensMap,
+            tokenMap: tokensMap,
             coinMap,
             totalCoinMap,
             idIndex,
@@ -158,33 +158,13 @@ const initConfig = function* <_R extends { [key: string]: any }>(
             marketRaw,
           }),
         )
-        store.dispatch(
-          getTokenMap({
-            tokensMap,
-            coinMap,
-            totalCoinMap,
-            idIndex,
-            addressIndex,
-            marketMap: markets,
-            pairs,
-            marketArr,
-            tokenArr,
-            disableWithdrawTokenList,
-            tokenListRaw,
-            disableWithdrawTokenListRaw,
-            marketRaw,
-          }),
-        )
-        // myLog(
-        //   "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
-        // );
         store.dispatch(getAmmMap({ ammpools, ammpoolsRaw, chainId }))
         store.dispatch(getAmmActivityMap({ ammpools }))
       },
     )
   } else {
     ;[
-      { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex, raw_data: tokenListRaw },
+      { tokensMap: tokenMap, coinMap, totalCoinMap, idIndex, addressIndex, raw_data: tokenListRaw },
       { ammpools, raw_data: ammpoolsRaw },
       { pairs, marketArr, tokenArr, markets, raw_data: marketRaw },
       { disableWithdrawTokenList, raw_data: disableWithdrawTokenListRaw },
@@ -208,7 +188,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     )
     store.dispatch(
       getTokenMap({
-        tokensMap,
+        tokenMap,
         coinMap,
         totalCoinMap,
         idIndex,

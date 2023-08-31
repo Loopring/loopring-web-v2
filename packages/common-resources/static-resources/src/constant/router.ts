@@ -517,59 +517,6 @@ export const MEDIA_LIST = [
   },
 ]
 
-export const headerMenuData: Array<HeaderMenuItemInterface> = [
-  {
-    label: {
-      id: 'L2Assets',
-      i18nKey: 'labelAssets',
-    },
-    router: { path: '/l2assets' },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: 'Markets',
-      i18nKey: 'labelMarkets',
-    },
-    router: { path: '/markets' },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: 'Trade',
-      i18nKey: 'labelTrade',
-    },
-    status: HeaderMenuTabStatus.default,
-    child: layer2ItemData,
-  },
-  {
-    label: {
-      id: 'Invest',
-      i18nKey: 'labelInvest',
-    },
-    router: { path: '/invest/overview' },
-    status: HeaderMenuTabStatus.default,
-    child: subMenuInvest,
-  },
-  {
-    label: {
-      id: 'vault',
-      i18nKey: 'labelVault',
-      description: 'labelVaultDescription',
-    },
-    child: vaultItemData,
-  },
-  {
-    label: {
-      id: 'NFT',
-      i18nKey: 'labelNFT',
-    },
-    router: { path: '/nft' },
-    status: HeaderMenuTabStatus.default,
-    child: subMenuNFT,
-  },
-]
-
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
   router: '/invest/ammpool',
@@ -656,6 +603,7 @@ export enum RecordTabIndex {
   BtradeSwapRecords = 'BtradeSwapRecords',
   StopLimitRecords = 'StopLimitRecords',
   leverageETHRecords = 'leverageETHRecords',
+  vaultRecords = 'vaultRecords',
 }
 
 export enum AssetTabIndex {
@@ -714,8 +662,110 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
       ],
     },
   ],
-  ETHEREUM: headerMenuData,
-  GOERLI: headerMenuData,
+  ETHEREUM: [
+    {
+      label: {
+        id: 'L2Assets',
+        i18nKey: 'labelAssets',
+      },
+      router: { path: '/l2assets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Markets',
+        i18nKey: 'labelMarkets',
+      },
+      router: { path: '/markets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Trade',
+        i18nKey: 'labelTrade',
+      },
+      status: HeaderMenuTabStatus.default,
+      child: layer2ItemData,
+    },
+    {
+      label: {
+        id: 'Invest',
+        i18nKey: 'labelInvest',
+      },
+      router: { path: '/invest/overview' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuInvest,
+    },
+    // {
+    //   label: {
+    //     id: 'vault',
+    //     i18nKey: 'labelVault',
+    //     description: 'labelVaultDescription',
+    //   },
+    //   child: vaultItemData,
+    // },
+    {
+      label: {
+        id: 'NFT',
+        i18nKey: 'labelNFT',
+      },
+      router: { path: '/nft' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuNFT,
+    },
+  ],
+  GOERLI: [
+    {
+      label: {
+        id: 'L2Assets',
+        i18nKey: 'labelAssets',
+      },
+      router: { path: '/l2assets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Markets',
+        i18nKey: 'labelMarkets',
+      },
+      router: { path: '/markets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Trade',
+        i18nKey: 'labelTrade',
+      },
+      status: HeaderMenuTabStatus.default,
+      child: layer2ItemData,
+    },
+    {
+      label: {
+        id: 'Invest',
+        i18nKey: 'labelInvest',
+      },
+      router: { path: '/invest/overview' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuInvest,
+    },
+    {
+      label: {
+        id: 'vault',
+        i18nKey: 'labelVault',
+        description: 'labelVaultDescription',
+      },
+      child: vaultItemData,
+    },
+    {
+      label: {
+        id: 'NFT',
+        i18nKey: 'labelNFT',
+      },
+      router: { path: '/nft' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuNFT,
+    },
+  ],
 }
 
 export const TokenPriceBase = {
@@ -829,7 +879,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
-    RouterMainKey.vault,
+    // RouterMainKey.vault,
   ],
   GOERLI: [
     RouterMainKey.lite,
@@ -844,6 +894,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.vault,
   ],
 }
 

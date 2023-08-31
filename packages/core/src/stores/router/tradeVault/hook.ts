@@ -4,6 +4,7 @@ import {
   resetVaultJoin,
   resetVaultSwap,
   updateVaultExit,
+  updateVaultJoin,
   updateVaultTrade,
 } from './reducer'
 import { TradeVault, TradeVaultStatus } from './interface'
@@ -33,7 +34,7 @@ export function useTradeVault(): TradeVaultStatus & {
     }, [dispatch]),
     updateVaultJoin: React.useCallback(
       (tradeVault: Partial<VaultJoinData>) => {
-        dispatch(updateVaultTrade(tradeVault))
+        dispatch(updateVaultJoin(tradeVault))
       },
       [dispatch],
     ),
