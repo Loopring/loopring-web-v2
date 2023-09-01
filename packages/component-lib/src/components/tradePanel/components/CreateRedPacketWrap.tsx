@@ -45,6 +45,8 @@ import {
   CheckedIcon,
   YEAR_DAY_MINUTE_FORMAT,
   myLog,
+  ScopeQR,
+  ScopeTarget,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import {
@@ -1216,6 +1218,7 @@ export const CreateRedPacketScope = withTranslation()(
     showPalazaPublic,
     t,
   }: CreateRedPacketScopeProps & WithTranslation) => {
+    const theme = useTheme()
     return (
       <Box width={'100%'} display={'flex'} flexDirection={'column'} paddingX={8} paddingTop={4} paddingBottom={8}>
         <Box marginBottom={6}>
@@ -1240,7 +1243,10 @@ export const CreateRedPacketScope = withTranslation()(
                   {t('labelRedPacketPlazaPublicDes')}
                 </Typography>
               </Box>
-              <ScopePublic color={'var(--color-text-secondary)'} />
+              <Box width={theme.unit * 8}>
+                <ScopePublic color={'var(--color-text-secondary)'} />
+              </Box>
+              
             </ScopeOption>}
             <ScopeOption
               onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PRIVATE)}
@@ -1252,7 +1258,9 @@ export const CreateRedPacketScope = withTranslation()(
                   {t('labelRedPacketQRPublicDes')}
                 </Typography>
               </Box>
-              <ScopePublic color={'var(--color-text-secondary)'} />
+              <Box width={theme.unit * 8}>
+                <ScopeQR color={'var(--color-text-secondary)'} />
+              </Box>
             </ScopeOption>
           </Box>
         </Box>
@@ -1278,7 +1286,11 @@ export const CreateRedPacketScope = withTranslation()(
                   {t('labelRedPacketExclusiveDes')}
                 </Typography>
               </Box>
-              <ScopePublic color={'var(--color-text-secondary)'} />
+              <Box width={theme.unit * 8}>
+                <ScopeTarget color={'var(--color-text-secondary)'} />
+              </Box>
+              
+
             </ScopeOption>
           </Box>
         </Box>
