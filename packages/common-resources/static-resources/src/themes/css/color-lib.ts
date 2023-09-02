@@ -176,7 +176,7 @@ export const ColorLightDefault = Object.freeze({
   shadow: `0px 4px 20px 0px #1D20231A`,
   shadowHeader: `0px 4px 8px ${hexToRGB('#5766EC', '0.1')}`,
   shadow2: `0px -4px 8px ${hexToRGB('#5766EC', '0.1')}`,
-  shadowHover: `0px 10px 20px  ${hexToRGB('#5781EC', '0.25')}`,
+  shadowHover: `0px 0px 4px  ${hexToRGB('#5781EC', '0.25')}`,
   shadow3: `0px 10px 20px  ${hexToRGB('#5781EC', '0.1')}`,
 
   /********************Case for provider*******************/

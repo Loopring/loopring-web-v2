@@ -57,7 +57,7 @@ const BoxStyle = styled(Box)`
   }
 ` as typeof Box
 const BoxLabel = styled(Box)`
-  background: var(--color-box-nft-label);
+  background: var(--color-box-third);
   color: var(--color-text-button);
   border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Box

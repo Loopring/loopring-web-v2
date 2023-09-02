@@ -125,7 +125,6 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit / 2}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
