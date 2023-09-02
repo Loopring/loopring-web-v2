@@ -218,20 +218,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
           images.push({imageUrl: canvas.toDataURL(), size: [width / 2, height / 2], name: (item ?? '/').split('/')?.pop()})
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
-
-            setImages(images)
           }
-          // canvas.toBlob((blob) => {
-          // const a = document.createElement('a')
-          // // @ts-ignore
-          // a.download = (item ?? '/').split('/')?.pop()
-          // a.style.display = 'none'
-          // // @ts-ignore
-          // a.href = URL.createObjectURL(blob)
-          // document.body.appendChild(a)
-          // a.click()
-          // document.body.removeChild(a)
-          // }, 'image/png')
         }
       })
       setLoading(false)

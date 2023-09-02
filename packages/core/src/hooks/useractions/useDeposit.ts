@@ -44,6 +44,7 @@ import {
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
+import Web3 from 'web3';
 
 export const useDeposit = <
   T extends {
@@ -420,7 +421,7 @@ export const useDeposit = <
 
               try {
                 await sdk.approveMax(
-                  connectProvides.usedWeb3,
+                    connectProvides.usedWeb3 as any,
                   account.accAddress,
                   tokenInfo.address,
                   exchangeInfo?.depositAddress,
@@ -473,7 +474,7 @@ export const useDeposit = <
           try {
             //response = { result: "xxxxxxxx" };
             response = await sdk.deposit(
-              connectProvides.usedWeb3,
+                connectProvides.usedWeb3 as any,
               account.accAddress,
               exchangeInfo.exchangeAddress,
               tokenInfo,

@@ -463,9 +463,9 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
   }
 
   &:hover {
-    background: var(--opacity);
+    background: var(--provider-hover);
     border-color: var(--color-border-select);
-    color: var(--color-text-primary);
+    color: var(--color-text-button-select);
   }
 
   &.selected {

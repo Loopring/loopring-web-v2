@@ -378,8 +378,8 @@ const UnLookView = React.memo(
                 <AvatarCoin
                   imgx={tokenAIcon.x}
                   imgy={tokenAIcon.y}
-                  imgheight={tokenAIcon.height}
-                  imgwidth={tokenAIcon.width}
+                  imgheight={tokenAIcon.h}
+                  imgwidth={tokenAIcon.w}
                   size={16}
                   variant='circular'
                   style={{ marginLeft: '-8px' }}
@@ -426,8 +426,8 @@ const UnLookView = React.memo(
                 <AvatarCoin
                   imgx={tokenBIcon.x}
                   imgy={tokenBIcon.y}
-                  imgheight={tokenBIcon.height}
-                  imgwidth={tokenBIcon.width}
+                  imgheight={tokenBIcon.h}
+                  imgwidth={tokenBIcon.w}
                   size={16}
                   variant='circular'
                   style={{ marginLeft: '-8px' }}

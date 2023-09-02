@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import { AssetsTable, AssetTitle, AssetTitleProps, useSettings } from '@loopring-web/component-lib'
 
 import { StylePaper, useSystem, useTokenMap } from '@loopring-web/core'
-import { AssetPanelProps } from './hook'
+import { AssetPanelProps, useAssetAction } from './hook'
 import React from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import MyLiquidity from '../../InvestPage/MyLiquidityPanel'
@@ -13,7 +13,7 @@ import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
 import {
   AssetL2TabIndex,
   AssetTabIndex,
-  MapChainId,
+  MapChainId, myLog,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import RewardsPanel from '../RewardsPanel'
@@ -39,13 +39,13 @@ export const AssetPanel = withTranslation('common')(
       allowTrade,
       setHideLpToken,
       setHideSmallBalances,
-      onTokenLockHold,
-      tokenLockDetail,
+      // onTokenLockHold,
+      // tokenLockDetail,
     },
     ...rest
   }: {
     assetTitleProps: AssetTitleProps
-    assetPanelProps: AssetPanelProps //AssetPanelProps;
+    assetPanelProps: AssetPanelProps
   } & WithTranslation) => {
     const container = React.useRef(null)
     const { disableWithdrawList } = useTokenMap()
@@ -54,6 +54,8 @@ export const AssetPanel = withTranslation('common')(
     const match: any = useRouteMatch('/l2assets/:assets?/:item?')
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
+    const {onTokenLockHold, tokenLockDetail} = useAssetAction()
+
     const handleTabChange = (value: AssetTabIndex) => {
       if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
@@ -84,7 +86,7 @@ export const AssetPanel = withTranslation('common')(
       handleTabChange(match?.params?.item)
     }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
-
+    // myLog('assetsRawData')
     return (
       <>
         {!isMobile && (

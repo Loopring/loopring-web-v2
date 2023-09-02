@@ -2,8 +2,6 @@ import { css } from '@emotion/react'
 import reset from './reset'
 // @ts-ignore
 import InterMedium from '../fonts/english/Inter-Medium.ttf'
-// @ts-ignore
-// import GilroyMedium from '../fonts/english/DINCondensed.ttf';
 
 import { ColorDarkDefault, ColorLightDefault, GrayBlack, GrayLight, hexToRGB } from './color-lib'
 import { ThemeType } from '../interface'
