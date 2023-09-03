@@ -1518,5 +1518,29 @@ export const DiscordSvg = () => (props: SvgIconProps) => {
     )
 }
 
+export const BorderTickSvg = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox='0 0 24 24'>
+      <g clip-path='url(#clip0_9_95)'>
+        <path
+          fill-rule='evenodd'
+          clip-rule='evenodd'
+          d='M0 0H17C17.3395 0 17.6734 0.0241719 18 0.0708887V0H19H20H22.5H23.5H24V0.5V1.5V2.5V4V6L23.9305 6.00973C23.9763 6.33324 24 6.66385 24 7V24L11.6923 12L0 0ZM22 2.10102V2H21.899C21.933 2.03333 21.9667 2.067 22 2.10102ZM14.6666 10.1145L20.7946 3.98584L21.7379 4.92851L14.6666 11.9998L10.424 7.75717L11.3666 6.81451L14.6666 10.1145Z'
+          fill='#446EFF'
+        />
+        <path
+          d='M14.6665 10.1145L20.7945 3.98584L21.7378 4.92851L14.6665 11.9998L10.4238 7.75717L11.3665 6.81451L14.6665 10.1145Z'
+          fill='white'
+        />
+      </g>
+      <defs>
+        <clipPath id='clip0_9_95'>
+          <rect width='24' height='24' fill='white' />
+        </clipPath>
+      </defs>
+    </SvgIcon>
+  )
+}
+
 
 
