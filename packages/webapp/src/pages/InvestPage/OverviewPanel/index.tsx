@@ -29,6 +29,7 @@ import {
   stakeAdvice,
   SoursURL,
   leverageETHAdvice,
+  Overview,
 } from '@loopring-web/common-resources'
 import { useAccount, useNotify } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
@@ -128,14 +129,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             </Button>
           </Box>
           <Box marginRight={5}>
-            <img
-              src={
-                SoursURL +
-                (theme.mode === 'dark'
-                  ? 'images/earn-page-title.svg'
-                  : 'images/earn-page-title-light.svg')
-              }
-            />
+            <Overview />
           </Box>
         </MaxWidthContainer>
         <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={containerColors[1]}>

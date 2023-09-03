@@ -11,7 +11,7 @@ import {
 } from '@loopring-web/component-lib'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
-import { BackIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
+import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
@@ -109,7 +109,8 @@ export const StackTradePanel = ({
                 {t("labelMyInvestLRCStaking")}
               </Button>
             </Box>
-            <img src={SoursURL + 'images/earn-staking-title.svg'} />
+            <SatkingLogo />
+            {/* <img src={SoursURL + 'images/earn-staking-title.svg'} /> */}
           </MaxWidthContainer>
           <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]} paddingY={5} >
             <StyleWrapper

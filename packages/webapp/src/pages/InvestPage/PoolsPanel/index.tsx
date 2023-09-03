@@ -8,7 +8,7 @@ import { useAmmMapUI } from './hook'
 import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
 
 import { useNotify, useSystem } from '@loopring-web/core'
-import { BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
+import { AmmLogo, BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
@@ -61,7 +61,7 @@ export const PoolsPanel = withTranslation('common')(
               {t("labelInvestMyAmm")}
             </Button>
           </Box>
-          <img src={SoursURL + 'images/earn-amm-title.svg'} />
+          <AmmLogo />
         </MaxWidthContainer>
         <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]}>
           <PoolsTable

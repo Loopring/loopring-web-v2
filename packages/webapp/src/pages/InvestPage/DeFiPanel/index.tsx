@@ -21,6 +21,7 @@ import {
   defiWSTETHAdvice,
   Info2Icon,
   MarketType,
+  SatkingLogo,
   SoursURL,
   TOAST_TIME,
   UpColor,
@@ -324,7 +325,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
             {t("labelInvestMyAmm")}
           </Button>
         </Box>
-        <img src={SoursURL + 'images/earn-staking-title.svg'} />
+        <SatkingLogo />
       </MaxWidthContainer>
 
       <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]}>

@@ -37,6 +37,7 @@ import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
   CloseIcon,
+  DualInvestmentLogo,
   getValuePrecisionThousand,
   HelpIcon,
   Info2Icon,
@@ -157,7 +158,7 @@ export const DualListPanel: any = withTranslation('common')(
               />
             </Box>
           </Box>
-          <img src={SoursURL + 'images/earn-amm-title.svg'} />
+          <DualInvestmentLogo />
         </MaxWidthContainer>
         <MaxWidthContainer
           background={containerColors[1]}
