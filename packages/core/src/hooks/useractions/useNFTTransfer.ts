@@ -158,8 +158,10 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   } = useAddressCheck()
 
   React.useEffect(() => {
-    // setSureItsLayer2(undefined);
-  }, [realAddr])
+    if (loopringSmartWalletVersion?.isLoopringSmartWallet && sureItsLayer2 === undefined) {
+      setSureItsLayer2(WALLET_TYPE.Loopring)
+    }
+  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const handleOnMemoChange = React.useCallback(

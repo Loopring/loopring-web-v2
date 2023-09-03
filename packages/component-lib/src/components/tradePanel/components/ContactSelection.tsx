@@ -1,4 +1,4 @@
-import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@mui/material'
+import { Avatar, Box, BoxProps, InputAdornment, OutlinedInput, Typography } from '@mui/material'
 import { SearchIcon, CloseIcon, SoursURL, hexToRGB } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
