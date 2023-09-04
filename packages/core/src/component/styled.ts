@@ -8,7 +8,7 @@ export const StylePaper = styled(Box)`
   flex-direction: column;
   width: 100%;
   flex: 1;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
   // padding: ${({ theme }) => 3 * theme.unit}px  0;
   margin-bottom: ${({ theme }) => 2 * theme.unit}px;
@@ -41,7 +41,6 @@ export const TableWrapStyled = styled(Box)`
     .toolbar {
       padding: 0;
     }
-    background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit}px;
     .rdg {
       .rdg-header-row {

@@ -25,7 +25,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
 import { LoopringAPI } from '../../api_wrapper'
 import { isAccActivated } from './useCheckAccStatus'
-import Web3 from 'web3'
 import { getTimestampDaysLater } from '../../utils'
 import { DAYS } from '../../defs'
 
@@ -176,7 +175,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             response = await LoopringAPI.luckTokenAPI.sendLuckTokenWithdraws(
               {
                 request: request as sdk.OriginLuckTokenWithdrawsRequestV3,
-                web3: connectProvides.usedWeb3 as unknown as Web3,
+                web3: connectProvides.usedWeb3 as any,
                 chainId: chainId === 'unknown' ? 1 : chainId,
                 walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
@@ -193,7 +192,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             response = await LoopringAPI.userAPI?.sendTotalClaim(
               {
                 request: request as sdk.OriginClaimRequestV3,
-                web3: connectProvides.usedWeb3 as unknown as Web3,
+                web3: connectProvides.usedWeb3 as any,
                 chainId: chainId === 'unknown' ? 1 : chainId,
                 walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
@@ -210,7 +209,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
             response = await LoopringAPI.defiAPI?.sendStakeClaim(
               {
                 request: request as sdk.OriginStakeClaimRequestV3,
-                web3: connectProvides.usedWeb3 as unknown as Web3,
+                web3: connectProvides.usedWeb3 as any,
                 chainId: chainId === 'unknown' ? 1 : chainId,
                 walletType: (ConnectProvidersSignMap[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
@@ -375,7 +374,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
               tokenId: token.tokenId,
               feeTokenId: feeToken.tokenId,
               amount: amount.toString(),
-              nftData: token.type === 'ERC20' ? undefined : claimValue.nftData,
+              nftData: claimToken?.isNft ? claimToken.nftTokenInfo?.nftData : undefined,
               claimer: accAddress,
               transfer: {
                 exchange: exchangeInfo.exchangeAddress,
@@ -393,7 +392,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
                 },
                 validUntil: getTimestampDaysLater(DAYS),
               },
-              luckyTokenHash: claimToken?.luckyTokenHash,
+              luckyTokenHash: claimToken?.isNft ? claimToken?.luckyTokenHash : undefined,
             }
           } else if (claimValue.claimType === CLAIM_TYPE.allToken) {
             request = {

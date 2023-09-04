@@ -371,6 +371,14 @@ export const subMenuInvest = [
     },
   },
 ]
+export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual'
+export const investTabs = [
+  { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
+  { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
+  { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
+  { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
+]
+
 export const defiMarkets = {
   TAIKO: [] as string[],
   ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],

@@ -6,6 +6,7 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
+    SoursURL,
 } from '@loopring-web/common-resources'
 import { InputButtonProps, InputSize } from './Interface'
 import React from 'react'

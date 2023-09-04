@@ -45,13 +45,11 @@ import {
   useAddressCheck,
   useBtnStatus,
   useChargeFees,
-  useIsHebao,
   useModalData,
   useSystem,
   useTokenMap,
   useTokenPrices,
   useWalletLayer2,
-  useWalletLayer2NFT,
   useWalletLayer2WithNFTSocket,
   volumeToCountAsBigNumber,
   walletLayer2Service,
@@ -59,7 +57,8 @@ import {
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
-import { useContacts } from '../../stores/contacts/hooks'
+import { useContacts } from '../../stores'
+import Web3 from 'web3'
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const {
@@ -84,7 +83,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const { currency } = useSettings()
   const { tokenPrices } = useTokenPrices()
 
-  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT()
   const { updateWalletLayer2 } = useWalletLayer2()
 
   const { nftTransferValue, updateNFTWithdrawData, updateNFTTransferData, resetNFTTransferData } =
@@ -164,13 +162,16 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   }, [realAddr])
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
-  const handleOnMemoChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const nftTransferValue = store.getState()._router_modalData.nftTransferValue
-    updateNFTTransferData({
-      ...nftTransferValue,
-      memo: e.target.value,
-    })
-  }, [])
+  const handleOnMemoChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const nftTransferValue = store.getState()._router_modalData.nftTransferValue
+      updateNFTTransferData({
+        ...nftTransferValue,
+        memo: e.target.value,
+      })
+    },
+    [updateNFTTransferData],
+  )
   const checkBtnStatus = React.useCallback(() => {
     if (
       tokenMap &&
@@ -196,7 +197,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     nftTransferValue.tradeValue,
     nftTransferValue.balance,
     chargeFeeTokenList.length,
-    isFeeNotEnough,
+    isFeeNotEnough?.isFeeNotEnough,
     isSameAddress,
     sureItsLayer2,
     addrStatus,
@@ -218,13 +219,18 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   ])
   const walletLayer2Callback = React.useCallback(() => {
     checkFeeIsEnough()
-  }, [])
+  }, [checkFeeIsEnough])
+  const { contacts, updateContacts, errorMessage: contactsErrorMessage } = useContacts()
+
   useWalletLayer2WithNFTSocket({ walletLayer2Callback })
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
       checkFeeIsEnough()
       return
+    }
+    if (contactsErrorMessage) {
+      updateContacts()
     }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     // checkActiveFeeIsEnough({
@@ -257,13 +263,19 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       setAddress('')
     }
   }, [
-    checkFeeIsEnough,
-    nftTransferValue,
     info?.isRetry,
+    contactsErrorMessage,
+    checkFeeIsEnough,
+    nftTransferValue.nftData,
+    nftTransferValue.total,
+    nftTransferValue.locked,
+    nftTransferValue.name,
+    contactAddress,
+    updateContacts,
     updateNFTTransferData,
     feeInfo,
     address,
-    contactAddress,
+    setAddress,
   ])
 
   React.useEffect(() => {
@@ -314,7 +326,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           const response = await LoopringAPI.userAPI?.submitNFTInTransfer(
             {
               request,
-              web3: connectProvides.usedWeb3 as any,
+              web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
@@ -440,14 +452,19 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       account,
       checkHWAddr,
       chainId,
+      setShowNFTTransfer,
       setShowAccount,
       nftTransferValue.name,
-      checkFeeIsEnough,
-      updateWalletLayer2NFT,
-      page,
       setShowNFTDetail,
-      resetNFTTransferData,
+      isShowNFTDetail,
+      updateNFTWithdrawData,
+      updateNFTTransferData,
       updateHW,
+      searchParams,
+      history,
+      pathname,
+      checkFeeIsEnough,
+      feeWithActive,
     ],
   )
 
@@ -557,7 +574,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const activeAccountPrice = React.useMemo(() => {
     if (
       realAddr !== '' &&
-      isActiveAccount == false &&
+      !isActiveAccount &&
       activeAccountFeeList.length &&
       activeAccountFeeList[0] &&
       tokenPrices &&
@@ -587,7 +604,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     // return activeAccountFeeList?.find(
     //   (item: any) => item.belong == feeInfo.belong
     // );
-  }, [isActiveAccount, activeAccountFeeList, tokenPrices, currency])
+  }, [realAddr, isActiveAccount, activeAccountFeeList, tokenPrices, currency, forexMap])
   const handlePanelEvent = React.useCallback(
     async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
       return new Promise<void>((res: any) => {
@@ -634,10 +651,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     },
     [lastRequest, processRequest, setShowAccount],
   )
-  const { isHebao } = useIsHebao()
-  const { contacts, updateContacts } = useContacts()
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.address === realAddr)?.addressType
+    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
     if (isShow === false) {
       setSureItsLayer2(undefined)
     } else if (addressType !== undefined) {
@@ -654,30 +669,19 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.nftTransfer,
     handleSureItsLayer2: (sure: WALLET_TYPE | EXCHANGE_TYPE) => {
       const found = exWalletToAddressMapFn(sure)!
-      const contact = contacts?.find((x) => x.address === realAddr)
-      if (isHebao !== undefined && contact) {
-        LoopringAPI.contactAPI
-          ?.updateContact(
-            {
-              contactAddress: realAddr,
-              isHebao,
-              accountId: account.accountId,
-              addressType: found,
-              contactName: contact.name,
-            },
-            account.apiKey,
-          )
-          .then(() => {
-            updateContacts(
-              contacts?.map((x) => {
-                if (x.address === realAddr) {
-                  return { ...x, addressType: found }
-                } else {
-                  return x
-                }
-              }),
-            )
-          })
+      const contact = contacts?.find((x) => x.contactAddress === realAddr)
+      if (!account.isContractAddress && contact) {
+        LoopringAPI.contactAPI?.updateContact(
+          {
+            contactAddress: realAddr,
+            isHebao: !!(account.isContractAddress || account.isCFAddress),
+            accountId: account.accountId,
+            addressType: found,
+            contactName: contact.contactName,
+          },
+          account.apiKey,
+        )
+        updateContacts()
       }
       setSureItsLayer2(sure)
     },

@@ -32,8 +32,12 @@ enum TabIndex {
 
 const SelectButton = styled(Button)<{ selected?: boolean }>`
   color: ${({ selected, theme }) => (selected ? theme.colorBase.textPrimary : 'auto')};
-  border-color: ${({ selected, theme }) => (selected ? theme.colorBase.textButtonSelect : 'auto')};
-  background-color: ${({ selected, theme }) => (selected ? theme.colorBase.box : 'auto')};
+  border-color: ${({ selected, theme }) => (selected ? theme.colorBase.borderHover : 'auto')};
+  background-color: transparent;
+  :hover{
+    background-color: transparent;
+    border-color: ${({ selected, theme }) => theme.colorBase.borderHover};
+  }
 `
 
 export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) => void }) => {

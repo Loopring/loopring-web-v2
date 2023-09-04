@@ -82,9 +82,11 @@ export interface ModalState {
   isShowGlobalToast: {
     isShow: boolean
     info: {
-      content: string
+      id?: string
+      messageKey?: string
+      content?: string
       type: ToastType
-    }
+    } & any
   }
   isShowVaultExit: ModalStatePlayLoad
   isShowVaultJoin: ModalStatePlayLoad

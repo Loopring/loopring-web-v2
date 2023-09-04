@@ -8,6 +8,8 @@ import { useSettings } from '../stores'
 // @ts-ignore
 export const boxLiner = (_props: { theme: Theme }) => css`
   background: var(--color-box-linear);
+  border: 0.5px solid var(--color-border);
+  border-radius: ${_props.theme.unit}px;
 
   textarea,
   .coinInput-wrap,
@@ -135,7 +137,7 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
 `
 export const ModelPanelStyle = styled(Box)`
   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
-  background: ${({ theme }) => theme.colorBase.box};
+  background: var(--color-pop-bg);
 ` as typeof Box
 
 export const SwitchPanelStyled: any = styled(Box)<
@@ -413,7 +415,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     height: var(--provider-btn-height);
 
     &:hover {
-      outline: 1px solid var(--color-border-select);
+      border: 1px solid var(--color-border-select);
     }
 
     &.Mui-disabled {
@@ -423,7 +425,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     }
 
     &.selected {
-      outline: 1px solid var(--color-border-select);
+      border: 1px solid var(--color-border-select);
 
       &:after {
         display: none;
@@ -496,7 +498,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
 ` as (props: ButtonProps) => JSX.Element
 
 export const StyledPaperBg = styled(Box)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 ` as any
 

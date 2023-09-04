@@ -23,7 +23,7 @@ export type WithdrawData<T = any> = IBData<T> & {
   // balance: number | undefined;
   address: string | undefined
   fee: FeeInfo | undefined
-  withdrawType: WithdrawType
+  withdrawType: sdk.OffchainFeeReqType
 }
 export type ForceWithdrawData = {
   belong: string | undefined

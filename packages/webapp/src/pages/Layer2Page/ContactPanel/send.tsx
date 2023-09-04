@@ -111,7 +111,7 @@ export const Send: React.FC<SendDialogProps> = ({ sendInfo, onCloseSend }) => {
           }}
         />
         <DialogTitle>
-          <Typography marginTop={3} variant={'h3'} textAlign={'center'}>
+            <Typography component={'span'} marginTop={3} variant={'h3'} textAlign={'center'}>
             {t('labelContactsNetworkChoose', {
               loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
               l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,

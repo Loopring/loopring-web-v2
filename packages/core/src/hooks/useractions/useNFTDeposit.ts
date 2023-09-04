@@ -11,6 +11,7 @@ import {
   IPFS_LOOPRING_SITE,
   myLog,
   SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
   TradeNFT,
   UIERROR_CODE,
   WalletMap,
@@ -37,6 +38,7 @@ import { connectProvides } from '@loopring-web/web3-provider'
 import _ from 'lodash'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
 import { useHistory } from 'react-router-dom'
+import Web3 from 'web3'
 
 export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   nftDepositProps: NFTDepositProps<T, I>
@@ -66,7 +68,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
 
   const debounceCheck = _.debounce(
     async (data) => {
-      const web3 = connectProvides.usedWeb3
+      const web3 = connectProvides.usedWeb3 as unknown as Web3
       if (LoopringAPI.nftAPI && exchangeInfo && web3) {
         setIsNFTCheckLoading(true)
         let [balance, meta, isApproved] = await Promise.all([
@@ -229,7 +231,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
         connectProvides.usedWeb3 &&
         LoopringAPI.nftAPI
       ) {
-        const web3 = connectProvides.usedWeb3
+        const web3 = connectProvides.usedWeb3 as unknown as Web3
         const gasLimit = undefined //parseInt(NFTGasAmounts.deposit) ?? undefined;
         const realGasPrice = gasPrice ?? 30
         enableBtn()
@@ -237,7 +239,8 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
           isShow: true,
           step: AccountStep.NFTDeposit_WaitForAuth,
         })
-        let nonce = (await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)) ?? 0
+        let nonce =
+          (await sdk.getNonce(connectProvides.usedWeb3 as unknown as Web3, account.accAddress)) ?? 0
         if (!nftDepositValue.isApproved) {
           setShowAccount({
             isShow: true,
@@ -416,6 +419,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   ])
 
   const nftDepositProps: NFTDepositProps<T, I> = {
+    type: TRADE_TYPE.NFT,
     handleOnNFTDataChange,
     getIPFSString,
     onNFTDepositClick,

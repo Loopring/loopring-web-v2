@@ -46,6 +46,9 @@ export const InputSearch = React.forwardRef(
             }}
           />
         }
+        sx={{
+          backgroundColor: 'transparent'
+        }}
       />
     )
   },

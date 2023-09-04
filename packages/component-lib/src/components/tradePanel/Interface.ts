@@ -40,7 +40,7 @@ import {
   TradeMarketInfoProps,
   TradeProBaseEventProps,
 } from './tradePro/Interface'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { TOASTOPEN } from '../toast'
 import { VaultJoinBaseProps } from './components/VaultWrap'
 
@@ -235,8 +235,8 @@ export type FeeSelectProps = {
     onChangeType: (w: WithdrawType) => void
   }
   floatLeft?: boolean
-  middleContent?: ReactNode
-  feeNotEnoughContent?: ReactNode
+  middleContent?: JSX.Element
+  feeNotEnoughContent?: JSX.Element
 }
 
 export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>

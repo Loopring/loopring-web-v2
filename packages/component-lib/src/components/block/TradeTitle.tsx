@@ -141,8 +141,8 @@ export const TradeTitle = <I extends object>({
                   <AvatarCoin
                     imgx={buyCoinIcon.x}
                     imgy={buyCoinIcon.y}
-                    imgheight={buyCoinIcon.height}
-                    imgwidth={buyCoinIcon.width}
+                    imgheight={buyCoinIcon.h}
+                    imgwidth={buyCoinIcon.w}
                     size={28}
                     variant='circular'
                     alt={coinBInfo?.simpleName as string}

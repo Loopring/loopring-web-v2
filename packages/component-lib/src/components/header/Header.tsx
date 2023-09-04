@@ -69,7 +69,7 @@ const ToolBarStyled = styled(Toolbar)`
 const HeaderStyled = styled(AppBar)`
   && {
     z-index: 400;
-    box-shadow: var(--shadow-header);
+    box-shadow: none;
     height: var(--header-height);
     margin: 0 auto;
     background-color: var(--color-box);
@@ -77,7 +77,7 @@ const HeaderStyled = styled(AppBar)`
     box-sizing: border-box;
     ${({ theme }) => theme.border.borderConfig({ d_W: 1, c_key: 'blur' })};
     border-radius: 0;
-
+    border: 0;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
     }
   }

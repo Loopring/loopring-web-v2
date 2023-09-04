@@ -37,7 +37,7 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  FeeSelect,
+  FeeSelect, GridWrapStyle,
   InputSize,
   TextField,
   Toast,
@@ -100,7 +100,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
     assetsData: any[]
     handleConfirm: (index: number) => void
   }) => {
-  contact
   const inputBtnRef = React.useRef()
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -333,9 +332,8 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
     isAddressCheckLoading,
   ])
 
-  return (
-    <Grid
-      className={walletMap ? 'transfer-wrap' : 'loading'}
+  return <GridWrapStyle
+      className={'transfer-wrap'}
       container
       paddingLeft={isMobile ? 2 : 5 / 2}
       paddingRight={isMobile ? 2 : 5 / 2}
@@ -482,7 +480,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                   color={'inherit'}
                   size={'large'}
                   onClick={() => {
-                    onClickContact!()
+                    onClickContact()
                   }}
                 >
                   <ContactIcon />
@@ -581,6 +579,5 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
         }}
         severity={ToastType.success}
       />
-    </Grid>
-  )
+  </GridWrapStyle>
 }

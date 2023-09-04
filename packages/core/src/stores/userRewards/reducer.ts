@@ -21,7 +21,10 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
       state.status = SagaStatus.PENDING
     },
     resetUserRewards(state, _action: PayloadAction<undefined>) {
-      state.status = SagaStatus.PENDING
+      state = {
+        ...initialState,
+      }
+      state.status = SagaStatus.UNSET
     },
     getUserAMM(state, _action: PayloadAction<undefined>) {
       const { myAmmLPMap, rewardU, feeU } = makeSummaryMyAmm({
