@@ -35,12 +35,21 @@ import {
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
+import { DisplayContact } from '@loopring-web/core/src/stores/contacts/reducer'
 
 export enum RedPacketStep {
-  TradeType,
-  ChooseType,
-  Main,
+  TradeType = 0,
+  ChooseType = 1,
+  Main = 2,
   NFTList = 3,
+}
+export enum TargetRedPacketStep {
+  TargetChosse = 0,
+  TradeType = 1,
+  ChooseType = 2,
+  Main = 3,
+  NFTList = 4,
+  TargetSend = 5,
 }
 
 /**
@@ -626,6 +635,13 @@ export type CreateRedPacketExtendsProps<T, F> = {
   assetsData: AssetsRawDataItem[]
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
+  backToScope: () => void
+  onSendTargetRedpacketClick: () => void
+  targetRedPackets: sdk.LuckyTokenItemForReceive[]
+  popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  onClickViewTargetDetail: (hash: string) => void
+  onCloseRedpacketPop: () => void
+  contacts?: DisplayContact[]
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -639,7 +655,30 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
       selectNFT: NFT
     }
   > & {
-    setActiveStep: (step: RedPacketStep) => void
+    setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void
     activeStep: RedPacketStep
     tokenMap: { [key: string]: sdk.TokenInfo }
+    backToScope: () => void
+    onClickNext: () => void
+    showNFT: boolean
   }
+
+export type TargetRedpacktSelectStepProps = {
+  onClickCreateNew: () => void
+  targetRedPackets: sdk.LuckyTokenItemForReceive[]
+  onClickExclusiveRedpacket: (hash: string) => void
+  onClickViewDetail: (hash: string) => void
+  onCloseRedpacketPop: () => void
+  popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  backToScope: () => void
+}
+
+export type TargetRedpacktInputAddressStepProps = {
+  isRedDot: boolean
+  onChangeIsRedDot: (isRedDot: boolean) => void
+  onFileInput: (input: string) => void
+  addressListString: string
+  onClickSend: () => void
+  contacts?: DisplayContact[]
+  onConfirm: (list: string[]) => void
+}

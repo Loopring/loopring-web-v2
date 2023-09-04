@@ -10,7 +10,7 @@ import {
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'
 
 import { useHeader } from './hook'
-import { confirmation, useSystem, useAccount } from '@loopring-web/core'
+import { confirmation, useSystem, useAccount, useTargetRedPackets } from '@loopring-web/core'
 import { withTranslation } from 'react-i18next'
 
 import {
@@ -40,6 +40,14 @@ const Header = withTranslation('common')(
       const { allowTrade, chainId } = useSystem()
       const { account } = useAccount()
       const [view, setView] = React.useState(false)
+      const { redPackets, setShowRedPacketsPopup, setOpendPopup, openedRedPackets} =useTargetRedPackets()
+      const showExclusiveRedpacket = redPackets && redPackets?.length > 0 && !openedRedPackets
+      const exclusiveRedpacketCount = redPackets ? redPackets.length : 0
+      const onClickExclusiveredPacket = () => {
+        setShowRedPacketsPopup(true)
+        setOpendPopup()
+      } 
+
       return (
         <>
           {isHideOnScroll ? (
@@ -60,6 +68,9 @@ const Header = withTranslation('common')(
                 headerToolBarData={headerToolBarData}
                 notification={notifyMap}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}
+                onClickExclusiveredPacket={onClickExclusiveredPacket}
+                showExclusiveRedpacket={showExclusiveRedpacket}
+                exclusiveRedpacketCount={exclusiveRedpacketCount}
               />
             </HideOnScroll>
           ) : (
@@ -77,6 +88,9 @@ const Header = withTranslation('common')(
               headerToolBarData={headerToolBarData}
               notification={notifyMap}
               selected={location.pathname === '/' ? headerRoot : location.pathname}
+              onClickExclusiveredPacket={onClickExclusiveredPacket}
+              showExclusiveRedpacket={showExclusiveRedpacket}
+              exclusiveRedpacketCount={exclusiveRedpacketCount}
             />
           )}
           <Toolbar id='back-to-top-anchor' />

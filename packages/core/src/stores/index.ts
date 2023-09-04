@@ -73,6 +73,7 @@ import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
 import { tradeBtradeSlice } from './router/tradeBtrade'
 import { contactsSlice } from './contacts/reducer'
 import { tradeLeverageETHSlice } from './router/tradeLeverageETH'
+import { targetRedpacketSlice } from './targetRedpackt/reducer'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -157,6 +158,7 @@ const reducer = combineReducers({
   notifyMap: notifyMapSlice.reducer,
   firebase: firebaseReducer,
   contacts: contactsSlice.reducer,
+  targetRedpacket: targetRedpacketSlice.reducer,
   _router_tradeDefi: tradeDefiSlice.reducer,
   _router_tradeDual: tradeDualSlice.reducer,
   _router_tradeStake: tradeStakeSlice.reducer,
@@ -269,3 +271,4 @@ export * from './walletL2NFTCollection'
 
 export * from './invest'
 export * from './contacts'
+export * from './targetRedpackt'

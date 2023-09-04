@@ -4,14 +4,20 @@ import {
   StylePaper,
   useAccount,
   useSystem,
+  useTargetRedPackets,
   useToast,
+  useTokenMap,
   useWalletLayer2,
 } from '@loopring-web/core'
 import {
+  CoinIcons,
+  NftImageStyle,
   RedPacketClaimTable,
+  RedPacketViewStep,
   Toast,
   ToastType,
   TransactionTradeViews,
+  useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
@@ -29,11 +35,25 @@ import {
 import {
   CloseIcon,
   RecordTabIndex,
+  RedPacketColorConfig,
   RedPacketIcon,
   RowConfig,
   SagaStatus,
   TOAST_TIME,
+  TokenType,
+  myLog,
 } from '@loopring-web/common-resources'
+import { LuckyTokenItemForReceive, SoursURL } from '@loopring-web/loopring-sdk'
+import styled from '@emotion/styled'
+import { useTheme } from '@emotion/react'
+
+const RedPacktButton = styled(Button)`
+  background: ${RedPacketColorConfig.default.btnColor};
+  :hover {
+    background: ${RedPacketColorConfig.default.btnColor};
+    opacity: 0.7;
+  }
+`
 
 export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) => {
   const container = React.useRef<HTMLDivElement>(null)
@@ -71,6 +91,18 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     undefined as number | undefined,
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
+  const {redPackets: exclusiveRedPackets,  setOpendPopup, setShowRedPacketsPopup, showPopup, openedRedPackets} = useTargetRedPackets()
+  const { setShowRedPacket } = useOpenModals()
+
+  const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
+    setShowRedPacket({
+      isShow: true,
+      info: {
+        ...redpacket,
+      },
+      step: RedPacketViewStep.OpenPanel,
+    })
+  }, [])
   React.useEffect(() => {
     LoopringAPI.luckTokenAPI
       ?.getLuckTokenClaimHistory(
@@ -98,6 +130,9 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         setBlindboxBalance(response.totalNum)
       })
   }, [])
+  const theme = useTheme()
+  const { coinJson } = useSettings()
+  const { idIndex } = useTokenMap()
   return (
     <Box
       flex={1}
@@ -137,6 +172,33 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         </Button>
       </Box>
       <StylePaper ref={container} flex={1} display={'flex'} flexDirection={'column'}>
+        {!openedRedPackets && exclusiveRedPackets && exclusiveRedPackets.length > 0 && (
+          <Box paddingX={2} paddingY={1} bgcolor={'var(--color-box-hover)'} borderRadius={0.5}>
+            <Typography>
+              {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}{' '}
+              <Button
+                onClick={() => {
+                  if (exclusiveRedPackets.length === 1) {
+                    setShowRedPacket({
+                      isShow: true,
+                      info: {
+                        ...exclusiveRedPackets[0],
+                      },
+                      step: RedPacketViewStep.OpenPanel,
+                    })
+                    setOpendPopup()
+                  } else {
+                    setOpendPopup()
+                    setShowRedPacketsPopup(true)
+                  }
+                }}
+                variant={'text'}
+              >
+                {t('labelRedPacketExclusiveViewDetails')}
+              </Button>{' '}
+            </Typography>
+          </Box>
+        )}
         <Box className='tableWrapper table-divide-short'>
           <RedPacketClaimTable
             {...{
@@ -190,6 +252,168 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
               getClaimRedPacket={getClaimNFTRedPacket}
             />
           </DialogContent>
+        </Dialog>
+        <Dialog
+          maxWidth={'md'}
+          open={showPopup}
+          onClose={() => {
+            setShowRedPacketsPopup(false)
+          }}
+        >
+          {false ? (
+            <DialogContent
+              sx={{ width: '480px', height: '480px', display: 'flex', justifyContent: 'center' }}
+            >
+              <IconButton
+                size={'large'}
+                sx={{
+                  position: 'absolute',
+                  right: 8,
+                  top: 8,
+                }}
+                color={'inherit'}
+                onClick={() => {
+                  setShowRedPacketsPopup(false)
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+              <Box
+                sx={{
+                  backgroundImage: `url(${SoursURL + 'images/target_popup_bg.png'})`,
+                  width: '280px',
+                  height: '361px',
+                  backgroundSize: 'contain',
+                  marginX: 6,
+                  marginY: 4,
+                }}
+              >
+                <Box
+                  marginX={3}
+                  marginTop={5}
+                  bgcolor={'var(--color-white)'}
+                  borderRadius={2}
+                  padding={1.5}
+                >
+                  <Box
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    padding={1}
+                    borderRadius={2}
+                    border={'1px solid #E1D3A5'}
+                  >
+                    <Box marginTop={4}>
+                      <img width={64} src={SoursURL + 'images/target_airdrop_icon.svg'} />
+                    </Box>
+                    <Typography variant={'h5'} marginTop={2} color={'black'}>
+                      {t('labelRedPacketCongratulations')}
+                    </Typography>
+                    <Typography textAlign={'center'} marginTop={1} marginBottom={3} color={'black'}>
+                      {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets?.length })}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box marginX={3} marginTop={1.5}>
+                  <RedPacktButton
+                    onClick={() => {
+                      if (exclusiveRedPackets && exclusiveRedPackets.length === 1) {
+                        setShowRedPacket({
+                          isShow: true,
+                          info: {
+                            ...exclusiveRedPackets[0],
+                          },
+                          step: RedPacketViewStep.OpenPanel,
+                        })
+                        setOpendPopup()
+                      } else {
+                        setShowRedPacketsPopup(true)
+                        setOpendPopup()
+                      }
+                    }}
+                    sx={{ background: 'black' }}
+                    fullWidth
+                    variant={'contained'}
+                  >
+                    {t('labelRedPacketOpen')}
+                  </RedPacktButton>
+                </Box>
+              </Box>
+            </DialogContent>
+          ) : (
+            <>
+              <DialogTitle>
+                <Typography variant={'h3'} marginTop={2} textAlign={'center'}>
+                  {t('labelExclusiveRedpacket')}
+                </Typography>
+                <IconButton
+                  size={'large'}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                  }}
+                  color={'inherit'}
+                  onClick={() => {
+                    setShowRedPacketsPopup(false)
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </DialogTitle>
+              <DialogContent style={{ width: '480px', height: '480px' }}>
+                <Box marginTop={5} paddingX={4}>
+                  {exclusiveRedPackets && exclusiveRedPackets.map((redpacket) => (
+                    <Box
+                      display={'flex'}
+                      paddingX={2.5}
+                      paddingY={1.5}
+                      borderRadius={1}
+                      bgcolor={'var(--field-opacity)'}
+                      justifyContent={'space-between'}
+                      marginBottom={2}
+                      key={redpacket.hash}
+                    >
+                      <Box display={'flex'} alignItems={'center'}>
+                        {redpacket.isNft ? (
+                          <NftImageStyle
+                            src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
+                            style={{
+                              width: `${theme.unit * 4}px`,
+                              height: `${theme.unit * 4}px`,
+                              borderRadius: `${theme.unit * 0.5}px`,
+                            }}
+                          />
+                        ) : (
+                          <Box width={theme.unit * 4} height={theme.unit * 4}>
+                            <CoinIcons
+                              size={theme.unit * 4}
+                              type={TokenType.single}
+                              tokenIcon={[coinJson[idIndex[redpacket.tokenId ?? 0]]]}
+                            />
+                          </Box>
+                        )}
+                        <Typography marginLeft={1}>
+                          {redpacket.isNft
+                            ? redpacket.nftTokenInfo?.metadata?.base.name
+                            : idIndex[redpacket.tokenId]}
+                        </Typography>
+                      </Box>
+                      <Button
+                        variant={'contained'}
+                        onClick={() => {
+                          onClickOpenExclusive(redpacket)
+                        }}
+                      >
+                        {t('labelRedPacketOpen')}
+                      </Button>
+                    </Box>
+                  ))}
+                </Box>
+              </DialogContent>
+            </>
+          )}
         </Dialog>
       </StylePaper>
       <Toast

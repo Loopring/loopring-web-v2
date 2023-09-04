@@ -685,6 +685,11 @@ export type RedPacketOrderData<I> = {
   tradeValue?: number
   fee: FeeInfo | undefined
   __request__: any
+  target?: {
+    redpacketHash: string
+    addressListString: string
+    isRedDot: boolean
+  }
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
