@@ -38,18 +38,17 @@ const TableStyled = styled(Box)<{ isMobile?: boolean; hasContent?: boolean } & B
       justify-content: flex-end;
       align-items: center;
     }
+    & > .rdg-row {
+      border-top: 1px solid var(--color-box-hover);
+    }
 
     & > .rdg-row.child_row {
-      background-color: var(--color-global-bg);
-      border-top: 1px solid var(--color-box-hover);
-      border-left: 1px solid var(--color-box-hover);
-      border-right: 1px solid var(--color-box-hover);
-
+      border-top: none;
       .rdg-cell:first-of-type {
         margin-left: ${({ theme }) => 2 * theme.unit}px;
       }
       &:hover {
-        background-color: var(--color-global-bg);
+        background-color: transparent;
       }
     }
     & > .rdg-row.child_row:first-of-type {
@@ -208,12 +207,6 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 width={'100%'}
                 sx={{ cursor: 'pointer' }}
               >
-                <Typography
-                  display={'inline-flex'}
-                  marginRight={1}
-                  component={'span'}
-                  color={'inherit'}
-                >{`${t('labelSelect')}`}</Typography>
                 <DropdownIconStyled status={row.isExpanded ? 'up' : 'down'} fontSize={'medium'} />
               </Typography>
             )
@@ -228,9 +221,8 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 component={'span'}
               >
                 <Button
-                  variant={'contained'}
-                  color={'primary'}
-                  size={'small'}
+                  variant={'outlined'}
+                  size={'medium'}  
                   onClick={(_e) => {
                     switch (row.type) {
                       case InvestMapType.AMM:
@@ -379,7 +371,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
             justifyContent={'space-between'}
             marginLeft={3}
           >
-            <Typography variant={'h5'}>{t('labelTitleOverviewToken', { ns: 'common' })}</Typography>
+            <Typography fontSize={"36px"} variant={'h1'}>{t('labelTitleOverviewAllPrd', { ns: 'common' })}</Typography>
             <TableFilterStyled>
               <Filter
                 {...{

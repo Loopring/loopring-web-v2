@@ -24,7 +24,15 @@ export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslat
     handleRowClick,
   } = useQuotePage({ tableRef })
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={3}>
+    <Box display={'flex'} flexDirection={'column'} flex={1} bgcolor={'var(--color-box-third)'} borderRadius={2}>
+      {/*<Button*/}
+      {/*  onClick={() => {*/}
+      {/*    onTest();*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  test button*/}
+      {/*</Button>*/}
+
       <TableWrapStyled
         ref={tableRef as any}
         paddingBottom={1}

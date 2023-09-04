@@ -5,6 +5,7 @@ import React from 'react'
 import {
   getIPFSString,
   StylePaper,
+  useContacts,
   useCreateRedPacket,
   useNotify,
   useSystem,
@@ -85,6 +86,8 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === 'create',
   })
+  const {contacts} = useContacts()
+  
   // createRedPacketProps.disabled
 
   return (
@@ -101,7 +104,7 @@ export const CreateRedPacketUIPanel = <
           {t('labelCreateRedPacketTitle')}
         </Button>
       </Box>
-      <StylePaper flex={1} display={'flex'} justifyContent={'center'}>
+      <StylePaper style={{backgroundColor: 'var(--color-pop-bg)'}} flex={1} display={'flex'} justifyContent={'center'}>
         {assetBtnStatus === TradeBtnStatus.LOADING ? (
           <LoadingBlock />
         ) : (
@@ -123,6 +126,7 @@ export const CreateRedPacketUIPanel = <
                   }
                 />
               ) as any,
+              contacts
             }}
           />
         )}

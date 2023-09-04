@@ -32,7 +32,7 @@ const InputStyled = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-text-secondary);
+    color: var(--color-placeholder);
   }
   height: 2.4rem;
   width: 92px; 

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib'
-import { CreateRedPacketProps, RedPacketStep } from '../../tradePanel'
+import { CreateRedPacketProps, RedPacketStep, TargetRedPacketStep } from '../../tradePanel'
 import {
   FeeInfo,
   LuckyRedPacketItem,
@@ -18,9 +18,12 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 
 import {
+  CreateRedPacketScope,
   CreateRedPacketStepTokenType,
   CreateRedPacketStepType,
   CreateRedPacketStepWrap,
+  TargetRedpacktInputAddressStep,
+  TargetRedpacktSelectStep,
 } from '../../tradePanel/components/CreateRedPacketWrap'
 import { Box, styled } from '@mui/material'
 import { LuckyTokenClaimType, LuckyTokenViewType } from '@loopring-web/loopring-sdk'
@@ -50,6 +53,12 @@ export const CreateRedPacketPanel = <
   assetsData,
   //@ts-ignore
   myNFTPanel,
+  onSendTargetRedpacketClick,
+  targetRedPackets,
+  popRedPacket,
+  onClickViewTargetDetail,
+  onCloseRedpacketPop,
+  contacts,
   ...rest
 }: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(['common', 'error'])
@@ -60,69 +69,140 @@ export const CreateRedPacketPanel = <
     // index,
     walletMap,
   } as any)
-  const [panelIndex, setPanelIndex] = React.useState(
-    tradeType === RedPacketOrderType.FromNFT ? RedPacketStep.ChooseType : RedPacketStep.TradeType,
+  const [panelIndex, setPanelIndex] = React.useState<RedPacketStep | TargetRedPacketStep>(
+    tradeType === RedPacketOrderType.FromNFT 
+      ? RedPacketStep.ChooseType 
+      : RedPacketStep.TradeType,
   )
 
-  const steps =
-    tradeType === RedPacketOrderType.FromNFT
-      ? [
-          'labelRedPacketChoose', //Prepare NFT metadata
-          'labelRedPacketMain', //labelADMint2
-        ]
-      : [
-          'labelRedPacketTypeTokens', //labelADMint2
-          'labelRedPacketChoose', //Prepare NFT metadata
-          'labelRedPacketMain', //labelADMint2
-        ]
+  let steps: string[]
+  if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+    if (tradeType === RedPacketOrderType.FromNFT) {
+      steps = [
+        'labelRedPacketChoose', //Prepare NFT metadata
+        'labelRedPacketMain', //labelADMint2
+        'labelRedPacketRecipientList', //labelADMint2
+      ]
+    } else {
+      steps = [
+        'labelRedPacketChooseTarget', //labelADMint2
+        'labelRedPacketTypeTokens', //labelADMint2
+        'labelRedPacketChoose', //Prepare NFT metadata
+        'labelRedPacketMain', //labelADMint2
+        'labelRedPacketRecipientList', //labelADMint2
+      ]
+    }
+  } else {
+    if (tradeType === RedPacketOrderType.FromNFT) {
+      steps = [
+        'labelRedPacketChoose', //Prepare NFT metadata
+        'labelRedPacketMain', //labelADMint2
+      ]
+    } else {
+      steps = [
+        'labelRedPacketTypeTokens', //labelADMint2
+        'labelRedPacketChoose', //Prepare NFT metadata
+        'labelRedPacketMain', //labelADMint2
+      ]
+    }
+  }
 
   React.useEffect(() => {
-    // isToken
-    if (!isToken && tradeData.nftData && panelIndex === RedPacketStep.NFTList) {
-      setActiveStep(RedPacketStep.Main)
+    if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+      if (tradeData.target?.redpacketHash) {
+        setActiveStep(TargetRedPacketStep.TargetSend)
+      } else if (!isToken && tradeData.nftData && panelIndex === TargetRedPacketStep.NFTList) {
+        setActiveStep(TargetRedPacketStep.Main)
+      }
+    } else {
+      if (!isToken && tradeData.nftData && panelIndex === RedPacketStep.NFTList) {
+        setActiveStep(RedPacketStep.Main)
+      }
     }
-  }, [tradeData?.nftData, panelIndex, tradeType])
+  }, [tradeData?.nftData, panelIndex, tradeType, tradeData.target?.redpacketHash])
 
-  const setActiveStep = React.useCallback((index: RedPacketStep) => {
-    switch (index) {
-      case RedPacketStep.TradeType:
-        setPanelIndex(0)
-        break
-      case RedPacketStep.ChooseType:
-        if (tradeType !== RedPacketOrderType.FromNFT) {
-          handleOnDataChange({
-            collectionInfo: undefined,
-            tokenId: undefined,
-            tradeValue: undefined,
-            balance: undefined,
-            nftData: undefined,
-            belong: undefined,
-            tokenAddress: undefined,
-            image: undefined,
-          } as any)
+  const setActiveStep = React.useCallback(
+    (index: RedPacketStep | TargetRedPacketStep) => {
+      if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+        switch (index) {
+          case TargetRedPacketStep.TradeType:
+            setPanelIndex(1)
+            break
+          case TargetRedPacketStep.ChooseType:
+            if (tradeType !== RedPacketOrderType.FromNFT) {
+              handleOnDataChange({
+                collectionInfo: undefined,
+                tokenId: undefined,
+                tradeValue: undefined,
+                balance: undefined,
+                nftData: undefined,
+                belong: undefined,
+                tokenAddress: undefined,
+                image: undefined,
+              } as any)
+            }
+            setPanelIndex(2)
+            break
+          case TargetRedPacketStep.Main:
+            handleOnDataChange({
+              validSince: Date.now(),
+            } as any)
+            setPanelIndex(3)
+            break
+          case TargetRedPacketStep.NFTList:
+            setPanelIndex(4)
+            break
+          case TargetRedPacketStep.TargetSend:
+            setPanelIndex(5)
+            break
         }
-        setPanelIndex(1)
-        break
-      case RedPacketStep.Main:
-        handleOnDataChange({
-          validSince: Date.now(),
-        } as any)
-        setPanelIndex(2)
-        break
-      case RedPacketStep.NFTList:
-        setPanelIndex(3)
-        break
-    }
-  }, [])
+      } else {
+        switch (index) {
+          case RedPacketStep.TradeType:
+            setPanelIndex(0)
+            break
+          case RedPacketStep.ChooseType:
+            if (tradeType !== RedPacketOrderType.FromNFT) {
+              handleOnDataChange({
+                collectionInfo: undefined,
+                tokenId: undefined,
+                tradeValue: undefined,
+                balance: undefined,
+                nftData: undefined,
+                belong: undefined,
+                tokenAddress: undefined,
+                image: undefined,
+              } as any)
+            }
+            setPanelIndex(1)
+            break
+          case RedPacketStep.Main:
+            handleOnDataChange({
+              validSince: Date.now(),
+            } as any)
+            setPanelIndex(2)
+            break
+          case RedPacketStep.NFTList:
+            setPanelIndex(3)
+            break
+        }
+      }
+    },
+    [tradeData.type?.scope],
+  )
   React.useEffect(() => {
     setPanelIndex((state) => {
       if (state > 1) {
-        return index + 2
+        if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+          return index + 3
+        } else {
+          return index + 2
+        }
       } else {
         return state
       }
     })
-  }, [index])
+  }, [index, tradeData.type?.scope])
   // LP token should not exist in withdraw panel for now
   const getWalletMapWithoutLP = React.useCallback(() => {
     const clonedWalletMap = cloneDeep(walletMap ?? {})
@@ -205,7 +285,6 @@ export const CreateRedPacketPanel = <
         ...tradeData?.type,
         partition: found!.value.partition,
         mode: found!.value.mode,
-        scope: LuckyTokenViewType.PRIVATE,
       },
       isNFT:
         tradeData.tradeType === RedPacketOrderType.NFT ||
@@ -220,116 +299,210 @@ export const CreateRedPacketPanel = <
   const isToken =
     tradeType === RedPacketOrderType.TOKEN ||
     (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT)
-
+  const [showScope, setShowScope] = React.useState(true)
+  const backToScope = () => setShowScope(true)
+  const notify = useNotify()
   const props: SwitchPanelProps<string> = React.useMemo(() => {
-    return {
-      index: panelIndex,
-      panelList: [
-        {
-          key: 'selectTokenType',
+    const isTarget = tradeData.type?.scope === LuckyTokenViewType.TARGET
+    const commonPanels = [
+      {
+        key: 'selectTokenType',
+        element: (
+          <CreateRedPacketStepTokenType
+            {...({
+              ...rest,
+              handleOnDataChange: handleOnDataChange as any,
+              disabled,
+              tradeType,
+              setActiveStep,
+              activeStep: RedPacketStep.TradeType,
+              backToScope: backToScope,
+              onClickNext: () => {
+                if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+                  setActiveStep(TargetRedPacketStep.ChooseType)
+                } else {
+                  setActiveStep(RedPacketStep.ChooseType)
+                }
+              },
+              showNFT: notify.notifyMap?.redPacket.showNFT && tradeData.type?.scope !== LuckyTokenViewType.PUBLIC
+            } as any)}
+          />
+        ),
+        toolBarItem: undefined,
+      },
+      {
+        key: 'selectType',
+        element: (
+          <CreateRedPacketStepType
+            {...({
+              ...rest,
+              handleOnDataChange: handleOnDataChange as any,
+              tradeData: {
+                ...tradeData,
+                type: tradeData.type,
+              } as any,
+              disabled,
+              tradeType,
+              selectedType,
+              setActiveStep,
+              activeStep: RedPacketStep.ChooseType,
+              onClickNext: () => {
+                if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+                  setActiveStep(TargetRedPacketStep.Main)
+                } else {
+                  setActiveStep(RedPacketStep.Main)
+                }
+              },
+            } as any)}
+            privateChecked={privateChecked}
+            onChangePrivateChecked={() => {
+              handleOnDataChange({
+                type: {
+                  ...tradeData?.type,
+                  scope: !privateChecked ? 1 : 0,
+                },
+              } as any)
+              setPrivateChecked(!privateChecked)
+            }}
+            backToScope={backToScope}
+          />
+        ),
+        toolBarItem: undefined,
+      },
+      {
+        key: 'trade',
+        element: (
+          // @ts-ignore
+          <CreateRedPacketStepWrap
+            {...{
+              ...rest,
+              tradeData,
+              disabled,
+              coinMap,
+              selectedType,
+              handleOnDataChange: handleOnDataChange as any,
+              tradeType,
+              tokenMap,
+              walletMap: getWalletMapWithoutLP(),
+              onChangeEvent,
+              setActiveStep,
+              activeStep: RedPacketStep.Main,
+            }}
+          />
+        ),
+        toolBarItem: undefined,
+      },
+    ]
+    const tokenNFTSelectionPanel = isToken
+      ? {
+          key: 'tradeMenuList',
           element: (
-            <CreateRedPacketStepTokenType
+            <TradeMenuList
               {...({
-                ...rest,
-                handleOnDataChange: handleOnDataChange as any,
-                disabled,
-                tradeType,
-                setActiveStep,
-                activeStep: RedPacketStep.TradeType,
-              } as any)}
-            />
-          ),
-          toolBarItem: undefined,
-        },
-        {
-          key: 'selectType',
-          element: (
-            <CreateRedPacketStepType
-              {...({
-                ...rest,
-                handleOnDataChange: handleOnDataChange as any,
-                tradeData: {
-                  ...tradeData,
-                  type: tradeData.type,
-                } as any,
-                disabled,
-                tradeType,
-                selectedType,
-                setActiveStep,
-                activeStep: RedPacketStep.ChooseType,
-              } as any)}
-              privateChecked={privateChecked}
-              onChangePrivateChecked={() => {
-                handleOnDataChange({
-                  type: {
-                    ...tradeData?.type,
-                    scope: !privateChecked ? 1 : 0,
-                  },
-                } as any)
-                setPrivateChecked(!privateChecked)
-              }}
-            />
-          ),
-          toolBarItem: undefined,
-        },
-        {
-          key: 'trade',
-          element: (
-            // @ts-ignore
-            <CreateRedPacketStepWrap
-              {...{
-                ...rest,
-                tradeData,
-                disabled,
-                coinMap,
-                selectedType,
-                handleOnDataChange: handleOnDataChange as any,
-                tradeType,
-                tokenMap,
+                nonZero: true,
+                sorted: true,
+                selected: switchData.tradeData.belong,
+                tradeData: switchData.tradeData,
                 walletMap: getWalletMapWithoutLP(),
+                t,
+                ...rest,
                 onChangeEvent,
-                setActiveStep,
-                activeStep: RedPacketStep.Main,
-              }}
+                coinMap,
+                //oinMap
+              } as any)}
             />
           ),
           toolBarItem: undefined,
-        },
-      ].concat(
-        isToken
-          ? ([
-              {
-                key: 'tradeMenuList',
-                element: (
-                  <TradeMenuList
-                    {...({
-                      nonZero: true,
-                      sorted: true,
-                      selected: switchData.tradeData.belong,
-                      tradeData: switchData.tradeData,
-                      walletMap: getWalletMapWithoutLP(),
-                      t,
-                      ...rest,
-                      onChangeEvent,
-                      coinMap,
-                      //oinMap
-                    } as any)}
-                  />
-                ),
-                toolBarItem: undefined,
-              },
-            ] as any)
-          : myNFTPanel
-          ? ([
-              {
-                key: 'nftList',
-                element: myNFTPanel,
-                toolBarItem: undefined,
-              },
-            ] as any)
-          : [],
-      ),
-      _width: '100%',
+        }
+      : myNFTPanel
+      ? {
+          key: 'nftList',
+          element: myNFTPanel,
+          toolBarItem: undefined,
+        }
+      : undefined
+    if (isTarget) {
+      return {
+        index: panelIndex,
+        _width: '100%',
+        panelList: [
+          {
+            key: 'tradeMenuList',
+            element: (
+              <TargetRedpacktSelectStep
+                backToScope={backToScope}
+                onCloseRedpacketPop={onCloseRedpacketPop}
+                popRedPacket={popRedPacket}
+                onClickExclusiveRedpacket={(hash) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      redpacketHash: hash,
+                    },
+                  } as any)
+                  setActiveStep(TargetRedPacketStep.TargetSend)
+                }}
+                targetRedPackets={targetRedPackets}
+                onClickCreateNew={() => {
+                  setActiveStep(TargetRedPacketStep.TradeType)
+                }}
+                onClickViewDetail={(hash) => {
+                  onClickViewTargetDetail(hash)
+                }}
+              />
+            ),
+            toolBarItem: undefined,
+          },
+          ...commonPanels,
+          tokenNFTSelectionPanel as any,
+          {
+            key: 'selectTokenType',
+            element: (
+              <TargetRedpacktInputAddressStep
+                contacts={contacts}
+                addressListString={tradeData.target?.addressListString ?? ''}
+                isRedDot={
+                  tradeData.target?.isRedDot !== undefined ? tradeData.target?.isRedDot : true
+                }
+                onChangeIsRedDot={(isRedDot) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      isRedDot,
+                    },
+                  } as any)
+                }}
+                onFileInput={(input) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      addressListString: input,
+                    },
+                  } as any)
+                }}
+                onClickSend={() => {
+                  onSendTargetRedpacketClick()
+                }}
+                onConfirm={(addressList) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      addressListString: addressList.join(';'),
+                    },
+                  } as any)
+                }}
+              />
+            ),
+            toolBarItem: undefined,
+          },
+        ],
+      }
+    } else {
+      return {
+        index: panelIndex,
+        _width: '100%',
+        panelList: [...commonPanels, tokenNFTSelectionPanel as any],
+      }
     }
   }, [
     tradeData,
@@ -345,7 +518,16 @@ export const CreateRedPacketPanel = <
     panelIndex,
     disabled,
     tradeData,
+    isToken,
+    tradeData.type?.scope
   ])
+
+  let activeStep
+  if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+    activeStep = panelIndex === 3 || panelIndex === 4 ? 3 : panelIndex
+  } else {
+    activeStep = panelIndex === 2 || panelIndex === 3 ? 2 : panelIndex
+  }
   return (
     <BoxStyle
       className={walletMap ? 'createRedPacket' : 'loading createRedPacket'}
@@ -357,13 +539,30 @@ export const CreateRedPacketPanel = <
       paddingBottom={0}
       alignItems={'center'}
     >
-      <HorizontalLabelPositionBelowStepper
-        activeStep={panelIndex === 2 || panelIndex === 3 ? 2 : panelIndex}
-        steps={steps}
-      />
-      <Box paddingTop={2} display={'flex'} flex={1} width={'100%'} minWidth={240} paddingX={3}>
-        <SwitchPanel {...{ ...rest, tReady, i18n, t, ...props }} />
-      </Box>
+      {showScope ? (
+        <CreateRedPacketScope
+          showPalazaPublic={tradeData.tradeType !== RedPacketOrderType.FromNFT}
+          onClickNext={() => {
+            setShowScope(false)
+          }}
+          onSelecteScope={(scope) => {
+            handleOnDataChange({
+              type: {
+                ...tradeData?.type,
+                scope: scope,
+              },
+            } as any)
+          }}
+          selectedScope={tradeData.type!.scope!}
+        />
+      ) : (
+        <>
+          <HorizontalLabelPositionBelowStepper activeStep={activeStep} steps={steps} />
+          <Box paddingTop={2} display={'flex'} flex={1} width={'100%'} minWidth={240} paddingX={3}>
+            <SwitchPanel {...{ ...rest, tReady, i18n, t, ...props }} />
+          </Box>
+        </>
+      )}
     </BoxStyle>
   )
 }

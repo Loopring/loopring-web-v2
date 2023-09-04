@@ -94,15 +94,15 @@ const Template: Story<any> = () => {
     <>
       <GlobalStyles
         styles={css`
-          ${globalCss({theme})};
+          ${globalCss({ theme })};
 
           body:before {
             ${
-                    theme.mode === 'dark'
-                            ? ` 
+              theme.mode === 'dark'
+                ? ` 
                         background: var(--color-global-bg);
                    `
-                            : ''
+                : ''
             }
           }
         }

@@ -9,21 +9,22 @@ import {
   Zoom,
 } from '@mui/material'
 import {
-    ButtonProps,
-    TGItemJSXInterface,
-    ToggleButtonGroupProps,
+  ButtonProps,
+  TGItemJSXInterface,
+  ToggleButtonGroupProps,
 } from './Interface'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import {
-    BackIcon,
-    CloseIcon,
-    QRIcon,
-    SoursURL,
+  BackIcon,
+  CloseIcon,
+  QRIcon,
+  SoursURL,
 } from '@loopring-web/common-resources'
 import React from 'react'
 
 const loadingSvg = SoursURL + 'svg/loading.svg'
+
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     line-height: 1em;
@@ -31,8 +32,16 @@ export const Button = styled(MuButton)<ButtonProps>`
     &:hover {
       cursor: pointer;
     }
+    &.MuiButton-outlined {
+      background-color: transparent;
+      :hover{
+        border-color: var(--color-primary);
+      }
+    }
 
     &.MuiButton-root.Mui-disabled {
+      color: var(--color-text-button-disabled);
+      background-color: var(--color-button-disabled);
       ${({ loading, theme, loadingbg }) => {
         return loading === 'true'
                 ? `
@@ -147,7 +156,7 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
               theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
       background: var(--color-box);
       // &:not(:last-child), &:not(:first-of-type) {
-        //   border: ${({theme}) =>
+      border: ${({theme}) =>
               theme.border.borderConfig({c_key: 'var(--color-primary)'})};
       // }
 
@@ -157,10 +166,10 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
         background: var(--color-box);
         // color: var(--color-primary);
         color: var(--color-text-button-select);
-          // border: ${({theme}) =>
+         border: ${({theme}) =>
                 theme.border.borderConfig({c_key: 'var(--color-primary)'})};
-        border: ${({theme}) =>
-                theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
+        /* border: ${({theme}) =>
+                theme.border.borderConfig({c_key: 'var(--color-border-hover)'})}; */
       }
     }
 
@@ -177,10 +186,10 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       color: var(--color-text-button-select) !important;
       background: var(--color-box) !important;
       //background:  var(--color-disable);
-        // border: ${({theme}) =>
-              theme.border.borderConfig({c_key: 'var(--color-primary)'})}
       border: ${({theme}) =>
-              theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
+              theme.border.borderConfig({c_key: 'var(--color-primary)'})}
+      /* border: ${({theme}) =>
+              theme.border.borderConfig({c_key: 'var(--color-border-hover)'})}; */
     }
   }
 ` as typeof MuToggleButtonGroup
@@ -362,12 +371,12 @@ const QRStyle = styled(Box)`
     left: -2px;
     //z-index: -1;
     background-image: ${({ theme }) => {
-      if (theme.mode === 'dark') {
-        return `url('${SoursURL}images/qr_code_dark.png')`
-      } else {
-        return `url('${SoursURL}images/qr_code_light.png')`
-      }
-    }};
+  if (theme.mode === 'dark') {
+    return `url('${SoursURL}images/qr_code_dark.png')`
+  } else {
+    return `url('${SoursURL}images/qr_code_light.png')`
+  }
+}};
   }
 ` as typeof Box
 export const QRButtonStyle = ({

@@ -200,7 +200,6 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
         />
         <Box
           marginTop={2}
-          marginLeft={2}
           display={'flex'}
           sx={isMobile ? { maxWidth: 'calc(100vw - 32px)' } : {}}
         >

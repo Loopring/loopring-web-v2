@@ -34,12 +34,7 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   width: 100%;
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(
-    to bottom,
-    var(--color-global-bg-opacity) 0%,
-    var(--color-global-bg-opacity) 100%
-  );
-
+  background-color: var(--color-box-secondary);
   .redPacketNFT & {
     background-image: none;
     background-color: initial;

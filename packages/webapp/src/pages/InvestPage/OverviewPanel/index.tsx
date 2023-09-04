@@ -1,11 +1,22 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Avatar, Box, Card, CardContent, Divider, Grid, Link, Typography } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  BoxProps,
+  BoxTypeMap,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Link,
+  Typography,
+} from '@mui/material'
 import styled from '@emotion/styled'
 
 import React from 'react'
 import { useOverview } from './hook'
 
-import { useSettings, InvestOverviewTable, useToggle } from '@loopring-web/component-lib'
+import { Button, useSettings, InvestOverviewTable, useToggle } from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
@@ -16,28 +27,53 @@ import {
   dualAdvice,
   myLog,
   stakeAdvice,
+  SoursURL,
   leverageETHAdvice,
+  Overview,
 } from '@loopring-web/common-resources'
 import { useAccount, useNotify } from '@loopring-web/core'
+import { useTheme } from '@emotion/react'
+import { MaxWidthContainer, containerColors } from '..'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: var(--color-box);
+  /* background: var(--dark700); */
   border-radius: ${({ theme }) => theme.unit}px;
+  width: 100%;
+  overflow: hidden;
   .MuiCard-root {
-    padding: ${({ theme }) => 2 * theme.unit}px;
+    padding: ${({ theme }) => 4 * theme.unit}px;
+    padding-top: ${({ theme }) => 6 * theme.unit}px;
     cursor: pointer;
-    background: var(--color-pop-bg);
+    background: var(--dark700);
+    border: 1px solid;
+    border-color: var(--color-border);
+    width: ${({ theme }) => 34 * theme.unit}px;
     .MuiCardContent-root {
       padding: 0;
     }
+    box-shadow: none;
+    .hover-button {
+      background: var(--color-button-inactive);
+      color: var(--color-text-primary);
+    }
     :hover {
-      background: var(--color-box-hover);
+      /* background: var(--color-box-hover); */
+      box-shadow: var(--color-shadow);
+      .hover-button {
+        color: var(--color-text-button);
+        background: var(--color-primary);
+      }
     }
   }
+
+  .scroll-view::-webkit-scrollbar {
+    display: none;
+  }
 `
+
 
 export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { filteredData, filterValue, getFilteredData, rawData, myMapLoading, myRawData } =
@@ -59,96 +95,116 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
       ? []
       : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4] }]),
   ]
+  const theme = useTheme()
+
+  
   return (
     <>
-      <WrapperStyled marginBottom={3}>
-        <Grid container spacing={2} padding={3}>
-          {investAdviceList.map((item, index) => {
-            return (
-              <Grid item xs={12} md={4} lg={3} key={item.type + index}>
-                <Card onClick={() => history.push(item.router)}>
-                  <CardContent>
-                    <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-                      <Avatar
-                        variant='circular'
-                        style={{
-                          height: 'var(--svg-size-huge)',
-                          width: 'var(--svg-size-huge)',
-                        }}
-                        src={item.banner}
-                      />
-                      <Box flex={1} display={'flex'} flexDirection={'column'} paddingLeft={1}>
-                        <Typography variant={'h5'}>
+      <WrapperStyled >
+        <MaxWidthContainer
+          display={'flex'}
+          justifyContent={'space-between'}
+          background={containerColors[0]}
+          height={34 * theme.unit}
+          alignItems={'center'}
+        >
+          <Box paddingY={7}>
+            <Typography
+              color={'var(--color-text-primary)'}
+              marginBottom={2}
+              fontSize={'48px'}
+              variant={'h1'}
+            >
+              {t("labelInvestLoopringEarn")}
+            </Typography>
+            <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
+              {t("labelInvestLoopringEarnDes")}
+            </Typography>
+            <Button
+              onClick={() => history.push('/invest/balance')}
+              sx={{ width: 18 * theme.unit }}
+              variant={'contained'}
+            >
+              {t("labelAssetInvests")}
+            </Button>
+          </Box>
+          <Box marginRight={5}>
+            <Overview />
+          </Box>
+        </MaxWidthContainer>
+        <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={containerColors[1]}>
+          <Box
+            sx={{
+              width: '100%',
+              overflowX: 'scroll',
+              maxWidth: 'lg',
+              paddingY: 3,
+            }}
+            className={'scroll-view'}
+          >
+            <Box sx={{ display: 'flex', width: 'fit-content' }}>
+              {investAdviceList.map((item, index) => {
+                return (
+                  <Card key={item.type} onClick={() => history.push(item.router)} sx={{ marginRight: 2.5 }}>
+                    <CardContent>
+                      <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                        <Avatar
+                          variant='circular'
+                          style={{
+                            height: 'var(--svg-size-huge)',
+                            width: 'var(--svg-size-huge)',
+                          }}
+                          src={item.banner}
+                        />
+                        <Typography marginTop={0.5} variant={'h5'}>
                           {t(item.titleI18n, { ns: 'layout' })}
                         </Typography>
-                        <Typography
-                          variant={'body2'}
-                          textOverflow={'ellipsis'}
-                          whiteSpace={'pre'}
-                          overflow={'hidden'}
-                          color={'var(--color-text-third)'}
-                        >
-                          {t(item.desI18n, { ns: 'layout' })}
-                        </Typography>
-                      </Box>
-                      <BackIcon
-                        fontSize={'small'}
-                        htmlColor={'var(--color-text-third)'}
-                        sx={{
-                          transform: 'rotate(180deg)',
-                        }}
-                      />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )
-          })}
-        </Grid>
-        {!!(account.readyState === AccountStatus.ACTIVATED) && (
-          <>
-            <Box display={'flex'} flexDirection={'column'}>
-              <Typography variant={'h5'} marginBottom={1} marginX={3}>
-                {t('labelTitleMyInvestAvailable', { ns: 'common' })}
-              </Typography>
-              <InvestOverviewTable
-                showLoading={myMapLoading}
-                coinJson={coinJson}
-                rawData={myRawData}
-                rowConfig={RowInvestConfig}
-              />
-            </Box>
-            <Box marginTop={3} marginBottom={2} marginX={2}>
-              <Divider />
-            </Box>
-          </>
-        )}
 
-        <Box display={'flex'} flex={1} marginBottom={1} flexDirection={'column'}>
-          <InvestOverviewTable
-            showLoading={showLoading}
-            showFilter={true}
-            filterValue={filterValue}
-            getFilteredData={getFilteredData}
-            coinJson={coinJson}
-            rawData={filteredData}
-            rowConfig={RowInvestConfig}
-          />
-          {rawData.length !== filteredData.length && (
-            <Link
-              variant={'body1'}
-              marginY={1}
-              textAlign={'center'}
-              display={'inline-flex'}
-              justifyContent={'center'}
-              onClick={() => {
-                getFilteredData('')
-              }}
-            >
-              {t('labelViewMore')}
-            </Link>
-          )}
-        </Box>
+                        <Typography variant={'h3'} marginTop={5} >
+                          21.2%-102.38%
+                        </Typography>
+                        <Typography>{t("labelAPR")}</Typography>
+                        <Button
+                          className={'hover-button'}
+                          sx={{ marginTop: 2 }}
+                          fullWidth
+                          variant={'contained'}
+                        >
+                          {t('labelLiquidityDeposit')}
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </Box>
+          </Box>
+          <Box marginTop={5} display={'flex'} flex={1} marginBottom={1} flexDirection={'column'}>
+            <InvestOverviewTable
+              showLoading={showLoading}
+              showFilter={true}
+              filterValue={filterValue}
+              getFilteredData={getFilteredData}
+              coinJson={coinJson}
+              rawData={filteredData}
+              rowConfig={RowInvestConfig}
+            />
+            {rawData.length !== filteredData.length && (
+              <Link
+                variant={'body1'}
+                marginY={1}
+                textAlign={'center'}
+                display={'inline-flex'}
+                justifyContent={'center'}
+                onClick={() => {
+                  getFilteredData('')
+                }}
+              >
+                {t('labelViewMore')}
+              </Link>
+            )}
+          </Box>
+        </MaxWidthContainer>
       </WrapperStyled>
     </>
   )

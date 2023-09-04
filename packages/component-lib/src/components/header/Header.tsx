@@ -69,7 +69,7 @@ const ToolBarStyled = styled(Toolbar)`
 const HeaderStyled = styled(AppBar)`
   && {
     z-index: 400;
-    box-shadow: var(--shadow-header);
+    box-shadow: none;
     height: var(--header-height);
     margin: 0 auto;
     background-color: var(--color-box);

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, CardContent, Grid } from '@mui/material'
+import { Box, CardContent, Grid, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { TradePanel } from './TradePanel'
 import {
@@ -15,7 +15,9 @@ import {
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import { BackIcon, TOAST_TIME } from '@loopring-web/common-resources'
+import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
+import { MaxWidthContainer, containerColors } from '..'
+import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`
   position: relative;
@@ -84,27 +86,17 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   } = confirmation.useConfirmation()
   const {
     toggle: {
-      CIETHInvest: {
-        enable
-      }
-    }
+      CIETHInvest: { enable },
+    },
   } = useToggle()
 
-  const {
-    confirmationNeeded,
-    showLeverageETHPopup,
-    setShowLeverageETHPopup
-  } = usePopup()
+  const { confirmationNeeded, showLeverageETHPopup, setShowLeverageETHPopup } = usePopup()
   const _confirmedDefiInvest = {
     isShow: showLeverageETHPopup,
     type: 'CiETH',
     confirmationNeeded,
   }
-  const setConfirmedDefiInvest = ({
-    isShow,
-  }: {
-    isShow: boolean
-  }) => {
+  const setConfirmedDefiInvest = ({ isShow }: { isShow: boolean }) => {
     if (isShow) {
       setShowLeverageETHPopup({ show: true, confirmationNeeded: true })
     } else {
@@ -121,79 +113,83 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
       isShow: enable ? !confirmed : false,
     })
   }, [confirmed, enable])
-
+  const theme = useTheme()
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-      <Box marginBottom={2} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-        <Button
-          startIcon={<BackIcon fontSize={'small'} />}
-          variant={'text'}
-          size={'medium'}
-          sx={{ color: 'var(--color-text-secondary)' }}
-          color={'inherit'}
-          onClick={() =>
-            history.push(match?.params?.isJoin ? '/invest/balance' : '/invest/overview')
-          }
-        >
-          {t('labelLeverageETHBack')}
-          {/*<Typography color={"textPrimary"}></Typography>*/}
-        </Button>
-        <Button
-          variant={'outlined'}
-          sx={{ marginLeft: 2 }}
-          onClick={() => history.push('/invest/balance/stake')}
-        >
-          {t('labelInvestMyDefi')}
-        </Button>
-      </Box>
-      <StyleWrapper
+    <Box display={'flex'} flexDirection={'column'} flex={1} >
+      <MaxWidthContainer
         display={'flex'}
-        flexDirection={'column'}
-        justifyContent={'center'}
+        justifyContent={'space-between'}
+        background={containerColors[0]}
+        height={34 * theme.unit}
         alignItems={'center'}
-        flex={1}
       >
-        {marketArray?.length ? (
-          // match?.params?.market && _market ? (
-          <TradePanel
-            isJoin={isJoin}
-            setServerUpdate={setServerUpdate}
-            setToastOpen={setToastOpen}
+        <Box paddingY={7}>
+          <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+            {t('labelLeverageETHStaking')}
+          </Typography>
+          <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
+            {t('labelLeverageETHStakingDes')}
+          </Typography>
+          <Button
+            onClick={() => history.push('/invest/balance')}
+            sx={{ width: 18 * theme.unit }}
+            variant={'contained'}
+          >
+            {t('labelMyInvestLRCStaking')}
+          </Button>
+        </Box>
+        <SatkingLogo />
+      </MaxWidthContainer>
+      <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]} paddingY={5}>
+        <StyleWrapper
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          flex={1}
+        >
+          {marketArray?.length ? (
+            // match?.params?.market && _market ? (
+            <TradePanel
+              isJoin={isJoin}
+              setServerUpdate={setServerUpdate}
+              setToastOpen={setToastOpen}
+            />
+          ) : (
+            // )
+            // : (
+            //   <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
+            // )
+            <LoadingBlock />
+          )}
+          <Toast
+            alertText={toastOpen?.content ?? ''}
+            severity={toastOpen?.type ?? ToastType.success}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
           />
-        ) : (
-          // )
-          // : (
-          //   <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
-          // )
-          <LoadingBlock />
-        )}
-        <Toast
-          alertText={toastOpen?.content ?? ''}
-          severity={toastOpen?.type ?? ToastType.success}
-          open={toastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-        />
 
-        <ConfirmInvestDefiServiceUpdate
-          open={serverUpdate}
-          handleClose={() => setServerUpdate(false)}
-        />
-        <ConfirmInvestDefiRisk
-          confirmationNeeded={confirmationNeeded}
-          open={_confirmedDefiInvest.isShow}
-          type={_confirmedDefiInvest.type as any}
-          handleClose={(_e, isAgree) => {
-            if (!isAgree) {
-              setConfirmedDefiInvest({ isShow: false })
-              history.push('/invest/overview')
-            } else {
-              confirmedLeverageETHInvest()
-              setConfirmedDefiInvest({ isShow: false })
-            }
-          }}
-        />
-      </StyleWrapper>
+          <ConfirmInvestDefiServiceUpdate
+            open={serverUpdate}
+            handleClose={() => setServerUpdate(false)}
+          />
+          <ConfirmInvestDefiRisk
+            confirmationNeeded={confirmationNeeded}
+            open={_confirmedDefiInvest.isShow}
+            type={_confirmedDefiInvest.type as any}
+            handleClose={(_e, isAgree) => {
+              if (!isAgree) {
+                setConfirmedDefiInvest({ isShow: false })
+                history.push('/invest/overview')
+              } else {
+                confirmedLeverageETHInvest()
+                setConfirmedDefiInvest({ isShow: false })
+              }
+            }}
+          />
+        </StyleWrapper>
+      </MaxWidthContainer>
     </Box>
   )
 })
