@@ -201,7 +201,7 @@ export const useTradeRace = () => {
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer.current as NodeJS.Timeout)
       }
-      nodeTimer.current = setTimeout(() => calculateTimeLeft(), 1000)
+      nodeTimer.current = setTimeout(calculateTimeLeft, 1000)
     }
   }, [eventData, eventStatus])
   React.useEffect(() => {

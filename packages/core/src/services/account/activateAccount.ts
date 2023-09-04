@@ -86,6 +86,7 @@ export async function activateAccount({
     }
     myLog('generateKeyPair done')
 
+    // @ts-ignore
     const request: sdk.UpdateAccountRequestV3 = {
       // // @ts-ignore
       // recommenderAccountId: "" as any,
@@ -109,7 +110,7 @@ export async function activateAccount({
       const response = await LoopringAPI?.userAPI?.updateAccount(
         {
           request,
-          web3: connectProvides.usedWeb3 as any,
+          web3: connectProvides.usedWeb3,
           chainId: system.chainId as any,
           walletType: (ConnectProviders[connectName] ??
             connectName) as unknown as sdk.ConnectorNames,

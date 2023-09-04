@@ -63,7 +63,8 @@ export const DataGridStyled = styled(DataGrid)`
 
   &.rdg {
     &.scrollable .rdg-header-row {
-      background: var(--color-box);
+      background: transparent;
+      /* background: var(--color-box); */
     }
 
     min-height: var(--min-height);
@@ -73,7 +74,7 @@ export const DataGridStyled = styled(DataGrid)`
     border: rgba(0, 0, 0, 0) 0 solid;
     //background-color: inherit;
     .rdg-header-row {
-      color: var(--color-text-secondary);
+      color: var(--color-text-third);
       width: 100%;
       background-color: inherit;
       font-weight: normal;

@@ -250,6 +250,10 @@ export const NFTList = withTranslation('common')(
                     size={size}
                     contentheight={sizeConfig.contentHeight}
                     className={'nft-item'}
+                    style={{
+                      backgroundColor: 'var(--color-box-secondary)',
+                      border: 'none'
+                    }}
                   >
                     {isEdit && (
                       <BoxBtnGroup className={'btn-group'}>
@@ -314,7 +318,6 @@ export const NFTList = withTranslation('common')(
                         flexDirection={'row'}
                         alignItems={'center'}
                         justifyContent={'space-between'}
-                        sx={{ background: 'var(--color-box-nft-label)' }}
                       >
                         <Box display={'flex'} flexDirection={'column'} width={'60%'}>
                           <Typography

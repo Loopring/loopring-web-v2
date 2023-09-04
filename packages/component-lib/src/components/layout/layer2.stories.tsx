@@ -189,17 +189,17 @@ const Template: Story<any> = () => {
       <MemoryRouter initialEntries={['/']}>
         <GlobalStyles
           styles={css`
-            ${globalCss({theme})};
+            ${globalCss({ theme })};
 
             body:before {
               ${
-                      theme.mode === 'dark'
-                              ? `
+                theme.mode === 'dark'
+                  ? `
             color: ${theme.colorBase.textPrimary};        
            
             background: var(--color-global-bg);
        `
-                              : ''
+                  : ''
               }
             }
           }

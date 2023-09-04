@@ -142,7 +142,6 @@ const accountSlice: Slice<AccountState> = createSlice<
 export default accountSlice
 export const {
   updateAccountStatus,
-    // restAccountStatus,
   changeShowModel,
   cleanAccountStatus,
   nextAccountStatus,

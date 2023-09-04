@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Avatar, Box, Card, CardContent, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardContent, CardProps, Typography } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useDualHook } from './hook'
 import {
@@ -11,7 +11,7 @@ import {
   CardStyleItem,
 } from '@loopring-web/component-lib'
 import { useDualMap, useSystem, useTokenMap } from '@loopring-web/core'
-import { getValuePrecisionThousand, SoursURL, TokenType } from '@loopring-web/common-resources'
+import { BorderTickSvg, getValuePrecisionThousand, SoursURL, TokenType } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
@@ -35,6 +35,31 @@ const WrapperStyled = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
+
+const TickCardStyleItem = (
+  props: CardProps & {
+    contentheight?: number
+    size?: 'large' | 'medium' | 'small' | undefined
+    selected?: boolean
+  },
+) => {
+  const { children, selected, ...rest } = props
+  return (
+    <CardStyleItem {...rest}>
+      {selected && (
+        <BorderTickSvg
+          fontSize={'large'}
+          sx={{
+            position: 'absolute',
+            top: '0px',
+            right: '0px',
+          }}
+        />
+      )}
+      {children}
+    </CardStyleItem>
+  )
+}
 
 export const BeginnerMode: any = withTranslation('common')(
   ({
@@ -114,20 +139,19 @@ export const BeginnerMode: any = withTranslation('common')(
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>
-          <Typography marginBottom={2} display={'flex'} variant={'h5'}>
-            <WhiteCircleText>1</WhiteCircleText>
-            <Typography marginLeft={1}>{t('labelDualBeginnerStep1Title')}</Typography>
+          <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+            {t('labelDualBeginnerStep1Title')}
           </Typography>
           <Box display={'flex'} flexDirection={'row'}>
             {tokenList.map(({ tokenName, minAPY, maxAPY, logo }) => {
               const selected = step1SelectedToken === tokenName
-
               return (
                 <Box marginRight={2} key={logo}>
-                  <CardStyleItem
+                  <TickCardStyleItem
                     className={
                       selected ? 'btnCard dualInvestCard selected' : 'btnCard dualInvestCard '
                     }
+                    selected={selected}
                     onClick={() => onSelectStep1Token(tokenName.toString())}
                   >
                     <CardContent sx={{ alignItems: 'center' }}>
@@ -175,7 +199,7 @@ export const BeginnerMode: any = withTranslation('common')(
                         </Typography>
                       </Typography>
                     </CardContent>
-                  </CardStyleItem>
+                  </TickCardStyleItem>
                 </Box>
               )
             })}
@@ -184,18 +208,18 @@ export const BeginnerMode: any = withTranslation('common')(
 
         {showStep2 && (
           <Box marginBottom={5}>
-            <Typography marginBottom={2} display={'flex'} variant={'h5'}>
-              <WhiteCircleText>2</WhiteCircleText>
-              <Typography marginLeft={1}>{t('labelDualBeginnerStep2Title')}</Typography>
+            <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+              {t('labelDualBeginnerStep2Title')}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
               <Box marginRight={2}>
-                <CardStyleItem
+                <TickCardStyleItem
                   className={
                     step2BuyOrSell === 'Sell'
                       ? 'btnCard dualInvestCard selected'
                       : 'btnCard dualInvestCard '
                   }
+                  selected={step2BuyOrSell === 'Sell'}
                   onClick={() => onSelectStep2BuyOrSell('Sell')}
                 >
                   <CardContent sx={{ alignItems: 'center' }}>
@@ -219,15 +243,16 @@ export const BeginnerMode: any = withTranslation('common')(
                       </Typography>
                     </Typography>
                   </CardContent>
-                </CardStyleItem>
+                </TickCardStyleItem>
               </Box>
               <Box marginLeft={2}>
-                <CardStyleItem
+                <TickCardStyleItem
                   className={
                     step2BuyOrSell === 'Buy'
                       ? 'btnCard dualInvestCard selected'
                       : 'btnCard dualInvestCard '
                   }
+                  selected={step2BuyOrSell === 'Buy'}
                   onClick={() => onSelectStep2BuyOrSell('Buy')}
                 >
                   <CardContent sx={{ alignItems: 'center' }}>
@@ -251,7 +276,7 @@ export const BeginnerMode: any = withTranslation('common')(
                       </Typography>
                     </Typography>
                   </CardContent>
-                </CardStyleItem>
+                </TickCardStyleItem>
               </Box>
             </Box>
           </Box>
@@ -259,20 +284,20 @@ export const BeginnerMode: any = withTranslation('common')(
 
         {showStep3 && (
           <Box marginBottom={2}>
-            <Typography marginBottom={2} display={'flex'} variant={'h5'}>
-              <WhiteCircleText>3</WhiteCircleText>
-              <Typography marginLeft={1}>{t('labelDualBeginnerStep3Title')}</Typography>
+            <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+              {t('labelDualBeginnerStep3Title')}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
               {step3Tokens.map((token) => {
                 return (
                   <Box marginRight={2} key={token}>
-                    <CardStyleItem
+                    <TickCardStyleItem
                       className={
                         step3Token === token
                           ? 'btnCard dualInvestCard selected'
                           : 'btnCard dualInvestCard '
                       }
+                      selected={step3Token === token}
                       onClick={() => onSelectStep3Token(token)}
                     >
                       <CardContent sx={{ alignItems: 'center' }}>
@@ -287,7 +312,7 @@ export const BeginnerMode: any = withTranslation('common')(
                               })}
                         </Typography>
                       </CardContent>
-                    </CardStyleItem>
+                    </TickCardStyleItem>
                   </Box>
                 )
               })}

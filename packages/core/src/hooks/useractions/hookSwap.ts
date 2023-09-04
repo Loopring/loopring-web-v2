@@ -69,7 +69,6 @@ export enum ShowWitchAle3t1 {
   SwapSecondConfirmation = 'SwapSecondConfirmation',
   ConfirmImpact = 'ConfirmImpact',
   SmallPrice = 'SmallPrice',
-
 }
 
 export const useAlert = () => {

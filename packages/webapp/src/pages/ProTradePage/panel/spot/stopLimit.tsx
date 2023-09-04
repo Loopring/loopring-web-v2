@@ -83,7 +83,7 @@ export const StopLimitView = withTranslation('common')(
                     flexDirection={'column'}
                     alignItems={'stretch'}
                     height={'inherit'}
-                    sx={{overflowY: 'scroll'}}
+                    sx={{overflowY: 'scroll', background: 'var(--color-global-bg)'}}
                     marginBottom={2}
                     flex={1}
                 >
