@@ -1851,4 +1851,7 @@ export default {
   labelRedPacketPublicTooltip: 'Your Red Packet is public, and everyone can participate in claiming it.',
   labelRedPacketPrivateTooltip: 'Your Red Packet is private, and only the addresses you specify can claim it.',
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketExclusiveSelected: 'Selected: {{count}}',
+  labelRedpacketExclusiveManualEdit: 'Manual Edit',
+  labelRedpacketValidAddresses: 'Valid Addresses: {{count}}',
 }

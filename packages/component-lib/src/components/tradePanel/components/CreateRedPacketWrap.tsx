@@ -1661,7 +1661,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               paddingTop={2}
             >
               <Typography marginBottom={3} variant={'h4'}>
-                Contact import
+                {t("labelRedpacketContactImport")}
               </Typography>
               <InputSearch
                 onChange={(e) => {
@@ -1713,7 +1713,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     )
                   })}
               </Box>
-              <Typography marginBottom={1}>Selected {selectedAddresses.length}</Typography>
+              <Typography marginBottom={1}>{t("labelRedpacketExclusiveSelected", {count: selectedAddresses.length})}</Typography>
               <Box>
                 <Button
                   onClick={() => {
@@ -1723,7 +1723,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   variant={'contained'}
                   fullWidth
                 >
-                  Confirm
+                  {t("labelConfirm")}
                 </Button>
               </Box>
             </Box>
@@ -1743,7 +1743,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               paddingTop={2}
             >
               <Typography marginBottom={3} variant={'h4'}>
-                Manual Edit
+                {t("labelRedpacketExclusiveManualEdit")}
               </Typography>
               <MultiLineInput
                 onChange={(e) => {
@@ -1761,7 +1761,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   variant={'contained'}
                   fullWidth
                 >
-                  Confirm
+                  {t("labelConfirm")}
                 </Button>
               </Box>
             </Box>
@@ -1799,7 +1799,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
             </Typography>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography>Valid Addresses: {getValidAddresses(addressListString).length}</Typography>
+            <Typography>{t("labelRedpacketValidAddresses", {count: getValidAddresses(addressListString).length})}</Typography>
             <Box>
               <Button
                 onClick={(e) => {
@@ -1809,7 +1809,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 variant={'outlined'}
                 sx={{marginRight: 3.5}}
               >
-                Manual Edit
+                {t("labelRedpacketExclusiveManualEdit")}
               </Button>
 
               <FormControlLabel
