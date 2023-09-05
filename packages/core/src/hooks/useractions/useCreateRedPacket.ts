@@ -801,8 +801,8 @@ export const useCreateRedPacket = <
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
 
     const getValidAddresses = (input: string) => {
-      return input.split(';').filter((str) => {
-        return isAddress(str)
+      return input.split(';').map(str => str.trim()).filter((str) => {
+        return isAddress(str.trim())
       })
     }
 
@@ -969,6 +969,9 @@ export const useCreateRedPacket = <
   const [popRedPacket, setPopRedPacket] = React.useState(
     undefined as sdk.LuckTokenClaimDetail | undefined,
   )
+  const [isWhiteListed, setIsWhiteListed] = React.useState(
+    undefined as undefined | boolean
+  )
 
   React.useEffect(() => {
     ;(async () => {
@@ -986,6 +989,12 @@ export const useCreateRedPacket = <
         account.apiKey,
       )
       setTargetRedPackets(response ? response?.list : [])
+    })()
+    ;(async () => {
+      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
+      const found = (response?.raw_data as any)
+        .find(item => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase())
+      setIsWhiteListed(found ? true : false)
     })()
   }, [])
 
@@ -1043,6 +1052,7 @@ export const useCreateRedPacket = <
     popRedPacket,
     onClickViewTargetDetail,
     onCloseRedpacketPop,
+    isWhiteListed
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }

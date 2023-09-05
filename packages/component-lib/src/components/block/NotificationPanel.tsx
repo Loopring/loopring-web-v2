@@ -23,33 +23,11 @@ export const NotificationPanel = ({
   showExclusiveRedpacket: boolean
   exclusiveRedpacketCount: number
 }) => {
-  // myLog("notifications", notification.notifications);
-  notification.notifications = notification.notifications?.reduce((prev, item) => {
-    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
-      prev.push(item)
-    }
-    return prev
-  }, [] as NOTIFICATION_ITEM[])
-  notification.activities = notification.activities?.reduce((prev, item) => {
-    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
-      prev.push(item)
-    }
-    return prev
-  }, [] as ACTIVITY[])
-
-  notification.activities = notification?.activitiesInvest?.reduce((prev, item) => {
-    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
-      prev.push(item)
-    }
-    return prev
-  }, notification.activities as ACTIVITY[])
 
   const hasActivities = notification.activities && notification.activities?.length
 
   const hasNotifications = notification.notifications && notification.notifications?.length
 
-  // const showExclusiveRedpacket = true
-  console.log('exclusiveRedpacketCount', exclusiveRedpacketCount) 
 
   return (
     <BoxStyle

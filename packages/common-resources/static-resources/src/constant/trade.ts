@@ -690,6 +690,7 @@ export type RedPacketOrderData<I> = {
     addressListString: string
     isRedDot: boolean
   }
+  showNFT: boolean
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>

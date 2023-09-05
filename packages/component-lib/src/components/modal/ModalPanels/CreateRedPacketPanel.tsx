@@ -59,6 +59,7 @@ export const CreateRedPacketPanel = <
   onClickViewTargetDetail,
   onCloseRedpacketPop,
   contacts,
+  isWhiteListed,
   ...rest
 }: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(['common', 'error'])
@@ -304,6 +305,9 @@ export const CreateRedPacketPanel = <
   const notify = useNotify()
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     const isTarget = tradeData.type?.scope === LuckyTokenViewType.TARGET
+    let showNFT = isTarget 
+      ? notify.notifyMap?.redPacket.showNFT && isWhiteListed
+      : notify.notifyMap?.redPacket.showNFT && tradeData.type?.scope !== LuckyTokenViewType.PUBLIC
     const commonPanels = [
       {
         key: 'selectTokenType',
@@ -324,7 +328,7 @@ export const CreateRedPacketPanel = <
                   setActiveStep(RedPacketStep.ChooseType)
                 }
               },
-              showNFT: notify.notifyMap?.redPacket.showNFT && tradeData.type?.scope !== LuckyTokenViewType.PUBLIC
+              showNFT
             } as any)}
           />
         ),
@@ -365,6 +369,7 @@ export const CreateRedPacketPanel = <
               setPrivateChecked(!privateChecked)
             }}
             backToScope={backToScope}
+            showNFT={showNFT}
           />
         ),
         toolBarItem: undefined,
@@ -480,6 +485,14 @@ export const CreateRedPacketPanel = <
                     },
                   } as any)
                 }}
+                onManualInputConfirm={(input) => {
+                  handleOnDataChange({
+                    target: {
+                      ...tradeData.target,
+                      addressListString: input,
+                    },
+                  } as any)
+                }}
                 onClickSend={() => {
                   onSendTargetRedpacketClick()
                 }}
@@ -491,6 +504,7 @@ export const CreateRedPacketPanel = <
                     },
                   } as any)
                 }}
+                showPopUpOption={isWhiteListed ? true : false}
               />
             ),
             toolBarItem: undefined,
@@ -543,6 +557,11 @@ export const CreateRedPacketPanel = <
         <CreateRedPacketScope
           showPalazaPublic={tradeData.tradeType !== RedPacketOrderType.FromNFT}
           onClickNext={() => {
+            if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+              setActiveStep(TargetRedPacketStep.TargetChosse)
+            } else {
+              setActiveStep(RedPacketStep.TradeType)
+            }
             setShowScope(false)
           }}
           onSelecteScope={(scope) => {

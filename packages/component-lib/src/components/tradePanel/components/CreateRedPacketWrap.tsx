@@ -858,6 +858,7 @@ export const CreateRedPacketStepType = withTranslation()(
     disabled = false,
     btnInfo,
     onClickNext,
+    showNFT,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tokenMap'> & {
     selectedType: LuckyRedPacketItem
@@ -879,7 +880,7 @@ export const CreateRedPacketStepType = withTranslation()(
           : item.showInERC20) &&
         (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true),
     ).filter((item) => {
-      return !(item.isBlindboxNFT && tradeData.type?.scope === sdk.LuckyTokenViewType.PUBLIC)
+      return !(item.isBlindboxNFT && showNFT)
     })
 
     return (
@@ -897,6 +898,7 @@ export const CreateRedPacketStepType = withTranslation()(
           alignItems={'stretch'}
           alignSelf={'stretch'}
           marginY={2}
+          minHeight={300}
         >
           {filteredList.map((item: LuckyRedPacketItem, index) => {
             return (
@@ -1353,7 +1355,9 @@ export const TargetRedpacktSelectStep = withTranslation()(
       >
         <Box width={'100%'}>
           <Typography marginTop={5} marginBottom={2}>
-            {t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
+            {targetRedPackets.length === 0
+              ? t('labelRedpacketExclusiveEmpty')
+              : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
           </Typography>
           <Box display={'flex'} flexWrap={'wrap'}>
             {targetRedPackets &&
@@ -1390,8 +1394,14 @@ export const TargetRedpacktSelectStep = withTranslation()(
                         </Box>
                       )}
                       <Box marginLeft={1}>
-                        <Typography>{redpacket.isNft ? redpacket.nftTokenInfo?.metadata?.base.name : idIndex[redpacket.tokenId]}</Typography>
-                        <Typography color={'var(--color-text-secondary)'}>{redpacket.info.memo}</Typography>
+                        <Typography>
+                          {redpacket.isNft
+                            ? redpacket.nftTokenInfo?.metadata?.base.name
+                            : idIndex[redpacket.tokenId]}
+                        </Typography>
+                        <Typography color={'var(--color-text-secondary)'}>
+                          {redpacket.info.memo}
+                        </Typography>
                       </Box>
                     </Box>
                     <Button
@@ -1417,8 +1427,9 @@ export const TargetRedpacktSelectStep = withTranslation()(
                       {t('labelRedpacketSentMaxLimit')}
                     </Typography>
                     <Typography color={'var(--color-text-secondary)'}>
-                      {redpacket.tokenAmount.totalCount - (redpacket.tokenAmount as any).remainTargetCount} /{' '}
-                      {redpacket.tokenAmount.totalCount}
+                      {redpacket.tokenAmount.totalCount -
+                        (redpacket.tokenAmount as any).remainTargetCount}{' '}
+                      / {redpacket.tokenAmount.totalCount}
                     </Typography>
                   </Box>
                 </TargetRedpacktOption>
@@ -1589,17 +1600,40 @@ export const TargetRedpacktSelectStep = withTranslation()(
   },
 )
 
+const MultiLineInput = styled('textarea')`
+  background: transparent;
+  height: 150px;
+  border: 1px solid var(--color-border);
+  outline: none;
+  color: var(--color-text-primary);
+  padding: ${({theme}) => theme.unit * 1}px;
+  border-radius: ${({theme}) => theme.unit * 0.5}px;
+`
+
 export const TargetRedpacktInputAddressStep = withTranslation()(
   (props: TargetRedpacktInputAddressStepProps & WithTranslation) => {
-    const { contacts, isRedDot, addressListString, onChangeIsRedDot, onFileInput, onClickSend, onConfirm, t } = props
+    const {
+      contacts,
+      isRedDot,
+      addressListString,
+      onChangeIsRedDot,
+      onFileInput,
+      onClickSend,
+      onConfirm,
+      onManualInputConfirm,
+      showPopUpOption,
+      t,
+    } = props
     const theme = useTheme()
     const { isMobile } = useSettings()
     const [ showContactModal, setShowContactModal ] = React.useState(false)
+    const [ showManualEditModal, setShowManualEditModal ] = React.useState(false)
+    const [ manualEditStr, setManualEditStr ] = React.useState('')
     const [ selectedAddresses, setSelectedAddresses ] = React.useState([] as string[])
     const [ search, setSearch ] = React.useState('')
     const getValidAddresses = (input: string) => {
-      return input.split(';').filter((str) => {
-        return isAddress(str)
+      return input.split(';').map(str => str.trim()).filter((str) => {
+        return isAddress(str.trim())
       })
     }
 
@@ -1695,6 +1729,44 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
             </Box>
           }
         />
+        <Modal
+          open={showManualEditModal}
+          onClose={() => {
+            setShowManualEditModal(false)
+          }}
+          content={
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              width={'var(--modal-width)'}
+              padding={5}
+              paddingTop={2}
+            >
+              <Typography marginBottom={3} variant={'h4'}>
+                Manual Edit
+              </Typography>
+              <MultiLineInput
+                onChange={(e) => {
+                  setManualEditStr(e.currentTarget.value)
+                }}
+                value={manualEditStr}
+              />
+
+              <Box marginTop={3}>
+                <Button
+                  onClick={() => {
+                    onManualInputConfirm(manualEditStr)
+                    setShowManualEditModal(false)
+                  }}
+                  variant={'contained'}
+                  fullWidth
+                >
+                  Confirm
+                </Button>
+              </Box>
+            </Box>
+          }
+        />
 
         <Typography marginTop={4} marginBottom={0.5}>
           {t('labelRedPacketExclusive')}
@@ -1710,10 +1782,10 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
           paddingY={3}
           border={'1px solid var(--color-border)'}
         >
-          <Box display={'flex'}>
-            <Typography width={'50%'} height={theme.unit * 30}>
+          <Box overflow={'scroll'} display={'flex'} marginBottom={2}>
+            <Typography width={'100%'} height={theme.unit * 30}>
               {addressListString &&
-                addressListString.split(';').map((str) => (
+                getValidAddresses(addressListString).map((str) => (
                   <>
                     <Typography
                       color={isAddress(str) ? 'var(--color-text-primary)' : 'var(--color-error)'}
@@ -1729,44 +1801,53 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
           <Box display={'flex'} justifyContent={'space-between'}>
             <Typography>Valid Addresses: {getValidAddresses(addressListString).length}</Typography>
             <Box>
-            <FormControlLabel
-              control={
-                <input
-                  onChange={(e) => {
-                    const reader = new FileReader()
-                    reader.onload = (event) => {
-                      onFileInput(event.target?.result ? (event.target.result as string) : '')
-                    }
-                    e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
-                  }}
-                  style={{ display: 'none' }}
-                  id='file-upload'
-                  type='file'
-                />
-              }
-              label={
-                <Button
-                  onClick={(e) => {
-                    ;(e.currentTarget.parentNode as any).click()
-                  }}
-                  variant={'outlined'}
-                >
-                  {t('labelRedpacketTextimport')}
-                </Button>
-              }
-            />
-            <Button
-              onClick={(e) => {
-                setSelectedAddresses([])
-                setShowContactModal(true)
-              }}
-              variant={'outlined'}
-            >
-              {t('labelRedpacketContactImport')}
-            </Button>
+              <Button
+                onClick={(e) => {
+                  setShowManualEditModal(true)
+                  setManualEditStr(addressListString)
+                }}
+                variant={'outlined'}
+                sx={{marginRight: 3.5}}
+              >
+                Manual Edit
+              </Button>
 
+              <FormControlLabel
+                control={
+                  <input
+                    onChange={(e) => {
+                      const reader = new FileReader()
+                      reader.onload = (event) => {
+                        onFileInput(event.target?.result ? (event.target.result as string) : '')
+                      }
+                      e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
+                    }}
+                    style={{ display: 'none' }}
+                    id='file-upload'
+                    type='file'
+                  />
+                }
+                label={
+                  <Button
+                    onClick={(e) => {
+                      ;(e.currentTarget.parentNode as any).click()
+                    }}
+                    variant={'outlined'}
+                  >
+                    {t('labelRedpacketTextimport')}
+                  </Button>
+                }
+              />
+              <Button
+                onClick={(e) => {
+                  setSelectedAddresses([])
+                  setShowContactModal(true)
+                }}
+                variant={'outlined'}
+              >
+                {t('labelRedpacketContactImport')}
+              </Button>
             </Box>
-            
           </Box>
         </Box>
 
@@ -1796,7 +1877,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <img width={260} src={SoursURL + 'images/target_option_red_dot.png'} />
             </Box>
           </Box>
-          <Box width={'45%'}>
+          {showPopUpOption && <Box width={'45%'}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -1826,7 +1907,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               </Typography>
               <img src={SoursURL + 'images/target_option_pop.png'} />
             </Box>
-          </Box>
+          </Box>}
         </Box>
 
         <Box marginTop={10} display={'flex'} justifyContent={'center'}>
