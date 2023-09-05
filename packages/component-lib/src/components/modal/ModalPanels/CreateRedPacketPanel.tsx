@@ -126,6 +126,9 @@ export const CreateRedPacketPanel = <
     (index: RedPacketStep | TargetRedPacketStep) => {
       if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
         switch (index) {
+          case TargetRedPacketStep.TargetChosse:
+            setPanelIndex(0)
+            break
           case TargetRedPacketStep.TradeType:
             setPanelIndex(1)
             break
@@ -321,6 +324,13 @@ export const CreateRedPacketPanel = <
               setActiveStep,
               activeStep: RedPacketStep.TradeType,
               backToScope: backToScope,
+              onClickBack: () => {
+                if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
+                  setActiveStep(TargetRedPacketStep.TargetChosse)
+                } else {
+                  backToScope()
+                }
+              },
               onClickNext: () => {
                 if (tradeData.type?.scope === LuckyTokenViewType.TARGET) {
                   setActiveStep(TargetRedPacketStep.ChooseType)

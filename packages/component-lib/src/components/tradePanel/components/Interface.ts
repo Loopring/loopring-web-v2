@@ -658,6 +658,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     tokenMap: { [key: string]: sdk.TokenInfo }
     backToScope: () => void
     onClickNext: () => void
+    onClickBack: () => void
     showNFT: boolean
   }
 

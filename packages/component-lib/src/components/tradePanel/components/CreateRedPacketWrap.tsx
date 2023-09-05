@@ -1038,8 +1038,8 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     disabled = false,
     handleOnDataChange,
     btnInfo,
-    backToScope,
     onClickNext,
+    onClickBack,
     showNFT,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tradeData' | 'tokenMap'> & WithTranslation) => {
@@ -1172,7 +1172,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               color={'primary'}
               sx={{ height: 'var(--btn-medium-height)' }}
               onClick={() => {
-                backToScope()
+                onClickBack()
               }}
             >
               {t(`labelMintBack`)}
