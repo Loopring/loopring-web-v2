@@ -3186,7 +3186,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     nftWithdrawValue,
     setShowActiveAccount,
-      disbaleList
+    disbaleList
   ])
 
   const currentModal = accountList[isShowAccount.step]
