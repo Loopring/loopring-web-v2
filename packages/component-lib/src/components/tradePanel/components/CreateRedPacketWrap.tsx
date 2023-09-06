@@ -880,7 +880,9 @@ export const CreateRedPacketStepType = withTranslation()(
           : item.showInERC20) &&
         (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true),
     ).filter((item) => {
-      return !(item.isBlindboxNFT && showNFT)
+      return item.isBlindboxNFT 
+        ? showNFT
+        : true
     })
 
     return (
