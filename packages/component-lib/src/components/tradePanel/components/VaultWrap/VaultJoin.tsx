@@ -9,6 +9,7 @@ import {
   Required,
   TRADE_TYPE,
   TradeBtnStatus,
+  VaultJoinData,
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { VaultJoinWrapProps } from './Interface'
@@ -18,10 +19,10 @@ import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { InputButtonDefaultProps } from '../Interface'
+import { BasicACoinInput } from '../BasicACoinInput'
 
-export const VaultJoinWrap = <T extends IBData<I>, I, V>({
+export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
-  switchStobEvent,
   btnStatus,
   tradeData,
   vaultJoinData,
@@ -29,6 +30,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
   onSubmitClick,
   onChangeEvent,
   propsExtends = {},
+  isActiveAccount,
   // coinAPrecision,
   // coinBPrecision,
   ...rest
@@ -98,24 +100,40 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
         alignItems={'stretch'}
         flexDirection={'column'}
       >
-        <BasicACoinTrade
-          {...{
-            ...rest,
-            ...i18n,
-            t,
-            tReady: true,
-            tradeData: tradeData as any,
-            type: TRADE_TYPE.TOKEN,
-            disabled,
-            onChangeEvent: onChangeEvent as any,
-            // walletMap,
-            // tradeData,
-            // coinMap,
-            inputButtonDefaultProps,
-            placeholderText: minFee?.minFee ? minFee.minFee : '0.00',
-            inputBtnRef,
-          }}
-        />
+        {!isActiveAccount ? (
+          // @ts-ignore
+          <BasicACoinInput
+            {...{
+              ...rest,
+              ...i18n,
+              t,
+              tReady: true,
+              tradeData: tradeData as any,
+              type: TRADE_TYPE.TOKEN,
+              disabled,
+              onChangeEvent: onChangeEvent as any,
+              inputCoinRef: inputBtnRef,
+              inputCoinDefaultProps: inputButtonDefaultProps,
+              // inputCoinProps: rest?.inputCoinProps,
+            }}
+          />
+        ) : (
+          <BasicACoinTrade
+            {...{
+              ...rest,
+              ...i18n,
+              t,
+              tReady: true,
+              tradeData: tradeData as any,
+              type: TRADE_TYPE.TOKEN,
+              disabled,
+              onChangeEvent: onChangeEvent as any,
+              inputButtonDefaultProps,
+              placeholderText: minFee?.minFee ? minFee.minFee : '0.00',
+              inputBtnRef,
+            }}
+          />
+        )}
       </Grid>
       <Grid item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>

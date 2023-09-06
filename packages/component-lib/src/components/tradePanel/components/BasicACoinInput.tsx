@@ -1,24 +1,24 @@
 import { CoinInfo, CoinMap, IBData } from '@loopring-web/common-resources'
 import { WithTranslation } from 'react-i18next'
 import React from 'react'
-import { BasicACoinTradeProps } from './Interface'
-import { InputButton, InputButtonProps } from '../../basic-lib'
+import { BasicACoinInputProps } from './Interface'
+import { InputCoin, InputCoinProps } from '../../basic-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
+export const BasicACoinInput = <T extends Partial<IBData<I>>, I>({
   t,
   tradeData,
   onChangeEvent,
   coinMap,
   walletMap,
   disabled,
-  inputButtonDefaultProps,
   handleError,
-  inputBtnRef,
-  inputButtonProps,
+  inputCoinRef,
+  inputCoinProps,
+  inputCoinDefaultProps,
   className,
   ...rest
-}: BasicACoinTradeProps<T, I> & WithTranslation) => {
+}: BasicACoinInputProps<T, I> & WithTranslation) => {
   const getDisabled = () => {
     if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined) {
       return true
@@ -52,8 +52,8 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
 
   if (typeof handleError !== 'function') {
     handleError = ({ belong, balance, tradeValue }: T) => {
-      const minimum = inputButtonProps?.minimum ?? inputButtonDefaultProps?.minimum
-      const maxValue = inputButtonProps?.maxValue
+      const minimum = inputCoinProps?.minimum ?? inputCoinDefaultProps?.minimum
+      const maxValue = inputCoinProps?.maxValue
       if (
         (typeof tradeValue !== 'undefined' && balance && balance < tradeValue) ||
         (tradeValue && !balance)
@@ -91,28 +91,29 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
     }
   }
 
-  const inputBtnProps: InputButtonProps<T, CoinInfo<I>, I> = {
+  const _inputCoinProps: InputCoinProps<T, CoinInfo<I>, I> = {
     subLabel: t('tokenMax'),
     emptyText: t('tokenSelectToken'),
     placeholderText: '0.00',
     maxAllow: true,
+    order: 'right',
     handleError: handleError as any,
     handleCountChange,
     handleOnClick,
     label: t('labelInput'),
-    ...inputButtonDefaultProps,
-    ...inputButtonProps,
+    ...inputCoinDefaultProps,
+    ...inputCoinProps,
     ...rest,
-  } as InputButtonProps<T, CoinInfo<I>, I>
+  } as InputCoinProps<T, CoinInfo<I>, I>
 
   return (
-    <InputButton
-      ref={inputBtnRef}
+    <InputCoin
+      ref={inputCoinRef}
       isShowCoinIcon={true}
       disabled={getDisabled()}
       className={className}
       {...{
-        ...(inputBtnProps as any),
+        ...(_inputCoinProps as any),
         inputData: tradeData ? tradeData : ({} as T),
         coinMap: coinMap ? coinMap : ({} as CoinMap<I, CoinInfo<I>>),
       }}

@@ -42,7 +42,7 @@ import {
 } from './tradePro/Interface'
 import React from 'react'
 import { TOASTOPEN } from '../toast'
-import { VaultJoinBaseProps } from './components/VaultWrap'
+import { VaultExitBaseProps, VaultJoinBaseProps } from './components/VaultWrap'
 
 export type SwapTradeData<T> = {
   sell: T
@@ -240,5 +240,6 @@ export type FeeSelectProps = {
 }
 
 export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>
+export type VaultExitProps = VaultExitBaseProps
 
 export * from './components/Interface'

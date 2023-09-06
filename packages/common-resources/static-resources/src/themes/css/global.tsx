@@ -296,23 +296,25 @@ export const globalCss = ({ theme }: any) => css`
     --provider-btn-height: 56px;
     --input-height-large: 48px;
     --input-height-huge: 56px;
+    --input-height-swap: 72px;
+    --input-height-swap-label: 36px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
     }
-    --color-EOA-Text:#FBA95C;
-    --color-Loopring-Text:#4169FF;
+    --color-EOA-Text: #fba95c;
+    --color-Loopring-Text: #4169ff;
     --color-OtherSmart-Text: #979797;
-    --color-Binance-Text:#A25402;
-    --color-Huobi-Text:#199E5E;
-    --color-OtherExchange-Text:#BBC2F2;
-    --color-EOA-Bg:#FFFEDC;
-    --color-Loopring-Bg: #C9DBEF;
-    --color-OtherSmart-Bg:#D9D9D9;
-    --color-Binance-Bg:#FDE3C8;
-    --color-Huobi-Bg:#B1F4DD;
-    --color-OtherExchange-Bg:#9BA0B7;
+    --color-Binance-Text: #a25402;
+    --color-Huobi-Text: #199e5e;
+    --color-OtherExchange-Text: #a0635a;
+    --color-EOA-Bg: #fffedc;
+    --color-Loopring-Bg: #c9dbef;
+    --color-OtherSmart-Bg: #d9d9d9;
+    --color-Binance-Bg: #fde3c8;
+    --color-Huobi-Bg: #b1f4dd;
+    --color-OtherExchange-Bg: #c1a6a2;
   }
 
   select {

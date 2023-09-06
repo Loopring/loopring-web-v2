@@ -44,7 +44,7 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   .MuiInputAdornment-root {
-    padding: 0 ${({theme}) => theme.unit}px;
+    padding: 0 ${({ theme }) => theme.unit}px;
   }
 
   label + & {
@@ -55,8 +55,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   && {
     .MuiSelect-nativeInput + svg {
       position: absolute;
-      right: ${({size}) => size === 'large' ? 1 : 0.4}rem;
-      top: ${({theme, size}) => size === 'large' ? 2 * theme.unit : theme.unit}px;
+      right: ${({ size }) => (size === 'large' ? 1 : 0.4)}rem;
+      top: ${({ theme, size }) => (size === 'large' ? 2 * theme.unit : theme.unit)}px;
       color: var(--color-text-secondary);
     }
 
@@ -68,7 +68,7 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   &:focus {
-    ${({theme}) => theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
+    ${({ theme }) => theme.border.defaultFrame({ c_key: 'focus', d_R: 0.5 })};
     outline: transparent;
   }
 `
@@ -210,6 +210,60 @@ export const IWrap = styled(Box)<
       `
     }
   }};
+  &.swapWrap {
+    .btnInput-wrap {
+      &.error {
+        border: initial !important;
+        border-bottom: 1px solid var(--color-error) !important;
+      }
+      input:focus + label::before {
+        box-shadow: initial;
+        ${({ theme }) => `${theme.border.defaultFrame({ c_key: 'var(--opacity)', d_R: 0.5 })};`}
+      }
+    }
+    //.input-wrap {
+    //  position: initial;
+    //}
+    flex: 1;
+    &:focus-within {
+      box-shadow: initial;
+
+      ${({ theme }) =>
+        `${theme.border.defaultFrame({ c_key: 'var(--color-border-hover)', d_R: 0.5 })};`}
+    }
+
+    height: var(--input-height-swap);
+    background: var(--field-opacity);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    .label-wrap {
+      //margin-left: 40%;
+      //width: 60%;
+
+      .MuiGrid-item {
+        flex-basis: inherit;
+        width: inherit;
+        max-width: inherit;
+      }
+      p {
+        padding-right: 1rem;
+      }
+      padding-top: 0.8rem;
+      height: var(--input-height-swap-label);
+    }
+    .btnInput-wrap {
+      position: initial;
+    }
+    .btn-wrap {
+      position: absolute;
+      top: 0rem;
+    }
+    //.input-wrap-right{
+    //
+    //}
+  }
 ` as (
   props: BoxProps & {
     size: 'middle' | 'small'
@@ -269,6 +323,19 @@ export const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
   &:active {
     color: var(--color-text-primary);
     background: var(--color-box-hover);
+  }
+  &.swapWrap {
+    //.input-wrap-right {
+    //  input[type='text'] {
+    //    text-align: left;
+    //  }
+    //}
+    & {
+      :active {
+        //color: var(--color-text-primary);
+        background: var(--opacity);
+      }
+    }
   }
 ` as (props: ButtonProps & { logoColor?: any }) => JSX.Element
 

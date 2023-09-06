@@ -106,7 +106,6 @@ export const makeVault = (
   if (vaultTokenMap && vaultMarkets && erc20IdIndex) {
     const { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
     const reformat: VaultMarketExtends[] = vaultMarkets.reduce((prev, ele) => {
-      // tokensMap[idIndex[ele.quoteTokenId]].tokenId
       if (/-/gi.test(ele.market) && ele.enabled) {
         prev.push({
           ...ele,
@@ -133,26 +132,26 @@ export const makeVault = (
       }
       return prev
     }, {} as { [key: string]: sdk.VaultToken & sdk.TokenInfo })
-    // joinTokenMap
-    // "vaultTokenAmounts": {
-    //   "minAmount": "10000000000000000",
-    //     "qtyStepScale": 0,
-    //     "status": 7
-    // },
     const {
       markets: marketMap,
       pairs,
       marketArr: marketArray,
       tokenArr: marketCoins,
     } = sdk.makeMarkets({ markets: reformat })
+    let tokenMap: any = tokensMap
     const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
       const tradePairs = pairs[key as string]?.tokenList?.sort()
       prev[key] = {
         ...pairs[key as string],
         tradePairs,
       }
+      tokenMap[key.toString()] = {
+        ...tokensMap[key.toString()],
+        tradePairs: pairs[key.toString()].tokenList,
+      }
       return prev
     }, {})
+
     if (enabled && enabled == 'isFormLocal') {
       store.dispatch(
         getVaultMapStatus({
@@ -163,9 +162,8 @@ export const makeVault = (
           coinMap,
           pairs,
           idIndex,
-
           addressIndex,
-          tokenMap: tokensMap,
+          tokenMap,
           joinTokenMap,
         }),
       )
@@ -179,7 +177,7 @@ export const makeVault = (
         pairs,
         idIndex,
         addressIndex,
-        tokenMap: tokensMap,
+        tokenMap,
         joinTokenMap,
       }
     }

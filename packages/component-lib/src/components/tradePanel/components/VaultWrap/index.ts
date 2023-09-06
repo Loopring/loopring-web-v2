@@ -2,6 +2,7 @@
 // please do not export this index to global
 // export * from './Interface'
 export * from './Interface'
-export * from './VaultExit'
 export * from './VaultJoin'
+export * from './VaultBorrow'
+export * from './VaultRepay'
 export * from './Confirm'

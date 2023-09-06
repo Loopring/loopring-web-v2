@@ -35,6 +35,7 @@ import {
   setShowVaultJoin,
   setShowVaultExit,
   setShowVaultSwap,
+  setShowVaultLoad,
 } from './reducer'
 
 import React from 'react'
@@ -301,6 +302,10 @@ export const useOpenModals = () => {
     ),
     setShowVaultSwap: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowVaultSwap(state)),
+      [dispatch],
+    ),
+    setShowVaultLoad: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultLoad(state)),
       [dispatch],
     ),
   }

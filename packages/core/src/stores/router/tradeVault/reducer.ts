@@ -1,7 +1,13 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { TradeVault, TradeVaultStatus } from './interface'
 import { MAPFEEBIPS } from '../../../defs'
-import { VaultExitData, VaultJoinData } from '@loopring-web/common-resources'
+import {
+  IBData,
+  VaultBorrowData,
+  VaultExitData,
+  VaultJoinData,
+  VaultRepayData,
+} from '@loopring-web/common-resources'
 
 const initState: TradeVault = {
   market: undefined,
@@ -13,11 +19,16 @@ const initState: TradeVault = {
 } as unknown as TradeVault
 const initJoinState: VaultJoinData = {} as unknown as VaultJoinData
 const initExitState: VaultExitData = {} as unknown as VaultExitData
+const initBorrowState: VaultBorrowData<IBData<any>> = {} as unknown as VaultBorrowData<IBData<any>>
+const initRepayState: VaultRepayData<IBData<any>> = {} as unknown as VaultRepayData<IBData<any>>
+
 const initialState: TradeVaultStatus = {
   // pageTradePro: initState,
   tradeVault: initState,
   vaultJoinData: initJoinState,
   vaultExitData: initExitState,
+  vaultBorrowData: initBorrowState,
+  vaultRepayData: initRepayState,
   __DAYS__: 30,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
@@ -34,6 +45,12 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
     },
     resetVaultExit(state) {
       state.vaultExitData = initExitState
+    },
+    resetVaultBorrow(state) {
+      state.vaultBorrowData = initBorrowState
+    },
+    resetVaultRepay(state) {
+      state.vaultRepayData = initRepayState
     },
     updateVaultTrade(state, action: PayloadAction<Partial<TradeVault>>) {
       const {
@@ -132,6 +149,12 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
     updateVaultExit(state, action: PayloadAction<Partial<VaultExitData>>) {
       state.vaultExitData = { ...action.payload }
     },
+    updateVaultBorrow(state, action: PayloadAction<Partial<VaultBorrowData>>) {
+      state.vaultBorrowData = { ...action.payload }
+    },
+    updateVaultRepay(state, action: PayloadAction<Partial<VaultRepayData>>) {
+      state.vaultRepayData = { ...action.payload }
+    },
   },
 })
 
@@ -143,4 +166,8 @@ export const {
   resetVaultSwap,
   updateVaultTrade,
   updateVaultExit,
+  updateVaultBorrow,
+  updateVaultRepay,
+  resetVaultBorrow,
+  resetVaultRepay,
 } = tradeVaultSlice.actions

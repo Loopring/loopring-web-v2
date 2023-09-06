@@ -107,6 +107,8 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   tradeCost?: string
   isShowBtradeAllow?: boolean
   minimumConverted: string | undefined
+  sellMaxAmtStr?: string
+  sellMinAmtStr?: string
 } & (
     | {
         isBtrade: undefined | boolean
@@ -134,6 +136,7 @@ export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   btradeType: BtradeType
   // totalPool: string;
 }
+
 export type VaultTradeCalcData<T> = Omit<BtradeTradeCalcData<T>, 'btradeType' | 'isBtrade'> & {
   isVault: true
 }
@@ -532,3 +535,10 @@ export type NetworkItemInfo = {
 
 export const url_path = 'https://static.loopring.io/events'
 export const url_test_path = 'https://static.loopring.io/events/testEvents'
+
+export type VaultLoadData<T> = {
+  coinInfoMap: CoinMap<T, CoinInfo<T>>
+  tradeData: T
+}
+export type VaultBorrowData<T> = {} & VaultLoadData<T>
+export type VaultRepayData<T> = {} & VaultLoadData<T>

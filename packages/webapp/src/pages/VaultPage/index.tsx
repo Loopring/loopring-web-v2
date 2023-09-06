@@ -1,6 +1,6 @@
 import { useHistory, useRouteMatch } from 'react-router-dom'
 
-import { Box, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Container, Tab, Tabs, Typography } from '@mui/material'
 
 import React from 'react'
 import { store, useVaultMap } from '@loopring-web/core'
@@ -59,7 +59,8 @@ export const VaultPage = () => {
   const { t } = useTranslation()
   const history = useHistory()
 
-  const { status: vaultStatus, getVaultMap } = useVaultMap()
+  const { status: vaultStatus, getVaultMap, marketArray } = useVaultMap()
+
   // RouterAllowIndex[]
   const [tabIndex, setTabIndex] = React.useState<VaultKey>(
     Object.values(VaultKey)
@@ -72,7 +73,7 @@ export const VaultPage = () => {
   const [error, setError] = React.useState(false)
   React.useEffect(() => {
     const { marketArray } = store.getState().invest.vaultMap
-    if (vaultStatus === SagaStatus.UNSET && marketArray.length) {
+    if (vaultStatus === SagaStatus.UNSET && marketArray?.length) {
       setError(false)
     } else if (vaultStatus === SagaStatus.ERROR) {
       setError(true)
@@ -81,55 +82,63 @@ export const VaultPage = () => {
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
-      <Box
-        // components={'nav'}
-        marginBottom={2}
-        display={'flex'}
-        justifyContent={'space-between'}
-        alignItems={isMobile ? 'left' : 'center'}
-        flexDirection={isMobile ? 'column' : 'row'}
+      <Container
+        maxWidth='lg'
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
-        <Tabs
-          variant={'scrollable'}
-          value={tabIndex}
-          onChange={(_e, value) => {
-            history.push(`${RouterPath.vault}/${value}`)
-            setTabIndex(value)
-          }}
-        >
-          <Tab value={VaultKey.VAULT_HOME} label={<HomeTitle />} />
-          <Tab value={VaultKey.VAULT_DASHBOARD} label={<DashBoardTitle />} />
-        </Tabs>
         <Box
+          // components={'nav'}
+          marginBottom={2}
           display={'flex'}
-          flexDirection={'row'}
-          marginTop={isMobile ? 2 : 'inherit'}
-          width={isMobile ? '100%' : 'initial'}
           justifyContent={'space-between'}
+          alignItems={isMobile ? 'left' : 'center'}
+          flexDirection={isMobile ? 'column' : 'row'}
         >
-          <Button
-            variant={'outlined'}
-            sx={{ marginLeft: 2 }}
-            onClick={() =>
-              history.push(`/${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
-            }
-          >
-            {t('labelVaultRecord')}
-          </Button>
-          <Button
-            startIcon={<HelpIcon fontSize={'large'} />}
-            variant={'text'}
-            onClick={() => {
-              window.open(`${LOOPRING_DOCUMENT}vault_tutorial_en.md`, '_blank')
-              window.opener = null
+          <Tabs
+            variant={'scrollable'}
+            value={tabIndex}
+            onChange={(_e, value) => {
+              history.push(`${RouterPath.vault}/${value}`)
+              setTabIndex(value)
             }}
-            sx={{ color: 'var(--color-text-secondary)' }}
           >
-            {t('labelVaultTutorial')}
-          </Button>
+            <Tab value={VaultKey.VAULT_HOME} label={<HomeTitle />} />
+            <Tab value={VaultKey.VAULT_DASHBOARD} label={<DashBoardTitle />} />
+          </Tabs>
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            marginTop={isMobile ? 2 : 'inherit'}
+            width={isMobile ? '100%' : 'initial'}
+            justifyContent={'space-between'}
+          >
+            <Button
+              variant={'outlined'}
+              sx={{ marginLeft: 2 }}
+              onClick={() =>
+                history.push(`/${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
+              }
+            >
+              {t('labelVaultRecord')}
+            </Button>
+            <Button
+              startIcon={<HelpIcon fontSize={'large'} />}
+              variant={'text'}
+              onClick={() => {
+                window.open(`${LOOPRING_DOCUMENT}vault_tutorial_en.md`, '_blank')
+                window.opener = null
+              }}
+              sx={{ color: 'var(--color-text-secondary)' }}
+            >
+              {t('labelVaultTutorial')}
+            </Button>
+          </Box>
         </Box>
-      </Box>
-      {!error ? (
+      </Container>
+      {!error && marketArray?.length ? (
         <>
           <ModalVaultWrap />
           {tabIndex == VaultKey.VAULT_DASHBOARD && <VaultDashBoardPanel />}

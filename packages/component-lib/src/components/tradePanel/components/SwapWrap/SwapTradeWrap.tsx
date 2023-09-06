@@ -22,12 +22,21 @@ import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
 import { Box, Grid, Tooltip, Typography, Link, Tab } from '@mui/material'
 import { InputButton } from '../../../basic-lib'
-
 import { SwapTradeProps } from './Interface'
 import { useSettings } from '../../../../stores'
 import { ButtonStyle, IconButtonStyled, TabsStyle } from '../Styled'
 import { useHistory } from 'react-router-dom'
+import styled from '@emotion/styled'
 
+const GridStyle = styled(Grid)`
+  .buyInput {
+    margin-top: ${({ theme }) => 1 * theme.unit}px;
+  }
+
+  .iconChange {
+    top: var(--input-height-swap);
+  }
+`
 export const SwapTradeWrap = <
   T extends IBData<I>,
   I,
@@ -145,6 +154,14 @@ export const SwapTradeWrap = <
   } as any
   const label = React.useMemo(() => {
     myLog(swapBtnI18nKey, 'swapBtnI18nKey useMemo')
+    const keyParams = {
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+    }
     if (swapBtnI18nKey) {
       const key = swapBtnI18nKey.split('|')
       if (key) {
@@ -153,30 +170,15 @@ export const SwapTradeWrap = <
           key && key[1]
             ? {
                 arg: key[1],
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                ...keyParams,
               }
             : {
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                ...keyParams,
               },
         )
       } else {
         return t(swapBtnI18nKey, {
-          layer2: L1L2_NAME_DEFINED[network].layer2,
-          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          ...keyParams,
         })
       }
     } else {
@@ -186,12 +188,7 @@ export const SwapTradeWrap = <
         ? `labelVaultSwapBtn`
         : `swapBtn`
       return t(label, {
-        layer2: L1L2_NAME_DEFINED[network].layer2,
-        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        ...keyParams,
       })
     }
   }, [t, swapBtnI18nKey, network, tradeCalcData])
@@ -199,10 +196,10 @@ export const SwapTradeWrap = <
 
   const convertStr = _isStoB
     ? `1${tradeData.sell?.belong} \u2248 ${
-        tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
+        tradeCalcData.StoB && tradeCalcData.StoB !== 'NaN' ? tradeCalcData.StoB : EmptyValueTag
       } ${tradeData.buy?.belong}`
     : `1${tradeData.buy?.belong} \u2248 ${
-        tradeCalcData.BtoS && tradeCalcData.BtoS != 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
+        tradeCalcData.BtoS && tradeCalcData.BtoS !== 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
       } ${tradeData.sell?.belong}`
   const priceImpactColor = (tradeCalcData as any)?.priceImpactColor
     ? (tradeCalcData as any).priceImpactColor
@@ -239,7 +236,7 @@ export const SwapTradeWrap = <
   const { isMobile } = useSettings()
 
   return (
-    <Grid
+    <GridStyle
       className={tradeCalcData ? 'trade-panel' : 'trade-panel loading'}
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -301,6 +298,8 @@ export const SwapTradeWrap = <
         <InputButton<any, I, CoinInfo<I>>
           ref={sellRef}
           disabled={getDisabled()}
+          className={'swapWrap'}
+          order={'left'}
           {...{
             ...propsSell,
             isHideError: true,
@@ -312,6 +311,7 @@ export const SwapTradeWrap = <
           }}
         />
         <Box
+          className={'iconChange'}
           alignSelf={'center'}
           marginY={1}
           position={'absolute'}
@@ -340,10 +340,13 @@ export const SwapTradeWrap = <
         <InputButton<any, I, CoinInfo<I>>
           ref={buyRef}
           disabled={getDisabled()}
+          className={'swapWrap buyInput'}
+          order={'left'}
           {...{
             ...propsBuy,
             // maxAllow:false,
             isHideError: true,
+
             inputData: tradeData ? tradeData.buy : ({} as any),
             coinMap:
               tradeCalcData && tradeCalcData.coinInfoMap
@@ -727,6 +730,6 @@ export const SwapTradeWrap = <
           </Typography>
         </Grid>
       )}
-    </Grid>
+    </GridStyle>
   )
 }

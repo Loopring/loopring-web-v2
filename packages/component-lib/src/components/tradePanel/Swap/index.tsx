@@ -17,6 +17,7 @@ import {
   SwapSettingIcon,
   SwapTradeCalcData,
   TradeCalcData,
+  VaultTradeCalcData,
 } from '@loopring-web/common-resources'
 import { SlippagePanel, SwapData, SwapMenuList, SwapTradeWrap } from '../components'
 import { CountDownIcon } from '../components/tool/Refresh'
@@ -41,7 +42,11 @@ const PopoverStyled = styled(Popover)`
 `
 
 export const SwapPanel = withTranslation('common', { withRef: true })(
-  <T extends IBData<I>, I, TCD extends BtradeTradeCalcData<I>, SCD extends SwapTradeCalcData<I>>({
+  <
+    T extends IBData<I>,
+    I,
+    TCD extends BtradeTradeCalcData<I> | SwapTradeCalcData<I> | VaultTradeCalcData<T>,
+  >({
     disabled,
     tradeCalcData,
     swapBtnStatus,
@@ -133,7 +138,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
             myLog('hookSwap view tradeData', tradeData)
 
             return (
-              <SwapTradeWrap<T, I, TCD, SCD>
+              <SwapTradeWrap<T, I, TCD>
                 key={'trade'}
                 {...{
                   ...rest,
@@ -352,7 +357,12 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
         },
       ],
     }
-    return <SwitchPanel className={'hasLinerBg'} {...{ ...rest, ...props, size: 'large' }} />
+    return (
+      <SwitchPanel
+        className={`hasLinerBg ${rest?.classWrapName}`}
+        {...{ ...rest, ...props, size: 'large' }}
+      />
+    )
   },
 ) as <T extends IBData<I>, I, TCD extends TradeCalcData<I>>(
   props: SwapProps<T, I, TCD> & React.RefAttributes<any>,

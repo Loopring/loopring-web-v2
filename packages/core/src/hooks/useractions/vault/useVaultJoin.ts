@@ -1,4 +1,9 @@
-import { AccountStep, SwitchData, useOpenModals } from '@loopring-web/component-lib'
+import {
+  AccountStep,
+  setShowVaultJoin,
+  SwitchData,
+  useOpenModals,
+} from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CoinInfo,
@@ -25,32 +30,30 @@ import {
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
-  useWalletLayer2,
   useWalletLayer2Socket,
+  walletLayer2Service,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
+import {
+  ConnectProviders,
+  ConnectProvidersSignMap,
+  connectProvides,
+} from '@loopring-web/web3-provider'
+import { useTranslation } from 'react-i18next'
 
-export const useVaultJoin = <T extends IBData<I>, I, V>() => {
+export const useVaultJoin = <T extends IBData<I>, I>() => {
+  const { t } = useTranslation()
   const { tokenMap: vaultTokenMap, joinTokenMap, coinMap: vaultCoinMap } = useVaultMap()
   const { tokenMap, coinMap, idIndex } = useTokenMap()
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
-  const { exchangeInfo, chainId } = useSystem()
-  const {
-    account: { readyState },
-  } = useAccount()
-  const [isLoading, setIsLoading] = React.useState(false)
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  const { updateVaultJoin, vaultJoinData } = useTradeVault()
+  const { exchangeInfo, chainId, baseURL } = useSystem()
   const { account } = useAccount()
-  const { baseURL } = useSystem()
-
+  const { updateVaultJoin, vaultJoinData } = useTradeVault()
   const [tradeData, setTradeData] = React.useState<T>({
     belong: undefined,
     balance: undefined,
     tradeValue: undefined,
   } as unknown as T)
-  const { updateWalletLayer2 } = useWalletLayer2()
   const isActiveAccount = [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
     vaultAccountInfo?.accountStatus ?? ('' as any),
   )
@@ -101,7 +104,7 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
     } else if (sdk.toBig(vaultJoinData.amount).lte(vaultJoinData.minAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultJoinMini | ${vaultJoinData.minShowVal} ${vaultJoinData.belong}`,
+        label: `labelVaultJoinMini|${vaultJoinData.minShowVal} ${vaultJoinData.belong}`,
       }
     } else if (sdk.toBig(vaultJoinData.tradeValue ?? 0).gte(vaultJoinData.balance ?? 0)) {
       return {
@@ -111,7 +114,7 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
     } else if (sdk.toBig(vaultJoinData.amount ?? 0).gte(vaultJoinData.maxAmount ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: 'labelVaultJoinMax | ${vaultJoinData.maxShowVal} ${vaultJoinData.belong}',
+        label: `labelVaultJoinMax|${vaultJoinData.maxShowVal} ${vaultJoinData.belong}`,
       }
     } else if (sdk.toBig(vaultJoinData.amount ?? 0).gte(vaultJoinData.maxAmount ?? 0)) {
       return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelVaultJoinMax' }
@@ -130,7 +133,7 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
     vaultJoinData.belong,
   ])
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
-    const { apiKey, connectName, eddsaKey } = account
+    // const { apiKey, connectName, eddsaKey } = account
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
     try {
       if (request || vaultJoinData.request) {
@@ -147,10 +150,18 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
+        walletLayer2Service.sendUserUpdate()
+        sdk.sleep(1000).then(() => updateVaultLayer2())
 
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultJoin_Success,
+          info: {
+            title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+          },
+        })
+        setShowVaultJoin({
+          isShow: false,
         })
       } else {
         throw 'no data'
@@ -159,6 +170,9 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultRedeem_Failed,
+        info: {
+          title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+        },
       })
     }
   }
@@ -178,9 +192,80 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultJoin_In_Progress,
+          info: {
+            title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+          },
         })
 
         //TODO: step 1: has rest balance  //vault l2 balance
+        if (isActiveAccount) {
+          const response = await LoopringAPI.vaultAPI?.getVaultBalance(
+            {
+              accountId: account.accountId,
+              tokens: '',
+            },
+            account.apiKey,
+          )
+
+          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            throw response
+          } else if (response.raw_data?.length) {
+            const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+              type: 4,
+            })
+            const promiseAllStorageId = response?.raw_data?.map((item) => {
+              return LoopringAPI.userAPI?.getNextStorageId(
+                {
+                  accountId: account.accountId,
+                  sellTokenId: item.tokenId,
+                },
+                account.apiKey,
+              )
+            })
+            await Promise.all([...promiseAllStorageId]).then((result) => {
+              return Promise.all(
+                result.map((item, index) => {
+                  return (
+                    item &&
+                    LoopringAPI.vaultAPI?.sendVaultResetToken(
+                      {
+                        request: {
+                          exchange: exchangeInfo.exchangeAddress,
+                          payerAddr: account.accAddress,
+                          payerId: account.accountId,
+                          payeeId: 0,
+                          payeeAddr: broker,
+                          storageId: item.offchainId,
+                          token: {
+                            tokenId: response?.raw_data[index].tokenId,
+                            volume: response?.raw_data[index].total,
+                          },
+                          maxFee: {
+                            tokenId: response?.raw_data[index].tokenId,
+                            volume: '0', // TEST: fee.toString(),
+                          },
+                          validUntil: getTimestampDaysLater(DAYS),
+                          memo: '',
+                        } as any,
+                        web3: connectProvides.usedWeb3 as any,
+                        chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
+                        walletType: (ConnectProviders[account.connectName] ??
+                          account.connectName) as unknown as sdk.ConnectorNames,
+                        eddsaKey: account.eddsaKey.sk,
+                        apiKey: account.apiKey,
+                      },
+                      {
+                        accountId: account.accountId,
+                        counterFactualInfo: account.eddsaKey.counterFactualInfo,
+                      },
+                    )
+                  )
+                }),
+              )
+            })
+          }
+        }
+
         //TODO: step 2: get a NFT
         const [avaiableNFT, storageId] = await Promise.all([
           isActiveAccount
@@ -203,7 +288,10 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
                     ...avaiableNFT.raw_data,
                   }
                 })
-            : Promise.resolve(vaultAccountInfo.collateralInfo),
+            : Promise.resolve({
+                ...vaultAccountInfo.collateralInfo,
+                tokenId: vaultAccountInfo?.collateralInfo?.nftTokenId,
+              }),
           LoopringAPI.userAPI.getNextStorageId(
             {
               accountId: account.accountId,
@@ -232,7 +320,7 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
           },
           buyToken: {
             //@ts-ignore
-            tokenId: avaiableNFT.nftTokenId,
+            tokenId: avaiableNFT.tokenId,
             //@ts-ignore
             nftData: avaiableNFT.nftData,
             amount: '1',
@@ -269,7 +357,7 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
     // btnStyle: tradeLimitBtnStyle,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: isLoading,
+    isLoading: false,
     submitCallback,
   })
   const {
@@ -312,12 +400,13 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
       isActiveAccount = false
 
     if (
-      readyState === AccountStatus.ACTIVATED &&
+      account &&
+      account.readyState === AccountStatus.ACTIVATED &&
       !isActiveAccount &&
       vaultAccountInfo?.collateralInfo?.collateralTokenId
     ) {
       initSymbol = idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
-    } else if (readyState === AccountStatus.ACTIVATED && !info?.symbol) {
+    } else if (account.readyState === AccountStatus.ACTIVATED && !info?.symbol) {
       const key = Reflect.ownKeys(vaultCoinMap).find((keyVal) => {
         const walletInfo = walletMap[keyVal.toString()] ?? { count: 0 }
         if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
@@ -351,6 +440,7 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
     // setWalletMap(walletMap as WalletMap<T>)
     updateVaultJoin({
       ...vaultJoinData,
+      walletMap,
       // walletMap: makeWalletLayer2({ needFilterZero: true }).walletMap ?? {},
       vaultLayer2Map: makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map,
     })
@@ -373,11 +463,11 @@ export const useVaultJoin = <T extends IBData<I>, I, V>() => {
   React.useEffect(() => {
     if (isShow) {
       initData()
-      updateWalletLayer2()
+      walletLayer2Service.sendUserUpdate()
       updateVaultLayer2()
     }
   }, [isShow])
-  const handlePanelEvent = async (props: SwitchData<T>, switchType: 'Tomenu' | 'Tobutton') => {
+  const handlePanelEvent = async (props: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
     setTradeData(props.tradeData as T)
     const tokenSymbol = props.tradeData.belong
     // debugger

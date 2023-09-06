@@ -302,13 +302,17 @@ export const marketInitCheck = ({
   marketArray,
   tokenMap,
   marketMap,
-}: {
+  defaultA = 'LRC',
+}: // defaultB = 'ETH',
+{
   market: string
   type?: 'sell' | 'buy'
   defaultValue?: string
   marketArray?: any
   tokenMap?: any
   marketMap?: any
+  defaultA?: string | null
+  defaultB?: string | null
 }): { tradePair: MarketType } => {
   const {
     coinMap,
@@ -332,11 +336,11 @@ export const marketInitCheck = ({
     }
     let whichCoinIndex = [coinA, coinB].findIndex((item) => item !== '#null')
     if (whichCoinIndex !== -1 && coinMap[[coinA, coinB][whichCoinIndex]] === undefined) {
-      whichCoinIndex === 0 ? (coinA = 'LRC') : (coinB = 'LRC')
+      whichCoinIndex === 0 ? (coinA = defaultA as any) : (coinB = defaultA as any)
     }
     if (whichCoinIndex === -1) {
       whichCoinIndex = 0
-      coinA = 'LRC'
+      coinA = defaultA as any
     }
     if (type === 'sell' && coinB !== '#null') {
       if (!tokenMap[coinA].tradePairs.includes(coinB as never)) {
@@ -360,3 +364,40 @@ export const marketInitCheck = ({
 }
 
 export const Limit = 14
+
+export const vaultSwapDependAsync = ({
+  market,
+  level = 0,
+  limit,
+  tokenMap,
+}: {
+  market: MarketType
+  level?: number
+  limit?: number
+  tokenMap?: any
+}): Promise<{
+  depth: sdk.DepthData | undefined
+}> => {
+  return new Promise((resolve, reject) => {
+    if (LoopringAPI.vaultAPI) {
+      Promise.all([
+        LoopringAPI.vaultAPI?.getVaultDepth({
+          request: {
+            market,
+            level,
+            limit,
+          },
+          tokenMap,
+        }),
+      ])
+        .then(([responseDepth]) => {
+          resolve({
+            depth: responseDepth?.depth,
+          })
+        })
+        .catch()
+    } else {
+      reject(new CustomError(ErrorMap.NO_SDK))
+    }
+  })
+}

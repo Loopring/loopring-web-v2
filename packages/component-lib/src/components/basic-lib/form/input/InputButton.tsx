@@ -6,7 +6,7 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
-    SoursURL,
+  SoursURL,
 } from '@loopring-web/common-resources'
 import { InputButtonProps, InputSize } from './Interface'
 import React from 'react'
@@ -39,7 +39,8 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     size = InputSize.middle,
     isHideError = false,
     fullwidth = false,
-      loading = false,
+    loading = false,
+    className,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -141,7 +142,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   // formatValue(sValue)
 
   return (
-    <IWrap component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
+    <IWrap className={className} component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
       <Grid
         container
         component={'div'}
@@ -237,24 +238,24 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             )}
           </ISBtn>
         </Grid>
-          <Grid item className={'input-wrap input-wrap-right'} sx={{position: 'relative'}}>
-              {loading && (
-                  <img
-                      style={{
-                          position: 'absolute',
-                          transform: 'translate(50%, -50%)',
-                          top: '50%',
-                          right: '24px',
-                      }}
-                      className='loading-gif'
-                      alt={'loading'}
-                      width='24'
-                      src={`${SoursURL}images/loading-line.gif`}
-                  />
-              )}
+        <Grid item className={'input-wrap input-wrap-right'} sx={{ position: 'relative' }}>
+          {loading && (
+            <img
+              style={{
+                position: 'absolute',
+                transform: 'translate(50%, -50%)',
+                top: '50%',
+                right: '24px',
+              }}
+              className='loading-gif'
+              alt={'loading'}
+              width='24'
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+          )}
 
           <IInput
-              className={loading ? 'loading' : ''}
+            className={loading ? 'loading' : ''}
             ref={inputEle}
             autoComplete='off'
             onValueChange={_handleContChange}
@@ -263,7 +264,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             decimalSeparator='.'
             groupSeparator=','
             name={name}
-              disabled={!(!disabled || belong) || disableInputValue || loading}
+            disabled={!(!disabled || belong) || disableInputValue || loading}
             placeholder={placeholderText}
             aria-placeholder={placeholderText}
             aria-label={belong}

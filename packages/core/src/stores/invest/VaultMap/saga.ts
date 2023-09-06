@@ -61,12 +61,12 @@ const getVaultMapApi = async () => {
         ) {
           throw (response as sdk.RESULT_INFO).message
         } else {
-          let localStorageData: any[] = []
+          let marketsRaw: any[] = response.markets
           localStorage.setItem(
             LocalStorageConfigKey.vaultMarkets,
             JSON.stringify({
               ...(vaultMapStorage ? JSON.parse(vaultMapStorage) : {}),
-              [chainId]: localStorageData,
+              [chainId]: marketsRaw,
             }),
           )
           // @ts-ignore

@@ -40,6 +40,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     }  
          
   `}
+
   .createRedPacket & {
     width: 100%;
 
@@ -112,6 +113,12 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     display: flex;
     justify-content: space-between;
     padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px;
+  }
+  &.vaultSwap {
+    height: auto;
+    .react-swipeable-view-container > div {
+      border: none;
+    }
   }
 ` as (
   props: SwipeableViewsProps & {

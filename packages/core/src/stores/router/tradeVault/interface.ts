@@ -3,6 +3,8 @@ import {
   MarketType,
   VaultJoinData,
   VaultExitData,
+  VaultBorrowState,
+  VaultRepayState,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { OrderInfoPatch } from '../tradePro'
@@ -32,6 +34,8 @@ export type TradeVaultStatus = {
   tradeVault: TradeVault
   vaultJoinData: VaultJoinData
   vaultExitData: VaultExitData
+  vaultBorrowData: VaultBorrowState
+  vaultRepayData: VaultRepayState
   __DAYS__: 30
   __SUBMIT_LOCK_TIMER__: 1000
   __TOAST_AUTO_CLOSE_TIMER__: 3000

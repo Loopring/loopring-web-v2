@@ -761,6 +761,7 @@ export type VaultJoinData<I = any> = {
   minAmount: string
   amount: string
   isMerge: boolean
+  vaultTokenInfo: sdk.TokenInfo
   // isShouldClean:boolean
   __request__: sdk.VaultJoinRequest
 } & Partial<IBData<I>> &

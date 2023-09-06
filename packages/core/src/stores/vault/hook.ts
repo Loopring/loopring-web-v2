@@ -25,10 +25,5 @@ export function useVaultLayer2(): VaultLayer2States & {
     }, [dispatch]),
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
     updateVaultLayer2: React.useCallback(() => dispatch(updateVaultLayer2(undefined)), [dispatch]),
-    // socketUpdateBalance: React.useCallback(
-    //   (balance: { [key: string]: sdk. }) =>
-    //     dispatch(socketUpdateBalance(balance)),
-    //   [dispatch],
-    // ),
   }
 }

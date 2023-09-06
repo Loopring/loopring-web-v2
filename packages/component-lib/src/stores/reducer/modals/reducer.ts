@@ -8,7 +8,7 @@ import {
   TradeNFT,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { AmmPanelType, ToastType } from '../../../components'
+import { AmmPanelType, ToastType, VaultLoadType } from '@loopring-web/component-lib'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
@@ -55,6 +55,7 @@ const initialState: ModalState = {
   isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
+  istShowVaultLoad: { isShow: false, type: VaultLoadType.Borrow },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -374,16 +375,16 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       }
     },
     setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload
-      state.isShowVaultExit.isShow = isShow
+      state.isShowVaultExit = { ...action.payload }
     },
     setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload
-      state.isShowVaultJoin.isShow = isShow
+      state.isShowVaultJoin = { ...action.payload }
     },
     setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload
-      state.isShowVaultSwap.isShow = isShow
+      state.isShowVaultSwap = { ...action.payload }
+    },
+    setShowVaultLoad(state, action: PayloadAction<ModalStatePlayLoad>) {
+      state.isShowVaultSwap = { ...action.payload }
     },
   },
 })
@@ -422,4 +423,5 @@ export const {
   setShowVaultExit,
   setShowVaultJoin,
   setShowVaultSwap,
+  setShowVaultLoad,
 } = modalsSlice.actions

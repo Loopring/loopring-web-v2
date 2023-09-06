@@ -133,6 +133,12 @@ import {
   VaultRedeem_Success,
   VaultRedeem_Failed,
   VaultRedeem_In_Progress,
+  VaultBorrow_Success,
+  VaultBorrow_Failed,
+  VaultBorrow_In_Progress,
+  VaultRepay_Success,
+  VaultRepay_Failed,
+  VaultRepay_In_Progress,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -3219,6 +3225,42 @@ export function useAccountModalForUI({
       [AccountStep.VaultRedeem_In_Progress]: {
         view: (
           <VaultRedeem_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountSetp.VaultBorrow_Success]: {
+        view: (
+          <VaultBorrow_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountSetp.VaultBorrow_Failed]: {
+        view: (
+          <VaultBorrow_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountSetp.VaultBorrow_In_Progress]: {
+        view: (
+          <VaultBorrow_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountSetp.VaultRepay_Success]: {
+        view: (
+          <VaultRepay_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountSetp.VaultRepay_Failed]: {
+        view: (
+          <VaultRepay_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountSetp.VaultRepay_In_Progress]: {
+        view: (
+          <VaultRepay_In_Progress
             btnInfo={undefined}
             {...{ info: isShowAccount?.info, t, ...rest }}
           />

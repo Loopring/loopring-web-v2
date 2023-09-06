@@ -1,26 +1,71 @@
 import React from 'react'
-import { useTokenMap, useVaultMap } from '@loopring-web/core'
-import { Modal, useOpenModals, VaultExitPanel, VaultJoinPanel } from '@loopring-web/component-lib'
-import { useVaultJoin } from './useVaultJoin'
+import {
+  useNotify,
+  useVaultJoin,
+  useVaultLoad,
+  useVaultMap,
+  useVaultRedeem,
+  useVaultSwap,
+} from '@loopring-web/core'
+import {
+  Modal,
+  SwapPanel,
+  Toast,
+  useOpenModals,
+  VaultExitPanel,
+  VaultJoinPanel,
+  VaultLoadPanel,
+} from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { TRADE_TYPE } from '@loopring-web/common-resources'
+import { TOAST_TIME, TRADE_TYPE } from '@loopring-web/common-resources'
+import { useTranslation } from 'react-i18next'
 
 export const ModalVaultWrap = () => {
-  const { tokenMap } = useTokenMap()
+  const { t } = useTranslation()
+  // const { tokenMap } = useTokenMap()
   const { getVaultMap, tokenMap: vaultTokenMao, idIndex: vaultIndex } = useVaultMap()
   const theme = useTheme()
+  const { campaignTagConfig } = useNotify().notifyMap ?? {}
+
   const {
     modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap },
     setShowVaultJoin,
     setShowVaultExit,
+    setShowVaultSwap,
   } = useOpenModals()
   const joinVaultProps = useVaultJoin()
+  const exitVaultProps = useVaultRedeem()
   React.useEffect(() => {
     getVaultMap()
   }, [])
-
+  const {
+    isMarketInit,
+    toastOpen,
+    closeToast,
+    tradeCalcData,
+    tradeData,
+    swapBtnI18nKey,
+    swapBtnStatus,
+    handleSwapPanelEvent,
+    should15sRefresh,
+    refreshRef,
+    onSwapClick,
+    tradeVault,
+    isSwapLoading,
+    market,
+    isMobile,
+    // setToastOpen,
+  } = useVaultSwap({ path: 'vault' })
+  const { vaultRepayProps, vaultBorrowProps, vaultLoadType, handleTabChange } = useVaultLoad()
   return (
     <>
+      <Toast
+        alertText={toastOpen?.content ?? ''}
+        open={toastOpen?.open ?? false}
+        autoHideDuration={TOAST_TIME}
+        onClose={closeToast}
+        severity={toastOpen.type}
+      />
       <Modal
         contentClassName={'trade-wrap'}
         open={isShowVaultJoin.isShow}
@@ -39,11 +84,71 @@ export const ModalVaultWrap = () => {
         }
       />
       <Modal
+        open={isShowVaultSwap.isShow}
+        onClose={() => {
+          setShowVaultSwap({ isShow: false })
+        }}
+        content={
+          <>
+            <SwapPanel
+              classWrapName={'vaultSwap'}
+              titleI8nKey={'labelVaultSwap'}
+              tokenBuyProps={{
+                disableInputValue: isMarketInit,
+                disabled: isSwapLoading || isMarketInit,
+                decimalsLimit: tradeCalcData.buyPrecision,
+              }}
+              tokenSellProps={{
+                disableInputValue: isMarketInit,
+                disabled: isSwapLoading || isMarketInit,
+                placeholderText:
+                  tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
+                    ? t('labelBtradeSwapMiniMax', {
+                        minValue: tradeCalcData.sellMinAmtStr,
+                        maxValue: tradeCalcData.sellMaxAmtStr,
+                      })
+                    : t('labelBtradeSwapMini', {
+                        minValue: tradeCalcData.sellMinAmtStr,
+                      }),
+              }}
+              {...{
+                campaignTagConfig,
+                tradeCalcData,
+                tradeData,
+                onSwapClick,
+                swapBtnI18nKey,
+                swapBtnStatus,
+                handleSwapPanelEvent,
+                should15sRefresh,
+                refreshRef,
+                tradeVault,
+                market,
+                isMobile,
+              }}
+            />
+          </>
+        }
+      />
+      <Modal
         open={isShowVaultExit.isShow}
         onClose={() => {
           setShowVaultExit({ isShow: false })
         }}
-        content={<VaultExitPanel />}
+        content={<VaultExitPanel {...{ ...exitVaultProps }} />}
+      />
+      <Modal
+        open={isShowVaultExit.isShow}
+        onClose={() => {
+          setShowVaultExit({ isShow: false })
+        }}
+        content={
+          <VaultLoadPanel
+            vaultRepayProps={vaultRepayProps as any}
+            vaultBorrowProps={vaultBorrowProps as any}
+            vaultLoadType={vaultLoadType}
+            handleTabChange={handleTabChange}
+          />
+        }
       />
     </>
   )
