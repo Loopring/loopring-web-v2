@@ -68,7 +68,6 @@ const WrapperStyled = styled(Box)`
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 
@@ -192,11 +191,28 @@ export const DualListPanel: any = withTranslation('common')(
                       .sort((a, b) => a.toString().localeCompare(b.toString()))
                       .map((item, index) => {
                         return (
-                          <Tab
-                            key={item.toString()}
-                            label={<Typography variant={'h3'}>{item.toString()}</Typography>}
-                            value={item.toString()}
-                          />
+                          <Grid marginLeft={2} item xs={6} md={3} lg={2} key={item.toString() + index.toString()}>
+                            <CardStyleItem
+                              className={
+                                item.toString().toLowerCase() === pairASymbol.toLowerCase()
+                                  ? 'btnCard dualInvestCard selected'
+                                  : 'btnCard dualInvestCard '
+                              }
+                              sx={{ height: '100%' }}
+                              onClick={() => handleOnPairChange({ pairA: item.toString() })}
+                            >
+                              <CardContent sx={{ alignItems: 'center' }}>
+                                <Typography component={'span'} display={'inline-flex'}>
+                                  <CoinIcon symbol={item.toString()} size={28} />
+                                </Typography>
+                                <Typography variant={'h5'} paddingLeft={1}>
+                                  {t('labelDualInvest', {
+                                    symbol: item.toString(),
+                                  })}
+                                </Typography>
+                              </CardContent>
+                            </CardStyleItem>
+                          </Grid>
                         )
                       })}
                 </Tabs>
