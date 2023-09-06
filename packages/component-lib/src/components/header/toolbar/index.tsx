@@ -1,9 +1,11 @@
 import { Badge, Box, IconButton } from '@mui/material'
 import {
+  ACTIVITY,
   Account,
   AccountStatus,
   CircleIcon,
   DownloadIcon,
+  NOTIFICATION_ITEM,
   NotificationIcon,
   Notify,
   ProfileIcon,
@@ -89,7 +91,7 @@ export const BtnDownload = ({
 // };
 
 export const BtnNotification = ({
-  notification,
+  notification: _notification,
   account,
   chainId,
   onClickExclusiveredPacket,
@@ -108,6 +110,35 @@ export const BtnNotification = ({
     popupId: 'notificationPop',
   })
   const [content] = React.useState(0)
+
+  const notifications = _notification?.notifications?.reduce((prev, item) => {
+    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
+      prev.push(item)
+    }
+    return prev
+  }, [] as NOTIFICATION_ITEM[])
+  const activitiesList1 = _notification?.activities?.reduce((prev, item) => {
+    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
+      prev.push(item)
+    }
+    return prev
+  }, [] as ACTIVITY[])
+
+  const activitiesList2 = _notification?.activitiesInvest?.reduce((prev, item) => {
+    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
+      prev.push(item)
+    }
+    return prev
+  }, _notification?.activities as ACTIVITY[])
+
+  const notification = {
+    ..._notification,
+    notifications: notifications,
+    activities: [...(activitiesList1 ?? []), ...(activitiesList2 ?? [])],
+    account, 
+    chainId
+  }
+
   return (
     <Box position={'relative'}>
       <IconButton aria-label={'notification'} {...bindHover(popupState)}>
@@ -115,7 +146,7 @@ export const BtnNotification = ({
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {((notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 || showExclusiveRedpacket) && (
+      {((notification.activities.length ?? 0 + notification.notifications.length ?? 0) > 0 || showExclusiveRedpacket) && (
         <CircleIcon
           sx={{
             position: 'absolute',
@@ -139,7 +170,7 @@ export const BtnNotification = ({
           horizontal: 'center',
         }}
       >
-        <NotificationPanel exclusiveRedpacketCount={exclusiveRedpacketCount} onClickExclusiveredPacket={onClickExclusiveredPacket} showExclusiveRedpacket={showExclusiveRedpacket} notification={{ ...notification, account, chainId }} />
+        <NotificationPanel exclusiveRedpacketCount={exclusiveRedpacketCount} onClickExclusiveredPacket={onClickExclusiveredPacket} showExclusiveRedpacket={showExclusiveRedpacket} notification={notification} />
       </PopoverPure>
     </Box>
   )

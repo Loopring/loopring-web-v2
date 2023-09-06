@@ -642,6 +642,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onClickViewTargetDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   contacts?: DisplayContact[]
+  isWhiteListed?: boolean
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -660,6 +661,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     tokenMap: { [key: string]: sdk.TokenInfo }
     backToScope: () => void
     onClickNext: () => void
+    onClickBack: () => void
     showNFT: boolean
   }
 
@@ -681,4 +683,6 @@ export type TargetRedpacktInputAddressStepProps = {
   onClickSend: () => void
   contacts?: DisplayContact[]
   onConfirm: (list: string[]) => void
+  onManualInputConfirm: (text: string) => void
+  showPopUpOption: boolean
 }
