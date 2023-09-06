@@ -80,43 +80,43 @@ export const useContactAdd = ({
   const allowToClickIsSure = React.useMemo(() => {
     return isAddressCheckLoading || addrStatus === AddressError.InvalidAddr || !realAddr
   }, [addrStatus, isAddressCheckLoading, realAddr])
-    const mapContactAddressType = React.useCallback(():
-      | (typeof sdk.AddressType)[sdk.AddressTypeKeys]
-      | undefined => {
-      if (addressTypeISCFAddress) {
-        return sdk.AddressType.LOOPRING_HEBAO_CF
-      } else if (loopringSmartWalletVersion?.isLoopringSmartWallet) {
-        const item = HEBAO_CONTRACT_MAP.find(
-          (item) => item[0] === loopringSmartWalletVersion?.version,
-        )
-        return item
-          ? item[1]
-          : /V2_/.test(loopringSmartWalletVersion?.version ?? '')
-          ? 2002
-          : undefined
-      } else if (isContractAddress) {
-        return sdk.AddressType.CONTRACT
-      } else if (selectedAddressType) {
-        return exWalletToAddressMapFn(selectedAddressType)
-      }
-    }, [
-      addressTypeISCFAddress,
-      loopringSmartWalletVersion?.isLoopringSmartWallet,
-      loopringSmartWalletVersion?.version,
-      isContractAddress,
-      selectedAddressType,
-    ])
-    const autoSetWalletType = () => {
-      if (realAddr && selectedAddressType == undefined) {
-        const addressType = mapContactAddressType()
-        if (addressType) {
-          const type = addressToExWalletMapFn(addressType)
-          onChangeAddressType(type)
-        } else {
-          onChangeAddressType(undefined)
-        }
+  const mapContactAddressType = React.useCallback(():
+    | (typeof sdk.AddressType)[sdk.AddressTypeKeys]
+    | undefined => {
+    if (addressTypeISCFAddress) {
+      return sdk.AddressType.LOOPRING_HEBAO_CF
+    } else if (loopringSmartWalletVersion?.isLoopringSmartWallet) {
+      const item = HEBAO_CONTRACT_MAP.find(
+        (item) => item[0] === loopringSmartWalletVersion?.version,
+      )
+      return item
+        ? item[1]
+        : /V2_/.test(loopringSmartWalletVersion?.version ?? '')
+        ? 2002
+        : undefined
+    } else if (isContractAddress) {
+      return sdk.AddressType.CONTRACT
+    } else if (selectedAddressType) {
+      return exWalletToAddressMapFn(selectedAddressType)
+    }
+  }, [
+    addressTypeISCFAddress,
+    loopringSmartWalletVersion?.isLoopringSmartWallet,
+    loopringSmartWalletVersion?.version,
+    isContractAddress,
+    selectedAddressType,
+  ])
+  const autoSetWalletType = () => {
+    if (realAddr && selectedAddressType == undefined) {
+      const addressType = mapContactAddressType()
+      if (addressType) {
+        const type = addressToExWalletMapFn(addressType)
+        onChangeAddressType(type)
+      } else {
+        onChangeAddressType(undefined)
       }
     }
+  }
   React.useEffect(() => {
     if (realAddr && addName) {
       enableBtn()
@@ -125,11 +125,11 @@ export const useContactAdd = ({
     disableBtn()
   }, [addrStatus, realAddr, addName, selectedAddressType])
   React.useEffect(() => {
-    if (realAddr) {
+    if (realAddr && realAddr !== '' && !isAddressCheckLoading) {
       autoSetWalletType()
     }
     disableBtn()
-  }, [realAddr])
+  }, [realAddr, isAddressCheckLoading])
   React.useEffect(() => {
     myLog('item?.contactAddress', (isEdit as EditItem)?.item)
     if ((isEdit as EditItem)?.item?.contactAddress) {
