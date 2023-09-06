@@ -71,10 +71,19 @@ const WrapperStyled = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `
 
-const TabCardStyleItem = styled(CardStyleItem)`
-  && {
+const MainTabCardStyleItem = styled(CardStyleItem)`
+  &&, &&.selected, &&:hover {
+    border-radius: ${({theme}) => theme.unit}px;
+    padding-left: ${({theme}) => 3 * theme.unit}px;
+    padding-right: ${({theme}) => 3 * theme.unit}px;
+  }
+`
+
+const SubTabCardStyleItem = styled(CardStyleItem)`
+  &&, &&.selected, &&:hover {
     padding: ${({theme}) => theme.unit}px ${({theme}) => 2.5 *theme.unit}px;
     width: auto;
+    border-radius:  ${({theme}) => theme.unit}px;
   }
 `
 
@@ -192,7 +201,7 @@ export const DualListPanel: any = withTranslation('common')(
                       .map((item, index) => {
                         return (
                           <Grid marginLeft={2} item xs={6} md={3} lg={2} key={item.toString() + index.toString()}>
-                            <CardStyleItem
+                            <MainTabCardStyleItem
                               className={
                                 item.toString().toLowerCase() === pairASymbol.toLowerCase()
                                   ? 'btnCard dualInvestCard selected'
@@ -211,7 +220,7 @@ export const DualListPanel: any = withTranslation('common')(
                                   })}
                                 </Typography>
                               </CardContent>
-                            </CardStyleItem>
+                            </MainTabCardStyleItem>
                           </Grid>
                         )
                       })}
@@ -237,7 +246,7 @@ export const DualListPanel: any = withTranslation('common')(
                               new RegExp(pairASymbol + '-' + item.toString(), 'ig').test(_item),
                             )
                             return (
-                              <TabCardStyleItem
+                              <SubTabCardStyleItem
                                 className={
                                       item.toString().toLowerCase() === pairBSymbol.toLowerCase()
                                         ? 'btnCard dualInvestCard selected'
@@ -261,7 +270,7 @@ export const DualListPanel: any = withTranslation('common')(
                                 }
                                 </Typography>
                                 
-                              </TabCardStyleItem>
+                              </SubTabCardStyleItem>
                             )
                           })}
                       </Box>
