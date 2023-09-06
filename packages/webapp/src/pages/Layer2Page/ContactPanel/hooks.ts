@@ -63,6 +63,7 @@ export const useContact = () => {
   const {
     account: { accountId, apiKey, accAddress, isContractAddress, isCFAddress },
   } = useAccount()
+  const { defaultNetwork } = useSettings()
   // const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
   const { t } = useTranslation()
   const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
@@ -150,51 +151,33 @@ export const useContact = () => {
     async (address: string, name: string) => {
       setDeleteLoading(true)
       const { accountId, apiKey, isContractAddress, isCFAddress } = store.getState().account
-      LoopringAPI.contactAPI
-        ?.createContact(
-          {
-            accountId,
-            isHebao: isContractAddress || isCFAddress ? true : false,
-            contactAddress: address,
-            contactName: name,
-          },
-          apiKey,
-        )
-        .then((response) => {
-          if (response === true) {
-            updateContacts()
-            // updateContacts(contacts!.filter((contact) => contact.address !== address))
-            setToastOpen(
-              {
-                open: true,
-                type: ToastType.success,
-                content: t('labelContactsDeleteSuccess'),
-              },
-              //     {
-              //   open: true,
-              //   isSuccess: true,
-              //   type: 'Delete',
-              // }
-            )
-            setDeleteInfo({
-              open: false,
-              selected: undefined,
-            })
-          } else {
-            throw (response.resultInfo as sdk.RESULT_INFO).message
-          }
+      const response = await LoopringAPI.contactAPI?.deleteContact(
+        {
+          accountId,
+          isHebao: isContractAddress || isCFAddress ? true : false,
+          contactAddress: address,
+          // @ts-ignore
+          network: NetworkMap[defaultNetwork].walletType,
+        },
+        apiKey,
+      )
+
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        setToastOpen({
+          open: true,
+          type: ToastType.error,
+          content: t('labelContactsDeleteFailed'),
         })
-        .catch((e) => {
-          //   TODO
-          setToastOpen({
-            open: true,
-            type: ToastType.error,
-            content: t('labelContactsDeleteFailed'),
-          })
-        })
-        .finally(() => {
-          setDeleteLoading(false)
-        })
+      }
+      updateContacts()
+      setToastOpen({
+        open: true,
+        type: ToastType.success,
+        content: t('labelContactsDeleteSuccess'),
+      })
+      setDeleteLoading(false)
+      onCloseDelete()
+      // if(result as sdk.RESULT_INFO)
     },
     [contacts],
   )
