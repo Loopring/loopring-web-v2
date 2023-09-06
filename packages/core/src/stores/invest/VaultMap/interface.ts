@@ -10,6 +10,7 @@ export type VaultMap = {
   tradeMap: sdk.LoopringMap<{ tokenId: number; tradePairs: string[] }>
   coinMap: CoinMap<any>
   // pairs: sdk.LoopringMap<sdk.TokenRelatedInfo>
+  joinTokenMap: sdk.LoopringMap<sdk.VaultToken>
   idIndex: LoopringMap<number>
   addressIndex: sdk.LoopringMap<TokenAddress>
   tokenMap: sdk.LoopringMap<sdk.VaultToken>

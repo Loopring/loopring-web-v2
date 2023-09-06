@@ -1,16 +1,19 @@
 import {
   CoinInfo,
   EmptyValueTag,
+  getValuePrecisionThousand,
   IBData,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  Required,
   TRADE_TYPE,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { VaultJoinWrapProps } from './Interface'
 import React from 'react'
-import { Grid, Typography } from '@mui/material'
+import { Grid, Tooltip, Typography } from '@mui/material'
 import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
@@ -29,7 +32,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
   // coinAPrecision,
   // coinBPrecision,
   ...rest
-}: VaultJoinWrapProps<T, I, V>) => {
+}: Required<VaultJoinWrapProps<T, I, V>>) => {
   const { t, ...i18n } = useTranslation()
   const inputBtnRef = React.useRef()
   let { defaultNetwork } = useSettings()
@@ -100,6 +103,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
             ...rest,
             ...i18n,
             t,
+            tReady: true,
             tradeData: tradeData as any,
             type: TRADE_TYPE.TOKEN,
             disabled,
@@ -123,10 +127,28 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
               alignItems={'center'}
               height={24}
             >
-              <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                {t('labelLabel')}
-              </Typography>
-              {vaultJoinData ? <></> : EmptyValueTag}
+              <Tooltip title={t('labelVaultTotalQuoteDest').toString()}>
+                <Typography
+                  component={'span'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  alignItems={'center'}
+                  display={'flex'}
+                >
+                  <Trans i18nKey={'labelVaultTotalQuote'}>
+                    Total Quote
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  </Trans>
+                </Typography>
+              </Tooltip>
+
+              {vaultJoinData && vaultJoinData?.maxShowVal ? (
+                <Typography component={'span'} variant='body2' color={'textPrimary'}>
+                  {vaultJoinData?.maxShowVal + ' ' + vaultJoinData?.belong}
+                </Typography>
+              ) : (
+                EmptyValueTag
+              )}
             </Grid>
 
             <Grid
@@ -136,10 +158,32 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V>({
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                {t('labelLabel')}
-              </Typography>
-              {vaultJoinData ? <></> : EmptyValueTag}
+              <Tooltip title={t('labelVaultTotalQuoteDest').toString()}>
+                <Typography
+                  component={'span'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  alignItems={'center'}
+                  display={'inline-flex'}
+                >
+                  {t('labelVaultTotalToken')}
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                </Typography>
+              </Tooltip>
+              <>
+                {vaultJoinData && vaultJoinData?.tradeValue ? (
+                  <Typography component={'span'} variant='body2' color={'textPrimary'}>
+                    {`${getValuePrecisionThousand(
+                      vaultJoinData?.tradeValue,
+                      vaultJoinData?.vaultTokenInfo?.decimals,
+                      vaultJoinData?.vaultTokenInfo?.decimals,
+                      undefined,
+                    )} ${vaultJoinData?.vaultSymbol}`}
+                  </Typography>
+                ) : (
+                  EmptyValueTag
+                )}
+              </>
             </Grid>
           </Grid>
           <Grid item>

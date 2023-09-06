@@ -751,12 +751,15 @@ export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
 
 export type VaultJoinData<I = any> = {
   walletMap: WalletMap<I>
-  coinMap: CoinMap<I>
+  coinMap: CoinMap<I> & { vaultToken: string; vaultId: number }
   vaultLayer2Map: WalletMap<I>
   vaultSymbol?: string
   request?: sdk.VaultJoinRequest
+  maxShowVal: string
+  minShowVal: string
   maxAmount: string
   minAmount: string
+  amount: string
   isMerge: boolean
   // isShouldClean:boolean
   __request__: sdk.VaultJoinRequest

@@ -83,6 +83,17 @@ export const makeBtrade = (btradeMarkets: any) => {
   }
 }
 
+/**
+ * @property vaultTokenAmounts.status
+ *  show: bit 0
+ *  join: bit 1
+ *  exit: bit 2
+ *  loan: bit 3
+ *  repay:bit 4
+ * @param vaultTokenMap
+ * @param vaultMarkets
+ * @param enabled
+ */
 export const makeVault = (
   vaultTokenMap: sdk.VaultToken[] | undefined,
   vaultMarkets: sdk.VaultMarket[] | undefined,
@@ -110,6 +121,24 @@ export const makeVault = (
         return prev as VaultMarketExtends[]
       }
     }, [] as VaultMarketExtends[])
+    const joinTokenMap = Reflect.ownKeys(tokensMap).reduce((prev, key) => {
+      const status = (
+        tokensMap[key.toString()] as sdk.VaultToken
+      )?.vaultTokenAmounts?.status?.toString(2)
+      if (status[0] == '1' && status[1] == '1') {
+        prev = {
+          ...prev,
+          [key]: tokensMap[key.toString()] as sdk.VaultToken,
+        }
+      }
+      return prev
+    }, {} as { [key: string]: sdk.VaultToken & sdk.TokenInfo })
+    // joinTokenMap
+    // "vaultTokenAmounts": {
+    //   "minAmount": "10000000000000000",
+    //     "qtyStepScale": 0,
+    //     "status": 7
+    // },
     const {
       markets: marketMap,
       pairs,
@@ -134,8 +163,10 @@ export const makeVault = (
           coinMap,
           pairs,
           idIndex,
+
           addressIndex,
           tokenMap: tokensMap,
+          joinTokenMap,
         }),
       )
     } else {
@@ -148,6 +179,8 @@ export const makeVault = (
         pairs,
         idIndex,
         addressIndex,
+        tokenMap: tokensMap,
+        joinTokenMap,
       }
     }
   } else {

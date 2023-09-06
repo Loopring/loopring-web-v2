@@ -258,7 +258,7 @@ export let vaultItemData: Array<HeaderMenuItemInterface> = [
     label: {
       id: VaultKey.VAULT_HOME,
       i18nKey: 'labelVaultHome',
-      description: 'labelVaultHomeDescription',
+      description: 'labelVaultHomeDes',
     },
     router: { path: RouterPath.vault + '' },
   },
@@ -266,7 +266,7 @@ export let vaultItemData: Array<HeaderMenuItemInterface> = [
     label: {
       id: VaultKey.VAULT_DASHBOARD,
       i18nKey: 'labelVaultDashboard',
-      description: 'labelVaultDashboardDescription',
+      description: 'labelVaultDashboardDes',
     },
     router: { path: RouterPath.vault + '/dashboard' },
   },

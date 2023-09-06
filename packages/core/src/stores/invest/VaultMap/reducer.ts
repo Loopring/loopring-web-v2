@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { VaultMapStates } from './interface'
 import { SagaStatus } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const initialState: Required<VaultMapStates> = {
   marketArray: [],
@@ -10,7 +11,7 @@ const initialState: Required<VaultMapStates> = {
   tokenMap: {},
   coinMap: {},
   idIndex: {},
-  // pairs:{},
+  joinTokenMap: {},
   addressIndex: {},
   __timer__: -1,
   status: SagaStatus.PENDING,
@@ -30,15 +31,16 @@ const vaultMapSlice: Slice = createSlice({
       } else {
         const vaultMap = action.payload
         if (vaultMap) {
+          // state.tokenMap =
           state.marketArray = vaultMap.marketArray
           state.marketCoins = vaultMap.marketCoins
           state.marketMap = vaultMap.marketMap
           state.tradeMap = vaultMap.tradeMap
           state.coinMap = vaultMap.coinMap
-          // state.pairs = vaultMap.pairs
           state.idIndex = vaultMap.idIndex
           state.addressIndex = vaultMap.addressIndex
           state.tokenMap = vaultMap.tokenMap
+          state.joinTokenMap = vaultMap.joinTokenMap
           state.raw_data = vaultMap?.raw_data ?? undefined
         }
 

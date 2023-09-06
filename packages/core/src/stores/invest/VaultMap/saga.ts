@@ -74,9 +74,9 @@ const getVaultMapApi = async () => {
         }
       }),
     ])
-    const ressult = makeVault(tokenMapRaw as sdk.VaultToken[], marketRaw)
+    const result = makeVault(tokenMapRaw as sdk.VaultToken[], marketRaw)
     return {
-      ...ressult,
+      ...result,
       raw_data: {
         tokenMapRaw,
         marketRaw,

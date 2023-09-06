@@ -29,7 +29,7 @@ export const VaultDashBoardPanel = () => {
         </Box>
       </Box>
       <Box>
-        <Typography>TODO: discription</Typography>
+        <Typography>TODO: description</Typography>
         <Box>
           <Button
             size={'medium'}
