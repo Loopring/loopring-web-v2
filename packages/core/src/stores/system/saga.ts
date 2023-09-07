@@ -245,7 +245,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(getDualMap(undefined))
   store.dispatch(getStakingMap(undefined))
   store.dispatch(getBtradeMap(undefined))
-  store.dispatch(getExclusiveRedpacket(undefined))
 
   yield all([
     take('defiMap/getDefiMapStatus'),

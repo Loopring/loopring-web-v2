@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
-import {  statusUnset, setShowRedPacketsPopup, setOpendPopup } from './reducer'
+import {  statusUnset, setShowRedPacketsPopup, setOpendPopup, getExclusiveRedpacket } from './reducer'
 import { TargetRedPacketStates } from './interface'
 import React from 'react'
+import { useAccount } from '../account'
 
 export function useTargetRedPackets(): TargetRedPacketStates & {
   statusUnset: () => void
@@ -10,6 +11,10 @@ export function useTargetRedPackets(): TargetRedPacketStates & {
 } {
   const targetRedpacket: TargetRedPacketStates = useSelector((state: any) => state.targetRedpacket)
   const dispatch = useDispatch()
+  const {account} = useAccount()
+  React.useEffect(() => {
+    dispatch(getExclusiveRedpacket(undefined))
+  }, [account.apiKey])
   return {
     ...targetRedpacket,
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),

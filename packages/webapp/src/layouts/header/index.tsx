@@ -42,7 +42,7 @@ const Header = withTranslation('common')(
       const [view, setView] = React.useState(false)
       const { redPackets, setShowRedPacketsPopup, setOpendPopup, openedRedPackets} =useTargetRedPackets()
       const showExclusiveRedpacket = redPackets && 
-        redPackets?.find(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") &&
+        redPackets.find(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") &&
         !openedRedPackets
       const exclusiveRedpacketCount = redPackets ? redPackets.length : 0
       const onClickExclusiveredPacket = () => {
