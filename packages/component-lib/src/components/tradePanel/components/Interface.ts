@@ -636,6 +636,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onSendTargetRedpacketClick: () => void
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
   onClickViewTargetDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   contacts?: DisplayContact[]
@@ -669,12 +670,13 @@ export type TargetRedpacktSelectStepProps = {
   onClickViewDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
   backToScope: () => void
 }
 
 export type TargetRedpacktInputAddressStepProps = {
-  isRedDot: boolean
-  onChangeIsRedDot: (isRedDot: boolean) => void
+  popupChecked: boolean
+  onChangePopupChecked: (popupChecked: boolean) => void
   onFileInput: (input: string) => void
   addressListString: string
   onClickSend: () => void

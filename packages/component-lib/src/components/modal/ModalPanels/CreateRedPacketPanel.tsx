@@ -56,6 +56,7 @@ export const CreateRedPacketPanel = <
   onSendTargetRedpacketClick,
   targetRedPackets,
   popRedPacket,
+  popRedPacketAmountStr,
   onClickViewTargetDetail,
   onCloseRedpacketPop,
   contacts,
@@ -448,6 +449,7 @@ export const CreateRedPacketPanel = <
                 backToScope={backToScope}
                 onCloseRedpacketPop={onCloseRedpacketPop}
                 popRedPacket={popRedPacket}
+                popRedPacketAmountStr={popRedPacketAmountStr}
                 onClickExclusiveRedpacket={(hash) => {
                   handleOnDataChange({
                     target: {
@@ -476,14 +478,14 @@ export const CreateRedPacketPanel = <
               <TargetRedpacktInputAddressStep
                 contacts={contacts}
                 addressListString={tradeData.target?.addressListString ?? ''}
-                isRedDot={
-                  tradeData.target?.isRedDot !== undefined ? tradeData.target?.isRedDot : true
+                popupChecked={
+                  tradeData.target?.popupChecked !== undefined ? tradeData.target?.popupChecked : false
                 }
-                onChangeIsRedDot={(isRedDot) => {
+                onChangePopupChecked={(popupChecked) => {
                   handleOnDataChange({
                     target: {
                       ...tradeData.target,
-                      isRedDot,
+                      popupChecked,
                     },
                   } as any)
                 }}

@@ -1860,4 +1860,7 @@ export default {
   labelRedpacketAddressesReviewPart1: 'The list contains {{count}} valid addresses,',
   labelRedpacketAddressesReviewPart2: '{{count}} invalid addresses',
   labelRedpacketAddressesReviewPart3: '. To proceed, invalid addresses will be automatically removed from the list.',
+  labelRedpacketExclusiveListEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
+  labelRedpacketBestwishes: 'Best wishes',
 }
