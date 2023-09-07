@@ -680,6 +680,6 @@ export type TargetRedpacktInputAddressStepProps = {
   onClickSend: () => void
   contacts?: DisplayContact[]
   onConfirm: (list: string[]) => void
-  onManualInputConfirm: (text: string) => void
-  showPopUpOption: boolean
+  onManualEditInput: (text: string) => void
+  popUpOptionDisabled: boolean
 }

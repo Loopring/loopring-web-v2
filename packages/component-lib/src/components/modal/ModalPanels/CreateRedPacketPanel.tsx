@@ -495,7 +495,7 @@ export const CreateRedPacketPanel = <
                     },
                   } as any)
                 }}
-                onManualInputConfirm={(input) => {
+                onManualEditInput={(input) => {
                   handleOnDataChange({
                     target: {
                       ...tradeData.target,
@@ -514,7 +514,7 @@ export const CreateRedPacketPanel = <
                     },
                   } as any)
                 }}
-                showPopUpOption={isWhiteListed ? true : false}
+                popUpOptionDisabled={isWhiteListed ? false : true}
               />
             ),
             toolBarItem: undefined,

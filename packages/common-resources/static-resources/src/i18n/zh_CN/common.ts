@@ -1854,4 +1854,10 @@ export default {
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
   labelRedpacketValidAddresses: 'Valid Addresses: {{count}}',
+  labelRedpacketTips: 'Tips',
+  labelRedpacketChangeImportTips: 'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
+  labelRedpacketAddressesReview: 'Addresses Review',
+  labelRedpacketAddressesReviewPart1: 'The list contains {{count}} valid addresses,',
+  labelRedpacketAddressesReviewPart2: '{{count}} invalid addresses',
+  labelRedpacketAddressesReviewPart3: '. To proceed, invalid addresses will be automatically removed from the list.',
 }
