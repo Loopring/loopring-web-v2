@@ -1013,7 +1013,7 @@ export const CreateRedPacketStepType = withTranslation()(
               {t(`labelMintBack`)}
             </Button>
           </Box>
-          <Box width={tradeType === RedPacketOrderType.FromNFT ? '100%' : '48%'}>
+          <Box width={'48%'}>
             <BtnMain
               {...{
                 defaultLabel: 'labelContinue',
@@ -1197,27 +1197,30 @@ export const CreateRedPacketStepTokenType = withTranslation()(
   },
 )
 
-const ScopeOption = styled(Box)<{ selected?: boolean }>`
+const ScopeOption = styled(Box)<{ selected?: boolean, disabled?: boolean }>`
   display: flex;
   border: 1px solid
     ${({ selected }) => (selected ? 'var(--color-border-select)' : 'var(--color-border)')};
   padding: ${({ theme }) => 3 * theme.unit}px;
   border-radius: ${({ theme }) => theme.unit}px;
   width: 47%;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '')};
 `
 type CreateRedPacketScopeProps = {
   selectedScope: sdk.LuckyTokenViewType
   onSelecteScope: (scope: sdk.LuckyTokenViewType) => void
   onClickNext: () => void
-  showPalazaPublic: boolean
+  palazaPublicDisabled: boolean
+  exclusiveDisabled: boolean
 }
 export const CreateRedPacketScope = withTranslation()(
   ({
     selectedScope,
     onClickNext,
     onSelecteScope,
-    showPalazaPublic,
+    palazaPublicDisabled,
+    exclusiveDisabled,
     t,
   }: CreateRedPacketScopeProps & WithTranslation) => {
     const theme = useTheme()
@@ -1242,22 +1245,25 @@ export const CreateRedPacketScope = withTranslation()(
             </Tooltip>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
-            {showPalazaPublic && (
-              <ScopeOption
-                onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PUBLIC)}
-                selected={selectedScope === sdk.LuckyTokenViewType.PUBLIC}
-              >
-                <Box marginRight={0.5}>
-                  <Typography>{t('labelRedPacketPlazaPublic')}</Typography>
-                  <Typography color={'var(--color-text-secondary)'}>
-                    {t('labelRedPacketPlazaPublicDes')}
-                  </Typography>
-                </Box>
-                <Box width={theme.unit * 8}>
-                  <ScopePublic color={'var(--color-text-secondary)'} />
-                </Box>
-              </ScopeOption>
-            )}
+            {/* {palazaPublicDisabled && ( */}
+            <ScopeOption
+              onClick={() => {
+                !palazaPublicDisabled && onSelecteScope(sdk.LuckyTokenViewType.PUBLIC)
+              }}
+              selected={selectedScope === sdk.LuckyTokenViewType.PUBLIC}
+              disabled={palazaPublicDisabled}
+            >
+              <Box marginRight={0.5}>
+                <Typography>{t('labelRedPacketPlazaPublic')}</Typography>
+                <Typography color={'var(--color-text-secondary)'}>
+                  {t('labelRedPacketPlazaPublicDes')}
+                </Typography>
+              </Box>
+              <Box width={theme.unit * 8}>
+                <ScopePublic color={'var(--color-text-secondary)'} />
+              </Box>
+            </ScopeOption>
+            {/* )} */}
             <ScopeOption
               onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PRIVATE)}
               selected={selectedScope === sdk.LuckyTokenViewType.PRIVATE}
@@ -1287,8 +1293,11 @@ export const CreateRedPacketScope = withTranslation()(
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
             <ScopeOption
-              onClick={() => onSelecteScope(sdk.LuckyTokenViewType.TARGET)}
+              onClick={() => {
+                !exclusiveDisabled && onSelecteScope(sdk.LuckyTokenViewType.TARGET)
+              }}
               selected={selectedScope === sdk.LuckyTokenViewType.TARGET}
+              disabled={exclusiveDisabled}
             >
               <Box marginRight={0.5}>
                 <Typography>{t('labelRedPacketExclusive')}</Typography>
@@ -1592,6 +1601,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
               <Button
                 onClick={() => {
                   popRedPacket && onClickExclusiveRedpacket(popRedPacket.hash)
+                  onCloseRedpacketPop()
                 }}
                 fullWidth
                 variant={'contained'}
@@ -1685,16 +1695,19 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
       onConfirm,
       onManualEditInput,
       popUpOptionDisabled,
+      maximumTargetsLength,
       t,
     } = props
     const theme = useTheme()
     const { isMobile } = useSettings()
     const [showContactModal, setShowContactModal] = React.useState(false)
     const [showPopUpTips, setShowPopUpTips] = React.useState(false)
+    const [inputDisabled, setInputDisabled] = React.useState(false)
     const [showChangeTips, setShowChangeTips] = React.useState<{
-      isPreviousText?: boolean
+      previousInputType?: 'text' | 'contact' | 'edit'
       show: boolean
       confirmCallBack?: () => void
+      contactImportCaches?: string[]
     }>({
       show: false,
     })
@@ -1777,12 +1790,13 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                         </Box>
                         <Checkbox
                           onChange={() => {
-                            if (selectedAddresses.find((addr) => addr === contact.address)) {
-                              setSelectedAddresses(
-                                selectedAddresses.filter((addr) => addr !== contact.address),
-                              )
-                            } else {
-                              setSelectedAddresses([...selectedAddresses, contact.address])
+                            const newSelectedAddresses = selectedAddresses.find(
+                              (addr) => addr === contact.address,
+                            )
+                              ? selectedAddresses.filter((addr) => addr !== contact.address)
+                              : [contact.address, ...selectedAddresses]
+                            if (newSelectedAddresses.length <= maximumTargetsLength) {
+                              setSelectedAddresses(newSelectedAddresses)
                             }
                           }}
                           checked={
@@ -1801,6 +1815,11 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <Box>
                 <Button
                   onClick={() => {
+                    setShowChangeTips({
+                      ...showChangeTips,
+                      contactImportCaches: selectedAddresses
+                    })
+                    setInputDisabled(true)
                     onConfirm(selectedAddresses)
                     setShowContactModal(false)
                   }}
@@ -1996,7 +2015,12 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
 
         <Box marginTop={3} borderRadius={1} paddingRight={2}>
           <MultiLineInput
+            disabled={inputDisabled}
             onInput={(e) => {
+              setShowChangeTips({
+                ...showChangeTips,
+                previousInputType: 'edit'
+              })
               onManualEditInput(e.currentTarget.value)
             }}
             value={addressListString}
@@ -2018,6 +2042,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     onChange={(e) => {
                       const reader = new FileReader()
                       reader.onload = (event) => {
+                        setInputDisabled(true)
                         onFileInput(event.target?.result ? (event.target.result as string) : '')
                       }
                       e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
@@ -2032,7 +2057,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     onClick={(e) => {
                       // debugger
                       const parentNode = e.currentTarget.parentNode as any
-                      if (showChangeTips.isPreviousText === false) {
+                      if (showChangeTips.previousInputType && showChangeTips.previousInputType !== 'text') {
                         setShowChangeTips({
                           ...showChangeTips,
                           show: true,
@@ -2040,7 +2065,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                             parentNode.click()
                             setShowChangeTips({
                               ...showChangeTips,
-                              isPreviousText: true,
+                              previousInputType: 'text',
                             })
                           },
                         })
@@ -2048,7 +2073,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                         parentNode.click()
                         setShowChangeTips({
                           ...showChangeTips,
-                          isPreviousText: true,
+                          previousInputType: 'text',
                         })
                       }
                     }}
@@ -2060,7 +2085,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               />
               <Button
                 onClick={(e) => {
-                  if (showChangeTips.isPreviousText === true) {
+                  if (showChangeTips.previousInputType && showChangeTips.previousInputType !== 'contact') {
                     setShowChangeTips({
                       ...showChangeTips,
                       show: true,
@@ -2069,16 +2094,16 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                         setShowContactModal(true)
                         setShowChangeTips({
                           ...showChangeTips,
-                          isPreviousText: false,
+                          previousInputType: 'contact'
                         })
                       },
                     })
                   } else {
-                    setSelectedAddresses([])
+                    setSelectedAddresses(showChangeTips.contactImportCaches ?? [])
                     setShowContactModal(true)
                     setShowChangeTips({
                       ...showChangeTips,
-                      isPreviousText: false,
+                      previousInputType: 'contact'
                     })
                   }
                 }}

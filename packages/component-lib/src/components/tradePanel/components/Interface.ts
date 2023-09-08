@@ -684,4 +684,5 @@ export type TargetRedpacktInputAddressStepProps = {
   onConfirm: (list: string[]) => void
   onManualEditInput: (text: string) => void
   popUpOptionDisabled: boolean
+  maximumTargetsLength: number
 }
