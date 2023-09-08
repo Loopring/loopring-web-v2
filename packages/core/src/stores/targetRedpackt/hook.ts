@@ -14,6 +14,12 @@ export function useTargetRedPackets(): TargetRedPacketStates & {
   const {account} = useAccount()
   React.useEffect(() => {
     dispatch(getExclusiveRedpacket(undefined))
+    const timer = setInterval(() => {
+      dispatch(getExclusiveRedpacket(undefined))
+    }, 5 * 60 * 1000)
+    return () => {
+      clearInterval(timer)
+    }
   }, [account.apiKey])
   return {
     ...targetRedpacket,
