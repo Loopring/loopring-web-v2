@@ -706,7 +706,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
     },
     // {
     //   label: {
-    //     id: 'vault',
+    //     id: 'vaultLayer2',
     //     i18nKey: 'labelVault',
     //     description: 'labelVaultDescription',
     //   },
@@ -887,7 +887,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
-    // RouterMainKey.vault,
+    // RouterMainKey.vaultLayer2,
   ],
   GOERLI: [
     RouterMainKey.lite,

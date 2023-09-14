@@ -225,7 +225,7 @@ export const useVaultSwap = <
           ...tradeDataTmp,
         }
       })
-      history.push('/vault/trade/' + _market)
+      history.push('/vaultLayer2/trade/' + _market)
       updateTradeVault({
         market,
         tradePair,
@@ -330,7 +330,7 @@ export const useVaultSwap = <
     } else {
       if (account.readyState === AccountStatus.ACTIVATED) {
         if (!tradeCalcData || !tradeCalcData.volumeSell || !tradeCalcData.volumeBuy) {
-          myLog('vault swapBtnStatus', TradeBtnStatus.DISABLED)
+          myLog('vaultLayer2 swapBtnStatus', TradeBtnStatus.DISABLED)
           return {
             label: 'labelEnterAmount',
             tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -1172,7 +1172,7 @@ export const useVaultSwap = <
       updateTradeVault({ market, tradeCalcData: _tradeCalcData })
     }
   }, [market, tradeVault, tradeData, tradeCalcData, setTradeCalcData])
-  myLog('vault swapBtnStatus', btnStatus)
+  myLog('vaultLayer2 swapBtnStatus', btnStatus)
   return {
     isMarketInit,
     toastOpen,

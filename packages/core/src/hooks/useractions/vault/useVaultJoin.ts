@@ -197,7 +197,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           },
         })
 
-        //TODO: step 1: has rest balance  //vault l2 balance
+        //TODO: step 1: has rest balance  //vaultLayer2 l2 balance
         if (isActiveAccount) {
           const response = await LoopringAPI.vaultAPI?.getVaultBalance(
             {

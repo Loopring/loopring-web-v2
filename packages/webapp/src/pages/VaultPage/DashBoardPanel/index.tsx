@@ -33,7 +33,7 @@ export const VaultDashBoardPanel = () => {
           <Button
             variant={'outlined'}
             color={'primary'}
-            onClick={() => history.push('/vault/transaction')}
+            onClick={() => history.push('/vaultLayer2/transaction')}
           >
             {t('labelTransaction')}
           </Button>
