@@ -688,7 +688,7 @@ export type RedPacketOrderData<I> = {
   target?: {
     redpacketHash: string
     addressListString: string
-    isRedDot: boolean
+    popupChecked: boolean
   }
   showNFT: boolean
 } & Partial<IBData<I>> &

@@ -57,7 +57,7 @@ export const useCreateRedPacket = <
   retryBtn: (isHardware?: boolean) => void
 } => {
   const { exchangeInfo, chainId } = useSystem()
-  const { tokenMap, totalCoinMap } = useTokenMap()
+  const { tokenMap, totalCoinMap, idIndex } = useTokenMap()
   // const tradeType
   const {
     allowTrade: { transfer: transferEnabale },
@@ -818,14 +818,15 @@ export const useCreateRedPacket = <
           isShow: true,
           step: AccountStep.RedPacketSend_WaitForAuth,
         })
+        debugger
         const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget(
           {
             claimer: getValidAddresses(redPacketOrder.target?.addressListString),
             hash: redPacketOrder.target?.redpacketHash,
             notifyType:
-              redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot
-                ? 0
-                : 1,
+              redPacketOrder.target?.popupChecked 
+                ? 1 
+                : 0,
           },
           account.eddsaKey.sk,
           account.apiKey,
@@ -969,6 +970,22 @@ export const useCreateRedPacket = <
   const [popRedPacket, setPopRedPacket] = React.useState(
     undefined as sdk.LuckTokenClaimDetail | undefined,
   )
+  const tokenInfo = popRedPacket && tokenMap[idIndex[popRedPacket.luckyToken.tokenId]]
+  
+  const popRedPacketAmountStr = popRedPacket 
+  ? (popRedPacket.luckyToken.isNft 
+    ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
+    : tokenInfo && getValuePrecisionThousand(
+      sdk
+        .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
+        .div('1e' + tokenInfo!.decimals),
+      tokenInfo!.precision,
+      tokenInfo!.precision,
+      tokenInfo!.precision,
+      false,
+    ) + ' ' + tokenInfo?.symbol
+  )
+  : undefined
   const [isWhiteListed, setIsWhiteListed] = React.useState(
     undefined as undefined | boolean
   )
@@ -1050,6 +1067,7 @@ export const useCreateRedPacket = <
     onSendTargetRedpacketClick,
     targetRedPackets,
     popRedPacket,
+    popRedPacketAmountStr,
     onClickViewTargetDetail,
     onCloseRedpacketPop,
     isWhiteListed

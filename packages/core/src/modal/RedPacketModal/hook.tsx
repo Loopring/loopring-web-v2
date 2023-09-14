@@ -823,13 +823,16 @@ export function useRedPacketModal() {
         detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.RELAY &&
         account.accountId !== _info.sender.accountId
 
-      const bottomButton: 'ended' | 'share' = [
-        sdk.LuckyTokenItemStatus.OVER_DUE,
-        sdk.LuckyTokenItemStatus.FAILED,
-        sdk.LuckyTokenItemStatus.COMPLETED,
-      ].includes(detail.luckyToken.status)
-        ? 'ended'
-        : 'share'
+      const bottomButton: 'ended' | 'share' | 'hidden' =
+        detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
+          ? 'hidden'
+          : [
+              sdk.LuckyTokenItemStatus.OVER_DUE,
+              sdk.LuckyTokenItemStatus.FAILED,
+              sdk.LuckyTokenItemStatus.COMPLETED,
+            ].includes(detail.luckyToken.status)
+          ? 'ended'
+          : 'share'
 
       let myAmountStr: string | undefined = undefined
       const relyNumber = detail.helpers?.length
@@ -1034,7 +1037,8 @@ export function useRedPacketModal() {
     ) {
       const shareButton: 'hidden' | 'share' =
         (blindBoxType === 'Not Started' || blindBoxType === 'Blind Box Started') &&
-        detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
+        detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED && 
+        detail.luckyToken.type.scope !== sdk.LuckyTokenViewType.TARGET
           ? 'share'
           : 'hidden'
 

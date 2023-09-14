@@ -9,7 +9,7 @@ import {
   IconButton,
   Tooltip,
   Typography,
-  TextField as MuiTextField
+  TextField as MuiTextField,
 } from '@mui/material'
 import React from 'react'
 import {
@@ -880,7 +880,7 @@ export const CreateRedPacketStepType = withTranslation()(
           : item.showInERC20) &&
         (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true),
     ).filter((item) => {
-      return !(item.isBlindboxNFT && showNFT)
+      return item.isBlindboxNFT ? showNFT : true
     })
 
     return (
@@ -1013,7 +1013,7 @@ export const CreateRedPacketStepType = withTranslation()(
               {t(`labelMintBack`)}
             </Button>
           </Box>
-          <Box width={tradeType === RedPacketOrderType.FromNFT ? '100%' : '48%'}>
+          <Box width={'48%'}>
             <BtnMain
               {...{
                 defaultLabel: 'labelContinue',
@@ -1197,32 +1197,42 @@ export const CreateRedPacketStepTokenType = withTranslation()(
   },
 )
 
-const ScopeOption = styled(Box)<{ selected?: boolean }>`
+const ScopeOption = styled(Box)<{ selected?: boolean, disabled?: boolean }>`
   display: flex;
   border: 1px solid
     ${({ selected }) => (selected ? 'var(--color-border-select)' : 'var(--color-border)')};
   padding: ${({ theme }) => 3 * theme.unit}px;
   border-radius: ${({ theme }) => theme.unit}px;
   width: 47%;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '')};
 `
 type CreateRedPacketScopeProps = {
   selectedScope: sdk.LuckyTokenViewType
   onSelecteScope: (scope: sdk.LuckyTokenViewType) => void
   onClickNext: () => void
-  showPalazaPublic: boolean
+  palazaPublicDisabled: boolean
+  exclusiveDisabled: boolean
 }
 export const CreateRedPacketScope = withTranslation()(
   ({
     selectedScope,
     onClickNext,
     onSelecteScope,
-    showPalazaPublic,
+    palazaPublicDisabled,
+    exclusiveDisabled,
     t,
   }: CreateRedPacketScopeProps & WithTranslation) => {
     const theme = useTheme()
     return (
-      <Box width={'100%'} display={'flex'} flexDirection={'column'} paddingX={8} paddingTop={4} paddingBottom={8}>
+      <Box
+        width={'100%'}
+        display={'flex'}
+        flexDirection={'column'}
+        paddingX={8}
+        paddingTop={4}
+        paddingBottom={8}
+      >
         <Box marginBottom={6}>
           <Box display={'flex'} alignItems={'center'} marginBottom={2}>
             <Typography marginRight={0.5} variant={'h4'}>
@@ -1235,9 +1245,13 @@ export const CreateRedPacketScope = withTranslation()(
             </Tooltip>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
-            {showPalazaPublic && <ScopeOption
-              onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PUBLIC)}
+            {/* {palazaPublicDisabled && ( */}
+            <ScopeOption
+              onClick={() => {
+                !palazaPublicDisabled && onSelecteScope(sdk.LuckyTokenViewType.PUBLIC)
+              }}
               selected={selectedScope === sdk.LuckyTokenViewType.PUBLIC}
+              disabled={palazaPublicDisabled}
             >
               <Box marginRight={0.5}>
                 <Typography>{t('labelRedPacketPlazaPublic')}</Typography>
@@ -1248,8 +1262,8 @@ export const CreateRedPacketScope = withTranslation()(
               <Box width={theme.unit * 8}>
                 <ScopePublic color={'var(--color-text-secondary)'} />
               </Box>
-              
-            </ScopeOption>}
+            </ScopeOption>
+            {/* )} */}
             <ScopeOption
               onClick={() => onSelecteScope(sdk.LuckyTokenViewType.PRIVATE)}
               selected={selectedScope === sdk.LuckyTokenViewType.PRIVATE}
@@ -1279,8 +1293,11 @@ export const CreateRedPacketScope = withTranslation()(
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
             <ScopeOption
-              onClick={() => onSelecteScope(sdk.LuckyTokenViewType.TARGET)}
+              onClick={() => {
+                !exclusiveDisabled && onSelecteScope(sdk.LuckyTokenViewType.TARGET)
+              }}
               selected={selectedScope === sdk.LuckyTokenViewType.TARGET}
+              disabled={exclusiveDisabled}
             >
               <Box marginRight={0.5}>
                 <Typography>{t('labelRedPacketExclusive')}</Typography>
@@ -1334,6 +1351,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
       onClickExclusiveRedpacket,
       onClickViewDetail,
       popRedPacket,
+      popRedPacketAmountStr,
       onCloseRedpacketPop,
       backToScope,
       t,
@@ -1353,89 +1371,119 @@ export const TargetRedpacktSelectStep = withTranslation()(
         paddingX={isMobile ? 2 : 5}
         position={'absolute'}
       >
-        <Box width={'100%'}>
-          <Typography marginTop={5} marginBottom={2}>
-            {targetRedPackets.length === 0
-              ? t('labelRedpacketExclusiveEmpty')
-              : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
-          </Typography>
-          <Box display={'flex'} flexWrap={'wrap'}>
-            {targetRedPackets &&
-              targetRedPackets.map((redpacket) => (
-                <TargetRedpacktOption
-                  onClick={() => {
-                    onClickExclusiveRedpacket(redpacket.hash)
-                  }}
-                  selected={false}
-                >
-                  <Box
-                    display={'flex'}
-                    marginBottom={1}
-                    justifyContent={'space-between'}
-                    alignItems={'start'}
-                  >
-                    <Box display={'flex'}>
-                      {redpacket.isNft ? (
-                        <NftImageStyle
-                          src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
-                          style={{
-                            width: `${theme.unit * 4}px`,
-                            height: `${theme.unit * 4}px`,
-                            borderRadius: `${theme.unit * 0.5}px`,
-                          }}
-                        />
-                      ) : (
-                        <Box width={theme.unit * 4} height={theme.unit * 4}>
-                          <CoinIcons
-                            size={theme.unit * 4}
-                            type={TokenType.single}
-                            tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
-                          />
+        {targetRedPackets.length > 0 ? (
+          <Box width={'100%'}>
+            <Typography marginTop={5} marginBottom={2}>
+              {targetRedPackets.length === 0
+                ? t('labelRedpacketExclusiveEmpty')
+                : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
+            </Typography>
+            <Box display={'flex'} flexWrap={'wrap'}>
+              {targetRedPackets &&
+                targetRedPackets
+                  .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
+                  .map((redpacket) => (
+                    <TargetRedpacktOption
+                      onClick={() => {
+                        onClickExclusiveRedpacket(redpacket.hash)
+                      }}
+                      selected={false}
+                    >
+                      <Box
+                        display={'flex'}
+                        marginBottom={1}
+                        justifyContent={'space-between'}
+                        alignItems={'start'}
+                      >
+                        <Box display={'flex'}>
+                          {redpacket.isNft ? (
+                            <NftImageStyle
+                              src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
+                              style={{
+                                width: `${theme.unit * 4}px`,
+                                height: `${theme.unit * 4}px`,
+                                borderRadius: `${theme.unit * 0.5}px`,
+                              }}
+                            />
+                          ) : (
+                            <Box width={theme.unit * 4} height={theme.unit * 4}>
+                              <CoinIcons
+                                size={theme.unit * 4}
+                                type={TokenType.single}
+                                tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
+                              />
+                            </Box>
+                          )}
+                          <Box marginLeft={1}>
+                            <Typography>
+                              {redpacket.isNft
+                                ? redpacket.nftTokenInfo?.metadata?.base.name
+                                : idIndex[redpacket.tokenId]}
+                            </Typography>
+                            <Typography color={'var(--color-text-secondary)'}>
+                              {redpacket.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                                ? t('labelLuckyBlindBox')
+                                : redpacket.type.mode === sdk.LuckyTokenClaimType.RELAY
+                                ? t('labelRelayRedPacket')
+                                : redpacket.type.partition === sdk.LuckyTokenAmountType.RANDOM
+                                ? t('labelLuckyRedPacket')
+                                : t('labelNormalRedPacket')}
+                            </Typography>
+                          </Box>
                         </Box>
-                      )}
-                      <Box marginLeft={1}>
-                        <Typography>
-                          {redpacket.isNft
-                            ? redpacket.nftTokenInfo?.metadata?.base.name
-                            : idIndex[redpacket.tokenId]}
+                        <Typography
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onClickViewDetail(redpacket.hash)
+                        }}
+                        color={'var(--color-primary)'}
+                        >
+                          {t('labelRedPacketExclusiveViewDetails')}
+                        </Typography>
+                        
+                      </Box>
+                      <hr
+                        style={{
+                          background: 'var(--color-border)',
+                          border: 'none',
+                          height: '0.5px',
+                        }}
+                      />
+                      <Box
+                        marginTop={1}
+                        marginLeft={5}
+                        display={'flex'}
+                        justifyContent={'space-between'}
+                      >
+                        <Typography color={'var(--color-text-secondary)'}>
+                          {t('labelRedpacketSentMaxLimit')}
                         </Typography>
                         <Typography color={'var(--color-text-secondary)'}>
-                          {redpacket.info.memo}
+                          {redpacket.tokenAmount.totalCount -
+                            (redpacket.tokenAmount as any).remainTargetCount}{' '}
+                          / {redpacket.tokenAmount.totalCount}
                         </Typography>
                       </Box>
-                    </Box>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onClickViewDetail(redpacket.hash)
-                      }}
-                      variant={'text'}
-                    >
-                      {t('labelRedPacketExclusiveViewDetails')}
-                    </Button>
-                  </Box>
-                  <hr
-                    style={{ background: 'var(--color-border)', border: 'none', height: '0.5px' }}
-                  />
-                  <Box
-                    marginTop={1}
-                    marginLeft={5}
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                  >
-                    <Typography color={'var(--color-text-secondary)'}>
-                      {t('labelRedpacketSentMaxLimit')}
-                    </Typography>
-                    <Typography color={'var(--color-text-secondary)'}>
-                      {redpacket.tokenAmount.totalCount -
-                        (redpacket.tokenAmount as any).remainTargetCount}{' '}
-                      / {redpacket.tokenAmount.totalCount}
-                    </Typography>
-                  </Box>
-                </TargetRedpacktOption>
-              ))}
+                    </TargetRedpacktOption>
+                  ))}
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <Box
+            height={'60%'}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            flexDirection={'column'}
+            width={'100%'}
+            paddingTop={'10%'}
+          >
+            <img width={160} src={SoursURL + '/images/exclusive_redpacket_empty.png'} />
+            <Typography marginTop={2} variant={'body2'} textAlign={'center'}>
+              {t("labelRedpacketExclusiveListEmpty")}
+            </Typography>
+          </Box>
+        )}
 
         <Box width={'100%'} marginTop={20} display={'flex'} justifyContent={'center'}>
           <Box width={'48%'} marginRight={'4%'}>
@@ -1501,7 +1549,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
                   />
                 </Box>
               )}
-              <Typography>20,000 LRC</Typography>
+              {popRedPacketAmountStr && <Typography>{popRedPacketAmountStr}</Typography>}
               <Box marginTop={4} width={'100%'} marginBottom={10}>
                 {popRedPacket?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
                   <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
@@ -1525,20 +1573,19 @@ export const TargetRedpacktSelectStep = withTranslation()(
                     {moment(popRedPacket?.luckyToken.validSince).format(YEAR_DAY_MINUTE_FORMAT)}
                   </Typography>
                 </Box>
-                {popRedPacket?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && (
-                  <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
-                    <Typography color={'var(--color-text-secondary)'}>
-                      {t('labelRedpacketRevealTime')}
-                    </Typography>
-                    <Typography>
-                      {moment(popRedPacket?.luckyToken.validUntil).format(YEAR_DAY_MINUTE_FORMAT)}
-                    </Typography>
-                  </Box>
-                )}
                 <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
                   <Typography color={'var(--color-text-secondary)'}>
-                    {popRedPacket?.luckyToken.info.memo}
+                    {popRedPacket?.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? t('labelRedpacketRevealTime')
+                      : t('labelBlindBoxEndTime')}
                   </Typography>
+                  <Typography>
+                    {moment(popRedPacket?.luckyToken.validUntil).format(YEAR_DAY_MINUTE_FORMAT)}
+                  </Typography>
+                </Box>
+                <Box marginBottom={1} display={'flex'} justifyContent={'space-between'}>
+                  <Typography color={'var(--color-text-secondary)'}>{t("labelRedpacketBestwishes")}</Typography>
+                  <Typography>{popRedPacket?.luckyToken.info.memo}</Typography>
                 </Box>
               </Box>
 
@@ -1553,12 +1600,13 @@ export const TargetRedpacktSelectStep = withTranslation()(
               </Button>
               <Button
                 onClick={() => {
+                  popRedPacket && onClickExclusiveRedpacket(popRedPacket.hash)
                   onCloseRedpacketPop()
                 }}
                 fullWidth
                 variant={'contained'}
               >
-                {t('labelClose')}
+                {t('labelContinue')}
               </Button>
             </Box>
           }
@@ -1581,17 +1629,37 @@ export const TargetRedpacktSelectStep = withTranslation()(
               paddingBottom={9}
             >
               <Typography variant={'h3'}>{t('labelRedpacketRecipientList')}</Typography>
-              <Box
-                borderRadius={1}
-                bgcolor={'var(--field-opacity)'}
-                marginTop={3}
-                paddingX={3}
-                paddingY={2}
-                width={'100%'}
-                height={362}
-              >
-                <Typography>{popRedPacket && (popRedPacket as any).targets.join('\n')}</Typography>
-              </Box>
+              {popRedPacket &&
+              (popRedPacket as any).targets &&
+              (popRedPacket as any).targets.length > 0 ? (
+                <Box
+                  borderRadius={1}
+                  bgcolor={'var(--field-opacity)'}
+                  marginTop={3}
+                  paddingX={3}
+                  paddingY={2}
+                  width={'100%'}
+                  height={362}
+                >
+                  <Typography>
+                    {popRedPacket && (popRedPacket as any).targets.join('\n')}
+                  </Typography>
+                </Box>
+              ) : (
+                <Box
+                  display={'flex'}
+                  width={'100%'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  flexDirection={'column'}
+                  height={362}
+                >
+                  <img width={85} src={SoursURL + '/images/receipt_empty.png'} />
+                  <Typography textAlign={'center'} width={'50%'} marginTop={2.5} variant={'body2'}>
+                    {t("labelRedpacketreceiptListEmpty")}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           }
         />
@@ -1606,35 +1674,62 @@ const MultiLineInput = styled('textarea')`
   border: 1px solid var(--color-border);
   outline: none;
   color: var(--color-text-primary);
-  padding: ${({theme}) => theme.unit * 1}px;
-  border-radius: ${({theme}) => theme.unit * 0.5}px;
+  padding: ${({ theme }) => theme.unit * 1}px;
+  border-radius: ${({ theme }) => theme.unit * 0.5}px;
+  width: 100%;
+  ::placeholder {
+    color: var(--color-text-secondary);
+    font-family: Roboto;
+  }
 `
 
 export const TargetRedpacktInputAddressStep = withTranslation()(
   (props: TargetRedpacktInputAddressStepProps & WithTranslation) => {
     const {
       contacts,
-      isRedDot,
+      popupChecked,
       addressListString,
-      onChangeIsRedDot,
+      onChangePopupChecked,
       onFileInput,
       onClickSend,
       onConfirm,
-      onManualInputConfirm,
-      showPopUpOption,
+      onManualEditInput,
+      popUpOptionDisabled,
+      maximumTargetsLength,
       t,
     } = props
     const theme = useTheme()
     const { isMobile } = useSettings()
-    const [ showContactModal, setShowContactModal ] = React.useState(false)
-    const [ showManualEditModal, setShowManualEditModal ] = React.useState(false)
-    const [ manualEditStr, setManualEditStr ] = React.useState('')
-    const [ selectedAddresses, setSelectedAddresses ] = React.useState([] as string[])
-    const [ search, setSearch ] = React.useState('')
+    const [showContactModal, setShowContactModal] = React.useState(false)
+    const [showPopUpTips, setShowPopUpTips] = React.useState(false)
+    const [inputDisabled, setInputDisabled] = React.useState(false)
+    const [showChangeTips, setShowChangeTips] = React.useState<{
+      previousInputType?: 'text' | 'contact' | 'edit'
+      show: boolean
+      confirmCallBack?: () => void
+      contactImportCaches?: string[]
+    }>({
+      show: false,
+    })
+    const [showAddressReview, setShowAddressReview] = React.useState(false)
+    // const [ manualEditStr, setManualEditStr ] = React.useState('')
+    const [selectedAddresses, setSelectedAddresses] = React.useState([] as string[])
+    const [search, setSearch] = React.useState('')
     const getValidAddresses = (input: string) => {
-      return input.split(';').map(str => str.trim()).filter((str) => {
-        return isAddress(str.trim())
-      })
+      return input
+        .split(';')
+        .map((str) => str.trim())
+        .filter((str) => {
+          return isAddress(str.trim())
+        })
+    }
+    const getInvalidAddresses = (input: string) => {
+      return input
+        .split(';')
+        .map((str) => str.trim())
+        .filter((str) => {
+          return !isAddress(str.trim())
+        })
     }
 
     return (
@@ -1661,7 +1756,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               paddingTop={2}
             >
               <Typography marginBottom={3} variant={'h4'}>
-                {t("labelRedpacketContactImport")}
+                {t('labelRedpacketContactImport')}
               </Typography>
               <InputSearch
                 onChange={(e) => {
@@ -1695,12 +1790,13 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                         </Box>
                         <Checkbox
                           onChange={() => {
-                            if (selectedAddresses.find((addr) => addr === contact.address)) {
-                              setSelectedAddresses(
-                                selectedAddresses.filter((addr) => addr !== contact.address),
-                              )
-                            } else {
-                              setSelectedAddresses([...selectedAddresses, contact.address])
+                            const newSelectedAddresses = selectedAddresses.find(
+                              (addr) => addr === contact.address,
+                            )
+                              ? selectedAddresses.filter((addr) => addr !== contact.address)
+                              : [contact.address, ...selectedAddresses]
+                            if (newSelectedAddresses.length <= maximumTargetsLength) {
+                              setSelectedAddresses(newSelectedAddresses)
                             }
                           }}
                           checked={
@@ -1713,26 +1809,33 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     )
                   })}
               </Box>
-              <Typography marginBottom={1}>{t("labelRedpacketExclusiveSelected", {count: selectedAddresses.length})}</Typography>
+              <Typography marginBottom={1}>
+                {t('labelRedpacketExclusiveSelected', { count: selectedAddresses.length })}
+              </Typography>
               <Box>
                 <Button
                   onClick={() => {
+                    setShowChangeTips({
+                      ...showChangeTips,
+                      contactImportCaches: selectedAddresses
+                    })
+                    setInputDisabled(true)
                     onConfirm(selectedAddresses)
                     setShowContactModal(false)
                   }}
                   variant={'contained'}
                   fullWidth
                 >
-                  {t("labelConfirm")}
+                  {t('labelConfirm')}
                 </Button>
               </Box>
             </Box>
           }
         />
         <Modal
-          open={showManualEditModal}
+          open={showPopUpTips}
           onClose={() => {
-            setShowManualEditModal(false)
+            setShowPopUpTips(false)
           }}
           content={
             <Box
@@ -1742,28 +1845,163 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               padding={5}
               paddingTop={2}
             >
-              <Typography marginBottom={3} variant={'h4'}>
-                {t("labelRedpacketExclusiveManualEdit")}
+              <Typography textAlign={'center'} marginBottom={3} variant={'h4'}>
+                {t("labelRedpacketTips")}
               </Typography>
-              <MultiLineInput
-                onChange={(e) => {
-                  setManualEditStr(e.currentTarget.value)
-                }}
-                value={manualEditStr}
-              />
+              <Typography marginBottom={3}>
+                {t("labelRedpacketPopPpDes")}
+              </Typography>
 
               <Box marginTop={3}>
                 <Button
                   onClick={() => {
-                    onManualInputConfirm(manualEditStr)
-                    setShowManualEditModal(false)
+                    setShowPopUpTips(false)
                   }}
                   variant={'contained'}
                   fullWidth
                 >
-                  {t("labelConfirm")}
+                  {t('labelConfirm')}
                 </Button>
               </Box>
+            </Box>
+          }
+        />
+        <Modal
+          open={showChangeTips.show}
+          onClose={() => {
+            setShowChangeTips({
+              ...showChangeTips,
+              show: false,
+            })
+          }}
+          content={
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              width={'var(--modal-width)'}
+              padding={5}
+              paddingTop={2}
+            >
+              <Typography textAlign={'center'} marginBottom={3} variant={'h4'}>
+                {t("labelRedpacketTips")}
+              </Typography>
+              <Typography marginBottom={3}>
+                {t("labelRedpacketChangeImportTips")}
+              </Typography>
+
+              <Box height={48} marginTop={3}>
+                <Button
+                  sx={{
+                    width: '48%',
+                    height: '100%',
+                    marginRight: '4%',
+                  }}
+                  onClick={() => {
+                    setShowChangeTips({
+                      ...showChangeTips,
+                      show: false,
+                    })
+                  }}
+                  variant={'outlined'}
+                >
+                  {t('labelCancel')}
+                </Button>
+                <Button
+                  sx={{
+                    width: '48%',
+                    height: '100%',
+                  }}
+                  onClick={() => {
+                    showChangeTips.confirmCallBack && showChangeTips.confirmCallBack()
+                  }}
+                  variant={'contained'}
+                >
+                  {t('labelConfirm')}
+                </Button>
+              </Box>
+            </Box>
+          }
+        />
+        <Modal
+          open={showAddressReview}
+          onClose={() => {
+            setShowAddressReview(false)
+          }}
+          content={
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              width={'var(--modal-width)'}
+              padding={5}
+              paddingTop={2}
+            >
+              <Typography textAlign={'center'} marginBottom={3} variant={'h4'}>
+                {t("labelRedpacketAddressesReview")}
+              </Typography>
+              <Box
+                borderRadius={1}
+                padding={1}
+                border={'1px solid var(--color-border)'}
+                overflow={'scroll'}
+              >
+                <Typography marginBottom={3} height={theme.unit * 20}>
+                  {addressListString &&
+                    addressListString.split(';').map((str) => (
+                      <>
+                        <Typography
+                          color={
+                            isAddress(str.trim()) ? 'var(--color-text-primary)' : 'var(--color-error)'
+                          }
+                          component={'span'}
+                        >
+                          {str}
+                        </Typography>{' '}
+                        ;<br />
+                      </>
+                    ))}
+
+                  {/* This list contains 2 valid addresses, <Typography component={'span'} color={'var(--color-error)'}>1 invalid addresses</Typography>.  To proceed, invalid addresses will be automatically removed from the list. */}
+                </Typography>
+              </Box>
+              <Typography marginTop={2} marginBottom={3}>
+                {t("labelRedpacketAddressesReviewPart1", {count: getValidAddresses(addressListString).length})}{' '}
+                <Typography component={'span'} color={'var(--color-error)'}>
+                  {t("labelRedpacketAddressesReviewPart2", {count: getInvalidAddresses(addressListString).length})}
+                </Typography>
+                {t("labelRedpacketAddressesReviewPart3")}
+              </Typography>
+
+              <Box height={48} marginTop={3}>
+                <Button
+                  sx={{
+                    width: '48%',
+                    height: '100%',
+                    marginRight: '4%',
+                  }}
+                  onClick={() => {
+                    setShowAddressReview(false)
+                  }}
+                  variant={'outlined'}
+                >
+                  {t('labelCancel')}
+                </Button>
+                <Button
+                  sx={{
+                    width: '48%',
+                    height: '100%',
+                  }}
+                  onClick={() => {
+                    onClickSend()
+                    // addressReview.confirmCallBack && addressReview.confirmCallBack()
+                  }}
+                  variant={'contained'}
+                >
+                  {t('labelConfirm')}
+                </Button>
+              </Box>
+              {/* <Box marginTop={3}>
+                
+              </Box> */}
             </Box>
           }
         />
@@ -1774,50 +2012,37 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
         <Typography color={'var(--color-text-secondary)'}>
           {t('labelExclusiveWhitelistDes')}
         </Typography>
-        <Box
-          marginTop={3}
-          marginX={4}
-          borderRadius={1}
-          paddingX={5}
-          paddingY={3}
-          border={'1px solid var(--color-border)'}
-        >
-          <Box overflow={'scroll'} display={'flex'} marginBottom={2}>
-            <Typography width={'100%'} height={theme.unit * 30}>
-              {addressListString &&
-                getValidAddresses(addressListString).map((str) => (
-                  <>
-                    <Typography
-                      color={isAddress(str) ? 'var(--color-text-primary)' : 'var(--color-error)'}
-                      component={'span'}
-                    >
-                      {str}
-                    </Typography>{' '}
-                    ;<br />
-                  </>
-                ))}
-            </Typography>
-          </Box>
-          <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography>{t("labelRedpacketValidAddresses", {count: getValidAddresses(addressListString).length})}</Typography>
-            <Box>
-              <Button
-                onClick={(e) => {
-                  setShowManualEditModal(true)
-                  setManualEditStr(addressListString)
-                }}
-                variant={'outlined'}
-                sx={{marginRight: 3.5}}
-              >
-                {t("labelRedpacketExclusiveManualEdit")}
-              </Button>
 
+        <Box marginTop={3} borderRadius={1} paddingRight={2}>
+          <MultiLineInput
+            disabled={inputDisabled}
+            onInput={(e) => {
+              setShowChangeTips({
+                ...showChangeTips,
+                previousInputType: 'edit'
+              })
+              onManualEditInput(e.currentTarget.value)
+            }}
+            value={addressListString}
+            placeholder={`Paste the address or address book import with; separate the address\neg:0x60eEB5870ebEf49ce7cDc354dac49906CF8d9285;\n0xF61f3C9cEcB8d206DeA1faEd99A693e6d3BAAEf2;
+          `}
+          />
+          <Box marginTop={2} display={'flex'} justifyContent={'space-between'}>
+            <Typography>
+              {getValidAddresses(addressListString).length > 0
+                ? t('labelRedpacketValidAddresses', {
+                    count: getValidAddresses(addressListString).length,
+                  })
+                : ''}
+            </Typography>
+            <Box>
               <FormControlLabel
                 control={
                   <input
                     onChange={(e) => {
                       const reader = new FileReader()
                       reader.onload = (event) => {
+                        setInputDisabled(true)
                         onFileInput(event.target?.result ? (event.target.result as string) : '')
                       }
                       e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
@@ -1830,7 +2055,27 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 label={
                   <Button
                     onClick={(e) => {
-                      ;(e.currentTarget.parentNode as any).click()
+                      // debugger
+                      const parentNode = e.currentTarget.parentNode as any
+                      if (showChangeTips.previousInputType && showChangeTips.previousInputType !== 'text') {
+                        setShowChangeTips({
+                          ...showChangeTips,
+                          show: true,
+                          confirmCallBack() {
+                            parentNode.click()
+                            setShowChangeTips({
+                              ...showChangeTips,
+                              previousInputType: 'text',
+                            })
+                          },
+                        })
+                      } else {
+                        parentNode.click()
+                        setShowChangeTips({
+                          ...showChangeTips,
+                          previousInputType: 'text',
+                        })
+                      }
                     }}
                     variant={'outlined'}
                   >
@@ -1840,8 +2085,27 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               />
               <Button
                 onClick={(e) => {
-                  setSelectedAddresses([])
-                  setShowContactModal(true)
+                  if (showChangeTips.previousInputType && showChangeTips.previousInputType !== 'contact') {
+                    setShowChangeTips({
+                      ...showChangeTips,
+                      show: true,
+                      confirmCallBack() {
+                        setSelectedAddresses([])
+                        setShowContactModal(true)
+                        setShowChangeTips({
+                          ...showChangeTips,
+                          previousInputType: 'contact'
+                        })
+                      },
+                    })
+                  } else {
+                    setSelectedAddresses(showChangeTips.contactImportCaches ?? [])
+                    setShowContactModal(true)
+                    setShowChangeTips({
+                      ...showChangeTips,
+                      previousInputType: 'contact'
+                    })
+                  }
                 }}
                 variant={'outlined'}
               >
@@ -1859,10 +2123,8 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={isRedDot}
-                  onChange={(_event: any, state: boolean) => {
-                    onChangeIsRedDot(true)
-                  }}
+                  // checked={popupChecked}
+                  checked
                   checkedIcon={<CheckedIcon />}
                   icon={<CheckBoxIcon />}
                   color='default'
@@ -1877,13 +2139,17 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <img width={260} src={SoursURL + 'images/target_option_red_dot.png'} />
             </Box>
           </Box>
-          {showPopUpOption && <Box width={'45%'}>
+          <Box width={'45%'}>
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={!isRedDot}
+                  checked={popupChecked}
                   onChange={(_event: any, state: boolean) => {
-                    onChangeIsRedDot(false)
+                    if (popUpOptionDisabled) {
+                      setShowPopUpTips(true)
+                    } else {
+                      onChangePopupChecked(!popupChecked)
+                    }
                   }}
                   checkedIcon={<CheckedIcon />}
                   icon={<CheckBoxIcon />}
@@ -1905,9 +2171,9 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
                 {t('labelRedpacketPopPpDes')}
               </Typography>
-              <img src={SoursURL + 'images/target_option_pop.png'} />
+              <img width={300}  src={SoursURL + 'images/target_option_pop.png'} />
             </Box>
-          </Box>}
+          </Box>
         </Box>
 
         <Box marginTop={10} display={'flex'} justifyContent={'center'}>
@@ -1916,9 +2182,15 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               {...{
                 defaultLabel: 'labelRedpacketPrepareRedPacket',
                 fullWidth: true,
-                disabled: () => false,
+                disabled: () => {
+                  return getValidAddresses(addressListString).length === 0
+                },
                 onClick: () => {
-                  onClickSend()
+                  if (getInvalidAddresses(addressListString).length > 0) {
+                    setShowAddressReview(true)
+                  } else {
+                    onClickSend()
+                  }
                 },
               }}
             />
