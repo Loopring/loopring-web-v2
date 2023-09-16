@@ -1,11 +1,5 @@
 import styled from '@emotion/styled'
-import {
-  Box,
-  Button,
-  Grid,
-  Modal,
-  Typography,
-} from '@mui/material'
+import { Box, Button, Grid, Modal, Typography } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
@@ -28,6 +22,7 @@ import {
   CheckedIcon,
   CurrencyToTag,
   DualViewBase,
+  DualViewInfo,
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
@@ -54,13 +49,15 @@ import {
   useSystem,
   useTokenMap,
   useTokenPrices,
+  LoopringAPI,
+  makeDualViewItem,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { MaxWidthContainer, containerColors } from '..'
-
+import _ from 'lodash'
 
 const Tab = styled(Box)<{ selected: boolean }>`
   background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
@@ -70,7 +67,8 @@ const Tab = styled(Box)<{ selected: boolean }>`
   line-height: 24px;
   margin-right: ${({ theme }) => theme.unit}px;
   cursor: pointer;
-  color: ${({ selected }) => `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`} ;
+  color: ${({ selected }) =>
+    `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`};
 `
 
 const MyLiquidity: any = withTranslation('common')(
@@ -85,8 +83,8 @@ const MyLiquidity: any = withTranslation('common')(
     isHideTotal?: boolean
     className?: string
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
-    hideAssets?: boolean,
-    noHeader?: boolean,
+    hideAssets?: boolean
+    noHeader?: boolean
   }) => {
     let match: any = useRouteMatch('/invest/balance/:type')
     const { search } = useLocation()
@@ -111,6 +109,7 @@ const MyLiquidity: any = withTranslation('common')(
     const history = useHistory()
     const { currency, hideSmallBalances } = useSettings()
     const { setShowAmm } = useOpenModals()
+
     const {
       dualList,
       dualOnInvestAsset,
@@ -126,6 +125,8 @@ const MyLiquidity: any = withTranslation('common')(
       setShowRefreshError,
       showRefreshError,
       refreshErrorInfo,
+      dualProducts,
+      getProduct,
     } = useDualAsset()
     const {
       summaryMyInvest,
@@ -246,10 +247,8 @@ const MyLiquidity: any = withTranslation('common')(
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
     const tabToName = (tab: InvestTab) => {
-      const found = investTabs.find(_tab => _tab.tab === tab)
-      return found
-        ? t(found.label)
-        : undefined
+      const found = investTabs.find((_tab) => _tab.tab === tab)
+      return found ? t(found.label) : undefined
     }
     const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
     const visibaleTabs: InvestTab[] = [
@@ -261,84 +260,90 @@ const MyLiquidity: any = withTranslation('common')(
     myLog('visibaleTabs', visibaleTabs)
     const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
     myLog('visibaleTabs _tab', _tab)
-    
+
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        {!noHeader && <MaxWidthContainer height={34 * theme.unit} alignItems={'center'} background={containerColors[0]}>
-          <Box
-            display={'flex'}
-            justifyContent={'space-between'}
-            flexDirection={isMobile ? 'column' : 'row'}
-            alignItems={isMobile ? 'start' : 'center'}
+        {!noHeader && (
+          <MaxWidthContainer
+            height={34 * theme.unit}
+            alignItems={'center'}
+            background={containerColors[0]}
           >
-            <Box paddingY={7}>
-              <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
-                {t('labelInvestBalanceTitle')}
-              </Typography>
-              <Button
-                onClick={() => {
-                  history.push('/l2assets/history/Transactions')
-                }}
-                sx={{ width: 18 * theme.unit }}
-                variant={'contained'}
-              >
-                {t('labelTxnDetailHeader')}
-              </Button>
-            </Box>
             <Box
-              sx={{ background: 'var(--color-box-secondary)' }}
-              width={'var(--earning-banner-width)'}
-              border={'1px solid var(--color-border)'}
-              borderRadius={0.5}
-              paddingX={3}
-              paddingY={4}
               display={'flex'}
               justifyContent={'space-between'}
-              marginRight={10}
-              marginBottom={isMobile ? 7 : 0}
+              flexDirection={isMobile ? 'column' : 'row'}
+              alignItems={isMobile ? 'start' : 'center'}
             >
-              <Box>
-                <Typography marginBottom={2} color={'var(--color-text-third)'} variant={'h6'}>
-                  {t('labelTotalPositionValue')}
+              <Box paddingY={7}>
+                <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
+                  {t('labelInvestBalanceTitle')}
                 </Typography>
-                <Typography>
-                  {_summaryMyInvest
-                    ? PriceTag[CurrencyToTag[currency]] +
-                      getValuePrecisionThousand(
-                        sdk
-                          .toBig(_summaryMyInvest)
-                          .times(forexMap[currency] ?? 0)
-                          .toString(),
-                        undefined,
-                        undefined,
-                        2,
-                        true,
-                        { isFait: true, floor: true },
-                      )
-                    : EmptyValueTag}
-                </Typography>
+                <Button
+                  onClick={() => {
+                    history.push('/l2assets/history/Transactions')
+                  }}
+                  sx={{ width: 18 * theme.unit }}
+                  variant={'contained'}
+                >
+                  {t('labelTxnDetailHeader')}
+                </Button>
               </Box>
-              <Box>
-                <Typography color={'var(--color-text-third)'} marginBottom={2} variant={'h6'}>
-                  {t('labelInvestTotalEarnings')}
-                </Typography>
-                <Typography>
-                  {summaryMyInvest.rewardU
-                    ? PriceTag[CurrencyToTag[currency]] +
-                      getValuePrecisionThousand(
-                        summaryMyInvest.rewardU,
-                        undefined,
-                        undefined,
-                        2,
-                        true,
-                        { isFait: true, floor: true },
-                      )
-                    : EmptyValueTag}
-                </Typography>
+              <Box
+                sx={{ background: 'var(--color-box-secondary)' }}
+                width={'var(--earning-banner-width)'}
+                border={'1px solid var(--color-border)'}
+                borderRadius={0.5}
+                paddingX={3}
+                paddingY={4}
+                display={'flex'}
+                justifyContent={'space-between'}
+                marginRight={10}
+                marginBottom={isMobile ? 7 : 0}
+              >
+                <Box>
+                  <Typography marginBottom={2} color={'var(--color-text-third)'} variant={'h6'}>
+                    {t('labelTotalPositionValue')}
+                  </Typography>
+                  <Typography>
+                    {_summaryMyInvest
+                      ? PriceTag[CurrencyToTag[currency]] +
+                        getValuePrecisionThousand(
+                          sdk
+                            .toBig(_summaryMyInvest)
+                            .times(forexMap[currency] ?? 0)
+                            .toString(),
+                          undefined,
+                          undefined,
+                          2,
+                          true,
+                          { isFait: true, floor: true },
+                        )
+                      : EmptyValueTag}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography color={'var(--color-text-third)'} marginBottom={2} variant={'h6'}>
+                    {t('labelInvestTotalEarnings')}
+                  </Typography>
+                  <Typography>
+                    {summaryMyInvest.rewardU
+                      ? PriceTag[CurrencyToTag[currency]] +
+                        getValuePrecisionThousand(
+                          summaryMyInvest.rewardU,
+                          undefined,
+                          undefined,
+                          2,
+                          true,
+                          { isFait: true, floor: true },
+                        )
+                      : EmptyValueTag}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
-          </Box>
-        </MaxWidthContainer>}
+          </MaxWidthContainer>
+        )}
         <MaxWidthContainer
           marginBottom={3}
           marginTop={3}
@@ -346,7 +351,7 @@ const MyLiquidity: any = withTranslation('common')(
           background={noHeader ? 'var(--color-box-third)' : containerColors[1]}
           containerProps={{
             borderRadius: noHeader ? `${theme.unit}px` : 0,
-            marginTop: noHeader ? 1 : 0
+            marginTop: noHeader ? 1 : 0,
           }}
         >
           {!(myPoolRow?.length > 0) &&
@@ -587,9 +592,7 @@ const MyLiquidity: any = withTranslation('common')(
               {_tab === 'staking' && (
                 <TableWrapStyled
                   ref={stakingRef}
-                  className={`table-divide-short ${
-                    lidoAssets?.length > 0 ? 'min-height' : ''
-                  }`}
+                  className={`table-divide-short ${lidoAssets?.length > 0 ? 'min-height' : ''}`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}
@@ -700,16 +703,10 @@ const MyLiquidity: any = withTranslation('common')(
                             display={'flex'}
                             flexDirection={'column'}
                           >
-                            <Typography
-                              variant={isMobile ? 'h5' : 'h4'}
-                              marginTop={-4}
-                              textAlign={'center'}
-                              paddingBottom={2}
-                            >
-                              {t('labelDuaInvestmentDetails', { ns: 'common' })}
-                            </Typography>
                             <DualDetail
                               isOrder={true}
+                              dualProducts={dualProducts}
+                              getProduct={getProduct}
                               dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
                               tokenMap={tokenMap}

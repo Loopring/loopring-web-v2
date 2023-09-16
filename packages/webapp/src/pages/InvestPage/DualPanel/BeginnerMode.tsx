@@ -8,10 +8,10 @@ import {
   DualTable,
   useOpenModals,
   useSettings,
-  CardStyleItem,
+  TickCardStyleItem,
 } from '@loopring-web/component-lib'
 import { useDualMap, useSystem, useTokenMap } from '@loopring-web/core'
-import { BorderTickSvg, getValuePrecisionThousand, SoursURL, TokenType } from '@loopring-web/common-resources'
+import { getValuePrecisionThousand, SoursURL, TokenType } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
@@ -35,31 +35,6 @@ const WrapperStyled = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
-
-const TickCardStyleItem = (
-  props: CardProps & {
-    contentheight?: number
-    size?: 'large' | 'medium' | 'small' | undefined
-    selected?: boolean
-  },
-) => {
-  const { children, selected, ...rest } = props
-  return (
-    <CardStyleItem {...rest}>
-      {selected && (
-        <BorderTickSvg
-          fontSize={'large'}
-          sx={{
-            position: 'absolute',
-            top: '0px',
-            right: '0px',
-          }}
-        />
-      )}
-      {children}
-    </CardStyleItem>
-  )
-}
 
 export const BeginnerMode: any = withTranslation('common')(
   ({

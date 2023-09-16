@@ -1,7 +1,15 @@
-import { IconButton, MenuItem as MuiMenuItem, Select, SelectProps } from '@mui/material'
+import {
+  Card,
+  CardProps,
+  IconButton,
+  MenuItem as MuiMenuItem,
+  Select,
+  SelectProps,
+} from '@mui/material'
 import styled from '@emotion/styled'
 import { MuiMenuItemProps } from './Interface'
 import React from 'react'
+import { BorderTickIcon, SystemColor } from '@loopring-web/common-resources'
 
 export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
   ${({ withnocheckicon }) => {
@@ -85,6 +93,88 @@ export const IconButtonStyle = styled(IconButton)`
   margin: 0 ${({ theme }) => theme.unit / 2}px;
   ${({ theme }) => theme.border.defaultFrame({ c_key: 'transparent' })};
 }`
+
+const CardStyleItem = styled(Card)<
+  CardProps & {
+    contentheight?: number
+    size?: 'large' | 'medium' | 'small' | undefined
+  }
+>`
+  background: var(--color-global-bg);
+  width: 100%;
+  height: auto;
+  display: flex;
+  cursor: pointer;
+  padding: 0 0 calc(100% + ${({ contentheight }) => `${contentheight ? contentheight : 80}px`});
+  position: relative;
+  background: var(--color-box);
+
+  .MuiCardContent-root {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  &.column .MuiCardContent-root {
+    flex-direction: column;
+  }
+
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => (3 / 2) * theme.unit}px;
+  box-shadow: none;
+  transition: none;
+  ${({ theme }) =>
+    theme.border.defaultFrame({
+      c_key: 'var(--color-border)',
+      d_R: 0.5,
+    })};
+
+  &.selected,
+  &:hover {
+    ${({ theme }) =>
+      theme.border.defaultFrame({
+        c_key: 'var(--color-border-select)',
+        d_R: 0.5,
+      })};
+  }
+
+  img {
+    object-fit: contain;
+  }
+` as (
+  props: CardProps & {
+    contentheight?: number
+    size?: 'large' | 'medium' | 'small' | undefined
+  },
+) => JSX.Element
+export const TickCardStyleItem = (
+  props: CardProps & {
+    contentheight?: number
+    size?: 'large' | 'medium' | 'small' | undefined
+    selected?: boolean
+  },
+) => {
+  const { children, selected, ...rest } = props
+  return (
+    <CardStyleItem {...rest}>
+      {selected && (
+        <BorderTickIcon
+          fontSize={'large'}
+          fill={SystemColor.blue}
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+          }}
+        />
+      )}
+      {children}
+    </CardStyleItem>
+  )
+}
 
 export * from './FileListItem'
 export * from './HeadMenuItem'

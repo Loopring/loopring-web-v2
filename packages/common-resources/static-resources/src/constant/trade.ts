@@ -10,6 +10,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'
 import { VendorProviders } from './vendor'
+import { DUAL_TYPE } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export enum DeFiChgType {
   coinSell = 'coinSell',
@@ -452,9 +453,6 @@ export type DualViewBase = {
   term: string
   strike: string
   isUp: boolean
-  // targetPrice,
-  // subscribeData,
-
   expireTime: number
   currentPrice: DualCurrentPrice
   productId: string
@@ -462,9 +460,7 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-
-  // balance,
-}
+} & Partial<sdk.DualProductAndPrice>
 
 export type DualViewInfo = DualViewBase & {
   __raw__: {

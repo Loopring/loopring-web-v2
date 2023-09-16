@@ -6,4 +6,5 @@ export * from './src/loopring-interface'
 export * from './src/constant'
 export * from './src/utils'
 export * from './src/error'
+
 export { i18n }

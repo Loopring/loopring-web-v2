@@ -205,8 +205,8 @@ export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
   coinSell: T
   stakeViewInfo: _R
 }
-
-export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
+export type DualTrade<R> = IBData<R> & { isRenew?: true; target; maxRecurseProductDuration: number }
+export type DualCalcData<R, B = DualTrade<any>> = sdk.CalDualResult & {
   sellToken?: sdk.TokenInfo
   buyToken?: sdk.TokenInfo
   coinSell: B

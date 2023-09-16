@@ -363,12 +363,27 @@ export const investTabs = [
   { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
 ]
 
-export const defiMarkets = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
-  GOERLI: ['RETH-ETH'],
+export const DEFI_CONFIG = {
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['LIDO', 'ROCKETPOOL'],
+    GOERLI: ['ROCKETPOOL'],
+  },
+  MARKETS: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
+    GOERLI: ['RETH-ETH'],
+  },
 }
-export const leverageETHConfig = {
+
+export const DUAL_CONFIG = {
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['PIONEX'],
+    GOERLI: ['PIONEX'],
+  },
+}
+export const LEVERAGE_ETH_CONFIG = {
   coins: {
     TAIKO: [] as string[],
     ETHEREUM: ['CIETH'],
@@ -379,6 +394,12 @@ export const leverageETHConfig = {
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
   },
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['CIAN'],
+    GOERLI: ['LIDO'],
+  },
+  // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
 }
 
 export const subMenuNFT = {

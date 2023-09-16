@@ -22,7 +22,9 @@ import {
 } from '@loopring-web/common-resources'
 
 import {
+  confirmation,
   DAYS,
+  findDualMarket,
   getTimestampDaysLater,
   makeDualViewItem,
   makeWalletLayer2,
@@ -40,12 +42,16 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI, store, useAccount, useSystem, useTokenMap } from '../../index'
 import { useTradeDual } from '../../stores'
 
-export const useDualTrade = <
-  T extends IBData<I>,
+export const useDualTrade = ;<
+  T extends IBData<I> & { isRenew?: boolean },
   I,
   ACD extends DualCalcData<R>,
   R extends DualViewInfo,
->() => {
+>({
+  setConfirmDualAutoInvest,
+}: {
+  setConfirmDualAutoInvest: (state: boolean) => void
+}) => {
   const refreshRef = React.useRef()
   const { exchangeInfo, allowTrade } = useSystem()
   const { tokenMap, marketArray } = useTokenMap()
@@ -53,7 +59,12 @@ export const useDualTrade = <
   const { marketMap: dualMarketMap } = useDualMap()
   const { account, status: accountStatus } = useAccount()
   const { setShowDual } = useOpenModals()
-
+  const {
+    confirmation: {
+      // confirmedDualInvest,
+      confirmDualAutoInvest,
+    },
+  } = confirmation.useConfirmation()
   const { toastOpen, closeToast } = useToast()
   const {
     modals: { isShowDual },
@@ -124,11 +135,12 @@ export const useDualTrade = <
         tradeData && tradeData.belong === baseSymbol
           ? tradeData
           : _coinSell?.belong === baseSymbol
-          ? ({ ..._coinSell } as T)
+          ? ({ ..._coinSell } as unknown as T)
           : ({
               balance: _updateInfo?.coinSell?.balance ?? 0,
               tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
               belong: baseSymbol,
+              isRenew: _updateInfo?.coinSell?.isRenew,
             } as T)
       const existedMarket = sdk.getExistedMarket(marketArray, baseSymbol, quoteSymbol)
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
@@ -175,7 +187,11 @@ export const useDualTrade = <
   )
 
   const handleOnchange = ({ tradeData }: DualChgData<T>) => {
-    refreshDual({ tradeData })
+    if (tradeData?.isRenew && !confirmDualAutoInvest) {
+      setConfirmDualAutoInvest(true)
+    } else {
+      refreshDual({ tradeData })
+    }
   }
 
   const availableTradeCheck = React.useCallback((): {
@@ -483,7 +499,7 @@ export const useDualTrade = <
     } else {
       return false
     }
-  }, [tokenMap, coinSellSymbol, handleOnchange])
+  }, [tokenMap, coinSellSymbol])
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {

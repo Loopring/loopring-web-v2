@@ -1,14 +1,17 @@
 import {
   LoopringAPI,
   makeDualOrderedItem,
+  makeDualViewItem,
   useAccount,
   useDualMap,
   useTokenMap,
 } from '@loopring-web/core'
 import React from 'react'
 import {
+  DualViewInfo,
   EmptyValueTag,
   getValuePrecisionThousand,
+  myLog,
   SDK_ERROR_MAP_TO_UI,
 } from '@loopring-web/common-resources'
 import { DualDetailType, RawDataDualAssetItem, ToastType } from '@loopring-web/component-lib'
@@ -360,9 +363,53 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     },
     [accountId, apiKey, setToastOpen, t, dualMarketMap],
   )
+  const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([])
+  const getProduct = _.debounce(async () => {
+    if (detail && detail.dualViewInfo) {
+      const market =
+        detail.dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE
+          ? detail.dualViewInfo.sellSymbol + '-' + detail.dualViewInfo.buySymbol
+          : detail.dualViewInfo.buySymbol + '-' + detail.dualViewInfo.sellSymbol
+      const currency = market ? dualMarketMap[market]?.currency : undefined
+      // @ts-ignore
+      // const [, , marketSymbolA, marketSymbolB] = (market ?? '').match(/(dual-)?(\w+)-(\w+)/i)
+      const dualMarket = dualMarketMap[market]
+      const { dualType } = detail.dualViewInfo
+      const baseSymbol = tokenMap[dualMarket.baseTokenId].symbol
+      const quoteSymbol = dualMarket.quoteAlias ?? tokenMap[dualMarket.quoteTokenId].symbol
+      const response = await LoopringAPI.defiAPI?.getDualInfos({
+        baseSymbol,
+        quoteSymbol,
+        currency: currency ?? '',
+        dualType,
+        startTime: Date.now() + 1000 * 60 * 60,
+        timeSpan: 1000 * 60 * 60 * 24 * 9,
+        limit: 50,
+      })
+
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        setDualProducts([])
+      } else {
+        const {
+          dualInfo: { infos, index, balance },
+          raw_data: { rules },
+        } = response as any
+        const rule = rules[0]
+        const rawData = infos.map((item: sdk.DualProductAndPrice) => {
+          return makeDualViewItem(item, index, rule, baseSymbol, quoteSymbol, dualMarketMap[market])
+        })
+        myLog('setDualProducts', rawData)
+        setDualProducts(rawData)
+      }
+    } else {
+      setDualProducts([])
+    }
+  }, 100)
 
   return {
     // page,
+    dualProducts,
+    getProduct,
     getDetail,
     showDetail,
     dualList,

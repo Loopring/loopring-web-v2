@@ -3,17 +3,30 @@ import { getDualMap, getDualMapStatus, updateDualSyncMap } from './reducer'
 import { DualMap, store } from '../../index'
 import { LoopringAPI } from '../../../api_wrapper'
 import { PayloadAction } from '@reduxjs/toolkit'
+import { DUAL_CONFIG, MapChainId } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const getDualMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined
   }
+  const { baseURL } = store.getState().system
+
+  const { defaultNetwork } = store.getState().settings
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const url =
+    sdk.LOOPRING_URLs.GET_DEFI_MARKETS + (/https:\/\/dev\./.test(baseURL) ? `?defiType=DUAL` : '')
   const {
     markets: marketMap,
     tokenArr: marketCoins,
     marketArr,
     pairs,
-  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: 'PIONEX' })
+  } = await LoopringAPI.defiAPI?.getDefiMarkets(
+    {
+      defiType: DUAL_CONFIG.products[network].join(','),
+    },
+    url,
+  )
   const marketArray = marketArr?.sort((b, a) => a.localeCompare(b))
   const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
     const tokenList = pairs[key as string]?.tokenList?.sort()
