@@ -452,9 +452,6 @@ export type DualViewBase = {
   term: string
   strike: string
   isUp: boolean
-  // targetPrice,
-  // subscribeData,
-
   expireTime: number
   currentPrice: DualCurrentPrice
   productId: string
@@ -462,8 +459,7 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-
-  // balance,
+  stepLength: string
 }
 
 export type DualViewInfo = DualViewBase & {

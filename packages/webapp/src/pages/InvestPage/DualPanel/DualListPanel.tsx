@@ -2,19 +2,13 @@ import React from 'react'
 import styled from '@emotion/styled'
 import {
   Box,
-  Card,
   CardContent,
   FormControlLabel,
   Grid,
   Switch,
-  Tab,
   Tabs,
   Typography,
   Tooltip,
-  TooltipProps,
-  tooltipClasses,
-  IconButton,
-  CardProps,
 } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useDualHook } from './hook'
@@ -22,12 +16,14 @@ import {
   Button,
   CardStyleItem,
   CoinIcon,
-  CoinIcons,
+  ConfirmInvestDualAutoRisk,
   DualTable,
+  EmptyDefault,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import {
+  confirmation,
   ModalDualPanel,
   useDualMap,
   useDualTrade,
@@ -36,30 +32,16 @@ import {
 } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import {
-  BackIcon,
-  BorderTickSvg,
-  CloseIcon,
   DualInvestmentLogo,
   getValuePrecisionThousand,
-  HelpIcon,
   Info2Icon,
   LOOPRING_DOCUMENT,
   SoursURL,
-  TokenType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import { BeginnerMode } from './BeginnerMode'
 import { MaxWidthContainer, containerColors } from '..'
-
-const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))({
-  [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: 'none',
-  },
-})
 
 const StyleDual = styled(Box)`
   position: relative;
@@ -72,18 +54,22 @@ const WrapperStyled = styled(Box)`
 `
 
 const MainTabCardStyleItem = styled(CardStyleItem)`
-  &&, &&.selected, &&:hover {
-    border-radius: ${({theme}) => theme.unit}px;
-    padding-left: ${({theme}) => 3 * theme.unit}px;
-    padding-right: ${({theme}) => 3 * theme.unit}px;
+  &&,
+  &&.selected,
+  &&:hover {
+    border-radius: ${({ theme }) => theme.unit}px;
+    padding-left: ${({ theme }) => 3 * theme.unit}px;
+    padding-right: ${({ theme }) => 3 * theme.unit}px;
   }
 `
 
 const SubTabCardStyleItem = styled(CardStyleItem)`
-  &&, &&.selected, &&:hover {
-    padding: ${({theme}) => theme.unit}px ${({theme}) => 2.5 *theme.unit}px;
+  &&,
+  &&.selected,
+  &&:hover {
+    padding: ${({ theme }) => theme.unit}px ${({ theme }) => 2.5 * theme.unit}px;
     width: auto;
-    border-radius:  ${({theme}) => theme.unit}px;
+    border-radius: ${({ theme }) => theme.unit}px;
   }
 `
 
@@ -91,19 +77,20 @@ export const DualListPanel: any = withTranslation('common')(
   ({
     t,
     setConfirmDualInvest,
-    showBeginnerModeHelp,
-    onShowBeginnerModeHelp,
-  }: WithTranslation & {
+  }: // showBeginnerModeHelp,
+  // onShowBeginnerModeHelp,
+  WithTranslation & {
     setConfirmDualInvest: (state: any) => void
-    showBeginnerModeHelp: boolean
-    onShowBeginnerModeHelp: (show: boolean) => void
+    // showBeginnerModeHelp: boolean
+    // onShowBeginnerModeHelp: (show: boolean) => void
   }) => {
-    const { coinJson } = useSettings()
     const { forexMap } = useSystem()
     const theme = useTheme()
     const { tradeMap, marketArray, status, getDualMap } = useDualMap()
     const { tokenMap } = useTokenMap()
     const { setShowDual } = useOpenModals()
+    const [confirmDualAutoInvest, setConfirmDualAutoInvest] = React.useState<boolean>(false)
+    const { confirmDualAutoInvest: confirmDualAutoInvestFun } = confirmation.useConfirmation()
     const {
       pairASymbol,
       pairBSymbol,
@@ -115,16 +102,13 @@ export const DualListPanel: any = withTranslation('common')(
       beginnerMode,
       handleOnPairChange,
       onToggleBeginnerMode,
-      isDualBalanceSufficient,
     } = useDualHook({ setConfirmDualInvest })
 
-    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade()
+    const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
+      setConfirmDualAutoInvest,
+    })
     const { isMobile } = useSettings()
-    const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
     const history = useHistory()
-    const dualType = new RegExp(pair).test(market ?? '')
-      ? sdk.DUAL_TYPE.DUAL_BASE
-      : sdk.DUAL_TYPE.DUAL_CURRENCY
     const marketsIsLoading = status === 'PENDING'
 
     return (
@@ -200,7 +184,14 @@ export const DualListPanel: any = withTranslation('common')(
                       .sort((a, b) => a.toString().localeCompare(b.toString()))
                       .map((item, index) => {
                         return (
-                          <Grid marginLeft={2} item xs={6} md={3} lg={2} key={item.toString() + index.toString()}>
+                          <Grid
+                            marginLeft={2}
+                            item
+                            xs={6}
+                            md={3}
+                            lg={2}
+                            key={item.toString() + index.toString()}
+                          >
                             <MainTabCardStyleItem
                               className={
                                 item.toString().toLowerCase() === pairASymbol.toLowerCase()
@@ -225,7 +216,6 @@ export const DualListPanel: any = withTranslation('common')(
                         )
                       })}
                 </Tabs>
-                
 
                 <WrapperStyled marginTop={1} flex={1} flexDirection={'column'}>
                   {pairASymbol && pairBSymbol && market && (
@@ -237,9 +227,7 @@ export const DualListPanel: any = withTranslation('common')(
                       justifyContent={'space-between'}
                       alignItems={'center'}
                     >
-                      <Box
-                        display={'flex'}
-                      >
+                      <Box display={'flex'}>
                         {pairASymbol &&
                           tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
                             const _index = marketArray.findIndex((_item) =>
@@ -248,28 +236,25 @@ export const DualListPanel: any = withTranslation('common')(
                             return (
                               <SubTabCardStyleItem
                                 className={
-                                      item.toString().toLowerCase() === pairBSymbol.toLowerCase()
-                                        ? 'btnCard dualInvestCard selected'
-                                        : 'btnCard dualInvestCard '
-                                    }
-                                    sx={{ height: '100%' , marginRight: 2}}
+                                  item.toString().toLowerCase() === pairBSymbol.toLowerCase()
+                                    ? 'btnCard dualInvestCard selected'
+                                    : 'btnCard dualInvestCard '
+                                }
+                                sx={{ height: '100%', marginRight: 2 }}
                                 onClick={() => {
                                   handleOnPairChange({ pairB: item })
                                 }}
                                 key={item.toString() + index.toString()}
                               >
                                 <Typography variant={'h5'}>
-                                {
-                                  _index !== -1
-                                  ? t('labelDualBase', {
-                                      symbol: item.toString(),
-                                    })
-                                  : t('labelDualQuote', {
-                                      symbol: item.toString(),
-                                    })
-                                }
+                                  {_index !== -1
+                                    ? t('labelDualBase', {
+                                        symbol: item.toString(),
+                                      })
+                                    : t('labelDualQuote', {
+                                        symbol: item.toString(),
+                                      })}
                                 </Typography>
-                                
                               </SubTabCardStyleItem>
                             )
                           })}
@@ -324,6 +309,7 @@ export const DualListPanel: any = withTranslation('common')(
                                       { floor: true },
                                     ),
                                   symbol: currentPrice.base,
+                                  baseSymbol: currentPrice.quote,
                                 }}
                               >
                                 LRC Current price:
@@ -334,7 +320,7 @@ export const DualListPanel: any = withTranslation('common')(
                                   paddingLeft={1}
                                 >
                                   price
-                                </Typography>{' '}
+                                </Typography>
                                 :
                               </Trans>
                             </>
@@ -404,16 +390,46 @@ export const DualListPanel: any = withTranslation('common')(
               display={'flex'}
               justifyContent={'center'}
               height={'100%'}
+              flex={1}
               alignItems={'center'}
             >
-              <img src={SoursURL + '/svg/dual-empty.svg'} />
-              <Button onClick={getDualMap} variant={'contained'}>
-                {t('labelDualRefresh')}
-              </Button>
+              <EmptyDefault
+                height={'calc(100% - 35px)'}
+                message={() => {
+                  return (
+                    <Trans i18nKey='labelNoContent'>
+                      <Button onClick={getDualMap} variant={'contained'}>
+                        {t('labelDualRefresh')}
+                      </Button>
+                    </Trans>
+                  )
+                }}
+              />
             </Box>
           )}
         </MaxWidthContainer>
-
+        <ConfirmInvestDualAutoRisk
+          open={confirmDualAutoInvest}
+          handleClose={(_e, isAgree) => {
+            if (!isAgree) {
+              dualTradeProps.onChangeEvent({
+                tradeData: {
+                  ...dualTradeProps.dualCalcData?.coinSell,
+                  isRenew: false,
+                },
+              })
+            } else {
+              dualTradeProps.onChangeEvent({
+                tradeData: {
+                  ...dualTradeProps.dualCalcData?.coinSell,
+                  isRenew: true,
+                },
+              })
+              confirmDualAutoInvestFun()
+            }
+            setConfirmDualAutoInvest({ isShow: false })
+          }}
+        />
         <ModalDualPanel
           dualTradeProps={dualTradeProps}
           dualToastOpen={dualToastOpen}

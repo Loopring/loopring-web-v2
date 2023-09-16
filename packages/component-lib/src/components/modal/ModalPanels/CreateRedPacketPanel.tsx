@@ -72,9 +72,7 @@ export const CreateRedPacketPanel = <
     walletMap,
   } as any)
   const [panelIndex, setPanelIndex] = React.useState<RedPacketStep | TargetRedPacketStep>(
-    tradeType === RedPacketOrderType.FromNFT 
-      ? RedPacketStep.ChooseType 
-      : RedPacketStep.TradeType,
+    tradeType === RedPacketOrderType.FromNFT ? RedPacketStep.ChooseType : RedPacketStep.TradeType,
   )
 
   let steps: string[]
@@ -160,7 +158,6 @@ export const CreateRedPacketPanel = <
             handleOnDataChange({
               validSince: Date.now(),
             } as any)
-            debugger
             if (tradeType === RedPacketOrderType.FromNFT) {
               setPanelIndex(1)
             } else {
@@ -342,7 +339,7 @@ export const CreateRedPacketPanel = <
   const notify = useNotify()
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     const isTarget = tradeData.type?.scope === LuckyTokenViewType.TARGET
-    let showNFT = isTarget 
+    let showNFT = isTarget
       ? notify.notifyMap?.redPacket.showNFT && isWhiteListed
       : notify.notifyMap?.redPacket.showNFT && tradeData.type?.scope !== LuckyTokenViewType.PUBLIC
 
@@ -558,7 +555,9 @@ export const CreateRedPacketPanel = <
       index: panelIndex,
       _width: '100%',
       panelList: [
-        ...((isTarget && tradeData.tradeType !== RedPacketOrderType.FromNFT) ? [targetSelectPanel] : []),
+        ...(isTarget && tradeData.tradeType !== RedPacketOrderType.FromNFT
+          ? [targetSelectPanel]
+          : []),
         ...(tradeData.tradeType !== RedPacketOrderType.FromNFT ? [selectTokenTypePanel] : []),
         selectTypePanel,
         tradePanel,
@@ -581,7 +580,7 @@ export const CreateRedPacketPanel = <
     disabled,
     tradeData,
     isToken,
-    tradeData.type?.scope
+    tradeData.type?.scope,
   ])
 
   let activeStep

@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
-import { Confirmation } from './interface'
+import { Confirmation, DualInvestConfirmType } from './interface'
 
 const initialState: Confirmation = {
   confirmed: false,
   confirmedRETHDefiInvest: false,
   confirmedWSETHDefiInvest: false,
-  confirmedDualInvest: false,
-  confirmedDualInvestV2: false,
+  // confirmedDualInvest: false,
+  confirmedDualInvestV2: undefined,
+  confirmDualAutoInvest: false,
   confirmedLRCStakeInvest: false,
   showDualBeginnerHelp: false,
   confirmedBtradeSwap: false,
@@ -34,11 +35,14 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmedLRCStakeInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedLRCStakeInvest = true
     },
-    confirmDualInvest(state: Confirmation, _action: PayloadAction<string>) {
-      state.confirmedDualInvest = true
+    confirmDualAutoInvest(state: Confirmation, _action: PayloadAction<undefined>) {
+      state.confirmDualAutoInvest = true
     },
-    confirmDualInvestV2(state: Confirmation, _action: PayloadAction<string>) {
-      state.confirmedDualInvestV2 = true
+    confirmDualInvestV2(
+      state: Confirmation,
+      _action: PayloadAction<{ level: DualInvestConfirmType | undefined }>,
+    ) {
+      state.confirmedDualInvestV2 = _action.payload?.level
     },
     confirmedBtradeSwap(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedBtradeSwap = true
@@ -61,7 +65,8 @@ export const {
   confirmedRETHDefiInvest,
   confirmedWSETHDefiInvest,
   confirmedLRCStakeInvest,
-  confirmDualInvest,
+  // confirmDualInvest,
+  confirmDualAutoInvest,
   confirmDualInvestV2,
   confirmedBtradeSwap,
   showDualBeginnerHelp,

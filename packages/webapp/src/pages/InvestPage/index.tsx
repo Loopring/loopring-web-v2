@@ -5,9 +5,9 @@ import { Box, BoxProps, Tab, Tabs, Typography } from '@mui/material'
 import { useTranslation, withTranslation } from 'react-i18next'
 import {
   ComingSoonPanel,
+  ConfirmInvestDualAutoRisk,
   ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
-  useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
 import React from 'react'
@@ -29,10 +29,8 @@ export enum InvestType {
   Stack = 5,
   LeverageETH = 6,
 }
-export const containerColors = [
-  'var(--color-global-bg)',
-  'var(--color-pop-bg)',
-]
+
+export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 export const MaxWidthContainer = (
   props: {
     children: React.ReactNode
@@ -143,8 +141,9 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
   const {
     toggle: { CIETHInvest },
   } = useToggle()
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState(
-    'hidden' as 'hidden' | 'all' | 'USDCOnly',
+
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState<undefined | string | false>(
+    undefined,
   )
   const {
     showLRCStakignPopup: confirmedLRCStakeInvest,
@@ -207,7 +206,6 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Dual && (
           <DualListPanel
             showBeginnerModeHelp={showBeginnerModeHelp}
-            onShowBeginnerModeHelp={onShowBeginnerModeHelp}
             setConfirmDualInvest={setConfirmDualInvest}
           />
         )}
@@ -228,13 +226,15 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
       </Box>
 
       <ConfirmInvestDualRisk
-        open={confirmDualInvest !== 'hidden'}
+        open={!!confirmDualInvest}
         USDCOnly={confirmDualInvest === 'USDCOnly'}
-        handleClose={(_e, isAgree) => {
+        handleClose={(_e, isAgree: confirmation.DualInvestConfirmType | undefined) => {
           if (!isAgree) {
+            setConfirmDualInvest(false)
             history.goBack()
           } else {
-            confirmDualInvestFun()
+            confirmDualInvestFun(isAgree)
+            setConfirmDualInvest(false)
             setShowBeginnerModeHelp(true)
             setTimeout(() => {
               onShowBeginnerModeHelp(false)
@@ -242,13 +242,14 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
           }
         }}
       />
+
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
           setConfirmedLRCStakeInvestInvest({ show: false, confirmationNeeded: false })
           if (!isAgree) {
-            history.goBack()
+            // history.goBack()
           } else {
             confirmedLRCInvestFun()
           }
