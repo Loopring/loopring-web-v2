@@ -636,7 +636,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
   backToScope: () => void
-  onSendTargetRedpacketClick: () => void
+  onSendTargetRedpacketClick: () => Promise<void>
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
   popRedPacketAmountStr: string | undefined
@@ -664,6 +664,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     onClickNext: () => void
     onClickBack: () => void
     showNFT: boolean
+    onChangeTradeType?: (tradeType: RedPacketOrderType) => void
   }
 
 export type TargetRedpacktSelectStepProps = {
@@ -688,4 +689,5 @@ export type TargetRedpacktInputAddressStepProps = {
   onManualEditInput: (text: string) => void
   popUpOptionDisabled: boolean
   maximumTargetsLength: number
+  onClickBack: () => void
 }

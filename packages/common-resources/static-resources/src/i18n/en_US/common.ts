@@ -1541,7 +1541,6 @@ export default {
     labelStakingRedeemSuccess: 'Redeem {{symbol}} Successful',
     labelStakingRedeemRemaining: 'Remaining Amount',
     labelStakingRedeemDate: 'Redeem Time',
-
     labelContactsAddContact: 'Add Contact',
     labelContactsAddressTitle: 'Address',
     labelContactsAddressDes: 'Enter wallet address or ENS',
@@ -1911,4 +1910,9 @@ export default {
     labelRedpacketExclusiveListEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
     labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
     labelRedpacketBestwishes: 'Best wishes',
+    labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
+    labelSendRedPacketClear: 'Clear',
+    labelSendRedPacketMax: 'Max: {{count}}',
+    labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
+    labelRedPacketTotal: 'Total {{count}}',
 }
