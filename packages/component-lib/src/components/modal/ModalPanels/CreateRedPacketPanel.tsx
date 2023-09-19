@@ -160,7 +160,6 @@ export const CreateRedPacketPanel = <
             handleOnDataChange({
               validSince: Date.now(),
             } as any)
-            debugger
             if (tradeType === RedPacketOrderType.FromNFT) {
               setPanelIndex(1)
             } else {
