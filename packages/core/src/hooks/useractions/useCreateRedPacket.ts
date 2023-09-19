@@ -818,7 +818,6 @@ export const useCreateRedPacket = <
           isShow: true,
           step: AccountStep.RedPacketSend_WaitForAuth,
         })
-        debugger
         const response = await LoopringAPI.luckTokenAPI.sendLuckTokenSubmitAddTarget(
           {
             claimer: getValidAddresses(redPacketOrder.target?.addressListString),
