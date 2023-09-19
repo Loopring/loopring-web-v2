@@ -166,11 +166,11 @@ export const DualListPanel: any = withTranslation('common')(
               justifyContent={'center'}
               height={'100%'}
               alignItems={'center'}
+              flex={1}
             >
               <img alt={'loading'} width='36' src={`${SoursURL}images/loading-line.gif`} />
             </Box>
-          ) : // ) : false  ? (
-          !!marketArray?.length ? (
+          ) : !!marketArray?.length ? (
             <>
               <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
                 <Tabs
@@ -416,18 +416,18 @@ export const DualListPanel: any = withTranslation('common')(
                 tradeData: {
                   ...dualTradeProps.dualCalcData?.coinSell,
                   isRenew: false,
-                },
+                } as any,
               })
             } else {
               dualTradeProps.onChangeEvent({
                 tradeData: {
                   ...dualTradeProps.dualCalcData?.coinSell,
                   isRenew: true,
-                },
+                } as any,
               })
               confirmDualAutoInvestFun()
             }
-            setConfirmDualAutoInvest({ isShow: false })
+            setConfirmDualAutoInvest(false)
           }}
         />
         <ModalDualPanel

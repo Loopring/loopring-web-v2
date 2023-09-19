@@ -134,7 +134,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     [updateTransferData],
   )
-  //TODO
+
   const {
     address,
     realAddr,

@@ -144,6 +144,10 @@ const CardStyleItem = styled(Card)<
   img {
     object-fit: contain;
   }
+  &.dualPrice {
+    padding: ${({ theme }) => theme.unit}px;
+    height: 54px;
+  }
 ` as (
   props: CardProps & {
     contentheight?: number

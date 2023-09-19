@@ -5,6 +5,7 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AmmPanelType,
   AssetsTable,
+  ButtonStyle,
   DefiStakingTable,
   DualAssetTable,
   DualDetail,
@@ -13,27 +14,30 @@ import {
   ModalCloseButton,
   MyPoolTable,
   SwitchPanelStyled,
+  Toast,
+  ToastType,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import {
   AssetTabIndex,
-  CheckBoxIcon,
-  CheckedIcon,
   CurrencyToTag,
   DualViewBase,
-  DualViewInfo,
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
   HiddenTag,
   InvestTab,
   investTabs,
+  L1L2_NAME_DEFINED,
+  MapChainId,
   myLog,
   PriceTag,
   RowInvestConfig,
   STAKING_INVEST_LIMIT,
+  TOAST_TIME,
   TokenType,
+  TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
@@ -49,15 +53,12 @@ import {
   useSystem,
   useTokenMap,
   useTokenPrices,
-  LoopringAPI,
-  makeDualViewItem,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { MaxWidthContainer, containerColors } from '..'
-import _ from 'lodash'
 
 const Tab = styled(Box)<{ selected: boolean }>`
   background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
@@ -107,7 +108,8 @@ const MyLiquidity: any = withTranslation('common')(
       useGetAssets()
     const { account } = useAccount()
     const history = useHistory()
-    const { currency, hideSmallBalances } = useSettings()
+    const { currency, hideSmallBalances, defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { setShowAmm } = useOpenModals()
 
     const {
@@ -127,6 +129,14 @@ const MyLiquidity: any = withTranslation('common')(
       refreshErrorInfo,
       dualProducts,
       getProduct,
+      cancelReInvest,
+      dualToastOpen,
+      closeDualToast,
+      editDualTrade,
+      editDualBtnInfo,
+      editDualBtnStatus,
+      handleOnchange,
+      onEditDualClick,
     } = useDualAsset()
     const {
       summaryMyInvest,
@@ -261,6 +271,38 @@ const MyLiquidity: any = withTranslation('common')(
     const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
     myLog('visibaleTabs _tab', _tab)
 
+    const label = React.useMemo(() => {
+      if (editDualBtnInfo.label) {
+        const key = editDualBtnInfo.label.split('|')
+        return t(
+          key[0],
+          key && key[1]
+            ? {
+                arg: key[1].toString(),
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }
+            : {
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              },
+        )
+      } else {
+        return t(`labelDualModifyBtn`, {
+          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+        })
+      }
+    }, [editDualBtnInfo.label])
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         {!noHeader && (
@@ -686,6 +728,8 @@ const MyLiquidity: any = withTranslation('common')(
                       showDetail={showDetail}
                       refresh={refresh}
                       hideAssets={hideAssets}
+                      cancelReInvest={cancelReInvest}
+                      getProduct={getProduct}
                     />
                     <Modal
                       open={dualOpen}
@@ -695,7 +739,7 @@ const MyLiquidity: any = withTranslation('common')(
                     >
                       <SwitchPanelStyled width={'var(--modal-width)'}>
                         <ModalCloseButton onClose={(_e: any) => setDualOpen(false)} t={t} />
-                        {dualDetail && (
+                        {dualDetail && dualDetail.dualViewInfo && (
                           <Box
                             flex={1}
                             paddingY={2}
@@ -706,15 +750,47 @@ const MyLiquidity: any = withTranslation('common')(
                             <DualDetail
                               isOrder={true}
                               dualProducts={dualProducts}
-                              getProduct={getProduct}
                               dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
                               tokenMap={tokenMap}
+                              isPriceEditable={true}
                               lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
                               greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
                               lessEarnView={dualDetail.lessEarnView}
                               greaterEarnView={dualDetail.greaterEarnView}
+                              onChange={(item) => {
+                                handleOnchange({ tradeData: item })
+                              }}
+                              coinSell={{
+                                ...editDualTrade,
+                              }}
                             />
+                            {dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
+                              <Grid item xs={12}>
+                                <Box paddingX={2} marginY={2}>
+                                  <ButtonStyle
+                                    fullWidth
+                                    variant={'contained'}
+                                    size={'medium'}
+                                    color={'primary'}
+                                    onClick={() => {
+                                      onEditDualClick()
+                                    }}
+                                    loading={
+                                      editDualBtnStatus === TradeBtnStatus.LOADING
+                                        ? 'true'
+                                        : 'false'
+                                    }
+                                    disabled={
+                                      editDualBtnStatus === TradeBtnStatus.LOADING ||
+                                      editDualBtnStatus === TradeBtnStatus.DISABLED
+                                    }
+                                  >
+                                    {label}
+                                  </ButtonStyle>
+                                </Box>
+                              </Grid>
+                            )}
                           </Box>
                         )}
                       </SwitchPanelStyled>
@@ -748,6 +824,17 @@ const MyLiquidity: any = withTranslation('common')(
             </Typography>
           </SwitchPanelStyled>
         </Modal>
+        <Toast
+          alertText={dualToastOpen?.content ?? ''}
+          severity={dualToastOpen?.type ?? ToastType.success}
+          open={dualToastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={() => {
+            if (closeDualToast) {
+              closeDualToast()
+            }
+          }}
+        />
       </Box>
     )
   },

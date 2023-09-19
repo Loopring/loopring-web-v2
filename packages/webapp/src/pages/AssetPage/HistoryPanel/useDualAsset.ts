@@ -3,8 +3,10 @@ import {
   makeDualOrderedItem,
   makeDualViewItem,
   useAccount,
+  useDualEdit,
   useDualMap,
   useTokenMap,
+  useTradeDual,
 } from '@loopring-web/core'
 import React from 'react'
 import {
@@ -31,6 +33,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   const {
     account: { accountId, apiKey },
   } = useAccount()
+  const { updateEditDual } = useTradeDual()
   const { tokenMap, idIndex } = useTokenMap()
   const { marketMap: dualMarketMap, marketArray } = useDualMap()
   const [dualList, setDualList] = React.useState<R[]>([])
@@ -130,36 +133,21 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     )
     return {
       dualViewInfo: {
+        ...item?.__raw__?.order,
         ...item,
         amount: amount + ' ' + sellSymbol,
         currentPrice,
+        __raw__: item.__raw__,
       },
       lessEarnTokenSymbol,
       greaterEarnTokenSymbol,
       lessEarnView,
       greaterEarnView,
       currentPrice,
+      __raw__: item.__raw__,
     } as DualDetailType
   }
-  const showDetail = async (item: R) => {
-    const {
-      __raw__: {
-        order: {
-          tokenInfoOrigin: { base, market },
-        },
-      },
-    } = item
-    const {
-      dualPrice: { index },
-    } = await LoopringAPI.defiAPI?.getDualIndex({
-      baseSymbol: base,
-      quoteSymbol: dualMarketMap[market].quoteAlias,
-    })
-    if (index) {
-      setDetail(getDetail(item, index))
-      setOpen(true)
-    }
-  }
+
   const refresh = async (item: R) => {
     const hash = item.__raw__.order.hash
     setShowLoading(true)
@@ -256,6 +244,56 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     }
     setShowLoading(false)
   }
+
+  const {
+    editDualTrade,
+    editDualBtnInfo,
+    editDualBtnStatus,
+    dualToastOpen,
+    closeDualToast,
+    setDualTradeData,
+    handleOnchange,
+    onEditDualClick,
+  } = useDualEdit({
+    refresh: (item) => {
+      refresh(item as any)
+      setOpen(false)
+    },
+  })
+  const showDetail = async (item: R) => {
+    const {
+      __raw__: {
+        order: {
+          tokenInfoOrigin: { base, market },
+        },
+      },
+    } = item
+    const {
+      dualPrice: { index },
+    } = await LoopringAPI.defiAPI?.getDualIndex({
+      baseSymbol: base,
+      quoteSymbol: dualMarketMap[market].quoteAlias,
+    })
+    if (index) {
+      const _item = getDetail(item, index)
+      setDetail(_item)
+      updateEditDual(_item)
+      if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
+        getProduct(_item)
+        handleOnchange({
+          tradeData: {
+            isRenew: _item?.__raw__?.order?.dualReinvestInfo?.isRecursive,
+            renewDuration: _item?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+            renewTargetPrice: _item?.__raw__?.order.dualReinvestInfo.newStrike,
+          },
+        })
+      }
+
+      // setDualTradeData(_item)
+      setOpen(true)
+    }
+  }
+
   const getDualTxList = React.useCallback(
     async ({ start, end, offset, limit = Limit }: any) => {
       setShowLoading(true)
@@ -364,19 +402,18 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     [accountId, apiKey, setToastOpen, t, dualMarketMap],
   )
   const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([])
-  const getProduct = _.debounce(async () => {
+  //TDDO:
+  const getProduct = async (detail) => {
     if (detail && detail.dualViewInfo) {
       const market =
         detail.dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE
           ? detail.dualViewInfo.sellSymbol + '-' + detail.dualViewInfo.buySymbol
           : detail.dualViewInfo.buySymbol + '-' + detail.dualViewInfo.sellSymbol
-      const currency = market ? dualMarketMap[market]?.currency : undefined
-      // @ts-ignore
-      // const [, , marketSymbolA, marketSymbolB] = (market ?? '').match(/(dual-)?(\w+)-(\w+)/i)
-      const dualMarket = dualMarketMap[market]
+      const dualMarket = dualMarketMap[`DUAL-${market}`]
       const { dualType } = detail.dualViewInfo
-      const baseSymbol = tokenMap[dualMarket.baseTokenId].symbol
-      const quoteSymbol = dualMarket.quoteAlias ?? tokenMap[dualMarket.quoteTokenId].symbol
+      const currency = dualMarket.currency
+      const baseSymbol = idIndex[dualMarket.baseTokenId]
+      const quoteSymbol = dualMarket.quoteAlias ?? idIndex[dualMarket.quoteTokenId]
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol,
         quoteSymbol,
@@ -396,7 +433,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         } = response as any
         const rule = rules[0]
         const rawData = infos.map((item: sdk.DualProductAndPrice) => {
-          return makeDualViewItem(item, index, rule, baseSymbol, quoteSymbol, dualMarketMap[market])
+          return makeDualViewItem(item, index, rule, baseSymbol, quoteSymbol, dualMarket)
         })
         myLog('setDualProducts', rawData)
         setDualProducts(rawData)
@@ -404,12 +441,16 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     } else {
       setDualProducts([])
     }
-  }, 100)
+  }
 
+  const cancelReInvest = React.useCallback((item) => {
+    updateEditDual({ ...item, dualViewInfo: item })
+    handleOnchange({ tradeData: { isRenew: false } })
+    sdk.sleep(0).then(() => {
+      onEditDualClick()
+    })
+  }, [])
   return {
-    // page,
-    dualProducts,
-    getProduct,
     getDetail,
     showDetail,
     dualList,
@@ -424,6 +465,16 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     setShowRefreshError,
     showRefreshError,
     refreshErrorInfo,
-    // updateTickersUI,
+    cancelReInvest,
+    dualProducts,
+    getProduct,
+    // onEdit,
+    dualToastOpen,
+    closeDualToast,
+    editDualTrade,
+    editDualBtnInfo,
+    editDualBtnStatus,
+    handleOnchange,
+    onEditDualClick,
   }
 }

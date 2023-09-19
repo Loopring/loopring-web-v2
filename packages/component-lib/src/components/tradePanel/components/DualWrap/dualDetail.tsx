@@ -12,7 +12,16 @@ import {
   UpColor,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
-import { Box, Divider, Link, Modal, Switch, Tooltip, Typography } from '@mui/material'
+import {
+  Box,
+  Divider,
+  Switch,
+  FormControlLabel,
+  Link,
+  Modal,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { ModalCloseButton } from '../../../basic-lib'
 import { ModifyParameter } from './ModifyParameter'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -196,127 +205,150 @@ export const DualDetail = ({
         </SwitchPanelStyled>
       </Modal>
 
-      <Box>
-        <Box display={'flex'} flexDirection={'column'}>
-          <Box display={'flex'} flexDirection={'column'} paddingX={2}>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Tooltip title={t('labelDualAutoTitleDes').toString()}>
-                <Typography
-                  component={'span'}
-                  variant={'body1'}
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Trans i18nKey={'labelDualAutoTitle'}>
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  </Trans>
-                </Typography>
-              </Tooltip>
-              <Typography component={'span'} variant={'inherit'}>
-                <Switch
-                  checked={coinSell.isRenew}
-                  color='default'
-                  onChange={(e) =>
-                    onChange({
-                      ...coinSell,
-                      isRenew: e.target.checked,
-                    })
-                  }
-                />
-              </Typography>
-            </Box>
-
-            <Typography
-              component={'span'}
-              variant={'body2'}
-              color={'var(--color-text-third)'}
-              display={'inline-flex'}
-              alignItems={'center'}
-              paddingBottom={1}
-            >
-              <Trans i18nKey={'labelDualAutoDetail'}>
-                Auto Reinvest will try to find a new product which based on the following rule at
-                16:00 on the settlement day.
-              </Trans>
-            </Typography>
-          </Box>
-        </Box>
-        {coinSell.isRenew && (
+      <Box display={'flex'} flexDirection={'column'}>
+        {!isOrder || (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) ? (
+          // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
           <Box
             display={'flex'}
+            order={isOrder ? 2 : 0}
+            marginBottom={isOrder ? 2 : 0}
             flexDirection={'column'}
-            sx={{
-              background: 'var(--field-opacity)',
-            }}
-            paddingY={1}
-            marginX={2}
-            borderRadius={1 / 2}
           >
-            <Box display={'flex'} justifyContent={'space-between'} paddingBottom={1} paddingX={2}>
-              <Tooltip title={t(`labelDualAuto${dualViewInfo?.dualType}PriceDes`).toString()}>
-                <Typography
-                  component={'span'}
-                  variant={'body1'}
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Trans i18nKey={`labelDualAuto${dualViewInfo?.dualType}Price`}>
-                    type Price
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  </Trans>
+            <Box display={'flex'} flexDirection={'column'} paddingX={2}>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Tooltip title={t('labelDualAutoTitleDes').toString()}>
+                  <Typography
+                    component={'span'}
+                    variant={'body1'}
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <Trans i18nKey={'labelDualAutoTitle'}>
+                      <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    </Trans>
+                  </Typography>
+                </Tooltip>
+                <Typography component={'span'} variant={'inherit'}>
+                  <FormControlLabel
+                    sx={{
+                      marginRight: 0,
+                    }}
+                    disabled={[
+                      sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
+                      sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
+                    ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
+                    onChange={(_e, checked) =>
+                      onChange({
+                        ...coinSell,
+                        isRenew: checked,
+                      })
+                    }
+                    control={<Switch color={'primary'} checked={coinSell.isRenew} />}
+                    label={''}
+                  />
                 </Typography>
-              </Tooltip>
-              {isPriceEditable ? (
-                <Link
-                  onClick={() => {
-                    setShowEdit(true)
-                  }}
-                  component={'a'}
-                  variant={'body1'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  {renewTargetPriceView}
-                  <BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />
-                </Link>
-              ) : (
-                <Typography component={'span'} variant={'body1'}>
-                  {renewTargetPriceView}
-                </Typography>
-              )}
-            </Box>
-            <Box display={'flex'} justifyContent={'space-between'} paddingX={2}>
-              <Tooltip title={t(`labelDualAutoDurationDes`).toString()}>
-                <Typography
-                  component={'span'}
-                  variant={'body1'}
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Trans i18nKey={`labelDualAutoDuration`}>
-                    Duration
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  </Trans>
-                </Typography>
-              </Tooltip>
-              <Link
-                onClick={() => {
-                  setShowEdit(true)
-                }}
-                component={'a'}
-                variant={'body1'}
+              </Box>
+
+              <Typography
+                component={'span'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
                 display={'inline-flex'}
                 alignItems={'center'}
+                paddingBottom={1}
               >
-                {coinSell.renewDuration}
-                <BackIcon fontSize={'inherit'} sx={{ transform: 'rotate(180deg)' }} />
-              </Link>
+                <Trans i18nKey={'labelDualAutoDetail'}>
+                  Auto Reinvest will try to find a new product which based on the following rule at
+                  16:00 on the settlement day.
+                </Trans>
+              </Typography>
             </Box>
+            {coinSell.isRenew && (
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                sx={{
+                  background: 'var(--field-opacity)',
+                }}
+                paddingY={1}
+                marginX={2}
+                borderRadius={1 / 2}
+              >
+                <Box
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  paddingBottom={1}
+                  paddingX={2}
+                >
+                  <Tooltip title={t(`labelDualAuto${dualViewInfo?.dualType}PriceDes`).toString()}>
+                    <Typography
+                      component={'span'}
+                      variant={'body1'}
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      <Trans i18nKey={`labelDualAuto${dualViewInfo?.dualType}Price`}>
+                        type Price
+                        <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                      </Trans>
+                    </Typography>
+                  </Tooltip>
+                  {isPriceEditable ? (
+                    <Link
+                      onClick={() => {
+                        setShowEdit(true)
+                      }}
+                      component={'a'}
+                      variant={'body1'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      {renewTargetPriceView}
+                      <BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />
+                    </Link>
+                  ) : (
+                    <Typography component={'span'} variant={'body1'}>
+                      {renewTargetPriceView}
+                    </Typography>
+                  )}
+                </Box>
+                <Box display={'flex'} justifyContent={'space-between'} paddingX={2}>
+                  <Tooltip title={t(`labelDualAutoDurationDes`).toString()}>
+                    <Typography
+                      component={'span'}
+                      variant={'body1'}
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      <Trans i18nKey={`labelDualAutoDuration`}>
+                        Duration
+                        <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                      </Trans>
+                    </Typography>
+                  </Tooltip>
+                  <Link
+                    onClick={() => {
+                      setShowEdit(true)
+                    }}
+                    component={'a'}
+                    variant={'body1'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    {coinSell.renewDuration}
+                    <BackIcon fontSize={'inherit'} sx={{ transform: 'rotate(180deg)' }} />
+                  </Link>
+                </Box>
+              </Box>
+            )}
           </Box>
+        ) : (
+          <></>
         )}
+
         {displayMode === DualDisplayMode.nonBeginnerMode &&
           (isOrder ? (
             <Typography
@@ -324,6 +356,7 @@ export const DualDetail = ({
               marginTop={-4}
               textAlign={'center'}
               paddingBottom={2}
+              order={0}
             >
               {t('labelDuaInvestmentDetails', { ns: 'common' })}
             </Typography>
@@ -339,7 +372,7 @@ export const DualDetail = ({
             </Typography>
           ))}
         {displayMode !== DualDisplayMode.beginnerModeStep1 && (
-          <Box paddingX={2} paddingBottom={1}>
+          <Box paddingX={2} paddingBottom={1} order={isOrder ? 2 : 2}>
             <BoxChartStyle height={128} width={'100%'} position={'relative'}>
               <Box className={'point1 point'}>
                 <Typography variant={'body2'} whiteSpace={'pre'} color={'textPrimary'}>
@@ -474,6 +507,7 @@ export const DualDetail = ({
             paddingX={2}
             paddingTop={1}
             borderRadius={1 / 2}
+            order={isOrder ? 3 : 3}
             sx={{
               background: 'var(--field-opacity)',
             }}

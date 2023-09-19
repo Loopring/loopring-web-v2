@@ -344,5 +344,9 @@ export default {
   labelTxNetworkFee: 'Network Fee',
   labelTxTradingFee: 'Trading Fee',
   labelTypeUNIFIED_CLAIM: 'Claim Rewards',
-  labelLoadingMore: "Loading More..."
+  labelLoadingMore: 'Loading More...',
+  labelDualAutoReinvest: 'Auto Reinvest',
+  labelDualAssetModify: 'Modify',
+  labelDualAssetReInvestDisable: 'Disable',
+  labelDualAssetReInvestEnable: 'Enable',
 }

@@ -24,8 +24,9 @@ export type DualDetailType = {
   lessEarnTokenSymbol: string
   greaterEarnTokenSymbol: string
   isOrder?: boolean
-  dualProducts: DualViewInfo[]
+  dualProducts?: DualViewInfo[]
   getProduct?: () => void
+  __raw__?: any
 }
 export type DualChgData<T> = {
   tradeData?: undefined | T
@@ -46,14 +47,11 @@ export type DualWrapProps<T, I, DUAL> = {
   tokenSell: TokenInfo
   btnStatus?: keyof typeof TradeBtnStatus | undefined
   accStatus?: AccountStatus
-  // dualProducts?: DualViewInfo[]
-  // isRenew: boolean
-  // renewTargetPrice?: string
-  // renewDuration?: string
+  dualProducts?: DualViewInfo[]
 }
 
 export type DualDetailProps<
-  R = { isRenew: boolean; renewTargetPrice?: string; renewDuration?: string },
+  R = { isRenew: boolean; renewTargetPrice?: string; renewDuration?: number },
 > = DualDetailType & {
   coinSell: R
   onChange: (props: R) => void

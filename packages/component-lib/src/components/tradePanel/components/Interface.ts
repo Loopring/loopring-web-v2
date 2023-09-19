@@ -113,12 +113,13 @@ export type TransferExtendProps<T, I, C> = {
   isFromContact?: boolean
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
-} & Pick<sdk.GetContactsResponse, 'contacts'> & TransferInfoProps<C>
+} & Pick<sdk.GetContactsResponse, 'contacts'> &
+  TransferInfoProps<C>
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> = TransferExtendProps<T, I, C> &
-    BasicACoinTradeViewProps<T, I> & {
-  onClickContact: () => void
-}
+  BasicACoinTradeViewProps<T, I> & {
+    onClickContact: () => void
+  }
 
 export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>
 export type BanxaViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C> & {
@@ -244,12 +245,13 @@ export type WithdrawExtendProps<T, I, C> = {
   // onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
-} & Pick<sdk.GetContactsResponse, 'contacts'> & WithdrawInfoProps<C>
+} & Pick<sdk.GetContactsResponse, 'contacts'> &
+  WithdrawInfoProps<C>
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> = BasicACoinTradeViewProps<T, I> &
-    WithdrawExtendProps<T, I, C> & {
-  onClickContact: () => void
-}
+  WithdrawExtendProps<T, I, C> & {
+    onClickContact: () => void
+  }
 
 export type ForceWithdrawExtendProps<T, I, C> = {
   addressDefault: string
@@ -283,7 +285,7 @@ export type DefaultProps<T, I> = {
   selectNFTDisabled?: boolean
 } & (
   | {
-  type: TRADE_TYPE.TOKEN
+      type: TRADE_TYPE.TOKEN
       coinMap: CoinMap<I, CoinInfo<I>>
       walletMap: WalletMap<I, WalletCoin<I>>
     }
@@ -636,7 +638,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
   backToScope: () => void
-  onSendTargetRedpacketClick: () => void
+  onSendTargetRedpacketClick: () => Promise<void>
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
   popRedPacketAmountStr: string | undefined
@@ -664,6 +666,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     onClickNext: () => void
     onClickBack: () => void
     showNFT: boolean
+    onChangeTradeType?: (tradeType: RedPacketOrderType) => void
   }
 
 export type TargetRedpacktSelectStepProps = {
@@ -688,4 +691,5 @@ export type TargetRedpacktInputAddressStepProps = {
   onManualEditInput: (text: string) => void
   popUpOptionDisabled: boolean
   maximumTargetsLength: number
+  onClickBack: () => void
 }

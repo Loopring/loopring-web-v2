@@ -191,6 +191,8 @@ export const STAKING_INVEST_LIMIT = 5
 export const PROPERTY_Value_LIMIT = 40
 export const REDPACKET_ORDER_LIMIT = 10000
 export const REDPACKET_ORDER_NFT_LIMIT = 20000
+export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 1000
+export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
@@ -460,6 +462,7 @@ export type DualViewBase = {
   amount?: string
   enterTime?: number
   stepLength: string
+  __raw__?: any
 }
 
 export type DualViewInfo = DualViewBase & {
@@ -526,6 +529,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     labelKey: 'labelLuckyRelayToken',
     desKey: 'labelLuckyRelayTokenDes',
     showInERC20: true,
+    hideForExclusive: true,
     value: {
       value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,

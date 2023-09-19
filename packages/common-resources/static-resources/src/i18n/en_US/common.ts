@@ -680,7 +680,7 @@ export default {
     'Represents the percentage to be received from each subsequent resale (max 10%).',
   labelMintDescription: 'Description <1>\u2139</1>',
   labelMintDescriptionTooltips:
-    "'The description will be included on the NFT\'s detail page beneath it\'s image.'
+    "The description will be included on the NFT's detail page beneath it's image.",
   labelMintProperty: 'Properties (Limit 64) <1>\u2139</1>',
   labelMintPropertyTooltips: 'Tags can be added to the NFT for easy searchability and distinction',
   labelPropertyAdd: 'Add property',
@@ -735,7 +735,7 @@ export default {
   labelL2toL2: 'Send to another {{loopringL2}}',
   labelL2toL1: 'Send to {{l1Symbol}}',
   labelBenefitL2:
-    'As {{l1ChainName}}\'s first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. ',
+    "As {{l1ChainName}}'s first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. ",
   labelNotBalancePayForActive: 'Insufficient balance in your {{loopringL2}} account',
   labelEnoughBalancePayForActive: 'You have enough balance to pay for {{loopringL2}} creation.',
   labelHaveInProcessingL1toL2:
@@ -820,7 +820,7 @@ export default {
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
   labelForceWithdrawDes:
-    'If the recipient doesn\'t have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.',
+    "'If the recipient doesn\'t have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.'
   labelForceWithdrawConfirm:
     'This feature allows a user to move their {{l2Symbol}} tokens to the {{l1Symbol}} address. The target address must either be a wallet or exchange address',
   labelForceWithdrawConfirm1:
@@ -1060,12 +1060,10 @@ export default {
   labelDualAmount: 'Amount',
   labelDuaInvestmentDetails: 'Dual Investment Details',
   labelDualOrderTable: 'Dual Investments',
-
   labelDualBeginnerPriceSmallerThan: 'if Index Price < {{value}}',
   labelDualBeginnerPriceSmallerThanOrEqual: 'if Index Price ≤ {{value}}',
   labelDualBeginnerPriceGreaterThan: 'if Index Price > {{value}}',
   labelDualBeginnerPriceGreaterThanOrEqual: 'if Index Price ≥ {{value}}',
-
   labelDualBeginnerAtSettlementDay: 'At Settlement Date',
   labelDualBeginnerIndexPriceDes: 'Index Price is derived from some leading exchanges.',
   labelDualBeginnerLockingDes: 'Your token for investment will be locked until Settlement Date.',
@@ -1541,7 +1539,6 @@ export default {
   labelStakingRedeemSuccess: 'Redeem {{symbol}} Successful',
   labelStakingRedeemRemaining: 'Remaining Amount',
   labelStakingRedeemDate: 'Redeem Time',
-
   labelContactsAddContact: 'Add Contact',
   labelContactsAddressTitle: 'Address',
   labelContactsAddressDes: 'Enter wallet address or ENS',
@@ -1920,6 +1917,11 @@ export default {
     'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
   labelRedpacketBestwishes: 'Best wishes',
+  labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
+  labelSendRedPacketClear: 'Clear',
+  labelSendRedPacketMax: 'Max: {{count}}',
+  labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
+  labelRedPacketTotal: 'Total {{count}}',
   labelInvestDualAutoTitle: 'What\'s Auto Reinvest',
   labelDualAutoTitle: 'Auto Reinvest <1></1>',
   labelDualAutoTitleDes:
@@ -1936,5 +1938,15 @@ export default {
   labelDayDisplay: '{{item}} Day',
   labelDualModifyConfirm: 'confirm',
   labelDualAutoDurationDes:
+    'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
+  labelDualModifyBtn: 'Modify',
+  labelTurnOffDualAutoInvest: 'Stop Auto Invest',
+  labelDualModifyAPR: 'APR: {{value}}',
+  labelDualModifySettlementDateDes: 'Changes will take effect after the Next Settlement Date.',
+  labelDualModifySettlementDate: 'Next Settlement Date: {{date}}',
+  labelDualEditSuccess: 'Update successful!',
+  labelDualEditFailed: 'Update Failed!',
+  labelDualEditDuration: 'Modify Longest Settlement Date <1></1>',
+  labelDualEditDurationDes:
     'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
 }
