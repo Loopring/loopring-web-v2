@@ -1242,7 +1242,7 @@ export default {
   labelL2toL2FeeWithActive: 'Fee (including activation fee)',
   labelRedPacketOpen: 'Open',
   labelRedPacketTitle: 'Red Packets',
-  labelRedPacketTypeTokens: 'Choose Tokens / NFTs',
+  labelRedPacketTypeTokens: 'Choose Tokens / NFTs / Blind Box',
   labelRedPacketChoose: 'Choose Red Packet Type',
   labelRedPacketMain: 'Input Red Packet/Send',
   labelLuckyTokenViewTypePublic: 'Public Red Packet',
@@ -1353,7 +1353,7 @@ export default {
   labelRedPacketsGiftsLargerThanPackets:
     'The number of Red Packets containing gifts cannot exceed the total number of Red Packets',
   labelBlindBoxNumberOverMaximun: 'Number of Blind Box exceeds maximum',
-  labelRedPacketsSplitNumber: 'Maximum split is {{value}}',
+  labelRedPacketsSplitNumber: 'The maximum number of Red Packet is {{value}}',
   labelRedPacketsSplitCommonDetail: 'Distribution per red packet: {{value}}',
   labelRedPacketsSplitLuckyDetail: 'Token amount for each Red Packet is randomized.',
   labelSendRedPacketTitle: 'Send Red Packet',
@@ -1382,9 +1382,9 @@ export default {
   labelRedPacketMarketsBtn: 'Red Packet Plaza',
   labelRedPacketBtn: 'Shared',
   labelRedPacketViewType0: 'Public',
-  labelRedPacketViewType1: 'Private',
+  labelRedPacketViewType1: 'Public',
   labelRedPacketViewTypeDetail0: 'public Red Packet',
-  labelRedPacketViewTypeDetail1: 'private Red Packet',
+  labelRedPacketViewTypeDetail1: 'public Red Packet',
   labelRedPacketStatusSUBMITTING: 'Submitting', // SUBMITTING = 0,
   labelRedPacketStatusNOT_EFFECTIVE: 'Not Start', // NOT_EFFECTIVE = 1,
   labelRedPacketStatusPENDING: 'In Processing', // PENDING = 2,
@@ -1891,5 +1891,7 @@ export default {
   labelRedpacketExclusiveListEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
   labelRedpacketBestwishes: 'Best wishes',
-  
+  labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
+  labelSendRedPacketClear: 'Clear',
+  labelSendRedPacketMax: 'Max: {{count}}',
 }

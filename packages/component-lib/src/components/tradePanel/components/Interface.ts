@@ -661,6 +661,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     onClickNext: () => void
     onClickBack: () => void
     showNFT: boolean
+    onChangeTradeType?: (tradeType: RedPacketOrderType) => void
   }
 
 export type TargetRedpacktSelectStepProps = {
