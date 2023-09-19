@@ -633,7 +633,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
   backToScope: () => void
-  onSendTargetRedpacketClick: () => void
+  onSendTargetRedpacketClick: () => Promise<void>
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
   popRedPacketAmountStr: string | undefined
@@ -686,4 +686,5 @@ export type TargetRedpacktInputAddressStepProps = {
   onManualEditInput: (text: string) => void
   popUpOptionDisabled: boolean
   maximumTargetsLength: number
+  onClickBack: () => void
 }

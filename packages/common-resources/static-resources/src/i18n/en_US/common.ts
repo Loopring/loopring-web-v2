@@ -1894,4 +1894,6 @@ export default {
   labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
   labelSendRedPacketClear: 'Clear',
   labelSendRedPacketMax: 'Max: {{count}}',
+  labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
+  labelRedPacketTotal: 'Total {{count}}',
 }

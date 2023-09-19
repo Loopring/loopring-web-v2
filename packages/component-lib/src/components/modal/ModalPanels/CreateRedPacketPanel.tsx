@@ -552,7 +552,12 @@ export const CreateRedPacketPanel = <
             } as any)
           }}
           onClickSend={() => {
-            onSendTargetRedpacketClick()
+            onSendTargetRedpacketClick().then(() => {
+              handleOnDataChange({
+                target: undefined,
+              } as any)
+              setActiveStep(TargetRedPacketStep.TargetChosse)
+            })
           }}
           onConfirm={(addressList) => {
             handleOnDataChange({
@@ -563,6 +568,12 @@ export const CreateRedPacketPanel = <
             } as any)
           }}
           popUpOptionDisabled={isWhiteListed ? false : true}
+          onClickBack={() => {
+            handleOnDataChange({
+              target: undefined,
+            } as any)
+            setActiveStep(TargetRedPacketStep.TargetChosse)
+          }}
         />
       ),
       toolBarItem: undefined,

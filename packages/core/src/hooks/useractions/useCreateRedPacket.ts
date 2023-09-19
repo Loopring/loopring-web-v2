@@ -827,7 +827,6 @@ export const useCreateRedPacket = <
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
-        history.push(`/redpacket/markets`)
         setShowAccount({
           isShow: true,
           step: AccountStep.RedPacketSend_Success,
