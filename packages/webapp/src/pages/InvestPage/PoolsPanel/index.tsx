@@ -40,7 +40,7 @@ export const PoolsPanel = withTranslation('common')(
     const container = React.useRef(null)
     const history = useHistory()
     const { forexMap } = useSystem()
-    const { currency } = useSettings()
+    const { currency, isMobile } = useSettings()
     const poolTableProps = useAmmMapUI()
     const { campaignTagConfig } = useNotify().notifyMap ?? {}
     const theme = useTheme()
@@ -50,18 +50,18 @@ export const PoolsPanel = withTranslation('common')(
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
-          height={34 * theme.unit}
+          height={isMobile ? 50 * theme.unit : 34 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
               {t("labelLiquidityPageTitle")}
             </Typography>
-            <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
+            <Button onClick={() => history.push('/invest/balance')} sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }} variant={'contained'}>
               {t("labelInvestMyAmm")}
             </Button>
           </Box>
-          <AmmLogo />
+          {!isMobile && <AmmLogo />}
         </MaxWidthContainer>
         <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]}>
           <PoolsTable

@@ -371,7 +371,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
             justifyContent={'space-between'}
             marginLeft={3}
           >
-            <Typography fontSize={"36px"} variant={'h1'}>{t('labelTitleOverviewAllPrd', { ns: 'common' })}</Typography>
+            <Typography fontSize={"36px"} variant={isMobile ? 'h3' : 'h1'}>{t('labelTitleOverviewAllPrd', { ns: 'common' })}</Typography>
             <TableFilterStyled>
               <Filter
                 {...{
