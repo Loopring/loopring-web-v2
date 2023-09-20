@@ -2,7 +2,6 @@ import { Box, BoxProps, Tab, Tabs, Toolbar } from '@mui/material'
 import {
   VaultBorrow,
   VaultBorrowWrapProps,
-  VaultLoadType,
   VaultRepay,
   VaultRepayWrapProps,
 } from '../components/VaultWrap'
@@ -10,6 +9,7 @@ import styled from '@emotion/styled'
 import { boxLiner, toolBarPanel } from '../../styled'
 import { useTranslation, WithTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
+import { VaultLoadType } from '@loopring-web/common-resources'
 
 export type VaultLoadProps<T, I, B, C> = {
   vaultLoadType: VaultLoadType

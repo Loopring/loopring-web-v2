@@ -16,8 +16,8 @@ import { ButtonStyle } from '../Styled'
 
 export const VaultBorrow = <T, I, B extends VaultBorrowData, C = IBData<I>>({
   disabled,
-  VaultBorrowBtnStatus,
-  VaultBorrowBtnI18nKey,
+  vaultBorrowBtnStatus,
+  vaultBorrowBtnI18nKey,
   onVaultBorrowClick,
   tokenProps,
   onAddChangeEvent,
@@ -35,9 +35,9 @@ export const VaultBorrow = <T, I, B extends VaultBorrowData, C = IBData<I>>({
   }
   const handleError = () => {
     if (
-      VaultBorrowBtnStatus === TradeBtnStatus.DISABLED &&
-      VaultBorrowBtnI18nKey &&
-      (/labelAMMNoEnough/.test(VaultBorrowBtnI18nKey) || /labelAMMMax/.test(VaultBorrowBtnI18nKey))
+      vaultBorrowBtnStatus === TradeBtnStatus.DISABLED &&
+      vaultBorrowBtnI18nKey &&
+      (/labelAMMNoEnough/.test(vaultBorrowBtnI18nKey) || /labelAMMMax/.test(vaultBorrowBtnI18nKey))
     ) {
       return { error: true }
     }
@@ -67,8 +67,8 @@ export const VaultBorrow = <T, I, B extends VaultBorrowData, C = IBData<I>>({
     ...rest,
   }
   const label = React.useMemo(() => {
-    if (VaultBorrowBtnI18nKey) {
-      const key = VaultBorrowBtnI18nKey.split('|')
+    if (vaultBorrowBtnI18nKey) {
+      const key = vaultBorrowBtnI18nKey.split('|')
       return t(
         key[0],
         key && key[1]
@@ -97,7 +97,7 @@ export const VaultBorrow = <T, I, B extends VaultBorrowData, C = IBData<I>>({
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       })
     }
-  }, [VaultBorrowBtnI18nKey])
+  }, [vaultBorrowBtnI18nKey])
 
   return (
     <Grid
@@ -120,7 +120,7 @@ export const VaultBorrow = <T, I, B extends VaultBorrowData, C = IBData<I>>({
       >
         <InputCoin<any, I, any>
           ref={coinRef}
-          disabled={getDisabled() || VaultBorrowBtnStatus === TradeBtnStatus.LOADING}
+          disabled={getDisabled() || vaultBorrowBtnStatus === TradeBtnStatus.LOADING}
           {...{
             ...propsToken,
             name: 'vaultToken',
@@ -159,15 +159,15 @@ export const VaultBorrow = <T, I, B extends VaultBorrowData, C = IBData<I>>({
               size={'large'}
               color={'primary'}
               onClick={() => {
-                onVaultBorrowClick(vaultBorrowData)
+                onvaultBorrowClick(vaultBorrowData)
               }}
               loading={
-                !getDisabled() && VaultBorrowBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
+                !getDisabled() && vaultBorrowBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
               }
               disabled={
                 getDisabled() ||
-                VaultBorrowBtnStatus === TradeBtnStatus.DISABLED ||
-                VaultBorrowBtnStatus === TradeBtnStatus.LOADING
+                aultBorrowBtnStatus === TradeBtnStatus.DISABLED ||
+                aultBorrowBtnStatus === TradeBtnStatus.LOADING
               }
               fullWidth={true}
             >

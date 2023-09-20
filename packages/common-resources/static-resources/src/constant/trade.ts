@@ -771,3 +771,13 @@ export type VaultExitData<I = any> = {
   __request__: any
 } & Partial<IBData<I>> &
   Partial<sdk.VaultExitRequest>
+
+export enum VaultLoadType {
+  Borrow = 'Borrow',
+  Repay = 'Repay',
+}
+
+export enum AmmPanelType {
+  Join = 0,
+  Exit = 1,
+}
