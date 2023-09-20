@@ -15,31 +15,117 @@ import {
 } from '../../../stores'
 import React from 'react'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { TradeBtnStatus } from '@loopring-web/common-resources'
+import {
+  AccountStatus,
+  getValuePrecisionThousand,
+  IBData,
+  SagaStatus,
+  TradeBtnStatus,
+} from '@loopring-web/common-resources'
 import { LoopringAPI } from '../../../api_wrapper'
-import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
 import { walletLayer2Service } from '../../../services'
 
 import { useSubmitBtn } from '../../common'
+import { useTranslation } from 'react-i18next'
+import { makeVaultAvaiable2, makeVaultLayer2 } from '../../help'
 
-export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I, B, C>> => {
-  const { setShowAccount, setShowVaultLoad } = useOpenModals()
-  const { account } = useAccount()
-  const { exchangeInfo, allowTrade } = useSystem()
-  const { tokenMap, idIndex, marketMap, coinMap, marketArray, marketCoins, getVaultMap } =
-    useVaultMap()
+export const useVaultBorrow = <T extends IBData<any>, I, B, C>(): Partial<
+  VaultBorrowWrapProps<T, I, B, C>
+> => {
+  const { t } = useTranslation()
+  const {
+    modals: { istShowVaultLoad },
+    setShowAccount,
+    setShowVaultLoad,
+  } = useOpenModals()
+  const { exchangeInfo } = useSystem()
+  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap } = useVaultMap()
+
+  const calcSupportData = (tradeData: T) => {
+    let supportData = {}
+    // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
+    if (tradeData.belong) {
+      const vaultToken = vaultTokenMap[tradeData.belong as any]
+      // const vaultTokenSymbol = walletAllowMap[tradeData.belong as any].vaultToken
+      // const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
+      // const ercToken = tokenMap[tradeData.belong]
+      // tradeData.belong
+      supportData = {
+        //TODO:
+        maxShowVal: getValuePrecisionThousand(
+          sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
+          vaultToken.precision,
+          vaultToken.precision,
+          undefined,
+        ),
+
+        minShowVal: getValuePrecisionThousand(
+          //TODO:
+          sdk.toBig(vaultToken.vaultTokenAmounts.minAmount).div('1e' + vaultToken.decimals),
+          vaultToken.precision,
+          vaultToken.precision,
+          undefined,
+        ),
+        maxAmount: vaultToken.btradeAmount,
+        minAmount: vaultToken.vaultTokenAmounts.minAmount,
+        vaultSymbol: vaultToken.symbol,
+        vaultTokenInfo: vaultToken,
+      }
+    }
+    return {
+      ...supportData,
+    }
+  }
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { vaultBorrowData, updateVaultBorrow, resetVaultBorrow } = useTradeVault()
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
+  const initData = () => {
+    let vaultBorrowData: any = {}
+    let initSymbol = 'LRC'
+    if (istShowVaultLoad.info?.symbol) {
+      initSymbol = istShowVaultLoad.info?.symbol
+    }
+    let { vaultAvaiable2Map } = makeVaultAvaiable2({ needFilterZero: false })
+    vaultBorrowData = {
+      ...vaultBorrowData,
+      vaultAvaiable2Map,
+      coinMap: vaultCoinMap,
+    }
+    let walletInfo
+    walletInfo = {
+      belong: initSymbol,
+      balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
+      tradeValue: undefined,
+    }
+    vaultBorrowData = {
+      ...vaultBorrowData,
+      walletInfo,
+    }
+
+    setTradeData({
+      ...walletInfo,
+    })
+
+    updateVaultBorrow({
+      ...walletInfo,
+      ...vaultBorrowData,
+      ...calcSupportData(walletInfo),
+    })
+  }
+  React.useEffect(() => {
+    if (istShowVaultLoad.isShow) {
+      initData()
+    } else {
+      resetVaultBorrow()
+    }
+  }, [istShowVaultLoad.isShow])
 
   const availableTradeCheck = React.useCallback(() => {
-    const vaultAccountInfoSymbol =
-      idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
+    // const vaultAccountInfoSymbol =
+    //     vaultIdIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     if (!vaultBorrowData?.amount && sdk.toBig(vaultBorrowData?.amount ?? 0).lte(0)) {
       return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: '' }
-    } else if (vaultAccountInfoSymbol) {
-      return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelVaultBorrowMax' }
     } else if (sdk.toBig(vaultBorrowData.amount).lte(vaultBorrowData.minAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -62,7 +148,7 @@ export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I,
     }
   }, [
     vaultAccountInfoStatus,
-    tokenMap,
+    vaultTokenMap,
     vaultBorrowData,
     vaultBorrowData.tradeValue,
     vaultBorrowData.balance,
@@ -73,17 +159,14 @@ export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I,
   ])
   const processRequest = async (request?: sdk.VaultLoadRequest) => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
+    const account = store.getState().account
     try {
-      if (request || vaultBorrowData.request) {
+      if (request || (vaultBorrowData.request && account)) {
         let response = LoopringAPI.vaultAPI?.submitVaultLoad({
           // @ts-ignore
           request: request ?? vaultBorrowData.request,
-          eddsaKey: account.eddsaKey.sk,
+          privateKey: account?.eddsaKey?.sk,
           apiKey: account.apiKey,
-          web3: connectProvides.usedWeb3 as any,
-          chainId: chainId === 'unknown' ? 1 : chainId,
-          walletType: (ConnectProvidersSignMap[account.connectName] ??
-            account.connectName) as unknown as sdk.ConnectorNames,
         })
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
@@ -98,7 +181,7 @@ export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I,
             title: t('labelVaultBorrowTitle'),
           },
         })
-        setShowVaultBorrow({
+        setShowVaultLoad({
           isShow: false,
         })
       } else {
@@ -116,6 +199,8 @@ export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I,
   }
 
   const submitCallback = async () => {
+    const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
+    const account = store.getState().account
     try {
       if (
         vaultBorrowData &&
@@ -135,7 +220,14 @@ export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I,
           },
         })
 
-        const vaultBorrowRequest: sdk.VaultLoadRequest = {}
+        const vaultBorrowRequest: sdk.VaultLoadRequest = {
+          accountId: account.accountId,
+          token: {
+            tokenId: vaultTokenMap[vaultBorrowData.belong].vaultTokenId as unknown as number,
+            volume: vaultBorrowData.volume,
+          },
+          timestamp: Date.now(),
+        }
 
         updateVaultBorrow({
           ...vaultBorrowData,
@@ -176,24 +268,97 @@ export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I,
   }
 }
 
-export const useVaultRepay = <T, I, B, C>(): Partial<VaultRepayWrapProps<T, I, B, C>> => {
-  const { setShowAccount } = useOpenModals()
+export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
+  VaultRepayWrapProps<T, I, B, C>
+> => {
+  // const { setShowAccount } = useOpenModals()
+  const {
+    modals: { istShowVaultLoad },
+    setShowAccount,
+    setShowVaultLoad,
+  } = useOpenModals()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { account } = useAccount()
-  const { tokenMap, idIndex, marketMap, coinMap, marketArray, marketCoins, getVaultMap } =
-    useVaultMap()
+  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap } = useVaultMap()
+  const { t } = useTranslation()
+  const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
+  const { exchangeInfo } = useSystem()
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
 
-  const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
-  const { exchangeInfo, allowTrade } = useSystem()
+  const calcSupportData = (tradeData: T) => {
+    let supportData = {}
+    // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
+    if (tradeData.belong) {
+      const vaultToken = vaultTokenMap[tradeData.belong as any]
+      // const vaultTokenSymbol = walletAllowMap[tradeData.belong as any].vaultToken
+      // const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
+      // const ercToken = tokenMap[tradeData.belong]
+      // tradeData.belong
+      supportData = {
+        //TODO:
+        maxShowVal: getValuePrecisionThousand(
+          sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
+          vaultToken.precision,
+          vaultToken.precision,
+          undefined,
+        ),
+
+        minShowVal: getValuePrecisionThousand(
+          //TODO:
+          sdk.toBig(vaultToken.vaultTokenAmounts.minAmount).div('1e' + vaultToken.decimals),
+          vaultToken.precision,
+          vaultToken.precision,
+          undefined,
+        ),
+        maxAmount: vaultToken.btradeAmount,
+        minAmount: vaultToken.vaultTokenAmounts.minAmount,
+        vaultSymbol: vaultToken.symbol,
+        vaultTokenInfo: vaultToken,
+      }
+    }
+    return {
+      ...supportData,
+    }
+  }
+  // useVaultSocket()
+  const initData = () => {
+    let vaultRepayData: any = {}
+    let initSymbol = vaultIdIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
+    const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
+
+    let walletInfo
+    walletInfo = {
+      belong: initSymbol,
+      balance: walletMap[initSymbol.toString()]?.count ?? 0,
+      tradeValue: undefined,
+    }
+    vaultRepayData = {
+      ...vaultRepayData,
+      walletMap,
+      coinMap: vaultCoinMap,
+    }
+
+    setTradeData({
+      ...walletInfo,
+    })
+
+    updateVaultRepay({
+      ...walletInfo,
+      ...vaultRepayData,
+      ...calcSupportData(walletInfo),
+    })
+  }
+  React.useEffect(() => {
+    if (istShowVaultLoad.isShow) {
+      initData()
+    } else {
+      resetVaultRepay()
+    }
+  }, [istShowVaultLoad.isShow])
   const availableTradeCheck = React.useCallback(() => {
-    const vaultAccountInfoSymbol =
-      idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
     if (!vaultRepayData?.amount && sdk.toBig(vaultRepayData?.amount ?? 0).lte(0)) {
       return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: '' }
-    } else if (vaultAccountInfoSymbol && vaultRepayData.belong !== vaultAccountInfoSymbol) {
-      return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelVaultRepayMax' }
     } else if (sdk.toBig(vaultRepayData.amount).lte(vaultRepayData.minAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -216,7 +381,7 @@ export const useVaultRepay = <T, I, B, C>(): Partial<VaultRepayWrapProps<T, I, B
     }
   }, [
     vaultAccountInfoStatus,
-    tokenMap,
+    vaultTokenMap,
     vaultRepayData,
     vaultRepayData.tradeValue,
     vaultRepayData.balance,
@@ -225,20 +390,48 @@ export const useVaultRepay = <T, I, B, C>(): Partial<VaultRepayWrapProps<T, I, B
     vaultRepayData.minAmount,
     vaultRepayData.belong,
   ])
+  const vaultLayer2Callback = React.useCallback(async () => {
+    if (account.readyState === AccountStatus.ACTIVATED) {
+      //TODO:
+      const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
+      let walletInfo
+      setTradeData((state) => {
+        walletInfo = {
+          ...state,
+          balance: walletMap[state?.belong ?? '']?.count ?? 0,
+        }
+        return walletInfo
+        // ...walletInfo,
+      })
+      updateVaultRepay({
+        ...walletInfo,
+        ...calcSupportData(walletInfo),
+      })
+    } else {
+    }
+  }, [tradeData, account.readyState])
+
+  React.useEffect(() => {
+    if (vaultLayer2Callback && vaultAccountInfoStatus === SagaStatus.UNSET) {
+      vaultLayer2Callback()
+    }
+  }, [vaultAccountInfoStatus])
+  React.useEffect(() => {
+    if (vaultLayer2Callback && vaultAccountInfoStatus === SagaStatus.UNSET) {
+      vaultLayer2Callback()
+    }
+  }, [vaultAccountInfoStatus])
   const processRequest = async (request?: sdk.VaultRepayRequest) => {
-    // const { apiKey, connectName, eddsaKey } = account
+    const account = store.getState().account
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
     try {
       if (request || vaultRepayData.request) {
         let response = LoopringAPI.vaultAPI?.submitVaultRepay({
           // @ts-ignore
           request: request ?? vaultRepayData.request,
-          eddsaKey: account.eddsaKey.sk,
+          // @ts-ignore
+          privateKey: account?.eddsaKey?.sk,
           apiKey: account.apiKey,
-          web3: connectProvides.usedWeb3 as any,
-          chainId: chainId === 'unknown' ? 1 : chainId,
-          walletType: (ConnectProvidersSignMap[account.connectName] ??
-            account.connectName) as unknown as sdk.ConnectorNames,
         })
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
@@ -253,7 +446,7 @@ export const useVaultRepay = <T, I, B, C>(): Partial<VaultRepayWrapProps<T, I, B
             title: t('labelVaultRepayTitle'),
           },
         })
-        setShowVaultRepay({
+        setShowVaultLoad({
           isShow: false,
         })
       } else {
@@ -271,6 +464,8 @@ export const useVaultRepay = <T, I, B, C>(): Partial<VaultRepayWrapProps<T, I, B
   }
 
   const submitCallback = async () => {
+    const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
+
     try {
       if (
         vaultRepayData &&
@@ -289,29 +484,15 @@ export const useVaultRepay = <T, I, B, C>(): Partial<VaultRepayWrapProps<T, I, B
             title: t('labelVaultRepayTitle'),
           },
         })
-        //
-        // const amount = sdk
-        //   .toBig(vaultRepayData.amount)
-        const vaultRepayRequest: sdk.VaultRepayRequest = {}
-        //   exchange: exchangeInfo.exchangeAddress,
-        //   accountId: account.accountId,
-        //   storageId: storageId.orderId,
-        //   sellToken: {
-        //     tokenId: tokenMap[vaultRepayData.belong].tokenId,
-        //     amount: amount.toString(),
-        //   },
-        //   buyToken: {
-        //     //@ts-ignore
-        //     tokenId: avaiableNFT.tokenId,
-        //     //@ts-ignore
-        //     nftData: avaiableNFT.nftData,
-        //     amount: '1',
-        //   },
-        //   allOrNone: false,
-        //   fillAmountBOrS: true,
-        //   validUntil: getTimestampDaysLater(DAYS),
-        //   maxFeeBips: 100,
-        // }
+
+        const vaultRepayRequest: sdk.VaultRepayRequest = {
+          accountId: account.accountId,
+          token: {
+            tokenId: vaultTokenMap[vaultRepayData.belong].vaultTokenId as unknown as number,
+            volume: vaultRepayData.volume,
+          },
+          timestamp: Date.now(),
+        }
         updateVaultRepay({
           ...vaultRepayData,
           __request__: vaultRepayRequest,
