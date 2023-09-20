@@ -18,6 +18,18 @@ import { StyleWrapper } from '../DeFiPanel/'
 import { ErrorPage } from '@loopring-web/web-bridge/src/pages/ErrorPage'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
+import styled from '@emotion/styled'
+
+const ButtonStyled = styled(Button)`  
+  background-color: var(--color-button-outlined);
+  color: var(--color-text-primary);
+  :hover {
+    background-color: var(--color-button-outlined);
+    ::before{
+      border-radius: 4px;
+    }
+  }
+`
 
 export const StackTradePanel = ({
   setConfirmedLRCStakeInvestInvest,
@@ -108,16 +120,15 @@ export const StackTradePanel = ({
               <Typography marginBottom={2} fontSize={isMobile ? '30px' : '48px'} variant={'h1'}>
                 {t('labelInvestLRCTitle')}
               </Typography>
-              <Button
+              <ButtonStyled
                 onClick={() => history.push('/invest/balance')}
                 sx={{
                   width: isMobile ? 36 * theme.unit : 18 * theme.unit,
-                  bgcolor: 'var(--color-button-outlined)',
                 }}
                 variant={'contained'}
               >
                 {t('labelMyInvestLRCStaking')}
-              </Button>
+              </ButtonStyled>
             </Box>
           </MaxWidthContainer>
           <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]} paddingY={5}>
@@ -136,7 +147,7 @@ export const StackTradePanel = ({
                   paddingX={4}
                   paddingTop={3}
                   paddingBottom={5}
-                  bgcolor={'var(--color-box-secondary)'}
+                  bgcolor={'var(--color-box-third)'}
                   border={'1px solid var(--color-border)'}
                   borderRadius={2}
                 >

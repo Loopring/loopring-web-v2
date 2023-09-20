@@ -79,6 +79,17 @@ export const StyleCardContent = styled(CardContent)`
   }
 ` as typeof CardContent
 
+const ButtonStyled = styled(Button)`  
+  background-color: var(--color-button-outlined);
+  color: var(--color-text-primary);
+  :hover {
+    background-color: var(--color-button-outlined);
+    ::before{
+      border-radius: 4px;
+    }
+  }
+`
+
 const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
@@ -135,16 +146,15 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
           <Typography marginBottom={2} fontSize={isMobile ? '30px' : '48px'} variant={'h1'}>
             {t('labelLeverageETHStaking')}
           </Typography>
-          <Button
+          <ButtonStyled
             onClick={() => history.push('/invest/balance')}
             sx={{
               width: isMobile ? 36 * theme.unit : 18 * theme.unit,
-              bgcolor: 'var(--color-button-outlined)',
             }}
             variant={'contained'}
           >
             {t('labelMyInvestLRCStaking')}
-          </Button>
+          </ButtonStyled>
         </Box>
       </MaxWidthContainer>
       <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]} paddingY={5}>

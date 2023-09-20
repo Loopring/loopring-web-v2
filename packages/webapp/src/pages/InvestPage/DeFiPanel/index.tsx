@@ -251,6 +251,18 @@ const LandDefiInvest = ({
     </Box>
   )
 }
+
+const ButtonStyled = styled(Button)`  
+  background-color: var(--color-button-outlined);
+  color: var(--color-text-primary);
+  :hover {
+    background-color: var(--color-button-outlined);
+    ::before{
+      border-radius: 4px;
+    }
+  }
+`
+
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { marketArray } = useDefiMap()
 
@@ -328,16 +340,15 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
             {t('labelInvestDefiTitle')}
           </Typography>
 
-          <Button
+          <ButtonStyled
             onClick={() => history.push('/invest/balance')}
             sx={{
               width: isMobile ? 36 * theme.unit : 18 * theme.unit,
-              bgcolor: 'var(--color-button-outlined)',
             }}
             variant={'contained'}
           >
             {t('labelInvestMyAmm')}
-          </Button>
+          </ButtonStyled>
         </Box>
       </MaxWidthContainer>
 
