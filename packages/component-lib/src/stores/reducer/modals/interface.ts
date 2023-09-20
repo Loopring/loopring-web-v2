@@ -4,8 +4,8 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
-  VaultLoadType,
   AmmPanelType,
+  VaultLoadType,
 } from '@loopring-web/common-resources'
 import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'

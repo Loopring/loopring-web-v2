@@ -1,8 +1,8 @@
 import { Box, BoxProps, Tab, Tabs, Toolbar } from '@mui/material'
 import {
-  // VaultBorrow,
+  VaultBorrow,
   VaultBorrowWrapProps,
-  // VaultRepay,
+  VaultRepay,
   VaultRepayWrapProps,
 } from '../components/VaultWrap'
 import styled from '@emotion/styled'
@@ -13,10 +13,9 @@ import { VaultLoadType } from '@loopring-web/common-resources'
 
 export type VaultLoadProps<T, I, B, C> = {
   handleTabChange: (index: VaultLoadType) => void
-
+  vaultRepayProps: VaultRepayWrapProps<T, I, B, C>
   vaultBorrowProps: VaultBorrowWrapProps<T, I, B, C>
   vaultLoadType: VaultLoadType
-  vaultRepayProps: VaultRepayWrapProps<T, I, B, C>
 }
 const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
   return (
@@ -144,7 +143,7 @@ export const VaultLoadPanel = <T, I, B, C>({
             padding={5 / 2}
             // key={panelList[0].key}
           >
-            {/*<VaultBorrow {...{ ...vaultBorrowProps, t }} />*/}
+            <VaultBorrow {...{ ...vaultBorrowProps, t }} />
             {/**/}
           </Box>
         )}
@@ -156,7 +155,7 @@ export const VaultLoadPanel = <T, I, B, C>({
             height={'100%'}
             padding={5 / 2}
           >
-            {/*<VaultRepay {...{ ...vaultRepayProps, t }} />*/}
+            <VaultRepay {...{ ...vaultRepayProps, t }} />
           </Box>
         )}
       </Box>
