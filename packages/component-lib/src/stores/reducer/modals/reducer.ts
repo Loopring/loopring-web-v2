@@ -17,7 +17,7 @@ const initialState: ModalState = {
     isShow: false,
     info: {
       content: '',
-      type: ToastType.info,
+      type: 'info',
     },
   },
   isShowNFTMetaNotReady: { isShow: false },
