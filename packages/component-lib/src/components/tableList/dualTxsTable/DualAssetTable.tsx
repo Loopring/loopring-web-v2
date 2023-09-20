@@ -32,7 +32,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 23% 14% 25% 6% 14% 10% 8% !important`
+        ? `--template-columns: 22% 14% auto 6% 14% 10% 8% 8% !important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -79,6 +79,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
       showloading,
       showDetail,
       refresh,
+      cancelReInvest,
       hideAssets,
       t,
     } = props
@@ -244,6 +245,24 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           },
         },
         {
+          key: 'Auto',
+          sortable: true,
+          name: t('labelDualAutoReinvest'),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return row?.__raw__.order?.dualReinvestInfo?.isRecursive ? (
+              <Link
+                onClick={(_e) => {
+                  cancelReInvest(row)
+                }}
+              >
+                {t('labelDualAssetReInvestEnable')}
+              </Link>
+            ) : (
+              <>{t('labelDualAssetReInvestDisable')} </>
+            )
+          },
+        },
+        {
           key: 'Action',
           sortable: false,
           width: 'auto',
@@ -262,7 +281,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 {t('labelDualAssetRefresh')}
               </Link>
             ) : (
-              <Link onClick={(_e) => showDetail(row)}>{t('labelDualAssetDetail')}</Link>
+              <>
+                <Link onClick={(_e) => showDetail(row)}>{t('labelDualAssetDetail')}</Link>
+              </>
             )
           },
         },
@@ -425,10 +446,10 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
           currentheight={RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight}
-          onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-            if (c.key === 'Action') return
-            showDetail(row)
-          }}
+          // onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
+          //   if (c.key === 'Action') return
+          //   showDetail(row)
+          // }}
           sortMethod={sortMethod}
           {...{
             ...defaultArgs,

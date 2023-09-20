@@ -118,7 +118,7 @@ export type RedPacketDetailProps = {
   showShareBtn: boolean
   tokenSymbol?: string
   ended: boolean
-  bottomButton: 'ended' | 'share'
+  bottomButton: 'ended' | 'share' | 'hidden'
   claimButton: 'claim' | 'claimed' | 'expired' | 'hidden'
   onClickClaim?: () => void
   totalNumber: number

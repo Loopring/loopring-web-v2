@@ -94,7 +94,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const [sureIsAllowAddress, setSureIsAllowAddress] = React.useState<
     EXCHANGE_TYPE | WALLET_TYPE | undefined
   >(undefined)
-
   const [lastRequest, setLastRequest] = React.useState<any>({})
 
   const {
@@ -107,6 +106,13 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isAddressCheckLoading,
     loopringSmartWalletVersion
   } = useAddressCheck()
+
+  React.useEffect(() => {
+    if (loopringSmartWalletVersion?.isLoopringSmartWallet && sureIsAllowAddress === undefined) {
+      setSureIsAllowAddress(WALLET_TYPE.Loopring)
+    }
+  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])
+
   const isNotAvailableAddress = isContract1XAddress ? 'isContract1XAddress' : undefined
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const checkBtnStatus = React.useCallback(() => {

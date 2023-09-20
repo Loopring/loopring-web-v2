@@ -1,8 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Typography,
-} from '@mui/material'
+import { Box, BoxProps, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useTranslation } from 'react-i18next'
 import {
@@ -10,8 +6,8 @@ import {
   EmptyValueTag,
   LoadingIcon,
   RoundCheckIcon,
-  RoundCircle,
-  myLog
+  RoundCircleIcon,
+  myLog,
 } from '@loopring-web/common-resources'
 import { FeeSelectProps, Modal } from '../../../components/tradePanel'
 import { CoinIcon } from '../../../components/basic-lib'
@@ -19,7 +15,7 @@ import { OffchainFeeReqType, toBig } from '@loopring-web/loopring-sdk'
 
 const BoxStyled = styled(Box)`` as typeof Box
 
-const OptionStyled = styled(Box)<{ checked?: boolean, disabled?: boolean }>`
+const OptionStyled = styled(Box)<{ checked?: boolean; disabled?: boolean }>`
   border: 1px solid;
   border-color: ${({ checked }) => (checked ? 'var(--color-primary)' : 'var(--color-border)')};
   width: 100%;
@@ -30,7 +26,7 @@ const OptionStyled = styled(Box)<{ checked?: boolean, disabled?: boolean }>`
   min-height: ${({ theme }) => theme.unit * 8}px;
   align-items: center;
   cursor: pointer;
-  opacity: ${({ disabled }) => disabled ? '0.5' : '1'};
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `
 
 type OptionType = { checked?: boolean; disabled?: boolean } & BoxProps
@@ -43,7 +39,7 @@ const Option = (props: OptionType) => {
       {checked ? (
         <RoundCheckIcon fontSize={'large'} fill={'var(--color-primary)'} />
       ) : (
-        <RoundCircle fontSize={'large'} />
+        <RoundCircleIcon fontSize={'large'} />
       )}
     </OptionStyled>
   )
@@ -79,10 +75,10 @@ export const FeeSelect = (props: FeeSelectProps) => {
     isFastWithdrawAmountLimit,
     floatLeft,
     middleContent,
-    feeNotEnoughContent
+    feeNotEnoughContent,
   } = props
 
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   return (
     <>
       <Typography
@@ -111,7 +107,8 @@ export const FeeSelect = (props: FeeSelectProps) => {
           onClick={() => onClickFee()}
         >
           <Typography marginRight={0.5} color={'var(--color-text-second)'}>
-            {withdrawInfos && withdrawInfos.types &&
+            {withdrawInfos &&
+              withdrawInfos.types &&
               (withdrawInfos.type === OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
                 ? t('labelL2toL1Standard')
                 : withdrawInfos.type === OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
@@ -179,11 +176,12 @@ export const FeeSelect = (props: FeeSelectProps) => {
                 </Box>
               )}
               {chargeFeeTokenList.map((feeInfo, index) => {
-                const inefficient = !feeInfo.count ||
+                const inefficient =
+                  !feeInfo.count ||
                   toBig(feeInfo.count).isZero() ||
                   toBig(feeInfo.count).lt(feeInfo.fee ?? '0')
-                const disabled = disableNoToken && !feeInfo.hasToken || inefficient
-                myLog('inefficient', feeInfo.belong,inefficient)
+                const disabled = (disableNoToken && !feeInfo.hasToken) || inefficient
+                myLog('inefficient', feeInfo.belong, inefficient)
                 return (
                   <Option
                     disabled={disabled}

@@ -16,6 +16,8 @@ import {
   WalletMap,
   BLINDBOX_REDPACKET_LIMIT,
   RedPacketOrderType,
+  EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST,
+  EXCLUSIVE_REDPACKET_ORDER_LIMIT,
 } from '@loopring-web/common-resources'
 import { store, useAccount, useModalData, useSystem, useTokenMap } from '../../stores'
 import {
@@ -57,7 +59,7 @@ export const useCreateRedPacket = <
   retryBtn: (isHardware?: boolean) => void
 } => {
   const { exchangeInfo, chainId } = useSystem()
-  const { tokenMap, totalCoinMap } = useTokenMap()
+  const { tokenMap, totalCoinMap, idIndex } = useTokenMap()
   // const tradeType
   const {
     allowTrade: { transfer: transferEnabale },
@@ -139,11 +141,7 @@ export const useCreateRedPacket = <
   const handleOnDataChange = React.useCallback(
     (tradeData: Partial<T>) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder
-      if (tradeData.tradeType) {
-        resetDefault(tradeData.tradeType)
-      } else {
-        updateRedPacketOrder({ ...redPacketOrder, ...tradeData })
-      }
+      updateRedPacketOrder({ ...redPacketOrder, ...tradeData })
     },
     [updateRedPacketOrder],
   )
@@ -270,7 +268,7 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
-      redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
+      // redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue
       // &&
       // redPacketOrder.memo &&
@@ -344,7 +342,8 @@ export const useCreateRedPacket = <
         redPacketConfigs?.luckTokenAgents &&
         !blindBoxGiftsEqualsZero &&
         !blindBoxGiftsLargerThanPackets &&
-        !blindBoxPacketsNumberTooLarge
+        !blindBoxPacketsNumberTooLarge &&
+        redPacketOrder.numbers <= redpacketNumberLimit
       ) {
         enableBtn()
         return
@@ -368,47 +367,37 @@ export const useCreateRedPacket = <
           })
         } else if (isFeeNotEnough.isFeeNotEnough) {
           setLabelAndParams('labelRedPacketFee', {})
-        } else if (tooSmall || redPacketOrder.numbers > REDPACKET_ORDER_LIMIT) {
-          if (tooSmall) {
-            setLabelAndParams(
-              'labelRedPacketsMin',
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
-                ? {
-                    value: getValuePrecisionThousand(
-                      sdk
-                        .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
-                        .div('1e' + tradeToken.decimals),
-                      tradeToken.precision,
-                      tradeToken.precision,
-                      tradeToken.precision,
-                      false,
-                      { floor: false, isAbbreviate: true },
-                    ),
-                    symbol: tradeToken.symbol,
-                  }
-                : {
-                    value:
-                      redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                        ? redPacketOrder.giftNumbers
-                        : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
-                        ? 1
-                        : redPacketOrder.numbers,
-                    symbol: 'NFT',
-                  },
-            )
-          } else {
-            let value =
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
-                ? tradeValue.div(tradeToken.luckyTokenAmounts.minimum).toFixed(0, 1)
-                : tradeValue
-            const limit =
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN
-                ? REDPACKET_ORDER_LIMIT
-                : REDPACKET_ORDER_NFT_LIMIT
-            setLabelAndParams('labelRedPacketsSplitNumber', {
-              value: (Number(value) <= limit ? balance : limit).toString(),
-            })
-          }
+        } else if (tooSmall) {
+          setLabelAndParams(
+            'labelRedPacketsMin',
+            isToken && tradeToken
+              ? {
+                  value: getValuePrecisionThousand(
+                    sdk
+                      .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
+                      .div('1e' + tradeToken.decimals),
+                    tradeToken.precision,
+                    tradeToken.precision,
+                    tradeToken.precision,
+                    false,
+                    { floor: false, isAbbreviate: true },
+                  ),
+                  symbol: tradeToken.symbol,
+                }
+              : {
+                  value:
+                    redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? redPacketOrder.giftNumbers
+                      : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
+                      ? 1
+                      : redPacketOrder.numbers,
+                  symbol: 'NFT',
+                },
+          )
+        } else if (redPacketOrder.numbers > redpacketNumberLimit) {
+          setLabelAndParams('labelRedPacketsSplitNumber', {
+            value: redpacketNumberLimit.toString(),
+          })
         } else if (tooLarge) {
           setLabelAndParams(
             'labelRedPacketsMax',
@@ -528,6 +517,10 @@ export const useCreateRedPacket = <
             setShowAccount({
               isShow: true,
               step: AccountStep.RedPacketSend_Success,
+              info: {
+                scope: request.type.scope,
+                hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+              },
             })
             handleOnDataChange({
               target: {
@@ -801,8 +794,8 @@ export const useCreateRedPacket = <
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
 
     const getValidAddresses = (input: string) => {
-      return input.split(';').filter((str) => {
-        return isAddress(str)
+      return input.split(';').map(str => str.trim()).filter((str) => {
+        return isAddress(str.trim())
       })
     }
 
@@ -823,9 +816,10 @@ export const useCreateRedPacket = <
             claimer: getValidAddresses(redPacketOrder.target?.addressListString),
             hash: redPacketOrder.target?.redpacketHash,
             notifyType:
-              redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot
-                ? 0
-                : 1,
+              redPacketOrder.target?.popupChecked === undefined ||
+              redPacketOrder.target?.popupChecked
+                ? 1
+                : 0,
           },
           account.eddsaKey.sk,
           account.apiKey,
@@ -833,7 +827,6 @@ export const useCreateRedPacket = <
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
-        history.push(`/redpacket/markets`)
         setShowAccount({
           isShow: true,
           step: AccountStep.RedPacketSend_Success,
@@ -881,6 +874,18 @@ export const useCreateRedPacket = <
     },
     [walletMap],
   )
+  const [isWhiteListed, setIsWhiteListed] = React.useState(
+    undefined as undefined | boolean
+  )
+  const redpacketNumberLimit =
+    redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET
+      ? isWhiteListed
+        ? EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST
+        : EXCLUSIVE_REDPACKET_ORDER_LIMIT
+      : isToken
+      ? REDPACKET_ORDER_LIMIT
+      : REDPACKET_ORDER_NFT_LIMIT
+
   const [minimum, maximum] = React.useMemo(() => {
     if (redPacketOrder.tradeType === RedPacketOrderType.NFT) {
       const minimum = sdk
@@ -891,10 +896,10 @@ export const useCreateRedPacket = <
       const maximum =
         redPacketOrder?.balance &&
         // @ts-ignore
-        sdk.toBig(redPacketOrder.balance ?? 0).lt(REDPACKET_ORDER_LIMIT)
+        sdk.toBig(redPacketOrder.balance ?? 0).lt(redpacketNumberLimit)
           ? // @ts-ignore
             redPacketOrder?.tradeValue ?? redPacketOrder.balance
-          : REDPACKET_ORDER_LIMIT
+          : redpacketNumberLimit
       return [minimum ? 1 : minimum, maximum]
     } else {
       if (redPacketOrder.belong && tokenMap[redPacketOrder.belong]) {
@@ -926,6 +931,7 @@ export const useCreateRedPacket = <
     [processRequest, setShowAccount],
   )
   const location = useLocation()
+  myLog('redPacketOrder', redPacketOrder)
   React.useEffect(() => {
     ;(async () => {
       const nftDatas = new URLSearchParams(location.search).get('nftDatas')
@@ -969,6 +975,23 @@ export const useCreateRedPacket = <
   const [popRedPacket, setPopRedPacket] = React.useState(
     undefined as sdk.LuckTokenClaimDetail | undefined,
   )
+  const tokenInfo = popRedPacket && tokenMap[idIndex[popRedPacket.luckyToken.tokenId]]
+  
+  const popRedPacketAmountStr = popRedPacket 
+  ? (popRedPacket.luckyToken.isNft 
+    ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
+    : tokenInfo && getValuePrecisionThousand(
+      sdk
+        .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
+        .div('1e' + tokenInfo!.decimals),
+      tokenInfo!.precision,
+      tokenInfo!.precision,
+      tokenInfo!.precision,
+      false,
+    ) + ' ' + tokenInfo?.symbol
+  )
+  : undefined
+  
 
   React.useEffect(() => {
     ;(async () => {
@@ -986,6 +1009,12 @@ export const useCreateRedPacket = <
         account.apiKey,
       )
       setTargetRedPackets(response ? response?.list : [])
+    })()
+    ;(async () => {
+      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
+      const found = (response?.raw_data as any)
+        .find(item => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase())
+      setIsWhiteListed(found ? true : false)
     })()
   }, [])
 
@@ -1041,8 +1070,10 @@ export const useCreateRedPacket = <
     onSendTargetRedpacketClick,
     targetRedPackets,
     popRedPacket,
+    popRedPacketAmountStr,
     onClickViewTargetDetail,
     onCloseRedpacketPop,
+    isWhiteListed
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }

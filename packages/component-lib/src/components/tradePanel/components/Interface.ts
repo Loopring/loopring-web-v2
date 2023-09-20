@@ -36,6 +36,7 @@ import {
   WithdrawTypes,
 } from '@loopring-web/common-resources'
 import { ContactType } from '@loopring-web/core'
+import { DisplayContact } from '@loopring-web/core/src/stores/contacts/reducer'
 
 export enum RedPacketStep {
   TradeType = 0,
@@ -112,7 +113,6 @@ export type TransferExtendProps<T, I, C> = {
   contact?: { address: string; name: string; addressType: typeof sdk.AddressType }
   isFromContact?: boolean
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
-  // contacts?: { address: string; name: string; addressType: typeof sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   TransferInfoProps<C>
 
@@ -651,12 +651,14 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
   backToScope: () => void
-  onSendTargetRedpacketClick: () => void
+  onSendTargetRedpacketClick: () => Promise<void>
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
   onClickViewTargetDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
-  contacts?: ContactType[]
+  contacts?: DisplayContact[]
+  isWhiteListed?: boolean
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -675,7 +677,9 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     tokenMap: { [key: string]: sdk.TokenInfo }
     backToScope: () => void
     onClickNext: () => void
+    onClickBack: () => void
     showNFT: boolean
+    onChangeTradeType?: (tradeType: RedPacketOrderType) => void
   }
 
 export type TargetRedpacktSelectStepProps = {
@@ -685,17 +689,22 @@ export type TargetRedpacktSelectStepProps = {
   onClickViewDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
   backToScope: () => void
 }
 
 export type TargetRedpacktInputAddressStepProps = {
-  isRedDot: boolean
-  onChangeIsRedDot: (isRedDot: boolean) => void
+  popupChecked: boolean
+  onChangePopupChecked: (popupChecked: boolean) => void
   onFileInput: (input: string) => void
   addressListString: string
   onClickSend: () => void
   contacts?: ContactType[]
   onConfirm: (list: string[]) => void
+  onManualEditInput: (text: string) => void
+  popUpOptionDisabled: boolean
+  maximumTargetsLength: number
+  onClickBack: () => void
 }
 
 /**

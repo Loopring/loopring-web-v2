@@ -41,6 +41,7 @@ import {
 import { useHistory, useLocation } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { confirmation } from '@loopring-web/core'
 
 // const ModelStyle = styled(Box)`
 //   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
@@ -556,26 +557,26 @@ export const SmallOrderAlert = ({
 
 export const AlertLimitPriceRisk = withTranslation('common')(
   ({
-     t,
-     value,
-     open,
-     handleClose,
-     handleConfirm,
-     price,
-     priceSymbol,
-     fromAmount,
-     fromSymbol,
-     toSymbol,
-     toAmount,
-   }: WithTranslation & {
+    t,
+    value,
+    open,
+    handleClose,
+    handleConfirm,
+    price,
+    priceSymbol,
+    fromAmount,
+    fromSymbol,
+    toSymbol,
+    toAmount,
+  }: WithTranslation & {
     open: boolean
     value: string
     handleClose: () => void
     handleConfirm: () => void
-    fromSymbol: string,
-    fromAmount: string | number,
-    toSymbol: string,
-    toAmount: string | number,
+    fromSymbol: string
+    fromAmount: string | number
+    toSymbol: string
+    toAmount: string | number
     price: string | number
     priceSymbol: string
     // handleClose: (event: MouseEvent, isAgree?: boolean) => void
@@ -608,11 +609,11 @@ export const AlertLimitPriceRisk = withTranslation('common')(
         description={[
           <Trans
             i18nKey={'labelPriceExtraGreat'}
-            tOptions={{compare: value ? t(value) : '> | <'}}
+            tOptions={{ compare: value ? t(value) : '> | <' }}
           >
-            The price you set is greater or less than 20% the market price. Are you sure you want
-            to make this order?
-          </Trans>
+            The price you set is greater or less than 20% the market price. Are you sure you want to
+            make this order?
+          </Trans>,
         ]}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
@@ -905,8 +906,6 @@ export const ConfirmLinkCopy = withTranslation('common', {
     )
   },
 )
-
-
 
 export const InformationForCoinBase = withTranslation('common', {
   withRef: true,
@@ -1906,6 +1905,103 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
   },
 )
 
+export const ConfirmInvestDualAutoRisk = withTranslation('common')(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean
+    handleClose: (event: any, isAgree?: boolean) => void
+  }) => {
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const [agree, setAgree] = React.useState(false)
+    return (
+      <Dialog
+        open={open}
+        sx={{ zIndex: 2000 }}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby='alert-dialog-slide-description'
+      >
+        <DialogTitle> {t('labelInvestDualAutoTitle')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-slide-description'>
+            <Trans
+              i18nKey={'labelInvestDualAutoCheck'}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'span'}
+                    variant={'body1'}
+                    display={'block'}
+                    color={'textPrimary'}
+                    paddingY={1}
+                  />
+                ),
+              }}
+            >
+              <p>
+                Auto Reinvest will automatically reinvest your investment and earned interest into a
+                new term with the same Target Price once the previous term expires, continuing until
+                you successfully buy or sell crypto. If there isn’t an available product within 2
+                hours after the previous settlement, the order will be automatically closed and your
+                investment and earned interest will be unlocked.
+              </p>
+              <p>
+                Reinvest Target Price: The Target Price at which you want to buy or sell crypto.
+              </p>
+              <p>
+                Longest Settlement Date: The maximum duration available for selecting the settlement
+                period. Auto Reinvest will automatically match products with settlement periods that
+                do not exceed the Longest Settlement Date.
+              </p>
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state)
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={t('labelDualAgree')}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            variant={'contained'}
+            size={'small'}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, agree)
+            }}
+            color={'primary'}
+          >
+            {t('labelIKnow')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  },
+)
 
 export const ConfirmInvestDualRisk = withTranslation('common')(
   ({
@@ -1916,7 +2012,7 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
   }: WithTranslation & {
     open: boolean
     USDCOnly: boolean
-    handleClose: (event: any, isAgree?: boolean) => void
+    handleClose: (event: any, isAgree?: confirmation.DualInvestConfirmType | undefined) => void
   }) => {
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -1933,7 +2029,7 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
       <Dialog
         open={open}
         keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
+        onClose={(e: MouseEvent) => handleClose(e, undefined)}
         aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle> {t('labelDualRiskTitle')}</DialogTitle>
@@ -2114,7 +2210,7 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
             size={'small'}
             disabled={USDCOnly ? !agree5 : !agree1 || !agree2 || !agree3 || !agree4 || !agree5}
             onClick={(e) => {
-              handleClose(e as any, true)
+              handleClose(e as any, USDCOnly ? 'USDCOnly' : 'all')
             }}
             color={'primary'}
           >

@@ -95,7 +95,7 @@ export const ModalDualPanel = withTranslation('common')(
             display={'flex'}
             position={'relative'}
             marginTop={'var(--toolbar-row-padding-minus)'}
-            height={'var(--toolbar-row-height)'}
+            minHeight={'var(--toolbar-row-height)'}
             paddingX={3}
           >
             <Box component={'h3'} display={'flex'} flexDirection={'row'} alignItems={'center'}>
@@ -141,8 +141,16 @@ export const ModalDualPanel = withTranslation('common')(
             position={'relative'}
             display={'flex'}
             paddingTop={2}
-            paddingBottom={3}
+            paddingBottom={1}
             paddingX={1}
+            sx={
+              isMobile
+                ? {
+                    maxHeight: 'initial',
+                    overflowY: 'initial',
+                  }
+                : { maxHeight: 'var(--lage-modal-height)', overflowY: 'scroll' }
+            }
           >
             <DualWrap isBeginnerMode={isBeginnerMode} {...{ ...rest, ...dualTradeProps }} />
           </Box>

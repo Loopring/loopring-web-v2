@@ -18,7 +18,8 @@ export const makeDualViewItem = (
   market: sdk.DefiMarketInfo,
 ): DualViewInfo => {
   const { expireTime, strike, ratio, profit, dualType } = info
-  const { precisionForPrice } = market
+  // @ts-ignore
+  const { precisionForPrice, stepLength } = market
   myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
@@ -63,6 +64,7 @@ export const makeDualViewItem = (
     },
     sellSymbol,
     buySymbol,
+    stepLength,
     __raw__: {
       info,
       index,
@@ -95,7 +97,7 @@ export const makeDualOrderedItem = (
     .div((expireTime - createdAt) / 86400000)
     .times(36500) // year APY
   const term = moment().to(new Date(expireTime), true)
-  const { precisionForPrice } = market
+  const { precisionForPrice, stepLength } = market
 
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
@@ -106,6 +108,7 @@ export const makeDualOrderedItem = (
     productId,
     enterTime: createdAt,
     expireTime,
+    stepLength,
     currentPrice: {
       precisionForPrice,
       base,

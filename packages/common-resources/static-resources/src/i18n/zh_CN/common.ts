@@ -772,11 +772,11 @@ export default {
   labelExchangeOthers: 'Other Exchanges',
   labelExchangeOthersDes: '',
   labelL2toL1AddressType: 'Address Type',
-  labelConfirmBtrade: 'Confirm Block Trade Support',
+  labelConfirmBtrade: 'Confirm CEX Support',
   labelConfirmDetail:
-    '<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>' +
-    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>' +
-    '<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>',
+    '<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>' +
+    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>' +
+    '<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>',
   labelBtradeUnderstand: 'I understand and acknowledge the risk',
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
@@ -1229,7 +1229,7 @@ export default {
   labelL2toL2FeeWithActive: 'Fee (including activation fee)',
   labelRedPacketOpen: 'Open',
   labelRedPacketTitle: 'Red Packets',
-  labelRedPacketTypeTokens: 'Choose Tokens / NFTs',
+  labelRedPacketTypeTokens: 'Choose Tokens / NFTs / Blind Box',
   labelRedPacketChoose: 'Choose Red Packet Type',
   labelRedPacketMain: 'Input Red Packet/Send',
   labelLuckyTokenViewTypePublic: 'Public Red Packet',
@@ -1340,7 +1340,7 @@ export default {
   labelRedPacketsGiftsLargerThanPackets:
     'The number of Red Packets containing gifts cannot exceed the total number of Red Packets',
   labelBlindBoxNumberOverMaximun: 'Number of Blind Box exceeds maximum',
-  labelRedPacketsSplitNumber: 'Maximum split is {{value}}',
+  labelRedPacketsSplitNumber: 'The maximum number of Red Packet is {{value}}',
   labelRedPacketsSplitCommonDetail: 'Distribution per red packet: {{value}}',
   labelRedPacketsSplitLuckyDetail: 'Token amount for each Red Packet is randomized.',
   labelSendRedPacketTitle: 'Send Red Packet',
@@ -1369,9 +1369,9 @@ export default {
   labelRedPacketMarketsBtn: 'Red Packet Plaza',
   labelRedPacketBtn: 'Shared',
   labelRedPacketViewType0: 'Public',
-  labelRedPacketViewType1: 'Private',
+  labelRedPacketViewType1: 'Public',
   labelRedPacketViewTypeDetail0: 'public Red Packet',
-  labelRedPacketViewTypeDetail1: 'private Red Packet',
+  labelRedPacketViewTypeDetail1: 'public Red Packet',
   labelRedPacketStatusSUBMITTING: 'Submitting', // SUBMITTING = 0,
   labelRedPacketStatusNOT_EFFECTIVE: 'Not Start', // NOT_EFFECTIVE = 1,
   labelRedPacketStatusPENDING: 'In Processing', // PENDING = 2,
@@ -1821,11 +1821,12 @@ export default {
   labelRedPacketViewType2: 'Exclusive',
   labelRedPacketPlazaPublic: 'Plaza Public',
   labelRedPacketPlazaPublicDes:
-    'In the red envelope square display & know the QR code users can participate in grabbing red envelopes',
+    'Everyone in the Loopring community can participate in claiming the red packet',
   labelRedPacketQRPublic: 'QR Public',
-  labelRedPacketQRPublicDes: 'know the QR code users can participate in grabbing red envelopes',
+  labelRedPacketQRPublicDes:
+    'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
-  labelRedPacketExclusiveDes: 'know the QR code users can participate in grabbing red envelopes',
+  labelRedPacketExclusiveDes: 'Only users that have received the red packet can claim it',
   labelRedPacketHaveExclusive: 'You have {{count}} exclusive Red Packets.',
   labelRedPacketExclusiveViewDetails: 'View Details >',
   labelRedPacketCongratulations: 'Congratulations!',
@@ -1838,18 +1839,44 @@ export default {
   labelRedpacketRevealTime: 'Reveal Time',
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
-  labelExclusiveWhitelistDes: 'For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
+  labelExclusiveWhitelistDes:
+    "For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
   labelRedpacketTextimport: 'Text import',
   labelRedpacketContactImport: 'Contact import',
   labelRedpacketNotificationDisplay: 'Notification Display',
   labelRedpacketRedDotDes: 'Recipients are alerted via a badge next to the Red Packets category',
   labelRedpacketBadge: 'Badge',
   labelRedpacketPopUp: 'Pop-up Notification',
-  labelRedpacketPopUpTooltip: 'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
-  labelRedpacketPopPpDes: 'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
+  labelRedpacketPopUpTooltip:
+    "'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.'
+  labelRedpacketPopPpDes:
+    'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
   labelRedPacketChooseTarget: 'Create Red Packet',
   labelRedPacketRecipientList: 'Recipient List',
-  labelRedPacketPublicTooltip: 'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip: 'Your Red Packet is private, and only the addresses you specify can claim it.',
+  labelRedPacketPublicTooltip:
+    'Your Red Packet is public, and everyone can participate in claiming it.',
+  labelRedPacketPrivateTooltip:
+    'Your Red Packet is private, and only the addresses you specify can claim it.',
+  labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketExclusiveSelected: 'Selected: {{count}}',
+  labelRedpacketExclusiveManualEdit: 'Manual Edit',
+  labelRedpacketValidAddresses: 'Valid Addresses: {{count}}',
+  labelRedpacketTips: 'Tips',
+  labelRedpacketChangeImportTips:
+    'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
+  labelRedpacketAddressesReview: 'Addresses Review',
+  labelRedpacketAddressesReviewPart1: 'The list contains {{count}} valid addresses,',
+  labelRedpacketAddressesReviewPart2: '{{count}} invalid addresses',
+  labelRedpacketAddressesReviewPart3:
+    '. To proceed, invalid addresses will be automatically removed from the list.',
+  labelRedpacketExclusiveListEmpty:
+    'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
+  labelRedpacketBestwishes: 'Best wishes',
+  labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
+  labelSendRedPacketClear: 'Clear',
+  labelSendRedPacketMax: 'Max: {{count}}',
+  labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
+  labelRedPacketTotal: 'Total {{count}}',
 }

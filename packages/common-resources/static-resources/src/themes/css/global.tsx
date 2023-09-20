@@ -3,7 +3,14 @@ import reset from './reset'
 // @ts-ignore
 import InterMedium from '../fonts/english/Inter-Medium.ttf'
 
-import { ColorDarkDefault, ColorLightDefault, GrayBlack, GrayLight, hexToRGB } from './color-lib'
+import {
+  ColorDarkDefault,
+  ColorLightDefault,
+  GrayBlack,
+  GrayLight,
+  hexToRGB,
+  SystemColor,
+} from './color-lib'
 import { ThemeType } from '../interface'
 
 export const fontDefault = {
@@ -331,4 +338,4 @@ export const globalCss = ({ theme }: any) => css`
     --background-color: inherit;
   }
 `
-export { ColorDarkDefault, ColorLightDefault }
+export { ColorDarkDefault, ColorLightDefault, SystemColor }
