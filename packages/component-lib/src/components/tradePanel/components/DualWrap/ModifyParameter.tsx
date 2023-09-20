@@ -112,9 +112,7 @@ export const ModifyParameter = ({
             </TickCardStyleItem>
           </Grid>,
         )
-        if (dualViewInfo.dualType == sdk.DUAL_TYPE.DUAL_BASE) {
-          item = method === 'minus' ? item.minus(stepLength) : item.plus(stepLength)
-        }
+        item = method === 'minus' ? item.minus(stepLength) : item.plus(stepLength)
       }
       return listELE.map((item) => item)
     } else {
