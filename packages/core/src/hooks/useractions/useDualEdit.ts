@@ -159,7 +159,7 @@ export const useDualEdit = <
               fillAmountBOrS: false,
               fee: tradeDual.feeVol ?? '0',
               baseProfit: tradeDual.dualReinvestInfo.profit,
-              settleRatio: tradeDual.settleRatio.replaceAll(sdk.SEP, ''),
+              settleRatio: tradeDual?.settleRatio?.toString()?.replaceAll(sdk.SEP, ''),
               expireTime: tradeDual.expireTime,
             }
           }
