@@ -735,7 +735,8 @@ export default {
   labelL2toL2: 'Send to another {{loopringL2}}',
   labelL2toL1: 'Send to {{l1Symbol}}',
   labelBenefitL2:
-    "A'As {{l1ChainName}}\'s first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. '  labelNotBalancePayForActive: 'Insufficient balance in your {{loopringL2}} account',
+    "As {{l1ChainName}}'s first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. ",
+  labelNotBalancePayForActive: 'Insufficient balance in your {{loopringL2}} account',
   labelEnoughBalancePayForActive: 'You have enough balance to pay for {{loopringL2}} creation.',
   labelHaveInProcessingL1toL2:
     'If you have already started the deposit, please be patient and recheck as transactions on {{l1ChainName}} can take up to 30 minutes.',
@@ -819,7 +820,7 @@ export default {
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
   labelForceWithdrawDes:
-    'If the recipient doesn\'t have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.',
+    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     'This feature allows a user to move their {{l2Symbol}} tokens to the {{l1Symbol}} address. The target address must either be a wallet or exchange address',
   labelForceWithdrawConfirm1:
@@ -851,7 +852,7 @@ export default {
     '<li>Withdraw {{symbol}} to {{l1Symbol}} and trade through 1Inch or {{type}}, etc...</li>' +
     '<li>The Loopring pool will rebalance soon. Please come back later to redeem.</li>',
   labelDefiMaxBalanceJoin:
-    'The quota is almost sold out and can\'t fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later.',
+    "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later.",
   labelDefiNoBalanceJoin:
     'Loopring will set up the pool soon. Please come back later to subscribe.',
   labelInvestBtn: 'Subscribe',
@@ -878,13 +879,13 @@ export default {
   labelWSETHDefiRisk:
     '<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>' +
     '<p>When using Lido to stake your ETH on the {{l1ChainName}} beacon chain, users will receive a token (stETH), which represents their ETH on the {{l1ChainName}} beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>' +
-    '<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn\'t change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>',
+    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>",
   labelRETHDefiRisk:
     '<p>Rocket Pool is the first truly decentralized {{l1ChainName}} staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the {{l1ChainName}} validator operations with smart contracts on the Execution layer.</p>' +
-    '<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH\'s value continuously increases relative to ETH, indicating the daily stake reward received.</p>' +
+    "<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>" +
     '<p></p>',
   labelWSETHDefiRisk2:
-    '<0>It is important to note that users can\'t redeem wstETH for ETH until phase 2 of {{l1ChainName}} 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>' +
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of {{l1ChainName}} 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</p>" +
     '<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on {{layer2}}. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on {{layer2}}, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</p>',
   labelRETHDefiRisk2:
     '<0>Loopring will provide a pool to allow users to trade rETH for ETH directly on {{layer2}}. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on {{layer2}}, users can always withdraw their rETH tokens to Layer 1 and swap for ETH in Rocket Pool, 1Inch, etc… </0>' +
@@ -963,7 +964,7 @@ export default {
     'Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site',
   labelCollectionMetaErrorType: 'correct `royalty_percentage` from 0 to 10',
   labelNFTServerRefresh:
-    'Click to refresh the NFT\'s metadata. This process usually takes around 30 minutes.',
+    "Click to refresh the NFT's metadata. This process usually takes around 30 minutes.",
   labelNFTServerRefreshSubmit: 'Refresh command submitted',
   labelNFTCollection: 'Collection',
   labelNFTCollectionName: 'Collection Name:',
@@ -981,7 +982,7 @@ export default {
   labelCollectionItemValue: 'Item: {{value}}',
   labelCollectionItemSimpleValue: ' \u2A09 {{value}}',
   labelMyCollectionsDes:
-    'Legacy NFTs created in Loopring don\'t contain collection information. We have added the feature to allow creators to import the collection information so that those NFTs can be categorized well. <1>Go to Import Collection for Legacy NFT</1>',
+    "Legacy NFTs created in Loopring don't contain collection information. We have added the feature to allow creators to import the collection information so that those NFTs can be categorized well. <1>Go to Import Collection for Legacy NFT</1>",
   labelNFTGuid:
     'Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>',
   labelChooseCollectionTooltips:
@@ -1059,12 +1060,10 @@ export default {
   labelDualAmount: 'Amount',
   labelDuaInvestmentDetails: 'Dual Investment Details',
   labelDualOrderTable: 'Dual Investments',
-
   labelDualBeginnerPriceSmallerThan: 'if Index Price < {{value}}',
   labelDualBeginnerPriceSmallerThanOrEqual: 'if Index Price ≤ {{value}}',
   labelDualBeginnerPriceGreaterThan: 'if Index Price > {{value}}',
   labelDualBeginnerPriceGreaterThanOrEqual: 'if Index Price ≥ {{value}}',
-
   labelDualBeginnerAtSettlementDay: 'At Settlement Date',
   labelDualBeginnerIndexPriceDes: 'Index Price is derived from some leading exchanges.',
   labelDualBeginnerLockingDes: 'Your token for investment will be locked until Settlement Date.',
@@ -1237,7 +1236,7 @@ export default {
     'Please waiting a while for Banxa sdk loading, if you keep on face this problem try fresh the browser or contact us',
   labelBanxaFailedForAPI: 'Please waiting a while, Banxa service is not available currently.',
   labelL2toL2AddressFeePaid: 'Active account fee had paid',
-  labelL2toL2AddressFeeActiveFee: 'Pay recipient\'s {{l2Symbol}} activation fee: {{value}}',
+  labelL2toL2AddressFeeActiveFee: "Pay recipient's {{l2Symbol}} activation fee: {{value}}",
   labelL2toL2FeeWithActive: 'Fee (including activation fee)',
   labelRedPacketOpen: 'Open',
   labelRedPacketTitle: 'Red Packets',
@@ -1255,9 +1254,9 @@ export default {
     'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
   labelLuckyRecievedBlindBox: 'Received Blind Box {{opendBlindBoxAmount}}/{{totalBlindBoxAmount}}',
   labelBlindBoxExplainationNotEnded:
-    'The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender\'s wallet.',
+    "The outcome of the Blind Box will be revealed upon expiration. Please claim within 3 days if your Red Packet contains a gift or it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxExplainationEnded:
-    'Please claim within 3 days or it will be forfeited and returned to the Sender\'s wallet.',
+    "Please claim within 3 days or it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxExplaination2:
     '{{opendBlindBoxAmount}} out of {{totalBlindBoxAmount}} blind boxes have been opened.',
   labelBlindBoxExplaination3: '{{remainingGiftsAmount}} gifts available for grabbing.',
@@ -1275,11 +1274,11 @@ export default {
   labelBlindBoxExpirationExplainationForToken:
     'After expiration, any unopened Red Packets will be forfeited and sent back to the Sender',
   labelBlindBoxExpirationExplainationForNFT:
-    'If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender\'s wallet.',
+    "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: 'Private Red Packet',
   labelBlindBoxPrivateDes: 'Your Red Packet is shared privately with others via a custom QR code.',
   labelBlindBoxClaimWarning:
-    'If the recipients of the NFT Red Packets do not claim their received NFT within 3 days, the NFT will be forfeited and sent back to the Sender\'s wallet.',
+    "If the recipients of the NFT Red Packets do not claim their received NFT within 3 days, the NFT will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxRecievedRedPackets: 'Received NFT Red Packets',
   labelBlindBoxCongratulations: 'Congratulations',
   labelBlindBoxSorry: 'Sorry',
@@ -1461,7 +1460,7 @@ export default {
   labelInvestStakeLRC: 'LRC STAKING',
   labelInvestStakeLRCDES: 'Earn LRC staking rewards',
   labelFriendsPayActivation: 'Your friend has paid for your {{l2Symbol}} activation fee.',
-  labelLRCStakingTitle: 'What\'s LRC Staking',
+  labelLRCStakingTitle: "What's LRC Staking",
   labelLRCStakingRisk:
     '<p>LRC staking is incentivized through an allocated portion of the Loopring protocol fee; the exact percentage is determined by the Loopring DAO. The APY is updated daily based on the allocated amount from previous day’s fee. Any LRC holder can participate in LRC staking via {{l2Symbol}} to accumulate daily rewards. The assets must be staked for a minimum of 90 days to receive rewards.</p>',
   labelLRCStakingAgree: 'I have read and understand the risk warning.',
@@ -1501,7 +1500,7 @@ export default {
   labelDeFiSidePoolShare: 'Pool Share',
   labelDeFiSideAPR: 'APR',
   labelDeFiSideCumulativeEarnings: 'Cumulative Earnings',
-  labelDeFiSidePreviousEarnings: 'Previous Day\'s Earnings',
+  labelDeFiSidePreviousEarnings: "Previous Day's Earnings",
   labelDeFiSideLockDuration: 'Lock duration to claim reward',
   labelDeFiSideSubscribeTime: 'Subscribe Time',
   labelDeFiSideHoldingTime: 'Holding Time',
@@ -1540,7 +1539,6 @@ export default {
   labelStakingRedeemSuccess: 'Redeem {{symbol}} Successful',
   labelStakingRedeemRemaining: 'Remaining Amount',
   labelStakingRedeemDate: 'Redeem Time',
-
   labelContactsAddContact: 'Add Contact',
   labelContactsAddressTitle: 'Address',
   labelContactsAddressDes: 'Enter wallet address or ENS',
@@ -1599,7 +1597,7 @@ export default {
   labelBtradeSwapContentDes:
     '<p>Block Trade offers a secure and trustless way for users to swap tokens using CEX liquidity. The trades happen exclusively between designated entities, ensuring that the existing liquidity of the DEX remains unaffected. There is no price impact to other DEX users as a result of the transaction.</p>' +
     '<p>This is similar to the traditional stock market’s Block Trade System. A block trade is a large, privately negotiated transaction, which can be made outside the open market through a private purchase agreement.</p>' +
-    '<p>The Loopring pool is currently unable to swap the fully requested amount. If you choose to continue, the unswapped tokens will be locked until they can be swapped. We\'ll rebalance the pool shortly.</p>' +
+    "<p>The Loopring pool is currently unable to swap the fully requested amount. If you choose to continue, the unswapped tokens will be locked until they can be swapped. We'll rebalance the pool shortly.</p>" +
     '<p>Block Trade offers two options:</p><ul>' +
     '<li>Prioritize Speed.</li>' +
     '<li>Prioritize Quantity.</li></ul>' +
@@ -1648,7 +1646,7 @@ export default {
   labelStopLimitTitle: 'Stop-Limit',
   labelStopPrice: 'Limit / Buy Price',
   labelStopStopPrice: 'Stop / Trigger Price',
-  labelStopLimitWhatIs: 'What\'s Stop-Limit?',
+  labelStopLimitWhatIs: "What's Stop-Limit?",
   labelStopLimitMinMax: 'Min {{minValue}} - Max {{maxValue}}',
   labelLimitStopPriceMinMax: 'Stop Price Range {{arg}}',
   labelLimitMainContent:
@@ -1768,17 +1766,17 @@ export default {
   labelRedPacketTimeRangeBlindboxDesERC20:
     'The Reveal Time is when the Red Packet ends, and recipients can open it to see if they have received tokens',
   labelBlindBoxExpirationExplainationForTokenBlindbox:
-    'If the recipients of the Tokens Red Packets do not open their received Tokens, the Tokens will be forfeited and sent back to the Sender\'s wallet.',
+    "If the recipients of the Tokens Red Packets do not open their received Tokens, the Tokens will be forfeited and sent back to the Sender's wallet.",
   labelBlindBoxRecieved: 'Received {{deliverdGiftsAmount}}/{{totalGiftsAmount}}',
   labelBlindBoxClaimHint: 'You can visit Assets > Red Packets to claim your rewards.',
   labelRedPacketBlindboxReceived1: 'ERC20 Blind Box',
   labelRedPacketBlindboxReceived2: 'Received',
-  labelRedPacketsGiftsEqualsZero: 'Number of gifts can\'t be zero',
+  labelRedPacketsGiftsEqualsZero: "Number of gifts can't be zero",
   labelRedpacketStandard: 'Standard',
-  labelCiETHDefiRiskTitle: 'What\'s Cian Leveraged ETH?',
+  labelCiETHDefiRiskTitle: "What's Cian Leveraged ETH?",
   labelCiETHDefiRisk:
     '<p>CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform, where users could earn either through joining algorithmic strategy vaults or through building their own DeFi strategies using CIAN’s advanced automation tools.</p>' +
-    '<p>The stETH/ETH leveraged staking strategy enables users to safely leverage stETH’s staking rewards. This strategy focuses on staking derivatives and protection/optimization tooling. By nature, this strategy is to use the user\'s asset as collateral to borrow ETH from lending platforms, then stake ETH in Lido to earn ETH staking interest. By utilizing tools like Flashloan, it actually adds leverage to users\' ETH investment. If only there is a positive APY diff between the borrowing rate and ETH staking rate, there will be additional earnings from this strategy vs. standard ETH staking.</p>' +
+    "<p>The stETH/ETH leveraged staking strategy enables users to safely leverage stETH’s staking rewards. This strategy focuses on staking derivatives and protection/optimization tooling. By nature, this strategy is to use the user's asset as collateral to borrow ETH from lending platforms, then stake ETH in Lido to earn ETH staking interest. By utilizing tools like Flashloan, it actually adds leverage to users' ETH investment. If only there is a positive APY diff between the borrowing rate and ETH staking rate, there will be additional earnings from this strategy vs. standard ETH staking.</p>" +
     '<p>It is quite important to understand that, when using such leveraged strategy, it’s highly advised to intend on holding that position for a while. By doing so, users will give enough time for the high APY to cover their entry & exit costs.</p>\n',
   labelDefiWithdrawFee:
     '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
@@ -1885,7 +1883,7 @@ export default {
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
   labelExclusiveWhitelistDes:
-    'For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
+    "For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
   labelRedpacketTextimport: 'Text import',
   labelRedpacketContactImport: 'Contact import',
   labelRedpacketNotificationDisplay: 'Notification Display',
@@ -1893,7 +1891,7 @@ export default {
   labelRedpacketBadge: 'Badge',
   labelRedpacketPopUp: 'Pop-up Notification',
   labelRedpacketPopUpTooltip:
-    'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
+    "Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
   labelRedpacketPopPpDes:
     'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
@@ -1919,7 +1917,12 @@ export default {
     'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
   labelRedpacketBestwishes: 'Best wishes',
-  labelInvestDualAutoTitle: 'What\'s Auto Reinvest',
+  labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
+  labelSendRedPacketClear: 'Clear',
+  labelSendRedPacketMax: 'Max: {{count}}',
+  labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
+  labelRedPacketTotal: 'Total {{count}}',
+  labelInvestDualAutoTitle: "What's Auto Reinvest",
   labelDualAutoTitle: 'Auto Reinvest <1></1>',
   labelDualAutoTitleDes:
     'Auto Reinvest will automatically reinvest your investment and earned interest into a new term with the same Target Price once the previous term expires, continuing until you successfully buy or sell crypto. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed and your investment and earned interest will be unlocked.\n',
