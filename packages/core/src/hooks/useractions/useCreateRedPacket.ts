@@ -794,12 +794,9 @@ export const useCreateRedPacket = <
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
 
     const getValidAddresses = (input: string) => {
-      return input
-        .split(';')
-        .map((str) => str.trim())
-        .filter((str) => {
-          return isAddress(str.trim())
-        })
+      return input.split(';').map(str => str.trim()).filter((str) => {
+        return isAddress(str.trim())
+      })
     }
 
     if (
@@ -877,7 +874,9 @@ export const useCreateRedPacket = <
     },
     [walletMap],
   )
-  const [isWhiteListed, setIsWhiteListed] = React.useState(undefined as undefined | boolean)
+  const [isWhiteListed, setIsWhiteListed] = React.useState(
+    undefined as undefined | boolean
+  )
   const redpacketNumberLimit =
     redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET
       ? isWhiteListed
@@ -977,23 +976,22 @@ export const useCreateRedPacket = <
     undefined as sdk.LuckTokenClaimDetail | undefined,
   )
   const tokenInfo = popRedPacket && tokenMap[idIndex[popRedPacket.luckyToken.tokenId]]
-
-  const popRedPacketAmountStr = popRedPacket
-    ? popRedPacket.luckyToken.isNft
-      ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
-      : tokenInfo &&
-        getValuePrecisionThousand(
-          sdk
-            .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
-            .div('1e' + tokenInfo!.decimals),
-          tokenInfo!.precision,
-          tokenInfo!.precision,
-          tokenInfo!.precision,
-          false,
-        ) +
-          ' ' +
-          tokenInfo?.symbol
-    : undefined
+  
+  const popRedPacketAmountStr = popRedPacket 
+  ? (popRedPacket.luckyToken.isNft 
+    ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
+    : tokenInfo && getValuePrecisionThousand(
+      sdk
+        .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
+        .div('1e' + tokenInfo!.decimals),
+      tokenInfo!.precision,
+      tokenInfo!.precision,
+      tokenInfo!.precision,
+      false,
+    ) + ' ' + tokenInfo?.symbol
+  )
+  : undefined
+  
 
   React.useEffect(() => {
     ;(async () => {
@@ -1014,9 +1012,8 @@ export const useCreateRedPacket = <
     })()
     ;(async () => {
       const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
-      const found = (response?.raw_data as any).find(
-        (item) => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase(),
-      )
+      const found = (response?.raw_data as any)
+        .find(item => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase())
       setIsWhiteListed(found ? true : false)
     })()
   }, [])
@@ -1076,8 +1073,7 @@ export const useCreateRedPacket = <
     popRedPacketAmountStr,
     onClickViewTargetDetail,
     onCloseRedpacketPop,
-    isW,
-    hiteListed,
+    isWhiteListed
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }

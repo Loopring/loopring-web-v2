@@ -28,11 +28,7 @@ import {
   TargetRedpacktSelectStep,
 } from '../../tradePanel/components/CreateRedPacketWrap'
 import { Box, styled } from '@mui/material'
-import {
-  LuckyTokenAmountType,
-  LuckyTokenClaimType,
-  LuckyTokenViewType,
-} from '@loopring-web/loopring-sdk'
+import { LuckyTokenAmountType, LuckyTokenClaimType, LuckyTokenViewType } from '@loopring-web/loopring-sdk'
 import { useNotify } from '@loopring-web/core'
 
 const BoxStyle = styled(Box)`
@@ -78,7 +74,9 @@ export const CreateRedPacketPanel = <
     walletMap,
   } as any)
   const [panelIndex, setPanelIndex] = React.useState<RedPacketStep | TargetRedPacketStep>(
-    tradeType === RedPacketOrderType.FromNFT ? RedPacketStep.ChooseType : RedPacketStep.TradeType,
+    tradeType === RedPacketOrderType.FromNFT 
+      ? RedPacketStep.ChooseType 
+      : RedPacketStep.TradeType,
   )
 
   let steps: string[]
@@ -132,10 +130,10 @@ export const CreateRedPacketPanel = <
         ...tradeData.type,
         scope: LuckyTokenViewType.PRIVATE,
         mode: LuckyTokenClaimType.BLIND_BOX,
-        partition: LuckyTokenAmountType, .RANDOM,
+        partition: LuckyTokenAmountType.RANDOM
       },
 
-      tradeType: RedPacketOrderType.B, lindBox,
+      tradeType: RedPacketOrderType.BlindBox
     } as any)
   }, [])
 
@@ -329,7 +327,7 @@ export const CreateRedPacketPanel = <
   const notify = useNotify()
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     const isTarget = tradeData.type?.scope === LuckyTokenViewType.TARGET
-    let showNFT = isTarget
+    let showNFT = isTarget 
       ? notify.notifyMap?.redPacket.showNFT && isWhiteListed
       : notify.notifyMap?.redPacket.showNFT && tradeData.type?.scope !== LuckyTokenViewType.PUBLIC
 
@@ -453,14 +451,14 @@ export const CreateRedPacketPanel = <
                 tradeType === RedPacketOrderType.NFT
                   ? LuckyRedPacketList.find((config) => config.defaultForNFT)
                   : tradeType === RedPacketOrderType.BlindBox
-                    ? LuckyRedPacketList.find((config) =>
+                  ? LuckyRedPacketList.find((config) =>
                       showERC20Blindbox
                         ? config.defaultForBlindbox
                         : config.defaultForBlindboxNotShowERC20Blindbox,
                     )
-                    : tradeType === RedPacketOrderType.FromNFT
-                      ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
-                      : LuckyRedPacketList.find((config) => config.defaultForERC20)
+                  : tradeType === RedPacketOrderType.FromNFT
+                  ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
+                  : LuckyRedPacketList.find((config) => config.defaultForERC20)
 
               setSelectType(found)
 
@@ -589,9 +587,7 @@ export const CreateRedPacketPanel = <
       index: panelIndex,
       _width: '100%',
       panelList: [
-        ...(isTarget && tradeData.tradeType !== RedPacketOrderType.FromNFT
-          ? [targetSelectPanel]
-          : []),
+        ...((isTarget && tradeData.tradeType !== RedPacketOrderType.FromNFT) ? [targetSelectPanel] : []),
         ...(tradeData.tradeType !== RedPacketOrderType.FromNFT ? [selectTokenTypePanel] : []),
         selectTypePanel,
         tradePanel,
@@ -614,7 +610,7 @@ export const CreateRedPacketPanel = <
     disabled,
     tradeData,
     isToken,
-    tradeData.type?.scope,
+    tradeData.type?.scope
   ])
 
   let activeStep
@@ -651,9 +647,9 @@ export const CreateRedPacketPanel = <
                 ...tradeData?.type,
                 scope: scope,
                 mode: LuckyTokenClaimType.BLIND_BOX,
-                partition: LuckyTokenAmountType.RANDOM,
+                partition: LuckyTokenAmountType.RANDOM
               },
-              tradeType: RedPacketOrderType.BlindBox,
+              tradeType: RedPacketOrderType.BlindBox
             } as any)
           }}
           selectedScope={tradeData.type!.scope!}

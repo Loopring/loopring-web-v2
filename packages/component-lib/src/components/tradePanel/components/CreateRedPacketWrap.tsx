@@ -901,7 +901,7 @@ export const CreateRedPacketStepType = withTranslation()(
           paddingY={2}
         >
           {tradeType === RedPacketOrderType.BlindBox && (
-            <Typography marginBottom={4} color={'var(--color-text-secondary)'}>
+            <Typography marginBottom={4} color={'var(--color-text-secondary)'} >
               Each recipient will receive a sealed Red Packet which cannot be opened until the
               expiration date. While some recipients will receive an NFT, others will need to try
               their luck next time.
@@ -1049,13 +1049,13 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     onClickBack,
     showNFT,
     t,
-    onChangeTradeType,
+    onChangeTradeType
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tradeData' | 'tokenMap'> & WithTranslation) => {
     const { isMobile } = useSettings()
     const getDisabled = React.useMemo(() => {
       return disabled
     }, [disabled])
-
+    
     return (
       <RedPacketBoxStyle
         display={'flex'}
@@ -1205,7 +1205,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
   },
 )
 
-const ScopeOption = styled(Box)<{ selected?: boolean; disabled?: boolean }>`
+const ScopeOption = styled(Box)<{ selected?: boolean, disabled?: boolean }>`
   display: flex;
   border: 1px solid
     ${({ selected }) => (selected ? 'var(--color-border-select)' : 'var(--color-border)')};
