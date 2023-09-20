@@ -436,27 +436,6 @@ export const DualListPanel: any = withTranslation('common')(
           closeDualToast={closeDualToast}
           isBeginnerMode={beginnerMode}
         />
-        <ConfirmInvestDualAutoRisk
-          open={confirmDualAutoInvest}
-          handleClose={(_e, isAgree) => {
-            if (!isAgree) {
-              dualTradeProps.onChangeEvent({
-                tradeData: {
-                  ...dualTradeProps.dualCalcData?.coinSell,
-                  isRenew: false,
-                },
-              })
-            } else {
-              dualTradeProps.onChangeEvent({
-                tradeData: {
-                  ...dualTradeProps.dualCalcData?.coinSell,
-                  isRenew: true,
-                },
-              })
-              confirmDualAutoInvestFun()
-            }
-          }}
-        />
       </Box>
     )
   },
