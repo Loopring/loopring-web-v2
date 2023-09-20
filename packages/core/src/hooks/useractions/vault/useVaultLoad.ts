@@ -23,15 +23,13 @@ import { walletLayer2Service } from '../../../services'
 import { useSubmitBtn } from '../../common'
 
 export const useVaultBorrow = <T, I, B, C>(): Partial<VaultBorrowWrapProps<T, I, B, C>> => {
-  const { setShowAccount, setShowVaultBorrow } = useOpenModals()
+  const { setShowAccount, setShowVaultLoad } = useOpenModals()
   const { account } = useAccount()
   const { exchangeInfo, allowTrade } = useSystem()
-
   const { tokenMap, idIndex, marketMap, coinMap, marketArray, marketCoins, getVaultMap } =
     useVaultMap()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { vaultBorrowData, updateVaultBorrow, resetVaultBorrow } = useTradeVault()
-  const { exchangeInfo, allowTrade } = useSystem()
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
 
   const availableTradeCheck = React.useCallback(() => {

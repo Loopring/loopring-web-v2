@@ -308,5 +308,6 @@ export const useOpenModals = () => {
       (state: ModalStatePlayLoad) => dispatch(setShowVaultLoad(state)),
       [dispatch],
     ),
+    setShowVaultBorrow,
   }
 }
