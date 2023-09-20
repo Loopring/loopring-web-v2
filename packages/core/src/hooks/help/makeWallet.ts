@@ -89,3 +89,40 @@ export const makeVaultLayer2 = <C extends { [key: string]: any }>({
     return { vaultLayer2Map: undefined }
   }
 }
+
+export const makeVaultAvaiable2 = <C extends { [key: string]: any }>({
+  needFilterZero,
+}: // _isTotal,
+{
+  needFilterZero: boolean
+}): {
+  vaultAvaiable2Map: WalletMap<C> | undefined
+} => {
+  // const { vaultLayer2 } = store.getState().vaultLayer2
+  const { tokenMap } = store.getState().invest.vaultMap
+  const { readyState } = store.getState().account
+  let vaultAvaiable2Map: WalletMap<C> | undefined = {}
+  // if (vaultLayer2) {
+  //     vaultLayer2Map = Reflect.ownKeys(vaultLayer2).reduce((prev, item) => {
+  //       const vaultAsset: sdk.VaultBalance = vaultLayer2[item as string]
+  //       const countBig = sdk.toBig(vaultAsset.total) //.minus(sdk.toBig(locked))
+  //       if (needFilterZero && countBig.eq(BIGO)) {
+  //         return prev
+  //       }
+  //       return {
+  //         ...prev,
+  //         [item]: {
+  //           belong: item,
+  //           count: sdk.fromWEI(tokenMap, item, countBig.toString()),
+  //           detail: vaultLayer2[item as string],
+  //         },
+  //       }
+  //     }, {} as WalletMap<C>)
+  //   }
+  //TODO:
+  if (readyState === AccountStatus.ACTIVATED) {
+    return { vaultAvaiable2Map }
+  } else {
+    return { vaultAvaiable2Map: undefined }
+  }
+}
