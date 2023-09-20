@@ -18,12 +18,14 @@ export interface DualAssetTableProps<R> {
   showloading: boolean
   getDualAssetList: (props: any) => Promise<void>
   showDetail: (item: R) => void
+  cancelReInvest: (item: R) => Promise<void>
   refresh: (item: R) => void
   hideAssets?: boolean
   pagination?: {
     pageSize: number
     total: number
   }
+  getProduct: (item: R) => void
 }
 
 export interface DualTxsTableProps<R = RawDataDualTxsItem> {

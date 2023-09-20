@@ -646,7 +646,7 @@ export const leverageETHAdvice: InvestAdvice = {
   titleI18n: 'labelInvestLeverageETH',
   desI18n: 'labelInvestLeverageETHDes',
   enable: true,
-  project: 'TODO Pool',
+  project: 'CIETH Pool',
   market: 'CIETH-ETH',
 }
 

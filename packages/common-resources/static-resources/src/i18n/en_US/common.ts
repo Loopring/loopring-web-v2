@@ -680,7 +680,7 @@ export default {
     'Represents the percentage to be received from each subsequent resale (max 10%).',
   labelMintDescription: 'Description <1>\u2139</1>',
   labelMintDescriptionTooltips:
-    "'The description will be included on the NFT\'s detail page beneath it\'s image.'
+    "The description will be included on the NFT's detail page beneath it's image.",
   labelMintProperty: 'Properties (Limit 64) <1>\u2139</1>',
   labelMintPropertyTooltips: 'Tags can be added to the NFT for easy searchability and distinction',
   labelPropertyAdd: 'Add property',
@@ -735,8 +735,7 @@ export default {
   labelL2toL2: 'Send to another {{loopringL2}}',
   labelL2toL1: 'Send to {{l1Symbol}}',
   labelBenefitL2:
-    'As {{l1ChainName}}\'s first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. ',
-  labelNotBalancePayForActive: 'Insufficient balance in your {{loopringL2}} account',
+    "A'As {{l1ChainName}}\'s first ever zkRollup, {{loopringL2}} allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your {{loopringL2}} account requires a small payment fee. '  labelNotBalancePayForActive: 'Insufficient balance in your {{loopringL2}} account',
   labelEnoughBalancePayForActive: 'You have enough balance to pay for {{loopringL2}} creation.',
   labelHaveInProcessingL1toL2:
     'If you have already started the deposit, please be patient and recheck as transactions on {{l1ChainName}} can take up to 30 minutes.',
@@ -1936,5 +1935,15 @@ export default {
   labelDayDisplay: '{{item}} Day',
   labelDualModifyConfirm: 'confirm',
   labelDualAutoDurationDes:
+    'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
+  labelDualModifyBtn: 'Modify',
+  labelTurnOffDualAutoInvest: 'Stop Auto Invest',
+  labelDualModifyAPR: 'APR: {{value}}',
+  labelDualModifySettlementDateDes: 'Changes will take effect after the Next Settlement Date.',
+  labelDualModifySettlementDate: 'Next Settlement Date: {{date}}',
+  labelDualEditSuccess: 'Update successful!',
+  labelDualEditFailed: 'Update Failed!',
+  labelDualEditDuration: 'Modify Longest Settlement Date <1></1>',
+  labelDualEditDurationDes:
     'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
 }

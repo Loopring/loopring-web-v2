@@ -40,14 +40,7 @@ export const DualWrap = <
   tokenMap,
   accStatus,
   isBeginnerMode,
-  // getDualProduct,
-  // isRenew,
-  // renewTargetPrice,
-  // renewDuration,
-  // onChange,
-  // isPriceEditable,
   dualProducts,
-  // setConfirmDualAutoInvest,
   ...rest
 }: DualWrapProps<T, I, DUAL> & {
   isBeginnerMode: boolean

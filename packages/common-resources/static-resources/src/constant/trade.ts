@@ -460,6 +460,7 @@ export type DualViewBase = {
   amount?: string
   enterTime?: number
   stepLength: string
+  __raw__?: any
 }
 
 export type DualViewInfo = DualViewBase & {

@@ -367,6 +367,7 @@ export const useDualTrade = <
 
   useWalletLayer2Socket({ walletLayer2Callback })
   const sendRequest = React.useCallback(async () => {
+    const tradeDual = store.getState()._router_tradeDual.tradeDual
     try {
       setIsLoading(true)
       if (
@@ -393,7 +394,7 @@ export const useDualTrade = <
         const isRenew = tradeDual.coinSell?.isRenew
           ? {
               isRecursive: true,
-              maxRecurseProductDuration: Number(tradeDual?.coinSell?.renewDuration ?? 7),
+              maxRecurseProductDuration: Number(tradeDual?.coinSell?.renewDuration ?? 7) * 86400000,
             }
           : {}
         // myLog("fee", tradeDual.feeVol);
@@ -416,7 +417,7 @@ export const useDualTrade = <
                   tokenId: tokenMap[tradeDual.lessEarnTokenSymbol]?.tokenId ?? 0,
                   volume: tradeDual.lessEarnVol,
                 },
-          validUntil: getTimestampDaysLater(DAYS),
+          validUntil: getTimestampDaysLater(DAYS * 12),
           maxFeeBips: tradeDual.maxFeeBips,
           fillAmountBOrS: false,
           fee: tradeDual.feeVol ?? '0',
@@ -484,7 +485,6 @@ export const useDualTrade = <
     setShowAccount,
     setShowDual,
     tokenMap,
-    tradeDual,
   ])
 
   // const isNoBalance = ;

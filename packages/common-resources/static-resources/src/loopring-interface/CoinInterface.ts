@@ -208,7 +208,7 @@ export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
 export type DualTrade<R> = IBData<R> & {
   isRenew: boolean
   renewTargetPrice?: string
-  renewDuration?: string
+  renewDuration?: number
 }
 
 // { isRenew?: true; target; maxRecurseProductDuration: number }
