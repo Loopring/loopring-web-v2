@@ -24,7 +24,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom'
 import styled from '@emotion/styled'
 
 const StyledPaper = styled(Grid)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 export const FiatPage = withTranslation('common')(

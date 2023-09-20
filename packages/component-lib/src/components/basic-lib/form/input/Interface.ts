@@ -33,6 +33,7 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   ) => { error: boolean; message?: string | JSX.Element }
   focusOnInput?: boolean
   name?: string
+  className?: string
   fullwidth?: boolean
   loading?: boolean
 } & XOR<
@@ -66,6 +67,7 @@ export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
   ) => { error: boolean; message?: string | JSX.Element }
   focusOnInput?: boolean
   size?: InputSize
+  maxValue?: string | number | undefined
   order?: 'left' | 'right'
   name?: string
   coinLabelStyle?: React.CSSProperties

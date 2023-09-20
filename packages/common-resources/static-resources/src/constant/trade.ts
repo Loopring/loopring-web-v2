@@ -1,4 +1,5 @@
 import {
+  CoinMap,
   CollectionMeta,
   DeFiCalcData,
   DeFiSideCalcData,
@@ -6,6 +7,7 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
+  WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'
@@ -685,6 +687,11 @@ export type RedPacketOrderData<I> = {
   tradeValue?: number
   fee: FeeInfo | undefined
   __request__: any
+  target?: {
+    redpacketHash: string
+    addressListString: string
+    isRedDot: boolean
+  }
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
@@ -721,3 +728,46 @@ export type AmmHistoryItem = {
   close: number
   timeStamp: number
 }
+
+export enum LocalStorageConfigKey {
+  tokenMap = 'tokenMap',
+  ammpools = 'ammpools',
+  markets = 'markets',
+  btradeMarkets = 'btradeMarkets',
+  vaultMarkets = 'vaultMarkets',
+  vaultTokenMap = 'vaultTokenMap',
+  exchangeInfo = 'exchangeInfo',
+  disableWithdrawTokenList = 'disableWithdrawTokenList',
+}
+
+export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
+  sdk.VaultMarket,
+  'enabled'
+> & {
+    vaultMarket: string
+    originalBaseSymbol: string
+    originalQuoteSymbol: string
+  }
+
+export type VaultJoinData<I = any> = {
+  walletMap: WalletMap<I>
+  coinMap: CoinMap<I> & { vaultToken: string; vaultId: number }
+  vaultLayer2Map: WalletMap<I>
+  vaultSymbol?: string
+  request?: sdk.VaultJoinRequest
+  maxShowVal: string
+  minShowVal: string
+  maxAmount: string
+  minAmount: string
+  amount: string
+  isMerge: boolean
+  vaultTokenInfo: sdk.TokenInfo
+  // isShouldClean:boolean
+  __request__: sdk.VaultJoinRequest
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultJoinRequest>
+
+export type VaultExitData<I = any> = {
+  __request__: any
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultExitRequest>

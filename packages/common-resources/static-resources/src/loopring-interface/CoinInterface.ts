@@ -1,5 +1,6 @@
 import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constant'
 import * as sdk from '@loopring-web/loopring-sdk'
+
 import React from 'react'
 export type CoinKey<R> = keyof R
 export type PairKey<P> = keyof P
@@ -62,7 +63,7 @@ export type WalletMap<R, I = WalletCoin<R>> = {
   [K in CoinKey<R>]?: I
 }
 
-export interface TradeCalcData<T> {
+export type TradeCalcData<T> = {
   coinSell: keyof T //name
   coinBuy: keyof T
   buyPrecision: number
@@ -84,10 +85,15 @@ export interface TradeCalcData<T> {
   feeTakerRate?: number
   tradeCost?: string
   lastStepAt?: 'sell' | 'buy'
-  isBtrade: undefined | boolean
+
   totalQuota: string
   minimumConverted: string | undefined
-}
+} & (
+  | {
+      isBtrade: undefined | boolean
+    }
+  | { isVault: undefined | boolean }
+)
 
 export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   isNotMatchMarketPrice?: boolean
@@ -99,10 +105,16 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
   priceImpactColor: string
   feeTakerRate?: number
   tradeCost?: string
-  isBtrade: undefined | false
   isShowBtradeAllow?: boolean
   minimumConverted: string | undefined
-}
+  sellMaxAmtStr?: string
+  sellMinAmtStr?: string
+} & (
+    | {
+        isBtrade: undefined | boolean
+      }
+    | { isVault: undefined | boolean }
+  )
 
 export enum BtradeType {
   Quantity = 'Quantity',
@@ -123,6 +135,10 @@ export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
   slippage: number | string
   btradeType: BtradeType
   // totalPool: string;
+}
+
+export type VaultTradeCalcData<T> = Omit<BtradeTradeCalcData<T>, 'btradeType' | 'isBtrade'> & {
+  isVault: true
 }
 
 export type TradeCalcProData<T> = {
@@ -519,3 +535,10 @@ export type NetworkItemInfo = {
 
 export const url_path = 'https://static.loopring.io/events'
 export const url_test_path = 'https://static.loopring.io/events/testEvents'
+
+export type VaultLoadData<T> = {
+  coinInfoMap: CoinMap<T, CoinInfo<T>>
+  tradeData: T
+}
+export type VaultBorrowData<T> = {} & VaultLoadData<T>
+export type VaultRepayData<T> = {} & VaultLoadData<T>

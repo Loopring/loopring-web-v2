@@ -185,6 +185,7 @@ export enum RouterPath {
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
+  vault = '/vault',
 }
 
 export enum RouterMainKey {
@@ -200,6 +201,7 @@ export enum RouterMainKey {
   layer2 = 'layer2',
   nft = 'nft',
   invest = 'invest',
+  vault = 'vault',
 }
 
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
@@ -246,6 +248,30 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
 ]
 
+export enum VaultKey {
+  VAULT_HOME = 'vaultHome',
+  VAULT_DASHBOARD = 'vaultDashboard',
+}
+
+export let vaultItemData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: VaultKey.VAULT_HOME,
+      i18nKey: 'labelVaultHome',
+      description: 'labelVaultHomeDes',
+    },
+    router: { path: RouterPath.vault + '' },
+  },
+  {
+    label: {
+      id: VaultKey.VAULT_DASHBOARD,
+      i18nKey: 'labelVaultDashboard',
+      description: 'labelVaultDashboardDes',
+    },
+    router: { path: RouterPath.vault + '/dashboard' },
+  },
+]
+
 export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
 export const ammDisableList = ['Liquidity']
 
@@ -269,16 +295,6 @@ export const subMenuLayer2 = {
       },
     },
   ],
-  // transactionsGroup: [
-  //   {
-  //     icon: L2HistoryIcon,
-  //     router: { path: "/layer2/history" },
-  //     label: {
-  //       id: "history",
-  //       i18nKey: "labelHistory",
-  //     },
-  //   },
-  // ],
   profileGroup: [
     {
       icon: ProfileIcon,
@@ -355,6 +371,14 @@ export const subMenuInvest = [
     },
   },
 ]
+export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual'
+export const investTabs = [
+  { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
+  { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
+  { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
+  { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
+]
+
 export const defiMarkets = {
   TAIKO: [] as string[],
   ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
@@ -501,51 +525,6 @@ export const MEDIA_LIST = [
   },
 ]
 
-export const headerMenuData: Array<HeaderMenuItemInterface> = [
-  {
-    label: {
-      id: 'L2Assets',
-      i18nKey: 'labelAssets',
-    },
-    router: { path: '/l2assets' },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: 'Markets',
-      i18nKey: 'labelMarkets',
-    },
-    router: { path: '/markets' },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: 'Trade',
-      i18nKey: 'labelTrade',
-    },
-    status: HeaderMenuTabStatus.default,
-    child: layer2ItemData,
-  },
-  {
-    label: {
-      id: 'Invest',
-      i18nKey: 'labelInvest',
-    },
-    router: { path: '/invest/overview' },
-    status: HeaderMenuTabStatus.default,
-    child: subMenuInvest,
-  },
-  {
-    label: {
-      id: 'NFT',
-      i18nKey: 'labelNFT',
-    },
-    router: { path: '/nft' },
-    status: HeaderMenuTabStatus.default,
-    child: subMenuNFT,
-  },
-]
-
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
   router: '/invest/ammpool',
@@ -632,6 +611,7 @@ export enum RecordTabIndex {
   BtradeSwapRecords = 'BtradeSwapRecords',
   StopLimitRecords = 'StopLimitRecords',
   leverageETHRecords = 'leverageETHRecords',
+  vaultRecords = 'vaultRecords',
 }
 
 export enum AssetTabIndex {
@@ -690,8 +670,110 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
       ],
     },
   ],
-  ETHEREUM: headerMenuData,
-  GOERLI: headerMenuData,
+  ETHEREUM: [
+    {
+      label: {
+        id: 'L2Assets',
+        i18nKey: 'labelAssets',
+      },
+      router: { path: '/l2assets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Markets',
+        i18nKey: 'labelMarkets',
+      },
+      router: { path: '/markets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Trade',
+        i18nKey: 'labelTrade',
+      },
+      status: HeaderMenuTabStatus.default,
+      child: layer2ItemData,
+    },
+    {
+      label: {
+        id: 'Invest',
+        i18nKey: 'labelInvest',
+      },
+      router: { path: '/invest/overview' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuInvest,
+    },
+    // {
+    //   label: {
+    //     id: 'vaultLayer2',
+    //     i18nKey: 'labelVault',
+    //     description: 'labelVaultDescription',
+    //   },
+    //   child: vaultItemData,
+    // },
+    {
+      label: {
+        id: 'NFT',
+        i18nKey: 'labelNFT',
+      },
+      router: { path: '/nft' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuNFT,
+    },
+  ],
+  GOERLI: [
+    {
+      label: {
+        id: 'L2Assets',
+        i18nKey: 'labelAssets',
+      },
+      router: { path: '/l2assets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Markets',
+        i18nKey: 'labelMarkets',
+      },
+      router: { path: '/markets' },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Trade',
+        i18nKey: 'labelTrade',
+      },
+      status: HeaderMenuTabStatus.default,
+      child: layer2ItemData,
+    },
+    {
+      label: {
+        id: 'Invest',
+        i18nKey: 'labelInvest',
+      },
+      router: { path: '/invest/overview' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuInvest,
+    },
+    {
+      label: {
+        id: 'vault',
+        i18nKey: 'labelVault',
+        description: 'labelVaultDescription',
+      },
+      child: vaultItemData,
+    },
+    {
+      label: {
+        id: 'NFT',
+        i18nKey: 'labelNFT',
+      },
+      router: { path: '/nft' },
+      status: HeaderMenuTabStatus.default,
+      child: subMenuNFT,
+    },
+  ],
 }
 
 export const TokenPriceBase = {
@@ -805,6 +887,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
+    // RouterMainKey.vaultLayer2,
   ],
   GOERLI: [
     RouterMainKey.lite,
@@ -819,6 +902,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.vault,
   ],
 }
 

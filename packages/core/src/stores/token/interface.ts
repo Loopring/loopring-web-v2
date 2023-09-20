@@ -11,7 +11,7 @@ export type TokenMap<R extends { [key: string]: any }> = LoopringMap<
   TokenInfo & { tradePairs: Array<CoinKey<R>> }
 >
 export type GetTokenMapParams<_R extends { [key: string]: any }> = {
-  tokensMap: LoopringMap<TokenInfo>
+  tokenMap: LoopringMap<TokenInfo>
   coinMap: LoopringMap<{
     icon?: string
     name: string

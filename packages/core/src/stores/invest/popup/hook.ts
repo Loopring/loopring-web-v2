@@ -8,15 +8,11 @@ import {
   setShowLeverageETHPopup,
   setShowRETHStakignPopup,
   setShowWSTETHStakignPopup,
+  setShowVaultPopup,
 } from './reducer'
 
-export const usePopup = (): PopupStates & {
-  setShowRETHStakignPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
-  setShowWSTETHStakignPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
-  setShowLRCStakignPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
-  setShowLeverageETHPopup: (v: { show: boolean; confirmationNeeded: boolean }) => void
-} => {
-  const popup: PopupStates = useSelector((state: RootState) => state.invest.popup)
+export const usePopup = () => {
+  const popup = useSelector((state: RootState) => state.invest.popup)
   const dispatch = useDispatch()
   return {
     ...popup,
@@ -36,5 +32,6 @@ export const usePopup = (): PopupStates & {
       (v) => dispatch(setShowLeverageETHPopup(v)),
       [dispatch],
     ),
+    setShowVaultPopup: React.useCallback((v) => dispatch(setShowVaultPopup(v)), [dispatch]),
   }
 }

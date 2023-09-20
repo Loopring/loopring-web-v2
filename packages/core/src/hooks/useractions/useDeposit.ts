@@ -44,7 +44,6 @@ import {
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
-import Web3 from 'web3';
 
 export const useDeposit = <
     T extends {

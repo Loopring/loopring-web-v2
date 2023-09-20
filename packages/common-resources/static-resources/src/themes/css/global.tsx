@@ -3,7 +3,8 @@ import reset from './reset'
 // @ts-ignore
 import InterMedium from '../fonts/english/Inter-Medium.ttf'
 
-import { ColorDarkDefault, ColorLightDefault, hexToRGB } from './color-lib'
+import { ColorDarkDefault, ColorLightDefault, GrayBlack, GrayLight, hexToRGB } from './color-lib'
+import { ThemeType } from '../interface'
 
 export const fontDefault = {
   h1: '3.8rem',
@@ -19,6 +20,16 @@ export const fontDefault = {
 export const refreshTime = 15
 export const colorBase = ({ theme }: any) => css`
   html {
+    --gray100: ${theme.mode == ThemeType.dark ? GrayBlack.gray100 : GrayLight.gray100};
+    --gray200: ${theme.mode == ThemeType.dark ? GrayBlack.gray200 : GrayLight.gray200};
+    --gray300: ${theme.mode == ThemeType.dark ? GrayBlack.gray300 : GrayLight.gray300};
+    --gray400: ${theme.mode == ThemeType.dark ? GrayBlack.gray400 : GrayLight.gray400};
+    --gray500: ${theme.mode == ThemeType.dark ? GrayBlack.gray500 : GrayLight.gray500};
+    --gray600: ${theme.mode == ThemeType.dark ? GrayBlack.gray600 : GrayLight.gray600};
+    --gray700: ${theme.mode == ThemeType.dark ? GrayBlack.gray700 : GrayLight.gray700};
+    --gray800: ${theme.mode == ThemeType.dark ? GrayBlack.gray800 : GrayLight.gray800};
+    --gray900: ${theme.mode == ThemeType.dark ? GrayBlack.gray900 : GrayLight.gray900};
+
     --color-primary: ${theme.colorBase.primary};
     --color-primary-hover: ${theme.colorBase.primaryHover};
     --color-primary-pressed: ${theme.colorBase.primaryPressed};
@@ -34,10 +45,12 @@ export const colorBase = ({ theme }: any) => css`
     --color-text-third: ${theme.colorBase.textThird};
     --color-text-button: ${theme.colorBase.textButton};
     --color-text-button-select: ${theme.colorBase.textButtonSelect};
+    --color-text-button-disabled: ${theme.colorBase.textButtonDisabled};
     --color-text-disable: ${theme.colorBase.textDisable};
     --color-border: ${theme.colorBase.border};
     --color-border-hover: ${theme.colorBase.borderHover};
     --color-border-dark: ${theme.colorBase.borderDark};
+    --color-placeholder: ${theme.colorBase.placeholder};
     --color-border-select: ${theme.colorBase.borderSelect};
     --color-border-disable: ${theme.colorBase.borderDisable};
     --color-border-disable2: ${theme.colorBase.borderDisable2};
@@ -55,6 +68,7 @@ export const colorBase = ({ theme }: any) => css`
     --field-opacity: ${theme.colorBase.fieldOpacity};
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
+    --color-box-third: ${theme.colorBase.boxThird};
     --color-mask: ${theme.colorBase.mask};
     --color-box-enhance: ${theme.colorBase.boxEnhance};
     --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
@@ -64,6 +78,9 @@ export const colorBase = ({ theme }: any) => css`
     /********************Case for shadow*******************/
     --color-button-pot: ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
+    --color-button-inactive: ${theme.colorBase.buttonInactive};
+    --color-button-disabled: ${theme.colorBase.buttonDisabled};
+    --color-button-outlined: ${theme.colorBase.buttonOutlined};
 
     /********************CSS shadow *******************/
     --shadow: ${theme.colorBase.shadow};
@@ -142,6 +159,7 @@ export const scrollbarDefault = ({ theme }: any) => css`
 export const globalCss = ({ theme }: any) => css`
   ${colorBase({ theme })}
   ${scrollbarDefault({ theme })};
+
   ${reset}
   #root {
     display: flex;
@@ -274,26 +292,29 @@ export const globalCss = ({ theme }: any) => css`
     --notification-activited-heigth: 80px;
     --modal-min-width: 340px;
     --carousel-dot-size: 14px;
+    --earning-banner-width: 320px;
     --provider-btn-height: 56px;
     --input-height-large: 48px;
     --input-height-huge: 56px;
+    --input-height-swap: 72px;
+    --input-height-swap-label: 36px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
     }
-    --color-EOA-Text:#FBA95C;
-    --color-Loopring-Text:#4169FF;
+    --color-EOA-Text: #fba95c;
+    --color-Loopring-Text: #4169ff;
     --color-OtherSmart-Text: #979797;
-    --color-Binance-Text:#A25402;
-    --color-Huobi-Text:#199E5E;
-    --color-OtherExchange-Text:#BBC2F2;
-    --color-EOA-Bg:#FFFEDC;
-    --color-Loopring-Bg: #C9DBEF;
-    --color-OtherSmart-Bg:#D9D9D9;
-    --color-Binance-Bg:#FDE3C8;
-    --color-Huobi-Bg:#B1F4DD;
-    --color-OtherExchange-Bg:#9BA0B7;
+    --color-Binance-Text: #a25402;
+    --color-Huobi-Text: #199e5e;
+    --color-OtherExchange-Text: #a0635a;
+    --color-EOA-Bg: #fffedc;
+    --color-Loopring-Bg: #c9dbef;
+    --color-OtherSmart-Bg: #d9d9d9;
+    --color-Binance-Bg: #fde3c8;
+    --color-Huobi-Bg: #b1f4dd;
+    --color-OtherExchange-Bg: #c1a6a2;
   }
 
   select {

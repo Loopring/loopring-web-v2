@@ -47,7 +47,7 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
   flex-direction: column;
   justify-content: center;
   ${({ theme }) => modalContentBaseStyle({ theme: theme })}
-  background: ${({ theme }) => theme.colorBase.box};
+  background: var(--color-pop-bg);
 
   .trade-wrap {
     margin-top: -26px;
@@ -102,7 +102,7 @@ export const Modal = withTranslation('common')(
         <BoxStyle
           style={{ boxShadow: '24' }}
           {...{
-            _width: `var(--modal-width)`,
+            _width: _width ?? `var(--modal-width)`,
             _height: _height,
           }}
         >
@@ -110,7 +110,10 @@ export const Modal = withTranslation('common')(
             <ModalCloseButton onClose={onClose} {...rest} />
             {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
           </Box>
-          <Box className={contentClassName} maxWidth={isMobile ? '350px' : 'inherit'}>
+          <Box
+            className={contentClassName}
+            maxWidth={isMobile ? 'var(--modal-min-width)' : 'inherit'}
+          >
             {content}
           </Box>
         </BoxStyle>
@@ -203,7 +206,7 @@ export const ModalPanel = <
     isShowLayerSwapNotice,
     isShowAnotherNetwork,
     isShowClaimWithdraw,
-    isShowSideStakingRedeem
+    isShowSideStakingRedeem,
   } = modals
   const theme = useTheme()
   return (

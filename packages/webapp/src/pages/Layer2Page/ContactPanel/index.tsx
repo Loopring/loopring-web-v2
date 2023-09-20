@@ -32,7 +32,7 @@ import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/ho
 import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 const ContactPageStyle = styled(Box)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   display: flex;
   flex-direction: column;
   align-items: stretch;

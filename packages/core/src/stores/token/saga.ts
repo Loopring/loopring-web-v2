@@ -3,9 +3,10 @@ import { getTokenMap, getTokenMapStatus } from './reducer'
 import { GetTokenMapParams } from './interface'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { store } from '../index'
+import { LocalStorageConfigKey } from '@loopring-web/common-resources'
 
 const getTokenMapApi = async <R extends { [key: string]: any }>({
-  tokensMap,
+  tokenMap,
   coinMap,
   totalCoinMap,
   idIndex,
@@ -19,12 +20,14 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
   marketRaw,
 }: GetTokenMapParams<R>) => {
   const { chainId } = store.getState().system
-  const tokenChainMap = window.localStorage.getItem('tokenMap')
-  const disableWithdrawTokenListChain = window.localStorage.getItem('disableWithdrawTokenList')
-  const marketChain = window.localStorage.getItem('markets')
+  const tokenChainMap = window.localStorage.getItem(LocalStorageConfigKey.tokenMap)
+  const disableWithdrawTokenListChain = window.localStorage.getItem(
+    LocalStorageConfigKey.disableWithdrawTokenList,
+  )
+  const marketChain = window.localStorage.getItem(LocalStorageConfigKey.markets)
   // let coinMap: CoinMap<any, CoinInfo<any>> = {};
   // let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
-  let tokenMap: any = tokensMap
+  // let tokenMap: any = tokenMap
   // let addressIndex: AddressMap = {};
   // let idIndex: IdMap = {};
   let disableWithdrawList: string[] = disableWithdrawTokenList
@@ -33,10 +36,10 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
       })
     : []
 
-  Reflect.ownKeys(tokensMap).forEach((key) => {
+  Reflect.ownKeys(tokenMap).forEach((key) => {
     if (pairs[key as string] && pairs[key as string].tokenList) {
       // @ts-ignore
-      tokensMap[key].tradePairs = pairs[key as string].tokenList
+      tokenMap[key].tradePairs = pairs[key as string].tokenList
     }
   })
   if (disableWithdrawTokenListRaw) {
@@ -86,7 +89,7 @@ export function* getPostsSaga<R extends { [key: string]: any }>({
 }: PayloadAction<GetTokenMapParams<R>>) {
   try {
     const {
-      tokensMap,
+      tokenMap,
       coinMap,
       totalCoinMap,
       idIndex,
@@ -103,7 +106,7 @@ export function* getPostsSaga<R extends { [key: string]: any }>({
 
     // @ts-ignore
     const { data } = yield call(getTokenMapApi, {
-      tokensMap,
+      tokenMap,
       coinMap,
       totalCoinMap,
       idIndex,

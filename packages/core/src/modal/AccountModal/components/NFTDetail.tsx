@@ -64,6 +64,7 @@ enum NFTDetailTab {
   Detail = 'Detail',
   Property = 'Property',
 }
+
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg-opacity);
   img {

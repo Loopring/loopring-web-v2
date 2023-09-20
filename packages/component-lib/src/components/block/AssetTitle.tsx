@@ -111,9 +111,9 @@ export const AssetTitle = withTranslation('common')(
             {t('labelSendAssetBtn')}
           </Button>
           <Button
-            variant={'contained'}
-            size={'small'}
-            color={'primary'}
+            variant={'outlined'}
+            size={'medium'}
+            color={'secondary'}
             disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowReceive()}
           >

@@ -94,7 +94,11 @@ export const ModalAccountInfo = withTranslation('common')(
           severity={ToastType.success}
         />
         <Toast
-          alertText={isShowGlobalToast?.info?.content ?? ''}
+          alertText={
+            isShowGlobalToast?.info?.messageKey
+              ? t(isShowGlobalToast?.info?.messageKey)
+              : isShowGlobalToast?.info?.content ?? ''
+          }
           severity={isShowGlobalToast?.info?.type ?? ToastType.success}
           open={isShowGlobalToast?.isShow ?? false}
           autoHideDuration={TOAST_TIME}

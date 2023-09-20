@@ -1,5 +1,5 @@
 import { borderFunc, pxToRem, unit } from './utils'
-import { ComponentsOverrides } from '@mui/material'
+import { ComponentsOverrides, TooltipProps } from '@mui/material'
 import { fontDefault } from '../css/global'
 import { myLog } from '../../utils'
 
@@ -307,6 +307,7 @@ export const MuiPaper = ({
         borderRadius: pxToRem(8),
         backgroundImage: 'none',
         backgroundColor: colorBase.popBg,
+        border: `.5px solid ${colorBase.border}`,
         '&.MuiPopover-paper': {
           backgroundImage: 'none',
           boxShadow: colorBase.shadowHover,
@@ -948,16 +949,31 @@ export const MuiLinearProgress = ({ colorBase }: any) => {
 
 export const MuiTooltip = ({
   colorBase,
-}: any): { styleOverrides: ComponentsOverrides['MuiTooltip'] } => {
+}: any): { 
+  styleOverrides: ComponentsOverrides['MuiTooltip'] 
+  defaultProps?: Partial<TooltipProps>
+} => {
   return {
+    defaultProps: {
+      arrow: true,
+    },
     styleOverrides: {
       tooltip: {
-        fontSize: fontDefault.body2,
+        fontSize: fontDefault.body1,
         fontWeight: 400,
         color: colorBase.textSecondary,
         background: colorBase.popBg,
         boxShadow: colorBase.shadowHover,
         lineHeight: '1.5em',
+        border: `0.5px solid ${colorBase.border}`,
+        padding: `${unit * 2}px`,
+        borderRadius: `${unit}px`,
+      },
+      arrow: {
+        color: colorBase.popBg,
+        "&:before":{
+          border: `0.5px solid ${colorBase.border}`,
+        }
       },
       // root: {
       //   fontSize: fontDefault.body1,

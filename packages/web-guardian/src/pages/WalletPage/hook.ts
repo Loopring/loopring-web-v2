@@ -19,7 +19,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { GuardianStep, useSettings } from '@loopring-web/component-lib'
-import { connectProvides } from '@loopring-web/web3-provider'
+import { connectProvides,AvaiableNetwork } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
 
 export enum TxGuardianHistoryType {
