@@ -36,7 +36,6 @@ import {
   WithdrawTypes,
 } from '@loopring-web/common-resources'
 import { ContactType } from '@loopring-web/core'
-import { DisplayContact } from '@loopring-web/core/src/stores/contacts/reducer'
 
 export enum RedPacketStep {
   TradeType = 0,
@@ -657,7 +656,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   popRedPacketAmountStr: string | undefined
   onClickViewTargetDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
-  contacts?: DisplayContact[]
+  contacts?: ContactType[]
   isWhiteListed?: boolean
 } & CreateRedPacketInfoProps<F>
 
