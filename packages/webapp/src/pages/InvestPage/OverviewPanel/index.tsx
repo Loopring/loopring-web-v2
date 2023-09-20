@@ -72,13 +72,19 @@ const WrapperStyled = styled(Box)`
   .scroll-view::-webkit-scrollbar {
     display: none;
   }
+  @media only screen and (max-width: 768px) {
+    .MuiCard-root {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+  }
 `
 
 
 export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { filteredData, filterValue, getFilteredData, rawData, myMapLoading, myRawData } =
     useOverview()
-  const { coinJson } = useSettings()
+  const { coinJson, isMobile } = useSettings()
   const { account } = useAccount()
   const { notifyMap } = useNotify()
   const showLoading = filteredData && !filteredData.length
@@ -105,7 +111,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
-          height={34 * theme.unit}
+          height={isMobile ? 60 * theme.unit : 34 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>
@@ -114,6 +120,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
               marginBottom={2}
               fontSize={'48px'}
               variant={'h1'}
+
             >
               {t("labelInvestLoopringEarn")}
             </Typography>
@@ -122,14 +129,14 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             </Typography>
             <Button
               onClick={() => history.push('/invest/balance')}
-              sx={{ width: 18 * theme.unit }}
+              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >
               {t("labelAssetInvests")}
             </Button>
           </Box>
           <Box marginRight={5}>
-            <Overview />
+            {!isMobile && <Overview />}
           </Box>
         </MaxWidthContainer>
         <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={containerColors[1]}>
@@ -142,7 +149,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
             }}
             className={'scroll-view'}
           >
-            <Box sx={{ display: 'flex', width: 'fit-content' }}>
+            <Box sx={{ display: 'flex', width: isMobile ? '100%' : 'fit-content', flexDirection: isMobile ? 'column' : 'row' }}>
               {investAdviceList.map((item, index) => {
                 return (
                   <Card key={item.type} onClick={() => history.push(item.router)} sx={{ marginRight: 2.5 }}>

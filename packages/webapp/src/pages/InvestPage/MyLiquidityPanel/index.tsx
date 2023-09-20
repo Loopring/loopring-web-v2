@@ -264,7 +264,7 @@ const MyLiquidity: any = withTranslation('common')(
     
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        {!noHeader && <MaxWidthContainer height={34 * theme.unit} alignItems={'center'} background={containerColors[0]}>
+        {!noHeader && <MaxWidthContainer height={isMobile ? 70 * theme.unit : 34 * theme.unit} alignItems={'center'} background={containerColors[0]}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}
@@ -277,9 +277,18 @@ const MyLiquidity: any = withTranslation('common')(
               </Typography>
               <Button
                 onClick={() => {
+                  history.push('/invest/overview')
+                }}
+                sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2}}
+                variant={'contained'}
+              >
+                {t('labelInvestOverviewTitle')}
+              </Button>
+              <Button
+                onClick={() => {
                   history.push('/l2assets/history/Transactions')
                 }}
-                sx={{ width: 18 * theme.unit }}
+                sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                 variant={'contained'}
               >
                 {t('labelTxnDetailHeader')}

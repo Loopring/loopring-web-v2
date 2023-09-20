@@ -306,6 +306,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }) as MarketType
   const isJoin = match?.params?.isJoin?.toUpperCase() !== 'Redeem'.toUpperCase()
   const theme = useTheme()
+  const { isMobile } = useSettings()
 
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1}>
@@ -313,31 +314,41 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
+        height={isMobile ? 34 * theme.unit : 25 * theme.unit}
+        alignItems={'center'}
       >
-        <Box paddingY={7}>
-          <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-            {t("labelInvestDefiTitle")}
+        <Box
+          paddingY={7}
+          width={'100%'}
+          display={'flex'}
+          alignItems={'center'}
+          flexDirection={'column'}
+        >
+          <Typography marginBottom={2} fontSize={isMobile ? '30px' : '48px'}  variant={'h1'}>
+            {t('labelInvestDefiTitle')}
           </Typography>
-          <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
-            {t("labelInvestDefiDes")}
-          </Typography>
-          <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-            {t("labelInvestMyAmm")}
+
+          <Button
+            onClick={() => history.push('/invest/balance')}
+            sx={{
+              width: isMobile ? 36 * theme.unit : 18 * theme.unit,
+              bgcolor: 'var(--color-button-outlined)',
+            }}
+            variant={'contained'}
+          >
+            {t('labelInvestMyAmm')}
           </Button>
         </Box>
-        <SatkingLogo />
       </MaxWidthContainer>
 
       <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]}>
-        <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
-          {t("labelInvestChoseProduct")}
-        </Typography>
         <StyleWrapper
           display={'flex'}
           flexDirection={'column'}
           justifyContent={'center'}
           alignItems={'center'}
           flex={1}
+          marginTop={6}
         >
           {marketArray?.length ? (
             match?.params?.market && _market ? (

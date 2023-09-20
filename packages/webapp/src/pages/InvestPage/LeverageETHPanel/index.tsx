@@ -12,6 +12,7 @@ import {
   ConfirmInvestDefiRisk,
   ToastType,
   useToggle,
+  useSettings,
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -114,31 +115,37 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     })
   }, [confirmed, enable])
   const theme = useTheme()
+  const { isMobile } = useSettings()
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1} >
+    <Box display={'flex'} flexDirection={'column'} flex={1}>
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
-        height={34 * theme.unit}
+        height={isMobile ? 34 * theme.unit : 25 * theme.unit}
         alignItems={'center'}
       >
-        <Box paddingY={7}>
-          <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+        <Box
+          paddingY={7}
+          width={'100%'}
+          display={'flex'}
+          alignItems={'center'}
+          flexDirection={'column'}
+        >
+          <Typography marginBottom={2} fontSize={isMobile ? '30px' : '48px'} variant={'h1'}>
             {t('labelLeverageETHStaking')}
-          </Typography>
-          <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
-            {t('labelLeverageETHStakingDes')}
           </Typography>
           <Button
             onClick={() => history.push('/invest/balance')}
-            sx={{ width: 18 * theme.unit }}
+            sx={{
+              width: isMobile ? 36 * theme.unit : 18 * theme.unit,
+              bgcolor: 'var(--color-button-outlined)',
+            }}
             variant={'contained'}
           >
             {t('labelMyInvestLRCStaking')}
           </Button>
         </Box>
-        <SatkingLogo />
       </MaxWidthContainer>
       <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]} paddingY={5}>
         <StyleWrapper
@@ -147,6 +154,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
           justifyContent={'center'}
           alignItems={'center'}
           flex={1}
+          marginTop={6}
         >
           {marketArray?.length ? (
             // match?.params?.market && _market ? (

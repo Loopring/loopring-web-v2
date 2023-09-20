@@ -40,7 +40,7 @@ export const StackTradePanel = ({
 
   const { isMobile } = useSettings()
 
-  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+  const styles = isMobile ? { flex: 1 } : { width: '500px' }
   React.useEffect(() => {
     setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
   }, [])
@@ -95,24 +95,32 @@ export const StackTradePanel = ({
             display={'flex'}
             justifyContent={'space-between'}
             background={containerColors[0]}
-            height={34 * theme.unit}
+            height={isMobile ? 34 * theme.unit : 25 * theme.unit}
             alignItems={'center'}
           >
-            <Box paddingY={7}>
-              <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-                {t("labelInvestLRCTitle")}
+            <Box
+              paddingY={7}
+              width={'100%'}
+              display={'flex'}
+              alignItems={'center'}
+              flexDirection={'column'}
+            >
+              <Typography marginBottom={2} fontSize={isMobile ? '30px' : '48px'} variant={'h1'}>
+                {t('labelInvestLRCTitle')}
               </Typography>
-              <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
-                {t("labelInvestLRCDes")}
-              </Typography>
-              <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-                {t("labelMyInvestLRCStaking")}
+              <Button
+                onClick={() => history.push('/invest/balance')}
+                sx={{
+                  width: isMobile ? 36 * theme.unit : 18 * theme.unit,
+                  bgcolor: 'var(--color-button-outlined)',
+                }}
+                variant={'contained'}
+              >
+                {t('labelMyInvestLRCStaking')}
               </Button>
             </Box>
-            <SatkingLogo />
-            {/* <img src={SoursURL + 'images/earn-staking-title.svg'} /> */}
           </MaxWidthContainer>
-          <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]} paddingY={5} >
+          <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]} paddingY={5}>
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}
@@ -122,11 +130,15 @@ export const StackTradePanel = ({
             >
               {stakeWrapProps.deFiSideCalcData ? (
                 <Box
-                  className={'hasLinerBg'}
                   display={'flex'}
                   style={styles}
                   justifyContent={'center'}
-                  padding={5 / 2}
+                  paddingX={4}
+                  paddingTop={3}
+                  paddingBottom={5}
+                  bgcolor={'var(--color-box-secondary)'}
+                  border={'1px solid var(--color-border)'}
+                  borderRadius={2}
                 >
                   <DeFiSideWrap isJoin={isJoin} symbol={'LRC'} {...(stakeWrapProps as any)} />
                 </Box>
