@@ -53,8 +53,3 @@ export type VaultRepayWrapProps<T, I, VR, C> = {
   vaultRepayData: VR
   tradeData: T
 }
-
-export enum VaultLoadType {
-  Borrow = 'Borrow',
-  Repay = 'Repay',
-}

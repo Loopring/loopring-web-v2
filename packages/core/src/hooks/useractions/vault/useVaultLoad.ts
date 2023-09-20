@@ -2,7 +2,6 @@ import {
   AccountStep,
   useOpenModals,
   VaultBorrowWrapProps,
-  VaultLoadType,
   VaultRepayWrapProps,
 } from '@loopring-web/component-lib'
 import {
@@ -21,6 +20,7 @@ import {
   IBData,
   SagaStatus,
   TradeBtnStatus,
+  VaultLoadType,
 } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../../../api_wrapper'
 import { walletLayer2Service } from '../../../services'

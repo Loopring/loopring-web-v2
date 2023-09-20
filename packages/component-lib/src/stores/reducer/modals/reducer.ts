@@ -6,16 +6,17 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  VaultLoadType,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { AmmPanelType, ToastType, VaultLoadType } from '@loopring-web/component-lib'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
     isShow: false,
     info: {
       content: '',
-      type: ToastType.info,
+      type: 'info',
     },
   },
   isShowNFTMetaNotReady: { isShow: false },
@@ -30,7 +31,7 @@ const initialState: ModalState = {
   isShowActiveAccount: { isShow: false },
   isShowExportAccount: { isShow: false },
   isShowSwap: { isShow: false },
-  isShowAmm: { isShow: false, type: AmmPanelType.Join },
+  isShowAmm: { isShow: false, type: 'Join' },
   isShowConnect: { isShow: false, step: 0 },
   isShowAccount: { isShow: false, step: 0 },
   isShowLayerSwapNotice: { isShow: false },
@@ -68,7 +69,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow: boolean
         info: {
           content: string
-          type: ToastType
+          type: 'info'
         }
       }>,
     ) {

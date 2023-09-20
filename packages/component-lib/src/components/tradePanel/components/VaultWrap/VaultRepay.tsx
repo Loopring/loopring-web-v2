@@ -2,7 +2,8 @@ import {
   IBData,
   L1L2_NAME_DEFINED,
   MapChainId,
-  TradeBtnStatus, VaultRepayData,
+  TradeBtnStatus,
+  VaultRepayData,
 } from '@loopring-web/common-resources'
 import { VaultRepayWrapProps } from './Interface'
 import { useTranslation } from 'react-i18next'
@@ -12,19 +13,18 @@ import { ButtonStyle, InputCoin } from '../../../index'
 
 import { useSettings } from '../../../../stores'
 
-export const VaultRepay = <T, I, VR extends VaultRepayData<C>, C = IBData<I>>(
-  {
-    disabled,
-    vaultRepayBtnStatus,
-    onVaultRepayClick,
-    vaultRepayBtnI18nKey,
-    tokenProps,
-    propsExtends,
-    // onRemoveChangeEvent,
-    // handleError,
-    // propsLPExtends = {},
-    vaultRepayData,
-  }: VaultRepayWrapProps<T, I, VR, C> => {
+export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C>, C = IBData<I>>({
+  disabled,
+  vaultRepayBtnStatus,
+  onVaultRepayClick,
+  vaultRepayBtnI18nKey,
+  tokenProps,
+  propsExtends,
+  // onRemoveChangeEvent,
+  // handleError,
+  // propsLPExtends = {},
+  vaultRepayData,
+}: VaultRepayWrapProps<T, I, VR, C>) => {
   const { coinJson, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const coinRef = React.useRef()
@@ -40,20 +40,20 @@ export const VaultRepay = <T, I, VR extends VaultRepayData<C>, C = IBData<I>>(
         key[0],
         key && key[1]
           ? {
-            arg: key[1].toString(),
-            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-          }
+              arg: key[1].toString(),
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
           : {
-            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-          },
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            },
       )
     } else {
       return t(`labelRemoveLiquidityBtn`, {
@@ -65,7 +65,6 @@ export const VaultRepay = <T, I, VR extends VaultRepayData<C>, C = IBData<I>>(
       })
     }
   }, [vaultRepayBtnI18nKey])
-
 
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _name: string, _ref: any) => {
