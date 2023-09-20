@@ -3230,17 +3230,17 @@ export function useAccountModalForUI({
           />
         ),
       },
-      [AccountSetp.VaultBorrow_Success]: {
+      [AccountStep.VaultBorrow_Success]: {
         view: (
           <VaultBorrow_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
         ),
       },
-      [AccountSetp.VaultBorrow_Failed]: {
+      [AccountStep.VaultBorrow_Failed]: {
         view: (
           <VaultBorrow_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
         ),
       },
-      [AccountSetp.VaultBorrow_In_Progress]: {
+      [AccountStep.VaultBorrow_In_Progress]: {
         view: (
           <VaultBorrow_In_Progress
             btnInfo={undefined}
@@ -3248,17 +3248,17 @@ export function useAccountModalForUI({
           />
         ),
       },
-      [AccountSetp.VaultRepay_Success]: {
+      [AccountStep.VaultRepay_Success]: {
         view: (
           <VaultRepay_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
         ),
       },
-      [AccountSetp.VaultRepay_Failed]: {
+      [AccountStep.VaultRepay_Failed]: {
         view: (
           <VaultRepay_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
         ),
       },
-      [AccountSetp.VaultRepay_In_Progress]: {
+      [AccountStep.VaultRepay_In_Progress]: {
         view: (
           <VaultRepay_In_Progress
             btnInfo={undefined}
