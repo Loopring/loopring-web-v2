@@ -523,6 +523,7 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: 'REMOVE GUARDIAN', // 35
   labelTxGuardianUNLOCK_WALLET_WA: 'UNLOCK WALLET', // 37
   labelTxGuardianRESET_GUARDIANS_WA: 'RESET GUARDIANS', // 200
+  labelTxGuardianCONTACT_UPDATE_WA: 'RESET GUARDIANS', // 201
   labelTxGuardianCALL_CONTRACT_WA: 'CALL CONTRACT',
   labelTxGuardian_recovery: 'recovery wallet',
   labelTxGuardian_transfer: 'over daily quota transfer',
@@ -1949,4 +1950,19 @@ export default {
   labelDualEditDuration: 'Modify Longest Settlement Date <1></1>',
   labelDualEditDurationDes:
     'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
+  labelDualInvestGuid: 'Invest',
+  labelCoverGain: 'Cover Gain',
+  labelCoverGainDes: 'Cover Gain Earn interest before taking profits',
+  labelDip: 'Buy The Dip',
+  labelDipDes: 'Earn interest while waiting for your price target',
+  labelDualMerge: 'Dual Investment',
+  labelDualMergeDes: 'Select based on Token and Settlement Date',
+  labelDualChooseTokenDUAL_BASE: 'Step 1: Choose a token to sell',
+  labelDualChooseTargetPriceDUAL_BASE: 'Step 2: Choose Target Price and Settlement Date',
+  labelDualChooseTokenDUAL_CURRENCY: 'Step 1: Choose a token to buy',
+  labelDualChooseTargetPriceDUAL_CURRENCY: 'Step 2: Choose Target Price and Settlement Date',
+  labelDualTypeDualGain: 'Cover Gain',
+  labelDualTypeDualDip: 'Buy The Dip',
+  labelDualTypeDualBegin: 'Dual Invest Beginner mode',
+  labelDualTypeAll: 'Dual Invest',
 }

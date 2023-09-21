@@ -448,7 +448,7 @@ export const DualDetail = ({
           <>
             <Box paddingX={2} marginTop={2}>
               <Typography variant={'h5'} marginBottom={0}>
-                {t('At Settlement Date')}
+                {t('labelDualBeginnerAtSettlementDay')}
               </Typography>
               <Typography color={'textSecondary'} marginBottom={1}>
                 {t('labelDualBeginnerIndexPriceDes')}
@@ -471,7 +471,7 @@ export const DualDetail = ({
                     })}
                 </Typography>
               </Box>
-              <Box marginBottom={5} display={'flex'} justifyContent={'space-between'}>
+              <Box marginBottom={2} display={'flex'} justifyContent={'space-between'}>
                 <Typography>
                   {t(
                     dualViewInfo.isUp
@@ -491,7 +491,12 @@ export const DualDetail = ({
                 </Typography>
               </Box>
             </Box>
-            <Typography textAlign={'center'} color={'var(--color-text-third)'} variant={'body2'}>
+            <Typography
+              textAlign={'center'}
+              color={'var(--color-text-third)'}
+              variant={'body2'}
+              paddingBottom={1}
+            >
               {t('labelDualBeginnerLockingDes')}
             </Typography>
           </>
