@@ -1869,4 +1869,5 @@ export default {
   labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
   labelRedPacketTotal: 'Total {{count}}',
   labelRedPacketExclusiveTag: 'Exclusive',
+  labelRedPacketClaiming: 'Claiming',
 }

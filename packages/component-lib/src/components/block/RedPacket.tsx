@@ -1148,6 +1148,10 @@ export const RedPacketDetail = ({
           <Button variant={'contained'} fullWidth disabled>
             {t('labelClaimBtnClaimed')}
           </Button>
+        ) : claimButton === 'claiming' && bottomButton === 'hidden' ? (
+          <Button variant={'contained'} fullWidth disabled>
+            {t('labelRedPacketClaiming')}
+          </Button>
         ) : (
           <></>
         )}
