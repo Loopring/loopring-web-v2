@@ -136,7 +136,9 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
         />
       </Tooltip>
     )
-    const exclusiveTag = <Typography marginLeft={0.5} borderRadius={1} paddingX={0.5} bgcolor={hexToRGB(theme.colorBase.warning, 0.5)} color={'var(--color-warning)'}>Exclusive </Typography>
+    const exclusiveTag = <Typography marginLeft={0.5} borderRadius={1} paddingX={0.5} bgcolor={hexToRGB(theme.colorBase.warning, 0.5)} color={'var(--color-warning)'}>  
+      {t("labelRedPacketExclusiveTag", { ns: 'common' })}
+    </Typography>
     const getColumnModeTransactionUnclaimedNFT = React.useCallback(
       (): Column<R, unknown>[] => [
         {

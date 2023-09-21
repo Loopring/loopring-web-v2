@@ -27,7 +27,7 @@ const getExclusiveRedPacketAPI = async (): Promise<{
       {
         statuses: [0],
         offset: 0,
-        limit: 50,
+        limit: 100,
         isAll: 1,
       },
       account.apiKey,

@@ -1391,7 +1391,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
                 ? t('labelRedpacketExclusiveEmpty')
                 : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
             </Typography>
-            <Box display={'flex'} flexWrap={'wrap'}>
+            <Box display={'flex'} flexWrap={'wrap'} maxHeight={'300px'} overflow={'scroll'}>
               {targetRedPackets &&
                 targetRedPackets
                   .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
@@ -1401,6 +1401,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
                         onClickExclusiveRedpacket(redpacket.hash)
                       }}
                       selected={false}
+                      key={redpacket.hash}
                     >
                       <Box
                         display={'flex'}
@@ -1500,7 +1501,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
           </Box>
         )}
 
-        <Box width={'100%'} marginTop={20} display={'flex'} justifyContent={'center'}>
+        <Box width={'100%'} marginTop={10} display={'flex'} justifyContent={'center'}>
           <Box width={'48%'} marginRight={'4%'}>
             <Button
               variant={'outlined'}

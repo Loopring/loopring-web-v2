@@ -1004,7 +1004,8 @@ export const useCreateRedPacket = <
           statuses: '2',
           official: false,
           offset: 0,
-          limit: 50,
+          limit: 100,
+          isEnough: true
         } as any,
         account.apiKey,
       )
