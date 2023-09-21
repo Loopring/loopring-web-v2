@@ -18,8 +18,7 @@ export const AssetPage = () => {
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
-  const { openedRedPackets, redPackets } = useTargetRedPackets()
-  const found = redPackets?.find(redpacket => (redpacket as any).notifyType === "NOTIFY_POINT")
+  const { redPackets } = useTargetRedPackets()
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
       case 'history':
@@ -28,7 +27,7 @@ export const AssetPage = () => {
       default:
         return (
           <AssetPanel
-            showRedpacketReddot={!!found}
+            showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
             assetTitleProps={assetTitleProps}
             assetPanelProps={{...assetPanelProps, assetBtnStatus}}
           />

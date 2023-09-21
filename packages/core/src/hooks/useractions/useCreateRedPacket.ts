@@ -525,6 +525,7 @@ export const useCreateRedPacket = <
             handleOnDataChange({
               target: {
                 redpacketHash: (response as sdk.TX_HASH_API)?.hash,
+                maxSendCount: request.numbers,
               },
             } as any)
           } else {

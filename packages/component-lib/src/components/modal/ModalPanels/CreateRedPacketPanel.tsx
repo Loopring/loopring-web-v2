@@ -523,11 +523,12 @@ export const CreateRedPacketPanel = <
           onCloseRedpacketPop={onCloseRedpacketPop}
           popRedPacket={popRedPacket}
           popRedPacketAmountStr={popRedPacketAmountStr}
-          onClickExclusiveRedpacket={(hash) => {
+          onClickExclusiveRedpacket={(info) => {
             handleOnDataChange({
               target: {
                 ...tradeData.target,
-                redpacketHash: hash,
+                redpacketHash: info.hash,
+                maxSendCount: info.remainCount
               },
             } as any)
             setActiveStep(TargetRedPacketStep.TargetSend)
@@ -544,9 +545,7 @@ export const CreateRedPacketPanel = <
       ),
       toolBarItem: undefined,
     }
-    const maximumTargetsLength = isWhiteListed
-      ? EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST
-      : EXCLUSIVE_REDPACKET_ORDER_LIMIT
+    const maximumTargetsLength = tradeData.target?.maxSendCount ?? 0
     const targetInputAddressPanel = {
       key: 'targetInputAddress',
       element: (
@@ -628,6 +627,8 @@ export const CreateRedPacketPanel = <
         tokenNFTSelectionPanel as any,
         ...(isTarget ? [targetInputAddressPanel] : []),
       ],
+      scrollDisabled: tradeData.type?.scope === LuckyTokenViewType.TARGET && 
+        panelIndex !== TargetRedPacketStep.TargetSend
     }
   }, [
     tradeData,

@@ -92,11 +92,11 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     undefined as number | undefined,
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
-  const {redPackets: exclusiveRedPackets,  setOpendPopup, setShowRedPacketsPopup, showPopup, openedRedPackets} = useTargetRedPackets()
-  const pointExclusiveRedPackets = exclusiveRedPackets?.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_POINT")
+  const {redPackets: exclusiveRedPackets, setShowRedPacketsPopup, showPopup,} = useTargetRedPackets()
   const { setShowRedPacket } = useOpenModals()
 
   const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
+    setShowRedPacketsPopup(false)
     setShowRedPacket({
       isShow: true,
       info: {
@@ -174,25 +174,13 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         </Button>
       </Box>
       <StylePaper ref={container} flex={1} display={'flex'} flexDirection={'column'}>
-        {pointExclusiveRedPackets && pointExclusiveRedPackets.length > 0 && (
+        {exclusiveRedPackets && exclusiveRedPackets.length > 0 && (
           <Box paddingX={2} paddingY={1} bgcolor={'var(--color-box-hover)'} borderRadius={0.5}>
             <Typography>
-              {t('labelRedPacketHaveExclusive', { count: pointExclusiveRedPackets.length })}{' '}
+              {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}{' '}
               <Button
                 onClick={() => {
-                  if (pointExclusiveRedPackets.length === 1) {
-                    setShowRedPacket({
-                      isShow: true,
-                      info: {
-                        ...pointExclusiveRedPackets[0],
-                      },
-                      step: RedPacketViewStep.OpenPanel,
-                    })
-                    setOpendPopup()
-                  } else {
-                    setOpendPopup()
-                    setShowRedPacketsPopup(true)
-                  }
+                  setShowRedPacketsPopup(true)
                 }}
                 variant={'text'}
               >
@@ -328,10 +316,8 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                           },
                           step: RedPacketViewStep.OpenPanel,
                         })
-                        setOpendPopup()
                       } else {
                         setShowRedPacketsPopup(true)
-                        setOpendPopup()
                       }
                     }}
                     sx={{ background: 'black' }}

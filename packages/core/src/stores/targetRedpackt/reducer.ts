@@ -40,11 +40,8 @@ const targetRedpacketSlice: Slice = createSlice({
     setShowRedPacketsPopup: (state: TargetRedPacketStates, action: PayloadAction<boolean>) => {
       state.showPopup = action.payload
     },
-    setOpendPopup: (state: TargetRedPacketStates) => {
-      state.openedRedPackets = true
-    },
   },
 })
 export { targetRedpacketSlice }
-export const { getExclusiveRedpacket, getExclusiveRedpacketStatus, statusUnset, setShowRedPacketsPopup, setOpendPopup } =
+export const { getExclusiveRedpacket, getExclusiveRedpacketStatus, statusUnset, setShowRedPacketsPopup } =
   targetRedpacketSlice.actions

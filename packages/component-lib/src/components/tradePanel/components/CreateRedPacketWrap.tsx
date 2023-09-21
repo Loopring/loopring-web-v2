@@ -1398,7 +1398,10 @@ export const TargetRedpacktSelectStep = withTranslation()(
                   .map((redpacket) => (
                     <TargetRedpacktOption
                       onClick={() => {
-                        onClickExclusiveRedpacket(redpacket.hash)
+                        onClickExclusiveRedpacket({
+                          hash: redpacket.hash,
+                          remainCount: (redpacket.tokenAmount as any).remainTargetCount as number
+                        })
                       }}
                       selected={false}
                       key={redpacket.hash}
@@ -1618,7 +1621,10 @@ export const TargetRedpacktSelectStep = withTranslation()(
               </Button>
               <Button
                 onClick={() => {
-                  popRedPacket && onClickExclusiveRedpacket(popRedPacket.hash)
+                  popRedPacket && onClickExclusiveRedpacket({
+                    hash: popRedPacket.hash,
+                    remainCount: (popRedPacket?.luckyToken.tokenAmount as any).remainTargetCount as number,
+                  })
                   onCloseRedpacketPop()
                 }}
                 fullWidth
@@ -1805,9 +1811,9 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <Box height={300} marginTop={2} marginBottom={2} overflow={'scroll'}>
                 {contacts
                   ?.filter((contact) => {
-                    return search
+                    return (contact.address && contact.name && search)
                       ? contact.address.toLowerCase().includes(search.toLowerCase()) ||
-                          contact.name.toLowerCase().includes(search.toLowerCase())
+                        contact.name.toLowerCase().includes(search.toLowerCase())
                       : true
                   })
                   .map((contact) => {
@@ -2079,10 +2085,12 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
           />
           <Box marginTop={2} display={'flex'} justifyContent={'space-between'}>
             <Box display={'flex'} alignItems={'center'}>
-              <Typography marginRight={2}>
-                {t('labelSendRedPacketMax', {
-                  count: maximumTargetsLength - getValidAddresses(addressListString).length,
-                })}
+              <Typography color={maximumTargetsLength - getValidAddresses(addressListString).length < 0 ? 'var(--color-error)' : ''} marginRight={2}>
+                {maximumTargetsLength - getValidAddresses(addressListString).length >= 0
+                  ? t('labelSendRedPacketMax', {
+                      count: maximumTargetsLength - getValidAddresses(addressListString).length,
+                    })
+                  : t('labelRedPacketMaxValueExceeded')}
               </Typography>
               {!inputDisabled && (
                 <Button
