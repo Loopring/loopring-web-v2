@@ -1845,10 +1845,10 @@ export default {
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
   labelRedPacketViewType2: 'Exclusive',
-  labelRedPacketPlazaPublic: 'Plaza Public',
+  labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
     'Everyone in the Loopring community can participate in claiming the red packet',
-  labelRedPacketQRPublic: 'QR Public',
+  labelRedPacketQRPublic: 'Public QR',
   labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
   labelRedPacketExclusiveDes: 'Only users that have received the red packet can claim it',

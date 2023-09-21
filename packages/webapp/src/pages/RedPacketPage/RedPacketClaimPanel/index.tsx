@@ -92,6 +92,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
   const {redPackets: exclusiveRedPackets,  setOpendPopup, setShowRedPacketsPopup, showPopup, openedRedPackets} = useTargetRedPackets()
+  const pointExclusiveRedPackets = exclusiveRedPackets?.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_POINT")
   const { setShowRedPacket } = useOpenModals()
 
   const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
@@ -172,17 +173,17 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         </Button>
       </Box>
       <StylePaper ref={container} flex={1} display={'flex'} flexDirection={'column'}>
-        {!openedRedPackets && exclusiveRedPackets && exclusiveRedPackets.length > 0 && (
+        {pointExclusiveRedPackets && pointExclusiveRedPackets.length > 0 && (
           <Box paddingX={2} paddingY={1} bgcolor={'var(--color-box-hover)'} borderRadius={0.5}>
             <Typography>
-              {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}{' '}
+              {t('labelRedPacketHaveExclusive', { count: pointExclusiveRedPackets.length })}{' '}
               <Button
                 onClick={() => {
-                  if (exclusiveRedPackets.length === 1) {
+                  if (pointExclusiveRedPackets.length === 1) {
                     setShowRedPacket({
                       isShow: true,
                       info: {
-                        ...exclusiveRedPackets[0],
+                        ...pointExclusiveRedPackets[0],
                       },
                       step: RedPacketViewStep.OpenPanel,
                     })

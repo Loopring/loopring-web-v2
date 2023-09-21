@@ -28,7 +28,7 @@ export const AssetPage = () => {
       default:
         return (
           <AssetPanel
-            showRedpacketReddot={!!found && !openedRedPackets}
+            showRedpacketReddot={!!found}
             assetTitleProps={assetTitleProps}
             assetPanelProps={{...assetPanelProps, assetBtnStatus}}
           />

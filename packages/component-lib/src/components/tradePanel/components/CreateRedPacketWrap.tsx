@@ -69,6 +69,7 @@ import BigNumber from 'bignumber.js'
 import { isAddress, useNotify, useTokenMap } from '@loopring-web/core'
 import { CoinIcons, FeeSelect, Modal } from '../../../components'
 import { useTheme } from '@emotion/react'
+import { useHistory } from 'react-router'
 
 const StyledTextFiled = styled(TextField)``
 
@@ -859,6 +860,7 @@ export const CreateRedPacketStepType = withTranslation()(
     btnInfo,
     onClickNext,
     showNFT,
+    onSelecteValue,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tokenMap'> & {
     selectedType: LuckyRedPacketItem
@@ -909,6 +911,7 @@ export const CreateRedPacketStepType = withTranslation()(
           )}
 
           {filteredList.map((item: LuckyRedPacketItem, index) => {
+
             return (
               <React.Fragment key={index}>
                 {tradeType == RedPacketOrderType.FromNFT && index === 1 && (
@@ -927,24 +930,7 @@ export const CreateRedPacketStepType = withTranslation()(
                     }`}
                     fullWidth
                     onClick={(_e) => {
-                      if (tradeType === RedPacketOrderType.BlindBox) {
-                        handleOnDataChange({
-                          isNFT: item.isBlindboxNFT ? true : false,
-                          type: {
-                            ...tradeData?.type,
-                            partition: item.value.partition,
-                            mode: item.value.mode,
-                          },
-                        } as any)
-                      } else {
-                        handleOnDataChange({
-                          type: {
-                            ...tradeData?.type,
-                            partition: item.value.partition,
-                            mode: item.value.mode,
-                          },
-                        } as any)
-                      }
+                      onSelecteValue && onSelecteValue(item)
                     }}
                   >
                     {item.icon ? (
@@ -1221,6 +1207,7 @@ type CreateRedPacketScopeProps = {
   onClickNext: () => void
   palazaPublicDisabled: boolean
   exclusiveDisabled: boolean
+  showBackBtn: boolean
 }
 export const CreateRedPacketScope = withTranslation()(
   ({
@@ -1229,9 +1216,11 @@ export const CreateRedPacketScope = withTranslation()(
     onSelecteScope,
     palazaPublicDisabled,
     exclusiveDisabled,
+    showBackBtn,
     t,
   }: CreateRedPacketScopeProps & WithTranslation) => {
     const theme = useTheme()
+    const history = useHistory()
     return (
       <Box
         width={'100%'}
@@ -1320,7 +1309,23 @@ export const CreateRedPacketScope = withTranslation()(
           </Box>
         </Box>
         <Box display={'flex'} justifyContent={'center'} width={'100%'}>
-          <Box width={'50%'}>
+          {showBackBtn && <Box width={'45%'} marginRight={'5%'}>
+            <Button
+              variant={'outlined'}
+              size={'medium'}
+              fullWidth
+              className={'step'}
+              startIcon={<BackIcon fontSize={'small'} />}
+              color={'primary'}
+              sx={{ height: 'var(--btn-medium-height)' }}
+              onClick={() => {
+                history.goBack()
+              }}
+            >
+              {t(`labelMintBack`)}
+            </Button>
+          </Box>}
+          <Box width={'45%'}>
             <BtnMain
               {...{
                 defaultLabel: 'labelContinue',

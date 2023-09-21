@@ -1817,10 +1817,10 @@ export default {
   labelTimeoutAddressClick:
     '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelRedPacketViewType2: 'Exclusive',
-  labelRedPacketPlazaPublic: 'Plaza Public',
+  labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
     'Everyone in the Loopring community can participate in claiming the red packet',
-  labelRedPacketQRPublic: 'QR Public',
+  labelRedPacketQRPublic: 'Public QR',
   labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
   labelRedPacketExclusiveDes: 'Only users that have received the red packet can claim it',

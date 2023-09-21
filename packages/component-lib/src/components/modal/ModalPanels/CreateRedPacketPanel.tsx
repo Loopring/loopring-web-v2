@@ -10,6 +10,7 @@ import {
   NFTWholeINFO,
   RedPacketOrderData,
   RedPacketOrderType,
+  myLog,
 } from '@loopring-web/common-resources'
 import {
   HorizontalLabelPositionBelowStepper,
@@ -125,16 +126,26 @@ export const CreateRedPacketPanel = <
     }
   }, [tradeData?.nftData, panelIndex, tradeType, tradeData.target?.redpacketHash])
   React.useEffect(() => {
-    handleOnDataChange({
-      type: {
-        ...tradeData.type,
-        scope: LuckyTokenViewType.PRIVATE,
-        mode: LuckyTokenClaimType.BLIND_BOX,
-        partition: LuckyTokenAmountType.RANDOM
-      },
-
-      tradeType: RedPacketOrderType.BlindBox
-    } as any)
+    if (tradeData.tradeType !== RedPacketOrderType.FromNFT) {
+      handleOnDataChange({
+        type: {
+          ...tradeData.type,
+          scope: LuckyTokenViewType.PRIVATE,
+          mode: LuckyTokenClaimType.BLIND_BOX,
+          partition: LuckyTokenAmountType.RANDOM
+        },
+        tradeType: RedPacketOrderType.BlindBox
+      } as any)
+    } else {
+      handleOnDataChange({
+        type: {
+          ...tradeData.type,
+          scope: LuckyTokenViewType.PRIVATE,
+          mode: LuckyTokenClaimType.BLIND_BOX,
+          partition: LuckyTokenAmountType.RANDOM
+        }
+      } as any)
+    }
   }, [])
 
   const setActiveStep = React.useCallback(
@@ -392,6 +403,28 @@ export const CreateRedPacketPanel = <
           }}
           backToScope={backToScope}
           showNFT={showNFT}
+          onSelecteValue={(item) => {
+            setSelectType(item)
+            if (tradeType === RedPacketOrderType.BlindBox) {
+              handleOnDataChange({
+                isNFT: item.isBlindboxNFT ? true : false,
+                type: {
+                  ...tradeData?.type,
+                  partition: item.value.partition,
+                  mode: item.value.mode,
+                },
+              } as any)
+            } else {
+              handleOnDataChange({
+                type: {
+                  ...tradeData?.type,
+                  partition: item.value.partition,
+                  mode: item.value.mode,
+                },
+              } as any)
+            }
+
+          }}
         />
       ),
       toolBarItem: undefined,
@@ -643,18 +676,30 @@ export const CreateRedPacketPanel = <
             setShowScope(false)
           }}
           onSelecteScope={(scope) => {
-            handleOnDataChange({
-              type: {
-                ...tradeData?.type,
-                scope: scope,
-                mode: LuckyTokenClaimType.BLIND_BOX,
-                partition: LuckyTokenAmountType.RANDOM
-              },
-              tradeType: RedPacketOrderType.BlindBox
-            } as any)
+            if (tradeData.tradeType === RedPacketOrderType.FromNFT) {
+              handleOnDataChange({
+                type: {
+                  ...tradeData?.type,
+                  scope: scope,
+                  mode: LuckyTokenClaimType.BLIND_BOX,
+                  partition: LuckyTokenAmountType.RANDOM
+                }
+              } as any)
+            } else {
+              handleOnDataChange({
+                type: {
+                  ...tradeData?.type,
+                  scope: scope,
+                  mode: LuckyTokenClaimType.BLIND_BOX,
+                  partition: LuckyTokenAmountType.RANDOM
+                },
+                tradeType: RedPacketOrderType.BlindBox
+              } as any)
+            }
           }}
           selectedScope={tradeData.type!.scope!}
           exclusiveDisabled={!isWhiteListed && tradeData.tradeType === RedPacketOrderType.FromNFT}
+          showBackBtn={tradeData.tradeType === RedPacketOrderType.FromNFT}
         />
       ) : (
         <>
