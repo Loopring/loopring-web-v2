@@ -137,11 +137,16 @@ function _SwitchPanel<T extends string>(
   const { isMobile } = useSettings()
   const theme = useTheme()
   const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined)
+  const ref = React.useRef<any>(null)
+  React.useEffect(() => {
+    ref.current && ref.current.rootNode.scrollTo(0,0)
+  }, [index])
   return (
     <SwipeableViewsStyled
       className={
         hasToolBar ? `${className ? className : ''}` : `noToolBar ${className ? className : ''}`
       }
+      ref={ref}
       axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
       index={index}
       _height={rest._height}

@@ -501,6 +501,7 @@ export const CreateRedPacketPanel = <
           }}
           targetRedPackets={targetRedPackets}
           onClickCreateNew={() => {
+            window.scrollTo(0, 0);
             setActiveStep(TargetRedPacketStep.TradeType)
           }}
           onClickViewDetail={(hash) => {

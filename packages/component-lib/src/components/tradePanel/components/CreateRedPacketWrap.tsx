@@ -1422,13 +1422,13 @@ export const TargetRedpacktSelectStep = withTranslation()(
                               />
                             </Box>
                           )}
-                          <Box marginLeft={1}>
-                            <Typography>
+                          <Box width={'125px'} marginLeft={1} marginBottom={1}>
+                            <Typography  textOverflow={'ellipsis'} whiteSpace={'nowrap'} overflow={'hidden'}>
                               {redpacket.isNft
                                 ? redpacket.nftTokenInfo?.metadata?.base.name
                                 : idIndex[redpacket.tokenId]}
                             </Typography>
-                            <Typography color={'var(--color-text-secondary)'}>
+                            <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
                               {redpacket.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
                                 ? t('labelLuckyBlindBox')
                                 : redpacket.type.mode === sdk.LuckyTokenClaimType.RELAY
@@ -1858,6 +1858,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   }}
                   variant={'contained'}
                   fullWidth
+                  disabled={selectedAddresses.length === 0}
                 >
                   {t('labelConfirm')}
                 </Button>
