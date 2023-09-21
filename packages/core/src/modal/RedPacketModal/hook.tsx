@@ -897,7 +897,6 @@ export function useRedPacketModal() {
         list = getUserReceiveList(detail.claims as any, tokenInfo, detail.champion).list
       }
       // }
-
       const claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden' = detail.luckyToken
         .isNft
         ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
@@ -1057,9 +1056,11 @@ export function useRedPacketModal() {
             ? 'ended'
             : 'hidden'
           : 'hidden'
-        : detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
+        : [sdk.LuckyTokenItemStatus.COMPLETED, sdk.LuckyTokenItemStatus.OVER_DUE, sdk.LuckyTokenItemStatus.FAILED] 
         ? 'ended'
-        : 'hidden'
+        : detail.luckyToken.status === sdk.LuckyTokenItemStatus.OVER_DUE 
+        ? 'expired'
+        :'hidden'
 
       const tokenInfo = !detail.luckyToken.isNft
         ? tokenMap[idIndex[detail.luckyToken.tokenId]]

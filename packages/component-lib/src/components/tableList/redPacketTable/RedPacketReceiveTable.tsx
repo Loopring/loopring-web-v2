@@ -236,9 +236,9 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
               return <Box>{t('labelBlindBoxExpired')}</Box>
             } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
               return <Box>{t('labelBlindBoxClaimed')}</Box>
-            } else {
-              return <></>
-            }
+            } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+              return <Box>{t('labelRedPacketClaiming')}</Box>
+            } 
           },
         },
       ],
@@ -355,6 +355,8 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                     return <Box>{t('labelBlindBoxExpired')}</Box>
                   } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
                     return <Box>{t('labelBlindBoxClaimed')}</Box>
+                  } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+                    return <Box>{t('labelRedPacketClaiming')}</Box>
                   } else {
                     return <></>
                   }

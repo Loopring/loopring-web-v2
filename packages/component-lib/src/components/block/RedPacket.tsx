@@ -1140,11 +1140,11 @@ export const RedPacketDetail = ({
           <Button variant={'contained'} fullWidth onClick={onClickClaim}>
             {t('labelClaimBtn')}
           </Button>
-        ) : claimButton === 'expired' && bottomButton === 'ended' ? (
+        ) : claimButton === 'expired' && bottomButton === 'hidden' ? (
           <Button variant={'contained'} fullWidth disabled>
             {t('labelClaimBtnExpired')}
           </Button>
-        ) : claimButton === 'claimed' && bottomButton === 'ended' ? (
+        ) : claimButton === 'claimed' && bottomButton === 'hidden' ? (
           <Button variant={'contained'} fullWidth disabled>
             {t('labelClaimBtnClaimed')}
           </Button>
@@ -1173,7 +1173,7 @@ export const RedPacketDetail = ({
             </Button>
           )
         ) : (
-          claimButton !== 'hidden' && (
+          bottomButton !== 'hidden' && (
             <Button
               variant={'contained'}
               color={'error'}
