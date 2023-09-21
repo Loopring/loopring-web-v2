@@ -112,12 +112,12 @@ export const DualListPanel: any = withTranslation('common')(
     const marketsIsLoading = status === 'PENDING'
 
     return (
-      <Box display={'flex'} flexDirection={'column'} flex={1}>
+      <Box display={'flex'} flexDirection={'column'} flex={1} width={'100%'}>
         <MaxWidthContainer
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
-          height={34 * theme.unit}
+          height={isMobile ? 60 * theme.unit : 34 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>
@@ -127,11 +127,12 @@ export const DualListPanel: any = withTranslation('common')(
             <Box display={'flex'} alignItems={'center'}>
               <Button
                 onClick={() => history.push('/invest/balance')}
-                sx={{ width: 18 * theme.unit }}
+                sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                 variant={'contained'}
               >
                 {t('labelInvestMyDual')}
               </Button>
+              
               <Button
                 onClick={() => {
                   window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')
@@ -153,7 +154,7 @@ export const DualListPanel: any = withTranslation('common')(
               />
             </Box>
           </Box>
-          <DualInvestmentLogo />
+          {!isMobile && <DualInvestmentLogo />}
         </MaxWidthContainer>
         <MaxWidthContainer background={containerColors[1]} minHeight={'70vh'} paddingY={5}>
           {beginnerMode ? (
@@ -178,6 +179,10 @@ export const DualListPanel: any = withTranslation('common')(
                   onChange={(_event, value) => handleOnPairChange({ pairA: value.toString() })}
                   aria-label='l2-history-tabs'
                   variant='scrollable'
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap'
+                  }}
                 >
                   {tradeMap &&
                     Reflect.ownKeys(tradeMap)
@@ -185,6 +190,7 @@ export const DualListPanel: any = withTranslation('common')(
                       .map((item, index) => {
                         return (
                           <Grid
+                            marginBottom={2}
                             marginLeft={2}
                             item
                             xs={6}
@@ -222,12 +228,15 @@ export const DualListPanel: any = withTranslation('common')(
                     <Box
                       display={'flex'}
                       flexDirection={'row'}
-                      paddingTop={3}
+                      paddingTop={1}
                       paddingX={2}
                       justifyContent={'space-between'}
                       alignItems={'center'}
                     >
-                      <Box display={'flex'}>
+                      <Box
+                        display={'flex'}
+                        flexWrap={'wrap'}
+                      >
                         {pairASymbol &&
                           tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
                             const _index = marketArray.findIndex((_item) =>
@@ -240,13 +249,13 @@ export const DualListPanel: any = withTranslation('common')(
                                     ? 'btnCard dualInvestCard selected'
                                     : 'btnCard dualInvestCard '
                                 }
-                                sx={{ height: '100%', marginRight: 2 }}
+                                sx={{ height: '100%', marginRight: 2, marginBottom: isMobile ? 2 : 0}}
                                 onClick={() => {
                                   handleOnPairChange({ pairB: item })
                                 }}
                                 key={item.toString() + index.toString()}
                               >
-                                <Typography variant={'h5'}>
+                                <Typography variant={isMobile ? 'body1' : 'h5'}>
                                   {_index !== -1
                                     ? t('labelDualBase', {
                                         symbol: item.toString(),
