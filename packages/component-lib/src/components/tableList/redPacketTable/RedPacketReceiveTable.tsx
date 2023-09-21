@@ -136,7 +136,9 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
         />
       </Tooltip>
     )
-    const exclusiveTag = <Typography marginLeft={0.5} borderRadius={1} paddingX={0.5} bgcolor={hexToRGB(theme.colorBase.warning, 0.5)} color={'var(--color-warning)'}>Exclusive </Typography>
+    const exclusiveTag = <Typography marginLeft={0.5} borderRadius={1} paddingX={0.5} bgcolor={hexToRGB(theme.colorBase.warning, 0.5)} color={'var(--color-warning)'}>  
+      {t("labelRedPacketExclusiveTag", { ns: 'common' })}
+    </Typography>
     const getColumnModeTransactionUnclaimedNFT = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -234,9 +236,9 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
               return <Box>{t('labelBlindBoxExpired')}</Box>
             } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
               return <Box>{t('labelBlindBoxClaimed')}</Box>
-            } else {
-              return <></>
-            }
+            } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+              return <Box>{t('labelRedPacketClaiming')}</Box>
+            } 
           },
         },
       ],
@@ -353,6 +355,8 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                     return <Box>{t('labelBlindBoxExpired')}</Box>
                   } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
                     return <Box>{t('labelBlindBoxClaimed')}</Box>
+                  } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+                    return <Box>{t('labelRedPacketClaiming')}</Box>
                   } else {
                     return <></>
                   }

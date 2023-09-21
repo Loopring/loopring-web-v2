@@ -119,7 +119,7 @@ export type RedPacketDetailProps = {
   tokenSymbol?: string
   ended: boolean
   bottomButton: 'ended' | 'share' | 'hidden'
-  claimButton: 'claim' | 'claimed' | 'expired' | 'hidden'
+  claimButton: 'claim' | 'claimed' | 'expired' | 'hidden' | 'claiming'
   onClickClaim?: () => void
   totalNumber: number
 }

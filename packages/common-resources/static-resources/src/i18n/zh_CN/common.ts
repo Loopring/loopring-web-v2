@@ -1819,12 +1819,14 @@ export default {
     '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelLeverageETHStakingDes: 'Gain higher APY aggressively',
   labelRedPacketViewType2: 'Exclusive',
-  labelRedPacketPlazaPublic: 'Plaza Public',
+  labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
     'Everyone in the Loopring community can participate in claiming the red packet',
   labelRedPacketQRPublic: 'QR Public',
   labelRedPacketQRPublicDes:
     'Anyone that knows the QR code can participate in claiming the red packet',
+  labelRedPacketQRPublic: 'Public QR',
+  labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
   labelRedPacketExclusiveDes: 'Only users that have received the red packet can claim it',
   labelRedPacketHaveExclusive: 'You have {{count}} exclusive Red Packets.',
@@ -1834,8 +1836,8 @@ export default {
   labelRedpacketExclusiveReady: 'You have {{count}} exclusive Red Packets ready',
   labelRedpacketSentMaxLimit: 'Sent / Max Limit',
   labelRedpacketCreateNew: 'Create New Red Packet',
-  labelRedpacketGiftRedPacket: 'Gift Red Packet',
-  labelRedpacketRedPacketscount: 'Total Red Packets count',
+  labelRedpacketGiftRedPacket: 'Count of Red Packet with Gift',
+  labelRedpacketRedPacketscount: 'Total Red Packets',
   labelRedpacketRevealTime: 'Reveal Time',
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
@@ -1879,4 +1881,6 @@ export default {
   labelSendRedPacketMax: 'Max: {{count}}',
   labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
   labelRedPacketTotal: 'Total {{count}}',
+  labelRedPacketExclusiveTag: 'Exclusive',
+  labelRedPacketClaiming: 'Claiming',
 }

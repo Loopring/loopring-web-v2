@@ -897,15 +897,15 @@ export function useRedPacketModal() {
         list = getUserReceiveList(detail.claims as any, tokenInfo, detail.champion).list
       }
       // }
-
       const claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden' = detail.luckyToken
         .isNft
         ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
           ? 'claim'
-          : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED ||
-            detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+          : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
           ? 'claimed'
-          : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
+          : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+          ? 'claiming'
+          :  detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
           ? 'expired'
           : 'hidden'
         : 'hidden'
@@ -1057,13 +1057,18 @@ export function useRedPacketModal() {
             ? 'ended'
             : 'hidden'
           : 'hidden'
-        : detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
+        : [sdk.LuckyTokenItemStatus.COMPLETED, sdk.LuckyTokenItemStatus.FAILED]
+          .includes(detail.luckyToken.status)
         ? 'ended'
-        : 'hidden'
+        : detail.luckyToken.status === sdk.LuckyTokenItemStatus.OVER_DUE 
+        ? 'expired'
+        :'hidden'
 
       const tokenInfo = !detail.luckyToken.isNft
         ? tokenMap[idIndex[detail.luckyToken.tokenId]]
         : undefined
+      myLog('claimButton, shareButton', claimButton,
+      shareButton)
       return {
         sender: _info.sender?.ens ? _info.sender?.ens : getShortAddr(_info.sender?.address),
         memo: _info.info.memo,
@@ -1188,12 +1193,12 @@ export function useRedPacketModal() {
               participated: blinBoxDetail.blindBoxStatus !== '',
               won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
               amount:
-                blinBoxDetail.claimAmount &&
+                blinBoxDetail.claimAmount && tokenInfo &&
                 getValuePrecisionThousand(
-                  sdk.toBig(blinBoxDetail.claimAmount ?? '0').div('1e' + tokenInfo!.decimals),
-                  tokenInfo!.precision,
-                  tokenInfo!.precision,
-                  tokenInfo!.precision,
+                  sdk.toBig(blinBoxDetail.claimAmount ?? '0').div('1e' + tokenInfo.decimals),
+                  tokenInfo.precision,
+                  tokenInfo.precision,
+                  tokenInfo.precision,
                   false,
                 ),
               total: tokenInfo && getValuePrecisionThousand(

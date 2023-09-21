@@ -1864,11 +1864,11 @@ export default {
   labelShareMessage:
     'Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}',
   labelRedPacketViewType2: 'Exclusive',
-  labelRedPacketPlazaPublic: 'Plaza Public',
+  labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
-    'In the red envelope square display & know the QR code users can participate in grabbing red envelopes',
-  labelRedPacketQRPublic: 'QR Public',
-  labelRedPacketQRPublicDes: 'know the QR code users can participate in grabbing red envelopes',
+    'Everyone in the Loopring community can participate in claiming the red packet',
+  labelRedPacketQRPublic: 'Public QR',
+  labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
   labelRedPacketExclusiveDes: 'know the QR code users can participate in grabbing red envelopes',
   labelRedPacketHaveExclusive: 'You have {{count}} exclusive Red Packets.',
@@ -1878,8 +1878,8 @@ export default {
   labelRedpacketExclusiveReady: 'You have {{count}} exclusive Red Packets ready',
   labelRedpacketSentMaxLimit: 'Sent / Max Limit',
   labelRedpacketCreateNew: 'Create New Red Packet',
-  labelRedpacketGiftRedPacket: 'Gift Red Packet',
-  labelRedpacketRedPacketscount: 'Total Red Packets count',
+  labelRedpacketGiftRedPacket: 'Count of Red Packet with Gift',
+  labelRedpacketRedPacketscount: 'Total Red Packets',
   labelRedpacketRevealTime: 'Reveal Time',
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
@@ -1965,4 +1965,6 @@ export default {
   labelDualTypeDualDip: 'Buy The Dip',
   labelDualTypeDualBegin: 'Dual Invest Beginner mode',
   labelDualTypeAll: 'Dual Invest',
+  labelRedPacketExclusiveTag: 'Exclusive',
+  labelRedPacketClaiming: 'Claiming',
 }

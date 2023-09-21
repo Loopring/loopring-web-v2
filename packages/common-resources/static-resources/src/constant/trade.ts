@@ -689,6 +689,7 @@ export type RedPacketOrderData<I> = {
     redpacketHash: string
     addressListString: string
     popupChecked: boolean
+    maxSendCount: number
   }
   showNFT: boolean
 } & Partial<IBData<I>> &
