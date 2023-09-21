@@ -277,7 +277,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     if (index) {
       const _item = getDetail(item, index)
       setDetail(_item)
-      updateEditDual(_item)
+      updateEditDual(_item as any)
       if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
         getProduct(_item)
         handleOnchange({

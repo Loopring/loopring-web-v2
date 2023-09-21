@@ -1965,4 +1965,5 @@ export default {
   labelDualTypeDualDip: 'Buy The Dip',
   labelDualTypeDualBegin: 'Dual Invest Beginner mode',
   labelDualTypeAll: 'Dual Invest',
+  labelDualAutoCancelConfirm: 'Cancel Dual invest',
 }

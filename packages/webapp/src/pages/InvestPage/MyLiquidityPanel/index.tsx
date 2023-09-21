@@ -6,6 +6,8 @@ import {
   AmmPanelType,
   AssetsTable,
   ButtonStyle,
+  CancelDualAlert,
+  // CancelOneOrdersAlert,
   DefiStakingTable,
   DualAssetTable,
   DualDetail,
@@ -88,6 +90,7 @@ const MyLiquidity: any = withTranslation('common')(
     noHeader?: boolean
   }) => {
     let match: any = useRouteMatch('/invest/balance/:type')
+
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
     const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
@@ -97,7 +100,6 @@ const MyLiquidity: any = withTranslation('common')(
     const leverageETHRef = React.useRef(null)
     const dualRef = React.useRef(null)
     const sideStakeRef = React.useRef(null)
-
     const { ammActivityMap } = useAmmActivityMap()
     const { forexMap } = useSystem()
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap()
@@ -111,7 +113,13 @@ const MyLiquidity: any = withTranslation('common')(
     const { currency, hideSmallBalances, defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { setShowAmm } = useOpenModals()
-
+    const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
+      open: boolean
+      row?: any
+    }>({
+      open: false,
+      row: undefined,
+    })
     const {
       dualList,
       dualOnInvestAsset,
@@ -158,9 +166,7 @@ const MyLiquidity: any = withTranslation('common')(
       // dualList,
     })
     const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
-
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
-
     React.useEffect(() => {
       if (match?.params?.type) {
         switch (match?.params?.type) {
@@ -186,7 +192,6 @@ const MyLiquidity: any = withTranslation('common')(
         getStakingList({})
       }
     }, [match?.params?.type, searchParams?.get('refreshStake')])
-
     React.useEffect(() => {
       if (account.accountId) {
         getDualTxList({})
@@ -207,7 +212,6 @@ const MyLiquidity: any = withTranslation('common')(
         marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
       )
     })
-
     const totalClaimableRewardsAmount =
       rewardsAPIError || !totalClaims
         ? '0'
@@ -303,6 +307,10 @@ const MyLiquidity: any = withTranslation('common')(
         })
       }
     }, [editDualBtnInfo.label])
+
+    const _cancelReInvest = (item) => {
+      setShowCancelOndAlert({ open: true, row: item })
+    }
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         {!noHeader && (
@@ -325,7 +333,7 @@ const MyLiquidity: any = withTranslation('common')(
                   onClick={() => {
                     history.push('/invest/overview')
                   }}
-                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2}}
+                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2 }}
                   variant={'contained'}
                 >
                   {t('labelInvestOverviewTitle')}
@@ -334,12 +342,11 @@ const MyLiquidity: any = withTranslation('common')(
                   onClick={() => {
                     history.push('/l2assets/history/Transactions')
                   }}
-                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit}}
+                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
                 >
                   {t('labelTxnDetailHeader')}
                 </Button>
-                
               </Box>
               <Box
                 sx={{ background: 'var(--color-box-secondary)' }}
@@ -738,7 +745,7 @@ const MyLiquidity: any = withTranslation('common')(
                       showDetail={showDetail}
                       refresh={refresh}
                       hideAssets={hideAssets}
-                      cancelReInvest={cancelReInvest}
+                      cancelReInvest={_cancelReInvest}
                       getProduct={getProduct}
                     />
                     <Modal
@@ -834,6 +841,11 @@ const MyLiquidity: any = withTranslation('common')(
             </Typography>
           </SwitchPanelStyled>
         </Modal>
+        <CancelDualAlert
+          open={showCancelOneAlert.open}
+          handleCancelOne={() => cancelReInvest(showCancelOneAlert.row)}
+          handleClose={() => setShowCancelOndAlert({ open: false, row: undefined })}
+        />
         <Toast
           alertText={dualToastOpen?.content ?? ''}
           severity={dualToastOpen?.type ?? ToastType.success}
