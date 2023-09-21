@@ -571,11 +571,10 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }) => columnsRaw as Column<T, any>[],
     }
-
     return (
       <TableStyled flex={1} flexDirection={'column'} display={'flex'} isMobile={isMobile}>
         <Box marginY={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-          <Typography variant={'h1'}>{t("labelTitleOverviewAllPrd", { ns: 'common' })}</Typography>
+          <Typography variant={isMobile ? 'h3' : 'h1'}>{t("labelTitleOverviewAllPrd", { ns: 'common' })}</Typography>
           {showFilter && (
             <Box
               display={'inline-flex'}

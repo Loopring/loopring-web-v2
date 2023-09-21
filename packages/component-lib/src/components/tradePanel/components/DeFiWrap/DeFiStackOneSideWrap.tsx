@@ -27,6 +27,10 @@ const GridStyle = styled(Grid)`
   input::placeholder {
     font-size: ${({ theme }) => theme.fontDefault.h5};
   }
+  .coinInput-wrap{
+    background-color: var(--color-global-bg);
+    border: 1px solid var(--color-border);
+  }
 `
 
 export const DeFiSideDetail = ({
@@ -496,15 +500,18 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       </Grid>
       <Grid
         item
-        marginTop={1}
+        marginTop={2}
+        paddingTop={5}
         flexDirection={'column'}
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
+        borderTop={'1px solid var(--color-border)'}
       >
         <InputCoin<T, I, any>
           ref={coinSellRef}
           disabled={getDisabled}
+          
           {...{
             ...propsSell,
             name: 'coinSell',
@@ -514,109 +521,108 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
             coinMap: {},
             coinPrecision: tokenSell.precision,
           }}
+          label={<Typography color={'var(--color-text-secondary)'}>Amount</Typography>}
         />
       </Grid>
       <>
-        <Grid item alignSelf={'stretch'} marginTop={1 / 2} marginBottom={2}>
+        <Grid item alignSelf={'stretch'} marginTop={3 / 2} marginBottom={3}>
           <Typography
             component={'span'}
             display={'inline-flex'}
             color={'textSecondary'}
-            variant={'body2'}
           >
             <Trans i18nKey={'labelInvestLRCStakingLockAlert'}>
               Your assets for investment will be locked until your redemption.
             </Trans>
           </Typography>
         </Grid>
-        <Grid
-          container
-          justifyContent={'space-between'}
-          direction={'row'}
-          alignItems={'center'}
-          marginTop={1}
-        >
-          <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
-            <Typography
-              component={'p'}
-              variant={'body2'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              <Trans i18nKey={'labelLRCStakeAPR'}>
-                APR
-                <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-              </Trans>
-            </Typography>
-          </Tooltip>
-          <Typography component={'p'} variant={'body2'} color={'textPrimary'}>
-            {deFiSideCalcData?.stakeViewInfo?.apr && deFiSideCalcData?.stakeViewInfo?.apr !== '0.00'
-              ? deFiSideCalcData.stakeViewInfo.apr + '%'
-              : EmptyValueTag}
-          </Typography>
-        </Grid>
-
-        <Grid
-          container
-          justifyContent={'space-between'}
-          direction={'row'}
-          alignItems={'center'}
-          marginTop={1}
-        >
-          <Tooltip title={t('labelLRCStakeEarnTooltips').toString()} placement={'top'}>
-            <Typography
-              component={'p'}
-              variant={'body2'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              <Trans i18nKey={'labelLRCStakeEarn'}>
-                Earn
-                <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-              </Trans>
-            </Typography>
-          </Tooltip>
-          <Typography component={'p'} variant={'body2'} color={'textPrimary'}>
-            {dalyEarn}
-          </Typography>
-        </Grid>
-        <Grid
-          container
-          justifyContent={'space-between'}
-          direction={'row'}
-          alignItems={'center'}
-          marginTop={1}
-        >
-          <Tooltip
-            title={t('labelLRCStakeDurationTooltips', {
-              day: daysDuration ? daysDuration : EmptyValueTag,
-            }).toString()}
-            placement={'top'}
+        <Box bgcolor={'var(--color-global-bg)'} width={'100%'} padding={2} borderRadius={1}>
+          <Grid
+            container
+            justifyContent={'space-between'}
+            direction={'row'}
+            alignItems={'center'}
           >
-            <Typography
-              component={'p'}
-              variant={'body2'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              <Trans i18nKey={'labelLRCStakeDuration'}>
-                Duration
-                <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-              </Trans>
+            <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
+              <Typography
+                component={'p'}
+                color={'textSecondary'}
+                display={'inline-flex'}
+                alignItems={'center'}
+              >
+                <Trans i18nKey={'labelLRCStakeAPR'}>
+                  APR
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                </Trans>
+              </Typography>
+            </Tooltip>
+            <Typography component={'p'} color={'var(--color-success)'}>
+              {deFiSideCalcData?.stakeViewInfo?.apr &&
+              deFiSideCalcData?.stakeViewInfo?.apr !== '0.00'
+                ? deFiSideCalcData.stakeViewInfo.apr + '%'
+                : EmptyValueTag}
             </Typography>
-          </Tooltip>
-          <Typography component={'p'} variant={'body2'} color={'textPrimary'}>
-            {daysDuration ? '≥ ' + daysDuration + ' ' + t('labelDay') : EmptyValueTag}
-          </Typography>
-        </Grid>
-        <Grid item alignSelf={'stretch'} marginTop={3}>
+          </Grid>
+
+          <Grid
+            container
+            justifyContent={'space-between'}
+            direction={'row'}
+            alignItems={'center'}
+            marginTop={2}
+          >
+            <Tooltip title={t('labelLRCStakeEarnTooltips').toString()} placement={'top'}>
+              <Typography
+                component={'p'}
+                color={'textSecondary'}
+                display={'inline-flex'}
+                alignItems={'center'}
+              >
+                <Trans i18nKey={'labelLRCStakeEarn'}>
+                  Earn
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                </Trans>
+              </Typography>
+            </Tooltip>
+            <Typography component={'p'} color={'textPrimary'}>
+              {dalyEarn}
+            </Typography>
+          </Grid>
+          <Grid
+            container
+            justifyContent={'space-between'}
+            direction={'row'}
+            alignItems={'center'}
+            marginTop={2}
+          >
+            <Tooltip
+              title={t('labelLRCStakeDurationTooltips', {
+                day: daysDuration ? daysDuration : EmptyValueTag,
+              }).toString()}
+              placement={'top'}
+            >
+              <Typography
+                component={'p'}
+                color={'textSecondary'}
+                display={'inline-flex'}
+                alignItems={'center'}
+              >
+                <Trans i18nKey={'labelLRCStakeDuration'}>
+                  Duration
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                </Trans>
+              </Typography>
+            </Tooltip>
+            <Typography component={'p'} color={'textPrimary'}>
+              {daysDuration ? '≥ ' + daysDuration + ' ' + t('labelDay') : EmptyValueTag}
+            </Typography>
+          </Grid>
+        </Box>
+
+        <Grid item alignSelf={'stretch'} marginTop={3} >
           <Typography
             component={'p'}
-            variant={'body2'}
-            color={'var(--color-text-third)'}
+            color={'var(--color-text-secondary)'}
             display={'inline-flex'}
             alignItems={'center'}
           >
@@ -637,13 +643,13 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
         </Grid>
       </>
 
-      <Grid item alignSelf={'stretch'} marginTop={2}>
+      <Grid item alignSelf={'stretch'} marginTop={4}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item>
             <ButtonStyle
               fullWidth
               variant={'contained'}
-              size={'medium'}
+              size={'large'}
               color={'primary'}
               onClick={() => {
                 onSubmitClick()

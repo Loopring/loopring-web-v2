@@ -19,6 +19,7 @@ import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
+import styled from '@emotion/styled'
 
 export enum InvestType {
   MyBalance = 0,
@@ -29,8 +30,19 @@ export enum InvestType {
   Stack = 5,
   LeverageETH = 6,
 }
-
-export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
+export const containerColors = [
+  'var(--color-global-bg)',
+  'var(--color-pop-bg)',
+]
+const BoxStyled = styled(Box)`
+  display: flex;
+  justify-content: center;
+  @media only screen and (max-width: 1200px) {
+    .inner-box {
+      width: 100%;
+    }
+  }
+`
 export const MaxWidthContainer = (
   props: {
     children: React.ReactNode
@@ -40,19 +52,20 @@ export const MaxWidthContainer = (
 ) => {
   const { containerProps, children, background, sx, ...otherProps } = props
   return (
-    <Box sx={{ background }} display={'flex'} justifyContent={'center'} {...containerProps}>
+    <BoxStyled sx={{ background }} {...containerProps}>
       <Box
         sx={{
           width: '1200px',
           maxWidth: '100%',
           ...sx,
         }}
+        className={'inner-box'}
         paddingX={3}
         {...otherProps}
       >
         {children}
       </Box>
-    </Box>
+    </BoxStyled>
   )
 }
 export const InvestRouter = [
