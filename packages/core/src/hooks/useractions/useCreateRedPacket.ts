@@ -515,12 +515,7 @@ export const useCreateRedPacket = <
           await sdk.sleep(TOAST_TIME)
           if (redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET) {
             setShowAccount({
-              isShow: true,
-              step: AccountStep.RedPacketSend_Success,
-              info: {
-                scope: request.type.scope,
-                hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-              },
+              isShow: false
             })
             handleOnDataChange({
               target: {
@@ -528,6 +523,7 @@ export const useCreateRedPacket = <
                 maxSendCount: request.numbers,
               },
             } as any)
+            getTargetRedpackets()
           } else {
             setShowAccount({
               isShow: true,
@@ -816,11 +812,12 @@ export const useCreateRedPacket = <
           {
             claimer: getValidAddresses(redPacketOrder.target?.addressListString),
             hash: redPacketOrder.target?.redpacketHash,
-            notifyType:
-              redPacketOrder.target?.popupChecked === undefined ||
-              redPacketOrder.target?.popupChecked
+            notifyType: isWhiteListed
+              ? redPacketOrder.target?.popupChecked === undefined ||
+                redPacketOrder.target?.popupChecked
                 ? 1
-                : 0,
+                : 0
+              : 0,
           },
           account.eddsaKey.sk,
           account.apiKey,
@@ -831,7 +828,11 @@ export const useCreateRedPacket = <
         setShowAccount({
           isShow: true,
           step: AccountStep.RedPacketSend_Success,
+          info: {
+            scope: sdk.LuckyTokenViewType.TARGET
+          }
         })
+        getTargetRedpackets()
       } catch (e: any) {
         setShowAccount({
           isShow: true,
@@ -993,25 +994,25 @@ export const useCreateRedPacket = <
   )
   : undefined
   
-
+  const getTargetRedpackets = async () => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+      {
+        senderId: account.accountId,
+        scopes: '2',
+        modes: '0,1,2',
+        partitions: '0,1',
+        statuses: '2',
+        official: false,
+        offset: 0,
+        limit: 100,
+        isEnough: true
+      } as any,
+      account.apiKey,
+    )
+    setTargetRedPackets(response ? response?.list : [])
+  }
   React.useEffect(() => {
-    ;(async () => {
-      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
-        {
-          senderId: account.accountId,
-          scopes: '2',
-          modes: '0,1,2',
-          partitions: '0,1',
-          statuses: '2',
-          official: false,
-          offset: 0,
-          limit: 100,
-          isEnough: true
-        } as any,
-        account.apiKey,
-      )
-      setTargetRedPackets(response ? response?.list : [])
-    })()
+    getTargetRedpackets()
     ;(async () => {
       const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
       const found = (response?.raw_data as any)

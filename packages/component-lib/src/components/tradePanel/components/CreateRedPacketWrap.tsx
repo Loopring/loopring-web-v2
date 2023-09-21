@@ -911,7 +911,6 @@ export const CreateRedPacketStepType = withTranslation()(
           )}
 
           {filteredList.map((item: LuckyRedPacketItem, index) => {
-
             return (
               <React.Fragment key={index}>
                 {tradeType == RedPacketOrderType.FromNFT && index === 1 && (
@@ -2092,10 +2091,14 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     })
                   : t('labelRedPacketMaxValueExceeded')}
               </Typography>
-              {!inputDisabled && (
+              {(
                 <Button
                   onClick={(e) => {
                     onManualEditInput('')
+                    setShowChangeTips({
+                      show: false,
+                      previousInputType: undefined,
+                    })
                   }}
                   variant={'outlined'}
                 >
@@ -2138,6 +2141,10 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                           ...showChangeTips,
                           show: true,
                           confirmCallBack() {
+                            setShowChangeTips(showChangeTips => ({
+                              ...showChangeTips,
+                              show: false
+                            }))
                             parentNode.click()
                             onManualEditInput('')
                           },
@@ -2162,6 +2169,10 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                       ...showChangeTips,
                       show: true,
                       confirmCallBack() {
+                        setShowChangeTips(showChangeTips => ({
+                          ...showChangeTips,
+                          show: false
+                        }))
                         onManualEditInput('')
                         setSelectedAddresses([])
                         setShowContactModal(true)

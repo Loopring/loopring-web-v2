@@ -554,7 +554,9 @@ export const CreateRedPacketPanel = <
           contacts={contacts}
           addressListString={tradeData.target?.addressListString ?? ''}
           popupChecked={
-            tradeData.target?.popupChecked !== undefined ? tradeData.target?.popupChecked : true
+            isWhiteListed 
+              ? tradeData.target?.popupChecked !== undefined ? tradeData.target?.popupChecked : true
+              : false
           }
           onChangePopupChecked={(popupChecked) => {
             handleOnDataChange({
@@ -683,18 +685,26 @@ export const CreateRedPacketPanel = <
                   ...tradeData?.type,
                   scope: scope,
                   mode: LuckyTokenClaimType.BLIND_BOX,
-                  partition: LuckyTokenAmountType.RANDOM
-                }
+                  partition: LuckyTokenAmountType.RANDOM,
+                },
               } as any)
+              setSelectType(LuckyRedPacketList.find((config) => config.defaultForFromNFT))
             } else {
+              const found = LuckyRedPacketList.find((config) =>
+                showERC20Blindbox
+                  ? config.defaultForBlindbox
+                  : config.defaultForBlindboxNotShowERC20Blindbox,
+              )
+              setSelectType(found)
               handleOnDataChange({
                 type: {
                   ...tradeData?.type,
                   scope: scope,
                   mode: LuckyTokenClaimType.BLIND_BOX,
-                  partition: LuckyTokenAmountType.RANDOM
+                  partition: LuckyTokenAmountType.RANDOM,
                 },
-                tradeType: RedPacketOrderType.BlindBox
+                isNFT: false,
+                tradeType: RedPacketOrderType.BlindBox,
               } as any)
             }
           }}
