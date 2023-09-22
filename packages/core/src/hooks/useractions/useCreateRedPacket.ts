@@ -18,6 +18,7 @@ import {
   RedPacketOrderType,
   EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST,
   EXCLUSIVE_REDPACKET_ORDER_LIMIT,
+  MapChainId,
 } from '@loopring-web/common-resources'
 import { store, useAccount, useModalData, useSystem, useTokenMap } from '../../stores'
 import {
@@ -26,6 +27,8 @@ import {
   RedPacketViewStep,
   SwitchData,
   useOpenModals,
+  useSettings,
+  useToggle,
 } from '@loopring-web/component-lib'
 import React, { useCallback } from 'react'
 import { makeWalletLayer2 } from '../help'
@@ -42,7 +45,24 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useRedPacketConfig } from '../../stores/redPacket'
 import { useHistory, useLocation } from 'react-router-dom'
 import moment from 'moment'
-
+const checkPermission = (dexToggle: any, info: {network: string, functionName: string, accAddress: string}) => {
+  const whiteList = dexToggle.whiteList
+  const {functionName, network, accAddress} = info
+  const toogle = dexToggle[functionName]
+  if (toogle.enable) {
+    return true
+  } else if (!toogle.enable && toogle.reason === 'no view') {
+    const found =
+      whiteList &&
+      whiteList[network].find((item: any) => item.superUserFunction.includes('redpacket_exclusive'))
+    return found &&
+      found.superUserAddress.find(
+        (addr) => addr.toLocaleLowerCase() === accAddress.toLocaleLowerCase(),
+      )
+  } else {
+    return false
+  }
+}
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
   I,
@@ -651,6 +671,22 @@ export const useCreateRedPacket = <
     }
   }, [isShow])
   React.useEffect(() => {
+    (async () => {
+      if (redPacketOrder.target?.redpacketHash) {
+        const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail({
+          hash: redPacketOrder.target?.redpacketHash
+        }, account.apiKey)
+        const targets = (response?.detail as any).targets as string[]
+        handleOnDataChange({
+          target: {
+            ...redPacketOrder.target,
+            sentAddresses: targets
+          }
+        } as any)
+      }
+    })()
+  }, [redPacketOrder.target?.redpacketHash])
+  React.useEffect(() => {
     if (isShow) {
       checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
     } else {
@@ -1033,6 +1069,17 @@ export const useCreateRedPacket = <
   const onCloseRedpacketPop = React.useCallback(async () => {
     setPopRedPacket(undefined)
   }, [])
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const {
+    toggle
+  } = useToggle()
+  
+  const showExclusiveOption = checkPermission(toggle, {
+    accAddress: account.accAddress,
+    network,
+    functionName: 'redpacket_exclusive'
+  })
 
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     tradeType: redPacketOrder.tradeType,
@@ -1076,7 +1123,8 @@ export const useCreateRedPacket = <
     popRedPacketAmountStr,
     onClickViewTargetDetail,
     onCloseRedpacketPop,
-    isWhiteListed
+    isWhiteListed,
+    showExclusiveOption,
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }

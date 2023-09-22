@@ -122,6 +122,7 @@ export type RedPacketDetailProps = {
   claimButton: 'claim' | 'claimed' | 'expired' | 'hidden' | 'claiming'
   onClickClaim?: () => void
   totalNumber: number
+  showReceiptListBtn: boolean
 }
 export type RedPacketBlindBoxDetailTypes =
   | 'Not Started'
@@ -211,6 +212,8 @@ export type RedPacketBlindBoxDetailProps = {
   expired: boolean
   isTokenBlindbox: boolean
   remainGiftsAmount: string
+  showReceiptListBtn: boolean
+  targets?: string[]
 }
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number
