@@ -17,6 +17,8 @@ import {
   BottomRule,
   Header as HeaderUI,
   HideOnScroll,
+  RedPacketViewStep,
+  useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import { withRouter, useLocation } from 'react-router-dom'
@@ -40,14 +42,23 @@ const Header = withTranslation('common')(
       const { allowTrade, chainId } = useSystem()
       const { account } = useAccount()
       const [view, setView] = React.useState(false)
-      const { redPackets, setShowRedPacketsPopup, setOpendPopup, openedRedPackets} =useTargetRedPackets()
-      const showExclusiveRedpacket = redPackets && 
-        redPackets.find(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") &&
-        !openedRedPackets
-      const exclusiveRedpacketCount = redPackets ? redPackets.length : 0
+      const { redPackets, setShowRedPacketsPopup} = useTargetRedPackets()
+      const popUpRedpackets = redPackets ? redPackets.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") : []
+      const showExclusiveRedpacket = popUpRedpackets.length > 0
+      const exclusiveRedpacketCount = popUpRedpackets.length
+      const { setShowRedPacket } = useOpenModals()
       const onClickExclusiveredPacket = () => {
-        setShowRedPacketsPopup(true)
-        setOpendPopup()
+        if (exclusiveRedpacketCount > 1) {
+          setShowRedPacketsPopup(true)
+        } else {
+          setShowRedPacket({
+            isShow: true,
+            info: {
+              ...popUpRedpackets[0],
+            },
+            step: RedPacketViewStep.OpenPanel,
+          })
+        }
       } 
 
       return (

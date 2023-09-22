@@ -29,7 +29,7 @@ const TableWrapperStyled = styled(Box)`
 const TableStyled = styled(Table)<{ isBlindbox: boolean }>`
   &.rdg {
     --template-columns: ${({ isBlindbox }) =>
-      isBlindbox ? '30% 25% 25% 25% !important' : '22% 12% 24% auto auto auto !important'};
+      isBlindbox ? '30% 25% 25% 20% !important' : '22% 12% 24% auto auto auto !important'};
 
     height: ${(props: any) => {
       if (props.ispro === 'pro') {

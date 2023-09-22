@@ -30,6 +30,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import {
@@ -43,7 +44,7 @@ import {
   TokenType,
   myLog,
 } from '@loopring-web/common-resources'
-import { LuckyTokenItemForReceive, SoursURL } from '@loopring-web/loopring-sdk'
+import { LuckyTokenClaimType, LuckyTokenItemForReceive, SoursURL } from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
 import { useTheme } from '@emotion/react'
 
@@ -91,10 +92,11 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     undefined as number | undefined,
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
-  const {redPackets: exclusiveRedPackets,  setOpendPopup, setShowRedPacketsPopup, showPopup, openedRedPackets} = useTargetRedPackets()
+  const {redPackets: exclusiveRedPackets, setShowRedPacketsPopup, showPopup,} = useTargetRedPackets()
   const { setShowRedPacket } = useOpenModals()
 
   const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
+    setShowRedPacketsPopup(false)
     setShowRedPacket({
       isShow: true,
       info: {
@@ -172,25 +174,13 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         </Button>
       </Box>
       <StylePaper ref={container} flex={1} display={'flex'} flexDirection={'column'}>
-        {!openedRedPackets && exclusiveRedPackets && exclusiveRedPackets.length > 0 && (
+        {exclusiveRedPackets && exclusiveRedPackets.length > 0 && (
           <Box paddingX={2} paddingY={1} bgcolor={'var(--color-box-hover)'} borderRadius={0.5}>
             <Typography>
               {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}{' '}
               <Button
                 onClick={() => {
-                  if (exclusiveRedPackets.length === 1) {
-                    setShowRedPacket({
-                      isShow: true,
-                      info: {
-                        ...exclusiveRedPackets[0],
-                      },
-                      step: RedPacketViewStep.OpenPanel,
-                    })
-                    setOpendPopup()
-                  } else {
-                    setOpendPopup()
-                    setShowRedPacketsPopup(true)
-                  }
+                  setShowRedPacketsPopup(true)
                 }}
                 variant={'text'}
               >
@@ -326,10 +316,8 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                           },
                           step: RedPacketViewStep.OpenPanel,
                         })
-                        setOpendPopup()
                       } else {
                         setShowRedPacketsPopup(true)
-                        setOpendPopup()
                       }
                     }}
                     sx={{ background: 'black' }}
@@ -394,11 +382,24 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
                             />
                           </Box>
                         )}
-                        <Typography marginLeft={1}>
+                        
+                        <Typography whiteSpace={'nowrap'} maxWidth={'150px'} overflow={'hidden'} textOverflow={'ellipsis'} marginLeft={1} marginRight={1}>
                           {redpacket.isNft
                             ? redpacket.nftTokenInfo?.metadata?.base.name
                             : idIndex[redpacket.tokenId]}
                         </Typography>
+                        {redpacket.type.mode === LuckyTokenClaimType.BLIND_BOX && <Tooltip title={<>{t('labelRedpacketFromBlindbox')}</>}>
+                          <img
+                            width={24}
+                            height={24}
+                            style={{ marginLeft: `${0.5 * theme.unit}px` }}
+                            src={
+                              theme.mode === 'dark'
+                                ? SoursURL + '/images/from_blindbox_dark.png'
+                                : SoursURL + '/images/from_blindbox_light.png'
+                            }
+                          />
+                        </Tooltip>}
                       </Box>
                       <Button
                         variant={'contained'}

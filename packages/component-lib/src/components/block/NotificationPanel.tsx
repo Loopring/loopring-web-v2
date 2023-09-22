@@ -48,6 +48,27 @@ export const NotificationPanel = ({
             marginX={1}
             marginBottom={1}
           >
+            {showExclusiveRedpacket && (
+              <Box
+                onClick={() => onClickExclusiveredPacket()}
+                sx={{
+                  backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,
+                  backgroundSize: 'contain',
+                  width: '330px',
+                  height: '77px',
+                  borderRadius: 2,
+                  paddingLeft: 3.5,
+                  paddingTop: 2.5,
+                  cursor: 'pointer',
+                  marginBottom: 1
+                }}
+              >
+                <Typography color={'black'}>Congratulations!</Typography>
+                <Typography variant={'body2'} color={'black'}>
+                  You've received {exclusiveRedpacketCount} exclusive Red Packet!
+                </Typography>
+              </Box>
+            )}
             {!!hasActivities &&
               notification.activities.map((activity, index) => (
                 <ListItemActivity
@@ -57,26 +78,6 @@ export const NotificationPanel = ({
                   account={notification.account}
                 />
               ))}
-              {showExclusiveRedpacket && <Box onClick={() => onClickExclusiveredPacket()} sx={{
-                  backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,  
-                  backgroundSize: 'contain',
-                  width: '330px',
-                  height: '77px',
-                  borderRadius: 2,
-                  paddingLeft: 3.5,
-                  paddingTop: 2.5,
-                  cursor: 'pointer'
-                  
-                }} >
-                  <Typography color={'black'}>
-                    Congratulations!
-                  </Typography>
-                  <Typography variant={'body2'} color={'black'}>
-                    You've received {exclusiveRedpacketCount} exclusive Red Packet!
-                  </Typography>
-                </Box>
-              }
-              
           </Box>
           {!!hasNotifications && (
             <>

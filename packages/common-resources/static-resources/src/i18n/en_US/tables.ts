@@ -349,4 +349,5 @@ export default {
   labelDualAssetModify: 'Modify',
   labelDualAssetReInvestDisable: 'Disable',
   labelDualAssetReInvestEnable: 'Enable',
+  labelRedPacketClaiming: 'Claiming',
 }

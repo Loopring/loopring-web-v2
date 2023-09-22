@@ -18,6 +18,7 @@ import {
   SoursURL,
   YEAR_DAY_MINUTE_FORMAT,
   DAY_MINUTE_FORMAT,
+  hexToRGB,
 } from '@loopring-web/common-resources'
 import QRCodeStyling from 'qr-code-styling'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -951,6 +952,8 @@ export const RedPacketDetail = ({
       }}
     />
   )
+  const theme = useTheme()
+  const isTarget = detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
 
   return (
     <BoxStyle
@@ -988,6 +991,7 @@ export const RedPacketDetail = ({
           overflow={'hidden'}
           textOverflow={'ellipsis'}
           paddingX={4}
+          marginLeft={isTarget ? 8.5 : 0}
           sx={{
             wordBreak: 'break-all',
             display: '-webkit-box',
@@ -995,8 +999,21 @@ export const RedPacketDetail = ({
             lineClamp: '2',
             '-webkit-box-orient': 'vertical',
           }}
-          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
-        />
+        >
+          {memo ?? ''}{' '}
+          {isTarget && (
+            <Typography
+              marginLeft={0.5}
+              borderRadius={1}
+              paddingX={0.5}
+              bgcolor={hexToRGB(theme.colorBase.warning, 0.5)}
+              color={'var(--color-warning)'}
+              component={'span'}
+            >
+              {t('labelRedPacketExclusiveTag')}
+            </Typography>
+          )}
+        </Typography>
         {ImageEle}
         <Typography variant={'h3'} color={RedPacketColorConfig.default.colorTop} marginTop={1}>
           {myAmountStr ? myAmountStr : EmptyValueTag}
@@ -1123,13 +1140,17 @@ export const RedPacketDetail = ({
           <Button variant={'contained'} fullWidth onClick={onClickClaim}>
             {t('labelClaimBtn')}
           </Button>
-        ) : claimButton === 'expired' && bottomButton === 'ended' ? (
+        ) : claimButton === 'expired' && bottomButton === 'hidden' ? (
           <Button variant={'contained'} fullWidth disabled>
             {t('labelClaimBtnExpired')}
           </Button>
-        ) : claimButton === 'claimed' && bottomButton === 'ended' ? (
+        ) : claimButton === 'claimed' && bottomButton === 'hidden' ? (
           <Button variant={'contained'} fullWidth disabled>
             {t('labelClaimBtnClaimed')}
+          </Button>
+        ) : claimButton === 'claiming' && bottomButton === 'hidden' ? (
+          <Button variant={'contained'} fullWidth disabled>
+            {t('labelRedPacketClaiming')}
           </Button>
         ) : (
           <></>
@@ -1156,7 +1177,7 @@ export const RedPacketDetail = ({
             </Button>
           )
         ) : (
-          claimButton === 'hidden' && (
+          bottomButton !== 'hidden' && (
             <Button
               variant={'contained'}
               color={'error'}

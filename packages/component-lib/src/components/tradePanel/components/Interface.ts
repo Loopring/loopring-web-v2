@@ -24,6 +24,7 @@ import {
   EXCHANGE_TYPE,
   FeeInfo,
   GET_IPFS_STRING,
+  LuckyRedPacketItem,
   NFTWholeINFO,
   RedPacketOrderType,
   RequireOne,
@@ -667,12 +668,16 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     onClickBack: () => void
     showNFT: boolean
     onChangeTradeType?: (tradeType: RedPacketOrderType) => void
+    onSelecteValue?: (item: LuckyRedPacketItem) => void
   }
 
 export type TargetRedpacktSelectStepProps = {
   onClickCreateNew: () => void
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
-  onClickExclusiveRedpacket: (hash: string) => void
+  onClickExclusiveRedpacket: (info: {
+    hash: string,
+    remainCount: number
+  }) => void
   onClickViewDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
