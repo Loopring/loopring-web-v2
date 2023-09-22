@@ -981,26 +981,8 @@ export const RedPacketDetail = ({
         </Typography>
       </Box>
       <Box display={'flex'} flexDirection={'column'} alignItems={'center'} marginY={2}>
-        <Typography variant={'body1'}>{sender}</Typography>
-        <Typography
-          variant={'body2'}
-          color={'var(--color-text-third)'}
-          whiteSpace={'pre-line'}
-          textAlign={'center'}
-          marginTop={1 / 2}
-          overflow={'hidden'}
-          textOverflow={'ellipsis'}
-          paddingX={4}
-          marginLeft={isTarget ? 8.5 : 0}
-          sx={{
-            wordBreak: 'break-all',
-            display: '-webkit-box',
-            '-webkit-line-clamp': '2',
-            lineClamp: '2',
-            '-webkit-box-orient': 'vertical',
-          }}
-        >
-          {memo ?? ''}{' '}
+        <Typography marginLeft={isTarget ? 8.5 : 0} variant={'body1'}>
+          {sender}
           {isTarget && (
             <Typography
               marginLeft={0.5}
@@ -1013,6 +995,26 @@ export const RedPacketDetail = ({
               {t('labelRedPacketExclusiveTag')}
             </Typography>
           )}
+        </Typography>
+        <Typography
+          variant={'body2'}
+          color={'var(--color-text-third)'}
+          whiteSpace={'pre-line'}
+          textAlign={'center'}
+          marginTop={1 / 2}
+          overflow={'hidden'}
+          textOverflow={'ellipsis'}
+          paddingX={4}
+          sx={{
+            wordBreak: 'break-all',
+            display: '-webkit-box',
+            '-webkit-line-clamp': '2',
+            lineClamp: '2',
+            '-webkit-box-orient': 'vertical',
+          }}
+        >
+          {memo ?? ''}{' '}
+          
         </Typography>
         {ImageEle}
         <Typography variant={'h3'} color={RedPacketColorConfig.default.colorTop} marginTop={1}>

@@ -1207,6 +1207,7 @@ type CreateRedPacketScopeProps = {
   palazaPublicDisabled: boolean
   exclusiveDisabled: boolean
   showBackBtn: boolean
+  showExclusiveOption: boolean
 }
 export const CreateRedPacketScope = withTranslation()(
   ({
@@ -1216,6 +1217,7 @@ export const CreateRedPacketScope = withTranslation()(
     palazaPublicDisabled,
     exclusiveDisabled,
     showBackBtn,
+    showExclusiveOption,
     t,
   }: CreateRedPacketScopeProps & WithTranslation) => {
     const theme = useTheme()
@@ -1276,7 +1278,7 @@ export const CreateRedPacketScope = withTranslation()(
             </ScopeOption>
           </Box>
         </Box>
-        <Box marginBottom={12}>
+        {showExclusiveOption && <Box marginBottom={12}>
           <Box display={'flex'} alignItems={'center'} marginBottom={2}>
             <Typography marginRight={0.5} variant={'h4'}>
               {t('labelLuckyTokenViewTypePrivate')}{' '}
@@ -1306,7 +1308,7 @@ export const CreateRedPacketScope = withTranslation()(
               </Box>
             </ScopeOption>
           </Box>
-        </Box>
+        </Box>}
         <Box display={'flex'} justifyContent={'center'} width={'100%'}>
           {showBackBtn && <Box width={'45%'} marginRight={'5%'}>
             <Button
@@ -1722,22 +1724,22 @@ const isAddressValid = (address: string, previousAddress: string[]) => {
   )
   return !existed && isAddress(address)
 }
-const getValidAddresses = (input: string) => {
+const getValidAddresses = (input: string, sentAddress: string[]) => {
   const addresses = input
     .split(';')
     .filter((str) => str.trim())
     .map((str) => str.trim())
   return addresses.filter((str, index) => {
-    return isAddressValid(str, addresses.slice(0, index))
+    return isAddressValid(str, addresses.slice(0, index).concat(sentAddress))
   })
 }
-const getInvalidAddresses = (input: string) => {
+const getInvalidAddresses = (input: string, sentAddress: string[]) => {
   const addresses = input
     .split(';')
     .filter((str) => str.trim())
     .map((str) => str.trim())
   return addresses.filter((str, index) => {
-    return !isAddressValid(str, addresses.slice(0, index))
+    return !isAddressValid(str, addresses.slice(0, index).concat(sentAddress ))
   })
 }
 
@@ -1755,6 +1757,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
       popUpOptionDisabled,
       maximumTargetsLength,
       onClickBack,
+      sentAddresses,
       t,
     } = props
     const theme = useTheme()
@@ -1773,7 +1776,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
     const [showAddressReview, setShowAddressReview] = React.useState(false)
     const [selectedAddresses, setSelectedAddresses] = React.useState([] as string[])
     const [search, setSearch] = React.useState('')
-    const overMaximum = getValidAddresses(addressListString).length > maximumTargetsLength
+    const overMaximum = getValidAddresses(addressListString, sentAddresses ?? []).length > maximumTargetsLength
 
     return (
       <RedPacketBoxStyle
@@ -1838,9 +1841,10 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                             )
                               ? selectedAddresses.filter((addr) => addr !== contact.address)
                               : [contact.address, ...selectedAddresses]
-                            if (newSelectedAddresses.length <= maximumTargetsLength) {
-                              setSelectedAddresses(newSelectedAddresses)
-                            }
+                            setSelectedAddresses(newSelectedAddresses)
+                            // if (newSelectedAddresses.length <= maximumTargetsLength) {
+                            //   setSelectedAddresses(newSelectedAddresses)
+                            // }
                           }}
                           checked={
                             selectedAddresses.find((addr) => addr === contact.address)
@@ -1869,9 +1873,9 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   }}
                   variant={'contained'}
                   fullWidth
-                  disabled={selectedAddresses.length === 0}
+                  disabled={selectedAddresses.length === 0 || selectedAddresses.length > maximumTargetsLength}
                 >
-                  {t('labelConfirm')}
+                  {selectedAddresses.length > maximumTargetsLength ? t('labelRedPacketMaxValueExceeded') : t('labelConfirm')}
                 </Button>
               </Box>
             </Box>
@@ -1999,7 +2003,8 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                                 addressListString
                                   .split(';')
                                   .filter((str) => str.trim())
-                                  .slice(0, index),
+                                  .slice(0, index)
+                                  .concat(sentAddresses ?? []),
                               )
                                 ? 'var(--color-text-primary)'
                                 : 'var(--color-error)'
@@ -2017,11 +2022,11 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               </Box>
               <Typography marginTop={2} marginBottom={3}>
                 {t('labelRedpacketAddressesReviewPart1', {
-                  count: getValidAddresses(addressListString).length,
+                  count: getValidAddresses(addressListString, sentAddresses ?? []).length,
                 })}{' '}
                 <Typography component={'span'} color={'var(--color-error)'}>
                   {t('labelRedpacketAddressesReviewPart2', {
-                    count: getInvalidAddresses(addressListString).length,
+                    count: getInvalidAddresses(addressListString, sentAddresses ?? []).length,
                   })}
                 </Typography>
                 {t('labelRedpacketAddressesReviewPart3')}
@@ -2084,10 +2089,10 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
           />
           <Box marginTop={2} display={'flex'} justifyContent={'space-between'}>
             <Box display={'flex'} alignItems={'center'}>
-              <Typography color={maximumTargetsLength - getValidAddresses(addressListString).length < 0 ? 'var(--color-error)' : ''} marginRight={2}>
-                {maximumTargetsLength - getValidAddresses(addressListString).length >= 0
+              <Typography color={maximumTargetsLength - getValidAddresses(addressListString, sentAddresses ?? []).length < 0 ? 'var(--color-error)' : ''} marginRight={2}>
+                {maximumTargetsLength - getValidAddresses(addressListString, sentAddresses ?? []).length >= 0
                   ? t('labelSendRedPacketMax', {
-                      count: maximumTargetsLength - getValidAddresses(addressListString).length,
+                      count: maximumTargetsLength - getValidAddresses(addressListString, sentAddresses ?? []).length,
                     })
                   : t('labelRedPacketMaxValueExceeded')}
               </Typography>
@@ -2289,10 +2294,10 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   defaultLabel: 'labelRedpacketPrepareRedPacket',
                   fullWidth: true,
                   disabled: () => {
-                    return getValidAddresses(addressListString).length === 0 || overMaximum
+                    return getValidAddresses(addressListString, sentAddresses ?? []).length === 0 || overMaximum
                   },
                   onClick: () => {
-                    if (getInvalidAddresses(addressListString).length > 0) {
+                    if (getInvalidAddresses(addressListString, sentAddresses ?? []).length > 0) {
                       setShowAddressReview(true)
                     } else {
                       onClickSend()
