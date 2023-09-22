@@ -352,7 +352,7 @@ export const CancelDualAlert = withTranslation('common', {
   },
 )
 
-export const CancelDualAutoAlert = withTranslation('common', {
+export const CancelOneOrdersAlert = withTranslation('common', {
   withRef: true,
 })(
   ({

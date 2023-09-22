@@ -1,19 +1,23 @@
-import { Avatar, Box, Grid, Typography } from '@mui/material'
-import { DualInvestmentLogo, DualViewType, SoursURL } from '@loopring-web/common-resources'
+import { Box, Grid, Typography } from '@mui/material'
+import {
+  DualDownIcon,
+  DualConvertIcon,
+  DualUpIcon,
+  DualViewType,
+} from '@loopring-web/common-resources'
 import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import styled from '@emotion/styled'
 
 export const ChooseDualTypeContent = [
   {
     icon: (
-      <Avatar
-        alt={'sell-high'}
-        sx={{
-          width: 80,
-          height: 80,
+      <DualUpIcon
+        style={{
+          width: 156,
+          height: 156,
         }}
-        src={SoursURL + '/svg/sell-high.svg'}
       />
     ),
     type: DualViewType.DualGain,
@@ -22,13 +26,11 @@ export const ChooseDualTypeContent = [
   },
   {
     icon: (
-      <Avatar
-        alt={'buy-low'}
-        sx={{
-          width: 80,
-          height: 80,
+      <DualDownIcon
+        style={{
+          width: 156,
+          height: 156,
         }}
-        src={SoursURL + '/svg/buy-low.svg'}
       />
     ),
     type: DualViewType.DualDip,
@@ -38,10 +40,10 @@ export const ChooseDualTypeContent = [
 
   {
     icon: (
-      <DualInvestmentLogo
+      <DualConvertIcon
         style={{
-          width: 100,
-          height: 100,
+          width: 156,
+          height: 156,
         }}
       />
     ),
@@ -50,6 +52,11 @@ export const ChooseDualTypeContent = [
     desKey: 'labelDualMergeDes',
   },
 ]
+export const TypographyStyle = styled(Typography)`
+  svg {
+    fill: ${({ theme }) => theme.colorBase.textSecondary};
+  }
+` as typeof Typography
 export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) => void }) => {
   const { isMobile } = useSettings()
   const { t } = useTranslation()
@@ -68,15 +75,15 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
               variant={'outlined'}
               sx={{
                 width: 'var(--dual-type-width)',
-                height: '320px',
+                height: '380px',
                 flexDirection: 'column',
                 justifyContent: 'space-around',
               }}
               onClick={() => onSelect(item.type)}
             >
-              <Typography component={'span'} display={'inline-flex'}>
+              <TypographyStyle component={'span'} display={'inline-flex'}>
                 {item.icon}
-              </Typography>
+              </TypographyStyle>
               <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
                 <Typography
                   variant={'h5'}

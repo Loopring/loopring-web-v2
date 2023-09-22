@@ -1966,4 +1966,5 @@ export default {
   labelDualTypeDualBegin: 'Dual Invest Beginner mode',
   labelDualTypeAll: 'Dual Invest',
   labelDualAutoCancelConfirm: 'Cancel Dual invest',
+  labelDualAutoCancelOrder: 'Cancel',
 }

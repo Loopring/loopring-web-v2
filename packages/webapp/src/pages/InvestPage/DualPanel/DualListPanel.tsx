@@ -3,12 +3,13 @@ import styled from '@emotion/styled'
 import {
   Box,
   CardContent,
+  Divider,
   FormControlLabel,
   Grid,
   Switch,
   Tabs,
-  Typography,
   Tooltip,
+  Typography,
 } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useDualHook } from './hook'
@@ -30,7 +31,7 @@ import {
   useSystem,
   useTokenMap,
 } from '@loopring-web/core'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import {
   BackIcon,
   DualInvestmentLogo,
@@ -42,7 +43,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useTheme } from '@emotion/react'
 import { BeginnerMode } from './BeginnerMode'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors, MaxWidthContainer } from '..'
 import { ChooseDualType } from './ChooseDualType'
 
 const StyleDual = styled(Box)`
@@ -79,13 +80,11 @@ export const DualListPanel: any = withTranslation('common')(
   ({
     t,
     setConfirmDualInvest,
-  }: // showBeginnerModeHelp,
-  // onShowBeginnerModeHelp,
-  WithTranslation & {
+  }: WithTranslation & {
     setConfirmDualInvest: (state: any) => void
-    // showBeginnerModeHelp: boolean
-    // onShowBeginnerModeHelp: (show: boolean) => void
   }) => {
+    const { search, pathname } = useLocation()
+
     const { forexMap } = useSystem()
     const [viewType, setViewType] = React.useState<DualViewType | undefined>(undefined)
     const theme = useTheme()
@@ -102,9 +101,7 @@ export const DualListPanel: any = withTranslation('common')(
       dualProducts,
       currentPrice,
       market,
-      beginnerMode,
       handleOnPairChange,
-      onToggleBeginnerMode,
       onSelectStep1Token,
     } = dualListProps
     const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
@@ -113,7 +110,12 @@ export const DualListPanel: any = withTranslation('common')(
     const { isMobile } = useSettings()
     const history = useHistory()
     const marketsIsLoading = status === 'PENDING'
-
+    React.useEffect(() => {
+      const searchParams = new URLSearchParams(search)
+      if (!searchParams.has('viewType')) {
+        setViewType(undefined)
+      }
+    }, [search])
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} width={'100%'}>
         <MaxWidthContainer
@@ -150,26 +152,39 @@ export const DualListPanel: any = withTranslation('common')(
           </Box>
           {!isMobile && <DualInvestmentLogo />}
         </MaxWidthContainer>
-        <MaxWidthContainer background={containerColors[1]} minHeight={'70vh'} paddingY={3}>
-          {viewType && (
-            <Box display={'flex'} justifyContent={'space-between'} paddingY={2}>
+        {viewType && (
+          <>
+            <MaxWidthContainer
+              background={containerColors[1]}
+              display={'flex'}
+              justifyContent={'space-between'}
+              paddingY={2}
+            >
               <Button
                 startIcon={<BackIcon fontSize={'small'} />}
                 variant={'text'}
                 size={'large'}
-                sx={{ color: 'var(--color-text-secondary)' }}
+                sx={{ color: 'var(--color-text-primary)' }}
                 color={'inherit'}
                 onClick={() => {
                   setViewType(undefined)
                   onSelectStep1Token(undefined)
                 }}
               >
+                {/*<BackIcon fontSize={'inherit'} />*/}
                 {t(`labelDualType${viewType}`)}
               </Button>
               {[DualViewType.All, DualViewType.DualBegin].includes(viewType) && (
                 <FormControlLabel
                   labelPlacement={'start'}
-                  control={<Switch checked={beginnerMode} onChange={onToggleBeginnerMode} />}
+                  control={
+                    <Switch
+                      checked={viewType === DualViewType.DualBegin}
+                      onChange={(_event, _checked) =>
+                        setViewType(_checked ? DualViewType.DualBegin : DualViewType.All)
+                      }
+                    />
+                  }
                   label={
                     <Typography marginLeft={1.5} variant={'h5'}>
                       {t('labelInvestDualBeginerMode')}
@@ -177,8 +192,11 @@ export const DualListPanel: any = withTranslation('common')(
                   }
                 />
               )}
-            </Box>
-          )}
+            </MaxWidthContainer>
+            <Divider />
+          </>
+        )}
+        <MaxWidthContainer background={containerColors[1]} minHeight={'70vh'} paddingY={3}>
           {viewType ? (
             viewType !== DualViewType.All ? (
               <BeginnerMode dualListProps={dualListProps} viewType={viewType} />
@@ -474,7 +492,7 @@ export const DualListPanel: any = withTranslation('common')(
           dualTradeProps={dualTradeProps}
           dualToastOpen={dualToastOpen}
           closeDualToast={closeDualToast}
-          isBeginnerMode={beginnerMode}
+          isBeginnerMode={viewType === DualViewType.DualBegin}
         />
       </Box>
     )

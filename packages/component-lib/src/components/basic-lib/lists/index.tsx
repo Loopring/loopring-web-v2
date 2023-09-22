@@ -148,6 +148,11 @@ const CardStyleItem = styled(Card)<
     padding: ${({ theme }) => theme.unit}px;
     height: 54px;
   }
+  &.dualInvestCard {
+    .MuiCardContent-root:last-child {
+      padding-bottom: 0px;
+    }
+  }
 ` as (
   props: CardProps & {
     contentheight?: number
