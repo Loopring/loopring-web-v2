@@ -1176,16 +1176,16 @@ export function useRedPacketModal() {
         //   : t("labelBlindBoxExplainationNotEnded"),
         claimButton,
         shareButton,
-        didClaimABlindBox: blinBoxDetail.blindBoxStatus !== '',
+        didClaimABlindBox: blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
         wonInfo: blinBoxDetail!.luckyToken.isNft
           ? {
-              participated: blinBoxDetail.blindBoxStatus !== '',
+            participated: blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
               won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
               amount: detail.claimAmount,
               isNFT: true,
             }
           : {
-              participated: blinBoxDetail.blindBoxStatus !== '',
+              participated: blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
               won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
               amount:
                 blinBoxDetail.claimAmount && tokenInfo &&
