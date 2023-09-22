@@ -73,8 +73,9 @@ export const useDualTrade = <
   const { tradeDual, updateTradeDual, resetTradeDual } = useTradeDual()
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const {
-    toggle: { dualInvest },
+    toggle: { dualInvest, dual_reinvest },
   } = useToggle()
+
   const [[coinSellSymbol, coinBuySymbol], setSellBuySymbol] = React.useState<
     [string | undefined, string | undefined]
   >([undefined, undefined])
@@ -130,7 +131,6 @@ export const useDualTrade = <
       //     ? [info.base, info.currency]
       //     : [info.currency, info.base];
       setSellBuySymbol([baseSymbol, quoteSymbol])
-      // debugger
       let coinSell: T =
         tradeData && tradeData.belong === baseSymbol
           ? tradeData
@@ -534,6 +534,7 @@ export const useDualTrade = <
       label: tradeMarketI18nKey,
       params: {},
     },
+    toggle: dual_reinvest,
     isLoading,
     tokenMap: tokenMap as any,
     onRefreshData: should15sRefresh,

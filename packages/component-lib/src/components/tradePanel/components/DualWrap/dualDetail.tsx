@@ -130,12 +130,14 @@ export const DualDetail = ({
   displayMode = DualDisplayMode.nonBeginnerMode,
   isPriceEditable = true,
   coinSell,
+  toggle,
   ...rest
 }: DualDetailProps) => {
   const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
   const [showEdit, setShowEdit] = React.useState(false)
   const { t } = useTranslation()
   const { upColor, isMobile } = useSettings()
+
   const { base, quote, precisionForPrice } = currentPrice
   const currentView = React.useMemo(
     () =>
@@ -182,6 +184,7 @@ export const DualDetail = ({
     //   : EmptyValueTag,
     coinSell?.renewTargetPrice,
   ])
+  const isEnable = toggle.enable || (!toggle.enable && toggle.reason == 'no view')
 
   myLog('dualViewInfo', dualViewInfo)
   return (
@@ -196,6 +199,7 @@ export const DualDetail = ({
           <Box display={'flex'} width={'100%'} flexDirection={'column'}>
             <ModalCloseButton onClose={() => setShowEdit(false)} t={t} {...rest} />
             <ModifyParameter
+              toggle={toggle}
               onClose={() => setShowEdit(false)}
               {...rest}
               coinSell={coinSell}
@@ -206,7 +210,8 @@ export const DualDetail = ({
       </Modal>
 
       <Box display={'flex'} flexDirection={'column'}>
-        {!isOrder || (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) ? (
+        {isEnable &&
+        (!isOrder || (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive)) ? (
           // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
           <Box
             display={'flex'}

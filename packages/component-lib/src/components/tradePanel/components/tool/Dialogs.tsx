@@ -28,6 +28,7 @@ import {
   CheckBoxIcon,
   CheckedIcon,
   copyToClipBoard,
+  DAY_MINUTE_FORMAT,
   getValuePrecisionThousand,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -42,6 +43,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { confirmation } from '@loopring-web/core'
+import moment from 'moment/moment'
 
 // const ModelStyle = styled(Box)`
 //   ${({ theme }) => modalContentBaseStyle({ theme: theme })};
@@ -315,8 +317,10 @@ export const CancelDualAlert = withTranslation('common', {
     open,
     handleCancelOne,
     handleClose,
+    row,
   }: WithTranslation & {
     open: boolean
+    row: any
     handleCancelOne: () => Promise<void>
     handleClose: (event: MouseEvent, isAgree?: boolean) => void
   }) => {
@@ -330,6 +334,33 @@ export const CancelDualAlert = withTranslation('common', {
         <DialogTitle style={{ padding: '2.4rem', paddingBottom: '1.6rem' }}>
           {t('labelDualAutoCancelConfirm')}
         </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography component={'span'} variant={'body1'} color={'inherit'}>
+              {t('labelDualAutoCancelConfirmDes')}
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogContent className={'infomation'}>
+          <DialogContentText>
+            <Box component={'ul'}>
+              <Box component='li'>
+                <Typography component={'span'} variant={'body1'} color={'inherit'}>
+                  {t('labelDualModifySettlementDateDialog')}
+                </Typography>
+
+                <Typography
+                  color={'textPrimary'}
+                  component={'span'}
+                  textAlign={'right'}
+                  paddingLeft={1}
+                >
+                  {moment(new Date(row?.expireTime)).format(DAY_MINUTE_FORMAT)}
+                </Typography>
+              </Box>
+            </Box>
+          </DialogContentText>
+        </DialogContent>
 
         <DialogActions style={{ padding: '2.4rem', paddingTop: 0 }}>
           <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}>

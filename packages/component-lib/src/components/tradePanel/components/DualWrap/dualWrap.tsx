@@ -41,6 +41,8 @@ export const DualWrap = <
   accStatus,
   isBeginnerMode,
   dualProducts,
+  toggle,
+  whitList,
   ...rest
 }: DualWrapProps<T, I, DUAL> & {
   isBeginnerMode: boolean
@@ -283,6 +285,8 @@ export const DualWrap = <
               displayMode={displayMode}
               isPriceEditable={false}
               dualProducts={dualProducts}
+              toggle={toggle}
+              whitList={whitList}
               // getProduct={getDualProduct}
               onChange={(data) => {
                 onChangeEvent({

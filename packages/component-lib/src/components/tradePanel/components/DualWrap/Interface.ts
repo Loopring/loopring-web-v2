@@ -48,6 +48,7 @@ export type DualWrapProps<T, I, DUAL> = {
   btnStatus?: keyof typeof TradeBtnStatus | undefined
   accStatus?: AccountStatus
   dualProducts?: DualViewInfo[]
+  toggle: { enable: boolean; reason?: string | undefined }
 }
 
 export type DualDetailProps<
@@ -60,4 +61,5 @@ export type DualDetailProps<
   getProduct?: () => void
   displayMode?: DualDisplayMode
   tokenMap: any
+  toggle: { enable: boolean; reason: string }
 }

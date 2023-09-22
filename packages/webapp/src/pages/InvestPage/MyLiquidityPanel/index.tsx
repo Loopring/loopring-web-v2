@@ -843,6 +843,7 @@ const MyLiquidity: any = withTranslation('common')(
         </Modal>
         <CancelDualAlert
           open={showCancelOneAlert.open}
+          row={showCancelOneAlert.row}
           handleCancelOne={() => cancelReInvest(showCancelOneAlert.row)}
           handleClose={() => setShowCancelOndAlert({ open: false, row: undefined })}
         />

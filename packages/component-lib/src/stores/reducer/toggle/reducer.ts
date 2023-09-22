@@ -34,6 +34,7 @@ const initialState: ToggleState = {
     orbiter: ['ETH'],
   },
   CIETHInvest: { enable: true },
+  dual_reinvest: { enable: true },
   whiteList: {},
   isSupperUser: false as any,
 }
