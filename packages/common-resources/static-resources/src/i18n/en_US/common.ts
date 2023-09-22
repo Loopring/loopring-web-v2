@@ -1965,6 +1965,9 @@ export default {
   labelDualTypeDualDip: 'Buy The Dip',
   labelDualTypeDualBegin: 'Dual Invest Beginner mode',
   labelDualTypeAll: 'Dual Invest',
-  labelDualAutoCancelConfirm: 'Cancel Dual invest',
+  labelDualAutoCancelConfirm: 'Disable Auto Reinvest',
   labelDualAutoCancelOrder: 'Cancel',
+  labelDualAutoCancelConfirmDes:
+    'Are you sure about disable auto reinvest? If disabled, there will be no new orders after the next settlement.',
+  labelDualModifySettlementDateDialog: 'Next Settlement Date',
 }

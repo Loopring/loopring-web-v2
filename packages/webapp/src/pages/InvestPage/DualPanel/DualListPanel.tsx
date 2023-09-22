@@ -103,6 +103,8 @@ export const DualListPanel: any = withTranslation('common')(
       market,
       handleOnPairChange,
       onSelectStep1Token,
+      // toggle,
+      // whitList,
     } = dualListProps
     const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
       setConfirmDualAutoInvest,
