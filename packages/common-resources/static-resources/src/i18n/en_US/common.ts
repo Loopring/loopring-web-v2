@@ -1898,4 +1898,5 @@ export default {
   labelRedPacketTotal: 'Total {{count}}',
   labelRedPacketExclusiveTag: 'Exclusive',
   labelRedPacketClaiming: 'Claiming',
+  labelRedPacketReceiptsList: 'Red Packet Receipt >',
 }

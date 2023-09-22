@@ -44,6 +44,7 @@ import { BoxNFT, CoinIcon, ModalCloseButtonPosition, TablePagination } from '../
 import { NFTMedia } from './nftMedia'
 import { sanitize } from 'dompurify'
 import { useTheme } from '@emotion/react'
+import { ReceiptListModal } from '../tradePanel/components/CreateRedPacketWrap'
 
 export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
@@ -937,6 +938,7 @@ export const RedPacketDetail = ({
   onClickClaim,
   claimButton,
   totalNumber,
+  showReceiptListBtn
 }: RedPacketDetailProps) => {
   const { t } = useTranslation('common')
   const showLucky = detail.luckyToken.tokenAmount.remainCount == 0
@@ -954,6 +956,7 @@ export const RedPacketDetail = ({
   )
   const theme = useTheme()
   const isTarget = detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
+  const [showExclusiveReceipt, setShowExclusiveReceipt] = React.useState(false)
 
   return (
     <BoxStyle
@@ -1014,7 +1017,6 @@ export const RedPacketDetail = ({
           }}
         >
           {memo ?? ''}{' '}
-          
         </Typography>
         {ImageEle}
         <Typography variant={'h3'} color={RedPacketColorConfig.default.colorTop} marginTop={1}>
@@ -1136,6 +1138,23 @@ export const RedPacketDetail = ({
         </Box>
         {pageNation}
       </Box>
+      {
+        showReceiptListBtn && <Button
+          variant={'text'}
+          sx={{ fontSize: '13px' }}
+          onClick={() => {
+            setShowExclusiveReceipt(true)
+          }}
+        >
+          {t("labelRedPacketReceiptsList")}
+        </Button>
+      }
+      <ReceiptListModal
+        open={showExclusiveReceipt}
+        t={t}
+        onClose={() => setShowExclusiveReceipt(false)}
+        targets={(detail as any).targets}
+      />
       {/* {showShareBtn && ( */}
       <Box paddingX={1} display={'flex'} flexDirection={'column'}>
         {claimButton === 'claim' ? (
@@ -1534,6 +1553,8 @@ export const RedPacketBlindBoxDetail = ({
   expired,
   isTokenBlindbox,
   remainGiftsAmount,
+  showReceiptListBtn,
+  targets
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation('common')
   const theme = useTheme()
@@ -1640,6 +1661,7 @@ export const RedPacketBlindBoxDetail = ({
   ) {
     return LooteryModal
   }
+  const [showExclusiveReceipt, setShowExclusiveReceipt] = React.useState(false)
 
   return (
     <BlindBoxDetailBoxStyle
@@ -2127,8 +2149,29 @@ export const RedPacketBlindBoxDetail = ({
               </>
             )}
           </Box>
+          <ReceiptListModal
+            open={showExclusiveReceipt}
+            t={t}
+            onClose={() => setShowExclusiveReceipt(false)}
+            targets={targets ?? []}
+          />
+
           {/* {(type === "Not Started" || type === "Blind Box Started") && ( */}
-          <Box marginBottom={1}>
+          <Box>
+            <Box display={'flex'} justifyContent={'center'}>
+              {showReceiptListBtn && (
+                <Button
+                  variant={'text'}
+                  sx={{ fontSize: '13px' }}
+                  onClick={() => {
+                    setShowExclusiveReceipt(true)
+                  }}
+                >
+                  {t("labelRedPacketReceiptsList")}
+                </Button>
+              )}
+            </Box>
+
             {shareButton === 'share' && (
               <Button
                 variant={'contained'}

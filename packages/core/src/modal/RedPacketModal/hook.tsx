@@ -267,7 +267,6 @@ export function useRedPacketModal() {
           info: _info,
         })
       } else if (_info?.hash) {
-        myLog('redPacketOpenProps', _info)
         return {
           ImageEle,
           memo: _info.info.memo,
@@ -303,7 +302,6 @@ export function useRedPacketModal() {
     }
 
     if (isShow && info && step === RedPacketViewStep.OpenedPanel && _info?.hash) {
-      myLog('redPacketOpenProps', _info)
       let myAmountStr: string | undefined = undefined
       let symbol: string
       if (_info?.claimAmount) {
@@ -375,7 +373,6 @@ export function useRedPacketModal() {
       claimAmount?: string
     }
     if (isShow && info && step === RedPacketViewStep.RedPacketClock && _info?.hash) {
-      myLog('redPacketClockProps', _info)
       return {
         memo: _info.info.memo,
         amountStr,
@@ -823,16 +820,7 @@ export function useRedPacketModal() {
         detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.RELAY &&
         account.accountId !== _info.sender.accountId
 
-      const bottomButton: 'ended' | 'share' | 'hidden' =
-        detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
-          ? 'hidden'
-          : [
-              sdk.LuckyTokenItemStatus.OVER_DUE,
-              sdk.LuckyTokenItemStatus.FAILED,
-              sdk.LuckyTokenItemStatus.COMPLETED,
-            ].includes(detail.luckyToken.status)
-          ? 'ended'
-          : 'share'
+      
 
       let myAmountStr: string | undefined = undefined
       const relyNumber = detail.helpers?.length
@@ -897,6 +885,16 @@ export function useRedPacketModal() {
         list = getUserReceiveList(detail.claims as any, tokenInfo, detail.champion).list
       }
       // }
+      const bottomButton: 'ended' | 'share' | 'hidden' = [
+        sdk.LuckyTokenItemStatus.OVER_DUE,
+        sdk.LuckyTokenItemStatus.FAILED,
+        sdk.LuckyTokenItemStatus.COMPLETED,
+      ].includes(detail.luckyToken.status)
+        ? 'ended'
+        : detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
+        ? 'hidden'
+        : 'share'
+
       const claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden' = detail.luckyToken
         .isNft
         ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
@@ -980,6 +978,7 @@ export function useRedPacketModal() {
             })
         },
         totalNumber: (detail as any).totalNum,
+        showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId
       } as RedPacketDetailProps
     } else {
       return undefined
@@ -1057,18 +1056,14 @@ export function useRedPacketModal() {
             ? 'ended'
             : 'hidden'
           : 'hidden'
-        : [sdk.LuckyTokenItemStatus.COMPLETED, sdk.LuckyTokenItemStatus.FAILED]
+        : [sdk.LuckyTokenItemStatus.COMPLETED, sdk.LuckyTokenItemStatus.FAILED, sdk.LuckyTokenItemStatus.OVER_DUE]
           .includes(detail.luckyToken.status)
         ? 'ended'
-        : detail.luckyToken.status === sdk.LuckyTokenItemStatus.OVER_DUE 
-        ? 'expired'
         :'hidden'
 
       const tokenInfo = !detail.luckyToken.isNft
         ? tokenMap[idIndex[detail.luckyToken.tokenId]]
         : undefined
-      myLog('claimButton, shareButton', claimButton,
-      shareButton)
       return {
         sender: _info.sender?.ens ? _info.sender?.ens : getShortAddr(_info.sender?.address),
         memo: _info.info.memo,
@@ -1265,6 +1260,8 @@ export function useRedPacketModal() {
             ) +
             ' ' +
             tokenInfo?.symbol,
+        showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId,
+        targets: (detail as any).targets
       } as RedPacketBlindBoxDetailProps
     } else {
       return undefined
