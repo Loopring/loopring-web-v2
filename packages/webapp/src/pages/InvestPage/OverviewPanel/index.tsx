@@ -138,7 +138,6 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   const lrcApr = React.useMemo(() => {
     return getAprRange(
       _.values(LRCMarketMap)
-        // .flatMap((dual: any) => [dual.quoteTokenApy.max as string, dual.quoteTokenApy.min as string])
         .filter((lrc) => lrc.apr)
         .map((lrc) => Number(lrc.apr)),
     )
@@ -146,7 +145,6 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   const leverageApr = React.useMemo(() => {
     return getAprRange(
       _.values(marketLeverageMap)
-        // .flatMap((dual: any) => [dual.quoteTokenApy.max as string, dual.quoteTokenApy.min as string])
         .filter((leverage) => leverage.apy)
         .map((leverage) => Number(leverage.apy)),
     )
