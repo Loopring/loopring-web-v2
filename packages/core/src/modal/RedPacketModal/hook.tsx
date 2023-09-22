@@ -978,7 +978,7 @@ export function useRedPacketModal() {
             })
         },
         totalNumber: (detail as any).totalNum,
-        showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId
+        showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId && detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
       } as RedPacketDetailProps
     } else {
       return undefined
@@ -1260,7 +1260,7 @@ export function useRedPacketModal() {
             ) +
             ' ' +
             tokenInfo?.symbol,
-        showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId,
+            showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId && detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
         targets: (detail as any).targets
       } as RedPacketBlindBoxDetailProps
     } else {

@@ -2060,6 +2060,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     height: '100%',
                   }}
                   onClick={() => {
+                    setShowAddressReview(false)
                     setShowChangeTips({
                       ...showChangeTips,
                       contactImportCaches: undefined
