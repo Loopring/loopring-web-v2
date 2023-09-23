@@ -37,7 +37,7 @@ export default {
   resetFee: 'Fee {{count}} GAS ≈ ${{price}}',
   resetLabelBtn: 'Reset',
   labelActiveEnterToken: 'Select payment token',
-  labelActiveAccountDescription: 'You have enough balance to pay for {{layer2}} creation as below.',
+  labelActiveAccountDescription: 'You need to have enough balance for {{layer2}} creation as below.',
   labelActiveAccountFee: 'Fee {{count}} GAS ≈ ${{price}}',
   labelActiveAccountBtn: 'Activate Account',
   depositLabelEnterToken: 'Select Layer 1 Token',

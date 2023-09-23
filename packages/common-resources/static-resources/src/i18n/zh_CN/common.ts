@@ -37,7 +37,7 @@ export default {
   resetFee: '{{count}} GAS ≈ ${{price}} 费用',
   resetLabelBtn: '重置',
   labelActiveEnterToken: 'Select payment token',
-  labelActiveAccountDescription: 'You have enough balance to pay for {{layer2}} creation as below.',
+  labelActiveAccountDescription: 'You need to have enough balance for {{layer2}} creation as below.',
   labelActiveAccountFee: 'Fee {{count}} GAS ≈ ${{price}}',
   labelActiveAccountBtn: 'Reset',
   depositLabelEnterToken: '选择充值代币',
