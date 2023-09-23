@@ -1198,7 +1198,7 @@ export const RedPacketDetail = ({
             </Button>
           )
         ) : (
-          bottomButton !== 'hidden' && (
+          bottomButton === 'ended' && (
             <Button
               variant={'contained'}
               color={'error'}

@@ -885,15 +885,7 @@ export function useRedPacketModal() {
         list = getUserReceiveList(detail.claims as any, tokenInfo, detail.champion).list
       }
       // }
-      const bottomButton: 'ended' | 'share' | 'hidden' = [
-        sdk.LuckyTokenItemStatus.OVER_DUE,
-        sdk.LuckyTokenItemStatus.FAILED,
-        sdk.LuckyTokenItemStatus.COMPLETED,
-      ].includes(detail.luckyToken.status)
-        ? 'ended'
-        : detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
-        ? 'hidden'
-        : 'share'
+      
 
       const claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden' = detail.luckyToken
         .isNft
@@ -907,6 +899,15 @@ export function useRedPacketModal() {
           ? 'expired'
           : 'hidden'
         : 'hidden'
+      const bottomButton: 'ended' | 'share' | 'hidden' = [
+        sdk.LuckyTokenItemStatus.OVER_DUE,
+        sdk.LuckyTokenItemStatus.FAILED,
+        sdk.LuckyTokenItemStatus.COMPLETED,
+      ].includes(detail.luckyToken.status)
+        ? (claimButton === 'hidden' ? 'ended' : 'hidden')
+        : detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
+        ? 'hidden'
+        : 'share'
 
       return {
         redPacketType,
