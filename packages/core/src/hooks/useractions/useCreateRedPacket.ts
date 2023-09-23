@@ -324,7 +324,7 @@ export const useCreateRedPacket = <
           .plus(feeToken.tokenId === tradeToken.tokenId ? fee : '0')
           .gt(balance)
         const eachValue = sdk.toBig(_tradeData.eachValue ?? 0).times('1e' + tradeToken.decimals)
-        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum)
+        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts?.minimum ?? 0)
         tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum)
       } else {
         balance = redPacketOrder.balance ?? 0
@@ -394,7 +394,7 @@ export const useCreateRedPacket = <
               ? {
                   value: getValuePrecisionThousand(
                     sdk
-                      .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
+                      .toBig(tradeToken.luckyTokenAmounts?.minimum ?? 0)
                       .div('1e' + tradeToken.decimals),
                     tradeToken.precision,
                     tradeToken.precision,
