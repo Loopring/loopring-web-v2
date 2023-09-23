@@ -1899,4 +1899,5 @@ export default {
   labelRedPacketExclusiveTag: 'Exclusive',
   labelRedPacketClaiming: 'Claiming',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
+  labelTxGuardian_upgrade_contract: "upgrade contract",
 }
