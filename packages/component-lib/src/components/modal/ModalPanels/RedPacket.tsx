@@ -43,11 +43,10 @@ export const RedPacketSend_Success = (props: PanelProps) => {
   let propsPatch: any = {
     iconType: IconType.DoneIcon,
   }
-
-  if (props.info.scope === sdk.LuckyTokenViewType.PRIVATE) {
+  if (props.info.scope === sdk.LuckyTokenViewType.TARGET) {
     propsPatch = {
       ...propsPatch,
-      title: 'labelSendRedPacketTitlePrivate',
+      title: 'labelSendRedPacketTitleExclusive',
       describe1: props.t('labelRedPacketSendSuccess', {
         symbol: props.symbol,
         value: props.value,

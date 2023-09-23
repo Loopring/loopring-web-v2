@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
-import { Box, Typography } from '@mui/material'
+import { Box, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import { BoxNFT, Column, NftImageStyle, Table, TablePagination } from '../../basic-lib'
-import { CoinInfo, globalSetup, myLog, RowConfig, TokenType } from '@loopring-web/common-resources'
+import { CoinInfo, globalSetup, hexToRGB, myLog, RowConfig, SoursURL, TokenType } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -29,7 +29,7 @@ const TableWrapperStyled = styled(Box)`
 const TableStyled = styled(Table)<{ isBlindbox: boolean }>`
   &.rdg {
     --template-columns: ${({ isBlindbox }) =>
-      isBlindbox ? '25% 25% 25% 25% !important' : '16% 16% 26% auto auto auto !important'};
+      isBlindbox ? '30% 25% 25% 20% !important' : '22% 12% 24% auto auto auto !important'};
 
     height: ${(props: any) => {
       if (props.ispro === 'pro') {
@@ -95,7 +95,7 @@ export const RedPacketRecordTable = withTranslation(['tables', 'common'])(
           page,
           filter: {
             isNft: tableType === 'NFT' ? true : tableType === 'token' ? false : undefined,
-            modes: tableType === 'blindbox' ? 2 : [0, 1, 2],
+            modes: tableType === 'blindbox' ? 2 : [0, 1],
           },
         })
       },
@@ -109,16 +109,36 @@ export const RedPacketRecordTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           name: t('labelRecordToken'),
-          formatter: ({ row: { token } }: FormatterProps<R, unknown>) => {
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const {token} = row
+            const blindBoxTag = (
+              <Tooltip title={<>{t('labelRedpacketFromBlindbox')}</>}>
+                <img
+                  width={24}
+                  height={24}
+                  style={{ marginLeft: `${0.5 * theme.unit}px` }}
+                  src={
+                    theme.mode === 'dark'
+                      ? sdk.SoursURL + '/images/from_blindbox_dark.png'
+                      : sdk.SoursURL + '/images/from_blindbox_light.png'
+                  }
+                />
+              </Tooltip>
+            )
+            const exclusiveTag = <Typography marginLeft={0.5} borderRadius={1} paddingX={0.5} bgcolor={hexToRGB(theme.colorBase.warning, 0.5)} color={'var(--color-warning)'}>Exclusive </Typography>
             if (token.type === TokenType.single) {
               const _token = token as CoinInfo<any> & { type: TokenType }
               return (
-                <ColumnCoinDeep
-                  token={{
-                    ..._token,
-                    name: '', // for not displaying name here
-                  }}
-                />
+                <Box display={'flex'} alignItems={'center'} height={'100%'}>
+                  <ColumnCoinDeep
+                    token={{
+                      ..._token,
+                      name: '', // for not displaying name here
+                    }}
+                  />
+                  {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && tableType !== 'blindbox' && blindBoxTag}
+                  {row.type.scope === sdk.LuckyTokenViewType.TARGET && exclusiveTag}
+                </Box>
               )
             } else {
               const { metadata } = token as sdk.UserNFTBalanceInfo
@@ -153,7 +173,6 @@ export const RedPacketRecordTable = withTranslation(['tables', 'common'])(
                   )}
                   <Typography
                     color={'inherit'}
-                    flex={1}
                     display={'inline-flex'}
                     alignItems={'center'}
                     paddingLeft={1}
@@ -163,6 +182,8 @@ export const RedPacketRecordTable = withTranslation(['tables', 'common'])(
                   >
                     {metadata?.base?.name ?? 'NFT'}
                   </Typography>
+                  {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && tableType !== 'blindbox' && blindBoxTag}
+                  {row.type.scope === sdk.LuckyTokenViewType.TARGET && exclusiveTag}
                 </Box>
               )
             }

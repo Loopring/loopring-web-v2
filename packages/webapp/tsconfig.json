@@ -7,7 +7,7 @@
   },
   "include": ["src", "src/*", "src/**/*.json", "src/types.d.ts"],
   "awesomeTypescriptLoaderOptions": {
-    "useCache": false,
+    "useCache": true,
     "transpileOnly": true
   }
 }
