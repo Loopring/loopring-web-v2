@@ -390,20 +390,21 @@ export const useCreateRedPacket = <
         } else if (tooSmall) {
           setLabelAndParams(
             'labelRedPacketsMin',
-            isToken && tradeToken
-              ? {
-                  value: getValuePrecisionThousand(
-                    sdk
-                      .toBig(tradeToken.luckyTokenAmounts?.minimum ?? 0)
-                      .div('1e' + tradeToken.decimals),
-                    tradeToken.precision,
-                    tradeToken.precision,
-                    tradeToken.precision,
-                    false,
-                    { floor: false, isAbbreviate: true },
-                  ),
-                  symbol: tradeToken.symbol,
-                }
+            isToken
+              ? tradeToken &&
+                  tradeToken.decimals && {
+                    value: getValuePrecisionThousand(
+                      sdk
+                        .toBig(tradeToken.luckyTokenAmounts?.minimum ?? '0')
+                        .div('1e' + tradeToken.decimals),
+                      tradeToken.precision,
+                      tradeToken.precision,
+                      tradeToken.precision,
+                      false,
+                      { floor: false, isAbbreviate: true },
+                    ),
+                    symbol: tradeToken.symbol,
+                  }
               : {
                   value:
                     redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX

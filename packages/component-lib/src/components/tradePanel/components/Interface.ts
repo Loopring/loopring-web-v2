@@ -694,4 +694,5 @@ export type TargetRedpacktInputAddressStepProps = {
   maximumTargetsLength: number
   onClickBack: () => void
   sentAddresses?: string[]
+  clearInput: () => void
 }

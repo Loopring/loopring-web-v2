@@ -31,6 +31,7 @@ import {
 import { Box, styled } from '@mui/material'
 import { LuckyTokenAmountType, LuckyTokenClaimType, LuckyTokenViewType } from '@loopring-web/loopring-sdk'
 import { useNotify } from '@loopring-web/core'
+import moment from 'moment'
 
 const BoxStyle = styled(Box)`
   &.createRedPacket {
@@ -574,6 +575,16 @@ export const CreateRedPacketPanel = <
             setActiveStep(TargetRedPacketStep.TargetChosse)
           }}
           sentAddresses={tradeData.target?.sentAddresses}
+          clearInput={() => {
+            handleOnDataChange({
+              numbers: undefined,
+              tradeValue: undefined,
+              validSince: Date.now(),
+              validUntil: moment().add('days', 1).toDate().getTime(),
+              giftNumbers: undefined,
+              memo: '',
+            } as any)
+          }}
         />
       ),
       toolBarItem: undefined,
