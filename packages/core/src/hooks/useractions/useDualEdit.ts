@@ -115,6 +115,7 @@ export const useDualEdit = <
           }
           if (
             tradeData.renewTargetPrice &&
+            tradeDual?.tokenInfoOrigin?.storageId !== undefined &&
             !sdk.toBig(tradeData.renewTargetPrice).eq(tradeDual.dualReinvestInfo.newStrike)
           ) {
             const req: sdk.GetNextStorageIdRequest = {
