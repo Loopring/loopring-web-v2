@@ -121,14 +121,14 @@ export const useDualEdit = <
               accountId: account.accountId,
               sellTokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
             }
-            const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+            // const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
             request.newStrike = tradeData.renewTargetPrice
             const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
 
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
-              storageId: storageId.orderId,
+              storageId: tradeDual.tokenInfoOrigin.storageId,
               accountId: account.accountId,
               sellToken: {
                 tokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
