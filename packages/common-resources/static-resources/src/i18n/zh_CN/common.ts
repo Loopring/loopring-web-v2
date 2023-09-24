@@ -37,7 +37,7 @@ export default {
   resetFee: '{{count}} GAS ≈ ${{price}} 费用',
   resetLabelBtn: '重置',
   labelActiveEnterToken: 'Select payment token',
-  labelActiveAccountDescription: 'You have enough balance to pay for {{layer2}} creation as below.',
+  labelActiveAccountDescription: 'You need to have enough balance for {{layer2}} creation as below.',
   labelActiveAccountFee: 'Fee {{count}} GAS ≈ ${{price}}',
   labelActiveAccountBtn: 'Reset',
   depositLabelEnterToken: '选择充值代币',
@@ -772,11 +772,11 @@ export default {
   labelExchangeOthers: 'Other Exchanges',
   labelExchangeOthersDes: '',
   labelL2toL1AddressType: 'Address Type',
-  labelConfirmBtrade: 'Confirm CEX Support',
+  labelConfirmBtrade: 'Confirm Block Trade Support',
   labelConfirmDetail:
-    '<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>' +
-    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>' +
-    '<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>',
+    '<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>' +
+    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>' +
+    '<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>',
   labelBtradeUnderstand: 'I understand and acknowledge the risk',
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
@@ -1057,13 +1057,13 @@ export default {
   labelDualBeginnerIndexPriceDes: 'Index Price is derived from some leading exchanges.',
   labelDualBeginnerLockingDes: 'Your token for investment will be locked until Settlement Date.',
   labelDualBeginnerAPR: 'APR: {{APR}}',
-  labelDualBeginnerStep1Title: 'Step 1: Choose a token to sell or buy',
-  labelDualBeginnerStep2Title: 'Step 2: Choose to sell or buy at desired price in the future',
+  labelDualBeginnerStep1Title: 'Choose a token to sell or buy',
+  labelDualBeginnerStep2Title: 'Choose to sell or buy at desired price in the future',
   labelDualBeginnerSellHigh: 'Sell {{token}} High',
   labelDualBeginnerBuyLow: 'Buy {{token}} Low',
   labelDualBeginnerReceiveStable: 'You will receive USDC or USDT',
   labelDualBeginnerInvestStable: 'You can invest USDC or USDT',
-  labelDualBeginnerStep3Title: 'Step 3: Choose Target Price and Settlement Date',
+  labelDualBeginnerStep3Title: 'Choose Target Price and Settlement Date',
   labelDualBeginnerSellHighFor: 'Sell high for {{token}}',
   labelDualBeginnerBuyLowWith: 'Buy low with {{token}}',
 
@@ -1783,9 +1783,8 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
+  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
-  labelClaimallToken: 'Reward token {{symbol}}',
-  labelTitleOverviewAllPrd: 'All Products',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
@@ -1817,14 +1816,10 @@ export default {
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelTimeoutAddressClick:
     '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
-  labelLeverageETHStakingDes: 'Gain higher APY aggressively',
   labelRedPacketViewType2: 'Exclusive',
   labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
     'Everyone in the Loopring community can participate in claiming the red packet',
-  labelRedPacketQRPublic: 'QR Public',
-  labelRedPacketQRPublicDes:
-    'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketQRPublic: 'Public QR',
   labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
@@ -1841,39 +1836,31 @@ export default {
   labelRedpacketRevealTime: 'Reveal Time',
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
-  labelExclusiveWhitelistDes:
-    "For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
+  labelExclusiveWhitelistDes: 'For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
   labelRedpacketTextimport: 'Text import',
   labelRedpacketContactImport: 'Contact import',
   labelRedpacketNotificationDisplay: 'Notification Display',
   labelRedpacketRedDotDes: 'Recipients are alerted via a badge next to the Red Packets category',
   labelRedpacketBadge: 'Badge',
   labelRedpacketPopUp: 'Pop-up Notification',
-  labelRedpacketPopUpTooltip:
-    "'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.'
-  labelRedpacketPopPpDes:
-    'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
+  labelRedpacketPopUpTooltip: 'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
+  labelRedpacketPopPpDes: 'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
   labelRedPacketChooseTarget: 'Create Red Packet',
   labelRedPacketRecipientList: 'Recipient List',
-  labelRedPacketPublicTooltip:
-    'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip:
-    'Your Red Packet is private, and only the addresses you specify can claim it.',
+  labelRedPacketPublicTooltip: 'Your Red Packet is public, and everyone can participate in claiming it.',
+  labelRedPacketPrivateTooltip: 'Your Red Packet is private, and only the addresses you specify can claim it.',
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
   labelRedpacketValidAddresses: 'Valid Addresses: {{count}}',
   labelRedpacketTips: 'Tips',
-  labelRedpacketChangeImportTips:
-    'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
+  labelRedpacketChangeImportTips: 'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
   labelRedpacketAddressesReview: 'Addresses Review',
   labelRedpacketAddressesReviewPart1: 'The list contains {{count}} valid addresses,',
   labelRedpacketAddressesReviewPart2: '{{count}} invalid addresses',
-  labelRedpacketAddressesReviewPart3:
-    '. To proceed, invalid addresses will be automatically removed from the list.',
-  labelRedpacketExclusiveListEmpty:
-    'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketAddressesReviewPart3: '. To proceed, invalid addresses will be automatically removed from the list.',
+  labelRedpacketExclusiveListEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
   labelRedpacketBestwishes: 'Best wishes',
   labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
@@ -1883,4 +1870,6 @@ export default {
   labelRedPacketTotal: 'Total {{count}}',
   labelRedPacketExclusiveTag: 'Exclusive',
   labelRedPacketClaiming: 'Claiming',
+  labelRedPacketReceiptsList: 'Red Packet Receipt >',
+  labelTxGuardian_upgrade_contract: "upgrade contract",
 }

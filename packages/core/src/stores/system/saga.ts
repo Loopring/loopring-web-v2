@@ -28,6 +28,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
+import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
 
 const initConfig = function* <_R extends { [key: string]: any }>(
