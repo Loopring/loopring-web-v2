@@ -12,6 +12,7 @@ import {
   DualCalcData,
   DualTrade,
   DualViewInfo,
+  DualViewType,
   getValuePrecisionThousand,
   globalSetup,
   myLog,
@@ -48,8 +49,10 @@ export const useDualTrade = <
   R extends DualViewInfo,
 >({
   setConfirmDualAutoInvest,
+  viewType,
 }: {
   setConfirmDualAutoInvest: (state: boolean) => void
+  viewType?: DualViewType
 }) => {
   const refreshRef = React.useRef()
   const { exchangeInfo, allowTrade } = useSystem()
@@ -142,7 +145,11 @@ export const useDualTrade = <
               balance: _updateInfo?.coinSell?.balance ?? 0,
               tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
               belong: baseSymbol,
-              isRenew: _updateInfo?.coinSell?.isRenew ?? false,
+              isRenew:
+                _updateInfo?.coinSell?.isRenew ??
+                [DualViewType.DualDip, DualViewType.DualGain].includes(viewType as ViewType)
+                  ? true
+                  : false,
             } as unknown as T)
       const existedMarket = sdk.getExistedMarket(marketArray, baseSymbol, quoteSymbol)
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {

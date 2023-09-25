@@ -15,7 +15,7 @@ import {
 } from '@loopring-web/component-lib'
 import { Box, Divider, Modal as MuiModal, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { myLog, TOAST_TIME, TokenType } from '@loopring-web/common-resources'
+import { DualViewType, myLog, TOAST_TIME, TokenType } from '@loopring-web/common-resources'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 
 const BoxLinear = styled(SwitchPanelStyled)`
@@ -48,8 +48,10 @@ export const ModalDualPanel = withTranslation('common')(
     dualToastOpen,
     closeDualToast,
     isBeginnerMode,
+    viewType,
     ...rest
   }: WithTranslation & {
+    viewType: DualViewType
     dualTradeProps: DualWrapProps<any, any, any>
     dualToastOpen?: TOASTOPEN
     closeDualToast?: (state: boolean) => void
@@ -129,6 +131,7 @@ export const ModalDualPanel = withTranslation('common')(
               {/*sx={{ display: "none" }}*/}
               <CountDownIcon
                 onRefreshData={dualTradeProps.onRefreshData}
+                // viewType={viewType}
                 ref={dualTradeProps.refreshRef}
               />
             </Box>

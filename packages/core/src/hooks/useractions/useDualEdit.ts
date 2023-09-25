@@ -49,8 +49,7 @@ export const useDualEdit = <
   const [isLoading, setIsLoading] = React.useState(false)
   const { tokenMap, idIndex } = useTokenMap()
   const [tradeData, setTradeData] = React.useState<T>({
-    // @t-ignore
-    isRenew: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false,
+    isRenew: (dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false) as any,
     renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
     renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.retryStatus,
   })
@@ -122,7 +121,7 @@ export const useDualEdit = <
               accountId: account.accountId,
               sellTokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
             }
-            // const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+            const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
             request.newStrike = tradeData.renewTargetPrice
             const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
@@ -132,7 +131,7 @@ export const useDualEdit = <
               storageId: tradeDual.tokenInfoOrigin.storageId,
               accountId: account.accountId,
               sellToken: {
-                tokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
+                tokenId: storageId.orderId, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
                 volume: tradeDual.tokenInfoOrigin.amountIn,
               },
               buyToken: {

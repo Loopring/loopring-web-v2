@@ -1868,7 +1868,8 @@ export default {
   labelRedPacketPlazaPublicDes:
     'Everyone in the Loopring community can participate in claiming the red packet',
   labelRedPacketQRPublic: 'Public QR',
-  labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
+  labelRedPacketQRPublicDes:
+    'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
   labelRedPacketExclusiveDes: 'know the QR code users can participate in grabbing red envelopes',
   labelRedPacketHaveExclusive: 'You have {{count}} exclusive Red Packets.',
@@ -1936,7 +1937,7 @@ export default {
   labelDualAutoDUAL_BASEPriceDes: 'The target price at which you want to sell crypto.',
   labelDualAutoDUAL_CURRENCYPriceDes: 'The target price at which you want to buy crypto.',
   labelDualModifyParameter: 'Modify Parameter',
-  labelDayDisplay: '{{item}} Day',
+  labelDayDisplay: '{{item}} Day(s)',
   labelDualModifyConfirm: 'confirm',
   labelDualAutoDurationDes:
     'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
