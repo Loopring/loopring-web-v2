@@ -1872,4 +1872,6 @@ export default {
   labelRedPacketClaiming: 'Claiming',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
   labelTxGuardian_upgrade_contract: "upgrade contract",
+  labelTxGuardian_approve_Token: "approve Token",
+
 }
