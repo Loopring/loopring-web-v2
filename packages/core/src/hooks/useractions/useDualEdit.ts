@@ -202,12 +202,14 @@ export const useDualEdit = <
           refresh({
             ...dualViewInfo,
             __raw__: {
-              ...dualViewInfo.__raw__,
-              dualReinvestInfo: {
-                ...dualViewInfo?.__raw__?.dualReinvestInfo,
-                newStrike: request.newStrike,
-                maxDuration: request.maxDuration,
-                isRecursive: request.isRecursive,
+              order: {
+                ...dualViewInfo.__raw__.order,
+                dualReinvestInfo: {
+                  ...dualViewInfo?.__raw__?.dualReinvestInfo,
+                  newStrike: request.newStrike,
+                  maxDuration: request.maxDuration,
+                  isRecursive: request.isRecursive,
+                },
               },
             },
           } as any)

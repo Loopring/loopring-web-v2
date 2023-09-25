@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import React from 'react'
 import { RootState } from '../../index'
 import { getDualMap, statusUnset } from './reducer'
-import { DualMap, DualMapStates } from './interface'
+import { DualMapStates } from './interface'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const useDualMap = (): DualMapStates & {
