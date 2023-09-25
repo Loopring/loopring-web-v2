@@ -129,10 +129,7 @@ export const useDualTrade = <
       const dualMarket =
         dualMarketMap[`DUAL-${sellSymbol}-${buySymbol}`] ??
         dualMarketMap[`DUAL-${buySymbol}-${sellSymbol}`]
-      // const [calcSellSymbol, calcBuySymbol] =
-      //   sdk.DUAL_TYPE.DUAL_BASE === info.dualType
-      //     ? [info.base, info.currency]
-      //     : [info.currency, info.base];
+
       setSellBuySymbol([baseSymbol, quoteSymbol])
       let coinSell: T =
         tradeData && tradeData.belong === baseSymbol
@@ -147,7 +144,7 @@ export const useDualTrade = <
               belong: baseSymbol,
               isRenew:
                 _updateInfo?.coinSell?.isRenew ??
-                [DualViewType.DualDip, DualViewType.DualGain].includes(viewType as ViewType)
+                [DualViewType.DualDip, DualViewType.DualGain].includes(viewType as DualViewType)
                   ? true
                   : false,
             } as unknown as T)
