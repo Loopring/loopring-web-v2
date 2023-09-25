@@ -320,6 +320,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
               ].join(','),
+              retryStatus: [sdk.RETRY_STATUSES.RETRYING],
             } as any,
             apiKey,
           ),
