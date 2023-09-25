@@ -389,7 +389,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignRight',
           name: '',
           formatter: () => {
-            return <MoreIcon cursor={'pointer'} />
+            return <MoreIcon onClick={() => showDetail(row)} cursor={'pointer'} />
           },
         },
       ],

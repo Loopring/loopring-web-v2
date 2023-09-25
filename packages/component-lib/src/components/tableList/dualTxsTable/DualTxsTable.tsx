@@ -289,6 +289,18 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           },
         },
         {
+          key: 'Auto',
+          sortable: true,
+          name: t('labelDualAutoReinvest'),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return row?.__raw__.order?.dualReinvestInfo?.isRecursive ? (
+              <>{t('labelDualAssetReInvestEnable')}</>
+            ) : (
+              <>{t('labelDualAssetReInvestDisable')} </>
+            )
+          },
+        },
+        {
           key: 'time',
           name: t('labelDualTxsTime'),
           headerCellClass: 'textAlignRight',
@@ -408,7 +420,10 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     paddingLeft={1}
                     variant={'body2'}
                   >
-                    APY: {apy}
+                    APY: {apy}, {t('labelDualAuto')}:
+                    {row?.__raw__.order?.dualReinvestInfo?.isRecursive
+                      ? t('labelDualAssetReInvestEnable')
+                      : t('labelDualAssetReInvestDisable')}
                   </Typography>
                 </Typography>
                 {/* " - " +*/}
