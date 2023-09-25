@@ -1785,6 +1785,8 @@ export default {
   labelStopPriceSell: 'Limit / Sell Price',
   labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
+  labelClaimallToken: 'Reward token {{symbol}}',
+  labelTitleOverviewAllPrd: 'All Products',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
@@ -1816,10 +1818,14 @@ export default {
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelTimeoutAddressClick:
     '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelLeverageETHStakingDes: 'Gain higher APY aggressively',
   labelRedPacketViewType2: 'Exclusive',
   labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
     'Everyone in the Loopring community can participate in claiming the red packet',
+  labelRedPacketQRPublic: 'QR Public',
+  labelRedPacketQRPublicDes:
+    'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketQRPublic: 'Public QR',
   labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
@@ -1836,31 +1842,39 @@ export default {
   labelRedpacketRevealTime: 'Reveal Time',
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
-  labelExclusiveWhitelistDes: 'For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
+  labelExclusiveWhitelistDes:
+    "For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
   labelRedpacketTextimport: 'Text import',
   labelRedpacketContactImport: 'Contact import',
   labelRedpacketNotificationDisplay: 'Notification Display',
   labelRedpacketRedDotDes: 'Recipients are alerted via a badge next to the Red Packets category',
   labelRedpacketBadge: 'Badge',
   labelRedpacketPopUp: 'Pop-up Notification',
-  labelRedpacketPopUpTooltip: 'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
-  labelRedpacketPopPpDes: 'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
+  labelRedpacketPopUpTooltip:
+    "'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.'
+  labelRedpacketPopPpDes:
+    'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
   labelRedPacketChooseTarget: 'Create Red Packet',
   labelRedPacketRecipientList: 'Recipient List',
-  labelRedPacketPublicTooltip: 'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip: 'Your Red Packet is private, and only the addresses you specify can claim it.',
+  labelRedPacketPublicTooltip:
+    'Your Red Packet is public, and everyone can participate in claiming it.',
+  labelRedPacketPrivateTooltip:
+    'Your Red Packet is private, and only the addresses you specify can claim it.',
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
   labelRedpacketValidAddresses: 'Valid Addresses: {{count}}',
   labelRedpacketTips: 'Tips',
-  labelRedpacketChangeImportTips: 'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
+  labelRedpacketChangeImportTips:
+    'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
   labelRedpacketAddressesReview: 'Addresses Review',
   labelRedpacketAddressesReviewPart1: 'The list contains {{count}} valid addresses,',
   labelRedpacketAddressesReviewPart2: '{{count}} invalid addresses',
-  labelRedpacketAddressesReviewPart3: '. To proceed, invalid addresses will be automatically removed from the list.',
-  labelRedpacketExclusiveListEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketAddressesReviewPart3:
+    '. To proceed, invalid addresses will be automatically removed from the list.',
+  labelRedpacketExclusiveListEmpty:
+    'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
   labelRedpacketBestwishes: 'Best wishes',
   labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',

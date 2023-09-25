@@ -243,10 +243,11 @@ export type WithdrawExtendProps<T, I, C> = {
   handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => void
   contact?: { address: string; name: string; addressType?: sdk.AddressType }
   isFromContact?: boolean
-  onClickContact?: () => void
+  // onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
-  contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
-} & WithdrawInfoProps<C>
+  // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
+} & Pick<sdk.GetContactsResponse, 'contacts'> &
+  WithdrawInfoProps<C>
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> = BasicACoinTradeViewProps<T, I> &
   WithdrawExtendProps<T, I, C> & {
@@ -285,7 +286,7 @@ export type DefaultProps<T, I> = {
   selectNFTDisabled?: boolean
 } & (
   | {
-      type?: TRADE_TYPE.TOKEN
+      type: TRADE_TYPE.TOKEN
       coinMap: CoinMap<I, CoinInfo<I>>
       walletMap: WalletMap<I, WalletCoin<I>>
     }
@@ -698,5 +699,4 @@ export type TargetRedpacktInputAddressStepProps = {
   maximumTargetsLength: number
   onClickBack: () => void
   sentAddresses?: string[]
-  clearInput: () => void
-  }
+}

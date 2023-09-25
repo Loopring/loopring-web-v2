@@ -1766,7 +1766,6 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
       maximumTargetsLength,
       onClickBack,
       sentAddresses,
-      clearInput,
       t,
     } = props
     const theme = useTheme()
@@ -2286,7 +2285,6 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 setShowChangeTips({ show: false })
                 setInputDisabled(false)
                 onClickBack()
-                clearInput()
               }}
             >
               {t('labelMintBack')}
