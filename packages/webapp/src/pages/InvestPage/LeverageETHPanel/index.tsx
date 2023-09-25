@@ -133,31 +133,34 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
-        height={isMobile ? 34 * theme.unit : 25 * theme.unit}
+        height={6 * theme.unit}
         alignItems={'center'}
+        containerProps={{
+          borderBottom: '1px solid var(--color-border)'
+        }}
       >
-        <Box
-          paddingY={7}
-          width={'100%'}
-          display={'flex'}
-          alignItems={'center'}
-          flexDirection={'column'}
-        >
-          <Typography marginBottom={2} fontSize={isMobile ? '30px' : '48px'} variant={'h1'}>
-            {t('labelLeverageETHStaking')}
-          </Typography>
-          <ButtonStyled
-            onClick={() => history.push('/invest/balance')}
-            sx={{
-              width: isMobile ? 36 * theme.unit : 18 * theme.unit,
-            }}
-            variant={'contained'}
+        <Box width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
+          <Button
+            startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
+            variant={'text'}
+            size={'medium'}
+            sx={{ color: 'var(--color-text-primary)' }}
+            color={'inherit'}
+            onClick={() => history.push(`/invest/overview`)}
           >
-            {t('labelMyInvestLRCStaking')}
-          </ButtonStyled>
+            {t("labelBack")}
+          </Button>
+
+          {/* <Typography variant={'h4'}>
+            {t('labelLeverageETHStaking')}
+          </Typography> */}
+          <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+            {t('labelMyInvestLRCStaking')}{' '}
+            {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
+          </Button>
         </Box>
       </MaxWidthContainer>
-      <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]} paddingY={5}>
+      <MaxWidthContainer minHeight={'70vh'} paddingY={5}>
         <StyleWrapper
           display={'flex'}
           flexDirection={'column'}

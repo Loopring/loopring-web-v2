@@ -76,6 +76,7 @@ const MainTabCardStyleItem = styled(CardStyleItem)`
     border-radius: ${({theme}) => theme.unit}px;
     padding-left: ${({theme}) => 3 * theme.unit}px;
     padding-right: ${({theme}) => 3 * theme.unit}px;
+    background: transparent;
   }
 `
 
@@ -133,11 +134,11 @@ export const DualListPanel: any = withTranslation('common')(
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
-          height={isMobile ? 60 * theme.unit : 34 * theme.unit}
+          height={isMobile ? 60 * theme.unit : 30 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>
-            <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+            <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
               {t('labelInvestDualTitle')}
             </Typography>
             <Box display={'flex'} alignItems={'center'}>
@@ -148,7 +149,7 @@ export const DualListPanel: any = withTranslation('common')(
               >
                 {t('labelInvestMyDual')}
               </Button>
-              
+
               <Button
                 onClick={() => {
                   window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')
@@ -197,7 +198,7 @@ export const DualListPanel: any = withTranslation('common')(
                   variant='scrollable'
                   sx={{
                     display: 'flex',
-                    flexWrap: 'wrap'
+                    flexWrap: 'wrap',
                   }}
                 >
                   {tradeMap &&
@@ -205,7 +206,15 @@ export const DualListPanel: any = withTranslation('common')(
                       .sort((a, b) => a.toString().localeCompare(b.toString()))
                       .map((item, index) => {
                         return (
-                          <Grid marginBottom={2} marginLeft={2} item xs={6} md={3} lg={2} key={item.toString() + index.toString()}>
+                          <Grid
+                            marginBottom={2}
+                            marginLeft={2}
+                            item
+                            xs={6}
+                            md={3}
+                            lg={2}
+                            key={item.toString() + index.toString()}
+                          >
                             <MainTabCardStyleItem
                               className={
                                 item.toString().toLowerCase() === pairASymbol.toLowerCase()
@@ -230,7 +239,6 @@ export const DualListPanel: any = withTranslation('common')(
                         )
                       })}
                 </Tabs>
-                
 
                 <WrapperStyled marginTop={1} flex={1} flexDirection={'column'}>
                   {pairASymbol && pairBSymbol && market && (
@@ -242,43 +250,35 @@ export const DualListPanel: any = withTranslation('common')(
                       justifyContent={'space-between'}
                       alignItems={'center'}
                     >
-                      <Box
-                        display={'flex'}
-                        flexWrap={'wrap'}
-                      >
-                        {pairASymbol &&
-                          tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
-                            const _index = marketArray.findIndex((_item) =>
-                              new RegExp(pairASymbol + '-' + item.toString(), 'ig').test(_item),
-                            )
-                            return (
-                              <SubTabCardStyleItem
-                                className={
-                                      item.toString().toLowerCase() === pairBSymbol.toLowerCase()
-                                        ? 'btnCard dualInvestCard selected'
-                                        : 'btnCard dualInvestCard '
-                                    }
-                                    sx={{ height: '100%' , marginRight: 2, marginBottom: isMobile ? 2 : 0}}
-                                onClick={() => {
-                                  handleOnPairChange({ pairB: item })
-                                }}
-                                key={item.toString() + index.toString()}
-                              >
-                                <Typography variant={isMobile ? 'body1' : 'h5'}>
-                                {
-                                  _index !== -1
-                                  ? t('labelDualBase', {
-                                      symbol: item.toString(),
-                                    })
-                                  : t('labelDualQuote', {
-                                      symbol: item.toString(),
-                                    })
-                                }
-                                </Typography>
-                                
-                              </SubTabCardStyleItem>
-                            )
-                          })}
+                      <Box display={'flex'} flexWrap={'wrap'}>
+                        <Tabs
+                          value={pairBSymbol}
+                          onChange={(_e, value) => handleOnPairChange({ pairB: value })}
+                          aria-label='Dual Quote Tab'
+                          variant={'scrollable'}
+                        >
+                          {pairASymbol &&
+                            tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
+                              const _index = marketArray.findIndex((_item) =>
+                                new RegExp(pairASymbol + '-' + item.toString(), 'ig').test(_item),
+                              )
+                              return (
+                                <Tab
+                                  label={
+                                    _index !== -1
+                                      ? t('labelDualBase', {
+                                          symbol: item.toString(),
+                                        })
+                                      : t('labelDualQuote', {
+                                          symbol: item.toString(),
+                                        })
+                                  }
+                                  value={item.toString()}
+                                  key={item.toString() + index.toString()}
+                                />
+                              )
+                            })}
+                        </Tabs>
                       </Box>
                       <Typography
                         component={'span'}

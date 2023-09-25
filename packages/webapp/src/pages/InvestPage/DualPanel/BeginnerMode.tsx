@@ -16,6 +16,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import { maxBy, minBy, values } from 'lodash'
+import React from 'react'
 
 const WhiteCircleText = styled(Box)`
   justify-content: center;
@@ -41,11 +42,18 @@ const TickCardStyleItem = (
     contentheight?: number
     size?: 'large' | 'medium' | 'small' | undefined
     selected?: boolean
+    width?: string
   },
 ) => {
-  const { children, selected, ...rest } = props
+  const { children, selected, width,...rest } = props
   return (
-    <CardStyleItem {...rest}>
+    <CardStyleItem style={{
+      borderRadius: '8px',
+      background: 'transparent',
+      width,
+      justifyContent: 'left',
+      padding: '18px 24px',
+    }} {...rest}>
       {selected && (
         <BorderTickSvg
           fontSize={'large'}
@@ -136,10 +144,30 @@ export const BeginnerMode: any = withTranslation('common')(
     const showStep2 = step1SelectedToken !== undefined
     const showStep3 = step2BuyOrSell !== undefined
     const showTable = step3Token !== undefined
+    const step3Ref = React.useRef(null)
+    const tableRef = React.useRef(null)
+    const scroolStep3ToMiddle = () => {
+      setTimeout(() => {
+        const element = step3Ref.current as any
+        const elementRect = element.getBoundingClientRect();
+        const absoluteElementTop = elementRect.top + window.pageYOffset;
+        const middle = absoluteElementTop - (window.innerHeight / 2);
+        window.scrollTo(0, middle);
+      }, 100);
+    }
+    const scroolTableToMiddle = () => {
+      setTimeout(() => {
+        const element = tableRef.current as any
+        const elementRect = element.getBoundingClientRect();
+        const absoluteElementTop = elementRect.top + window.pageYOffset;
+        const middle = absoluteElementTop - (window.innerHeight / 2);
+        window.scrollTo(0, middle);
+      }, 100);
+    }
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>
-          <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+          <Typography marginBottom={2} display={'flex'} variant={'h4'}>
             {t('labelDualBeginnerStep1Title')}
           </Typography>
           <Box display={'flex'} flexDirection={'row'}>
@@ -153,6 +181,8 @@ export const BeginnerMode: any = withTranslation('common')(
                     }
                     selected={selected}
                     onClick={() => onSelectStep1Token(tokenName.toString())}
+                    width={'280px'}
+
                   >
                     <CardContent sx={{ alignItems: 'center' }}>
                       <Typography component={'span'} display={'inline-flex'}>
@@ -164,8 +194,10 @@ export const BeginnerMode: any = withTranslation('common')(
                       <Typography paddingLeft={1}>
                         <Typography
                           color={
-                            selected ? theme.colorBase.textPrimary : theme.colorBase.textSecondary
+                            selected ? theme.colorBase.textPrimary : theme.colorBase.textPrimary
                           }
+                          variant={'subtitle1'}
+                          // fontSize={'16px'}
                         >
                           {tokenName.toString()}
                         </Typography>
@@ -208,7 +240,7 @@ export const BeginnerMode: any = withTranslation('common')(
 
         {showStep2 && (
           <Box marginBottom={5}>
-            <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t('labelDualBeginnerStep2Title')}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
@@ -220,7 +252,11 @@ export const BeginnerMode: any = withTranslation('common')(
                       : 'btnCard dualInvestCard '
                   }
                   selected={step2BuyOrSell === 'Sell'}
-                  onClick={() => onSelectStep2BuyOrSell('Sell')}
+                  onClick={() => {
+                    onSelectStep2BuyOrSell('Sell')
+                    scroolStep3ToMiddle()
+                  }}
+                  width={'309px'}
                 >
                   <CardContent sx={{ alignItems: 'center' }}>
                     <Typography component={'span'} display={'inline-flex'}>
@@ -228,11 +264,8 @@ export const BeginnerMode: any = withTranslation('common')(
                     </Typography>
                     <Typography paddingLeft={1}>
                       <Typography
-                        color={
-                          step2BuyOrSell === 'Sell'
-                            ? theme.colorBase.textPrimary
-                            : theme.colorBase.textSecondary
-                        }
+                        color={theme.colorBase.textPrimary  }
+                        variant={'subtitle1'}
                       >
                         {t('labelDualBeginnerSellHigh', {
                           token: step1SelectedToken,
@@ -253,7 +286,11 @@ export const BeginnerMode: any = withTranslation('common')(
                       : 'btnCard dualInvestCard '
                   }
                   selected={step2BuyOrSell === 'Buy'}
-                  onClick={() => onSelectStep2BuyOrSell('Buy')}
+                  onClick={() => {
+                    onSelectStep2BuyOrSell('Buy')
+                    scroolStep3ToMiddle()
+                  }}
+                  width={'309px'}
                 >
                   <CardContent sx={{ alignItems: 'center' }}>
                     <Typography component={'span'} display={'inline-flex'}>
@@ -261,11 +298,8 @@ export const BeginnerMode: any = withTranslation('common')(
                     </Typography>
                     <Typography paddingLeft={1}>
                       <Typography
-                        color={
-                          step2BuyOrSell === 'Buy'
-                            ? theme.colorBase.textPrimary
-                            : theme.colorBase.textSecondary
-                        }
+                        color={theme.colorBase.textPrimary  }
+                        variant={'subtitle1'}
                       >
                         {t('labelDualBeginnerBuyLow', {
                           token: step1SelectedToken,
@@ -283,8 +317,8 @@ export const BeginnerMode: any = withTranslation('common')(
         )}
 
         {showStep3 && (
-          <Box marginBottom={2}>
-            <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+          <Box ref={step3Ref} marginBottom={2}>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t('labelDualBeginnerStep3Title')}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
@@ -298,13 +332,17 @@ export const BeginnerMode: any = withTranslation('common')(
                           : 'btnCard dualInvestCard '
                       }
                       selected={step3Token === token}
-                      onClick={() => onSelectStep3Token(token)}
+                      onClick={() => {
+                        onSelectStep3Token(token)
+                        scroolTableToMiddle()
+                      }}
+                      width={'280px'}
                     >
                       <CardContent sx={{ alignItems: 'center' }}>
                         <Typography component={'span'} display={'inline-flex'}>
-                          <CoinIcon size={20} symbol={token} />
+                          <CoinIcon size={32} symbol={token} />
                         </Typography>
-                        <Typography paddingLeft={1}>
+                        <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'} paddingLeft={1}>
                           {step2BuyOrSell === 'Buy'
                             ? t('labelDualBeginnerBuyLowWith', { token: token })
                             : t('labelDualBeginnerSellHighFor', {
@@ -320,7 +358,7 @@ export const BeginnerMode: any = withTranslation('common')(
           </Box>
         )}
         {showTable && (
-          <WrapperStyled marginTop={1} flex={1} flexDirection={'column'}>
+          <WrapperStyled ref={tableRef} marginTop={1} flex={1} flexDirection={'column'}>
             {pairASymbol && pairBSymbol && market && (
               <Box
                 display={'flex'}

@@ -1855,4 +1855,7 @@ export default {
   labelShareMessage: "Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}",
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
+  labelDefiRate: 'Rate',
+  labelDefiLido: 'Lido',
+  labelDefiRocketPool: 'Rocket Pool',
 }

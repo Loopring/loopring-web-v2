@@ -264,7 +264,7 @@ const MyLiquidity: any = withTranslation('common')(
     
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        {!noHeader && <MaxWidthContainer height={isMobile ? 70 * theme.unit : 34 * theme.unit} alignItems={'center'} background={containerColors[0]}>
+        {!noHeader && <MaxWidthContainer height={isMobile ? 70 * theme.unit : 30 * theme.unit} alignItems={'center'} background={containerColors[0]}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}
@@ -272,7 +272,7 @@ const MyLiquidity: any = withTranslation('common')(
             alignItems={isMobile ? 'start' : 'center'}
           >
             <Box paddingY={7}>
-              <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
+              <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
                 {t('labelInvestBalanceTitle')}
               </Typography>
               <Button

@@ -50,11 +50,11 @@ export const PoolsPanel = withTranslation('common')(
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
-          height={isMobile ? 50 * theme.unit : 34 * theme.unit}
+          height={isMobile ? 50 * theme.unit : 30 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>
-            <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+            <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
               {t("labelLiquidityPageTitle")}
             </Typography>
             <Button onClick={() => history.push('/invest/balance')} sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }} variant={'contained'}>
