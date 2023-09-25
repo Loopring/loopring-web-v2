@@ -41,7 +41,9 @@ export const TradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+  const styles = isMobile ? { flex: 1, background: 'var(--color-box-third)' } : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
+  // leverageETHAdvice
+  // console.log('leverageETHAdvice', leverageETHAdvice)
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (

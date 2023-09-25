@@ -63,6 +63,7 @@ const MainTabCardStyleItem = styled(CardStyleItem)`
     border-radius: ${({ theme }) => theme.unit}px;
     padding-left: ${({ theme }) => 3 * theme.unit}px;
     padding-right: ${({ theme }) => 3 * theme.unit}px;
+    background: transparent;
   }
 `
 
@@ -125,11 +126,11 @@ export const DualListPanel: any = withTranslation('common')(
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
-          height={isMobile ? 60 * theme.unit : 34 * theme.unit}
+          height={isMobile ? 60 * theme.unit : 30 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>
-            <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+            <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
               {t('labelInvestDualTitle')}
             </Typography>
             <Box display={'flex'} alignItems={'center'}>
@@ -496,6 +497,7 @@ export const DualListPanel: any = withTranslation('common')(
           dualToastOpen={dualToastOpen}
           closeDualToast={closeDualToast}
           isBeginnerMode={viewType === DualViewType.DualBegin}
+          // viewType={DualViewType}
         />
       </Box>
     )

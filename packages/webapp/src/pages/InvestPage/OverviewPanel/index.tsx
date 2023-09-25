@@ -173,14 +173,14 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
-          height={isMobile ? 60 * theme.unit : 34 * theme.unit}
+          height={isMobile ? 60 * theme.unit : 30 * theme.unit}
           alignItems={'center'}
         >
           <Box paddingY={7}>
             <Typography
               color={'var(--color-text-primary)'}
               marginBottom={2}
-              fontSize={'48px'}
+              fontSize={'38px'}
               variant={'h1'}
             >
               {t('labelInvestLoopringEarn')}

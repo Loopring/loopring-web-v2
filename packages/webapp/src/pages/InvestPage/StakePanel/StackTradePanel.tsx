@@ -11,8 +11,8 @@ import {
 } from '@loopring-web/component-lib'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
-import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { useTranslation } from 'react-i18next'
+import { BackIcon, L1L2_NAME_DEFINED, MapChainId, SatkingLogo, SoursURL, TOAST_TIME, UpIcon, hexToRGB } from '@loopring-web/common-resources'
+import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
 import { ErrorPage } from '@loopring-web/web-bridge/src/pages/ErrorPage'
@@ -57,6 +57,8 @@ export const StackTradePanel = ({
     setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
   }, [])
   const theme = useTheme()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   return (
     <>
       <Toast
@@ -68,70 +70,64 @@ export const StackTradePanel = ({
       />
       {toggle?.LRCStackInvest.enable ? (
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-          {false && (
-            <Box
-              marginBottom={2}
-              display={'flex'}
-              justifyContent={'space-between'}
-              alignItems={isMobile ? 'left' : 'center'}
-              flexDirection={isMobile ? 'column' : 'row'}
-            >
-              <Button
-                startIcon={<BackIcon fontSize={'small'} />}
-                variant={'text'}
-                size={'medium'}
-                sx={
-                  isMobile
-                    ? {
-                        color: 'var(--color-text-secondary)',
-                        justifyContent: 'left',
-                      }
-                    : { color: 'var(--color-text-secondary)' }
-                }
-                color={'inherit'}
-                onClick={() => history.push('/invest/overview')}
-              >
-                {t('labelInvestLRCStakingTitle')}
-              </Button>
-              <Button
-                variant={'outlined'}
-                size={'medium'}
-                onClick={() => history.push('/invest/balance/sideStake')}
-                sx={{ color: 'var(--color-text-secondary)' }}
-              >
-                {t('labelMyInvestLRCStaking')}
-              </Button>
-            </Box>
-          )}
           <MaxWidthContainer
             display={'flex'}
-            justifyContent={'space-between'}
             background={containerColors[0]}
-            height={isMobile ? 34 * theme.unit : 25 * theme.unit}
             alignItems={'center'}
+            flexDirection={'column'}
+            containerProps={{
+              borderBottom: `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
+            }}
           >
             <Box
-              paddingY={7}
               width={'100%'}
               display={'flex'}
               alignItems={'center'}
-              flexDirection={'column'}
+              justifyItems={'center'}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+              height={6 * theme.unit}
             >
-              <Typography marginBottom={2} fontSize={isMobile ? '30px' : '48px'} variant={'h1'}>
-                {t('labelInvestLRCTitle')}
-              </Typography>
-              <ButtonStyled
-                onClick={() => history.push('/invest/balance')}
-                sx={{
-                  width: isMobile ? 36 * theme.unit : 18 * theme.unit,
-                }}
-                variant={'contained'}
+              <Button
+                startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
+                variant={'text'}
+                size={'medium'}
+                sx={{ color: 'var(--color-text-primary)' }}
+                color={'inherit'}
+                onClick={() => history.push(`/invest/overview`)}
               >
-                {t('labelMyInvestLRCStaking')}
-              </ButtonStyled>
+                {t("labelBack")}
+              </Button>
+              <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+                {t('labelMyInvestLRCStaking')}{' '}
+                {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
+              </Button>
             </Box>
           </MaxWidthContainer>
-          <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]} paddingY={5}>
+          <MaxWidthContainer>
+            <Typography
+              marginTop={2}
+              borderRadius={2}
+              bgcolor={'var(--color-box-third)'}
+              paddingY={1.5}
+              paddingX={2}
+            >
+              <Trans
+                i18nKey={'labelLRCStakeRiskDes'}
+                tOptions={{
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                }}
+              >
+                The staked LRC is locked in Loopring L2 and won't be able to used for other purpose
+                although it can be redeemed any time; while if the staking is redeemed before 90
+                days, the accumulated reward will be dismissed.
+              </Trans>
+            </Typography>
+          </MaxWidthContainer>
+          <MaxWidthContainer background={containerColors[0]} paddingY={3}>
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}
@@ -144,9 +140,9 @@ export const StackTradePanel = ({
                   display={'flex'}
                   style={styles}
                   justifyContent={'center'}
-                  paddingX={4}
+                  paddingX={3}
                   paddingTop={3}
-                  paddingBottom={5}
+                  paddingBottom={3}
                   bgcolor={'var(--color-box-third)'}
                   border={'1px solid var(--color-border)'}
                   borderRadius={2}

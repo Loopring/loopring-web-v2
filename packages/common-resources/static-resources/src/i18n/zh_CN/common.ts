@@ -1886,4 +1886,9 @@ export default {
   labelRedPacketClaiming: 'Claiming',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
   labelTxGuardian_upgrade_contract: "upgrade contract",
+  labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelLeverageETHStakingDes: 'Gain higher APY aggressively',
+  labelDefiRate: 'Rate',
+  labelDefiLido: 'Lido',
+  labelDefiRocketPool: 'Rocket Pool',
 }

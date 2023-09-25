@@ -1978,5 +1978,7 @@ export default {
   labelDualAutoCancelConfirmDes:
     'Are you sure about disable auto reinvest? If disabled, there will be no new orders after the next settlement.',
   labelDualModifySettlementDateDialog: 'Next Settlement Date',
-  labelRedPacketReceiptsList: 'Red Packet Receipt >',
+  labelDefiRate: 'Rate',
+  labelDefiLido: 'Lido',
+  labelDefiRocketPool: 'Rocket Pool',
 }
