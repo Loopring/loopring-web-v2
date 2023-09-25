@@ -67,17 +67,8 @@ export const useHebaoMain = <
       operationLogList: [],
       guardianConfig: {},
     })
-  // const [openHebao, setOpenHebao] = React.useState<{
-  //   isShow: boolean
-  //   step: GuardianStep
-  //   options?: any
-  // }>({
-  //   isShow: false,
-  //   step: GuardianStep.LockAccount_WaitForAuth,
-  //   options: undefined,
-  // })
+
   const { clearOneItem } = layer1Store.useLayer1Store()
-  // const { chainId } = useSystem()
   const [isLoading, setIsLoading] = React.useState(false)
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -275,17 +266,18 @@ export const useAction = ({
 
         await callSwitchChain(_chainId)
         let isContract1XAddress: any = undefined,
-          guardianModuleAddress: any = undefined,
-          guardians: any = undefined
+          guardianModuleAddress: any = undefined
+        // guardians: any = undefined
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
           isContract1XAddress = true
           const walletModule = guardianConfig?.supportContracts?.find((item: any) => {
             return item.contractName === 'GUARDIAN_MODULE'
           })
           guardianModuleAddress = walletModule?.contractAddress
-        } else if (contractType && contractType.walletType === 0) {
-          guardians = []
         }
+        // else if (contractType && contractType.walletType === 0) {
+        //   guardians = []
+        // }
         const request: sdk.ApproveSignatureRequest = {
           approveRecordId: selected.id,
           txAwareHash: selected.messageHash,
@@ -297,15 +289,15 @@ export const useAction = ({
         const response = await LoopringAPI.walletAPI.submitApproveSignature(
           {
             request: request,
-            guardian: selected,
-              web3: connectProvides.usedWeb3 as any,
+            guardian: { ...selected, type: sdk.HEBAO_META_TYPE[selected.type] as any },
+            web3: connectProvides.usedWeb3 as any,
             chainId: _chainId,
             eddsaKey: '',
             apiKey: '',
             isHWAddr: !isFirstTime,
             walletType: account.connectName as any,
           },
-          guardians,
+          [],
           isContract1XAddress,
           contractType?.masterCopy ?? undefined,
           guardianModuleAddress ?? undefined,
@@ -366,7 +358,7 @@ export const useAction = ({
         }
         const response = await LoopringAPI.walletAPI.rejectHebao({
           request,
-            web3: connectProvides.usedWeb3 as any,
+          web3: connectProvides.usedWeb3 as any,
           address: account.accAddress,
           chainId: _chainId as any,
           guardiaContractAddress: guardian.address,
