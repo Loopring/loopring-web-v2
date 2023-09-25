@@ -49,8 +49,7 @@ export const useDualEdit = <
   const [isLoading, setIsLoading] = React.useState(false)
   const { tokenMap, idIndex } = useTokenMap()
   const [tradeData, setTradeData] = React.useState<T>({
-    // @t-ignore
-    isRenew: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false,
+    isRenew: (dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false) as any,
     renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
     renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.retryStatus,
   })
@@ -115,6 +114,7 @@ export const useDualEdit = <
           }
           if (
             tradeData.renewTargetPrice &&
+            tradeDual?.tokenInfoOrigin?.storageId !== undefined &&
             !sdk.toBig(tradeData.renewTargetPrice).eq(tradeDual.dualReinvestInfo.newStrike)
           ) {
             const req: sdk.GetNextStorageIdRequest = {
@@ -128,10 +128,10 @@ export const useDualEdit = <
 
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
-              storageId: storageId.orderId,
+              storageId: tradeDual.tokenInfoOrigin.storageId,
               accountId: account.accountId,
               sellToken: {
-                tokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
+                tokenId: storageId.orderId, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
                 volume: tradeDual.tokenInfoOrigin.amountIn,
               },
               buyToken: {

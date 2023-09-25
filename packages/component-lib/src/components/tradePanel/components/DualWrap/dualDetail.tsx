@@ -184,7 +184,6 @@ export const DualDetail = ({
     //   : EmptyValueTag,
     coinSell?.renewTargetPrice,
   ])
-  const isEnable = toggle.enable || (!toggle.enable && toggle.reason == 'no view')
 
   myLog('dualViewInfo', dualViewInfo)
   return (
@@ -210,7 +209,7 @@ export const DualDetail = ({
       </Modal>
 
       <Box display={'flex'} flexDirection={'column'}>
-        {isEnable &&
+        {toggle &&
         (!isOrder || (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive)) ? (
           // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
           <Box

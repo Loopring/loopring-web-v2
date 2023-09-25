@@ -771,6 +771,7 @@ const MyLiquidity: any = withTranslation('common')(
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
                               tokenMap={tokenMap}
                               isPriceEditable={true}
+                              toggle={true}
                               lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
                               greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
                               lessEarnView={dualDetail.lessEarnView}

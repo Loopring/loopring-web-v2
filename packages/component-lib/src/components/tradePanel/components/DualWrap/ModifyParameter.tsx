@@ -259,7 +259,7 @@ export const ModifyParameter = ({
               Array.from({ length: maxDuration }, (_, index) => ({
                 value: index + 1,
                 label:
-                  (index + 1) % 4 == 0 || index == 0 || index == maxDuration - 1
+                  (index + 1) % 5 == 0 || index == 0 || index == maxDuration - 1
                     ? t('labelDayDisplay', { item: index + 1 })
                     : '',
               })) as Mark[]

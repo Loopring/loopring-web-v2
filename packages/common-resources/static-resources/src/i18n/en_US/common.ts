@@ -1944,7 +1944,7 @@ export default {
   labelDualAutoDUAL_BASEPriceDes: 'The target price at which you want to sell crypto.',
   labelDualAutoDUAL_CURRENCYPriceDes: 'The target price at which you want to buy crypto.',
   labelDualModifyParameter: 'Modify Parameter',
-  labelDayDisplay: '{{item}} Day',
+  labelDayDisplay: '{{item}} Day(s)',
   labelDualModifyConfirm: 'confirm',
   labelDualAutoDurationDes:
     'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',

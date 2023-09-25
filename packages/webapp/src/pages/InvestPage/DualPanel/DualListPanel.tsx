@@ -108,6 +108,7 @@ export const DualListPanel: any = withTranslation('common')(
     } = dualListProps
     const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
       setConfirmDualAutoInvest,
+      viewType,
     })
     const { isMobile } = useSettings()
     const history = useHistory()
@@ -491,7 +492,7 @@ export const DualListPanel: any = withTranslation('common')(
           }}
         />
         <ModalDualPanel
-          dualTradeProps={dualTradeProps}
+          dualTradeProps={{ ...dualTradeProps }}
           dualToastOpen={dualToastOpen}
           closeDualToast={closeDualToast}
           isBeginnerMode={viewType === DualViewType.DualBegin}
