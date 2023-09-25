@@ -49,10 +49,11 @@ export const useDualEdit = <
   const [isLoading, setIsLoading] = React.useState(false)
   const { tokenMap, idIndex } = useTokenMap()
   const [tradeData, setTradeData] = React.useState<T>({
-    isRenew: (dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false) as any,
+    // @ts-ignore
+    isRenew: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false,
     renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
-    renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.retryStatus,
-  })
+    renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
+  } as T)
 
   const handleOnchange = ({ tradeData }: { tradeData: T }) => {
     setTradeData(tradeData)
@@ -106,9 +107,10 @@ export const useDualEdit = <
           request.isRecursive = false
         } else {
           request.isRecursive = true
+          request.maxDuration = tradeDual.dualReinvestInfo.maxDuration
           if (
             tradeData.renewDuration &&
-            tradeData.renewDuration !== (tradeDual.dualReinvestInfo.maxDuration ?? 0) / 86400000
+            tradeData.renewDuration !== (request.maxDuration ?? 0) / 86400000
           ) {
             request.maxDuration = Number(tradeData.renewDuration) * 86400000
           }
@@ -196,7 +198,19 @@ export const useDualEdit = <
           //   setShowAccount({ isShow: false })
           // }
         }
-        refresh && refresh(dualViewInfo as any)
+        refresh &&
+          refresh({
+            ...dualViewInfo,
+            __raw__: {
+              ...dualViewInfo.__raw__,
+              dualReinvestInfo: {
+                ...dualViewInfo?.__raw__?.dualReinvestInfo,
+                newStrike: request.newStrike,
+                maxDuration: request.maxDuration,
+                isRecursive: request.isRecursive,
+              },
+            },
+          } as any)
       } else {
         throw new Error('api not ready')
       }

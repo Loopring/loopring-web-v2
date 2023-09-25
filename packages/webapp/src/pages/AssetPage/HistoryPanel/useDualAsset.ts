@@ -251,7 +251,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     editDualBtnStatus,
     dualToastOpen,
     closeDualToast,
-    setDualTradeData,
+    // setDualTradeData,
     handleOnchange,
     onEditDualClick,
   } = useDualEdit({

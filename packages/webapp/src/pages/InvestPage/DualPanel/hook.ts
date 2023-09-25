@@ -31,9 +31,6 @@ export const useDualHook = ({
   const match: any = useRouteMatch('/invest/dual/:market?')
   const { search, pathname } = useLocation()
   const { tokenMap, idIndex } = useTokenMap()
-  // const [beginnerMode, setBeginnerMode] = React.useState<boolean>(
-  //   new URLSearchParams(search).get('beginnerMode') === 'true',
-  // )
   const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
   const { tokenPrices } = useTokenPrices()
   const [priceObj, setPriceObj] = React.useState<{
@@ -126,7 +123,6 @@ export const useDualHook = ({
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout)
     }
-
     // @ts-ignore
     const currency = market ? marketMap[market]?.currency : undefined
     if (pairASymbol && pairBSymbol && market) {
@@ -371,7 +367,6 @@ export const useDualHook = ({
   }, [viewType, dualStatus])
 
   return {
-    // dualWrapProps: undefined,
     currentPrice,
     pairASymbol,
     pairBSymbol,
@@ -383,8 +378,6 @@ export const useDualHook = ({
     marketQuote,
     priceObj,
     pair,
-    // beginnerMode,
-    // onToggleBeginnerMode,
     step1SelectedToken,
     step2BuyOrSell,
     step3Token,

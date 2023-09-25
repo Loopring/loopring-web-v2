@@ -7,7 +7,6 @@ import {
   AssetsTable,
   ButtonStyle,
   CancelDualAlert,
-  // CancelOneOrdersAlert,
   DefiStakingTable,
   DualAssetTable,
   DualDetail,
@@ -22,6 +21,7 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import {
+  AccountStatus,
   AssetTabIndex,
   CurrencyToTag,
   DualViewBase,
@@ -36,6 +36,7 @@ import {
   myLog,
   PriceTag,
   RowInvestConfig,
+  SagaStatus,
   STAKING_INVEST_LIMIT,
   TOAST_TIME,
   TokenType,
@@ -48,19 +49,19 @@ import {
   TableWrapStyled,
   useAccount,
   useAmmActivityMap,
-  useDualMap,
   useDefiMap,
-  useUserRewards,
+  useDualMap,
   useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
+  useUserRewards,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors, MaxWidthContainer } from '..'
 
 const Tab = styled(Box)<{ selected: boolean }>`
   background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
@@ -105,7 +106,7 @@ const MyLiquidity: any = withTranslation('common')(
     const { tokenMap, disableWithdrawList, idIndex } = useTokenMap()
     const { tokenPrices } = useTokenPrices()
     const { redeemItemClick } = useStakeRedeemClick()
-    const { marketMap: dualMarketMap } = useDualMap()
+    const { marketMap: dualMarketMap, status: dualMarketMapStatus } = useDualMap()
     const { assetsRawData, onSend, onReceive, allowTrade, getTokenRelatedMarketArray } =
       useGetAssets()
     const { account } = useAccount()
@@ -193,10 +194,13 @@ const MyLiquidity: any = withTranslation('common')(
       }
     }, [match?.params?.type, searchParams?.get('refreshStake')])
     React.useEffect(() => {
-      if (account.accountId) {
+      if (
+        account.readyState === AccountStatus.ACTIVATED &&
+        dualMarketMapStatus === SagaStatus.UNSET
+      ) {
         getDualTxList({})
       }
-    }, [account.accountId])
+    }, [account.readyState, dualMarketMapStatus])
 
     const theme = useTheme()
     const { isMobile } = useSettings()
