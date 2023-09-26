@@ -119,7 +119,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   const dualApr = React.useMemo(() => {
     return getAprRange(
       _.values(dualMarketMap)
-      .flatMap((dual: any) => [dual.quoteTokenApy.max as string, dual.quoteTokenApy.min as string])
+      .flatMap((dual: any) => [dual.quoteTokenApy?.max as string, dual.quoteTokenApy?.min as string])
       .filter((apy) => apy)
       .map(apy => Number(apy))
     )
