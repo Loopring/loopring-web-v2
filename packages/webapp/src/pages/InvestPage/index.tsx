@@ -1,6 +1,6 @@
 import { useHistory, useRouteMatch } from 'react-router-dom'
 
-import { Box, Tab, Tabs, Typography } from '@mui/material'
+import { Box, BoxProps, Tab, Tabs, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
 import {
@@ -19,6 +19,7 @@ import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
+import styled from '@emotion/styled'
 
 export enum InvestType {
   MyBalance = 0,
@@ -29,7 +30,44 @@ export enum InvestType {
   Stack = 5,
   LeverageETH = 6,
 }
-
+export const containerColors = [
+  'var(--color-global-bg)',
+  'var(--color-pop-bg)',
+]
+const BoxStyled = styled(Box)`
+  display: flex;
+  justify-content: center;
+  @media only screen and (max-width: 1200px) {
+    .inner-box {
+      width: 100%;
+    }
+  }
+`
+export const MaxWidthContainer = (
+  props: {
+    children: React.ReactNode
+    background?: string
+    containerProps?: BoxProps
+  } & BoxProps,
+) => {
+  const { containerProps, children, background, sx, ...otherProps } = props
+  return (
+    <BoxStyled sx={{ background }} {...containerProps}>
+      <Box
+        sx={{
+          width: '1200px',
+          maxWidth: '100%',
+          ...sx,
+        }}
+        className={'inner-box'}
+        paddingX={3}
+        {...otherProps}
+      >
+        {children}
+      </Box>
+    </BoxStyled>
+  )
+}
 export const InvestRouter = [
   'balance',
   'ammpool',
@@ -173,37 +211,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
 
   return (
     <Box flex={1} flexDirection={'column'} display={'flex'}>
-      {isShowTab && (
-        <Box display={'flex'}>
-          <Tabs
-            variant={'scrollable'}
-            value={tabIndex}
-            onChange={(_e, value) => {
-              history.push(`/invest/${InvestRouter[value]}`)
-              setTabIndex(value)
-            }}
-          >
-            <Tab value={InvestType.Overview} label={<OverviewTitle />} />
-            <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
-            <Tab
-              sx={{ visibility: 'hidden', width: 0 }}
-              value={InvestType.AmmPool}
-              label={<AmmTitle />}
-            />
-            <Tab
-              sx={{ visibility: 'hidden', width: 0 }}
-              value={InvestType.DeFi}
-              label={<DefiTitle />}
-            />
-            <Tab
-              sx={{ visibility: 'hidden', width: 0 }}
-              value={InvestType.LeverageETH}
-              label={<>todo</>}
-            />
-          </Tabs>
-        </Box>
-      )}
-      <Box flex={1} component={'section'} marginTop={1} display={'flex'}>
+      <Box flex={1} component={'section'} display={'flex'}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}

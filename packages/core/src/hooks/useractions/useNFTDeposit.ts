@@ -66,7 +66,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
 
   const debounceCheck = _.debounce(
     async (data) => {
-      const web3 = connectProvides.usedWeb3
+      const web3: any = connectProvides.usedWeb3
       if (LoopringAPI.nftAPI && exchangeInfo && web3) {
         setIsNFTCheckLoading(true)
         let [balance, meta, isApproved] = await Promise.all([
@@ -229,7 +229,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
         connectProvides.usedWeb3 &&
         LoopringAPI.nftAPI
       ) {
-        const web3 = connectProvides.usedWeb3
+        const web3: any = connectProvides.usedWeb3;
         const gasLimit = undefined //parseInt(NFTGasAmounts.deposit) ?? undefined;
         const realGasPrice = gasPrice ?? 30
         enableBtn()

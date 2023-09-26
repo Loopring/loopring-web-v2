@@ -2,10 +2,7 @@ import styled from '@emotion/styled'
 import {
   Box,
   Button,
-  Checkbox,
-  FormControlLabel,
   Grid,
-  Link,
   Modal,
   Typography,
 } from '@mui/material'
@@ -29,16 +26,16 @@ import {
   AssetTabIndex,
   CheckBoxIcon,
   CheckedIcon,
-  CLAIM_TYPE,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
   HiddenTag,
+  InvestTab,
+  investTabs,
   myLog,
   PriceTag,
-  RecordTabIndex,
   RowInvestConfig,
   STAKING_INVEST_LIMIT,
   TokenType,
@@ -62,26 +59,34 @@ import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
+import { MaxWidthContainer, containerColors } from '..'
 
-const StyleWrapper = styled(Grid)`
-  position: relative;
-  width: 100%;
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-` as typeof Grid
+
+const Tab = styled(Box)<{ selected: boolean }>`
+  background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
+  padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
+  border-radius: ${({ theme }) => 0.5 * theme.unit}px;
+  font-size: 16px;
+  line-height: 24px;
+  margin-right: ${({ theme }) => theme.unit}px;
+  cursor: pointer;
+  color: ${({ selected }) => `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`} ;
+`
 
 const MyLiquidity: any = withTranslation('common')(
-  <R extends { [key: string]: any }, I extends { [key: string]: any }>({
+  ({
     t,
     isHideTotal,
     hideAssets,
     className,
+    noHeader,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
     className?: string
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
-    hideAssets?: boolean
+    hideAssets?: boolean,
+    noHeader?: boolean,
   }) => {
     let match: any = useRouteMatch('/invest/balance/:type')
     const { search } = useLocation()
@@ -104,7 +109,7 @@ const MyLiquidity: any = withTranslation('common')(
       useGetAssets()
     const { account } = useAccount()
     const history = useHistory()
-    const { currency, hideSmallBalances, setHideSmallBalances } = useSettings()
+    const { currency, hideSmallBalances } = useSettings()
     const { setShowAmm } = useOpenModals()
     const {
       dualList,
@@ -179,19 +184,6 @@ const MyLiquidity: any = withTranslation('common')(
 
     const theme = useTheme()
     const { isMobile } = useSettings()
-    const fontSize: any = isMobile
-      ? {
-          title: 'body1',
-          count: 'h5',
-          title2: 'body1',
-          count2: 'h5',
-        }
-      : {
-          title: 'body1',
-          count: 'h1',
-          title2: 'body1',
-          count2: 'h5',
-        }
     const lidoAssets = assetsRawData.filter((o) => {
       return (
         ethStakingCoins?.includes(o.name) &&
@@ -253,124 +245,119 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
+    const tabToName = (tab: InvestTab) => {
+      const found = investTabs.find(_tab => _tab.tab === tab)
+      return found
+        ? t(found.label)
+        : undefined
+    }
+    const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
+    const visibaleTabs: InvestTab[] = [
+      ...(myPoolRow?.length > 0 ? ['pools' as InvestTab] : []),
+      ...(lidoAssets?.length > 0 ? ['lido' as InvestTab] : []),
+      ...(stakingList?.length > 0 ? ['staking' as InvestTab] : []),
+      ...(dualList?.length > 0 ? ['dual' as InvestTab] : []),
+    ]
+    myLog('visibaleTabs', visibaleTabs)
+    const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
+    myLog('visibaleTabs _tab', _tab)
+    
     return (
-      <Box
-        display={'flex'}
-        className={className}
-        flex={1}
-        position={'relative'}
-        flexDirection={'column'}
-      >
-        <Box
-          position={'absolute'}
-          display={'flex'}
-          alignItems={'center'}
-          sx={
-            isHideTotal && !isMobile
-              ? {
-                  right: 2 * theme.unit,
-                  top: -42,
-                  zIndex: 99,
-                }
-              : {
-                  right: 2 * theme.unit,
-                  top: 2 * theme.unit,
-                  zIndex: 99,
-                }
-          }
-        >
-          <FormControlLabel
-            sx={{
-              marginRight: 2,
-              paddingRight: 0,
-              fontSize: isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1,
-            }}
-            control={
-              <Checkbox
-                checked={hideSmallBalances}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color='default'
-                onChange={(event) => {
-                  setHideSmallBalances(event.target.checked)
-                }}
-              />
-            }
-            label={t('labelHideSmallBalances', { ns: 'tables' })}
-          />
-          <Link
-            variant={'body1'}
-            target='_self'
-            rel='noopener noreferrer'
-            onClick={() => history.push(`/l2assets/history/${RecordTabIndex.AmmRecords}`)}
+      <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
+        {!noHeader && <MaxWidthContainer height={isMobile ? 70 * theme.unit : 30 * theme.unit} alignItems={'center'} background={containerColors[0]}>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            flexDirection={isMobile ? 'column' : 'row'}
+            alignItems={isMobile ? 'start' : 'center'}
           >
-            {t('labelTransactionsLink')}
-          </Link>
-        </Box>
-        <StyleWrapper
-          container
-          className={'MuiPaper-elevation2'}
-          paddingY={3}
-          paddingX={4}
-          margin={0}
-          display={isHideTotal ? 'none' : 'flex'}
+            <Box paddingY={7}>
+              <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
+                {t('labelInvestBalanceTitle')}
+              </Typography>
+              <Button
+                onClick={() => {
+                  history.push('/invest/overview')
+                }}
+                sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2}}
+                variant={'contained'}
+              >
+                {t('labelInvestOverviewTitle')}
+              </Button>
+              <Button
+                onClick={() => {
+                  history.push('/l2assets/history/Transactions')
+                }}
+                sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+                variant={'contained'}
+              >
+                {t('labelTxnDetailHeader')}
+              </Button>
+            </Box>
+            <Box
+              sx={{ background: 'var(--color-box-secondary)' }}
+              width={'var(--earning-banner-width)'}
+              border={'1px solid var(--color-border)'}
+              borderRadius={0.5}
+              paddingX={3}
+              paddingY={4}
+              display={'flex'}
+              justifyContent={'space-between'}
+              marginRight={10}
+              marginBottom={isMobile ? 7 : 0}
+            >
+              <Box>
+                <Typography marginBottom={2} color={'var(--color-text-third)'} variant={'h6'}>
+                  {t('labelTotalPositionValue')}
+                </Typography>
+                <Typography>
+                  {_summaryMyInvest
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        sdk
+                          .toBig(_summaryMyInvest)
+                          .times(forexMap[currency] ?? 0)
+                          .toString(),
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true, floor: true },
+                      )
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography color={'var(--color-text-third)'} marginBottom={2} variant={'h6'}>
+                  {t('labelInvestTotalEarnings')}
+                </Typography>
+                <Typography>
+                  {summaryMyInvest.rewardU
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        summaryMyInvest.rewardU,
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true, floor: true },
+                      )
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        </MaxWidthContainer>}
+        <MaxWidthContainer
+          marginBottom={3}
+          marginTop={3}
+          minHeight={'80vh'}
+          background={noHeader ? 'var(--color-box-third)' : containerColors[1]}
+          containerProps={{
+            borderRadius: noHeader ? `${theme.unit}px` : 0,
+            marginTop: noHeader ? 1 : 0
+          }}
         >
-          <Grid container spacing={2} alignItems={'flex-end'}>
-            <Grid item display={'flex'} flexDirection={'column'} sm={6} md={5}>
-              <Typography variant={fontSize.title} color={'textSecondary'}>
-                {t('labelTotalPositionValue')}
-              </Typography>
-              <Typography variant={fontSize.count} marginTop={1}>
-                {_summaryMyInvest
-                  ? PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      sdk
-                        .toBig(_summaryMyInvest)
-                        .times(forexMap[currency] ?? 0)
-                        .toString(),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true, floor: true },
-                    )
-                  : EmptyValueTag}
-              </Typography>
-            </Grid>
-            {/*<Grid item marginRight={6}>*/}
-            {/*  <Divider orientation={"vertical"} />*/}
-            {/*</Grid>*/}
-            {/*<Grid item display={"flex"} flexDirection={"column"} sm={3} md={4}>*/}
-            {/*  <Typography*/}
-            {/*    variant={fontSize.title2}*/}
-            {/*    component={"h3"}*/}
-            {/*    fontFamily={"Roboto"}*/}
-            {/*    color={"textSecondary"}*/}
-            {/*  >*/}
-            {/*    {t("labelFeeRewards")}*/}
-            {/*  </Typography>*/}
-            {/*  <Typography*/}
-            {/*    variant={fontSize.count2}*/}
-            {/*    marginTop={1}*/}
-            {/*    fontFamily={"Roboto"}*/}
-            {/*  >*/}
-            {/*    {summaryMyInvest?.feeU*/}
-            {/*      ? PriceTag[CurrencyToTag[currency]] +*/}
-            {/*        getValuePrecisionThousand(*/}
-            {/*          (summaryMyInvest.feeU || 0) **/}
-            {/*            (forexMap[currency] ?? 0),*/}
-            {/*          undefined,*/}
-            {/*          undefined,*/}
-            {/*          2,*/}
-            {/*          true,*/}
-            {/*          { isFait: true, floor: true }*/}
-            {/*        )*/}
-            {/*      : EmptyValueTag}*/}
-            {/*  </Typography>*/}
-            {/*</Grid>*/}
-          </Grid>
-        </StyleWrapper>
-        <Box marginBottom={3} flex={1}>
           {!(myPoolRow?.length > 0) &&
           !(lidoAssets?.length > 0) &&
           !(leverageETHAssets?.length > 0) &&
@@ -397,10 +384,18 @@ const MyLiquidity: any = withTranslation('common')(
             </TableWrapStyled>
           ) : (
             <>
-              {(myPoolRow?.length > 0 || filter?.searchValue !== '') && (
+              <Box width={'100%'} display={'flex'}>
+                {visibaleTabs.map((tab) => (
+                  <Tab selected={tab === _tab} onClick={() => setTab(tab)}>
+                    {tabToName(tab)}
+                  </Tab>
+                ))}
+              </Box>
+
+              {_tab === 'pools' && (
                 <TableWrapStyled
                   ref={ammPoolRef}
-                  className={`table-divide-short MuiPaper-elevation2`}
+                  className={`table-divide-short`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}
@@ -457,10 +452,10 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {stakingList?.length > 0 && (
+              {_tab === 'lido' && (
                 <TableWrapStyled
                   ref={sideStakeRef}
-                  className={`table-divide-short MuiPaper-elevation2 min-height`}
+                  className={`table-divide-short min-height`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}
@@ -598,10 +593,10 @@ const MyLiquidity: any = withTranslation('common')(
                   />
                 </TableWrapStyled>
               )}
-              {lidoAssets?.length > 0 && (
+              {_tab === 'staking' && (
                 <TableWrapStyled
                   ref={stakingRef}
-                  className={`table-divide-short MuiPaper-elevation2 ${
+                  className={`table-divide-short ${
                     lidoAssets?.length > 0 ? 'min-height' : ''
                   }`}
                   marginTop={2}
@@ -655,68 +650,10 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {!!(leverageETHAssets?.length > 0) && (
-                <TableWrapStyled
-                  ref={leverageETHRef}
-                  className={`table-divide-short MuiPaper-elevation2 ${
-                    leverageETHAssets?.length > 0 ? 'min-height' : ''
-                  }`}
-                  marginTop={2}
-                  paddingY={2}
-                  paddingX={0}
-                  flex={1}
-                >
-                  <Grid item xs={12}>
-                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
-                      {t('labelLeverageETHTitle')}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
-                    {summaryMyInvest?.leverageETHDollar !== undefined ? (
-                      <Typography component={'h4'} variant={'h3'} marginX={3}>
-                        {summaryMyInvest?.leverageETHDollar
-                          ? hideAssets
-                            ? HiddenTag
-                            : PriceTag[CurrencyToTag[currency]] +
-                              getValuePrecisionThousand(
-                                sdk
-                                  .toBig(summaryMyInvest?.leverageETHDollar)
-                                  .times(forexMap[currency] ?? 0),
-                                undefined,
-                                undefined,
-                                2,
-                                true,
-                                { isFait: true, floor: true },
-                              )
-                          : EmptyValueTag}
-                      </Typography>
-                    ) : (
-                      ''
-                    )}
-                    <AssetsTable
-                      {...{
-                        disableWithdrawList,
-                        rawData: leverageETHAssets,
-                        showFilter: false,
-                        allowTrade,
-                        onSend,
-                        onReceive,
-                        getMarketArrayListCallback: getTokenRelatedMarketArray, // todo change logic
-                        rowConfig: RowInvestConfig,
-                        forexMap: forexMap as any,
-                        isInvest: true,
-                        hideAssets,
-                        isLeverageETH: true,
-                        ...rest,
-                      }}
-                    />
-                  </Grid>
-                </TableWrapStyled>
-              )}
-              {dualList?.length > 0 && (
+              {_tab === 'dual' && (
                 <TableWrapStyled
                   ref={dualRef}
-                  className={`table-divide-short MuiPaper-elevation2 min-height`}
+                  className={`table-divide-short min-height`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}
@@ -799,7 +736,7 @@ const MyLiquidity: any = withTranslation('common')(
               )}
             </>
           )}
-        </Box>
+        </MaxWidthContainer>
         <Modal
           open={showRefreshError}
           onClose={(_e: any) => setShowRefreshError(false)}

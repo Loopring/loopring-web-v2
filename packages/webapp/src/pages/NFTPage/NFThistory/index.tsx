@@ -9,7 +9,7 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { BackIcon } from '@loopring-web/common-resources'
 
 const StyledPaper = styled(Box)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 

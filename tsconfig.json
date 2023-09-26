@@ -3,12 +3,27 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@loopring-web/webapp": ["./packages/webapp/src"],
-      "@loopring-web/webapp/*": ["./packages/webapp/src/*"],
-      "@loopring-web/web-bridge": ["./packages/web-bridge/src"],
-      "@loopring-web/web-bridge/*": ["./packages/web-bridge/src/*"]
+      "@loopring-web/webapp": [
+        "./packages/webapp/src"
+      ],
+      "@loopring-web/webapp/*": [
+        "./packages/webapp/src/*"
+      ],
+      "@loopring-web/web-bridge": [
+        "./packages/web-bridge/src"
+      ],
+      "@loopring-web/web-bridge/*": [
+        "./packages/web-bridge/src/*"
+      ]
     }
   },
-  "include": ["**/*"],
-  "exclude": ["node_modules", "dist", "../*.stories.*", "docs"]
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "../*.stories.*",
+    "docs"
+  ]
 }

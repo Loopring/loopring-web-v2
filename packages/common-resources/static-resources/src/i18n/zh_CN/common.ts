@@ -1057,13 +1057,13 @@ export default {
   labelDualBeginnerIndexPriceDes: 'Index Price is derived from some leading exchanges.',
   labelDualBeginnerLockingDes: 'Your token for investment will be locked until Settlement Date.',
   labelDualBeginnerAPR: 'APR: {{APR}}',
-  labelDualBeginnerStep1Title: 'Choose a token to sell or buy',
-  labelDualBeginnerStep2Title: 'Choose to sell or buy at desired price in the future',
+  labelDualBeginnerStep1Title: 'Step 1: Choose a token to sell or buy',
+  labelDualBeginnerStep2Title: 'Step 2: Choose to sell or buy at desired price in the future',
   labelDualBeginnerSellHigh: 'Sell {{token}} High',
   labelDualBeginnerBuyLow: 'Buy {{token}} Low',
   labelDualBeginnerReceiveStable: 'You will receive USDC or USDT',
   labelDualBeginnerInvestStable: 'You can invest USDC or USDT',
-  labelDualBeginnerStep3Title: 'Choose Target Price and Settlement Date',
+  labelDualBeginnerStep3Title: 'Step 3: Choose Target Price and Settlement Date',
   labelDualBeginnerSellHighFor: 'Sell high for {{token}}',
   labelDualBeginnerBuyLowWith: 'Buy low with {{token}}',
 
@@ -1783,8 +1783,9 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
-  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
+  labelClaimallToken: 'Reward token {{symbol}}',
+  labelTitleOverviewAllPrd: 'All Products',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
@@ -1872,4 +1873,8 @@ export default {
   labelRedPacketClaiming: 'Claiming',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
   labelTxGuardian_upgrade_contract: "upgrade contract",
+  labelLeverageETHStakingDes: 'Gain higher APY aggressively',
+  labelDefiRate: 'Rate',
+  labelDefiLido: 'Lido',
+  labelDefiRocketPool: 'Rocket Pool',
 }
