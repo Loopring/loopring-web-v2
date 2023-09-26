@@ -147,13 +147,13 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
     toggle: { CIETHInvest },
   } = useToggle()
   const investAdviceList = [
-    { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0], apyRange: ammApr },
-    { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1], apyRange: defiApr},
     { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2], apyRange: dualApr},
-    { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3], apyRange: lrcApr },
+    { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1], apyRange: defiApr},
     ...(!CIETHInvest.enable && CIETHInvest.reason === 'no view'
       ? []
       : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4], apyRange: leverageApr }]),
+    { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0], apyRange: ammApr },
+    { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3], apyRange: lrcApr },
   ]
   const theme = useTheme()
 
