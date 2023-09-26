@@ -98,7 +98,7 @@ export const BeginnerMode: any = withTranslation('common')(
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>
-          <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+          <Typography marginBottom={2} display={'flex'} variant={'h4'}>
             {t(viewStepType[0].labelKey)}
           </Typography>
           <Box display={'flex'} flexDirection={'row'}>
@@ -167,7 +167,7 @@ export const BeginnerMode: any = withTranslation('common')(
 
         {!!(step1SelectedToken !== undefined && viewType == DualViewType.DualBegin) && (
           <Box marginBottom={5}>
-            <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t('labelDualBeginnerStep2Title')}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
@@ -242,7 +242,7 @@ export const BeginnerMode: any = withTranslation('common')(
         )}
         {step1SelectedToken !== undefined && step2BuyOrSell !== undefined && (
           <Box marginBottom={2}>
-            <Typography marginBottom={2} display={'flex'} variant={'h2'}>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t(viewStepType[2].labelKey)}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
