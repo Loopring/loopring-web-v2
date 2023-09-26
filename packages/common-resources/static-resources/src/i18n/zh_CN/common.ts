@@ -37,7 +37,7 @@ export default {
   resetFee: '{{count}} GAS ≈ ${{price}} 费用',
   resetLabelBtn: '重置',
   labelActiveEnterToken: 'Select payment token',
-  labelActiveAccountDescription: 'You have enough balance to pay for {{layer2}} creation as below.',
+  labelActiveAccountDescription: 'You need to have enough balance for {{layer2}} creation as below.',
   labelActiveAccountFee: 'Fee {{count}} GAS ≈ ${{price}}',
   labelActiveAccountBtn: 'Reset',
   depositLabelEnterToken: '选择充值代币',
@@ -772,11 +772,11 @@ export default {
   labelExchangeOthers: 'Other Exchanges',
   labelExchangeOthersDes: '',
   labelL2toL1AddressType: 'Address Type',
-  labelConfirmBtrade: 'Confirm CEX Support',
+  labelConfirmBtrade: 'Confirm Block Trade Support',
   labelConfirmDetail:
-    '<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>' +
-    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>' +
-    '<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>',
+    '<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>' +
+    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>' +
+    '<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>',
   labelBtradeUnderstand: 'I understand and acknowledge the risk',
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
@@ -1057,13 +1057,13 @@ export default {
   labelDualBeginnerIndexPriceDes: 'Index Price is derived from some leading exchanges.',
   labelDualBeginnerLockingDes: 'Your token for investment will be locked until Settlement Date.',
   labelDualBeginnerAPR: 'APR: {{APR}}',
-  labelDualBeginnerStep1Title: 'Step 1: Choose a token to sell or buy',
-  labelDualBeginnerStep2Title: 'Step 2: Choose to sell or buy at desired price in the future',
+  labelDualBeginnerStep1Title: 'Choose a token to sell or buy',
+  labelDualBeginnerStep2Title: 'Choose to sell or buy at desired price in the future',
   labelDualBeginnerSellHigh: 'Sell {{token}} High',
   labelDualBeginnerBuyLow: 'Buy {{token}} Low',
   labelDualBeginnerReceiveStable: 'You will receive USDC or USDT',
   labelDualBeginnerInvestStable: 'You can invest USDC or USDT',
-  labelDualBeginnerStep3Title: 'Step 3: Choose Target Price and Settlement Date',
+  labelDualBeginnerStep3Title: 'Choose Target Price and Settlement Date',
   labelDualBeginnerSellHighFor: 'Sell high for {{token}}',
   labelDualBeginnerBuyLowWith: 'Buy low with {{token}}',
 
@@ -1783,6 +1783,7 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
+  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
   labelClaimallToken: 'Reward token {{symbol}}',
   labelTitleOverviewAllPrd: 'All Products',
@@ -1883,4 +1884,6 @@ export default {
   labelRedPacketTotal: 'Total {{count}}',
   labelRedPacketExclusiveTag: 'Exclusive',
   labelRedPacketClaiming: 'Claiming',
+  labelRedPacketReceiptsList: 'Red Packet Receipt >',
+  labelTxGuardian_upgrade_contract: "upgrade contract",
 }

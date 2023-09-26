@@ -647,6 +647,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onCloseRedpacketPop: () => void
   contacts?: DisplayContact[]
   isWhiteListed?: boolean
+  showExclusiveOption?: boolean
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -697,4 +698,5 @@ export type TargetRedpacktInputAddressStepProps = {
   popUpOptionDisabled: boolean
   maximumTargetsLength: number
   onClickBack: () => void
+  sentAddresses?: string[]
 }
