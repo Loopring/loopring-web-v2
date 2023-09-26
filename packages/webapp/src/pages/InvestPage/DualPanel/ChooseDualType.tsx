@@ -73,11 +73,11 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
-        height={isMobile ? 60 * theme.unit : 34 * theme.unit}
+        height={isMobile ? 60 * theme.unit : 30 * theme.unit}
         alignItems={'center'}
       >
         <Box paddingY={7}>
-          <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
+          <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
             {t('labelInvestDualTitle')}
           </Typography>
           <Box display={'flex'} alignItems={'center'}>

@@ -87,78 +87,16 @@ export const BeginnerMode: any = withTranslation('common')(
       isDualBalanceSufficient,
     } = dualListProps
     const { isMobile } = useSettings()
-    // const tokenList: Array<{
-    //   tokenName: string
-    //   minAPY: number
-    //   maxAPY: number
-    // }> = Object.values(baseTokenList ?? {})?.sort((a, b) =>
-    //   a?.tokenName.toString().localeCompare(b?.tokenName.toString()),
-    // )
+    const tokenList: Array<{
+      tokenName: string
+      minAPY: number
+      maxAPY: number
+    }> = Object.values(baseTokenList ?? {})?.sort((a, b) =>
+      a?.tokenName.toString().localeCompare(b?.tokenName.toString()),
+    )
     const dualType =
       step2BuyOrSell === 'Sell' ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
-    const tokenList = Reflect.ownKeys(tradeMap ?? {})
-      .filter(
-        (tokenName) => tokenName !== 'USDT' && tokenName !== 'USDC' && tokenName !== 'OLDUSDC',
-      )
-      .sort((a, b) => a.toString().localeCompare(b.toString()))
-      .map((tokenName) => {
-        const list = values(marketMap)
-          .flatMap((x) => {
-            const baseToken = idIndex[x.baseTokenId]
-            const quoteToken = idIndex[x.quoteTokenId]
-            return [
-              {
-                token: baseToken,
-                // @ts-ignore
-                apyInfo: x.baseTokenApy,
-              },
-              {
-                token: quoteToken,
-                // @ts-ignore
-                apyInfo: x.quoteTokenApy,
-              },
-            ]
-          })
-          .filter((x) => x.token === tokenName.toString())
-        const min = minBy(list, (x) => {
-          return Number(x.apyInfo && x.apyInfo.min)
-        })
-        const max = maxBy(list, (x) => {
-          return Number(x.apyInfo && x.apyInfo.max)
-        })
-        return {
-          tokenName,
-          minAPY: min?.apyInfo.min,
-          maxAPY: max?.apyInfo.max,
-          logo: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
-        }
-      })
-    // marketMap[]
-    const step3Tokens = step1SelectedToken ? tradeMap[step1SelectedToken].tokenList : []
-    // const theme = useTheme()
-    const showStep2 = step1SelectedToken !== undefined
-    const showStep3 = step2BuyOrSell !== undefined
-    const showTable = step3Token !== undefined
-    const step3Ref = React.useRef(null)
-    const tableRef = React.useRef(null)
-    const scroolStep3ToMiddle = () => {
-      setTimeout(() => {
-        const element = step3Ref.current as any
-        const elementRect = element.getBoundingClientRect();
-        const absoluteElementTop = elementRect.top + window.pageYOffset;
-        const middle = absoluteElementTop - (window.innerHeight / 2);
-        window.scrollTo(0, middle);
-      }, 100);
-    }
-    const scroolTableToMiddle = () => {
-      setTimeout(() => {
-        const element = tableRef.current as any
-        const elementRect = element.getBoundingClientRect();
-        const absoluteElementTop = elementRect.top + window.pageYOffset;
-        const middle = absoluteElementTop - (window.innerHeight / 2);
-        window.scrollTo(0, middle);
-      }, 100);
-    }
+
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>

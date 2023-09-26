@@ -34,7 +34,6 @@ import {
 import { useHistory, useLocation } from 'react-router-dom'
 import {
   BackIcon,
-  DualInvestmentLogo,
   DualViewType,
   getValuePrecisionThousand,
   Info2Icon,
@@ -154,9 +153,9 @@ export const DualListPanel: any = withTranslation('common')(
               </Button>
             </MaxWidthContainer>
             <Divider />
-            <MaxWidthContainer background={containerColors[1]} minHeight={'70vh'} paddingY={3}>
+            <MaxWidthContainer background={containerColors[1]} minHeight={'70vh'}>
               <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Box display={'flex'}>
+                <Box display={'flex'} alignItems={'center'} marginY={3}>
                   <Typography compontent={'h4'} variant={'h4'}>
                     {t(`labelDualType${viewType}`)}
                   </Typography>
@@ -165,6 +164,7 @@ export const DualListPanel: any = withTranslation('common')(
                       window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')
                       window.opener = null
                     }}
+                    size={'small'}
                     sx={{ marginLeft: 1.5 }}
                     variant={'contained'}
                   >
