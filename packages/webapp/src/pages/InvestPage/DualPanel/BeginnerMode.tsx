@@ -96,12 +96,14 @@ export const BeginnerMode: any = withTranslation('common')(
     )
     const dualType =
       step2BuyOrSell === 'Sell' ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
+    const step3Ref = React.useRef(null)
+    const tableRef = React.useRef(null)
 
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>
           <Typography marginBottom={2} display={'flex'} variant={'h4'}>
-          {t(viewStepType[0].labelKey)}
+            {t(viewStepType[0].labelKey)}
           </Typography>
           <Box display={'flex'} flexDirection={'row'}>
             {tokenList.map(({ tokenName, minAPY, maxAPY }) => {
@@ -115,7 +117,6 @@ export const BeginnerMode: any = withTranslation('common')(
                     selected={selected}
                     onClick={() => onSelectStep1Token(tokenName.toString())}
                     width={'280px'}
-
                   >
                     <CardContent sx={{ alignItems: 'center' }}>
                       <Typography component={'span'} display={'inline-flex'}>
@@ -196,10 +197,7 @@ export const BeginnerMode: any = withTranslation('common')(
                       <Avatar alt={'sell-high'} src={SoursURL + '/svg/sell-high.svg'} />
                     </Typography>
                     <Typography paddingLeft={1}>
-                      <Typography
-                        color={theme.colorBase.textPrimary  }
-                        variant={'subtitle1'}
-                      >
+                      <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'}>
                         {t('labelDualBeginnerSellHigh', {
                           token: step1SelectedToken,
                         })}
@@ -230,10 +228,7 @@ export const BeginnerMode: any = withTranslation('common')(
                       <Avatar alt={'buy-low'} src={SoursURL + '/svg/buy-low.svg'} />
                     </Typography>
                     <Typography paddingLeft={1}>
-                      <Typography
-                        color={theme.colorBase.textPrimary  }
-                        variant={'subtitle1'}
-                      >
+                      <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'}>
                         {t('labelDualBeginnerBuyLow', {
                           token: step1SelectedToken,
                         })}
@@ -252,7 +247,7 @@ export const BeginnerMode: any = withTranslation('common')(
         {step1SelectedToken !== undefined && step2BuyOrSell !== undefined && (
           <Box ref={step3Ref} marginBottom={2}>
             <Typography marginBottom={2} display={'flex'} variant={'h4'}>
-            {t(viewStepType[2].labelKey)}
+              {t(viewStepType[2].labelKey)}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
               {tradeMap[step1SelectedToken ?? '']?.tokenList?.map((token) => {
@@ -275,7 +270,11 @@ export const BeginnerMode: any = withTranslation('common')(
                         <Typography component={'span'} display={'inline-flex'}>
                           <CoinIcon size={32} symbol={token} />
                         </Typography>
-                        <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'} paddingLeft={1}>
+                        <Typography
+                          color={theme.colorBase.textPrimary}
+                          variant={'subtitle1'}
+                          paddingLeft={1}
+                        >
                           {step2BuyOrSell === 'Buy'
                             ? t('labelDualBeginnerBuyLowWith', { token: token })
                             : t('labelDualBeginnerSellHighFor', {
