@@ -1979,4 +1979,8 @@ export default {
     'Are you sure about disable auto reinvest? If disabled, there will be no new orders after the next settlement.',
   labelDualModifySettlementDateDialog: 'Next Settlement Date',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
+  labelDualIsHigh: 'is significantly higher',
+  labelDualIsLow: 'is significantly lower',
+  labelDualAutoAlert:
+    "The current price of {{base}} is {{currentPrice}} {{quote}}, which  {{method}}  than the price you've set for Auto Reinvest. This may result in a lower APY for your next settlement. You can adjust the price for Auto Reinvest.",
 }

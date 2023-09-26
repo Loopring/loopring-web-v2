@@ -153,20 +153,6 @@ export const DualDetail = ({
         : EmptyValueTag,
     [dualViewInfo.currentPrice.currentPrice, precisionForPrice, tokenMap],
   )
-
-  const targetView = React.useMemo(() => {
-    return dualViewInfo?.strike
-      ? getValuePrecisionThousand(
-          dualViewInfo.strike,
-          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
-          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
-          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
-          true,
-          { floor: true },
-        ) + ` ${quote}`
-      : EmptyValueTag
-  }, [dualViewInfo?.strike])
-
   const renewTargetPriceView = React.useMemo(() => {
     return coinSell?.renewTargetPrice
       ? getValuePrecisionThousand(
@@ -184,6 +170,19 @@ export const DualDetail = ({
     //   : EmptyValueTag,
     coinSell?.renewTargetPrice,
   ])
+
+  const targetView = React.useMemo(() => {
+    return dualViewInfo?.strike
+      ? getValuePrecisionThousand(
+          dualViewInfo.strike,
+          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+          true,
+          { floor: true },
+        ) + ` ${quote}`
+      : EmptyValueTag
+  }, [dualViewInfo?.strike])
 
   myLog('dualViewInfo', dualViewInfo)
   return (

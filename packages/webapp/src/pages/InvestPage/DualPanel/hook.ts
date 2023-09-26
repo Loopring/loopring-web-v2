@@ -214,7 +214,7 @@ export const useDualHook = ({
   const [step2BuyOrSell, setStep2BuyOrSell] = React.useState<'Buy' | 'Sell' | undefined>(undefined)
   const [step3Token, setStep3Token] = React.useState<string | undefined>(undefined)
   const onSelectStep1Token = React.useCallback(
-    (token: string) => {
+    (token?: string) => {
       setStep1SelectedToken(token)
       //@ts-ignore
       if (![DualViewType.DualGain, DualViewType.DualDip].includes(viewType)) {

@@ -749,7 +749,7 @@ const MyLiquidity: any = withTranslation('common')(
                       showDetail={showDetail}
                       refresh={refresh}
                       hideAssets={hideAssets}
-                      cancelReInvest={_cancelReInvest}
+                      cancelReInvest={_cancelReInvest as any}
                       getProduct={getProduct}
                     />
                     <Modal

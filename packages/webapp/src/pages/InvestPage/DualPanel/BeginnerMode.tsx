@@ -373,6 +373,7 @@ export const BeginnerMode: any = withTranslation('common')(
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
+                          baseSymbol: currentPrice.quote,
                         }}
                       >
                         LRC Current price:
@@ -383,7 +384,7 @@ export const BeginnerMode: any = withTranslation('common')(
                           paddingLeft={1}
                         >
                           price
-                        </Typography>{' '}
+                        </Typography>
                         :
                       </Trans>
                     ) : (

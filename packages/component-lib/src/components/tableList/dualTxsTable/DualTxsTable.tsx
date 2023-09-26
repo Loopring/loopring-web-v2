@@ -3,6 +3,9 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import {
+  CompleteIcon,
+  WarningIcon,
+  WaitingIcon,
   DAY_FORMAT,
   DirectionTag,
   EmptyValueTag,
@@ -165,7 +168,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 paddingX={0.5}
                 bgcolor={'var(--color-warning)'}
               >
-                pending
+                {t('labelDualPending')}
               </Typography>
             )
             const failed = (
@@ -175,7 +178,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 paddingX={0.5}
                 bgcolor={'var(--color-error)'}
               >
-                failed
+                {t('labelDualFailed')}
               </Typography>
             )
             return (
@@ -305,9 +308,44 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           name: t('labelDualTxsTime'),
           headerCellClass: 'textAlignRight',
           formatter: ({ row }) => {
+            let icon = <></>
+            const {
+              __raw__: {
+                order: {
+                  // investmentStatus,
+                  dualReinvestInfo: { retryStatus },
+                },
+              },
+            } = row
+            // dualReinvestInfo
+            switch (retryStatus) {
+              case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
+                icon = <CompleteIcon color={'success'} />
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
+                icon = <WarningIcon color={'error'} />
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRYING:
+                icon = <WaitingIcon color={'primary'} />
+                break
+            }
             return (
-              <Box className='rdg-cell-value textAlignRight'>
-                {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+              <Box
+                className={'textAlignRight'}
+                display={'flex'}
+                flexDirection={'row'}
+                height={'100%'}
+                alignItems={'center'}
+              >
+                <Typography
+                  component={'span'}
+                  paddingRight={1 / 2}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+                </Typography>
+                {icon && <Tooltip title={t('labelDualAutoInvestTip').toString()}>{icon}</Tooltip>}
               </Box>
             )
           },

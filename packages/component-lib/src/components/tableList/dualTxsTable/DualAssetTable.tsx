@@ -2,8 +2,10 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import {
+  AlertIcon,
   ClockIcon,
   EmptyValueTag,
+  getValuePrecisionThousand,
   globalSetup,
   HiddenTag,
   MoreIcon,
@@ -12,7 +14,7 @@ import {
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, Link, Typography } from '@mui/material'
+import { Box, BoxProps, Link, Tooltip, Typography } from '@mui/material'
 import moment from 'moment'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
@@ -132,7 +134,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
             const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-            //${row.sellSymbol}/${row.buySymbol}
+            // const investmentStatus = row.__raw__.order.investmentStatus
+            // const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+
             return (
               <Typography
                 component={'span'}
@@ -161,7 +165,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                   </Typography>
                   {showClock && (
                     <Box component={'span'} marginLeft={1} display={'flex'} alignItems={'center'}>
-                      <ClockIcon />
+                      <ClockIcon color={'warning'} />
                     </Box>
                   )}
                 </Typography>
@@ -272,6 +276,34 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const investmentStatus = row.__raw__.order.investmentStatus
             const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            const dualType = row.__raw__.order?.dualType
+            const { isRecursive, newStrike } = row.__raw__.order?.dualReinvestInfo
+            const { currentPrice, precisionForPrice, base, quote } = row.__raw__.currentPrice
+            const currentView = currentPrice
+              ? getValuePrecisionThousand(
+                  currentPrice,
+                  precisionForPrice ?? 6,
+                  precisionForPrice ?? 6,
+                  undefined,
+                  false,
+                )
+              : EmptyValueTag
+            let showAlert = false
+            if (isRecursive && dualType == DUAL_TYPE.DUAL_BASE) {
+              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).lte(-0.05)
+            } else {
+              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).gte(0.05)
+            }
+            // const renewTargetPriceView = newStrike
+            //   ? getValuePrecisionThousand(
+            //       newStrike,
+            //       precisionForPrice ?? 6,
+            //       precisionForPrice ?? 6,
+            //       undefined,
+            //       { floor: true },
+            //     )
+            //   : EmptyValueTag
+
             return showRefresh ? (
               <Link
                 onClick={(_e) => {
@@ -280,10 +312,28 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
               >
                 {t('labelDualAssetRefresh')}
               </Link>
+            ) : showAlert ? (
+              <Tooltip
+                title={t('labelDualAutoAlert', {
+                  ns: 'common',
+                  base,
+                  currentPrice: currentView,
+                  quote,
+                  method:
+                    dualType == DUAL_TYPE.DUAL_BASE
+                      ? t('labelDualIsLow', { ns: 'common' })
+                      : t('labelDualIsHigh', { ns: 'common' }),
+                }).toString()}
+              >
+                <Typography display={'inline-flex'} alignItems={'center'}>
+                  <Link paddingRight={1 / 2} onClick={(_e) => showDetail(row)}>
+                    {t('labelDualAssetDetail')}
+                  </Link>
+                  <AlertIcon color={'warning'} />
+                </Typography>
+              </Tooltip>
             ) : (
-              <>
-                <Link onClick={(_e) => showDetail(row)}>{t('labelDualAssetDetail')}</Link>
-              </>
+              <Link onClick={(_e) => showDetail(row)}>{t('labelDualAssetDetail')}</Link>
             )
           },
         },
@@ -301,6 +351,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const investmentStatus = row.__raw__.order.investmentStatus
+            const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+
             return (
               <Typography
                 component={'span'}
@@ -317,21 +370,11 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
+                {inAuto && <ClockIcon color={'primary'} />}
               </Typography>
             )
           },
         },
-        // {
-        //   key: "Frozen",
-        //   sortable: false,
-        //   width: "auto",
-        //   cellClass: "textAlignCenter",
-        //   headerCellClass: "textAlignCenter",
-        //   name: t("labelDualAssetFrozen"),
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     return <>{}</>;
-        //   },
-        // },
         {
           key: 'Price',
           sortable: false,
@@ -340,6 +383,25 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignCenter',
           headerCellClass: 'textAlignCenter',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const dualType = row.__raw__.order?.dualType
+            const { isRecursive, newStrike } = row.__raw__.order?.dualReinvestInfo
+            const { currentPrice, precisionForPrice, base, quote } = row.__raw__.currentPrice
+            const currentView = currentPrice
+              ? getValuePrecisionThousand(
+                  currentPrice,
+                  precisionForPrice ?? 6,
+                  precisionForPrice ?? 6,
+                  undefined,
+                  false,
+                )
+              : EmptyValueTag
+            let showAlert = false
+            if (isRecursive && dualType == DUAL_TYPE.DUAL_BASE) {
+              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).lte(-0.05)
+            } else {
+              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).gte(0.05)
+            }
+
             return (
               <Box
                 className={'textAlignRight'}
@@ -348,7 +410,27 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
                 justifyContent={'center'}
               >
-                <Typography component={'span'}>{row?.strike}</Typography>
+                {showAlert ? (
+                  <Tooltip
+                    title={t('labelDualAutoAlert', {
+                      ns: 'common',
+                      base,
+                      currentPrice: currentView,
+                      quote,
+                      method:
+                        dualType == DUAL_TYPE.DUAL_BASE
+                          ? t('labelDualIsLow', { ns: 'common' })
+                          : t('labelDualIsHigh', { ns: 'common' }),
+                    }).toString()}
+                  >
+                    <Typography component={'span'}>
+                      {row?.strike}
+                      <AlertIcon color={'warning'} />
+                    </Typography>
+                  </Tooltip>
+                ) : (
+                  <Typography component={'span'}>{row?.strike}</Typography>
+                )}
                 <Typography component={'span'} variant={'body2'} color={'textSecondary'}>
                   {moment(new Date(row.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}
                 </Typography>
@@ -387,8 +469,8 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           sortable: false,
           cellClass: 'textAlignRight',
           headerCellClass: 'textAlignRight',
-          name: '',
-          formatter: () => {
+          name: 'Action',
+          formatter: ({ row }: FormatterProps<R>) => {
             return <MoreIcon onClick={() => showDetail(row)} cursor={'pointer'} />
           },
         },

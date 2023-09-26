@@ -61,5 +61,5 @@ export type DualDetailProps<
   getProduct?: () => void
   displayMode?: DualDisplayMode
   tokenMap: any
-  toggle: { enable: boolean; reason: string }
+  toggle: boolean
 }

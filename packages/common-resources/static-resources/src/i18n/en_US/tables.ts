@@ -352,4 +352,7 @@ export default {
   labelDualAssetReInvestEnable: 'Enable',
   labelDualAuto: 'ReInvest',
   labelRedPacketClaiming: 'Claiming',
+  labelDualFailed: 'Failed',
+  labelDualPending: 'pending',
+  labelDualAutoInvestTip: 'Auto Reinvest Status',
 }
