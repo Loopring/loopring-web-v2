@@ -501,12 +501,14 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       <Grid
         item
         marginTop={2}
-        paddingTop={5}
+        paddingTop={2}
+        paddingBottom={3}
         flexDirection={'column'}
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
         borderTop={'1px solid var(--color-border)'}
+        borderBottom={'1px solid var(--color-border)'}
       >
         <InputCoin<T, I, any>
           ref={coinSellRef}
@@ -525,7 +527,7 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
         />
       </Grid>
       <>
-        <Grid item alignSelf={'stretch'} marginTop={3 / 2} marginBottom={3}>
+        {/* <Grid item alignSelf={'stretch'} marginTop={3 / 2} marginBottom={3}>
           <Typography
             component={'span'}
             display={'inline-flex'}
@@ -535,8 +537,8 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
               Your assets for investment will be locked until your redemption.
             </Trans>
           </Typography>
-        </Grid>
-        <Box bgcolor={'var(--color-global-bg)'} width={'100%'} padding={2} borderRadius={1}>
+        </Grid> */}
+        <Box  marginTop={3} width={'100%'} borderRadius={1}>
           <Grid
             container
             justifyContent={'space-between'}
@@ -619,7 +621,7 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           </Grid>
         </Box>
 
-        <Grid item alignSelf={'stretch'} marginTop={3} >
+        {/* <Grid item alignSelf={'stretch'} marginTop={3} >
           <Typography
             component={'p'}
             color={'var(--color-text-secondary)'}
@@ -640,7 +642,7 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
               the accumulated reward will be dismissed.
             </Trans>
           </Typography>
-        </Grid>
+        </Grid> */}
       </>
 
       <Grid item alignSelf={'stretch'} marginTop={4}>

@@ -63,6 +63,7 @@ const MainTabCardStyleItem = styled(CardStyleItem)`
     border-radius: ${({ theme }) => theme.unit}px;
     padding-left: ${({ theme }) => 3 * theme.unit}px;
     padding-right: ${({ theme }) => 3 * theme.unit}px;
+    background: transparent;
   }
 `
 

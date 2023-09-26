@@ -159,24 +159,32 @@ const CardStyleItem = styled(Card)<
     size?: 'large' | 'medium' | 'small' | undefined
   },
 ) => JSX.Element
+
 export const TickCardStyleItem = (
   props: CardProps & {
     contentheight?: number
     size?: 'large' | 'medium' | 'small' | undefined
     selected?: boolean
+    width?: string
   },
 ) => {
-  const { children, selected, ...rest } = props
+  const { children, selected, width,...rest } = props
   return (
-    <CardStyleItem {...rest}>
+    <CardStyleItem style={{
+      borderRadius: '8px',
+      background: 'transparent',
+      width,
+      justifyContent: 'left',
+      padding: '18px 24px',
+    }} {...rest}>
       {selected && (
         <BorderTickIcon
           fontSize={'large'}
           fill={SystemColor.blue}
           sx={{
             position: 'absolute',
-            top: 0,
-            right: 0,
+            top: '0px',
+            right: '0px',
           }}
         />
       )}
