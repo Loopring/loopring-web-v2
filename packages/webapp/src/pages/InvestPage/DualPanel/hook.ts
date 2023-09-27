@@ -21,15 +21,11 @@ import {
 } from '@loopring-web/common-resources'
 
 const DUALLimit = 20
-export const useDualHook = ({
-  setConfirmDualInvest,
-  viewType,
-}: {
-  viewType: DualViewType | undefined
-  setConfirmDualInvest: (state: undefined | string) => void
-}) => {
+export const useDualHook = () => {
   const match: any = useRouteMatch('/invest/dual/:market?')
   const { search, pathname } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const viewType = searchParams.get('viewType')
   const { tokenMap, idIndex } = useTokenMap()
   const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
   const { tokenPrices } = useTokenPrices()
@@ -45,7 +41,6 @@ export const useDualHook = ({
   } = confirmation.useConfirmation()
   const history = useHistory()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  setConfirmDualInvest(confirmedDualInvestV2 ? undefined : confirmation.DualInvestConfirmType.all)
   // const { tradeMap, marketMap } = useDualMap()
 
   const [isLoading, setIsLoading] = React.useState(true)
@@ -187,18 +182,20 @@ export const useDualHook = ({
     }, 60000)
   }, 100)
   React.useEffect(() => {
-    if (dualStatus === SagaStatus.UNSET && pairBSymbol) {
-      if (marketArray !== undefined && marketArray.length) {
-        handleOnPairChange({ pairB: pairBSymbol })
-      } else if (marketArray?.length == 0) {
-        history.push('/invest')
-      }
-    }
-  }, [dualStatus])
-
-  React.useEffect(() => {
     if (dualStatus === SagaStatus.UNSET && pair) {
       getProduct.cancel()
+      let pairBSymbol
+      setPairBSymbol((state) => {
+        pairBSymbol = state
+        return state
+      })
+      if (pairBSymbol) {
+        if (marketArray !== undefined && marketArray.length) {
+          handleOnPairChange({ pairB: pairBSymbol })
+        } else if (marketArray?.length == 0) {
+          history.push('/invest')
+        }
+      }
       myLog('update pair', pair)
       getProduct()
     }
@@ -209,21 +206,6 @@ export const useDualHook = ({
       getProduct.cancel()
     }
   }, [pair, dualStatus])
-
-  const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(undefined)
-  const [step2BuyOrSell, setStep2BuyOrSell] = React.useState<'Buy' | 'Sell' | undefined>(undefined)
-  const [step3Token, setStep3Token] = React.useState<string | undefined>(undefined)
-  const onSelectStep1Token = React.useCallback(
-    (token?: string) => {
-      setStep1SelectedToken(token)
-      //@ts-ignore
-      if (![DualViewType.DualGain, DualViewType.DualDip].includes(viewType)) {
-        setStep2BuyOrSell(undefined)
-      }
-      setStep3Token(undefined)
-    },
-    [viewType],
-  )
   React.useEffect(() => {
     switch (viewType) {
       case DualViewType.DualGain:
@@ -241,11 +223,22 @@ export const useDualHook = ({
         setStep2BuyOrSell(undefined)
         break
     }
-    const searchParams = new URLSearchParams(search)
-    searchParams.set('viewType', viewType ?? '')
-    history.push(pathname + '?' + searchParams.toString())
     getDualMap()
   }, [viewType])
+  const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(undefined)
+  const [step2BuyOrSell, setStep2BuyOrSell] = React.useState<'Buy' | 'Sell' | undefined>(undefined)
+  const [step3Token, setStep3Token] = React.useState<string | undefined>(undefined)
+  const onSelectStep1Token = React.useCallback(
+    (token?: string) => {
+      setStep1SelectedToken(token)
+      //@ts-ignore
+      if (![DualViewType.DualGain, DualViewType.DualDip].includes(viewType)) {
+        setStep2BuyOrSell(undefined)
+      }
+      setStep3Token(undefined)
+    },
+    [viewType],
+  )
 
   const onSelectStep2BuyOrSell = React.useCallback((which: 'Buy' | 'Sell') => {
     setStep2BuyOrSell(which)

@@ -1797,7 +1797,6 @@ export default {
   labelStopPriceSell: 'Limit / Sell Price',
   labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
-  labelClaimallToken: 'Reward token {{symbol}}',
   labelTitleOverviewAllPrd: 'All Products',
   labelInvestDefiDes: 'Earn ETH staking rewards',
   labelInvestChoseProduct: 'Choose the product you want',
@@ -1853,7 +1852,6 @@ export default {
   labelTimeoutAddressClick:
     '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
-  labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
   labelRedPacketViewType2: 'Exclusive',
   labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
@@ -1926,13 +1924,6 @@ export default {
   labelHuobi: 'Huobi',
   labelOtherExchange: 'Other Exchange',
   labelContactsEditContact: 'Edit Contact',
-  labelTitleOverviewAllPrd: 'All Products',
-  labelInvestDefiDes: 'Earn ETH staking rewards',
-  labelInvestChoseProduct: 'Choose the product you want',
-  labelInvestTotalEarnings: 'Total Earnings',
-  labelInvestLoopringEarn: 'Loopring Earn',
-  labelInvestLoopringEarnDes: 'Earn stable profits with professional asset management',
-  labelInvestLRCDes: 'Earn LRC staking rewards',
   labelLeverageETHStakingDes: 'Gain higher APY aggressively',
   labelDownloadShared: 'Download',
   labelShareReferralCode: 'Share to',
@@ -1994,4 +1985,36 @@ export default {
   labelDualAutoAlert:
     "The current price of {{base}} is {{currentPrice}} {{quote}}, which  {{method}}  than the price you've set for Auto Reinvest. This may result in a lower APY for your next settlement. You can adjust the price for Auto Reinvest.",
   labelDualAutoDuration: 'Longest Settlement Date <1></1>',
+  labelInvestDualGainTitle: 'What is Covered Gain?',
+  labelInvestDualGainGuid:
+    '<p>Covered Gain is an investment strategy to sell digital assets at your Target Price and earn interest while waiting.</p>' +
+    '<p>On the Settlement Date, there can be 2 scenarios:</p>' +
+    '<ol><li>Market Price > Target Price</li>' +
+    '<li>Market Price ≤ Target Price</li></ol>' +
+    '<h5>Market Price > Target Price</h5>' +
+    '<p>Your original investment and earned interest will be sold at the target price.</p>' +
+    '<p>This order is then closed regardless of whether "Auto Reinvest" is enabled or not.</p>' +
+    '<h5>Market Price ≤ Target Price</h5>' +
+    '<p>Your original investment and earned interest won’t be sold.</p>' +
+    '<p>If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a suitable dual investment product based on the agreed terms until you either successfully sell crypto at your desired price or disable the feature.</p>' +
+    '<h5>Auto Reinvest</h5>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully sell your crypto at your Target Price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell your crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelInvestDualDipTitle: 'What is Buy The Dip?',
+  labelInvestDualDipGuid:
+    '<p>Buy The Dip is an investment strategy to buy digital assets at your Target Price and earn interest while waiting.</p>' +
+    '<p>On the Settlement Date, there can be 2 scenarios: </p>' +
+    '<ol><li>Market Price > Target Price </li>' +
+    '<li>Market Price ≤ Target Price </li></ol>' +
+    '<h5>Market Price > Target Price</h5>' +
+    '<p>Your original investment and earned interest won’t be converted. Earned interest is in USDC or USDT.</p>' +
+    '<p>If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a suitable dual investment product based on the agreed terms until you either successfully buy crypto at your desired price or disable the feature.</p>' +
+    '<h5>Market Price ≤ Target Price</h5>' +
+    '<p>Your original investment and earned interest will be converted at the Target Price.</p>' +
+    '<p>This order is then closed regardless of whether "Auto Reinvest" is enabled or not.</p>' +
+    '<h5>Auto Reinvest</h5>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
 }

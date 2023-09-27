@@ -1980,6 +1980,280 @@ export const ConfirmInvestDefiRisk = withTranslation('common')(
   },
 )
 
+export const ConfirmInvestDualGainRisk = withTranslation('common')(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean
+    handleClose: (event: any, isAgree?: boolean) => void
+  }) => {
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const [agree, setAgree] = React.useState(false)
+    return (
+      <Dialog
+        open={open}
+        sx={{ zIndex: 2000 }}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby='alert-dialog-slide-description'
+      >
+        <DialogTitle> {t('labelInvestDualGainTitle')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-slide-description'>
+            <Trans
+              i18nKey={'labelInvestDualGainGuid'}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'span'}
+                    variant={'body1'}
+                    display={'block'}
+                    color={'textSecondary'}
+                    paddingY={1 / 2}
+                  />
+                ),
+                ol: <ol style={{ listStyle: 'decimal', paddingLeft: 24 }} />,
+                li: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'li'}
+                    display={'list-item'}
+                    variant={'body1'}
+                    color={'textSecondary'}
+                  />
+                ),
+                h5: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'h5'}
+                    variant={'h5'}
+                    display={'block'}
+                    color={'textPrimary'}
+                    paddingY={2}
+                  />
+                ),
+              }}
+            >
+              <p>
+                Covered Gain is an investment strategy to sell digital assets at your Target Price
+                and earn interest while waiting.
+              </p>
+              <p>On the Settlement Date, there can be 2 scenarios:</p>
+              <ol>
+                <li>Market Price &gt; Target Price</li>
+                <li>Market Price ≤ Target Price</li>
+              </ol>
+              <h5>Market Price &gt; Target Price</h5>
+              <p>Your original investment and earned interest will be sold at the target price.</p>
+              <p>
+                This order is then closed regardless of whether "Auto Reinvest" is enabled or not.
+              </p>
+              <h5>Market Price ≤ Target Price</h5>
+              <p>Your original investment and earned interest won’t be sold.</p>
+              <p>
+                If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to
+                a suitable dual investment product based on the agreed terms until you either
+                successfully sell crypto at your desired price or disable the feature.
+              </p>
+              <h5>Auto Reinvest</h5>
+              <p>
+                When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest
+                your funds into a new product with the same target price when the previous product
+                expires, continuing until you successfully sell your crypto at your Target Price. If
+                there isn’t an available product within 2 hours after the previous settlement, the
+                order will be automatically closed.
+              </p>
+              <p>Sell Price: the Target Price at which you want to sell your crypto.</p>
+              <p>
+                Longest Settlement Date: your acceptable investment period. If no suitable products
+                are available within this range, “Auto Reinvest” will not subscribe to any products
+                for you, even if it's enabled.
+              </p>
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state)
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={t('labelDualAgree')}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            variant={'contained'}
+            size={'small'}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, agree)
+            }}
+            color={'primary'}
+          >
+            {t('labelIKnow')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  },
+)
+export const ConfirmInvestDualDipRisk = withTranslation('common')(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean
+    handleClose: (event: any, isAgree?: boolean) => void
+  }) => {
+    const { defaultNetwork } = useSettings()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const [agree, setAgree] = React.useState(false)
+    return (
+      <Dialog
+        open={open}
+        sx={{ zIndex: 2000 }}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby='alert-dialog-slide-description'
+      >
+        <DialogTitle> {t('labelInvestDualDipTitle')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-slide-description'>
+            <Trans
+              i18nKey={'labelInvestDualDipGuid'}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'span'}
+                    variant={'body1'}
+                    display={'block'}
+                    color={'textSecondary'}
+                    paddingY={1 / 2}
+                  />
+                ),
+                ol: <ol style={{ listStyle: 'decimal', paddingLeft: 24 }} />,
+                li: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'li'}
+                    display={'list-item'}
+                    variant={'body1'}
+                    color={'textSecondary'}
+                  />
+                ),
+                h5: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'h5'}
+                    variant={'h5'}
+                    display={'block'}
+                    color={'textPrimary'}
+                    paddingTop={2}
+                  />
+                ),
+              }}
+            >
+              <p>
+                Covered Gain is an investment strategy to sell digital assets at your Target Price
+                and earn interest while waiting.
+              </p>
+              <p>On the Settlement Date, there can be 2 scenarios:</p>
+              <ol>
+                <li>Market Price &gt; Target Price</li>
+                <li>Market Price ≤ Target Price</li>
+              </ol>
+              <h5>Market Price &gt; Target Price</h5>
+              <p>Your original investment and earned interest will be sold at the target price.</p>
+              <p>
+                This order is then closed regardless of whether "Auto Reinvest" is enabled or not.
+              </p>
+              <h5>Market Price ≤ Target Price</h5>
+              <p>Your original investment and earned interest won’t be sold.</p>
+              <p>
+                If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to
+                a suitable dual investment product based on the agreed terms until you either
+                successfully sell crypto at your desired price or disable the feature.
+              </p>
+              <h5>Auto Reinvest</h5>
+              <p>
+                When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest
+                your funds into a new product with the same target price when the previous product
+                expires, continuing until you successfully sell your crypto at your Target Price. If
+                there isn’t an available product within 2 hours after the previous settlement, the
+                order will be automatically closed.
+              </p>
+              <p>Sell Price: the Target Price at which you want to sell your crypto.</p>
+              <p>
+                Longest Settlement Date: your acceptable investment period. If no suitable products
+                are available within this range, “Auto Reinvest” will not subscribe to any products
+                for you, even if it's enabled.
+              </p>
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state)
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={t('labelDualAgree')}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            variant={'contained'}
+            size={'small'}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, agree)
+            }}
+            color={'primary'}
+          >
+            {t('labelIKnow')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  },
+)
 export const ConfirmInvestDualAutoRisk = withTranslation('common')(
   ({
     t,
@@ -2285,7 +2559,12 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
             size={'small'}
             disabled={USDCOnly ? !agree5 : !agree1 || !agree2 || !agree3 || !agree4 || !agree5}
             onClick={(e) => {
-              handleClose(e as any, USDCOnly ? 'USDCOnly' : 'all')
+              handleClose(
+                e as any,
+                USDCOnly
+                  ? confirmation.DualInvestConfirmType.USDCOnly
+                  : confirmation.DualInvestConfirmType.all,
+              )
             }}
             color={'primary'}
           >

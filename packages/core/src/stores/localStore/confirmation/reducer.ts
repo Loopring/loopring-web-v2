@@ -9,6 +9,9 @@ const initialState: Confirmation = {
   // confirmedDualInvest: false,
   confirmedDualInvestV2: undefined,
   confirmDualAutoInvest: false,
+  confirmDualDipInvest: false,
+  confirmDualGainInvest: false,
+
   confirmedLRCStakeInvest: false,
   showDualBeginnerHelp: false,
   confirmedBtradeSwap: false,
@@ -38,6 +41,12 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmDualAutoInvest(state: Confirmation, _action: PayloadAction<undefined>) {
       state.confirmDualAutoInvest = true
     },
+    confirmDualDipInvest(state: Confirmation, _action: PayloadAction<undefined>) {
+      state.confirmDualDipInvest = true
+    },
+    confirmDualGainInvest(state: Confirmation, _action: PayloadAction<undefined>) {
+      state.confirmDualGainInvest = true
+    },
     confirmDualInvestV2(
       state: Confirmation,
       _action: PayloadAction<{ level: DualInvestConfirmType | undefined }>,
@@ -65,6 +74,8 @@ export const {
   confirmedRETHDefiInvest,
   confirmedWSETHDefiInvest,
   confirmedLRCStakeInvest,
+  confirmDualDipInvest,
+  confirmDualGainInvest,
   // confirmDualInvest,
   confirmDualAutoInvest,
   confirmDualInvestV2,

@@ -41,6 +41,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 import { LoopringAPI, store, useAccount, useSystem, useTokenMap } from '../../index'
 import { useTradeDual } from '../../stores'
+import { useLocation } from 'react-router-dom'
 
 export const useDualTrade = <
   T extends DualTrade<I>,
@@ -49,11 +50,12 @@ export const useDualTrade = <
   R extends DualViewInfo,
 >({
   setConfirmDualAutoInvest,
-  viewType,
 }: {
   setConfirmDualAutoInvest: (state: boolean) => void
-  viewType?: DualViewType
 }) => {
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const viewType = searchParams.get('viewType')
   const refreshRef = React.useRef()
   const { exchangeInfo, allowTrade } = useSystem()
   const { tokenMap, marketArray } = useTokenMap()
@@ -193,7 +195,11 @@ export const useDualTrade = <
   )
 
   const handleOnchange = ({ tradeData }: DualChgData<T>) => {
-    if (tradeData?.isRenew && !confirmDualAutoInvest) {
+    if (
+      tradeData?.isRenew &&
+      !confirmDualAutoInvest &&
+      [DualViewType.All, DualViewType.DualBegin].includes(viewType as DualViewType)
+    ) {
       setConfirmDualAutoInvest(true)
     } else {
       refreshDual({ tradeData })

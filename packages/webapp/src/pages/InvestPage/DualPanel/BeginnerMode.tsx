@@ -23,19 +23,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
-import { maxBy, minBy, values } from 'lodash'
 import React from 'react'
-
-const WhiteCircleText = styled(Box)`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  height: ${({ theme }) => theme.unit * 3}px;
-  width: ${({ theme }) => theme.unit * 3}px;
-  border-radius: ${({ theme }) => theme.unit * 1.5}px;
-  border: ${({ theme }) => `2px solid ${theme.colorBase.textPrimary}`};
-  border-color: ${({ theme }) => theme.colorBase.textPrimary};
-`
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -91,14 +79,31 @@ export const BeginnerMode: any = withTranslation('common')(
       tokenName: string
       minAPY: number
       maxAPY: number
-    }> = Object.values(baseTokenList ?? {})?.sort((a, b) =>
+    }> = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
       a?.tokenName.toString().localeCompare(b?.tokenName.toString()),
     )
     const dualType =
       step2BuyOrSell === 'Sell' ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
     const step3Ref = React.useRef(null)
     const tableRef = React.useRef(null)
-
+    const scroolStep3ToMiddle = () => {
+      setTimeout(() => {
+        const element = step3Ref.current as any
+        const elementRect = element.getBoundingClientRect()
+        const absoluteElementTop = elementRect.top + window.pageYOffset
+        const middle = absoluteElementTop - window.innerHeight / 2
+        window.scrollTo(0, middle)
+      }, 100)
+    }
+    const scroolTableToMiddle = () => {
+      setTimeout(() => {
+        const element = tableRef.current as any
+        const elementRect = element.getBoundingClientRect()
+        const absoluteElementTop = elementRect.top + window.pageYOffset
+        const middle = absoluteElementTop - window.innerHeight / 2
+        window.scrollTo(0, middle)
+      }, 100)
+    }
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>

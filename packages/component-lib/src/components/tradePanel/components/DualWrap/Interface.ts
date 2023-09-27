@@ -5,6 +5,7 @@ import {
   DualCurrentPrice,
   DualViewBase,
   DualViewInfo,
+  DualViewType,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { TokenInfo } from '@loopring-web/loopring-sdk'
@@ -49,6 +50,7 @@ export type DualWrapProps<T, I, DUAL> = {
   accStatus?: AccountStatus
   dualProducts?: DualViewInfo[]
   toggle: { enable: boolean; reason?: string | undefined }
+  viewType?: DualViewType
 }
 
 export type DualDetailProps<

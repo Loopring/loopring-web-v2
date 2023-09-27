@@ -30,10 +30,7 @@ export enum InvestType {
   Stack = 5,
   LeverageETH = 6,
 }
-export const containerColors = [
-  'var(--color-global-bg)',
-  'var(--color-pop-bg)',
-]
+export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const BoxStyled = styled(Box)`
   display: flex;
   justify-content: center;
@@ -146,28 +143,17 @@ export const DefiTitle = () => {
 
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
   let match: any = useRouteMatch('/invest/:item?')
-  const history = useHistory()
-  const {
-    confirmDualInvest: confirmDualInvestFun,
-    confirmedLRCStakeInvest: confirmedLRCInvestFun,
-  } = confirmation.useConfirmation()
+  const { confirmedLRCStakeInvest: confirmedLRCInvestFun } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
 
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState<undefined | string | false>(
-    undefined,
-  )
   const {
     showLRCStakignPopup: confirmedLRCStakeInvest,
     setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
     confirmationNeeded,
   } = usePopup()
 
-  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false)
-  const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
-    setShowBeginnerModeHelp(show)
-  }, [])
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
       ? InvestType[match?.params?.item]
@@ -208,7 +194,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         setIsShowTab(true)
         return
     }
-  }, [match?.params.item])
+  }, [match?.params?.item])
 
   return (
     <Box flex={1} flexDirection={'column'} display={'flex'}>
@@ -216,12 +202,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
-        {tabIndex === InvestType.Dual && (
-          <DualListPanel
-            showBeginnerModeHelp={showBeginnerModeHelp}
-            setConfirmDualInvest={setConfirmDualInvest}
-          />
-        )}
+        {tabIndex === InvestType.Dual && <DualListPanel />}
         {tabIndex === InvestType.MyBalance && (
           <Box flex={1} alignItems={'stretch'} display={'flex'} flexDirection={'column'}>
             <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
@@ -237,24 +218,6 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
             <LeverageETHPanel />
           ))}
       </Box>
-
-      <ConfirmInvestDualRisk
-        open={!!confirmDualInvest}
-        USDCOnly={confirmDualInvest === 'USDCOnly'}
-        handleClose={(_e, isAgree: confirmation.DualInvestConfirmType | undefined) => {
-          if (!isAgree) {
-            setConfirmDualInvest(false)
-            history.goBack()
-          } else {
-            confirmDualInvestFun(isAgree)
-            setConfirmDualInvest(false)
-            setShowBeginnerModeHelp(true)
-            setTimeout(() => {
-              onShowBeginnerModeHelp(false)
-            }, 5 * 1000)
-          }
-        }}
-      />
 
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}

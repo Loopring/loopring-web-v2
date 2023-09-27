@@ -14,4 +14,6 @@ export interface Confirmation {
   confirmedLRCStakeInvest: boolean
   confirmedBtradeSwap: boolean
   confirmedLeverageETHInvest: boolean
+  confirmDualDipInvest: boolean
+  confirmDualGainInvest: boolean
 }
