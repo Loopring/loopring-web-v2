@@ -21,6 +21,10 @@ export type Method<R> = {
 
 export type MyPoolTableProps<R> = {
   rawData: R[]
+  totalAMMClaims?: {
+    detail: EarningsDetail[]
+    totalDollar: string
+  }
   account: Account
   title: string | (() => JSX.Element) | JSX.Element
   totalDollar?: string | number | undefined

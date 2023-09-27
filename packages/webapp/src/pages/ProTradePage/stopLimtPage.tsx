@@ -33,7 +33,7 @@ export const HeaderHeight = RowConfig.rowHeaderHeight
 
 const BoxStyle = styled(Box)`
   --tab-header: ${HeaderHeight}px;
-  background: var(--color-box);
+  background: var(--color-global-bg);
 
   &.spot {
     ${({ theme }: any) => boxLiner({ theme })}
@@ -187,7 +187,7 @@ export const StopLimitPage = withTranslation('common')(<Config extends LayoutCon
     ),
   }
   return (
-    <Box display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
+    <Box bgcolor={'var(--color-box-third)'} display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
       {market ? (
         <ResponsiveGridLayout
           className='layout'

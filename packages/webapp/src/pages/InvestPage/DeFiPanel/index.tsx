@@ -19,11 +19,17 @@ import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
+  DualInvestmentLogo,
+  hexToRGB,
   Info2Icon,
   MarketType,
+  SatkingLogo,
+  SoursURL,
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
+import { MaxWidthContainer, containerColors } from '..'
+import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`
   position: relative;
@@ -135,7 +141,7 @@ const LandDefiInvest = ({
             <React.Fragment key={item.type + index}>
               {item.enable ? (
                 <Grid item xs={12} md={4} lg={3}>
-                  <Card sx={{ display: 'flex' }} onClick={item.click}>
+                  <Card sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }} onClick={item.click}>
                     <StyleCardContent className={isMobile ? 'isMobile' : 'tableLap'}>
                       <Box
                         className={'content'}
@@ -247,6 +253,18 @@ const LandDefiInvest = ({
     </Box>
   )
 }
+
+const ButtonStyled = styled(Button)`  
+  background-color: var(--color-button-outlined);
+  color: var(--color-text-primary);
+  :hover {
+    background-color: var(--color-button-outlined);
+    ::before{
+      border-radius: 4px;
+    }
+  }
+`
+
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { marketArray } = useDefiMap()
 
@@ -301,91 +319,135 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }) as MarketType
   const isJoin = match?.params?.isJoin?.toUpperCase() !== 'Redeem'.toUpperCase()
+  const theme = useTheme()
+  const { isMobile } = useSettings()
+  const isMainView = !(match?.params?.market && _market)
+  const height = isMainView 
+    ? isMobile ? 34 * theme.unit : 30 * theme.unit
+    : 6 * theme.unit
 
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-      <Box marginBottom={2} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-        <Button
-          startIcon={<BackIcon fontSize={'small'} />}
-          variant={'text'}
-          size={'medium'}
-          sx={{ color: 'var(--color-text-secondary)' }}
-          color={'inherit'}
-          onClick={() =>
-            history.push(
-              !_market
-                ? '/invest/overview'
-                : match?.params?.isJoin
-                ? '/invest/balance'
-                : '/invest/defi',
-            )
-          }
-        >
-          {t('labelInvestDefiTitle')}
-          {/*<Typography color={"textPrimary"}></Typography>*/}
-        </Button>
-        <Button
-          variant={'outlined'}
-          sx={{ marginLeft: 2 }}
-          onClick={() => history.push('/invest/balance/stake')}
-        >
-          {t('labelInvestMyDefi')}
-        </Button>
-      </Box>
-      <StyleWrapper
+    <Box display={'flex'} flexDirection={'column'} flex={1}>
+      <MaxWidthContainer
         display={'flex'}
-        flexDirection={'column'}
-        justifyContent={'center'}
+        justifyContent={'space-between'}
+        background={containerColors[0]}
+        height={height}
         alignItems={'center'}
-        flex={1}
+        containerProps={{
+          borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`
+        }}
       >
-        {marketArray?.length ? (
-          match?.params?.market && _market ? (
-            <DeFiTradePanel
-              market={_market}
-              isJoin={isJoin}
-              setServerUpdate={setServerUpdate}
-              setToastOpen={setToastOpen}
-            />
-          ) : (
-            <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
-          )
+        {isMainView ? (
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
+            <Box >
+          <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
+            {t('labelInvestDefiTitle')}
+          </Typography>
+          <Box display={'flex'} alignItems={'center'}>
+            <Button
+              onClick={() => history.push('/invest/balance')}
+              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+              variant={'contained'}
+            >
+              {t('labelInvestMyAmm')}
+            </Button>
+          </Box>
+          </Box>
+            {!isMobile && <SatkingLogo />}
+          </Box>
+          
         ) : (
-          <LoadingBlock />
+          <Box
+            width={'100%'}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+          >
+            <Button
+              startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
+              variant={'text'}
+              size={'medium'}
+              sx={{ color: 'var(--color-text-primary)' }}
+              color={'inherit'}
+              onClick={() => history.push(`/invest/defi`)}
+            >
+              {t('labelInvestDefiTitle')}
+            </Button>
+            <Button
+              onClick={() => history.push('/invest/balance')}
+              sx={
+                {
+                  // width: isMobile ? 36 * theme.unit : 18 * theme.unit,
+                }
+              }
+              variant={'text'}
+            >
+              {t('labelMyInvestLRCStaking')}{' '}
+              {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
+            </Button>
+          </Box>
         )}
-        <Toast
-          alertText={toastOpen?.content ?? ''}
-          severity={toastOpen?.type ?? ToastType.success}
-          open={toastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-        />
+      </MaxWidthContainer>
 
-        <ConfirmInvestDefiServiceUpdate
-          open={serverUpdate}
-          handleClose={() => setServerUpdate(false)}
-        />
-        <ConfirmInvestDefiRisk
-          open={_confirmedDefiInvest.isShow}
-          type={_confirmedDefiInvest.type as any}
-          confirmationNeeded={confirmationNeeded}
-          handleClose={(_e, isAgree) => {
-            if (!isAgree) {
+      <MaxWidthContainer height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'} background={isMainView ? containerColors[1] : 'transparent'}>
+        <StyleWrapper
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          flex={1}
+          paddingTop={4}
+          paddingBottom={4}
+        >
+          {marketArray?.length ? (
+            match?.params?.market && _market ? (
+              <DeFiTradePanel
+                market={_market}
+                isJoin={isJoin}
+                setServerUpdate={setServerUpdate}
+                setToastOpen={setToastOpen}
+              />
+            ) : (
+              <LandDefiInvest setConfirmedDefiInvest={setConfirmedDefiInvest} />
+            )
+          ) : (
+            <LoadingBlock />
+          )}
+          <Toast
+            alertText={toastOpen?.content ?? ''}
+            severity={toastOpen?.type ?? ToastType.success}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
+
+          <ConfirmInvestDefiServiceUpdate
+            open={serverUpdate}
+            handleClose={() => setServerUpdate(false)}
+          />
+          <ConfirmInvestDefiRisk
+            open={_confirmedDefiInvest.isShow}
+            type={_confirmedDefiInvest.type as any}
+            confirmationNeeded={confirmationNeeded}
+            handleClose={(_e, isAgree) => {
+              if (!isAgree) {
+                setConfirmedDefiInvest({ isShow: false })
+              } else {
+                if (_confirmedDefiInvest.type === 'RETH') {
+                  confirmedRETHDefiInvestFun()
+                  history.push(defiRETHAdvice.router)
+                }
+                if (_confirmedDefiInvest.type === 'WSETH') {
+                  confirmedWSETHDefiInvestFun()
+                  history.push(defiWSTETHAdvice.router)
+                }
+              }
               setConfirmedDefiInvest({ isShow: false })
-            } else {
-              if (_confirmedDefiInvest.type === 'RETH') {
-                confirmedRETHDefiInvestFun()
-                history.push(defiRETHAdvice.router)
-              }
-              if (_confirmedDefiInvest.type === 'WSETH') {
-                confirmedWSETHDefiInvestFun()
-                history.push(defiWSTETHAdvice.router)
-              }
-            }
-            setConfirmedDefiInvest({ isShow: false })
-          }}
-        />
-      </StyleWrapper>
+            }}
+          />
+        </StyleWrapper>
+      </MaxWidthContainer>
     </Box>
   )
 })

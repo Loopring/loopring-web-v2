@@ -11,7 +11,7 @@ import {
   EmptyValueTag,
   ForexMap,
   getValuePrecisionThousand,
-  RowInvestConfig,
+  RowDualInvestConfig,
   UpColor,
   UpIcon,
   YEAR_DAY_FORMAT,
@@ -64,6 +64,17 @@ export interface DualsTableProps<R, C = sdk.Currency> {
   forexMap: ForexMap<C>
   onItemClick: (item: R) => void
 }
+
+const ButtonStyled = styled(Button)`
+  & {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-size: 16px;
+    height: ${({theme}) => 5 * theme.unit}px;
+    padding-left: ${({theme}) => 2.5 * theme.unit}px;
+    padding-right: ${({theme}) => 2.5 * theme.unit}px;
+  }
+`
 
 export const DualTable = withTranslation(['tables', 'common'])(
   <R extends RawDataDualsItem>(props: DualsTableProps<R> & WithTranslation) => {
@@ -161,16 +172,15 @@ export const DualTable = withTranslation(['tables', 'common'])(
                 className={'textAlignRight'}
                 component={'span'}
               >
-                <Button
-                  variant={'contained'}
-                  color={'primary'}
-                  size={'small'}
+                <ButtonStyled
+                  variant={'outlined'}
+                  size={'medium'}
                   onClick={(_e) => {
                     onItemClick(row)
                   }}
                 >
                   {t('labelInvestBtn', { ns: 'common' })}
-                </Button>
+                </ButtonStyled>
               </Typography>
             )
           },
@@ -297,10 +307,10 @@ export const DualTable = withTranslation(['tables', 'common'])(
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowInvestConfig.rowHeaderHeight + rawData.length * RowInvestConfig.rowHeight
+            RowDualInvestConfig.rowHeaderHeight + rawData.length * RowDualInvestConfig.rowHeight
           }
-          rowHeight={RowInvestConfig.rowHeight}
-          headerRowHeight={RowInvestConfig.rowHeaderHeight}
+          rowHeight={RowDualInvestConfig.rowHeight}
+          headerRowHeight={RowDualInvestConfig.rowHeaderHeight}
           onRowClick={(_index: number, row: R) => {
             onItemClick(row)
           }}

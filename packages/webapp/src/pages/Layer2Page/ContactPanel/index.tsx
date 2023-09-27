@@ -14,7 +14,7 @@ import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
 
 const ContactPageStyle = styled(Box)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   display: flex;
   flex-direction: column;
   align-items: stretch;
