@@ -33,6 +33,7 @@ import {
   Overview,
   EmptyValueTag,
   UpIcon,
+  getValuePrecisionThousand,
 } from '@loopring-web/common-resources'
 import { useAccount, useAmmMap, useDefiMap, useDualMap, useNotify, useStakingMap } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
@@ -123,7 +124,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
       _.values(dualMarketMap)
       .flatMap((dual: any) => [dual.quoteTokenApy?.max as string, dual.quoteTokenApy?.min as string])
       .filter((apy) => apy)
-      .map(apy => Number(apy))
+      .map(apy => Number(apy) * 100)
     )
   }, [dualMarketMap])
   const lrcApr = React.useMemo(() => {
@@ -258,7 +259,24 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
 
                           <Typography variant={'h3'} marginTop={5}>
                             {item.apyRange
-                              ? `${item.apyRange.from}%-${item.apyRange.to}%`
+                              ? item.apyRange.from === item.apyRange.to
+                                ? `${getValuePrecisionThousand(
+                                    item.apyRange.from,
+                                    undefined,
+                                    2,
+                                    2,
+                                  )}%`
+                                : `${getValuePrecisionThousand(
+                                    item.apyRange.from,
+                                    undefined,
+                                    2,
+                                    2,
+                                  )}%-${getValuePrecisionThousand(
+                                    item.apyRange.to,
+                                    undefined,
+                                    2,
+                                    2,
+                                  )}%`
                               : EmptyValueTag}
                           </Typography>
                           <Typography>{t('labelAPR')}</Typography>
