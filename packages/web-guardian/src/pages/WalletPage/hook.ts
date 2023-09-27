@@ -294,7 +294,7 @@ export const useAction = ({
             chainId: _chainId,
             eddsaKey: '',
             apiKey: '',
-            isHWAddr: !isFirstTime,
+            isHWAddr: false, // !isFirstTime,
             walletType: account.connectName as any,
           },
           [],
@@ -400,7 +400,7 @@ export const useAction = ({
     }
   }
   const handleOpenApprove = (guardian: sdk.Guardian) => {
-    if (isContractAddress && guardian.type !== 'recovery') {
+    if (isContractAddress) {
       // setNotSupportOpen(true)
       return
     }
