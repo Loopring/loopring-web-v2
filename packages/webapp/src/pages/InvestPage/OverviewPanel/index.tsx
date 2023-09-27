@@ -8,6 +8,7 @@ import {
   CardContent,
   Divider,
   Grid,
+  IconButton,
   Link,
   Typography,
 } from '@mui/material'
@@ -31,6 +32,7 @@ import {
   leverageETHAdvice,
   Overview,
   EmptyValueTag,
+  UpIcon,
 } from '@loopring-web/common-resources'
 import {
   useAccount,
@@ -157,7 +159,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   } = useToggle()
   const investAdviceList = [
     { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0], apyRange: ammApr },
-    { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1], apyRange: defiApr },
+    { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1], apyRange: defiApr},
     { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2], apyRange: dualApr },
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3], apyRange: lrcApr },
     ...(!CIETHInvest.enable && CIETHInvest.reason === 'no view'
@@ -165,7 +167,9 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
       : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4], apyRange: leverageApr }]),
   ]
   const theme = useTheme()
-
+  const scrollViewRef = React.useRef()
+  const [showArrow, setShowArrow] = React.useState({left: false, right: true})
+  
   return (
     <>
       <WrapperStyled>
@@ -199,15 +203,40 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
           <Box marginRight={5}>{!isMobile && <Overview />}</Box>
         </MaxWidthContainer>
         <MaxWidthContainer marginTop={5} minHeight={'80vh'} background={containerColors[1]}>
-          <Box
-            sx={{
-              width: '100%',
-              overflowX: 'scroll',
-              maxWidth: 'lg',
-              paddingY: 3,
-            }}
-            className={'scroll-view'}
-          >
+          <Box position={'relative'}>
+            <Box
+              component='div'
+              onScroll={(event) => {
+                if (
+                  event.currentTarget.scrollLeft + event.currentTarget.offsetWidth ===
+                  event.currentTarget.scrollWidth
+                ) {
+                  setShowArrow({
+                    left: true,
+                    right: false,
+                  })
+                } else if (event.currentTarget.scrollLeft === 0) {
+                  setShowArrow({
+                    left: false,
+                    right: true,
+                  })
+                } else {
+                  setShowArrow({
+                    left: true,
+                    right: true,
+                  })
+                }
+              }}
+              sx={{
+                width: '100%',
+                overflowX: 'scroll',
+                maxWidth: 'lg',
+                paddingY: 3,
+                scrollBehavior: 'smooth',
+              }}
+              className={'scroll-view'}
+              ref={scrollViewRef}
+            >
             <Box
               sx={{
                 display: 'flex',
@@ -215,48 +244,82 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
                 flexDirection: isMobile ? 'column' : 'row',
               }}
             >
-              {investAdviceList.map((item, index) => {
-                return (
-                  <Card
-                    key={item.type}
-                    onClick={() => history.push(item.router)}
-                    sx={{ marginRight: 2.5 }}
-                  >
-                    <CardContent>
-                      <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-                        <Avatar
-                          variant='circular'
-                          style={{
-                            height: 'var(--svg-size-huge)',
-                            width: 'var(--svg-size-huge)',
-                          }}
-                          src={item.banner}
-                        />
-                        <Typography marginTop={0.5} variant={'h5'}>
-                          {t(item.titleI18n, { ns: 'layout' })}
-                        </Typography>
+                {investAdviceList.map((item, index) => {
+                  return (
+                    <Card
+                      key={item.type}
+                      onClick={() => history.push(item.router)}
+                      sx={{ marginRight: 2.5 }}
+                    >
+                      <CardContent>
+                        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                          <Avatar
+                            variant='circular'
+                            style={{
+                              height: 'var(--svg-size-huge)',
+                              width: 'var(--svg-size-huge)',
+                            }}
+                            src={item.banner}
+                          />
+                          <Typography marginTop={0.5} variant={'h5'}>
+                            {t(item.titleI18n, { ns: 'layout' })}
+                          </Typography>
 
-                        <Typography variant={'h3'} marginTop={5}>
-                          {item.apyRange
-                            ? `${item.apyRange.from}%-${item.apyRange.to}%`
-                            : EmptyValueTag}
-                        </Typography>
-                        <Typography>{t('labelAPR')}</Typography>
-                        <Button
-                          className={'hover-button'}
-                          sx={{ marginTop: 2 }}
-                          fullWidth
-                          variant={'contained'}
-                        >
-                          {t('labelLiquidityDeposit')}
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+                          <Typography variant={'h3'} marginTop={5}>
+                            {item.apyRange
+                              ? `${item.apyRange.from}%-${item.apyRange.to}%`
+                              : EmptyValueTag}
+                          </Typography>
+                          <Typography>{t('labelAPR')}</Typography>
+                          <Button
+                            className={'hover-button'}
+                            sx={{ marginTop: 2 }}
+                            fullWidth
+                            variant={'contained'}
+                          >
+                            {t('labelLiquidityDeposit')}
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </Box>
             </Box>
+            {showArrow.left && (
+              <IconButton
+                size={'large'}
+                sx={{
+                  position: 'absolute',
+                  transform: 'translateY(-50%)',
+                  top: '50%',
+                  left: -30,
+                }}
+                onClick={() => {
+                  ;(scrollViewRef.current as any).scrollTo(0, 0)
+                }}
+              >
+                <BackIcon />
+              </IconButton>
+            )}
+            {showArrow.right && (
+              <IconButton
+                size={'large'}
+                sx={{
+                  position: 'absolute',
+                  transform: 'rotate(180deg) translateY(50%)',
+                  top: '50%',
+                  right: -30,
+                }}
+                onClick={() => {
+                  ;(scrollViewRef.current as any).scrollTo(1000, 0)
+                }}
+              >
+                <BackIcon />
+              </IconButton>
+            )}
           </Box>
+
           <Box marginTop={5} display={'flex'} flex={1} marginBottom={1} flexDirection={'column'}>
             <InvestOverviewTable
               showLoading={showLoading}

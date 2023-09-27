@@ -527,7 +527,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
     return (
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
-          currentheight={RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight}
+          currentheight={
+            rawData.length ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight : 350
+          }
           // onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
           //   if (c.key === 'Action') return
           //   showDetail(row)
