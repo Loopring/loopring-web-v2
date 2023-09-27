@@ -278,7 +278,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
             const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
             const dualType = row.__raw__.order?.dualType
             const { isRecursive, newStrike } = row.__raw__.order?.dualReinvestInfo
-            const { currentPrice, precisionForPrice, base, quote } = row.__raw__.currentPrice
+            const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice
             const currentView = currentPrice
               ? getValuePrecisionThousand(
                   currentPrice,
@@ -385,7 +385,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const dualType = row.__raw__.order?.dualType
             const { isRecursive, newStrike } = row.__raw__.order?.dualReinvestInfo
-            const { currentPrice, precisionForPrice, base, quote } = row.__raw__.currentPrice
+            const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice ?? {}
             const currentView = currentPrice
               ? getValuePrecisionThousand(
                   currentPrice,

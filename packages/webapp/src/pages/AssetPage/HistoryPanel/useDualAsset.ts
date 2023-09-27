@@ -239,7 +239,15 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           } else {
             setDualList((state) => {
               return state.map((x) => {
-                return x.__raw__.order.id === refreshedRecord.__raw__.order.id ? refreshedRecord : x
+                return x.__raw__.order.id === refreshedRecord.__raw__.order.id
+                  ? {
+                      ...refreshedRecord,
+                      __raw__: {
+                        ...x.__raw__,
+                        ...refreshedRecord.__raw__,
+                      },
+                    }
+                  : x
               })
             })
             setShowLoading(false)

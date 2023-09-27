@@ -54,6 +54,15 @@ export const useDualEdit = <
     renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
     renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
   } as T)
+  React.useEffect(() => {
+    const { dualViewInfo } = store.getState()._router_tradeDual.editDual
+    setTradeData({
+      // @ts-ignore
+      isRenew: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false,
+      renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+      renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
+    })
+  }, [dualViewInfo?.__raw__?.order?.hash])
 
   const handleOnchange = ({ tradeData }: { tradeData: T }) => {
     setTradeData(tradeData)

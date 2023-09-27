@@ -307,6 +307,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           key: 'time',
           name: t('labelDualTxsTime'),
           headerCellClass: 'textAlignRight',
+          title: t('labelDualAutoInvestTip'),
           formatter: ({ row }) => {
             let icon = <></>
             const {
@@ -337,15 +338,30 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
                 alignItems={'center'}
               >
-                <Typography
-                  component={'span'}
-                  paddingRight={1 / 2}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
-                </Typography>
-                {icon && <Tooltip title={t('labelDualAutoInvestTip').toString()}>{icon}</Tooltip>}
+                {icon ? (
+                  <Tooltip title={t('labelDualAutoInvestTip').toString()}>
+                    <>
+                      <Typography
+                        component={'span'}
+                        paddingRight={1 / 2}
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                      >
+                        {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+                      </Typography>
+                      {icon}
+                    </>
+                  </Tooltip>
+                ) : (
+                  <Typography
+                    component={'span'}
+                    paddingRight={1 / 2}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+                  </Typography>
+                )}
               </Box>
             )
           },
