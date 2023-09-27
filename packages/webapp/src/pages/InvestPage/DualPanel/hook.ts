@@ -227,10 +227,10 @@ export const useDualHook = ({
   React.useEffect(() => {
     switch (viewType) {
       case DualViewType.DualGain:
-        setStep2BuyOrSell('Buy')
+        setStep2BuyOrSell('Sell')
         break
       case DualViewType.DualDip:
-        setStep2BuyOrSell('Sell')
+        setStep2BuyOrSell('Buy')
         break
       case DualViewType.DualBegin:
         // setBeginnerMode(true)

@@ -341,7 +341,7 @@ export const DualDetail = ({
                     display={'inline-flex'}
                     alignItems={'center'}
                   >
-                    {coinSell.renewDuration}
+                    {t('labelDayDisplay',{item:coinSell.renewDuration)}
                     <BackIcon fontSize={'inherit'} sx={{ transform: 'rotate(180deg)' }} />
                   </Link>
                 </Box>

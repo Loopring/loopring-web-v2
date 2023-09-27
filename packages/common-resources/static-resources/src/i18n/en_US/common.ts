@@ -1985,4 +1985,5 @@ export default {
   labelDualIsLow: 'is significantly lower',
   labelDualAutoAlert:
     "The current price of {{base}} is {{currentPrice}} {{quote}}, which  {{method}}  than the price you've set for Auto Reinvest. This may result in a lower APY for your next settlement. You can adjust the price for Auto Reinvest.",
+  labelDualAutoDuration: 'Longest Settlement Date <1></1>',
 }
