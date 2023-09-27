@@ -356,12 +356,13 @@ export const subMenuInvest = [
   },
   
 ]
-export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual'
+export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual' | 'leverageETH'
 export const investTabs = [
   { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
   { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
   { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
   { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
+  { tab: 'leverageETH' as InvestTab, label: 'labelLeverageETHTitle' },
 ]
 
 export const defiMarkets = {

@@ -253,10 +253,11 @@ const MyLiquidity: any = withTranslation('common')(
     }
     const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
     const visibaleTabs: InvestTab[] = [
-      ...(myPoolRow?.length > 0 ? ['pools' as InvestTab] : []),
-      ...(lidoAssets?.length > 0 ? ['lido' as InvestTab] : []),
-      ...(stakingList?.length > 0 ? ['staking' as InvestTab] : []),
-      ...(dualList?.length > 0 ? ['dual' as InvestTab] : []),
+      'dual',
+      'staking',
+      'leverageETH',
+      'pools',
+      'lido',
     ]
     myLog('visibaleTabs', visibaleTabs)
     const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
@@ -358,31 +359,7 @@ const MyLiquidity: any = withTranslation('common')(
             marginTop: noHeader ? 1 : 0
           }}
         >
-          {!(myPoolRow?.length > 0) &&
-          !(lidoAssets?.length > 0) &&
-          !(leverageETHAssets?.length > 0) &&
-          !(stakingList?.length > 0) &&
-          !(dualList?.length > 0) ? (
-            <TableWrapStyled
-              flex={1}
-              marginTop={isHideTotal ? 1 : 2}
-              height={'100%'}
-              display={'flex'}
-              width={'100%'}
-            >
-              <EmptyDefault
-                sx={{ flex: 1 }}
-                message={() => {
-                  return (
-                    <Trans i18nKey='labelNoInvestContent'>
-                      You have no investment assets, invest AMM, ETH Stacking, DUAL earn your
-                      rewards
-                    </Trans>
-                  )
-                }}
-              />
-            </TableWrapStyled>
-          ) : (
+          {(
             <>
               <Box width={'100%'} display={'flex'}>
                 {visibaleTabs.map((tab) => (
@@ -400,6 +377,7 @@ const MyLiquidity: any = withTranslation('common')(
                   paddingY={2}
                   paddingX={0}
                   flex={1}
+                  marginLeft={-3}
                 >
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                     <MyPoolTable
@@ -460,6 +438,7 @@ const MyLiquidity: any = withTranslation('common')(
                   paddingY={2}
                   paddingX={0}
                   flex={1}
+                  marginLeft={-3}
                 >
                   <Grid container>
                     <Grid item md={6} xs={12}>
@@ -603,6 +582,7 @@ const MyLiquidity: any = withTranslation('common')(
                   paddingY={2}
                   paddingX={0}
                   flex={1}
+                  marginLeft={-3}
                 >
                   <Grid item xs={12}>
                     <Typography variant={'h5'} marginBottom={1} marginX={3}>
@@ -658,6 +638,7 @@ const MyLiquidity: any = withTranslation('common')(
                   paddingY={2}
                   paddingX={0}
                   flex={1}
+                  marginLeft={-3}
                 >
                   <Grid item xs={12}>
                     <Typography variant={'h5'} marginBottom={1} marginX={3}>
@@ -734,6 +715,65 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
+              {_tab === 'leverageETH' && (
+                <TableWrapStyled
+                  ref={leverageETHRef}
+                  className={`table-divide-short MuiPaper-elevation2 ${
+                    leverageETHAssets?.length > 0 ? 'min-height' : ''
+                  }`}
+                  marginTop={2}
+                  paddingY={2}
+                  paddingX={0}
+                  flex={1}
+                >
+                  <Grid item xs={12}>
+                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
+                      {t('labelLeverageETHTitle')}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
+                    {summaryMyInvest?.leverageETHDollar !== undefined ? (
+                      <Typography component={'h4'} variant={'h3'} marginX={3}>
+                        {summaryMyInvest?.leverageETHDollar
+                          ? hideAssets
+                            ? HiddenTag
+                            : PriceTag[CurrencyToTag[currency]] +
+                              getValuePrecisionThousand(
+                                sdk
+                                  .toBig(summaryMyInvest?.leverageETHDollar)
+                                  .times(forexMap[currency] ?? 0),
+                                undefined,
+                                undefined,
+                                2,
+                                true,
+                                { isFait: true, floor: true },
+                              )
+                          : EmptyValueTag}
+                      </Typography>
+                    ) : (
+                      ''
+                    )}
+                    <AssetsTable
+                      {...{
+                        disableWithdrawList,
+                        rawData: leverageETHAssets,
+                        showFilter: false,
+                        allowTrade,
+                        onSend,
+                        onReceive,
+                        getMarketArrayListCallback: getTokenRelatedMarketArray, // todo change logic
+                        rowConfig: RowInvestConfig,
+                        forexMap: forexMap as any,
+                        isInvest: true,
+                        hideAssets,
+                        isLeverageETH: true,
+                        ...rest,
+                      }}
+                    />
+                  </Grid>
+                </TableWrapStyled>
+              )}
+
             </>
           )}
         </MaxWidthContainer>
