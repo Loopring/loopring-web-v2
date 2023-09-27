@@ -862,7 +862,7 @@ export default {
   labelFeeTitleList: 'Fee',
   labelInvestOverviewTitle: 'Overview',
   labelTitleOverviewToken: 'Total Investment Tokens',
-  labelInvestType_AMM: 'AMM Pool',
+  labelInvestType_AMM: 'AMM Pools',
   labelInvestType_STAKE: 'ETH Staking',
   labelInvestType_DUAL: 'Dual Investment',
   labelInvestType_STAKELRC: 'LRC Staking',
@@ -1080,9 +1080,9 @@ export default {
   labelDualBeginnerSellHighFor: 'Sell high for {{token}}',
   labelDualBeginnerBuyLowWith: 'Buy low with {{token}}',
 
-  labelInvestMyAmm: 'My Investment',
-  labelInvestMyDual: 'My Investment',
-  labelInvestMyDefi: 'My Investment',
+  labelInvestMyAmm: 'My Investments',
+  labelInvestMyDual: 'My Investments',
+  labelInvestMyDefi: 'My Investments',
   labelInvestMaxDual: 'Max {{value}}',
   labelDualTitle: 'Dual Investment',
   labelDualDesSuccess:
@@ -1093,7 +1093,7 @@ export default {
   labelInvestRangeDay: '{{arg}} Days',
   labelAmmExit: 'Redeem',
   labelAmmJoin: 'Subscribe',
-  labelDualPanelClose: 'Go to My Investment',
+  labelDualPanelClose: 'Go to My Investments',
   labelDualMobilePrice: '{{symbol}} price:',
   labelEditCollectionSuccess: 'Collection edit was successful',
   labelEditCollectionFailed: 'Collection edit has failed',
@@ -1469,7 +1469,7 @@ export default {
   labelLRCStakingRisk2:
     '<0>The staked LRC will be locked in {{loopringL2}}, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.</0>',
   labelInvestLRCStakingTitle: 'LRC Staking',
-  labelMyInvestLRCStaking: 'My Investment',
+  labelMyInvestLRCStaking: 'My Investments',
   labelInvestLRCStakingLockAlert:
     'Your assets for investment will be locked until your redemption.',
   labelLRCStakeAPRTooltips:
