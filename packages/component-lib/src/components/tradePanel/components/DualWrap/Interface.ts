@@ -55,6 +55,7 @@ export type DualDetailProps<
   R = { isRenew: boolean; renewTargetPrice?: string; renewDuration?: number },
 > = DualDetailType & {
   coinSell: R
+  btnConfirm?: any
   onChange: (props: R) => void
   isPriceEditable: boolean
   dualProducts: DualViewInfo[]

@@ -27,6 +27,7 @@ export const ModifyParameter = ({
   onChange,
   isPriceEditable,
   dualProducts,
+  btnConfirm,
   // getProduct,
   maxDuration = 10,
 }: DualDetailProps & { maxDuration?: number; onClose: () => void }) => {
@@ -274,15 +275,19 @@ export const ModifyParameter = ({
       </Grid>
       <Grid item xs={12}>
         <Box paddingX={2} marginY={2}>
-          <ButtonStyle
-            fullWidth
-            variant={'contained'}
-            size={'medium'}
-            color={'primary'}
-            onClick={onClose}
-          >
-            {t('labelDualModifyConfirm')}
-          </ButtonStyle>
+          {btnConfirm ? (
+            btnConfirm
+          ) : (
+            <ButtonStyle
+              fullWidth
+              variant={'contained'}
+              size={'medium'}
+              color={'primary'}
+              onClick={onClose}
+            >
+              {t('labelDualModifyConfirm')}
+            </ButtonStyle>
+          )}
         </Box>
       </Grid>
     </Box>

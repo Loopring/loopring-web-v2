@@ -131,6 +131,7 @@ export const DualDetail = ({
   isPriceEditable = true,
   coinSell,
   toggle,
+  btnConfirm,
   ...rest
 }: DualDetailProps) => {
   const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
@@ -200,6 +201,7 @@ export const DualDetail = ({
               toggle={toggle}
               onClose={() => setShowEdit(false)}
               {...rest}
+              btnConfirm={btnConfirm}
               coinSell={coinSell}
               isPriceEditable={isPriceEditable}
             />
@@ -232,25 +234,27 @@ export const DualDetail = ({
                     </Trans>
                   </Typography>
                 </Tooltip>
-                <Typography component={'span'} variant={'inherit'}>
-                  <FormControlLabel
-                    sx={{
-                      marginRight: 0,
-                    }}
-                    disabled={[
-                      sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
-                      sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
-                    ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
-                    onChange={(_e, checked) =>
-                      onChange({
-                        ...coinSell,
-                        isRenew: checked,
-                      })
-                    }
-                    control={<Switch color={'primary'} checked={coinSell.isRenew} />}
-                    label={''}
-                  />
-                </Typography>
+                {!isOrder && (
+                  <Typography component={'span'} variant={'inherit'}>
+                    <FormControlLabel
+                      sx={{
+                        marginRight: 0,
+                      }}
+                      disabled={[
+                        sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
+                        sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
+                      ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
+                      onChange={(_e, checked) =>
+                        onChange({
+                          ...coinSell,
+                          isRenew: checked,
+                        })
+                      }
+                      control={<Switch color={'primary'} checked={coinSell.isRenew} />}
+                      label={''}
+                    />
+                  </Typography>
+                )}
               </Box>
 
               <Typography
@@ -341,7 +345,7 @@ export const DualDetail = ({
                     display={'inline-flex'}
                     alignItems={'center'}
                   >
-                    {t('labelDayDisplay',{item:coinSell.renewDuration)}
+                    {t('labelDayDisplay', { item: coinSell.renewDuration })}
                     <BackIcon fontSize={'inherit'} sx={{ transform: 'rotate(180deg)' }} />
                   </Link>
                 </Box>

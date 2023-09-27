@@ -269,13 +269,7 @@ const MyLiquidity: any = withTranslation('common')(
       return found ? t(found.label) : undefined
     }
     const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
-    const visibaleTabs: InvestTab[] = [
-      'dual',
-      'staking',
-      'leverageETH',
-      'pools',
-      'lido',
-    ]
+    const visibaleTabs: InvestTab[] = ['dual', 'staking', 'leverageETH', 'pools', 'lido']
     myLog('visibaleTabs', visibaleTabs)
     const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
     myLog('visibaleTabs _tab', _tab)
@@ -418,7 +412,7 @@ const MyLiquidity: any = withTranslation('common')(
             marginTop: noHeader ? 1 : 0,
           }}
         >
-          {(
+          {
             <>
               <Box width={'100%'} display={'flex'}>
                 {visibaleTabs.map((tab) => (
@@ -751,26 +745,8 @@ const MyLiquidity: any = withTranslation('common')(
                           >
                             <DualDetail
                               isOrder={true}
-                              dualProducts={dualProducts}
-                              dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
-                              currentPrice={dualDetail.dualViewInfo.currentPrice}
-                              tokenMap={tokenMap}
-                              isPriceEditable={true}
-                              toggle={true}
-                              lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
-                              greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
-                              lessEarnView={dualDetail.lessEarnView}
-                              greaterEarnView={dualDetail.greaterEarnView}
-                              onChange={(item) => {
-                                handleOnchange({ tradeData: item })
-                              }}
-                              coinSell={{
-                                ...editDualTrade,
-                              }}
-                            />
-                            {dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
-                              <Grid item xs={12}>
-                                <Box paddingX={2} marginY={2}>
+                              btnConfirm={
+                                dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
                                   <ButtonStyle
                                     fullWidth
                                     variant={'contained'}
@@ -791,9 +767,51 @@ const MyLiquidity: any = withTranslation('common')(
                                   >
                                     {label}
                                   </ButtonStyle>
-                                </Box>
-                              </Grid>
-                            )}
+                                )
+                              }
+                              dualProducts={dualProducts}
+                              dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
+                              currentPrice={dualDetail.dualViewInfo.currentPrice}
+                              tokenMap={tokenMap}
+                              isPriceEditable={true}
+                              toggle={true}
+                              lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
+                              greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
+                              lessEarnView={dualDetail.lessEarnView}
+                              greaterEarnView={dualDetail.greaterEarnView}
+                              onChange={(item) => {
+                                handleOnchange({ tradeData: item })
+                              }}
+                              coinSell={{
+                                ...editDualTrade,
+                              }}
+                            />
+                            {/*{dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (*/}
+                            {/*  <Grid item xs={12}>*/}
+                            {/*    <Box paddingX={2} marginY={2}>*/}
+                            {/*      <ButtonStyle*/}
+                            {/*        fullWidth*/}
+                            {/*        variant={'contained'}*/}
+                            {/*        size={'medium'}*/}
+                            {/*        color={'primary'}*/}
+                            {/*        onClick={() => {*/}
+                            {/*          onEditDualClick()*/}
+                            {/*        }}*/}
+                            {/*        loading={*/}
+                            {/*          editDualBtnStatus === TradeBtnStatus.LOADING*/}
+                            {/*            ? 'true'*/}
+                            {/*            : 'false'*/}
+                            {/*        }*/}
+                            {/*        disabled={*/}
+                            {/*          editDualBtnStatus === TradeBtnStatus.LOADING ||*/}
+                            {/*          editDualBtnStatus === TradeBtnStatus.DISABLED*/}
+                            {/*        }*/}
+                            {/*      >*/}
+                            {/*        {label}*/}
+                            {/*      </ButtonStyle>*/}
+                            {/*    </Box>*/}
+                            {/*  </Grid>*/}
+                            {/*)}*/}
                           </Box>
                         )}
                       </SwitchPanelStyled>
@@ -859,9 +877,8 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-
             </>
-          )}
+          }
         </MaxWidthContainer>
         <Modal
           open={showRefreshError}

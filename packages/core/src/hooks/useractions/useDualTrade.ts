@@ -388,6 +388,13 @@ export const useDualTrade = <
           sellTokenId: sellToken?.tokenId ?? 0,
         }
         const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+        if ((storageId as sdk.RESULT_INFO).code || (storageId as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[700001]
+          throw new CustomErrorWithCode({
+            ...storageId,
+            ...errorItem,
+          } as any)
+        }
         const {
           dualType,
           productId,
