@@ -355,14 +355,14 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     </Typography>
                   </Tooltip>
                 ) : (
-                  <Typography
-                    component={'span'}
-                    paddingRight={1 / 2}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
-                  </Typography>
+                <Typography
+                  component={'span'}
+                  paddingRight={1 / 2}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+                </Typography>
                 )}
               </Box>
             )
