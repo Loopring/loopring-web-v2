@@ -7,6 +7,7 @@ import {
   DialogContentText,
   DialogTitle,
   FormControlLabel as MuiFormControlLabel,
+  IconButton,
   Link,
   List,
   ListItem,
@@ -27,6 +28,7 @@ import {
   Bridge,
   CheckBoxIcon,
   CheckedIcon,
+  CloseIcon,
   copyToClipBoard,
   DAY_MINUTE_FORMAT,
   getValuePrecisionThousand,
@@ -2001,6 +2003,17 @@ export const ConfirmInvestDualGainRisk = withTranslation('common')(
         aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle> {t('labelInvestDualGainTitle')}</DialogTitle>
+        <IconButton
+          aria-label='close'
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
             <Trans
@@ -2138,6 +2151,17 @@ export const ConfirmInvestDualDipRisk = withTranslation('common')(
         aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle> {t('labelInvestDualDipTitle')}</DialogTitle>
+        <IconButton
+          aria-label='close'
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
             <Trans
@@ -2275,6 +2299,17 @@ export const ConfirmInvestDualAutoRisk = withTranslation('common')(
         aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle> {t('labelInvestDualAutoTitle')}</DialogTitle>
+        <IconButton
+          aria-label='close'
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
             <Trans
@@ -2382,6 +2417,17 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
         aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle> {t('labelDualRiskTitle')}</DialogTitle>
+        <IconButton
+          aria-label='close'
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         {USDCOnly ? (
           <DialogContent>
             <DialogContentText id='alert-dialog-slide-description'>

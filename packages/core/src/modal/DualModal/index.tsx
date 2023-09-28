@@ -17,7 +17,7 @@ import {
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Box, Divider, Modal as MuiModal, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { DualViewType, TOAST_TIME, TokenType } from '@loopring-web/common-resources'
@@ -69,8 +69,8 @@ export const ModalDualPanel = withTranslation('common')(
     setConfirmDualAutoInvest: (state: boolean) => void
   }) => {
     const history = useHistory()
-    // const { search } = useLocation()
-    // const searchParams = new URLSearchParams(search)
+    const { search, pathname } = useLocation()
+    const searchParams = new URLSearchParams(search)
     const {
       modals: { isShowDual },
       setShowDual,
@@ -239,7 +239,9 @@ export const ModalDualPanel = withTranslation('common')(
           handleClose={(_e, isAgree: confirmation.DualInvestConfirmType | undefined) => {
             if (!isAgree) {
               setShowAlert(false)
+              searchParams.set('viewType', '')
               history.goBack()
+              history.push(pathname + '?' + searchParams.toString())
             } else {
               confirmDualInvestFun(isAgree)
               setShowAlert(false)
@@ -247,11 +249,17 @@ export const ModalDualPanel = withTranslation('common')(
           }}
         />
         <ConfirmInvestDualGainRisk
-          open={!confirmDualGainInvest && [DualViewType.DualGain].includes(viewType as any)}
+          open={
+            !confirmDualGainInvest &&
+            showDualAlert &&
+            [DualViewType.DualGain].includes(viewType as any)
+          }
           handleClose={(_e, isAgree) => {
             if (!isAgree) {
               setShowAlert(false)
-              history.goBack()
+              // history.goBack()
+              searchParams.set('viewType', '')
+              history.push(pathname + '?' + searchParams.toString())
             } else {
               confirmDualGainInvestFun()
               setShowAlert(false)
@@ -259,11 +267,17 @@ export const ModalDualPanel = withTranslation('common')(
           }}
         />
         <ConfirmInvestDualDipRisk
-          open={!confirmDualDipInvest && [DualViewType.DualDip].includes(viewType as any)}
+          open={
+            !confirmDualDipInvest &&
+            showDualAlert &&
+            [DualViewType.DualDip].includes(viewType as any)
+          }
           handleClose={(_e, isAgree) => {
             if (!isAgree) {
               setShowAlert(false)
-              history.goBack()
+              searchParams.set('viewType', '')
+              // history.goBack()
+              history.push(pathname + '?' + searchParams.toString())
             } else {
               confirmDualDipInvestFun()
               setShowAlert(false)

@@ -296,7 +296,9 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           sortable: true,
           name: t('labelDualAutoReinvest'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return row?.__raw__.order?.dualReinvestInfo?.isRecursive ? (
+            return row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+              row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+                sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
               <>{t('labelDualAssetReInvestEnable')}</>
             ) : (
               <>{t('labelDualAssetReInvestDisable')} </>
@@ -340,17 +342,17 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               >
                 {icon ? (
                   <Tooltip title={t('labelDualAutoInvestTip').toString()}>
-                    <>
+                    <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
+                      {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
                       <Typography
                         component={'span'}
-                        paddingRight={1 / 2}
                         display={'inline-flex'}
                         alignItems={'center'}
+                        paddingLeft={1 / 2}
                       >
-                        {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+                        {icon}
                       </Typography>
-                      {icon}
-                    </>
+                    </Typography>
                   </Tooltip>
                 ) : (
                   <Typography
@@ -475,13 +477,13 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     variant={'body2'}
                   >
                     APY: {apy}, {t('labelDualAuto')}:
-                    {row?.__raw__.order?.dualReinvestInfo?.isRecursive
+                    {row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+                    row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+                      sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
                       ? t('labelDualAssetReInvestEnable')
                       : t('labelDualAssetReInvestDisable')}
                   </Typography>
                 </Typography>
-                {/* " - " +*/}
-                {/*&nbsp;&nbsp;*/}
 
                 <Typography
                   display={'flex'}

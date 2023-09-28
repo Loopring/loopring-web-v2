@@ -79,11 +79,11 @@ const SubTabCardStyleItem = styled(CardStyleItem)`
 export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslation) => {
   const { search, pathname } = useLocation()
   const searchParams = new URLSearchParams(search)
-  // const hasViewType = new URLSearchParams(search).has('viewType')
+  const viewType = new URLSearchParams(search).get('viewType')
   const { forexMap } = useSystem()
   const history = useHistory()
   const { isMobile } = useSettings()
-  const [viewType, setViewType] = React.useState<DualViewType | undefined>(undefined)
+  // const [viewType, setViewType] = React.useState<DualViewType | undefined>(undefined)
   const { tradeMap, marketArray, status, getDualMap } = useDualMap()
   const { tokenMap } = useTokenMap()
   const { setShowDual } = useOpenModals()
@@ -123,7 +123,9 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
               onClick={() => {
-                setViewType(undefined)
+                searchParams.set('viewType', '')
+                // history.goBack()
+                history.push(pathname + '?' + searchParams.toString())
                 onSelectStep1Token(undefined)
               }}
             >
@@ -164,9 +166,13 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                   control={
                     <Switch
                       checked={viewType === DualViewType.DualBegin}
-                      onChange={(_event, _checked) =>
-                        setViewType(_checked ? DualViewType.DualBegin : DualViewType.All)
-                      }
+                      onChange={(_event, _checked) => {
+                        searchParams.set(
+                          'viewType',
+                          _checked ? DualViewType.DualBegin : DualViewType.All,
+                        )
+                        history.push(pathname + '?' + searchParams.toString())
+                      }}
                     />
                   }
                   label={
@@ -445,7 +451,6 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
       ) : (
         <ChooseDualType
           onSelect={(item) => {
-            setViewType(item)
             searchParams.set('viewType', item)
             history.push(pathname + '?' + searchParams.toString())
           }}
