@@ -1,12 +1,9 @@
 import React, { useCallback, useState } from 'react'
 import {
   ContactType,
-  exWalletToAddressMapFn,
   LoopringAPI,
   store,
   useAccount,
-  useAddressCheck,
-  useBtnStatus,
   useContacts,
   useToast,
   volumeToCount,
@@ -14,7 +11,6 @@ import {
 } from '@loopring-web/core'
 import {
   RawDataTransactionItem,
-  TOASTOPEN,
   ToastType,
   TransactionStatus,
   useOpenModals,
@@ -22,15 +18,8 @@ import {
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
-import {
-  AddressError,
-  EXCHANGE_TYPE,
-  NetworkMap,
-  SDK_ERROR_MAP_TO_UI,
-  WALLET_TYPE,
-} from '@loopring-web/common-resources'
+import { NetworkMap, SDK_ERROR_MAP_TO_UI, ContactType } from '@loopring-web/common-resources'
 import { useLocation } from 'react-router-dom'
-import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export type Contact = {
   name: string
