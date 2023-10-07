@@ -545,7 +545,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
         <Table
           {...{
             ...defaultArgs,
-            // rowRenderer: RowRenderer,
             ...props,
             rawData,
             showloading,
