@@ -1,33 +1,29 @@
 import styled from '@emotion/styled'
 import { Avatar, Box, Card, CardContent, CardProps, Typography } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
-import { useDualHook } from './hook'
 import {
+  CardStyleItem,
   CoinIcon,
   CoinIcons,
   DualTable,
   useOpenModals,
   useSettings,
-  CardStyleItem,
+  TickCardStyleItem,
 } from '@loopring-web/component-lib'
 import { useDualMap, useSystem, useTokenMap } from '@loopring-web/core'
-import { BorderTickSvg, getValuePrecisionThousand, SoursURL, TokenType } from '@loopring-web/common-resources'
+import {
+  DualGain,
+  DualDip,
+  DualBegin,
+  DualViewType,
+  getValuePrecisionThousand,
+  SoursURL,
+  TokenType,
+} from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
-import { maxBy, minBy, values } from 'lodash'
 import React from 'react'
-
-const WhiteCircleText = styled(Box)`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  height: ${({ theme }) => theme.unit * 3}px;
-  width: ${({ theme }) => theme.unit * 3}px;
-  border-radius: ${({ theme }) => theme.unit * 1.5}px;
-  border: ${({ theme }) => `2px solid ${theme.colorBase.textPrimary}`};
-  border-color: ${({ theme }) => theme.colorBase.textPrimary};
-`
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -36,46 +32,27 @@ const WrapperStyled = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
-
-const TickCardStyleItem = (
-  props: CardProps & {
-    contentheight?: number
-    size?: 'large' | 'medium' | 'small' | undefined
-    selected?: boolean
-    width?: string
-  },
-) => {
-  const { children, selected, width,...rest } = props
-  return (
-    <CardStyleItem style={{
-      borderRadius: '8px',
-      background: 'transparent',
-      width,
-      justifyContent: 'left',
-      padding: '18px 24px',
-    }} {...rest}>
-      {selected && (
-        <BorderTickSvg
-          fontSize={'large'}
-          sx={{
-            position: 'absolute',
-            top: '0px',
-            right: '0px',
-          }}
-        />
-      )}
-      {children}
-    </CardStyleItem>
-  )
+export const ViewStepType = {
+  [DualViewType.DualGain]: DualGain,
+  [DualViewType.DualDip]: DualDip,
+  [DualViewType.DualBegin]: DualBegin,
 }
 
 export const BeginnerMode: any = withTranslation('common')(
   ({
     t,
-    setConfirmDualInvest,
-  }: WithTranslation & {
-    setConfirmDualInvest: (state: any) => void
+    dualListProps,
+    viewType,
+  }: // setConfirmDualInvest,
+  WithTranslation & {
+    dualListProps: any
+    viewType: DualViewType
+    // setConfirmDualInvest: (state: any) => void
   }) => {
+    // const viewType ===
+    const viewStepType = ViewStepType[viewType]
+
+    const theme = useTheme()
     const { tradeMap, marketMap } = useDualMap()
     const { coinJson } = useSettings()
     const { forexMap } = useSystem()
@@ -88,7 +65,7 @@ export const BeginnerMode: any = withTranslation('common')(
       dualProducts,
       currentPrice,
       market,
-
+      baseTokenList,
       step1SelectedToken,
       step2BuyOrSell,
       step3Token,
@@ -96,85 +73,48 @@ export const BeginnerMode: any = withTranslation('common')(
       onSelectStep2BuyOrSell,
       onSelectStep3Token,
       isDualBalanceSufficient,
-    } = useDualHook({ setConfirmDualInvest })
+    } = dualListProps
     const { isMobile } = useSettings()
-
+    const tokenList: Array<{
+      tokenName: string
+      minAPY: number
+      maxAPY: number
+    }> = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
+      a?.tokenName.toString().localeCompare(b?.tokenName.toString()),
+    )
     const dualType =
       step2BuyOrSell === 'Sell' ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
-    const tokenList = Reflect.ownKeys(tradeMap ?? {})
-      .filter(
-        (tokenName) => tokenName !== 'USDT' && tokenName !== 'USDC' && tokenName !== 'OLDUSDC',
-      )
-      .sort((a, b) => a.toString().localeCompare(b.toString()))
-      .map((tokenName) => {
-        const list = values(marketMap)
-          .flatMap((x) => {
-            const baseToken = idIndex[x.baseTokenId]
-            const quoteToken = idIndex[x.quoteTokenId]
-            return [
-              {
-                token: baseToken,
-                // @ts-ignore
-                apyInfo: x.baseTokenApy,
-              },
-              {
-                token: quoteToken,
-                // @ts-ignore
-                apyInfo: x.quoteTokenApy,
-              },
-            ]
-          })
-          .filter((x) => x.token === tokenName.toString())
-        const min = minBy(list, (x) => {
-          return Number(x.apyInfo && x.apyInfo.min)
-        })
-        const max = maxBy(list, (x) => {
-          return Number(x.apyInfo && x.apyInfo.max)
-        })
-        return {
-          tokenName,
-          minAPY: min?.apyInfo.min,
-          maxAPY: max?.apyInfo.max,
-          logo: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
-        }
-      })
-    // marketMap[]
-    const step3Tokens = step1SelectedToken ? tradeMap[step1SelectedToken].tokenList : []
-    const theme = useTheme()
-    const showStep2 = step1SelectedToken !== undefined
-    const showStep3 = step2BuyOrSell !== undefined
-    const showTable = step3Token !== undefined
     const step3Ref = React.useRef(null)
     const tableRef = React.useRef(null)
     const scroolStep3ToMiddle = () => {
       setTimeout(() => {
         const element = step3Ref.current as any
-        const elementRect = element.getBoundingClientRect();
-        const absoluteElementTop = elementRect.top + window.pageYOffset;
-        const middle = absoluteElementTop - (window.innerHeight / 2);
-        window.scrollTo(0, middle);
-      }, 100);
+        const elementRect = element.getBoundingClientRect()
+        const absoluteElementTop = elementRect.top + window.pageYOffset
+        const middle = absoluteElementTop - window.innerHeight / 2
+        window.scrollTo(0, middle)
+      }, 100)
     }
     const scroolTableToMiddle = () => {
       setTimeout(() => {
         const element = tableRef.current as any
-        const elementRect = element.getBoundingClientRect();
-        const absoluteElementTop = elementRect.top + window.pageYOffset;
-        const middle = absoluteElementTop - (window.innerHeight / 2);
-        window.scrollTo(0, middle);
-      }, 100);
+        const elementRect = element.getBoundingClientRect()
+        const absoluteElementTop = elementRect.top + window.pageYOffset
+        const middle = absoluteElementTop - window.innerHeight / 2
+        window.scrollTo(0, middle)
+      }, 100)
     }
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>
           <Typography marginBottom={2} display={'flex'} variant={'h4'}>
-            {t('labelDualBeginnerStep1Title')}
+            {t(viewStepType[0].labelKey)}
           </Typography>
           <Box display={'flex'} flexDirection={'row'}>
-            {tokenList.map(({ tokenName, minAPY, maxAPY, logo }) => {
+            {tokenList.map(({ tokenName, minAPY, maxAPY }) => {
               const selected = step1SelectedToken === tokenName
               return (
-                <Box marginRight={2} key={logo}>
+                <Box marginRight={2} key={tokenName.toString()}>
                   <TickCardStyleItem
                     className={
                       selected ? 'btnCard dualInvestCard selected' : 'btnCard dualInvestCard '
@@ -182,9 +122,15 @@ export const BeginnerMode: any = withTranslation('common')(
                     selected={selected}
                     onClick={() => onSelectStep1Token(tokenName.toString())}
                     width={'280px'}
-
                   >
-                    <CardContent sx={{ alignItems: 'center' }}>
+                    <CardContent
+                    // sx={{
+                    //   alignItems: 'center',
+                    //   // paddingX: 3,
+                    //   // paddingY: 2,
+                    //   '&:last-child': { paddingY: 2 },
+                    // }}
+                    >
                       <Typography component={'span'} display={'inline-flex'}>
                         <CoinIcon
                           size={32}
@@ -238,7 +184,7 @@ export const BeginnerMode: any = withTranslation('common')(
           </Box>
         </Box>
 
-        {showStep2 && (
+        {!!(step1SelectedToken !== undefined && viewType == DualViewType.DualBegin) && (
           <Box marginBottom={5}>
             <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t('labelDualBeginnerStep2Title')}
@@ -256,17 +202,21 @@ export const BeginnerMode: any = withTranslation('common')(
                     onSelectStep2BuyOrSell('Sell')
                     scroolStep3ToMiddle()
                   }}
-                  width={'309px'}
+                  width={'310px'}
                 >
-                  <CardContent sx={{ alignItems: 'center' }}>
+                  <CardContent
+                  // sx={{
+                  //   alignItems: 'center',
+                  //   // paddingX: 3,
+                  //   // paddingY: 2,
+                  //   // '&:last-child': { paddingY: 2 },
+                  // }}
+                  >
                     <Typography component={'span'} display={'inline-flex'}>
                       <Avatar alt={'sell-high'} src={SoursURL + '/svg/sell-high.svg'} />
                     </Typography>
                     <Typography paddingLeft={1}>
-                      <Typography
-                        color={theme.colorBase.textPrimary  }
-                        variant={'subtitle1'}
-                      >
+                      <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'}>
                         {t('labelDualBeginnerSellHigh', {
                           token: step1SelectedToken,
                         })}
@@ -290,17 +240,21 @@ export const BeginnerMode: any = withTranslation('common')(
                     onSelectStep2BuyOrSell('Buy')
                     scroolStep3ToMiddle()
                   }}
-                  width={'309px'}
+                  width={'310px'}
                 >
-                  <CardContent sx={{ alignItems: 'center' }}>
+                  <CardContent
+                  // sx={{
+                  //   alignItems: 'center',
+                  //   // paddingX: 3,
+                  //   // paddingY: 2,
+                  //   // '&:last-child': { paddingY: 2 },
+                  // }}
+                  >
                     <Typography component={'span'} display={'inline-flex'}>
                       <Avatar alt={'buy-low'} src={SoursURL + '/svg/buy-low.svg'} />
                     </Typography>
                     <Typography paddingLeft={1}>
-                      <Typography
-                        color={theme.colorBase.textPrimary  }
-                        variant={'subtitle1'}
-                      >
+                      <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'}>
                         {t('labelDualBeginnerBuyLow', {
                           token: step1SelectedToken,
                         })}
@@ -316,13 +270,13 @@ export const BeginnerMode: any = withTranslation('common')(
           </Box>
         )}
 
-        {showStep3 && (
+        {step1SelectedToken !== undefined && step2BuyOrSell !== undefined && (
           <Box ref={step3Ref} marginBottom={2}>
             <Typography marginBottom={2} display={'flex'} variant={'h4'}>
-              {t('labelDualBeginnerStep3Title')}
+              {t(viewStepType[2].labelKey)}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
-              {step3Tokens.map((token) => {
+              {tradeMap[step1SelectedToken ?? '']?.tokenList?.map((token) => {
                 return (
                   <Box marginRight={2} key={token}>
                     <TickCardStyleItem
@@ -338,11 +292,22 @@ export const BeginnerMode: any = withTranslation('common')(
                       }}
                       width={'280px'}
                     >
-                      <CardContent sx={{ alignItems: 'center' }}>
+                      <CardContent
+                        sx={{
+                          alignItems: 'center',
+                          paddingX: 3,
+                          paddingY: 2,
+                          '&:last-child': { paddingY: 2 },
+                        }}
+                      >
                         <Typography component={'span'} display={'inline-flex'}>
                           <CoinIcon size={32} symbol={token} />
                         </Typography>
-                        <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'} paddingLeft={1}>
+                        <Typography
+                          color={theme.colorBase.textPrimary}
+                          variant={'subtitle1'}
+                          paddingLeft={1}
+                        >
                           {step2BuyOrSell === 'Buy'
                             ? t('labelDualBeginnerBuyLowWith', { token: token })
                             : t('labelDualBeginnerSellHighFor', {
@@ -357,7 +322,7 @@ export const BeginnerMode: any = withTranslation('common')(
             </Box>
           </Box>
         )}
-        {showTable && (
+        {step3Token !== undefined && step1SelectedToken !== undefined && (
           <WrapperStyled ref={tableRef} marginTop={1} flex={1} flexDirection={'column'}>
             {pairASymbol && pairBSymbol && market && (
               <Box
@@ -453,6 +418,7 @@ export const BeginnerMode: any = withTranslation('common')(
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
+                          baseSymbol: currentPrice.quote,
                         }}
                       >
                         LRC Current price:
@@ -463,7 +429,7 @@ export const BeginnerMode: any = withTranslation('common')(
                           paddingLeft={1}
                         >
                           price
-                        </Typography>{' '}
+                        </Typography>
                         :
                       </Trans>
                     ) : (

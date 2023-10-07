@@ -353,5 +353,9 @@ export default {
   labelDualAuto: 'ReInvest',
   labelDualFailed: 'Failed',
   labelDualPending: 'pending',
-  labelDualAutoInvestTip: 'Auto Reinvest Status',
+  labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
+  labelDualRetryStatusSuccess: 'Auto reinvested successful.',
+  labelDualRetryStatusError:
+    'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
+  labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
 }

@@ -12,7 +12,6 @@ import {
   setShowDeposit,
   setShowDual,
   setShowExportAccount,
-  setShowFeeSelect,
   setShowFeeSetting,
   setShowGlobalToast,
   setShowIFrame,
@@ -43,7 +42,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from '@loopring-web/common-resources'
-import { OffchainFeeReqType, OffchainNFTFeeReqType, RESULT_INFO } from '@loopring-web/loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
 import { AmmPanelType, ToastType } from '../../../components'
 
@@ -213,7 +212,7 @@ export const useOpenModals = () => {
       (
         state: ModalStatePlayLoad & {
           step?: number
-          error?: RESULT_INFO
+          error?: sdk.RESULT_INFO
           info?: { [key: string]: any }
         },
       ) => dispatch(setShowAccount(state)),
@@ -243,7 +242,7 @@ export const useOpenModals = () => {
       (
         state: ModalStatePlayLoad & {
           step?: number
-          error?: RESULT_INFO
+          error?: sdk.RESULT_INFO
           info?: { [key: string]: any }
         },
       ) => dispatch(setShowConnect(state)),
