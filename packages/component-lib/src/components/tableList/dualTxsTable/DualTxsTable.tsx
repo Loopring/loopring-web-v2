@@ -397,6 +397,8 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            let icon: any = undefined,
+              status = ''
             const {
               sellSymbol,
               apy,
@@ -414,6 +416,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     amountOut,
                   },
                   timeOrigin: { expireTime },
+                  dualReinvestInfo: { retryStatus, maxDuration, newStrike },
                 },
               },
             } = row
@@ -463,6 +466,47 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 : `${amount} ${sellSymbol}`
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, _marketBuy] : [_marketBuy, sellSymbol]
+
+            switch (retryStatus) {
+              case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
+                icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusSuccess'
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
+                icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusError'
+
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRYING:
+                icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusRetrying'
+                break
+            }
+            const recursiveStatus = icon ? (
+              <Tooltip
+                title={t(status, {
+                  day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
+                  price: newStrike ? newStrike : EmptyValueTag,
+                }).toString()}
+              >
+                <Typography display={'inline-flex'} alignItems={'center'} height={'100%'}>
+                  {/*<>{content}</>*/}
+                  <>{icon}</>
+                </Typography>
+              </Tooltip>
+            ) : (
+              <></>
+            )
+
+            // const content =
+            //   row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+            //   row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+            //   sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
+            //     <>{t('labelDualAssetReInvestEnable')}</>
+            //   ) : (
+            //     <>{t('labelDualAssetReInvestDisable')} </>
+            //   )
+
             return (
               <Box display={'flex'} alignItems={'stretch'} flexDirection={'column'}>
                 <Typography
@@ -528,6 +572,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                       `${DAY_FORMAT} ${MINUTE_FORMAT}`,
                     )}
                     `}
+                    {recursiveStatus}
                   </Typography>
                 </Typography>
               </Box>
