@@ -9,7 +9,6 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from '@loopring-web/common-resources'
-
 export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },

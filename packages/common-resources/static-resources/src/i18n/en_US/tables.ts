@@ -344,5 +344,20 @@ export default {
   labelTxNetworkFee: 'Network Fee',
   labelTxTradingFee: 'Trading Fee',
   labelTypeUNIFIED_CLAIM: 'Claim Rewards',
-  labelLoadingMore: "Loading More..."
+  labelRedPacketClaiming: 'Claiming',
+  labelLoadingMore: 'Loading More...',
+  labelDualAutoReinvest: 'Auto Reinvest',
+  labelDualAssetModify: 'Modify',
+  labelDualAssetReInvestDisable: 'Disable',
+  labelDualAssetReInvestEnable: 'Enable',
+  labelDualAuto: 'ReInvest',
+  labelDualFailed: 'Failed',
+  labelDualPending: 'pending',
+  labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
+  labelDualRetryStatusSuccess: 'Auto reinvested successful.',
+  labelDualRetryStatusError:
+    'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
+  labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
+  labelDualAssetReInvestYes: 'ReInvest On',
+  labelDualAssetReInvestNo: 'ReInvest Off',
 }

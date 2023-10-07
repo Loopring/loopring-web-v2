@@ -193,6 +193,8 @@ export const STAKING_INVEST_LIMIT = 5
 export const PROPERTY_Value_LIMIT = 40
 export const REDPACKET_ORDER_LIMIT = 10000
 export const REDPACKET_ORDER_NFT_LIMIT = 20000
+export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 1000
+export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
@@ -454,9 +456,6 @@ export type DualViewBase = {
   term: string
   strike: string
   isUp: boolean
-  // targetPrice,
-  // subscribeData,
-
   expireTime: number
   currentPrice: DualCurrentPrice
   productId: string
@@ -464,8 +463,8 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-
-  // balance,
+  stepLength: string
+  __raw__?: any
 }
 
 export type DualViewInfo = DualViewBase & {
@@ -532,6 +531,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     labelKey: 'labelLuckyRelayToken',
     desKey: 'labelLuckyRelayTokenDes',
     showInERC20: true,
+    hideForExclusive: true,
     value: {
       value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -690,7 +690,9 @@ export type RedPacketOrderData<I> = {
   target?: {
     redpacketHash: string
     addressListString: string
-    isRedDot: boolean
+    popupChecked: boolean
+    maxSendCount: number
+    sentAddresses?: string[]
   }
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
@@ -728,7 +730,6 @@ export type AmmHistoryItem = {
   close: number
   timeStamp: number
 }
-
 export enum LocalStorageConfigKey {
   tokenMap = 'tokenMap',
   ammpools = 'ammpools',
@@ -740,14 +741,46 @@ export enum LocalStorageConfigKey {
   disableWithdrawTokenList = 'disableWithdrawTokenList',
 }
 
+export enum DualStep {
+  ChooseType = 'ChooseType',
+  ShowBase = 'ShowBase',
+  ShowSellBuy = 'ShowSellBuy',
+  ShowQuote = 'ShowQuote',
+  ShowList = 'ShowList',
+}
+export enum DualViewType {
+  DualGain = 'DualGain',
+  DualDip = 'DualDip',
+  DualBegin = 'DualBegin',
+  All = 'All',
+}
+export const DualGain = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_BASE' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_BASE' },
+]
+export const DualDip = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_CURRENCY' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_CURRENCY' },
+]
+export const DualBegin = [
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualBeginnerStep1Title' },
+  { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep2Title' },
+]
+
+
 export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
   sdk.VaultMarket,
   'enabled'
 > & {
-    vaultMarket: string
-    originalBaseSymbol: string
-    originalQuoteSymbol: string
-  }
+  vaultMarket: string
+  originalBaseSymbol: string
+  originalQuoteSymbol: string
+}
 
 export type VaultJoinData<I = any> = {
   walletMap: WalletMap<I>

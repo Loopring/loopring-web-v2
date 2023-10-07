@@ -5,8 +5,10 @@ import { BoxNFT, Button, Column, NftImageStyle, Table, TablePagination } from '.
 import {
   CoinInfo,
   globalSetup,
+  hexToRGB,
   myLog,
   RowConfig,
+  SoursURL,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -120,7 +122,6 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
       }
     }, [tokenType, showActionableRecords])
     const theme = useTheme()
-
     const fromBlindboxTag = (
       <Tooltip title={<>{t('labelRedpacketFromBlindbox')}</>}>
         <img
@@ -135,6 +136,9 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
         />
       </Tooltip>
     )
+    const exclusiveTag = <Typography marginLeft={0.5} borderRadius={1} paddingX={0.5} bgcolor={hexToRGB(theme.colorBase.warning, 0.5)} color={'var(--color-warning)'}>  
+      {t("labelRedPacketExclusiveTag", { ns: 'common' })}
+    </Typography>
     const getColumnModeTransactionUnclaimedNFT = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -186,6 +190,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                   {metadata?.base?.name ?? 'NFT'}
                 </Typography>
                 {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && fromBlindboxTag}
+                {row.type.scope === sdk.LuckyTokenViewType.TARGET && exclusiveTag}
               </Box>
             )
           },
@@ -231,9 +236,9 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
               return <Box>{t('labelBlindBoxExpired')}</Box>
             } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
               return <Box>{t('labelBlindBoxClaimed')}</Box>
-            } else {
-              return <></>
-            }
+            } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+              return <Box>{t('labelRedPacketClaiming')}</Box>
+            } 
           },
         },
       ],
@@ -259,6 +264,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                     }}
                   />
                   {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && fromBlindboxTag}
+                  {row.type.scope === sdk.LuckyTokenViewType.TARGET && exclusiveTag}
                 </Box>
               )
             } else {
@@ -311,6 +317,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                     {metadata?.base?.name ?? 'NFT'}
                   </Typography>
                   {row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX && fromBlindboxTag}
+                  {row.type.scope === sdk.LuckyTokenViewType.TARGET && exclusiveTag}
                 </Box>
               )
             }
@@ -348,6 +355,8 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                     return <Box>{t('labelBlindBoxExpired')}</Box>
                   } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
                     return <Box>{t('labelBlindBoxClaimed')}</Box>
+                  } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+                    return <Box>{t('labelRedPacketClaiming')}</Box>
                   } else {
                     return <></>
                   }

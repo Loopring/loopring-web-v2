@@ -16,6 +16,9 @@ import {
   WalletMap,
   BLINDBOX_REDPACKET_LIMIT,
   RedPacketOrderType,
+  EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST,
+  EXCLUSIVE_REDPACKET_ORDER_LIMIT,
+  MapChainId,
 } from '@loopring-web/common-resources'
 import { store, useAccount, useModalData, useSystem, useTokenMap } from '../../stores'
 import {
@@ -24,6 +27,8 @@ import {
   RedPacketViewStep,
   SwitchData,
   useOpenModals,
+  useSettings,
+  useToggle,
 } from '@loopring-web/component-lib'
 import React, { useCallback } from 'react'
 import { makeWalletLayer2 } from '../help'
@@ -40,7 +45,29 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useRedPacketConfig } from '../../stores/redPacket'
 import { useHistory, useLocation } from 'react-router-dom'
 import moment from 'moment'
-
+const checkPermission = (
+  dexToggle: any,
+  info: { network: string; functionName: string; accAddress: string },
+) => {
+  const whiteList = dexToggle.whiteList
+  const { functionName, network, accAddress } = info
+  const toogle = dexToggle[functionName]
+  if (toogle.enable) {
+    return true
+  } else if (!toogle.enable && toogle.reason === 'no view') {
+    const found =
+      whiteList &&
+      whiteList[network].find((item: any) => item.superUserFunction.includes('redpacket_exclusive'))
+    return (
+      found &&
+      found.superUserAddress.find(
+        (addr) => addr.toLocaleLowerCase() === accAddress.toLocaleLowerCase(),
+      )
+    )
+  } else {
+    return false
+  }
+}
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
   I,
@@ -57,7 +84,7 @@ export const useCreateRedPacket = <
   retryBtn: (isHardware?: boolean) => void
 } => {
   const { exchangeInfo, chainId } = useSystem()
-  const { tokenMap, totalCoinMap } = useTokenMap()
+  const { tokenMap, totalCoinMap, idIndex } = useTokenMap()
   // const tradeType
   const {
     allowTrade: { transfer: transferEnabale },
@@ -72,7 +99,7 @@ export const useCreateRedPacket = <
   const [selectNFT, setSelectNFT] = React.useState<NFT | undefined>(undefined)
 
   const { redPacketConfigs } = useRedPacketConfig()
-  const { redPacketOrder, updateRedPacketOrder, resetRedPacketOrder } = useModalData()
+  const { redPacketOrder, updateRedPacketOrder } = useModalData()
   const { account, status: accountStatus } = useAccount()
   const { checkHWAddr, updateHW } = useWalletInfo()
   const isToken =
@@ -139,11 +166,7 @@ export const useCreateRedPacket = <
   const handleOnDataChange = React.useCallback(
     (tradeData: Partial<T>) => {
       const redPacketOrder = store.getState()._router_modalData.redPacketOrder
-      if (tradeData.tradeType) {
-        resetDefault(tradeData.tradeType)
-      } else {
-        updateRedPacketOrder({ ...redPacketOrder, ...tradeData })
-      }
+      updateRedPacketOrder({ ...redPacketOrder, ...tradeData })
     },
     [updateRedPacketOrder],
   )
@@ -270,7 +293,7 @@ export const useCreateRedPacket = <
       redPacketOrder.numbers &&
       redPacketOrder.numbers > 0 &&
       redPacketOrder.validUntil &&
-      redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
+      // redPacketOrder.numbers <= REDPACKET_ORDER_LIMIT &&
       _tradeData.tradeValue
       // &&
       // redPacketOrder.memo &&
@@ -306,7 +329,7 @@ export const useCreateRedPacket = <
           .plus(feeToken.tokenId === tradeToken.tokenId ? fee : '0')
           .gt(balance)
         const eachValue = sdk.toBig(_tradeData.eachValue ?? 0).times('1e' + tradeToken.decimals)
-        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum)
+        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts?.minimum ?? 0)
         tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum)
       } else {
         balance = redPacketOrder.balance ?? 0
@@ -344,7 +367,8 @@ export const useCreateRedPacket = <
         redPacketConfigs?.luckTokenAgents &&
         !blindBoxGiftsEqualsZero &&
         !blindBoxGiftsLargerThanPackets &&
-        !blindBoxPacketsNumberTooLarge
+        !blindBoxPacketsNumberTooLarge &&
+        redPacketOrder.numbers <= redpacketNumberLimit
       ) {
         enableBtn()
         return
@@ -368,15 +392,15 @@ export const useCreateRedPacket = <
           })
         } else if (isFeeNotEnough.isFeeNotEnough) {
           setLabelAndParams('labelRedPacketFee', {})
-        } else if (tooSmall || redPacketOrder.numbers > REDPACKET_ORDER_LIMIT) {
-          if (tooSmall) {
-            setLabelAndParams(
-              'labelRedPacketsMin',
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
-                ? {
+        } else if (tooSmall) {
+          setLabelAndParams(
+            'labelRedPacketsMin',
+            isToken
+              ? tradeToken &&
+                  tradeToken.decimals && {
                     value: getValuePrecisionThousand(
                       sdk
-                        .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
+                        .toBig(tradeToken.luckyTokenAmounts?.minimum ?? '0')
                         .div('1e' + tradeToken.decimals),
                       tradeToken.precision,
                       tradeToken.precision,
@@ -386,29 +410,20 @@ export const useCreateRedPacket = <
                     ),
                     symbol: tradeToken.symbol,
                   }
-                : {
-                    value:
-                      redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                        ? redPacketOrder.giftNumbers
-                        : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
-                        ? 1
-                        : redPacketOrder.numbers,
-                    symbol: 'NFT',
-                  },
-            )
-          } else {
-            let value =
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN && tradeToken
-                ? tradeValue.div(tradeToken.luckyTokenAmounts.minimum).toFixed(0, 1)
-                : tradeValue
-            const limit =
-              (redPacketOrder as T).tradeType === RedPacketOrderType.TOKEN
-                ? REDPACKET_ORDER_LIMIT
-                : REDPACKET_ORDER_NFT_LIMIT
-            setLabelAndParams('labelRedPacketsSplitNumber', {
-              value: (Number(value) <= limit ? balance : limit).toString(),
-            })
-          }
+              : {
+                  value:
+                    redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                      ? redPacketOrder.giftNumbers
+                      : redPacketOrder.type?.partition === sdk.LuckyTokenAmountType.AVERAGE
+                      ? 1
+                      : redPacketOrder.numbers,
+                  symbol: 'NFT',
+                },
+          )
+        } else if (redPacketOrder.numbers > redpacketNumberLimit) {
+          setLabelAndParams('labelRedPacketsSplitNumber', {
+            value: redpacketNumberLimit.toString(),
+          })
         } else if (tooLarge) {
           setLabelAndParams(
             'labelRedPacketsMax',
@@ -526,14 +541,15 @@ export const useCreateRedPacket = <
           await sdk.sleep(TOAST_TIME)
           if (redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET) {
             setShowAccount({
-              isShow: true,
-              step: AccountStep.RedPacketSend_Success,
+              isShow: false,
             })
             handleOnDataChange({
               target: {
                 redpacketHash: (response as sdk.TX_HASH_API)?.hash,
+                maxSendCount: request.numbers,
               },
             } as any)
+            getTargetRedpackets()
           } else {
             setShowAccount({
               isShow: true,
@@ -660,6 +676,25 @@ export const useCreateRedPacket = <
       walletLayer2Service.sendUserUpdate()
     }
   }, [isShow])
+  React.useEffect(() => {
+    ;(async () => {
+      if (redPacketOrder.target?.redpacketHash) {
+        const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail(
+          {
+            hash: redPacketOrder.target?.redpacketHash,
+          },
+          account.apiKey,
+        )
+        const targets = (response?.detail as any).targets as string[]
+        handleOnDataChange({
+          target: {
+            ...redPacketOrder.target,
+            sentAddresses: targets,
+          },
+        } as any)
+      }
+    })()
+  }, [redPacketOrder.target?.redpacketHash])
   React.useEffect(() => {
     if (isShow) {
       checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
@@ -801,9 +836,12 @@ export const useCreateRedPacket = <
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
 
     const getValidAddresses = (input: string) => {
-      return input.split(';').filter((str) => {
-        return isAddress(str)
-      })
+      return input
+        .split(';')
+        .map((str) => str.trim())
+        .filter((str) => {
+          return isAddress(str.trim())
+        })
     }
 
     if (
@@ -822,10 +860,12 @@ export const useCreateRedPacket = <
           {
             claimer: getValidAddresses(redPacketOrder.target?.addressListString),
             hash: redPacketOrder.target?.redpacketHash,
-            notifyType:
-              redPacketOrder.target?.isRedDot === undefined || redPacketOrder.target?.isRedDot
-                ? 0
-                : 1,
+            notifyType: isWhiteListed
+              ? redPacketOrder.target?.popupChecked === undefined ||
+                redPacketOrder.target?.popupChecked
+                ? 1
+                : 0
+              : 0,
           },
           account.eddsaKey.sk,
           account.apiKey,
@@ -833,11 +873,14 @@ export const useCreateRedPacket = <
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
-        history.push(`/redpacket/markets`)
         setShowAccount({
           isShow: true,
           step: AccountStep.RedPacketSend_Success,
+          info: {
+            scope: sdk.LuckyTokenViewType.TARGET,
+          },
         })
+        getTargetRedpackets()
       } catch (e: any) {
         setShowAccount({
           isShow: true,
@@ -881,6 +924,16 @@ export const useCreateRedPacket = <
     },
     [walletMap],
   )
+  const [isWhiteListed, setIsWhiteListed] = React.useState(undefined as undefined | boolean)
+  const redpacketNumberLimit =
+    redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET
+      ? isWhiteListed
+        ? EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST
+        : EXCLUSIVE_REDPACKET_ORDER_LIMIT
+      : isToken
+      ? REDPACKET_ORDER_LIMIT
+      : REDPACKET_ORDER_NFT_LIMIT
+
   const [minimum, maximum] = React.useMemo(() => {
     if (redPacketOrder.tradeType === RedPacketOrderType.NFT) {
       const minimum = sdk
@@ -891,10 +944,10 @@ export const useCreateRedPacket = <
       const maximum =
         redPacketOrder?.balance &&
         // @ts-ignore
-        sdk.toBig(redPacketOrder.balance ?? 0).lt(REDPACKET_ORDER_LIMIT)
+        sdk.toBig(redPacketOrder.balance ?? 0).lt(redpacketNumberLimit)
           ? // @ts-ignore
             redPacketOrder?.tradeValue ?? redPacketOrder.balance
-          : REDPACKET_ORDER_LIMIT
+          : redpacketNumberLimit
       return [minimum ? 1 : minimum, maximum]
     } else {
       if (redPacketOrder.belong && tokenMap[redPacketOrder.belong]) {
@@ -926,6 +979,7 @@ export const useCreateRedPacket = <
     [processRequest, setShowAccount],
   )
   const location = useLocation()
+  myLog('redPacketOrder', redPacketOrder)
   React.useEffect(() => {
     ;(async () => {
       const nftDatas = new URLSearchParams(location.search).get('nftDatas')
@@ -969,23 +1023,50 @@ export const useCreateRedPacket = <
   const [popRedPacket, setPopRedPacket] = React.useState(
     undefined as sdk.LuckTokenClaimDetail | undefined,
   )
+  const tokenInfo = popRedPacket && tokenMap[idIndex[popRedPacket.luckyToken.tokenId]]
 
+  const popRedPacketAmountStr = popRedPacket
+    ? popRedPacket.luckyToken.isNft
+      ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
+      : tokenInfo &&
+        getValuePrecisionThousand(
+          sdk
+            .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
+            .div('1e' + tokenInfo!.decimals),
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          false,
+        ) +
+          ' ' +
+          tokenInfo?.symbol
+    : undefined
+
+  const getTargetRedpackets = async () => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+      {
+        senderId: account.accountId,
+        scopes: '2',
+        modes: '0,1,2',
+        partitions: '0,1',
+        statuses: '2',
+        official: false,
+        offset: 0,
+        limit: 100,
+        isEnough: true,
+      } as any,
+      account.apiKey,
+    )
+    setTargetRedPackets(response ? response?.list : [])
+  }
   React.useEffect(() => {
+    getTargetRedpackets()
     ;(async () => {
-      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
-        {
-          senderId: account.accountId,
-          scopes: '2',
-          modes: '0,1,2',
-          partitions: '0,1',
-          statuses: '2',
-          official: false,
-          offset: 0,
-          limit: 50,
-        } as any,
-        account.apiKey,
+      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
+      const found = (response?.raw_data as any).find(
+        (item) => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase(),
       )
-      setTargetRedPackets(response ? response?.list : [])
+      setIsWhiteListed(found ? true : false)
     })()
   }, [])
 
@@ -1001,6 +1082,15 @@ export const useCreateRedPacket = <
   const onCloseRedpacketPop = React.useCallback(async () => {
     setPopRedPacket(undefined)
   }, [])
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { toggle } = useToggle()
+
+  const showExclusiveOption = checkPermission(toggle, {
+    accAddress: account.accAddress,
+    network,
+    functionName: 'redpacket_exclusive',
+  })
 
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
     tradeType: redPacketOrder.tradeType,
@@ -1041,8 +1131,11 @@ export const useCreateRedPacket = <
     onSendTargetRedpacketClick,
     targetRedPackets,
     popRedPacket,
+    popRedPacketAmountStr,
     onClickViewTargetDetail,
     onCloseRedpacketPop,
+    isWhiteListed,
+    showExclusiveOption,
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }

@@ -2,7 +2,16 @@ import { Box, IconButton, MenuItem, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import React, { ForwardedRef } from 'react'
-import { AddressItemType, CloseIcon, EXCHANGE_TYPE, Info2Icon, RoundCheckIcon, RoundCircle, WALLET_TYPE, hexToRGB } from '@loopring-web/common-resources'
+import {
+  AddressItemType,
+  CloseIcon,
+  EXCHANGE_TYPE,
+  Info2Icon,
+  RoundCheckIcon,
+  RoundCircleIcon,
+  WALLET_TYPE,
+  hexToRGB,
+} from '@loopring-web/common-resources'
 import { MenuItemProps, TextField } from '../../basic-lib'
 import { useOpenModals } from '../../../stores'
 import { useAddressTypeLists } from './hook/useAddressType'
@@ -22,8 +31,7 @@ const MenuItemStyle = styled(MenuItem)<MenuItemProps<any> & { maxWidth?: string 
   align-items: center;
   cursor: pointer;
   flex-direction: row;
-  margin-top:  ${({ theme }) => 2 * theme.unit}px;
-
+  margin-top: ${({ theme }) => 2 * theme.unit}px;
 ` as (props: MenuItemProps<any> & { maxWidth?: string | number }) => JSX.Element
 
 const WarningBoxStyled = styled(Box)`
@@ -36,8 +44,7 @@ const WarningBoxStyled = styled(Box)`
   align-items: center;
   cursor: pointer;
   flex-direction: row;
-  background: ${({ theme }) => hexToRGB(theme.colorBase.warning,0.2)};
-
+  background: ${({ theme }) => hexToRGB(theme.colorBase.warning, 0.2)};
 `
 
 export const WalletItemOptions = React.memo(
@@ -84,7 +91,7 @@ export const WalletItemOptions = React.memo(
           {selectedValue === myValue ? (
             <RoundCheckIcon fontSize={'large'} fill={'var(--color-primary)'} />
           ) : (
-            <RoundCircle fontSize={'large'} />
+            <RoundCircleIcon fontSize={'large'} />
           )}
         </MenuItemStyle>
       )
@@ -109,7 +116,9 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
     return (
       <WarningBoxStyled>
         <Info2Icon fontSize={'large'} htmlColor={theme.colorBase.warning}></Info2Icon>
-        <Typography marginLeft={1} fontSize={'13px'} >{t('labelWalletTypeDes')}</Typography>
+        <Typography marginLeft={1} fontSize={'13px'}>
+          {t('labelWalletTypeDes')}
+        </Typography>
       </WarningBoxStyled>
     )
   }, [t])
@@ -252,7 +261,9 @@ export const FullAddressType = <T extends EXCHANGE_TYPE>({
           walletListFn(detectedWalletType).find((item) => item.value === selectedValue)?.label ??
           '',
       }}
-      label={<Typography color={'var(--color-text-third)'}>{t('labelL2toL1AddressType')}</Typography>}
+      label={
+        <Typography color={'var(--color-text-third)'}>{t('labelL2toL1AddressType')}</Typography>
+      }
     >
       <Box maxWidth={'480px'} padding={5}>
         <IconButton
@@ -268,7 +279,7 @@ export const FullAddressType = <T extends EXCHANGE_TYPE>({
           <CloseIcon />
         </IconButton>
         <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
-          {t("labelL2toL1AddressType")}
+          {t('labelL2toL1AddressType')}
         </Typography>
         <MenuItemStyle disabled={true} value={-1}>
           <Typography component={'span'}>{t('labelExchangeTypeDes')}</Typography>

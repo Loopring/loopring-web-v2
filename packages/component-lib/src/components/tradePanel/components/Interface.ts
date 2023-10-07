@@ -24,6 +24,7 @@ import {
   EXCHANGE_TYPE,
   FeeInfo,
   GET_IPFS_STRING,
+  LuckyRedPacketItem,
   NFTWholeINFO,
   RedPacketOrderType,
   RequireOne,
@@ -651,12 +652,15 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
   backToScope: () => void
-  onSendTargetRedpacketClick: () => void
+  onSendTargetRedpacketClick: () => Promise<void>
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
   onClickViewTargetDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   contacts?: ContactType[]
+  isWhiteListed?: boolean
+  showExclusiveOption?: boolean
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -675,27 +679,37 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     tokenMap: { [key: string]: sdk.TokenInfo }
     backToScope: () => void
     onClickNext: () => void
+    onClickBack: () => void
     showNFT: boolean
+    onChangeTradeType?: (tradeType: RedPacketOrderType) => void
+    onSelecteValue?: (item: LuckyRedPacketItem) => void
   }
 
 export type TargetRedpacktSelectStepProps = {
   onClickCreateNew: () => void
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
-  onClickExclusiveRedpacket: (hash: string) => void
+  onClickExclusiveRedpacket: (info: { hash: string; remainCount: number }) => void
   onClickViewDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
   backToScope: () => void
 }
 
 export type TargetRedpacktInputAddressStepProps = {
-  isRedDot: boolean
-  onChangeIsRedDot: (isRedDot: boolean) => void
+  popupChecked: boolean
+  onChangePopupChecked: (popupChecked: boolean) => void
   onFileInput: (input: string) => void
   addressListString: string
   onClickSend: () => void
   contacts?: ContactType[]
   onConfirm: (list: string[]) => void
+  onManualEditInput: (text: string) => void
+  popUpOptionDisabled: boolean
+  maximumTargetsLength: number
+  onClickBack: () => void
+  sentAddresses?: string[]
+  clearInput: () => void
 }
 
 /**

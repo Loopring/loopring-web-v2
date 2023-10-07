@@ -19,6 +19,8 @@ import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
+  DualInvestmentLogo,
+  hexToRGB,
   Info2Icon,
   MarketType,
   SatkingLogo,
@@ -139,7 +141,7 @@ const LandDefiInvest = ({
             <React.Fragment key={item.type + index}>
               {item.enable ? (
                 <Grid item xs={12} md={4} lg={3}>
-                  <Card sx={{ display: 'flex' }} onClick={item.click}>
+                  <Card sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }} onClick={item.click}>
                     <StyleCardContent className={isMobile ? 'isMobile' : 'tableLap'}>
                       <Box
                         className={'content'}
@@ -251,6 +253,18 @@ const LandDefiInvest = ({
     </Box>
   )
 }
+
+const ButtonStyled = styled(Button)`  
+  background-color: var(--color-button-outlined);
+  color: var(--color-text-primary);
+  :hover {
+    background-color: var(--color-button-outlined);
+    ::before{
+      border-radius: 4px;
+    }
+  }
+`
+
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { marketArray } = useDefiMap()
 
@@ -306,6 +320,11 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }) as MarketType
   const isJoin = match?.params?.isJoin?.toUpperCase() !== 'Redeem'.toUpperCase()
   const theme = useTheme()
+  const { isMobile } = useSettings()
+  const isMainView = !(match?.params?.market && _market)
+  const height = isMainView 
+    ? isMobile ? 34 * theme.unit : 30 * theme.unit
+    : 6 * theme.unit
 
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1}>
@@ -313,31 +332,73 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
+        height={height}
+        alignItems={'center'}
+        containerProps={{
+          borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`
+        }}
       >
-        <Box paddingY={7}>
-          <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-            {t("labelInvestDefiTitle")}
+        {isMainView ? (
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
+            <Box >
+          <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
+            {t('labelInvestDefiTitle')}
           </Typography>
-          <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
-            {t("labelInvestDefiDes")}
-          </Typography>
-          <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-            {t("labelInvestMyAmm")}
-          </Button>
-        </Box>
-        <SatkingLogo />
+          <Box display={'flex'} alignItems={'center'}>
+            <Button
+              onClick={() => history.push('/invest/balance')}
+              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+              variant={'contained'}
+            >
+              {t('labelInvestMyAmm')}
+            </Button>
+          </Box>
+          </Box>
+            {!isMobile && <SatkingLogo />}
+          </Box>
+          
+        ) : (
+          <Box
+            width={'100%'}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+          >
+            <Button
+              startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
+              variant={'text'}
+              size={'medium'}
+              sx={{ color: 'var(--color-text-primary)' }}
+              color={'inherit'}
+              onClick={() => history.push(`/invest/defi`)}
+            >
+              {t('labelInvestDefiTitle')}
+            </Button>
+            <Button
+              onClick={() => history.push('/invest/balance')}
+              sx={
+                {
+                  // width: isMobile ? 36 * theme.unit : 18 * theme.unit,
+                }
+              }
+              variant={'text'}
+            >
+              {t('labelMyInvestLRCStaking')}{' '}
+              {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
+            </Button>
+          </Box>
+        )}
       </MaxWidthContainer>
 
-      <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]}>
-        <Typography marginTop={6} marginBottom={4} textAlign={"center"} variant={"h1"}>
-          {t("labelInvestChoseProduct")}
-        </Typography>
+      <MaxWidthContainer height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'} background={isMainView ? containerColors[1] : 'transparent'}>
         <StyleWrapper
           display={'flex'}
           flexDirection={'column'}
           justifyContent={'center'}
           alignItems={'center'}
           flex={1}
+          paddingTop={4}
+          paddingBottom={4}
         >
           {marketArray?.length ? (
             match?.params?.market && _market ? (

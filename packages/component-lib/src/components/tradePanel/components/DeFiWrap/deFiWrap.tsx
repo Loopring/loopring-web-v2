@@ -35,6 +35,15 @@ const GridStyle = styled(Grid)`
     list-style: disc;
     padding-left: ${({ theme }) => theme.unit}px;
   }
+  
+`
+const InputCoinStyled = styled(InputCoin)`
+  && {
+    .coinInput-wrap {
+      background-color: var(--color-global-bg);
+      border: 1px solid var(--color-border);
+    }
+  }
 `
 
 export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
@@ -272,7 +281,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           display={'inline-flex'}
           variant={'h5'}
           alignItems={'center'}
-          alignSelf={'self-start'}
+          alignSelf={'center'}
         >
           {title}
           <HelpIcon
@@ -314,12 +323,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       <Grid
         item
         marginTop={3}
+        paddingBottom={3}
         flexDirection={'column'}
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
+        borderBottom={'1px solid var(--color-border)'}
       >
-        <InputCoin<T, I, any>
+        <InputCoinStyled
           ref={coinSellRef}
           disabled={getDisabled}
           {...{
@@ -342,7 +353,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-disable)'} />
           </IconButtonStyled>
         </Box>
-        <InputCoin<T, I, any>
+        <InputCoinStyled
           ref={coinBuyRef}
           disabled={getDisabled}
           {...{
@@ -356,32 +367,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           }}
         />
       </Grid>
-      <Grid item>
-        <Typography
-          component={'p'}
-          variant='body1'
-          textAlign={'center'}
-          lineHeight={'24px'}
-          paddingY={2}
-        >
-          {showVal ? (
-            <>
-              {convertStr}
-              <IconButtonStyled
-                size={'small'}
-                aria-label={t('tokenExchange')}
-                onClick={_onSwitchStob}
-                // style={{transform: 'rotate(90deg)'}}
-              >
-                <ReverseIcon />
-              </IconButtonStyled>
-            </>
-          ) : (
-            t('labelCalculating')
-          )}
-        </Typography>
-      </Grid>
-      <Grid item alignSelf={'stretch'}>
+      
+      <Grid marginTop={3} item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
             {isLeverageETH && (
@@ -392,11 +379,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Box display={"flex"} flexDirection={"row"} >
-                  <Typography marginRight={0.5} component={'p'} variant='body2' color={'textSecondary'}>
+                <Box display={'flex'} flexDirection={'row'}>
+                  <Typography
+                    marginRight={0.5}
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                  >
                     {t('labelAPR')}
                   </Typography>
-                  
+
                   <Tooltip title={t('labelLRCStakeAPRTooltips')}>
                     <span>
                       <Info2Icon />
@@ -408,6 +400,20 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 </Typography>
               </Grid>
             )}
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Typography component={'p'} variant='body2' color={'textSecondary'}>
+                {t('labelDefiRate')}
+              </Typography>
+              <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                {showVal ? convertStr : t('labelCalculating')}
+              </Typography>
+            </Grid>
             <Grid
               container
               justifyContent={'space-between'}

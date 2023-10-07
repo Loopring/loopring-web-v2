@@ -7,7 +7,7 @@ import { StakingMap, StakingMapStates } from './interface'
 export const useStakingMap = (): StakingMapStates & {
   getStakingMap: () => void
   statusUnset: () => void
-  updateDefiSyncMap: (props: { stakingMap: StakingMap }) => void
+  updateStakingSyncMap: (props: { stakingMap: StakingMap }) => void
 } => {
   const stakingMap: StakingMapStates = useSelector((state: RootState) => state.invest.stakingMap)
   const dispatch = useDispatch()
@@ -15,7 +15,7 @@ export const useStakingMap = (): StakingMapStates & {
     ...stakingMap,
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
     getStakingMap: React.useCallback(() => dispatch(getStakingMap(undefined)), [dispatch]),
-    updateDefiSyncMap: React.useCallback(
+    updateStakingSyncMap: React.useCallback(
       ({ stakingMap }: { stakingMap: StakingMap }) => dispatch(getStakingMap(stakingMap)),
       [dispatch],
     ),

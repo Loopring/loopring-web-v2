@@ -239,122 +239,128 @@ export type ExtraTableProps = {
   showloading?: boolean
 }
 
-export const Table = React.forwardRef(<R, SR>(props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps, ref: ForwardedRef<any>) => {
-  const {
-    EmptyRowsRenderer,
-    generateRows,
-    generateColumns,
-    sortInitDirection,
-    sortDefaultKey,
-    sortMethod,
-    rawData,
-    style,
-    frozeSort,
-    rowRenderer,
-    rowClassFn,
-    rowKeyGetter,
-    columnMode,
-    onScroll,
-    onRowClick,
-    rowHeight,
-    showloading,
-    t,
-    ...rest
-  } = props
+export const Table = React.forwardRef(
+  <R, SR>(
+    props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps,
+    ref: ForwardedRef<any>,
+  ) => {
+    const {
+      EmptyRowsRenderer,
+      generateRows,
+      generateColumns,
+      sortInitDirection,
+      sortDefaultKey,
+      sortMethod,
+      rawData,
+      style,
+      frozeSort,
+      rowRenderer,
+      rowClassFn,
+      rowKeyGetter,
+      columnMode,
+      onScroll,
+      onRowClick,
+      rowHeight,
+      showloading,
+      t,
+      ...rest
+    } = props
 
-  const columns = generateColumns({ columnsRaw: columnMode, t })
-  const [rows, setRows] = React.useState(generateRows(rawData, props))
+    const columns = generateColumns({ columnsRaw: columnMode, t })
+    const [rows, setRows] = React.useState(generateRows(rawData, props))
 
-  React.useEffect(() => {
-    setRows(generateRows(rawData, props))
-  }, [rawData])
-  /*** sort handle start ***/
-  const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([
-    {
-      columnKey: sortDefaultKey as any,
-      direction: sortInitDirection ? sortInitDirection : ('ASC' as any),
-    },
-  ])
+    React.useEffect(() => {
+      setRows(generateRows(rawData, props))
+    }, [rawData])
+    /*** sort handle start ***/
+    const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([
+      {
+        columnKey: sortDefaultKey as any,
+        direction: sortInitDirection ? sortInitDirection : ('ASC' as any),
+      },
+    ])
 
-  const sortedRows: readonly R[] = React.useMemo(() => {
-    if (sortColumns.length === 0) return rows
-    const { columnKey, direction } = sortColumns[0]
-    let sortedRows: R[] = [...rows]
-    sortedRows = sortMethod ? sortMethod(sortedRows, columnKey, direction) : rows
-    return direction === 'DESC' ? sortedRows.reverse() : sortedRows
-  }, [rows, sortColumns, sortMethod])
-  const onSortColumnsChange = React.useCallback((sortColumns: SortColumn[]) => {
-    setSortColumns(sortColumns.slice(-1))
-  }, [])
+    const sortedRows: readonly R[] = React.useMemo(() => {
+      if (sortColumns.length === 0) return rows
+      const { columnKey, direction } = sortColumns[0]
+      let sortedRows: R[] = [...rows]
+      sortedRows = sortMethod ? sortMethod(sortedRows, columnKey, direction) : rows
+      return direction === 'DESC' ? sortedRows.reverse() : sortedRows
+    }, [rows, sortColumns, sortMethod])
+    const onSortColumnsChange = React.useCallback((sortColumns: SortColumn[]) => {
+      setSortColumns(sortColumns.slice(-1))
+    }, [])
 
-  const loopringColumns = React.useMemo(() => {
-    return columns.map((c) => {
-      if (c.headerRenderer) {
-        return { ...c } as Column<R, unknown>
-      } else {
-        return {
-          ...c,
-          headerRenderer: (props: SortableHeaderCellProps<R>) => <SortableHeaderCell {...props} />,
-        } as Column<R, unknown>
-      }
-    }) as Column<R, unknown>[]
-  }, [columns])
-  const RenderEmptyMsg = styled.span`
-    display: flex;
-
-    .link {
-      margin: 0 5px;
-    }
-  `
-  /*** sort handle end ***/
-  return (
-    <TableWrapperStyled showloading={!!showloading ? 'true' : 'false'}>
-      <DataGridStyled
-        {...rest}
-        ref={ref}
-        onScroll={onScroll}
-        columns={loopringColumns as any}
-        style={style}
-        rows={sortDefaultKey && sortedRows ? sortedRows : rows}
-        rowKeyGetter={rowKeyGetter}
-        rowClass={(row) => (rowClassFn ? rowClassFn(row, props) : '')}
-        rowHeight={rowHeight ? rowHeight : RowConfig.rowHeight}
-        onRowsChange={setRows}
-        onSortColumnsChange={onSortColumnsChange}
-        rowRenderer={rowRenderer as any}
-        sortColumns={sortColumns}
-        onRowClick={onRowClick}
-        emptyRowsRenderer={
-          !showloading
-            ? () =>
-                EmptyRowsRenderer ? (
-                  EmptyRowsRenderer
-                ) : (
-                  <EmptyDefault
-                    height={`calc(100% - var(--header-row-height))`}
-                    message={() => {
-                      return (
-                        <RenderEmptyMsg>
-                          <Trans i18nKey='labelEmptyDefault'>Content is Empty</Trans>
-                        </RenderEmptyMsg>
-                      )
-                    }}
-                  />
-                )
-            : null
+    const loopringColumns = React.useMemo(() => {
+      return columns.map((c) => {
+        if (c.headerRenderer) {
+          return { ...c } as Column<R, unknown>
+        } else {
+          return {
+            ...c,
+            headerRenderer: (props: SortableHeaderCellProps<R>) => (
+              <SortableHeaderCell {...props} />
+            ),
+          } as Column<R, unknown>
         }
-      />
-      {showloading && (
-        <LoadingStyled color={'inherit'}>
-          <img
-            className='loading-gif'
-            alt={'loading'}
-            width='36'
-            src={`${SoursURL}images/loading-line.gif`}
-          />
-        </LoadingStyled>
-      )}
-    </TableWrapperStyled>
-  )
-}
+      }) as Column<R, unknown>[]
+    }, [columns])
+    const RenderEmptyMsg = styled.span`
+      display: flex;
+
+      .link {
+        margin: 0 5px;
+      }
+    `
+    /*** sort handle end ***/
+    return (
+      <TableWrapperStyled showloading={!!showloading ? 'true' : 'false'}>
+        <DataGridStyled
+          {...rest}
+          ref={ref}
+          onScroll={onScroll}
+          columns={loopringColumns as any}
+          style={style}
+          rows={sortDefaultKey && sortedRows ? sortedRows : rows}
+          rowKeyGetter={rowKeyGetter}
+          rowClass={(row) => (rowClassFn ? rowClassFn(row, props) : '')}
+          rowHeight={rowHeight ? rowHeight : RowConfig.rowHeight}
+          onRowsChange={setRows}
+          onSortColumnsChange={onSortColumnsChange}
+          rowRenderer={rowRenderer as any}
+          sortColumns={sortColumns}
+          onRowClick={onRowClick}
+          emptyRowsRenderer={
+            !showloading
+              ? () =>
+                  EmptyRowsRenderer ? (
+                    EmptyRowsRenderer
+                  ) : (
+                    <EmptyDefault
+                      height={`calc(100% - var(--header-row-height))`}
+                      message={() => {
+                        return (
+                          <RenderEmptyMsg>
+                            <Trans i18nKey='labelEmptyDefault'>Content is Empty</Trans>
+                          </RenderEmptyMsg>
+                        )
+                      }}
+                    />
+                  )
+              : null
+          }
+        />
+        {showloading && (
+          <LoadingStyled color={'inherit'}>
+            <img
+              className='loading-gif'
+              alt={'loading'}
+              width='36'
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+          </LoadingStyled>
+        )}
+      </TableWrapperStyled>
+    )
+  },
 )

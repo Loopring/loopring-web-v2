@@ -11,6 +11,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   CLAIM_TYPE,
   getShortAddr,
+  myLog,
   SDK_ERROR_MAP_TO_UI,
   TokenType,
 } from '@loopring-web/common-resources'
@@ -46,11 +47,11 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
       setShowLoading(true)
       if (LoopringAPI.luckTokenAPI && accountId) {
         if (apiKey) {
+          myLog('filterfilterfilterfilterfilter', filter)
           const response = await LoopringAPI.luckTokenAPI.getLuckTokenLuckyTokens(
             {
               senderId: accountId,
-              scopes: '0,1',
-              modes: '0,1,2',
+              scopes: '0,1,2',
               partitions: '0,1',
               statuses: '1,2,3,4',
               official: false,

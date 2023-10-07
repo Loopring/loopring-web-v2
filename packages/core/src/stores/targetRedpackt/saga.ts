@@ -27,7 +27,7 @@ const getExclusiveRedPacketAPI = async (): Promise<{
       {
         statuses: [0],
         offset: 0,
-        limit: 50,
+        limit: 100,
         isAll: 1,
       },
       account.apiKey,
@@ -42,7 +42,8 @@ const getExclusiveRedPacketAPI = async (): Promise<{
     if (__timer__ && __timer__ !== -1) {
       clearTimeout(__timer__)
     }
-    return { data: {}, __timer__: -1 }
+    throw 'err'
+    // return { data: undefined,, __timer__: -1 }
   }
 }
 function* getPostsSaga() {
