@@ -21,6 +21,7 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
+  ContactType,
   EXCHANGE_TYPE,
   FeeInfo,
   GET_IPFS_STRING,
@@ -36,7 +37,6 @@ import {
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
-import { DisplayContact } from '@loopring-web/core/src/stores/contacts/reducer'
 
 export enum RedPacketStep {
   TradeType = 0,
@@ -114,12 +114,13 @@ export type TransferExtendProps<T, I, C> = {
   isFromContact?: boolean
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
-} & Pick<sdk.GetContactsResponse, 'contacts'> & TransferInfoProps<C>
+} & Pick<sdk.GetContactsResponse, 'contacts'> &
+  TransferInfoProps<C>
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> = TransferExtendProps<T, I, C> &
-    BasicACoinTradeViewProps<T, I> & {
-  onClickContact: () => void
-}
+  BasicACoinTradeViewProps<T, I> & {
+    onClickContact: () => void
+  }
 
 export type RampViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C>
 export type BanxaViewProps<T, I, C = CoinKey<I>> = TransferViewProps<T, I, C> & {
@@ -245,12 +246,13 @@ export type WithdrawExtendProps<T, I, C> = {
   // onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
-} & Pick<sdk.GetContactsResponse, 'contacts'> & WithdrawInfoProps<C>
+} & Pick<sdk.GetContactsResponse, 'contacts'> &
+  WithdrawInfoProps<C>
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> = BasicACoinTradeViewProps<T, I> &
-    WithdrawExtendProps<T, I, C> & {
-  onClickContact: () => void
-}
+  WithdrawExtendProps<T, I, C> & {
+    onClickContact: () => void
+  }
 
 export type ForceWithdrawExtendProps<T, I, C> = {
   addressDefault: string
@@ -284,7 +286,7 @@ export type DefaultProps<T, I> = {
   selectNFTDisabled?: boolean
 } & (
   | {
-  type: TRADE_TYPE.TOKEN
+      type: TRADE_TYPE.TOKEN
       coinMap: CoinMap<I, CoinInfo<I>>
       walletMap: WalletMap<I, WalletCoin<I>>
     }
@@ -646,6 +648,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   contacts?: DisplayContact[]
   isWhiteListed?: boolean
   showExclusiveOption?: boolean
+  showERC20Blindbox?: boolean
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -690,7 +693,7 @@ export type TargetRedpacktInputAddressStepProps = {
   onFileInput: (input: string) => void
   addressListString: string
   onClickSend: () => void
-  contacts?: DisplayContact[]
+  contacts?: ContactType[]
   onConfirm: (list: string[]) => void
   onManualEditInput: (text: string) => void
   popUpOptionDisabled: boolean

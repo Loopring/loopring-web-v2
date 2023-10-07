@@ -86,8 +86,9 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === 'create',
   })
-  const {contacts} = useContacts()
-  
+  const { contacts } = useContacts()
+  const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox
+
   // createRedPacketProps.disabled
 
   return (
@@ -104,12 +105,18 @@ export const CreateRedPacketUIPanel = <
           {t('labelCreateRedPacketTitle')}
         </Button>
       </Box>
-      <StylePaper style={{backgroundColor: 'var(--color-pop-bg)'}} flex={1} display={'flex'} justifyContent={'center'}>
+      <StylePaper
+        style={{ backgroundColor: 'var(--color-pop-bg)' }}
+        flex={1}
+        display={'flex'}
+        justifyContent={'center'}
+      >
         {assetBtnStatus === TradeBtnStatus.LOADING ? (
           <LoadingBlock />
         ) : (
           <CreateRedPacketPanel
             {...{
+              showERC20Blindbox,
               _height: 'auto',
               ...createRedPacketProps,
               tradeType: createRedPacketProps.tradeType,
@@ -126,7 +133,7 @@ export const CreateRedPacketUIPanel = <
                   }
                 />
               ) as any,
-              contacts
+              contacts,
             }}
           />
         )}

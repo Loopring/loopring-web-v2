@@ -9,7 +9,7 @@ import {
   IconButton,
   Tooltip,
   Typography,
-  TextField as MuiTextField,
+  // TextField as MuiTextField,
 } from '@mui/material'
 import React from 'react'
 import {
@@ -44,7 +44,6 @@ import {
   CheckBoxIcon,
   CheckedIcon,
   YEAR_DAY_MINUTE_FORMAT,
-  myLog,
   ScopeQR,
   ScopeTarget,
 } from '@loopring-web/common-resources'
@@ -67,7 +66,7 @@ import { NFTInput } from './BasicANFTTrade'
 import { DateTimeRangePicker } from '../../datetimerangepicker'
 import BigNumber from 'bignumber.js'
 import { isAddress, useNotify, useTokenMap } from '@loopring-web/core'
-import { CoinIcons, FeeSelect, Modal } from '../../../components'
+import { CoinIcons, FeeSelect, InitialNameAvatar, Modal } from '../../../components'
 import { useTheme } from '@emotion/react'
 import { useHistory } from 'react-router'
 import { TFunction } from 'i18next'
@@ -853,7 +852,7 @@ export const CreateRedPacketStepType = withTranslation()(
     // handleOnSelectedType,
     tradeType,
     tradeData,
-    handleOnDataChange,
+    // handleOnDataChange,
     setActiveStep,
     backToScope,
     selectedType,
@@ -904,7 +903,7 @@ export const CreateRedPacketStepType = withTranslation()(
           paddingY={2}
         >
           {tradeType === RedPacketOrderType.BlindBox && (
-            <Typography marginBottom={4} color={'var(--color-text-secondary)'} >
+            <Typography marginBottom={4} color={'var(--color-text-secondary)'}>
               Each recipient will receive a sealed Red Packet which cannot be opened until the
               expiration date. While some recipients will receive an NFT, others will need to try
               their luck next time.
@@ -1028,7 +1027,7 @@ export const CreateRedPacketStepType = withTranslation()(
 export const CreateRedPacketStepTokenType = withTranslation()(
   <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
     tradeType,
-    setActiveStep,
+    // setActiveStep,
     disabled = false,
     btnInfo,
     onClickNext,
@@ -1041,7 +1040,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled
     }, [disabled])
-    
+
     return (
       <RedPacketBoxStyle
         display={'flex'}
@@ -2074,7 +2073,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 </Button>
               </Box>
               {/* <Box marginTop={3}>
-                
+
               </Box> */}
             </Box>
           }
@@ -2141,7 +2140,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                         })
                       }
                       e.currentTarget.files && reader.readAsText(e.currentTarget.files[0])
-                      e.currentTarget.value = '' 
+                      e.currentTarget.value = ''
                     }}
                     style={{ display: 'none' }}
                     id='file-upload'

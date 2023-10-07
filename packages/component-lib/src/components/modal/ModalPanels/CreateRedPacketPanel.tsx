@@ -56,6 +56,7 @@ export const CreateRedPacketPanel = <
   tokenMap = {},
   assetsData,
   //@ts-ignore
+  showERC20Blindbox,
   myNFTPanel,
   onSendTargetRedpacketClick,
   targetRedPackets,
@@ -279,7 +280,6 @@ export const CreateRedPacketPanel = <
     })
     return clonedWalletMap
   }, [walletMap])
-  const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox
   const [selectedType, setSelectType] = React.useState(
     tradeData.tradeType === RedPacketOrderType.NFT
       ? LuckyRedPacketList.find((config) => config.defaultForNFT)
