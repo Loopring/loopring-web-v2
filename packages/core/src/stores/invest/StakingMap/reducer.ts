@@ -37,7 +37,7 @@ const stakingMapSlice: Slice = createSlice({
       }
       state.status = SagaStatus.DONE
     },
-    updateDefiSyncMap(state, _action: PayloadAction<StakingMapStates>) {
+    updateStakingSyncMap(state, _action: PayloadAction<StakingMapStates>) {
       state.status = SagaStatus.PENDING
     },
     statusUnset: (state) => {
@@ -45,6 +45,6 @@ const stakingMapSlice: Slice = createSlice({
     },
   },
 })
-const { getStakingMap, updateDefiSyncMap, getStakingMapStatus, statusUnset } =
+const { getStakingMap, updateStakingSyncMap, getStakingMapStatus, statusUnset } =
   stakingMapSlice.actions
-export { stakingMapSlice, getStakingMap, getStakingMapStatus, statusUnset, updateDefiSyncMap }
+export { stakingMapSlice, getStakingMap, getStakingMapStatus, statusUnset, updateStakingSyncMap }

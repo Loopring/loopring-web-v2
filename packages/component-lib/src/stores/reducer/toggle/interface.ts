@@ -34,6 +34,7 @@ export type ToggleState = {
   CIETHInvest: { enable: boolean; reason?: string }
   redpacket_exclusive: { enable: boolean; reason?: string }
   [key: string]: { enable?: boolean; reason?: string; [key: string]: any }
+  dual_reinvest: { enable: boolean; reason?: string }
   whiteList: any
   // @ts-ignore
   isSupperUser: any
