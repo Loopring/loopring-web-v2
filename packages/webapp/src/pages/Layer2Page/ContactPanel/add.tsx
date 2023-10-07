@@ -21,11 +21,11 @@ import {
   TradeBtnStatus,
   UIERROR_CODE,
   WALLET_TYPE,
+  ContactType,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import {
   addressToExWalletMapFn,
-  ContactType,
   exWalletToAddressMapFn,
   LoopringAPI,
   store,
@@ -166,7 +166,6 @@ export const useContactAdd = ({
   }
 
   const { defaultNetwork } = useSettings()
-  // {contactAddress: address, contactName: name, addressType}: ContactType
 
   const onSubmit = React.useCallback(async () => {
     setLoadingBtn()
