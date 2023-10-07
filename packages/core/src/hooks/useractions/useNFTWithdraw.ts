@@ -240,7 +240,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === 'unknown' ? 1 : chainId,
-              walletType: (ConnectProviders[connectName] ??
+              walletType: (ConnectProviders[ connectName ] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,

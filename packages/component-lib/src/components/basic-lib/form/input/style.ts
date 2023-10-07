@@ -34,6 +34,13 @@ export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
     ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+    background-color: transparent;
+  }
+  background-color: transparent;
+
+  input::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
   }
 
   .MuiInputAdornment-root {
@@ -117,8 +124,7 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    background: var(--color-box);
-    border-radius: ${({ theme }) => theme.unit / 2}px;
+    border-radius: ${({ theme }) => theme.unit}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
 
@@ -271,7 +277,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-text-secondary);;
+    color: var(--color-placeholder);;
   }
 
   :disabled {

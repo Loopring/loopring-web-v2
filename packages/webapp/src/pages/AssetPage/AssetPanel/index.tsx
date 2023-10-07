@@ -13,6 +13,7 @@ import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
 import {
   AssetL2TabIndex,
   AssetTabIndex,
+  CircleIcon,
   MapChainId, myLog,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
@@ -20,7 +21,7 @@ import RewardsPanel from '../RewardsPanel'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 
@@ -42,8 +43,10 @@ export const AssetPanel = withTranslation('common')(
       // onTokenLockHold,
       // tokenLockDetail,
     },
+    showRedpacketReddot,
     ...rest
   }: {
+    showRedpacketReddot: boolean
     assetTitleProps: AssetTitleProps
     assetPanelProps: AssetPanelProps
   } & WithTranslation) => {
@@ -86,11 +89,12 @@ export const AssetPanel = withTranslation('common')(
       handleTabChange(match?.params?.item)
     }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
+
     // myLog('assetsRawData')
     return (
       <>
         {!isMobile && (
-          <StyleTitlePaper paddingX={3} paddingY={5 / 2} className={'MuiPaper-elevation2'}>
+          <StyleTitlePaper paddingX={3} paddingY={5 / 2} >
             <AssetTitle
               {...{
                 t,
@@ -109,8 +113,33 @@ export const AssetPanel = withTranslation('common')(
           variant='scrollable'
         >
           {AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
-            if (isMobile && item == AssetTabIndex.RedPacket) {
-              return <React.Fragment key={item.toString()} />
+            if (item == AssetTabIndex.RedPacket) {
+              if (isMobile) {
+                return <React.Fragment key={item.toString()} />
+              } else {
+                return (
+                  <Tab
+                    key={item.toString()}
+                    label={
+                      <>
+                        {t(`labelAsset${item}`)}
+                        {showRedpacketReddot && <CircleIcon
+                          sx={{
+                            position: 'absolute',
+                            top: 2,
+                            right: -0,
+                            pointerEvents: 'none' as any,
+                          }}
+                          className={'noteit'}
+                          fontSize={'large'}
+                          htmlColor={'var(--color-error)'}
+                        />}
+                      </>
+                    }
+                    value={item}
+                  />
+                )
+              }
             } else {
               return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
             }
@@ -121,7 +150,6 @@ export const AssetPanel = withTranslation('common')(
             marginTop={1}
             marginBottom={2}
             ref={container}
-            className={'MuiPaper-elevation2'}
           >
             <Box className='tableWrapper table-divide-short'>
               <AssetsTable
@@ -150,7 +178,7 @@ export const AssetPanel = withTranslation('common')(
         )}
         {currentTab === AssetTabIndex.Rewards && <RewardsPanel hideAssets={hideAssets} />}
         {currentTab === AssetTabIndex.Invests && (
-          <MyLiquidity className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
+          <MyLiquidity noHeader className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
         )}
         {!isMobile && currentTab === AssetTabIndex.RedPacket && (
           <RedPacketClaimPanel hideAssets={hideAssets} />

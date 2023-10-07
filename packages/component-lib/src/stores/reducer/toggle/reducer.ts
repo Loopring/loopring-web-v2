@@ -34,6 +34,7 @@ const initialState: ToggleState = {
     orbiter: ['ETH'],
   },
   CIETHInvest: { enable: true },
+  redpacket_exclusive: { enable: true },
   whiteList: {},
   isSupperUser: false as any,
 }

@@ -311,11 +311,11 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/ammpool' },
+    router: { path: '/invest/dual' },
     label: {
-      id: 'ammpool',
-      i18nKey: 'labelInvestAmm',
-      description: 'labelInvestAmmDes',
+      id: 'dual',
+      i18nKey: 'labelInvestDual',
+      description: 'labelInvestDualDes',
     },
   },
   {
@@ -329,11 +329,20 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/dual' },
+    router: { path: '/invest/leverageETH' },
     label: {
-      id: 'dual',
-      i18nKey: 'labelInvestDual',
-      description: 'labelInvestDualDes',
+      id: 'leverageeth',
+      i18nKey: 'labelInvestLeverageETH',
+      description: 'labelInvestLeverageETHDes',
+    },
+  },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: '/invest/ammpool' },
+    label: {
+      id: 'ammpool',
+      i18nKey: 'labelInvestAmm',
+      description: 'labelInvestAmmDes',
     },
   },
   {
@@ -345,16 +354,17 @@ export const subMenuInvest = [
       description: 'labelInvestStakeLRCDes',
     },
   },
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: '/invest/leverageETH' },
-    label: {
-      id: 'leverageeth',
-      i18nKey: 'labelInvestLeverageETH',
-      description: 'labelInvestLeverageETHDes',
-    },
-  },
+  
 ]
+export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual' | 'leverageETH'
+export const investTabs = [
+  { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
+  { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
+  { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
+  { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
+  { tab: 'leverageETH' as InvestTab, label: 'labelLeverageETHTitle' },
+]
+
 export const defiMarkets = {
   TAIKO: [] as string[],
   ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],

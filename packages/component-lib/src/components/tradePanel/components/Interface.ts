@@ -24,6 +24,7 @@ import {
   EXCHANGE_TYPE,
   FeeInfo,
   GET_IPFS_STRING,
+  LuckyRedPacketItem,
   NFTWholeINFO,
   RedPacketOrderType,
   RequireOne,
@@ -35,12 +36,21 @@ import {
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
+import { DisplayContact } from '@loopring-web/core/src/stores/contacts/reducer'
 
 export enum RedPacketStep {
-  TradeType,
-  ChooseType,
-  Main,
+  TradeType = 0,
+  ChooseType = 1,
+  Main = 2,
   NFTList = 3,
+}
+export enum TargetRedPacketStep {
+  TargetChosse = 0,
+  TradeType = 1,
+  ChooseType = 2,
+  Main = 3,
+  NFTList = 4,
+  TargetSend = 5,
 }
 
 /**
@@ -626,6 +636,16 @@ export type CreateRedPacketExtendsProps<T, F> = {
   assetsData: AssetsRawDataItem[]
   onChangePrivateChecked?: () => void
   privateChecked?: boolean
+  backToScope: () => void
+  onSendTargetRedpacketClick: () => Promise<void>
+  targetRedPackets: sdk.LuckyTokenItemForReceive[]
+  popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
+  onClickViewTargetDetail: (hash: string) => void
+  onCloseRedpacketPop: () => void
+  contacts?: DisplayContact[]
+  isWhiteListed?: boolean
+  showExclusiveOption?: boolean
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -639,7 +659,43 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
       selectNFT: NFT
     }
   > & {
-    setActiveStep: (step: RedPacketStep) => void
+    setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void
     activeStep: RedPacketStep
     tokenMap: { [key: string]: sdk.TokenInfo }
+    backToScope: () => void
+    onClickNext: () => void
+    onClickBack: () => void
+    showNFT: boolean
+    onChangeTradeType?: (tradeType: RedPacketOrderType) => void
+    onSelecteValue?: (item: LuckyRedPacketItem) => void
   }
+
+export type TargetRedpacktSelectStepProps = {
+  onClickCreateNew: () => void
+  targetRedPackets: sdk.LuckyTokenItemForReceive[]
+  onClickExclusiveRedpacket: (info: {
+    hash: string,
+    remainCount: number
+  }) => void
+  onClickViewDetail: (hash: string) => void
+  onCloseRedpacketPop: () => void
+  popRedPacket: sdk.LuckTokenClaimDetail | undefined
+  popRedPacketAmountStr: string | undefined
+  backToScope: () => void
+}
+
+export type TargetRedpacktInputAddressStepProps = {
+  popupChecked: boolean
+  onChangePopupChecked: (popupChecked: boolean) => void
+  onFileInput: (input: string) => void
+  addressListString: string
+  onClickSend: () => void
+  contacts?: DisplayContact[]
+  onConfirm: (list: string[]) => void
+  onManualEditInput: (text: string) => void
+  popUpOptionDisabled: boolean
+  maximumTargetsLength: number
+  onClickBack: () => void
+  sentAddresses?: string[]
+  clearInput: () => void
+}

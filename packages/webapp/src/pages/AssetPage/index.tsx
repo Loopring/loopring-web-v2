@@ -6,7 +6,7 @@ import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { store, useAccount, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
+import { store, useAccount, useTargetRedPackets, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
 import { useAssetAction, useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 
@@ -18,6 +18,7 @@ export const AssetPage = () => {
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
+  const { redPackets } = useTargetRedPackets()
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
       case 'history':
@@ -26,6 +27,7 @@ export const AssetPage = () => {
       default:
         return (
           <AssetPanel
+            showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
             assetTitleProps={assetTitleProps}
             assetPanelProps={{...assetPanelProps, assetBtnStatus}}
           />

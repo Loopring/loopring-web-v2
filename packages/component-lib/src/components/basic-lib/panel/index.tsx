@@ -85,6 +85,7 @@ export const CardStyleItem = styled(Card)<
     &.column .MuiCardContent-root {
       flex-direction: column;
     }
+    
 
     height: auto;
     display: flex;
@@ -95,7 +96,7 @@ export const CardStyleItem = styled(Card)<
     transition: none;
     ${({ theme }) =>
       theme.border.defaultFrame({
-        c_key: 'var(--field-opacity)',
+        c_key: 'var(--color-border)',
         d_R: 0.5,
       })};
 
@@ -122,7 +123,7 @@ export const CardStyleItem = styled(Card)<
 export const ImageUploadWrapper = styled(Box)`
   position: relative;
   width: 100%;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 
   .MuiFormControlLabel-root {

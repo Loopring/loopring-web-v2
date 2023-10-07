@@ -18,6 +18,10 @@ export const RowInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 56,
   rowHeaderHeight: IsMobile.any() ? 48 : 56,
 }
+export const RowDualInvestConfig = {
+  rowHeight: IsMobile.any() ? 48 : 72,
+  rowHeaderHeight: IsMobile.any() ? 48 : 72,
+}
 export const DirectionTag = '\u2192'
 export const FeeChargeOrderDefault = ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']
 export const HEADER_HEIGHT = 64

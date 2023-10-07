@@ -39,7 +39,7 @@ export const DeFiTradePanel = ({
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
 
-  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+  const styles = isMobile ? { flex: 1, background: 'var(--color-box-third)' } : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
   const { t } = useTranslation()
   return (
     <>
@@ -50,12 +50,13 @@ export const DeFiTradePanel = ({
           style={styles}
           justifyContent={'center'}
           padding={5 / 2}
+          bgcolor={'var(--color-box-third)'}
         >
           <DeFiWrap
             market={market}
             isJoin={isJoin}
             type={DEFI_ADVICE_MAP[tokenBase].project}
-            title={t('labelInvestDefiTitle')}
+            title={market === 'WSTETH-ETH' ? t('labelDefiLido') : t('labelDefiRocketPool')}
             {...(deFiWrapProps as any)}
           />
         </Box>

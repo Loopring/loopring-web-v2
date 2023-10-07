@@ -31,7 +31,7 @@ import { ContactTransactionsPage } from './history'
 import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 
 const ContactPageStyle = styled(Box)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   display: flex;
   flex-direction: column;
   align-items: stretch;
