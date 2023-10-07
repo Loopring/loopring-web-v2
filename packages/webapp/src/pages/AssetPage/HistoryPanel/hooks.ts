@@ -34,9 +34,9 @@ import { DUAL_TYPE, GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import {
   AccountStatus,
   BTRDE_PRE,
-  defiMarkets,
+  DEFI_CONFIG,
   getValuePrecisionThousand,
-  leverageETHConfig,
+  LEVERAGE_ETH_CONFIG,
   MapChainId,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
@@ -346,7 +346,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        const markets = defiMarkets[network]
+        const markets = DEFI_CONFIG.MARKETS[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,
@@ -1155,7 +1155,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        const types = leverageETHConfig.types[network]
+        const types = LEVERAGE_ETH_CONFIG.types[network]
         const response = await LoopringAPI.defiAPI.getDefiTransaction(
           {
             accountId,

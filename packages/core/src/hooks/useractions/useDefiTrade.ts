@@ -1,13 +1,21 @@
 import React from 'react'
-import { DeFiWrapProps, ToastType, useOpenModals, useToggle } from '@loopring-web/component-lib'
+import {
+  DeFiWrapProps,
+  ToastType,
+  useOpenModals,
+  useSettings,
+  useToggle,
+} from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CustomErrorWithCode,
+  DEFI_CONFIG,
   DeFiCalcData,
   DeFiChgType,
   getValuePrecisionThousand,
   globalSetup,
   IBData,
+  MapChainId,
   MarketType,
   myLog,
   SDK_ERROR_MAP_TO_UI,
@@ -52,8 +60,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
 }) => {
   const { t } = useTranslation(['common'])
   const refreshRef = React.createRef()
-  // const match: any = useRouteMatch("/invest/:defi?/:market?/:isJoin?");
-
+  const { defaultNetwork } = useSettings()
   const {
     marketMap: defiMarketMap,
     updateDefiSyncMap,
@@ -61,7 +68,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
   } = useDefiMap()
   const [isLoading, setIsLoading] = React.useState(false)
   const [isStoB, setIsStoB] = React.useState(true)
-
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const { tokenMap } = useTokenMap()
   const { account } = useAccount()
   // const { status: walletLayer2Status } = useWalletLayer2();
@@ -420,7 +427,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
         setIsLoading(true)
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: 'LIDO,ROCKETPOOL' }),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: DEFI_CONFIG.products[network].join(',') }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(isJoin ? sdk.OffchainFeeReqType.DEFI_JOIN : sdk.OffchainFeeReqType.DEFI_EXIT)
           : Promise.resolve(undefined),

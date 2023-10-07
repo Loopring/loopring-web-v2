@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import {
   Box,
+  Grid,
   IconButton,
   IconProps,
   LinearProgress,
@@ -282,3 +283,23 @@ export const TabsStyle = styled(Tabs)`
     }
   }
 ` as typeof Tabs
+
+const loadingGif = './static/loading-1.gif'
+export const GridWrapStyle = styled(Grid)`
+  &.loading {
+    position: relative;
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      //background-color:  var(--field-opacity);
+      background: url(${loadingGif}) no-repeat 50% 50%;
+      background-size: 80px;
+    }
+  }
+` as typeof Grid

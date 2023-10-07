@@ -35,6 +35,8 @@ const initialState: ToggleState = {
   },
   CIETHInvest: { enable: true },
   redpacket_exclusive: { enable: true },
+  dual_reinvest: { enable: true },
+  redpacket_exclusive: { enable: true },
   whiteList: {},
   isSupperUser: false as any,
 }

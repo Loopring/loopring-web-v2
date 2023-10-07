@@ -27,6 +27,31 @@ export const volumeToCountAsBigNumber = (
   }
 }
 
+export const volumeToBigIntCount = (
+  symbol: string,
+  volumn: string | number | bigint,
+  tokenMap = store.getState().tokenMap.tokenMap,
+): string | undefined => {
+  const result = volumeToCountAsBigInt(symbol, volumn, tokenMap)
+  return result ? result.toString(10) : undefined
+}
+export const volumeToCountAsBigInt = (
+  symbol: string,
+  volumn: string | number | bigint,
+  tokenMap = store.getState().tokenMap.tokenMap,
+): bigint | undefined => {
+  if (tokenMap && tokenMap[symbol] && typeof volumn !== 'undefined') {
+    try {
+      return BigInt(volumn) / BigInt(Number('1e' + tokenMap[symbol].decimals))
+      // return toBig(volumn).div('1e' + tokenMap[symbol].decimals)
+    } catch (error: any) {
+      throw error
+    }
+  } else {
+    return undefined
+  }
+}
+
 export const getTokenNameFromTokenId = (
   tokenId: number | string,
   tokenMap = store.getState().tokenMap.tokenMap,
