@@ -150,6 +150,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     reCheck,
   } = useAddressCheck(true)
 
+  React.useEffect(() => {
+    if (loopringSmartWalletVersion?.isLoopringSmartWallet && sureItsLayer2 === undefined) {
+      setSureItsLayer2(WALLET_TYPE.Loopring)
+    }
+  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])
+
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
       const sellToken = tokenMap[transferValue.belong]
