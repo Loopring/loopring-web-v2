@@ -1,5 +1,6 @@
 import { IsMobile } from '../utils'
 import { NetworkItemInfo } from '../loopring-interface'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum UpColor {
   green = 'green',
@@ -156,3 +157,11 @@ if (window) {
   // @ts-ignore
   window.__MapChainId = MapChainId
 }
+
+export const HEBAO_CONTRACT_MAP = [
+  ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
+  ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+  ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+  ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+  ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+]

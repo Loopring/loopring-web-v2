@@ -3,22 +3,25 @@ import { getDefiMap, getDefiMapStatus, updateDefiSyncMap } from './reducer'
 import { DefiMap, store } from '../../index'
 import { LoopringAPI } from '../../../api_wrapper'
 import { PayloadAction } from '@reduxjs/toolkit'
+import { DEFI_CONFIG, LEVERAGE_ETH_CONFIG, MapChainId } from '@loopring-web/common-resources'
 
 const getDefiMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined
   }
-  const chainId = store.getState().system.chainId
-  const [normal, leverage] = chainId === 1 ? ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
+  const { defaultNetwork } = store.getState().settings
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
+  // const [normal, leverage] = chainId === 1 ? ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
   const [
     { markets: marketMap, tokenArr: marketCoins, marketArr: marketArray },
     { markets: marketLeverageMap, tokenArr: marketLeverageCoins, marketArr: marketLeverageArray },
   ] = await Promise.all([
     LoopringAPI.defiAPI?.getDefiMarkets({
-      defiType: normal,
+      defiType: DEFI_CONFIG.products[network].join(','),
     }),
     LoopringAPI.defiAPI?.getDefiMarkets({
-      defiType: leverage,
+      defiType: LEVERAGE_ETH_CONFIG.products[network].join(','),
     }),
   ])
   let { __timer__ } = store.getState().invest.defiMap

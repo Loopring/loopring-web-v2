@@ -513,7 +513,7 @@ export const useBanxaTransPost = () => {
           response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request: _.cloneDeep(request),
-              web3: connectProvides.usedWeb3 as unknown as Web3,
+              web3: connectProvides.usedWeb3 as any,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
