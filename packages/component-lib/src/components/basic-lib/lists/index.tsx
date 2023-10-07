@@ -196,10 +196,15 @@ export const CardStyleItem = styled(Card)<
     padding: ${({ theme }) => theme.unit}px;
     height: 54px;
   }
-  &.dualInvestCard {
+  &.MuiPaper-root.dualInvestCard {
     padding: 0;
     background: var(--color-box);
+    &.selected,
+    &:hover {
+      padding: inherit;
+    }
     .MuiCardContent-root {
+      box-sizing: border-box;
       padding: ${({ theme }) => 2 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;
       &:last-child {
         padding: ${({ theme }) => 2 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;

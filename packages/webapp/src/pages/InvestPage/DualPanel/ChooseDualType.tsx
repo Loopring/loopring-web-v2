@@ -94,8 +94,9 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
                 window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')
                 window.opener = null
               }}
-              sx={{ marginLeft: 1.5 }}
-              variant={'contained'}
+              sx={{ marginLeft: 1.5, height: 40 }}
+              variant={'outlined'}
+              color={'inherit'}
             >
               {t('labelInvestDualTutorial')}
             </Button>
@@ -118,41 +119,46 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
                   variant={'outlined'}
                   sx={{
                     width: 'var(--dual-type-width)',
-                    height: '380px',
+                    height: '320px',
                     flexDirection: 'column',
                     justifyContent: 'space-around',
                   }}
                   onClick={() => onSelect(item.type)}
                 >
-                  <TypographyStyle component={'span'} display={'inline-flex'}>
-                    {item.icon}
-                  </TypographyStyle>
-                  <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                  <Box display={'flex'} flexDirection={'column'} alignItems={'left'} marginTop={3}>
                     <Typography
                       variant={'h5'}
                       component={'span'}
                       display={'inline-flex'}
                       color={'textPrimary'}
-                      textAlign={'center'}
+                      textAlign={'left'}
+                      sx={{ textIndent: 0 }}
                     >
                       {t(item.titleKey)}
                     </Typography>
                     <Typography
+                      sx={{ textIndent: 0 }}
                       variant={'body1'}
                       component={'span'}
                       display={'inline-flex'}
                       color={'textSecondary'}
-                      textAlign={'center'}
-                      marginBottom={2}
+                      textAlign={'left'}
                     >
                       {t(item.desKey)}
                     </Typography>
-                    <Box width={'100%'}>
-                      <Button variant={'contained'} fullWidth color={'primary'} size={'medium'}>
-                        {t('labelDualInvestGuid')}
-                      </Button>
-                    </Box>
                   </Box>
+                  <TypographyStyle component={'span'} display={'inline-flex'}>
+                    {item.icon}
+                  </TypographyStyle>
+                  <Button
+                    sx={{ marginBottom: 3 }}
+                    variant={'contained'}
+                    fullWidth
+                    color={'primary'}
+                    size={'medium'}
+                  >
+                    {t('labelDualInvestGuid')}
+                  </Button>
                 </MenuBtnStyled>
               </Grid>
             )

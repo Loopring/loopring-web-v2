@@ -160,7 +160,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                   {t('labelInvestDualTutorial')}
                 </Button>
               </Box>
-              {[DualViewType.All, DualViewType.DualBegin].includes(viewType) && (
+              {[DualViewType.All, DualViewType.DualBegin].includes(viewType as any) && (
                 <FormControlLabel
                   labelPlacement={'start'}
                   control={
@@ -275,7 +275,6 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                                         : 'btnCard dualInvestCard '
                                     }
                                     sx={{
-                                      height: '100%',
                                       marginRight: 2,
                                       marginBottom: isMobile ? 2 : 0,
                                     }}
@@ -284,7 +283,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                                     }}
                                     key={item.toString() + index.toString()}
                                   >
-                                    <Typography variant={isMobile ? 'body1' : 'h5'}>
+                                    <Typography variant={isMobile ? 'body1' : 'h5'} padding={2}>
                                       {_index !== -1
                                         ? t('labelDualBase', {
                                             symbol: item.toString(),
@@ -460,7 +459,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
       <ModalDualPanel
         confirmDualAutoInvest={confirmDualAutoInvest}
         setConfirmDualAutoInvest={setConfirmDualAutoInvest}
-        viewType={viewType}
+        viewType={viewType as any}
         dualTradeProps={{ ...dualTradeProps }}
         dualToastOpen={dualToastOpen}
         closeDualToast={closeDualToast}
