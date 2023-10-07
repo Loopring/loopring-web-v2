@@ -265,10 +265,12 @@ export const DualDetail = ({
                 alignItems={'center'}
                 paddingBottom={1}
               >
-                <Trans i18nKey={'labelDualAutoDetail'}>
-                  Auto Reinvest will try to find a new product which based on the following rule at
-                  16:00 on the settlement day.
-                </Trans>
+                {coinSell.isRenew && (
+                  <Trans i18nKey={'labelDualAutoDetail'}>
+                    Auto Reinvest will try to find a new product which based on the following rule
+                    at 16:00 on the settlement day.
+                  </Trans>
+                )}
               </Typography>
             </Box>
             {coinSell.isRenew && (

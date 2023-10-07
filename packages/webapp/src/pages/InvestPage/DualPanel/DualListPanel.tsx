@@ -155,7 +155,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                   }}
                   size={'small'}
                   sx={{ marginLeft: 1.5 }}
-                  variant={'contained'}
+                  variant={'outlined'}
                 >
                   {t('labelInvestDualTutorial')}
                 </Button>
