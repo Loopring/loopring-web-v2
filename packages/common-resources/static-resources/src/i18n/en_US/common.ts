@@ -37,7 +37,8 @@ export default {
   resetFee: 'Fee {{count}} GAS ≈ ${{price}}',
   resetLabelBtn: 'Reset',
   labelActiveEnterToken: 'Select payment token',
-  labelActiveAccountDescription: 'You need to have enough balance for {{layer2}} creation as below.',
+  labelActiveAccountDescription:
+    'You need to have enough balance for {{layer2}} creation as below.',
   labelActiveAccountFee: 'Fee {{count}} GAS ≈ ${{price}}',
   labelActiveAccountBtn: 'Activate Account',
   depositLabelEnterToken: 'Select Layer 1 Token',
@@ -523,6 +524,7 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: 'REMOVE GUARDIAN', // 35
   labelTxGuardianUNLOCK_WALLET_WA: 'UNLOCK WALLET', // 37
   labelTxGuardianRESET_GUARDIANS_WA: 'RESET GUARDIANS', // 200
+  labelTxGuardianCONTACT_UPDATE_WA: 'RESET GUARDIANS', // 201
   labelTxGuardianCALL_CONTRACT_WA: 'CALL CONTRACT',
   labelTxGuardian_recovery: 'recovery wallet',
   labelTxGuardian_transfer: 'over daily quota transfer',
@@ -879,7 +881,7 @@ export default {
   labelWSETHDefiRisk:
     '<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>' +
     '<p>When using Lido to stake your ETH on the {{l1ChainName}} beacon chain, users will receive a token (stETH), which represents their ETH on the {{l1ChainName}} beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>' +
-    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
+    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>",
   labelRETHDefiRisk:
     '<p>Rocket Pool is the first truly decentralized {{l1ChainName}} staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the {{l1ChainName}} validator operations with smart contracts on the Execution layer.</p>' +
     "<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>" +
@@ -1007,7 +1009,7 @@ export default {
   labelDualInvestQuoteTitle: 'Invest {{symbolA}} (Buy {{symbolB}} Low)',
   labelDualInvestDes: 'Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}',
   labelDualCurrentPriceTip: 'Current Price is based on USDT derived from some leading exchanges.',
-  labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1>  USDT',
+  labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1> {{baseSymbol}}',
   labelDualSuccess: 'Subscription {{symbol}} Successfully',
   labelDualProcessing: 'Waiting for completion',
   labelDualProcessingDes:
@@ -1798,7 +1800,6 @@ export default {
   labelStopPriceSell: 'Limit / Sell Price',
   labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
-  labelClaimallToken: 'Reward token {{symbol}}',
   labelTitleOverviewAllPrd: 'All Products',
   labelInvestDefiDes: 'Earn ETH staking rewards',
   labelInvestChoseProduct: 'Choose the product you want',
@@ -1846,6 +1847,7 @@ export default {
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
+  labelContactsEditContactBtn: 'Edit Contact',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
   labelTimeoutAddressClick:
@@ -1857,7 +1859,8 @@ export default {
   labelRedPacketPlazaPublicDes:
     'Everyone in the Loopring community can participate in claiming the red packet',
   labelRedPacketQRPublic: 'Public QR',
-  labelRedPacketQRPublicDes: 'Anyone that knows the QR code can participate in claiming the red packet',
+  labelRedPacketQRPublicDes:
+    'Anyone that knows the QR code can participate in claiming the red packet',
   labelRedPacketExclusive: 'Exclusive Red Packet',
   labelRedPacketExclusiveDes: 'Only users that have received the red packet can claim it',
   labelRedPacketHaveExclusive: 'You have {{count}} exclusive Red Packets.',
@@ -1872,31 +1875,39 @@ export default {
   labelRedpacketRevealTime: 'Reveal Time',
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
-  labelExclusiveWhitelistDes: 'For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
+  labelExclusiveWhitelistDes:
+    "For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
   labelRedpacketTextimport: 'Text import',
   labelRedpacketContactImport: 'Contact import',
   labelRedpacketNotificationDisplay: 'Notification Display',
   labelRedpacketRedDotDes: 'Recipients are alerted via a badge next to the Red Packets category',
   labelRedpacketBadge: 'Badge',
   labelRedpacketPopUp: 'Pop-up Notification',
-  labelRedpacketPopUpTooltip: 'Whitelisted addresses include Loopring, our partners, or other verified members. If you\'re interested in being whitelisted, please contact us at support@loopring.io.',
-  labelRedpacketPopPpDes: 'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
+  labelRedpacketPopUpTooltip:
+    "Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
+  labelRedpacketPopPpDes:
+    'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
   labelRedPacketChooseTarget: 'Create Red Packet',
   labelRedPacketRecipientList: 'Recipient List',
-  labelRedPacketPublicTooltip: 'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip: 'Your Red Packet is private, and only the addresses you specify can claim it.',
+  labelRedPacketPublicTooltip:
+    'Your Red Packet is public, and everyone can participate in claiming it.',
+  labelRedPacketPrivateTooltip:
+    'Your Red Packet is private, and only the addresses you specify can claim it.',
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
   labelRedpacketValidAddresses: 'Valid Addresses: {{count}}',
   labelRedpacketTips: 'Tips',
-  labelRedpacketChangeImportTips: 'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
+  labelRedpacketChangeImportTips:
+    'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
   labelRedpacketAddressesReview: 'Addresses Review',
   labelRedpacketAddressesReviewPart1: 'The list contains {{count}} valid addresses,',
   labelRedpacketAddressesReviewPart2: '{{count}} invalid addresses',
-  labelRedpacketAddressesReviewPart3: '. To proceed, invalid addresses will be automatically removed from the list.',
-  labelRedpacketExclusiveListEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketAddressesReviewPart3:
+    '. To proceed, invalid addresses will be automatically removed from the list.',
+  labelRedpacketExclusiveListEmpty:
+    'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
   labelRedpacketBestwishes: 'Best wishes',
   labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
@@ -1907,12 +1918,105 @@ export default {
   labelRedPacketExclusiveTag: 'Exclusive',
   labelRedPacketClaiming: 'Claiming',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
-  labelTxGuardian_upgrade_contract: "upgrade contract",
+  labelTxGuardian_upgrade_contract: 'upgrade contract',
+  labelEOA: 'EOA',
+  labelLoopringWallet: 'Loopring',
+  labelOtherSmart: 'Other Smart',
+  labelBinance: 'Binance',
+  labelHuobi: 'Huobi',
+  labelOtherExchange: 'Other Exchange',
+  labelContactsEditContact: 'Edit Contact',
   labelLeverageETHStakingDes: 'Gain higher APY aggressively',
   labelDownloadShared: 'Download',
   labelShareReferralCode: 'Share to',
-  labelShareMessage: "Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}",
+  labelShareMessage:
+    'Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}',
+
+  labelInvestDualAutoTitle: "What's Auto Reinvest",
+  labelDualAutoTitle: 'Auto Reinvest <1></1>',
+  labelDualAutoTitleDes:
+    'Auto Reinvest will automatically reinvest your investment and earned interest into a new term with the same Target Price once the previous term expires, continuing until you successfully buy or sell crypto. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed and your investment and earned interest will be unlocked.\n',
+  labelInvestDualAutoCheck:
+    '<p>Auto Reinvest will automatically reinvest your investment and earned interest into a new term with the same Target Price once the previous term expires, continuing until you successfully buy or sell crypto. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed and your investment and earned interest will be unlocked.</p><p> Reinvest Target Price: The Target Price at which you want to buy or sell crypto.</p><p> Longest Settlement Date: The maximum duration available for selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.</p>',
+  labelDualAutoDetail:
+    'Auto Reinvest will try to find a new product which based on the following rule at 16:00 on the settlement day.',
+  labelDualAutoDUAL_BASEPrice: 'Sell Price <1></1>',
+  labelDualAutoDUAL_CURRENCYPrice: 'Buy Price <1></1>',
+  labelDualAutoDUAL_BASEPriceDes: 'The target price at which you want to sell crypto.',
+  labelDualAutoDUAL_CURRENCYPriceDes: 'The target price at which you want to buy crypto.',
+  labelDualModifyParameter: 'Modify Parameter',
+  labelDayDisplay: '{{item}} Day(s)',
+  labelDualModifyConfirm: 'confirm',
+  labelDualAutoDurationDes:
+    'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
+  labelDualModifyBtn: 'Modify',
+  labelTurnOffDualAutoInvest: 'Stop Auto Invest',
+  labelDualModifyAPR: 'APR: {{value}}',
+  labelDualModifySettlementDateDes: 'Changes will take effect after the Next Settlement Date.',
+  labelDualModifySettlementDate: 'Next Settlement Date: {{date}}',
+  labelDualEditSuccess: 'Update successful!',
+  labelDualEditFailed: 'Update Failed!',
+  labelDualEditDuration: 'Modify Longest Settlement Date <1></1>',
+  labelDualEditDurationDes:
+    'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
+  labelDualInvestGuid: 'Invest',
+  labelCoverGain: 'Cover Gain',
+  labelCoverGainDes: 'Cover Gain Earn interest before taking profits',
+  labelDip: 'Buy The Dip',
+  labelDipDes: 'Earn interest while waiting for your price target',
+  labelDualMerge: 'Dual Investment',
+  labelDualMergeDes: 'Select based on Token and Settlement Date',
+  labelDualChooseTokenDUAL_BASE: 'Step 1: Choose a token to sell',
+  labelDualChooseTargetPriceDUAL_BASE: 'Step 2: Choose Target Price and Settlement Date',
+  labelDualChooseTokenDUAL_CURRENCY: 'Step 1: Choose a token to buy',
+  labelDualChooseTargetPriceDUAL_CURRENCY: 'Step 2: Choose Target Price and Settlement Date',
+  labelDualTypeDualGain: 'Cover Gain',
+  labelDualTypeDualDip: 'Buy The Dip',
+  labelDualTypeDualBegin: 'Dual Invest Beginner mode',
+  labelDualTypeAll: 'Dual Invest',
+  labelDualAutoCancelConfirm: 'Disable Auto Reinvest',
+  labelDualAutoCancelOrder: 'Cancel',
+  labelDualAutoCancelConfirmDes:
+    'Are you sure about disable auto reinvest? If disabled, there will be no new orders after the next settlement.',
+  labelDualModifySettlementDateDialog: 'Next Settlement Date',
   labelDefiRate: 'Rate',
   labelDefiLido: 'Lido',
   labelDefiRocketPool: 'Rocket Pool',
+  labelDualIsHigh: 'is significantly higher',
+  labelDualIsLow: 'is significantly lower',
+  labelDualAutoAlert:
+    "The current price of {{base}} is {{currentPrice}} {{quote}}, which  {{method}}  than the price you've set for Auto Reinvest. This may result in a lower APY for your next settlement. You can adjust the price for Auto Reinvest.",
+  labelDualAutoDuration: 'Longest Settlement Date <1></1>',
+  labelInvestDualGainTitle: 'What is Covered Gain?',
+  labelInvestDualGainGuid:
+    '<p>Covered Gain is an investment strategy to sell digital assets at your Target Price and earn interest while waiting.</p>' +
+    '<p>On the Settlement Date, there can be 2 scenarios:</p>' +
+    '<ol><li>Market Price > Target Price</li>' +
+    '<li>Market Price ≤ Target Price</li></ol>' +
+    '<h5>Market Price > Target Price</h5>' +
+    '<p>Your original investment and earned interest will be sold at the target price.</p>' +
+    '<p>This order is then closed regardless of whether "Auto Reinvest" is enabled or not.</p>' +
+    '<h5>Market Price ≤ Target Price</h5>' +
+    '<p>Your original investment and earned interest won’t be sold.</p>' +
+    '<p>If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a suitable dual investment product based on the agreed terms until you either successfully sell crypto at your desired price or disable the feature.</p>' +
+    '<h5>Auto Reinvest</h5>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully sell your crypto at your Target Price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell your crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelInvestDualDipTitle: 'What is Buy The Dip?',
+  labelInvestDualDipGuid:
+    '<p>Buy The Dip is an investment strategy to buy digital assets at your Target Price and earn interest while waiting.</p>' +
+    '<p>On the Settlement Date, there can be 2 scenarios: </p>' +
+    '<ol><li>Market Price > Target Price </li>' +
+    '<li>Market Price ≤ Target Price </li></ol>' +
+    '<h5>Market Price > Target Price</h5>' +
+    '<p>Your original investment and earned interest won’t be converted. Earned interest is in USDC or USDT.</p>' +
+    '<p>If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a suitable dual investment product based on the agreed terms until you either successfully buy crypto at your desired price or disable the feature.</p>' +
+    '<h5>Market Price ≤ Target Price</h5>' +
+    '<p>Your original investment and earned interest will be converted at the Target Price.</p>' +
+    '<p>This order is then closed regardless of whether "Auto Reinvest" is enabled or not.</p>' +
+    '<h5>Auto Reinvest</h5>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
 }

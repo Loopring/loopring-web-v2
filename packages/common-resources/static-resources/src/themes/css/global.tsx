@@ -3,7 +3,14 @@ import reset from './reset'
 // @ts-ignore
 import InterMedium from '../fonts/english/Inter-Medium.ttf'
 
-import { ColorDarkDefault, ColorLightDefault, GrayBlack, GrayLight, hexToRGB } from './color-lib'
+import {
+  ColorDarkDefault,
+  ColorLightDefault,
+  GrayBlack,
+  GrayLight,
+  hexToRGB,
+  SystemColor,
+} from './color-lib'
 import { ThemeType } from '../interface'
 
 export const fontDefault = {
@@ -296,11 +303,25 @@ export const globalCss = ({ theme }: any) => css`
     --provider-btn-height: 56px;
     --input-height-large: 48px;
     --input-height-huge: 56px;
+    --dual-type-width: 320px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
+      --dual-type-width: 240px;
     }
+    --color-EOA-Text: #fba95c;
+    --color-Loopring-Text: #4169ff;
+    --color-OtherSmart-Text: #979797;
+    --color-Binance-Text: #a25402;
+    --color-Huobi-Text: #199e5e;
+    --color-OtherExchange-Text: #a0635a;
+    --color-EOA-Bg: #fffedc;
+    --color-Loopring-Bg: #c9dbef;
+    --color-OtherSmart-Bg: #d9d9d9;
+    --color-Binance-Bg: #fde3c8;
+    --color-Huobi-Bg: #b1f4dd;
+    --color-OtherExchange-Bg: #c1a6a2;
   }
 
   select {
@@ -317,4 +338,4 @@ export const globalCss = ({ theme }: any) => css`
     --background-color: inherit;
   }
 `
-export { ColorDarkDefault, ColorLightDefault }
+export { ColorDarkDefault, ColorLightDefault, SystemColor }
