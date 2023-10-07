@@ -35,8 +35,8 @@ import {
   WalletMap,
   WithdrawType,
   WithdrawTypes,
+  ContactType,
 } from '@loopring-web/common-resources'
-import { ContactType } from '@loopring-web/core'
 
 export enum RedPacketStep {
   TradeType = 0,
