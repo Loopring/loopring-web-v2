@@ -123,7 +123,14 @@ export const BeginnerMode: any = withTranslation('common')(
                     onClick={() => onSelectStep1Token(tokenName.toString())}
                     width={'280px'}
                   >
-                    <CardContent sx={{ alignItems: 'center' }}>
+                    <CardContent
+                    // sx={{
+                    //   alignItems: 'center',
+                    //   // paddingX: 3,
+                    //   // paddingY: 2,
+                    //   '&:last-child': { paddingY: 2 },
+                    // }}
+                    >
                       <Typography component={'span'} display={'inline-flex'}>
                         <CoinIcon
                           size={32}
@@ -195,9 +202,16 @@ export const BeginnerMode: any = withTranslation('common')(
                     onSelectStep2BuyOrSell('Sell')
                     scroolStep3ToMiddle()
                   }}
-                  width={'309px'}
+                  width={'310px'}
                 >
-                  <CardContent sx={{ alignItems: 'center' }}>
+                  <CardContent
+                  // sx={{
+                  //   alignItems: 'center',
+                  //   // paddingX: 3,
+                  //   // paddingY: 2,
+                  //   // '&:last-child': { paddingY: 2 },
+                  // }}
+                  >
                     <Typography component={'span'} display={'inline-flex'}>
                       <Avatar alt={'sell-high'} src={SoursURL + '/svg/sell-high.svg'} />
                     </Typography>
@@ -226,9 +240,16 @@ export const BeginnerMode: any = withTranslation('common')(
                     onSelectStep2BuyOrSell('Buy')
                     scroolStep3ToMiddle()
                   }}
-                  width={'309px'}
+                  width={'310px'}
                 >
-                  <CardContent sx={{ alignItems: 'center' }}>
+                  <CardContent
+                  // sx={{
+                  //   alignItems: 'center',
+                  //   // paddingX: 3,
+                  //   // paddingY: 2,
+                  //   // '&:last-child': { paddingY: 2 },
+                  // }}
+                  >
                     <Typography component={'span'} display={'inline-flex'}>
                       <Avatar alt={'buy-low'} src={SoursURL + '/svg/buy-low.svg'} />
                     </Typography>
@@ -271,7 +292,14 @@ export const BeginnerMode: any = withTranslation('common')(
                       }}
                       width={'280px'}
                     >
-                      <CardContent sx={{ alignItems: 'center' }}>
+                      <CardContent
+                        sx={{
+                          alignItems: 'center',
+                          paddingX: 3,
+                          paddingY: 2,
+                          '&:last-child': { paddingY: 2 },
+                        }}
+                      >
                         <Typography component={'span'} display={'inline-flex'}>
                           <CoinIcon size={32} symbol={token} />
                         </Typography>
