@@ -78,7 +78,7 @@ module.exports = function ({env}) {
                     "crypto-js": require.resolve('crypto-js'),
                     "crypto-js/sha256": require.resolve('crypto-js/sha256'),
                     "stream": require.resolve("stream-browserify"),
-                    "assert": require.resolve("assert"),
+                    "assert": require.resolve("assert/"),
                     "http": require.resolve("stream-http"),
                     "https": require.resolve("https-browserify"),
                     "os": require.resolve("os-browserify"),

@@ -14,8 +14,10 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     _height?: number | string
     _width?: number | string
     ismobile?: 'true' | 'false'
+    scroolDisabled?: boolean
   }
 >`
+  overflow: ${({ scroolDisabled }) =>  scroolDisabled ? 'hidden' : 'scroll'};
   position: relative;
   flex: 1;
   ${({ _height, _width, ismobile }) => ` 
@@ -118,6 +120,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     _height?: number | string
     _width?: number | string
     ismobile?: boolean | undefined | string
+    scroolDisabled?: boolean
   },
 ) => JSX.Element
 
@@ -129,6 +132,7 @@ function _SwitchPanel<T extends string>(
     // _height,
     // _width,
     size,
+    scrollDisabled,
     ...rest
   }: SwitchPanelProps<T> & WithTranslation,
   _ref: React.ForwardedRef<any>,
@@ -137,16 +141,22 @@ function _SwitchPanel<T extends string>(
   const { isMobile } = useSettings()
   const theme = useTheme()
   const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined)
+  const ref = React.useRef<any>(null)
+  React.useEffect(() => {
+    ref.current && ref.current.rootNode.scrollTo(0,0)
+  }, [index])
   return (
     <SwipeableViewsStyled
       className={
         hasToolBar ? `${className ? className : ''}` : `noToolBar ${className ? className : ''}`
       }
+      ref={ref}
       axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
       index={index}
       _height={rest._height}
       _width={rest._width}
       ismobile={isMobile ? 'true' : 'false'}
+      scroolDisabled={scrollDisabled}
     >
       {panelList.map((panel: PanelContent<T>, _index) => {
         return (

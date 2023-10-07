@@ -1,5 +1,5 @@
 import { store } from '../../index'
-import { toBig } from '@loopring-web/loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import BigNumber from 'bignumber.js'
 
 export const volumeToCount = (
@@ -18,7 +18,7 @@ export const volumeToCountAsBigNumber = (
 ): BigNumber | undefined => {
   if (tokenMap && tokenMap[symbol] && typeof volumn !== 'undefined') {
     try {
-      return toBig(volumn).div('1e' + tokenMap[symbol].decimals)
+      return sdk.toBig(volumn).div('1e' + tokenMap[symbol].decimals)
     } catch (error: any) {
       throw error
     }

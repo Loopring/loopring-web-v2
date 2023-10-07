@@ -1,6 +1,6 @@
 import { Trans } from 'react-i18next'
-import { ACTIVITY, NOTIFICATION, NOTIFICATION_ITEM } from '@loopring-web/common-resources'
-import { Box, Divider } from '@mui/material'
+import { ACTIVITY, NOTIFICATION, NOTIFICATION_ITEM, SoursURL } from '@loopring-web/common-resources'
+import { Box, Divider, Typography } from '@mui/material'
 import { EmptyDefault, ListItemActivity, NotificationListItem } from '../basic-lib'
 import styled from '@emotion/styled'
 
@@ -14,22 +14,14 @@ const BoxStyle = styled(Box)`
 ` as typeof Box
 export const NotificationPanel = ({
   notification,
-}: //   = {
-//   activities: [],
-//   activitiesInvest: [],
-//   notifications: [],
-//   invest: {} as any,
-//   chainId: 0 as any,
-//   campaignTagConfig: {
-//     ORDERBOOK: [],
-//     MARKET: [],
-//     AMM: [],
-//     FIAT: [],
-//     SWAP: [],
-//   },
-// },
-{
-  notification: NOTIFICATION
+  onClickExclusiveredPacket,
+  showExclusiveRedpacket,
+  exclusiveRedpacketCount
+}: {
+  notification: NOTIFICATION,
+  onClickExclusiveredPacket: () => void
+  showExclusiveRedpacket: boolean
+  exclusiveRedpacketCount: number
 }) => {
   // myLog("notifications", notification.notifications);
   notification.notifications = notification.notifications?.reduce((prev, item) => {
@@ -67,7 +59,7 @@ export const NotificationPanel = ({
       // paddingBottom={1}
       paddingTop={hasActivities ? 1 : 0}
     >
-      {hasActivities || hasNotifications ? (
+      {showExclusiveRedpacket || hasActivities || hasNotifications ? (
         <>
           <Box
             component={'section'}
@@ -76,6 +68,28 @@ export const NotificationPanel = ({
             marginX={1}
             marginBottom={1}
           >
+            {showExclusiveRedpacket && (
+              <Box
+                onClick={() => onClickExclusiveredPacket()}
+                sx={{
+                  backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,
+                  backgroundSize: 'contain',
+                  width: '330px',
+                  height: '77px',
+                  borderRadius: 2,
+                  paddingLeft: 3.5,
+                  paddingTop: 2.5,
+                  cursor: 'pointer',
+                  marginTop: 1,
+                  marginBottom: !!hasActivities ? 1 : 0
+                }}
+              >
+                <Typography color={'black'}>Congratulations!</Typography>
+                <Typography variant={'body2'} color={'black'}>
+                  You've received {exclusiveRedpacketCount} exclusive Red Packet!
+                </Typography>
+              </Box>
+            )}
             {!!hasActivities &&
               notification.activities.map((activity, index) => (
                 <ListItemActivity

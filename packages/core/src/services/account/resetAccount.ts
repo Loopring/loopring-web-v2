@@ -106,7 +106,7 @@ export async function toggleCheck(
         StopLimit: { enable: false, reason: 'account frozen' },
       }),
     )
-  } else if (dexToggleUrl && chainId === sdk.ChainId.MAINNET) {
+  } else if (dexToggleUrl) {
     Promise.all([
       dexToggleUrl
         ? fetch(dexToggleUrl).then((response) => (response?.ok ? response.json() : {}))

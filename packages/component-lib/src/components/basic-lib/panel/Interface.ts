@@ -14,4 +14,5 @@ export type SwitchPanelProps<T extends string> = {
   // onTransitionEnd?: () => void,
   _height?: number | string
   _width?: number | string
+  scrollDisabled?: boolean
 }

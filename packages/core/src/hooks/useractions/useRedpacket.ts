@@ -3,13 +3,14 @@ import { LoopringAPI } from '../../api_wrapper'
 import { AccountStep, RedPacketViewStep, useOpenModals } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LuckyTokenItemStatus } from '@loopring-web/loopring-sdk'
-import { store, useAccount, useSystem } from '../../stores'
+import { store, useAccount, useSystem, useTargetRedPackets } from '../../stores'
 import { CustomError, ErrorMap, UIERROR_CODE } from '@loopring-web/common-resources'
 
 export function useOpenRedpacket() {
   const { setShowRedPacket, setShowAccount } = useOpenModals()
   const { chainId } = useSystem()
   const { account } = useAccount()
+  const { getExclusiveRedpacket } = useTargetRedPackets()
 
   const callOpen = React.useCallback(async () => {
     // setShowAccount({
@@ -20,6 +21,7 @@ export function useOpenRedpacket() {
       referrer?: string
       isShouldSharedRely: boolean
     }
+    
     // let difference = new Date(_info.validSince).getTime() - Date.now();
     if (
       _info.status == LuckyTokenItemStatus.COMPLETED ||
@@ -85,6 +87,7 @@ export function useOpenRedpacket() {
             },
           })
         }
+        getExclusiveRedpacket()
       } catch (error: any) {
         if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {
           // setShowAccount({

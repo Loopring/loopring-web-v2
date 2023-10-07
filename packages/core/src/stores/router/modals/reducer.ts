@@ -65,7 +65,7 @@ const initialRedPacketState: RedPacketOrderData<any> = {
     mode: sdk.LuckyTokenClaimType.COMMON,
     scope: sdk.LuckyTokenViewType.PRIVATE,
   },
-  tradeType: RedPacketOrderType.BlindBox,
+  tradeType: RedPacketOrderType.TOKEN,
   __request__: undefined,
   isNFT: false,
 }
@@ -589,12 +589,13 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     updateRedPacketOrder(state, action: PayloadAction<RedPacketOrderData<any>>) {
       state.lastStep = LAST_STEP.redPacketSend
-      const { balance, tradeValue, belong, ...rest } = action.payload
+      const { balance, tradeValue, belong, target, ...rest } = action.payload
       state.redPacketOrder = {
         ...state.redPacketOrder,
         balance: balance === undefined || balance >= 0 ? balance : state.redPacketOrder.balance,
         belong,
         tradeValue,
+        target,
         ...rest,
       } as RedPacketOrderData<any>
       // state.redPacketOrder = {

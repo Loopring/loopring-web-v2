@@ -102,9 +102,9 @@ export default {
   labelTransactionNFT: 'NFT Transactions',
   labelTransactionNFTDes: 'NFT Transactions History',
   labelForceWithdraw: 'Force Withdraw',
-  labelInvestBalance: 'My Investment',
+  labelInvestBalance: 'My Investments',
   labelInvestBalanceDes: 'The deposition you hold',
-  labelInvestAmm: 'AMM Pool',
+  labelInvestAmm: 'AMM Pools',
   labelInvestOverview: 'Overview',
   labelInvestOverviewDes: 'Select DeFi Investment',
   labelInvestAmmDes: 'Add liquidity and earn fees',
@@ -129,6 +129,6 @@ export default {
     'This site is not released yet and could contain bugs. Please use it with caution!',
   labelReferralReward: 'Referrals Reward',
   // labelDepositNFTDes:"Receive NFT"
-  labelInvestLeverageETH: 'Leveraged ETH',
+  labelInvestLeverageETH: 'Leveraged ETH Staking',
   labelInvestLeverageETHDes: 'Gain higher APY aggressively',
 }
