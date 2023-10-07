@@ -1785,6 +1785,7 @@ export default {
   labelStopPriceDes:
     'After the "Stop Price" is triggered, the relayer will automatically place a limit order at this price. ',
   labelStopPriceSell: 'Limit / Sell Price',
+  labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
   labelTitleOverviewAllPrd: 'All Products',
   labelInvestDefiDes: 'Earn ETH staking rewards',
@@ -1793,7 +1794,6 @@ export default {
   labelInvestLoopringEarn: 'Loopring Earn',
   labelInvestLoopringEarnDes: 'Earn stable profits with professional asset management',
   labelInvestLRCDes: 'Earn LRC staking rewards',
-  labelClaimallToken: 'Reward token {{symbol}}',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
   labelHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. ',
@@ -1839,15 +1839,11 @@ export default {
   labelHighPriceImpacTitle: 'High Price Impact Detected',
   labelTimeoutAddressClick:
     '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
-  labelLeverageETHStakingDes: 'Gain higher APY aggressively',
   labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
   labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
   labelRedPacketViewType2: 'Exclusive',
-  labelRedPacketPlazaPublic: 'Plaza Public',
+  labelRedPacketPlazaPublic: 'Public Plaza',
   labelRedPacketPlazaPublicDes:
-    'In the red envelope square display & know the QR code users can participate in grabbing red envelopes',
-  labelRedPacketQRPublic: 'QR Public',
-  labelRedPacketQRPublicDes: 'know the QR code users can participate in grabbing red envelopes',
     'Everyone in the Loopring community can participate in claiming the red packet',
   labelRedPacketQRPublic: 'Public QR',
   labelRedPacketQRPublicDes:
@@ -2010,4 +2006,4 @@ export default {
     '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
     '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
-  }
+}

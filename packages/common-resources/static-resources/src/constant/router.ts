@@ -583,6 +583,14 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
+      id: 'vault',
+      i18nKey: 'labelVault',
+      description: 'labelVaultDescription',
+    },
+    child: vaultItemData,
+  },
+  {
+    label: {
       id: 'NFT',
       i18nKey: 'labelNFT',
     },
