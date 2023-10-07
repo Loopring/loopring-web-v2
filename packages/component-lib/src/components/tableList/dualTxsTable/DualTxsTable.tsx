@@ -165,7 +165,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               <Typography
                 borderRadius={1}
                 marginLeft={1}
-                paddingX={0.5}
+                paddingX={1 / 2}
                 bgcolor={'var(--color-warning)'}
               >
                 {t('labelDualPending')}
@@ -175,7 +175,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               <Typography
                 borderRadius={1}
                 marginLeft={1}
-                paddingX={0.5}
+                paddingX={1 / 2}
                 bgcolor={'var(--color-error)'}
               >
                 {t('labelDualFailed')}
@@ -397,6 +397,8 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            let icon: any = undefined,
+              status = ''
             const {
               sellSymbol,
               apy,
@@ -414,6 +416,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     amountOut,
                   },
                   timeOrigin: { expireTime },
+                  dualReinvestInfo: { retryStatus, maxDuration, newStrike },
                 },
               },
             } = row
@@ -463,8 +466,70 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 : `${amount} ${sellSymbol}`
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, _marketBuy] : [_marketBuy, sellSymbol]
+
+            switch (retryStatus) {
+              case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
+                icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusSuccess'
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
+                icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusError'
+
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRYING:
+                icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusRetrying'
+                break
+            }
+            const recursiveStatus = icon ? (
+              <Tooltip
+                title={t(status, {
+                  day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
+                  price: newStrike ? newStrike : EmptyValueTag,
+                }).toString()}
+              >
+                <Typography display={'inline-flex'} alignItems={'center'} height={'100%'}>
+                  {/*<>{content}</>*/}
+                  <>{icon}</>
+                </Typography>
+              </Tooltip>
+            ) : (
+              <></>
+            )
+            const pending = (
+              <Typography
+                borderRadius={1}
+                marginLeft={1}
+                paddingX={1 / 2}
+                component={'span'}
+                fontSize={'9px'}
+                bgcolor={'var(--color-warning)'}
+              >
+                {t('labelDualPending')}
+              </Typography>
+            )
+            const failed = (
+              <Typography
+                borderRadius={1}
+                marginLeft={1}
+                paddingX={1 / 2}
+                component={'span'}
+                fontSize={'9px'}
+                bgcolor={'var(--color-error)'}
+              >
+                {t('labelDualFailed')}
+              </Typography>
+            )
+
             return (
-              <Box display={'flex'} alignItems={'stretch'} flexDirection={'column'}>
+              <Box
+                display={'flex'}
+                alignItems={'stretch'}
+                flexDirection={'column'}
+                height={'100%'}
+                justifyContent={'center'}
+              >
                 <Typography
                   display={'flex'}
                   flexDirection={'row'}
@@ -484,19 +549,37 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     <Typography component={'span'} color={'textPrimary'} variant={'inherit'}>
                       {sentence}
                     </Typography>
+                    {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                    investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
+                      ? failed
+                      : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+                      ? pending
+                      : null}
                   </Typography>
                   <Typography
                     component={'span'}
                     color={'textPrimary'}
                     paddingLeft={1}
                     variant={'body2'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
                   >
-                    APY: {apy}, {t('labelDualAuto')}:
+                    APY: {apy}
+                  </Typography>
+                  <Typography
+                    component={'span'}
+                    color={'textPrimary'}
+                    paddingLeft={1 / 2}
+                    variant={'body2'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
                     {row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
                     row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
                       sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
-                      ? t('labelDualAssetReInvestEnable')
-                      : t('labelDualAssetReInvestDisable')}
+                      ? t('labelDualAssetReInvestYes')
+                      : t('labelDualAssetReInvestNo')}
+                    {recursiveStatus}
                   </Typography>
                 </Typography>
 
