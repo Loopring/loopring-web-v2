@@ -54,11 +54,13 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
     &.Mui-disabled{
       color: var(--color-text-disable)
     }
+
     &.Mui-selected, &.Mui-selected:hover {
       background: inherit;
       color: var(--color-text-button-select);
       //color: var(--color-primary);
     }
+
     &:hover {
       background: inherit;
       color: var(--color-primary);
