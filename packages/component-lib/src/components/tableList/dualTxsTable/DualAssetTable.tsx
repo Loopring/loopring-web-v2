@@ -2,10 +2,8 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import {
-  AlertIcon,
   ClockIcon,
   EmptyValueTag,
-  getValuePrecisionThousand,
   globalSetup,
   HiddenTag,
   MoreIcon,
@@ -134,8 +132,6 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
             const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-            // const investmentStatus = row.__raw__.order.investmentStatus
-            // const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
 
             return (
               <Typography
@@ -530,10 +526,6 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           currentheight={
             rawData.length ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight : 350
           }
-          // onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-          //   if (c.key === 'Action') return
-          //   showDetail(row)
-          // }}
           sortMethod={sortMethod}
           {...{
             ...defaultArgs,

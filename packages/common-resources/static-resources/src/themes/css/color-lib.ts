@@ -23,7 +23,6 @@ export const GrayBlack = {
   gray1000: '#31353D',
   gray1100: '#292C33',
 }
-
 export const SystemColor = {
   blue: '#446EFF',
   green: '#00BBA8',

@@ -203,18 +203,20 @@ export const useTradeRace = () => {
       }
       nodeTimer.current = setTimeout(calculateTimeLeft, 1000)
     }
+
   }, [eventData, eventStatus])
-  React.useEffect(() => {
-    if (eventStatus) {
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as NodeJS.Timeout)
+  React
+    .useEffect(() => {
+      if (eventStatus) {
+        if (nodeTimer.current !== -1) {
+          clearTimeout(nodeTimer.current as NodeJS.Timeout)
+        }
+        calculateTimeLeft()
       }
-      calculateTimeLeft()
-    }
-    return () => {
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as NodeJS.Timeout)
-      }
+      return () => {
+        if (nodeTimer.current !== -1) {
+          clearTimeout(nodeTimer.current as NodeJS.Timeout)
+        }
     }
   }, [eventStatus])
 
