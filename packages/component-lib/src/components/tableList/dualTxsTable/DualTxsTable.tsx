@@ -165,7 +165,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               <Typography
                 borderRadius={1}
                 marginLeft={1}
-                paddingX={0.5}
+                paddingX={1 / 2}
                 bgcolor={'var(--color-warning)'}
               >
                 {t('labelDualPending')}
@@ -175,7 +175,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               <Typography
                 borderRadius={1}
                 marginLeft={1}
-                paddingX={0.5}
+                paddingX={1 / 2}
                 bgcolor={'var(--color-error)'}
               >
                 {t('labelDualFailed')}
@@ -497,18 +497,39 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             ) : (
               <></>
             )
-
-            // const content =
-            //   row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
-            //   row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
-            //   sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
-            //     <>{t('labelDualAssetReInvestEnable')}</>
-            //   ) : (
-            //     <>{t('labelDualAssetReInvestDisable')} </>
-            //   )
+            const pending = (
+              <Typography
+                borderRadius={1}
+                marginLeft={1}
+                paddingX={1 / 2}
+                component={'span'}
+                fontSize={'9px'}
+                bgcolor={'var(--color-warning)'}
+              >
+                {t('labelDualPending')}
+              </Typography>
+            )
+            const failed = (
+              <Typography
+                borderRadius={1}
+                marginLeft={1}
+                paddingX={1 / 2}
+                component={'span'}
+                fontSize={'9px'}
+                bgcolor={'var(--color-error)'}
+              >
+                {t('labelDualFailed')}
+              </Typography>
+            )
 
             return (
-              <Box display={'flex'} alignItems={'stretch'} flexDirection={'column'}>
+              <Box
+                display={'flex'}
+                alignItems={'stretch'}
+                flexDirection={'column'}
+                height={'100%'}
+                justifyContent={'center'}
+              >
                 <Typography
                   display={'flex'}
                   flexDirection={'row'}
@@ -528,19 +549,37 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     <Typography component={'span'} color={'textPrimary'} variant={'inherit'}>
                       {sentence}
                     </Typography>
+                    {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                    investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
+                      ? failed
+                      : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+                      ? pending
+                      : null}
                   </Typography>
                   <Typography
                     component={'span'}
                     color={'textPrimary'}
                     paddingLeft={1}
                     variant={'body2'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
                   >
-                    APY: {apy}, {t('labelDualAuto')}:
+                    APY: {apy}
+                  </Typography>
+                  <Typography
+                    component={'span'}
+                    color={'textPrimary'}
+                    paddingLeft={1 / 2}
+                    variant={'body2'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
                     {row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
                     row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
                       sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
-                      ? t('labelDualAssetReInvestEnable')
-                      : t('labelDualAssetReInvestDisable')}
+                      ? t('labelDualAssetReInvestYes')
+                      : t('labelDualAssetReInvestNo')}
+                    {recursiveStatus}
                   </Typography>
                 </Typography>
 
@@ -572,7 +611,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                       `${DAY_FORMAT} ${MINUTE_FORMAT}`,
                     )}
                     `}
-                    {recursiveStatus}
                   </Typography>
                 </Typography>
               </Box>

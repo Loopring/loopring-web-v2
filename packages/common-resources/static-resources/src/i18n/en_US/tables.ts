@@ -358,4 +358,6 @@ export default {
   labelDualRetryStatusError:
     'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
   labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
+  labelDualAssetReInvestYes: 'ReInvest On',
+  labelDualAssetReInvestNo: 'ReInvest Off',
 }
