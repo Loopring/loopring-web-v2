@@ -312,26 +312,73 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           title: t('labelDualAutoInvestTip'),
           formatter: ({ row }) => {
             let icon = <></>
+            let icon: any = undefined,
+              status = ''
             const {
               __raw__: {
                 order: {
                   // investmentStatus,
-                  dualReinvestInfo: { retryStatus },
+                  dualReinvestInfo: { retryStatus, maxDuration, newStrike },
                 },
               },
             } = row
-            // dualReinvestInfo
             switch (retryStatus) {
               case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
-                icon = <CompleteIcon color={'success'} />
+                icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusSuccess'
                 break
               case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
-                icon = <WarningIcon color={'error'} />
+                icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusError'
+
                 break
               case sdk.DUAL_RETRY_STATUS.RETRYING:
-                icon = <WaitingIcon color={'primary'} />
+                icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusRetrying'
                 break
             }
+
+            const content =
+              row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+              row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+                sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
+                <>{t('labelDualAssetReInvestEnable')}</>
+              ) : (
+                <>{t('labelDualAssetReInvestDisable')} </>
+              )
+            return icon ? (
+              <Tooltip
+                title={t(status, {
+                  day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
+                  price: newStrike ? newStrike : EmptyValueTag,
+                }).toString()}
+              >
+                <Typography display={'inline-flex'} alignItems={'center'} height={'100%'}>
+                  <>{content}</>
+                  <>{icon}</>
+                </Typography>
+              </Tooltip>
+            ) : (
+              <>{content}</>
+            )
+          },
+        },
+        {
+          key: 'time',
+          name: t('labelDualTxsTime'),
+          headerCellClass: 'textAlignRight',
+          title: t('labelDualAutoInvestTip'),
+          formatter: ({ row }) => {
+            // let icon = <></>,
+            //   status = ''
+            // const row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
+            // renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+            //   renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
+
+            // dualReinvestInfo
+
             return (
               <Box
                 className={'textAlignRight'}
