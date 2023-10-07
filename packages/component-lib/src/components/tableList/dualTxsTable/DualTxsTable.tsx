@@ -296,28 +296,8 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           sortable: true,
           name: t('labelDualAutoReinvest'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
-              row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
-                sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
-              <>{t('labelDualAssetReInvestEnable')}</>
-            ) : (
-              <>{t('labelDualAssetReInvestDisable')} </>
-            )
-          },
-        },
-        {
-          key: 'time',
-          name: t('labelDualTxsTime'),
-          headerCellClass: 'textAlignRight',
-          title: t('labelDualAutoInvestTip'),
-          formatter: ({ row }) => {
             let icon = <></>,
               status = ''
-            // const row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
-            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
-            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
-            // renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
-            //   renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
             const {
               __raw__: {
                 order: {
@@ -326,7 +306,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 },
               },
             } = row
-            // dualReinvestInfo
             switch (retryStatus) {
               case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
                 icon = <CompleteIcon color={'success'} />
@@ -343,6 +322,44 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 break
             }
 
+            const content =
+              row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+              row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+                sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
+                <>{t('labelDualAssetReInvestEnable')}</>
+              ) : (
+                <>{t('labelDualAssetReInvestDisable')} </>
+              )
+            return icon ? (
+              <Tooltip
+                title={t(status, {
+                  day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
+                  price: newStrike ? newStrike : EmptyValueTag,
+                }).toString()}
+              >
+                {content}
+              </Tooltip>
+            ) : (
+              <>{content}</>
+            )
+          },
+        },
+        {
+          key: 'time',
+          name: t('labelDualTxsTime'),
+          headerCellClass: 'textAlignRight',
+          title: t('labelDualAutoInvestTip'),
+          formatter: ({ row }) => {
+            // let icon = <></>,
+            //   status = ''
+            // const row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
+            // renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+            //   renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
+
+            // dualReinvestInfo
+
             return (
               <Box
                 className={'textAlignRight'}
@@ -351,35 +368,14 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
                 alignItems={'center'}
               >
-                {icon ? (
-                  <Tooltip
-                    title={t(status, {
-                      day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
-                      price: newStrike ? newStrike : EmptyValueTag,
-                    }).toString()}
-                  >
-                    <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
-                      {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
-                      <Typography
-                        component={'span'}
-                        display={'inline-flex'}
-                        alignItems={'center'}
-                        paddingLeft={1 / 2}
-                      >
-                        {icon}
-                      </Typography>
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography
-                    component={'span'}
-                    paddingRight={1 / 2}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
-                  </Typography>
-                )}
+                <Typography
+                  component={'span'}
+                  paddingRight={1 / 2}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+                </Typography>
               </Box>
             )
           },
