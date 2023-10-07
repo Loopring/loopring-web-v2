@@ -66,7 +66,7 @@ import { NFTInput } from './BasicANFTTrade'
 import { DateTimeRangePicker } from '../../datetimerangepicker'
 import BigNumber from 'bignumber.js'
 import { isAddress, useNotify, useTokenMap } from '@loopring-web/core'
-import { CoinIcons, FeeSelect, Modal } from '../../../components'
+import { CoinIcons, FeeSelect, InitialNameAvatar, Modal } from '../../../components'
 import { useTheme } from '@emotion/react'
 import { useHistory } from 'react-router'
 import { TFunction } from 'i18next'
@@ -852,7 +852,7 @@ export const CreateRedPacketStepType = withTranslation()(
     // handleOnSelectedType,
     tradeType,
     tradeData,
-    handleOnDataChange,
+    // handleOnDataChange,
     setActiveStep,
     backToScope,
     selectedType,
@@ -1027,7 +1027,7 @@ export const CreateRedPacketStepType = withTranslation()(
 export const CreateRedPacketStepTokenType = withTranslation()(
   <T extends RedPacketOrderData<I>, I, C = FeeInfo>({
     tradeType,
-    setActiveStep,
+    // setActiveStep,
     disabled = false,
     btnInfo,
     onClickNext,
@@ -1437,7 +1437,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
       onCloseRedpacketPop,
       backToScope,
       t,
-      tReady,
+      // tReady,
     } = props
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
@@ -1833,41 +1833,48 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <Box height={300} marginTop={2} marginBottom={2} overflow={'scroll'}>
                 {contacts
                   ?.filter((contact) => {
-                    return contact.address && contact.name && search
-                      ? contact.address.toLowerCase().includes(search.toLowerCase()) ||
-                          contact.name.toLowerCase().includes(search.toLowerCase())
+                    return contact.contactAddress && contact.contactName && search
+                      ? contact.contactAddress.toLowerCase().includes(search.toLowerCase()) ||
+                          contact.contactName.toLowerCase().includes(search.toLowerCase())
                       : true
                   })
                   .map((contact) => {
                     return (
                       <Box
                         marginBottom={2}
-                        key={contact.address}
+                        // addressType
+                        // contactAddress
+                        // contactMemo
+                        // contactName
+                        // isFavourite
+                        // network
+                        // ownerAccountId
+                        key={contact.contactAddress}
                         display={'flex'}
                         alignItems={'start'}
                         justifyContent={'space-between'}
                       >
                         <Box display={'flex'}>
-                          <Avatar sizes={'32px'} src={contact.avatarURL}></Avatar>
+                          <InitialNameAvatar name={contact.contactName} />
                           <Box marginLeft={1}>
-                            <Typography>{contact.name}</Typography>
-                            <Typography variant={'body2'}>{contact.address}</Typography>
+                            <Typography>{contact.contactName}</Typography>
+                            <Typography variant={'body2'}>{contact.contactAddress}</Typography>
                           </Box>
                         </Box>
                         <Checkbox
                           onChange={() => {
                             const newSelectedAddresses = selectedAddresses.find(
-                              (addr) => addr === contact.address,
+                              (addr) => addr === contact.contactAddress,
                             )
-                              ? selectedAddresses.filter((addr) => addr !== contact.address)
-                              : [contact.address, ...selectedAddresses]
+                              ? selectedAddresses.filter((addr) => addr !== contact.contactAddress)
+                              : [contact.contactAddress, ...selectedAddresses]
                             setSelectedAddresses(newSelectedAddresses)
                             // if (newSelectedAddresses.length <= maximumTargetsLength) {
                             //   setSelectedAddresses(newSelectedAddresses)
                             // }
                           }}
                           checked={
-                            selectedAddresses.find((addr) => addr === contact.address)
+                            selectedAddresses.find((addr) => addr === contact.contactAddress)
                               ? true
                               : false
                           }
@@ -2140,7 +2147,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               </Typography>
               {
                 <Button
-                  onClick={(e) => {
+                  onClick={(_e) => {
                     onManualEditInput('')
                     setInputDisabled(false)
                     setShowChangeTips({
@@ -2209,7 +2216,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 }
               />
               <Button
-                onClick={(e) => {
+                onClick={(_e) => {
                   if (
                     showChangeTips.previousInputType &&
                     showChangeTips.previousInputType !== 'contact'
@@ -2269,7 +2276,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               control={
                 <Checkbox
                   checked={popupChecked}
-                  onChange={(_event: any, state: boolean) => {
+                  onChange={(_event: any, _state: boolean) => {
                     if (popUpOptionDisabled) {
                       setShowPopUpTips(true)
                     } else {
