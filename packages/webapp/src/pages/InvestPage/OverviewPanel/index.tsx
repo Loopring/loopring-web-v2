@@ -33,9 +33,15 @@ import {
   Overview,
   EmptyValueTag,
   UpIcon,
-  getValuePrecisionThousand,
 } from '@loopring-web/common-resources'
-import { useAccount, useAmmMap, useDefiMap, useDualMap, useNotify, useStakingMap } from '@loopring-web/core'
+import {
+  useAccount,
+  useAmmMap,
+  useDefiMap,
+  useDualMap,
+  useNotify,
+  useStakingMap,
+} from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { MaxWidthContainer, containerColors } from '..'
 import _ from 'lodash'
@@ -86,12 +92,13 @@ const WrapperStyled = styled(Box)`
 `
 
 const getAprRange = (list: number[]) => {
-  const aprs = list
-    .sort((a, b) => a - b)
-  return aprs.length > 0 && {
-    from: aprs[0],
-    to: aprs[aprs.length - 1],
-  }
+  const aprs = list.sort((a, b) => a - b)
+  return (
+    aprs.length > 0 && {
+      from: aprs[0],
+      to: aprs[aprs.length - 1],
+    }
+  )
 }
 
 export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation & {}) => {
@@ -108,39 +115,40 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
   const ammApr = React.useMemo(() => {
     return getAprRange(
       _.values(ammMap)
-      .filter((amm) => amm && amm.APR)
-      .map(amm => amm.APR!)
+        .filter((amm) => amm && amm.APR)
+        .map((amm) => amm.APR!),
     )
   }, [ammMap])
   const defiApr = React.useMemo(() => {
     return getAprRange(
       _.values(marketMap)
-      .filter((defi) => defi && defi.apy )
-      .map(defi => Number(defi.apy))
+        .filter((defi) => defi && defi.apy)
+        .map((defi) => Number(defi.apy)),
     )
   }, [marketMap])
   const dualApr = React.useMemo(() => {
     return getAprRange(
       _.values(dualMarketMap)
-      .flatMap((dual: any) => [dual.baseTokenApy?.max as string, dual.baseTokenApy?.min as string])
-      .filter((apy) => apy)
-      .map(apy => Number(apy) * 100)
+        .flatMap((dual: any) => [
+          dual.quoteTokenApy?.max as string,
+          dual.quoteTokenApy?.min as string,
+        ])
+        .filter((apy) => apy)
+        .map((apy) => Number(apy)),
     )
   }, [dualMarketMap])
   const lrcApr = React.useMemo(() => {
     return getAprRange(
       _.values(LRCMarketMap)
-      // .flatMap((dual: any) => [dual.quoteTokenApy.max as string, dual.quoteTokenApy.min as string])
-      .filter((lrc) => lrc.apr)
-      .map(lrc => Number(lrc.apr))
+        .filter((lrc) => lrc.apr)
+        .map((lrc) => Number(lrc.apr)),
     )
   }, [LRCMarketMap])
   const leverageApr = React.useMemo(() => {
     return getAprRange(
       _.values(marketLeverageMap)
-      // .flatMap((dual: any) => [dual.quoteTokenApy.max as string, dual.quoteTokenApy.min as string])
-      .filter((leverage) => leverage.apy)
-      .map(leverage => Number(leverage.apy))
+        .filter((leverage) => leverage.apy)
+        .map((leverage) => Number(leverage.apy)),
     )
   }, [marketLeverageMap])
 
@@ -150,13 +158,13 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
     toggle: { CIETHInvest },
   } = useToggle()
   const investAdviceList = [
-    { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2], apyRange: dualApr},
+    { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0], apyRange: ammApr },
     { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1], apyRange: defiApr},
+    { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2], apyRange: dualApr },
+    { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3], apyRange: lrcApr },
     ...(!CIETHInvest.enable && CIETHInvest.reason === 'no view'
       ? []
       : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4], apyRange: leverageApr }]),
-    { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0], apyRange: ammApr },
-    { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3], apyRange: lrcApr },
   ]
   const theme = useTheme()
   const scrollViewRef = React.useRef()
@@ -229,13 +237,13 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
               className={'scroll-view'}
               ref={scrollViewRef}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  width: isMobile ? '100%' : 'fit-content',
-                  flexDirection: isMobile ? 'column' : 'row',
-                }}
-              >
+            <Box
+              sx={{
+                display: 'flex',
+                width: isMobile ? '100%' : 'fit-content',
+                flexDirection: isMobile ? 'column' : 'row',
+              }}
+            >
                 {investAdviceList.map((item, index) => {
                   return (
                     <Card
@@ -259,24 +267,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
 
                           <Typography variant={'h3'} marginTop={5}>
                             {item.apyRange
-                              ? item.apyRange.from === item.apyRange.to
-                                ? `${getValuePrecisionThousand(
-                                    item.apyRange.from,
-                                    undefined,
-                                    2,
-                                    2,
-                                  )}%`
-                                : `${getValuePrecisionThousand(
-                                    item.apyRange.from,
-                                    undefined,
-                                    2,
-                                    2,
-                                  )}%-${getValuePrecisionThousand(
-                                    item.apyRange.to,
-                                    undefined,
-                                    2,
-                                    2,
-                                  )}%`
+                              ? `${item.apyRange.from}%-${item.apyRange.to}%`
                               : EmptyValueTag}
                           </Typography>
                           <Typography>{t('labelAPR')}</Typography>

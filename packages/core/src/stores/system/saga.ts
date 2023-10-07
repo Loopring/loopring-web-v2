@@ -5,8 +5,11 @@ import { store, LoopringSocket, LoopringAPI, toggleCheck } from '../../index'
 import {
   ChainIdExtends,
   CustomError,
+  DEFI_CONFIG,
+  DUAL_CONFIG,
   ErrorMap,
   ForexMap,
+  LEVERAGE_ETH_CONFIG,
   MapChainId,
   myLog,
   TokenPriceBase,
@@ -19,16 +22,48 @@ import { updateWalletLayer1 } from '../walletLayer1/reducer'
 import { getTokenMap } from '../token/reducer'
 import { getNotify } from '../notify/reducer'
 import { getTokenPrices } from '../tokenPrices/reducer'
-import { getDefiMap } from '../invest/DefiMap/reducer'
 import { getInvestTokenTypeMap } from '../invest/InvestTokenTypeMap/reducer'
-import { getDualMap } from '../invest/DualMap/reducer'
 import { getStakingMap } from '../invest/StakingMap/reducer'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
-import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
+import { setShowGlobalToast } from '@loopring-web/component-lib'
+import { updateDualSyncMap } from '../invest/DualMap/reducer'
+import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
+
+export const defiAllAsync = async () => {
+  if (LoopringAPI.defiAPI) {
+    let { raw_data } = await LoopringAPI.defiAPI?.getDefiMarkets({})
+    // const { baseURL } = store.getState().system
+    const { defaultNetwork } = store.getState().settings
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const [
+      dualMap,
+      { markets: marketMap, tokenArr: marketCoins, marketArr: marketArray },
+      { markets: marketLeverageMap, tokenArr: marketLeverageCoins, marketArr: marketLeverageArray },
+    ] = [
+      sdk.makeInvestMarkets(raw_data, DUAL_CONFIG.products[network].join(',')),
+      sdk.makeInvestMarkets(raw_data, DEFI_CONFIG.products[network].join(',')),
+      sdk.makeInvestMarkets(raw_data, LEVERAGE_ETH_CONFIG.products[network].join(',')),
+    ]
+    store.dispatch(updateDualSyncMap({ dualMap }))
+    // store.dispatch(updateDefiSyncMap({ dualMap }))
+    store.dispatch(
+      updateDefiSyncMap({
+        defiMap: {
+          marketArray,
+          marketCoins,
+          marketMap,
+          marketLeverageMap,
+          marketLeverageCoins,
+          marketLeverageArray,
+        },
+      }),
+    )
+  }
+}
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: sdk.ChainId | 'unknown',
@@ -241,11 +276,10 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   }
   store.dispatch(getRedPacketConfigs(undefined))
   store.dispatch(getNotify(undefined))
-  store.dispatch(getDefiMap(undefined))
-  store.dispatch(getDualMap(undefined))
+
   store.dispatch(getStakingMap(undefined))
   store.dispatch(getBtradeMap(undefined))
-
+  defiAllAsync()
   yield all([
     take('defiMap/getDefiMapStatus'),
     take('dualMap/getDualMapStatus'),
@@ -433,7 +467,12 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           raw_data: { enable: false },
           legal: { enable: false },
         }
-        throw new CustomError(ErrorMap.NO_SDK)
+        setShowGlobalToast({
+          isShow: true,
+          info: {
+            content: ErrorMap.NO_SDK,
+          },
+        })
       }
 
       // @ts-ignore

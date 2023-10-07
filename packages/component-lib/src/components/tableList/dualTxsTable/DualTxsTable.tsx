@@ -3,6 +3,9 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import {
+  CompleteIcon,
+  WarningIcon,
+  WaitingIcon,
   DAY_FORMAT,
   DirectionTag,
   EmptyValueTag,
@@ -12,7 +15,7 @@ import {
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, Typography } from '@mui/material'
+import { Box, BoxProps, Tooltip, Typography } from '@mui/material'
 import moment from 'moment'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
@@ -165,7 +168,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 paddingX={0.5}
                 bgcolor={'var(--color-warning)'}
               >
-                pending
+                {t('labelDualPending')}
               </Typography>
             )
             const failed = (
@@ -175,7 +178,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 paddingX={0.5}
                 bgcolor={'var(--color-error)'}
               >
-                failed
+                {t('labelDualFailed')}
               </Typography>
             )
             return (
@@ -289,13 +292,90 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           },
         },
         {
+          key: 'Auto',
+          sortable: true,
+          name: t('labelDualAutoReinvest'),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            let icon = <></>,
+              status = ''
+            const {
+              __raw__: {
+                order: {
+                  // investmentStatus,
+                  dualReinvestInfo: { retryStatus, maxDuration, newStrike },
+                },
+              },
+            } = row
+            switch (retryStatus) {
+              case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
+                icon = <CompleteIcon color={'success'} />
+                status = 'labelDualRetryStatusSuccess'
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
+                icon = <WarningIcon color={'error'} />
+                status = 'labelDualRetryStatusError'
+
+                break
+              case sdk.DUAL_RETRY_STATUS.RETRYING:
+                icon = <WaitingIcon color={'primary'} />
+                status = 'labelDualRetryStatusRetrying'
+                break
+            }
+
+            const content =
+              row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+              row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+                sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
+                <>{t('labelDualAssetReInvestEnable')}</>
+              ) : (
+                <>{t('labelDualAssetReInvestDisable')} </>
+              )
+            return icon ? (
+              <Tooltip
+                title={t(status, {
+                  day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
+                  price: newStrike ? newStrike : EmptyValueTag,
+                }).toString()}
+              >
+                {content}
+              </Tooltip>
+            ) : (
+              <>{content}</>
+            )
+          },
+        },
+        {
           key: 'time',
           name: t('labelDualTxsTime'),
           headerCellClass: 'textAlignRight',
+          title: t('labelDualAutoInvestTip'),
           formatter: ({ row }) => {
+            // let icon = <></>,
+            //   status = ''
+            // const row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
+            // renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+            //   renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
+
+            // dualReinvestInfo
+
             return (
-              <Box className='rdg-cell-value textAlignRight'>
-                {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+              <Box
+                className={'textAlignRight'}
+                display={'flex'}
+                flexDirection={'row'}
+                height={'100%'}
+                alignItems={'center'}
+              >
+                <Typography
+                  component={'span'}
+                  paddingRight={1 / 2}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  {moment(new Date(row.__raw__.order?.createdAt), 'YYYYMMDDHHMM').fromNow()}
+                </Typography>
               </Box>
             )
           },
@@ -408,11 +488,14 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     paddingLeft={1}
                     variant={'body2'}
                   >
-                    APY: {apy}
+                    APY: {apy}, {t('labelDualAuto')}:
+                    {row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+                    row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+                      sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
+                      ? t('labelDualAssetReInvestEnable')
+                      : t('labelDualAssetReInvestDisable')}
                   </Typography>
                 </Typography>
-                {/* " - " +*/}
-                {/*&nbsp;&nbsp;*/}
 
                 <Typography
                   display={'flex'}
