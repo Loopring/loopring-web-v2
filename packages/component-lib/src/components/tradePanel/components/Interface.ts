@@ -661,6 +661,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   contacts?: ContactType[]
   isWhiteListed?: boolean
   showExclusiveOption?: boolean
+  showERC20Blindbox?: boolean
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
