@@ -252,7 +252,6 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
             } else {
               setIsCFAddress(false)
             }
-
             setIsContractAddress(true)
             setIsContract1XAddress(
               found.addressType === sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6 ||

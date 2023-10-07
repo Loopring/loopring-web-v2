@@ -37,7 +37,6 @@ import {
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
-import { DisplayContact } from '@loopring-web/core/src/stores/contacts/reducer'
 
 export enum RedPacketStep {
   TradeType = 0,
