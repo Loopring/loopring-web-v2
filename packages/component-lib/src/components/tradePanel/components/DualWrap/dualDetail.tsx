@@ -230,6 +230,7 @@ export const DualDetail = ({
                     alignItems={'center'}
                   >
                     <Trans i18nKey={'labelDualAutoTitle'}>
+                      Auto Reinvest
                       <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                     </Trans>
                   </Typography>

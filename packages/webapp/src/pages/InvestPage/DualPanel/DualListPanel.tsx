@@ -139,7 +139,22 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
             </Button>
           </MaxWidthContainer>
           <Divider />
-          <MaxWidthContainer background={containerColors[1]} minHeight={'70vh'}>
+          <MaxWidthContainer
+            containerProps={{
+              sx: {
+                background: containerColors[1],
+                display: 'flex',
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+              },
+            }}
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
               <Box display={'flex'} alignItems={'center'} marginY={3}>
                 <Typography component={'h4'} variant={'h4'}>
@@ -180,7 +195,6 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                 />
               )}
             </Box>
-
             <>
               {viewType !== DualViewType.All ? (
                 <BeginnerMode dualListProps={dualListProps} viewType={viewType} />
@@ -197,59 +211,65 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                   <img alt={'loading'} width='36' src={`${SoursURL}images/loading-line.gif`} />
                 </Box>
               ) : !!marketArray?.length ? (
-                <>
-                  <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
-                    <Tabs
-                      value={pairASymbol}
-                      onChange={(_event, value) => handleOnPairChange({ pairA: value.toString() })}
-                      aria-label='l2-history-tabs'
-                      variant='scrollable'
-                      sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                      }}
-                    >
-                      {tradeMap &&
-                        Reflect.ownKeys(tradeMap)
-                          .sort((a, b) => a.toString().localeCompare(b.toString()))
-                          .map((item, index) => {
-                            return (
-                              <Grid
-                                marginBottom={2}
-                                marginLeft={2}
-                                item
-                                xs={6}
-                                md={3}
-                                lg={2}
-                                key={item.toString() + index.toString()}
+                <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
+                  <Tabs
+                    value={pairASymbol}
+                    onChange={(_event, value) => handleOnPairChange({ pairA: value.toString() })}
+                    aria-label='l2-history-tabs'
+                    variant='scrollable'
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    {tradeMap &&
+                      Reflect.ownKeys(tradeMap)
+                        .sort((a, b) => a.toString().localeCompare(b.toString()))
+                        .map((item, index) => {
+                          return (
+                            <Grid
+                              marginBottom={2}
+                              marginLeft={2}
+                              item
+                              xs={6}
+                              md={3}
+                              lg={2}
+                              key={item.toString() + index.toString()}
+                            >
+                              <MainTabCardStyleItem
+                                className={
+                                  item.toString().toLowerCase() === pairASymbol.toLowerCase()
+                                    ? 'btnCard dualInvestCard selected'
+                                    : 'btnCard dualInvestCard '
+                                }
+                                sx={{ height: '100%' }}
+                                onClick={() => handleOnPairChange({ pairA: item.toString() })}
                               >
-                                <MainTabCardStyleItem
-                                  className={
-                                    item.toString().toLowerCase() === pairASymbol.toLowerCase()
-                                      ? 'btnCard dualInvestCard selected'
-                                      : 'btnCard dualInvestCard '
-                                  }
-                                  sx={{ height: '100%' }}
-                                  onClick={() => handleOnPairChange({ pairA: item.toString() })}
-                                >
-                                  <CardContent sx={{ alignItems: 'center' }}>
-                                    <Typography component={'span'} display={'inline-flex'}>
-                                      <CoinIcon symbol={item.toString()} size={28} />
-                                    </Typography>
-                                    <Typography variant={'h5'} paddingLeft={1}>
-                                      {t('labelDualInvest', {
-                                        symbol: item.toString(),
-                                      })}
-                                    </Typography>
-                                  </CardContent>
-                                </MainTabCardStyleItem>
-                              </Grid>
-                            )
-                          })}
-                    </Tabs>
+                                <CardContent sx={{ alignItems: 'center' }}>
+                                  <Typography component={'span'} display={'inline-flex'}>
+                                    <CoinIcon symbol={item.toString()} size={28} />
+                                  </Typography>
+                                  <Typography variant={'h5'} paddingLeft={1}>
+                                    {t('labelDualInvest', {
+                                      symbol: item.toString(),
+                                    })}
+                                  </Typography>
+                                </CardContent>
+                              </MainTabCardStyleItem>
+                            </Grid>
+                          )
+                        })}
+                  </Tabs>
 
-                    <WrapperStyled marginTop={1} flex={1} flexDirection={'column'}>
-                      {pairASymbol && pairBSymbol && market && (
+                  <WrapperStyled
+                    display={'flex'}
+                    marginTop={1}
+                    flex={1}
+                    flexDirection={'column'}
+                    className={'dualList'}
+                  >
+                    {pairASymbol && pairBSymbol && market && (
+                      <>
                         <Box
                           display={'flex'}
                           flexDirection={'row'}
@@ -396,27 +416,27 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                               ))}
                           </Typography>
                         </Box>
-                      )}
-                      <Box flex={1}>
-                        <DualTable
-                          rawData={dualProducts ?? []}
-                          showloading={isLoading}
-                          forexMap={forexMap as any}
-                          onItemClick={(item) => {
-                            setShowDual({
-                              isShow: true,
-                              dualInfo: {
-                                ...item,
-                                sellSymbol: pairASymbol,
-                                buySymbol: pairBSymbol,
-                              },
-                            })
-                          }}
-                        />
-                      </Box>
-                    </WrapperStyled>
-                  </StyleDual>
-                </>
+                        <Box flex={1} display={'flex'}>
+                          <DualTable
+                            rawData={dualProducts ?? []}
+                            showloading={isLoading}
+                            forexMap={forexMap as any}
+                            onItemClick={(item) => {
+                              setShowDual({
+                                isShow: true,
+                                dualInfo: {
+                                  ...item,
+                                  sellSymbol: pairASymbol,
+                                  buySymbol: pairBSymbol,
+                                },
+                              })
+                            }}
+                          />
+                        </Box>
+                      </>
+                    )}
+                  </WrapperStyled>
+                </StyleDual>
               ) : (
                 <Box
                   key={'empty'}
