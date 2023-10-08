@@ -324,7 +324,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               start,
               end,
               investmentStatuses: [
-                sdk.LABEL_INVESTMENT_STATUS.FAILED,
+                // sdk.LABEL_INVESTMENT_STATUS.FAILED,
+                sdk.LABEL_INVESTMENT_STATUS.CANCELLED,
+                sdk.LABEL_INVESTMENT_STATUS.SUCCESS,
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
               ].join(','),

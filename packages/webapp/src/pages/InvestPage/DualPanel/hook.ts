@@ -141,8 +141,7 @@ export const useDualHook = () => {
       } else {
         const {
           // totalNum,
-          dualInfo: { infos, index, balance },
-          raw_data: { rules },
+          dualInfo: { infos, index, balance, rules },
         } = response as any
         const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
         const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
