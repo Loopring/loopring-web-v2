@@ -1,5 +1,4 @@
-import styled from '@emotion/styled'
-import { Box, Button, Grid, Modal, Tabs, Typography } from '@mui/material'
+import { Box, Button, Grid, Modal, Tab, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
@@ -18,6 +17,7 @@ import {
   ToastType,
   useOpenModals,
   useSettings,
+  Tabs,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -64,18 +64,18 @@ import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
+// background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
 
-const Tab = styled(Box)<{ selected: boolean }>`
-  background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
-  padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
-  border-radius: ${({ theme }) => 0.5 * theme.unit}px;
-  font-size: 16px;
-  line-height: 24px;
-  margin-right: ${({ theme }) => theme.unit}px;
-  cursor: pointer;
-  color: ${({ selected }) =>
-    `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`};
-`
+// const TabStyle = styled(Tab)`
+//   padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
+//   border-radius: ${({ theme }) => 0.5 * theme.unit}px;
+//   font-size: 16px;
+//   line-height: 24px;
+//   margin-right: ${({ theme }) => theme.unit}px;
+//   cursor: pointer;
+//   color: ${({ selected }) =>
+//     `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`};
+// `
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -249,7 +249,10 @@ const MyLiquidity: any = withTranslation('common')(
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
       setTab(
-        InvestAssetRouter[match?.params?.type?.toUpperCase() ?? 'DUAL'] ?? InvestAssetRouter.DUAL,
+        InvestAssetRouter[
+          // @ts-ignore
+          match?.params?.type?.toUpperCase() ?? 'DUAL'
+        ] ?? InvestAssetRouter.DUAL,
       )
       if (searchParams?.get('refreshStake')) {
         getStakingList({})
@@ -398,12 +401,13 @@ const MyLiquidity: any = withTranslation('common')(
             <>
               <Box width={'100%'} display={'flex'}>
                 <Tabs
+                  className={'btnTab'}
                   value={tab}
                   onChange={(_event: any, newValue: any) => setTab(newValue)}
                   aria-label='InvestmentsTab'
                 >
                   {visibaleTabs.map((tab) => (
-                    <Tab label={t(tab.label)} key={tab.tab} />
+                    <Tab value={tab.tab.toString()} label={t(tab.label).toString()} key={tab.tab} />
                   ))}
                 </Tabs>
               </Box>
@@ -866,7 +870,7 @@ const MyLiquidity: any = withTranslation('common')(
         <CancelDualAlert
           open={showCancelOneAlert.open}
           row={showCancelOneAlert.row}
-          handleCancelOne={() => cancelReInvest(showCancelOneAlert.row)}
+          handleCancelOne={async () => await cancelReInvest(showCancelOneAlert.row)}
           handleClose={() => setShowCancelOndAlert({ open: false, row: undefined })}
         />
         <Toast
