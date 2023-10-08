@@ -355,13 +355,20 @@ export const subMenuInvest = [
     },
   },
 ]
-export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual' | 'leverageETH'
-export const investTabs = [
-  { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
-  { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
-  { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
-  { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
-  { tab: 'leverageETH' as InvestTab, label: 'labelLeverageETHTitle' },
+export enum INVEST_TAB {
+  pools = 'pools',
+  lido = 'lido',
+  staking = 'staking',
+  dual = 'dual',
+  leverageETH = 'leverageETH',
+}
+
+export const invest_Tabs = [
+  { tab: INVEST_TAB.pools, label: 'labelLiquidityPageTitle' },
+  { tab: INVEST_TAB.lido, label: 'labelInvestLRCTitle' },
+  { tab: INVEST_TAB.staking, label: 'labelInvestDefiTitle' },
+  { tab: INVEST_TAB.dual, label: 'labelInvestDualTitle' },
+  { tab: INVEST_TAB.leverageETH, label: 'labelLeverageETHTitle' },
 ]
 
 export const DEFI_CONFIG = {

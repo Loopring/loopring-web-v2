@@ -41,7 +41,6 @@ export const useDualHook = () => {
   } = confirmation.useConfirmation()
   const history = useHistory()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  // const { tradeMap, marketMap } = useDualMap()
 
   const [isLoading, setIsLoading] = React.useState(true)
   const [currentPrice, setCurrentPrice] = React.useState<DualCurrentPrice | undefined>(undefined)

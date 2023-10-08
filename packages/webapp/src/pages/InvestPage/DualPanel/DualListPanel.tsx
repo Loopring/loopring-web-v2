@@ -17,15 +17,12 @@ import {
   Button,
   CardStyleItem,
   CoinIcon,
-  ConfirmInvestDualAutoRisk,
-  ConfirmInvestDualRisk,
   DualTable,
   EmptyDefault,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import {
-  confirmation,
   ModalDualPanel,
   useDualMap,
   useDualTrade,
