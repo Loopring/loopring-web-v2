@@ -150,6 +150,7 @@ export const CardStyleItem = styled(Card)<
       top: ${({ theme }) => theme.unit}px;
       transform: scale(1.5);
     }
+    background-color: var(--color-box-secondary);
   }
 
   &.btnCard {
