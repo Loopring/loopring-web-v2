@@ -387,11 +387,13 @@ export const LinkActionStyle = styled(Link)`
 
 export const Tabs = styled(MuTabs)`
   &.btnTab {
-    //TODO
     .MuiTab-root {
-      //TODO
+      padding: ${({theme}) => theme.unit}px ${({theme}) => theme.unit * 1.5}px;
+      min-height: auto;
+      line-height: 24px;
       &.Mui-selected {
-        //TODO
+        border-radius: ${({theme}) => theme.unit * .5}px;
+        background: var(--color-primary);
       }
     }
   }
