@@ -227,17 +227,19 @@ const MyLiquidity: any = withTranslation('common')(
           },
           { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
         )
-    const dualStakeDollar = dualOnInvestAsset
-      ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
-          const price = tokenPrices[idIndex[cur.tokenId]]
-          return sdk
-            .toBig(cur?.amount ?? 0)
-            .div('1e' + tokenMap[idIndex[cur.tokenId]].decimals)
-            .times(price ?? 0)
-            .plus(pre)
-            .toString()
-        }, '0')
-      : undefined
+    const dualStakeDollar = React.useMemo(() => {
+      return dualOnInvestAsset
+        ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
+            const price = tokenPrices[idIndex[cur.tokenId]]
+            return sdk
+              .toBig(cur?.amount ?? 0)
+              .div('1e' + tokenMap[idIndex[cur.tokenId]].decimals)
+              .times(price ?? 0)
+              .plus(pre)
+              .toString()
+          }, '0')
+        : undefined
+    }, [dualOnInvestAsset, tokenPrices])
     const _summaryMyInvest = sdk
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
