@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Box, Button, Grid, Modal, Typography } from '@mui/material'
+import { Box, Button, Grid, Modal, Tabs, Typography } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
@@ -30,8 +30,11 @@ import {
   getValuePrecisionThousand,
   HiddenTag,
   INVEST_TAB,
-  InvestTab,
-  investTabs,
+  INVEST_TABS,
+  invest_Tabs,
+  InvestAssetRouter,
+  // InvestTab,
+  // investTabs,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -169,32 +172,7 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
-    React.useEffect(() => {
-      if (match?.params?.type) {
-        switch (match?.params?.type) {
-          //TODO
-          case 'dual':
-            // @ts-ignore
-            window.scrollTo(0, dualRef?.current?.offsetTop)
-            break
-          case 'stake':
-            // @ts-ignore
-            window.scrollTo(0, stakingRef?.current?.offsetTop)
 
-            break
-          case 'amm':
-            // @ts-ignore
-            window.scrollTo(0, ammPoolRef?.current?.offsetTop)
-            break
-          case 'sideStake':
-            // @ts-ignore
-            window.scrollTo(0, sideStakeRef?.current?.offsetTop)
-        }
-      }
-      if (searchParams?.get('refreshStake')) {
-        getStakingList({})
-      }
-    }, [match?.params?.type, searchParams?.get('refreshStake')])
     React.useEffect(() => {
       if (
         account.readyState === AccountStatus.ACTIVATED &&
@@ -266,17 +244,19 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
-    const tabToName = (tab: InvestTab) => {
-      const found = investTabs.find((_tab) => _tab.tab === tab)
-      return found ? t(found.label) : undefined
-    }
-    const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
-    //TODO
-    const visibaleTabs: INVEST_TAB[] = Object.keys(INVEST_TAB)
-    //['dual', 'staking', 'leverageETH', 'pools', 'lido']
-    myLog('visibaleTabs', visibaleTabs)
-    const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
-    myLog('visibaleTabs _tab', _tab)
+    const visibaleTabs: InvestAssetRouter[] = _.cloneDeep(INVEST_TABS).filter(() => {
+      return true
+      // TODO when has toggle
+    })
+    const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
+    React.useEffect(() => {
+      setTab(
+        InvestAssetRouter[match?.params?.type?.toUpperCase() ?? 'DUAL'] ?? InvestAssetRouter.DUAL,
+      )
+      if (searchParams?.get('refreshStake')) {
+        getStakingList({})
+      }
+    }, [match?.params?.type, searchParams?.get('refreshStake')])
 
     const label = React.useMemo(() => {
       if (editDualBtnInfo.label) {
@@ -419,11 +399,15 @@ const MyLiquidity: any = withTranslation('common')(
           {
             <>
               <Box width={'100%'} display={'flex'}>
-                {visibaleTabs.map((tab) => (
-                  <Tab selected={tab === _tab} onClick={() => setTab(tab)}>
-                    {tabToName(tab)}
-                  </Tab>
-                ))}
+                <Tabs
+                  value={tab}
+                  onChange={(_event: any, newValue: any) => setTab(newValue)}
+                  aria-label='InvestmentsTab'
+                >
+                  {visibaleTabs.map((tab) => (
+                    <Tab label={t(tab.label)} />
+                  ))}
+                </Tabs>
               </Box>
 
               {_tab === 'pools' && (
