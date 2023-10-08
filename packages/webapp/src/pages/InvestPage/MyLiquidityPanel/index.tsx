@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { Box, Button, Grid, Modal, Tabs, Typography } from '@mui/material'
-import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AmmPanelType,
@@ -11,7 +11,6 @@ import {
   DualAssetTable,
   DualDetail,
   EarningsDetail,
-  EmptyDefault,
   ModalCloseButton,
   MyPoolTable,
   SwitchPanelStyled,
@@ -29,9 +28,9 @@ import {
   FailedIcon,
   getValuePrecisionThousand,
   HiddenTag,
-  INVEST_TAB,
-  INVEST_TABS,
-  invest_Tabs,
+  INVESTtab,
+  INVESTtabS,
+  investtabs,
   InvestAssetRouter,
   // InvestTab,
   // investTabs,
@@ -244,7 +243,7 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
-    const visibaleTabs: InvestAssetRouter[] = _.cloneDeep(INVEST_TABS).filter(() => {
+    const visibaleTabs: InvestAssetRouter[] = _.cloneDeep(INVESTtabS).filter(() => {
       return true
       // TODO when has toggle
     })
@@ -410,7 +409,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Tabs>
               </Box>
 
-              {_tab === 'pools' && (
+              {tab === InvestAssetRouter.AMM && (
                 <TableWrapStyled
                   ref={ammPoolRef}
                   className={`table-divide-short`}
@@ -471,7 +470,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {_tab === 'lido' && (
+              {tab === InvestAssetRouter.STAKELRC && (
                 <TableWrapStyled
                   ref={sideStakeRef}
                   className={`table-divide-short min-height`}
@@ -613,7 +612,7 @@ const MyLiquidity: any = withTranslation('common')(
                   />
                 </TableWrapStyled>
               )}
-              {_tab === 'staking' && (
+              {tab === InvestAssetRouter.STAKE && (
                 <TableWrapStyled
                   ref={stakingRef}
                   className={`table-divide-short ${lidoAssets?.length > 0 ? 'min-height' : ''}`}
@@ -669,7 +668,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {_tab === 'dual' && (
+              {tab === InvestAssetRouter.DUAL && (
                 <TableWrapStyled
                   ref={dualRef}
                   className={`table-divide-short min-height`}
@@ -781,7 +780,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {_tab === 'leverageETH' && (
+              {tab === InvestAssetRouter.LEVERAGEETH && (
                 <TableWrapStyled
                   ref={leverageETHRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
