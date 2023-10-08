@@ -42,7 +42,6 @@ export const DualWrap = <
   isBeginnerMode,
   dualProducts,
   toggle,
-  whitList,
   ...rest
 }: DualWrapProps<T, I, DUAL> & {
   isBeginnerMode: boolean
@@ -94,8 +93,8 @@ export const DualWrap = <
     name: 'coinSell',
     isHideError: true,
     order: 'right' as any,
-    decimalsLimit: tokenSell.precision,
-    coinPrecision: tokenSell.precision,
+    decimalsLimit: tokenSell?.precision,
+    coinPrecision: tokenSell?.precision,
     inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
     coinMap: {},
     ...tokenSellProps,
@@ -283,9 +282,8 @@ export const DualWrap = <
               greaterEarnView={greaterEarnView}
               displayMode={displayMode}
               isPriceEditable={false}
-              dualProducts={dualProducts}
+              dualProducts={dualProducts ?? []}
               toggle={toggle}
-              whitList={whitList}
               // getProduct={getDualProduct}
               onChange={(data) => {
                 onChangeEvent({

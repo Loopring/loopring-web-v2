@@ -75,12 +75,8 @@ export const BeginnerMode: any = withTranslation('common')(
       isDualBalanceSufficient,
     } = dualListProps
     const { isMobile } = useSettings()
-    const tokenList: Array<{
-      tokenName: string
-      minAPY: number
-      maxAPY: number
-    }> = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
-      a?.tokenName.toString().localeCompare(b?.tokenName.toString()),
+    const tokenList = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
+      a?.tokenName?.toString().localeCompare(b?.tokenName?.toString()),
     )
     const dualType =
       step2BuyOrSell === 'Sell' ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
