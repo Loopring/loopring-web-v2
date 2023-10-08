@@ -1785,8 +1785,8 @@ export default {
     '<p>It is quite important to understand that, when using such leveraged strategy, it’s highly advised to intend on holding that position for a while. By doing so, users will give enough time for the high APY to cover their entry & exit costs.</p>\n',
   labelDefiWithdrawFee:
     '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
-  labelLeverageETHTitle: 'Leveraged ETH',
-  labelLayer2HistoryleverageETHRecords: 'Leveraged ETH',
+  labelLeverageETHTitle: 'Leveraged ETH Staking',
+  labelLayer2HistoryleverageETHRecords: 'Leveraged ETH Staking',
   labelSwapMinConverted: 'Minimum Converted',
   labelSwapMinConvertedTooltip:
     'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
