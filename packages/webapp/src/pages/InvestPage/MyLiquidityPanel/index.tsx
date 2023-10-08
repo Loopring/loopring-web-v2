@@ -28,9 +28,7 @@ import {
   FailedIcon,
   getValuePrecisionThousand,
   HiddenTag,
-  INVESTtab,
-  INVESTtabS,
-  investtabs,
+  INVEST_TABS,
   InvestAssetRouter,
   // InvestTab,
   // investTabs,
@@ -65,6 +63,7 @@ import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
+import _ from 'lodash'
 
 const Tab = styled(Box)<{ selected: boolean }>`
   background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
@@ -243,7 +242,7 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
-    const visibaleTabs: InvestAssetRouter[] = _.cloneDeep(INVESTtabS).filter(() => {
+    const visibaleTabs = _.cloneDeep(INVEST_TABS).filter(() => {
       return true
       // TODO when has toggle
     })
@@ -404,7 +403,7 @@ const MyLiquidity: any = withTranslation('common')(
                   aria-label='InvestmentsTab'
                 >
                   {visibaleTabs.map((tab) => (
-                    <Tab label={t(tab.label)} />
+                    <Tab label={t(tab.label)} key={tab.tab} />
                   ))}
                 </Tabs>
               </Box>
