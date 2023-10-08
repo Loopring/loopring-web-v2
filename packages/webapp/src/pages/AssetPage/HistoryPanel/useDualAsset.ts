@@ -61,7 +61,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       __raw__: {
         order: {
           dualType,
-          tokenInfoOrigin: { base, currency: quote, amountIn, market },
+          tokenInfoOrigin: { amountIn },
           // timeOrigin: { settlementTime },
         },
       },
@@ -197,7 +197,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
         let [sellTokenSymbol, buyTokenSymbol] =
-          item.dualType == DUAL_TYPE.DUAL_BASE
+          item.dualType === DUAL_TYPE.DUAL_BASE
             ? [
                 coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                 coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -274,19 +274,8 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   })
   const showDetail = async (item: R) => {
     const {
-      __raw__: {
-        order: {
-          tokenInfoOrigin: { base, market },
-        },
-        index,
-      },
+      __raw__: { index },
     } = item
-    // const {
-    //   dualPrice: { index },
-    // } = await LoopringAPI.defiAPI?.getDualIndex({
-    //   baseSymbol: base,
-    //   quoteSymbol: dualMarketMap[market].quoteAlias,
-    // })
     if (index) {
       const _item = getDetail(item, index?.index)
       setDetail(_item)
@@ -302,7 +291,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         })
       }
 
-      // setDualTradeData(_item)
       setOpen(true)
     }
   }
@@ -367,7 +355,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
-                item.dualType == DUAL_TYPE.DUAL_BASE
+                item.dualType === DUAL_TYPE.DUAL_BASE
                   ? [
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -432,7 +420,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t, dualMarketMap],
+    [accountId, apiKey, setToastOpen, t, dualMarketMap, idIndex, tokenMap],
   )
   const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([])
   // TODO:
@@ -461,7 +449,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         setDualProducts([])
       } else {
         const {
-          dualInfo: { infos, index, balance },
+          dualInfo: { infos, index },
           raw_data: { rules },
         } = response as any
         const rule = rules[0]
