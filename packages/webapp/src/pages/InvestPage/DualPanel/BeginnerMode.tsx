@@ -1,8 +1,7 @@
 import styled from '@emotion/styled'
-import { Avatar, Box, Card, CardContent, CardProps, Typography } from '@mui/material'
+import { Avatar, Box, CardContent, Typography } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import {
-  CardStyleItem,
   CoinIcon,
   CoinIcons,
   DualTable,
@@ -53,10 +52,10 @@ export const BeginnerMode: any = withTranslation('common')(
     const viewStepType = ViewStepType[viewType]
 
     const theme = useTheme()
-    const { tradeMap, marketMap } = useDualMap()
+    const { tradeMap } = useDualMap()
     const { coinJson } = useSettings()
     const { forexMap } = useSystem()
-    const { tokenMap, idIndex } = useTokenMap()
+    const { tokenMap } = useTokenMap()
     const { setShowDual } = useOpenModals()
     const {
       pairASymbol,
@@ -75,7 +74,7 @@ export const BeginnerMode: any = withTranslation('common')(
       isDualBalanceSufficient,
     } = dualListProps
     const { isMobile } = useSettings()
-    const tokenList = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
+    const tokenList: any[] = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
       a?.tokenName?.toString().localeCompare(b?.tokenName?.toString()),
     )
     const dualType =
@@ -107,7 +106,7 @@ export const BeginnerMode: any = withTranslation('common')(
             {t(viewStepType[0].labelKey)}
           </Typography>
           <Box display={'flex'} flexDirection={'row'}>
-            {tokenList.map(({ tokenName, minAPY, maxAPY }) => {
+            {tokenList?.map(({ tokenName, minAPY, maxAPY }: any) => {
               const selected = step1SelectedToken === tokenName
               return (
                 <Box marginRight={2} key={tokenName.toString()}>
@@ -180,7 +179,7 @@ export const BeginnerMode: any = withTranslation('common')(
           </Box>
         </Box>
 
-        {!!(step1SelectedToken !== undefined && viewType == DualViewType.DualBegin) && (
+        {step1SelectedToken !== undefined && viewType === DualViewType.DualBegin && (
           <Box marginBottom={5}>
             <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t('labelDualBeginnerStep2Title')}
