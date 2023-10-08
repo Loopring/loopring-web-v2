@@ -211,7 +211,7 @@ export const DualDetail = ({
       </Modal>
 
       <Box display={'flex'} flexDirection={'column'}>
-        {toggle &&
+        {toggle?.enable &&
         (!isOrder || (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive)) ? (
           // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
           <Box
