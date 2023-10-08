@@ -521,10 +521,6 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           currentheight={
             rawData.length ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight : 350
           }
-          // onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-          //   if (c.key === 'Action') return
-          //   showDetail(row)
-          // }}
           sortMethod={sortMethod}
           {...{
             ...defaultArgs,

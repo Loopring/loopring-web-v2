@@ -29,6 +29,7 @@ import {
   FailedIcon,
   getValuePrecisionThousand,
   HiddenTag,
+  INVEST_TAB,
   InvestTab,
   investTabs,
   L1L2_NAME_DEFINED,
@@ -171,6 +172,7 @@ const MyLiquidity: any = withTranslation('common')(
     React.useEffect(() => {
       if (match?.params?.type) {
         switch (match?.params?.type) {
+          //TODO
           case 'dual':
             // @ts-ignore
             window.scrollTo(0, dualRef?.current?.offsetTop)
@@ -269,7 +271,9 @@ const MyLiquidity: any = withTranslation('common')(
       return found ? t(found.label) : undefined
     }
     const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
-    const visibaleTabs: InvestTab[] = ['dual', 'staking', 'leverageETH', 'pools', 'lido']
+    //TODO
+    const visibaleTabs: INVEST_TAB[] = Object.keys(INVEST_TAB)
+    //['dual', 'staking', 'leverageETH', 'pools', 'lido']
     myLog('visibaleTabs', visibaleTabs)
     const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
     myLog('visibaleTabs _tab', _tab)
@@ -325,7 +329,7 @@ const MyLiquidity: any = withTranslation('common')(
               alignItems={isMobile ? 'start' : 'center'}
             >
               <Box paddingY={7}>
-                <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
+                <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
                   {t('labelInvestBalanceTitle')}
                 </Typography>
                 <Button
@@ -786,32 +790,6 @@ const MyLiquidity: any = withTranslation('common')(
                                 ...editDualTrade,
                               }}
                             />
-                            {/*{dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (*/}
-                            {/*  <Grid item xs={12}>*/}
-                            {/*    <Box paddingX={2} marginY={2}>*/}
-                            {/*      <ButtonStyle*/}
-                            {/*        fullWidth*/}
-                            {/*        variant={'contained'}*/}
-                            {/*        size={'medium'}*/}
-                            {/*        color={'primary'}*/}
-                            {/*        onClick={() => {*/}
-                            {/*          onEditDualClick()*/}
-                            {/*        }}*/}
-                            {/*        loading={*/}
-                            {/*          editDualBtnStatus === TradeBtnStatus.LOADING*/}
-                            {/*            ? 'true'*/}
-                            {/*            : 'false'*/}
-                            {/*        }*/}
-                            {/*        disabled={*/}
-                            {/*          editDualBtnStatus === TradeBtnStatus.LOADING ||*/}
-                            {/*          editDualBtnStatus === TradeBtnStatus.DISABLED*/}
-                            {/*        }*/}
-                            {/*      >*/}
-                            {/*        {label}*/}
-                            {/*      </ButtonStyle>*/}
-                            {/*    </Box>*/}
-                            {/*  </Grid>*/}
-                            {/*)}*/}
                           </Box>
                         )}
                       </SwitchPanelStyled>
