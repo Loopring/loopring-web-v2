@@ -461,7 +461,7 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-  stepLength: string
+  stepLength?: string
   quote?: string
   __raw__?: any
 }
