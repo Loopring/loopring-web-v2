@@ -147,6 +147,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                 flex: 1,
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
+                alignItems: 'center',
               },
             }}
             sx={{
