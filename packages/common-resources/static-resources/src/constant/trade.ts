@@ -758,5 +758,5 @@ export const DualDip = [
 export const DualBegin = [
   { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualBeginnerStep1Title' },
   { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
-  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep2Title' },
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]

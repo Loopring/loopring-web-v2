@@ -366,7 +366,7 @@ export const subMenuInvest = [
 export const INVEST_TABS = [
   { tab: InvestAssetRouter.AMM, label: 'labelLiquidityPageTitle' },
   { tab: InvestAssetRouter.STAKELRC, label: 'labelInvestLRCTitle' },
-  { tab: InvestAssetRouter.STAKELRC, label: 'labelInvestDefiTitle' },
+  { tab: InvestAssetRouter.STAKE, label: 'labelInvestDefiTitle' },
   { tab: InvestAssetRouter.DUAL, label: 'labelInvestDualTitle' },
   { tab: InvestAssetRouter.LEVERAGEETH, label: 'labelLeverageETHTitle' },
 ]
