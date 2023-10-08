@@ -233,7 +233,7 @@ const MyLiquidity: any = withTranslation('common')(
           return sdk
             .toBig(cur?.amount ?? 0)
             .div('1e' + tokenMap[idIndex[cur.tokenId]].decimals)
-            .times(price)
+            .times(price ?? 0)
             .plus(pre)
             .toString()
         }, '0')
@@ -251,7 +251,7 @@ const MyLiquidity: any = withTranslation('common')(
       setTab(
         InvestAssetRouter[
           // @ts-ignore
-          match?.params?.type?.toUpperCase() ?? 'DUAL'
+          match?.params?.type?.toUpperCase() ?? InvestAssetRouter.DUAL
         ] ?? InvestAssetRouter.DUAL,
       )
       if (searchParams?.get('refreshStake')) {
@@ -689,12 +689,12 @@ const MyLiquidity: any = withTranslation('common')(
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
                     {dualStakeDollar !== undefined ? (
                       <Typography component={'h4'} variant={'h3'} marginX={3}>
-                        {dualStakeDollar
+                        {dualStakeDollar && !Number.isNaN(dualStakeDollar)
                           ? hideAssets
                             ? HiddenTag
                             : PriceTag[CurrencyToTag[currency]] +
                               sdk
-                                .toBig(dualStakeDollar)
+                                .toBig(dualStakeDollar?.replaceAll(sdk.SEP))
                                 .times(forexMap[currency] ?? 0)
                                 .toFixed(2, 1)
                           : EmptyValueTag}

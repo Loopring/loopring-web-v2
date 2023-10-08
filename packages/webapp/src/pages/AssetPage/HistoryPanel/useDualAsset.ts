@@ -404,7 +404,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               const currentPrice = {
                 base: item.tokenInfoOrigin.base,
                 quote: item.tokenInfoOrigin.quote,
-                currentPrice: findIndex.index,
+                currentPrice: findIndex?.index,
                 precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market].precisionForPrice,
               }
               prev.push({

@@ -402,9 +402,6 @@ export const useAction = ({
           },
         })
       }
-      // .catch((error: any) => {
-
-      // })
     }
   }
   const handleOpenApprove = (guardian: sdk.Guardian) => {
