@@ -388,6 +388,7 @@ export const LinkActionStyle = styled(Link)`
 export const Tabs = styled(MuTabs)`
   &.btnTab {
     .MuiTab-root {
+      color: var(--color-text-primary);
       margin-right: ${({theme}) => theme.unit}px;
       padding: ${({theme}) => theme.unit}px ${({theme}) => theme.unit * 1.5}px;
       min-height: auto;
