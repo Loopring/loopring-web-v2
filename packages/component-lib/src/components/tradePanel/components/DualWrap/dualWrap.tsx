@@ -82,9 +82,9 @@ export const DualWrap = <
       ? t('labelInvestMaxDual', {
           value: getValuePrecisionThousand(
             dualCalcData.maxSellAmount,
-            dualCalcData.sellToken.precision,
-            dualCalcData.sellToken.precision,
-            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken?.precision,
+            dualCalcData.sellToken?.precision,
+            dualCalcData.sellToken?.precision,
             false,
             { floor: false, isAbbreviate: true },
           ),

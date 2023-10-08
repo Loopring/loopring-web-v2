@@ -136,6 +136,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       dualViewInfo: {
         ...item?.__raw__?.order,
         ...item,
+        quote: item?.__raw__?.order?.tokenInfoOrigin?.quote,
         amount: amount + ' ' + sellSymbol,
         currentPrice,
         __raw__: item.__raw__,

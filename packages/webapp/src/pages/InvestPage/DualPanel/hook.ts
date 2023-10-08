@@ -31,10 +31,10 @@ export const useDualHook = () => {
   const { tokenPrices } = useTokenPrices()
   const [priceObj, setPriceObj] = React.useState<{
     symbol: any
-    price: any
+    // price: any
   }>({
     symbol: undefined,
-    price: undefined,
+    // price: undefined,
   })
   const {
     confirmation: { confirmedDualInvestV2 },
@@ -97,8 +97,10 @@ export const useDualHook = () => {
         setPair(`${_pairASymbol}-${_pairBSymbol}`)
         setMarketPair([coinA, coinB])
         setPriceObj({
-          symbol: coinA,
-          price: tokenPrices[coinA],
+          symbol: /USD/gi.test(marketMap[market]?.quoteAlias ?? '')
+            ? 'USDT'
+            : marketMap[market]?.quoteAlias,
+          // price: tokenPrices[coinA],
         })
       }
     },
@@ -261,9 +263,10 @@ export const useDualHook = () => {
         setMarket(market)
         setPair(`${pairA}-${pairB}`)
         setMarketPair([coinA, coinB])
+
         setPriceObj({
-          symbol: coinA,
-          price: tokenPrices[coinA],
+          symbol: marketMap[market].quoteAlias,
+          // price: tokenPrices[coinA],
         })
       }
     },
@@ -377,5 +380,6 @@ export const useDualHook = () => {
     onSelectStep3Token,
     isDualBalanceSufficient,
     baseTokenList,
+    // baseSymbol: priceObj.symbol,
   }
 }

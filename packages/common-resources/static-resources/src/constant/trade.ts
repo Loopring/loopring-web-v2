@@ -462,6 +462,7 @@ export type DualViewBase = {
   amount?: string
   enterTime?: number
   stepLength: string
+  quote?: string
   __raw__?: any
 }
 

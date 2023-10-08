@@ -138,8 +138,9 @@ export const DualDetail = ({
   const [showEdit, setShowEdit] = React.useState(false)
   const { t } = useTranslation()
   const { upColor, isMobile } = useSettings()
-
   const { base, quote, precisionForPrice } = currentPrice
+  const quoteAlice = /USD/gi.test(dualViewInfo?.quote ?? '') ? 'USDT' : dualViewInfo?.quote
+
   const currentView = React.useMemo(
     () =>
       base
@@ -163,7 +164,7 @@ export const DualDetail = ({
           precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
           true,
           { floor: true },
-        ) + ` ${quote}`
+        ) + ` ${quoteAlice}`
       : EmptyValueTag
   }, [
     // Number(dualViewInfo?.strike).toLocaleString('en-US')
@@ -181,7 +182,7 @@ export const DualDetail = ({
           precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
           true,
           { floor: true },
-        ) + ` ${quote}`
+        ) + ` ${quoteAlice}`
       : EmptyValueTag
   }, [dualViewInfo?.strike])
 
