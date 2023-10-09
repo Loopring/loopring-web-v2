@@ -1057,7 +1057,7 @@ export const useCreateRedPacket = <
       } as any,
       account.apiKey,
     )
-    setTargetRedPackets(response ? response?.list : [])
+    setTargetRedPackets(response?.list ?? [])
   }
   React.useEffect(() => {
     getTargetRedpackets()

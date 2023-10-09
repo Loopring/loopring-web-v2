@@ -1454,10 +1454,10 @@ export const TargetRedpacktSelectStep = withTranslation()(
         paddingX={isMobile ? 2 : 5}
         position={'absolute'}
       >
-        {targetRedPackets.length > 0 ? (
+        {targetRedPackets?.length > 0 ? (
           <Box width={'100%'}>
             <Typography marginTop={5} marginBottom={2}>
-              {targetRedPackets.length === 0
+              {targetRedPackets?.length === 0
                 ? t('labelRedpacketExclusiveEmpty')
                 : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
             </Typography>
