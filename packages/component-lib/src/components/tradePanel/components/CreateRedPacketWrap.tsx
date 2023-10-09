@@ -1034,7 +1034,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     onClickBack,
     showNFT,
     t,
-    onChangeTradeType
+    onChangeTradeType,
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tradeData' | 'tokenMap'> & WithTranslation) => {
     const { isMobile } = useSettings()
     const getDisabled = React.useMemo(() => {
@@ -1190,7 +1190,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
   },
 )
 
-const ScopeOption = styled(Box)<{ selected?: boolean, disabled?: boolean }>`
+const ScopeOption = styled(Box)<{ selected?: boolean; disabled?: boolean }>`
   display: flex;
   border: 1px solid
     ${({ selected }) => (selected ? 'var(--color-border-select)' : 'var(--color-border)')};
@@ -1278,54 +1278,58 @@ export const CreateRedPacketScope = withTranslation()(
             </ScopeOption>
           </Box>
         </Box>
-        {showExclusiveOption && <Box marginBottom={12}>
-          <Box display={'flex'} alignItems={'center'} marginBottom={2}>
-            <Typography marginRight={0.5} variant={'h4'}>
-              {t('labelLuckyTokenViewTypePrivate')}{' '}
-            </Typography>
-            <Tooltip title={t('labelRedPacketPrivateTooltip')}>
-              <Box>
-                <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
-              </Box>
-            </Tooltip>
+        {showExclusiveOption && (
+          <Box marginBottom={12}>
+            <Box display={'flex'} alignItems={'center'} marginBottom={2}>
+              <Typography marginRight={0.5} variant={'h4'}>
+                {t('labelLuckyTokenViewTypePrivate')}{' '}
+              </Typography>
+              <Tooltip title={t('labelRedPacketPrivateTooltip')}>
+                <Box>
+                  <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
+                </Box>
+              </Tooltip>
+            </Box>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <ScopeOption
+                onClick={() => {
+                  !exclusiveDisabled && onSelecteScope(sdk.LuckyTokenViewType.TARGET)
+                }}
+                selected={selectedScope === sdk.LuckyTokenViewType.TARGET}
+                disabled={exclusiveDisabled}
+              >
+                <Box marginRight={0.5}>
+                  <Typography>{t('labelRedPacketExclusive')}</Typography>
+                  <Typography color={'var(--color-text-secondary)'}>
+                    {t('labelRedPacketExclusiveDes')}
+                  </Typography>
+                </Box>
+                <Box width={theme.unit * 8}>
+                  <ScopeTarget color={'var(--color-text-secondary)'} />
+                </Box>
+              </ScopeOption>
+            </Box>
           </Box>
-          <Box display={'flex'} justifyContent={'space-between'}>
-            <ScopeOption
-              onClick={() => {
-                !exclusiveDisabled && onSelecteScope(sdk.LuckyTokenViewType.TARGET)
-              }}
-              selected={selectedScope === sdk.LuckyTokenViewType.TARGET}
-              disabled={exclusiveDisabled}
-            >
-              <Box marginRight={0.5}>
-                <Typography>{t('labelRedPacketExclusive')}</Typography>
-                <Typography color={'var(--color-text-secondary)'}>
-                  {t('labelRedPacketExclusiveDes')}
-                </Typography>
-              </Box>
-              <Box width={theme.unit * 8}>
-                <ScopeTarget color={'var(--color-text-secondary)'} />
-              </Box>
-            </ScopeOption>
-          </Box>
-        </Box>}
+        )}
         <Box display={'flex'} justifyContent={'center'} width={'100%'}>
-          {showBackBtn && <Box width={'45%'} marginRight={'5%'}>
-            <Button
-              variant={'outlined'}
-              size={'medium'}
-              fullWidth
-              className={'step'}
-              startIcon={<BackIcon fontSize={'small'} />}
-              color={'primary'}
-              sx={{ height: 'var(--btn-medium-height)' }}
-              onClick={() => {
-                history.goBack()
-              }}
-            >
-              {t(`labelMintBack`)}
-            </Button>
-          </Box>}
+          {showBackBtn && (
+            <Box width={'45%'} marginRight={'5%'}>
+              <Button
+                variant={'outlined'}
+                size={'medium'}
+                fullWidth
+                className={'step'}
+                startIcon={<BackIcon fontSize={'small'} />}
+                color={'primary'}
+                sx={{ height: 'var(--btn-medium-height)' }}
+                onClick={() => {
+                  history.goBack()
+                }}
+              >
+                {t(`labelMintBack`)}
+              </Button>
+            </Box>
+          )}
           <Box width={'45%'}>
             <BtnMain
               {...{
@@ -1357,9 +1361,12 @@ const TargetRedpacktOption = styled(Box)<{ selected: boolean }>`
   cursor: pointer;
 `
 
-export const ReceiptListModal = (
-  props: { open: boolean; onClose: () => void; targets: string[], t: TFunction<"translation", undefined> },
-) => {
+export const ReceiptListModal = (props: {
+  open: boolean
+  onClose: () => void
+  targets: string[]
+  t: TFunction<'translation', undefined>
+}) => {
   const { open, t, onClose, targets } = props
   return (
     <Modal
@@ -1430,7 +1437,6 @@ export const TargetRedpacktSelectStep = withTranslation()(
       onCloseRedpacketPop,
       backToScope,
       t,
-      tReady
     } = props
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
@@ -1447,10 +1453,10 @@ export const TargetRedpacktSelectStep = withTranslation()(
         paddingX={isMobile ? 2 : 5}
         position={'absolute'}
       >
-        {targetRedPackets.length > 0 ? (
+        {targetRedPackets?.length > 0 ? (
           <Box width={'100%'}>
             <Typography marginTop={5} marginBottom={2}>
-              {targetRedPackets.length === 0
+              {targetRedPackets?.length === 0
                 ? t('labelRedpacketExclusiveEmpty')
                 : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
             </Typography>
@@ -1463,7 +1469,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
                       onClick={() => {
                         onClickExclusiveRedpacket({
                           hash: redpacket.hash,
-                          remainCount: (redpacket.tokenAmount as any).remainTargetCount as number
+                          remainCount: (redpacket.tokenAmount as any).remainTargetCount as number,
                         })
                       }}
                       selected={false}
@@ -1495,7 +1501,11 @@ export const TargetRedpacktSelectStep = withTranslation()(
                             </Box>
                           )}
                           <Box width={'125px'} marginLeft={1} marginBottom={1}>
-                            <Typography  textOverflow={'ellipsis'} whiteSpace={'nowrap'} overflow={'hidden'}>
+                            <Typography
+                              textOverflow={'ellipsis'}
+                              whiteSpace={'nowrap'}
+                              overflow={'hidden'}
+                            >
                               {redpacket.isNft
                                 ? redpacket.nftTokenInfo?.metadata?.base.name
                                 : idIndex[redpacket.tokenId]}
@@ -1684,10 +1694,12 @@ export const TargetRedpacktSelectStep = withTranslation()(
               </Button>
               <Button
                 onClick={() => {
-                  popRedPacket && onClickExclusiveRedpacket({
-                    hash: popRedPacket.hash,
-                    remainCount: (popRedPacket?.luckyToken.tokenAmount as any).remainTargetCount as number,
-                  })
+                  popRedPacket &&
+                    onClickExclusiveRedpacket({
+                      hash: popRedPacket.hash,
+                      remainCount: (popRedPacket?.luckyToken.tokenAmount as any)
+                        .remainTargetCount as number,
+                    })
                   onCloseRedpacketPop()
                 }}
                 fullWidth
@@ -1708,8 +1720,6 @@ export const TargetRedpacktSelectStep = withTranslation()(
     )
   },
 )
-
-
 
 const MultiLineInput = styled('textarea')`
   background: transparent;
@@ -1746,7 +1756,7 @@ const getInvalidAddresses = (input: string, sentAddress: string[]) => {
     .filter((str) => str.trim())
     .map((str) => str.trim())
   return addresses.filter((str, index) => {
-    return !isAddressValid(str, addresses.slice(0, index).concat(sentAddress ))
+    return !isAddressValid(str, addresses.slice(0, index).concat(sentAddress))
   })
 }
 
@@ -1784,7 +1794,8 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
     const [showAddressReview, setShowAddressReview] = React.useState(false)
     const [selectedAddresses, setSelectedAddresses] = React.useState([] as string[])
     const [search, setSearch] = React.useState('')
-    const overMaximum = getValidAddresses(addressListString, sentAddresses ?? []).length > maximumTargetsLength
+    const overMaximum =
+      getValidAddresses(addressListString, sentAddresses ?? []).length > maximumTargetsLength
 
     return (
       <RedPacketBoxStyle
@@ -1821,41 +1832,48 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               <Box height={300} marginTop={2} marginBottom={2} overflow={'scroll'}>
                 {contacts
                   ?.filter((contact) => {
-                    return (contact.address && contact.name && search)
-                      ? contact.address.toLowerCase().includes(search.toLowerCase()) ||
-                        contact.name.toLowerCase().includes(search.toLowerCase())
+                    return contact.contactAddress && contact.contactName && search
+                      ? contact.contactAddress.toLowerCase().includes(search.toLowerCase()) ||
+                          contact.contactName.toLowerCase().includes(search.toLowerCase())
                       : true
                   })
                   .map((contact) => {
                     return (
                       <Box
                         marginBottom={2}
-                        key={contact.address}
+                        // addressType
+                        // contactAddress
+                        // contactMemo
+                        // contactName
+                        // isFavourite
+                        // network
+                        // ownerAccountId
+                        key={contact.contactAddress}
                         display={'flex'}
                         alignItems={'start'}
                         justifyContent={'space-between'}
                       >
                         <Box display={'flex'}>
-                          <Avatar sizes={'32px'} src={contact.avatarURL}></Avatar>
+                          <InitialNameAvatar name={contact.contactName} />
                           <Box marginLeft={1}>
-                            <Typography>{contact.name}</Typography>
-                            <Typography variant={'body2'}>{contact.address}</Typography>
+                            <Typography>{contact.contactName}</Typography>
+                            <Typography variant={'body2'}>{contact.contactAddress}</Typography>
                           </Box>
                         </Box>
                         <Checkbox
                           onChange={() => {
                             const newSelectedAddresses = selectedAddresses.find(
-                              (addr) => addr === contact.address,
+                              (addr) => addr === contact.contactAddress,
                             )
-                              ? selectedAddresses.filter((addr) => addr !== contact.address)
-                              : [contact.address, ...selectedAddresses]
+                              ? selectedAddresses.filter((addr) => addr !== contact.contactAddress)
+                              : [contact.contactAddress, ...selectedAddresses]
                             setSelectedAddresses(newSelectedAddresses)
                             // if (newSelectedAddresses.length <= maximumTargetsLength) {
                             //   setSelectedAddresses(newSelectedAddresses)
                             // }
                           }}
                           checked={
-                            selectedAddresses.find((addr) => addr === contact.address)
+                            selectedAddresses.find((addr) => addr === contact.contactAddress)
                               ? true
                               : false
                           }
@@ -1881,9 +1899,14 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   }}
                   variant={'contained'}
                   fullWidth
-                  disabled={selectedAddresses.length === 0 || selectedAddresses.length > maximumTargetsLength}
+                  disabled={
+                    selectedAddresses.length === 0 ||
+                    selectedAddresses.length > maximumTargetsLength
+                  }
                 >
-                  {selectedAddresses.length > maximumTargetsLength ? t('labelRedPacketMaxValueExceeded') : t('labelConfirm')}
+                  {selectedAddresses.length > maximumTargetsLength
+                    ? t('labelRedPacketMaxValueExceeded')
+                    : t('labelConfirm')}
                 </Button>
               </Box>
             </Box>
@@ -2063,7 +2086,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     setShowAddressReview(false)
                     setShowChangeTips({
                       ...showChangeTips,
-                      contactImportCaches: undefined
+                      contactImportCaches: undefined,
                     })
                     onClickSend()
                   }}
@@ -2101,16 +2124,29 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
           />
           <Box marginTop={2} display={'flex'} justifyContent={'space-between'}>
             <Box display={'flex'} alignItems={'center'}>
-              <Typography color={maximumTargetsLength - getValidAddresses(addressListString, sentAddresses ?? []).length < 0 ? 'var(--color-error)' : ''} marginRight={2}>
-                {maximumTargetsLength - getValidAddresses(addressListString, sentAddresses ?? []).length >= 0
+              <Typography
+                color={
+                  maximumTargetsLength -
+                    getValidAddresses(addressListString, sentAddresses ?? []).length <
+                  0
+                    ? 'var(--color-error)'
+                    : ''
+                }
+                marginRight={2}
+              >
+                {maximumTargetsLength -
+                  getValidAddresses(addressListString, sentAddresses ?? []).length >=
+                0
                   ? t('labelSendRedPacketMax', {
-                      count: maximumTargetsLength - getValidAddresses(addressListString, sentAddresses ?? []).length,
+                      count:
+                        maximumTargetsLength -
+                        getValidAddresses(addressListString, sentAddresses ?? []).length,
                     })
                   : t('labelRedPacketMaxValueExceeded')}
               </Typography>
-              {(
+              {
                 <Button
-                  onClick={(e) => {
+                  onClick={(_e) => {
                     onManualEditInput('')
                     setInputDisabled(false)
                     setShowChangeTips({
@@ -2122,7 +2158,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 >
                   {t('labelSendRedPacketClear')}
                 </Button>
-              )}
+              }
             </Box>
 
             <Box>
@@ -2160,9 +2196,9 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                           ...showChangeTips,
                           show: true,
                           confirmCallBack() {
-                            setShowChangeTips(showChangeTips => ({
+                            setShowChangeTips((showChangeTips) => ({
                               ...showChangeTips,
-                              show: false
+                              show: false,
                             }))
                             parentNode.click()
                             onManualEditInput('')
@@ -2179,7 +2215,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                 }
               />
               <Button
-                onClick={(e) => {
+                onClick={(_e) => {
                   if (
                     showChangeTips.previousInputType &&
                     showChangeTips.previousInputType !== 'contact'
@@ -2188,9 +2224,9 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                       ...showChangeTips,
                       show: true,
                       confirmCallBack() {
-                        setShowChangeTips(showChangeTips => ({
+                        setShowChangeTips((showChangeTips) => ({
                           ...showChangeTips,
-                          show: false
+                          show: false,
                         }))
                         onManualEditInput('')
                         setSelectedAddresses([])
@@ -2309,7 +2345,10 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                   defaultLabel: 'labelRedpacketPrepareRedPacket',
                   fullWidth: true,
                   disabled: () => {
-                    return getValidAddresses(addressListString, sentAddresses ?? []).length === 0 || overMaximum
+                    return (
+                      getValidAddresses(addressListString, sentAddresses ?? []).length === 0 ||
+                      overMaximum
+                    )
                   },
                   onClick: () => {
                     if (getInvalidAddresses(addressListString, sentAddresses ?? []).length > 0) {
@@ -2317,7 +2356,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     } else {
                       setShowChangeTips({
                         ...showChangeTips,
-                        contactImportCaches: undefined
+                        contactImportCaches: undefined,
                       })
                       onClickSend()
                     }
