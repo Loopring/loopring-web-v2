@@ -138,9 +138,8 @@ export const BeginnerMode: any = withTranslation('common')(
                             selected ? theme.colorBase.textPrimary : theme.colorBase.textPrimary
                           }
                           variant={'subtitle1'}
-                          // fontSize={'16px'}
                         >
-                          {tokenName.toString()}
+                          {tokenName?.toString()}
                         </Typography>
                         <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
                           {t('labelDualBeginnerAPR', {
