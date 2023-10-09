@@ -1,6 +1,5 @@
-import styled from '@emotion/styled'
-import { Box, Button, Grid, Modal, Typography } from '@mui/material'
-import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { Box, Button, Grid, Modal, Tab, Typography } from '@mui/material'
+import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AmmPanelType,
@@ -11,7 +10,6 @@ import {
   DualAssetTable,
   DualDetail,
   EarningsDetail,
-  EmptyDefault,
   ModalCloseButton,
   MyPoolTable,
   SwitchPanelStyled,
@@ -19,6 +17,7 @@ import {
   ToastType,
   useOpenModals,
   useSettings,
+  Tabs,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -29,8 +28,10 @@ import {
   FailedIcon,
   getValuePrecisionThousand,
   HiddenTag,
-  InvestTab,
-  investTabs,
+  INVEST_TABS,
+  InvestAssetRouter,
+  // InvestTab,
+  // investTabs,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -62,18 +63,19 @@ import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
+import _ from 'lodash'
+// background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
 
-const Tab = styled(Box)<{ selected: boolean }>`
-  background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
-  padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
-  border-radius: ${({ theme }) => 0.5 * theme.unit}px;
-  font-size: 16px;
-  line-height: 24px;
-  margin-right: ${({ theme }) => theme.unit}px;
-  cursor: pointer;
-  color: ${({ selected }) =>
-    `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`};
-`
+// const TabStyle = styled(Tab)`
+//   padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
+//   border-radius: ${({ theme }) => 0.5 * theme.unit}px;
+//   font-size: 16px;
+//   line-height: 24px;
+//   margin-right: ${({ theme }) => theme.unit}px;
+//   cursor: pointer;
+//   color: ${({ selected }) =>
+//     `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`};
+// `
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -168,31 +170,7 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
-    React.useEffect(() => {
-      if (match?.params?.type) {
-        switch (match?.params?.type) {
-          case 'dual':
-            // @ts-ignore
-            window.scrollTo(0, dualRef?.current?.offsetTop)
-            break
-          case 'stake':
-            // @ts-ignore
-            window.scrollTo(0, stakingRef?.current?.offsetTop)
 
-            break
-          case 'amm':
-            // @ts-ignore
-            window.scrollTo(0, ammPoolRef?.current?.offsetTop)
-            break
-          case 'sideStake':
-            // @ts-ignore
-            window.scrollTo(0, sideStakeRef?.current?.offsetTop)
-        }
-      }
-      if (searchParams?.get('refreshStake')) {
-        getStakingList({})
-      }
-    }, [match?.params?.type, searchParams?.get('refreshStake')])
     React.useEffect(() => {
       if (
         account.readyState === AccountStatus.ACTIVATED &&
@@ -249,30 +227,39 @@ const MyLiquidity: any = withTranslation('common')(
           },
           { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
         )
-    const dualStakeDollar = dualOnInvestAsset
-      ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
-          const price = tokenPrices[idIndex[cur.tokenId]]
-          return sdk
-            .toBig(cur?.amount ?? 0)
-            .div('1e' + tokenMap[idIndex[cur.tokenId]].decimals)
-            .times(price)
-            .plus(pre)
-            .toString()
-        }, '0')
-      : undefined
+    const dualStakeDollar = React.useMemo(() => {
+      return dualOnInvestAsset
+        ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
+            const price = tokenPrices[idIndex[cur.tokenId]]
+            return sdk
+              .toBig(cur?.amount ?? 0)
+              .div('1e' + tokenMap[idIndex[cur.tokenId]].decimals)
+              .times(price ?? 0)
+              .plus(pre)
+              .toString()
+          }, '0')
+        : undefined
+    }, [dualOnInvestAsset, tokenPrices])
     const _summaryMyInvest = sdk
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
-    const tabToName = (tab: InvestTab) => {
-      const found = investTabs.find((_tab) => _tab.tab === tab)
-      return found ? t(found.label) : undefined
-    }
-    const [tab, setTab] = React.useState(undefined as InvestTab | undefined)
-    const visibaleTabs: InvestTab[] = ['dual', 'staking', 'leverageETH', 'pools', 'lido']
-    myLog('visibaleTabs', visibaleTabs)
-    const _tab = tab ? tab : visibaleTabs[0] ? visibaleTabs[0] : undefined
-    myLog('visibaleTabs _tab', _tab)
+    const visibaleTabs = _.cloneDeep(INVEST_TABS).filter(() => {
+      return true
+      // TODO when has toggle
+    })
+    const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
+    React.useEffect(() => {
+      setTab(
+        InvestAssetRouter[
+          // @ts-ignore
+          match?.params?.type?.toUpperCase() ?? InvestAssetRouter.DUAL
+        ] ?? InvestAssetRouter.DUAL,
+      )
+      if (searchParams?.get('refreshStake')) {
+        getStakingList({})
+      }
+    }, [match?.params?.type, searchParams?.get('refreshStake')])
 
     const label = React.useMemo(() => {
       if (editDualBtnInfo.label) {
@@ -325,7 +312,7 @@ const MyLiquidity: any = withTranslation('common')(
               alignItems={isMobile ? 'start' : 'center'}
             >
               <Box paddingY={7}>
-                <Typography marginBottom={5} fontSize={'48px'} variant={'h1'}>
+                <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
                   {t('labelInvestBalanceTitle')}
                 </Typography>
                 <Button
@@ -415,14 +402,19 @@ const MyLiquidity: any = withTranslation('common')(
           {
             <>
               <Box width={'100%'} display={'flex'}>
-                {visibaleTabs.map((tab) => (
-                  <Tab selected={tab === _tab} onClick={() => setTab(tab)}>
-                    {tabToName(tab)}
-                  </Tab>
-                ))}
+                <Tabs
+                  className={'btnTab'}
+                  value={tab}
+                  onChange={(_event: any, newValue: any) => setTab(newValue)}
+                  aria-label='InvestmentsTab'
+                >
+                  {visibaleTabs.map((tab) => (
+                    <Tab value={tab.tab.toString()} label={t(tab.label).toString()} key={tab.tab} />
+                  ))}
+                </Tabs>
               </Box>
 
-              {_tab === 'pools' && (
+              {tab === InvestAssetRouter.AMM && (
                 <TableWrapStyled
                   ref={ammPoolRef}
                   className={`table-divide-short`}
@@ -483,7 +475,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {_tab === 'lido' && (
+              {tab === InvestAssetRouter.STAKELRC && (
                 <TableWrapStyled
                   ref={sideStakeRef}
                   className={`table-divide-short min-height`}
@@ -625,7 +617,7 @@ const MyLiquidity: any = withTranslation('common')(
                   />
                 </TableWrapStyled>
               )}
-              {_tab === 'staking' && (
+              {tab === InvestAssetRouter.STAKE && (
                 <TableWrapStyled
                   ref={stakingRef}
                   className={`table-divide-short ${lidoAssets?.length > 0 ? 'min-height' : ''}`}
@@ -681,7 +673,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {_tab === 'dual' && (
+              {tab === InvestAssetRouter.DUAL && (
                 <TableWrapStyled
                   ref={dualRef}
                   className={`table-divide-short min-height`}
@@ -699,12 +691,12 @@ const MyLiquidity: any = withTranslation('common')(
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
                     {dualStakeDollar !== undefined ? (
                       <Typography component={'h4'} variant={'h3'} marginX={3}>
-                        {dualStakeDollar
+                        {dualStakeDollar && !Number.isNaN(dualStakeDollar)
                           ? hideAssets
                             ? HiddenTag
                             : PriceTag[CurrencyToTag[currency]] +
                               sdk
-                                .toBig(dualStakeDollar)
+                                .toBig(dualStakeDollar?.replaceAll(sdk.SEP))
                                 .times(forexMap[currency] ?? 0)
                                 .toFixed(2, 1)
                           : EmptyValueTag}
@@ -786,32 +778,6 @@ const MyLiquidity: any = withTranslation('common')(
                                 ...editDualTrade,
                               }}
                             />
-                            {/*{dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (*/}
-                            {/*  <Grid item xs={12}>*/}
-                            {/*    <Box paddingX={2} marginY={2}>*/}
-                            {/*      <ButtonStyle*/}
-                            {/*        fullWidth*/}
-                            {/*        variant={'contained'}*/}
-                            {/*        size={'medium'}*/}
-                            {/*        color={'primary'}*/}
-                            {/*        onClick={() => {*/}
-                            {/*          onEditDualClick()*/}
-                            {/*        }}*/}
-                            {/*        loading={*/}
-                            {/*          editDualBtnStatus === TradeBtnStatus.LOADING*/}
-                            {/*            ? 'true'*/}
-                            {/*            : 'false'*/}
-                            {/*        }*/}
-                            {/*        disabled={*/}
-                            {/*          editDualBtnStatus === TradeBtnStatus.LOADING ||*/}
-                            {/*          editDualBtnStatus === TradeBtnStatus.DISABLED*/}
-                            {/*        }*/}
-                            {/*      >*/}
-                            {/*        {label}*/}
-                            {/*      </ButtonStyle>*/}
-                            {/*    </Box>*/}
-                            {/*  </Grid>*/}
-                            {/*)}*/}
                           </Box>
                         )}
                       </SwitchPanelStyled>
@@ -819,7 +785,7 @@ const MyLiquidity: any = withTranslation('common')(
                   </Grid>
                 </TableWrapStyled>
               )}
-              {_tab === 'leverageETH' && (
+              {tab === InvestAssetRouter.LEVERAGEETH && (
                 <TableWrapStyled
                   ref={leverageETHRef}
                   className={`table-divide-short MuiPaper-elevation2 ${
@@ -906,7 +872,7 @@ const MyLiquidity: any = withTranslation('common')(
         <CancelDualAlert
           open={showCancelOneAlert.open}
           row={showCancelOneAlert.row}
-          handleCancelOne={() => cancelReInvest(showCancelOneAlert.row)}
+          handleCancelOne={async () => await cancelReInvest(showCancelOneAlert.row)}
           handleClose={() => setShowCancelOndAlert({ open: false, row: undefined })}
         />
         <Toast

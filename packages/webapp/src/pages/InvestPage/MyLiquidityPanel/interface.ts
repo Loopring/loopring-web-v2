@@ -1,1 +1,0 @@
-export type Tab = 'pools' | 'lido' | 'staking' | 'dual'

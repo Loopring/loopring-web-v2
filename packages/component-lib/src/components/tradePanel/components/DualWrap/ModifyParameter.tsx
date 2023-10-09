@@ -91,6 +91,7 @@ export const ModifyParameter = ({
                 flexDirection={'column'}
                 alignItems={'center'}
                 justifyContent={'center'}
+                width={'100%'}
               >
                 <Typography
                   variant={'inherit'}

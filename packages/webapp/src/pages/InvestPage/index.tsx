@@ -49,7 +49,7 @@ export const MaxWidthContainer = (
 ) => {
   const { containerProps, children, background, sx, ...otherProps } = props
   return (
-    <BoxStyled sx={{ background }} {...containerProps}>
+    <BoxStyled sx={{ background, ...containerProps?.sx }} {...containerProps}>
       <Box
         sx={{
           width: '1200px',

@@ -1,17 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import {
-  Avatar,
-  Box,
-  BoxProps,
-  BoxTypeMap,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  IconButton,
-  Link,
-  Typography,
-} from '@mui/material'
+import { Avatar, Box, Card, CardContent, IconButton, Link, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 
 import React from 'react'
@@ -23,16 +11,13 @@ import {
   BackIcon,
   ammAdvice,
   defiAdvice,
-  AccountStatus,
   RowInvestConfig,
   dualAdvice,
-  myLog,
   stakeAdvice,
-  SoursURL,
   leverageETHAdvice,
   Overview,
+  getValuePrecisionThousand,
   EmptyValueTag,
-  UpIcon,
 } from '@loopring-web/common-resources'
 import {
   useAccount,
@@ -130,11 +115,11 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
     return getAprRange(
       _.values(dualMarketMap)
         .flatMap((dual: any) => [
-          dual.quoteTokenApy?.max as string,
-          dual.quoteTokenApy?.min as string,
+          dual.baseTokenApy?.max as string,
+          dual.baseTokenApy?.min as string,
         ])
         .filter((apy) => apy)
-        .map((apy) => Number(apy)),
+        .map((apy) => Number(apy) * 100),
     )
   }, [dualMarketMap])
   const lrcApr = React.useMemo(() => {
@@ -158,18 +143,16 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
     toggle: { CIETHInvest },
   } = useToggle()
   const investAdviceList = [
-    { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0], apyRange: ammApr },
-    { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1], apyRange: defiApr},
     { ...dualAdvice, ...notifyMap?.invest?.investAdvice[2], apyRange: dualApr },
+    { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1], apyRange: defiApr },
+    { ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4], apyRange: leverageApr },
+    { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0], apyRange: ammApr },
     { ...stakeAdvice, ...notifyMap?.invest?.investAdvice[3], apyRange: lrcApr },
-    ...(!CIETHInvest.enable && CIETHInvest.reason === 'no view'
-      ? []
-      : [{ ...leverageETHAdvice, ...notifyMap?.invest?.investAdvice[4], apyRange: leverageApr }]),
   ]
   const theme = useTheme()
   const scrollViewRef = React.useRef()
-  const [showArrow, setShowArrow] = React.useState({left: false, right: true})
-  
+  const [showArrow, setShowArrow] = React.useState({ left: false, right: true })
+
   return (
     <>
       <WrapperStyled>
@@ -237,13 +220,13 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
               className={'scroll-view'}
               ref={scrollViewRef}
             >
-            <Box
-              sx={{
-                display: 'flex',
-                width: isMobile ? '100%' : 'fit-content',
-                flexDirection: isMobile ? 'column' : 'row',
-              }}
-            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  width: isMobile ? '100%' : 'fit-content',
+                  flexDirection: isMobile ? 'column' : 'row',
+                }}
+              >
                 {investAdviceList.map((item, index) => {
                   return (
                     <Card
@@ -267,7 +250,24 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
 
                           <Typography variant={'h3'} marginTop={5}>
                             {item.apyRange
-                              ? `${item.apyRange.from}%-${item.apyRange.to}%`
+                              ? item.apyRange.from === item.apyRange.to
+                                ? `${getValuePrecisionThousand(
+                                    item.apyRange.from,
+                                    undefined,
+                                    2,
+                                    2,
+                                  )}%`
+                                : `${getValuePrecisionThousand(
+                                    item.apyRange.from,
+                                    undefined,
+                                    2,
+                                    2,
+                                  )}%-${getValuePrecisionThousand(
+                                    item.apyRange.to,
+                                    undefined,
+                                    2,
+                                    2,
+                                  )}%`
                               : EmptyValueTag}
                           </Typography>
                           <Typography>{t('labelAPR')}</Typography>

@@ -36,8 +36,8 @@ export function useToggle() {
               // @ts-ignore
               (_toggle: string) => _toggle?.toUpperCase() == fn?.toUpperCase(),
             )
-            if (key) {
-              toggle[key] = { ...toggle[key], enable: true }
+            if (key && toggle[key].enable == false && toggle[key].reason === 'no view') {
+              toggle[key] = { ...toggle[key], enable: true, reason: 'whiteList' }
               list.push(key)
             }
           })

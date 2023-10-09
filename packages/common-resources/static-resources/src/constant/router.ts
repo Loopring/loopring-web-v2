@@ -10,7 +10,7 @@ import {
   VipIcon,
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
-import { AddAssetList, InvestMapType, SendAssetList } from './trade'
+import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
 import { WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
@@ -355,13 +355,20 @@ export const subMenuInvest = [
     },
   },
 ]
-export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual' | 'leverageETH'
-export const investTabs = [
-  { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
-  { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
-  { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
-  { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
-  { tab: 'leverageETH' as InvestTab, label: 'labelLeverageETHTitle' },
+// export enum INVEST_TAB {
+//   pools = 'pools',
+//   lido = 'lido',
+//   staking = 'staking',
+//   dual = 'dual',
+//   leverageETH = 'leverageETH',
+// }
+
+export const INVEST_TABS = [
+  { tab: InvestAssetRouter.DUAL, label: 'labelInvestDualTitle' },
+  { tab: InvestAssetRouter.STAKE, label: 'labelInvestDefiTitle' },
+  { tab: InvestAssetRouter.LEVERAGEETH, label: 'labelLeverageETHTitle' },
+  { tab: InvestAssetRouter.AMM, label: 'labelLiquidityPageTitle' },
+  { tab: InvestAssetRouter.STAKELRC, label: 'labelInvestLRCTitle' },
 ]
 
 export const DEFI_CONFIG = {
