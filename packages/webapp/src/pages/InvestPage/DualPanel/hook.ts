@@ -6,6 +6,7 @@ import {
   makeDualViewItem,
   store,
   useDualMap,
+  useSystem,
   useTokenMap,
   useTokenPrices,
 } from '@loopring-web/core'
@@ -19,13 +20,15 @@ import {
   myLog,
   SagaStatus,
 } from '@loopring-web/common-resources'
+import { useSettings } from '@loopring-web/component-lib'
 
 const DUALLimit = 20
 export const useDualHook = () => {
   const match: any = useRouteMatch('/invest/dual/:market?')
-  const { search, pathname } = useLocation()
+  const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
   const viewType = searchParams.get('viewType')
+  const { defaultNetwork } = useSettings()
   const { tokenMap, idIndex } = useTokenMap()
   const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
   const { tokenPrices } = useTokenPrices()
@@ -89,10 +92,10 @@ export const useDualHook = () => {
         setPairBSymbol(_pairBSymbol)
         market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol)
       }
-      history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}${search}`)
-
       if (market) {
-        const [, , coinA, coinB] = market ?? ''.match(/(dual-)?(\w+)-(\w+)/i)
+        getProduct()
+        history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}${search}`)
+        const [, , coinA, coinB] = market.match(/(dual-)?(\w+)-(\w+)/i)
         setMarket(market)
         setPair(`${_pairASymbol}-${_pairBSymbol}`)
         setMarketPair([coinA, coinB])
@@ -184,20 +187,16 @@ export const useDualHook = () => {
   React.useEffect(() => {
     if (dualStatus === SagaStatus.UNSET && pair) {
       getProduct.cancel()
-      let pairBSymbol
-      setPairBSymbol((state) => {
-        pairBSymbol = state
-        return state
-      })
-      if (pairBSymbol) {
-        if (marketArray !== undefined && marketArray.length) {
-          handleOnPairChange({ pairB: pairBSymbol })
-        } else if (marketArray?.length == 0) {
-          history.push('/invest')
+      const [_, _pairASymbol, _pairBSymbol] = pair.match(/(\w+)-(\w+)/i)
+      if (marketArray !== undefined && marketArray.length) {
+        const market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol)
+        if (market) {
+          handleOnPairChange({ pairB: _pairBSymbol })
         }
+        return
       }
+      history.push(`/invest/dual/${search}`)
       myLog('update pair', pair)
-      getProduct()
     }
     return () => {
       if (nodeTimer.current !== -1) {
@@ -263,7 +262,6 @@ export const useDualHook = () => {
         setMarket(market)
         setPair(`${pairA}-${pairB}`)
         setMarketPair([coinA, coinB])
-
         setPriceObj({
           symbol: marketMap[market].quoteAlias,
           // price: tokenPrices[coinA],
