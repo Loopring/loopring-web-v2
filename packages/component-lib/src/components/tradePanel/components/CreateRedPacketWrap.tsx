@@ -1437,7 +1437,6 @@ export const TargetRedpacktSelectStep = withTranslation()(
       onCloseRedpacketPop,
       backToScope,
       t,
-      // tReady,
     } = props
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
@@ -2276,7 +2275,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               control={
                 <Checkbox
                   checked={popupChecked}
-                  onChange={(_event: any, _state: boolean) => {
+                  onChange={(_event: any, state: boolean) => {
                     if (popUpOptionDisabled) {
                       setShowPopUpTips(true)
                     } else {
