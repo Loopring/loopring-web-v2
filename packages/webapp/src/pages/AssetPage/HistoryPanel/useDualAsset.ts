@@ -279,18 +279,21 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     if (index) {
       const _item = getDetail(item, index?.index)
       setDetail(_item)
-      updateEditDual(_item as any)
+      const tradeData = {
+        isRenew: _item?.__raw__?.order?.dualReinvestInfo?.isRecursive,
+        renewDuration: _item?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+        renewTargetPrice: _item?.__raw__?.order.dualReinvestInfo.newStrike,
+      }
+      updateEditDual({
+        ...(_item as any),
+        tradeData,
+      })
       if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
         getProduct(_item)
         handleOnchange({
-          tradeData: {
-            isRenew: _item?.__raw__?.order?.dualReinvestInfo?.isRecursive,
-            renewDuration: _item?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
-            renewTargetPrice: _item?.__raw__?.order.dualReinvestInfo.newStrike,
-          },
+          tradeData,
         })
       }
-
       setOpen(true)
     }
   }
@@ -316,7 +319,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
                 sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
               ].join(','),
-              retryStatus: [sdk.DUAL_RETRY_STATUS.RETRYING],
+              retryStatuses: [sdk.DUAL_RETRY_STATUS.RETRYING],
             } as any,
             apiKey,
           ),
@@ -464,8 +467,13 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     }
   }
   const cancelReInvest = React.useCallback((item) => {
-    updateEditDual({ ...item, dualViewInfo: item })
-    handleOnchange({ tradeData: { isRenew: false } })
+    updateEditDual({
+      ...item,
+      dualViewInfo: item,
+      tradeData: {
+        isRenew: false,
+      },
+    })
     sdk.sleep(0).then(() => {
       onEditDualClick()
     })

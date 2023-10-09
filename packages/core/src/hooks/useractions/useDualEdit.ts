@@ -43,8 +43,7 @@ export const useDualEdit = <
   const { setShowDual } = useOpenModals()
   const {
     editDual: { dualViewInfo },
-    // updateEditDual,
-    // updateEditDual,
+    updateEditDual,
     resetEditDual,
   } = useTradeDual()
 
@@ -69,6 +68,11 @@ export const useDualEdit = <
 
   const handleOnchange = ({ tradeData }: { tradeData: T }) => {
     setTradeData(tradeData)
+    const editDual = store.getState()._router_tradeDual.editDual
+    updateEditDual({
+      ...editDual,
+      tradeData,
+    })
   }
 
   const availableTradeCheck = React.useCallback((): {
@@ -103,6 +107,8 @@ export const useDualEdit = <
 
   const onSubmitBtnClick = React.useCallback(async () => {
     const editDual = store.getState()._router_tradeDual.editDual
+    let { tradeData: _tradeData } = editDual
+    _tradeData = { ..._tradeData, ...tradeData }
     const tradeDual = editDual?.dualViewInfo?.__raw__?.order
     const dualViewInfo = editDual?.dualViewInfo
     try {
@@ -115,28 +121,28 @@ export const useDualEdit = <
           newStrike: tradeDual.dualReinvestInfo.newStrike,
           accountId: account.accountId,
         }
-        if (!tradeData.isRenew) {
+        if (!_tradeData.isRenew) {
           request.isRecursive = false
         } else {
           request.isRecursive = true
           request.maxDuration = tradeDual.dualReinvestInfo.maxDuration
           if (
-            tradeData.renewDuration &&
-            tradeData.renewDuration !== (request.maxDuration ?? 0) / 86400000
+            _tradeData.renewDuration &&
+            _tradeData.renewDuration !== (request.maxDuration ?? 0) / 86400000
           ) {
-            request.maxDuration = Number(tradeData.renewDuration) * 86400000
+            request.maxDuration = Number(_tradeData.renewDuration) * 86400000
           }
           if (
-            tradeData.renewTargetPrice &&
+            _tradeData.renewTargetPrice &&
             tradeDual?.tokenInfoOrigin?.storageId !== undefined &&
-            !sdk.toBig(tradeData.renewTargetPrice).eq(tradeDual.dualReinvestInfo.newStrike)
+            !sdk.toBig(_tradeData.renewTargetPrice).eq(tradeDual.dualReinvestInfo.newStrike)
           ) {
             const req: sdk.GetNextStorageIdRequest = {
               accountId: account.accountId,
               sellTokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
             }
             const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
-            request.newStrike = tradeData.renewTargetPrice
+            request.newStrike = _tradeData.renewTargetPrice
             const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
 
@@ -229,7 +235,7 @@ export const useDualEdit = <
         throw new Error('api not ready')
       }
     } catch (reason) {
-      if (!tradeData.isRenew) {
+      if (!_tradeData.isRenew) {
         resetEditDual()
       }
       setToastOpen({
