@@ -297,6 +297,11 @@ const MyLiquidity: any = withTranslation('common')(
     const _cancelReInvest = (item) => {
       setShowCancelOndAlert({ open: true, row: item })
     }
+    const nanToEmptyTag = (value: any, prefix: string) => {
+      return value === 'NaN'
+        ? EmptyValueTag
+        : prefix + value
+    }
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         {!noHeader && (
@@ -495,16 +500,16 @@ const MyLiquidity: any = withTranslation('common')(
                           {summaryMyInvest?.stakeLRCDollar
                             ? hideAssets
                               ? HiddenTag
-                              : PriceTag[CurrencyToTag[currency]] +
-                                getValuePrecisionThousand(
-                                  sdk
-                                    .toBig(summaryMyInvest?.stakeLRCDollar)
-                                    .times(forexMap[currency] ?? 0),
-                                  undefined,
-                                  undefined,
-                                  2,
-                                  true,
-                                  { isFait: true, floor: true },
+                              : nanToEmptyTag(
+                                  getValuePrecisionThousand(
+                                    sdk.toBig(NaN).times(forexMap[currency] ?? 0),
+                                    undefined,
+                                    undefined,
+                                    2,
+                                    true,
+                                    { isFait: true, floor: true },
+                                  ),
+                                  PriceTag[CurrencyToTag[currency]],
                                 )
                             : EmptyValueTag}
                         </Typography>
@@ -638,16 +643,18 @@ const MyLiquidity: any = withTranslation('common')(
                         {summaryMyInvest?.stakeETHDollar
                           ? hideAssets
                             ? HiddenTag
-                            : PriceTag[CurrencyToTag[currency]] +
-                              getValuePrecisionThousand(
-                                sdk
-                                  .toBig(summaryMyInvest?.stakeETHDollar)
-                                  .times(forexMap[currency] ?? 0),
-                                undefined,
-                                undefined,
-                                2,
-                                true,
-                                { isFait: true, floor: true },
+                            : nanToEmptyTag(
+                                getValuePrecisionThousand(
+                                  sdk
+                                    .toBig(summaryMyInvest?.stakeETHDollar)
+                                    .times(forexMap[currency] ?? 0),
+                                  undefined,
+                                  undefined,
+                                  2,
+                                  true,
+                                  { isFait: true, floor: true },
+                                ),
+                                PriceTag[CurrencyToTag[currency]],
                               )
                           : EmptyValueTag}
                       </Typography>
@@ -694,11 +701,13 @@ const MyLiquidity: any = withTranslation('common')(
                         {dualStakeDollar && !Number.isNaN(dualStakeDollar)
                           ? hideAssets
                             ? HiddenTag
-                            : PriceTag[CurrencyToTag[currency]] +
-                              sdk
-                                .toBig(dualStakeDollar?.replaceAll(sdk.SEP))
-                                .times(forexMap[currency] ?? 0)
-                                .toFixed(2, 1)
+                            : nanToEmptyTag(
+                                sdk
+                                  .toBig(dualStakeDollar?.replaceAll(sdk.SEP))
+                                  .times(forexMap[currency] ?? 0)
+                                  .toFixed(2, 1),
+                                PriceTag[CurrencyToTag[currency]],
+                              )
                           : EmptyValueTag}
                       </Typography>
                     ) : (
@@ -807,16 +816,18 @@ const MyLiquidity: any = withTranslation('common')(
                         {summaryMyInvest?.leverageETHDollar
                           ? hideAssets
                             ? HiddenTag
-                            : PriceTag[CurrencyToTag[currency]] +
-                              getValuePrecisionThousand(
-                                sdk
-                                  .toBig(summaryMyInvest?.leverageETHDollar)
-                                  .times(forexMap[currency] ?? 0),
-                                undefined,
-                                undefined,
-                                2,
-                                true,
-                                { isFait: true, floor: true },
+                            : nanToEmptyTag(
+                                getValuePrecisionThousand(
+                                  sdk
+                                    .toBig(summaryMyInvest?.leverageETHDollar)
+                                    .times(forexMap[currency] ?? 0),
+                                  undefined,
+                                  undefined,
+                                  2,
+                                  true,
+                                  { isFait: true, floor: true },
+                                ),
+                                PriceTag[CurrencyToTag[currency]],
                               )
                           : EmptyValueTag}
                       </Typography>

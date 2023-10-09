@@ -597,6 +597,12 @@ export const MyPoolTable = withTranslation('tables')(
       ]
     }
 
+    const nanToEmptyTag = (value: any, prefix: string) => {
+      return value === 'NaN'
+        ? EmptyValueTag
+        : prefix + value
+    }
+
     return (
       <TableStyled isMobile={isMobile} className={`${rawData?.length > 0 ? 'min-height' : ''}`}>
         {
@@ -631,14 +637,16 @@ export const MyPoolTable = withTranslation('tables')(
               {totalDollar
                 ? hideAssets
                   ? HiddenTag
-                  : PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true, floor: true },
+                  : nanToEmptyTag(
+                      getValuePrecisionThousand(
+                        sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true, floor: true },
+                      ),
+                      PriceTag[CurrencyToTag[currency]],
                     )
                 : EmptyValueTag}
             </Typography>
