@@ -14,20 +14,38 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>() => {
     invest: {
       vaultMap: { idIndex: vaultIdIndex },
     },
+    vaultLayer2: { vaultAccountInfo: _vaultAccountInfo },
   } = store.getState()
   // const { idIndex: vaultIdIndex } = store.getState().vaultMap
 
   let vaultLayer2, vaultAccountInfo
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
-    // @ts-ignore
+    let promise: any[] = []
 
+    // @ts-ignore
     try {
-      vaultAccountInfo = await LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey)
+      promise.push(LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey))
+
+      if (_vaultAccountInfo && _vaultAccountInfo.hash && _vaultAccountInfo.isInActive) {
+        promise.push(
+          LoopringAPI.vaultAPI.getVaultGetOperationByHash(
+            {
+              accountId: accountId as any,
+              hash: _vaultAccountInfo.hash,
+            },
+            apiKey,
+          ),
+        )
+      }
+      const [vaultAccountInfo, history] = await Promise.all(promise)
       if (
         (vaultAccountInfo as sdk.RESULT_INFO).code ||
         (vaultAccountInfo as sdk.RESULT_INFO).message
       ) {
         throw vaultAccountInfo
+      }
+      if (history?.operation?.status) {
+        //TODO
       }
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
@@ -41,16 +59,33 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>() => {
   }
   return { vaultLayer2, vaultAccountInfo }
 }
-export function* getPostsSaga() {
+export function* getPostsSaga({
+  payload,
+}: {
+  payload: { activeInfo?: { hash: string; isInActive: boolean } | undefined }
+}) {
   try {
-    const { vaultLayer2, vaultAccountInfo } = yield call(getVaultLayer2Balance)
-    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo }))
+    let { vaultLayer2, vaultAccountInfo } = yield call(getVaultLayer2Balance)
+    const activeInfo = undefined
+    if (
+      payload.activeInfo &&
+      [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED, ''].includes(
+        vaultAccountInfo.accountStatus,
+      )
+    ) {
+      vaultAccountInfo = {
+        ...vaultAccountInfo,
+        ...payload.activeInfo,
+      }
+    }
+    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo, activeInfo }))
   } catch (err) {
     yield put(getVaultLayer2Status({ error: err }))
   }
 }
 
 export function* vaultLayer2Saga() {
+  // @ts-ignore
   yield all([takeLatest(updateVaultLayer2, getPostsSaga)])
 }
 

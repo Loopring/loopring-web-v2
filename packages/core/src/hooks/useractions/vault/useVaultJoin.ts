@@ -8,11 +8,15 @@ import {
   AccountStatus,
   CoinInfo,
   CoinMap,
+  CustomErrorWithCode,
+  EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   SagaStatus,
+  SDK_ERROR_MAP_TO_UI,
   TRADE_TYPE,
   TradeBtnStatus,
+  UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
 import React from 'react'
@@ -49,6 +53,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { exchangeInfo, chainId, baseURL } = useSystem()
   const { account } = useAccount()
   const { updateVaultJoin, vaultJoinData } = useTradeVault()
+  const [isLoading, setIsLoading] = React.useState(false)
   const [tradeData, setTradeData] = React.useState<T>({
     belong: undefined,
     balance: undefined,
@@ -135,9 +140,10 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
     // const { apiKey, connectName, eddsaKey } = account
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
+    const ercToken = tokenMap[vaultJoinData.belong]
     try {
-      if (request || vaultJoinData.request) {
-        let response = LoopringAPI.vaultAPI?.submitVaultJoin({
+      if (request || (vaultJoinData.request && LoopringAPI.vaultAPI)) {
+        let response = LoopringAPI.vaultAPI.submitVaultJoin({
           // @ts-ignore
           request: request ?? vaultJoinData.request,
           eddsaKey: account.eddsaKey.sk,
@@ -151,33 +157,104 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           throw response
         }
         walletLayer2Service.sendUserUpdate()
-        sdk.sleep(1000).then(() => updateVaultLayer2())
+        // vaultJoinData.request
 
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.VaultJoin_Success,
-          info: {
-            title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          },
-        })
-        setShowVaultJoin({
-          isShow: false,
-        })
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          throw new CustomErrorWithCode({
+            code: (response as sdk.RESULT_INFO).code,
+            message: (response as sdk.RESULT_INFO).message,
+            ...SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN],
+          })
+        } else {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.VaultJoin_In_Progress,
+            info: {
+              title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+              status: 'Pending',
+              percentage: '0',
+              amount: EmptyValueTag,
+              sum: getValuePrecisionThousand(
+                vaultJoinData.tradeValue,
+                ercToken.precision,
+                ercToken.precision,
+                undefined,
+              ),
+              symbol: ercToken,
+              vSymbol: vaultJoinData.vaultSymbol,
+            },
+          })
+          // Success
+          // Failed
+
+          sdk.sleep(1000).then(() => updateVaultLayer2())
+          const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash({
+            accountId: account.accountId,
+            hash: (response as any).hash,
+          })
+          if ((response2 as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          } else {
+            response2.status
+            updateVaultLayer2
+          }
+          // 171504
+          //TODO
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.VaultJoin_Success,
+            info: {
+              title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+              status: 'Pending',
+              percentage: '0',
+              amount: EmptyValueTag,
+              sum: getValuePrecisionThousand(
+                vaultJoinData.tradeValue,
+                ercToken.precision,
+                ercToken.precision,
+                undefined,
+              ),
+              symbol: ercToken,
+              vSymbol: vaultJoinData.vaultSymbol,
+            },
+          })
+          sdk.sleep(1000).then(() => updateVaultLayer2())
+          setShowVaultJoin({
+            isShow: false,
+          })
+        }
       } else {
         throw 'no data'
       }
     } catch (e) {
+      //TODO
+      const error = {
+        message: e.message,
+      }
       setShowAccount({
         isShow: true,
-        step: AccountStep.VaultRedeem_Failed,
+        step: AccountStep.VaultJoin_Failed,
         info: {
           title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+          status: 'Failed',
+          percentage: '0',
+          amount: EmptyValueTag,
+          sum: getValuePrecisionThousand(
+            vaultJoinData.tradeValue,
+            ercToken.precision,
+            ercToken.precision,
+            undefined,
+          ),
+          symbol: ercToken,
+          vSymbol: vaultJoinData.vaultSymbol,
         },
+        error,
       })
     }
   }
 
   const submitCallback = async () => {
+    const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
+    const ercToken = tokenMap[vaultJoinData.belong]
     try {
       if (
         vaultJoinData &&
@@ -189,13 +266,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         sdk.toBig(vaultJoinData.amount).gte(vaultJoinData.minAmount ?? 0) &&
         sdk.toBig(vaultJoinData.amount).lte(vaultJoinData.maxAmount ?? 0)
       ) {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.VaultJoin_In_Progress,
-          info: {
-            title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          },
-        })
+        setIsLoading(true)
 
         //TODO: step 1: has rest balance  //vaultLayer2 l2 balance
         if (isActiveAccount) {
@@ -339,14 +410,29 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         processRequest(takerOrder)
       }
     } catch (e) {
+      //TODO: catch
+      setIsLoading(false)
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultJoin_Failed,
+        // info: {
+        //   title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+        //   status: 'Failed',
+        //   percentage: '0',
+        //   amount: EmptyValueTag,
+        //   sum: getValuePrecisionThousand(
+        //     vaultJoinData.tradeValue,
+        //     ercToken.precision,
+        //     ercToken.precision,
+        //     undefined,
+        //   ),
+        //   symbol: ercToken,
+        //   vSymbol: vaultJoinData.vaultSymbol,
+        // },
         error: {
           ...(e as any),
         },
       })
-      //TODO: catch
     }
   }
 
@@ -357,7 +443,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     // btnStyle: tradeLimitBtnStyle,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: false,
+    isLoading,
     submitCallback,
   })
   const {

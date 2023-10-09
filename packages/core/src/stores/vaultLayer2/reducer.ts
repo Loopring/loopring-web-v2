@@ -13,7 +13,10 @@ const vaultLayer2Slice: Slice<VaultLayer2States> = createSlice({
   name: 'vaultLayer2',
   initialState,
   reducers: {
-    updateVaultLayer2(state) {
+    updateVaultLayer2(
+      state,
+      action: PayloadAction<{ activeInfo?: { hash: string; isInActive: boolean } | undefined }>,
+    ) {
       state.status = SagaStatus.PENDING
     },
     reset(state) {

@@ -7,5 +7,10 @@ export type VaultLayer2Map<R extends { [key: string]: any }> = {
 
 export type VaultLayer2States = {
   vaultLayer2?: VaultLayer2Map<any> | undefined
-  vaultAccountInfo?: sdk.VaultAccountInfo | undefined
+  vaultAccountInfo?:
+    | (sdk.VaultAccountInfo & {
+        hash: string
+        isInActive: boolean
+      })
+    | undefined
 } & StateBase
