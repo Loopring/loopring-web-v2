@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import React from 'react'
 import { RootState } from '../../index'
 
-import { PopupStates } from './interface'
 import {
   setShowLRCStakignPopup,
   setShowLeverageETHPopup,

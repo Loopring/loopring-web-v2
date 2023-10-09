@@ -1,7 +1,7 @@
 import { all, call, fork, put, take, takeLatest, delay } from 'redux-saga/effects'
 import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV } from './interface'
-import { store, LoopringSocket, LoopringAPI, toggleCheck, makeBtrade, makeVault } from '../../index'
+import { store, LoopringSocket, LoopringAPI, toggleCheck, makeVault } from '../../index'
 import {
   ChainIdExtends,
   CustomError,
@@ -140,6 +140,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       }),
     )
     store.dispatch(initAmmMap({ ammpools, chainId }))
+    makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')
     ;(function (btradeMarkets) {
       if (btradeMarkets) {
         const {
@@ -298,10 +299,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     case ENV_KEY.Guardian.toLowerCase():
       break
     case ENV_KEY.Earn.toLowerCase():
-      // store.dispatch(getRedPacketConfigs(undefined))
-      // store.dispatch(getNotify(undefined))
-      // store.dispatch(getStakingMap(undefined))
-      // store.dispatch(getBtradeMap(undefined))
       store.dispatch(getDualMap(undefined))
       defiAllAsync()
       yield all([take('dualMap/getDualMapStatus')])

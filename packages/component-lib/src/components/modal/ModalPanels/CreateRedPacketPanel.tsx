@@ -55,8 +55,7 @@ export const CreateRedPacketPanel = <
   coinMap = {},
   tokenMap = {},
   assetsData,
-  //@ts-ignore
-  showERC20Blindbox,
+  redPacketConfig,
   myNFTPanel,
   onSendTargetRedpacketClick,
   targetRedPackets,
@@ -70,6 +69,7 @@ export const CreateRedPacketPanel = <
   ...rest
 }: CreateRedPacketProps<T, I, C, NFT> & { assetsData: any[] }) => {
   const { t, i18n, ready: tReady } = useTranslation(['common', 'error'])
+  const { showERC20Blindbox } = redPacketConfig ?? {}
   const { onChangeEvent, index, switchData } = useBasicTrade({
     ...rest,
     coinMap,

@@ -36,6 +36,7 @@ import {
   WithdrawType,
   WithdrawTypes,
   ContactType,
+  RedPacketConfig,
 } from '@loopring-web/common-resources'
 
 export enum RedPacketStep {
@@ -661,7 +662,7 @@ export type CreateRedPacketExtendsProps<T, F> = {
   contacts?: ContactType[]
   isWhiteListed?: boolean
   showExclusiveOption?: boolean
-  showERC20Blindbox?: boolean
+  redPacketConfig: RedPacketConfig
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<

@@ -86,11 +86,15 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === 'create',
   })
-  const { contacts } = useContacts()
-  const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox
-
-  // createRedPacketProps.disabled
-
+  const {
+    notifyMap: { redPacket: redPacketConfig },
+  } = useNotify()
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
+  React.useEffect(() => {
+    if (contactsErrorMessage) {
+      updateContacts()
+    }
+  }, [])
   return (
     <Box display={'flex'} flex={1} flexDirection={'column'}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} marginBottom={2}>
@@ -116,7 +120,7 @@ export const CreateRedPacketUIPanel = <
         ) : (
           <CreateRedPacketPanel
             {...{
-              showERC20Blindbox,
+              redPacketConfig: redPacketConfig ?? {},
               _height: 'auto',
               ...createRedPacketProps,
               tradeType: createRedPacketProps.tradeType,
