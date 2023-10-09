@@ -146,7 +146,8 @@ export const useDualTrade = <
               belong: baseSymbol,
               isRenew:
                 _updateInfo?.coinSell?.isRenew ??
-                [DualViewType.DualDip, DualViewType.DualGain].includes(viewType as DualViewType)
+                (dual_reinvest?.enable &&
+                  [DualViewType.DualDip, DualViewType.DualGain].includes(viewType as DualViewType))
                   ? true
                   : false,
             } as unknown as T)
