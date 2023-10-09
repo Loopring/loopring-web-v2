@@ -1437,7 +1437,6 @@ export const TargetRedpacktSelectStep = withTranslation()(
       onCloseRedpacketPop,
       backToScope,
       t,
-      // tReady,
     } = props
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
@@ -1454,10 +1453,10 @@ export const TargetRedpacktSelectStep = withTranslation()(
         paddingX={isMobile ? 2 : 5}
         position={'absolute'}
       >
-        {targetRedPackets.length > 0 ? (
+        {targetRedPackets?.length > 0 ? (
           <Box width={'100%'}>
             <Typography marginTop={5} marginBottom={2}>
-              {targetRedPackets.length === 0
+              {targetRedPackets?.length === 0
                 ? t('labelRedpacketExclusiveEmpty')
                 : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
             </Typography>
@@ -1842,13 +1841,6 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     return (
                       <Box
                         marginBottom={2}
-                        // addressType
-                        // contactAddress
-                        // contactMemo
-                        // contactName
-                        // isFavourite
-                        // network
-                        // ownerAccountId
                         key={contact.contactAddress}
                         display={'flex'}
                         alignItems={'start'}

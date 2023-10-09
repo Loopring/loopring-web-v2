@@ -21,7 +21,6 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
-  ContactType,
   EXCHANGE_TYPE,
   FeeInfo,
   GET_IPFS_STRING,
@@ -36,6 +35,8 @@ import {
   WalletMap,
   WithdrawType,
   WithdrawTypes,
+  ContactType,
+  RedPacketConfig,
 } from '@loopring-web/common-resources'
 
 export enum RedPacketStep {
@@ -110,10 +111,10 @@ export type TransferExtendProps<T, I, C> = {
   onBack?: () => void
   memo: string
   handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void
-  contact?: { address: string; name: string; addressType: sdk.AddressType }
+  contact?: { address: string; name: string; addressType: typeof sdk.AddressType }
   isFromContact?: boolean
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
-  // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
+  // contacts?: { address: string; name: string; addressType: typeof sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   TransferInfoProps<C>
 
@@ -241,7 +242,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isToMyself?: boolean
   sureIsAllowAddress: WALLET_TYPE | EXCHANGE_TYPE | undefined
   handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => void
-  contact?: { address: string; name: string; addressType?: sdk.AddressType }
+  contact?: { address: string; name: string; addressType?: typeof sdk.AddressType }
   isFromContact?: boolean
   // onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
@@ -278,6 +279,10 @@ export type InputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
   Partial<InputButtonProps<T, I, C>>,
   'label'
 >
+export type InputCoinDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
+  Partial<InputCoinProps<T, I, C>>,
+  'label'
+>
 
 export type DefaultProps<T, I> = {
   tradeData: T
@@ -306,14 +311,23 @@ export type BasicACoinTradeViewProps<T, I> = Omit<DefaultWithMethodProps<T, I>, 
   baseURL?: string
   getIPFSString?: (url: string | undefined, basicUrl: string) => string
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
-} & Pick<InputButtonProps<T, I, CoinInfo<I>>, 'handleError'>
+} & Pick<InputButtonProps<T, I, CoinInfo<I>> | InputCoinProps<T, I, CoinInfo<I>>, 'handleError'>
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   type?: TRADE_TYPE.TOKEN
   inputBtnRef: React.Ref<any>
   inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>
   inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>
+  className?: string
 }
+export type BasicACoinInputProps<T, I> = BasicACoinTradeViewProps<T, I> & {
+  type?: TRADE_TYPE.TOKEN
+  inputCoinRef: React.Ref<any>
+  inputCoinProps?: InputCoinDefaultProps<I, CoinInfo<I>>
+  inputCoinDefaultProps?: InputCoinDefaultProps<I, CoinInfo<I>>
+  className?: string
+}
+
 export type BasicANFTTradeProps<T, I> = (Omit<
   BasicACoinTradeViewProps<T, I>,
   'coinMap' | 'lastFailed' | 'walletMap'
@@ -645,10 +659,10 @@ export type CreateRedPacketExtendsProps<T, F> = {
   popRedPacketAmountStr: string | undefined
   onClickViewTargetDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
-  contacts?: DisplayContact[]
+  contacts?: ContactType[]
   isWhiteListed?: boolean
   showExclusiveOption?: boolean
-  showERC20Blindbox?: boolean
+  redPacketConfig: RedPacketConfig
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
