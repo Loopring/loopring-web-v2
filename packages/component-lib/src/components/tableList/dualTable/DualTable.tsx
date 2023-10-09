@@ -33,7 +33,7 @@ const TableStyled = styled(Table)`
       if (props.ispro === 'pro') {
         return '620px'
       }
-      if (props.currentheight && props.currentheight > 350) {
+      if (props.currentheight) {
         return props.currentheight + 'px'
       } else {
         return '100%'
@@ -307,7 +307,9 @@ export const DualTable = withTranslation(['tables', 'common'])(
       <TableWrapperStyled>
         <TableStyled
           currentheight={
-            RowDualInvestConfig.rowHeaderHeight + rawData.length * RowDualInvestConfig.rowHeight
+            rawData.length > 0
+              ? RowDualInvestConfig.rowHeaderHeight + rawData.length * RowDualInvestConfig.rowHeight
+              : RowDualInvestConfig.minHeight
           }
           rowHeight={RowDualInvestConfig.rowHeight}
           headerRowHeight={RowDualInvestConfig.rowHeaderHeight}
