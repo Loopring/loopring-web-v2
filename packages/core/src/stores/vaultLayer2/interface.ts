@@ -7,10 +7,10 @@ export type VaultLayer2Map<R extends { [key: string]: any }> = {
 
 export type VaultLayer2States = {
   vaultLayer2?: VaultLayer2Map<any> | undefined
-  vaultAccountInfo?:
-    | (sdk.VaultAccountInfo & {
-        hash: string
-        isInActive: boolean
-      })
-    | undefined
+  vaultAccountInfo?: sdk.VaultAccountInfo | undefined
+  activeInfo?: {
+    hash: string
+    isInActive: boolean
+  }
+  __timer__?: NodeJS.Timeout | -1
 } & StateBase

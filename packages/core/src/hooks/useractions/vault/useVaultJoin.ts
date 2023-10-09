@@ -140,9 +140,9 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
     // const { apiKey, connectName, eddsaKey } = account
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    const ercToken = tokenMap[vaultJoinData.belong]
+    const ercToken = tokenMap[vaultJoinData?.belong?.toString()]
     try {
-      if (request || (vaultJoinData.request && LoopringAPI.vaultAPI)) {
+      if (LoopringAPI.vaultAPI && (request || vaultJoinData.request) && ercToken) {
         let response = LoopringAPI.vaultAPI.submitVaultJoin({
           // @ts-ignore
           request: request ?? vaultJoinData.request,
@@ -186,18 +186,32 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           })
           // Success
           // Failed
+          await sdk.sleep(1000)
+          const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
+            {
+              accountId: account?.accountId?.toString(),
+              hash: (response as any).hash,
+            },
+            account.apiKey,
+          )
 
-          sdk.sleep(1000).then(() => updateVaultLayer2())
-          const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash({
-            accountId: account.accountId,
-            hash: (response as any).hash,
-          })
           if ((response2 as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           } else {
-            response2.status
-            updateVaultLayer2
+            updateVaultLayer2(
+              ['VAULT_STATUS_SUCCEED', 'VAULT_STATUS_FAILED'].includes(
+                // @ts-ignore
+                response2?.raw_data?.operation?.status ?? [],
+              )
+                ? {}
+                : {
+                    activeInfo: {
+                      hash: (response as any).hash,
+                      isInActive: true,
+                    },
+                  },
+            )
           }
-          // 171504
+
           //TODO
           setShowAccount({
             isShow: true,

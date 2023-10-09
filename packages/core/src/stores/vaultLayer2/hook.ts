@@ -28,7 +28,7 @@ export function useVaultLayer2(): VaultLayer2States & {
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
     updateVaultLayer2: React.useCallback(
       (props: { activeInfo?: { hash: string; isInActive: boolean } | undefined }) =>
-        dispatch(updateVaultLayer2(undefined)),
+        dispatch(updateVaultLayer2(props)),
       [dispatch],
     ),
   }

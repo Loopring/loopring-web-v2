@@ -7,18 +7,23 @@ import * as sdk from '@loopring-web/loopring-sdk'
 type VaultLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>
 }
-const getVaultLayer2Balance = async <R extends { [key: string]: any }>() => {
-  const {
+const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInfo?: {
+  hash: string
+  isInActive: boolean
+}) => {
+  let {
     // tokenMap: { idIndex,coinMap },
     account: { accountId, apiKey },
     invest: {
       vaultMap: { idIndex: vaultIdIndex },
     },
-    vaultLayer2: { vaultAccountInfo: _vaultAccountInfo },
+    vaultLayer2: { __timer__ },
   } = store.getState()
   // const { idIndex: vaultIdIndex } = store.getState().vaultMap
-
-  let vaultLayer2, vaultAccountInfo
+  let _activeInfo: any = undefined,
+    vaultLayer2,
+    vaultAccountInfo,
+    history
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
     let promise: any[] = []
 
@@ -26,27 +31,52 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>() => {
     try {
       promise.push(LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey))
 
-      if (_vaultAccountInfo && _vaultAccountInfo.hash && _vaultAccountInfo.isInActive) {
+      if (activeInfo && activeInfo.hash && activeInfo.isInActive) {
         promise.push(
           LoopringAPI.vaultAPI.getVaultGetOperationByHash(
             {
               accountId: accountId as any,
-              hash: _vaultAccountInfo.hash,
+              hash: activeInfo.hash,
             },
             apiKey,
           ),
         )
       }
-      const [vaultAccountInfo, history] = await Promise.all(promise)
+      ;[vaultAccountInfo, history] = await Promise.all(promise)
       if (
         (vaultAccountInfo as sdk.RESULT_INFO).code ||
         (vaultAccountInfo as sdk.RESULT_INFO).message
       ) {
         throw vaultAccountInfo
       }
-      if (history?.operation?.status) {
-        //TODO
+      if (
+        history &&
+        history?.raw_data?.operation?.status &&
+        // TODO
+        ['VAULT_STATUS_SUCCEED', 'VAULT_STATUS_FAILED'].includes(history.operation.status)
+      ) {
+        _activeInfo = undefined
+        if (__timer__ && __timer__ !== -1) {
+          clearTimeout(__timer__)
+          __timer__ = -1
+        }
+      } else if (
+        activeInfo &&
+        [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED, ''].includes(
+          vaultAccountInfo.accountStatus,
+        )
+      ) {
+        _activeInfo = activeInfo
+        __timer__ = ((__timer__) => {
+          if (__timer__ && __timer__ !== -1) {
+            clearTimeout(__timer__)
+          }
+          return setTimeout(() => {
+            store.dispatch(updateVaultLayer2({ activeInfo }))
+          }, 1000 * 3)
+        })(__timer__)
       }
+
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
         vaultLayer2 = vaultAccountInfo.userAssets.reduce((prev, item) => {
@@ -57,7 +87,8 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>() => {
       throw error
     }
   }
-  return { vaultLayer2, vaultAccountInfo }
+
+  return { vaultLayer2, vaultAccountInfo, activeInfo: _activeInfo, __timer__ }
 }
 export function* getPostsSaga({
   payload,
@@ -65,20 +96,12 @@ export function* getPostsSaga({
   payload: { activeInfo?: { hash: string; isInActive: boolean } | undefined }
 }) {
   try {
-    let { vaultLayer2, vaultAccountInfo } = yield call(getVaultLayer2Balance)
-    const activeInfo = undefined
-    if (
-      payload.activeInfo &&
-      [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED, ''].includes(
-        vaultAccountInfo.accountStatus,
-      )
-    ) {
-      vaultAccountInfo = {
-        ...vaultAccountInfo,
-        ...payload.activeInfo,
-      }
-    }
-    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo, activeInfo }))
+    let { vaultLayer2, vaultAccountInfo, activeInfo, __timer__ } = yield call(
+      getVaultLayer2Balance,
+      payload.activeInfo,
+    )
+
+    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo, activeInfo, __timer__ }))
   } catch (err) {
     yield put(getVaultLayer2Status({ error: err }))
   }
