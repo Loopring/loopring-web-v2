@@ -290,9 +290,17 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
               : EmptyValueTag
             let showAlert = false
             if (isRecursive && dualType == DUAL_TYPE.DUAL_BASE) {
-              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).lte(-0.05)
+              showAlert = sdk
+                .toBig(currentPrice ?? 0)
+                .div(newStrike)
+                .minus(1)
+                .lte(-0.05)
             } else {
-              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).gte(0.05)
+              showAlert = sdk
+                .toBig(currentPrice ?? 0)
+                .div(newStrike)
+                .minus(1)
+                .gte(0.05)
             }
 
             return showRefresh ? (
@@ -521,10 +529,6 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           currentheight={
             rawData.length ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight : 350
           }
-          // onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-          //   if (c.key === 'Action') return
-          //   showDetail(row)
-          // }}
           sortMethod={sortMethod}
           {...{
             ...defaultArgs,

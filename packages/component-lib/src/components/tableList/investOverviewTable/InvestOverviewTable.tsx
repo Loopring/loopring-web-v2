@@ -104,7 +104,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
     [getFilteredData],
   )
   const tableHeight = React.useMemo(() => {
-    return (rows.length + 1) * rowConfig.rowHeight
+    return rows.length > 0 ? (rows.length + 1) * rowConfig.rowHeight : 350
   }, [rows.length, rowConfig])
   const [isDropDown, setIsDropDown] = React.useState(true)
 

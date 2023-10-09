@@ -43,6 +43,9 @@ export const useDualEdit = <
   const { setShowDual } = useOpenModals()
   const {
     editDual: { dualViewInfo },
+    // updateEditDual,
+    // updateEditDual,
+    resetEditDual,
   } = useTradeDual()
 
   const { toastOpen, setToastOpen, closeToast } = useToast()
@@ -226,6 +229,9 @@ export const useDualEdit = <
         throw new Error('api not ready')
       }
     } catch (reason) {
+      if (!tradeData.isRenew) {
+        resetEditDual()
+      }
       setToastOpen({
         open: true,
         type: ToastType.error,

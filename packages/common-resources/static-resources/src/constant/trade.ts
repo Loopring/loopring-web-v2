@@ -463,7 +463,8 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-  stepLength: string
+  stepLength?: string
+  quote?: string
   __raw__?: any
 }
 
@@ -769,7 +770,7 @@ export const DualDip = [
 export const DualBegin = [
   { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualBeginnerStep1Title' },
   { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
-  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep2Title' },
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]
 
 

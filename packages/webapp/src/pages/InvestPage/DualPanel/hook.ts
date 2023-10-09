@@ -31,17 +31,16 @@ export const useDualHook = () => {
   const { tokenPrices } = useTokenPrices()
   const [priceObj, setPriceObj] = React.useState<{
     symbol: any
-    price: any
+    // price: any
   }>({
     symbol: undefined,
-    price: undefined,
+    // price: undefined,
   })
   const {
     confirmation: { confirmedDualInvestV2 },
   } = confirmation.useConfirmation()
   const history = useHistory()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  // const { tradeMap, marketMap } = useDualMap()
 
   const [isLoading, setIsLoading] = React.useState(true)
   const [currentPrice, setCurrentPrice] = React.useState<DualCurrentPrice | undefined>(undefined)
@@ -98,8 +97,10 @@ export const useDualHook = () => {
         setPair(`${_pairASymbol}-${_pairBSymbol}`)
         setMarketPair([coinA, coinB])
         setPriceObj({
-          symbol: coinA,
-          price: tokenPrices[coinA],
+          symbol: /USD/gi.test(marketMap[market]?.quoteAlias ?? '')
+            ? 'USDT'
+            : marketMap[market]?.quoteAlias,
+          // price: tokenPrices[coinA],
         })
       }
     },
@@ -142,8 +143,7 @@ export const useDualHook = () => {
       } else {
         const {
           // totalNum,
-          dualInfo: { infos, index, balance },
-          raw_data: { rules },
+          dualInfo: { infos, index, balance, rules },
         } = response as any
         const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
         const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
@@ -263,9 +263,10 @@ export const useDualHook = () => {
         setMarket(market)
         setPair(`${pairA}-${pairB}`)
         setMarketPair([coinA, coinB])
+
         setPriceObj({
-          symbol: coinA,
-          price: tokenPrices[coinA],
+          symbol: marketMap[market].quoteAlias,
+          // price: tokenPrices[coinA],
         })
       }
     },
@@ -379,5 +380,6 @@ export const useDualHook = () => {
     onSelectStep3Token,
     isDualBalanceSufficient,
     baseTokenList,
+    // baseSymbol: priceObj.symbol,
   }
 }

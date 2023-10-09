@@ -138,8 +138,9 @@ export const DualDetail = ({
   const [showEdit, setShowEdit] = React.useState(false)
   const { t } = useTranslation()
   const { upColor, isMobile } = useSettings()
-
   const { base, quote, precisionForPrice } = currentPrice
+  const quoteAlice = /USD/gi.test(dualViewInfo?.quote ?? '') ? 'USDT' : dualViewInfo?.quote
+
   const currentView = React.useMemo(
     () =>
       base
@@ -163,7 +164,7 @@ export const DualDetail = ({
           precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
           true,
           { floor: true },
-        ) + ` ${quote}`
+        ) + ` ${quoteAlice}`
       : EmptyValueTag
   }, [
     // Number(dualViewInfo?.strike).toLocaleString('en-US')
@@ -181,7 +182,7 @@ export const DualDetail = ({
           precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
           true,
           { floor: true },
-        ) + ` ${quote}`
+        ) + ` ${quoteAlice}`
       : EmptyValueTag
   }, [dualViewInfo?.strike])
 
@@ -210,7 +211,7 @@ export const DualDetail = ({
       </Modal>
 
       <Box display={'flex'} flexDirection={'column'}>
-        {toggle &&
+        {toggle?.enable &&
         (!isOrder || (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive)) ? (
           // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
           <Box
@@ -230,6 +231,7 @@ export const DualDetail = ({
                     alignItems={'center'}
                   >
                     <Trans i18nKey={'labelDualAutoTitle'}>
+                      Auto Reinvest
                       <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                     </Trans>
                   </Typography>
