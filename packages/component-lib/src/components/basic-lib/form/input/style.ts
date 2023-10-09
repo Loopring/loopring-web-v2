@@ -34,10 +34,17 @@ export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
     ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+    background-color: transparent;
+  }
+  background-color: transparent;
+
+  input::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
   }
 
   .MuiInputAdornment-root {
-    padding: 0 ${({theme}) => theme.unit}px;
+    padding: 0 ${({ theme }) => theme.unit}px;
   }
 
   label + & {
@@ -48,9 +55,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   && {
     .MuiSelect-nativeInput + svg {
       position: absolute;
-      right: 0.4rem;
-      right: ${({size}) => size === 'large' ? 1 : 0.4}rem;
-      top: ${({theme, size}) => size === 'large' ? 2 * theme.unit : theme.unit}px;
+      right: ${({ size }) => (size === 'large' ? 1 : 0.4)}rem;
+      top: ${({ theme, size }) => (size === 'large' ? 2 * theme.unit : theme.unit)}px;
       color: var(--color-text-secondary);
     }
 
@@ -62,7 +68,7 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   &:focus {
-    ${({theme}) => theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
+    ${({ theme }) => theme.border.defaultFrame({ c_key: 'focus', d_R: 0.5 })};
     outline: transparent;
   }
 `
@@ -118,8 +124,7 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    background: var(--color-box);
-    border-radius: ${({ theme }) => theme.unit / 2}px;
+    border-radius: ${({ theme }) => theme.unit}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
 
@@ -272,7 +277,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-text-secondary);;
+    color: var(--color-placeholder);;
   }
 
   :disabled {

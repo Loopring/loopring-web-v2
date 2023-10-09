@@ -467,13 +467,16 @@ export const DefiStakingTable = withTranslation(['tables', 'common'])(
     }
 
     return (
-      <TableWrapperStyled isMobile={isMobile}>
+      <TableWrapperStyled isMobile={isMobile} >
         <TableStyled
           currentheight={
-            RowInvestConfig.rowHeaderHeight + rawData.length * RowInvestConfig.rowHeight
+            rawData.length > 0 
+              ? RowInvestConfig.rowHeaderHeight + rawData.length * RowInvestConfig.rowHeight
+              : 350
           }
           rowHeight={RowInvestConfig.rowHeight}
           headerRowHeight={RowInvestConfig.rowHeaderHeight}
+          
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,

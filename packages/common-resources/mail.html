@@ -1,263 +1,133 @@
-<div id="zohoSupportWebToCase" align="center">
-  <form
-    name="zsWebToCase_638510000000180873"
-    id="zsWebToCase_638510000000180873"
-    action="https://desk.zoho.com/support/WebToCase"
-    method="POST"
-    onSubmit="return zsValidateMandatoryFields()"
-    enctype="multipart/form-data"
-  >
-    <input type="hidden" name="xnQsjsdp" value="edbsne3e0671907c01d4368bf22694c4645f0" />
-    <input
-      type="hidden"
-      name="xmIwtLD"
-      value="edbsna177e6b86568a92d2e6f08fab3b80d5960bb314f2e20acd3f10783571e08dc71"
-    />
-    <input type="hidden" name="xJdfEaS" value="" />
-    <input type="hidden" name="actionType" value="Q2FzZXM=" />
-    <input type="hidden" id="property(module)" value="Cases" />
-    <input
-      type="hidden"
-      id="dependent_field_values_Cases"
-      value='&#x7b;"JSON_VALUES"&#x3a;&#x7b;&#x7d;,"JSON_SELECT_VALUES"&#x3a;&#x7b;&#x7d;,"JSON_MAP_DEP_LABELS"&#x3a;&#x5b;&#x5d;&#x7d;'
-    />
-    <input type="hidden" name="returnURL" value="https&#x3a;&#x2f;&#x2f;loopring.io" />
-    <section border="0" cellspacing="0" class="zsFormClass">
-      <div class="inline-flex">
-        <section
-          colspan="2"
-          class="zsFontClass"
-          style="font-size: 20px; text-align: center; padding-bottom: 20px"
-        >
-          Loopring Help Center
-        </section>
-      </div>
-      <br />
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left">First Name&nbsp;&nbsp; </label>
-        <section align="left" width="75%">
-          <input type="text" maxlength="120" name="First Name" value="" />
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left">Last Name&nbsp;&nbsp; </label>
-        <section align="left" width="75%">
-          <input type="text" maxlength="120" name="Contact Name" class="manfieldbdr" />
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left">Email&nbsp;&nbsp; </label>
-        <section align="left" width="75%">
-          <input type="text" maxlength="120" name="Email" value="" class="manfieldbdr" />
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left"
-          >What&#x27;s your ticket about&#x3f; &nbsp;&nbsp;
-        </label>
-        <section align="left" width="75%" class="custom-select">
-          <select
-            name="What' s your ticket about?"
-            value=""
-            onchange="setDependent(this,
-					false)"
-            id="CASECF1"
-          >
-            <option value="Loopring zkRollup Layer2">Loopring zkRollup Layer2</option>
-            <option value="Smart Wallet App">Smart Wallet App</option>
-            <option value="Others">Others</option>
-          </select>
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left"
-          >What&#x27;s your Ethereum address in question&#x3f;&nbsp;&nbsp;
-        </label>
-        <section align="left" width="75%">
-          <input
-            type="text"
-            maxlength="120"
-            name="What' s your Ethereum address in question?"
-            value=""
-          />
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left"
-          >What&#x27;s your operation system&#x3f; &nbsp;&nbsp;
-        </label>
-        <section align="left" width="75%">
-          <select
-            name="What' s your operation system?"
-            value=""
-            onchange="setDependent(this,
-					false)"
-            id="CASECF3"
-          >
-            <option value="Windows">Windows</option>
-            <option value="macOS">macOS</option>
-            <option value="Linux or Unix">Linux or Unix</option>
-            <option value="iOS">iOS</option>
-            <option value="Android">Android</option>
-            <option value="Others">Others</option>
-          </select>
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left"
-          >What&#x27;s your browser - if this applies&#x3f;&nbsp;&nbsp;
-        </label>
-        <section align="left" width="75%">
-          <input
-            type="text"
-            maxlength="120"
-            name="What' s your browser - if this applies?"
-            value=""
-          />
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left">Subject&nbsp;&nbsp; </label>
-        <section align="left" width="75%">
-          <input type="text" maxlength="255" name="Subject" value="" class="manfieldbdr" />
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left">Description &nbsp;&nbsp; </label>
-        <section align="left" width="75%">
-          <textarea
-            name="Description"
-            maxlength="3000"
-            width="250"
-            height="300"
-            rows="8"
-            style="height: 80px"
-          >
-          </textarea>
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left">Attachment &nbsp;&nbsp; </label>
-        <section align="left" width="75%">
-          <span class="zsFontClass wtcuploadfile" id="zsBrowseAttachment">Attach files</span
-          ><input
-            class="wtcuploadinput"
-            type="file"
-            name="attachment_1"
-            id="zsattachment_1"
-            style="display: block"
-            onclick="zsOpenFileBrowseAttachment(event)"
-            onchange="zsRenderBrowseFileAttachment(this.value, this)"
-          /><input
-            class="wtcuploadinput"
-            type="file"
-            name="attachment_2"
-            id="zsattachment_2"
-            style="display: none"
-            onclick="zsOpenFileBrowseAttachment(event)"
-            onchange="zsRenderBrowseFileAttachment(this.value, this)"
-          />
-          <input
-            class="wtcuploadinput"
-            type="file"
-            name="attachment_3"
-            id="zsattachment_3"
-            style="display: none"
-            onclick="zsOpenFileBrowseAttachment(event)"
-            onchange="zsRenderBrowseFileAttachment(this.value, this)"
-          />
-          <input
-            class="wtcuploadinput"
-            type="file"
-            name="attachment_4"
-            id="zsattachment_4"
-            style="display: none"
-            onclick="zsOpenFileBrowseAttachment(event)"
-            onchange="zsRenderBrowseFileAttachment(this.value, this)"
-          />
-          <input
-            class="wtcuploadinput"
-            type="file"
-            name="attachment_5"
-            id="zsattachment_5"
-            style="display: none"
-            onclick="zsOpenFileBrowseAttachment(event)"
-            onchange="zsRenderBrowseFileAttachment(this.value, this)"
-          />
-          <div class="clboth"></div>
-          <span id="zsMaxSizeMessage" style="font-size: 12px; float: left; line-height: 20px"
-            >Each of your file(s) can be up to 20MB in size.</span
-          ><span
-            id="zsMaxLimitMessage"
-            style="color: black; font-size: 12px; float: left; margin-left: 14px; display: none"
-            >You can attach as many as 5 files at a time.</span
-          >
-          <div id="zsFileBrowseAttachments"></div>
-        </section>
-      </div>
-      <div class="inline-flex">
-        <label class="zsFontClass" width="25%" align="left">Captcha&nbsp; </label>
-        <section class="zsCaptchablock">
-          <div id="zsCaptchaLoading">Loading...<br /><br /></div>
-          <div id="zsCaptcha" style="display: none; align-items: center">
-            <img src="#" id="zsCaptchaUrl" name="zsCaptchaImage" /><a
-              href="javascript:"
-              style="
-                color: #00a3fe;
-                cursor: pointer;
-                margin-left: 10px;
-                vertical-align: middle;
-                text-decoration: none;
-              "
-              class="zsFontClass"
-              onclick="zsRegenerateCaptcha()"
-              >Refresh</a
-            >
-          </div>
-        </section>
-        <div style="padding-top: 8px">
-          <input type="text" name="zsWebFormCaptchaWord" /><input
-            type="hidden"
-            name="zsCaptchaSrc"
-            value=""
-          />
-        </div>
 
-        <div class="inline-flex">
-          <section style="padding: 11px 5px 0px 5px" colspan="2" align="center" width="25%">
-            <input
-              type="submit"
-              id="zsSubmitButton_638510000000180873"
-              class="zsFontClass"
-              value="Submit"
-            />
-            &nbsp; &nbsp;
-            <input
-              type="button"
-              class="zsFontClass"
-              value="Reset"
-              onclick="zsResetWebForm('638510000000180873')"
-            />
-          </section>
-        </div>
-        <div class="inline-flex">
-          <label width="25%" align="left"></label>
-          <section style="padding: 0px 5px" align="left" width="75%">
-            <div class="wb_FtCon wb_common">
-              <span>powered by </span
-              ><a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://zoho.com/desk"
-                class="wb_logoCon"
-                ><img
-                  class="wb_logo"
-                  src="https://d1ydxa2xvtn0b5.cloudfront.net/app/images/portalLogo.de847024ebc0131731a3.png"
-              /></a>
-            </div>
-          </section>
-        </div>
-      </div>
-    </section>
-  </form>
+<div id='zohoSupportWebToCase' align='center'>
+	<form name='zsWebToCase_638510000000180873' id='zsWebToCase_638510000000180873'
+				action='https://desk.zoho.com/support/WebToCase' method='POST' onSubmit='return zsValidateMandatoryFields()'
+				enctype='multipart/form-data'><input type='hidden' name='xnQsjsdp'
+																						 value='edbsne3e0671907c01d4368bf22694c4645f0'/> <input type='hidden'
+																																																		name='xmIwtLD'
+																																																		value='edbsna177e6b86568a92d2e6f08fab3b80d5960bb314f2e20acd3f10783571e08dc71'/>
+		<input type='hidden' name='xJdfEaS' value=''/> <input type='hidden' name='actionType' value='Q2FzZXM='/> <input
+						type="hidden" id="property(module)" value="Cases"/> <input type="hidden" id="dependent_field_values_Cases"
+																																			 value="&#x7b;&quot;JSON_VALUES&quot;&#x3a;&#x7b;&#x7d;,&quot;JSON_SELECT_VALUES&quot;&#x3a;&#x7b;&#x7d;,&quot;JSON_MAP_DEP_LABELS&quot;&#x3a;&#x5b;&#x5d;&#x7d;"/>
+		<input type='hidden' name='returnURL' value='https&#x3a;&#x2f;&#x2f;loopring.io'/>
+		<section border='0' cellspacing='0' class='zsFormClass'>
+			<div class='inline-flex' >
+				<section colspan='2'  class='zsFontClass' style="font-size: 20px; text-align: center; padding-bottom: 20px ">Loopring Help Center</section>
+			</div>
+			<br>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>First Name&nbsp;&nbsp; </label>
+				<section align='left' width='75%'><input type='text' maxlength='120' name='First Name' value=''/></section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>Last Name&nbsp;&nbsp; </label>
+				<section align='left' width='75%'><input type='text' maxlength='120' name='Contact Name' class='manfieldbdr'/></section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>Email&nbsp;&nbsp; </label>
+				<section align='left' width='75%'><input type='text' maxlength='120' name='Email' value='' class='manfieldbdr'/></section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>What&#x27;s your ticket about&#x3f; &nbsp;&nbsp; </label>
+				<section align='left' width='75%' class="custom-select">
+					<select name="What' s your ticket about?" value='' onchange="setDependent(this,
+					false)" id='CASECF1'>
+					<option value='Loopring zkRollup Layer2'>Loopring zkRollup Layer2</option>
+					<option value='Smart Wallet App'>Smart Wallet App</option>
+					<option value='Others'>Others</option>
+					</select></section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>What&#x27;s your Ethereum address in question&#x3f;&nbsp;&nbsp; </label>
+				<section align='left' width='75%'><input type='text' maxlength='120' name="What' s your Ethereum address in question?"
+					value='' />
+				</section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>What&#x27;s your operation system&#x3f; &nbsp;&nbsp; </label>
+				<section align='left' width='75%'><select name="What' s your operation system?" value='' onchange="setDependent(this,
+					false)" id='CASECF3'>
+					<option value='Windows'>Windows</option>
+					<option value='macOS'>macOS</option>
+					<option value='Linux or Unix'>Linux or Unix</option>
+					<option value='iOS'>iOS</option>
+					<option value='Android'>Android</option>
+					<option value='Others'>Others</option>
+					</select></section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>What&#x27;s your browser - if this applies&#x3f;&nbsp;&nbsp; </label>
+				<section align='left' width='75%'><input type='text' maxlength='120' name="What' s your browser - if this applies?"
+					value='' />
+				</section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>Subject&nbsp;&nbsp; </label>
+				<section align='left' width='75%'><input type='text' maxlength='255' name='Subject' value='' class='manfieldbdr'/>
+				</section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>Description &nbsp;&nbsp; </label>
+				<section align='left' width='75%'  >
+					<textarea name='Description' maxlength='3000' width='250' height='300' rows="8" style="height: 80px">
+						
+					</textarea>
+				</section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass ' width='25%' align='left'>Attachment &nbsp;&nbsp; </label>
+				<section align='left' width='75%'><span class="zsFontClass wtcuploadfile" id="zsBrowseAttachment">Attach files</span><input
+								class="wtcuploadinput" type='file' name='attachment_1' id='zsattachment_1' style='display:block;'
+								onclick='zsOpenFileBrowseAttachment(event)'
+								onchange='zsRenderBrowseFileAttachment(this.value, this)'/><input class="wtcuploadinput" type='file'
+																																									name='attachment_2'
+																																									id='zsattachment_2'
+																																									style='display:none;'
+																																									onclick='zsOpenFileBrowseAttachment(event)'
+																																									onchange='zsRenderBrowseFileAttachment(this.value, this)'/>
+					<input class="wtcuploadinput" type='file' name='attachment_3' id='zsattachment_3' style='display:none;'
+								 onclick='zsOpenFileBrowseAttachment(event)' onchange='zsRenderBrowseFileAttachment(this.value, this)'/>
+					<input class="wtcuploadinput" type='file' name='attachment_4' id='zsattachment_4' style='display:none;'
+								 onclick='zsOpenFileBrowseAttachment(event)' onchange='zsRenderBrowseFileAttachment(this.value, this)'/>
+					<input class="wtcuploadinput" type='file' name='attachment_5' id='zsattachment_5' style='display:none;'
+								 onclick='zsOpenFileBrowseAttachment(event)' onchange='zsRenderBrowseFileAttachment(this.value, this)'/>
+					<div class="clboth"></div>
+					<span id='zsMaxSizeMessage' style='font-size: 12px;float: left; line-height: 20px'>Each of your file(s) can be up to 20MB in size.</span><span
+									id='zsMaxLimitMessage'
+									style='color:black;font-size: 12px;float: left;margin-left: 14px;display: none;'>You can attach as many as 5 files at a time.</span>
+					<div id='zsFileBrowseAttachments'></div>
+				</section>
+			</div>
+			<div class='inline-flex'>
+				<label  class='zsFontClass' width='25%' align='left'>Captcha&nbsp; </label>
+				<section class="zsCaptchablock">
+					<div id='zsCaptchaLoading'>Loading...<br><br></div>
+					<div id='zsCaptcha' style='display:none; align-items: center'><img src='#' id='zsCaptchaUrl' name="zsCaptchaImage"><a
+									href="javascript:"
+									style='color:#00a3fe; cursor:pointer; margin-left:10px; vertical-align:middle;text-decoration: none;'
+									class='zsFontClass' onclick='zsRegenerateCaptcha()'>Refresh</a></div>
+				</section>
+				<div style="padding-top: 8px"><input type='text' name='zsWebFormCaptchaWord'/><input type='hidden' name='zsCaptchaSrc' value=''/></div>
+
+				<div class='inline-flex'>
+				<section style='padding: 11px 5px 0px 5px;' colspan='2' align='center' width='25%'><input type='submit'
+																																														 id="zsSubmitButton_638510000000180873"
+																																														 class='zsFontClass'
+																																														 value='Submit'> &nbsp;
+					&nbsp; <input type='button' class='zsFontClass' value='Reset' onclick="zsResetWebForm('638510000000180873')">
+				</section>
+			</div>
+			<div class='inline-flex'>
+				<label width='25%' align='left'></label>
+				<section style='padding: 0px 5px;' align='left' width='75%'>
+					<div class='wb_FtCon wb_common'><span>powered by  </span><a target='_blank' rel='noopener noreferrer'
+																																			href='https://zoho.com/desk'
+																																			class='wb_logoCon'><img class='wb_logo'
+																																															src='https://d1ydxa2xvtn0b5.cloudfront.net/app/images/portalLogo.de847024ebc0131731a3.png'/></a>
+					</div>
+				</section>
+			</div>
+			</div>
+		</section>
+	</form>
 </div>

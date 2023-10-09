@@ -4,38 +4,44 @@ import {
   findDualMarket,
   LoopringAPI,
   makeDualViewItem,
+  store,
   useDualMap,
+  useSystem,
   useTokenMap,
   useTokenPrices,
 } from '@loopring-web/core'
 import React from 'react'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { DualCurrentPrice, DualViewInfo, myLog, SagaStatus } from '@loopring-web/common-resources'
+import {
+  DualCurrentPrice,
+  DualViewInfo,
+  DualViewType,
+  myLog,
+  SagaStatus,
+} from '@loopring-web/common-resources'
+import { useSettings } from '@loopring-web/component-lib'
+
 const DUALLimit = 20
-export const useDualHook = ({
-  setConfirmDualInvest,
-}: {
-  setConfirmDualInvest: (state: 'hidden' | 'all' | 'USDCOnly') => void
-}) => {
+export const useDualHook = () => {
   const match: any = useRouteMatch('/invest/dual/:market?')
   const { search } = useLocation()
-  const [beginnerMode, setBeginnerMode] = React.useState<boolean>(
-    new URLSearchParams(search).get('beginnerMode') === 'true',
-  )
-  const { marketArray, marketMap, tradeMap, status: dualStatus } = useDualMap()
+  const searchParams = new URLSearchParams(search)
+  const viewType = searchParams.get('viewType')
+  const { defaultNetwork } = useSettings()
+  const { tokenMap, idIndex } = useTokenMap()
+  const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
   const { tokenPrices } = useTokenPrices()
   const [priceObj, setPriceObj] = React.useState<{
     symbol: any
-    price: any
+    // price: any
   }>({
     symbol: undefined,
-    price: undefined,
+    // price: undefined,
   })
   const {
-    confirmation: { confirmedDualInvest, confirmedDualInvestV2 },
+    confirmation: { confirmedDualInvestV2 },
   } = confirmation.useConfirmation()
-  setConfirmDualInvest(confirmedDualInvestV2 ? 'hidden' : confirmedDualInvest ? 'USDCOnly' : 'all')
   const history = useHistory()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
 
@@ -64,13 +70,6 @@ export const useDualHook = ({
     return [coinA, coinB]
   })
 
-  const onToggleBeginnerMode = React.useCallback(() => {
-    const searchParams = new URLSearchParams(search)
-    searchParams.set('beginnerMode', beginnerMode ? 'false' : 'true')
-    history.push(`${match.url}?${searchParams.toString()}`)
-    setBeginnerMode(!beginnerMode)
-  }, [beginnerMode])
-
   const handleOnPairChange = React.useCallback(
     (
       prosp:
@@ -93,16 +92,18 @@ export const useDualHook = ({
         setPairBSymbol(_pairBSymbol)
         market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol)
       }
-      history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}${search}`)
-
       if (market) {
-        const [, , coinA, coinB] = market ?? ''.match(/(dual-)?(\w+)-(\w+)/i)
+        getProduct()
+        history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}${search}`)
+        const [, , coinA, coinB] = market.match(/(dual-)?(\w+)-(\w+)/i)
         setMarket(market)
         setPair(`${_pairASymbol}-${_pairBSymbol}`)
         setMarketPair([coinA, coinB])
         setPriceObj({
-          symbol: coinA,
-          price: tokenPrices[coinA],
+          symbol: /USD/gi.test(marketMap[market]?.quoteAlias ?? '')
+            ? 'USDT'
+            : marketMap[market]?.quoteAlias,
+          // price: tokenPrices[coinA],
         })
       }
     },
@@ -113,7 +114,6 @@ export const useDualHook = ({
   const [isDualBalanceSufficient, setIsDualBalanceSufficient] = React.useState<boolean | undefined>(
     undefined,
   )
-  const { tokenMap } = useTokenMap()
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true)
@@ -146,8 +146,7 @@ export const useDualHook = ({
       } else {
         const {
           // totalNum,
-          dualInfo: { infos, index, balance },
-          raw_data: { rules },
+          dualInfo: { infos, index, balance, rules },
         } = response as any
         const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
         const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
@@ -186,19 +185,18 @@ export const useDualHook = ({
     }, 60000)
   }, 100)
   React.useEffect(() => {
-    if (dualStatus === SagaStatus.UNSET && pairBSymbol) {
-      if (marketArray !== undefined && marketArray.length) {
-        handleOnPairChange({ pairB: pairBSymbol })
-      } else if (marketArray?.length == 0) {
-        history.push('/invest')
-      }
-    }
-  }, [dualStatus])
-  React.useEffect(() => {
     if (dualStatus === SagaStatus.UNSET && pair) {
       getProduct.cancel()
+      const [_, _pairASymbol, _pairBSymbol] = pair.match(/(\w+)-(\w+)/i)
+      if (marketArray !== undefined && marketArray.length) {
+        const market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol)
+        if (market) {
+          handleOnPairChange({ pairB: _pairBSymbol })
+        }
+        return
+      }
+      history.push(`/invest/dual/${search}`)
       myLog('update pair', pair)
-      getProduct()
     }
     return () => {
       if (nodeTimer.current !== -1) {
@@ -207,15 +205,40 @@ export const useDualHook = ({
       getProduct.cancel()
     }
   }, [pair, dualStatus])
-
+  React.useEffect(() => {
+    switch (viewType) {
+      case DualViewType.DualGain:
+        setStep2BuyOrSell('Sell')
+        break
+      case DualViewType.DualDip:
+        setStep2BuyOrSell('Buy')
+        break
+      case DualViewType.DualBegin:
+        // setBeginnerMode(true)
+        setStep2BuyOrSell(undefined)
+        break
+      case DualViewType.All:
+      default:
+        setStep2BuyOrSell(undefined)
+        break
+    }
+    getDualMap()
+  }, [viewType])
   const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(undefined)
   const [step2BuyOrSell, setStep2BuyOrSell] = React.useState<'Buy' | 'Sell' | undefined>(undefined)
   const [step3Token, setStep3Token] = React.useState<string | undefined>(undefined)
-  const onSelectStep1Token = React.useCallback((token: string) => {
-    setStep1SelectedToken(token)
-    setStep2BuyOrSell(undefined)
-    setStep3Token(undefined)
-  }, [])
+  const onSelectStep1Token = React.useCallback(
+    (token?: string) => {
+      setStep1SelectedToken(token)
+      //@ts-ignore
+      if (![DualViewType.DualGain, DualViewType.DualDip].includes(viewType)) {
+        setStep2BuyOrSell(undefined)
+      }
+      setStep3Token(undefined)
+    },
+    [viewType],
+  )
+
   const onSelectStep2BuyOrSell = React.useCallback((which: 'Buy' | 'Sell') => {
     setStep2BuyOrSell(which)
     setStep3Token(undefined)
@@ -240,16 +263,102 @@ export const useDualHook = ({
         setPair(`${pairA}-${pairB}`)
         setMarketPair([coinA, coinB])
         setPriceObj({
-          symbol: coinA,
-          price: tokenPrices[coinA],
+          symbol: marketMap[market].quoteAlias,
+          // price: tokenPrices[coinA],
         })
       }
     },
     [step1SelectedToken, step2BuyOrSell, marketArray, tradeMap],
   )
+  const baseTokenList = React.useMemo(() => {
+    if (dualStatus === SagaStatus.UNSET) {
+      return Reflect.ownKeys(marketMap ?? {}).reduce(
+        (prev, key) => {
+          if (!marketMap[key.toString()].enabled) {
+            return prev
+          }
+          const { marketMap: dualMarketMap } = store.getState().invest.dualMap
+          const baseSymbol = idIndex[marketMap[key.toString()].baseTokenId]
+          // let sortList = [
+          //   dualMarketMap[baseSymbol].DUAL?.replace('%', ''),
+          //   dualMarketMap[baseSymbol].quoteTokenApy?.replace('%', ''),
+          // ]
+          prev[baseSymbol] = {
+            tokenName: baseSymbol,
+            // minAPY: dualMarketMap[key.toString()].apy?.replace('%', ''),
+            // maxAPY: dualMarketMap[key.toString()].apy?.replace('%', ''),
+            tokenList: tradeMap[baseSymbol]?.tokenList,
+          }
+
+          if (viewType === DualViewType.DualGain) {
+            let sortList = [
+              dualMarketMap[key]?.baseTokenApy?.min,
+              dualMarketMap[key]?.baseTokenApy?.max,
+            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
+            sortList = sortList
+              .filter((item) => item)
+              .sort(
+                (a, b) =>
+                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
+              )
+            // sortList = [...sortList, ]
+            prev[baseSymbol] = {
+              ...prev[baseSymbol],
+              minAPY: sortList[0],
+              maxAPY: sortList[sortList.length - 1],
+            }
+          } else if (viewType === DualViewType.DualDip) {
+            let sortList = [
+              dualMarketMap[key]?.quoteTokenApy?.min,
+              dualMarketMap[key]?.quoteTokenApy?.max,
+            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
+            sortList = sortList
+              .filter((item) => item)
+              .sort(
+                (a, b) =>
+                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
+              )
+            // sortList = [...sortList, ]
+            prev[baseSymbol] = {
+              ...prev[baseSymbol],
+              minAPY: sortList[0],
+              maxAPY: sortList[sortList.length - 1],
+            }
+          } else {
+            let sortList = [
+              dualMarketMap[key]?.baseTokenApy?.min,
+              dualMarketMap[key]?.baseTokenApy?.max,
+              dualMarketMap[key]?.quoteTokenApy?.min,
+              dualMarketMap[key]?.quoteTokenApy?.max,
+            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
+            sortList = sortList
+              .filter((item) => item)
+              .sort(
+                (a, b) =>
+                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
+              )
+            // sortList = [...sortList, ]
+            prev[baseSymbol] = {
+              ...prev[baseSymbol],
+              minAPY: sortList[0],
+              maxAPY: sortList[sortList.length - 1],
+            }
+          }
+
+          return prev
+        },
+        {} as {
+          tokenName: string
+          minAPY: number
+          maxAPY: number
+        },
+      )
+    } else {
+      return {}
+    }
+  }, [viewType, dualStatus])
 
   return {
-    // dualWrapProps: undefined,
     currentPrice,
     pairASymbol,
     pairBSymbol,
@@ -261,13 +370,6 @@ export const useDualHook = ({
     marketQuote,
     priceObj,
     pair,
-    beginnerMode,
-    onToggleBeginnerMode,
-    // confirmShowNoBalance,
-    // setConfirmShowNoBalance,
-    // serverUpdate,
-    // setServerUpdate,
-
     step1SelectedToken,
     step2BuyOrSell,
     step3Token,
@@ -275,5 +377,7 @@ export const useDualHook = ({
     onSelectStep2BuyOrSell,
     onSelectStep3Token,
     isDualBalanceSufficient,
+    baseTokenList,
+    // baseSymbol: priceObj.symbol,
   }
 }

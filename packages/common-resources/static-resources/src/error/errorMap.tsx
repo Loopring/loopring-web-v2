@@ -346,6 +346,19 @@ export const ErrorMap = {
     id: 'ERROR_ADDRESS_CHECK_ERROR',
     messageKey: 'errorAddressCheckError',
   },
+  ERROR_CONTACT_EXISTED: { id: 'ERROR_CONTACT_EXISTED', messageKey: 'errorContactExisted' },
+  ERROR_CONTACT_NAME_EXISTED: {
+    id: 'ERROR_CONTACT_NAME_EXISTED',
+    messageKey: 'errorContactNameExisted',
+  },
+  ERROR_CONTACT_LIMIT_REACHED: {
+    id: 'ERROR_CONTACT_LIMIT_REACHED',
+    messageKey: 'errorContactLimit',
+  },
+  ERROR_CONTACT_NAME_OVER_LIMIT: {
+    id: 'ERROR_CONTACT_NAME_OVER_LIMIT',
+    messageKey: 'errorContactOverLimit',
+  },
 }
 
 export enum UIERROR_CODE {
@@ -386,6 +399,10 @@ export enum UIERROR_CODE {
   ERROR_SWITCH_ETHEREUM = 700202,
   ERROR_NO_GAMESTOP_EXTENSION = 700203,
   ERROR_ETHEREUM_NOT_METAMASK = 700204,
+  ERROR_CONTACT_EXISTED = 124001,
+  ERROR_CONTACT_NAME_EXISTED = 124002,
+  ERROR_CONTACT_LIMIT_REACHED = 124003,
+  ERROR_CONTACT_NAME_OVER_LIMIT = 124004,
 }
 
 export type ErrorObject = {
@@ -478,5 +495,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
   122001: ErrorMap.ERROR_ON_REFRESH,
+  124001: ErrorMap.ERROR_CONTACT_EXISTED,
+  124002: ErrorMap.ERROR_CONTACT_NAME_EXISTED,
+  124003: ErrorMap.ERROR_CONTACT_LIMIT_REACHED,
+  124004: ErrorMap.ERROR_CONTACT_NAME_OVER_LIMIT,
   115003: ErrorMap.ERROR_DUAL_EXPIRED,
 }

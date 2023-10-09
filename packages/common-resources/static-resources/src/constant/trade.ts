@@ -454,9 +454,6 @@ export type DualViewBase = {
   term: string
   strike: string
   isUp: boolean
-  // targetPrice,
-  // subscribeData,
-
   expireTime: number
   currentPrice: DualCurrentPrice
   productId: string
@@ -464,8 +461,9 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-
-  // balance,
+  stepLength?: string
+  quote?: string
+  __raw__?: any
 }
 
 export type DualViewInfo = DualViewBase & {
@@ -732,3 +730,34 @@ export type AmmHistoryItem = {
   close: number
   timeStamp: number
 }
+
+export enum DualStep {
+  ChooseType = 'ChooseType',
+  ShowBase = 'ShowBase',
+  ShowSellBuy = 'ShowSellBuy',
+  ShowQuote = 'ShowQuote',
+  ShowList = 'ShowList',
+}
+export enum DualViewType {
+  DualGain = 'DualGain',
+  DualDip = 'DualDip',
+  DualBegin = 'DualBegin',
+  All = 'All',
+}
+export const DualGain = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_BASE' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_BASE' },
+]
+export const DualDip = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_CURRENCY' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_CURRENCY' },
+]
+export const DualBegin = [
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualBeginnerStep1Title' },
+  { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
+]

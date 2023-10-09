@@ -493,7 +493,7 @@ export const AssetsTable = withTranslation('tables')(
             ref={gridRef}
           className={isInvest ? 'investAsset' : ''}
           {...{ ...rest, t }}
-            style={{height: rowConfig.rowHeaderHeight + total * rowConfig.rowHeight}}
+            style={{height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350}}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}

@@ -52,8 +52,10 @@ npm run storybook
 
 ## 👺 For Developer
 
-- We appreciate any improvements or initiatives for Loopring Layer2 website, please view the source code in `./packages/component-lib`.
-- The project contains a separate lib "web3-provider", which is a third-party ETH web3 wallet provider service (wallectConnect & metamask),
+- We appreciate any improvements or initiatives for Loopring Layer2 website, please view the source code
+  in `./packages/component-lib`.
+- The project contains a separate lib "web3-provider", which is a third-party ETH web3 wallet provider service (
+  wallectConnect & metamask),
 - You are welcome to reuse it or integrate your provider service with our website.
 - Feel free to leave suggestions or ideas.
 

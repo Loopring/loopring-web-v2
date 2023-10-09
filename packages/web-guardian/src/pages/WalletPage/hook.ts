@@ -287,9 +287,6 @@ export const useAction = ({
           isContract1XAddress = true
           guardianModuleAddress = walletModule?.contractAddress
         }
-        // else if (contractType && contractType.walletType === 0) {
-        //   guardians = []
-        // }
         const request: sdk.ApproveSignatureRequest = {
           approveRecordId: selected.id,
           txAwareHash: selected.messageHash,

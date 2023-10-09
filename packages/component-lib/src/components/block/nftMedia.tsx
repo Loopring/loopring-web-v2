@@ -6,7 +6,7 @@ import {
   SoursURL,
   SyncIcon,
 } from '@loopring-web/common-resources'
-import { Theme, useTheme } from '@emotion/react'
+import { useTheme } from '@emotion/react'
 import React from 'react'
 import { Box, BoxProps, Modal, Tooltip, Typography } from '@mui/material'
 import {
@@ -28,23 +28,18 @@ import styled from '@emotion/styled'
 import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 // import "@google/model-viewer";
-
-const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
+//background-color: var(--color-box-secondary);
+const BoxStyle = styled(Box)<BoxProps>`
   ${(props) => cssBackground(props)};
   width: 100%;
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(
-    to bottom,
-    var(--color-global-bg-opacity) 0%,
-    var(--color-global-bg-opacity) 100%
-  );
-
+  background-color: var(--opacity);
   .redPacketNFT & {
     background-image: none;
     background-color: initial;
   }
-` as (prosp: BoxProps & { theme: Theme }) => JSX.Element
+`
 
 export const NFTMedia = React.memo(
   React.forwardRef(

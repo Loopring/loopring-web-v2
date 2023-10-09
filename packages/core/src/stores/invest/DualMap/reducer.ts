@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { DualMapStates } from './interface'
 import { SagaStatus } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const initialState: Required<DualMapStates> = {
   marketArray: [],
@@ -40,7 +41,19 @@ const dualMapSlice: Slice = createSlice({
       }
       state.status = SagaStatus.DONE
     },
-    updateDualSyncMap(state, _action: PayloadAction<DualMapStates>) {
+    updateDualSyncMap(
+      state,
+      _action: PayloadAction<
+        Partial<{
+          markets: sdk.LoopringMap<sdk.DefiMarketInfo>
+          pairs: sdk.LoopringMap<sdk.TokenRelatedInfo>
+          tokenArr: string[]
+          tokenArrStr: string
+          marketArr: string[]
+          marketArrStr: string
+        }>
+      >,
+    ) {
       state.status = SagaStatus.PENDING
     },
     statusUnset: (state) => {
