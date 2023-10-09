@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { TradeDual, TradeDualStatus } from './interface'
+import { EditDual, TradeDual, TradeDualStatus } from './interface'
 import { DualViewInfo, DualViewOrder } from '@loopring-web/common-resources'
 
 const initialState: TradeDualStatus<DualViewInfo> = {
@@ -95,7 +95,7 @@ const tradeDualSlice: Slice<TradeDualStatus<DualViewInfo>> = createSlice({
         state.tradeDual.sellVol = sellVol
       }
     },
-    updateEditDual(state, action: PayloadAction<{ dualViewInfo: DualViewOrder } & DualViewOrder>) {
+    updateEditDual(state, action: PayloadAction<EditDual<any> & DualViewOrder>) {
       state.editDual = { ...action.payload }
     },
   },
