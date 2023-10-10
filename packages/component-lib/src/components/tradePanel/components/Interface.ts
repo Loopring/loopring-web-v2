@@ -679,6 +679,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void
     activeStep: RedPacketStep
     tokenMap: { [key: string]: sdk.TokenInfo }
+    idIndex: { [key: string]: string }
     backToScope: () => void
     onClickNext: () => void
     onClickBack: () => void

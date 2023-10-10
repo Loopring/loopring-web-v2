@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts'
-import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -9,7 +8,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 import { utils } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
-import { AddressError, myLog } from '@loopring-web/common-resources'
+import { AddressError, myLog, isAddress } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../api_wrapper'
 
 export function getLibrary(provider: any): Web3Provider {
@@ -56,13 +55,6 @@ export function transactionChecker(web3: any, address: string) {
 }
 
 // returns the checksummed address if the address is valid, otherwise returns false
-export function isAddress(value: any): string | false {
-  try {
-    return getAddress(value)
-  } catch {
-    return false
-  }
-}
 
 const ETHERSCAN_PREFIXES: { [key: number]: string } = {
   1: '',

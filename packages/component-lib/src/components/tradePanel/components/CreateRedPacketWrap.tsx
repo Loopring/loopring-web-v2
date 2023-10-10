@@ -46,6 +46,7 @@ import {
   YEAR_DAY_MINUTE_FORMAT,
   ScopeQR,
   ScopeTarget,
+  isAddress,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import {
@@ -65,7 +66,6 @@ import moment from 'moment'
 import { NFTInput } from './BasicANFTTrade'
 import { DateTimeRangePicker } from '../../datetimerangepicker'
 import BigNumber from 'bignumber.js'
-import { isAddress, useNotify, useTokenMap } from '@loopring-web/core'
 import { CoinIcons, FeeSelect, InitialNameAvatar, Modal } from '../../../components'
 import { useTheme } from '@emotion/react'
 import { useHistory } from 'react-router'
@@ -126,7 +126,9 @@ export const CreateRedPacketStepWrap = withTranslation()(
     selectedType,
     minimum,
     maximum,
+    idIndex,
     selectNFTDisabled,
+    redPacketConfig,
     ...rest
   }: CreateRedPacketViewProps<T, I, F> & {
     selectedType: LuckyRedPacketItem
@@ -378,8 +380,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
     const endMinDateTime = startDateTime ? moment.max(now, startDateTime.clone()) : now
 
     const timeRangeMaxInSeconds = isToken
-      ? useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsToken
-      : useNotify().notifyMap?.redPacket.timeRangeMaxInSecondsNFT
+      ? redPacketConfig.timeRangeMaxInSecondsToken
+      : redPacketConfig.timeRangeMaxInSecondsNFT
     // ?? 14 * 24 * 60 * 60;
     const endMaxDateTime = startDateTime
       ? startDateTime.clone().add(timeRangeMaxInSeconds, 'seconds')
@@ -870,7 +872,7 @@ export const CreateRedPacketStepType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled
     }, [disabled])
-    const showERC20Blindbox = useNotify().notifyMap?.redPacket.showERC20Blindbox
+    const showERC20Blindbox = redPacketConfig.showERC20Blindbox
     const filteredList = LuckyRedPacketList.filter(
       (item) =>
         (tradeType == RedPacketOrderType.NFT
@@ -1440,7 +1442,6 @@ export const TargetRedpacktSelectStep = withTranslation()(
     } = props
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
-    const { idIndex } = useTokenMap()
     const [showReceipts, setShowReceipts] = React.useState(false)
 
     return (

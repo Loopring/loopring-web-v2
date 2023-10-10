@@ -695,6 +695,7 @@ export type RedPacketOrderData<I> = {
     maxSendCount: number
     sentAddresses?: string[]
   }
+  showNFT: boolean
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
@@ -814,4 +815,9 @@ export enum VaultLoadType {
 export enum AmmPanelType {
   Join = 0,
   Exit = 1,
+}
+
+export enum DualInvestConfirmType {
+  USDCOnly = 'USDCOnly',
+  all = 'all',
 }

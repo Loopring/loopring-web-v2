@@ -26,7 +26,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { ColumnCoinDeep } from '../assetsTable'
 import TextTooltip from './textTooltip'
 import { useTheme } from '@emotion/react'
-// import { redpacketService } from '@loopring-web/core'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;

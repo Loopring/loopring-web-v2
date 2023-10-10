@@ -19,8 +19,9 @@ import {
   EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST,
   EXCLUSIVE_REDPACKET_ORDER_LIMIT,
   MapChainId,
+  isAddress,
 } from '@loopring-web/common-resources'
-import { store, useAccount, useModalData, useSystem, useTokenMap } from '../../stores'
+import { store, useAccount, useModalData, useNotify, useSystem, useTokenMap } from '../../stores'
 import {
   AccountStep,
   CreateRedPacketProps,
@@ -37,7 +38,7 @@ import { useBtnStatus } from '../common'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../api_wrapper'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
-import { getTimestampDaysLater, isAddress } from '../../utils'
+import { getTimestampDaysLater } from '../../utils'
 import { DAYS } from '../../defs'
 import Web3 from 'web3'
 import { isAccActivated } from './useCheckAccStatus'
@@ -85,6 +86,7 @@ export const useCreateRedPacket = <
 } => {
   const { exchangeInfo, chainId } = useSystem()
   const { tokenMap, totalCoinMap, idIndex } = useTokenMap()
+  const { notifyMap } = useNotify()
   // const tradeType
   const {
     allowTrade: { transfer: transferEnabale },
@@ -1093,6 +1095,7 @@ export const useCreateRedPacket = <
   })
 
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
+    redPacketConfig: notifyMap?.redPacket ?? {},
     tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
     onCreateRedPacketClick,
@@ -1103,6 +1106,7 @@ export const useCreateRedPacket = <
     walletMap,
     coinMap: totalCoinMap,
     tokenMap,
+    idIndex,
     minimum,
     maximum,
     feeInfo: redPacketOrder.fee ?? feeInfo,
