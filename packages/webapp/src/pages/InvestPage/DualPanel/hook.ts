@@ -6,7 +6,6 @@ import {
   makeDualViewItem,
   store,
   useDualMap,
-  useSystem,
   useTokenMap,
   useTokenPrices,
 } from '@loopring-web/core'
@@ -20,7 +19,6 @@ import {
   myLog,
   SagaStatus,
 } from '@loopring-web/common-resources'
-import { useSettings } from '@loopring-web/component-lib'
 
 const DUALLimit = 20
 export const useDualHook = () => {
@@ -28,7 +26,6 @@ export const useDualHook = () => {
   const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
   const viewType = searchParams.get('viewType')
-  const { defaultNetwork } = useSettings()
   const { tokenMap, idIndex } = useTokenMap()
   const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
   const { tokenPrices } = useTokenPrices()
