@@ -10,7 +10,7 @@ const initialState: PopupStates = {
   showVaultPopup: false,
 }
 const popupSlice: Slice = createSlice({
-  name: 'stakingMap',
+  name: 'popup',
   initialState,
   reducers: {
     setShowRETHStakignPopup(

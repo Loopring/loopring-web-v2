@@ -145,7 +145,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
               alignItems={'center'}
               height={24}
             >
-              <Tooltip title={t('labelVaultTotalQuoteDest').toString()}>
+              <Tooltip title={t('labelVaultTotalQuoteDes').toString()}>
                 <Typography
                   component={'span'}
                   variant='body2'
@@ -176,7 +176,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('labelVaultTotalQuoteDest').toString()}>
+              <Tooltip title={t('labelVaultTokenQuoteDes').toString()}>
                 <Typography
                   component={'span'}
                   variant='body2'

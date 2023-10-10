@@ -2074,4 +2074,6 @@ export default {
     'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
   labelVaultBorrow: 'Borrow',
   labelVaultRepay: 'Repay',
+  labelVaultTotalQuoteDes: 'Total Quote',
+  labelVaultTokenQuoteDes: '',
 }
