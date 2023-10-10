@@ -159,20 +159,31 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
-                <Typography component={'span'} display={'flex'}>
-                  <Typography
-                    component={'span'}
-                    // display={"inline-flex"}
-                    color={'textPrimary'}
-                    display={'flex'}
-                    flexDirection={'column'}
-                  >
-                    {`${base}/${quote}`}
-                  </Typography>
-                  {showClock && (
-                    <Box component={'span'} marginLeft={1} display={'flex'} alignItems={'center'}>
-                      <ClockIcon color={'warning'} />
-                    </Box>
+                <Typography component={'span'} display={'flex'} alignItems={'center'}>
+                  {showClock ? (
+                    <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
+                      <Typography
+                        component={'span'}
+                        // display={"inline-flex"}
+                        alignItems={'center'}
+                        color={'textPrimary'}
+                        display={'inline-flex'}
+                        flexDirection={'row'}
+                      >
+                        {`${base}/${quote}`}
+                        <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography
+                      component={'span'}
+                      // display={"inline-flex"}
+                      color={'textPrimary'}
+                      display={'flex'}
+                      flexDirection={'column'}
+                    >
+                      {`${base}/${quote}`}
+                    </Typography>
                   )}
                 </Typography>
               </Typography>
@@ -389,9 +400,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 </Typography>
                 {/*{inAuto && <ClockIcon color={'primary'} />}*/}
                 {showClock && (
-                  <Box component={'span'} marginLeft={1} display={'flex'} alignItems={'center'}>
-                    <ClockIcon color={'warning'} />
-                  </Box>
+                  <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
+                    <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />
+                  </Tooltip>
                 )}
               </Typography>
             )
