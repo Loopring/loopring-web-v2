@@ -241,7 +241,7 @@ export const ModalDualPanel = withTranslation('common')(
             [DualViewType.All, DualViewType.DualBegin].includes(viewType as any)
           }
           USDCOnly={confirmedDualInvestV2 === 'USDCOnly'}
-          handleClose={(_e, isAgree: confirmation.DualInvestConfirmType | undefined) => {
+          handleClose={(_e, isAgree: DualInvestConfirmType | undefined) => {
             if (!isAgree) {
               setShowAlert(false)
               searchParams.set('viewType', '')
