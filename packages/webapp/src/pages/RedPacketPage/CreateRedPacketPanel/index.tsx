@@ -118,7 +118,6 @@ export const CreateRedPacketUIPanel = <
         ) : (
           <CreateRedPacketPanel
             {...{
-              redPacketConfig,
               _height: 'auto',
               ...createRedPacketProps,
               tradeType: createRedPacketProps.tradeType,
