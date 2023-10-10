@@ -210,7 +210,7 @@ export const ModifyParameter = ({
                       undefined,
                     ),
                   symbol: base,
-                  baseSymbol: quote,
+                  baseSymbol: /USD/gi.test(quote ?? '') ? 'USDT' : quote,
                 }}
               >
                 LRC Current price:

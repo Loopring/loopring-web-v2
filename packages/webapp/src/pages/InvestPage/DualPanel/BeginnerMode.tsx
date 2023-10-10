@@ -412,7 +412,9 @@ export const BeginnerMode: any = withTranslation('common')(
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
-                          baseSymbol: currentPrice.quote,
+                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                            ? 'USDT'
+                            : currentPrice.quote,
                         }}
                       >
                         LRC Current price:
