@@ -31,6 +31,7 @@ import {
   CloseIcon,
   copyToClipBoard,
   DAY_MINUTE_FORMAT,
+  DualInvestConfirmType,
   getValuePrecisionThousand,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -44,7 +45,6 @@ import {
 import { useHistory, useLocation } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { confirmation } from '@loopring-web/core'
 import moment from 'moment/moment'
 
 // const ModelStyle = styled(Box)`
@@ -2396,7 +2396,7 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
   }: WithTranslation & {
     open: boolean
     USDCOnly: boolean
-    handleClose: (event: any, isAgree?: confirmation.DualInvestConfirmType | undefined) => void
+    handleClose: (event: any, isAgree?: DualInvestConfirmType | undefined) => void
   }) => {
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -2607,9 +2607,7 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
             onClick={(e) => {
               handleClose(
                 e as any,
-                USDCOnly
-                  ? confirmation.DualInvestConfirmType.USDCOnly
-                  : confirmation.DualInvestConfirmType.all,
+                USDCOnly ? DualInvestConfirmType.USDCOnly : DualInvestConfirmType.all,
               )
             }}
             color={'primary'}

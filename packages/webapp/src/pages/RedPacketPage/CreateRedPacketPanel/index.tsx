@@ -86,8 +86,7 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === 'create',
   })
-  const { notifyMap } = useNotify()
-  const redPacketConfig = notifyMap?.redPacket ?? {}
+
   const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
   React.useEffect(() => {
     if (contactsErrorMessage) {
@@ -119,7 +118,7 @@ export const CreateRedPacketUIPanel = <
         ) : (
           <CreateRedPacketPanel
             {...{
-              redPacketConfig: redPacketConfig ?? {},
+              redPacketConfig,
               _height: 'auto',
               ...createRedPacketProps,
               tradeType: createRedPacketProps.tradeType,
