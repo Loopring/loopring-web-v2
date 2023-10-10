@@ -98,7 +98,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
     market,
     handleOnPairChange,
     onSelectStep1Token,
-    priceObj,
+    // priceObj,
     // toggle,
     // whitList,
   } = dualListProps
@@ -365,7 +365,9 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                                           { floor: true },
                                         ),
                                       symbol: currentPrice.base,
-                                      baseSymbol: priceObj?.symbol ?? '', //currentPrice.quote,
+                                      baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                                        ? 'USDT'
+                                        : currentPrice.quote, //currentPrice.quote,
                                     }}
                                   >
                                     LRC Current price:

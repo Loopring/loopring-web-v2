@@ -12,13 +12,12 @@ import {
   myLog,
   OrderListIcon,
   RecordTabIndex,
-  ReverseIcon,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { DeFiWrapProps } from './Interface'
 import { Trans, useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, IconButton, Tooltip, Typography } from '@mui/material'
+import { Box, Grid, Tooltip, Typography } from '@mui/material'
 import { InputCoin } from '../../../basic-lib'
 import { ButtonStyle, IconButtonStyled } from '../Styled'
 import { CountDownIcon } from '../tool/Refresh'
@@ -26,7 +25,6 @@ import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
-import { usePopup } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { toBig } from '@loopring-web/loopring-sdk'
 
@@ -35,7 +33,6 @@ const GridStyle = styled(Grid)`
     list-style: disc;
     padding-left: ${({ theme }) => theme.unit}px;
   }
-  
 `
 const InputCoinStyled = styled(InputCoin)`
   && {
@@ -72,6 +69,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   maxBuyVol,
   market,
   title,
+  setShowRETHStakignPopup,
+  setShowWSTETHStakignPopup,
+  setShowLeverageETHPopup,
   isLeverageETH,
   extraWithdrawFee,
   apr,
@@ -240,8 +240,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       false,
       { floor: true },
     )} ${tokenBuy.symbol}`
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
-  
+
   const fee = isJoin
     ? deFiCalcData?.fee
       ? deFiCalcData?.fee + ` ${tokenBuy.symbol}`
@@ -256,7 +255,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         { floor: true },
       ) + ` ${tokenBuy.symbol}`
     : EmptyValueTag
-  
+
   return (
     <Grid
       className={deFiCalcData ? '' : 'loading'}
@@ -290,11 +289,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             sx={{ marginLeft: 1, cursor: 'pointer' }}
             onClick={() => {
               if (isLeverageETH) {
-                setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
+                setShowLeverageETHPopup &&
+                  setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
               } else if (market === 'RETH-ETH') {
-                setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowRETHStakignPopup &&
+                  setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
               } else if (market === 'WSTETH-ETH') {
-                setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowWSTETHStakignPopup &&
+                  setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
               }
             }}
           />
@@ -367,7 +369,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           }}
         />
       </Grid>
-      
+
       <Grid marginTop={3} item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
