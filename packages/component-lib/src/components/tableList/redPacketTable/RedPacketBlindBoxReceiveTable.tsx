@@ -20,13 +20,13 @@ import {
 } from './Interface'
 import React from 'react'
 import { FormatterProps } from 'react-data-grid'
-import _, { random } from 'lodash'
+import _ from 'lodash'
 import moment from 'moment'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ColumnCoinDeep } from '../assetsTable'
 import TextTooltip from './textTooltip'
 import { useTheme } from '@emotion/react'
-import { redpacketService } from '@loopring-web/core'
+// import { redpacketService } from '@loopring-web/core'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -83,8 +83,9 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       onItemClick,
       showActionableRecords,
       isUnclaimed,
+      page,
+      setPage,
     } = props
-    const [page, setPage] = React.useState(1)
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
@@ -237,7 +238,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
         headerCellClass: 'textAlignRight',
         name: t('labelRecordStatus'),
         formatter: ({ row }: FormatterProps<R>) => {
-          if (row.rawData.luckyToken.validUntil > Date.now() ) {
+          if (row.rawData.luckyToken.validUntil > Date.now()) {
             return (
               <Tooltip
                 title={
@@ -422,20 +423,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-
-    const onRefresh = React.useCallback(() => {
-      updateData({ page })
-    }, [page])
-
-    const subject = React.useMemo(() => redpacketService.onRefresh(), [])
-    React.useEffect(() => {
-      const subscription = subject.subscribe(() => {
-        onRefresh()
-      })
-      return () => {
-        subscription.unsubscribe()
-      }
-    }, [subject])
 
     return (
       <TableWrapperStyled>
