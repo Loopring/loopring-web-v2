@@ -10,6 +10,25 @@ import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 
+export type VaultAccountInfoStatus = {
+  joinBtnStatus: TradeBtnStatus
+  joinBtnLabel: string
+  onJoinPop: (props: any) => void
+  vaultAccountInfo: sdk.VaultAccountInfo
+  swapBtnStatus: TradeBtnStatus
+  swapBtnLabel: string
+  onSwapPop: (props: any) => void
+  redeemBtnStatus: TradeBtnStatus
+  onRedeemPop: (props: any) => void
+  redeemBtnLabel: string
+  borrowBtnStatus: TradeBtnStatus
+  onBorrowPop: (props: any) => void
+  borrowBtnLabel: string
+  repayBtnStatus: TradeBtnStatus
+  onRepayPop: (props: any) => void
+  repayBtnLabel: string
+  // isShowFeathure:  vaultAccountInfo?.accountStatus
+}
 export const useAccountInfo = () => {
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
@@ -33,7 +52,7 @@ export const useAccountInfo = () => {
             clearTimeout(nodeTimer.current as any)
           }
           nodeTimer.current = setTimeout(() => {
-            updateVaultLayer2()
+            updateVaultLayer2({})
           }, 6000)
           return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultPendingBtn|` }
         // @ts-ignore
@@ -249,6 +268,7 @@ export const useAccountInfo = () => {
     repayBtnStatus,
     onRepayPop,
     repayBtnLabel: label(repayBtnLabel),
+
     // isShowFeathure:  vaultAccountInfo?.accountStatus
-  }
+  } as VaultAccountInfoStatus
 }

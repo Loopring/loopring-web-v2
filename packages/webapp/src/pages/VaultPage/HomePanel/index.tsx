@@ -1,32 +1,21 @@
-import { Box, Container } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import React from 'react'
-import { SoursURL, TradeBtnStatus } from '@loopring-web/common-resources'
+import { RouterPath, SoursURL, TradeBtnStatus, VaultKey } from '@loopring-web/common-resources'
 import { BoxBannerStyle, Button, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { useAccountInfo } from '@loopring-web/core'
+import { useAccountInfo, useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
+import { useHistory } from 'react-router-dom'
 
-export const VaultHomePanel = () => {
+export const VaultHomePanel = ({
+  vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop },
+}: {
+  vaultAccountInfo: VaultAccountInfoStatus
+}) => {
   const { isMobile } = useSettings()
   const { t } = useTranslation()
-  const {
-    joinBtnStatus,
-    onJoinPop,
-    joinBtnLabel,
-    vaultAccountInfo,
-    swapBtnStatus,
-    onSwapPop,
-    swapBtnLabel,
-    redeemBtnStatus,
-    onRedeemPop,
-    redeemBtnLabel,
-    borrowBtnStatus,
-    onBorrowPop,
-    borrowBtnLabel,
-    repayBtnStatus,
-    onRepayPop,
-    repayBtnLabel,
-  } = useAccountInfo()
+  const { vaultAccountInfo, activeInfo } = useVaultLayer2()
+  const history = useHistory()
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -43,119 +32,76 @@ export const VaultHomePanel = () => {
             flex: 1,
           }}
         >
+          <Typography compontent={'h2'} variant={'h3'}>
+            {t('labelTitleVault')}
+          </Typography>
+
+          <Typography compontent={'p'} variant={'body1'}>
+            {t('labelTitleVaultDes')}
+          </Typography>
+
           <Box className={'bg'} marginY={3} display={'flex'}>
             <Box width={isMobile ? '100%' : '65%'}>
-              <Box marginY={2} display={'flex'} flexDirection={'ro'}>
+              <Box marginY={2} display={'flex'} flexDirection={'row'}>
                 <Box marginX={1} marginY={1}>
-                  <Button
-                    size={'medium'}
-                    onClick={onJoinPop}
-                    loading={'false'}
-                    variant={'contained'}
-                    sx={{ minWidth: 'var(--walletconnect-width)' }}
-                    disabled={
-                      joinBtnStatus === TradeBtnStatus.DISABLED ||
-                      joinBtnStatus === TradeBtnStatus.LOADING
-                    }
-                  >
-                    {joinBtnLabel}
-                  </Button>
-                </Box>
-                <Box marginX={1} marginY={1}>
-                  {[sdk.VaultAccountStatus.IN_STAKING].includes(
-                    (vaultAccountInfo?.accountStatus ?? '') as sdk.VaultAccountStatus,
-                  ) && (
+                  {(vaultAccountInfo &&
+                    [sdk.VaultAccountStatus.IN_STAKING].includes(
+                      vaultAccountInfo?.accountStatus,
+                    )) ||
+                  activeInfo?.hash ? (
                     <Button
                       size={'medium'}
-                      onClick={onSwapPop}
+                      onClick={() => {
+                        history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+                      }}
+                      loading={'false'}
+                      variant={'contained'}
+                      sx={{ minWidth: 'var(--walletconnect-width)' }}
+                    >
+                      {
+                        //TODO go trade
+                        t('labelGoVaultDashBoard')
+                      }
+                    </Button>
+                  ) : (
+                    <Button
+                      size={'medium'}
+                      onClick={onJoinPop}
                       loading={'false'}
                       variant={'contained'}
                       sx={{ minWidth: 'var(--walletconnect-width)' }}
                       disabled={
-                        swapBtnStatus === TradeBtnStatus.DISABLED ||
-                        swapBtnStatus === TradeBtnStatus.LOADING
+                        joinBtnStatus === TradeBtnStatus.DISABLED ||
+                        joinBtnStatus === TradeBtnStatus.LOADING
                       }
                     >
-                      {swapBtnLabel}
+                      {joinBtnLabel}
                     </Button>
                   )}
                 </Box>
-                <Box marginX={1} marginY={1}>
-                  {[sdk.VaultAccountStatus.IN_STAKING].includes(
-                    (vaultAccountInfo?.accountStatus ?? '') as sdk.VaultAccountStatus,
-                  ) && (
-                    <Button
-                      size={'medium'}
-                      onClick={onRedeemPop}
-                      loading={'false'}
-                      variant={'contained'}
-                      sx={{ minWidth: 'var(--walletconnect-width)' }}
-                      disabled={
-                        redeemBtnStatus === TradeBtnStatus.DISABLED ||
-                        redeemBtnStatus === TradeBtnStatus.LOADING
-                      }
-                    >
-                      {redeemBtnLabel}
-                    </Button>
-                  )}
-                </Box>
-                <Box marginX={1} marginY={1}>
-                  {[sdk.VaultAccountStatus.IN_STAKING].includes(
-                    (vaultAccountInfo?.accountStatus ?? '') as sdk.VaultAccountStatus,
-                  ) && (
-                    <Button
-                      size={'medium'}
-                      onClick={onRedeemPop}
-                      loading={'false'}
-                      variant={'contained'}
-                      sx={{ minWidth: 'var(--walletconnect-width)' }}
-                      disabled={
-                        redeemBtnStatus === TradeBtnStatus.DISABLED ||
-                        redeemBtnStatus === TradeBtnStatus.LOADING
-                      }
-                    >
-                      {redeemBtnLabel}
-                    </Button>
-                  )}
-                </Box>
-                <Box marginX={1} marginY={1}>
-                  {[sdk.VaultAccountStatus.IN_STAKING].includes(
-                    (vaultAccountInfo?.accountStatus ?? '') as sdk.VaultAccountStatus,
-                  ) && (
-                    <Button
-                      size={'medium'}
-                      onClick={onBorrowPop}
-                      loading={'false'}
-                      variant={'contained'}
-                      sx={{ minWidth: 'var(--walletconnect-width)' }}
-                      disabled={
-                        borrowBtnStatus === TradeBtnStatus.DISABLED ||
-                        borrowBtnStatus === TradeBtnStatus.LOADING
-                      }
-                    >
-                      {borrowBtnLabel}
-                    </Button>
-                  )}
-                </Box>
-                <Box marginX={1} marginY={1}>
-                  {[sdk.VaultAccountStatus.IN_STAKING].includes(
-                    (vaultAccountInfo?.accountStatus ?? '') as sdk.VaultAccountStatus,
-                  ) && (
-                    <Button
-                      size={'medium'}
-                      onClick={onRepayPop}
-                      loading={'false'}
-                      variant={'contained'}
-                      sx={{ minWidth: 'var(--walletconnect-width)' }}
-                      disabled={
-                        repayBtnStatus === TradeBtnStatus.DISABLED ||
-                        repayBtnStatus === TradeBtnStatus.LOADING
-                      }
-                    >
-                      {repayBtnLabel}
-                    </Button>
-                  )}
-                </Box>
+
+                <Box></Box>
+                {/*//TODO market*/}
+
+                {/*<Box marginX={1} marginY={1}>*/}
+                {/*  {[sdk.VaultAccountStatus.IN_STAKING].includes(*/}
+                {/*    (vaultAccountInfo?.accountStatus ?? '') as sdk.VaultAccountStatus,*/}
+                {/*  ) && (*/}
+                {/*    <Button*/}
+                {/*      size={'medium'}*/}
+                {/*      onClick={onSwapPop}*/}
+                {/*      loading={'false'}*/}
+                {/*      variant={'contained'}*/}
+                {/*      sx={{ minWidth: 'var(--walletconnect-width)' }}*/}
+                {/*      disabled={*/}
+                {/*        swapBtnStatus === TradeBtnStatus.DISABLED ||*/}
+                {/*        swapBtnStatus === TradeBtnStatus.LOADING*/}
+                {/*      }*/}
+                {/*    >*/}
+                {/*      {swapBtnLabel}*/}
+                {/*    </Button>*/}
+                {/*  )}*/}
+                {/*</Box>*/}
               </Box>
             </Box>
           </Box>

@@ -2076,4 +2076,7 @@ export default {
   labelVaultRepay: 'Repay',
   labelVaultTotalQuoteDes: 'Total Quote',
   labelVaultTokenQuoteDes: '',
+  labelTitleVaultDes:
+    'Use third-party funds to trade assets. Traders can access additional capital to leverage their positions and amplify trading results. ',
+  labelTitleVault: 'Vault',
 }

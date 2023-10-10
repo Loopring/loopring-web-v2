@@ -1,9 +1,9 @@
 import { useHistory, useRouteMatch } from 'react-router-dom'
 
-import { Box, Container, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Container, Divider, Tab, Tabs, Typography } from '@mui/material'
 
 import React from 'react'
-import { store, useVaultMap } from '@loopring-web/core'
+import { store, useAccountInfo, useVaultMap } from '@loopring-web/core'
 
 import {
   RouterPath,
@@ -13,6 +13,7 @@ import {
   HelpIcon,
   LOOPRING_DOCUMENT,
   RecordTabIndex,
+  OrderListIcon,
 } from '@loopring-web/common-resources'
 import { Button, EmptyDefault, useSettings } from '@loopring-web/component-lib'
 import { VaultDashBoardPanel } from './DashBoardPanel'
@@ -58,6 +59,7 @@ export const VaultPage = () => {
   const { defaultNetwork, isMobile } = useSettings()
   const { t } = useTranslation()
   const history = useHistory()
+  const vaultAccountInfo = useAccountInfo()
 
   const { status: vaultStatus, getVaultMap, marketArray } = useVaultMap()
 
@@ -91,7 +93,6 @@ export const VaultPage = () => {
       >
         <Box
           // components={'nav'}
-          marginBottom={2}
           display={'flex'}
           justifyContent={'space-between'}
           alignItems={isMobile ? 'left' : 'center'}
@@ -116,8 +117,9 @@ export const VaultPage = () => {
             justifyContent={'space-between'}
           >
             <Button
-              variant={'outlined'}
-              sx={{ marginLeft: 2 }}
+              variant={'text'}
+              startIcon={<OrderListIcon fontSize={'inherit'} color={'inherit'} />}
+              sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
               onClick={() =>
                 history.push(`/${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
               }
@@ -125,24 +127,29 @@ export const VaultPage = () => {
               {t('labelVaultRecord')}
             </Button>
             <Button
-              startIcon={<HelpIcon fontSize={'large'} />}
+              startIcon={<HelpIcon fontSize={'inherit'} color={'inherit'} />}
               variant={'text'}
               onClick={() => {
                 window.open(`${LOOPRING_DOCUMENT}vault_tutorial_en.md`, '_blank')
                 window.opener = null
               }}
-              sx={{ color: 'var(--color-text-secondary)' }}
+              sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
             >
               {t('labelVaultTutorial')}
             </Button>
           </Box>
         </Box>
       </Container>
+      <Divider />
       {!error && marketArray?.length ? (
         <>
           <ModalVaultWrap />
-          {tabIndex == VaultKey.VAULT_DASHBOARD && <VaultDashBoardPanel />}
-          {tabIndex == VaultKey.VAULT_HOME && <VaultHomePanel />}
+          {tabIndex == VaultKey.VAULT_DASHBOARD && (
+            <VaultDashBoardPanel vaultAccountInfo={vaultAccountInfo} />
+          )}
+          {tabIndex == VaultKey.VAULT_HOME && (
+            <VaultHomePanel vaultAccountInfo={vaultAccountInfo} />
+          )}
         </>
       ) : (
         <Box
