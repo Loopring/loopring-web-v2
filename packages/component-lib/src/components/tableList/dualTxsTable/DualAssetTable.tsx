@@ -128,15 +128,21 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
               sellSymbol,
               buySymbol,
               __raw__: {
-                order: { dualType, investmentStatus },
+                order: {
+                  dualType,
+                  // investmentStatus,
+                  settlementStatus,
+                  dualReinvestInfo: { retryStatus, isRecursive },
+                },
               },
             } = row
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
-            const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-            // const investmentStatus = row.__raw__.order.investmentStatus
-            // const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
 
+            const showClock =
+              isRecursive &&
+              settlementStatus?.toUpperCase() == sdk.SETTLEMENT_STATUS.PAID &&
+              retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
             return (
               <Typography
                 component={'span'}
@@ -153,20 +159,31 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
-                <Typography component={'span'} display={'flex'}>
-                  <Typography
-                    component={'span'}
-                    // display={"inline-flex"}
-                    color={'textPrimary'}
-                    display={'flex'}
-                    flexDirection={'column'}
-                  >
-                    {`${base}/${quote}`}
-                  </Typography>
-                  {showClock && (
-                    <Box component={'span'} marginLeft={1} display={'flex'} alignItems={'center'}>
-                      <ClockIcon color={'warning'} />
-                    </Box>
+                <Typography component={'span'} display={'flex'} alignItems={'center'}>
+                  {showClock ? (
+                    <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
+                      <Typography
+                        component={'span'}
+                        // display={"inline-flex"}
+                        alignItems={'center'}
+                        color={'textPrimary'}
+                        display={'inline-flex'}
+                        flexDirection={'row'}
+                      >
+                        {`${base}/${quote}`}
+                        <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography
+                      component={'span'}
+                      // display={"inline-flex"}
+                      color={'textPrimary'}
+                      display={'flex'}
+                      flexDirection={'column'}
+                    >
+                      {`${base}/${quote}`}
+                    </Typography>
                   )}
                 </Typography>
               </Typography>
@@ -350,9 +367,21 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const investmentStatus = row.__raw__.order.investmentStatus
-            const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-
+            const {
+              __raw__: {
+                order: {
+                  dualType,
+                  investmentStatus,
+                  settlementStatus,
+                  dualReinvestInfo: { retryStatus, isRecursive },
+                },
+              },
+            } = row
+            // const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            const showClock =
+              isRecursive &&
+              settlementStatus?.toUpperCase() == sdk.SETTLEMENT_STATUS.PAID &&
+              retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
             return (
               <Typography
                 component={'span'}
@@ -369,7 +398,12 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
-                {inAuto && <ClockIcon color={'primary'} />}
+                {/*{inAuto && <ClockIcon color={'primary'} />}*/}
+                {showClock && (
+                  <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
+                    <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />
+                  </Tooltip>
+                )}
               </Typography>
             )
           },
