@@ -7,7 +7,6 @@ import {
   store,
   useDualMap,
   useTokenMap,
-  useTokenPrices,
 } from '@loopring-web/core'
 import React from 'react'
 import _ from 'lodash'
@@ -28,14 +27,6 @@ export const useDualHook = () => {
   const viewType = searchParams.get('viewType')
   const { tokenMap, idIndex } = useTokenMap()
   const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
-  const { tokenPrices } = useTokenPrices()
-  // const [priceObj, setPriceObj] = React.useState<{
-  //   symbol: any
-  //   // price: any
-  // }>({
-  //   symbol: undefined,
-  //   // price: undefined,
-  // })
   const {
     confirmation: { confirmedDualInvestV2 },
   } = confirmation.useConfirmation()
@@ -259,10 +250,6 @@ export const useDualHook = () => {
         setMarket(market)
         setPair(`${pairA}-${pairB}`)
         setMarketPair([coinA, coinB])
-        // setPriceObj({
-        //   symbol: marketMap[market].quoteAlias,
-        //   // price: tokenPrices[coinA],
-        // })
       }
     },
     [step1SelectedToken, step2BuyOrSell, marketArray, tradeMap],
