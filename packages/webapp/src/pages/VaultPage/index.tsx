@@ -20,7 +20,6 @@ import { VaultDashBoardPanel } from './DashBoardPanel'
 import { VaultHomePanel } from './HomePanel'
 import { useTranslation } from 'react-i18next'
 import { ModalVaultWrap } from './components/ModalWrap'
-import { useTheme } from '@emotion/react/dist/emotion-react.cjs'
 import { useTheme } from '@emotion/react'
 
 export const HomeTitle = () => {
@@ -106,7 +105,7 @@ export const VaultPage = () => {
             variant={'scrollable'}
             value={tabIndex}
             sx={{
-              marginLeft: theme.unit * 2,
+              marginLeft: -2,
             }}
             onChange={(_e, value) => {
               history.push(`${RouterPath.vault}/${value}`)

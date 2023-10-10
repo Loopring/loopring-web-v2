@@ -42,52 +42,47 @@ export const VaultHomePanel = ({
         >
           <Box marginY={3} display={'flex'} justifyContent={'space-between'}>
             <Box flex={1} maxWidth={440}>
-              <Typography compontent={'h2'} variant={'h3'}>
+              <Typography component={'h2'} variant={'h3'}>
                 {t('labelTitleVault')}
               </Typography>
 
-              <Typography compontent={'p'} variant={'body1'}>
+              <Typography component={'p'} variant={'body1'}>
                 {t('labelTitleVaultDes')}
               </Typography>
               <Box marginY={2} display={'flex'} flexDirection={'row'}>
-                <Box marginX={1} marginY={1}>
-                  {(vaultAccountInfo &&
-                    [sdk.VaultAccountStatus.IN_STAKING].includes(
-                      vaultAccountInfo?.accountStatus,
-                    )) ||
-                  activeInfo?.hash ? (
-                    <Button
-                      size={'medium'}
-                      onClick={() => {
-                        history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
-                      }}
-                      loading={'false'}
-                      variant={'contained'}
-                      sx={{ minWidth: 'var(--walletconnect-width)' }}
-                    >
-                      {
-                        //TODO go trade
-                        t('labelGoVaultDashBoard')
-                      }
-                    </Button>
-                  ) : (
-                    <Button
-                      size={'medium'}
-                      onClick={onJoinPop}
-                      loading={'false'}
-                      variant={'contained'}
-                      sx={{ minWidth: 'var(--walletconnect-width)' }}
-                      disabled={
-                        joinBtnStatus === TradeBtnStatus.DISABLED ||
-                        joinBtnStatus === TradeBtnStatus.LOADING
-                      }
-                    >
-                      {joinBtnLabel}
-                    </Button>
-                  )}
-                </Box>
+                {(vaultAccountInfo &&
+                  [sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus)) ||
+                activeInfo?.hash ? (
+                  <Button
+                    size={'medium'}
+                    onClick={() => {
+                      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+                    }}
+                    loading={'false'}
+                    variant={'contained'}
+                    sx={{ minWidth: 'var(--walletconnect-width)' }}
+                  >
+                    {
+                      //TODO go trade
+                      t('labelGoVaultDashBoard')
+                    }
+                  </Button>
+                ) : (
+                  <Button
+                    size={'medium'}
+                    onClick={onJoinPop}
+                    loading={'false'}
+                    variant={'contained'}
+                    sx={{ minWidth: 'var(--walletconnect-width)' }}
+                    disabled={
+                      joinBtnStatus === TradeBtnStatus.DISABLED ||
+                      joinBtnStatus === TradeBtnStatus.LOADING
+                    }
+                  >
+                    {joinBtnLabel}
+                  </Button>
+                )}
 
-                <Box></Box>
                 {/*//TODO market*/}
 
                 {/*<Box marginX={1} marginY={1}>*/}
