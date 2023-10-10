@@ -34,6 +34,8 @@ export async function resetLayer12Data() {
   }
   store.dispatch(
     updateToggleStatus({
+      chainId: store.getState().settings.defaultNetwork,
+      account: store.getState().account,
       order: { enable: true, reason: undefined },
       joinAmm: { enable: true, reason: undefined },
       exitAmm: { enable: true, reason: undefined },
@@ -77,7 +79,7 @@ export async function toggleCheck(
 ) {
   if (chainId === undefined) {
     const system = store.getState().system
-    chainId = (system.chainId ?? sdk.ChainId.MAINNET) as sdk.ChainId
+    // chainId = (system.chainId ?? sdk.ChainId.MAINNET) as sdk.ChainId
     dexToggleUrl = system.dexToggleUrl
   }
 
@@ -86,6 +88,8 @@ export async function toggleCheck(
     myLog('account.frozen ___timer___', account.accountId)
     store.dispatch(
       updateToggleStatus({
+        // chainId:store.getState().settings.defaultNetwork,
+        // account:store.getState().account,
         order: { enable: false, reason: 'account frozen' },
         joinAmm: { enable: false, reason: 'account frozen' },
         exitAmm: { enable: false, reason: 'account frozen' },
@@ -122,6 +126,8 @@ export async function toggleCheck(
       .then(([toggle, _whiteListRes]) => {
         store.dispatch(
           updateToggleStatus({
+            chainId: store.getState().settings.defaultNetwork,
+            account,
             order: { enable: true, reason: undefined },
             joinAmm: { enable: true, reason: undefined },
             exitAmm: { enable: true, reason: undefined },

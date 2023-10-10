@@ -1,3 +1,5 @@
+import { Account } from '@loopring-web/common-resources'
+
 export type ToggleState = {
   order: { enable: boolean; reason?: string }
   joinAmm: { enable: boolean; reason?: string }
@@ -42,4 +44,9 @@ export type ToggleState = {
   whiteList: any
   // @ts-ignore
   isSupperUser: any
+}
+
+export type TogglePlayLoad = Partial<ToggleState> & {
+  account?: Account
+  chainId: any
 }
