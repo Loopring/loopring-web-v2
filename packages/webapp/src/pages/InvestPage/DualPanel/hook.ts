@@ -6,9 +6,7 @@ import {
   makeDualViewItem,
   store,
   useDualMap,
-  useSystem,
   useTokenMap,
-  useTokenPrices,
 } from '@loopring-web/core'
 import React from 'react'
 import _ from 'lodash'
@@ -20,7 +18,6 @@ import {
   myLog,
   SagaStatus,
 } from '@loopring-web/common-resources'
-import { useSettings } from '@loopring-web/component-lib'
 
 const DUALLimit = 20
 export const useDualHook = () => {
@@ -28,17 +25,8 @@ export const useDualHook = () => {
   const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
   const viewType = searchParams.get('viewType')
-  const { defaultNetwork } = useSettings()
   const { tokenMap, idIndex } = useTokenMap()
   const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
-  const { tokenPrices } = useTokenPrices()
-  // const [priceObj, setPriceObj] = React.useState<{
-  //   symbol: any
-  //   // price: any
-  // }>({
-  //   symbol: undefined,
-  //   // price: undefined,
-  // })
   const {
     confirmation: { confirmedDualInvestV2 },
   } = confirmation.useConfirmation()
@@ -262,10 +250,6 @@ export const useDualHook = () => {
         setMarket(market)
         setPair(`${pairA}-${pairB}`)
         setMarketPair([coinA, coinB])
-        // setPriceObj({
-        //   symbol: marketMap[market].quoteAlias,
-        //   // price: tokenPrices[coinA],
-        // })
       }
     },
     [step1SelectedToken, step2BuyOrSell, marketArray, tradeMap],
