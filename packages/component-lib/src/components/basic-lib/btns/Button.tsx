@@ -389,12 +389,13 @@ export const Tabs = styled(MuTabs)`
   &.btnTab {
     .MuiTab-root {
       color: var(--color-text-primary);
-      margin-right: ${({theme}) => theme.unit}px;
-      padding: ${({theme}) => theme.unit}px ${({theme}) => theme.unit * 1.5}px;
+      margin-right: ${({ theme }) => theme.unit}px;
+      padding: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit * 1.5}px;
       min-height: auto;
       line-height: 24px;
       &.Mui-selected {
-        border-radius: ${({theme}) => theme.unit * .5}px;
+        color: var(--color-text-button);
+        border-radius: ${({ theme }) => theme.unit * 0.5}px;
         background: var(--color-primary);
       }
     }
