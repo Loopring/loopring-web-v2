@@ -32,13 +32,13 @@ export const useDualHook = () => {
   const { tokenMap, idIndex } = useTokenMap()
   const { marketArray, marketMap, tradeMap, status: dualStatus, getDualMap } = useDualMap()
   const { tokenPrices } = useTokenPrices()
-  const [priceObj, setPriceObj] = React.useState<{
-    symbol: any
-    // price: any
-  }>({
-    symbol: undefined,
-    // price: undefined,
-  })
+  // const [priceObj, setPriceObj] = React.useState<{
+  //   symbol: any
+  //   // price: any
+  // }>({
+  //   symbol: undefined,
+  //   // price: undefined,
+  // })
   const {
     confirmation: { confirmedDualInvestV2 },
   } = confirmation.useConfirmation()
@@ -93,18 +93,11 @@ export const useDualHook = () => {
         market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol)
       }
       if (market) {
-        getProduct()
         history.push(`/invest/dual/${_pairASymbol}-${_pairBSymbol}${search}`)
         const [, , coinA, coinB] = market.match(/(dual-)?(\w+)-(\w+)/i)
         setMarket(market)
         setPair(`${_pairASymbol}-${_pairBSymbol}`)
         setMarketPair([coinA, coinB])
-        setPriceObj({
-          symbol: /USD/gi.test(marketMap[market]?.quoteAlias ?? '')
-            ? 'USDT'
-            : marketMap[market]?.quoteAlias,
-          // price: tokenPrices[coinA],
-        })
       }
     },
     [marketArray, pairASymbol, tradeMap],
@@ -177,7 +170,9 @@ export const useDualHook = () => {
         })
         myLog('setDualProducts', rawData)
         setDualProducts(rawData)
+        // setIsLoading(false)
       }
+      // }
     }
     setIsLoading(false)
     nodeTimer.current = setTimeout(() => {
@@ -191,6 +186,11 @@ export const useDualHook = () => {
       if (marketArray !== undefined && marketArray.length) {
         const market = findDualMarket(marketArray, _pairASymbol, _pairBSymbol)
         if (market) {
+          setPairASymbol(_pairASymbol)
+          setPairBSymbol(_pairBSymbol)
+          getProduct()
+          return
+        } else {
           handleOnPairChange({ pairB: _pairBSymbol })
         }
         return
@@ -262,10 +262,10 @@ export const useDualHook = () => {
         setMarket(market)
         setPair(`${pairA}-${pairB}`)
         setMarketPair([coinA, coinB])
-        setPriceObj({
-          symbol: marketMap[market].quoteAlias,
-          // price: tokenPrices[coinA],
-        })
+        // setPriceObj({
+        //   symbol: marketMap[market].quoteAlias,
+        //   // price: tokenPrices[coinA],
+        // })
       }
     },
     [step1SelectedToken, step2BuyOrSell, marketArray, tradeMap],
@@ -368,7 +368,7 @@ export const useDualHook = () => {
     handleOnPairChange,
     marketBase,
     marketQuote,
-    priceObj,
+    // priceObj,
     pair,
     step1SelectedToken,
     step2BuyOrSell,
