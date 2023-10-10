@@ -4,7 +4,7 @@ import {
   nextAccountStatus,
   nextAccountSyncStatus,
   statusUnset,
-  updateAccountStatus
+  updateAccountStatus,
 } from './reducer'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { Account, AccountStatus, myLog } from '@loopring-web/common-resources'
@@ -31,7 +31,6 @@ const getAccount = async (): Promise<{
       }, 1000 * 60)
     })(__timer__)
   }
-  toggleCheck()
   const [{ accInfo: account }, { walletType }] = await Promise.all([
     LoopringAPI?.exchangeAPI?.getAccount({
       owner: accAddress,
@@ -68,6 +67,7 @@ export function* accountUpdateSaga({ payload }: PayloadAction<Partial<Account>>)
         __timer__: data.__timer__,
       }),
     )
+    toggleCheck()
   } catch (err) {
     yield put(nextAccountStatus({ error: err }))
   }
@@ -119,9 +119,7 @@ export function* accountUpdateSyncSaga(action: PayloadAction<Account>) {
         ...action?.payload,
       }),
     )
-    yield put(
-      statusUnset({}),
-    )
+    yield put(statusUnset({}))
   } catch (err) {
     yield put(nextAccountStatus({ error: err }))
   }
@@ -136,10 +134,9 @@ function* accountSyncSage() {
   yield all([takeLatest(nextAccountSyncStatus, accountUpdateSyncSaga)])
 }
 
-
 function* accountRestSage() {
   // @ts-ignore
   yield all([takeLatest(cleanAccountStatus, cleanAccountSaga)])
 }
 
-export const accountFork = [fork(accountSage), fork(accountRestSage),fork(accountSyncSage)]
+export const accountFork = [fork(accountSage), fork(accountRestSage), fork(accountSyncSage)]
