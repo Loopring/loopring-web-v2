@@ -94,7 +94,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({ t }: WithTransl
     useGetVIPInfo()
 
   const getVIPLevel = React.useCallback(() => {
-    if (userVIPInfo && userVIPInfo.vipInfo && userVIPInfo.vipInfo.vipTag) {
+    if (userVIPInfo && userVIPInfo?.vipInfo?.vipTag) {
       if (userVIPInfo.vipInfo.vipTag === 'spam') {
         return 'vip_0'
       }
@@ -294,7 +294,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({ t }: WithTransl
                 alignItems={'center'}
               >
                 <Typography component={'span'} variant={'body1'}>
-                  {level && userVIPInfo && userVIPInfo.vipInfo.vipTag ? getImagePath : ''}
+                  {level && userVIPInfo?.vipInfo?.vipTag ? getImagePath : ''}
                 </Typography>
               </Typography>
             </Typography>
