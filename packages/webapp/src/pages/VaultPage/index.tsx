@@ -33,11 +33,12 @@ export const HomeTitle = () => {
         marginRight={1}
         className={'invest-Balance-Title'}
       >
-        {t('labelInvestBalanceTitle')}
+        {t('labelVaultHomeTitle')}
       </Typography>
     </Typography>
   )
 }
+
 export const DashBoardTitle = () => {
   const { t } = useTranslation()
   return (
@@ -49,7 +50,7 @@ export const DashBoardTitle = () => {
         marginRight={1}
         className={'invest-Overview-Title'}
       >
-        {t('labelInvestOverviewTitle')}
+        {t('labelVaultDashboardTitle')}
       </Typography>
     </Typography>
   )

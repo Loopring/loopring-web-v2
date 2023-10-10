@@ -51,6 +51,7 @@ export enum TokenType {
   defi = 'defi',
   dual = 'dual',
   nft = 'nft',
+  vault = 'vault',
 }
 
 export type PairMap<

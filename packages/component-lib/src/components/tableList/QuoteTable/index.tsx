@@ -103,7 +103,7 @@ export interface QuoteTableProps {
   campaignTagConfig: CAMPAIGNTAGCONFIG
   headerRowHeight?: number
   onVisibleRowsChange?: (startIndex: number) => void
-  onRowClick?: (rowIdx: number, row: QuoteTableRawDataItem, column: any) => void
+  onRowClick?: (row: QuoteTableRawDataItem, column: any) => void
   account: Account
   favoriteMarket: string[]
   addFavoriteMarket: (pair: string) => void

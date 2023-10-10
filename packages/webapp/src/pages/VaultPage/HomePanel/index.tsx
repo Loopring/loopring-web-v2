@@ -2,17 +2,19 @@ import { Box, Container, Typography } from '@mui/material'
 import React from 'react'
 import {
   RouterPath,
+  RowConfig,
   SoursURL,
   TradeBtnStatus,
   VaultIcon,
   VaultKey,
 } from '@loopring-web/common-resources'
-import { BoxBannerStyle, Button, useSettings } from '@loopring-web/component-lib'
+import { BoxBannerStyle, Button, QuoteTable, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
+import { useVaultMarket } from './hook'
 
 export const VaultHomePanel = ({
   vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop },
@@ -24,7 +26,8 @@ export const VaultHomePanel = ({
   const { t } = useTranslation()
   const { vaultAccountInfo, activeInfo } = useVaultLayer2()
   const history = useHistory()
-
+  const tableRef = React.useRef<HTMLDivElement>()
+  const vaultMarketProps = useVaultMarket({ tableRef })
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <BoxBannerStyle
@@ -83,27 +86,11 @@ export const VaultHomePanel = ({
                   </Button>
                 )}
 
-                {/*//TODO market*/}
-
-                {/*<Box marginX={1} marginY={1}>*/}
-                {/*  {[sdk.VaultAccountStatus.IN_STAKING].includes(*/}
-                {/*    (vaultAccountInfo?.accountStatus ?? '') as sdk.VaultAccountStatus,*/}
-                {/*  ) && (*/}
-                {/*    <Button*/}
-                {/*      size={'medium'}*/}
-                {/*      onClick={onSwapPop}*/}
-                {/*      loading={'false'}*/}
-                {/*      variant={'contained'}*/}
-                {/*      sx={{ minWidth: 'var(--walletconnect-width)' }}*/}
-                {/*      disabled={*/}
-                {/*        swapBtnStatus === TradeBtnStatus.DISABLED ||*/}
-                {/*        swapBtnStatus === TradeBtnStatus.LOADING*/}
-                {/*      }*/}
-                {/*    >*/}
-                {/*      {swapBtnLabel}*/}
-                {/*    </Button>*/}
-                {/*  )}*/}
-                {/*</Box>*/}
+                <QuoteTable
+                  rowHeight={RowConfig.rowHeight}
+                  headerRowHeight={RowConfig.rowHeaderHeight}
+                  {...{ ...vaultMarketProps }}
+                />
               </Box>
             </Box>
             {!isMobile && (

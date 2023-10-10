@@ -1846,7 +1846,6 @@ export default {
   labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
   labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
   labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
-  labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
   labelContactsEditContactBtn: 'Edit Contact',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
@@ -2079,4 +2078,13 @@ export default {
   labelTitleVaultDes:
     'Use third-party funds to trade assets. Traders can access additional capital to leverage their positions and amplify trading results. ',
   labelTitleVault: 'Vault',
+  labelVaultHomeTitle: 'Home',
+  labelVaultDashboardTitle: 'Dashboard',
+  labelVaultTotalBalance: 'Total Balance',
+  labelVaultOpenDate: 'Open Date',
+  labelVaultMarginLevel: 'Margin Level',
+  labelVaultTotalCollateral: 'Total Collateral',
+  labelVaultTotalDebt: 'Total Debt',
+  labelVaultTotalEquity: 'Total Equity',
+  labelVaultProfit: 'Profit',
 }
