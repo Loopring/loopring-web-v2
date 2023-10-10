@@ -124,6 +124,6 @@ export default {
     'This site is not released yet and could contain bugs. Please use it with caution!',
   labelReferralReward: 'Referrals Reward',
   // labelDepositNFTDes:"Receive NFT"
-  labelInvestLeverageETH: 'Leveraged ETH',
+  labelInvestLeverageETH: 'Leveraged ETH Staking',
   labelInvestLeverageETHDes: 'Gain higher APY aggressively',
 }

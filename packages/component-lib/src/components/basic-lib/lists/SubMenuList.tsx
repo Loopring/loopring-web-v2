@@ -14,6 +14,7 @@ import { SubMenuListProps } from './Interface'
 import { Link as RouterLink } from 'react-router-dom'
 import { L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
+import React from 'react'
 
 export const SubMenuItem = styled<any>(ListItem)`
   border-left: 2px solid transparent;
@@ -142,7 +143,7 @@ export const SubMenuList = withTranslation(['layout', 'common'], {
                 )}
               </div>
             ) : (
-              <></>
+              <React.Fragment key={`group-any`}></React.Fragment>
             )}
           </>
         )

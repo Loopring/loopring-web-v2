@@ -10,7 +10,7 @@ import {
   VipIcon,
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
-import { AddAssetList, InvestMapType, SendAssetList } from './trade'
+import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
 import { WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
@@ -354,23 +354,44 @@ export const subMenuInvest = [
       description: 'labelInvestStakeLRCDes',
     },
   },
-  
 ]
-export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual' | 'leverageETH'
-export const investTabs = [
-  { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
-  { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
-  { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
-  { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
-  { tab: 'leverageETH' as InvestTab, label: 'labelLeverageETHTitle' },
+// export enum INVEST_TAB {
+//   pools = 'pools',
+//   lido = 'lido',
+//   staking = 'staking',
+//   dual = 'dual',
+//   leverageETH = 'leverageETH',
+// }
+
+export const INVEST_TABS = [
+  { tab: InvestAssetRouter.DUAL, label: 'labelInvestDualTitle' },
+  { tab: InvestAssetRouter.STAKE, label: 'labelInvestDefiTitle' },
+  { tab: InvestAssetRouter.LEVERAGEETH, label: 'labelLeverageETHTitle' },
+  { tab: InvestAssetRouter.AMM, label: 'labelLiquidityPageTitle' },
+  { tab: InvestAssetRouter.STAKELRC, label: 'labelInvestLRCTitle' },
 ]
 
-export const defiMarkets = {
-  TAIKO: [] as string[],
-  ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
-  GOERLI: ['RETH-ETH'],
+export const DEFI_CONFIG = {
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['LIDO', 'ROCKETPOOL'],
+    GOERLI: ['ROCKETPOOL'],
+  },
+  MARKETS: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
+    GOERLI: ['RETH-ETH'],
+  },
 }
-export const leverageETHConfig = {
+
+export const DUAL_CONFIG = {
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['PIONEX'],
+    GOERLI: ['PIONEX'],
+  },
+}
+export const LEVERAGE_ETH_CONFIG = {
   coins: {
     TAIKO: [] as string[],
     ETHEREUM: ['CIETH'],
@@ -381,6 +402,12 @@ export const leverageETHConfig = {
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
   },
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['CIAN'],
+    GOERLI: ['LIDO'],
+  },
+  // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
 }
 
 export const subMenuNFT = {
@@ -627,7 +654,7 @@ export const leverageETHAdvice: InvestAdvice = {
   titleI18n: 'labelInvestLeverageETH',
   desI18n: 'labelInvestLeverageETHDes',
   enable: true,
-  project: 'TODO Pool',
+  project: 'CIETH Pool',
   market: 'CIETH-ETH',
 }
 

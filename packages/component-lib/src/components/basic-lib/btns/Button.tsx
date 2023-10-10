@@ -7,20 +7,12 @@ import {
   ToggleButtonGroup as MuToggleButtonGroup,
   useScrollTrigger,
   Zoom,
+  Tabs as MuTabs,
 } from '@mui/material'
-import {
-  ButtonProps,
-  TGItemJSXInterface,
-  ToggleButtonGroupProps,
-} from './Interface'
+import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Interface'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import {
-  BackIcon,
-  CloseIcon,
-  QRIcon,
-  SoursURL,
-} from '@loopring-web/common-resources'
+import { BackIcon, CloseIcon, QRIcon, SoursURL } from '@loopring-web/common-resources'
 import React from 'react'
 
 const loadingSvg = SoursURL + 'svg/loading.svg'
@@ -34,7 +26,7 @@ export const Button = styled(MuButton)<ButtonProps>`
     }
     &.MuiButton-outlined {
       background-color: transparent;
-      :hover{
+      :hover {
         border-color: var(--color-primary);
       }
     }
@@ -44,7 +36,7 @@ export const Button = styled(MuButton)<ButtonProps>`
       background-color: var(--color-button-disabled);
       ${({ loading, theme, loadingbg }) => {
         return loading === 'true'
-                ? `
+          ? `
            color:transparent;
            background-color:${theme.colorBase.primary};
            background-color:${loadingbg};
@@ -62,7 +54,7 @@ export const Button = styled(MuButton)<ButtonProps>`
             color:#fff  
            }
        `
-                : ''
+          : ''
       }}
     }
 
@@ -77,10 +69,10 @@ export const Button = styled(MuButton)<ButtonProps>`
 ` as (props: ButtonProps) => JSX.Element
 
 export function ScrollTop({
-                              // anchorTopRef,
-                              ...props
-                          }: {
-    children: React.ReactElement;
+  // anchorTopRef,
+  ...props
+}: {
+  children: React.ReactElement
   // anchorTopRef?: React.Ref<any>;
 }) {
   const { children } = props
@@ -91,17 +83,14 @@ export function ScrollTop({
     threshold: 100,
   })
 
-    const scrollToTop = React.useCallback(
-        (event: React.MouseEvent<HTMLDivElement>) => {
-            const anchor =
-                (event.currentTarget as HTMLDivElement).parentElement || //.ownerDocument || document
-                document.querySelector('#back-to-top-anchor')
-            if (anchor) {
-                window.scrollTo(0, anchor?.offsetTop)
-            }
-        },
-        [],
-    )
+  const scrollToTop = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const anchor =
+      (event.currentTarget as HTMLDivElement).parentElement || //.ownerDocument || document
+      document.querySelector('#back-to-top-anchor')
+    if (anchor) {
+      window.scrollTo(0, anchor?.offsetTop)
+    }
+  }, [])
 
   return (
     <Zoom in={trigger}>
@@ -125,22 +114,21 @@ export function ScrollTop({
 
 export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
   ${({ theme, size }) =>
-          size !== 'small'
-                  ? `
+    size !== 'small'
+      ? `
       background: var(--color-box);
       padding: ${theme.unit / 2}px;
       padding-right: ${theme.unit / 4}px;
       box-shadow: var(--shadow3);
   `
-                  : ``};
+      : ``};
 
   .MuiToggleButton-sizeSmall {
     background: var(--color-box);
     height: 2.4rem;
     font-size: 1.2rem;
     margin-right: ${({ theme }) => theme.unit}px;
-    border: ${({theme}) =>
-            theme.border.borderConfig({c_key: 'var(--color-border)'})};
+    border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-border)' })};
     color: var(--color-text-secondary);
 
     &:not(:first-of-type),
@@ -152,12 +140,10 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       //backgroundColor: var(--color-box);
       // color: var(--color-primary);
       color: var(--color-text-button-select);
-      border: ${({theme}) =>
-              theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
+      border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })};
       background: var(--color-box);
       // &:not(:last-child), &:not(:first-of-type) {
-      border: ${({theme}) =>
-              theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+      border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
       // }
 
       &.Mui-selected,
@@ -166,10 +152,9 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
         background: var(--color-box);
         // color: var(--color-primary);
         color: var(--color-text-button-select);
-         border: ${({theme}) =>
-                theme.border.borderConfig({c_key: 'var(--color-primary)'})};
-        /* border: ${({theme}) =>
-                theme.border.borderConfig({c_key: 'var(--color-border-hover)'})}; */
+        border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
+        /* border: ${({ theme }) =>
+          theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })}; */
       }
     }
 
@@ -186,25 +171,24 @@ export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
       color: var(--color-text-button-select) !important;
       background: var(--color-box) !important;
       //background:  var(--color-disable);
-      border: ${({theme}) =>
-              theme.border.borderConfig({c_key: 'var(--color-primary)'})}
-      /* border: ${({theme}) =>
-              theme.border.borderConfig({c_key: 'var(--color-border-hover)'})}; */
+      border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
+      /* border: ${({ theme }) =>
+        theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })}; */
     }
   }
 ` as typeof MuToggleButtonGroup
 
 export const ToggleButtonGroup = withTranslation('common')(
   ({
-       t,
-       value,
-       // handleChange,
-       size = 'medium',
-       tgItemJSXs,
-       data,
-       exclusive,
-       onChange,
-   }: { t: TFunction } & ToggleButtonGroupProps) => {
+    t,
+    value,
+    // handleChange,
+    size = 'medium',
+    tgItemJSXs,
+    data,
+    exclusive,
+    onChange,
+  }: { t: TFunction } & ToggleButtonGroupProps) => {
     const _handleChange = React.useCallback(
       (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => {
         // setValue(value)
@@ -226,27 +210,19 @@ export const ToggleButtonGroup = withTranslation('common')(
         exclusive={exclusive}
         onChange={_handleChange}
       >
-          {tgItemJSXs?.map(
-              ({
-                   value,
-                   JSX,
-                   tlabel,
-                   disabled,
-                   key,
-                   notWrap,
-               }: TGItemJSXInterface) =>
-                  notWrap ? (
-                      <Box key={key ? key : value}>{JSX}</Box>
-                  ) : (
-                      <ToggleButton
-                          key={key ? key : value}
-                          value={value}
-                          aria-label={tlabel}
-                          disabled={disabled}
-                      >
-                          {JSX}
-                      </ToggleButton>
-                  ),
+        {tgItemJSXs?.map(({ value, JSX, tlabel, disabled, key, notWrap }: TGItemJSXInterface) =>
+          notWrap ? (
+            <Box key={key ? key : value}>{JSX}</Box>
+          ) : (
+            <ToggleButton
+              key={key ? key : value}
+              value={value}
+              aria-label={tlabel}
+              disabled={disabled}
+            >
+              {JSX}
+            </ToggleButton>
+          ),
         )}
       </MuToggleButtonGroupStyle>
     )
@@ -254,16 +230,16 @@ export const ToggleButtonGroup = withTranslation('common')(
 )
 
 export const ModalCloseButton = ({
-                                     onClose,
-                                     className = '',
-                                     closeIcon = <CloseIcon/>,
-                                     t,
-                                 }: {
-    className?: string;
-    closeIcon?: JSX.Element;
+  onClose,
+  className = '',
+  closeIcon = <CloseIcon />,
+  t,
+}: {
+  className?: string
+  closeIcon?: JSX.Element
   onClose?: {
-      bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
-  }['bivarianceHack'];
+    bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void
+  }['bivarianceHack']
 } & { t: TFunction }) => {
   return (
     <Box
@@ -290,20 +266,20 @@ export const ModalCloseButton = ({
 }
 
 export const ModalCloseButtonPosition = ({
-                                             onClose,
-                                             className = '',
-                                             closeIcon = <CloseIcon/>,
-                                             t,
-                                             right,
-                                             top,
-                                         }: {
-    className?: string;
-    closeIcon?: JSX.Element;
+  onClose,
+  className = '',
+  closeIcon = <CloseIcon />,
+  t,
+  right,
+  top,
+}: {
+  className?: string
+  closeIcon?: JSX.Element
   onClose?: {
-      bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
-  }['bivarianceHack'];
-    right?: number;
-    top?: number;
+    bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void
+  }['bivarianceHack']
+  right?: number
+  top?: number
 } & { t: TFunction }) => {
   return (
     <Box
@@ -329,14 +305,14 @@ export const ModalCloseButtonPosition = ({
 }
 
 export const ModalBackButton = ({
-                                    onBack,
-                                    t,
-                                    marginTop = '-24px',
-                                    marginLeft = 1.5,
-                                }: {
-    onBack?: () => void;
-    marginTop?: number | string;
-    marginLeft?: number | string;
+  onBack,
+  t,
+  marginTop = '-24px',
+  marginLeft = 1.5,
+}: {
+  onBack?: () => void
+  marginTop?: number | string
+  marginLeft?: number | string
 } & Partial<WithTranslation>) => {
   return (
     <Box alignSelf={'flex-start'} marginTop={marginTop} marginLeft={marginLeft}>
@@ -362,7 +338,7 @@ const QRStyle = styled(Box)`
 
   &:after {
     pointer-events: none;
-    content: "";
+    content: '';
     position: absolute;
     display: block;
     height: 48px;
@@ -371,19 +347,19 @@ const QRStyle = styled(Box)`
     left: -2px;
     //z-index: -1;
     background-image: ${({ theme }) => {
-  if (theme.mode === 'dark') {
-    return `url('${SoursURL}images/qr_code_dark.png')`
-  } else {
-    return `url('${SoursURL}images/qr_code_light.png')`
-  }
-}};
+      if (theme.mode === 'dark') {
+        return `url('${SoursURL}images/qr_code_dark.png')`
+      } else {
+        return `url('${SoursURL}images/qr_code_light.png')`
+      }
+    }};
   }
 ` as typeof Box
 export const QRButtonStyle = ({
-                                  onQRClick,
-                                  t,
-                              }: {
-    onQRClick?: () => void;
+  onQRClick,
+  t,
+}: {
+  onQRClick?: () => void
 } & WithTranslation) => {
   return (
     <QRStyle
@@ -408,3 +384,20 @@ export const LinkActionStyle = styled(Link)`
   text-decoration: underline dotted;
   color: inherit;
 ` as typeof Link
+
+export const Tabs = styled(MuTabs)`
+  &.btnTab {
+    .MuiTab-root {
+      color: var(--color-text-primary);
+      margin-right: ${({ theme }) => theme.unit}px;
+      padding: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit * 1.5}px;
+      min-height: auto;
+      line-height: 24px;
+      &.Mui-selected {
+        color: var(--color-text-button);
+        border-radius: ${({ theme }) => theme.unit * 0.5}px;
+        background: var(--color-primary);
+      }
+    }
+  }
+`

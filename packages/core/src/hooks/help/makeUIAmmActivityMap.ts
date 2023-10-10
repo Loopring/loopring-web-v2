@@ -53,7 +53,6 @@ export const makeClaimRewards = <R = EarningsRow>(totalClaims: sdk.ClaimItem[]) 
         }
       })
 
-      //TODO:1
       // @ts-ignore
       amountStr = volumeToCountAsBigNumber(tokenInfo.symbol, _item.sum)
       // amountStr = volumeToCountAsBigNumber(tokenInfo.symbol, 1000000000)
@@ -68,7 +67,7 @@ export const makeClaimRewards = <R = EarningsRow>(totalClaims: sdk.ClaimItem[]) 
         tokenValueDollar: tokenValueDollar.toString(),
         amountStr: amountStr.toString(),
         // @ts-ignore
-        amount: _item?.sum, //1000000000, //TODO:1 _item.sum,
+        amount: _item?.sum,
         rawData: item,
       } as unknown as R
       // prev.push()

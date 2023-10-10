@@ -135,11 +135,8 @@ export const ModalPanel = <
   nftDeployProps,
   resetProps,
   claimProps,
-  // nftMintAdvanceProps,
   activeAccountProps,
   collectionAdvanceProps,
-  // dualTradeProps,
-
   sideStackRedeemProps,
   assetsData,
   account,
@@ -157,11 +154,9 @@ export const ModalPanel = <
   nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>
   depositProps: DepositProps<T, I>
   sideStackRedeemProps: DeFiStakeRedeemWrapProps<T, I, any>
-  // depositGroupProps: DepositGroupProps<T, I>;
-  // nftDepositProps: NFTDepositProps<T, I>;
+
   collectionAdvanceProps: CollectionAdvanceProps<C>
-  // dualTradeProps: DualWrapProps<T, I, DUAL>;
-  // nftMintAdvanceProps: NFTMintAdvanceProps<T, I>;
+
   resetProps: ResetProps<F>
   activeAccountProps: ResetProps<F>
   assetsData: any[]
@@ -203,7 +198,7 @@ export const ModalPanel = <
     isShowLayerSwapNotice,
     isShowAnotherNetwork,
     isShowClaimWithdraw,
-    isShowSideStakingRedeem
+    isShowSideStakingRedeem,
   } = modals
   const theme = useTheme()
   return (

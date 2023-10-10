@@ -1,5 +1,6 @@
 import { IsMobile } from '../utils'
 import { NetworkItemInfo } from '../loopring-interface'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum UpColor {
   green = 'green',
@@ -12,14 +13,17 @@ export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5,
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,
+  minHeight: 350
 }
 export const RowInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 56,
   rowHeaderHeight: IsMobile.any() ? 48 : 56,
+  minHeight: 350
 }
 export const RowDualInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 72,
   rowHeaderHeight: IsMobile.any() ? 48 : 72,
+  minHeight: 350
 }
 export const DirectionTag = '\u2192'
 export const FeeChargeOrderDefault = ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']
@@ -156,3 +160,11 @@ if (window) {
   // @ts-ignore
   window.__MapChainId = MapChainId
 }
+
+export const HEBAO_CONTRACT_MAP = [
+  ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
+  ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+  ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+  ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+  ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+]

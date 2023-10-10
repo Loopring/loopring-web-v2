@@ -19,7 +19,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { GuardianStep, useSettings } from '@loopring-web/component-lib'
-import { connectProvides,AvaiableNetwork } from '@loopring-web/web3-provider'
+import { connectProvides, AvaiableNetwork } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
 
 export enum TxGuardianHistoryType {
@@ -298,7 +298,7 @@ export const useAction = ({
           {
             request: request,
             guardian: selected,
-              web3: connectProvides.usedWeb3 as any,
+            web3: connectProvides.usedWeb3 as any,
             chainId: _chainId,
             eddsaKey: '',
             apiKey: '',
@@ -366,7 +366,7 @@ export const useAction = ({
         }
         const response = await LoopringAPI.walletAPI.rejectHebao({
           request,
-            web3: connectProvides.usedWeb3 as any,
+          web3: connectProvides.usedWeb3 as any,
           address: account.accAddress,
           chainId: _chainId as any,
           guardiaContractAddress: guardian.address,
@@ -402,13 +402,10 @@ export const useAction = ({
           },
         })
       }
-      // .catch((error: any) => {
-
-      // })
     }
   }
   const handleOpenApprove = (guardian: sdk.Guardian) => {
-    if (isContractAddress && guardian.type !== 'recovery') {
+    if (isContractAddress && guardian.type !== sdk.HEBAO_META_TYPE.recovery) {
       // setNotSupportOpen(true)
       return
     }

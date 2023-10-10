@@ -70,4 +70,18 @@ export default {
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. <1>Go</1>',
   errorGuardianRouterError: 'Oops! Guardian site moved to <a>guardian.loopring.io</a>.',
   errorAddressCheckError: 'Error on address checking processing ',
+  errorContactExisted: 'Contact address already exists',
+  errorContactNameExisted: 'Name already exists',
+  errorContactLimit: 'Unable to Add Contact,You have reached the maximum limit of 1500 contacts',
+  errorContactOverLimit:
+    'Unable to Add Contact,You have reached the maximum limit of 1500 contacts',
+  labelContactsAddSuccess: 'Add Contact Succeed',
+  labelContactsDeleteSuccess: 'Delete Contact Succeed',
+  labelContactsEditSuccess: 'Edit Contact Succeed',
+  labelContactsSendSuccess: 'Send Succeed',
+  labelContactsCopySuccess: 'Copied to Clipboard',
+  labelContactsAddFailed: 'Add Contact Failed',
+  labelContactsDeleteFailed: 'Delete Contact Failed',
+  labelContactsEditFailed: 'Edit Contact Failed',
+  labelContactsSendFailed: 'Send Failed',
 }
