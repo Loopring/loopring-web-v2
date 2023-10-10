@@ -1841,13 +1841,6 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     return (
                       <Box
                         marginBottom={2}
-                        // addressType
-                        // contactAddress
-                        // contactMemo
-                        // contactName
-                        // isFavourite
-                        // network
-                        // ownerAccountId
                         key={contact.contactAddress}
                         display={'flex'}
                         alignItems={'start'}
