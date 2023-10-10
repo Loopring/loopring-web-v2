@@ -20,6 +20,8 @@ import { VaultDashBoardPanel } from './DashBoardPanel'
 import { VaultHomePanel } from './HomePanel'
 import { useTranslation } from 'react-i18next'
 import { ModalVaultWrap } from './components/ModalWrap'
+import { useTheme } from '@emotion/react/dist/emotion-react.cjs'
+import { useTheme } from '@emotion/react'
 
 export const HomeTitle = () => {
   const { t } = useTranslation()
@@ -58,6 +60,8 @@ export const VaultPage = () => {
   // const selected = match?.params?.item ?? VaultKey.VAULT_HOME
   const { defaultNetwork, isMobile } = useSettings()
   const { t } = useTranslation()
+  const theme = useTheme()
+
   const history = useHistory()
   const vaultAccountInfo = useAccountInfo()
 
@@ -101,6 +105,9 @@ export const VaultPage = () => {
           <Tabs
             variant={'scrollable'}
             value={tabIndex}
+            sx={{
+              marginLeft: theme.unit * 2,
+            }}
             onChange={(_e, value) => {
               history.push(`${RouterPath.vault}/${value}`)
               setTabIndex(value)
