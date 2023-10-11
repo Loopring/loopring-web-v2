@@ -170,8 +170,8 @@ export const useGetVaultAssets = (): VaultAssetsTableProps & { totalAsset: strin
   myLog('assetsRawData')
   return {
     rawData: assetsRawData,
-    hideL2Assets,
-    marketArray,
+    hideAssets: hideL2Assets,
+    // marketArray,
     allowTrade,
     setHideL2Assets,
     setHideSmallBalances,

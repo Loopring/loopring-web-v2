@@ -138,7 +138,7 @@ export const VaultDashBoardPanel = ({
               <Box border={'var(--color-border)'} borderRadius={1.5}></Box>
             </Grid>
           </Grid>
-          <Grid item md={4} xs={12}>
+          <Grid item md={3} xs={12}>
             <Box
               border={'var(--color-border) 1px solid'}
               borderRadius={1.5}

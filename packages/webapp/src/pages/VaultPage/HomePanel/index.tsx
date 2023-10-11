@@ -1,12 +1,6 @@
 import { Box, Container, Typography } from '@mui/material'
 import React from 'react'
-import {
-  RouterPath,
-  SoursURL,
-  TradeBtnStatus,
-  VaultIcon,
-  VaultKey,
-} from '@loopring-web/common-resources'
+import { RouterPath, TradeBtnStatus, VaultIcon, VaultKey } from '@loopring-web/common-resources'
 import { BoxBannerStyle, Button, MarketTable, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -27,11 +21,12 @@ export const VaultHomePanel = ({
   const history = useHistory()
   const tableRef = React.useRef<HTMLDivElement>()
   const vaultMarketProps = useVaultMarket({ tableRef })
+
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <BoxBannerStyle
         className={isMobile ? 'mobile' : ''}
-        backGroundUrl={SoursURL + '/images/any.webp'}
+        // backGroundUrl={SoursURL + '/images/any.webp'}
         direction={'right'}
       >
         <Container
@@ -43,7 +38,13 @@ export const VaultHomePanel = ({
           }}
         >
           <Box marginY={3} display={'flex'} justifyContent={'space-between'}>
-            <Box flex={1} maxWidth={440}>
+            <Box
+              flex={1}
+              maxWidth={440}
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'center'}
+            >
               <Typography component={'h2'} variant={'h3'}>
                 {t('labelTitleVault')}
               </Typography>
@@ -84,7 +85,6 @@ export const VaultHomePanel = ({
                     {joinBtnLabel}
                   </Button>
                 )}
-                <MarketTable {...{ ...vaultMarketProps }} />
               </Box>
             </Box>
             {!isMobile && (
@@ -103,6 +103,25 @@ export const VaultHomePanel = ({
           </Box>
         </Container>
       </BoxBannerStyle>
+      <Box
+        flex={1}
+        display={'flex'}
+        flexDirection={'column'}
+        sx={{
+          background: 'var(--color-pop-bg)',
+        }}
+      >
+        <Container
+          maxWidth='lg'
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+          }}
+        >
+          <MarketTable {...{ ...vaultMarketProps }} />
+        </Container>
+      </Box>
     </Box>
   )
 }
