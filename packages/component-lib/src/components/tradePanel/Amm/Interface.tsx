@@ -3,15 +3,11 @@ import {
   AccountStatus,
   AmmExitData,
   AmmJoinData,
+  AmmPanelType,
   CoinInfo,
   IBData,
 } from '@loopring-web/common-resources'
 import { AmmDepositBaseProps, AmmWithdrawBaseProps } from '../components'
-
-export enum AmmPanelType {
-  Join = 0,
-  Exit = 1,
-}
 
 /**
  *
