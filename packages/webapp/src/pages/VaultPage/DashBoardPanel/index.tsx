@@ -52,8 +52,8 @@ export const VaultDashBoardPanel = ({
           flex: 1,
         }}
       >
-        <Grid container spacing={2} display={'flex'} alignContent={'stretch'} marginTop={3}>
-          <Grid item md={8} xs={12}>
+        <Grid container spacing={3} display={'flex'} alignContent={'stretch'} marginTop={3}>
+          <Grid item md={9} xs={12}>
             <Grid
               border={'var(--color-border)'}
               borderRadius={1.5}
@@ -134,7 +134,7 @@ export const VaultDashBoardPanel = ({
                 </Box>
               </Box>
             </Grid>
-            <Grid item md={4} xs={12}>
+            <Grid item md={3} xs={12}>
               <Box border={'var(--color-border)'} borderRadius={1.5}></Box>
             </Grid>
           </Grid>
