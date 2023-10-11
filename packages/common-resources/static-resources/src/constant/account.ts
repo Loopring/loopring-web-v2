@@ -73,4 +73,3 @@ export type AssetsRawDataItem = {
   depositAmount?: string
 }
 export const ContactLimit = 1500;
-

@@ -267,7 +267,6 @@ export const useAction = ({
         await callSwitchChain(_chainId)
         let isContract1XAddress: any = undefined,
           guardianModuleAddress: any = undefined
-        // guardians: any = undefined
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
           isContract1XAddress = true
           const walletModule = guardianConfig?.supportContracts?.find((item: any) => {
@@ -275,9 +274,6 @@ export const useAction = ({
           })
           guardianModuleAddress = walletModule?.contractAddress
         }
-        // else if (contractType && contractType.walletType === 0) {
-        //   guardians = []
-        // }
         const request: sdk.ApproveSignatureRequest = {
           approveRecordId: selected.id,
           txAwareHash: selected.messageHash,
@@ -394,9 +390,6 @@ export const useAction = ({
           },
         })
       }
-      // .catch((error: any) => {
-
-      // })
     }
   }
   const handleOpenApprove = (guardian: sdk.Guardian) => {
