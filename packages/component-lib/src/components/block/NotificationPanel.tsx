@@ -16,9 +16,9 @@ export const NotificationPanel = ({
   notification,
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
-  exclusiveRedpacketCount
+  exclusiveRedpacketCount,
 }: {
-  notification: NOTIFICATION,
+  notification: NOTIFICATION
   onClickExclusiveredPacket: () => void
   showExclusiveRedpacket: boolean
   exclusiveRedpacketCount: number
@@ -47,9 +47,6 @@ export const NotificationPanel = ({
   const hasActivities = notification.activities && notification.activities?.length
 
   const hasNotifications = notification.notifications && notification.notifications?.length
-
-  // const showExclusiveRedpacket = true
-  console.log('exclusiveRedpacketCount', exclusiveRedpacketCount) 
 
   return (
     <BoxStyle
@@ -84,7 +81,7 @@ export const NotificationPanel = ({
                   paddingTop: 2.5,
                   cursor: 'pointer',
                   marginTop: 1,
-                  marginBottom: !!hasActivities ? 1 : 0
+                  marginBottom: !!hasActivities ? 1 : 0,
                 }}
               >
                 <Typography color={'black'}>Congratulations!</Typography>
@@ -102,26 +99,6 @@ export const NotificationPanel = ({
                   account={notification.account}
                 />
               ))}
-              {showExclusiveRedpacket && <Box onClick={() => onClickExclusiveredPacket()} sx={{
-                  backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,  
-                  backgroundSize: 'contain',
-                  width: '330px',
-                  height: '77px',
-                  borderRadius: 2,
-                  paddingLeft: 3.5,
-                  paddingTop: 2.5,
-                  cursor: 'pointer'
-                  
-                }} >
-                  <Typography color={'black'}>
-                    Congratulations!
-                  </Typography>
-                  <Typography variant={'body2'} color={'black'}>
-                    You've received {exclusiveRedpacketCount} exclusive Red Packet!
-                  </Typography>
-                </Box>
-              }
-              
           </Box>
           {!!hasNotifications && (
             <>
