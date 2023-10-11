@@ -11,7 +11,9 @@ import React from 'react'
 // import * as sdk from '@loopring-web/loopring-sdk'
 
 export function useVaultLayer2(): VaultLayer2States & {
-  updateVaultLayer2: () => void
+  updateVaultLayer2: (props: {
+    activeInfo?: { hash: string; isInActive: boolean } | undefined
+  }) => void
   // socketUpdateBalance: (balance: { [key: string]: loopring_defs.UserBalanceInfo }) => void
   statusUnset: () => void
   resetLayer2: () => void
@@ -24,6 +26,10 @@ export function useVaultLayer2(): VaultLayer2States & {
       dispatch(reset(undefined))
     }, [dispatch]),
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
-    updateVaultLayer2: React.useCallback(() => dispatch(updateVaultLayer2(undefined)), [dispatch]),
+    updateVaultLayer2: React.useCallback(
+      (props: { activeInfo?: { hash: string; isInActive: boolean } | undefined }) =>
+        dispatch(updateVaultLayer2(props)),
+      [dispatch],
+    ),
   }
 }

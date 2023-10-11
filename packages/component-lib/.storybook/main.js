@@ -1,3 +1,4 @@
+import { dirname, join } from "path";
 const path = require('path')
 const nodePath = '../../'
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -27,7 +28,7 @@ function findBabelRules(config) {
     // console.log(rule);
     if (rule.oneOf) {
       result_rule = rule.oneOf.find((rule) => {
-        return rule.test && rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
+        return rule.test && rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString();
       })
     }
   })
@@ -36,13 +37,16 @@ function findBabelRules(config) {
 
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+
   addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/preset-create-react-app',
-    '@storybook/addon-interactions',
+    getAbsolutePath("@storybook/addon-links"),
+    getAbsolutePath("@storybook/addon-essentials"),
+    getAbsolutePath("@storybook/preset-create-react-app"),
+    getAbsolutePath("@storybook/addon-interactions"),
   ],
-  framework: '@storybook/react',
+
+  framework: getAbsolutePath("@storybook/react"),
+
   typescript: {
     check: false,
     checkOptions: {},
@@ -52,9 +56,11 @@ module.exports = {
       propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
     },
   },
+
   core: {
-    builder: 'webpack4',
+    builder: getAbsolutePath("webpack4"),
   },
+
   webpackFinal: async (config, { configType }) => {
     config = disableEsLint(config)
     const isProd = configType.toLowerCase() === 'production'
@@ -139,4 +145,12 @@ module.exports = {
       },
     }
   },
+
+  docs: {
+    autodocs: true
+  }
+}
+
+function getAbsolutePath(value) {
+  return dirname(require.resolve(join(value, "package.json")));
 }

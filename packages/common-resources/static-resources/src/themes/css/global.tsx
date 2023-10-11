@@ -303,12 +303,13 @@ export const globalCss = ({ theme }: any) => css`
     --provider-btn-height: 56px;
     --input-height-large: 48px;
     --input-height-huge: 56px;
-    --input-height-swap: 72px;
-    --input-height-swap-label: 36px;
+    --dual-type-width: 320px;
+    --min-height: 350px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;
       --walletconnect-width: 126px;
+      --dual-type-width: 240px;
     }
     --color-EOA-Text: #fba95c;
     --color-Loopring-Text: #4169ff;

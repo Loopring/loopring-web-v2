@@ -130,6 +130,8 @@ export const DualDetail = ({
   displayMode = DualDisplayMode.nonBeginnerMode,
   isPriceEditable = true,
   coinSell,
+  toggle,
+  btnConfirm,
   ...rest
 }: DualDetailProps) => {
   const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
@@ -137,6 +139,8 @@ export const DualDetail = ({
   const { t } = useTranslation()
   const { upColor, isMobile } = useSettings()
   const { base, quote, precisionForPrice } = currentPrice
+  const quoteAlice = /USD/gi.test(dualViewInfo?.quote ?? '') ? 'USDT' : dualViewInfo?.quote
+
   const currentView = React.useMemo(
     () =>
       base
@@ -151,6 +155,23 @@ export const DualDetail = ({
         : EmptyValueTag,
     [dualViewInfo.currentPrice.currentPrice, precisionForPrice, tokenMap],
   )
+  const renewTargetPriceView = React.useMemo(() => {
+    return coinSell?.renewTargetPrice
+      ? getValuePrecisionThousand(
+          coinSell?.renewTargetPrice,
+          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+          true,
+          { floor: true },
+        ) + ` ${quoteAlice}`
+      : EmptyValueTag
+  }, [
+    // Number(dualViewInfo?.strike).toLocaleString('en-US')
+    //   ? Number(dualViewInfo?.strike).toLocaleString('en-US')
+    //   : EmptyValueTag,
+    coinSell?.renewTargetPrice,
+  ])
 
   const targetView = React.useMemo(() => {
     return dualViewInfo?.strike
@@ -161,27 +182,9 @@ export const DualDetail = ({
           precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
           true,
           { floor: true },
-        ) + ` ${quote}`
+        ) + ` ${quoteAlice}`
       : EmptyValueTag
   }, [dualViewInfo?.strike])
-
-  const renewTargetPriceView = React.useMemo(() => {
-    return coinSell?.renewTargetPrice
-      ? getValuePrecisionThousand(
-          coinSell?.renewTargetPrice,
-          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
-          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
-          precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
-          true,
-          { floor: true },
-        ) + ` ${quote}`
-      : EmptyValueTag
-  }, [
-    // Number(dualViewInfo?.strike).toLocaleString('en-US')
-    //   ? Number(dualViewInfo?.strike).toLocaleString('en-US')
-    //   : EmptyValueTag,
-    coinSell?.renewTargetPrice,
-  ])
 
   myLog('dualViewInfo', dualViewInfo)
   return (
@@ -196,8 +199,10 @@ export const DualDetail = ({
           <Box display={'flex'} width={'100%'} flexDirection={'column'}>
             <ModalCloseButton onClose={() => setShowEdit(false)} t={t} {...rest} />
             <ModifyParameter
+              toggle={toggle}
               onClose={() => setShowEdit(false)}
               {...rest}
+              btnConfirm={btnConfirm}
               coinSell={coinSell}
               isPriceEditable={isPriceEditable}
             />
@@ -206,7 +211,8 @@ export const DualDetail = ({
       </Modal>
 
       <Box display={'flex'} flexDirection={'column'}>
-        {!isOrder || (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) ? (
+        {(toggle?.enable && !isOrder) ||
+        (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) ? (
           // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
           <Box
             display={'flex'}
@@ -225,29 +231,32 @@ export const DualDetail = ({
                     alignItems={'center'}
                   >
                     <Trans i18nKey={'labelDualAutoTitle'}>
+                      Auto Reinvest
                       <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                     </Trans>
                   </Typography>
                 </Tooltip>
-                <Typography component={'span'} variant={'inherit'}>
-                  <FormControlLabel
-                    sx={{
-                      marginRight: 0,
-                    }}
-                    disabled={[
-                      sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
-                      sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
-                    ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
-                    onChange={(_e, checked) =>
-                      onChange({
-                        ...coinSell,
-                        isRenew: checked,
-                      })
-                    }
-                    control={<Switch color={'primary'} checked={coinSell.isRenew} />}
-                    label={''}
-                  />
-                </Typography>
+                {!isOrder && (
+                  <Typography component={'span'} variant={'inherit'}>
+                    <FormControlLabel
+                      sx={{
+                        marginRight: 0,
+                      }}
+                      disabled={[
+                        sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
+                        sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
+                      ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
+                      onChange={(_e, checked) =>
+                        onChange({
+                          ...coinSell,
+                          isRenew: checked,
+                        })
+                      }
+                      control={<Switch color={'primary'} checked={coinSell.isRenew} />}
+                      label={''}
+                    />
+                  </Typography>
+                )}
               </Box>
 
               <Typography
@@ -258,10 +267,12 @@ export const DualDetail = ({
                 alignItems={'center'}
                 paddingBottom={1}
               >
-                <Trans i18nKey={'labelDualAutoDetail'}>
-                  Auto Reinvest will try to find a new product which based on the following rule at
-                  16:00 on the settlement day.
-                </Trans>
+                {coinSell.isRenew && (
+                  <Trans i18nKey={'labelDualAutoDetail'}>
+                    Auto Reinvest will try to find a new product which based on the following rule
+                    at 16:00 on the settlement day.
+                  </Trans>
+                )}
               </Typography>
             </Box>
             {coinSell.isRenew && (
@@ -338,7 +349,7 @@ export const DualDetail = ({
                     display={'inline-flex'}
                     alignItems={'center'}
                   >
-                    {coinSell.renewDuration}
+                    {t('labelDayDisplay', { item: coinSell.renewDuration })}
                     <BackIcon fontSize={'inherit'} sx={{ transform: 'rotate(180deg)' }} />
                   </Link>
                 </Box>
@@ -448,7 +459,7 @@ export const DualDetail = ({
           <>
             <Box paddingX={2} marginTop={2}>
               <Typography variant={'h5'} marginBottom={0}>
-                {t('At Settlement Date')}
+                {t('labelDualBeginnerAtSettlementDay')}
               </Typography>
               <Typography color={'textSecondary'} marginBottom={1}>
                 {t('labelDualBeginnerIndexPriceDes')}
@@ -471,7 +482,7 @@ export const DualDetail = ({
                     })}
                 </Typography>
               </Box>
-              <Box marginBottom={5} display={'flex'} justifyContent={'space-between'}>
+              <Box marginBottom={2} display={'flex'} justifyContent={'space-between'}>
                 <Typography>
                   {t(
                     dualViewInfo.isUp
@@ -491,7 +502,12 @@ export const DualDetail = ({
                 </Typography>
               </Box>
             </Box>
-            <Typography textAlign={'center'} color={'var(--color-text-third)'} variant={'body2'}>
+            <Typography
+              textAlign={'center'}
+              color={'var(--color-text-third)'}
+              variant={'body2'}
+              paddingBottom={1}
+            >
               {t('labelDualBeginnerLockingDes')}
             </Typography>
           </>

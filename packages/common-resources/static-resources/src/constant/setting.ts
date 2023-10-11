@@ -8,17 +8,25 @@ export enum UpColor {
 }
 export const SlippageTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
 export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
+export type RowConfigType = {
+  rowHeight?: number
+  rowHeaderHeight?: number
+  minHeight?: number
+}
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,
+  minHeight: 350,
 }
 export const RowInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 56,
   rowHeaderHeight: IsMobile.any() ? 48 : 56,
+  minHeight: 350,
 }
 export const RowDualInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 72,
   rowHeaderHeight: IsMobile.any() ? 48 : 72,
+  minHeight: 350,
 }
 export const DirectionTag = '\u2192'
 export const FeeChargeOrderDefault = ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']
@@ -151,3 +159,11 @@ export const HEBAO_CONTRACT_MAP = [
   ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
   ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
 ]
+
+export type ContactType = Pick<sdk.GetContactsResponse, 'contacts'>['contacts'][0]
+
+export enum TableFilterParams {
+  all = 'all',
+  favourite = 'favourite',
+  ranking = 'ranking',
+}

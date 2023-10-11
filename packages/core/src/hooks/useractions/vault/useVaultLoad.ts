@@ -282,7 +282,9 @@ export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
   const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap } = useVaultMap()
   const { t } = useTranslation()
   const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
-  const { exchangeInfo } = useSystem()
+  const { exchangeInfo, forexMap } = useSystem()
+  const [isLoading, setIsLoading] = React.useState(false)
+
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
 
   const calcSupportData = (tradeData: T) => {
@@ -437,12 +439,24 @@ export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
           throw response
         }
         walletLayer2Service.sendUserUpdate()
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.VaultRepay_In_Progress,
+          info: {
+            title: t('labelVaultRepayTitle'),
+          },
+        })
         sdk.sleep(1000).then(() => updateVaultLayer2())
-
+        //TODO c
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultRepay_Success,
+          // TODO:
           info: {
+            usdValue: 0,
+            usdDebt: 0,
+            usdEquity: 0,
+            forexMap,
             title: t('labelVaultRepayTitle'),
           },
         })
@@ -477,14 +491,7 @@ export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
         sdk.toBig(vaultRepayData.amount).gte(vaultRepayData.minAmount ?? 0) &&
         sdk.toBig(vaultRepayData.amount).lte(vaultRepayData.maxAmount ?? 0)
       ) {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.VaultRepay_In_Progress,
-          info: {
-            title: t('labelVaultRepayTitle'),
-          },
-        })
-
+        setIsLoading(true)
         const vaultRepayRequest: sdk.VaultRepayRequest = {
           accountId: account.accountId,
           token: {
@@ -501,6 +508,7 @@ export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
         processRequest(vaultRepayRequest)
       }
     } catch (e) {
+      setIsLoading(false)
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultRepay_Failed,
@@ -519,7 +527,7 @@ export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
     // btnStyle: tradeLimitBtnStyle,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: false,
+    isLoading,
     submitCallback,
   })
   return {

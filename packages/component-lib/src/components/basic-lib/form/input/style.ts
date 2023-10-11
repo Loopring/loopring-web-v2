@@ -125,7 +125,7 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    border-radius: ${({ theme }) => theme.unit / 2}px;
+    border-radius: ${({ theme }) => theme.unit }px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
 
@@ -345,7 +345,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-placeholder);;
+    color: var(--color-placeholder);
   }
 
   :disabled {

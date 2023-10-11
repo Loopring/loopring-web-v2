@@ -10,7 +10,7 @@ import {
   VipIcon,
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
-import { AddAssetList, InvestMapType, SendAssetList } from './trade'
+import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
 import { WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
@@ -327,11 +327,11 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/ammpool' },
+    router: { path: '/invest/dual' },
     label: {
-      id: 'ammpool',
-      i18nKey: 'labelInvestAmm',
-      description: 'labelInvestAmmDes',
+      id: 'dual',
+      i18nKey: 'labelInvestDual',
+      description: 'labelInvestDualDes',
     },
   },
   {
@@ -345,11 +345,20 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/dual' },
+    router: { path: '/invest/leverageETH' },
     label: {
-      id: 'dual',
-      i18nKey: 'labelInvestDual',
-      description: 'labelInvestDualDes',
+      id: 'leverageeth',
+      i18nKey: 'labelInvestLeverageETH',
+      description: 'labelInvestLeverageETHDes',
+    },
+  },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: '/invest/ammpool' },
+    label: {
+      id: 'ammpool',
+      i18nKey: 'labelInvestAmm',
+      description: 'labelInvestAmmDes',
     },
   },
   {
@@ -361,22 +370,21 @@ export const subMenuInvest = [
       description: 'labelInvestStakeLRCDes',
     },
   },
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: '/invest/leverageETH' },
-    label: {
-      id: 'leverageeth',
-      i18nKey: 'labelInvestLeverageETH',
-      description: 'labelInvestLeverageETHDes',
-    },
-  },
 ]
-export type InvestTab = 'pools' | 'lido' | 'staking' | 'dual'
-export const investTabs = [
-  { tab: 'pools' as InvestTab, label: 'labelLiquidityPageTitle' },
-  { tab: 'lido' as InvestTab, label: 'labelInvestLRCTitle' },
-  { tab: 'staking' as InvestTab, label: 'labelInvestDefiTitle' },
-  { tab: 'dual' as InvestTab, label: 'labelInvestDualTitle' },
+// export enum INVEST_TAB {
+//   pools = 'pools',
+//   lido = 'lido',
+//   staking = 'staking',
+//   dual = 'dual',
+//   leverageETH = 'leverageETH',
+// }
+
+export const INVEST_TABS = [
+  { tab: InvestAssetRouter.DUAL, label: 'labelInvestDualTitle' },
+  { tab: InvestAssetRouter.STAKE, label: 'labelInvestDefiTitle' },
+  { tab: InvestAssetRouter.LEVERAGEETH, label: 'labelLeverageETHTitle' },
+  { tab: InvestAssetRouter.AMM, label: 'labelLiquidityPageTitle' },
+  { tab: InvestAssetRouter.STAKELRC, label: 'labelInvestLRCTitle' },
 ]
 
 export const DEFI_CONFIG = {
@@ -546,6 +554,59 @@ export const MEDIA_LIST = [
   },
 ]
 
+export const headerMenuData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: 'L2Assets',
+      i18nKey: 'labelAssets',
+    },
+    router: { path: '/l2assets' },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: 'Markets',
+      i18nKey: 'labelMarkets',
+    },
+    router: { path: '/markets' },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: 'Trade',
+      i18nKey: 'labelTrade',
+    },
+    status: HeaderMenuTabStatus.default,
+    child: layer2ItemData,
+  },
+  {
+    label: {
+      id: 'Invest',
+      i18nKey: 'labelInvest',
+    },
+    router: { path: '/invest/overview' },
+    status: HeaderMenuTabStatus.default,
+    child: subMenuInvest,
+  },
+  {
+    label: {
+      id: 'vault',
+      i18nKey: 'labelVault',
+      description: 'labelVaultDescription',
+    },
+    child: vaultItemData,
+  },
+  {
+    label: {
+      id: 'NFT',
+      i18nKey: 'labelNFT',
+    },
+    router: { path: '/nft' },
+    status: HeaderMenuTabStatus.default,
+    child: subMenuNFT,
+  },
+]
+
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
   router: '/invest/ammpool',
@@ -691,110 +752,8 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
       ],
     },
   ],
-  ETHEREUM: [
-    {
-      label: {
-        id: 'L2Assets',
-        i18nKey: 'labelAssets',
-      },
-      router: { path: '/l2assets' },
-      status: HeaderMenuTabStatus.default,
-    },
-    {
-      label: {
-        id: 'Markets',
-        i18nKey: 'labelMarkets',
-      },
-      router: { path: '/markets' },
-      status: HeaderMenuTabStatus.default,
-    },
-    {
-      label: {
-        id: 'Trade',
-        i18nKey: 'labelTrade',
-      },
-      status: HeaderMenuTabStatus.default,
-      child: layer2ItemData,
-    },
-    {
-      label: {
-        id: 'Invest',
-        i18nKey: 'labelInvest',
-      },
-      router: { path: '/invest/overview' },
-      status: HeaderMenuTabStatus.default,
-      child: subMenuInvest,
-    },
-    // {
-    //   label: {
-    //     id: 'vaultLayer2',
-    //     i18nKey: 'labelVault',
-    //     description: 'labelVaultDescription',
-    //   },
-    //   child: vaultItemData,
-    // },
-    {
-      label: {
-        id: 'NFT',
-        i18nKey: 'labelNFT',
-      },
-      router: { path: '/nft' },
-      status: HeaderMenuTabStatus.default,
-      child: subMenuNFT,
-    },
-  ],
-  GOERLI: [
-    {
-      label: {
-        id: 'L2Assets',
-        i18nKey: 'labelAssets',
-      },
-      router: { path: '/l2assets' },
-      status: HeaderMenuTabStatus.default,
-    },
-    {
-      label: {
-        id: 'Markets',
-        i18nKey: 'labelMarkets',
-      },
-      router: { path: '/markets' },
-      status: HeaderMenuTabStatus.default,
-    },
-    {
-      label: {
-        id: 'Trade',
-        i18nKey: 'labelTrade',
-      },
-      status: HeaderMenuTabStatus.default,
-      child: layer2ItemData,
-    },
-    {
-      label: {
-        id: 'Invest',
-        i18nKey: 'labelInvest',
-      },
-      router: { path: '/invest/overview' },
-      status: HeaderMenuTabStatus.default,
-      child: subMenuInvest,
-    },
-    {
-      label: {
-        id: 'vault',
-        i18nKey: 'labelVault',
-        description: 'labelVaultDescription',
-      },
-      child: vaultItemData,
-    },
-    {
-      label: {
-        id: 'NFT',
-        i18nKey: 'labelNFT',
-      },
-      router: { path: '/nft' },
-      status: HeaderMenuTabStatus.default,
-      child: subMenuNFT,
-    },
-  ],
+  ETHEREUM: headerMenuData,
+  GOERLI: headerMenuData,
 }
 
 export const TokenPriceBase = {

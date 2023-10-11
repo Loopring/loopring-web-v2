@@ -8,6 +8,7 @@ export type VaultMap<
     [key: string]: any
   },
 > = {
+  erc20Array: string[]
   marketArray: string[]
   marketCoins: string[]
   marketMap: sdk.LoopringMap<VaultUIMap>

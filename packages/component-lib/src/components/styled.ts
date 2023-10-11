@@ -393,6 +393,20 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
   &.banxaEnter {
     justify-content: space-between;
   }
+  &.vaultBtn {
+    border: 0;
+    font-size: ${({ theme }) => theme.fontDefault.h5};
+    color: var(--color-text-primary);
+    justify-content: space-between;
+    .MuiButton-endIcon {
+      color: var(--color-text-Secondary);
+    }
+    &:hover {
+      .MuiButton-endIcon {
+        color: var(--color-primary);
+      }
+    }
+  }
 
   &.redPacketType {
     display: flex;
@@ -402,8 +416,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     text-indent: 0em;
     text-align: left;
     padding: ${({ theme }) => theme.unit * 2}px ${({ theme }) => theme.unit * 4}px;
-
-    .mainTitlte {
+    .mainTitle {
     }
   }
 

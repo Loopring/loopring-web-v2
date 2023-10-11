@@ -97,7 +97,7 @@ export const makeDualOrderedItem = (
     .div((expireTime - createdAt) / 86400000)
     .times(36500) // year APY
   const term = moment().to(new Date(expireTime), true)
-  const { precisionForPrice, stepLength } = market
+  const { precisionForPrice, stepLength } = market ?? {}
 
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,

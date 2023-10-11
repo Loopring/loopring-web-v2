@@ -192,7 +192,7 @@ export const AmmCard = withTranslation('common', { withRef: true })(
 
         return (
           <CardStyled ref={ref}>
-            <LabelStyled type={ruleType}>{isOrderbook ? 'Orderbook' : 'AMM Pool'}</LabelStyled>
+            <LabelStyled type={ruleType}>{isOrderbook ? 'Orderbook' : 'AMM Pools'}</LabelStyled>
             <CardContent style={{ paddingBottom: 0 }}>
               <Box
                 display={'flex'}

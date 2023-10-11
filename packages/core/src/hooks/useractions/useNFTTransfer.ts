@@ -330,7 +330,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProviders[connectName] ??
+              walletType: (ConnectProviders[ connectName ] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,

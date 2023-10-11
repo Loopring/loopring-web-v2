@@ -96,7 +96,7 @@ export const BtnNotification = ({
   chainId,
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
-  exclusiveRedpacketCount
+  exclusiveRedpacketCount,
 }: {
   notification: Notify
   account: Account
@@ -135,8 +135,8 @@ export const BtnNotification = ({
     ..._notification,
     notifications: notifications,
     activities: [...(activitiesList1 ?? []), ...(activitiesList2 ?? [])],
-    account, 
-    chainId
+    account,
+    chainId,
   }
 
   return (
@@ -146,7 +146,8 @@ export const BtnNotification = ({
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {((notification.activities.length ?? 0 + notification.notifications.length ?? 0) > 0 || showExclusiveRedpacket) && (
+      {((notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 ||
+        showExclusiveRedpacket) && (
         <CircleIcon
           sx={{
             position: 'absolute',
@@ -170,7 +171,12 @@ export const BtnNotification = ({
           horizontal: 'center',
         }}
       >
-        <NotificationPanel exclusiveRedpacketCount={exclusiveRedpacketCount} onClickExclusiveredPacket={onClickExclusiveredPacket} showExclusiveRedpacket={showExclusiveRedpacket} notification={notification} />
+        <NotificationPanel
+          exclusiveRedpacketCount={exclusiveRedpacketCount}
+          onClickExclusiveredPacket={onClickExclusiveredPacket}
+          showExclusiveRedpacket={showExclusiveRedpacket}
+          notification={{ ...notification, account, chainId }}
+        />
       </PopoverPure>
     </Box>
   )

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import {
-  Box, Grid,
+  Box,
+  Grid,
   IconButton,
   IconProps,
   LinearProgress,

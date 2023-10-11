@@ -43,20 +43,36 @@ export const useDualEdit = <
   const { setShowDual } = useOpenModals()
   const {
     editDual: { dualViewInfo },
+    updateEditDual,
+    resetEditDual,
   } = useTradeDual()
 
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const [isLoading, setIsLoading] = React.useState(false)
   const { tokenMap, idIndex } = useTokenMap()
   const [tradeData, setTradeData] = React.useState<T>({
-    // @t-ignore
+    // @ts-ignore
     isRenew: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false,
     renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
-    renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.retryStatus,
-  })
+    renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
+  } as T)
+  React.useEffect(() => {
+    const { dualViewInfo } = store.getState()._router_tradeDual.editDual
+    setTradeData({
+      // @ts-ignore
+      isRenew: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive ?? false,
+      renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+      renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
+    })
+  }, [dualViewInfo?.__raw__?.order?.hash])
 
   const handleOnchange = ({ tradeData }: { tradeData: T }) => {
     setTradeData(tradeData)
+    const editDual = store.getState()._router_tradeDual.editDual
+    updateEditDual({
+      ...editDual,
+      tradeData,
+    })
   }
 
   const availableTradeCheck = React.useCallback((): {
@@ -91,6 +107,8 @@ export const useDualEdit = <
 
   const onSubmitBtnClick = React.useCallback(async () => {
     const editDual = store.getState()._router_tradeDual.editDual
+    let { tradeData: _tradeData } = editDual
+    _tradeData = { ..._tradeData, ...tradeData }
     const tradeDual = editDual?.dualViewInfo?.__raw__?.order
     const dualViewInfo = editDual?.dualViewInfo
     try {
@@ -103,35 +121,37 @@ export const useDualEdit = <
           newStrike: tradeDual.dualReinvestInfo.newStrike,
           accountId: account.accountId,
         }
-        if (!tradeData.isRenew) {
+        if (!_tradeData.isRenew) {
           request.isRecursive = false
         } else {
           request.isRecursive = true
+          request.maxDuration = tradeDual.dualReinvestInfo.maxDuration
           if (
-            tradeData.renewDuration &&
-            tradeData.renewDuration !== (tradeDual.dualReinvestInfo.maxDuration ?? 0) / 86400000
+            _tradeData.renewDuration &&
+            _tradeData.renewDuration !== (request.maxDuration ?? 0) / 86400000
           ) {
-            request.maxDuration = Number(tradeData.renewDuration) * 86400000
+            request.maxDuration = Number(_tradeData.renewDuration) * 86400000
           }
           if (
-            tradeData.renewTargetPrice &&
-            !sdk.toBig(tradeData.renewTargetPrice).eq(tradeDual.dualReinvestInfo.newStrike)
+            _tradeData.renewTargetPrice &&
+            tradeDual?.tokenInfoOrigin?.storageId !== undefined &&
+            !sdk.toBig(_tradeData.renewTargetPrice).eq(tradeDual.dualReinvestInfo.newStrike)
           ) {
             const req: sdk.GetNextStorageIdRequest = {
               accountId: account.accountId,
               sellTokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
             }
             const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
-            request.newStrike = tradeData.renewTargetPrice
+            request.newStrike = _tradeData.renewTargetPrice
             const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
 
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
-              storageId: storageId.orderId,
+              storageId: tradeDual.tokenInfoOrigin.storageId,
               accountId: account.accountId,
               sellToken: {
-                tokenId: tradeDual.tokenInfoOrigin.tokenIn ?? 0,
+                tokenId: storageId.orderId, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
                 volume: tradeDual.tokenInfoOrigin.amountIn,
               },
               buyToken: {
@@ -196,11 +216,28 @@ export const useDualEdit = <
           //   setShowAccount({ isShow: false })
           // }
         }
-        refresh && refresh(dualViewInfo as any)
+        refresh &&
+          refresh({
+            ...dualViewInfo,
+            __raw__: {
+              order: {
+                ...dualViewInfo.__raw__.order,
+                dualReinvestInfo: {
+                  ...dualViewInfo?.__raw__?.dualReinvestInfo,
+                  newStrike: request.newStrike,
+                  maxDuration: request.maxDuration,
+                  isRecursive: request.isRecursive,
+                },
+              },
+            },
+          } as any)
       } else {
         throw new Error('api not ready')
       }
     } catch (reason) {
+      if (!_tradeData.isRenew) {
+        resetEditDual()
+      }
       setToastOpen({
         open: true,
         type: ToastType.error,

@@ -15,6 +15,7 @@ import {
   store,
   useVaultMap,
   useContacts,
+  useVaultTicker,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -30,6 +31,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: vaultLayer2Status,
     statusUnset: vaultsLayer2Unset,
   } = useVaultLayer2()
+  const { status: vaultTickerStatus, statusUnset: vaultTickerUnset } = useVaultTicker()
 
   const {
     resetLayer2NFT,
@@ -46,15 +48,15 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2()
-    const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
+  const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
 
-    const {
-      updateWalletL2Collection,
-      updateLegacyContracts,
-      resetL2Collection,
-      status: walletL2CollectionStatus,
-      statusUnset: walletL2CollectionstatusUnset,
-    } = useWalletL2Collection()
+  const {
+    updateWalletL2Collection,
+    updateLegacyContracts,
+    resetL2Collection,
+    status: walletL2CollectionStatus,
+    statusUnset: walletL2CollectionstatusUnset,
+  } = useWalletL2Collection()
 
   const {
     updateWalletL2NFTCollection,
@@ -96,7 +98,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2()
-            updateVaultLayer2()
+            updateVaultLayer2({})
             updateWalletL2NFTCollection({ page: 1 })
             updateWalletL2Collection({ page: 1 })
           }
@@ -138,6 +140,18 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
       case SagaStatus.DONE:
         vaultsLayer2Unset()
+        break
+      default:
+        break
+    }
+  }, [vaultLayer2Status])
+  React.useEffect(() => {
+    switch (vaultTickerStatus) {
+      case SagaStatus.ERROR:
+        vaultTickerUnset()
+        break
+      case SagaStatus.DONE:
+        vaultTickerUnset()
         break
       default:
         break

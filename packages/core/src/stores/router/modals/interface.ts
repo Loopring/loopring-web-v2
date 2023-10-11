@@ -127,7 +127,6 @@ export type ModalDataStatus = {
     | undefined
   redPacketOrder: RedPacketOrderData<any>
   claimValue: ClaimData
-  // joinVault: Partial<VaultJoinData>
 }
 
 export enum LAST_STEP {

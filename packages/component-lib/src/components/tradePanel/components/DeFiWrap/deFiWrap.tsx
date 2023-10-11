@@ -12,13 +12,12 @@ import {
   myLog,
   OrderListIcon,
   RecordTabIndex,
-  ReverseIcon,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { DeFiWrapProps } from './Interface'
 import { Trans, useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, IconButton, Tooltip, Typography } from '@mui/material'
+import { Box, Grid, Tooltip, Typography } from '@mui/material'
 import { InputCoin } from '../../../basic-lib'
 import { ButtonStyle, IconButtonStyled } from '../Styled'
 import { CountDownIcon } from '../tool/Refresh'
@@ -26,7 +25,6 @@ import { useHistory } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
 import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
-import { usePopup } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { toBig } from '@loopring-web/loopring-sdk'
 
@@ -34,6 +32,14 @@ const GridStyle = styled(Grid)`
   ul {
     list-style: disc;
     padding-left: ${({ theme }) => theme.unit}px;
+  }
+`
+const InputCoinStyled = styled(InputCoin)`
+  && {
+    .coinInput-wrap {
+      background-color: var(--color-global-bg);
+      border: 1px solid var(--color-border);
+    }
   }
 `
 
@@ -63,6 +69,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   maxBuyVol,
   market,
   title,
+  setShowRETHStakignPopup,
+  setShowWSTETHStakignPopup,
+  setShowLeverageETHPopup,
   isLeverageETH,
   extraWithdrawFee,
   apr,
@@ -231,8 +240,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       false,
       { floor: true },
     )} ${tokenBuy.symbol}`
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
-  
+
   const fee = isJoin
     ? deFiCalcData?.fee
       ? deFiCalcData?.fee + ` ${tokenBuy.symbol}`
@@ -247,7 +255,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         { floor: true },
       ) + ` ${tokenBuy.symbol}`
     : EmptyValueTag
-  
+
   return (
     <Grid
       className={deFiCalcData ? '' : 'loading'}
@@ -272,7 +280,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           display={'inline-flex'}
           variant={'h5'}
           alignItems={'center'}
-          alignSelf={'self-start'}
+          alignSelf={'center'}
         >
           {title}
           <HelpIcon
@@ -281,11 +289,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             sx={{ marginLeft: 1, cursor: 'pointer' }}
             onClick={() => {
               if (isLeverageETH) {
-                setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
+                setShowLeverageETHPopup &&
+                  setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
               } else if (market === 'RETH-ETH') {
-                setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowRETHStakignPopup &&
+                  setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
               } else if (market === 'WSTETH-ETH') {
-                setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowWSTETHStakignPopup &&
+                  setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
               }
             }}
           />
@@ -314,12 +325,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       <Grid
         item
         marginTop={3}
+        paddingBottom={3}
         flexDirection={'column'}
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
+        borderBottom={'1px solid var(--color-border)'}
       >
-        <InputCoin<T, I, any>
+        <InputCoinStyled
           ref={coinSellRef}
           disabled={getDisabled}
           {...{
@@ -342,7 +355,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-disable)'} />
           </IconButtonStyled>
         </Box>
-        <InputCoin<T, I, any>
+        <InputCoinStyled
           ref={coinBuyRef}
           disabled={getDisabled}
           {...{
@@ -356,32 +369,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           }}
         />
       </Grid>
-      <Grid item>
-        <Typography
-          component={'p'}
-          variant='body1'
-          textAlign={'center'}
-          lineHeight={'24px'}
-          paddingY={2}
-        >
-          {showVal ? (
-            <>
-              {convertStr}
-              <IconButtonStyled
-                size={'small'}
-                aria-label={t('tokenExchange')}
-                onClick={_onSwitchStob}
-                // style={{transform: 'rotate(90deg)'}}
-              >
-                <ReverseIcon />
-              </IconButtonStyled>
-            </>
-          ) : (
-            t('labelCalculating')
-          )}
-        </Typography>
-      </Grid>
-      <Grid item alignSelf={'stretch'}>
+
+      <Grid marginTop={3} item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
             {isLeverageETH && (
@@ -392,11 +381,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Box display={"flex"} flexDirection={"row"} >
-                  <Typography marginRight={0.5} component={'p'} variant='body2' color={'textSecondary'}>
+                <Box display={'flex'} flexDirection={'row'}>
+                  <Typography
+                    marginRight={0.5}
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                  >
                     {t('labelAPR')}
                   </Typography>
-                  
+
                   <Tooltip title={t('labelLRCStakeAPRTooltips')}>
                     <span>
                       <Info2Icon />
@@ -408,6 +402,20 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 </Typography>
               </Grid>
             )}
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Typography component={'p'} variant='body2' color={'textSecondary'}>
+                {t('labelDefiRate')}
+              </Typography>
+              <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                {showVal ? convertStr : t('labelCalculating')}
+              </Typography>
+            </Grid>
             <Grid
               container
               justifyContent={'space-between'}

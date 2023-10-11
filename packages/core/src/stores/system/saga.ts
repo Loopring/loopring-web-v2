@@ -1,13 +1,16 @@
 import { all, call, fork, put, take, takeLatest, delay } from 'redux-saga/effects'
 import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV } from './interface'
-import { store, LoopringSocket, LoopringAPI, toggleCheck, makeBtrade, makeVault } from '../../index'
+import { store, LoopringSocket, LoopringAPI, toggleCheck, makeVault } from '../../index'
 import {
   ChainIdExtends,
   CustomError,
+  DEFI_CONFIG,
+  DUAL_CONFIG,
   ErrorMap,
   ForexMap,
   LocalStorageConfigKey,
+  LEVERAGE_ETH_CONFIG,
   MapChainId,
   myLog,
   TokenPriceBase,
@@ -30,7 +33,10 @@ import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
-import { getVaultMap } from '../invest/VaultMap/reducer'
+import { updateDualSyncMap } from '../invest/DualMap/reducer'
+import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
+import { getVaultMap, updateVaultSyncMap } from '../invest/VaultMap/reducer'
+import { getVaultTickers } from '../invest/VaultTicker/reducer'
 
 enum ENV_KEY {
   Bridge = 'bridge',
@@ -38,35 +44,57 @@ enum ENV_KEY {
   Earn = 'earn',
   Guardian = 'guardian',
 }
+export const defiAllAsync = async () => {
+  if (LoopringAPI.defiAPI) {
+    let { raw_data } = await LoopringAPI.defiAPI?.getDefiMarkets({})
+    // const { baseURL } = store.getState().system
+    const { defaultNetwork } = store.getState().settings
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const [
+      dualMap,
+      { markets: marketMap, tokenArr: marketCoins, marketArr: marketArray },
+      { markets: marketLeverageMap, tokenArr: marketLeverageCoins, marketArr: marketLeverageArray },
+    ] = [
+      sdk.makeInvestMarkets(raw_data, DUAL_CONFIG.products[network].join(',')),
+      sdk.makeInvestMarkets(raw_data, DEFI_CONFIG.products[network].join(',')),
+      sdk.makeInvestMarkets(raw_data, LEVERAGE_ETH_CONFIG.products[network].join(',')),
+    ]
+    store.dispatch(updateDualSyncMap({ dualMap }))
+    // store.dispatch(updateDefiSyncMap({ dualMap }))
+    store.dispatch(
+      updateDefiSyncMap({
+        defiMap: {
+          marketArray,
+          marketCoins,
+          marketMap,
+          marketLeverageMap,
+          marketLeverageCoins,
+          marketLeverageArray,
+        },
+      }),
+    )
+  }
+}
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: sdk.ChainId | 'unknown',
 ) {
   const APP_NAME = process.env?.REACT_APP_NAME ?? 'loopring.io'
   const { chainId } = store.getState().system
-  const _tokenMap = JSON.parse(window.localStorage.getItem(LocalStorageConfigKey.tokenMap) ?? '{}')[
-    chainId
-  ]
-  const _ammpools = JSON.parse(window.localStorage.getItem(LocalStorageConfigKey.ammpools) ?? '{}')[
-    chainId
-  ]
-  const _markets = JSON.parse(window.localStorage.getItem(LocalStorageConfigKey.markets) ?? '{}')[
-    chainId
-  ]
-  const _btradeMarkets = JSON.parse(
-    window.localStorage.getItem(LocalStorageConfigKey.btradeMarkets) ?? '{}',
-  )[chainId]
+  const _tokenMap = JSON.parse(window.localStorage.getItem('tokenMap') ?? '{}')[chainId]
+  const _ammpools = JSON.parse(window.localStorage.getItem('ammpools') ?? '{}')[chainId]
+  const _markets = JSON.parse(window.localStorage.getItem('markets') ?? '{}')[chainId]
+  const _btradeMarkets = JSON.parse(window.localStorage.getItem('btradeMarkets') ?? '{}')[chainId]
   const _vaultMarkets = JSON.parse(
     window.localStorage.getItem(LocalStorageConfigKey.vaultMarkets) ?? '{}',
   )[chainId]
   const _vaultTokenMap = JSON.parse(
     window.localStorage.getItem(LocalStorageConfigKey.vaultTokenMap) ?? '{}',
   )[chainId]
-
   const _disableWithdrawTokenList = JSON.parse(
     window.localStorage.getItem(LocalStorageConfigKey.disableWithdrawTokenList) ?? '{}',
   )[chainId]
-  let tokenMap,
+  let tokensMap,
     coinMap,
     totalCoinMap,
     idIndex,
@@ -84,7 +112,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   if (_tokenMap && _ammpools && _markets && _disableWithdrawTokenList) {
     myLog('tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList from local storge')
     const resultTokenMap = sdk.makeMarket(_tokenMap)
-    tokenMap = resultTokenMap.tokensMap
+    tokensMap = resultTokenMap.tokensMap
     coinMap = resultTokenMap.coinMap
     totalCoinMap = resultTokenMap.totalCoinMap
     idIndex = resultTokenMap.idIndex
@@ -99,7 +127,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
 
     store.dispatch(
       getTokenMap({
-        tokenMap,
+        tokensMap,
         coinMap,
         totalCoinMap,
         idIndex,
@@ -112,8 +140,35 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       }),
     )
     store.dispatch(initAmmMap({ ammpools, chainId }))
-    makeBtrade(_btradeMarkets)
-    makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')
+    store.dispatch(updateVaultSyncMap(makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')))
+    ;(function (btradeMarkets) {
+      if (btradeMarkets) {
+        const {
+          markets: marketMap,
+          pairs,
+          marketArr: marketArray,
+          tokenArr: marketCoins,
+        } = sdk.makeMarkets({ markets: btradeMarkets })
+        const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
+          const tradePairs = pairs[key as string]?.tokenList?.sort()
+          prev[key] = {
+            ...pairs[key as string],
+            tradePairs,
+          }
+          return prev
+        }, {})
+        if (!marketArray?.length) {
+          store.dispatch(
+            getBtradeMapStatus({
+              marketArray,
+              marketCoins,
+              marketMap,
+              tradeMap,
+            }),
+          )
+        }
+      }
+    })(_btradeMarkets)
 
     yield delay(1)
     store.dispatch(getTokenPrices(undefined))
@@ -159,13 +214,33 @@ const initConfig = function* <_R extends { [key: string]: any }>(
             marketRaw,
           }),
         )
+        store.dispatch(
+          getTokenMap({
+            tokensMap,
+            coinMap,
+            totalCoinMap,
+            idIndex,
+            addressIndex,
+            marketMap: markets,
+            pairs,
+            marketArr,
+            tokenArr,
+            disableWithdrawTokenList,
+            tokenListRaw,
+            disableWithdrawTokenListRaw,
+            marketRaw,
+          }),
+        )
+        // myLog(
+        //   "tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList update from server-side update"
+        // );
         store.dispatch(getAmmMap({ ammpools, ammpoolsRaw, chainId }))
         store.dispatch(getAmmActivityMap({ ammpools }))
       },
     )
   } else {
     ;[
-      { tokensMap: tokenMap, coinMap, totalCoinMap, idIndex, addressIndex, raw_data: tokenListRaw },
+      { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex, raw_data: tokenListRaw },
       { ammpools, raw_data: ammpoolsRaw },
       { pairs, marketArr, tokenArr, markets, raw_data: marketRaw },
       { disableWithdrawTokenList, raw_data: disableWithdrawTokenListRaw },
@@ -189,7 +264,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     )
     store.dispatch(
       getTokenMap({
-        tokenMap,
+        tokensMap,
         coinMap,
         totalCoinMap,
         idIndex,
@@ -225,6 +300,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       break
     case ENV_KEY.Earn.toLowerCase():
       store.dispatch(getDualMap(undefined))
+      defiAllAsync()
       yield all([take('dualMap/getDualMapStatus')])
       store.dispatch(getInvestTokenTypeMap(undefined))
       break
@@ -232,20 +308,21 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     default:
       store.dispatch(getRedPacketConfigs(undefined))
       store.dispatch(getNotify(undefined))
-      store.dispatch(getDefiMap(undefined))
-      store.dispatch(getDualMap(undefined))
       store.dispatch(getStakingMap(undefined))
+      store.dispatch(getDualMap(undefined))
+      store.dispatch(getDefiMap(undefined))
       store.dispatch(getBtradeMap(undefined))
+      store.dispatch(getExclusiveRedpacket(undefined))
       store.dispatch(getVaultMap(undefined))
-  store.dispatch(getExclusiveRedpacket(undefined))
-
+      defiAllAsync()
       yield all([
         take('defiMap/getDefiMapStatus'),
         take('dualMap/getDualMapStatus'),
-        // take('vaultMap/getVaultMgetVaultMapStatusapStatus'),
         take('stakingMap/getStakingMapStatus'),
       ])
       store.dispatch(getInvestTokenTypeMap(undefined))
+      yield take('vaultTickerMap/getVaultTickersStatus')
+      store.dispatch(getVaultTickers(undefined))
       break
   }
 

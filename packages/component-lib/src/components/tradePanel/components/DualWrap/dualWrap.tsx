@@ -41,6 +41,7 @@ export const DualWrap = <
   accStatus,
   isBeginnerMode,
   dualProducts,
+  toggle,
   ...rest
 }: DualWrapProps<T, I, DUAL> & {
   isBeginnerMode: boolean
@@ -80,9 +81,9 @@ export const DualWrap = <
       ? t('labelInvestMaxDual', {
           value: getValuePrecisionThousand(
             dualCalcData.maxSellAmount,
-            dualCalcData.sellToken.precision,
-            dualCalcData.sellToken.precision,
-            dualCalcData.sellToken.precision,
+            dualCalcData.sellToken?.precision,
+            dualCalcData.sellToken?.precision,
+            dualCalcData.sellToken?.precision,
             false,
             { floor: false, isAbbreviate: true },
           ),
@@ -92,8 +93,8 @@ export const DualWrap = <
     name: 'coinSell',
     isHideError: true,
     order: 'right' as any,
-    decimalsLimit: tokenSell.precision,
-    coinPrecision: tokenSell.precision,
+    decimalsLimit: tokenSell?.precision,
+    coinPrecision: tokenSell?.precision,
     inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
     coinMap: {},
     ...tokenSellProps,
@@ -186,16 +187,15 @@ export const DualWrap = <
         : EmptyValueTag,
     [dualCalcData],
   )
+  const calc =
+    (dualCalcData?.dualViewInfo?.expireTime -
+      (dualCalcData?.dualViewInfo?.enterTime ? dualCalcData?.dualViewInfo.enterTime : Date.now())) /
+    86400000
   const renewDuration =
     !dualCalcData?.coinSell?.renewDuration && dualCalcData?.dualViewInfo
-      ? Math.ceil(
-          // @ts-ignore
-          (dualCalcData?.dualViewInfo?.expireTime -
-            (dualCalcData?.dualViewInfo?.enterTime
-              ? dualCalcData?.dualViewInfo.enterTime
-              : Date.now())) /
-            86400000,
-        )
+      ? calc < 1
+        ? Math.ceil(calc)
+        : Math.floor(calc)
       : dualCalcData.coinSell?.renewDuration ?? 0
 
   return (
@@ -282,7 +282,8 @@ export const DualWrap = <
               greaterEarnView={greaterEarnView}
               displayMode={displayMode}
               isPriceEditable={false}
-              dualProducts={dualProducts}
+              dualProducts={dualProducts ?? []}
+              toggle={toggle}
               // getProduct={getDualProduct}
               onChange={(data) => {
                 onChangeEvent({

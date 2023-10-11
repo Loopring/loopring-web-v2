@@ -1,4 +1,4 @@
-import { useLeverageETHTrade } from '@loopring-web/core'
+import { useLeverageETHTrade, usePopup } from '@loopring-web/core'
 import { MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
@@ -41,7 +41,15 @@ export const TradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+  const styles = isMobile
+    ? { flex: 1, background: 'var(--color-box-third)' }
+    : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
+  // leverageETHAdvice
+  // console.log('leverageETHAdvice', leverageETHAdvice)
+  // setShowRETHStakignPopup={setShowRETHStakignPopup}
+  // setShowWSTETHStakignPopup={setShowWSTETHStakignPopup}
+  const { setShowLeverageETHPopup } = usePopup()
+
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (
@@ -56,6 +64,7 @@ export const TradePanel = ({
             isLeverageETH
             market={market}
             isJoin={isJoin}
+            setShowLeverageETHPopup={setShowLeverageETHPopup}
             type={leverageETHAdvice.project}
             title={t('labelLeverageETHStaking')}
             {...(deFiWrapProps as any)}

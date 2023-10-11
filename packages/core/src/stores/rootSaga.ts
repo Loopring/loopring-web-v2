@@ -17,8 +17,8 @@ import { investForks } from './invest'
 import { walletL2CollectionFork } from './walletL2Collection/saga'
 import { walletL2NFTCollectionFork } from './walletL2NFTCollection/saga'
 import { redPacketConfigsSaga } from './redPacket/saga'
-import { contractsForks } from './contacts/saga'
 import { exclusiveRedPacketSaga } from './targetRedpackt/saga'
+import { contractsForks } from './contacts/saga'
 import { vaultLayer2Fork } from './vaultLayer2/saga'
 
 function* mySaga() {
@@ -41,6 +41,7 @@ function* mySaga() {
     ...amountForks,
     ...notifyForks,
     ...layer1ActionHistoryForks,
+    ...exclusiveRedPacketSaga,
     ...contractsForks,
     ...exclusiveRedPacketSaga,
     ...vaultLayer2Fork,

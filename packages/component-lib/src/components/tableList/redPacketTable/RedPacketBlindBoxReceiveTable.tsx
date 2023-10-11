@@ -7,6 +7,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  hexToRGB,
   myLog,
   RowConfig,
   TokenType,
@@ -25,7 +26,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { ColumnCoinDeep } from '../assetsTable'
 import TextTooltip from './textTooltip'
 import { useTheme } from '@emotion/react'
-import { redpacketService } from '@loopring-web/core'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -82,8 +82,9 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       onItemClick,
       showActionableRecords,
       isUnclaimed,
+      page,
+      setPage,
     } = props
-    const [page, setPage] = React.useState(1)
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
         offset: (page - 1) * (pagination?.pageSize ?? 10),
@@ -115,11 +116,23 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
         updateData.cancel()
       }
     }, [showActionableRecords])
+    const exclusiveTag = (
+      <Typography
+        marginLeft={0.5}
+        borderRadius={1}
+        paddingX={0.5}
+        bgcolor={hexToRGB(theme.colorBase.warning, 0.5)}
+        color={'var(--color-warning)'}
+      >
+        {t('labelRedPacketExclusiveTag', { ns: 'common' })}
+      </Typography>
+    )
     const columnModeTransaction = [
       {
         key: 'Token',
         name: t('labelToken'),
         formatter: ({ row }: FormatterProps<R>) => {
+          const isTarget = row.rawData.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
           if (row.rawData.luckyToken.isNft) {
             const metadata = row.rawData.luckyToken.nftTokenInfo?.metadata
             return (
@@ -153,7 +166,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
                 )}
                 <Typography
                   color={'inherit'}
-                  flex={1}
                   display={'inline-block'}
                   alignItems={'center'}
                   paddingLeft={1}
@@ -163,17 +175,21 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
                 >
                   {metadata?.base?.name ?? 'NFT'}
                 </Typography>
+                {isTarget && exclusiveTag}
               </Box>
             )
           } else {
             const _token = row.token as CoinInfo<any> & { type: TokenType }
             return (
-              <ColumnCoinDeep
-                token={{
-                  ..._token,
-                  name: '', // for not displaying name here
-                }}
-              />
+              <Box height={'100%'} display={'flex'} alignItems={'center'}>
+                <ColumnCoinDeep
+                  token={{
+                    ..._token,
+                    name: '', // for not displaying name here
+                  }}
+                />
+                {isTarget && exclusiveTag}
+              </Box>
             )
           }
         },
@@ -237,7 +253,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
                   </>
                 }
               >
-                <span style={{ borderBottom: '1px dotted', marginRight: `${theme.unit * 2}px` }}>
+                <span style={{ borderBottom: '1px dotted' }}>
                   {t('labelRedPacketOpen', { ns: 'common' })}
                 </span>
               </Tooltip>
@@ -406,20 +422,6 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-
-    const onRefresh = React.useCallback(() => {
-      updateData({ page })
-    }, [page])
-
-    const subject = React.useMemo(() => redpacketService.onRefresh(), [])
-    React.useEffect(() => {
-      const subscription = subject.subscribe(() => {
-        onRefresh()
-      })
-      return () => {
-        subscription.unsubscribe()
-      }
-    }, [subject])
 
     return (
       <TableWrapperStyled>

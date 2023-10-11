@@ -1,4 +1,4 @@
-import { confirmation, useStakeTradeJOIN, useToast } from '@loopring-web/core'
+import { confirmation, usePopup, useStakeTradeJOIN, useToast } from '@loopring-web/core'
 
 import {
   Button,
@@ -11,13 +11,34 @@ import {
 } from '@loopring-web/component-lib'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
-import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { useTranslation } from 'react-i18next'
+import {
+  BackIcon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  SatkingLogo,
+  SoursURL,
+  TOAST_TIME,
+  UpIcon,
+  hexToRGB,
+} from '@loopring-web/common-resources'
+import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
-import { ErrorPage } from '@loopring-web/web-bridge/src/pages/ErrorPage'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
+import styled from '@emotion/styled'
+import { ErrorPage } from '../../ErrorPage'
+
+const ButtonStyled = styled(Button)`
+  background-color: var(--color-button-outlined);
+  color: var(--color-text-primary);
+  :hover {
+    background-color: var(--color-button-outlined);
+    ::before {
+      border-radius: 4px;
+    }
+  }
+`
 
 export const StackTradePanel = ({
   setConfirmedLRCStakeInvestInvest,
@@ -40,11 +61,14 @@ export const StackTradePanel = ({
 
   const { isMobile } = useSettings()
 
-  const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
+  const styles = isMobile ? { flex: 1 } : { width: '500px' }
   React.useEffect(() => {
     setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
   }, [])
   const theme = useTheme()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { setShowLRCStakignPopup } = usePopup()
   return (
     <>
       <Toast
@@ -56,63 +80,64 @@ export const StackTradePanel = ({
       />
       {toggle?.LRCStackInvest.enable ? (
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-          {false && (
-            <Box
-              marginBottom={2}
-              display={'flex'}
-              justifyContent={'space-between'}
-              alignItems={isMobile ? 'left' : 'center'}
-              flexDirection={isMobile ? 'column' : 'row'}
-            >
-              <Button
-                startIcon={<BackIcon fontSize={'small'} />}
-                variant={'text'}
-                size={'medium'}
-                sx={
-                  isMobile
-                    ? {
-                        color: 'var(--color-text-secondary)',
-                        justifyContent: 'left',
-                      }
-                    : { color: 'var(--color-text-secondary)' }
-                }
-                color={'inherit'}
-                onClick={() => history.push('/invest/overview')}
-              >
-                {t('labelInvestLRCStakingTitle')}
-              </Button>
-              <Button
-                variant={'outlined'}
-                size={'medium'}
-                onClick={() => history.push('/invest/balance/sideStake')}
-                sx={{ color: 'var(--color-text-secondary)' }}
-              >
-                {t('labelMyInvestLRCStaking')}
-              </Button>
-            </Box>
-          )}
           <MaxWidthContainer
             display={'flex'}
-            justifyContent={'space-between'}
             background={containerColors[0]}
-            height={34 * theme.unit}
             alignItems={'center'}
+            flexDirection={'column'}
+            containerProps={{
+              borderBottom: `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
+            }}
           >
-            <Box paddingY={7}>
-              <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-                {t("labelInvestLRCTitle")}
-              </Typography>
-              <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
-                {t("labelInvestLRCDes")}
-              </Typography>
-              <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-                {t("labelMyInvestLRCStaking")}
+            <Box
+              width={'100%'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyItems={'center'}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+              height={6 * theme.unit}
+            >
+              <Button
+                startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
+                variant={'text'}
+                size={'medium'}
+                sx={{ color: 'var(--color-text-primary)' }}
+                color={'inherit'}
+                onClick={() => history.push(`/invest/overview`)}
+              >
+                {t('labelBack')}
+              </Button>
+              <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+                {t('labelMyInvestLRCStaking')}{' '}
+                {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
               </Button>
             </Box>
-            <SatkingLogo />
-            {/* <img src={SoursURL + 'images/earn-staking-title.svg'} /> */}
           </MaxWidthContainer>
-          <MaxWidthContainer minHeight={'80vh'} background={containerColors[1]} paddingY={5} >
+          <MaxWidthContainer>
+            <Typography
+              marginTop={2}
+              borderRadius={2}
+              bgcolor={'var(--color-box-third)'}
+              paddingY={1.5}
+              paddingX={2}
+            >
+              <Trans
+                i18nKey={'labelLRCStakeRiskDes'}
+                tOptions={{
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                }}
+              >
+                The staked LRC is locked in Loopring L2 and won't be able to used for other purpose
+                although it can be redeemed any time; while if the staking is redeemed before 90
+                days, the accumulated reward will be dismissed.
+              </Trans>
+            </Typography>
+          </MaxWidthContainer>
+          <MaxWidthContainer background={containerColors[0]} paddingY={3}>
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}
@@ -122,13 +147,22 @@ export const StackTradePanel = ({
             >
               {stakeWrapProps.deFiSideCalcData ? (
                 <Box
-                  className={'hasLinerBg'}
                   display={'flex'}
                   style={styles}
                   justifyContent={'center'}
-                  padding={5 / 2}
+                  paddingX={3}
+                  paddingTop={3}
+                  paddingBottom={3}
+                  bgcolor={'var(--color-box-third)'}
+                  border={'1px solid var(--color-border)'}
+                  borderRadius={2}
                 >
-                  <DeFiSideWrap isJoin={isJoin} symbol={'LRC'} {...(stakeWrapProps as any)} />
+                  <DeFiSideWrap
+                    setShowLRCStakignPopup={setShowLRCStakignPopup}
+                    isJoin={isJoin}
+                    symbol={'LRC'}
+                    {...(stakeWrapProps as any)}
+                  />
                 </Box>
               ) : (
                 <LoadingBlock />

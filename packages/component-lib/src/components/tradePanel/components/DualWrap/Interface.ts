@@ -5,6 +5,7 @@ import {
   DualCurrentPrice,
   DualViewBase,
   DualViewInfo,
+  DualViewType,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { TokenInfo } from '@loopring-web/loopring-sdk'
@@ -48,16 +49,20 @@ export type DualWrapProps<T, I, DUAL> = {
   btnStatus?: keyof typeof TradeBtnStatus | undefined
   accStatus?: AccountStatus
   dualProducts?: DualViewInfo[]
+  toggle: { enable: boolean; reason?: string | undefined }
+  viewType?: DualViewType
 }
 
 export type DualDetailProps<
   R = { isRenew: boolean; renewTargetPrice?: string; renewDuration?: number },
 > = DualDetailType & {
   coinSell: R
+  btnConfirm?: any
   onChange: (props: R) => void
   isPriceEditable: boolean
   dualProducts: DualViewInfo[]
   getProduct?: () => void
   displayMode?: DualDisplayMode
   tokenMap: any
+  toggle: { enable: boolean; reason?: string }
 }

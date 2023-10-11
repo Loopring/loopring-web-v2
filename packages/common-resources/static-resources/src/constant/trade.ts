@@ -7,10 +7,11 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
+  Ticker,
   WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { MarketType } from './market'
+import { FloatTag, MarketType } from './market'
 import { VendorProviders } from './vendor'
 
 export enum DeFiChgType {
@@ -196,6 +197,8 @@ export const REDPACKET_ORDER_NFT_LIMIT = 20000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 1000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
+
+export const VAULT_MAKET_REFRESH = 60000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
   image: 'image',
@@ -463,7 +466,8 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-  stepLength: string
+  stepLength?: string
+  quote?: string
   __raw__?: any
 }
 
@@ -691,6 +695,8 @@ export type RedPacketOrderData<I> = {
     redpacketHash: string
     addressListString: string
     popupChecked: boolean
+    maxSendCount: number
+    sentAddresses?: string[]
   }
   showNFT: boolean
 } & Partial<IBData<I>> &
@@ -729,7 +735,6 @@ export type AmmHistoryItem = {
   close: number
   timeStamp: number
 }
-
 export enum LocalStorageConfigKey {
   tokenMap = 'tokenMap',
   ammpools = 'ammpools',
@@ -740,6 +745,37 @@ export enum LocalStorageConfigKey {
   exchangeInfo = 'exchangeInfo',
   disableWithdrawTokenList = 'disableWithdrawTokenList',
 }
+
+export enum DualStep {
+  ChooseType = 'ChooseType',
+  ShowBase = 'ShowBase',
+  ShowSellBuy = 'ShowSellBuy',
+  ShowQuote = 'ShowQuote',
+  ShowList = 'ShowList',
+}
+export enum DualViewType {
+  DualGain = 'DualGain',
+  DualDip = 'DualDip',
+  DualBegin = 'DualBegin',
+  All = 'All',
+}
+export const DualGain = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_BASE' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_BASE' },
+]
+export const DualDip = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_CURRENCY' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_CURRENCY' },
+]
+export const DualBegin = [
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualBeginnerStep1Title' },
+  { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
+]
 
 export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
   sdk.VaultMarket,
@@ -782,3 +818,10 @@ export enum AmmPanelType {
   Join = 0,
   Exit = 1,
 }
+
+export enum DualInvestConfirmType {
+  USDCOnly = 'USDCOnly',
+  all = 'all',
+}
+
+export type MarketTableRawDataItem = sdk.DatacenterTokenQuote & any

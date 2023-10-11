@@ -17,6 +17,7 @@ import {
   getShortAddr,
   MoreIcon,
   TOAST_TIME,
+  ContactType,
 } from '@loopring-web/common-resources'
 import { EditContact } from './add'
 import { Delete } from './delete'
@@ -27,9 +28,7 @@ import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
-import { ContactType } from '@loopring-web/core'
 import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
-import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 const ContactPageStyle = styled(Box)`
   background: var(--color-box-third);

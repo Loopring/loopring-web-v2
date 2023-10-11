@@ -110,7 +110,7 @@ export async function activateAccount({
       const response = await LoopringAPI?.userAPI?.updateAccount(
         {
           request,
-          web3: connectProvides.usedWeb3,
+          web3: connectProvides.usedWeb3 as any,
           chainId: system.chainId as any,
           walletType: (ConnectProviders[connectName] ??
             connectName) as unknown as sdk.ConnectorNames,

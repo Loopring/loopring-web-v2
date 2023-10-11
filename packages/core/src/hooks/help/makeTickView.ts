@@ -2,7 +2,8 @@ import { LoopringMap, TickerData, toBig } from '@loopring-web/loopring-sdk'
 import { store } from '../../index'
 import { volumeToCount } from './volumeToCount'
 import { TickerMap } from '../../stores'
-import { Ticker } from '@loopring-web/common-resources'
+import { getValuePrecisionThousand, Ticker, TickerNewMap } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export const makeTickView = (tick: TickerData) => {
   const { tokenPrices } = store.getState().tokenPrices
@@ -72,4 +73,46 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
     }
     return prev
   }, {} as TickerMap<R>)
+}
+
+export const makeTokenTickerView = ({ item }: { item: sdk.DatacenterTokenInfoSimple }) => {
+  const {
+    // system: { forexMap },
+    tokenMap: { tokenMap },
+  } = store.getState()
+  const tokenInfo = tokenMap[item.symbol]
+
+  const volume = getValuePrecisionThousand(
+    item.volume24H,
+    tokenInfo.precision,
+    tokenInfo.precision,
+    undefined,
+  ) //volumeToCount(item.symbol, item.volume24H)
+  const priceU = sdk.toBig(item.volume24H ?? 0).times(item.price ?? 0)
+  const change = getValuePrecisionThousand(item.percentChange24H ?? 0, 2, 2, 2)
+  // @ts-ignore
+  return {
+    ...item,
+    timeUnit: '24h',
+    volume,
+    priceU,
+    change,
+    __rawTicker__: item,
+    rawData: item,
+  } as unknown as Ticker
+}
+export const makeTokenTickerMap = <R extends { [key: string]: any }>({
+  rawData,
+}: {
+  rawData: sdk.DatacenterTokenInfoSimple[]
+}): TickerNewMap<R> => {
+  // const tickerMap = {}
+  return rawData.reduce((prev: TickerNewMap<R>, item) => {
+    const key = item.symbol as unknown as R
+    if (item && item.symbol && item.price) {
+      // @ts-ignore
+      prev[key] = item
+    }
+    return prev
+  }, {} as TickerNewMap<R>)
 }

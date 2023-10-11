@@ -224,8 +224,10 @@ export const MuiButton = ({
             left: 0,
             right: 0,
             bottom: 0,
+            borderRadius: pxToRem(8),
           },
         },
+        borderRadius: pxToRem(8),
         '&.Mui-disabled': {
           backgroundColor: colorBase.defaultDisable,
           color: colorBase.textDisable,

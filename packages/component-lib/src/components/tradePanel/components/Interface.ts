@@ -24,6 +24,7 @@ import {
   EXCHANGE_TYPE,
   FeeInfo,
   GET_IPFS_STRING,
+  LuckyRedPacketItem,
   NFTWholeINFO,
   RedPacketOrderType,
   RequireOne,
@@ -34,8 +35,9 @@ import {
   WalletMap,
   WithdrawType,
   WithdrawTypes,
+  ContactType,
+  RedPacketConfig,
 } from '@loopring-web/common-resources'
-import { ContactType } from '@loopring-web/core'
 
 export enum RedPacketStep {
   TradeType = 0,
@@ -112,6 +114,7 @@ export type TransferExtendProps<T, I, C> = {
   contact?: { address: string; name: string; addressType: typeof sdk.AddressType }
   isFromContact?: boolean
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
+  // contacts?: { address: string; name: string; addressType: typeof sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   TransferInfoProps<C>
 
@@ -658,6 +661,8 @@ export type CreateRedPacketExtendsProps<T, F> = {
   onCloseRedpacketPop: () => void
   contacts?: ContactType[]
   isWhiteListed?: boolean
+  showExclusiveOption?: boolean
+  redPacketConfig: RedPacketConfig
 } & CreateRedPacketInfoProps<F>
 
 export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPacketExtendsProps<
@@ -674,17 +679,19 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void
     activeStep: RedPacketStep
     tokenMap: { [key: string]: sdk.TokenInfo }
+    idIndex: { [key: string]: string }
     backToScope: () => void
     onClickNext: () => void
     onClickBack: () => void
     showNFT: boolean
     onChangeTradeType?: (tradeType: RedPacketOrderType) => void
+    onSelecteValue?: (item: LuckyRedPacketItem) => void
   }
 
 export type TargetRedpacktSelectStepProps = {
   onClickCreateNew: () => void
   targetRedPackets: sdk.LuckyTokenItemForReceive[]
-  onClickExclusiveRedpacket: (hash: string) => void
+  onClickExclusiveRedpacket: (info: { hash: string; remainCount: number }) => void
   onClickViewDetail: (hash: string) => void
   onCloseRedpacketPop: () => void
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
@@ -704,6 +711,8 @@ export type TargetRedpacktInputAddressStepProps = {
   popUpOptionDisabled: boolean
   maximumTargetsLength: number
   onClickBack: () => void
+  sentAddresses?: string[]
+  clearInput: () => void
 }
 
 /**

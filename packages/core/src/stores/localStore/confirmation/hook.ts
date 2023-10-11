@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../index'
-import { Confirmation, DualInvestConfirmType } from './interface'
+import { Confirmation } from './interface'
 
 import {
   confirm,
@@ -14,7 +14,10 @@ import {
   confirmDualInvestV2,
   confirmDualAutoInvest,
   confirmedLeverageETHInvest,
+  confirmDualDipInvest,
+  confirmDualGainInvest,
 } from './reducer'
+import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
 export const useConfirmation = (): {
   confirmation: Confirmation
@@ -26,6 +29,8 @@ export const useConfirmation = (): {
   confirmDualAutoInvest: () => void
   confirmedBtradeSwap: () => void
   confirmedLeverageETHInvest: () => void
+  confirmDualDipInvest: () => void
+  confirmDualGainInvest: () => void
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation,
@@ -47,9 +52,6 @@ export const useConfirmation = (): {
       },
       [dispatch],
     ),
-    confirmDualAutoInvest: React.useCallback(() => {
-      dispatch(confirmDualAutoInvest())
-    }, [dispatch]),
     confirmedRETHDefiInvest: React.useCallback(() => {
       dispatch(confirmedRETHDefiInvest(undefined))
     }, [dispatch]),
@@ -67,6 +69,12 @@ export const useConfirmation = (): {
     }, [dispatch]),
     confirmDualAutoInvest: React.useCallback(() => {
       dispatch(confirmDualAutoInvest(undefined))
+    }, [dispatch]),
+    confirmDualDipInvest: React.useCallback(() => {
+      dispatch(confirmDualDipInvest(undefined))
+    }, [dispatch]),
+    confirmDualGainInvest: React.useCallback(() => {
+      dispatch(confirmDualGainInvest(undefined))
     }, [dispatch]),
   }
 }

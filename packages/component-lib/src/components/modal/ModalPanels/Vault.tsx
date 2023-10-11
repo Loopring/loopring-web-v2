@@ -21,7 +21,7 @@ import { useSettings } from '../../../stores'
 
 const TradeDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
-  const { percentage, symbol, vSymbol, sum } = props?.info ?? {}
+  const { percentage, symbol, vSymbol, sum, status } = props?.info ?? {}
   return (
     <Box
       justifySelf={'stretch'}
@@ -52,10 +52,10 @@ const TradeDes2 = (props: PanelProps) => {
         component={'span'}
       >
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultStatus')}
+          {props.t('labelVaultTradeStatus')}
         </Typography>
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t('labelVaultStatusSuccess', { percentage })}
+          {props.t('labelVaultTradeStatus', { percentage })}
         </Typography>
       </Typography>
 
@@ -151,7 +151,7 @@ export const VaultTrade_In_Progress = (props: PanelProps) => {
 }
 const JoinDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
-  const { percentage, symbol, vSymbol, sum, amount } = props?.info ?? {}
+  const { percentage, symbol, vSymbol, sum, amount, status } = props?.info ?? {}
   return (
     <Box
       justifySelf={'stretch'}
@@ -185,7 +185,7 @@ const JoinDes2 = (props: PanelProps) => {
           {props.t('labelVaultStatus')}
         </Typography>
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t('labelVaultStatusSuccess', { percentage })}
+          {props.t(`labelVaultJoinStatus${status}`, { percentage })}
         </Typography>
       </Typography>
 
@@ -264,7 +264,12 @@ export const VaultJoin_Failed = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    describe2: props.info && <JoinDes2 {...props} />,
+    //TODO
+    describe2: (
+      <>
+        {props.info && <JoinDes2 {...props} />} {props.error && error?.message}
+      </>
+    ),
   }
   return <VaultJoinBase title={props.info?.title} {...propsPatch} {...props} />
 }

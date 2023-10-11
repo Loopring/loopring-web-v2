@@ -18,14 +18,18 @@ import {
   RedPacketOrderType,
   EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST,
   EXCLUSIVE_REDPACKET_ORDER_LIMIT,
+  MapChainId,
+  isAddress,
 } from '@loopring-web/common-resources'
-import { store, useAccount, useModalData, useSystem, useTokenMap } from '../../stores'
+import { store, useAccount, useModalData, useNotify, useSystem, useTokenMap } from '../../stores'
 import {
   AccountStep,
   CreateRedPacketProps,
   RedPacketViewStep,
   SwitchData,
   useOpenModals,
+  useSettings,
+  useToggle,
 } from '@loopring-web/component-lib'
 import React, { useCallback } from 'react'
 import { makeWalletLayer2 } from '../help'
@@ -34,7 +38,7 @@ import { useBtnStatus } from '../common'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../api_wrapper'
 import { ConnectProvidersSignMap, connectProvides } from '@loopring-web/web3-provider'
-import { getTimestampDaysLater, isAddress } from '../../utils'
+import { getTimestampDaysLater } from '../../utils'
 import { DAYS } from '../../defs'
 import Web3 from 'web3'
 import { isAccActivated } from './useCheckAccStatus'
@@ -42,7 +46,29 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useRedPacketConfig } from '../../stores/redPacket'
 import { useHistory, useLocation } from 'react-router-dom'
 import moment from 'moment'
-
+const checkPermission = (
+  dexToggle: any,
+  info: { network: string; functionName: string; accAddress: string },
+) => {
+  const whiteList = dexToggle.whiteList
+  const { functionName, network, accAddress } = info
+  const toogle = dexToggle[functionName]
+  if (toogle.enable) {
+    return true
+  } else if (!toogle.enable && toogle.reason === 'no view') {
+    const found =
+      whiteList &&
+      whiteList[network].find((item: any) => item.superUserFunction.includes('redpacket_exclusive'))
+    return (
+      found &&
+      found.superUserAddress.find(
+        (addr) => addr.toLocaleLowerCase() === accAddress.toLocaleLowerCase(),
+      )
+    )
+  } else {
+    return false
+  }
+}
 export const useCreateRedPacket = <
   T extends RedPacketOrderData<I>,
   I,
@@ -60,6 +86,7 @@ export const useCreateRedPacket = <
 } => {
   const { exchangeInfo, chainId } = useSystem()
   const { tokenMap, totalCoinMap, idIndex } = useTokenMap()
+  const { notifyMap } = useNotify()
   // const tradeType
   const {
     allowTrade: { transfer: transferEnabale },
@@ -74,7 +101,7 @@ export const useCreateRedPacket = <
   const [selectNFT, setSelectNFT] = React.useState<NFT | undefined>(undefined)
 
   const { redPacketConfigs } = useRedPacketConfig()
-  const { redPacketOrder, updateRedPacketOrder, resetRedPacketOrder } = useModalData()
+  const { redPacketOrder, updateRedPacketOrder } = useModalData()
   const { account, status: accountStatus } = useAccount()
   const { checkHWAddr, updateHW } = useWalletInfo()
   const isToken =
@@ -304,7 +331,7 @@ export const useCreateRedPacket = <
           .plus(feeToken.tokenId === tradeToken.tokenId ? fee : '0')
           .gt(balance)
         const eachValue = sdk.toBig(_tradeData.eachValue ?? 0).times('1e' + tradeToken.decimals)
-        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts.minimum)
+        tooSmall = eachValue.lt(tradeToken.luckyTokenAmounts?.minimum ?? 0)
         tooLarge = tradeValue.gt(tradeToken.luckyTokenAmounts.maximum)
       } else {
         balance = redPacketOrder.balance ?? 0
@@ -370,20 +397,21 @@ export const useCreateRedPacket = <
         } else if (tooSmall) {
           setLabelAndParams(
             'labelRedPacketsMin',
-            isToken && tradeToken
-              ? {
-                  value: getValuePrecisionThousand(
-                    sdk
-                      .toBig(tradeToken.luckyTokenAmounts.minimum ?? 0)
-                      .div('1e' + tradeToken.decimals),
-                    tradeToken.precision,
-                    tradeToken.precision,
-                    tradeToken.precision,
-                    false,
-                    { floor: false, isAbbreviate: true },
-                  ),
-                  symbol: tradeToken.symbol,
-                }
+            isToken
+              ? tradeToken &&
+                  tradeToken.decimals && {
+                    value: getValuePrecisionThousand(
+                      sdk
+                        .toBig(tradeToken.luckyTokenAmounts?.minimum ?? '0')
+                        .div('1e' + tradeToken.decimals),
+                      tradeToken.precision,
+                      tradeToken.precision,
+                      tradeToken.precision,
+                      false,
+                      { floor: false, isAbbreviate: true },
+                    ),
+                    symbol: tradeToken.symbol,
+                  }
               : {
                   value:
                     redPacketOrder.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
@@ -515,18 +543,15 @@ export const useCreateRedPacket = <
           await sdk.sleep(TOAST_TIME)
           if (redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET) {
             setShowAccount({
-              isShow: true,
-              step: AccountStep.RedPacketSend_Success,
-              info: {
-                scope: request.type.scope,
-                hash: Explorer + `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
-              },
+              isShow: false,
             })
             handleOnDataChange({
               target: {
                 redpacketHash: (response as sdk.TX_HASH_API)?.hash,
+                maxSendCount: request.numbers,
               },
             } as any)
+            getTargetRedpackets()
           } else {
             setShowAccount({
               isShow: true,
@@ -653,6 +678,25 @@ export const useCreateRedPacket = <
       walletLayer2Service.sendUserUpdate()
     }
   }, [isShow])
+  React.useEffect(() => {
+    ;(async () => {
+      if (redPacketOrder.target?.redpacketHash) {
+        const response = await LoopringAPI.luckTokenAPI?.getLuckTokenDetail(
+          {
+            hash: redPacketOrder.target?.redpacketHash,
+          },
+          account.apiKey,
+        )
+        const targets = (response?.detail as any).targets as string[]
+        handleOnDataChange({
+          target: {
+            ...redPacketOrder.target,
+            sentAddresses: targets,
+          },
+        } as any)
+      }
+    })()
+  }, [redPacketOrder.target?.redpacketHash])
   React.useEffect(() => {
     if (isShow) {
       checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
@@ -794,9 +838,12 @@ export const useCreateRedPacket = <
     const redPacketOrder = store.getState()._router_modalData.redPacketOrder as T
 
     const getValidAddresses = (input: string) => {
-      return input.split(';').map(str => str.trim()).filter((str) => {
-        return isAddress(str.trim())
-      })
+      return input
+        .split(';')
+        .map((str) => str.trim())
+        .filter((str) => {
+          return isAddress(str.trim())
+        })
     }
 
     if (
@@ -815,11 +862,12 @@ export const useCreateRedPacket = <
           {
             claimer: getValidAddresses(redPacketOrder.target?.addressListString),
             hash: redPacketOrder.target?.redpacketHash,
-            notifyType:
-              redPacketOrder.target?.popupChecked === undefined ||
-              redPacketOrder.target?.popupChecked
+            notifyType: isWhiteListed
+              ? redPacketOrder.target?.popupChecked === undefined ||
+                redPacketOrder.target?.popupChecked
                 ? 1
-                : 0,
+                : 0
+              : 0,
           },
           account.eddsaKey.sk,
           account.apiKey,
@@ -830,7 +878,11 @@ export const useCreateRedPacket = <
         setShowAccount({
           isShow: true,
           step: AccountStep.RedPacketSend_Success,
+          info: {
+            scope: sdk.LuckyTokenViewType.TARGET,
+          },
         })
+        getTargetRedpackets()
       } catch (e: any) {
         setShowAccount({
           isShow: true,
@@ -874,9 +926,7 @@ export const useCreateRedPacket = <
     },
     [walletMap],
   )
-  const [isWhiteListed, setIsWhiteListed] = React.useState(
-    undefined as undefined | boolean
-  )
+  const [isWhiteListed, setIsWhiteListed] = React.useState(undefined as undefined | boolean)
   const redpacketNumberLimit =
     redPacketOrder.type?.scope === sdk.LuckyTokenViewType.TARGET
       ? isWhiteListed
@@ -976,44 +1026,48 @@ export const useCreateRedPacket = <
     undefined as sdk.LuckTokenClaimDetail | undefined,
   )
   const tokenInfo = popRedPacket && tokenMap[idIndex[popRedPacket.luckyToken.tokenId]]
-  
-  const popRedPacketAmountStr = popRedPacket 
-  ? (popRedPacket.luckyToken.isNft 
-    ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
-    : tokenInfo && getValuePrecisionThousand(
-      sdk
-        .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
-        .div('1e' + tokenInfo!.decimals),
-      tokenInfo!.precision,
-      tokenInfo!.precision,
-      tokenInfo!.precision,
-      false,
-    ) + ' ' + tokenInfo?.symbol
-  )
-  : undefined
-  
 
+  const popRedPacketAmountStr = popRedPacket
+    ? popRedPacket.luckyToken.isNft
+      ? `${popRedPacket.luckyToken.tokenAmount.totalAmount} NFTs`
+      : tokenInfo &&
+        getValuePrecisionThousand(
+          sdk
+            .toBig(popRedPacket.luckyToken.tokenAmount.totalAmount)
+            .div('1e' + tokenInfo!.decimals),
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          tokenInfo!.precision,
+          false,
+        ) +
+          ' ' +
+          tokenInfo?.symbol
+    : undefined
+
+  const getTargetRedpackets = async () => {
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
+      {
+        senderId: account.accountId,
+        scopes: '2',
+        modes: '0,1,2',
+        partitions: '0,1',
+        statuses: '2',
+        official: false,
+        offset: 0,
+        limit: 100,
+        isEnough: true,
+      } as any,
+      account.apiKey,
+    )
+    setTargetRedPackets(response?.list ?? [])
+  }
   React.useEffect(() => {
-    ;(async () => {
-      const response = await LoopringAPI.luckTokenAPI?.getLuckTokenLuckyTokens(
-        {
-          senderId: account.accountId,
-          scopes: '2',
-          modes: '0,1,2',
-          partitions: '0,1',
-          statuses: '2',
-          official: false,
-          offset: 0,
-          limit: 50,
-        } as any,
-        account.apiKey,
-      )
-      setTargetRedPackets(response ? response?.list : [])
-    })()
+    getTargetRedpackets()
     ;(async () => {
       const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
-      const found = (response?.raw_data as any)
-        .find(item => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase())
+      const found = (response?.raw_data as any).find(
+        (item) => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase(),
+      )
       setIsWhiteListed(found ? true : false)
     })()
   }, [])
@@ -1030,8 +1084,18 @@ export const useCreateRedPacket = <
   const onCloseRedpacketPop = React.useCallback(async () => {
     setPopRedPacket(undefined)
   }, [])
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { toggle } = useToggle()
+
+  const showExclusiveOption = checkPermission(toggle, {
+    accAddress: account.accAddress,
+    network,
+    functionName: 'redpacket_exclusive',
+  })
 
   const createRedPacketProps: CreateRedPacketProps<T, I, F> = {
+    redPacketConfig: notifyMap?.redPacket ?? {},
     tradeType: redPacketOrder.tradeType,
     chargeFeeTokenList,
     onCreateRedPacketClick,
@@ -1042,6 +1106,7 @@ export const useCreateRedPacket = <
     walletMap,
     coinMap: totalCoinMap,
     tokenMap,
+    idIndex,
     minimum,
     maximum,
     feeInfo: redPacketOrder.fee ?? feeInfo,
@@ -1073,7 +1138,8 @@ export const useCreateRedPacket = <
     popRedPacketAmountStr,
     onClickViewTargetDetail,
     onCloseRedpacketPop,
-    isWhiteListed
+    isWhiteListed,
+    showExclusiveOption,
   } as unknown as CreateRedPacketProps<T, I, F, NFT>
 
   return { createRedPacketProps, retryBtn }

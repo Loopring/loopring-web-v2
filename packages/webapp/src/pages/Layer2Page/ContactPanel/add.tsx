@@ -21,11 +21,11 @@ import {
   TradeBtnStatus,
   UIERROR_CODE,
   WALLET_TYPE,
+  ContactType,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import {
   addressToExWalletMapFn,
-  ContactType,
   exWalletToAddressMapFn,
   LoopringAPI,
   store,
@@ -89,11 +89,9 @@ export const useContactAdd = ({
       const item = HEBAO_CONTRACT_MAP.find(
         (item) => item[0] === loopringSmartWalletVersion?.version,
       )
-      return item
-        ? item[1]
-        : /V2_/.test(loopringSmartWalletVersion?.version ?? '')
-        ? 2002
-        : undefined
+      return (
+        item ? item[1] : /V2_/.test(loopringSmartWalletVersion?.version ?? '') ? 2002 : undefined
+      ) as any
     } else if (isContractAddress) {
       return sdk.AddressType.CONTRACT
     } else if (selectedAddressType) {
@@ -166,7 +164,6 @@ export const useContactAdd = ({
   }
 
   const { defaultNetwork } = useSettings()
-  // {contactAddress: address, contactName: name, addressType}: ContactType
 
   const onSubmit = React.useCallback(async () => {
     setLoadingBtn()

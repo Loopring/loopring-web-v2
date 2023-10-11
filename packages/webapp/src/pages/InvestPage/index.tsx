@@ -19,6 +19,7 @@ import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
+import styled from '@emotion/styled'
 
 export enum InvestType {
   MyBalance = 0,
@@ -29,8 +30,16 @@ export enum InvestType {
   Stack = 5,
   LeverageETH = 6,
 }
-
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
+const BoxStyled = styled(Box)`
+  display: flex;
+  justify-content: center;
+  @media only screen and (max-width: 1200px) {
+    .inner-box {
+      width: 100%;
+    }
+  }
+`
 export const MaxWidthContainer = (
   props: {
     children: React.ReactNode
@@ -40,19 +49,20 @@ export const MaxWidthContainer = (
 ) => {
   const { containerProps, children, background, sx, ...otherProps } = props
   return (
-    <Box sx={{ background }} display={'flex'} justifyContent={'center'} {...containerProps}>
+    <BoxStyled sx={{ background, ...containerProps?.sx }} {...containerProps}>
       <Box
         sx={{
           width: '1200px',
           maxWidth: '100%',
           ...sx,
         }}
+        className={'inner-box'}
         paddingX={3}
         {...otherProps}
       >
         {children}
       </Box>
-    </Box>
+    </BoxStyled>
   )
 }
 export const InvestRouter = [
@@ -133,28 +143,17 @@ export const DefiTitle = () => {
 
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
   let match: any = useRouteMatch('/invest/:item?')
-  const history = useHistory()
-  const {
-    confirmDualInvest: confirmDualInvestFun,
-    confirmedLRCStakeInvest: confirmedLRCInvestFun,
-  } = confirmation.useConfirmation()
+  const { confirmedLRCStakeInvest: confirmedLRCInvestFun } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
 
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState<undefined | string | false>(
-    undefined,
-  )
   const {
     showLRCStakignPopup: confirmedLRCStakeInvest,
     setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
     confirmationNeeded,
   } = usePopup()
 
-  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false)
-  const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
-    setShowBeginnerModeHelp(show)
-  }, [])
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
       ? InvestType[match?.params?.item]
@@ -195,7 +194,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         setIsShowTab(true)
         return
     }
-  }, [match?.params.item])
+  }, [match?.params?.item])
 
   return (
     <Box flex={1} flexDirection={'column'} display={'flex'}>
@@ -203,12 +202,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
-        {tabIndex === InvestType.Dual && (
-          <DualListPanel
-            showBeginnerModeHelp={showBeginnerModeHelp}
-            setConfirmDualInvest={setConfirmDualInvest}
-          />
-        )}
+        {tabIndex === InvestType.Dual && <DualListPanel />}
         {tabIndex === InvestType.MyBalance && (
           <Box flex={1} alignItems={'stretch'} display={'flex'} flexDirection={'column'}>
             <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
@@ -224,24 +218,6 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
             <LeverageETHPanel />
           ))}
       </Box>
-
-      <ConfirmInvestDualRisk
-        open={!!confirmDualInvest}
-        USDCOnly={confirmDualInvest === 'USDCOnly'}
-        handleClose={(_e, isAgree: confirmation.DualInvestConfirmType | undefined) => {
-          if (!isAgree) {
-            setConfirmDualInvest(false)
-            history.goBack()
-          } else {
-            confirmDualInvestFun(isAgree)
-            setConfirmDualInvest(false)
-            setShowBeginnerModeHelp(true)
-            setTimeout(() => {
-              onShowBeginnerModeHelp(false)
-            }, 5 * 1000)
-          }
-        }}
-      />
 
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
