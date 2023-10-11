@@ -16,13 +16,33 @@ export const NotificationPanel = ({
   notification,
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
-  exclusiveRedpacketCount
+  exclusiveRedpacketCount,
 }: {
-  notification: NOTIFICATION,
+  notification: NOTIFICATION
   onClickExclusiveredPacket: () => void
   showExclusiveRedpacket: boolean
   exclusiveRedpacketCount: number
 }) => {
+  // myLog("notifications", notification.notifications);
+  notification.notifications = notification.notifications?.reduce((prev, item) => {
+    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
+      prev.push(item)
+    }
+    return prev
+  }, [] as NOTIFICATION_ITEM[])
+  notification.activities = notification.activities?.reduce((prev, item) => {
+    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
+      prev.push(item)
+    }
+    return prev
+  }, [] as ACTIVITY[])
+
+  notification.activities = notification?.activitiesInvest?.reduce((prev, item) => {
+    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
+      prev.push(item)
+    }
+    return prev
+  }, notification.activities as ACTIVITY[])
 
   const hasActivities = notification.activities && notification.activities?.length
 
@@ -61,7 +81,7 @@ export const NotificationPanel = ({
                   paddingTop: 2.5,
                   cursor: 'pointer',
                   marginTop: 1,
-                  marginBottom: !!hasActivities ? 1 : 0
+                  marginBottom: !!hasActivities ? 1 : 0,
                 }}
               >
                 <Typography color={'black'}>Congratulations!</Typography>
@@ -79,26 +99,6 @@ export const NotificationPanel = ({
                   account={notification.account}
                 />
               ))}
-              {showExclusiveRedpacket && <Box onClick={() => onClickExclusiveredPacket()} sx={{
-                  backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,  
-                  backgroundSize: 'contain',
-                  width: '330px',
-                  height: '77px',
-                  borderRadius: 2,
-                  paddingLeft: 3.5,
-                  paddingTop: 2.5,
-                  cursor: 'pointer'
-                  
-                }} >
-                  <Typography color={'black'}>
-                    Congratulations!
-                  </Typography>
-                  <Typography variant={'body2'} color={'black'}>
-                    You've received {exclusiveRedpacketCount} exclusive Red Packet!
-                  </Typography>
-                </Box>
-              }
-              
           </Box>
           {!!hasNotifications && (
             <>

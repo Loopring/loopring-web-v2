@@ -17,7 +17,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     scroolDisabled?: boolean
   }
 >`
-  overflow: ${({ scroolDisabled }) =>  scroolDisabled ? 'hidden' : 'scroll'};
+  overflow: ${({ scroolDisabled }) => (scroolDisabled ? 'hidden' : 'scroll')};
   position: relative;
   flex: 1;
   ${({ _height, _width, ismobile }) => ` 
@@ -42,7 +42,6 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     }  
          
   `}
-
   .createRedPacket & {
     width: 100%;
 
@@ -150,7 +149,7 @@ function _SwitchPanel<T extends string>(
   const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined)
   const ref = React.useRef<any>(null)
   React.useEffect(() => {
-    ref.current && ref.current.rootNode.scrollTo(0,0)
+    ref.current && ref.current.rootNode.scrollTo(0, 0)
   }, [index])
   return (
     <SwipeableViewsStyled
