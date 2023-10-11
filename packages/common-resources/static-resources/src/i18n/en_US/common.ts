@@ -2081,7 +2081,7 @@ export default {
   labelVaultHomeTitle: 'Home',
   labelVaultDashboardTitle: 'Dashboard',
   labelVaultTotalBalance: 'Total Balance',
-  labelVaultOpenDate: 'Open Date',
+  labelVaultOpenDate: 'Open Date:',
   labelVaultMarginLevel: 'Margin Level',
   labelVaultTotalCollateral: 'Total Collateral',
   labelVaultTotalDebt: 'Total Debt',

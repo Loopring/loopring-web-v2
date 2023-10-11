@@ -126,10 +126,7 @@ export const useGetVaultAssets = (): VaultAssetsTableProps & { totalAsset: strin
             ...item,
             precision: precision,
           })
-          totalAssets = totalAssets.plus(
-            sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0),
-          )
-          // totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0))
+          totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar))
         }
         pre?.sort((a, b) => {
           const deltaDollar = b.tokenValueDollar - a.tokenValueDollar

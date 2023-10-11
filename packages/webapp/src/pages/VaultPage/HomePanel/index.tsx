@@ -24,11 +24,7 @@ export const VaultHomePanel = ({
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
-      <BoxBannerStyle
-        className={isMobile ? 'mobile' : ''}
-        // backGroundUrl={SoursURL + '/images/any.webp'}
-        direction={'right'}
-      >
+      <BoxBannerStyle className={isMobile ? 'mobile' : ''} direction={'right'}>
         <Container
           maxWidth='lg'
           style={{
