@@ -277,7 +277,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   }
   store.dispatch(getRedPacketConfigs(undefined))
   store.dispatch(getNotify(undefined))
-
   store.dispatch(getStakingMap(undefined))
   store.dispatch(getBtradeMap(undefined))
   defiAllAsync()

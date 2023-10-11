@@ -267,7 +267,6 @@ export const useAction = ({
         await callSwitchChain(_chainId)
         let isContract1XAddress: any = undefined,
           guardianModuleAddress: any = undefined
-        // guardians: any = undefined
         let walletModule: any,
           type = sdk.HEBAO_META_TYPE[selected.type] as unknown as sdk.HEBAO_META_TYPE
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {

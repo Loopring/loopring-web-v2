@@ -304,6 +304,8 @@ export const globalCss = ({ theme }: any) => css`
     --input-height-large: 48px;
     --input-height-huge: 56px;
     --dual-type-width: 320px;
+    --min-height: 350px;
+
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;
