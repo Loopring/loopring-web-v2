@@ -2020,5 +2020,4 @@ export default {
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
   labelTxGuardian_upgrade_contract: 'upgrade contract',
   labelTxGuardian_approve_token: 'approve token',
-
 }
