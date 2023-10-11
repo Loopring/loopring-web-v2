@@ -521,6 +521,18 @@ export type LuckyRedPacketItem = {
   }
 }
 
+export type TickerNew<R = sdk.DatacenterTokenInfoSimple> = R & {
+  timeUnit: '24h'
+  volume: string
+  priceU: string
+  change: string
+  __rawTicker__: R & any
+  rawData: R & any
+}
+export type TickerNewMap<R> = {
+  [key in keyof R]: TickerNew
+}
+
 export type Ticker = TradeFloat & {
   open: number
   high: number

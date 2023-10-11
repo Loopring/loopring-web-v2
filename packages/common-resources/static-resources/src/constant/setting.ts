@@ -8,6 +8,11 @@ export enum UpColor {
 }
 export const SlippageTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
 export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
+export type RowConfigType = {
+  rowHeight?: number
+  rowHeaderHeight?: number
+  minHeight?: number
+}
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,

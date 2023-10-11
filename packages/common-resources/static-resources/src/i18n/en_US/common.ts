@@ -2037,7 +2037,7 @@ export default {
   labelVaultJoinSuccess: '',
   labelVaultJoinMarginTitle: 'Margin Call',
   labelVaultJoinTitle: 'Open Position',
-  labelVaultTradeBtn: 'Trade',
+  labelVaultTradeBtn: 'Vault Trade',
   labelVaultRedeemBtn: 'Close Out',
   labelVaultExitDes:
     'Upon closing your position, all open orders will be canceled, and any outstanding debts will be automatically repaid. If the available balance of the Vault_Token is insufficient to cover the debt, Loopring will sell a portion of your assets at the market price to repay the debt. The remaining Vault_Token will be converted to the token you have staked at the current market price and returned to your {{loopringL2}} Account.',

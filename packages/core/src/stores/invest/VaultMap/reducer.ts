@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { VaultMapStates } from './interface'
 import { SagaStatus } from '@loopring-web/common-resources'
-import * as sdk from '@loopring-web/loopring-sdk'
 
 const initialState: Required<VaultMapStates> = {
   marketArray: [],
   marketCoins: [],
+  erc20Array: [],
   marketMap: {},
   tradeMap: {},
   tokenMap: {},
@@ -41,6 +41,7 @@ const vaultMapSlice: Slice = createSlice({
           state.addressIndex = vaultMap.addressIndex
           state.tokenMap = vaultMap.tokenMap
           state.joinTokenMap = vaultMap.joinTokenMap
+          state.erc20Array = vaultMap.erc20Array
           state.raw_data = vaultMap?.raw_data ?? undefined
         }
 

@@ -7,10 +7,11 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
+  Ticker,
   WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { MarketType } from './market'
+import { FloatTag, MarketType } from './market'
 import { VendorProviders } from './vendor'
 
 export enum DeFiChgType {
@@ -196,6 +197,8 @@ export const REDPACKET_ORDER_NFT_LIMIT = 20000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 1000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
+
+export const VAULT_MAKET_REFRESH = 60000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
   image: 'image',
@@ -774,15 +777,14 @@ export const DualBegin = [
   { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]
 
-
 export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
   sdk.VaultMarket,
   'enabled'
 > & {
-  vaultMarket: string
-  originalBaseSymbol: string
-  originalQuoteSymbol: string
-}
+    vaultMarket: string
+    originalBaseSymbol: string
+    originalQuoteSymbol: string
+  }
 
 export type VaultJoinData<I = any> = {
   walletMap: WalletMap<I>
@@ -821,3 +823,5 @@ export enum DualInvestConfirmType {
   USDCOnly = 'USDCOnly',
   all = 'all',
 }
+
+export type MarketTableRawDataItem = sdk.DatacenterTokenQuote & any

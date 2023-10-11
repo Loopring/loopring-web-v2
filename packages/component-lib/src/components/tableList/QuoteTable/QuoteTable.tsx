@@ -82,7 +82,7 @@ export type QuoteTableRawDataItem = Ticker & {
   timeUnit?: '24h'
 }
 
-const QuoteTableChangedCell: any = styled.span`
+export const QuoteTableChangedCell: any = styled.span`
   color: ${({ theme: { colorBase }, upColor, value }: any) => {
     const isUpColorGreen = upColor === 'green'
     return value > 0
@@ -112,11 +112,6 @@ export interface QuoteTableProps {
   showLoading?: boolean
   isPro?: boolean
   forexMap: ForexMap<Currency>
-}
-
-export type VisibleDataItem = {
-  coinA: string
-  coinB: string
 }
 
 export const QuoteTable = withTranslation('tables')(

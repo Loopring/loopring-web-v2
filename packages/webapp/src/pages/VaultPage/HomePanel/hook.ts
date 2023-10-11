@@ -2,33 +2,59 @@ import React, { useCallback } from 'react'
 
 import { QuoteTableRawDataItem } from '@loopring-web/component-lib'
 
-import { RowConfig, SagaStatus, TableFilterParams } from '@loopring-web/common-resources'
-import _ from 'lodash'
+import {
+  RowConfig,
+  RowConfigType,
+  SagaStatus,
+  TableFilterParams,
+  VAULT_MAKET_REFRESH,
+} from '@loopring-web/common-resources'
 import {
   favoriteVaultMarket as favoriteMarketReducer,
   LAYOUT,
   useAccount,
   useSystem,
-  useTicker,
-  useTokenMap,
   useVaultMap,
+  useVaultTicker,
 } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
-import { useQuote } from '../../QuotePage/hook'
 
-export const useVaultMarket = ({ tableRef }: { tableRef: React.Ref<any> }) => {
+export const useVaultMarket = ({
+  tableRef,
+  rowConfig = RowConfig,
+}: {
+  tableRef: React.Ref<any>
+  rowConfig?: RowConfigType
+}) => {
   const { account } = useAccount()
-  const { status: tickerStatus } = useTicker()
-  // const { marketMap } = useTokenMap()
-  const { marketArray, marketMap } = useVaultMap()
-
+  const { status: vaultTickerStatus, vaultTickerMap, updateVaultTickers } = useVaultTicker()
+  // const { marketMap, tokenMap } = useTokenMap()
+  const { marketArray, marketMap: vaultMarketMap, tokenMap: valutTokenMap } = useVaultMap()
   const [tableTabValue, setTableTabValue] = React.useState(TableFilterParams.all)
   const [searchValue, setSearchValue] = React.useState<string>('')
-  const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
+  const [filteredData, setFilteredData] = React.useState<any[]>([])
   const [tableHeight, setTableHeight] = React.useState(0)
   const { favoriteMarket, removeMarket, addMarket } = favoriteMarketReducer.useFavoriteMarket()
+  const autoRefresh = React.useRef<NodeJS.Timeout | -1>(-1)
 
-  const { tickList } = useQuote()
+  const autoReCalc = React.useCallback(() => {
+    updateVaultTickers()
+    if (autoRefresh.current !== -1) {
+      clearTimeout(autoRefresh.current as NodeJS.Timeout)
+    }
+    autoRefresh.current = setTimeout(() => {
+      autoReCalc()
+    }, VAULT_MAKET_REFRESH)
+  }, [])
+  React.useEffect(() => {
+    autoReCalc()
+    return () => {
+      if (autoRefresh.current !== -1) {
+        clearTimeout(autoRefresh.current as NodeJS.Timeout)
+      }
+    }
+  }, [])
+  // const { tickList } = useQuote()
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
     if (currentTarget && tableRef.current) {
       const calcHeight = tableRef.current?.offsetTop - LAYOUT.HEADER_HEIGHT - currentTarget.scrollY
@@ -45,85 +71,58 @@ export const useVaultMarket = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     },
     [handleCurrentScroll, tableRef],
   )
-  const resetTableData = React.useCallback(
-    (tableData) => {
-      setFilteredData(tableData)
-      setTableHeight(RowConfig.rowHeaderHeight + tableData.length * RowConfig.rowHeight)
-    },
-    [setFilteredData, setTableHeight],
-  )
-  React.useEffect(() => {
-    window.addEventListener('scroll', currentScroll)
-    return () => {
-      window.removeEventListener('scroll', currentScroll)
-    }
-  }, [currentScroll])
+
   let history = useHistory()
 
-  // prevent amm risky pair
-  const getFilteredTickList = React.useCallback(() => {
-    if (tickList && !!tickList.length) {
-      return tickList.filter((o: any) => {
-        const pair = `${o.pair.coinA}-${o.pair.coinB}`
-        // const status = ('00' + marketMap[pair]?.status?.toString(2)).split('')
-        // if (status[status.length - 2] === '1') {
-        //   return true
-        // } else if (
-        //   status[status.length - 1] === '1'
-        //   // &&
-        //   // ammPoolBalances.find((o) => o.poolName === pair)
-        // ) {
-        //   // return !ammPoolBalances.find((o) => o.poolName === pair).risky
-        // }
-      })
-    }
-    return []
-  }, [tickList, marketMap])
-
   React.useEffect(() => {
-    if (tickerStatus === SagaStatus.UNSET && tickList.length) {
+    if (vaultTickerStatus === SagaStatus.UNSET && vaultTickerMap) {
       // const data = getFilteredTickList();
       handleTableFilterChange({})
     }
-  }, [tickerStatus, tickList])
+  }, [vaultTickerStatus])
 
   const handleTableFilterChange = React.useCallback(
     ({
       type = tableTabValue,
-      keyword = searchValue,
+      // keyword,
+      ...rest
     }: {
       type?: TableFilterParams
       keyword?: string
     }) => {
-      let data = _.cloneDeep(tickList)
-      // myLog("tickList", data);
+      let filter = ''
+      setSearchValue((state) => {
+        filter = state
+        if (rest.hasOwnProperty('keyword')) {
+          filter = rest.keyword ?? ''
+        }
+        return filter
+      })
+      let data = Object.values(vaultTickerMap)
       if (type === TableFilterParams.favourite) {
+        // myLog("tickList", data);
         data = data.filter((o: any) => {
-          const pair = `${o.pair.coinA}-${o.pair.coinB}`
-          return favoriteMarket?.includes(pair)
+          return favoriteMarket?.includes(o.symbol)
         })
       }
-      data = data.filter((o: any) => {
-        const formattedKeyword = keyword?.toLocaleLowerCase()
-        const coinA = o.pair.coinA.toLowerCase()
-        const coinB = o.pair.coinB.toLowerCase()
-        if (keyword === '') {
-          return true
-        }
-        return coinA?.includes(formattedKeyword) || coinB?.includes(formattedKeyword)
-      })
-      if (type === TableFilterParams.all && !keyword) {
-        data = getFilteredTickList()
+      if (filter) {
+        data = data.filter((o: any) => {
+          return new RegExp(filter, 'ig').test(o.symbol)
+        })
       }
-      resetTableData(data)
+      setFilteredData(data)
+      setTableHeight(
+        (rowConfig.rowHeaderHeight ?? RowConfig.rowHeaderHeight) +
+          data.length * (rowConfig?.rowHeight ?? RowConfig.rowHeaderHeight),
+      )
     },
     [
-      tickList,
+      vaultTickerMap,
       tableTabValue,
-      resetTableData,
       favoriteMarket,
+      searchValue,
       // swapRankingList,
-      getFilteredTickList,
+      // getFilteredTickList,
     ],
   )
 
@@ -154,10 +153,9 @@ export const useVaultMarket = ({ tableRef }: { tableRef: React.Ref<any> }) => {
 
   const handleSearchChange = React.useCallback(
     (value) => {
-      setSearchValue(value)
       handleTableFilterChange({ keyword: value, type: tableTabValue })
     },
-    [handleTableFilterChange, tableTabValue],
+    [tableTabValue],
   )
   const { forexMap } = useSystem()
   return {
@@ -169,12 +167,13 @@ export const useVaultMarket = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     favoriteMarket,
     handleSearchChange,
     addFavoriteMarket: addMarket,
-    showLoading: !tickList?.length,
-    tickList,
+    showLoading: !Object.keys(vaultTickerMap ?? {})?.length,
+    // tickList,
     rawData: filteredData,
     currentheight: tableHeight,
     onRowClick: handleRowClick,
     account,
     forexMap,
+    rowConfig,
   }
 }

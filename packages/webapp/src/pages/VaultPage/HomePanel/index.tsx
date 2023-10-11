@@ -2,13 +2,12 @@ import { Box, Container, Typography } from '@mui/material'
 import React from 'react'
 import {
   RouterPath,
-  RowConfig,
   SoursURL,
   TradeBtnStatus,
   VaultIcon,
   VaultKey,
 } from '@loopring-web/common-resources'
-import { BoxBannerStyle, Button, QuoteTable, useSettings } from '@loopring-web/component-lib'
+import { BoxBannerStyle, Button, MarketTable, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
@@ -85,12 +84,7 @@ export const VaultHomePanel = ({
                     {joinBtnLabel}
                   </Button>
                 )}
-
-                <QuoteTable
-                  rowHeight={RowConfig.rowHeight}
-                  headerRowHeight={RowConfig.rowHeaderHeight}
-                  {...{ ...vaultMarketProps }}
-                />
+                <MarketTable {...{ ...vaultMarketProps }} />
               </Box>
             </Box>
             {!isMobile && (

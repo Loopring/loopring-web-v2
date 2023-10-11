@@ -3,7 +3,6 @@ import { getTokenMap, getTokenMapStatus } from './reducer'
 import { GetTokenMapParams } from './interface'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { store } from '../index'
-import { LocalStorageConfigKey } from '@loopring-web/common-resources'
 
 const getTokenMapApi = async <R extends { [key: string]: any }>({
   tokensMap,

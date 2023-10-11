@@ -90,16 +90,15 @@ export const makeVaultLayer2 = <C extends { [key: string]: any }>({
   }
 }
 
-export const makeVaultAvaiable2 = <C extends { [key: string]: any }>({
-  needFilterZero,
-}: // _isTotal,
+export const makeVaultAvaiable2 = <C extends { [key: string]: any }>({}: // needFilterZero,
+// _isTotal,
 {
   needFilterZero: boolean
 }): {
   vaultAvaiable2Map: WalletMap<C> | undefined
 } => {
   // const { vaultLayer2 } = store.getState().vaultLayer2
-  const { tokenMap } = store.getState().invest.vaultMap
+  // const { tokenMap } = store.getState().invest.vaultMap
   const { readyState } = store.getState().account
   let vaultAvaiable2Map: WalletMap<C> | undefined = {}
   // if (vaultLayer2) {

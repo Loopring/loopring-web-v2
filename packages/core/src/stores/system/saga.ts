@@ -36,7 +36,8 @@ import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
 import { updateDualSyncMap } from '../invest/DualMap/reducer'
 import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
-import { getVaultMap } from '../invest/VaultMap/reducer'
+import { getVaultMap, updateVaultSyncMap } from '../invest/VaultMap/reducer'
+import { getVaultTickers } from '../invest/VaultTicker/reducer'
 
 enum ENV_KEY {
   Bridge = 'bridge',
@@ -140,7 +141,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       }),
     )
     store.dispatch(initAmmMap({ ammpools, chainId }))
-    makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')
+    store.dispatch(updateVaultSyncMap(makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')))
     ;(function (btradeMarkets) {
       if (btradeMarkets) {
         const {
@@ -321,6 +322,8 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         take('stakingMap/getStakingMapStatus'),
       ])
       store.dispatch(getInvestTokenTypeMap(undefined))
+      yield take('vaultTickerMap/getVaultTickersStatus')
+      store.dispatch(getVaultTickers(undefined))
       break
   }
 

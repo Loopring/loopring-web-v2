@@ -105,6 +105,7 @@ export const makeVault = (
   } = store.getState().tokenMap
   if (vaultTokenMap && vaultMarkets && erc20IdIndex) {
     const { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
+    let erc20Array = []
     const reformat: VaultMarketExtends[] = vaultMarkets.reduce((prev, ele) => {
       if (/-/gi.test(ele.market) && ele.enabled) {
         prev.push({
@@ -113,8 +114,9 @@ export const makeVault = (
           vaultMarket: ele.market,
           market: ele.market.replace(/(\w+)-(\w+)-(\w+)/, '$2-$3'),
           originalBaseSymbol: erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId],
-          originalQuoteSymbol: erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId],
+          originalQuoteSymbol: erc20IdIndex[tokensMap[idIndex[ele.quoteTokenId]].tokenId],
         })
+        erc20Array.push(erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId])
         return prev
       } else {
         return prev as VaultMarketExtends[]
@@ -152,35 +154,23 @@ export const makeVault = (
       return prev
     }, {})
 
-    if (enabled && enabled == 'isFormLocal') {
-      store.dispatch(
-        getVaultMapStatus({
-          marketArray,
-          marketCoins,
-          marketMap,
-          tradeMap,
-          coinMap,
-          pairs,
-          idIndex,
-          addressIndex,
-          tokenMap,
-          joinTokenMap,
-        }),
-      )
-    } else {
-      return {
-        marketArray,
-        marketCoins,
-        marketMap,
-        tradeMap,
-        coinMap,
-        pairs,
-        idIndex,
-        addressIndex,
-        tokenMap,
-        joinTokenMap,
-      }
+    // if (enabled && enabled == 'isFormLocal') {
+    //
+    // } else {
+    return {
+      marketArray,
+      marketCoins,
+      marketMap,
+      tradeMap,
+      coinMap,
+      pairs,
+      idIndex,
+      addressIndex,
+      tokenMap,
+      joinTokenMap,
+      erc20Array,
     }
+    // }
   } else {
     return {
       marketMap: undefined,
@@ -191,6 +181,7 @@ export const makeVault = (
       coinMap: undefined,
       idIndex: undefined,
       addressIndex: undefined,
+      erc20Array: undefined,
     }
   }
 }
