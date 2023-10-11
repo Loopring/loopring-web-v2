@@ -12,10 +12,11 @@ import { useSettings } from '../../../stores'
 import { VaultLoadType } from '@loopring-web/common-resources'
 
 export type VaultLoadProps<T, I, B, C> = {
+  vaultLoadType: VaultLoadType
+
   handleTabChange: (index: VaultLoadType) => void
   vaultRepayProps: VaultRepayWrapProps<T, I, B, C>
   vaultBorrowProps: VaultBorrowWrapProps<T, I, B, C>
-  vaultLoadType: VaultLoadType
 }
 const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
   return (

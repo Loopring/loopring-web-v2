@@ -15,7 +15,6 @@ import CurrencyInput from 'react-currency-input-field'
 
 import { InputSize } from './Interface'
 import { css } from '@emotion/react'
-import { fontDefault } from '@loopring-web/common-resources'
 
 export const inputHeightLarge = () => css`
   height: var(--input-height-large);
@@ -125,7 +124,7 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    border-radius: ${({ theme }) => theme.unit }px;
+    border-radius: ${({ theme }) => theme.unit}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
 
