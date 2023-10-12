@@ -107,6 +107,7 @@ export const ModalAccountInfo = withTranslation('common')(
               isShow: false,
               info: {
                 content: '',
+                messageKey: '',
                 type: ToastType.info,
               },
             })
