@@ -13,6 +13,7 @@ import {
 import { useTheme } from '@emotion/react'
 import { useSettings } from '../../../stores'
 import { TagIconList } from '../../block'
+import { CoinIcon } from '../../basic-lib'
 
 export const VendorIconItem = ({ svgIcon }: { svgIcon: string }) => {
   const theme = useTheme()
@@ -60,7 +61,7 @@ export const VendorMenu = ({
       flexDirection={'column'}
     >
       <Typography variant={isMobile ? 'h4' : 'h3'} whiteSpace={'pre'} component={'h4'}>
-        {t('labelL1toL2ThirdPart', { type: t(`label${type}`) })}
+        {type === 'Buy' ? t('labelL1toL2ThirdPartOn') : t('labelL1toL2ThirdPartOff')}
       </Typography>
       <Box
         display={'flex'}
@@ -95,6 +96,8 @@ export const VendorMenu = ({
                     ? 56
                     : '',
                 flexDirection: 'row',
+                display: 'flex',
+                justifyContent: 'space-between',
               }}
               loading={
                 item.btnStatus && item.btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
@@ -103,37 +106,52 @@ export const VendorMenu = ({
                 item.btnStatus &&
                 [TradeBtnStatus.LOADING, TradeBtnStatus.DISABLED].includes(item.btnStatus)
               }
-              startIcon={VendorIconItem({ svgIcon: item.svgIcon })}
               onClick={(e) => {
                 if (item.handleSelect) {
                   item.handleSelect(e)
                 }
               }}
             >
-              <Typography component={'span'} className={'vendorName'} height={0}>
-                {t(item.key)}
-              </Typography>
-              {campaignTagConfig && (
-                <TagIconList
-                  scenario={SCENARIO.FIAT}
-                  size={'var(--svg-size-large)'}
-                  campaignTagConfig={campaignTagConfig}
-                  symbol={`${item.key}-${type == TradeTypes.Buy ? 'on' : 'off'}`}
-                />
-              )}
-              {type == TradeTypes.Sell && (
-                <Avatar
-                  alt={'BETA'}
-                  style={{
-                    width: 'auto',
-                    // width: size ? size : "var(--svg-size-medium)",
-                    height: 'var(--svg-size-medium)',
-                    marginRight: theme.unit / 2,
-                  }}
-                  variant={'square'}
-                  src={'https://static.loopring.io/assets/svg/beta.png'}
-                />
-              )}
+              <Box>
+                {VendorIconItem({ svgIcon: item.svgIcon })}
+                {campaignTagConfig && (
+                  <TagIconList
+                    scenario={SCENARIO.FIAT}
+                    size={'var(--svg-size-large)'}
+                    campaignTagConfig={campaignTagConfig}
+                    symbol={`${item.key}-${type == TradeTypes.Buy ? 'on' : 'off'}`}
+                  />
+                )}
+                {type == TradeTypes.Sell && (
+                  <Avatar
+                    alt={'BETA'}
+                    style={{
+                      width: 'auto',
+                      height: 'var(--svg-size-medium)',
+                      marginRight: theme.unit / 2,
+                    }}
+                    variant={'square'}
+                    src={'https://static.loopring.io/assets/svg/beta.png'}
+                  />
+                )}
+              </Box>
+              <Box display={'flex'} alignItems={'center'}>
+                {item.key === 'Ramp' ? (
+                  <>
+                    <CoinIcon symbol={'ETH'} />
+                    <CoinIcon symbol={'USDC'} />
+                    <CoinIcon symbol={'LRC'} />
+                  </>
+                ) : (
+                  <>
+                    <CoinIcon symbol={'ETH'} />
+                    <CoinIcon symbol={'USDC'} />
+                    <CoinIcon symbol={'USDT'} />
+                    <CoinIcon symbol={'LRC'} />
+                  </>
+                )}
+              </Box>
+
               {/*{item.flag &&*/}
               {/*  item.flag.startDate < Date.now() &&*/}
               {/*  Date.now() < item.flag.endDate && (*/}
