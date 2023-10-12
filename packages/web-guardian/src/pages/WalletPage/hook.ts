@@ -19,7 +19,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { GuardianStep, useSettings } from '@loopring-web/component-lib'
-import { connectProvides, AvaiableNetwork } from '@loopring-web/web3-provider'
+import { connectProvides } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
 
 export enum TxGuardianHistoryType {
@@ -256,7 +256,13 @@ export const useAction = ({
     })
     if (LoopringAPI.walletAPI && selected && connectProvides.usedWeb3) {
       try {
-        const [{ contractType }, _chainId] = await Promise.all([
+        const [
+          {
+            // @ts-ignore
+            raw_data: { data: contractTypes },
+          },
+          _chainId,
+        ] = await Promise.all([
           LoopringAPI.walletAPI.getContractType({
             wallet: selected.address,
             network: networkName,
@@ -270,6 +276,9 @@ export const useAction = ({
         // guardians: any = undefined
         let walletModule: any,
           type = sdk.HEBAO_META_TYPE[selected.type] as unknown as sdk.HEBAO_META_TYPE
+        const contractType = contractTypes?.find(
+          (item) => item?.network.toUpperCase() === networkName,
+        )
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
           switch (type) {
             case sdk.HEBAO_META_TYPE.transfer:
@@ -287,9 +296,6 @@ export const useAction = ({
           isContract1XAddress = true
           guardianModuleAddress = walletModule?.contractAddress
         }
-        // else if (contractType && contractType.walletType === 0) {
-        //   guardians = []
-        // }
         const request: sdk.ApproveSignatureRequest = {
           approveRecordId: selected.id,
           txAwareHash: selected.messageHash,

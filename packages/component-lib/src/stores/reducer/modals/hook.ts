@@ -287,8 +287,9 @@ export const useOpenModals = () => {
       (state: {
         isShow: boolean
         info: {
-          content: string
+          content?: string
           type: ToastType
+          messageKey?: string
         }
       }) => dispatch(setShowGlobalToast(state)),
       [dispatch],
