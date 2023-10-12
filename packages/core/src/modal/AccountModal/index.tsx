@@ -96,7 +96,7 @@ export const ModalAccountInfo = withTranslation('common')(
         <Toast
           alertText={
             isShowGlobalToast?.info?.messageKey
-              ? t(isShowGlobalToast?.info?.messageKey)
+              ? t(isShowGlobalToast?.info?.messageKey, { ns: ['error', 'common'] })
               : isShowGlobalToast?.info?.content ?? ''
           }
           severity={isShowGlobalToast?.info?.type ?? ToastType.success}

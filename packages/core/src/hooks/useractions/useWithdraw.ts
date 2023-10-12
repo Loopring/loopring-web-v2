@@ -92,8 +92,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     amount: withdrawValue.tradeValue,
     needAmountRefresh:
       withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-    tokenSymbol: withdrawValue.belong,
-    updateData: ({ fee, amount }) => {
+    tokenSymbol: store.getState()._router_modalData.withdrawValue?.belong,
+    updateData: ({ fee, amount, tokenSymbol }) => {
       const _withdrawValue = store.getState()._router_modalData.withdrawValue
       myLog(
         withdrawValue.withdrawType,
@@ -102,10 +102,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         _withdrawValue.belong,
         amount,
         _withdrawValue.tradeValue,
+        tokenSymbol,
       )
       if (
         withdrawValue.withdrawType == _withdrawValue.withdrawType &&
-        withdrawValue.belong == _withdrawValue.belong &&
+        _withdrawValue.belong === tokenSymbol &&
         amount == _withdrawValue.tradeValue
         // ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
         //     amount == _withdrawValue.tradeValue ) ||
@@ -145,7 +146,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     if (loopringSmartWalletVersion?.isLoopringSmartWallet && sureIsAllowAddress === undefined) {
       setSureIsAllowAddress(WALLET_TYPE.Loopring)
     }
-  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])  
+  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])
 
   const isNotAvailableAddress =
     // isCFAddress
@@ -276,6 +277,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             })
             checkFeeIsEnough({
               requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+              tokenSymbol: withdrawValue.belong,
               isRequiredAPI: true,
             })
             setWithdrawTypes({
@@ -339,7 +341,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             break
           }
         }
-        updateWithdrawData(objInit)
+        updateWithdrawData(objInit as any)
       } else if (withdrawValue.belong && walletMap2) {
         const walletInfo = walletMap2[withdrawValue.belong]
         updateWithdrawData({
@@ -401,11 +403,16 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   const _checkFeeIsEnough = _.debounce(
     () => {
-      const { tradeValue: amount, withdrawType } = store.getState()._router_modalData.withdrawValue
+      const {
+        tradeValue: amount,
+        withdrawType,
+        belong,
+      } = store.getState()._router_modalData.withdrawValue
       checkFeeIsEnough({
         isRequiredAPI: true,
         intervalTime: LIVE_FEE_TIMES,
         amount,
+        tokenSymbol: belong,
         requestType: withdrawType,
         needAmountRefresh: withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
       })
@@ -419,22 +426,35 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const processRequest = React.useCallback(
     async (request: sdk.OffChainWithdrawalRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account
+      const withdrawValue = store.getState()._router_modalData.withdrawValue
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI && isAccActivated()) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated() &&
+          withdrawValue?.fee?.belong
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress)
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true
           }
-
           myLog('withdraw processRequest:', isHWAddr, isNotHardwareWallet)
-
+          const feeToken = tokenMap[withdrawValue?.fee?.belong]
+          const feeRaw = withdrawValue.fee.feeRaw ?? withdrawValue?.fee.__raw__?.feeRaw ?? 0
+          const fee = sdk.toBig(feeRaw)
           const response = await LoopringAPI.userAPI.submitOffchainWithdraw(
             {
-              request,
+              request: {
+                ...request,
+                maxFee: {
+                  tokenId: feeToken?.tokenId ?? request.maxFee.tokenId,
+                  volume: fee?.toString() ?? request.maxFee.volume, // TEST: fee.toString(),
+                },
+              },
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === 'unknown' ? 1 : chainId,
-              walletType: (ConnectProviders[ connectName ] ??
+              walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
@@ -677,7 +697,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap2 as WalletMap<any>,
     withdrawBtnStatus: btnStatus,
-    withdrawType: withdrawValue.withdrawType,
+    withdrawType: withdrawValue.withdrawType as any,
     isFastWithdrawAmountLimit,
     withdrawTypes,
     sureIsAllowAddress,
@@ -715,7 +735,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const _withdrawValue = store.getState()._router_modalData.withdrawValue
       updateWithdrawData({
         ..._withdrawValue,
-        withdrawType: value,
+        withdrawType: value as any,
       })
       // _checkFeeIsEnough.cancel()
       _checkFeeIsEnough()
@@ -736,7 +756,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         } else {
           updateWithdrawData({
             fee: undefined,
-            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL as WithdrawType,
+            withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
             belong: undefined,
             tradeValue: undefined,
             balance: undefined,
@@ -755,11 +775,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     isFromContact: contactAddress ? true : false,
     contact: contactAddress
-      ? {
+      ? ({
           address: contactAddress,
           name: contactName!,
           addressType: contactAddressType!,
-        }
+        } as any)
       : undefined,
     loopringSmartWalletVersion,
     contacts,

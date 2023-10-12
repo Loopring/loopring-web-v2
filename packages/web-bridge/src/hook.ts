@@ -71,6 +71,7 @@ export function useInit() {
           await connectProvides[account.connectName]({
             account: account.accAddress,
             darkMode: theme.mode === ThemeType.dark,
+            chainId: defaultNetwork.toString(),
           })
           updateAccount({})
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
