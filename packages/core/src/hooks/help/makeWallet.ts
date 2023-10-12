@@ -54,18 +54,21 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>({
   }
 }
 
-export const makeVaultLayer2 = <C extends { [key: string]: any }>({
+export const makeVaultLayer2 = <
+  C extends { [key: string]: any },
+  I = WalletCoin<C> & { detail: any },
+>({
   needFilterZero,
 }: // _isTotal,
 {
   needFilterZero: boolean
 }): {
-  vaultLayer2Map: WalletMap<C> | undefined
+  vaultLayer2Map: WalletMap<C, I> | undefined
 } => {
   const { vaultLayer2 } = store.getState().vaultLayer2
   const { tokenMap } = store.getState().invest.vaultMap
   const { readyState } = store.getState().account
-  let vaultLayer2Map: WalletMap<C> | undefined
+  let vaultLayer2Map: WalletMap<C, I> | undefined
   if (vaultLayer2) {
     vaultLayer2Map = Reflect.ownKeys(vaultLayer2).reduce((prev, item) => {
       const vaultAsset: sdk.VaultBalance = vaultLayer2[item as string]
@@ -81,7 +84,7 @@ export const makeVaultLayer2 = <C extends { [key: string]: any }>({
           detail: vaultLayer2[item as string],
         },
       }
-    }, {} as WalletMap<C>)
+    }, {} as WalletMap<C, I>)
   }
   if (readyState === AccountStatus.ACTIVATED) {
     return { vaultLayer2Map }

@@ -1,7 +1,12 @@
 import React from 'react'
 import {
+  accountReducer,
+  accountStaticCallBack,
+  goActiveAccount,
   makeVaultLayer2,
+  metaMaskCallback,
   store,
+  unlockAccount,
   useAccount,
   useBtnStatus,
   useSystem,
@@ -12,28 +17,120 @@ import {
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
 } from '@loopring-web/core'
-import { useSettings, VaultAssetsTableProps } from '@loopring-web/component-lib'
+import {
+  AccountStep,
+  setShowAccount,
+  setShowConnect,
+  setShowWrongNetworkGuide,
+  useOpenModals,
+  useSettings,
+  VaultAssetsTableProps,
+  WalletConnectStep,
+} from '@loopring-web/component-lib'
 import {
   AssetsRawDataItem,
   EmptyValueTag,
+  fnType,
   globalSetup,
   myLog,
   SagaStatus,
   TokenType,
   TradeBtnStatus,
+  VaultAction,
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
+import { VaultAccountStatus } from '@loopring-web/loopring-sdk/dist/defs/loopring_defs'
 
-export const useGetVaultAssets = (): VaultAssetsTableProps & { totalAsset: string } => {
+export const useGetVaultAssets = (): VaultAssetsTableProps & {
+  totalAsset: string
+  onActionBtnClick: (key: VaultAction) => void
+  showNoVaultAccount: boolean
+  setShowNoVaultAccount: (key: boolean) => void
+} => {
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
   const { status: accountStatus, account } = useAccount()
-  const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
+  const {
+    vaultAccountInfo,
+    activeInfo,
+    status: vaultAccountInfoStatus,
+    updateVaultLayer2,
+  } = useVaultLayer2()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
+  const [showNoVaultAccount, setShowNoVaultAccount] = React.useState(false)
+
+  const {
+    // modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap,istShowVaultLoad },
+    setShowVaultJoin,
+    setShowVaultExit,
+    setShowVaultLoad,
+    setShowVaultSwap,
+  } = useOpenModals()
+  const btnClickCallbackArray = {
+    [fnType.ERROR_NETWORK]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }))
+        store.dispatch(setShowWrongNetworkGuide({ isShow: true }))
+      },
+    ],
+    [fnType.UN_CONNECT]: [
+      function () {
+        setShowNoVaultAccount(true)
+      },
+    ],
+    [fnType.NO_ACCOUNT]: [
+      function () {
+        setShowNoVaultAccount(true)
+      },
+    ],
+    [fnType.DEPOSITING]: [
+      function () {
+        setShowNoVaultAccount(true)
+      },
+    ],
+    [fnType.NOT_ACTIVE]: [
+      function () {
+        setShowNoVaultAccount(true)
+      },
+    ],
+    [fnType.LOCKED]: [
+      function () {
+        setShowNoVaultAccount(true)
+      },
+    ],
+    [fnType.ACTIVATED]: [
+      (key: any) => {
+        if (
+          [VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any) &&
+          activeInfo?.hash
+        ) {
+          switch (key) {
+            case VaultAction.VaultJoin:
+              setShowVaultJoin({ isShow: true })
+              break
+            case VaultAction.VaultExit:
+              setShowVaultExit({ isShow: true })
+              break
+            case VaultAction.VaultLoad:
+              setShowVaultLoad({ isShow: true })
+              break
+            case VaultAction.VaultSwap:
+              setShowVaultSwap({ isShow: true })
+              break
+          }
+        }
+      },
+      [vaultAccountInfo?.accountStatus, activeInfo?.hash],
+    ],
+  }
+  const onActionBtnClick = (props: string) => {
+    accountStaticCallBack(btnClickCallbackArray, [props])
+  }
+
   const {
     themeMode,
     currency,
@@ -155,27 +252,20 @@ export const useGetVaultAssets = (): VaultAssetsTableProps & { totalAsset: strin
     startWorker()
   }, [])
   useWalletLayer2Socket({ walletLayer2Callback })
-  const getTokenRelatedMarketArray = React.useCallback((token: string) => {
-    const { marketArray } = store.getState().tokenMap
-    if (!marketArray) return []
-    return marketArray.filter((market) => {
-      const [coinA, coinB] = market.split('-')
-      return token === coinA || token === coinB
-    })
-  }, [])
 
   myLog('assetsRawData')
   return {
+    forexMap,
     rawData: assetsRawData,
     hideAssets: hideL2Assets,
     // marketArray,
     allowTrade,
-    setHideL2Assets,
     setHideSmallBalances,
-    themeMode,
-    getTokenRelatedMarketArray,
     hideSmallBalances,
     showFilter: true,
     totalAsset,
+    showNoVaultAccount,
+    setShowNoVaultAccount,
+    onActionBtnClick,
   }
 }

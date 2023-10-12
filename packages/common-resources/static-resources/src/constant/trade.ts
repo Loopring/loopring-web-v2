@@ -825,3 +825,9 @@ export enum DualInvestConfirmType {
 }
 
 export type MarketTableRawDataItem = sdk.DatacenterTokenQuote & any
+export enum VaultAction {
+  VaultJoin = 'VaultJoin',
+  VaultExit = 'VaultExit',
+  VaultLoad = 'VaultLoad',
+  VaultSwap = 'VaultSwap',
+}

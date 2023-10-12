@@ -28,9 +28,10 @@ export const ModalVaultWrap = () => {
   const { campaignTagConfig } = useNotify().notifyMap ?? {}
 
   const {
-    modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap },
+    modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap, istShowVaultLoad },
     setShowVaultJoin,
     setShowVaultExit,
+    setShowVaultLoad,
     setShowVaultSwap,
   } = useOpenModals()
   const joinVaultProps = useVaultJoin()

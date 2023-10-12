@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router-dom'
 
-import { Box, Container, Typography, Grid } from '@mui/material'
+import { Box, Container, Typography, Grid, Modal } from '@mui/material'
 import React from 'react'
 import {
   ConvertToIcon,
@@ -15,11 +15,29 @@ import {
   getValuePrecisionThousand,
   EmptyValueTag,
   YEAR_DAY_MINUTE_FORMAT,
+  TradeBtnStatus,
+  AccountStatus,
+  L1L2_NAME_DEFINED,
+  SoursURL,
+  MapChainId,
+  VaultAction,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { MenuBtnStyled, useSettings, VaultAssetsTable } from '@loopring-web/component-lib'
+import {
+  MenuBtnStyled,
+  ModalCloseButtonPosition,
+  useSettings,
+  VaultAssetsTable,
+  Button,
+} from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
-import { useSystem, useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
+import {
+  useAccount,
+  useSystem,
+  useVaultLayer2,
+  VaultAccountInfoStatus,
+  WalletConnectL2Btn,
+} from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import { CollateralInfo } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 import moment from 'moment'
@@ -49,12 +67,117 @@ export const VaultDashBoardPanel = ({
   const { t } = useTranslation()
   const history = useHistory()
   const { forexMap } = useSystem()
-  const { isMobile, currency } = useSettings()
+  const { isMobile, currency, defaultNetwork } = useSettings()
   const priceTag = PriceTag[CurrencyToTag[currency]]
-  const assetPanelProps = useGetVaultAssets()
+  const { account } = useAccount()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
+  const { onActionBtnClick, showNoVaultAccount, setShowNoVaultAccount, ...assetPanelProps } =
+    useGetVaultAssets()
   const { totalAsset, hideAssets } = assetPanelProps
+  const viewTemplate = React.useMemo(() => {
+    switch (account.readyState) {
+      case AccountStatus.UN_CONNECT:
+      case AccountStatus.LOCKED:
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.NOT_ACTIVE:
+        return <WalletConnectL2Btn />
+      case AccountStatus.DEPOSITING:
+        return (
+          <Box
+            flex={1}
+            display={'flex'}
+            justifyContent={'center'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <img
+              className='loading-gif'
+              alt={'loading'}
+              width='60'
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+            <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+              {t('describeTitleOpenAccounting', {
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              })}
+            </Typography>
+          </Box>
+        )
+        break
+      case AccountStatus.ERROR_NETWORK:
+        return (
+          <Box
+            flex={1}
+            display={'flex'}
+            justifyContent={'center'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+              {t('describeTitleOnErrorNetwork', {
+                connectName: account.connectName,
+              })}
+            </Typography>
+          </Box>
+        )
+        break
+      case AccountStatus.ACTIVATED:
+        return (
+          <Button
+            size={'medium'}
+            className={'vaultInProcessing'}
+            onClick={onJoinPop}
+            loading={'false'}
+            variant={'contained'}
+            fullWidth={true}
+            sx={{ minWidth: 'var(--walletconnect-width)' }}
+            loading={(joinBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false') as any}
+            disabled={
+              joinBtnStatus === TradeBtnStatus.DISABLED || joinBtnStatus === TradeBtnStatus.LOADING
+            }
+          >
+            {joinBtnLabel}
+          </Button>
+        )
+      default:
+        break
+    }
+  }, [account.readyState, account.connectName, isMobile])
+
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
+      <Modal open={showNoVaultAccount} onClose={() => setShowNoVaultAccount(false)}>
+        <>
+          <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <Box
+              padding={5}
+              bgcolor={'var(--color-box)'}
+              width={'var(--modal-width)'}
+              borderRadius={1}
+              display={'flex'}
+              alignItems={'center'}
+              flexDirection={'column'}
+              position={'relative'}
+            >
+              {/* <Box></Box> */}
+              <ModalCloseButtonPosition
+                right={2}
+                top={2}
+                t={t}
+                onClose={() => setShowNoVaultAccount(false)}
+              />
+              <Typography marginBottom={3} variant={'h3'}>
+                TODO label What is Vault
+              </Typography>
+              <Typography marginBottom={3} variant={'h3'}>
+                TODO label What is des
+              </Typography>
+              <>{viewTemplate}</>
+            </Box>
+          </Box>
+        </>
+      </Modal>
       <Container
         maxWidth='lg'
         style={{
@@ -205,7 +328,7 @@ export const VaultDashBoardPanel = ({
                 fullWidth
                 endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
                 onClick={(e) => {
-                  // TODO
+                  onActionBtnClick(VaultAction.VaultLoad)
                 }}
               >
                 <Typography
@@ -231,7 +354,7 @@ export const VaultDashBoardPanel = ({
                 fullWidth
                 endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
                 onClick={(e) => {
-                  // TODO
+                  onActionBtnClick(VaultAction.VaultJoin)
                 }}
               >
                 <Typography
@@ -257,7 +380,7 @@ export const VaultDashBoardPanel = ({
                 fullWidth
                 endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
                 onClick={(e) => {
-                  // TODO
+                  onActionBtnClick(VaultAction.VaultSwap)
                 }}
               >
                 <Typography
@@ -287,7 +410,7 @@ export const VaultDashBoardPanel = ({
                 fullWidth
                 endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
                 onClick={(e) => {
-                  // TODO
+                  onActionBtnClick(VaultAction.VaultExit)
                 }}
               >
                 <Typography
