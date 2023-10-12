@@ -145,7 +145,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     if (loopringSmartWalletVersion?.isLoopringSmartWallet && sureIsAllowAddress === undefined) {
       setSureIsAllowAddress(WALLET_TYPE.Loopring)
     }
-  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])  
+  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])
 
   const isNotAvailableAddress =
     // isCFAddress
@@ -419,22 +419,35 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const processRequest = React.useCallback(
     async (request: sdk.OffChainWithdrawalRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account
+      const withdrawValue = store.getState()._router_modalData.withdrawValue
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI && isAccActivated()) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          isAccActivated() &&
+          withdrawValue?.fee?.belong
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress)
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true
           }
-
           myLog('withdraw processRequest:', isHWAddr, isNotHardwareWallet)
-
+          const feeToken = tokenMap[withdrawValue?.fee?.belong]
+          const feeRaw = withdrawValue.fee.feeRaw ?? withdrawValue?.fee.__raw__?.feeRaw ?? 0
+          const fee = sdk.toBig(feeRaw)
           const response = await LoopringAPI.userAPI.submitOffchainWithdraw(
             {
-              request,
+              request: {
+                ...request,
+                maxFee: {
+                  tokenId: feeToken?.tokenId ?? request.maxFee.tokenId,
+                  volume: fee?.toString() ?? request.maxFee.volume, // TEST: fee.toString(),
+                },
+              },
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === 'unknown' ? 1 : chainId,
-              walletType: (ConnectProviders[ connectName ] ??
+              walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
