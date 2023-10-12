@@ -60,6 +60,8 @@ export const useContactAdd = ({
   const { t } = useTranslation()
   const [loading, setLoading] = React.useState(false)
   const [isNameExit, setIsNameExit] = React.useState(false)
+  const [isContactExit, setIsContactExit] = React.useState(false)
+
   const {
     address,
     realAddr,
@@ -334,12 +336,14 @@ export const useContactAdd = ({
     addName,
     onChangeName,
     realAddr,
+
     addrStatus,
     handleOnAddressChange: onChangeAddress,
     allowToClickIsSure,
     onChangeAddressType,
     btnStatus,
     isNameExit,
+    isContactExit,
     btnLabel,
     submitContact: onBtnClick,
   }
@@ -355,6 +359,7 @@ interface AddDialogProps {
     | {
         item: ContactType
       }
+
   contacts: ContactType[]
   onClose: () => void
   setToast: (props: TOASTOPEN) => void
