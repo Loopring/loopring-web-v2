@@ -9,10 +9,10 @@ import {
   MapChainId,
   MoreIcon,
   LEVERAGE_ETH_CONFIG,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { useOpenModals, useSettings, useToggle } from '../../../../stores'
-import { AmmPanelType } from '../../../tradePanel'
 import { RawDataAssetsItem } from '../AssetsTable'
 import { useTranslation } from 'react-i18next'
 
