@@ -8,21 +8,13 @@ import { StylePaper, useSystem, useTokenMap } from '@loopring-web/core'
 import { AssetPanelProps, useAssetAction } from './hook'
 import React from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import MyLiquidity from '../../InvestPage/MyLiquidityPanel'
-import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
-import {
-  AssetL2TabIndex,
-  // AssetTabIndex,
-  CircleIcon,
-  MapChainId, myLog,
-  TradeBtnStatus,
-} from '@loopring-web/common-resources'
-import RewardsPanel from '../RewardsPanel'
-import { AssetL2TabEarnIndex, AssetTabIndex } from '../../../constant/router'
+import { AssetTabIndex, MapChainId, myLog, TradeBtnStatus } from '@loopring-web/common-resources'
+import { AssetL2TabEarnIndex } from '../../../constant/router'
+import { MyInvest } from './myInvest'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
-  background: var(--color-box-third);
+  background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 
@@ -44,10 +36,8 @@ export const AssetPanel = withTranslation('common')(
       // onTokenLockHold,
       // tokenLockDetail,
     },
-    showRedpacketReddot,
     ...rest
   }: {
-    showRedpacketReddot: boolean
     assetTitleProps: AssetTitleProps
     assetPanelProps: AssetPanelProps
   } & WithTranslation) => {
@@ -58,14 +48,14 @@ export const AssetPanel = withTranslation('common')(
     const match: any = useRouteMatch('/l2assets/:assets?/:item?')
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
-    const {onTokenLockHold, tokenLockDetail} = useAssetAction()
+    const { onTokenLockHold, tokenLockDetail } = useAssetAction()
 
     const handleTabChange = (value: AssetTabIndex) => {
-      if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
+      if (AssetL2TabEarnIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
-          case AssetTabIndex.DualInvests:
+          case AssetTabIndex.Invests:
             history.replace('/l2assets/assets/Invests')
-            setCurrentTab(AssetTabIndex.DualInvests)
+            setCurrentTab(AssetTabIndex.Invests)
             break
           case AssetTabIndex.Tokens:
           default:
@@ -82,12 +72,11 @@ export const AssetPanel = withTranslation('common')(
       handleTabChange(match?.params?.item)
     }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
-
     // myLog('assetsRawData')
     return (
       <>
         {!isMobile && (
-          <StyleTitlePaper paddingX={3} paddingY={5 / 2} >
+          <StyleTitlePaper paddingX={3} paddingY={5 / 2} className={'MuiPaper-elevation2'}>
             <AssetTitle
               {...{
                 t,
@@ -114,6 +103,7 @@ export const AssetPanel = withTranslation('common')(
             marginTop={1}
             marginBottom={2}
             ref={container}
+            className={'MuiPaper-elevation2'}
           >
             <Box className='tableWrapper table-divide-short'>
               <AssetsTable
@@ -140,8 +130,9 @@ export const AssetPanel = withTranslation('common')(
             </Box>
           </StylePaper>
         )}
-        {currentTab === AssetTabIndex.DualInvests && (
-          <MyLiquidity noHeader className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
+        {currentTab === AssetTabIndex.Invests && (
+          <MyInvest />
+          // <MyLiquidity className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
         )}
       </>
     )

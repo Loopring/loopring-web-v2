@@ -2,11 +2,6 @@ import { Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
 import { Box, Container, Link } from '@mui/material'
 import Header from 'layouts/header'
-import { QuotePage } from 'pages/QuotePage'
-import { SwapPage } from 'pages/SwapPage'
-import { Layer2Page } from 'pages/Layer2Page'
-import { MiningPage } from 'pages/MiningPage'
-import { OrderbookPage } from 'pages/ProTradePage'
 import {
   ModalCoinPairPanel,
   ModalGroup,
@@ -19,12 +14,10 @@ import {
   useTokenMap,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
-import { LandPage } from '../pages/LandPage'
 import {
   ErrorMap,
   GUARDIAN_URL,
   MapChainId,
-  RouterAllowIndex,
   RouterMainKey,
   RouterPath,
   SagaStatus,
@@ -43,19 +36,13 @@ import {
   useToggle,
 } from '@loopring-web/component-lib'
 import { InvestMarkdownPage, MarkdownPage, NotifyMarkdownPage } from '../pages/MarkdownPage'
-import { TradeRacePage } from '../pages/TradeRacePage'
-import { NFTPage } from '../pages/NFTPage'
 import { useGetAssets } from '../pages/AssetPage/AssetPanel/hook'
 import { Footer } from '../layouts/footer'
-import { InvestPage } from '../pages/InvestPage'
+import { EarnPage } from '../pages/InvestPage'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 import { AssetPage } from '../pages/AssetPage'
-import { FiatPage } from '../pages/FiatPage'
-import { RedPacketPage } from '../pages/RedPacketPage'
 import { useTranslation } from 'react-i18next'
-import { BtradeSwapPage } from '../pages/BtradeSwapPage'
-import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
-import { EarnPage } from '../pages/EarnPage'
+import { RouterAllowEarnIndex } from '../constant/router'
 
 const ContentWrap = ({
   children,
@@ -74,9 +61,9 @@ const ContentWrap = ({
       <Header isHideOnScroll={false} />
       {state === 'PENDING' ? (
         <LoadingBlock />
-      ) : state === 'ERROR' || !RouterAllowIndex[network]?.includes(value) ? (
+      ) : state === 'ERROR' || !RouterAllowEarnIndex[network]?.includes(value) ? (
         <ErrorPage
-          {...(!RouterAllowIndex[network]?.includes(value)
+          {...(!RouterAllowEarnIndex[network]?.includes(value)
             ? ErrorMap.TRADE_404
             : ErrorMap.NO_NETWORK_ERROR)}
         />
@@ -187,14 +174,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path='/loading'>
           <LoadingPage />
         </Route>
-        <Route exact path='/'>
-          {searchParams && searchParams.has('noheader') ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} isLandPage />
-          )}
-          <LandPage />
-        </Route>
         <Route path='/document'>
           {searchParams && searchParams.has('noheader') ? (
             <></>
@@ -250,98 +229,17 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <ErrorPage messageKey={'error404'} />
         </Route>
-        <Route exact path={['/race-event/:path']}>
-          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
-          <TradeRacePage />
-        </Route>
 
-        <Route path={RouterPath.pro}>
-          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
-
-          {state === 'PENDING' && tickerMap ? (
-            <LoadingBlock />
-          ) : RouterAllowIndex[network]?.includes(RouterMainKey.pro) ? (
-            <OrderbookPage />
-          ) : (
-            <ErrorPage {...ErrorMap.TRADE_404} />
-          )}
-        </Route>
-        <Route path={RouterPath.stoplimit}>
-          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
-
-          {state === 'PENDING' || !marketArray.length || !Object.keys(tickerMap ?? {}).length ? (
-            <LoadingBlock />
-          ) : RouterAllowIndex[network]?.includes(RouterMainKey.stoplimit) ? (
-            <StopLimitPage />
-          ) : (
-            <ErrorPage {...ErrorMap.TRADE_404} />
-          )}
-        </Route>
-        <Route path={RouterPath.lite}>
-          <ContentWrap state={state} value={RouterMainKey.lite}>
-            <SwapPage />
-          </ContentWrap>
-        </Route>
-        <Route path={RouterPath.btrade}>
-          <ContentWrap state={state} value={RouterMainKey.btrade}>
-            <BtradeSwapPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.fiat, RouterPath.fiat + '/*']}>
-          <ContentWrap state={state} value={RouterMainKey.fiat}>
-            <FiatPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={RouterPath.markets}>
-          <ContentWrap state={state} value={RouterMainKey.markets}>
-            <EarnPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={RouterPath.mining}>
-          <ContentWrap state={state} value={RouterMainKey.mining}>
-            <MiningPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.redPacket, RouterPath.redPacket + '/*']}>
-          <ContentWrap state={state} value={RouterMainKey.redPacket}>
-            <RedPacketPage />
-          </ContentWrap>
-        </Route>
         <Route exact path={[RouterPath.l2assets, RouterPath.l2assets + '/*']}>
           <ContentWrap state={state} value={RouterMainKey.l2assets}>
             <AssetPage />
           </ContentWrap>
         </Route>
-        <Route exact path={[RouterPath.layer2, RouterPath.layer2 + '/*']}>
-          <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
-            <Layer2Page />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.nft, RouterPath.nft + '/*']}>
-          <ContentWrap state={state} value={RouterMainKey.nft}>
-            <NFTPage />
-          </ContentWrap>
-        </Route>
         <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>
-          <ContentWrap noContainer state={state} value={RouterMainKey.invest}>
-            <InvestPage />
+          <ContentWrap state={state} value={RouterMainKey.invest}>
+            <EarnPage />
           </ContentWrap>
         </Route>
-
-        <Route
-          path={['/guardian', '/guardian/*']}
-          component={() => (
-            <>
-              <Header isHideOnScroll={true} isLandPage />
-              <ErrorPage
-                {...ErrorMap.GUARDIAN_ROUTER_ERROR}
-                components={{
-                  a: <Link target='_blank' rel='noopener noreferrer' href={GUARDIAN_URL} />,
-                }}
-              />
-            </>
-          )}
-        />
         <Route
           path={['/error/:messageKey', '/error']}
           component={() => (
