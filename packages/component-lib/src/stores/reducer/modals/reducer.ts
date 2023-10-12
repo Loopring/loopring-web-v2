@@ -64,6 +64,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow: boolean
         info: {
           content: string
+          messageKey: string
           type: ToastType
         }
       }>,

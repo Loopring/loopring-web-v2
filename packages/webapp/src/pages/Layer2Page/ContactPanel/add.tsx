@@ -247,7 +247,9 @@ export const useContactAdd = ({
       autoSetWalletType()
     }
     const list = contacts?.filter((item) => {
-      return isEdit ? isEdit?.item?.contactAddress !== item?.contactAddress?.toLowerCase() : true
+      return isEdit
+        ? isEdit?.item?.contactAddress?.toLowerCase() !== item?.contactAddress?.toLowerCase()
+        : true
     })
 
     if (addName && list?.find((item) => item.contactName === addName)) {
@@ -311,6 +313,7 @@ export const useContactAdd = ({
     : WALLET_TYPE.EOA
   const onChangeAddress = (input: string) => {
     setAddress(input)
+    setSelectedAddressType(undefined)
   }
   const onChangeName = (input: string) => {
     if (new TextEncoder().encode(input).length <= 48) {
@@ -432,7 +435,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       })
     }
-  }, [btnLabel])
+  }, [btnLabel, isEdit])
   const getDisabled = React.useMemo(() => {
     return btnStatus === TradeBtnStatus.DISABLED
   }, [btnStatus])
