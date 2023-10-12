@@ -256,7 +256,13 @@ export const useAction = ({
     })
     if (LoopringAPI.walletAPI && selected && connectProvides.usedWeb3) {
       try {
-        const [{ contractType }, _chainId] = await Promise.all([
+        const [
+          {
+            // @ts-ignore
+            raw_data: { data: contractTypes },
+          },
+          _chainId,
+        ] = await Promise.all([
           LoopringAPI.walletAPI.getContractType({
             wallet: selected.address,
             network: networkName,
@@ -267,11 +273,27 @@ export const useAction = ({
         await callSwitchChain(_chainId)
         let isContract1XAddress: any = undefined,
           guardianModuleAddress: any = undefined
+        // guardians: any = undefined
+        let walletModule: any,
+          type = sdk.HEBAO_META_TYPE[selected.type] as unknown as sdk.HEBAO_META_TYPE
+        const contractType = contractTypes?.find(
+          (item) => item?.network.toUpperCase() === networkName,
+        )
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
+          switch (type) {
+            case sdk.HEBAO_META_TYPE.transfer:
+            case sdk.HEBAO_META_TYPE.deposit_wallet:
+            case sdk.HEBAO_META_TYPE.approve_token:
+              walletModule = guardianConfig?.supportContracts?.find((item: any) => {
+                return item.contractName === 'TRANSFER_MODULE'
+              })
+              break
+            default:
+              walletModule = guardianConfig?.supportContracts?.find((item: any) => {
+                return item.contractName === 'GUARDIAN_MODULE'
+              })
+          }
           isContract1XAddress = true
-          const walletModule = guardianConfig?.supportContracts?.find((item: any) => {
-            return item.contractName === 'GUARDIAN_MODULE'
-          })
           guardianModuleAddress = walletModule?.contractAddress
         }
         const request: sdk.ApproveSignatureRequest = {
