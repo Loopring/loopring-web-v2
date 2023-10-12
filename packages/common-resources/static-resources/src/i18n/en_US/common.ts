@@ -787,11 +787,11 @@ export default {
   labelExchangeOthers: 'Other Exchanges',
   labelExchangeOthersDes: '',
   labelL2toL1AddressType: 'Address Type',
-  labelConfirmBtrade: 'Confirm Block Trade Support',
+  labelConfirmBtrade: 'Confirm CEX Support',
   labelConfirmDetail:
-    '<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>' +
-    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>' +
-    '<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>',
+    '<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>' +
+    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>' +
+    '<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>',
   labelBtradeUnderstand: 'I understand and acknowledge the risk',
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
@@ -822,7 +822,7 @@ export default {
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a CEX address using {{loopringL2}}. Since the CEX does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     'This feature allows a user to move their {{l2Symbol}} tokens to the {{l1Symbol}} address. The target address must either be a wallet or exchange address',
   labelForceWithdrawConfirm1:
