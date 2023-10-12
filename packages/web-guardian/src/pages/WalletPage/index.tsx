@@ -90,6 +90,8 @@ const SectionStyled = styled(Box)<{ isMobile?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: ${({ theme }) => theme.unit}px;
 `
 
 const Section = ({
