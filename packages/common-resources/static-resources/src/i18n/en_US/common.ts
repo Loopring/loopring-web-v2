@@ -2021,4 +2021,5 @@ export default {
   labelTxGuardian_upgrade_contract: 'upgrade contract',
   labelTxGuardian_approve_token: 'approve token',
   labelContactNameExisted: 'Name already exists',
+  labelContactAddressExisted: 'Address already exists',
 }

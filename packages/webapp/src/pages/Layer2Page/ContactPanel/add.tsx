@@ -246,27 +246,32 @@ export const useContactAdd = ({
     if (realAddr && addName && realAddr !== '' && !isAddressCheckLoading) {
       autoSetWalletType()
     }
-    if (
-      addName &&
-      contacts
-        ?.filter((item) => {
-          return isEdit
-            ? isEdit?.item?.contactAddress !== item?.contactAddress?.toLowerCase()
-            : true
-        })
-        ?.find((item) => item.contactName === addName)
-    ) {
+    const list = contacts?.filter((item) => {
+      return isEdit ? isEdit?.item?.contactAddress !== item?.contactAddress?.toLowerCase() : true
+    })
+
+    if (addName && list?.find((item) => item.contactName === addName)) {
       setIsNameExit(true)
-      return
+    } else {
+      setIsNameExit(false)
     }
-    setIsNameExit(false)
+    if (list?.find((item) => item.contactAddress.toLowerCase() === realAddr.toLowerCase())) {
+      setIsContactExit(true)
+    } else {
+      setIsContactExit(false)
+    }
   }, [realAddr, isAddressCheckLoading, addName])
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus
     label: string | undefined
   } => {
     if (realAddr && addName) {
-      if (isNameExit) {
+      if (isContactExit) {
+        return {
+          label: `labelContactAddressExisted`,
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+        }
+      } else if (isNameExit) {
         return {
           label: `labelContactNameExisted`,
           tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -282,7 +287,7 @@ export const useContactAdd = ({
       label: undefined,
       tradeBtnStatus: TradeBtnStatus.DISABLED,
     }
-  }, [realAddr, addName, isNameExit])
+  }, [realAddr, addName, isNameExit, isContactExit])
 
   const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck,
@@ -336,7 +341,6 @@ export const useContactAdd = ({
     addName,
     onChangeName,
     realAddr,
-
     addrStatus,
     handleOnAddressChange: onChangeAddress,
     allowToClickIsSure,
@@ -385,7 +389,8 @@ export const EditContact: React.FC<AddDialogProps> = ({
     addName,
     onChangeName,
     realAddr,
-    isNameExit,
+    isContactExit,
+    // isNameExit,
     handleOnAddressChange,
     allowToClickIsSure,
     onChangeAddressType,
@@ -522,10 +527,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
                 >
                   {t('labelInvalidAddress')}
                 </Typography>
-              ) : !isEdit &&
-                contacts?.find(
-                  (item) => item.contactAddress.toLowerCase() === realAddr.toLowerCase(),
-                ) ? (
+              ) : isContactExit ? (
                 <Typography
                   color={'var(--color-error)'}
                   variant={'body2'}
