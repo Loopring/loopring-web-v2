@@ -22,6 +22,8 @@ import {
   UIERROR_CODE,
   WALLET_TYPE,
   ContactType,
+  L1L2_NAME_DEFINED,
+  MapChainId,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import {
@@ -30,8 +32,8 @@ import {
   LoopringAPI,
   store,
   useAddressCheck,
-  useBtnStatus,
   useContacts,
+  useSubmitBtn,
 } from '@loopring-web/core'
 import {
   FullAddressType,
@@ -56,6 +58,10 @@ export const useContactAdd = ({
   setToast: (props: TOASTOPEN) => void
 }) => {
   const { t } = useTranslation()
+  const [loading, setLoading] = React.useState(false)
+  const [isNameExit, setIsNameExit] = React.useState(false)
+  const [isContactExit, setIsContactExit] = React.useState(false)
+
   const {
     address,
     realAddr,
@@ -73,7 +79,7 @@ export const useContactAdd = ({
     updateContacts,
   } = useContacts()
   const [addName, setAddName] = React.useState('')
-  const { btnStatus, enableBtn, disableBtn, setLoadingBtn } = useBtnStatus()
+
   const [selectedAddressType, setSelectedAddressType] = React.useState<
     WALLET_TYPE | EXCHANGE_TYPE | undefined
   >(undefined)
@@ -115,58 +121,8 @@ export const useContactAdd = ({
       }
     }
   }
-  React.useEffect(() => {
-    if (realAddr && addName) {
-      enableBtn()
-      return
-    }
-    disableBtn()
-  }, [addrStatus, realAddr, addName, selectedAddressType])
-  React.useEffect(() => {
-    if (realAddr && realAddr !== '' && !isAddressCheckLoading) {
-      autoSetWalletType()
-    }
-    disableBtn()
-  }, [realAddr, isAddressCheckLoading])
-  React.useEffect(() => {
-    myLog('item?.contactAddress', (isEdit as EditItem)?.item)
-    if ((isEdit as EditItem)?.item?.contactAddress) {
-      onChangeAddress((isEdit as EditItem)?.item.contactAddress)
-      onChangeName((isEdit as EditItem)?.item.contactName)
-      onChangeAddressType(
-        addressToExWalletMapFn((isEdit as EditItem)?.item?.addressType ?? undefined),
-      )
-    }
-  }, [(isEdit as EditItem)?.item?.contactAddress])
-  const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet
-    ? WALLET_TYPE.Loopring
-    : isContractAddress
-    ? WALLET_TYPE.OtherSmart
-    : WALLET_TYPE.EOA
-  const onChangeAddress = (input: string) => {
-    setAddress(input)
-  }
-  const onChangeName = (input: string) => {
-    if (new TextEncoder().encode(input).length <= 48) {
-      setAddName(input)
-    }
-  }
-  const onChangeAddressType = (value: WALLET_TYPE | EXCHANGE_TYPE | undefined) => {
-    myLog(onChangeAddressType, 'value')
-    setSelectedAddressType(value)
-  }
-  const restData = () => {
-    onChangeAddress('')
-    onChangeName('')
-    onChangeAddressType(undefined)
-    updateContacts()
-    onClose()
-  }
-
-  const { defaultNetwork } = useSettings()
-
   const onSubmit = React.useCallback(async () => {
-    setLoadingBtn()
+    setLoading(true)
     const { accountId, apiKey, isContractAddress, isCFAddress } = store.getState().account
     let createContact: sdk.CreateContactRequest | sdk.UpdateContactRequest = {
       contactAddress: realAddr,
@@ -224,8 +180,6 @@ export const useContactAdd = ({
             content: t('labelContactsEditFailed'),
           })
         }
-
-        enableBtn()
       }
     } else {
       try {
@@ -273,21 +227,112 @@ export const useContactAdd = ({
             content: t('labelContactsAddFailed'),
           })
         }
-        enableBtn()
       }
+      setLoading(false)
     }
   }, [
-    setLoadingBtn,
+    // setLoadingBtn,
     realAddr,
     addName,
-    defaultNetwork,
+    // defaultNetwork,
     mapContactAddressType,
     isEdit,
     setToast,
     t,
-    restData,
-    enableBtn,
+    // restData,
+    // enableBtn,
   ])
+  React.useEffect(() => {
+    if (realAddr && addName && realAddr !== '' && !isAddressCheckLoading) {
+      autoSetWalletType()
+    }
+    const list = contacts?.filter((item) => {
+      return isEdit
+        ? isEdit?.item?.contactAddress?.toLowerCase() !== item?.contactAddress?.toLowerCase()
+        : true
+    })
+
+    if (addName && list?.find((item) => item.contactName === addName)) {
+      setIsNameExit(true)
+    } else {
+      setIsNameExit(false)
+    }
+    if (list?.find((item) => item.contactAddress.toLowerCase() === realAddr.toLowerCase())) {
+      setIsContactExit(true)
+    } else {
+      setIsContactExit(false)
+    }
+  }, [realAddr, isAddressCheckLoading, addName])
+  const availableTradeCheck = React.useCallback((): {
+    tradeBtnStatus: TradeBtnStatus
+    label: string | undefined
+  } => {
+    if (realAddr && addName) {
+      if (isContactExit) {
+        return {
+          label: `labelContactAddressExisted`,
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+        }
+      } else if (isNameExit) {
+        return {
+          label: `labelContactNameExisted`,
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+        }
+      } else {
+        return {
+          label: undefined,
+          tradeBtnStatus: TradeBtnStatus.AVAILABLE,
+        }
+      }
+    }
+    return {
+      label: undefined,
+      tradeBtnStatus: TradeBtnStatus.DISABLED,
+    }
+  }, [realAddr, addName, isNameExit, isContactExit])
+
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
+    availableTradeCheck,
+    isLoading: isAddressCheckLoading || loading,
+    submitCallback: onSubmit,
+  })
+  React.useEffect(() => {
+    myLog('item?.contactAddress', (isEdit as EditItem)?.item)
+    if ((isEdit as EditItem)?.item?.contactAddress) {
+      onChangeAddress((isEdit as EditItem)?.item.contactAddress)
+      onChangeName((isEdit as EditItem)?.item.contactName)
+      onChangeAddressType(
+        addressToExWalletMapFn((isEdit as EditItem)?.item?.addressType ?? undefined),
+      )
+    }
+  }, [(isEdit as EditItem)?.item?.contactAddress])
+  const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet
+    ? WALLET_TYPE.Loopring
+    : isContractAddress
+    ? WALLET_TYPE.OtherSmart
+    : WALLET_TYPE.EOA
+  const onChangeAddress = (input: string) => {
+    setAddress(input)
+    setSelectedAddressType(undefined)
+  }
+  const onChangeName = (input: string) => {
+    if (new TextEncoder().encode(input).length <= 48) {
+      setAddName(input)
+    }
+  }
+  const onChangeAddressType = (value: WALLET_TYPE | EXCHANGE_TYPE | undefined) => {
+    myLog(onChangeAddressType, 'value')
+    setSelectedAddressType(value)
+  }
+  const restData = () => {
+    onChangeAddress('')
+    onChangeName('')
+    onChangeAddressType(undefined)
+    updateContacts()
+    onClose()
+  }
+
+  const { defaultNetwork } = useSettings()
 
   return {
     restData,
@@ -304,7 +349,10 @@ export const useContactAdd = ({
     allowToClickIsSure,
     onChangeAddressType,
     btnStatus,
-    submitContact: onSubmit,
+    isNameExit,
+    isContactExit,
+    btnLabel,
+    submitContact: onBtnClick,
   }
 }
 
@@ -318,6 +366,7 @@ interface AddDialogProps {
     | {
         item: ContactType
       }
+
   contacts: ContactType[]
   onClose: () => void
   setToast: (props: TOASTOPEN) => void
@@ -333,6 +382,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
   setToast,
   contacts,
 }) => {
+  const { t } = useTranslation(['common'])
   const {
     restData,
     selectedAddressType,
@@ -342,14 +392,50 @@ export const EditContact: React.FC<AddDialogProps> = ({
     addName,
     onChangeName,
     realAddr,
+    isContactExit,
+    // isNameExit,
     handleOnAddressChange,
     allowToClickIsSure,
     onChangeAddressType,
     btnStatus,
     addrStatus,
     submitContact, // ,
+    btnLabel,
   } = useContactAdd({ isEdit, onClose, setToast })
-  const { t } = useTranslation()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const label = React.useMemo(() => {
+    if (btnLabel) {
+      const key = btnLabel.split('|')
+      return t(
+        key[0],
+        key && key[1]
+          ? {
+              arg: key[1].toString(),
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            }
+          : {
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            },
+      )
+    } else {
+      return t(isEdit ? `labelContactsEditContactBtn` : `labelContactsAddContactBtn`, {
+        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+      })
+    }
+  }, [btnLabel, isEdit])
   const getDisabled = React.useMemo(() => {
     return btnStatus === TradeBtnStatus.DISABLED
   }, [btnStatus])
@@ -444,10 +530,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
                 >
                   {t('labelInvalidAddress')}
                 </Typography>
-              ) : !isEdit &&
-                contacts?.find(
-                  (item) => item.contactAddress.toLowerCase() === realAddr.toLowerCase(),
-                ) ? (
+              ) : isContactExit ? (
                 <Typography
                   color={'var(--color-error)'}
                   variant={'body2'}
@@ -534,7 +617,7 @@ export const EditContact: React.FC<AddDialogProps> = ({
             loading={btnStatus === TradeBtnStatus.LOADING && !getDisabled ? 'true' : 'false'}
             disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
           >
-            {isEdit ? t('labelContactsEditContactBtn') : t('labelContactsAddContactBtn')}
+            {label}
           </Button>
         </DialogActions>
       </Dialog>
