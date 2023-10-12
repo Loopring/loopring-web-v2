@@ -627,7 +627,8 @@ export default {
   labelGuid: 'Go to Guide',
   labelOK: 'Ok',
   labelL2toL2InvalidAddr: 'Invalid address or ENS',
-  labelL2toL2IsNotLoopringContract: 'Is not Loopring Contract wallet address',
+  labelL2toL2IsNotLoopringContract:
+    'This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the {{l1Symbol}} account. ',
   labelL2toL2AddressNotLoopring:
     '<0></0> This address does not have an activated {{loopringL2}}. Please ensure  the recipient can access {{loopringL2}} before sending.',
   labelL2toL2AddressType: 'Address Type',
@@ -1702,7 +1703,7 @@ export default {
   labelDepositTo: 'Deposit to',
   labelReferTitle: 'Invite friends to join in \nLoopring and receive rewards',
   labelReferTitleDes:
-    'As referrer: will receive a one-year commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
+    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
   labelCopy: 'Copy',
   labelReferralRules: 'Reward rules',
   labelReferralMethod1: 'Method 1',
