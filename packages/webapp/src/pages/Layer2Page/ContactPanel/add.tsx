@@ -42,6 +42,7 @@ import {
   TOASTOPEN,
   ToastType,
   useSettings,
+  useOpenModals,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -61,7 +62,10 @@ export const useContactAdd = ({
   const [loading, setLoading] = React.useState(false)
   const [isNameExit, setIsNameExit] = React.useState(false)
   const [isContactExit, setIsContactExit] = React.useState(false)
-
+  const {
+    setShowOtherExchange,
+    // modals: { isShowOtherExchange },
+  } = useOpenModals()
   const {
     address,
     realAddr,
@@ -115,6 +119,7 @@ export const useContactAdd = ({
       const addressType = mapContactAddressType()
       if (addressType) {
         const type = addressToExWalletMapFn(addressType)
+        myLog('onChangeAddressType before', type)
         onChangeAddressType(type)
       } else {
         onChangeAddressType(undefined)
@@ -192,7 +197,6 @@ export const useContactAdd = ({
             code: (response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message,
           }
         }
-        // setLoading(false)
         setToast({
           open: true,
           type: ToastType.success,
@@ -231,10 +235,8 @@ export const useContactAdd = ({
       setLoading(false)
     }
   }, [
-    // setLoadingBtn,
     realAddr,
     addName,
-    // defaultNetwork,
     mapContactAddressType,
     isEdit,
     setToast,
@@ -301,10 +303,12 @@ export const useContactAdd = ({
     if ((isEdit as EditItem)?.item?.contactAddress) {
       onChangeAddress((isEdit as EditItem)?.item.contactAddress)
       onChangeName((isEdit as EditItem)?.item.contactName)
+      myLog('onChangeAddressType before', (isEdit as EditItem)?.item?.addressType ?? '')
       onChangeAddressType(
         addressToExWalletMapFn((isEdit as EditItem)?.item?.addressType ?? undefined),
       )
     }
+    setLoading(false)
   }, [(isEdit as EditItem)?.item?.contactAddress])
   const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet
     ? WALLET_TYPE.Loopring
@@ -321,7 +325,7 @@ export const useContactAdd = ({
     }
   }
   const onChangeAddressType = (value: WALLET_TYPE | EXCHANGE_TYPE | undefined) => {
-    myLog(onChangeAddressType, 'value')
+    myLog('onChangeAddressType', value)
     setSelectedAddressType(value)
   }
   const restData = () => {
@@ -329,7 +333,10 @@ export const useContactAdd = ({
     onChangeName('')
     onChangeAddressType(undefined)
     updateContacts()
+    setSelectedAddressType(undefined)
     onClose()
+    setLoading(false)
+    setShowOtherExchange({ agree: false, isShow: false })
   }
 
   const { defaultNetwork } = useSettings()
