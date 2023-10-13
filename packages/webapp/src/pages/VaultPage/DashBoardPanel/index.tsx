@@ -34,12 +34,10 @@ import { useTranslation } from 'react-i18next'
 import {
   useAccount,
   useSystem,
-  useVaultLayer2,
   VaultAccountInfoStatus,
   WalletConnectL2Btn,
 } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
-import { CollateralInfo } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 import moment from 'moment'
 
 export const VaultDashBoardPanel = ({

@@ -41,7 +41,6 @@ import {
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
-import { VaultAccountStatus } from '@loopring-web/loopring-sdk/dist/defs/loopring_defs'
 
 export const useGetVaultAssets = (): VaultAssetsTableProps & {
   totalAsset: string
@@ -105,7 +104,7 @@ export const useGetVaultAssets = (): VaultAssetsTableProps & {
     [fnType.ACTIVATED]: [
       (key: any) => {
         if (
-          [VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any) &&
+          [sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any) &&
           activeInfo?.hash
         ) {
           switch (key) {
