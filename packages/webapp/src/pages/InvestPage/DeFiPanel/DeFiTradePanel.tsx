@@ -1,4 +1,4 @@
-import { useDefiMap, useDefiTrade } from '@loopring-web/core'
+import { useDefiMap, useDefiTrade, usePopup } from '@loopring-web/core'
 import { DEFI_ADVICE_MAP, MarketType, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
@@ -38,9 +38,12 @@ export const DeFiTradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-
-  const styles = isMobile ? { flex: 1, background: 'var(--color-box-third)' } : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
+  const styles = isMobile
+    ? { flex: 1, background: 'var(--color-box-third)' }
+    : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
   const { t } = useTranslation()
+  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
+
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (
@@ -55,6 +58,9 @@ export const DeFiTradePanel = ({
           <DeFiWrap
             market={market}
             isJoin={isJoin}
+            setShowRETHStakignPopup={setShowRETHStakignPopup}
+            setShowWSTETHStakignPopup={setShowWSTETHStakignPopup}
+            // setShowLeverageETHPopup={setShowLeverageETHPopup}
             type={DEFI_ADVICE_MAP[tokenBase].project}
             title={market === 'WSTETH-ETH' ? t('labelDefiLido') : t('labelDefiRocketPool')}
             {...(deFiWrapProps as any)}

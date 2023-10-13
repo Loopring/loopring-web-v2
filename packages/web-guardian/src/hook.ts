@@ -42,7 +42,7 @@ export function useInit() {
       return SagaStatus.PENDING
     }
   })
-  const { isMobile } = useSettings()
+  const { isMobile, defaultNetwork } = useSettings()
   const theme = useTheme()
 
   const {
@@ -72,6 +72,7 @@ export function useInit() {
           await connectProvides[account.connectName]({
             account: account.accAddress,
             darkMode: theme.mode === ThemeType.dark,
+            chainId: defaultNetwork.toString(),
           })
           updateAccount({})
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {

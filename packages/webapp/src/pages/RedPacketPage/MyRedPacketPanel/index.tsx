@@ -7,7 +7,7 @@ import {
   useSettings,
   RedPacketBlindBoxReceiveTable,
 } from '@loopring-web/component-lib'
-import { StylePaper, useSystem } from '@loopring-web/core'
+import { redpacketService, StylePaper, useSystem } from '@loopring-web/core'
 import React from 'react'
 import {
   useMyRedPacketBlindBoxReceiveTransaction,
@@ -34,7 +34,7 @@ const SelectButton = styled(Button)<{ selected?: boolean }>`
   color: ${({ selected, theme }) => (selected ? theme.colorBase.textPrimary : 'auto')};
   border-color: ${({ selected, theme }) => (selected ? theme.colorBase.borderHover : 'auto')};
   background-color: transparent;
-  :hover{
+  :hover {
     background-color: transparent;
     border-color: ${({ selected, theme }) => theme.colorBase.borderHover};
   }
@@ -208,6 +208,57 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
       </Box>
     </>
   )
+  const [pageReceive, setReceivePage] = React.useState(1)
+  const [pageBlindBox, setBlindBoxPage] = React.useState(1)
+
+  const onRefresh = React.useCallback(async () => {
+    if (
+      currentTab === TabIndex.NFTReceived ||
+      currentTab === TabIndex.NFTSend ||
+      currentTab ===
+        TabIndex.NFTsUnClaimed[
+          (TabIndex.NFTsUnClaimed, TabIndex.NFTReceived, TabIndex.NFTSend)
+        ].includes(currentTab)
+    ) {
+      await getRedPacketReceiveList({
+        offset: (pageReceive - 1) * (pageSize ?? 12),
+        limit: pageSize ?? 12,
+        filter: {
+          statuses: showActionableRecords ? [0] : undefined,
+          isNft: true,
+        },
+      })
+      // updateData({
+      //   page,
+      //   filter: { isNft: tokenType === TokenType.nft },
+      // })
+    } else if ([TabIndex.BlindBoxReceived, TabIndex.BlindBoxUnClaimed].includes(currentTab)) {
+    }
+    getRedPacketReceiveList_BlindBox({ pageBlindBox })
+  }, [currentTab])
+
+  // const onRefresh = React.useCallback(() => {
+  //
+  // }, [page, tokenType])
+  // const subject = React.useMemo(() => redpacketService.onRefresh(), [])
+  // React.useEffect(() => {
+  //   const subscription = subject.subscribe(() => {
+  //     onRefresh()
+  //   })
+  //   return () => {
+  //     subscription.unsubscribe()
+  //   }
+  // }, [])
+
+  const subject = React.useMemo(() => redpacketService.onRefresh(), [])
+  React.useEffect(() => {
+    const subscription = subject.subscribe(() => {
+      onRefresh()
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [subject])
 
   return (
     <Box
@@ -257,6 +308,8 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
                   currentTab === TabIndex.NFTsUnClaimed
                     ? TokenType.nft
                     : TokenType.single,
+                page: pageReceive,
+                setPage: setReceivePage,
                 onItemClick: onReceiveItemClick,
                 onClaimItem: onReceiveClaimItem,
                 showloading: showloadingReceive,
@@ -292,6 +345,8 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
                 pageSize: pageSize,
                 total: redPacketReceiveTotal_BlindBox,
               }}
+              page={pageBlindBox}
+              setPage={setBlindBoxPage}
               showActionableRecords={showActionableRecords}
               isUnclaimed={currentTab === TabIndex.BlindBoxUnClaimed}
             />

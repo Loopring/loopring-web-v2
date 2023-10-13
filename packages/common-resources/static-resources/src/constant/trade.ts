@@ -761,3 +761,8 @@ export const DualBegin = [
   { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
   { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]
+
+export enum DualInvestConfirmType {
+  USDCOnly = 'USDCOnly',
+  all = 'all',
+}

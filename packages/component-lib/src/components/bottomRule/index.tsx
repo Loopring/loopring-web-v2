@@ -58,7 +58,7 @@ export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm }: P
           }
         }}
       >
-        {btnTxt}
+          {btnTxt}
       </Button>
       <ModalCloseButton onClose={() => setIsShow(false)} {...{ ...trans, tReady: true }} />
     </StyledBox>

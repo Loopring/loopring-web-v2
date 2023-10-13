@@ -20,12 +20,11 @@ import {
   makeWalletLayer2,
   store,
   useWalletLayer2,
-  useWalletLayer2Socket,
 } from '../../index'
 
 const INTERVAL_TIME = (() => 900000)()
 export function useChargeFees({
-  tokenSymbol,
+  tokenSymbol: _tokenSymbol,
   requestType: _requestType,
   amount,
   extraType,
@@ -108,15 +107,7 @@ export function useChargeFees({
   const [_intervalTime, setIntervalTime] = React.useState<number>(intervalTime)
   const { status: walletLayer2Status } = useWalletLayer2()
   const [requestType, setRequestType] = React.useState(_requestType)
-  // const [walletMap, setWalletMap] = React.useState(
-  //   makeWalletLayer2({ needFilterZero: true }).walletMap ?? ({} as WalletMap<any>),
-  // )
-  // const walletLayer2Callback = React.useCallback(() => {
-  //   const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
-  //   setWalletMap(walletMap)
-  // }, [])
-
-  // useWalletLayer2Socket({ walletLayer2Callback })
+  const [tokenSymbol, seTokenSymbol] = React.useState(_tokenSymbol)
 
   const handleFeeChange = (_value: FeeInfo): void => {
     const walletMap =
@@ -157,6 +148,7 @@ export function useChargeFees({
         requestType,
         isFeeNotEnough: isFeeNotEnough,
         amount: _amount.needAmountRefresh ? _amount.amount : undefined,
+        tokenSymbol,
       })
     }
     setFeeInfo(value)
@@ -332,6 +324,7 @@ export function useChargeFees({
                     chargeFeeTokenList: _chargeFeeTokenList,
                     isFeeNotEnough: _isFeeNotEnough,
                     amount: _amount.needAmountRefresh ? _amount.amount : undefined,
+                    tokenSymbol,
                   })
                 }
                 // myLog("_feeInfo", _feeInfo);
@@ -357,6 +350,7 @@ export function useChargeFees({
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
                       amount: _amount.needAmountRefresh ? _amount.amount : undefined,
+                      tokenSymbol,
                     })
                   }
                   return _feeInfo
@@ -376,18 +370,19 @@ export function useChargeFees({
                       chargeFeeTokenList: _chargeFeeTokenList,
                       isFeeNotEnough: _isFeeNotEnough,
                       amount: _amount.needAmountRefresh ? _amount.amount : undefined,
+                      tokenSymbol,
                     })
                   }
                   return feeInfo ?? state
                 }
               }
             })
-            const _chargeFeeTokenListWithCount = _chargeFeeTokenList.map(feeInfo => {
+            const _chargeFeeTokenListWithCount = _chargeFeeTokenList.map((feeInfo) => {
               return {
                 ...feeInfo,
                 count: walletMap[feeInfo.belong]?.count
-                  ? walletMap[feeInfo.belong]?.count 
-                  : undefined
+                  ? walletMap[feeInfo.belong]?.count
+                  : undefined,
               } as FeeInfo
             })
             setChargeFeeTokenList(_chargeFeeTokenListWithCount ?? [])
@@ -426,6 +421,9 @@ export function useChargeFees({
       setIntervalTime((state) => {
         return intervalTime ? intervalTime : state
       })
+      if (props?.tokenSymbol && props?.tokenSymbol !== tokenSymbol) {
+        seTokenSymbol(props.tokenSymbol)
+      }
       if (props.amount && props.needAmountRefresh && props.requestType) {
         myLog('checkFeeIsEnough needAmountRefresh', requestType)
         if (props.requestType && props.requestType !== requestType) {

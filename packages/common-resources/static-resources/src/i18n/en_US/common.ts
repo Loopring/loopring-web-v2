@@ -627,7 +627,8 @@ export default {
   labelGuid: 'Go to Guide',
   labelOK: 'Ok',
   labelL2toL2InvalidAddr: 'Invalid address or ENS',
-  labelL2toL2IsNotLoopringContract: 'Is not Loopring Contract wallet address',
+  labelL2toL2IsNotLoopringContract:
+    'This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the {{l1Symbol}} account. ',
   labelL2toL2AddressNotLoopring:
     '<0></0> This address does not have an activated {{loopringL2}}. Please ensure  the recipient can access {{loopringL2}} before sending.',
   labelL2toL2AddressType: 'Address Type',
@@ -787,11 +788,11 @@ export default {
   labelExchangeOthers: 'Other Exchanges',
   labelExchangeOthersDes: '',
   labelL2toL1AddressType: 'Address Type',
-  labelConfirmBtrade: 'Confirm Block Trade Support',
+  labelConfirmBtrade: 'Confirm CEX Support',
   labelConfirmDetail:
-    '<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>' +
-    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>' +
-    '<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>',
+    '<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>' +
+    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>' +
+    '<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>',
   labelBtradeUnderstand: 'I understand and acknowledge the risk',
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
@@ -822,7 +823,7 @@ export default {
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a CEX address using {{loopringL2}}. Since the CEX does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     'This feature allows a user to move their {{l2Symbol}} tokens to the {{l1Symbol}} address. The target address must either be a wallet or exchange address',
   labelForceWithdrawConfirm1:
@@ -1702,7 +1703,7 @@ export default {
   labelDepositTo: 'Deposit to',
   labelReferTitle: 'Invite friends to join in \nLoopring and receive rewards',
   labelReferTitleDes:
-    'As referrer: will receive a one-year commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
+    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
   labelCopy: 'Copy',
   labelReferralRules: 'Reward rules',
   labelReferralMethod1: 'Method 1',
@@ -1918,7 +1919,6 @@ export default {
   labelRedPacketExclusiveTag: 'Exclusive',
   labelRedPacketClaiming: 'Claiming',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
-  labelTxGuardian_upgrade_contract: 'upgrade contract',
   labelEOA: 'EOA',
   labelLoopringWallet: 'Loopring',
   labelOtherSmart: 'Other Smart',
@@ -2019,4 +2019,8 @@ export default {
     '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
     '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelTxGuardian_upgrade_contract: 'upgrade contract',
+  labelTxGuardian_approve_token: 'approve token',
+  labelContactNameExisted: 'Name already exists',
+  labelContactAddressExisted: 'Address already exists',
 }

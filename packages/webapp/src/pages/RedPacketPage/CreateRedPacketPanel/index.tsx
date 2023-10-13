@@ -86,10 +86,13 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === 'create',
   })
-  const {contacts} = useContacts()
-  
-  // createRedPacketProps.disabled
 
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
+  React.useEffect(() => {
+    if (contactsErrorMessage) {
+      updateContacts()
+    }
+  }, [])
   return (
     <Box display={'flex'} flex={1} flexDirection={'column'}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} marginBottom={2}>
@@ -104,7 +107,12 @@ export const CreateRedPacketUIPanel = <
           {t('labelCreateRedPacketTitle')}
         </Button>
       </Box>
-      <StylePaper style={{backgroundColor: 'var(--color-pop-bg)'}} flex={1} display={'flex'} justifyContent={'center'}>
+      <StylePaper
+        style={{ backgroundColor: 'var(--color-pop-bg)' }}
+        flex={1}
+        display={'flex'}
+        justifyContent={'center'}
+      >
         {assetBtnStatus === TradeBtnStatus.LOADING ? (
           <LoadingBlock />
         ) : (
@@ -126,7 +134,7 @@ export const CreateRedPacketUIPanel = <
                   }
                 />
               ) as any,
-              contacts
+              contacts,
             }}
           />
         )}
