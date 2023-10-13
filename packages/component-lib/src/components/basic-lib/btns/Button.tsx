@@ -40,6 +40,7 @@ export const Button = styled(MuButton)<ButtonProps>`
            color:transparent;
            background-color:${theme.colorBase.primary};
            background-color:${loadingbg};
+           
            &::after{
             display: block;
             content: url(${loadingSvg});
@@ -53,6 +54,7 @@ export const Button = styled(MuButton)<ButtonProps>`
             justify-content: center;
             color:#fff  
            }
+           
        `
           : ''
       }}

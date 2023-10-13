@@ -40,6 +40,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     isHideError = false,
     fullwidth = false,
     loading = false,
+    className,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -141,7 +142,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   // formatValue(sValue)
 
   return (
-    <IWrap component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
+    <IWrap className={className} component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
       <Grid
         container
         component={'div'}

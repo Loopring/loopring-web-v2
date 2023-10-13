@@ -7,9 +7,10 @@ const initialState: PopupStates = {
   showLRCStakignPopup: false,
   showLeverageETHPopup: false,
   confirmationNeeded: true,
+  showVaultPopup: false,
 }
 const popupSlice: Slice = createSlice({
-  name: 'stakingMap',
+  name: 'popup',
   initialState,
   reducers: {
     setShowRETHStakignPopup(
@@ -40,8 +41,20 @@ const popupSlice: Slice = createSlice({
       state.showLeverageETHPopup = action.payload.show
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
+    setShowVaultPopup(
+      state: PopupStates,
+      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showVaultPopup = action.payload.show
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
   },
 })
-const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLRCStakignPopup, setShowLeverageETHPopup } =
-  popupSlice.actions
-export { popupSlice, setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLRCStakignPopup, setShowLeverageETHPopup }
+export const {
+  setShowRETHStakignPopup,
+  setShowWSTETHStakignPopup,
+  setShowLRCStakignPopup,
+  setShowLeverageETHPopup,
+  setShowVaultPopup,
+} = popupSlice.actions
+export { popupSlice }

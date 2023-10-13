@@ -27,7 +27,6 @@ import { ResetPanel } from './Reset'
 import { useTranslation } from 'react-i18next'
 import {
   AmmPanel,
-  AmmPanelType,
   AmmProps,
   DepositProps,
   DualWrap,

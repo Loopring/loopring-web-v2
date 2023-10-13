@@ -22,6 +22,7 @@ const WrapStyled = styled(Box)<{ height: number | undefined | string }>`
   display: flex;
   flex-direction: column;
   flex-flow: column wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   height: ${(props) =>

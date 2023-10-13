@@ -200,7 +200,17 @@ export const CountDownStyled = styled(Box)`
 
 export const ButtonStyle = styled(Button)`
   font-size: 1.6rem;
-` as typeof Button
+  &.MuiButton-root.Mui-disabled {
+  ${({ loading }) => {
+    return (
+      loading === 'true' &&
+      ` &.vaultInProcessing{
+           &::after{  
+           
+           }
+         }`
+    )
+  }}` as typeof Button
 
 export const TabsStyle = styled(Tabs)`
   &&.trade-tabs {
