@@ -1,10 +1,10 @@
 import React from 'react'
-import { SagaStatus } from '@loopring-web/common-resources'
+import { SagaStatus, AmmPanelType } from '@loopring-web/common-resources'
 
 import { store, useAmmMap, useSystem } from '@loopring-web/core'
 
 import { useLocation } from 'react-router-dom'
-import { AccountStep, AmmPanelType, PoolRow, useOpenModals } from '@loopring-web/component-lib'
+import { AccountStep, PoolRow, useOpenModals } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import _ from 'lodash'
 

@@ -17,6 +17,7 @@ import { css, Theme, useTheme } from '@emotion/react'
 import {
   AmmDetailExtendProps,
   AmmInData,
+  AmmPanelType,
   CoinInfo,
   EmptyValueTag,
   FloatTag,
@@ -36,7 +37,7 @@ import moment from 'moment'
 import { TradeTitle } from '../block'
 import { Header } from '../header'
 import React from 'react'
-import { AmmPanel, AmmPanelType, AmmProps } from '../tradePanel'
+import { AmmPanel, AmmProps } from '../tradePanel'
 import { Currency } from '@loopring-web/loopring-sdk'
 
 const Style = styled.div``
