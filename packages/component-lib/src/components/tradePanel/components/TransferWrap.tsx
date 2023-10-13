@@ -164,6 +164,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           position={'relative'}
         >
           {t('labelNotOtherSmartWallet', {
+            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -184,7 +185,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           {t(`labelL2toL2${addrStatus}`)}
         </Typography>
       )
-    } else if (isExchange) {
+    } else if (isExchange && addressDefault) {
       return (
         <Typography
           color={'var(--color-error)'}
@@ -203,7 +204,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           })}
         </Typography>
       )
-    } else if (isSameAddress) {
+    } else if (isSameAddress && addressDefault) {
       return (
         <Typography
           color={'var(--color-error)'}
