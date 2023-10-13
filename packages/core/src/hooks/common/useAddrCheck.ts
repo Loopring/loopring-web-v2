@@ -145,6 +145,8 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   setCheckAddaccountId(response.accInfo.accountId)
                 }
               }
+            } else {
+              setIsCFAddress(false)
             }
           }
           // clearTimeout(nodeTimer.current)
