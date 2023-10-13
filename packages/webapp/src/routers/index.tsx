@@ -24,9 +24,10 @@ import {
   ErrorMap,
   GUARDIAN_URL,
   MapChainId,
-  RouterAllowIndex,
-  RouterMainKey,
-  RouterPath,
+  myLog,
+  // RouterAllowIndex,
+  // RouterMainKey,
+  // RouterPath,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -56,7 +57,9 @@ import { useTranslation } from 'react-i18next'
 import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
 import { EarnPage } from '../pages/EarnPage'
+import { RouterAllowIndex, RouterMainKey, RouterPath } from '../constant/router'
 
+// RouterAllowIndex
 const ContentWrap = ({
   children,
   state,
@@ -255,7 +258,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <TradeRacePage />
         </Route>
 
-        <Route path={RouterPath.pro}>
+        {/* <Route path={RouterPath.pro}>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
 
           {state === 'PENDING' && tickerMap ? (
@@ -291,13 +294,13 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <ContentWrap state={state} value={RouterMainKey.fiat}>
             <FiatPage />
           </ContentWrap>
-        </Route>
-        <Route exact path={RouterPath.markets}>
-          <ContentWrap state={state} value={RouterMainKey.markets}>
+        </Route> */}
+        <Route exact path={RouterPath.dualIntro}>
+          <ContentWrap state={state} value={RouterMainKey.dualIntro}>
             <EarnPage />
           </ContentWrap>
         </Route>
-        <Route exact path={RouterPath.mining}>
+        {/* <Route exact path={RouterPath.mining}>
           <ContentWrap state={state} value={RouterMainKey.mining}>
             <MiningPage />
           </ContentWrap>
@@ -320,6 +323,16 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={[RouterPath.nft, RouterPath.nft + '/*']}>
           <ContentWrap state={state} value={RouterMainKey.nft}>
             <NFTPage />
+          </ContentWrap>
+        </Route>
+        <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>
+          <ContentWrap noContainer state={state} value={RouterMainKey.invest}>
+            <InvestPage />
+          </ContentWrap>
+        </Route> */}
+        <Route exact path={[RouterPath.l2assets, RouterPath.l2assets + '/*']}>
+          <ContentWrap state={state} value={RouterMainKey.l2assets}>
+            <AssetPage />
           </ContentWrap>
         </Route>
         <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>

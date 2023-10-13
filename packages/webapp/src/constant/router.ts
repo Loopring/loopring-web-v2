@@ -63,11 +63,11 @@ import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
   RecordTabIndex,
-  RouterMainKey,
+  // RouterMainKey,
   WalletSite,
   ButtonComponentsMap,
   subMenuInvest,
-  RouterPath,
+  // RouterPath,
 } from '@loopring-web/common-resources'
 
 export const toolBarAvailableEarnItem: number[] = [
@@ -107,6 +107,28 @@ export const toolBarMobileAvailableEarnItem = [
   ButtonComponentsMap.WalletConnect,
 ]
 
+export enum RouterPath {
+  // lite = '/trade/lite',
+  // pro = '/trade/pro',
+  // stoplimit = '/trade/stoplimit',
+  // btrade = '/trade/btrade',
+  // fiat = '/trade/fiat',
+  // markets = '/markets',
+  // mining = '/mining',
+  // redPacket = '/redPacket',
+  l2assets = '/l2assets',
+  // layer2 = '/layer2',
+  // nft = '/nft',
+  invest = '/invest',
+  dualIntro = '/dual-intro',
+}
+
+export enum RouterMainKey {
+  l2assets = 'l2assets',
+  dualIntro = 'dualIntro',
+  invest = 'invest',
+}
+
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -118,19 +140,66 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: 'Invest',
-      i18nKey: 'labelInvest',
+      id: 'DualInvest',
+      i18nKey: 'labelDualInvest',
     },
-    router: { path: '/invest/overview' },
+    router: { path: '/dual-intro' },
     status: HeaderMenuTabStatus.default,
-    child: subMenuInvest,
   },
 ]
 
-// export const DEFI_ADVICE_MAP = {
-//   WSTETH: defiWSTETHAdvice,
-//   RETH: defiRETHAdvice,
-// }
+
+export const RouterAllowIndex = {
+  TAIKO: [
+    
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    // RouterMainKey.lite,
+    // RouterMainKey.pro,
+    // RouterMainKey.stoplimit,
+    // RouterMainKey.btrade,
+    // RouterMainKey.fiat,
+    // RouterMainKey.markets,
+    // RouterMainKey.mining,
+    // RouterMainKey.redPacket,
+    // RouterMainKey.l2assets,
+    // RouterMainKey.layer2,
+    // RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
+  ETHEREUM: [
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    // RouterMainKey.lite,
+    // RouterMainKey.pro,
+    // RouterMainKey.stoplimit,
+    // RouterMainKey.btrade,
+    // RouterMainKey.fiat,
+    // RouterMainKey.markets,
+    // RouterMainKey.mining,
+    // RouterMainKey.redPacket,
+    // RouterMainKey.l2assets,
+    // RouterMainKey.layer2,
+    // RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
+  GOERLI: [
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    // RouterMainKey.lite,
+    // RouterMainKey.pro,
+    // RouterMainKey.stoplimit,
+    // RouterMainKey.btrade,
+    // RouterMainKey.fiat,
+    // RouterMainKey.markets,
+    // RouterMainKey.mining,
+    // RouterMainKey.redPacket,
+    // RouterMainKey.l2assets,
+    // RouterMainKey.layer2,
+    // RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
+}
 
 export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] } = {
   TAIKO: [

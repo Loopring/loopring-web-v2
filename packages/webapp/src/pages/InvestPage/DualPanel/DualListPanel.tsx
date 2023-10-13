@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from '@emotion/styled'
 import {
   Box,
@@ -36,6 +36,7 @@ import {
   getValuePrecisionThousand,
   Info2Icon,
   LOOPRING_DOCUMENT,
+  SagaStatus,
   SoursURL,
 } from '@loopring-web/common-resources'
 import { BeginnerMode } from './BeginnerMode'
@@ -77,10 +78,10 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
   const { search, pathname } = useLocation()
   const searchParams = new URLSearchParams(search)
   const viewType = new URLSearchParams(search).get('viewType')
+  const autoChose = new URLSearchParams(search).get('autoChose')
   const { forexMap } = useSystem()
   const history = useHistory()
   const { isMobile } = useSettings()
-  // const [viewType, setViewType] = React.useState<DualViewType | undefined>(undefined)
   const { tradeMap, marketArray, status, getDualMap } = useDualMap()
   const { tokenMap } = useTokenMap()
   const { setShowDual } = useOpenModals()
@@ -98,13 +99,16 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
     market,
     handleOnPairChange,
     onSelectStep1Token,
-    // priceObj,
-    // toggle,
-    // whitList,
   } = dualListProps
-
   const marketsIsLoading = status === 'PENDING'
 
+  useEffect(() => {
+    if (!marketsIsLoading && !!marketArray?.length && autoChose) {
+      // debugger
+      // const [tokenA, tokenB] = autoChose.split('-')
+      handleOnPairChange({pairA: autoChose})
+    }
+  }, [marketsIsLoading, !!marketArray?.length])
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1} width={'100%'}>
       {viewType ? (

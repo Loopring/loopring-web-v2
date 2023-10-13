@@ -11,7 +11,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom'
 import MyLiquidity from '../../InvestPage/MyLiquidityPanel'
 import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
 import {
-  AssetL2TabIndex,
+  // AssetL2TabIndex,
   // AssetTabIndex,
   CircleIcon,
   MapChainId, myLog,
@@ -61,7 +61,7 @@ export const AssetPanel = withTranslation('common')(
     const {onTokenLockHold, tokenLockDetail} = useAssetAction()
 
     const handleTabChange = (value: AssetTabIndex) => {
-      if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
+      if (AssetL2TabEarnIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
           case AssetTabIndex.DualInvests:
             history.replace('/l2assets/assets/Invests')
@@ -78,9 +78,6 @@ export const AssetPanel = withTranslation('common')(
         setCurrentTab(AssetTabIndex.Tokens)
       }
     }
-    React.useEffect(() => {
-      handleTabChange(match?.params?.item)
-    }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
 
     // myLog('assetsRawData')

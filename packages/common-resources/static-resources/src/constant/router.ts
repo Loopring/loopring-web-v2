@@ -185,6 +185,7 @@ export enum RouterPath {
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
+  earn = '/earn',
 }
 
 export enum RouterMainKey {
@@ -200,6 +201,7 @@ export enum RouterMainKey {
   layer2 = 'layer2',
   nft = 'nft',
   invest = 'invest',
+  earn = 'earn',
 }
 
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [

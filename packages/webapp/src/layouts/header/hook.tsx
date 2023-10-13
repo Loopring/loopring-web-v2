@@ -3,8 +3,8 @@ import React from 'react'
 import {
   ButtonComponentsMap,
   fnType,
-  headerMenuData,
-  headerMenuDataMap,
+  // headerMenuData,
+  // headerMenuDataMap,
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
   MapChainId,
@@ -27,6 +27,7 @@ import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
+import { headerMenuDataEarnMap } from '../../constant/router'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
@@ -101,9 +102,10 @@ export const useHeader = () => {
     }
   }, [accountStatus, account?.readyState])
   const { notifyMap } = useNotify()
+  
   return {
     headerToolBarData,
-    headerMenuData: headerMenuDataMap[network],
+    headerMenuData: headerMenuDataEarnMap[network],
     headerMenuLandingData,
     account,
     notifyMap,
