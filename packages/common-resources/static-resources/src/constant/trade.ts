@@ -814,11 +814,6 @@ export enum VaultLoadType {
   Repay = 'Repay',
 }
 
-export enum AmmPanelType {
-  Join = 0,
-  Exit = 1,
-}
-
 export enum DualInvestConfirmType {
   USDCOnly = 'USDCOnly',
   all = 'all',
