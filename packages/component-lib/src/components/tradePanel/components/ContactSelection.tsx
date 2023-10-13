@@ -1,24 +1,74 @@
-import { Avatar, Box, Grid, InputAdornment, OutlinedInput, Typography } from '@mui/material'
-import { SearchIcon, CloseIcon, SoursURL } from '@loopring-web/common-resources'
+import { Avatar, Box, BoxProps, InputAdornment, OutlinedInput, Typography } from '@mui/material'
+import { SearchIcon, CloseIcon, SoursURL, hexToRGB } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useEffect, useState } from 'react'
-import { createImageFromInitials } from '@loopring-web/core'
-import { AddressType } from '@loopring-web/loopring-sdk'
+import React, { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { AddressTypeTag } from '../../basic-lib'
+import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 type SingleContactProps = {
   editing: boolean
   name: string
   address: string
-  avatarURL: string
+  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
   onSelect: (address: string) => void
   hidden: boolean
 }
 
+const AvatarContainer = styled(Box)`
+  background-color: white;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+`
+const getInitials = (name: string) => {
+  let initials
+  const nameSplit = name.split(' ')
+  const nameLength = nameSplit.length
+  if (nameLength > 1) {
+    initials = nameSplit[0].substring(0, 1) + nameSplit[nameLength - 1].substring(0, 1)
+  } else if (nameLength === 1) {
+    initials = nameSplit[0].substring(0, 1)
+  } else return
+
+  return initials.toUpperCase()
+}
+// @ts-ignore
+export const InitialNameAvatar = React.memo(
+  ({
+    name,
+    ...rest
+  }: {
+    name: string
+  } & any) => {
+    const theme = useTheme()
+    return (
+      <AvatarContainer {...rest}>
+        <Avatar
+          sx={{
+            bgcolor: hexToRGB(theme.colorBase.warning, 0.5),
+            color: theme.colorBase.warning,
+            fontSize: '16px',
+          }}
+        >
+          {getInitials(name)}
+        </Avatar>
+      </AvatarContainer>
+    )
+  },
+) as ({
+  name,
+  ...rest
+}: {
+  name: string
+} & any) => JSX.Element
+
 export const SingleContact = (props: SingleContactProps) => {
-  const { editing, name, address, avatarURL, hidden, onSelect } = props
+  const { editing, name, address, addressType, hidden, onSelect } = props
+
   return (
     <Box
       style={{ cursor: 'pointer' }}
@@ -28,15 +78,19 @@ export const SingleContact = (props: SingleContactProps) => {
       onClick={() => {
         onSelect(address)
       }}
-      // onCl
     >
       <Box display={'flex'}>
-        <Avatar sizes={'32px'} src={avatarURL}></Avatar>
+        <InitialNameAvatar name={name}></InitialNameAvatar>
         <Box marginLeft={1}>
           {editing ? (
             <OutlinedInput size={'small'} value={name} />
           ) : (
-            <Typography>{name}</Typography>
+            <>
+              <Typography component={'span'} display={'flex-inline'} paddingRight={1}>
+                {name}
+              </Typography>
+              <AddressTypeTag addressType={addressType} />
+            </>
           )}
           <Typography>{address}</Typography>
         </Box>
@@ -56,41 +110,35 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void
-  contacts:
-    | {
-        name: string
-        address: string
-        addressType: AddressType
-      }[]
-    | undefined
+  // contacts:
+  //   | {
+  //       name: string
+  //       address: string
+  //       addressType: AddressType
+  //     }[]
+  //   | undefined
   scrollHeight: string
-}
+} & Pick<sdk.GetContactsResponse, 'contacts'>
 export const ContactSelection = (props: ContactSelectionProps) => {
   // const { t } = useTranslation();
   const { onSelect, contacts, scrollHeight } = props
   const { isMobile } = useSettings()
   const theme = useTheme()
-  const displayContacts =
-    contacts &&
-    contacts.map((contact) => {
-      return {
-        name: contact.name,
-        address: contact.address,
-        avatarURL: createImageFromInitials(32, contact.name, theme.colorBase.warning)!,
-        editing: false,
-        addressType: contact.addressType,
-      }
-    })
-
-  const [inputValue, setInputValue] = useState('')
-  const filteredContacts =
-    displayContacts &&
-    displayContacts.filter((contact) => {
-      return inputValue
-        ? contact.address.toLowerCase().includes(inputValue.toLowerCase()) ||
-            contact.name.toLowerCase().includes(inputValue.toLowerCase())
-        : true
-    })
+  const [filterContacts, setFilterContacts] = React.useState(contacts ?? [])
+  const [inputValue, setInputValue] = React.useState('')
+  const handleOnFiler = (value: string) => {
+    setInputValue(value)
+    let _contacts = contacts
+    if (value && contacts) {
+      _contacts = contacts.filter((contact) => {
+        return (
+          contact.contactAddress.toLowerCase().includes(value.toLowerCase()) ||
+          contact.contactName.toLowerCase().includes(value.toLowerCase())
+        )
+      })
+    }
+    setFilterContacts(_contacts)
+  }
   const { t } = useTranslation()
 
   const normalView = (
@@ -116,26 +164,26 @@ export const ContactSelection = (props: ContactSelectionProps) => {
               htmlColor={'var(--color-text-third)'}
               style={{ visibility: inputValue ? 'visible' : 'hidden' }}
               onClick={() => {
-                setInputValue('')
+                handleOnFiler('')
               }}
             />
           }
           onChange={(e) => {
-            setInputValue(e.target.value)
+            handleOnFiler(e.target.value)
           }}
-        ></OutlinedInput>
+        />
         <Box overflow={'scroll'} height={scrollHeight}>
-          {filteredContacts &&
-            filteredContacts.map((contact) => {
+          {filterContacts &&
+            filterContacts.map((contact) => {
               return (
                 <SingleContact
-                  key={contact.address}
-                  name={contact.name}
-                  address={contact.address}
-                  avatarURL={contact.avatarURL}
+                  key={contact.contactAddress}
+                  name={contact.contactName}
+                  address={contact.contactAddress}
+                  addressType={contact.addressType}
                   editing={false}
                   onSelect={onSelect}
-                  hidden={contact.addressType === AddressType.OFFICIAL}
+                  hidden={contact.addressType === sdk.AddressType.OFFICIAL}
                 />
               )
             })}

@@ -4,11 +4,11 @@ import { Box } from '@mui/material'
 import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
 import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
-import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { store, useAccount, useTargetRedPackets, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
-import { useAssetAction, useGetAssets } from './AssetPanel/hook'
+import { useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
+import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
+import { HistoryPanel } from './HistoryPanel'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -29,7 +29,7 @@ export const AssetPage = () => {
           <AssetPanel
             showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
             assetTitleProps={assetTitleProps}
-            assetPanelProps={{...assetPanelProps, assetBtnStatus}}
+            assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
           />
         )
     }
@@ -48,7 +48,7 @@ export const AssetPage = () => {
           {isMobile && (
             <AssetTitleMobile
               assetBtnStatus={assetBtnStatus}
-              {...{...assetTitleProps, ...assetTitleMobileExtendProps}}
+              {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
             />
           )}
           {layer2Router}

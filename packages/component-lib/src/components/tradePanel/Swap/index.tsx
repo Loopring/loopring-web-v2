@@ -11,6 +11,7 @@ import {
   myLog,
   OrderListIcon,
   RecordTabIndex,
+  RouterPath,
   SCENARIO,
   SlippageBtradeTolerance,
   SlippageTolerance,
@@ -131,7 +132,6 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
           key: 'trade',
           element: React.useMemo(() => {
             myLog('hookSwap view tradeData', tradeData)
-
             return (
               <SwapTradeWrap<T, I, TCD, SCD>
                 key={'trade'}
@@ -180,11 +180,13 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                     display={'flex'}
                     alignItems={'center'}
                   >
-                    <TagIconList
-                      scenario={scenario}
-                      campaignTagConfig={campaignTagConfig}
-                      symbol={market as string}
-                    />
+                    {campaignTagConfig && (
+                      <TagIconList
+                        scenario={scenario}
+                        campaignTagConfig={campaignTagConfig}
+                        symbol={market as string}
+                      />
+                    )}
                   </Typography>
                 </Typography>
 
@@ -300,10 +302,10 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                       onClick={() => {
                         !tradeCalcData.isBtrade
                           ? history.push(
-                              `/l2assets/history/${RecordTabIndex.Trades}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,
                             )
                           : history.push(
-                              `/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
                             )
                       }}
                       sx={{ backgroundColor: 'var(--field-opacity)' }}

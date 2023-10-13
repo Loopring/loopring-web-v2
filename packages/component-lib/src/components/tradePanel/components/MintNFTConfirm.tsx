@@ -48,7 +48,7 @@ const TableStyle = styled(Table)`
       }
     }};
   }
-` as typeof Table
+`
 
 export const MintNFTConfirm = <
   ME extends Partial<NFTMETA>,

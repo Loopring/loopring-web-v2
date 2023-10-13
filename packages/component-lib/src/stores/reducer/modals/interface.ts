@@ -4,8 +4,9 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
-import { AmmPanelType, ToastType } from '../../../components'
+import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum ModalType {

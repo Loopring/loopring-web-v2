@@ -327,15 +327,14 @@ export const enum InvestMapType {
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
   LEVERAGEETH = 'LEVERAGEETH',
-  // BTradeInvest = "BTradeInvest",
 }
 
 export const enum InvestAssetRouter {
-  AMM = 'amm',
-  STAKE = 'stake',
+  AMM = 'ammpool',
+  STAKE = 'defi',
   DUAL = 'dual',
-  STAKELRC = 'sideStake',
-  LEVERAGEETH = 'leverageeth',
+  STAKELRC = 'stakelrc',
+  LEVERAGEETH = 'leverageETH',
   // BTradeInvest = "BTradeInvest",
 }
 
@@ -345,7 +344,6 @@ export const InvestOpenType = [
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
   InvestMapType.LEVERAGEETH,
-  // InvestMapType.BTradeInvest,
 ]
 
 export const enum InvestDuration {
@@ -447,6 +445,7 @@ export type DualCurrentPrice = {
   base: string
   precisionForPrice: number
   currentPrice?: number
+  quoteUnit: string
 }
 export type DualViewBase = {
   apy: `${string}%`
@@ -463,6 +462,17 @@ export type DualViewBase = {
   enterTime?: number
   stepLength?: string
   quote?: string
+  outSymbol?: string
+  outAmount?: string
+  side?: string
+  status?: string
+  statusColor?: string
+  maxDuration?: number
+  autoStatus?: string
+  autoIcon?: JSX.Element
+  autoContent?: string
+  newStrike?: string
+  deliveryPrice?: string | undefined
   __raw__?: any
 }
 
@@ -742,6 +752,7 @@ export enum DualViewType {
   DualGain = 'DualGain',
   DualDip = 'DualDip',
   DualBegin = 'DualBegin',
+  DualBTC = 'DualBTC',
   All = 'All',
 }
 export const DualGain = [
@@ -761,3 +772,13 @@ export const DualBegin = [
   { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
   { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]
+export const DualBTC = [
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_BASE' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
+]
+
+export enum DualInvestConfirmType {
+  USDCOnly = 'USDCOnly',
+  all = 'all',
+}

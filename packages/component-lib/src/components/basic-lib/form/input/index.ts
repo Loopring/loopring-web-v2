@@ -8,6 +8,8 @@ export * from './InputSearch'
 export * from './InputCode'
 export * from './CollectionInput'
 export * from './TextareaWithCount'
+export * from './InputMaxButton'
+export * from './InputMaxCoin'
 export {
   TextField,
   TextareaAutosizeStyled,

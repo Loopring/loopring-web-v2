@@ -5,6 +5,7 @@ import {
   DropDownIcon,
   getValuePrecisionThousand,
   LOOPRING_DOC,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { withTranslation } from 'react-i18next'
 import { Card } from './Card'
@@ -120,7 +121,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   variant={'contained'}
                   fullWidth={true}
                   size={'large'}
-                  onClick={() => history.push('/trade/lite/LRC-ETH')}
+                  onClick={() => history.push(`${RouterPath.lite}/LRC-ETH`)}
                 >
                   {t('labelLaunchApp')}
                   <i>

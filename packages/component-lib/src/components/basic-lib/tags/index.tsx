@@ -45,7 +45,7 @@ export const ChipStyle = styled(Chip)`
 `
 export const AddressTypeTag = ({ addressType }: { addressType }) => {
   const { t } = useTranslation('common')
-  myLog('addressType', addressType, sdk.AddressType)
+    myLog('addressType', addressType, sdk.AddressType)
   switch (addressType) {
     case sdk.AddressType.EOA:
       return (

@@ -20,7 +20,12 @@ import {
 import { useHistory, useLocation } from 'react-router-dom'
 import { Box, Divider, Modal as MuiModal, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { DualViewType, TOAST_TIME, TokenType } from '@loopring-web/common-resources'
+import {
+  DualInvestConfirmType,
+  DualViewType,
+  TOAST_TIME,
+  TokenType,
+} from '@loopring-web/common-resources'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { confirmation } from '../../stores'
 import React from 'react'
@@ -172,7 +177,7 @@ export const ModalDualPanel = withTranslation('common')(
                 />
               </Box>
             </Box>
-            <Divider sx={{ marginX: 2 }} />
+            <Divider sx={{ marginX: 0 }} />
             <Box
               flex={1}
               // flexDirection={!isMobile ? "row" : "column"}
@@ -181,7 +186,6 @@ export const ModalDualPanel = withTranslation('common')(
               display={'flex'}
               paddingTop={2}
               paddingBottom={1}
-              paddingX={1}
               sx={
                 isMobile
                   ? {
@@ -233,10 +237,12 @@ export const ModalDualPanel = withTranslation('common')(
           open={
             !confirmedDualInvestV2 &&
             showDualAlert &&
-            [DualViewType.All, DualViewType.DualBegin].includes(viewType as any)
+            [DualViewType.All, DualViewType.DualBegin, DualViewType.DualBTC].includes(
+              viewType as any,
+            )
           }
           USDCOnly={confirmedDualInvestV2 === 'USDCOnly'}
-          handleClose={(_e, isAgree: confirmation.DualInvestConfirmType | undefined) => {
+          handleClose={(_e, isAgree: DualInvestConfirmType | undefined) => {
             if (!isAgree) {
               setShowAlert(false)
               searchParams.set('viewType', '')

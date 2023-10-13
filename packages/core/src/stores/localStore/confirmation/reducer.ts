@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
-import { Confirmation, DualInvestConfirmType } from './interface'
+import { Confirmation } from './interface'
+import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
 const initialState: Confirmation = {
   confirmed: false,

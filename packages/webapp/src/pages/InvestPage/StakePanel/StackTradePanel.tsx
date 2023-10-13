@@ -1,4 +1,4 @@
-import { confirmation, useStakeTradeJOIN, useToast } from '@loopring-web/core'
+import { confirmation, usePopup, useStakeTradeJOIN, useToast } from '@loopring-web/core'
 
 import {
   Button,
@@ -11,21 +11,30 @@ import {
 } from '@loopring-web/component-lib'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
-import { BackIcon, L1L2_NAME_DEFINED, MapChainId, SatkingLogo, SoursURL, TOAST_TIME, UpIcon, hexToRGB } from '@loopring-web/common-resources'
+import {
+  BackIcon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  TOAST_TIME,
+  hexToRGB,
+  RouterPath,
+  InvestRouter,
+  InvestType,
+} from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
-import { ErrorPage } from '@loopring-web/web-bridge/src/pages/ErrorPage'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
+import { ErrorPage } from '../../ErrorPage'
 
-const ButtonStyled = styled(Button)`  
+const ButtonStyled = styled(Button)`
   background-color: var(--color-button-outlined);
   color: var(--color-text-primary);
   :hover {
     background-color: var(--color-button-outlined);
-    ::before{
+    ::before {
       border-radius: 4px;
     }
   }
@@ -59,6 +68,7 @@ export const StackTradePanel = ({
   const theme = useTheme()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const { setShowLRCStakignPopup } = usePopup()
   return (
     <>
       <Toast
@@ -94,11 +104,18 @@ export const StackTradePanel = ({
                 size={'medium'}
                 sx={{ color: 'var(--color-text-primary)' }}
                 color={'inherit'}
-                onClick={() => history.push(`/invest/overview`)}
+                onClick={() =>
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
+                }
               >
-                {t("labelBack")}
+                {t('labelBack')}
               </Button>
-              <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+              <Button
+                onClick={() =>
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+                }
+                variant={'text'}
+              >
                 {t('labelMyInvestLRCStaking')}{' '}
                 {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
               </Button>
@@ -147,7 +164,12 @@ export const StackTradePanel = ({
                   border={'1px solid var(--color-border)'}
                   borderRadius={2}
                 >
-                  <DeFiSideWrap isJoin={isJoin} symbol={'LRC'} {...(stakeWrapProps as any)} />
+                  <DeFiSideWrap
+                    setShowLRCStakignPopup={setShowLRCStakignPopup}
+                    isJoin={isJoin}
+                    symbol={'LRC'}
+                    {...(stakeWrapProps as any)}
+                  />
                 </Box>
               ) : (
                 <LoadingBlock />
