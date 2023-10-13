@@ -627,8 +627,6 @@ export default {
   labelGuid: 'Go to Guide',
   labelOK: 'Ok',
   labelL2toL2InvalidAddr: 'Invalid address or ENS',
-  labelL2toL2IsNotLoopringContract:
-    'This wallet binds with smart contract that does not support {{loopringLayer2}}. You will need to send funds to the {{l1Symbol}} account. ',
   labelL2toL2AddressNotLoopring:
     '<0></0> This address does not have an activated {{loopringL2}}. Please ensure  the recipient can access {{loopringL2}} before sending.',
   labelL2toL2AddressType: 'Address Type',
@@ -639,7 +637,6 @@ export default {
   labelL2toL2Confirm: 'Confirm',
   labelL2toL2TokenAmount: 'Token Amount',
 
-  labelL1toL2ThirdPart: '{{type}} Crypto with',
   labelActiveAccountFeeNotEnough: 'Insufficient balance <1>Add assets</1>',
   labelNFTTransferTX: '{{l2Symbol}} \u2192 {{l2Symbol}}',
   labelNFTWithdrawTX: '{{l2Symbol}} \u2192 {{l1Symbol}}',
@@ -710,7 +707,7 @@ export default {
   labelAddAssetTitleActive: 'Add assets & Activate',
   labelFromMyL1: 'From my {{l1Symbol}} account',
   labelFromOtherL1: 'From another {{l1Symbol}} account',
-  labelBuyWithCard: 'Buy with Card',
+  labelBuyWithCard: 'On-Ramp From Fiat',
   labelFromOtherL2: 'From another {{loopringL2}} account',
   labelFromExchange: 'From an exchange',
   labelOpenInWalletApp: 'Open in wallet app/extension',
@@ -2022,6 +2019,8 @@ export default {
   labelTxGuardian_approve_token: 'approve token',
   labelContactNameExisted: 'Name already exists',
   labelContactAddressExisted: 'Address already exists',
+  labelL1toL2ThirdPartOn: 'On-ramp Crypto',
+  labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',

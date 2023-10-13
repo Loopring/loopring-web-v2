@@ -500,6 +500,7 @@ export const CreateRedPacketPanel = <
           onClickViewDetail={(hash) => {
             onClickViewTargetDetail(hash)
           }}
+          {...{ ...rest }}
         />
       ),
       toolBarItem: undefined,
