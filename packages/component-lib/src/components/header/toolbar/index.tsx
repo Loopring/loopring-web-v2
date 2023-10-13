@@ -91,7 +91,7 @@ export const BtnDownload = ({
 // };
 
 export const BtnNotification = ({
-  notification: _notification,
+  notification,
   account,
   chainId,
   onClickExclusiveredPacket,
@@ -110,34 +110,6 @@ export const BtnNotification = ({
     popupId: 'notificationPop',
   })
   const [content] = React.useState(0)
-
-  const notifications = _notification?.notifications?.reduce((prev, item) => {
-    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
-      prev.push(item)
-    }
-    return prev
-  }, [] as NOTIFICATION_ITEM[])
-  const activitiesList1 = _notification?.activities?.reduce((prev, item) => {
-    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
-      prev.push(item)
-    }
-    return prev
-  }, [] as ACTIVITY[])
-
-  const activitiesList2 = _notification?.activitiesInvest?.reduce((prev, item) => {
-    if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
-      prev.push(item)
-    }
-    return prev
-  }, _notification?.activities as ACTIVITY[])
-
-  const notification = {
-    ..._notification,
-    notifications: notifications,
-    activities: [...(activitiesList1 ?? []), ...(activitiesList2 ?? [])],
-    account,
-    chainId,
-  }
 
   return (
     <Box position={'relative'}>
