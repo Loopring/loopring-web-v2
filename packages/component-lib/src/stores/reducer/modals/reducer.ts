@@ -6,9 +6,10 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { AmmPanelType, ToastType } from '../../../components'
+import { ToastType } from '../../../components'
 
 const initialState: ModalState = {
   isShowGlobalToast: {

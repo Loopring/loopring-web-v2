@@ -1,12 +1,18 @@
 import { AmmChgData, AmmDepositWrap, AmmWithdrawWrap } from '../components'
 import { Box, BoxProps, Tab, Tabs, Toolbar } from '@mui/material'
-import { AmmExitData, AmmInData, AmmJoinData, IBData } from '@loopring-web/common-resources'
+import {
+  AmmExitData,
+  AmmInData,
+  AmmJoinData,
+  IBData,
+  AmmPanelType,
+} from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import React from 'react'
 import { CountDownIcon } from '../components/tool/Refresh'
 import styled from '@emotion/styled'
 import { boxLiner, toolBarPanel } from '../../styled'
-import { AmmPanelType, AmmProps } from './Interface'
+import { AmmProps } from './Interface'
 import { useSettings } from '../../../stores'
 
 const WrapStyle = styled(Box)<
