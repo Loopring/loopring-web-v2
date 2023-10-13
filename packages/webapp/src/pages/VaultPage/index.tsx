@@ -56,7 +56,7 @@ export const DashBoardTitle = () => {
   )
 }
 export const VaultPage = () => {
-  let match: any = useRouteMatch(`/${RouterPath.vault}/:item`)
+  let match: any = useRouteMatch(`/vault/:item`)
   // const selected = match?.params?.item ?? VaultKey.VAULT_HOME
   const { defaultNetwork, isMobile } = useSettings()
   const { t } = useTranslation()
@@ -68,14 +68,13 @@ export const VaultPage = () => {
   const { status: vaultStatus, getVaultMap, marketArray } = useVaultMap()
 
   // RouterAllowIndex[]
-  const [tabIndex, setTabIndex] = React.useState<VaultKey>(
-    Object.values(VaultKey)
-      .map((item) => item.toLowerCase())
-      .includes(match?.params?.item?.toLowerCase())
-      ? match?.params?.item
-      : VaultKey.VAULT_HOME,
-    // InvestType.Overview
-  )
+  const [tabIndex, setTabIndex] = React.useState<VaultKey>(() => {
+    return (
+      Object.values(VaultKey).find(
+        (item) => item.toLowerCase() == match?.params?.item?.toLowerCase(),
+      ) ?? VaultKey.VAULT_HOME
+    )
+  })
   const [error, setError] = React.useState(false)
   React.useEffect(() => {
     const { marketArray } = store.getState().invest.vaultMap
@@ -85,6 +84,12 @@ export const VaultPage = () => {
       setError(true)
     }
   }, [vaultStatus])
+  React.useEffect(() => {
+    const item = Object.values(VaultKey).find(
+      (item) => item.toLowerCase() == match?.params?.item?.toLowerCase(),
+    )
+    setTabIndex(item ? item : VaultKey.VAULT_HOME)
+  }, [match?.params?.item])
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -110,7 +115,6 @@ export const VaultPage = () => {
             }}
             onChange={(_e, value) => {
               history.push(`${RouterPath.vault}/${value}`)
-              setTabIndex(value)
             }}
           >
             <Tab value={VaultKey.VAULT_HOME} label={<HomeTitle />} />
