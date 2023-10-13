@@ -17,6 +17,7 @@ import { css, Theme, useTheme } from '@emotion/react'
 import {
   AmmDetailExtendProps,
   AmmInData,
+  AmmPanelType,
   CoinInfo,
   EmptyValueTag,
   FloatTag,

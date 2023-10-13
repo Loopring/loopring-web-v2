@@ -696,6 +696,10 @@ export enum RecordTabIndex {
   vaultRecords = 'vaultRecords',
 }
 
+export enum AmmPanelType {
+  Join = 0,
+  Exit = 1,
+}
 export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',
