@@ -112,7 +112,7 @@ export const VendorMenu = ({
                 }
               }}
             >
-              <Box>
+              <Box display={'flex'}>
                 {VendorIconItem({ svgIcon: item.svgIcon })}
                 {campaignTagConfig && (
                   <TagIconList
