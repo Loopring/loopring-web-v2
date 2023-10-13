@@ -185,6 +185,22 @@ export enum AccountStep {
   BtradeSwap_Failed,
 
   AMM_Pending,
+
+  VaultTrade_Success,
+  VaultTrade_Failed,
+  VaultTrade_In_Progress,
+  VaultJoin_Success,
+  VaultJoin_Failed,
+  VaultJoin_In_Progress,
+  VaultRedeem_Success,
+  VaultRedeem_Failed,
+  VaultRedeem_In_Progress,
+  VaultBorrow_Success,
+  VaultBorrow_Failed,
+  VaultBorrow_In_Progress,
+  VaultRepay_Success,
+  VaultRepay_Failed,
+  VaultRepay_In_Progress,
 }
 
 /**

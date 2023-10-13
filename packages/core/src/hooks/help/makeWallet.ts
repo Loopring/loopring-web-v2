@@ -1,5 +1,5 @@
 import { BIGO, store } from '../../index'
-import { AccountStatus, CoinKey, WalletCoin } from '@loopring-web/common-resources'
+import { AccountStatus, CoinKey, WalletCoin, WalletMap } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export type WalletMapExtend<C> = {
@@ -12,8 +12,7 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>({
   needFilterZero,
   isActive = false,
   _isToL1,
-}: // _isTotal,
-{
+}: {
   needFilterZero: boolean
   isActive?: boolean
   _isToL1?: boolean
@@ -52,5 +51,80 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>({
     return { walletMap }
   } else {
     return { walletMap: undefined }
+  }
+}
+
+export const makeVaultLayer2 = <
+  C extends { [key: string]: any },
+  I = WalletCoin<C> & { detail: any },
+>({
+  needFilterZero,
+}: // _isTotal,
+{
+  needFilterZero: boolean
+}): {
+  vaultLayer2Map: WalletMap<C, I> | undefined
+} => {
+  const { vaultLayer2 } = store.getState().vaultLayer2
+  const { tokenMap } = store.getState().invest.vaultMap
+  const { readyState } = store.getState().account
+  let vaultLayer2Map: WalletMap<C, I> | undefined
+  if (vaultLayer2) {
+    vaultLayer2Map = Reflect.ownKeys(vaultLayer2).reduce((prev, item) => {
+      const vaultAsset: sdk.VaultBalance = vaultLayer2[item as string]
+      const countBig = sdk.toBig(vaultAsset.total) //.minus(sdk.toBig(locked))
+      if (needFilterZero && countBig.eq(BIGO)) {
+        return prev
+      }
+      return {
+        ...prev,
+        [item]: {
+          belong: item,
+          count: sdk.fromWEI(tokenMap, item, countBig.toString()),
+          detail: vaultLayer2[item as string],
+        },
+      }
+    }, {} as WalletMap<C, I>)
+  }
+  if (readyState === AccountStatus.ACTIVATED) {
+    return { vaultLayer2Map }
+  } else {
+    return { vaultLayer2Map: undefined }
+  }
+}
+
+export const makeVaultAvaiable2 = <C extends { [key: string]: any }>({}: // needFilterZero,
+// _isTotal,
+{
+  needFilterZero: boolean
+}): {
+  vaultAvaiable2Map: WalletMap<C> | undefined
+} => {
+  // const { vaultLayer2 } = store.getState().vaultLayer2
+  // const { tokenMap } = store.getState().invest.vaultMap
+  const { readyState } = store.getState().account
+  let vaultAvaiable2Map: WalletMap<C> | undefined = {}
+  // if (vaultLayer2) {
+  //     vaultLayer2Map = Reflect.ownKeys(vaultLayer2).reduce((prev, item) => {
+  //       const vaultAsset: sdk.VaultBalance = vaultLayer2[item as string]
+  //       const countBig = sdk.toBig(vaultAsset.total) //.minus(sdk.toBig(locked))
+  //       if (needFilterZero && countBig.eq(BIGO)) {
+  //         return prev
+  //       }
+  //       return {
+  //         ...prev,
+  //         [item]: {
+  //           belong: item,
+  //           count: sdk.fromWEI(tokenMap, item, countBig.toString()),
+  //           detail: vaultLayer2[item as string],
+  //         },
+  //       }
+  //     }, {} as WalletMap<C>)
+  //   }
+  //TODO:
+  if (readyState === AccountStatus.ACTIVATED) {
+    return { vaultAvaiable2Map }
+  } else {
+    return { vaultAvaiable2Map: undefined }
   }
 }

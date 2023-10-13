@@ -28,6 +28,7 @@ import {
   MyAmmLP,
   PriceTag,
   YEAR_DAY_FORMAT,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 
 import { account, ammCalcData, coinMap, tradeCalcData } from '../../static'

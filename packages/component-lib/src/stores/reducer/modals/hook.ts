@@ -32,6 +32,10 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowVaultJoin,
+  setShowVaultExit,
+  setShowVaultSwap,
+  setShowVaultLoad,
 } from './reducer'
 
 import React from 'react'
@@ -288,6 +292,22 @@ export const useOpenModals = () => {
           messageKey?: string
         }
       }) => dispatch(setShowGlobalToast(state)),
+      [dispatch],
+    ),
+    setShowVaultExit: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultExit(state)),
+      [dispatch],
+    ),
+    setShowVaultJoin: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultJoin(state)),
+      [dispatch],
+    ),
+    setShowVaultSwap: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultSwap(state)),
+      [dispatch],
+    ),
+    setShowVaultLoad: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowVaultLoad(state)),
       [dispatch],
     ),
   }

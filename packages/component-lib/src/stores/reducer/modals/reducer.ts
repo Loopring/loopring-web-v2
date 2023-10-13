@@ -7,9 +7,10 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  VaultLoadType,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { ToastType } from '../../../components'
+import { ToastType } from '@loopring-web/component-lib'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
@@ -53,6 +54,10 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
+  isShowVaultExit: { isShow: false },
+  isShowVaultJoin: { isShow: false },
+  isShowVaultSwap: { isShow: false },
+  istShowVaultLoad: { isShow: false, type: VaultLoadType.Borrow },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -372,6 +377,18 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
+    setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad>) {
+      state.isShowVaultExit = { ...action.payload }
+    },
+    setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad>) {
+      state.isShowVaultJoin = { ...action.payload }
+    },
+    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
+      state.isShowVaultSwap = { ...action.payload }
+    },
+    setShowVaultLoad(state, action: PayloadAction<ModalStatePlayLoad>) {
+      state.isShowVaultSwap = { ...action.payload }
+    },
   },
 })
 export const {
@@ -406,4 +423,8 @@ export const {
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
+  setShowVaultExit,
+  setShowVaultJoin,
+  setShowVaultSwap,
+  setShowVaultLoad,
 } = modalsSlice.actions

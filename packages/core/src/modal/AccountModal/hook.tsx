@@ -124,6 +124,21 @@ import {
   useSettings,
   TOASTOPEN,
   setShowGlobalToast,
+  VaultTrade_Success,
+  VaultTrade_Failed,
+  VaultTrade_In_Progress,
+  VaultJoin_Success,
+  VaultJoin_Failed,
+  VaultJoin_In_Progress,
+  VaultRedeem_Success,
+  VaultRedeem_Failed,
+  VaultRedeem_In_Progress,
+  VaultBorrow_Success,
+  VaultBorrow_Failed,
+  VaultBorrow_In_Progress,
+  VaultRepay_Success,
+  VaultRepay_Failed,
+  VaultRepay_In_Progress,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -3130,6 +3145,126 @@ export function useAccountModalForUI({
           />
         ),
         height: 'auto',
+      },
+      [AccountStep.VaultTrade_Success]: {
+        view: (
+          <VaultTrade_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultTrade_Failed]: {
+        view: (
+          <VaultTrade_Failed
+            btnInfo={undefined}
+            {...{
+              t,
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultTrade_In_Progress]: {
+        view: (
+          <VaultTrade_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultJoin_Success]: {
+        view: (
+          <VaultJoin_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultJoin_Failed]: {
+        view: (
+          <VaultJoin_Failed
+            btnInfo={undefined}
+            {...{
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              t,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultJoin_In_Progress]: {
+        view: (
+          <VaultJoin_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultRedeem_Success]: {
+        view: (
+          <VaultRedeem_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRedeem_Failed]: {
+        view: (
+          <VaultRedeem_Failed
+            btnInfo={undefined}
+            {...{
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              t,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultRedeem_In_Progress]: {
+        view: (
+          <VaultRedeem_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultBorrow_Success]: {
+        view: (
+          <VaultBorrow_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultBorrow_Failed]: {
+        view: (
+          <VaultBorrow_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultBorrow_In_Progress]: {
+        view: (
+          <VaultBorrow_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultRepay_Success]: {
+        view: (
+          <VaultRepay_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRepay_Failed]: {
+        view: (
+          <VaultRepay_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRepay_In_Progress]: {
+        view: (
+          <VaultRepay_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
       },
     })
   }, [

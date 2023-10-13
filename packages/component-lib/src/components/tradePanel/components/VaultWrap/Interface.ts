@@ -1,0 +1,55 @@
+import { InputButtonProps } from '../../../basic-lib'
+import { CoinInfo, IBData, TradeBtnStatus, VaultRepayData } from '@loopring-web/common-resources'
+import { SwitchData } from '../Interface'
+
+export type VaultJoinBaseProps<T, I, V> = {
+  btnStatus?: keyof typeof TradeBtnStatus | undefined
+  onSubmitClick: (data: T) => void | any
+  btnI18nKey?: string
+  propsExtends?: Partial<InputButtonProps<T, I, unknown>>
+  vaultJoinData: V
+  tradeData: T
+  isActiveAccount: boolean
+} & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
+
+export type VaultJoinExtendProps<T, I, C = IBData<I>> = {
+  switchStobEvent?: (_isStoB: boolean) => void
+  disabled?: boolean
+  onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
+  tokenProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
+  onBack: () => {}
+}
+export type VaultJoinWrapProps<T, I, V> = VaultJoinBaseProps<T, I, V> & VaultJoinExtendProps<T, I>
+
+export type VaultExitBaseProps = {
+  btnStatus?: keyof typeof TradeBtnStatus | undefined
+  onSubmitClick: () => void | any
+  vaultExitBtnI18nKey?: string
+  onClose: () => void
+  confirmLabel?: string
+  cancelLabel?: string
+  disabled?: boolean
+}
+
+// export type VaultExitWrapProps = VaultExitBaseProps
+export type VaultBorrowWrapProps<T, I, B, C> = {
+  disabled?: boolean
+  vaultBorrowBtnStatus?: keyof typeof TradeBtnStatus | undefined
+  vaultBorrowBtnI18nKey?: string
+  onVaultBorrowClick: () => void | any
+  tokenProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
+  onAddChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
+  vaultBorrowData: B
+  propsExtends?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
+  tradeData: T
+}
+export type VaultRepayWrapProps<T, I, VR, C> = {
+  disabled?: boolean
+  vaultRepayBtnStatus?: keyof typeof TradeBtnStatus | undefined
+  onVaultRepayClick: () => void | any
+  vaultRepayBtnI18nKey?: string
+  tokenProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
+  propsExtends?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
+  vaultRepayData: VR
+  tradeData: T
+}

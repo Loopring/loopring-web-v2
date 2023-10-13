@@ -6,13 +6,16 @@ import { btradeMapFork } from './BtradeMap/saga'
 import * as defiReducer from './DefiMap/reducer'
 import * as stakingSlice from './StakingMap/reducer'
 import * as btradeSlice from './BtradeMap/reducer'
-
+import * as vaultSlice from './VaultMap/reducer'
+import * as vaultTickerMapSlice from './VaultTicker/reducer'
 import * as investTokenTypeMapReducer from './InvestTokenTypeMap/reducer'
 import * as popupSlice from './popup/reducer'
 import { investTokenTypeForks } from './InvestTokenTypeMap/saga'
 import { dualReducer } from './DualMap'
 import { dualMapFork } from './DualMap/saga'
 import { stakingMapFork } from './StakingMap/saga'
+import { vaultMapFork } from './VaultMap/saga'
+import { vaultTickerForks } from './VaultTicker/saga'
 
 export const investReducer = combineReducers({
   defiMap: defiReducer.defiMapSlice.reducer,
@@ -20,7 +23,9 @@ export const investReducer = combineReducers({
   stakingMap: stakingSlice.stakingMapSlice.reducer,
   investTokenTypeMap: investTokenTypeMapReducer.investTokenTypeMapSlice.reducer,
   btradeMap: btradeSlice.btradeMapSlice.reducer,
+  vaultMap: vaultSlice.vaultMapSlice.reducer,
   popup: popupSlice.popupSlice.reducer,
+  vaultTickerMap: vaultTickerMapSlice.vaultTickerMapSlice.reducer,
 })
 export const investForks = [
   ...defiMapFork,
@@ -28,6 +33,8 @@ export const investForks = [
   ...dualMapFork,
   ...stakingMapFork,
   ...btradeMapFork,
+  ...vaultMapFork,
+  ...vaultTickerForks,
 ]
 
 export * from './DefiMap'
@@ -35,4 +42,6 @@ export * from './DualMap'
 export * from './InvestTokenTypeMap'
 export * from './StakingMap'
 export * from './BtradeMap'
+export * from './VaultMap'
 export * from './popup'
+export * from './VaultTicker'

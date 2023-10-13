@@ -379,7 +379,6 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
 
   &.addAsset,
   &.sendAsset {
-
     white-space: pre;
     font-size: ${({ theme }) => theme.fontDefault.h5};
     justify-content: space-between;
@@ -394,6 +393,20 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
   &.banxaEnter {
     justify-content: space-between;
   }
+  &.vaultBtn {
+    border: 0;
+    font-size: ${({ theme }) => theme.fontDefault.h5};
+    color: var(--color-text-primary);
+    justify-content: space-between;
+    .MuiButton-endIcon {
+      color: var(--color-text-Secondary);
+    }
+    &:hover {
+      .MuiButton-endIcon {
+        color: var(--color-primary);
+      }
+    }
+  }
 
   &.redPacketType {
     display: flex;
@@ -403,8 +416,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     text-indent: 0em;
     text-align: left;
     padding: ${({ theme }) => theme.unit * 2}px ${({ theme }) => theme.unit * 4}px;
-
-    .mainTitlte {
+    .mainTitle {
     }
   }
 
@@ -511,3 +523,41 @@ export const MediaLabelStyled = styled(Box)<BoxProps & { colorbg?: string }>`
   background: ${({ colorbg }) => (colorbg ? colorbg : 'var(--color-tag)')};
   cursor: help;
 ` as (props: BoxProps & { colorbg?: string }) => JSX.Element
+
+export const BoxBannerStyle = styled(Box)<
+  BoxProps & { backGroundUrl?: string | number; direction?: 'left' | 'right' }
+>`
+  background-color: var(--color-box);
+
+  .bg:after {
+    display: block;
+    content: '';
+    float: ${({ direction }) => direction};
+    width: 35%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-image: url('${({ backGroundUrl }) => backGroundUrl}');
+  }
+
+  &.mobile .bg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &:after {
+      opacity: 0.08;
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  }
+` as (
+  props: BoxProps & {
+    backGroundUrl?: string | number
+    direction?: 'left' | 'right'
+  },
+) => JSX.Element
