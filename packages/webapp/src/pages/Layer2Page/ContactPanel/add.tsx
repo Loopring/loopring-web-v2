@@ -192,7 +192,6 @@ export const useContactAdd = ({
             code: (response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message,
           }
         }
-        // setLoading(false)
         setToast({
           open: true,
           type: ToastType.success,
@@ -231,10 +230,8 @@ export const useContactAdd = ({
       setLoading(false)
     }
   }, [
-    // setLoadingBtn,
     realAddr,
     addName,
-    // defaultNetwork,
     mapContactAddressType,
     isEdit,
     setToast,
@@ -305,6 +302,7 @@ export const useContactAdd = ({
         addressToExWalletMapFn((isEdit as EditItem)?.item?.addressType ?? undefined),
       )
     }
+    setLoading(false)
   }, [(isEdit as EditItem)?.item?.contactAddress])
   const detectedWalletType = loopringSmartWalletVersion?.isLoopringSmartWallet
     ? WALLET_TYPE.Loopring
@@ -330,6 +328,7 @@ export const useContactAdd = ({
     onChangeAddressType(undefined)
     updateContacts()
     onClose()
+    setLoading(false)
   }
 
   const { defaultNetwork } = useSettings()
