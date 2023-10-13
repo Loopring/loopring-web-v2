@@ -501,7 +501,7 @@ export const useVaultSwap = <
           step: AccountStep.VaultTrade_In_Progress,
           info,
         })
-        updateVaultLayer2()
+        updateVaultLayer2({})
         // walletLayer2Service.sendUserUpdate()
         await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE)
         if (refreshRef.current) {

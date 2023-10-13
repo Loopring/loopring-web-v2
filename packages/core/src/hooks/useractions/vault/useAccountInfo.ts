@@ -30,7 +30,12 @@ export type VaultAccountInfoStatus = {
   // isShowFeathure:  vaultAccountInfo?.accountStatus
 }
 export const useAccountInfo = () => {
-  const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
+  const {
+    vaultAccountInfo,
+    status: vaultAccountInfoStatus,
+    updateVaultLayer2,
+    activeInfo,
+  } = useVaultLayer2()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const { setShowVaultJoin, setShowVaultSwap, setShowVaultExit } = useOpenModals()
   const { t } = useTranslation()
@@ -60,13 +65,16 @@ export const useAccountInfo = () => {
           return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultAddBtn|` }
         case sdk.VaultAccountStatus.FREE: // sdk.VaultAccountStatus.FREE:
         default:
+          if (activeInfo?.hash) {
+            return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
+          }
           return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
       }
     } else {
       // setIsLoading(true)
-      return { tradeBtnStatus: TradeBtnStatus.LOADING, label: `labelVaultAddBtn|` }
+      return { tradeBtnStatus: TradeBtnStatus.LOADING, label: `labelVaultJoinInProcessing|` }
     }
-  }, [vaultAccountInfoStatus])
+  }, [vaultAccountInfoStatus, activeInfo])
   const {
     btnStatus: joinBtnStatus,
     onBtnClick: onJoinPop,

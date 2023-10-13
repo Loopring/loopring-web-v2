@@ -145,6 +145,12 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   setCheckAddaccountId(response.accInfo.accountId)
                 }
               }
+            } else {
+              setIsCFAddress(false)
+              setIsLoopringAddress(false)
+              setLoopringSmartWalletVersion({
+                isLoopringSmartWallet: false,
+              })
             }
           }
           myLog('address update async', address, realAddr)

@@ -674,6 +674,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     BasicANFTTradeProps<T, I> & {
       handleOnChoose: (value: NFT) => void
       selectNFT: NFT
+      
     }
   > & {
     setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void
@@ -697,6 +698,7 @@ export type TargetRedpacktSelectStepProps = {
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
   popRedPacketAmountStr: string | undefined
   backToScope: () => void
+  idIndex: { [key: string]: string }
 }
 
 export type TargetRedpacktInputAddressStepProps = {

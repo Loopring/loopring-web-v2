@@ -14,6 +14,7 @@ import {
   PriceTag,
   RowConfig,
   TokenType,
+  VaultAction,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons'
@@ -92,7 +93,6 @@ export type VaultAssetsTableProps<R = RawDataAssetsItem> = {
   onVisibleRowsChange?: (props: any) => void
   showFilter?: boolean
   isLoading?: boolean
-  getMarketArrayListCallback: (token: string) => string[]
   rowConfig?: typeof RowConfig
   forexMap: ForexMap<sdk.Currency>
   hideAssets?: boolean
