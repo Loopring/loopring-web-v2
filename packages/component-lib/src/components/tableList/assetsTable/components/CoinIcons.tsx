@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, Box, BoxProps, styled, Typography } from '@mui/material'
 import { CoinInfo, SoursURL, TokenType } from '@loopring-web/common-resources'
-import { AvatarCoin } from '../../../basic-lib'
+import { AvatarCoin, VaultTag } from '../../../basic-lib'
 import { useSettings } from '../../../../stores'
 
 const BoxStyle = styled(Box)<BoxProps & { size: number }>`
@@ -9,6 +9,9 @@ const BoxStyle = styled(Box)<BoxProps & { size: number }>`
     return `
     .logo-icon.dual:last-child {
       transform: scale(0.6) translate(${size / 6}px, ${size / 6}px);
+    }
+    .logo-icon.vault:last-child {
+      transform: scale(0.5) translate(${size / 6}px, ${size / 4}px);
     }
     `
   }}
@@ -65,6 +68,28 @@ export const CoinIcons = React.memo(
             />
           )}
         </Box>
+        {[TokenType.vault].includes(type) && (
+          <Box
+            className={`logo-icon ${type}`}
+            display={'flex'}
+            height={'var(--btn-icon-size-small)'}
+            position={'relative'}
+            zIndex={24}
+            left={-12}
+            width={'var(--btn-icon-size-small)'}
+            alignItems={'center'}
+            justifyContent={'center'}
+          >
+            <VaultTag
+              sx={{
+                height: 36,
+                width: 36,
+                transformOrigin: 'bottom',
+                transform: `scale(${size / (36 * 2)})`,
+              }}
+            />
+          </Box>
+        )}
         {coinBInfo || [TokenType.dual, TokenType.lp].includes(type) ? (
           <Box
             className={`logo-icon ${type}`}

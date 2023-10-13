@@ -1,4 +1,4 @@
-import { SvgIcon, Chip } from '@mui/material'
+import { SvgIcon, Chip, SvgIconProps } from '@mui/material'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
@@ -110,4 +110,33 @@ export const AddressTypeTag = ({ addressType }: { addressType }) => {
     default:
       return <></>
   }
+}
+
+export const VaultTag = (props: SvgIconProps) => {
+  return (
+    <svg viewBox='0 0 48 48' {...props}>
+      <path
+        d='M48 24C48 37.2548 37.2548 48 24 48C10.7452 48 0 37.2548 0 24C0 10.7452 10.7452 0 24 0C37.2548 0 48 10.7452 48 24Z'
+        fill='url(#vaultTagLinear)'
+      />
+      <path d='M17.4545 14.0859H12L19.3636 29.5596L22.0909 23.5596L17.4545 14.0859Z' fill='white' />
+      <path
+        d='M23.4545 38.0859L21.2727 33.3491L30.5455 14.0859H36L24.5455 38.0859H23.4545Z'
+        fill='white'
+      />
+      <defs>
+        <linearGradient
+          id='vaultTagLinear'
+          x1='24'
+          y1='0'
+          x2='24'
+          y2='48'
+          gradientUnits='userSpaceOnUse'
+        >
+          <stop stop-color='#68E19B' />
+          <stop offset='1' stop-color='#4EADEB' />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
 }

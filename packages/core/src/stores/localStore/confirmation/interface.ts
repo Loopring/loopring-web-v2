@@ -1,7 +1,4 @@
-export enum DualInvestConfirmType {
-  USDCOnly = 'USDCOnly',
-  all = 'all',
-}
+import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
 export interface Confirmation {
   confirmed: boolean

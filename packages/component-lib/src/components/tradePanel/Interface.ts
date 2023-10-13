@@ -33,7 +33,12 @@ import {
   TransferInfoProps as _TransferInfoProps,
   WithdrawExtendProps,
 } from './components/Interface'
-import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps } from './components'
+import {
+  SwapData,
+  SwapTradeBaseEventProps,
+  SwapTradeBaseProps,
+  VaultBorrowBaseProps,
+} from './components'
 import {
   StopTradeLimitInfoProps,
   TradeLimitInfoProps,
@@ -42,6 +47,7 @@ import {
 } from './tradePro/Interface'
 import React from 'react'
 import { TOASTOPEN } from '../toast'
+import { VaultExitBaseProps, VaultJoinBaseProps } from './components/VaultWrap'
 
 export type SwapTradeData<T> = {
   sell: T
@@ -152,7 +158,7 @@ export type SwapProps<T, I, TCD> = {
   titleI8nKey?: string
   toPro?: () => void
   tradeData: SwapTradeData<T>
-  campaignTagConfig: CAMPAIGNTAGCONFIG
+  campaignTagConfig?: CAMPAIGNTAGCONFIG
   handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: SwapType) => Promise<void>
   market?: MarketType
   onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>
@@ -237,5 +243,11 @@ export type FeeSelectProps = {
   middleContent?: JSX.Element
   feeNotEnoughContent?: JSX.Element
 }
+
+export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>
+export type VaultBorrowProps<T, I, V> = BasicACoinTradeHookProps<T, I> &
+  VaultBorrowBaseProps<T, I, V>
+
+export type VaultExitProps = VaultExitBaseProps
 
 export * from './components/Interface'

@@ -23,6 +23,7 @@ export type SwapTradeBaseProps<T, I, TCD> = {
   tradeCalcData: TCD
   tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
   tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
+  classWrapName?: string
 }
 export type SwapTradeBaseEventProps<T, I> = {
   onSwapClick: () => void | any

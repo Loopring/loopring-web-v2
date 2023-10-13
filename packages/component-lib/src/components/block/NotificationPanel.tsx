@@ -16,9 +16,9 @@ export const NotificationPanel = ({
   notification,
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
-  exclusiveRedpacketCount
+  exclusiveRedpacketCount,
 }: {
-  notification: NOTIFICATION,
+  notification: NOTIFICATION
   onClickExclusiveredPacket: () => void
   showExclusiveRedpacket: boolean
   exclusiveRedpacketCount: number
@@ -81,7 +81,7 @@ export const NotificationPanel = ({
                   paddingTop: 2.5,
                   cursor: 'pointer',
                   marginTop: 1,
-                  marginBottom: !!hasActivities ? 1 : 0
+                  marginBottom: !!hasActivities ? 1 : 0,
                 }}
               >
                 <Typography color={'black'}>Congratulations!</Typography>

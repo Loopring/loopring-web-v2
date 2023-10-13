@@ -1,7 +1,7 @@
 import { all, call, fork, put, take, takeLatest, delay } from 'redux-saga/effects'
 import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV } from './interface'
-import { store, LoopringSocket, LoopringAPI, toggleCheck } from '../../index'
+import { store, LoopringSocket, LoopringAPI, toggleCheck, makeVault } from '../../index'
 import {
   ChainIdExtends,
   CustomError,
@@ -9,6 +9,7 @@ import {
   DUAL_CONFIG,
   ErrorMap,
   ForexMap,
+  LocalStorageConfigKey,
   LEVERAGE_ETH_CONFIG,
   MapChainId,
   myLog,
@@ -22,17 +23,28 @@ import { updateWalletLayer1 } from '../walletLayer1/reducer'
 import { getTokenMap } from '../token/reducer'
 import { getNotify } from '../notify/reducer'
 import { getTokenPrices } from '../tokenPrices/reducer'
+import { getDefiMap } from '../invest/DefiMap/reducer'
 import { getInvestTokenTypeMap } from '../invest/InvestTokenTypeMap/reducer'
+import { getDualMap } from '../invest/DualMap/reducer'
 import { getStakingMap } from '../invest/StakingMap/reducer'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
+import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
 import { updateDualSyncMap } from '../invest/DualMap/reducer'
 import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
+import { getVaultMap, updateVaultSyncMap } from '../invest/VaultMap/reducer'
+import { getVaultTickers } from '../invest/VaultTicker/reducer'
 
+enum ENV_KEY {
+  Bridge = 'bridge',
+  LoopringIo = 'loopring.io',
+  Earn = 'earn',
+  Guardian = 'guardian',
+}
 export const defiAllAsync = async () => {
   if (LoopringAPI.defiAPI) {
     let { raw_data } = await LoopringAPI.defiAPI?.getDefiMarkets({})
@@ -68,14 +80,20 @@ export const defiAllAsync = async () => {
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: sdk.ChainId | 'unknown',
 ) {
+  const APP_NAME = process.env?.REACT_APP_NAME ?? 'loopring.io'
   const { chainId } = store.getState().system
   const _tokenMap = JSON.parse(window.localStorage.getItem('tokenMap') ?? '{}')[chainId]
   const _ammpools = JSON.parse(window.localStorage.getItem('ammpools') ?? '{}')[chainId]
   const _markets = JSON.parse(window.localStorage.getItem('markets') ?? '{}')[chainId]
   const _btradeMarkets = JSON.parse(window.localStorage.getItem('btradeMarkets') ?? '{}')[chainId]
-
+  const _vaultMarkets = JSON.parse(
+    window.localStorage.getItem(LocalStorageConfigKey.vaultMarkets) ?? '{}',
+  )[chainId]
+  const _vaultTokenMap = JSON.parse(
+    window.localStorage.getItem(LocalStorageConfigKey.vaultTokenMap) ?? '{}',
+  )[chainId]
   const _disableWithdrawTokenList = JSON.parse(
-    window.localStorage.getItem('disableWithdrawTokenList') ?? '{}',
+    window.localStorage.getItem(LocalStorageConfigKey.disableWithdrawTokenList) ?? '{}',
   )[chainId]
   let tokensMap,
     coinMap,
@@ -123,6 +141,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       }),
     )
     store.dispatch(initAmmMap({ ammpools, chainId }))
+    store.dispatch(updateVaultSyncMap(makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')))
     ;(function (btradeMarkets) {
       if (btradeMarkets) {
         const {
@@ -181,7 +200,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       ]: any) => {
         store.dispatch(
           getTokenMap({
-            tokensMap,
+            tokenMap: tokensMap,
             coinMap,
             totalCoinMap,
             idIndex,
@@ -271,21 +290,43 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     yield take('ammMap/getAmmMapStatus')
     store.dispatch(getAmmActivityMap({ ammpools }))
     if (store.getState().tokenMap.status === 'ERROR') {
-      throw 'tokenMap Error'
+      throw new CustomError({ ...ErrorMap.NO_SDK, message: 'tokenMap Error' })
     }
   }
-  store.dispatch(getRedPacketConfigs(undefined))
-  store.dispatch(getNotify(undefined))
 
-  store.dispatch(getStakingMap(undefined))
-  store.dispatch(getBtradeMap(undefined))
-  defiAllAsync()
-  yield all([
-    take('defiMap/getDefiMapStatus'),
-    take('dualMap/getDualMapStatus'),
-    take('stakingMap/getStakingMapStatus'),
-  ])
-  store.dispatch(getInvestTokenTypeMap(undefined))
+  //TODO: APP_NAME
+  switch (APP_NAME.toLowerCase()) {
+    case ENV_KEY.Bridge.toLowerCase():
+    case ENV_KEY.Guardian.toLowerCase():
+      break
+    case ENV_KEY.Earn.toLowerCase():
+      store.dispatch(getDualMap(undefined))
+      defiAllAsync()
+      yield all([take('dualMap/getDualMapStatus')])
+      store.dispatch(getInvestTokenTypeMap(undefined))
+      break
+    case ENV_KEY.LoopringIo.toLowerCase():
+    default:
+      store.dispatch(getRedPacketConfigs(undefined))
+      store.dispatch(getNotify(undefined))
+      store.dispatch(getStakingMap(undefined))
+      store.dispatch(getDualMap(undefined))
+      store.dispatch(getDefiMap(undefined))
+      store.dispatch(getBtradeMap(undefined))
+      store.dispatch(getExclusiveRedpacket(undefined))
+      store.dispatch(getVaultMap(undefined))
+      defiAllAsync()
+      yield all([
+        take('defiMap/getDefiMapStatus'),
+        take('dualMap/getDualMapStatus'),
+        take('stakingMap/getStakingMapStatus'),
+      ])
+      store.dispatch(getInvestTokenTypeMap(undefined))
+      yield take('vaultTickerMap/getVaultTickersStatus')
+      store.dispatch(getVaultTickers(undefined))
+      break
+  }
+
   yield delay(5)
   const { account, walletLayer1 } = store.getState()
   if (account.accAddress && walletLayer1.walletLayer1 === undefined) {
@@ -396,27 +437,20 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         etherscanBaseUrl =
           sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
       }
-      LoopringAPI.userAPI?.setBaseUrl(baseURL)
-      LoopringAPI.luckTokenAPI?.setBaseUrl(baseURL)
-      LoopringAPI.exchangeAPI?.setBaseUrl(baseURL)
-      LoopringAPI.globalAPI?.setBaseUrl(baseURL)
-      LoopringAPI.ammpoolAPI?.setBaseUrl(baseURL)
-      LoopringAPI.walletAPI?.setBaseUrl(baseURL)
-      LoopringAPI.wsAPI?.setBaseUrl(baseURL)
-      LoopringAPI.nftAPI?.setBaseUrl(baseURL)
-      LoopringAPI.delegate?.setBaseUrl(baseURL)
-      LoopringAPI.defiAPI?.setBaseUrl(baseURL)
-      LoopringAPI.contactAPI?.setBaseUrl(baseURL)
+      LoopringAPI.setBaseURL(baseURL)
+
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
-        const _exchangeInfo = JSON.parse(window.localStorage.getItem('exchangeInfo') ?? '{}')
+        const _exchangeInfo = JSON.parse(
+          window.localStorage.getItem(LocalStorageConfigKey.exchangeInfo) ?? '{}',
+        )
         ;[{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] = await Promise.all([
           _exchangeInfo[chainId]
             ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
             : LoopringAPI.exchangeAPI.getExchangeInfo().then(({ exchangeInfo }) => {
                 myLog('exchangeInfo from service because no localstorage ')
                 window.localStorage.setItem(
-                  'exchangeInfo',
+                  LocalStorageConfigKey.exchangeInfo,
                   JSON.stringify({
                     ..._exchangeInfo,
                     [exchangeInfo.chainId]: exchangeInfo,
@@ -440,7 +474,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         if (_exchangeInfo[chainId]) {
           LoopringAPI.exchangeAPI.getExchangeInfo().then(async ({ exchangeInfo }: any) => {
             window.localStorage.setItem(
-              'exchangeInfo',
+              LocalStorageConfigKey.exchangeInfo,
               JSON.stringify({
                 ..._exchangeInfo,
                 [exchangeInfo.chainId]: exchangeInfo,

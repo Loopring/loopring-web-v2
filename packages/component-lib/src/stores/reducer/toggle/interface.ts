@@ -24,6 +24,10 @@ export type ToggleState = {
   LRCStackInvest: { enable: boolean; reason?: string }
   BTradeInvest: { enable: boolean; reason?: string }
   StopLimit: { enable: boolean; reason?: string }
+  VaultInvest: {
+    enable: boolean
+    reason?: string
+  }
   // @ts-ignore
   send: {
     orbiter: string[]

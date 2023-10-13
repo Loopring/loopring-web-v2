@@ -16,6 +16,7 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
   handleError,
   inputBtnRef,
   inputButtonProps,
+  className,
   ...rest
 }: BasicACoinTradeProps<T, I> & WithTranslation) => {
   const getDisabled = () => {
@@ -109,6 +110,7 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
       ref={inputBtnRef}
       isShowCoinIcon={true}
       disabled={getDisabled()}
+      className={className}
       {...{
         ...(inputBtnProps as any),
         inputData: tradeData ? tradeData : ({} as T),

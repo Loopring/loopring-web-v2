@@ -9,9 +9,13 @@ import {
   useWalletLayer2NFT,
   useWalletL2NFTCollection,
   useWalletL2Collection,
+  useVaultLayer2,
   redPacketHistory,
   offFaitService,
   store,
+  useVaultMap,
+  useContacts,
+  useVaultTicker,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -21,6 +25,13 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer1Status,
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1()
+
+  const {
+    updateVaultLayer2,
+    status: vaultLayer2Status,
+    statusUnset: vaultsLayer2Unset,
+  } = useVaultLayer2()
+  const { status: vaultTickerStatus, statusUnset: vaultTickerUnset } = useVaultTicker()
 
   const {
     resetLayer2NFT,
@@ -37,6 +48,8 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2()
+  const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
+
   const {
     updateWalletL2Collection,
     updateLegacyContracts,
@@ -85,10 +98,12 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2()
+            updateVaultLayer2({})
             updateWalletL2NFTCollection({ page: 1 })
             updateWalletL2Collection({ page: 1 })
           }
           updateLegacyContracts()
+          updateContacts()
           break
       }
     }
@@ -117,6 +132,31 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [walletLayer2Status])
+
+  React.useEffect(() => {
+    switch (vaultLayer2Status) {
+      case SagaStatus.ERROR:
+        vaultsLayer2Unset()
+        break
+      case SagaStatus.DONE:
+        vaultsLayer2Unset()
+        break
+      default:
+        break
+    }
+  }, [vaultLayer2Status])
+  React.useEffect(() => {
+    switch (vaultTickerStatus) {
+      case SagaStatus.ERROR:
+        vaultTickerUnset()
+        break
+      case SagaStatus.DONE:
+        vaultTickerUnset()
+        break
+      default:
+        break
+    }
+  }, [vaultLayer2Status])
 
   React.useEffect(() => {
     switch (walletL2CollectionStatus) {
@@ -167,4 +207,16 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [userRewardsStatus])
+  React.useEffect(() => {
+    switch (contactsStatus) {
+      case SagaStatus.ERROR:
+        contactsUnset()
+        break
+      case SagaStatus.DONE:
+        contactsUnset()
+        break
+      default:
+        break
+    }
+  }, [contactsStatus])
 }
