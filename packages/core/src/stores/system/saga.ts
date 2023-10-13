@@ -29,6 +29,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
+import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
 import { updateDualSyncMap } from '../invest/DualMap/reducer'
 import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
@@ -276,7 +277,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   }
   store.dispatch(getRedPacketConfigs(undefined))
   store.dispatch(getNotify(undefined))
-
   store.dispatch(getStakingMap(undefined))
   store.dispatch(getBtradeMap(undefined))
   defiAllAsync()

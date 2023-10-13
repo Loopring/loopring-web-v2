@@ -2,7 +2,6 @@ import { Box, Button, Grid, Modal, Tab, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
-  AmmPanelType,
   AssetsTable,
   ButtonStyle,
   CancelDualAlert,
@@ -42,6 +41,7 @@ import {
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
@@ -64,18 +64,6 @@ import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
-// background: ${({ selected }) => `${selected ? 'var(--color-primary)' : 'transparent'}`};
-
-// const TabStyle = styled(Tab)`
-//   padding: ${({ theme }) => theme.unit}px ${({ theme }) => 1.5 * theme.unit}px;
-//   border-radius: ${({ theme }) => 0.5 * theme.unit}px;
-//   font-size: 16px;
-//   line-height: 24px;
-//   margin-right: ${({ theme }) => theme.unit}px;
-//   cursor: pointer;
-//   color: ${({ selected }) =>
-//     `${selected ? 'var(--color-text-button)' : 'var(--color-text-primary)'}`};
-// `
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -298,9 +286,7 @@ const MyLiquidity: any = withTranslation('common')(
       setShowCancelOndAlert({ open: true, row: item })
     }
     const nanToEmptyTag = (value: any, prefix: string) => {
-      return value === 'NaN'
-        ? EmptyValueTag
-        : prefix + value
+      return value === 'NaN' ? EmptyValueTag : prefix + value
     }
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
@@ -775,7 +761,7 @@ const MyLiquidity: any = withTranslation('common')(
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
                               tokenMap={tokenMap}
                               isPriceEditable={true}
-                              toggle={true}
+                              toggle={{ enable: true }}
                               lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
                               greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
                               lessEarnView={dualDetail.lessEarnView}

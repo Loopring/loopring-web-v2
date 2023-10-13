@@ -8,7 +8,6 @@ import {
   hexToRGB,
   myLog,
   RowConfig,
-  SoursURL,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -23,7 +22,6 @@ import { ColumnCoinDeep } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 import TextTooltip from './textTooltip'
 import { useTheme } from '@emotion/react'
-import { redpacketService } from '@loopring-web/core'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -87,10 +85,11 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
       onClaimItem,
       showActionableRecords,
       isUncliamedNFT,
+      setPage,
+      page,
     } = props
     // const { isMobile, upColor } = useSettings();
     const history = useHistory()
-    const [page, setPage] = React.useState(1)
 
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
@@ -136,9 +135,17 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
         />
       </Tooltip>
     )
-    const exclusiveTag = <Typography marginLeft={0.5} borderRadius={1} paddingX={0.5} bgcolor={hexToRGB(theme.colorBase.warning, 0.5)} color={'var(--color-warning)'}>  
-      {t("labelRedPacketExclusiveTag", { ns: 'common' })}
-    </Typography>
+    const exclusiveTag = (
+      <Typography
+        marginLeft={0.5}
+        borderRadius={1}
+        paddingX={0.5}
+        bgcolor={hexToRGB(theme.colorBase.warning, 0.5)}
+        color={'var(--color-warning)'}
+      >
+        {t('labelRedPacketExclusiveTag', { ns: 'common' })}
+      </Typography>
+    )
     const getColumnModeTransactionUnclaimedNFT = React.useCallback(
       (): Column<R, unknown>[] => [
         {
@@ -236,9 +243,10 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
               return <Box>{t('labelBlindBoxExpired')}</Box>
             } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
               return <Box>{t('labelBlindBoxClaimed')}</Box>
-            } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+            } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING) {
               return <Box>{t('labelRedPacketClaiming')}</Box>
-            } 
+            }
+            return <></>
           },
         },
       ],
@@ -355,7 +363,7 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
                     return <Box>{t('labelBlindBoxExpired')}</Box>
                   } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMED) {
                     return <Box>{t('labelBlindBoxClaimed')}</Box>
-                  } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING){
+                  } else if (row.rawData.claim.status === sdk.ClaimRecordStatus.CLAIMING) {
                     return <Box>{t('labelRedPacketClaiming')}</Box>
                   } else {
                     return <></>
@@ -384,23 +392,6 @@ export const RedPacketReceiveTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-    const onRefresh = React.useCallback(() => {
-      if (tokenType === TokenType.nft) {
-        updateData({
-          page,
-          filter: { isNft: tokenType === TokenType.nft },
-        })
-      }
-    }, [page, tokenType])
-    const subject = React.useMemo(() => redpacketService.onRefresh(), [])
-    React.useEffect(() => {
-      const subscription = subject.subscribe(() => {
-        onRefresh()
-      })
-      return () => {
-        subscription.unsubscribe()
-      }
-    }, [])
 
     return (
       <TableWrapperStyled>

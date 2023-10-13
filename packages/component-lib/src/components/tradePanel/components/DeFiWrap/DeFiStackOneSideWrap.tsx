@@ -21,13 +21,12 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import moment from 'moment'
 import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
-import { usePopup } from '@loopring-web/core'
 
 const GridStyle = styled(Grid)`
   input::placeholder {
     font-size: ${({ theme }) => theme.fontDefault.h5};
   }
-  .coinInput-wrap{
+  .coinInput-wrap {
     background-color: var(--color-global-bg);
     border: 1px solid var(--color-border);
   }
@@ -325,6 +324,7 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   tokenSellProps,
   minSellAmount,
   maxSellAmount,
+  setShowLRCStakignPopup,
   ...rest
 }: DeFiSideWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -460,7 +460,6 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     : undefined
   dalyEarn = dalyEarn && dalyEarn !== '0' ? dalyEarn + ' ' + tokenSell.symbol : EmptyValueTag
   myLog('deFiSideCalcData.stakeViewInfo', deFiSideCalcData.stakeViewInfo)
-  const { setShowLRCStakignPopup } = usePopup()
   return (
     <GridStyle
       className={deFiSideCalcData ? '' : 'loading'}
@@ -513,7 +512,6 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
         <InputCoin<T, I, any>
           ref={coinSellRef}
           disabled={getDisabled}
-          
           {...{
             ...propsSell,
             name: 'coinSell',
@@ -538,13 +536,8 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
             </Trans>
           </Typography>
         </Grid> */}
-        <Box  marginTop={3} width={'100%'} borderRadius={1}>
-          <Grid
-            container
-            justifyContent={'space-between'}
-            direction={'row'}
-            alignItems={'center'}
-          >
+        <Box marginTop={3} width={'100%'} borderRadius={1}>
+          <Grid container justifyContent={'space-between'} direction={'row'} alignItems={'center'}>
             <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
               <Typography
                 component={'p'}

@@ -69,7 +69,7 @@ export default {
   errorHadUnknownCollectionDes:
     'As the creator, you will be able to generate collection information for those NFT minted earlier that belong to nowhere. And once done, the other people holding your NFT will be able to view those NFT with proper collection information via loopring.io and loopring wallet. <1>Go</1>',
   errorGuardianRouterError: 'Oops! Guardian site moved to <a>guardian.loopring.io</a>.',
-  errorAddressCheckError: 'Error on address checking processing ',
+  errorAddressCheckError: 'Oops! Something went wrong on address checking processing ',
   errorContactExisted: 'Contact address already exists',
   errorContactNameExisted: 'Name already exists',
   errorContactLimit: 'Unable to Add Contact,You have reached the maximum limit of 1500 contacts',

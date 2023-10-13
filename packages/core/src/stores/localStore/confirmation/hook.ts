@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../index'
-import { Confirmation, DualInvestConfirmType } from './interface'
+import { Confirmation } from './interface'
 
 import {
   confirm,
@@ -17,6 +17,7 @@ import {
   confirmDualDipInvest,
   confirmDualGainInvest,
 } from './reducer'
+import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
 export const useConfirmation = (): {
   confirmation: Confirmation

@@ -671,6 +671,10 @@ export enum RecordTabIndex {
   leverageETHRecords = 'leverageETHRecords',
 }
 
+export enum AmmPanelType {
+  Join = 0,
+  Exit = 1,
+}
 export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',

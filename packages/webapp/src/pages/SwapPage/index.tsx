@@ -16,13 +16,7 @@ import {
   SoursURL,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
-import {
-  getPriceImpactInfo,
-  PriceLevel,
-  ShowWitchAle3t1,
-  useNotify,
-  useSwap,
-} from '@loopring-web/core'
+import { PriceLevel, ShowWitchAle3t1, useNotify, useSubmitBtn, useSwap } from '@loopring-web/core'
 import React from 'react'
 
 export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation) => {
@@ -48,16 +42,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
     handleConfirm,
     handleClose,
     priceLevel,
-    // alertOpen,
-    // confirmOpen,
-    // pageTradeLite,
-    // priceAlertCallBack,
-    // smallOrderAlertCallBack,
-    // secondConfirmationCallBack,
-    // smallOrderAlertOpen,
-    // secondConfirmationOpen,
   } = useSwap({ path: '/trade/lite' })
-
   const styles = isMobile ? { flex: 1 } : { width: 'var(--swap-box-width)' }
   const { campaignTagConfig } = useNotify().notifyMap ?? {}
   const estimatedFee =

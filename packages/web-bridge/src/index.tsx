@@ -20,7 +20,7 @@ if (process.env.REACT_APP_VER) {
   console.log('VER:', process.env.REACT_APP_VER)
 }
 // @ts-ignore
-window.global = window
+window.global = window;
 const ProviderApp = React.memo(({ children }: { children: JSX.Element }) => {
   const providers: Array<[TProvider<any>, any]> = [
     provider(Provider as any, { store }),
