@@ -44,7 +44,6 @@ import {
   AmmPanelType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
 import {
   TableWrapStyled,
@@ -76,7 +75,7 @@ const MyLiquidity: any = withTranslation('common')(
   }: WithTranslation & {
     isHideTotal?: boolean
     className?: string
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
+    ammActivityMap: sdk.LoopringMap<sdk.LoopringMap<sdk.AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
     noHeader?: boolean
   }) => {
