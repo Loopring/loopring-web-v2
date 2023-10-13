@@ -41,7 +41,7 @@ import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 
 export const VaultDashBoardPanel = ({
-  vaultAccountInfo:,
+  vaultAccountInfo: _vaultAccountInfo,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
@@ -55,7 +55,7 @@ export const VaultDashBoardPanel = ({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const { onActionBtnClick, showNoVaultAccount, setShowNoVaultAccount, ...assetPanelProps } =
-    useGetVaultAssets({ vaultAccountInfo:_vaultAccountInfo })
+    useGetVaultAssets({ vaultAccountInfo: _vaultAccountInfo })
   const { totalAsset, hideAssets } = assetPanelProps
   const viewTemplate = React.useMemo(() => {
     switch (account.readyState) {
