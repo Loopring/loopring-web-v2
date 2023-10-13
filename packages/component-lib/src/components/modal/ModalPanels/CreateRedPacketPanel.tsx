@@ -53,6 +53,7 @@ export const CreateRedPacketPanel = <
   walletMap = {},
   coinMap = {},
   tokenMap = {},
+  idIndex,
   assetsData,
   myNFTPanel,
   onSendTargetRedpacketClick,
@@ -500,6 +501,7 @@ export const CreateRedPacketPanel = <
           onClickViewDetail={(hash) => {
             onClickViewTargetDetail(hash)
           }}
+          idIndex={idIndex}
         />
       ),
       toolBarItem: undefined,
