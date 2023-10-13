@@ -1699,7 +1699,7 @@ export default {
   labelDepositTo: 'Deposit to',
   labelReferTitle: 'Invite friends to join in \nLoopring and receive rewards',
   labelReferTitleDes:
-    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
+    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a discount on transfer fees.',
   labelCopy: 'Copy',
   labelReferralRules: 'Reward rules',
   labelReferralMethod1: 'Method 1',

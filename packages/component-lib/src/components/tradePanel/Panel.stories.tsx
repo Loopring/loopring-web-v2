@@ -12,6 +12,7 @@ import {
   SlippageTolerance,
   TRADE_TYPE,
   TradeBtnStatus,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import {
   ammCalcData,

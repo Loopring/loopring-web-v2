@@ -41,27 +41,11 @@ import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 
 export const VaultDashBoardPanel = ({
-  vaultAccountInfo: {
-    joinBtnStatus,
-    joinBtnLabel,
-    onJoinPop,
-    vaultAccountInfo,
-    swapBtnStatus,
-    swapBtnLabel,
-    onSwapPop,
-    redeemBtnStatus,
-    onRedeemPop,
-    redeemBtnLabel,
-    borrowBtnStatus,
-    onBorrowPop,
-    borrowBtnLabel,
-    repayBtnStatus,
-    onRepayPop,
-    repayBtnLabel,
-  },
+  vaultAccountInfo: _vaultAccountInfo,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
+  const { joinBtnStatus, joinBtnLabel, onJoinPop, vaultAccountInfo } = _vaultAccountInfo
   const { t } = useTranslation()
   const history = useHistory()
   const { forexMap } = useSystem()
@@ -71,7 +55,7 @@ export const VaultDashBoardPanel = ({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const { onActionBtnClick, showNoVaultAccount, setShowNoVaultAccount, ...assetPanelProps } =
-    useGetVaultAssets()
+    useGetVaultAssets({ vaultAccountInfo: _vaultAccountInfo })
   const { totalAsset, hideAssets } = assetPanelProps
   const viewTemplate = React.useMemo(() => {
     switch (account.readyState) {
@@ -184,8 +168,8 @@ export const VaultDashBoardPanel = ({
           flex: 1,
         }}
       >
-        <Grid container spacing={3} display={'flex'} alignContent={'stretch'} marginTop={3}>
-          <Grid item md={9} xs={12} height={'100%'} display={'flex'}>
+        <Grid container spacing={3} marginTop={3}>
+          <Grid item sm={9} xs={12} flex={1} display={'flex'}>
             <Box
               border={'var(--color-border) 1px solid'}
               borderRadius={1.5}
@@ -310,7 +294,7 @@ export const VaultDashBoardPanel = ({
               </Box>
             </Box>
           </Grid>
-          <Grid item md={3} xs={12}>
+          <Grid item sm={3} xs={12}>
             <Box
               border={'var(--color-border) 1px solid'}
               borderRadius={1.5}
