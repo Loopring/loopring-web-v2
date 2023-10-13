@@ -122,13 +122,14 @@ export const useGetVaultAssets = ({
         ) {
           switch (key) {
             case VaultAction.VaultJoin:
-              onJoinPop()
+              onJoinPop({})
               // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
               break
             case VaultAction.VaultExit:
               setShowVaultExit({ isShow: true })
               break
             case VaultAction.VaultLoad:
+              debugger
               setShowVaultLoad({ isShow: true })
               break
             case VaultAction.VaultSwap:

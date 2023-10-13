@@ -41,11 +41,11 @@ import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 
 export const VaultDashBoardPanel = ({
-  vaultAccountInfo,
+  vaultAccountInfo:,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
-  const { joinBtnStatus, joinBtnLabel, onJoinPop, vaultAccountInfo } = vaultAccountInfo
+  const { joinBtnStatus, joinBtnLabel, onJoinPop, vaultAccountInfo } = _vaultAccountInfo
   const { t } = useTranslation()
   const history = useHistory()
   const { forexMap } = useSystem()
@@ -55,7 +55,7 @@ export const VaultDashBoardPanel = ({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const { onActionBtnClick, showNoVaultAccount, setShowNoVaultAccount, ...assetPanelProps } =
-    useGetVaultAssets({ vaultAccountInfo })
+    useGetVaultAssets({ vaultAccountInfo:_vaultAccountInfo })
   const { totalAsset, hideAssets } = assetPanelProps
   const viewTemplate = React.useMemo(() => {
     switch (account.readyState) {
