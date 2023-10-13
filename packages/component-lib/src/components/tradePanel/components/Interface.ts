@@ -697,6 +697,7 @@ export type TargetRedpacktSelectStepProps = {
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
   popRedPacketAmountStr: string | undefined
   backToScope: () => void
+  idIndex: { [key: string]: string }
 }
 
 export type TargetRedpacktInputAddressStepProps = {
