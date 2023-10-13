@@ -147,6 +147,10 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
               }
             } else {
               setIsCFAddress(false)
+              setIsLoopringAddress(false)
+              setLoopringSmartWalletVersion({
+                isLoopringSmartWallet: false,
+              })
             }
           }
           // clearTimeout(nodeTimer.current)
