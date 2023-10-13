@@ -107,13 +107,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       if (
         withdrawValue.withdrawType == _withdrawValue.withdrawType &&
         _withdrawValue.belong === tokenSymbol &&
-        amount == _withdrawValue.tradeValue
-        // ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
-        //     amount == _withdrawValue.tradeValue ) ||
-        //   withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+        ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
+          amount == _withdrawValue.tradeValue) ||
+          withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
       ) {
         updateWithdrawData({ ..._withdrawValue, fee })
-        // _updateWithdrawData({ ..._withdrawValue, fee })
       }
     },
   })
