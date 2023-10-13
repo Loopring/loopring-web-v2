@@ -2,7 +2,6 @@ import { Box, Button, Grid, Modal, Tab, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
-  AmmPanelType,
   AssetsTable,
   ButtonStyle,
   CancelDualAlert,
@@ -42,6 +41,7 @@ import {
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
