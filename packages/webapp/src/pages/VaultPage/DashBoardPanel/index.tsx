@@ -114,6 +114,7 @@ export const VaultDashBoardPanel = ({
             variant={'contained'}
             fullWidth={true}
             sx={{ minWidth: 'var(--walletconnect-width)' }}
+            // @ts-ignore
             loading={(joinBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false') as any}
             disabled={
               joinBtnStatus === TradeBtnStatus.DISABLED || joinBtnStatus === TradeBtnStatus.LOADING

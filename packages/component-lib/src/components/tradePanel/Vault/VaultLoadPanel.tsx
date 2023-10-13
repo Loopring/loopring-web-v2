@@ -1,22 +1,19 @@
 import { Box, BoxProps, Tab, Tabs, Toolbar } from '@mui/material'
-import {
-  VaultBorrow,
-  VaultBorrowWrapProps,
-  VaultRepay,
-  VaultRepayWrapProps,
-} from '../components/VaultWrap'
+import { VaultRepay, VaultRepayWrapProps } from '../components/VaultWrap'
 import styled from '@emotion/styled'
 import { boxLiner, toolBarPanel } from '../../styled'
 import { useTranslation, WithTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
-import { VaultLoadType } from '@loopring-web/common-resources'
+import { IBData, VaultBorrowData, VaultLoadType } from '@loopring-web/common-resources'
+import { VaultBorrowPanel } from './VaultBorrowPanel'
+import { VaultBorrowProps } from '../Interface'
 
-export type VaultLoadProps<T, I, B, C> = {
+export type VaultLoadProps<T, B, I> = {
   vaultLoadType: VaultLoadType
 
   handleTabChange: (index: VaultLoadType) => void
-  vaultRepayProps: VaultRepayWrapProps<T, I, B, C>
-  vaultBorrowProps: VaultBorrowWrapProps<T, I, B, C>
+  vaultRepayProps: VaultRepayWrapProps<T, B, I>
+  vaultBorrowProps: VaultBorrowProps<T, B, I>
 }
 const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
   return (
@@ -66,53 +63,17 @@ const WrapStyle = styled(Box)<
     isMobile: boolean
   },
 ) => JSX.Element
-export const VaultLoadPanel = <T, I, B, C>({
+export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>, I>({
   handleTabChange,
   vaultLoadType,
   vaultRepayProps,
   vaultBorrowProps,
-}: VaultLoadProps<T, I, B, C>) => {
+}: VaultLoadProps<T, V, I>) => {
   const { t } = useTranslation()
   const {
     // defaultNetwork,
     isMobile,
   } = useSettings()
-  // const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  // const getDisabled = React.useMemo(() => {
-  //   return disabled || btnStatus === TradeBtnStatus.DISABLED
-  // }, [btnStatus, disabled])
-  // const label = React.useMemo(() => {
-  //   if (confirmLabel) {
-  //     const key = confirmLabel.split('|')
-  //     return t(
-  //       key[0],
-  //       key && key[1]
-  //         ? {
-  //             arg: key[1].toString(),
-  //             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-  //             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-  //             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-  //             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-  //             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-  //           }
-  //         : {
-  //             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-  //             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-  //             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-  //             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-  //             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-  //           },
-  //     )
-  //   } else {
-  //     return t(`labelVaultConfirm`, {
-  //       l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-  //       loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-  //       l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-  //       l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-  //       ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-  //     })
-  //   }
-  // }, [confirmLabel])
   return (
     <WrapStyle
       display={'flex'}
@@ -144,7 +105,7 @@ export const VaultLoadPanel = <T, I, B, C>({
             padding={5 / 2}
             // key={panelList[0].key}
           >
-            <VaultBorrow {...{ ...vaultBorrowProps, t }} />
+            <VaultBorrowPanel {...{ ...vaultBorrowProps, t }} />
             {/**/}
           </Box>
         )}

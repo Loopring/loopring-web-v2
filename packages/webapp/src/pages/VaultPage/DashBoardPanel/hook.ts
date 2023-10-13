@@ -124,6 +124,7 @@ export const useGetVaultAssets = ({
               break
             case VaultAction.VaultLoad:
               // debugger
+              // setShowVaultLoad({ isShow: false })
               onBorrowPop({ isShow: true })
               break
             case VaultAction.VaultSwap:

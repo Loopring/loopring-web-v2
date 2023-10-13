@@ -5,7 +5,6 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
-  VaultLoadType,
 } from '@loopring-web/common-resources'
 import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -90,10 +89,11 @@ export interface ModalState {
       type: ToastType
     } & any
   }
-  isShowVaultExit: ModalStatePlayLoad
-  isShowVaultJoin: ModalStatePlayLoad
-  isShowVaultSwap: ModalStatePlayLoad
-  istShowVaultLoad: ModalStatePlayLoad & {
-    type: VaultLoadType
-  }
+  isShowVaultExit: ModalStatePlayLoad & Transaction
+  isShowVaultJoin: ModalStatePlayLoad & Transaction
+  isShowVaultSwap: ModalStatePlayLoad & Transaction
+  istShowVaultLoad: ModalStatePlayLoad &
+    Transaction & {
+      type: string
+    }
 }

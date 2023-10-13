@@ -1,6 +1,6 @@
 import { InputButtonProps } from '../../../basic-lib'
-import { CoinInfo, IBData, TradeBtnStatus, VaultRepayData } from '@loopring-web/common-resources'
-import { SwitchData } from '../Interface'
+import { CoinInfo, IBData, TradeBtnStatus } from '@loopring-web/common-resources'
+import { BasicACoinTradeViewProps, SwitchData } from '../Interface'
 
 export type VaultJoinBaseProps<T, I, V> = {
   btnStatus?: keyof typeof TradeBtnStatus | undefined
@@ -32,24 +32,26 @@ export type VaultExitBaseProps = {
 }
 
 // export type VaultExitWrapProps = VaultExitBaseProps
-export type VaultBorrowWrapProps<T, I, B, C> = {
+export type VaultBorrowBaseProps<T, I, B> = {
   disabled?: boolean
   vaultBorrowBtnStatus?: keyof typeof TradeBtnStatus | undefined
   vaultBorrowBtnI18nKey?: string
   onVaultBorrowClick: () => void | any
-  tokenProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
-  onAddChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
+  tokenProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
+  onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
   vaultBorrowData: B
-  propsExtends?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
+  propsExtends?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
   tradeData: T
 }
-export type VaultRepayWrapProps<T, I, VR, C> = {
+export type VaultBorrowWrapProps<T, I, B> = BasicACoinTradeViewProps<T, I> &
+  VaultBorrowBaseProps<T, I, B>
+export type VaultRepayWrapProps<T, I, VR> = {
   disabled?: boolean
   vaultRepayBtnStatus?: keyof typeof TradeBtnStatus | undefined
   onVaultRepayClick: () => void | any
   vaultRepayBtnI18nKey?: string
-  tokenProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
-  propsExtends?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
+  tokenProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
+  propsExtends?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
   vaultRepayData: VR
   tradeData: T
 }

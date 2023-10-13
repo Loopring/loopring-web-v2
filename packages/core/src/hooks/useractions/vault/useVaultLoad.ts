@@ -1,7 +1,7 @@
 import {
   AccountStep,
   useOpenModals,
-  VaultBorrowWrapProps,
+  VaultBorrowProps,
   VaultRepayWrapProps,
 } from '@loopring-web/component-lib'
 import {
@@ -20,6 +20,7 @@ import {
   IBData,
   SagaStatus,
   TradeBtnStatus,
+  VaultBorrowData,
   VaultLoadType,
 } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../../../api_wrapper'
@@ -29,8 +30,8 @@ import { useSubmitBtn } from '../../common'
 import { useTranslation } from 'react-i18next'
 import { makeVaultAvaiable2, makeVaultLayer2 } from '../../help'
 
-export const useVaultBorrow = <T extends IBData<any>, I, B, C>(): Partial<
-  VaultBorrowWrapProps<T, I, B, C>
+export const useVaultBorrow = <T extends IBData<I>, V extends VaultBorrowData<I>, I>(): Partial<
+  VaultBorrowProps<T, V, I>
 > => {
   const { t } = useTranslation()
   const {
@@ -50,27 +51,27 @@ export const useVaultBorrow = <T extends IBData<any>, I, B, C>(): Partial<
       // const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
       // const ercToken = tokenMap[tradeData.belong]
       // tradeData.belong
-      supportData = {
-        //TODO:
-        maxShowVal: getValuePrecisionThousand(
-          sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
-          vaultToken.precision,
-          vaultToken.precision,
-          undefined,
-        ),
-
-        minShowVal: getValuePrecisionThousand(
-          //TODO:
-          sdk.toBig(vaultToken.vaultTokenAmounts.minAmount).div('1e' + vaultToken.decimals),
-          vaultToken.precision,
-          vaultToken.precision,
-          undefined,
-        ),
-        maxAmount: vaultToken.btradeAmount,
-        minAmount: vaultToken.vaultTokenAmounts.minAmount,
-        vaultSymbol: vaultToken.symbol,
-        vaultTokenInfo: vaultToken,
-      }
+      // supportData = {
+      //   //TODO:
+      //   maxShowVal: getValuePrecisionThousand(
+      //     sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
+      //     vaultToken.precision,
+      //     vaultToken.precision,
+      //     undefined,
+      //   ),
+      //
+      //   minShowVal: getValuePrecisionThousand(
+      //     //TODO:
+      //     sdk.toBig(vaultToken.vaultTokenAmounts.minAmount).div('1e' + vaultToken.decimals),
+      //     vaultToken.precision,
+      //     vaultToken.precision,
+      //     undefined,
+      //   ),
+      //   maxAmount: vaultToken.btradeAmount,
+      //   minAmount: vaultToken.vaultTokenAmounts.minAmount,
+      //   vaultSymbol: vaultToken.symbol,
+      //   vaultTokenInfo: vaultToken,
+      // }
     }
     return {
       ...supportData,
@@ -81,7 +82,7 @@ export const useVaultBorrow = <T extends IBData<any>, I, B, C>(): Partial<
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
   const initData = () => {
     let vaultBorrowData: any = {}
-    let initSymbol = 'LRC'
+    let initSymbol = 'VLRC'
     if (istShowVaultLoad.info?.symbol) {
       initSymbol = istShowVaultLoad.info?.symbol
     }
@@ -268,8 +269,8 @@ export const useVaultBorrow = <T extends IBData<any>, I, B, C>(): Partial<
   }
 }
 
-export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
-  VaultRepayWrapProps<T, I, B, C>
+export const useVaultRepay = <T extends IBData<I>, V extends VaultBorrowData<I>, I>(): Partial<
+  VaultRepayWrapProps<T, V, I>
 > => {
   // const { setShowAccount } = useOpenModals()
   const {
@@ -446,7 +447,7 @@ export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
             title: t('labelVaultRepayTitle'),
           },
         })
-        sdk.sleep(1000).then(() => updateVaultLayer2())
+        sdk.sleep(1000).then(() => updateVaultLayer2({}))
         //TODO c
         setShowAccount({
           isShow: true,
@@ -542,7 +543,7 @@ export const useVaultRepay = <T extends IBData<any>, I, B, C>(): Partial<
 export const useVaultLoad = () => {
   const {
     modals: {
-      istShowVaultLoad: { type, isShow },
+      istShowVaultLoad: { type, isShow, symbol },
     },
   } = useOpenModals()
   const [vaultLoadType, setVaultLoadType] = React.useState(type ?? VaultLoadType.Borrow)

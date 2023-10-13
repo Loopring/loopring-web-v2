@@ -52,7 +52,7 @@ export const useVaultRedeem = () => {
           throw response
         }
         walletLayer2Service.sendUserUpdate()
-        updateVaultLayer2()
+        updateVaultLayer2({})
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultRedeem_Success,

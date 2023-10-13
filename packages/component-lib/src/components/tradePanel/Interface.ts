@@ -33,7 +33,12 @@ import {
   TransferInfoProps as _TransferInfoProps,
   WithdrawExtendProps,
 } from './components/Interface'
-import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps } from './components'
+import {
+  SwapData,
+  SwapTradeBaseEventProps,
+  SwapTradeBaseProps,
+  VaultBorrowBaseProps,
+} from './components'
 import {
   StopTradeLimitInfoProps,
   TradeLimitInfoProps,
@@ -240,6 +245,9 @@ export type FeeSelectProps = {
 }
 
 export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>
+export type VaultBorrowProps<T, I, V> = BasicACoinTradeHookProps<T, I> &
+  VaultBorrowBaseProps<T, I, V>
+
 export type VaultExitProps = VaultExitBaseProps
 
 export * from './components/Interface'

@@ -80,6 +80,11 @@ export const useVaultSwap = <
 }: {
   path: string
 }) => {
+  // let match: any = useRouteMatch(`/vault/:l2/:market`)
+  // const { pathname, search } = useLocation()
+  // const searchParams = new URLSearchParams(search)
+  // const history = useHistory()
+
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
   const { tokenPrices } = useTokenPrices()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
@@ -93,7 +98,6 @@ export const useVaultSwap = <
     tokenMap,
   })
   const { t } = useTranslation(['common', 'error'])
-  const history = useHistory()
   const [isSwapLoading, setIsSwapLoading] = React.useState(false)
 
   const refreshRef = React.createRef()
@@ -225,7 +229,8 @@ export const useVaultSwap = <
           ...tradeDataTmp,
         }
       })
-      history.push('/vaultLayer2/trade/' + _market)
+      // searchParams.set('market', _market)
+      // history.replace(pathname + '?' + searchParams.toString())
       updateTradeVault({
         market,
         tradePair,
