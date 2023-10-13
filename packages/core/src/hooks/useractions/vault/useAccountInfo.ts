@@ -1,4 +1,4 @@
-import { store, useSubmitBtn, useVaultLayer2 } from '@loopring-web/core'
+import { store, useSubmitBtn, useVaultLayer2, VaultLayer2States } from '@loopring-web/core'
 import React from 'react'
 import {
   L1L2_NAME_DEFINED,
@@ -10,11 +10,10 @@ import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export type VaultAccountInfoStatus = {
+export type VaultAccountInfoStatus = VaultLayer2States & {
   joinBtnStatus: TradeBtnStatus
   joinBtnLabel: string
   onJoinPop: (props: any) => void
-  vaultAccountInfo: sdk.VaultAccountInfo
   swapBtnStatus: TradeBtnStatus
   swapBtnLabel: string
   onSwapPop: (props: any) => void

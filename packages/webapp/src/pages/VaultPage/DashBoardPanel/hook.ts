@@ -15,6 +15,7 @@ import {
   useVaultLayer2,
   useWalletLayer2,
   useWalletLayer2Socket,
+  VaultAccountInfoStatus,
   volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
@@ -42,33 +43,32 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
 
-export const useGetVaultAssets = (): VaultAssetsTableProps & {
+export const useGetVaultAssets = ({
+  vaultAccountInfo: _vaultAccountInfo,
+}: {
+  vaultAccountInfo: VaultAccountInfoStatus
+}): VaultAssetsTableProps & {
   totalAsset: string
   onActionBtnClick: (key: VaultAction) => void
   showNoVaultAccount: boolean
   setShowNoVaultAccount: (key: boolean) => void
 } => {
+  const { onJoinPop, vaultAccountInfo, activeInfo, onSwapPop, onBorrowPop, onRedeemPop } =
+    _vaultAccountInfo
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
   const { status: accountStatus, account } = useAccount()
-  const {
-    vaultAccountInfo,
-    activeInfo,
-    status: vaultAccountInfoStatus,
-    updateVaultLayer2,
-  } = useVaultLayer2()
+  // const {
+  //   vaultAccountInfo,
+  //   activeInfo,
+  //   status: vaultAccountInfoStatus,
+  //   updateVaultLayer2,
+  // } = useVaultLayer2()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
   const [showNoVaultAccount, setShowNoVaultAccount] = React.useState(false)
 
-  const {
-    // modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap,istShowVaultLoad },
-    setShowVaultJoin,
-    setShowVaultExit,
-    setShowVaultLoad,
-    setShowVaultSwap,
-  } = useOpenModals()
   const btnClickCallbackArray = {
     [fnType.ERROR_NETWORK]: [
       function () {
@@ -102,23 +102,32 @@ export const useGetVaultAssets = (): VaultAssetsTableProps & {
       },
     ],
     [fnType.ACTIVATED]: [
-      (key: any) => {
+      (
+        accountStatus: sdk.VaultAccountStatus,
+        activeInfo: {
+          hash: string
+          isInActive: true
+        },
+        key: any,
+      ) => {
         if (
-          [sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any) &&
+          [sdk.VaultAccountStatus.IN_STAKING].includes(accountStatus as any) ||
           activeInfo?.hash
         ) {
           switch (key) {
             case VaultAction.VaultJoin:
-              setShowVaultJoin({ isShow: true })
+              onJoinPop({})
+              // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
               break
             case VaultAction.VaultExit:
-              setShowVaultExit({ isShow: true })
+              onRedeemPop({ isShow: true })
               break
             case VaultAction.VaultLoad:
-              setShowVaultLoad({ isShow: true })
+              // debugger
+              onBorrowPop({ isShow: true })
               break
             case VaultAction.VaultSwap:
-              setShowVaultSwap({ isShow: true })
+              onSwapPop({})
               break
           }
         }

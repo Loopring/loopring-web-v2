@@ -1,4 +1,4 @@
-import { dirname, join } from "path";
+import { dirname, join } from 'path'
 const path = require('path')
 const nodePath = '../../'
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -28,7 +28,7 @@ function findBabelRules(config) {
     // console.log(rule);
     if (rule.oneOf) {
       result_rule = rule.oneOf.find((rule) => {
-        return rule.test && rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString();
+        return rule.test && rule.test.toString() === /\.(js|mjs|jsx|ts|tsx)$/.toString()
       })
     }
   })
@@ -39,13 +39,13 @@ module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 
   addons: [
-    getAbsolutePath("@storybook/addon-links"),
-    getAbsolutePath("@storybook/addon-essentials"),
-    getAbsolutePath("@storybook/preset-create-react-app"),
-    getAbsolutePath("@storybook/addon-interactions"),
+    getAbsolutePath('@storybook/addon-links'),
+    getAbsolutePath('@storybook/addon-essentials'),
+    getAbsolutePath('@storybook/preset-create-react-app'),
+    getAbsolutePath('@storybook/addon-interactions'),
   ],
 
-  framework: getAbsolutePath("@storybook/react"),
+  framework: getAbsolutePath('@storybook/react'),
 
   typescript: {
     check: false,
@@ -58,7 +58,7 @@ module.exports = {
   },
 
   core: {
-    builder: getAbsolutePath("webpack4"),
+    builder: getAbsolutePath('webpack5'),
   },
 
   webpackFinal: async (config, { configType }) => {
@@ -147,10 +147,10 @@ module.exports = {
   },
 
   docs: {
-    autodocs: true
-  }
+    autodocs: true,
+  },
 }
 
 function getAbsolutePath(value) {
-  return dirname(require.resolve(join(value, "package.json")));
+  return dirname(require.resolve(join(value, 'package.json')))
 }

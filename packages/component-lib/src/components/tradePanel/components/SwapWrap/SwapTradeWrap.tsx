@@ -35,6 +35,7 @@ const GridStyle = styled(Grid)`
 
   .iconChange {
     top: var(--input-height-swap);
+    transform: translateY(-50%);
   }
 `
 export const SwapTradeWrap = <
@@ -316,7 +317,6 @@ export const SwapTradeWrap = <
           marginY={1}
           position={'absolute'}
           zIndex={99}
-          top={60}
           sx={{
             boxSizing: 'border-box',
             border: '3px solid var(--color-box)',
