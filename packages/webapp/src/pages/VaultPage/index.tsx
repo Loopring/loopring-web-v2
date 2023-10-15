@@ -126,7 +126,7 @@ export const VaultPage = () => {
               startIcon={<OrderListIcon fontSize={'inherit'} color={'inherit'} />}
               sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
               onClick={() =>
-                history.push(`/${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
+                history.push(`${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
               }
             >
               {t('labelVaultRecord')}

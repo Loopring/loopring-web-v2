@@ -93,45 +93,35 @@ export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C
     <Grid
       className={vaultRepayData ? '' : 'loading'}
       container
-      direction={'column'}
-      justifyContent={'space-between'}
-      alignItems={'center'}
       flex={1}
-      height={'100%'}
       overflow={'hidden'}
+      spacing={2}
     >
-      <Grid
-        item
-        display={'flex'}
-        alignSelf={'stretch'}
-        alignItems={'stretch'}
-        flexDirection={'column'}
-      >
-        <Grid item xs={12} minHeight={86} paddingTop={1}>
-          <InputCoin
-            ref={coinRef}
-            disabled={getDisabled()}
-            {...{
-              ...propsToken,
-              handleCountChange: (data, _name, ref) => handleCountChange(data, ref),
-              isHideError: true,
-              isShowCoinInfo: false,
-              order: 'right',
-              inputData: vaultRepayData ? vaultRepayData.tradeData : ({} as any),
-              coinMap: vaultRepayData ? vaultRepayData.coinInfoMap : ({} as any),
-              ...propsExtends,
-            }}
-          />
-        </Grid>
+      <Grid item xs={12} minHeight={86} paddingTop={1}>
+        <InputCoin
+          ref={coinRef}
+          disabled={getDisabled()}
+          {...{
+            ...propsToken,
+            handleCountChange: (data, _name, ref) => handleCountChange(data, ref),
+            isHideError: true,
+            isShowCoinInfo: false,
+            order: 'right',
+            inputData: vaultRepayData ? vaultRepayData.tradeData : ({} as any),
+            coinMap: vaultRepayData ? vaultRepayData.coinInfoMap : ({} as any),
+            ...propsExtends,
+          }}
+        />
+      </Grid>
 
+      <Grid item xs={12} flexDirection={'column'}>
         <Box
           borderRadius={1}
           style={{ background: 'var(--color-table-header-bg)' }}
-          alignItems={'stretch'}
           display={'flex'}
-          paddingY={1}
-          paddingX={2}
-          flexDirection={'column'}
+          fileDirection={'column'}
+          justifyContent={'stretch'}
+          padding={1}
         >
           <Typography variant={'body1'} color={'textSecondary'} alignSelf={'flex-start'}>
             {t('labelMinReceive')}
@@ -139,31 +129,27 @@ export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C
         </Box>
       </Grid>
 
-      <Grid item alignSelf={'stretch'}>
-        <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
-          <Grid item>
-            <ButtonStyle
-              variant={'contained'}
-              size={'large'}
-              color={'primary'}
-              onClick={() => {
-                onVaultRepayClick(vaultRepayData)
-                // setSelectedPercentage(0);
-              }}
-              loading={
-                !getDisabled() && vaultRepayBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
-              }
-              disabled={
-                getDisabled() ||
-                vaultRepayBtnStatus === TradeBtnStatus.DISABLED ||
-                vaultRepayBtnStatus === TradeBtnStatus.LOADING
-              }
-              fullWidth={true}
-            >
-              {label}
-            </ButtonStyle>
-          </Grid>
-        </Grid>
+      <Grid item xs={12}>
+        <ButtonStyle
+          variant={'contained'}
+          size={'large'}
+          color={'primary'}
+          onClick={() => {
+            onVaultRepayClick(vaultRepayData)
+            // setSelectedPercentage(0);
+          }}
+          loading={
+            !getDisabled() && vaultRepayBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
+          }
+          disabled={
+            getDisabled() ||
+            vaultRepayBtnStatus === TradeBtnStatus.DISABLED ||
+            vaultRepayBtnStatus === TradeBtnStatus.LOADING
+          }
+          fullWidth={true}
+        >
+          {label}
+        </ButtonStyle>
       </Grid>
     </Grid>
   )

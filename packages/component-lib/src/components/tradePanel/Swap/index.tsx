@@ -347,6 +347,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
           key: 'tradeMenuList',
           element: React.useMemo(
             () => (
+              // @ts-ignore
               <SwapMenuList<T, I, TCD>
                 key={'tradeMenuList'}
                 {...{

@@ -76,7 +76,7 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
   return (
     <WrapStyle
       display={'flex'}
-      className={'trade-panel container'}
+      className={'trade-panel container valut-load'}
       isMobile={isMobile}
       paddingTop={'var(--toolbar-row-padding)'}
       paddingBottom={3}
@@ -101,10 +101,9 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
             justifyContent={'space-evenly'}
             alignItems={'stretch'}
             height={'100%'}
-            padding={5 / 2}
             // key={panelList[0].key}
           >
-            <VaultBorrowPanel {...{ ...vaultBorrowProps, t }} />
+            <VaultBorrowPanel {...{ ...vaultBorrowProps, t, _height: 'auto' }} />
           </Box>
         )}
         {vaultLoadType === VaultLoadType.Repay && (
