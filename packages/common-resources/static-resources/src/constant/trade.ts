@@ -7,11 +7,10 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
-  Ticker,
   WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { FloatTag, MarketType } from './market'
+import { MarketType } from './market'
 import { VendorProviders } from './vendor'
 
 export enum DeFiChgType {
@@ -812,6 +811,11 @@ export type VaultExitData<I = any> = {
 export enum VaultLoadType {
   Borrow = 'Borrow',
   Repay = 'Repay',
+}
+
+export enum AmmPanelType {
+  Join = 0,
+  Exit = 1,
 }
 
 export enum DualInvestConfirmType {

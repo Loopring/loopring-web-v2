@@ -55,7 +55,6 @@ import {
   useVaultMap,
   vaultSwapDependAsync,
 } from '@loopring-web/core'
-import { useLocation } from 'react-use'
 
 const useVaultSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket()
@@ -82,8 +81,9 @@ export const useVaultSwap = <
   path: string
 }) => {
   // let match: any = useRouteMatch(`/vault/:l2/:market`)
-  const { pathname, search } = useLocation()
-  const searchParams = new URLSearchParams(search)
+  // const { pathname, search } = useLocation()
+  // const searchParams = new URLSearchParams(search)
+  // const history = useHistory()
 
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
   const { tokenPrices } = useTokenPrices()
@@ -98,7 +98,6 @@ export const useVaultSwap = <
     tokenMap,
   })
   const { t } = useTranslation(['common', 'error'])
-  const history = useHistory()
   const [isSwapLoading, setIsSwapLoading] = React.useState(false)
 
   const refreshRef = React.createRef()
@@ -230,8 +229,8 @@ export const useVaultSwap = <
           ...tradeDataTmp,
         }
       })
-      searchParams.set('market', _market)
-      history.push(pathname + '?' + searchParams.toString())
+      // searchParams.set('market', _market)
+      // history.replace(pathname + '?' + searchParams.toString())
       updateTradeVault({
         market,
         tradePair,

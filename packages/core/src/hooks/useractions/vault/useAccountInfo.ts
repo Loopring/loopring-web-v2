@@ -5,6 +5,7 @@ import {
   MapChainId,
   SagaStatus,
   TradeBtnStatus,
+  VaultLoadType,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +27,7 @@ export type VaultAccountInfoStatus = VaultLayer2States & {
   repayBtnStatus: TradeBtnStatus
   onRepayPop: (props: any) => void
   repayBtnLabel: string
+  vaultAccountInfoStatus: SagaStatus
   // isShowFeathure:  vaultAccountInfo?.accountStatus
 }
 export const useAccountInfo = () => {
@@ -36,7 +38,7 @@ export const useAccountInfo = () => {
     activeInfo,
   } = useVaultLayer2()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  const { setShowVaultJoin, setShowVaultSwap, setShowVaultExit } = useOpenModals()
+  const { setShowVaultJoin, setShowVaultSwap, setShowVaultExit, setShowVaultLoad } = useOpenModals()
   const { t } = useTranslation()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -52,12 +54,6 @@ export const useAccountInfo = () => {
       switch (vaultAccountInfo?.accountStatus) {
         // @ts-ignore
         case sdk.VaultAccountStatus.IN_REDEEM: //sdk.VaultAccountStatus.IN_REDEEM:
-          if (nodeTimer.current !== -1) {
-            clearTimeout(nodeTimer.current as any)
-          }
-          nodeTimer.current = setTimeout(() => {
-            updateVaultLayer2({})
-          }, 6000)
           return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultPendingBtn|` }
         // @ts-ignore
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
@@ -124,11 +120,11 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableSwapCheck,
     isLoading: false,
-    submitCallback: async () => {
+    submitCallback: async (key?: string) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultSwap({ isShow: true, info: { symbol: '' } })
+          setShowVaultSwap({ isShow: true, symbol: key ?? '' })
           break
       }
     },
@@ -161,11 +157,11 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableRedeemCheck,
     isLoading: false,
-    submitCallback: async () => {
+    submitCallback: async (key?: string) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultExit({ isShow: true, info: { symbol: '' } })
+          setShowVaultExit({ isShow: true, symbol: key ?? '' })
           break
       }
     },
@@ -197,11 +193,11 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableBorrowCheck,
     isLoading: false,
-    submitCallback: async () => {
+    submitCallback: async (key?: string) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultExit({ isShow: true, info: { symbol: '' } })
+          setShowVaultLoad({ isShow: true, symbol: key ?? '', type: VaultLoadType.Borrow })
           break
       }
     },
@@ -233,11 +229,11 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableRepayCheck,
     isLoading: false,
-    submitCallback: async () => {
+    submitCallback: async (key?: string) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultExit({ isShow: true, info: { symbol: '' } })
+          setShowVaultLoad({ isShow: true, symbol: key ?? '', type: VaultLoadType.Repay })
           break
       }
     },
@@ -257,6 +253,22 @@ export const useAccountInfo = () => {
     })
   }, [])
 
+  React.useEffect(() => {
+    if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_REDEEM) {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as any)
+      }
+      nodeTimer.current = setTimeout(() => {
+        updateVaultLayer2({})
+      }, 6000)
+    }
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as any)
+      }
+    }
+  }, [vaultAccountInfo?.accountStatus])
+
   // myLog('useAccountInfo', vaultAccountInfo)
   return {
     joinBtnStatus,
@@ -275,7 +287,8 @@ export const useAccountInfo = () => {
     repayBtnStatus,
     onRepayPop,
     repayBtnLabel: label(repayBtnLabel),
-    activeInfo,
+    vaultAccountInfoStatus,
+
     // isShowFeathure:  vaultAccountInfo?.accountStatus
   } as VaultAccountInfoStatus
 }

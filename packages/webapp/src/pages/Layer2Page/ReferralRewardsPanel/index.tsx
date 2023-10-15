@@ -1,15 +1,5 @@
 import styled from '@emotion/styled'
-import {
-  Box,
-  BoxProps,
-  Container,
-  Grid,
-  InputAdornment,
-  Link,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material'
+import { Box, Container, Grid, InputAdornment, Link, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useAccount, useSubmitBtn, useToast } from '@loopring-web/core'
@@ -42,6 +32,7 @@ import {
   ToastType,
   useSettings,
   OutlinedInput,
+  BoxBannerStyle,
 } from '@loopring-web/component-lib'
 import { useReferralsTable, useRefundTable } from './hook'
 import { useHistory } from 'react-router-dom'
@@ -61,43 +52,6 @@ const BoxStyled = styled(Box)`
     }
   }
 `
-export const BoxBannerStyle = styled(Box)<
-  BoxProps & { backGroundUrl?: string | number; direction?: 'left' | 'right' }
->`
-  background-color: var(--color-box);
-
-  .bg:after {
-    display: block;
-    content: '';
-    float: ${({ direction }) => direction};
-    width: 35%;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    background-image: url('${({ backGroundUrl }) => backGroundUrl}');
-  }
-
-  &.mobile .bg {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-
-    &:after {
-      opacity: 0.08;
-      z-index: 1;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-  }
-` as (
-  props: BoxProps & {
-    backGroundUrl?: string | number
-    direction?: 'left' | 'right'
-  },
-) => JSX.Element
 
 enum ReferStep {
   method1 = 0,
@@ -128,7 +82,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [open, setOpen] = React.useState(false)
   const [images, setImages] = React.useState<CarouselItem[]>([])
-
+  const [loading, setLoading] = React.useState(true)
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
     referralBanners: {
@@ -139,15 +93,33 @@ const ReferHeader = <R extends ImageReferralBanner>({
       code: { default: [48, 30, 230, 64, '#000000', 630, 880] },
     },
   })
+  const {btnStatus, onBtnClick, btnLabel} = useSubmitBtn({
+    availableTradeCheck: () => {
+      return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+    },
+    isLoading: loading,
+    submitCallback: async () => {
+      setOpen(true)
+      // Carousel
+      // onDownloadImage();
+    },
+  })
   // const [images, setImages] = React.useState<JSX.Element[]>([]);
   React.useEffect(() => {
     fetch(`${url_path}/referral/information.json`)
       .then((response) => response.json())
       .then((result) => {
         if (result.referralBanners) {
-          setImageList(result)
-          renderImage(result)
+          try {
+            setImageList(result)
+            renderImage(result)
+          } catch (error) {
+            setLoading(false)
+          }
         }
+      })
+      .catch(() => {
+        setLoading(false)
       })
   }, [])
   const renderImage = React.useCallback(
@@ -198,7 +170,11 @@ const ReferHeader = <R extends ImageReferralBanner>({
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
 
           // myLog('imageUrl createObjectURL', canvas.toDataURL())
-          images.push({ imageUrl: canvas.toDataURL(), size: [width / 2, height / 2] })
+          images.push({
+            imageUrl: canvas.toDataURL(),
+            size: [width / 2, height / 2],
+            name: (item ?? '/').split('/')?.pop(),
+          })
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
 
@@ -206,6 +182,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
           }
         }
       })
+      setLoading(false)
     },
     [imageList, account],
   )
@@ -326,9 +303,12 @@ const ReferHeader = <R extends ImageReferralBanner>({
         <ShareModal
           onClick={() => onDownloadImage()}
           open={open}
-          loading={false}
+          message={t('labelShareMessage', { code: account?.accountId })}
+          loading={btnStatus === TradeBtnStatus.LOADING}
           onClose={() => setOpen(false)}
           imageList={images}
+          ipfsProvides={ipfsProvides}
+          link={ExchangeIO + `?referralcode=${account?.accountId}`}
         />
         <Box className={'bg'} marginY={3} display={'flex'}>
           <Box width={isMobile ? '100%' : '65%'}>
@@ -379,7 +359,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
                     value={account.accountId}
                     disabled={true}
                     fullWidth={true}
-                    // onChange={(event: any) => {}}
                     startAdornment={
                       <InputAdornment position='start'>
                         <Typography
@@ -393,7 +372,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
                         >
                           #
                         </Typography>
-                        {/*<LinkIcon color={"inherit"} />*/}
                       </InputAdornment>
                     }
                     endAdornment={
@@ -418,14 +396,9 @@ const ReferHeader = <R extends ImageReferralBanner>({
               >
                 {label}
               </Button>
-              {/*{image.map((item, index) => (*/}
-              {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
-              {/*))}*/}
+
               <Box sx={{ display: 'block' }} height={0} width={0} overflow={'hidden'}>
                 <canvas className={'canvas'} />
-                {/*{images.map((item, index) => (*/}
-                {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
-                {/*))}*/}
               </Box>
             </Box>
           </Box>

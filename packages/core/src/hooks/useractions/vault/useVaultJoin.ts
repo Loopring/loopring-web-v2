@@ -65,7 +65,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const calcSupportData = (tradeData: T) => {
     let supportData = {}
     // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    if (tradeData.belong) {
+    if (tradeData?.belong) {
       const vaultTokenSymbol = walletAllowMap[tradeData.belong as any].vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
       const ercToken = tokenMap[tradeData.belong]
@@ -139,8 +139,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   ])
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
     // const { apiKey, connectName, eddsaKey } = account
-    const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    const ercToken = tokenMap[vaultJoinData?.belong?.toString()]
+    const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData ?? {}
+    const ercToken = tokenMap[vaultJoinData?.belong?.toString() ?? '']
     try {
       if (LoopringAPI.vaultAPI && (request || vaultJoinData.request) && ercToken) {
         let response = LoopringAPI.vaultAPI.submitVaultJoin({
@@ -231,7 +231,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
               vSymbol: vaultJoinData.vaultSymbol,
             },
           })
-          sdk.sleep(1000).then(() => updateVaultLayer2())
+          sdk.sleep(1000).then(() => updateVaultLayer2({}))
           setShowVaultJoin({
             isShow: false,
           })
@@ -242,7 +242,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     } catch (e) {
       //TODO
       const error = {
-        message: e.message,
+        //@ts-ignore
+        message: e?.message,
       }
       setShowAccount({
         isShow: true,
@@ -268,7 +269,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
   const submitCallback = async () => {
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    const ercToken = tokenMap[vaultJoinData.belong]
+    // const ercToken = tokenMap[vaultJoinData.belong]
     try {
       if (
         vaultJoinData &&
@@ -462,7 +463,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   })
   const {
     modals: {
-      isShowVaultJoin: { isShow, info },
+      isShowVaultJoin: { isShow, symbol },
       // isShowAccount: { info },
     },
     setShowAccount,
@@ -484,8 +485,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const initData = () => {
     let vaultJoinData: any = {}
     let initSymbol = 'LRC'
-    if (info?.symbol) {
-      initSymbol = info?.symbol
+    if (symbol) {
+      initSymbol = symbol
     }
     let walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
     let vaultMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
@@ -506,7 +507,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       vaultAccountInfo?.collateralInfo?.collateralTokenId
     ) {
       initSymbol = idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
-    } else if (account.readyState === AccountStatus.ACTIVATED && !info?.symbol) {
+    } else if (account.readyState === AccountStatus.ACTIVATED && !symbol) {
       const key = Reflect.ownKeys(vaultCoinMap).find((keyVal) => {
         const walletInfo = walletMap[keyVal.toString()] ?? { count: 0 }
         if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
@@ -564,7 +565,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     if (isShow) {
       initData()
       walletLayer2Service.sendUserUpdate()
-      updateVaultLayer2()
+      updateVaultLayer2({})
     }
   }, [isShow])
   const handlePanelEvent = async (props: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
@@ -572,7 +573,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const tokenSymbol = props.tradeData.belong
     // debugger
     if (tokenSymbol) {
-      // const supportData = calcSupportData(props.tradeData)
       updateVaultJoin({
         ...vaultJoinData,
         amount: sdk

@@ -951,8 +951,8 @@ export const MuiLinearProgress = ({ colorBase }: any) => {
 
 export const MuiTooltip = ({
   colorBase,
-}: any): { 
-  styleOverrides: ComponentsOverrides['MuiTooltip'] 
+}: any): {
+  styleOverrides: ComponentsOverrides['MuiTooltip']
   defaultProps?: Partial<TooltipProps>
 } => {
   return {
@@ -973,9 +973,9 @@ export const MuiTooltip = ({
       },
       arrow: {
         color: colorBase.popBg,
-        "&:before":{
+        '&:before': {
           border: `0.5px solid ${colorBase.border}`,
-        }
+        },
       },
       // root: {
       //   fontSize: fontDefault.body1,

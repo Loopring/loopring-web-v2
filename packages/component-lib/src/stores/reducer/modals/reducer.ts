@@ -57,7 +57,7 @@ const initialState: ModalState = {
   isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
-  istShowVaultLoad: { isShow: false, type: VaultLoadType.Borrow },
+  istShowVaultLoad: { isShow: false, type: VaultLoadType.Borrow, symbol: undefined },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -377,17 +377,20 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
-    setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad>) {
+    setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultExit = { ...action.payload }
     },
-    setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad>) {
+    setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultJoin = { ...action.payload }
     },
-    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
+    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultSwap = { ...action.payload }
     },
-    setShowVaultLoad(state, action: PayloadAction<ModalStatePlayLoad>) {
-      state.isShowVaultSwap = { ...action.payload }
+    setShowVaultLoad(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Transaction & { type: string }>,
+    ) {
+      state.istShowVaultLoad = { ...action.payload }
     },
   },
 })

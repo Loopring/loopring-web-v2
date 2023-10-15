@@ -58,16 +58,11 @@ export const DashBoardTitle = () => {
 export const VaultPage = () => {
   let match: any = useRouteMatch(`/vault/:item`)
   // const selected = match?.params?.item ?? VaultKey.VAULT_HOME
-  const { defaultNetwork, isMobile } = useSettings()
+  const { isMobile } = useSettings()
   const { t } = useTranslation()
-  const theme = useTheme()
-
   const history = useHistory()
   const vaultAccountInfo = useAccountInfo()
-
   const { status: vaultStatus, getVaultMap, marketArray } = useVaultMap()
-
-  // RouterAllowIndex[]
   const [tabIndex, setTabIndex] = React.useState<VaultKey>(() => {
     return (
       Object.values(VaultKey).find(
@@ -101,7 +96,6 @@ export const VaultPage = () => {
         }}
       >
         <Box
-          // components={'nav'}
           display={'flex'}
           justifyContent={'space-between'}
           alignItems={isMobile ? 'left' : 'center'}
@@ -132,7 +126,7 @@ export const VaultPage = () => {
               startIcon={<OrderListIcon fontSize={'inherit'} color={'inherit'} />}
               sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
               onClick={() =>
-                history.push(`/${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
+                history.push(`${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
               }
             >
               {t('labelVaultRecord')}

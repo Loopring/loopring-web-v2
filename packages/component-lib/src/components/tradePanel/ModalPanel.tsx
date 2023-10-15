@@ -33,7 +33,6 @@ import {
   IBData,
   TRADE_TYPE,
   TradeNFT,
-  myLog,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
@@ -57,7 +56,15 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
     position: relative;
     height: ${({ _height }) =>
       _height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'auto'};
-
+    &.valut-load {
+      padding: 0;
+      border: 0;
+      .react-swipeable-view-container {
+        & > div {
+          padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px 0px;
+        }
+      }
+    }
     .react-swipeable-view-container {
       & > div {
         padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px ${({ theme }) => theme.unit * 5}px;

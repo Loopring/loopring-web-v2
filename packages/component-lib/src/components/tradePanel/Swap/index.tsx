@@ -129,6 +129,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
       [tradeData, onChangeEvent],
     )
     const theme = useTheme()
+    // @ts-ignore
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
       index: index, // show default show
       panelList: [
@@ -136,8 +137,8 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
           key: 'trade',
           element: React.useMemo(() => {
             myLog('hookSwap view tradeData', tradeData)
-
             return (
+              // @ts-ignore
               <SwapTradeWrap<T, I, TCD>
                 key={'trade'}
                 {...{
@@ -185,11 +186,13 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                     display={'flex'}
                     alignItems={'center'}
                   >
-                    <TagIconList
-                      scenario={scenario}
-                      campaignTagConfig={campaignTagConfig}
-                      symbol={market as string}
-                    />
+                    {campaignTagConfig && (
+                      <TagIconList
+                        scenario={scenario}
+                        campaignTagConfig={campaignTagConfig}
+                        symbol={market as string}
+                      />
+                    )}
                   </Typography>
                 </Typography>
 
@@ -241,7 +244,8 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                           t={rest.t}
                           max={100}
                           slippageList={
-                            tradeCalcData.isBtrade
+                            (tradeCalcData as BtradeTradeCalcData<I>)?.isBtrade ||
+                            (tradeCalcData as VaultTradeCalcData<T>)?.isVault
                               ? (SlippageBtradeTolerance.concat(`slippage:${slippage}`) as Array<
                                   number | string
                                 >)
@@ -303,12 +307,18 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   <Typography display={'inline-block'} marginLeft={2} component={'span'}>
                     <IconButtonStyled
                       onClick={() => {
-                        !tradeCalcData.isBtrade
+                        // @ts-ignore
+                        tradeCalcData.isBtrade
                           ? history.push(
-                              `/l2assets/history/${RecordTabIndex.Trades}?market=${market}`,
+                              `/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
+                            )
+                          : // @ts-ignore
+                          tradeCalcData.isVault
+                          ? history.push(
+                              `/l2assets/history/${RecordTabIndex.vaultRecords}?market=${market}`,
                             )
                           : history.push(
-                              `/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
+                              `/l2assets/history/${RecordTabIndex.Trades}?market=${market}`,
                             )
                       }}
                       sx={{ backgroundColor: 'var(--field-opacity)' }}
@@ -337,7 +347,8 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
           key: 'tradeMenuList',
           element: React.useMemo(
             () => (
-              <SwapMenuList<T, I, TCD | SCD>
+              // @ts-ignore
+              <SwapMenuList<T, I, TCD>
                 key={'tradeMenuList'}
                 {...{
                   ...rest,

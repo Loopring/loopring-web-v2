@@ -295,19 +295,20 @@ export const useOpenModals = () => {
       [dispatch],
     ),
     setShowVaultExit: React.useCallback(
-      (state: ModalStatePlayLoad) => dispatch(setShowVaultExit(state)),
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultExit(state)),
       [dispatch],
     ),
     setShowVaultJoin: React.useCallback(
-      (state: ModalStatePlayLoad) => dispatch(setShowVaultJoin(state)),
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultJoin(state)),
       [dispatch],
     ),
     setShowVaultSwap: React.useCallback(
-      (state: ModalStatePlayLoad) => dispatch(setShowVaultSwap(state)),
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultSwap(state)),
       [dispatch],
     ),
     setShowVaultLoad: React.useCallback(
-      (state: ModalStatePlayLoad) => dispatch(setShowVaultLoad(state)),
+      (state: ModalStatePlayLoad & Transaction & { type?: string }) =>
+        dispatch(setShowVaultLoad(state)),
       [dispatch],
     ),
   }
