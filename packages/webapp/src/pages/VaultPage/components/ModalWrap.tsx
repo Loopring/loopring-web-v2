@@ -17,16 +17,14 @@ import {
   VaultLoadPanel,
 } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { TOAST_TIME, TRADE_TYPE } from '@loopring-web/common-resources'
+import { TOAST_TIME, TRADE_TYPE, VaultLoadType } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 
 export const ModalVaultWrap = () => {
   const { t } = useTranslation()
-  // const { tokenMap } = useTokenMap()
   const { getVaultMap, tokenMap: vaultTokenMao, idIndex: vaultIndex } = useVaultMap()
   const theme = useTheme()
   const { campaignTagConfig } = useNotify().notifyMap ?? {}
-
   const {
     modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap, istShowVaultLoad },
     setShowVaultJoin,
@@ -55,7 +53,6 @@ export const ModalVaultWrap = () => {
     isSwapLoading,
     market,
     isMobile,
-    // setToastOpen,
   } = useVaultSwap({ path: 'vault' })
   const { vaultRepayProps, vaultBorrowProps, vaultLoadType, handleTabChange } = useVaultLoad()
   return (
@@ -90,44 +87,42 @@ export const ModalVaultWrap = () => {
           setShowVaultSwap({ isShow: false })
         }}
         content={
-          <>
-            <SwapPanel
-              classWrapName={'vaultSwap'}
-              titleI8nKey={'labelVaultSwap'}
-              tokenBuyProps={{
-                disableInputValue: isMarketInit,
-                disabled: isSwapLoading || isMarketInit,
-                decimalsLimit: tradeCalcData.buyPrecision,
-              }}
-              tokenSellProps={{
-                disableInputValue: isMarketInit,
-                disabled: isSwapLoading || isMarketInit,
-                placeholderText:
-                  tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
-                    ? t('labelBtradeSwapMiniMax', {
-                        minValue: tradeCalcData.sellMinAmtStr,
-                        maxValue: tradeCalcData.sellMaxAmtStr,
-                      })
-                    : t('labelBtradeSwapMini', {
-                        minValue: tradeCalcData.sellMinAmtStr,
-                      }),
-              }}
-              {...{
-                campaignTagConfig,
-                tradeCalcData,
-                tradeData: tradeData as any,
-                onSwapClick,
-                swapBtnI18nKey,
-                swapBtnStatus,
-                handleSwapPanelEvent,
-                should15sRefresh,
-                refreshRef,
-                tradeVault,
-                market,
-                isMobile,
-              }}
-            />
-          </>
+          <SwapPanel
+            classWrapName={'vaultSwap'}
+            titleI8nKey={'labelVaultSwap'}
+            tokenBuyProps={{
+              disableInputValue: isMarketInit,
+              disabled: isSwapLoading || isMarketInit,
+              decimalsLimit: tradeCalcData.buyPrecision,
+            }}
+            tokenSellProps={{
+              disableInputValue: isMarketInit,
+              disabled: isSwapLoading || isMarketInit,
+              placeholderText:
+                tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
+                  ? t('labelBtradeSwapMiniMax', {
+                      minValue: tradeCalcData.sellMinAmtStr,
+                      maxValue: tradeCalcData.sellMaxAmtStr,
+                    })
+                  : t('labelBtradeSwapMini', {
+                      minValue: tradeCalcData.sellMinAmtStr,
+                    }),
+            }}
+            {...{
+              campaignTagConfig,
+              tradeCalcData,
+              tradeData: tradeData as any,
+              onSwapClick,
+              swapBtnI18nKey,
+              swapBtnStatus,
+              handleSwapPanelEvent,
+              should15sRefresh,
+              refreshRef,
+              tradeVault,
+              market,
+              isMobile,
+            }}
+          />
         }
       />
       <Modal
@@ -146,7 +141,7 @@ export const ModalVaultWrap = () => {
           <VaultLoadPanel
             vaultRepayProps={vaultRepayProps as any}
             vaultBorrowProps={vaultBorrowProps as any}
-            vaultLoadType={vaultLoadType}
+            vaultLoadType={vaultLoadType as VaultLoadType}
             handleTabChange={handleTabChange}
           />
         }

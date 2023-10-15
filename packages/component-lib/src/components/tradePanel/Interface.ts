@@ -158,7 +158,7 @@ export type SwapProps<T, I, TCD> = {
   titleI8nKey?: string
   toPro?: () => void
   tradeData: SwapTradeData<T>
-  campaignTagConfig: CAMPAIGNTAGCONFIG
+  campaignTagConfig?: CAMPAIGNTAGCONFIG
   handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: SwapType) => Promise<void>
   market?: MarketType
   onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>

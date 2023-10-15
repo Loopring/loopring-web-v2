@@ -25,7 +25,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
   } as any)
   const [panelIndex, setPanelIndex] = React.useState(index)
   React.useEffect(() => {
-    setPanelIndex(index + 1)
+    setPanelIndex(index)
   }, [index])
 
   const props: SwitchPanelProps<'tradeMenuList' | 'trade' | 'confirm'> = {

@@ -2090,4 +2090,5 @@ export default {
   labelVaultTotalDebt: 'Total Debt',
   labelVaultTotalEquity: 'Total Equity',
   labelVaultProfit: 'Profit',
+  labelVaultCloseBtn: 'Close',
 }

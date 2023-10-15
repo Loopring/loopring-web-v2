@@ -65,7 +65,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const calcSupportData = (tradeData: T) => {
     let supportData = {}
     // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    if (tradeData.belong) {
+    if (tradeData?.belong) {
       const vaultTokenSymbol = walletAllowMap[tradeData.belong as any].vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
       const ercToken = tokenMap[tradeData.belong]
@@ -573,7 +573,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const tokenSymbol = props.tradeData.belong
     // debugger
     if (tokenSymbol) {
-      // const supportData = calcSupportData(props.tradeData)
       updateVaultJoin({
         ...vaultJoinData,
         amount: sdk

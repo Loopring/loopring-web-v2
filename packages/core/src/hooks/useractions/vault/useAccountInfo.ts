@@ -27,6 +27,7 @@ export type VaultAccountInfoStatus = VaultLayer2States & {
   repayBtnStatus: TradeBtnStatus
   onRepayPop: (props: any) => void
   repayBtnLabel: string
+  vaultAccountInfoStatus: SagaStatus
   // isShowFeathure:  vaultAccountInfo?.accountStatus
 }
 export const useAccountInfo = () => {
@@ -53,12 +54,6 @@ export const useAccountInfo = () => {
       switch (vaultAccountInfo?.accountStatus) {
         // @ts-ignore
         case sdk.VaultAccountStatus.IN_REDEEM: //sdk.VaultAccountStatus.IN_REDEEM:
-          if (nodeTimer.current !== -1) {
-            clearTimeout(nodeTimer.current as any)
-          }
-          nodeTimer.current = setTimeout(() => {
-            updateVaultLayer2({})
-          }, 6000)
           return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultPendingBtn|` }
         // @ts-ignore
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
@@ -258,6 +253,22 @@ export const useAccountInfo = () => {
     })
   }, [])
 
+  React.useEffect(() => {
+    if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_REDEEM) {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as any)
+      }
+      nodeTimer.current = setTimeout(() => {
+        updateVaultLayer2({})
+      }, 6000)
+    }
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as any)
+      }
+    }
+  }, [vaultAccountInfo?.accountStatus])
+
   // myLog('useAccountInfo', vaultAccountInfo)
   return {
     joinBtnStatus,
@@ -276,6 +287,7 @@ export const useAccountInfo = () => {
     repayBtnStatus,
     onRepayPop,
     repayBtnLabel: label(repayBtnLabel),
+    vaultAccountInfoStatus,
 
     // isShowFeathure:  vaultAccountInfo?.accountStatus
   } as VaultAccountInfoStatus

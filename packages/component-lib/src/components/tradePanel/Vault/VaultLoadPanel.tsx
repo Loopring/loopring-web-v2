@@ -10,7 +10,6 @@ import { VaultBorrowProps } from '../Interface'
 
 export type VaultLoadProps<T, B, I> = {
   vaultLoadType: VaultLoadType
-
   handleTabChange: (index: VaultLoadType) => void
   vaultRepayProps: VaultRepayWrapProps<T, B, I>
   vaultBorrowProps: VaultBorrowProps<T, B, I>
@@ -106,7 +105,6 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
             // key={panelList[0].key}
           >
             <VaultBorrowPanel {...{ ...vaultBorrowProps, t }} />
-            {/**/}
           </Box>
         )}
         {vaultLoadType === VaultLoadType.Repay && (
