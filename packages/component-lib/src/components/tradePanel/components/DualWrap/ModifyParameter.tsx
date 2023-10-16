@@ -37,7 +37,7 @@ export const ModifyParameter = ({
   const {
     stepLength,
     // strike,
-    currentPrice: { currentPrice, precisionForPrice, base, quote },
+    currentPrice: { currentPrice, precisionForPrice, base, quote, quoteUnit },
   } = dualViewInfo
 
   const stepEle = React.useMemo(() => {

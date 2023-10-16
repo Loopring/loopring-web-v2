@@ -152,6 +152,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
 
   const refresh = async (item: R) => {
     const hash = item.__raw__.order.hash
+    const currentPrice = item.currentPrice
     setShowLoading(true)
     const { marketArray, marketMap: dualMarketMap } = store.getState().invest.dualMap
     if (LoopringAPI.defiAPI && accountId && apiKey && marketArray?.length) {
@@ -210,7 +211,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           item,
           sellTokenSymbol,
           buyTokenSymbol,
-          0,
+          currentPrice?.currentPrice ?? 0,
           dualMarketMap[item.tokenInfoOrigin.market],
         )
 
@@ -356,7 +357,12 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
               const [, , coinA, coinB] =
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
-
+              const findIndex = indexes?.find((_item) => {
+                return (
+                  _item.base === item.tokenInfoOrigin.base &&
+                  _item.quote === item.tokenInfoOrigin.quote
+                )
+              })
               let [sellTokenSymbol, buyTokenSymbol] =
                 item.dualType === DUAL_TYPE.DUAL_BASE
                   ? [
@@ -371,7 +377,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 item,
                 sellTokenSymbol,
                 buyTokenSymbol,
-                0,
+                findIndex?.index ?? 0,
                 dualMarketMap[item.tokenInfoOrigin.market],
               )
 
@@ -384,12 +390,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 tokenMap[sellTokenSymbol].precision,
                 true,
               )
-              const findIndex = indexes?.find((_item) => {
-                return (
-                  _item.base === item.tokenInfoOrigin.base &&
-                  _item.quote === item.tokenInfoOrigin.quote
-                )
-              })
+
               const currentPrice = {
                 base: item.tokenInfoOrigin.base,
                 quote: item.tokenInfoOrigin.quote,
