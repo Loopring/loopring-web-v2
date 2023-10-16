@@ -238,7 +238,9 @@ export const ModalDualPanel = withTranslation('common')(
           open={
             !confirmedDualInvestV2 &&
             showDualAlert &&
-            [DualViewType.All, DualViewType.DualBegin].includes(viewType as any)
+            [DualViewType.All, DualViewType.DualBegin, DualViewType.DualBTC].includes(
+              viewType as any,
+            )
           }
           USDCOnly={confirmedDualInvestV2 === 'USDCOnly'}
           handleClose={(_e, isAgree: DualInvestConfirmType | undefined) => {

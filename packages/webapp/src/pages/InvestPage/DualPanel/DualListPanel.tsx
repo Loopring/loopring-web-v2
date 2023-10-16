@@ -31,13 +31,15 @@ import {
   useSystem,
   useTokenMap,
 } from '@loopring-web/core'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
   DualViewType,
   getValuePrecisionThousand,
   Info2Icon,
+  InvestAssetRouter,
   LOOPRING_DOCUMENT,
+  RouterPath,
   SagaStatus,
   SoursURL,
 } from '@loopring-web/common-resources'
@@ -492,9 +494,9 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
             searchParams.set('viewType', item)
 
             history.push(
-              pathname + item === DualViewType.DualBTC
-                ? '/ETH-WBTC'
-                : '' + '?' + searchParams.toString(),
+              `${RouterPath.invest}/${InvestAssetRouter.DUAL}/${
+                item === DualViewType.DualBTC ? 'ETH-WBTC' : 'ETH-USDC'
+              }?${searchParams.toString()}`,
             )
           }}
         />

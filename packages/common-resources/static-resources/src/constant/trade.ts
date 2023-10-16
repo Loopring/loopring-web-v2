@@ -331,11 +331,11 @@ export const enum InvestMapType {
 }
 
 export const enum InvestAssetRouter {
-  AMM = 'amm',
-  STAKE = 'stake',
+  AMM = 'ammpool',
+  STAKE = 'defi',
   DUAL = 'dual',
-  STAKELRC = 'sideStake',
-  LEVERAGEETH = 'leverageeth',
+  STAKELRC = 'stakelrc',
+  LEVERAGEETH = 'leverageETH',
   // BTradeInvest = "BTradeInvest",
 }
 
