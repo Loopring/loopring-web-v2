@@ -18,6 +18,7 @@ import {
   getValuePrecisionThousand,
   SoursURL,
   TokenType,
+  DualBTC,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
@@ -35,6 +36,7 @@ export const ViewStepType = {
   [DualViewType.DualGain]: DualGain,
   [DualViewType.DualDip]: DualDip,
   [DualViewType.DualBegin]: DualBegin,
+  [DualViewType.DualBTC]: DualBTC,
 }
 
 export const BeginnerMode: any = withTranslation('common')(

@@ -14,7 +14,9 @@ import {
   AssetL2TabIndex,
   AssetTabIndex,
   CircleIcon,
-  MapChainId, myLog,
+  MapChainId,
+  myLog,
+  RouterPath,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import RewardsPanel from '../RewardsPanel'
@@ -57,7 +59,7 @@ export const AssetPanel = withTranslation('common')(
     const match: any = useRouteMatch('/l2assets/:assets?/:item?')
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
-    const {onTokenLockHold, tokenLockDetail} = useAssetAction()
+    const { onTokenLockHold, tokenLockDetail } = useAssetAction()
 
     const handleTabChange = (value: AssetTabIndex) => {
       if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
@@ -94,7 +96,7 @@ export const AssetPanel = withTranslation('common')(
     return (
       <>
         {!isMobile && (
-          <StyleTitlePaper paddingX={3} paddingY={5 / 2} >
+          <StyleTitlePaper paddingX={3} paddingY={5 / 2}>
             <AssetTitle
               {...{
                 t,
@@ -123,17 +125,19 @@ export const AssetPanel = withTranslation('common')(
                     label={
                       <>
                         {t(`labelAsset${item}`)}
-                        {showRedpacketReddot && <CircleIcon
-                          sx={{
-                            position: 'absolute',
-                            top: 2,
-                            right: -0,
-                            pointerEvents: 'none' as any,
-                          }}
-                          className={'noteit'}
-                          fontSize={'large'}
-                          htmlColor={'var(--color-error)'}
-                        />}
+                        {showRedpacketReddot && (
+                          <CircleIcon
+                            sx={{
+                              position: 'absolute',
+                              top: 2,
+                              right: -0,
+                              pointerEvents: 'none' as any,
+                            }}
+                            className={'noteit'}
+                            fontSize={'large'}
+                            htmlColor={'var(--color-error)'}
+                          />
+                        )}
                       </>
                     }
                     value={item}
@@ -146,11 +150,7 @@ export const AssetPanel = withTranslation('common')(
           })}
         </Tabs>
         {currentTab === AssetTabIndex.Tokens && (
-          <StylePaper
-            marginTop={1}
-            marginBottom={2}
-            ref={container}
-          >
+          <StylePaper marginTop={1} marginBottom={2} ref={container}>
             <Box className='tableWrapper table-divide-short'>
               <AssetsTable
                 {...{
@@ -178,7 +178,13 @@ export const AssetPanel = withTranslation('common')(
         )}
         {currentTab === AssetTabIndex.Rewards && <RewardsPanel hideAssets={hideAssets} />}
         {currentTab === AssetTabIndex.Invests && (
-          <MyLiquidity noHeader className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
+          <MyLiquidity
+            noHeader
+            path={`${RouterPath.l2assets}/assets/Invests`}
+            className={'assetWrap'}
+            isHideTotal={true}
+            hideAssets={hideAssets}
+          />
         )}
         {!isMobile && currentTab === AssetTabIndex.RedPacket && (
           <RedPacketClaimPanel hideAssets={hideAssets} />

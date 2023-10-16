@@ -2022,4 +2022,7 @@ export default {
   labelContactAddressExisted: 'Address already exists',
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelDualBTC: 'ETH - WBTC Dual Investment',
+  labelDualBTCDes: 'Select based on Token and Settlement Date',
+  labelDualTypeDualBTC: 'ETH - WBTC Dual Investment',
 }
