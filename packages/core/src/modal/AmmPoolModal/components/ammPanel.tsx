@@ -1,17 +1,12 @@
 import React from 'react'
-import {
-  AmmPanel,
-  AmmPanelType,
-  ConfirmAmmExitMiniOrder,
-  TOASTOPEN,
-} from '@loopring-web/component-lib'
+import { AmmPanel, ConfirmAmmExitMiniOrder, TOASTOPEN } from '@loopring-web/component-lib'
 
 import { Grid } from '@mui/material'
 import { useAccount, useAmmMap, usePageAmmPool, walletLayer2Service } from '../../../index'
 import styled from '@emotion/styled'
 import { useAmmJoin } from '../../../hooks/useractions/hookAmmJoin'
 import { useAmmExit } from '../../../hooks/useractions/hookAmmExit'
-import { SagaStatus } from '@loopring-web/common-resources'
+import { SagaStatus, AmmPanelType } from '@loopring-web/common-resources'
 
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);

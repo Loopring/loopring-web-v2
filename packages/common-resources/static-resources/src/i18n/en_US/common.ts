@@ -1700,7 +1700,7 @@ export default {
   labelDepositTo: 'Deposit to',
   labelReferTitle: 'Invite friends to join in \nLoopring and receive rewards',
   labelReferTitleDes:
-    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
+    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a discount on transfer fees.',
   labelCopy: 'Copy',
   labelReferralRules: 'Reward rules',
   labelReferralMethod1: 'Method 1',
@@ -2022,4 +2022,7 @@ export default {
   labelContactAddressExisted: 'Address already exists',
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelDualBTC: 'ETH - WBTC Dual Investment',
+  labelDualBTCDes: 'Select based on Token and Settlement Date',
+  labelDualTypeDualBTC: 'ETH - WBTC Dual Investment',
 }
