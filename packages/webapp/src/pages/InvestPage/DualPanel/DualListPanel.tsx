@@ -31,7 +31,7 @@ import {
   useSystem,
   useTokenMap,
 } from '@loopring-web/core'
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import {
   BackIcon,
   DualViewType,
@@ -95,13 +95,10 @@ export const DualListBlock = ({
   dualListProps: any
 }) => {
   const { t } = useTranslation()
-
   const { tokenMap } = useTokenMap()
   const { forexMap } = useSystem()
   const { isMobile } = useSettings()
   const { setShowDual } = useOpenModals()
-  // const { defaultNetwork } = store.getState().settings
-  // const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   return (
     <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
