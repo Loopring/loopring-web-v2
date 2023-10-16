@@ -29,6 +29,7 @@ import {
   getValuePrecisionThousand,
   myLog,
   NFTWholeINFO,
+  RouterPath,
   UIERROR_CODE,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -820,8 +821,6 @@ export function useRedPacketModal() {
         detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.RELAY &&
         account.accountId !== _info.sender.accountId
 
-      
-
       let myAmountStr: string | undefined = undefined
       const relyNumber = detail.helpers?.length
       const value =
@@ -885,7 +884,6 @@ export function useRedPacketModal() {
         list = getUserReceiveList(detail.claims as any, tokenInfo, detail.champion).list
       }
       // }
-      
 
       const claimButton: 'claimed' | 'claim' | 'claiming' | 'expired' | 'hidden' = detail.luckyToken
         .isNft
@@ -895,7 +893,7 @@ export function useRedPacketModal() {
           ? 'claimed'
           : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
           ? 'claiming'
-          :  detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
+          : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
           ? 'expired'
           : 'hidden'
         : 'hidden'
@@ -904,7 +902,9 @@ export function useRedPacketModal() {
         sdk.LuckyTokenItemStatus.FAILED,
         sdk.LuckyTokenItemStatus.COMPLETED,
       ].includes(detail.luckyToken.status)
-        ? (claimButton === 'hidden' ? 'ended' : 'hidden')
+        ? claimButton === 'hidden'
+          ? 'ended'
+          : 'hidden'
         : detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
         ? 'hidden'
         : 'share'
@@ -979,7 +979,9 @@ export function useRedPacketModal() {
             })
         },
         totalNumber: (detail as any).totalNum,
-        showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId && detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
+        showReceiptListBtn:
+          account.accountId === detail.luckyToken.sender.accountId &&
+          detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
       } as RedPacketDetailProps
     } else {
       return undefined
@@ -1037,7 +1039,7 @@ export function useRedPacketModal() {
     ) {
       const shareButton: 'hidden' | 'share' =
         (blindBoxType === 'Not Started' || blindBoxType === 'Blind Box Started') &&
-        detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED && 
+        detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED &&
         detail.luckyToken.type.scope !== sdk.LuckyTokenViewType.TARGET
           ? 'share'
           : 'hidden'
@@ -1057,10 +1059,13 @@ export function useRedPacketModal() {
             ? 'ended'
             : 'hidden'
           : 'hidden'
-        : [sdk.LuckyTokenItemStatus.COMPLETED, sdk.LuckyTokenItemStatus.FAILED, sdk.LuckyTokenItemStatus.OVER_DUE]
-          .includes(detail.luckyToken.status)
+        : [
+            sdk.LuckyTokenItemStatus.COMPLETED,
+            sdk.LuckyTokenItemStatus.FAILED,
+            sdk.LuckyTokenItemStatus.OVER_DUE,
+          ].includes(detail.luckyToken.status)
         ? 'ended'
-        :'hidden'
+        : 'hidden'
 
       const tokenInfo = !detail.luckyToken.isNft
         ? tokenMap[idIndex[detail.luckyToken.tokenId]]
@@ -1138,7 +1143,7 @@ export function useRedPacketModal() {
             setShowRedPacket({
               isShow: false,
             })
-            history.push(`/l2assets/assets/${AssetTabIndex.RedPacket}`)
+            history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.RedPacket}`)
             return
           }
           const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
@@ -1177,19 +1182,23 @@ export function useRedPacketModal() {
         //   : t("labelBlindBoxExplainationNotEnded"),
         claimButton,
         shareButton,
-        didClaimABlindBox: blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
+        didClaimABlindBox:
+          blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
         wonInfo: blinBoxDetail!.luckyToken.isNft
           ? {
-            participated: blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
+              participated:
+                blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
               won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
               amount: detail.claimAmount,
               isNFT: true,
             }
           : {
-              participated: blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
+              participated:
+                blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
               won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
               amount:
-                blinBoxDetail.claimAmount && tokenInfo &&
+                blinBoxDetail.claimAmount &&
+                tokenInfo &&
                 getValuePrecisionThousand(
                   sdk.toBig(blinBoxDetail.claimAmount ?? '0').div('1e' + tokenInfo.decimals),
                   tokenInfo.precision,
@@ -1197,15 +1206,17 @@ export function useRedPacketModal() {
                   tokenInfo.precision,
                   false,
                 ),
-              total: tokenInfo && getValuePrecisionThousand(
-                sdk
-                  .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
-                  .div('1e' + tokenInfo!.decimals),
-                tokenInfo!.precision,
-                tokenInfo!.precision,
-                tokenInfo!.precision,
-                false,
-              ),
+              total:
+                tokenInfo &&
+                getValuePrecisionThousand(
+                  sdk
+                    .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
+                    .div('1e' + tokenInfo!.decimals),
+                  tokenInfo!.precision,
+                  tokenInfo!.precision,
+                  tokenInfo!.precision,
+                  false,
+                ),
               symbol: tokenInfo!.symbol,
               isNFT: false,
             },
@@ -1261,8 +1272,10 @@ export function useRedPacketModal() {
             ) +
             ' ' +
             tokenInfo?.symbol,
-            showReceiptListBtn: account.accountId === detail.luckyToken.sender.accountId && detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
-        targets: (detail as any).targets
+        showReceiptListBtn:
+          account.accountId === detail.luckyToken.sender.accountId &&
+          detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
+        targets: (detail as any).targets,
       } as RedPacketBlindBoxDetailProps
     } else {
       return undefined

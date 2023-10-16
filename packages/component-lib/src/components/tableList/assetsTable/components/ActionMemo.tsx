@@ -10,6 +10,8 @@ import {
   MoreIcon,
   LEVERAGE_ETH_CONFIG,
   AmmPanelType,
+  InvestAssetRouter,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { useOpenModals, useSettings, useToggle } from '../../../../stores'
@@ -130,9 +132,11 @@ const ActionPopContent = React.memo(
                 disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
                   if (coins.includes(tokenValue)) {
-                    history.push('/invest/leverageETH')
+                    history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`)
                   } else {
-                    history.push(`/invest/defi/${tokenValue}-null/invest`)
+                    history.push(
+                      `${RouterPath.invest}/${InvestAssetRouter.STAKE}/${tokenValue}-null/invest`,
+                    )
                   }
                 }}
               >
@@ -142,9 +146,11 @@ const ActionPopContent = React.memo(
                 disabled={!_allowTrade?.[`${tokenValue}Invest`]?.enable}
                 onClick={() => {
                   if (coins.includes(tokenValue)) {
-                    history.push('/invest/leverageETH/redeem')
+                    history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}/redeem`)
                   } else {
-                    history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                    history.push(
+                      `${RouterPath.invest}/${InvestAssetRouter.STAKE}/${tokenValue}-null/redeem`,
+                    )
                   }
                 }}
               >
@@ -230,7 +236,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     size={'small'}
                     color={'primary'}
                     onClick={() => {
-                      history.push(`/invest/leverageETH`)
+                      history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`)
                     }}
                   >
                     {t('labelDefiInvest')}
@@ -242,7 +248,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     size={'small'}
                     color={'primary'}
                     onClick={() => {
-                      history.push(`/invest/leverageETH/redeem`)
+                      history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}/redeem`)
                     }}
                   >
                     {t('labelDefiRedeem')}
@@ -258,9 +264,11 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     color={'primary'}
                     onClick={() => {
                       if (coins.includes(tokenValue)) {
-                        history.push('/invest/leverageETH')
+                        history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`)
                       } else {
-                        history.push(`/invest/defi/${tokenValue}-null/invest`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.STAKE}/${tokenValue}-null/invest`,
+                        )
                       }
                     }}
                   >
@@ -274,9 +282,11 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     color={'primary'}
                     onClick={() => {
                       if (coins.includes(tokenValue)) {
-                        history.push('/invest/leverageETH/redeem')
+                        history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}/redeem`)
                       } else {
-                        history.push(`/invest/defi/${tokenValue}-null/redeem`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.STAKE}/${tokenValue}-null/redeem`,
+                        )
                       }
                     }}
                   >

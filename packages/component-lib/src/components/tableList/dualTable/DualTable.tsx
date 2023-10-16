@@ -27,8 +27,11 @@ const TableWrapperStyled = styled(Box)`
   height: 100%;
   ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table)<{ isMobile: boolean }>`
   &.rdg {
+    --template-columns: ${({ isMobile }: any) =>
+      isMobile ? '20% 44% auto !important' : '18% auto 18% 18% 20% !important'};
+
     height: ${(props: any) => {
       if (props.ispro === 'pro') {
         return '620px'
@@ -70,9 +73,9 @@ const ButtonStyled = styled(Button)`
     border-color: var(--color-primary);
     color: var(--color-primary);
     font-size: 16px;
-    height: ${({theme}) => 5 * theme.unit}px;
-    padding-left: ${({theme}) => 2.5 * theme.unit}px;
-    padding-right: ${({theme}) => 2.5 * theme.unit}px;
+    height: ${({ theme }) => 5 * theme.unit}px;
+    padding-left: ${({ theme }) => 2.5 * theme.unit}px;
+    padding-right: ${({ theme }) => 2.5 * theme.unit}px;
   }
 `
 
@@ -104,7 +107,9 @@ export const DualTable = withTranslation(['tables', 'common'])(
                 : ['var(--color-error)', 'var(--color-success)']
             return (
               <Box display='flex' justifyContent={'stretch'} height={'100%'} alignItems={'center'}>
-                <Typography component={'span'}> {row.strike}</Typography>
+                <Typography component={'span'}>
+                  {row.strike + ' ' + (row.currentPrice?.quoteUnit ?? row?.currentPrice?.quote)}
+                </Typography>
                 <Typography
                   component={'span'}
                   display={'inline-flex'}
@@ -212,7 +217,9 @@ export const DualTable = withTranslation(['tables', 'common'])(
                 : ['var(--color-error)', 'var(--color-success)']
             return (
               <Box display='flex' justifyContent={'stretch'} height={'100%'} alignItems={'center'}>
-                <Typography component={'span'}> {row.strike}</Typography>
+                <Typography component={'span'}>
+                  {row.strike + ' ' + (row.currentPrice?.quoteUnit ?? row?.currentPrice?.quote)}
+                </Typography>
                 <Typography
                   component={'span'}
                   display={'inline-flex'}
@@ -306,6 +313,7 @@ export const DualTable = withTranslation(['tables', 'common'])(
     return (
       <TableWrapperStyled>
         <TableStyled
+          isMobile={isMobile}
           currentheight={
             rawData.length > 0
               ? RowDualInvestConfig.rowHeaderHeight + rawData.length * RowDualInvestConfig.rowHeight

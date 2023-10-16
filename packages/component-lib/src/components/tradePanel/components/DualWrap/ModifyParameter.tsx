@@ -37,7 +37,7 @@ export const ModifyParameter = ({
   const {
     stepLength,
     // strike,
-    currentPrice: { currentPrice, precisionForPrice, base, quote },
+    currentPrice: { currentPrice, precisionForPrice, base, quote, quoteUnit },
   } = dualViewInfo
 
   const stepEle = React.useMemo(() => {
@@ -176,7 +176,7 @@ export const ModifyParameter = ({
             </Typography>
             <Typography component={'span'} color={'textPrimary'}>
               <WarningIcon2
-                htmlColor={'var(--color-warning)'}
+                color={'warning'}
                 fontSize={'large'}
                 sx={{
                   visibility: 'hidden',
@@ -211,7 +211,7 @@ export const ModifyParameter = ({
                       undefined,
                     ),
                   symbol: base,
-                  baseSymbol: /USD/gi.test(quote ?? '') ? 'USDT' : quote,
+                  baseSymbol: /USD/gi.test(quoteUnit ?? '') ? 'USDT' : quoteUnit,
                 }}
               >
                 LRC Current price:

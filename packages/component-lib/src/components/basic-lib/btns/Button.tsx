@@ -397,6 +397,43 @@ export const Tabs = styled(MuTabs)`
         color: var(--color-text-button);
         border-radius: ${({ theme }) => theme.unit * 0.5}px;
         background: var(--color-primary);
+        &:focus-visible::after,
+        &:after {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &.btnOutLineTab {
+    min-height: 28px;
+    height: 28px;
+    .MuiTabs-fixed {
+      .MuiTab-root {
+        margin: 0 ${({ theme }) => theme.unit}px;
+        &:first-child {
+          margin-left: 0;
+        }
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+    .MuiTab-root {
+      min-height: 28px;
+      height: 28px;
+      padding: 0;
+      color: var(--color-text-secondary);
+      border: var(--color-text-secondary) 1px solid;
+      border-radius: ${({ theme }) => theme.unit * 0.5}px;
+      margin: 0;
+      &.Mui-selected {
+        color: var(--color-primary);
+        border: var(--color-primary) 1px solid;
+        &:focus-visible::after,
+        &:after {
+          display: none;
+        }
       }
     }
   }

@@ -18,11 +18,13 @@ import {
   getValuePrecisionThousand,
   SoursURL,
   TokenType,
+  DualBTC,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import React from 'react'
+import _ from 'lodash'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -35,6 +37,7 @@ export const ViewStepType = {
   [DualViewType.DualGain]: DualGain,
   [DualViewType.DualDip]: DualDip,
   [DualViewType.DualBegin]: DualBegin,
+  [DualViewType.DualBTC]: DualBTC,
 }
 
 export const BeginnerMode: any = withTranslation('common')(
@@ -42,15 +45,11 @@ export const BeginnerMode: any = withTranslation('common')(
     t,
     dualListProps,
     viewType,
-  }: // setConfirmDualInvest,
-  WithTranslation & {
+  }: WithTranslation & {
     dualListProps: any
     viewType: DualViewType
-    // setConfirmDualInvest: (state: any) => void
   }) => {
-    // const viewType ===
     const viewStepType = ViewStepType[viewType]
-
     const theme = useTheme()
     const { tradeMap } = useDualMap()
     const { coinJson } = useSettings()
@@ -74,6 +73,7 @@ export const BeginnerMode: any = withTranslation('common')(
       isDualBalanceSufficient,
     } = dualListProps
     const { isMobile } = useSettings()
+    const { marketArray } = useDualMap()
     const tokenList: any[] = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
       a?.tokenName?.toString().localeCompare(b?.tokenName?.toString()),
     )
@@ -81,6 +81,8 @@ export const BeginnerMode: any = withTranslation('common')(
       step2BuyOrSell === 'Sell' ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
     const step3Ref = React.useRef(null)
     const tableRef = React.useRef(null)
+    const quoteList = _.cloneDeep(tradeMap[step1SelectedToken ?? '']?.tokenList ?? [])
+    // const last = quoteList.pop()
     const scroolStep3ToMiddle = () => {
       setTimeout(() => {
         const element = step3Ref.current as any
@@ -216,7 +218,19 @@ export const BeginnerMode: any = withTranslation('common')(
                         })}
                       </Typography>
                       <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
-                        {t('labelDualBeginnerReceiveStable')}
+                        {t('labelDualBeginnerReceiveStable', {
+                          ...(quoteList?.length > 1
+                            ? {
+                                last: t('labelDualBeginnerLast', {
+                                  last: quoteList[quoteList.length - 1],
+                                }),
+                                list: [...quoteList.slice(0, quoteList.length - 1)].join(', '),
+                              }
+                            : {
+                                last: '',
+                                list: [...quoteList].join(', '),
+                              }),
+                        })}
                       </Typography>
                     </Typography>
                   </CardContent>
@@ -254,7 +268,19 @@ export const BeginnerMode: any = withTranslation('common')(
                         })}
                       </Typography>
                       <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
-                        {t('labelDualBeginnerInvestStable')}
+                        {t('labelDualBeginnerInvestStable', {
+                          ...(quoteList?.length > 1
+                            ? {
+                                last: t('labelDualBeginnerLast', {
+                                  last: quoteList[quoteList.length - 1],
+                                }),
+                                list: [...quoteList.slice(0, quoteList.length - 1)].join(', '),
+                              }
+                            : {
+                                last: '',
+                                list: [...quoteList].join(', '),
+                              }),
+                        })}
                       </Typography>
                     </Typography>
                   </CardContent>
@@ -270,7 +296,7 @@ export const BeginnerMode: any = withTranslation('common')(
               {t(viewStepType[2].labelKey)}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
-              {tradeMap[step1SelectedToken ?? '']?.tokenList?.map((token) => {
+              {tradeMap[step1SelectedToken ?? '']?.quoteList?.map((token) => {
                 return (
                   <Box marginRight={2} key={token}>
                     <TickCardStyleItem
@@ -412,9 +438,9 @@ export const BeginnerMode: any = withTranslation('common')(
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
-                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                          baseSymbol: /USD/gi.test(currentPrice.quoteUnit ?? '')
                             ? 'USDT'
-                            : currentPrice.quote,
+                            : currentPrice.quoteUnit,
                         }}
                       >
                         LRC Current price:

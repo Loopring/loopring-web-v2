@@ -15,9 +15,9 @@ import { useTranslation } from 'react-i18next'
 import { Box, Grid, Typography } from '@mui/material'
 import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
-import { InputCoin } from '../../../basic-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DualDetail } from './dualDetail'
+import { InputMaxCoin } from '../../../basic-lib'
 
 export const DualWrap = <
   T extends IBData<I> & { isRenew: boolean; targetPrice: string; duration: string },
@@ -55,7 +55,6 @@ export const DualWrap = <
   const [displayMode, setDisplayMode] = React.useState<DualDisplayMode>(
     isBeginnerMode ? DualDisplayMode.beginnerModeStep1 : DualDisplayMode.nonBeginnerMode,
   )
-
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined
   }, [btnStatus, dualCalcData, disabled])
@@ -74,13 +73,13 @@ export const DualWrap = <
   )
 
   const propsSell = {
-    label: t('tokenEnterPaymentToken'),
-    subLabel: t('tokenMax'),
+    label: t('labelTokenEnterDualToken'),
+    subLabel: t('labelTokenMaxBalance'),
     emptyText: t('tokenSelectToken'),
-    placeholderText: dualCalcData.maxSellAmount
-      ? t('labelInvestMaxDual', {
+    placeholderText: dualCalcData.miniSellVol
+      ? t('labelInvestMiniDual', {
           value: getValuePrecisionThousand(
-            dualCalcData.maxSellAmount,
+            sdk.toBig(dualCalcData.miniSellVol).div('1e' + dualCalcData.sellToken?.decimals),
             dualCalcData.sellToken?.precision,
             dualCalcData.sellToken?.precision,
             dualCalcData.sellToken?.precision,
@@ -90,18 +89,23 @@ export const DualWrap = <
         })
       : '0.00',
     maxAllow: true,
+    noBalance: EmptyValueTag,
     name: 'coinSell',
     isHideError: true,
-    order: 'right' as any,
+    order: 'left' as any,
     decimalsLimit: tokenSell?.precision,
     coinPrecision: tokenSell?.precision,
-    inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
+    inputData: {
+      ...(dualCalcData ? dualCalcData.coinSell : ({} as any)),
+      max: dualCalcData.maxSellAmount,
+    },
     coinMap: {},
     ...tokenSellProps,
     handleError: handleError as any,
     handleCountChange,
     isShowCoinInfo: true,
-    isShowCoinIcon: true,
+    isShowCoinIcon: false,
+    // CoinIconElement: tokenSell.symbol,
     ...rest,
   } as any
   const label = React.useMemo(() => {
@@ -209,50 +213,6 @@ export const DualWrap = <
     >
       {dualCalcData.dualViewInfo && priceSymbol && (
         <>
-          {displayMode !== DualDisplayMode.beginnerModeStep2 && (
-            <Grid
-              item
-              xs={12}
-              flexDirection={'column'}
-              alignItems={'stretch'}
-              justifyContent={'space-between'}
-              display={'flex'}
-            >
-              <Box
-                paddingX={2}
-                display={'flex'}
-                alignItems={'stretch'}
-                justifyContent={'space-between'}
-                flexDirection={'column'}
-              >
-                <InputCoin<any, I, any>
-                  ref={coinSellRef}
-                  disabled={getDisabled}
-                  {...{
-                    ...propsSell,
-                  }}
-                />
-                <Typography
-                  variant={'body1'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                  justifyContent={'space-between'}
-                  paddingTop={1}
-                  paddingBottom={2}
-                >
-                  <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
-                    {t('labelDualQuota')}
-                  </Typography>
-                  <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-                    {totalQuota + ' ' + dualCalcData.coinSell.belong}
-                  </Typography>
-                </Typography>
-              </Box>
-            </Grid>
-          )}
-          {/*<Grid item xs={12}>*/}
-          {/*  */}
-          {/*</Grid>*/}
           <Grid
             item
             xs={12}
@@ -284,7 +244,48 @@ export const DualWrap = <
               isPriceEditable={false}
               dualProducts={dualProducts ?? []}
               toggle={toggle}
-              // getProduct={getDualProduct}
+              inputPart={
+                displayMode !== DualDisplayMode.beginnerModeStep2 ? (
+                  <Box
+                    display={'flex'}
+                    alignItems={'stretch'}
+                    justifyContent={'space-between'}
+                    flexDirection={'column'}
+                    order={1}
+                    marginTop={2}
+                    marginBottom={1}
+                  >
+                    <Box paddingX={2}>
+                      <InputMaxCoin<any, I, any>
+                        ref={coinSellRef}
+                        disabled={getDisabled}
+                        {...{
+                          ...propsSell,
+                        }}
+                      />
+                    </Box>
+                    <Typography
+                      variant={'body1'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      paddingX={2}
+                      paddingBottom={1}
+                    >
+                      <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
+                        {t('labelDualQuota')}
+                      </Typography>
+                      <Typography
+                        component={'span'}
+                        variant={'inherit'}
+                        color={'textPrimary'}
+                        marginLeft={1 / 2}
+                      >
+                        {totalQuota + ' ' + dualCalcData.coinSell.belong}
+                      </Typography>
+                    </Typography>
+                  </Box>
+                ) : undefined
+              }
               onChange={(data) => {
                 onChangeEvent({
                   tradeData: {
