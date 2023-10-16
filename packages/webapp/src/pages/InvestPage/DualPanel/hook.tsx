@@ -178,7 +178,7 @@ export const useDualHook = () => {
         setMarketPair([coinA, coinB])
       }
     },
-    [marketArray, pairASymbol],
+    [marketArray, pairASymbol, search],
   )
   const tradeMap = React.useMemo(() => {
     const { tradeMap, marketMap } = store.getState().invest.dualMap
@@ -186,6 +186,7 @@ export const useDualHook = () => {
       { markets: marketArray.length ? marketArray?.map((item) => marketMap[item]) : [] },
       DUAL_CONFIG.products[network].join(','),
     )
+
     const _tradeMap =
       Reflect.ownKeys(pairs ?? {})?.reduce((prev, key) => {
         const tokenList = pairs[key as string]?.tokenList?.sort()
