@@ -2,7 +2,8 @@ import styled from '@emotion/styled'
 import { Box, Container, Grid, InputAdornment, Link, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useAccount, useSubmitBtn, useToast } from '@loopring-web/core'
+import { useAccount, useIPFS, useSubmitBtn, useToast } from '@loopring-web/core'
+
 import {
   AccountStatus,
   AssetTabIndex,
@@ -83,6 +84,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const [open, setOpen] = React.useState(false)
   const [images, setImages] = React.useState<CarouselItem[]>([])
   const [loading, setLoading] = React.useState(true)
+  const { ipfsProvides } = useIPFS({
+    handleSuccessUpload: () => undefined,
+    handleFailedUpload: () => undefined,
+  })
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
     referralBanners: {
@@ -93,9 +98,9 @@ const ReferHeader = <R extends ImageReferralBanner>({
       code: { default: [48, 30, 230, 64, '#000000', 630, 880] },
     },
   })
-  const {btnStatus, onBtnClick, btnLabel} = useSubmitBtn({
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
-      return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
     },
     isLoading: loading,
     submitCallback: async () => {
@@ -104,6 +109,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
       // onDownloadImage();
     },
   })
+
   // const [images, setImages] = React.useState<JSX.Element[]>([]);
   React.useEffect(() => {
     fetch(`${url_path}/referral/information.json`)
@@ -244,17 +250,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
       }
     })
   }
-  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
-    availableTradeCheck: () => {
-      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
-    },
-    isLoading: false,
-    submitCallback: async () => {
-      setOpen(true)
-      // Carousel
-      // onDownloadImage();
-    },
-  })
 
   const label = React.useMemo(() => {
     if (btnLabel) {
