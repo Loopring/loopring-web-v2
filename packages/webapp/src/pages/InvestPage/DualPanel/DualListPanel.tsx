@@ -37,7 +37,11 @@ import {
   DualViewType,
   getValuePrecisionThousand,
   Info2Icon,
+  InvestAssetRouter,
+  InvestRouter,
+  InvestType,
   LOOPRING_DOCUMENT,
+  RouterPath,
   SagaStatus,
   SoursURL,
 } from '@loopring-web/common-resources'
@@ -93,13 +97,10 @@ export const DualListBlock = ({
   dualListProps: any
 }) => {
   const { t } = useTranslation()
-
   const { tokenMap } = useTokenMap()
   const { forexMap } = useSystem()
   const { isMobile } = useSettings()
   const { setShowDual } = useOpenModals()
-  // const { defaultNetwork } = store.getState().settings
-  // const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   return (
     <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
@@ -216,7 +217,18 @@ export const DualListBlock = ({
                 {currentPrice &&
                   (!isMobile ? (
                     <>
-                      <Tooltip title={<>{t('labelDualCurrentPriceTip')}</>} placement={'top'}>
+                      <Tooltip
+                        title={
+                          <>
+                            {t('labelDualCurrentPriceTip', {
+                              symbol: /USD/gi.test(currentPrice?.quoteUnit ?? '')
+                                ? 'USDT'
+                                : currentPrice?.quoteUnit,
+                            })}
+                          </>
+                        }
+                        placement={'top'}
+                      >
                         <Typography
                           component={'p'}
                           variant='body2'
@@ -247,9 +259,9 @@ export const DualListBlock = ({
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
-                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                          baseSymbol: /USD/gi.test(currentPrice.quoteUnit ?? '')
                             ? 'USDT'
-                            : currentPrice.quote, //currentPrice.quote,
+                            : currentPrice.quoteUnit, //currentPrice.quote,
                         }}
                       >
                         LRC Current price:
@@ -374,7 +386,9 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
               endIcon={<BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />}
-              onClick={() => history.push('/invest/balance')}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
             >
               {t('labelInvestMyDual')}
             </Button>
@@ -492,9 +506,9 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
             searchParams.set('viewType', item)
 
             history.push(
-              pathname + item === DualViewType.DualBTC
-                ? '/ETH-WBTC'
-                : '' + '?' + searchParams.toString(),
+              `${RouterPath.invest}/${InvestAssetRouter.DUAL}/${
+                item === DualViewType.DualBTC ? 'ETH-WBTC' : 'ETH-USDC'
+              }?${searchParams.toString()}`,
             )
           }}
         />

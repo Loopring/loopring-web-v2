@@ -13,6 +13,7 @@ import {
   PriceTag,
   RowConfig,
   TokenType,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { MyPoolRow, MyPoolTableProps } from './Interface'
 import styled from '@emotion/styled'
@@ -598,9 +599,7 @@ export const MyPoolTable = withTranslation('tables')(
     }
 
     const nanToEmptyTag = (value: any, prefix: string) => {
-      return value === 'NaN'
-        ? EmptyValueTag
-        : prefix + value
+      return value === 'NaN' ? EmptyValueTag : prefix + value
     }
 
     return (
@@ -717,7 +716,7 @@ export const MyPoolTable = withTranslation('tables')(
                       variant={'contained'}
                       size={'small'}
                       onClick={() => {
-                        history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                        history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`)
                       }}
                     >
                       {t('labelClaimBtn', { ns: 'common' })}

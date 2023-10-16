@@ -413,7 +413,7 @@ export const OrderHistoryTable = withTranslation('tables')(
                         : '≥'}
                       {row.extraOrderInfo?.stopPrice}
                     </Typography>
-                    {row?.extraOrderInfo?.isTriggered && <CompleteIcon />}
+                    {row?.extraOrderInfo?.isTriggered && <CompleteIcon color={'success'} />}
                   </Box>
                 </Tooltip>
               )

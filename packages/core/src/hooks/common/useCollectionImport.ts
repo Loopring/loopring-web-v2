@@ -6,7 +6,9 @@ import {
   CustomError,
   ErrorMap,
   L2CollectionFilter,
+  NFTSubRouter,
   NFTWholeINFO,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -159,16 +161,18 @@ export const useCollectionImport = <
     setStep: (item) => {
       switch (item) {
         case ImportCollectionStep.SELECTCOLLECTION:
-          history.replace(`/nft/importLegacyCollection/${selectContract?.value}`)
+          history.replace(
+            `${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${selectContract?.value}`,
+          )
           break
         case ImportCollectionStep.SELECTNFT:
           history.replace(
-            `/nft/importLegacyCollection/${selectContract?.value}--${selectCollection?.id}`,
+            `${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${selectContract?.value}--${selectCollection?.id}`,
           )
           break
         case ImportCollectionStep.SELECTCONTRACT:
         default:
-          history.replace('/nft/importLegacyCollection')
+          history.replace(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}`)
           break
       }
       setStep(item)
