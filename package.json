@@ -108,11 +108,13 @@
     "dev": "cd ./packages/webapp; yarn dev",
     "dev-bridge": "cd packages/web-bridge; yarn dev",
     "dev-guardian": "cd packages/web-guardian; yarn dev",
+    "dev_earn": "cd packages/web-earn; yarn dev",
     "build": "cd ./packages/webapp; yarn build",
     "build-sb": "cd ./packages/component-lib; npm run build",
     "build-bridge": "cd packages/web-bridge; yarn build",
     "build-guardian": "cd packages/web-guardian; yarn build",
     "build_dev": "cd ./packages/webapp; yarn build_dev",
+    "build_earn": "cd packages/web-earn; yarn build",
     "deploy": "cd ./packages/webapp; yarn deploy",
     "deploy:ipfs": "cd ./packages/webapp; yarn deploy:ipfs",
     "sass": "node-sass packages/web-wallet/public/*.scss packages/web-wallet/public/*.css"
