@@ -42,6 +42,7 @@ import {
   TokenType,
   TradeBtnStatus,
   AmmPanelType,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
@@ -72,6 +73,7 @@ const MyLiquidity: any = withTranslation('common')(
     hideAssets,
     className,
     noHeader,
+    path = `${RouterPath.invest}/balance`,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
@@ -79,8 +81,9 @@ const MyLiquidity: any = withTranslation('common')(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
     noHeader?: boolean
+    path?: string
   }) => {
-    let match: any = useRouteMatch('/invest/balance/:type')
+    let match: any = useRouteMatch(path + '/:type')
 
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
@@ -238,12 +241,7 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
-      setTab(
-        InvestAssetRouter[
-          // @ts-ignore
-          match?.params?.type?.toUpperCase() ?? InvestAssetRouter.DUAL
-        ] ?? InvestAssetRouter.DUAL,
-      )
+      setTab(match?.params?.type ?? InvestAssetRouter.DUAL)
       if (searchParams?.get('refreshStake')) {
         getStakingList({})
       }
@@ -396,7 +394,10 @@ const MyLiquidity: any = withTranslation('common')(
                 <Tabs
                   className={'btnTab'}
                   value={tab}
-                  onChange={(_event: any, newValue: any) => setTab(newValue)}
+                  onChange={(_event: any, newValue: any) => {
+                    myLog('newValue', newValue)
+                    history.push(`${path}/${newValue}`)
+                  }}
                   aria-label='InvestmentsTab'
                 >
                   {visibaleTabs.map((tab) => (

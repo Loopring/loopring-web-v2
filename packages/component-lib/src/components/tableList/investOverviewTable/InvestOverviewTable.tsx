@@ -5,8 +5,10 @@ import { Button, CoinIcon, Column, Table } from '../../basic-lib'
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  InvestAssetRouter,
   InvestDuration,
   InvestMapType,
+  RouterPath,
   RowConfig,
   TokenType,
 } from '@loopring-web/common-resources'
@@ -222,23 +224,31 @@ export const InvestOverviewTable = <R extends RowInvest>({
               >
                 <Button
                   variant={'outlined'}
-                  size={'medium'}  
+                  size={'medium'}
                   onClick={(_e) => {
                     switch (row.type) {
                       case InvestMapType.AMM:
-                        history.push(`/invest/ammpool?search=${row.token.symbol}`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.AMM}?search=${row.token.symbol}`,
+                        )
                         return
                       case InvestMapType.STAKE:
-                        history.push(`/invest/defi/${row.token.symbol}-null/invest`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.STAKE}/${row.token.symbol}-null/invest`,
+                        )
                         return
                       case InvestMapType.DUAL:
-                        history.push(`/invest/dual/${row.token.symbol}-null`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.DUAL}/${row.token.symbol}-null`,
+                        )
                         return
                       case InvestMapType.STAKELRC:
-                        history.push(`/invest/stakelrc/${row.token.symbol}-null`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.STAKELRC}/${row.token.symbol}-null`,
+                        )
                         return
                       case InvestMapType.LEVERAGEETH:
-                        history.push(`/invest/leverageETH`)
+                        history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`)
                         return
                     }
                   }}
@@ -371,7 +381,9 @@ export const InvestOverviewTable = <R extends RowInvest>({
             justifyContent={'space-between'}
             marginLeft={3}
           >
-            <Typography fontSize={"36px"} variant={'h1'}>{t('labelTitleOverviewAllPrd', { ns: 'common' })}</Typography>
+            <Typography fontSize={'36px'} variant={isMobile ? 'h3' : 'h1'}>
+              {t('labelTitleOverviewAllPrd', { ns: 'common' })}
+            </Typography>
             <TableFilterStyled>
               <Filter
                 {...{
