@@ -447,7 +447,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
         alignItems={'center'}
         justifyContent={'space-between'}
       >
-        <Box>
+        <Box width={'20%'}>
           <Typography variant={'h5'} color={'var(--color-text-secondary)'}>
             Current Locking TVL
           </Typography>
@@ -502,11 +502,11 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
           </ConnectBtn>
         )}
 
-        <Box>
+        <Box width={'20%'}>
           <Typography textAlign={'right'} variant={'h5'} color={'var(--color-text-secondary)'}>
             Up To
           </Typography>
-          <Typography variant={'h2'}>{upTo}</Typography>
+          <Typography textAlign={'right'} variant={'h2'}>{upTo}</Typography>
         </Box>
       </Box>
 

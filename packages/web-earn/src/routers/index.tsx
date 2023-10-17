@@ -190,14 +190,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path='/loading'>
           <LoadingPage />
         </Route>
-        <Route exact path='/'>
-          {searchParams && searchParams.has('noheader') ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} isLandPage />
-          )}
-          <LandPage />
-        </Route>
+        
         <Route path='/document'>
           {searchParams && searchParams.has('noheader') ? (
             <></>
@@ -295,7 +288,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <FiatPage />
           </ContentWrap>
         </Route> */}
-        <Route exact path={RouterPath.dualIntro}>
+        <Route exact path={'/'}>
           <ContentWrap state={state} value={RouterMainKey.dualIntro}>
             <EarnPage />
           </ContentWrap>

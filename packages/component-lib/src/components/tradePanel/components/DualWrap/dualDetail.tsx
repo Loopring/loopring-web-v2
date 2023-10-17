@@ -21,6 +21,7 @@ import {
   Modal,
   Tooltip,
   Typography,
+  Button,
 } from '@mui/material'
 import { InputCoin, ModalCloseButton } from '../../../basic-lib'
 import { ModifyParameter } from './ModifyParameter'
@@ -35,10 +36,22 @@ import { useTheme } from '@emotion/react'
 type CanvasProps = {
   width: number,
   height: number,
+  currentPrice: string,
+  targetPrice: string,
+  symbol1: string
+  symbol2: string
+  type: 'buyLow' | 'sellHigh'
+  isLess: boolean
 }
 const Canvas = ({
   width, 
   height,
+  currentPrice,
+  symbol1,
+  symbol2,
+  type,
+  targetPrice,
+  isLess
 }: CanvasProps) => {
   const canvasRef = useRef()
   const theme = useTheme()
@@ -53,23 +66,22 @@ const Canvas = ({
       myLog('width',canvas.height)
       ctx.clearRect(0, 0, width, height)
       
-      const isUp = true
       const dotColor = theme.colorBase.border
       const green = theme.colorBase.success
       const orange = theme.colorBase.warning
       const greenBox = hexToRGB(theme.colorBase.success, 0.5)
       const orangeBox = hexToRGB(theme.colorBase.warning, 0.5)
-      const animationCurveColor = isUp ? theme.colorBase.success : theme.colorBase.warning
+      const animationCurveColor = isLess ? theme.colorBase.warning :theme.colorBase.success
       const fontColor1 = theme.colorBase.white
       const fontColor2 = theme.colorBase.success
       const fontColor3 = theme.colorBase.warning
       const fontColor4 = theme.colorBase.textSecondary
-      const text1 = 'BTC Price'
-      const text2 = '$29,200'
+      const text1 = symbol1 + ' Price'
+      const text2 = currentPrice
       const font1 = '12px Roboto'
-      const text3 = 'earn extra USDT'
-      const text4 = 'Buy BTC low and earn extra BTC'
-      const text5 = '$29,200'
+      const text3 = type === 'buyLow' ? `earn extra ${symbol2}` : `Sell ${symbol1} and earn extra ${symbol2}`
+      const text4 = type === 'buyLow' ? `Buy ${symbol1} low and earn extra ${symbol1}` : `earn extra ${symbol1}`
+      const text5 = targetPrice
       
 
       
@@ -121,8 +133,8 @@ const Canvas = ({
 
       ctx.font = font1
       ctx.fillStyle = fontColor1
-      ctx.fillText(text1, 10, height / 4 - 7)
-      ctx.fillText(text2, 10, height / 4 + 14)
+      ctx.fillText(text1, 10, height / 4 - 7 - 10)
+      ctx.fillText(text2, 10, height / 4 + 14 - 10)
 
       ctx.fillStyle = fontColor2
       ctx.fillText(text3, width / 2 + 5, height / 3.5)
@@ -130,20 +142,19 @@ const Canvas = ({
       ctx.fillText(text4, width / 2 + 5, height / 1.2)
 
       ctx.fillStyle = fontColor4
-      ctx.fillText(text5, width - 50, height / 2 + 4)
+      ctx.fillText(text5, width - 90, height / 2 + 4)
 
-      const controlPoints = isUp
+      const controlPoints = isLess
         ? [
-            { x: 10, y: height / 2 + 10 },
-            { x: (width / 5) * 1, y: height - height / 6 },
-            { x: (width / 5) * 2, y: height / 6 },
-            { x: width / 2, y: height / 2 - 10 },
-          ]
-        : [
-            { x: 10, y: height / 2 + 10 },
+          type === 'buyLow' ? { x: 10, y: height / 2 - 10 } : { x: 10, y: height / 2 + 10 },
             { x: (width / 5) * 1, y: height - height / 6 },
             { x: (width / 5) * 2, y: height / 6 },
             { x: width / 2, y: height / 2 + 20 },
+          ]:[
+          type === 'buyLow' ? { x: 10, y: height / 2 - 10 } : { x: 10, y: height / 2 + 10 },
+            { x: (width / 5) * 1, y: height - height / 6 },
+            { x: (width / 5) * 2, y: height / 6 },
+            { x: width / 2, y: height / 2 - 10 },
           ]
 
       drawBezierAnimation(controlPoints, animationCurveColor)
@@ -227,10 +238,12 @@ const Canvas = ({
         }
       }
     }
-  }, [canvasRef.current])
+  }, [canvasRef.current, isLess])
   return <Box component={'canvas'} width={canvas?.parentElement?.clientWidth} height={height} ref={canvasRef}/>
 }
-
+const CheckButton = styled( Button)<{checked: boolean}>`
+  border-color: ${(({checked}) => checked ? 'blue' : '')};
+`
 const BoxChartStyle = styled(Box)(({ theme }: any) => {
   const fillColor: string = theme.colorBase.textThird
   const whiteColor: string = theme.colorBase.white
@@ -347,7 +360,7 @@ export const DualDetail = ({
   const currentView = React.useMemo(
     () =>
       base
-        ? getValuePrecisionThousand(
+        ? '$' + getValuePrecisionThousand(
             currentPrice.currentPrice,
             precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
             precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
@@ -388,6 +401,19 @@ export const DualDetail = ({
         ) + ` ${quoteAlice}`
       : EmptyValueTag
   }, [dualViewInfo?.strike])
+  // const currentPrice = React.useMemo(() => {
+  //   return dualViewInfo?.strike
+  //     ? '$' + getValuePrecisionThousand(
+  //         dualViewInfo.strike,
+  //         precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+  //         precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+  //         precisionForPrice ? precisionForPrice : tokenMap[quote].precisionForOrder,
+  //         true,
+  //         { floor: true },
+  //       ) 
+  //     : EmptyValueTag
+  // }, [dualViewInfo?.strike])
+  const[isLess,setIsLess]=React.useState(true)
 
   myLog('dualViewInfo', dualViewInfo)
   return (
@@ -899,14 +925,24 @@ export const DualDetail = ({
               paddingY={1}
               
             >
-              Current Price<Typography marginLeft={1} component={'span'} color={'var(--color-success)'}>$200</Typography> 
+              Current {dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE ? quote : base} Price<Typography marginLeft={1} component={'span'} color={'var(--color-success)'}>{currentView}</Typography> 
             </Typography>
             </Box>
             
           ))}
         {displayMode !== DualDisplayMode.beginnerModeStep1 && (
           <Box paddingX={2} paddingBottom={1} order={isOrder ? 2 : 2}>
-             <Canvas height={180} width={500}/>
+            <Box marginY={2}>
+            <CheckButton checked={isLess} onClick={() => {setIsLess(true)}} sx={{marginRight:2}} variant={'outlined'}>
+              {`if ${dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE ? quote : base} ≤ ${targetView}`}
+            </CheckButton>
+            <CheckButton checked={!isLess} onClick={() => {setIsLess(false)}} variant={'outlined'}>
+              {`if ${dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE ? quote : base} > ${targetView}`}
+            </CheckButton>
+
+            </Box>
+            
+            <Canvas isLess={isLess} type={dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE ? 'sellHigh' : 'buyLow'} height={180} width={500} symbol1={ dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE ? quote : base} symbol2={dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE ? base : quote} currentPrice={currentView} targetPrice={targetView}/>
             {/* <<CanvasBoxChartStyle height={128} width={'100%'} position={'relative'}>
               <Box className={'point1 point'}>
                 <Typography variant={'body2'} whiteSpace={'pre'} color={'textPrimary'}>

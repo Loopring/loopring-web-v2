@@ -35,6 +35,7 @@ import {
   SoursURL,
   subMenuLayer2,
   toolBarAvailableItem as _toolBarAvailableItem,
+  myLog,
 } from '@loopring-web/common-resources'
 import {
   BtnDownload,
@@ -337,6 +338,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                           new RegExp(label.id?.toLowerCase(), 'ig').test(
                             match?.params[LAYERMAP[layer + 1]],
                           )
+                        
                         return [
                           ...prev,
                           <HeadMenuItem
