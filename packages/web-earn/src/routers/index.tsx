@@ -1,4 +1,4 @@
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
 import { Box, Container, Link } from '@mui/material'
 import Header from 'layouts/header'
@@ -208,6 +208,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MarkdownPage />
           </Container>
         </Route>
+        <Route exact path={'/'} children={ <Redirect to={RouterPath.dualIntro} /> }/>
         <Route exact path='/notification/:path'>
           {searchParams && searchParams.has('noheader') ? (
             <></>
@@ -288,7 +289,15 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <FiatPage />
           </ContentWrap>
         </Route> */}
-        <Route exact path={'/'}>
+        {/* <Redirect */}
+        {/* <Redirect to={RouterPath.dualIntro} exact path={'/'} /> */}
+          {/* <ContentWrap state={state} value={RouterMainKey.dualIntro}>
+            <EarnPage />
+          </ContentWrap>
+        </Redirect> */}
+        
+
+        <Route exact path={RouterPath.dualIntro}>
           <ContentWrap state={state} value={RouterMainKey.dualIntro}>
             <EarnPage />
           </ContentWrap>

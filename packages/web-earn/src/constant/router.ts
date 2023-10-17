@@ -120,7 +120,7 @@ export enum RouterPath {
   // layer2 = '/layer2',
   // nft = '/nft',
   invest = '/invest',
-  dualIntro = '/',
+  dualIntro = '/dual-intro',
 }
 
 export enum RouterMainKey {
@@ -132,10 +132,10 @@ export enum RouterMainKey {
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: 'aaa',
+      id: 'dual-intro',
       i18nKey: 'labelDualInvest',
     },
-    router: { path: '/' },
+    router: { path: '/dual-intro' },
     status: HeaderMenuTabStatus.default,
   },
   {
