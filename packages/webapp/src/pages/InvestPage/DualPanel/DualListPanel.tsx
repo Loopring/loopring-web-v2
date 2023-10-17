@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import * as sdk from '@loopring-web/loopring-sdk'
+
 import {
   Box,
   CardContent,
@@ -11,7 +13,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Trans, WithTranslation, withTranslation } from 'react-i18next'
+import { Trans, useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import { useDualHook } from './hook'
 import {
   Button,
@@ -35,7 +37,10 @@ import {
   DualViewType,
   getValuePrecisionThousand,
   Info2Icon,
+  InvestAssetRouter,
   LOOPRING_DOCUMENT,
+  RouterPath,
+  SagaStatus,
   SoursURL,
 } from '@loopring-web/common-resources'
 import { BeginnerMode } from './BeginnerMode'
@@ -72,24 +77,10 @@ const SubTabCardStyleItem = styled(CardStyleItem)`
     border-radius: ${({ theme }) => theme.unit}px;
   }
 `
-
-export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslation) => {
-  const { search, pathname } = useLocation()
-  const searchParams = new URLSearchParams(search)
-  const viewType = new URLSearchParams(search).get('viewType')
-  const { forexMap } = useSystem()
-  const history = useHistory()
-  const { isMobile } = useSettings()
-  // const [viewType, setViewType] = React.useState<DualViewType | undefined>(undefined)
-  const { tradeMap, marketArray, status, getDualMap } = useDualMap()
-  const { tokenMap } = useTokenMap()
-  const { setShowDual } = useOpenModals()
-  const [confirmDualAutoInvest, setConfirmDualAutoInvest] = React.useState(false)
-  const dualListProps = useDualHook()
-  const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
-    setConfirmDualAutoInvest,
-  })
-  const {
+export const DualListBlock = ({
+  marketArray,
+  tradeMap,
+  dualListProps: {
     pairASymbol,
     pairBSymbol,
     isLoading,
@@ -97,13 +88,261 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
     currentPrice,
     market,
     handleOnPairChange,
-    onSelectStep1Token,
-    // priceObj,
-    // toggle,
-    // whitList,
-  } = dualListProps
+  },
+}: {
+  tradeMap: sdk.LoopringMap<{ tokenId: number; tokenList: string[] }>
+  marketArray: string[]
+  dualListProps: any
+}) => {
+  const { t } = useTranslation()
+  const { tokenMap } = useTokenMap()
+  const { forexMap } = useSystem()
+  const { isMobile } = useSettings()
+  const { setShowDual } = useOpenModals()
 
-  const marketsIsLoading = status === 'PENDING'
+  return (
+    <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
+      <Tabs
+        value={pairASymbol}
+        onChange={(_event, value) => handleOnPairChange({ pairA: value.toString() })}
+        aria-label='l2-history-tabs'
+        variant='scrollable'
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+        }}
+      >
+        {tradeMap &&
+          Object.keys(tradeMap)
+            .sort((a, b) => a.toString().localeCompare(b.toString()))
+            .map((item, index) => {
+              return (
+                <Grid
+                  marginBottom={2}
+                  marginLeft={2}
+                  item
+                  xs={6}
+                  md={3}
+                  lg={2}
+                  key={item.toString() + index.toString()}
+                >
+                  <MainTabCardStyleItem
+                    className={
+                      item.toString().toLowerCase() === pairASymbol.toLowerCase()
+                        ? 'btnCard dualInvestCard selected'
+                        : 'btnCard dualInvestCard '
+                    }
+                    sx={{ height: '100%' }}
+                    onClick={() => handleOnPairChange({ pairA: item.toString() })}
+                  >
+                    <CardContent sx={{ alignItems: 'center' }}>
+                      <Typography component={'span'} display={'inline-flex'}>
+                        <CoinIcon symbol={item.toString()} size={28} />
+                      </Typography>
+                      <Typography variant={'h5'} paddingLeft={1}>
+                        {t('labelDualInvest', {
+                          symbol: item.toString(),
+                        })}
+                      </Typography>
+                    </CardContent>
+                  </MainTabCardStyleItem>
+                </Grid>
+              )
+            })}
+      </Tabs>
+
+      <WrapperStyled
+        display={'flex'}
+        marginTop={1}
+        flex={1}
+        flexDirection={'column'}
+        className={'dualList'}
+      >
+        {pairASymbol && pairBSymbol && market && (
+          <>
+            <Box
+              display={'flex'}
+              flexDirection={'row'}
+              paddingTop={1}
+              paddingX={2}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+            >
+              <Box display={'flex'} flexWrap={'wrap'}>
+                {pairASymbol &&
+                  tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
+                    const _index = marketArray.findIndex((_item) =>
+                      new RegExp(pairASymbol + '-' + item.toString(), 'ig').test(_item),
+                    )
+                    return (
+                      <SubTabCardStyleItem
+                        className={
+                          item.toString().toLowerCase() === pairBSymbol.toLowerCase()
+                            ? 'btnCard dualInvestCard selected'
+                            : 'btnCard dualInvestCard '
+                        }
+                        sx={{
+                          marginRight: 2,
+                          marginBottom: isMobile ? 2 : 0,
+                        }}
+                        onClick={() => {
+                          handleOnPairChange({ pairB: item })
+                        }}
+                        key={item.toString() + index.toString()}
+                      >
+                        <Typography variant={isMobile ? 'body1' : 'h5'} padding={2}>
+                          {_index !== -1
+                            ? t('labelDualBase', {
+                                symbol: item.toString(),
+                              })
+                            : t('labelDualQuote', {
+                                symbol: item.toString(),
+                              })}
+                        </Typography>
+                      </SubTabCardStyleItem>
+                    )
+                  })}
+              </Box>
+              <Typography
+                component={'span'}
+                display={isMobile ? 'flex' : 'inline-flex'}
+                color={'textSecondary'}
+                variant={'body2'}
+                flexDirection={isMobile ? 'column' : 'row'}
+                alignItems={'center'}
+                whiteSpace={'pre-wrap'}
+              >
+                {currentPrice &&
+                  (!isMobile ? (
+                    <>
+                      <Tooltip title={<>{t('labelDualCurrentPriceTip')}</>} placement={'top'}>
+                        <Typography
+                          component={'p'}
+                          variant='body2'
+                          color={'textSecondary'}
+                          display={'inline-flex'}
+                          alignItems={'center'}
+                        >
+                          <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                        </Typography>
+                      </Tooltip>
+                      <Trans
+                        i18nKey={'labelDualCurrentPrice'}
+                        tOptions={{
+                          price:
+                            // PriceTag[CurrencyToTag[currency]] +
+                            getValuePrecisionThousand(
+                              currentPrice.currentPrice,
+                              currentPrice.precisionForPrice
+                                ? currentPrice.precisionForPrice
+                                : tokenMap[currentPrice.quote].precisionForOrder,
+                              currentPrice.precisionForPrice
+                                ? currentPrice.precisionForPrice
+                                : tokenMap[currentPrice.quote].precisionForOrder,
+                              currentPrice.precisionForPrice
+                                ? currentPrice.precisionForPrice
+                                : tokenMap[currentPrice.quote].precisionForOrder,
+                              true,
+                              { floor: true },
+                            ),
+                          symbol: currentPrice.base,
+                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                            ? 'USDT'
+                            : currentPrice.quote, //currentPrice.quote,
+                        }}
+                      >
+                        LRC Current price:
+                        <Typography
+                          component={'span'}
+                          display={'inline-flex'}
+                          color={'textPrimary'}
+                          paddingLeft={1}
+                        >
+                          price
+                        </Typography>
+                        :
+                      </Trans>
+                    </>
+                  ) : (
+                    <>
+                      <Typography
+                        component={'span'}
+                        color={'textSecondary'}
+                        variant={'body2'}
+                        textAlign={'right'}
+                      >
+                        {t('labelDualMobilePrice', {
+                          symbol: currentPrice.base,
+                        })}
+                      </Typography>
+                      <Typography
+                        textAlign={'right'}
+                        component={'span'}
+                        display={'inline-flex'}
+                        color={'textPrimary'}
+                        paddingLeft={1}
+                      >
+                        {getValuePrecisionThousand(
+                          currentPrice.currentPrice,
+                          currentPrice.precisionForPrice
+                            ? currentPrice.precisionForPrice
+                            : tokenMap[currentPrice.quote].precisionForOrder,
+                          currentPrice.precisionForPrice
+                            ? currentPrice.precisionForPrice
+                            : tokenMap[currentPrice.quote].precisionForOrder,
+                          currentPrice.precisionForPrice
+                            ? currentPrice.precisionForPrice
+                            : tokenMap[currentPrice.quote].precisionForOrder,
+                          true,
+                          { floor: true },
+                        )}
+                      </Typography>
+                    </>
+                  ))}
+              </Typography>
+            </Box>
+            <Box flex={1} display={'flex'}>
+              <DualTable
+                rawData={dualProducts ?? []}
+                showloading={isLoading}
+                forexMap={forexMap as any}
+                onItemClick={(item) => {
+                  setShowDual({
+                    isShow: true,
+                    dualInfo: {
+                      ...item,
+                      sellSymbol: pairASymbol,
+                      buySymbol: pairBSymbol,
+                    },
+                  })
+                }}
+              />
+            </Box>
+          </>
+        )}
+      </WrapperStyled>
+    </StyleDual>
+  )
+}
+
+export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslation) => {
+  const { search, pathname } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const viewType = new URLSearchParams(search).get('viewType')
+  const { forexMap } = useSystem()
+  const history = useHistory()
+  const { status: dualStatus, getDualMap } = useDualMap()
+  const [confirmDualAutoInvest, setConfirmDualAutoInvest] = React.useState(false)
+  const dualListProps = useDualHook()
+  const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
+    setConfirmDualAutoInvest,
+  })
+  const { onSelectStep1Token } = dualListProps
+  React.useEffect(() => {
+    if (dualStatus === SagaStatus.ERROR) {
+      getDualMap()
+    }
+  }, [dualStatus])
 
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1} width={'100%'}>
@@ -198,9 +437,9 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               )}
             </Box>
             <>
-              {viewType !== DualViewType.All ? (
+              {![DualViewType.All, DualViewType.DualBTC].includes(viewType as any) ? (
                 <BeginnerMode dualListProps={dualListProps} viewType={viewType} />
-              ) : marketsIsLoading ? (
+              ) : dualStatus == SagaStatus.PENDING ? (
                 <Box
                   key={'loading'}
                   flexDirection={'column'}
@@ -212,235 +451,12 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
                 >
                   <img alt={'loading'} width='36' src={`${SoursURL}images/loading-line.gif`} />
                 </Box>
-              ) : !!marketArray?.length ? (
-                <StyleDual flexDirection={'column'} display={'flex'} flex={1}>
-                  <Tabs
-                    value={pairASymbol}
-                    onChange={(_event, value) => handleOnPairChange({ pairA: value.toString() })}
-                    aria-label='l2-history-tabs'
-                    variant='scrollable'
-                    sx={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    {tradeMap &&
-                      Reflect.ownKeys(tradeMap)
-                        .sort((a, b) => a.toString().localeCompare(b.toString()))
-                        .map((item, index) => {
-                          return (
-                            <Grid
-                              marginBottom={2}
-                              marginLeft={2}
-                              item
-                              xs={6}
-                              md={3}
-                              lg={2}
-                              key={item.toString() + index.toString()}
-                            >
-                              <MainTabCardStyleItem
-                                className={
-                                  item.toString().toLowerCase() === pairASymbol.toLowerCase()
-                                    ? 'btnCard dualInvestCard selected'
-                                    : 'btnCard dualInvestCard '
-                                }
-                                sx={{ height: '100%' }}
-                                onClick={() => handleOnPairChange({ pairA: item.toString() })}
-                              >
-                                <CardContent sx={{ alignItems: 'center' }}>
-                                  <Typography component={'span'} display={'inline-flex'}>
-                                    <CoinIcon symbol={item.toString()} size={28} />
-                                  </Typography>
-                                  <Typography variant={'h5'} paddingLeft={1}>
-                                    {t('labelDualInvest', {
-                                      symbol: item.toString(),
-                                    })}
-                                  </Typography>
-                                </CardContent>
-                              </MainTabCardStyleItem>
-                            </Grid>
-                          )
-                        })}
-                  </Tabs>
-
-                  <WrapperStyled
-                    display={'flex'}
-                    marginTop={1}
-                    flex={1}
-                    flexDirection={'column'}
-                    className={'dualList'}
-                  >
-                    {pairASymbol && pairBSymbol && market && (
-                      <>
-                        <Box
-                          display={'flex'}
-                          flexDirection={'row'}
-                          paddingTop={1}
-                          paddingX={2}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                        >
-                          <Box display={'flex'} flexWrap={'wrap'}>
-                            {pairASymbol &&
-                              tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
-                                const _index = marketArray.findIndex((_item) =>
-                                  new RegExp(pairASymbol + '-' + item.toString(), 'ig').test(_item),
-                                )
-                                return (
-                                  <SubTabCardStyleItem
-                                    className={
-                                      item.toString().toLowerCase() === pairBSymbol.toLowerCase()
-                                        ? 'btnCard dualInvestCard selected'
-                                        : 'btnCard dualInvestCard '
-                                    }
-                                    sx={{
-                                      marginRight: 2,
-                                      marginBottom: isMobile ? 2 : 0,
-                                    }}
-                                    onClick={() => {
-                                      handleOnPairChange({ pairB: item })
-                                    }}
-                                    key={item.toString() + index.toString()}
-                                  >
-                                    <Typography variant={isMobile ? 'body1' : 'h5'} padding={2}>
-                                      {_index !== -1
-                                        ? t('labelDualBase', {
-                                            symbol: item.toString(),
-                                          })
-                                        : t('labelDualQuote', {
-                                            symbol: item.toString(),
-                                          })}
-                                    </Typography>
-                                  </SubTabCardStyleItem>
-                                )
-                              })}
-                          </Box>
-                          <Typography
-                            component={'span'}
-                            display={isMobile ? 'flex' : 'inline-flex'}
-                            color={'textSecondary'}
-                            variant={'body2'}
-                            flexDirection={isMobile ? 'column' : 'row'}
-                            alignItems={'center'}
-                            whiteSpace={'pre-wrap'}
-                          >
-                            {currentPrice &&
-                              (!isMobile ? (
-                                <>
-                                  <Tooltip
-                                    title={<>{t('labelDualCurrentPriceTip')}</>}
-                                    placement={'top'}
-                                  >
-                                    <Typography
-                                      component={'p'}
-                                      variant='body2'
-                                      color={'textSecondary'}
-                                      display={'inline-flex'}
-                                      alignItems={'center'}
-                                    >
-                                      <Info2Icon
-                                        fontSize={'small'}
-                                        color={'inherit'}
-                                        sx={{ marginX: 1 / 2 }}
-                                      />
-                                    </Typography>
-                                  </Tooltip>
-                                  <Trans
-                                    i18nKey={'labelDualCurrentPrice'}
-                                    tOptions={{
-                                      price:
-                                        // PriceTag[CurrencyToTag[currency]] +
-                                        getValuePrecisionThousand(
-                                          currentPrice.currentPrice,
-                                          currentPrice.precisionForPrice
-                                            ? currentPrice.precisionForPrice
-                                            : tokenMap[currentPrice.quote].precisionForOrder,
-                                          currentPrice.precisionForPrice
-                                            ? currentPrice.precisionForPrice
-                                            : tokenMap[currentPrice.quote].precisionForOrder,
-                                          currentPrice.precisionForPrice
-                                            ? currentPrice.precisionForPrice
-                                            : tokenMap[currentPrice.quote].precisionForOrder,
-                                          true,
-                                          { floor: true },
-                                        ),
-                                      symbol: currentPrice.base,
-                                      baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
-                                        ? 'USDT'
-                                        : currentPrice.quote, //currentPrice.quote,
-                                    }}
-                                  >
-                                    LRC Current price:
-                                    <Typography
-                                      component={'span'}
-                                      display={'inline-flex'}
-                                      color={'textPrimary'}
-                                      paddingLeft={1}
-                                    >
-                                      price
-                                    </Typography>
-                                    :
-                                  </Trans>
-                                </>
-                              ) : (
-                                <>
-                                  <Typography
-                                    component={'span'}
-                                    color={'textSecondary'}
-                                    variant={'body2'}
-                                    textAlign={'right'}
-                                  >
-                                    {t('labelDualMobilePrice', {
-                                      symbol: currentPrice.base,
-                                    })}
-                                  </Typography>
-                                  <Typography
-                                    textAlign={'right'}
-                                    component={'span'}
-                                    display={'inline-flex'}
-                                    color={'textPrimary'}
-                                    paddingLeft={1}
-                                  >
-                                    {getValuePrecisionThousand(
-                                      currentPrice.currentPrice,
-                                      currentPrice.precisionForPrice
-                                        ? currentPrice.precisionForPrice
-                                        : tokenMap[currentPrice.quote].precisionForOrder,
-                                      currentPrice.precisionForPrice
-                                        ? currentPrice.precisionForPrice
-                                        : tokenMap[currentPrice.quote].precisionForOrder,
-                                      currentPrice.precisionForPrice
-                                        ? currentPrice.precisionForPrice
-                                        : tokenMap[currentPrice.quote].precisionForOrder,
-                                      true,
-                                      { floor: true },
-                                    )}
-                                  </Typography>
-                                </>
-                              ))}
-                          </Typography>
-                        </Box>
-                        <Box flex={1} display={'flex'}>
-                          <DualTable
-                            rawData={dualProducts ?? []}
-                            showloading={isLoading}
-                            forexMap={forexMap as any}
-                            onItemClick={(item) => {
-                              setShowDual({
-                                isShow: true,
-                                dualInfo: {
-                                  ...item,
-                                  sellSymbol: pairASymbol,
-                                  buySymbol: pairBSymbol,
-                                },
-                              })
-                            }}
-                          />
-                        </Box>
-                      </>
-                    )}
-                  </WrapperStyled>
-                </StyleDual>
+              ) : !!dualListProps?.marketArray?.length ? (
+                <DualListBlock
+                  tradeMap={dualListProps.tradeMap}
+                  marketArray={dualListProps.marketArray}
+                  dualListProps={dualListProps}
+                />
               ) : (
                 <Box
                   key={'empty'}
@@ -470,9 +486,15 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
         </>
       ) : (
         <ChooseDualType
+          chooseDualTypeContent={dualListProps.chooseDualTypeContent}
           onSelect={(item) => {
             searchParams.set('viewType', item)
-            history.push(pathname + '?' + searchParams.toString())
+
+            history.push(
+              `${RouterPath.invest}/${InvestAssetRouter.DUAL}/${
+                item === DualViewType.DualBTC ? 'ETH-WBTC' : 'ETH-USDC'
+              }?${searchParams.toString()}`,
+            )
           }}
         />
       )}

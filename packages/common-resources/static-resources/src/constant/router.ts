@@ -318,7 +318,7 @@ export const subMenuLayer2 = {
 export const subMenuInvest = [
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/overview' },
+    router: { path: `${RouterPath.invest}/overview` },
     label: {
       id: 'overview',
       i18nKey: 'labelInvestOverview',
@@ -327,7 +327,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/dual' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
     label: {
       id: 'dual',
       i18nKey: 'labelInvestDual',
@@ -336,7 +336,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/defi' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.STAKE}` },
     label: {
       id: 'defi',
       i18nKey: 'labelInvestDefi',
@@ -345,7 +345,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/leverageETH' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}` },
     label: {
       id: 'leverageeth',
       i18nKey: 'labelInvestLeverageETH',
@@ -354,7 +354,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/ammpool' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.AMM}` },
     label: {
       id: 'ammpool',
       i18nKey: 'labelInvestAmm',
@@ -363,7 +363,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/stakelrc' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.STAKELRC}` },
     label: {
       id: 'stackonesided',
       i18nKey: 'labelInvestStakeLRC',
@@ -609,7 +609,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
 
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
-  router: '/invest/ammpool',
+  router: `${RouterPath.invest}/${InvestAssetRouter.AMM}`,
   banner: SoursURL + 'images/icon-amm.svg',
   titleI18n: 'labelInvestAmm',
   desI18n: 'labelInvestAmmDes',
@@ -618,7 +618,7 @@ export const ammAdvice: InvestAdvice = {
 }
 export const defiAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
-  router: '/invest/defi',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKE}`,
   notification: '',
   banner: SoursURL + 'images/icon-lido.svg',
   titleI18n: 'labelInvestDefi',
@@ -627,7 +627,7 @@ export const defiAdvice: InvestAdvice = {
 }
 export const defiWSTETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
-  router: '/invest/defi/WSTETH',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKE}/WSTETH`,
   notification: '',
   banner: SoursURL + 'images/icon-lido2.svg',
   titleI18n: 'labelInvestWSTETH',
@@ -638,7 +638,7 @@ export const defiWSTETHAdvice: InvestAdvice = {
 }
 export const defiRETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
-  router: '/invest/defi/RETH',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKE}/RETH`,
   notification: '',
   banner: SoursURL + 'images/icon-pocket.svg',
   titleI18n: 'labelInvestRETH',
@@ -654,7 +654,7 @@ export const DEFI_ADVICE_MAP = {
 }
 export const dualAdvice: InvestAdvice = {
   type: InvestMapType.DUAL,
-  router: '/invest/dual',
+  router: `${RouterPath.invest}/${InvestAssetRouter.DUAL}`,
   notification: '',
   banner: SoursURL + 'images/icon-dual.svg',
   titleI18n: 'labelInvestDual',
@@ -663,7 +663,7 @@ export const dualAdvice: InvestAdvice = {
 }
 export const stakeAdvice: InvestAdvice = {
   type: InvestMapType.STAKELRC,
-  router: '/invest/stakelrc',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKELRC}`,
   notification: '',
   banner: SoursURL + 'images/icon-stake-lrc.svg',
   titleI18n: 'labelInvestStakeLRC',
@@ -672,7 +672,7 @@ export const stakeAdvice: InvestAdvice = {
 }
 export const leverageETHAdvice: InvestAdvice = {
   type: InvestMapType.LEVERAGEETH,
-  router: '/invest/leverageETH',
+  router: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`,
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
