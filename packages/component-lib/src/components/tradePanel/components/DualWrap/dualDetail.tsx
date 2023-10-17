@@ -1,5 +1,5 @@
 import { DualDetailProps, DualDisplayMode } from './Interface'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSettings } from '../../../../stores'
 import {
@@ -22,12 +22,214 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { ModalCloseButton } from '../../../basic-lib'
+import { InputCoin, ModalCloseButton } from '../../../basic-lib'
 import { ModifyParameter } from './ModifyParameter'
 import * as sdk from '@loopring-web/loopring-sdk'
 import moment from 'moment/moment'
 import styled from '@emotion/styled'
 import { SwitchPanelStyled } from '../../../styled'
+import { Grid } from '@mui/material'
+import { useTheme } from '@emotion/react'
+
+
+type CanvasProps = {
+  width: number,
+  height: number,
+}
+const Canvas = ({
+  width, 
+  height,
+}: CanvasProps) => {
+  const canvasRef = useRef()
+  const theme = useTheme()
+  const canvas = canvasRef.current ? canvasRef.current as HTMLCanvasElement : undefined
+  useEffect(() => {
+    if (canvas) {
+      const ctx = canvas.getContext('2d')!
+      
+      canvas.width = canvas.parentElement!.clientWidth;
+      canvas.height = height;
+      myLog('width',canvas.width)
+      myLog('width',canvas.height)
+      ctx.clearRect(0, 0, width, height)
+      
+      const isUp = true
+      const dotColor = theme.colorBase.border
+      const green = theme.colorBase.success
+      const orange = theme.colorBase.warning
+      const greenBox = hexToRGB(theme.colorBase.success, 0.5)
+      const orangeBox = hexToRGB(theme.colorBase.warning, 0.5)
+      const animationCurveColor = isUp ? theme.colorBase.success : theme.colorBase.warning
+      const fontColor1 = theme.colorBase.white
+      const fontColor2 = theme.colorBase.success
+      const fontColor3 = theme.colorBase.warning
+      const fontColor4 = theme.colorBase.textSecondary
+      const text1 = 'BTC Price'
+      const text2 = '$29,200'
+      const font1 = '12px Roboto'
+      const text3 = 'earn extra USDT'
+      const text4 = 'Buy BTC low and earn extra BTC'
+      const text5 = '$29,200'
+      
+
+      
+      ctx.clearRect(0,0,width,height)
+
+      // draw dash
+      ctx.lineWidth = 1
+      ctx.setLineDash([5, 3])
+      ctx.beginPath()
+      ctx.strokeStyle = dotColor
+      ctx.moveTo(1, 0)
+      ctx.lineTo(width, 0)
+
+      ctx.moveTo(1, height / 2)
+      ctx.lineTo(width / 2, height / 2)
+
+      ctx.moveTo(1, height - 1)
+      ctx.lineTo(width, height - 1)
+      ctx.stroke()
+      ctx.closePath()
+
+      ctx.beginPath()
+      ctx.setLineDash([0, 0])
+      ctx.lineWidth = 2
+      ctx.strokeStyle = green
+      ctx.moveTo(width / 2, 0)
+      ctx.lineTo(width / 2, height / 2)
+      ctx.stroke()
+      ctx.closePath()
+
+      ctx.beginPath()
+      ctx.setLineDash([0, 0])
+      ctx.lineWidth = 2
+      ctx.strokeStyle = orange
+      ctx.moveTo(width / 2, height / 2)
+      ctx.lineTo(width / 2, height)
+      ctx.stroke()
+      ctx.closePath()
+
+      ctx.fillStyle = greenBox
+      ctx.fillRect(width / 2, 0, width / 2, height / 2)
+
+      ctx.fillStyle = orangeBox
+      ctx.fillRect(width / 2, height / 2, width / 2, height / 2)
+
+      ctx.fillStyle = green
+      ctx.roundRect(5, 10, 100, 50, 5)
+      ctx.fill()
+
+      ctx.font = font1
+      ctx.fillStyle = fontColor1
+      ctx.fillText(text1, 10, height / 4 - 7)
+      ctx.fillText(text2, 10, height / 4 + 14)
+
+      ctx.fillStyle = fontColor2
+      ctx.fillText(text3, width / 2 + 5, height / 3.5)
+      ctx.fillStyle = fontColor3
+      ctx.fillText(text4, width / 2 + 5, height / 1.2)
+
+      ctx.fillStyle = fontColor4
+      ctx.fillText(text5, width - 50, height / 2 + 4)
+
+      const controlPoints = isUp
+        ? [
+            { x: 10, y: height / 2 + 10 },
+            { x: (width / 5) * 1, y: height - height / 6 },
+            { x: (width / 5) * 2, y: height / 6 },
+            { x: width / 2, y: height / 2 - 10 },
+          ]
+        : [
+            { x: 10, y: height / 2 + 10 },
+            { x: (width / 5) * 1, y: height - height / 6 },
+            { x: (width / 5) * 2, y: height / 6 },
+            { x: width / 2, y: height / 2 + 20 },
+          ]
+
+      drawBezierAnimation(controlPoints, animationCurveColor)
+
+      function drawBezierAnimation(controlPoints, color) {
+        var t = 0
+
+        function draw() {
+          if (t === 0) {
+            ctx.beginPath()
+            ctx.strokeStyle = animationCurveColor
+            ctx.arc(controlPoints[0].x, controlPoints[0].y, 4, 0, 2 * Math.PI)
+            ctx.closePath()
+            ctx.stroke()
+          }
+
+          ctx.beginPath()
+          ctx.moveTo(controlPoints[0].x, controlPoints[0].y)
+          var x = cubicBezier(
+            t,
+            controlPoints[0].x,
+            controlPoints[1].x,
+            controlPoints[2].x,
+            controlPoints[3].x,
+          )
+          var y = cubicBezier(
+            t,
+            controlPoints[0].y,
+            controlPoints[1].y,
+            controlPoints[2].y,
+            controlPoints[3].y,
+          )
+          if (
+            (x - controlPoints[0].x) * (x - controlPoints[0].x) +
+              (y - controlPoints[0].y) * (y - controlPoints[0].y) >
+              25 &&
+            (x - controlPoints[3].x) * (x - controlPoints[3].x) +
+              (y - controlPoints[3].y) * (y - controlPoints[3].y) >
+              25
+          ) {
+            // Draw a point moving along the curve
+            ctx.beginPath()
+            ctx.arc(x, y, 1, 0, Math.PI * 2)
+            ctx.fillStyle = color
+            ctx.fill()
+            ctx.closePath()
+          }
+
+          // Update the parameter t for animation
+          t += 0.005
+          if (t > 1) {
+            ctx.beginPath()
+            ctx.strokeStyle = animationCurveColor
+            ctx.arc(controlPoints[3].x, controlPoints[3].y, 4, 0, 2 * Math.PI)
+            ctx.closePath()
+            ctx.stroke()
+            return
+          }
+
+          // Request next frame
+          requestAnimationFrame(draw)
+        }
+
+        // Start the animation
+        draw()
+
+        // Cubic Bezier function
+        function cubicBezier(t, p0, p1, p2, p3) {
+          var u = 1 - t
+          var tt = t * t
+          var uu = u * u
+          var uuu = uu * u
+          var ttt = tt * t
+
+          var p = uuu * p0 // (1-t)^3 * P0
+          p += 3 * uu * t * p1 // 3(1-t)^2 * t * P1
+          p += 3 * u * tt * p2 // 3(1-t) * t^2 * P2
+          p += ttt * p3 // t^3 * P3
+
+          return p
+        }
+      }
+    }
+  }, [canvasRef.current])
+  return <Box component={'canvas'} width={canvas?.parentElement?.clientWidth} height={height} ref={canvasRef}/>
+}
 
 const BoxChartStyle = styled(Box)(({ theme }: any) => {
   const fillColor: string = theme.colorBase.textThird
@@ -132,6 +334,7 @@ export const DualDetail = ({
   coinSell,
   toggle,
   btnConfirm,
+  inputView,
   ...rest
 }: DualDetailProps) => {
   const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
@@ -205,257 +408,13 @@ export const DualDetail = ({
               btnConfirm={btnConfirm}
               coinSell={coinSell}
               isPriceEditable={isPriceEditable}
+              inputView={inputView}
             />
           </Box>
         </SwitchPanelStyled>
       </Modal>
 
-      <Box display={'flex'} flexDirection={'column'}>
-        {(toggle?.enable && !isOrder) ||
-        (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) ? (
-          // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
-          <Box
-            display={'flex'}
-            order={isOrder ? 2 : 0}
-            marginBottom={isOrder ? 2 : 0}
-            flexDirection={'column'}
-          >
-            <Box display={'flex'} flexDirection={'column'} paddingX={2}>
-              <Box display={'flex'} justifyContent={'space-between'}>
-                <Tooltip title={t('labelDualAutoTitleDes').toString()}>
-                  <Typography
-                    component={'span'}
-                    variant={'body1'}
-                    color={'textSecondary'}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    <Trans i18nKey={'labelDualAutoTitle'}>
-                      Auto Reinvest
-                      <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    </Trans>
-                  </Typography>
-                </Tooltip>
-                {!isOrder && (
-                  <Typography component={'span'} variant={'inherit'}>
-                    <FormControlLabel
-                      sx={{
-                        marginRight: 0,
-                      }}
-                      disabled={[
-                        sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
-                        sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
-                      ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
-                      onChange={(_e, checked) =>
-                        onChange({
-                          ...coinSell,
-                          isRenew: checked,
-                        })
-                      }
-                      control={<Switch color={'primary'} checked={coinSell.isRenew} />}
-                      label={''}
-                    />
-                  </Typography>
-                )}
-              </Box>
-
-              <Typography
-                component={'span'}
-                variant={'body2'}
-                color={'var(--color-text-third)'}
-                display={'inline-flex'}
-                alignItems={'center'}
-                paddingBottom={1}
-              >
-                {coinSell.isRenew && (
-                  <Trans i18nKey={'labelDualAutoDetail'}>
-                    Auto Reinvest will try to find a new product which based on the following rule
-                    at 16:00 on the settlement day.
-                  </Trans>
-                )}
-              </Typography>
-            </Box>
-            {coinSell.isRenew && (
-              <Box
-                display={'flex'}
-                flexDirection={'column'}
-                sx={{
-                  background: 'var(--field-opacity)',
-                }}
-                paddingY={1}
-                marginX={2}
-                borderRadius={1 / 2}
-              >
-                <Box
-                  display={'flex'}
-                  justifyContent={'space-between'}
-                  paddingBottom={1}
-                  paddingX={2}
-                >
-                  <Tooltip title={t(`labelDualAuto${dualViewInfo?.dualType}PriceDes`).toString()}>
-                    <Typography
-                      component={'span'}
-                      variant={'body1'}
-                      color={'textSecondary'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                    >
-                      <Trans i18nKey={`labelDualAuto${dualViewInfo?.dualType}Price`}>
-                        type Price
-                        <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                      </Trans>
-                    </Typography>
-                  </Tooltip>
-                  {isPriceEditable ? (
-                    <Link
-                      onClick={() => {
-                        setShowEdit(true)
-                      }}
-                      component={'a'}
-                      variant={'body1'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                    >
-                      {renewTargetPriceView}
-                      <BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />
-                    </Link>
-                  ) : (
-                    <Typography component={'span'} variant={'body1'}>
-                      {renewTargetPriceView}
-                    </Typography>
-                  )}
-                </Box>
-                <Box display={'flex'} justifyContent={'space-between'} paddingX={2}>
-                  <Tooltip title={t(`labelDualAutoDurationDes`).toString()}>
-                    <Typography
-                      component={'span'}
-                      variant={'body1'}
-                      color={'textSecondary'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                    >
-                      <Trans i18nKey={`labelDualAutoDuration`}>
-                        Duration
-                        <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                      </Trans>
-                    </Typography>
-                  </Tooltip>
-                  <Link
-                    onClick={() => {
-                      setShowEdit(true)
-                    }}
-                    component={'a'}
-                    variant={'body1'}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    {t('labelDayDisplay', { item: coinSell.renewDuration })}
-                    <BackIcon fontSize={'inherit'} sx={{ transform: 'rotate(180deg)' }} />
-                  </Link>
-                </Box>
-              </Box>
-            )}
-          </Box>
-        ) : (
-          <></>
-        )}
-
-        {displayMode === DualDisplayMode.nonBeginnerMode &&
-          (isOrder ? (
-            <Typography
-              variant={isMobile ? 'h5' : 'h4'}
-              marginTop={-4}
-              textAlign={'center'}
-              paddingBottom={2}
-              order={0}
-            >
-              {t('labelDuaInvestmentDetails', { ns: 'common' })}
-            </Typography>
-          ) : (
-            <Typography
-              variant={'body1'}
-              component={'h6'}
-              color={'textSecondary'}
-              paddingX={2}
-              paddingY={1}
-            >
-              {t('labelDualSettlementCalculator')}
-            </Typography>
-          ))}
-        {displayMode !== DualDisplayMode.beginnerModeStep1 && (
-          <Box paddingX={2} paddingBottom={1} order={isOrder ? 2 : 2}>
-            <BoxChartStyle height={128} width={'100%'} position={'relative'}>
-              <Box className={'point1 point'}>
-                <Typography variant={'body2'} whiteSpace={'pre'} color={'textPrimary'}>
-                  {t('labelDualTargetPrice3')}
-                </Typography>
-                <Typography>{targetView}</Typography>
-              </Box>
-              <Box
-                className={'point2 point'}
-                whiteSpace={'pre'}
-                sx={{
-                  left: sdk
-                    .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
-                    .minus(dualViewInfo.strike)
-                    .gte(0)
-                    ? '75%'
-                    : '25%',
-                }}
-              >
-                <Typography variant={'body2'} color={'textPrimary'}>
-                  {t('labelDualCurrentPrice3', {
-                    symbol: base,
-                  })}
-                </Typography>
-                <Typography
-                  color={upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'}
-                >
-                  {currentView}
-                </Typography>
-              </Box>
-              <Box className={'returnV1 returnV'}>
-                <Typography
-                  variant={'body2'}
-                  color={'var(--color-warning)'}
-                  whiteSpace={'pre-line'}
-                >
-                  {quote &&
-                    t('labelDualReturn', {
-                      symbol:
-                        (greaterEarnView === '0' ? EmptyValueTag : greaterEarnView) + ' ' + quote,
-                    })}
-                </Typography>
-              </Box>
-              <Box className={'returnV2 returnV'}>
-                <Typography
-                  variant={'body2'}
-                  color={'var(--color-success)'}
-                  whiteSpace={'pre-line'}
-                >
-                  {base &&
-                    t('labelDualReturn', {
-                      symbol: (lessEarnView === '0' ? EmptyValueTag : lessEarnView) + ' ' + base,
-                    })}
-                </Typography>
-              </Box>
-              <Box className={'backView'}>
-                <Box
-                  className={'line'}
-                  width={
-                    sdk
-                      .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
-                      .minus(dualViewInfo.strike)
-                      .gte(0)
-                      ? '75%'
-                      : '25%'
-                  }
-                />
-              </Box>
-            </BoxChartStyle>
-          </Box>
-        )}
-        {displayMode === DualDisplayMode.beginnerModeStep2 && (
+      {displayMode === DualDisplayMode.beginnerModeStep2 && (
           <>
             <Box paddingX={2} marginTop={2}>
               <Typography variant={'h5'} marginBottom={0}>
@@ -520,6 +479,7 @@ export const DualDetail = ({
             justifyContent={'space-between'}
             marginTop={displayMode === DualDisplayMode.nonBeginnerMode ? 2 : 0}
             marginX={2}
+            marginBottom={2}
             paddingX={2}
             paddingTop={1}
             borderRadius={1 / 2}
@@ -528,7 +488,7 @@ export const DualDetail = ({
               background: 'var(--field-opacity)',
             }}
           >
-            {displayMode === DualDisplayMode.nonBeginnerMode && (
+            {/* {displayMode === DualDisplayMode.nonBeginnerMode && (
               <>
                 <Typography
                   variant={'body1'}
@@ -589,7 +549,7 @@ export const DualDetail = ({
                   </Typography>
                 </Typography>
               </>
-            )}
+            )} */}
 
             {isOrder && (
               <Box paddingBottom={1}>
@@ -750,6 +710,272 @@ export const DualDetail = ({
                 )}
               </Typography>
             </Typography>
+          </Box>
+        )}
+
+      {inputView}
+
+
+      <Box display={'flex'} flexDirection={'column'}>
+        {(toggle?.enable && !isOrder) ||
+        (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) ? (
+          // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
+          <Box
+            display={'flex'}
+            order={isOrder ? 2 : 0}
+            marginBottom={isOrder ? 2 : 0}
+            flexDirection={'column'}
+          >
+            <Box display={'flex'} flexDirection={'column'} paddingX={2}>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Tooltip title={t('labelDualAutoTitleDes').toString()}>
+                  <Typography
+                    component={'span'}
+                    variant={'body1'}
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <Trans i18nKey={'labelDualAutoTitle'}>
+                      Auto Reinvest
+                      <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    </Trans>
+                  </Typography>
+                </Tooltip>
+                {!isOrder && (
+                  <Typography component={'span'} variant={'inherit'}>
+                    <FormControlLabel
+                      sx={{
+                        marginRight: 0,
+                      }}
+                      disabled={[
+                        sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
+                        sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
+                      ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
+                      onChange={(_e, checked) =>
+                        onChange({
+                          ...coinSell,
+                          isRenew: checked,
+                        })
+                      }
+                      control={<Switch color={'primary'} checked={coinSell.isRenew} />}
+                      label={''}
+                    />
+                  </Typography>
+                )}
+              </Box>
+
+              <Typography
+                component={'span'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
+                display={'inline-flex'}
+                alignItems={'center'}
+                paddingBottom={1}
+              >
+                {coinSell.isRenew && (
+                  <Trans i18nKey={'labelDualAutoDetail'}>
+                    Auto Reinvest will try to find a new product which based on the following rule
+                    at 16:00 on the settlement day.
+                  </Trans>
+                )}
+              </Typography>
+            </Box>
+            {coinSell.isRenew && (
+              <Box
+                display={'flex'}
+                flexDirection={'column'}
+                sx={{
+                  background: 'var(--field-opacity)',
+                }}
+                paddingY={1}
+                marginX={2}
+                borderRadius={1 / 2}
+              >
+                <Box
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  paddingBottom={1}
+                  paddingX={2}
+                >
+                  <Tooltip title={t(`labelDualAuto${dualViewInfo?.dualType}PriceDes`).toString()}>
+                    <Typography
+                      component={'span'}
+                      variant={'body1'}
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      <Trans i18nKey={`labelDualAuto${dualViewInfo?.dualType}Price`}>
+                        type Price
+                        <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                      </Trans>
+                    </Typography>
+                  </Tooltip>
+                  {isPriceEditable ? (
+                    <Link
+                      onClick={() => {
+                        setShowEdit(true)
+                      }}
+                      component={'a'}
+                      variant={'body1'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      {renewTargetPriceView}
+                      <BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />
+                    </Link>
+                  ) : (
+                    <Typography component={'span'} variant={'body1'}>
+                      {renewTargetPriceView}
+                    </Typography>
+                  )}
+                </Box>
+                <Box display={'flex'} justifyContent={'space-between'} paddingX={2}>
+                  <Tooltip title={t(`labelDualAutoDurationDes`).toString()}>
+                    <Typography
+                      component={'span'}
+                      variant={'body1'}
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      <Trans i18nKey={`labelDualAutoDuration`}>
+                        Duration
+                        <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                      </Trans>
+                    </Typography>
+                  </Tooltip>
+                  <Link
+                    onClick={() => {
+                      setShowEdit(true)
+                    }}
+                    component={'a'}
+                    variant={'body1'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    {t('labelDayDisplay', { item: coinSell.renewDuration })}
+                    <BackIcon fontSize={'inherit'} sx={{ transform: 'rotate(180deg)' }} />
+                  </Link>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        ) : (
+          <></>
+        )}
+
+        <Box component={'div'} height={8} marginX={-1} marginY={3} bgcolor={'var(--field-opacity)'}/>
+
+
+        {displayMode === DualDisplayMode.nonBeginnerMode &&
+          (isOrder ? (
+            <Typography
+              variant={isMobile ? 'h5' : 'h4'}
+              marginTop={-4}
+              textAlign={'center'}
+              paddingBottom={2}
+              order={0}
+            >
+              {t('labelDuaInvestmentDetails', { ns: 'common' })}
+            </Typography>
+          ) : (
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography
+              variant={'body1'}
+              component={'h6'}
+              color={'textSecondary'}
+              paddingX={2}
+              paddingY={1}
+            >
+              {t('labelDualSettlementCalculator')}
+            </Typography>
+              <Typography
+              variant={'body1'}
+              component={'h6'}
+              color={'textSecondary'}
+              paddingX={2}
+              paddingY={1}
+              
+            >
+              Current Price<Typography marginLeft={1} component={'span'} color={'var(--color-success)'}>$200</Typography> 
+            </Typography>
+            </Box>
+            
+          ))}
+        {displayMode !== DualDisplayMode.beginnerModeStep1 && (
+          <Box paddingX={2} paddingBottom={1} order={isOrder ? 2 : 2}>
+             <Canvas height={180} width={500}/>
+            {/* <<CanvasBoxChartStyle height={128} width={'100%'} position={'relative'}>
+              <Box className={'point1 point'}>
+                <Typography variant={'body2'} whiteSpace={'pre'} color={'textPrimary'}>
+                  {t('labelDualTargetPrice3')}
+                </Typography>
+                <Typography>{targetView}</Typography>
+              </Box>
+              <Box
+                className={'point2 point'}
+                whiteSpace={'pre'}
+                sx={{
+                  left: sdk
+                    .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
+                    .minus(dualViewInfo.strike)
+                    .gte(0)
+                    ? '75%'
+                    : '25%',
+                }}
+              >
+                <Typography variant={'body2'} color={'textPrimary'}>
+                  {t('labelDualCurrentPrice3', {
+                    symbol: base,
+                  })}
+                </Typography>
+                <Typography
+                  color={upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'}
+                >
+                  {currentView}
+                </Typography>
+              </Box>
+              <Box className={'returnV1 returnV'}>
+                <Typography
+                  variant={'body2'}
+                  color={'var(--color-warning)'}
+                  whiteSpace={'pre-line'}
+                >
+                  {quote &&
+                    t('labelDualReturn', {
+                      symbol:
+                        (greaterEarnView === '0' ? EmptyValueTag : greaterEarnView) + ' ' + quote,
+                    })}
+                </Typography>
+              </Box>
+              <Box className={'returnV2 returnV'}>
+                <Typography
+                  variant={'body2'}
+                  color={'var(--color-success)'}
+                  whiteSpace={'pre-line'}
+                >
+                  {base &&
+                    t('labelDualReturn', {
+                      symbol: (lessEarnView === '0' ? EmptyValueTag : lessEarnView) + ' ' + base,
+                    })}
+                </Typography>
+              </Box>
+              <Box className={'backView'}>
+                <Box
+                  className={'line'}
+                  width={
+                    sdk
+                      .toBig(dualViewInfo.currentPrice?.currentPrice ?? 0)
+                      .minus(dualViewInfo.strike)
+                      .gte(0)
+                      ? '75%'
+                      : '25%'
+                  }
+                />
+              </Box>
+            </BoxChartStyle> */}
           </Box>
         )}
       </Box>

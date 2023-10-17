@@ -39,13 +39,14 @@ import {
 import {
   BackIcon,
   MapChainId,
-  RecordMap,
   RecordTabIndex,
   RowConfig,
   TOAST_TIME,
   TabOrderIndex,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { RecordEarnMap } from '../../../constant/router'
+
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -59,7 +60,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const [pageSize, setPageSize] = React.useState(0)
   const [currentTab, setCurrentTab] = React.useState<RecordTabIndex>(() => {
     let item = match?.params?.tab ?? RecordTabIndex.Transactions
-    return RecordMap[network]?.includes(item) ? item : RecordTabIndex.Transactions
+    return RecordEarnMap[network]?.includes(item) ? item : RecordTabIndex.Transactions
   })
   const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
     return match?.params?.orderTab ?? TabOrderIndex.orderOpenTable
@@ -209,7 +210,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             aria-label='l2-history-tabs'
             variant='scrollable'
           >
-            {RecordMap[network]?.map((item) => {
+            {RecordEarnMap[network]?.map((item) => {
               return <Tab key={item} label={t(`labelLayer2History${item}`)} value={item} />
             })}
           </Tabs>

@@ -118,7 +118,7 @@ export const ModalDualPanel = withTranslation('common')(
           aria-describedby='modal-modal-description'
         >
           <BoxLinear
-            width={isMobile ? '90%' : 'var(--modal-width)'}
+            width={isMobile ? '90%' : '600px'}
             height={isMobile ? 'auto' : 'inherit'}
             // width={"80%"}
             // minWidth={isMobile ? "initial" : 720}

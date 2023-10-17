@@ -78,9 +78,13 @@ export const AssetPanel = withTranslation('common')(
         setCurrentTab(AssetTabIndex.Tokens)
       }
     }
+    React.useEffect(() => {
+      if (match.params.item === 'Invests') {
+        setCurrentTab(AssetTabIndex.DualInvests)
+      }
+    }, [])
     const hideAssets = assetTitleProps.hideL2Assets
 
-    // myLog('assetsRawData')
     return (
       <>
         {!isMobile && (

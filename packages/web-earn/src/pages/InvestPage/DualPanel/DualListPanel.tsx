@@ -118,10 +118,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
               onClick={() => {
-                searchParams.set('viewType', '')
-                // history.goBack()
-                history.push(pathname + '?' + searchParams.toString())
-                onSelectStep1Token(undefined)
+                history.goBack()
               }}
             >
               {t('labelBack')}
@@ -131,7 +128,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
               endIcon={<BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />}
-              onClick={() => history.push('/invest/balance')}
+              onClick={() => history.push('/l2assets/assets/Invests')}
             >
               {t('labelInvestMyDual')}
             </Button>

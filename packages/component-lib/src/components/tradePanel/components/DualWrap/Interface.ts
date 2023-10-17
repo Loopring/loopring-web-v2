@@ -65,4 +65,5 @@ export type DualDetailProps<
   displayMode?: DualDisplayMode
   tokenMap: any
   toggle: { enable: boolean; reason?: string }
+  inputView: React.ReactNode 
 }

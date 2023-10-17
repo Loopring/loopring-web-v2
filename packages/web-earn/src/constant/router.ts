@@ -217,9 +217,9 @@ export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] }
 }
 
 export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
-  TAIKO: [RecordTabIndex.Transactions],
-  ETHEREUM: [RecordTabIndex.DualRecords],
-  GOERLI: [RecordTabIndex.DualRecords],
+  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
+  ETHEREUM: [RecordTabIndex.Transactions,RecordTabIndex.DualRecords],
+  GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
 }
 export enum AssetTabIndex {
   Tokens = 'Tokens',
