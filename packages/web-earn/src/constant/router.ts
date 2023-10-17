@@ -148,10 +148,8 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   },
 ]
 
-
 export const RouterAllowIndex = {
   TAIKO: [
-    
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
     // RouterMainKey.lite,
@@ -218,7 +216,7 @@ export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] }
 
 export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
   TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  ETHEREUM: [RecordTabIndex.Transactions,RecordTabIndex.DualRecords],
+  ETHEREUM: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
   GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
 }
 export enum AssetTabIndex {
