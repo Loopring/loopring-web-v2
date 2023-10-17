@@ -177,7 +177,7 @@ export const ModalDualPanel = withTranslation('common')(
                 />
               </Box>
             </Box>
-            <Divider sx={{ marginX: 2 }} />
+            <Divider sx={{ marginX: 0 }} />
             <Box
               flex={1}
               // flexDirection={!isMobile ? "row" : "column"}
@@ -186,7 +186,6 @@ export const ModalDualPanel = withTranslation('common')(
               display={'flex'}
               paddingTop={2}
               paddingBottom={1}
-              paddingX={1}
               sx={
                 isMobile
                   ? {
