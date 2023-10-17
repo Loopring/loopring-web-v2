@@ -21,7 +21,7 @@
 // with yarn
 yarn install
 yarn up
-cd ./packages/webapp
+cd ./packages/web-earn
 npm run dev
 
 
