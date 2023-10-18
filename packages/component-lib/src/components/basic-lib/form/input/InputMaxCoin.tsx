@@ -4,7 +4,6 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
-  TokenType,
 } from '@loopring-web/common-resources'
 import { InputCoinProps, InputSize } from './Interface'
 import React from 'react'
@@ -50,32 +49,6 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined,
   )
-  // const [coinType, setCoinType] = React.useState({
-  //   type: TokenType.single,
-  //   tokenIcon: belong ? [coinJson[belong]] : undefined,
-  // })
-  // React.useEffect(() => {
-  //   // let coinType =
-  //   if (belong) {
-  //     const [_, type, coinA, coinB] = belong?.match(/(\w+-)?(\w+)-(\w+)/i) ?? []
-  //     if (tokenType) {
-  //       setCoinType({
-  //         type: tokenType,
-  //         tokenIcon: coinIcon ?? [coinJson[belong]],
-  //       })
-  //     } else if (type) {
-  //       switch (type?.toLowerCase()) {
-  //         case TokenType.lp:
-  //           setCoinType({ type: TokenType.lp, tokenIcon: [coinJson[coinA], coinJson[coinB]] })
-  //           break
-  //       }
-  //     } else {
-  //       setCoinType({ type: TokenType.single, tokenIcon: coinIcon ?? [coinJson[belong]] })
-  //     }
-  //   } else {
-  //     setCoinType({ type: TokenType.single, tokenIcon: belong ? [coinJson[belong]] : undefined })
-  //   }
-  // }, [belong, tokenType, coinIcon])
   React.useEffect(() => {
     if (tradeValue === undefined && error.error) {
       setError({ error: false })
@@ -254,16 +227,6 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
                   justifyContent={order === 'left' ? 'flex-start' : 'center'}
                 >
                   <CoinIcon symbol={belong} type={tokenType ?? undefined} />
-                  {/*/!*{coinType && coinType?.tokenIcon && belong && (*!/*/}
-                  {/*/!*  <CoinIcons*!/*/}
-                  {/*/!*    size={size}*!/*/}
-                  {/*/!*    type={coinType.type}*!/*/}
-                  {/*/!*    tokenIcon={coinType?.tokenIcon as any}*!/*/}
-                  {/*/!*  />*!/*/}
-                  {/*/!*)}*!/*/}
-                  {/*<Typography variant={'body1'} component={'span'} paddingLeft={1}>*/}
-                  {/*  {belong}*/}
-                  {/*</Typography>*/}
                 </Grid>
               )}
               {!isShowCoinIcon && CoinIconElement && (
