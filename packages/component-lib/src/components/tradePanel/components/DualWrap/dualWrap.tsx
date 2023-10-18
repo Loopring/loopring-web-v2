@@ -259,6 +259,7 @@ export const DualWrap = <
                         {...{
                           ...propsSell,
                         }}
+                        size={'small'}
                       />
                     </Box>
                     <Typography

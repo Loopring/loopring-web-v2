@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import React from 'react'
 import { Avatar, Box, FormControlLabel as MuFormControlLabel } from '@mui/material'
 import {
   AvatarCoinProps,
@@ -37,18 +38,39 @@ export const AvatarCoin = (props: AvatarCoinProps) => {
 export const CoinIcon = <R extends MarketType | string | LPTokenType>({
   symbol,
   lpSize = 24,
-  size = 24,
+  size: _size,
 }: {
   symbol: R
   lpSize?: number
-  size?: number
+  size?: number | 'middle' | 'small' | 'large'
 }) => {
   const { coinJson } = useSettings()
+  const size = React.useMemo(() => {
+    if (!_size) {
+      return 24
+    } else if (typeof _size === 'string') {
+      switch (_size) {
+        case 'middle':
+          return 24
+          break
+        case 'small':
+          return 20
+          break
+        case 'large':
+          return 36
+          break
+      }
+    } else {
+      return _size
+    }
+  }, [_size])
+
   if (symbol && symbol.match(/LP-(\w+)-(\w+)/i) && coinJson) {
     // @ts-ignore
     const [, coinA, coinB] = symbol.match(/LP-(\w+)-(\w+)/i)
     const coinAIcon: any = coinJson[coinA]
     const coinBIcon: any = coinJson[coinB]
+
     return (
       <Box display={'flex'} alignItems={'center'} marginRight={-1 / 2}>
         <Box

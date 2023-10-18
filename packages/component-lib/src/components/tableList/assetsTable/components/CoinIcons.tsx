@@ -17,13 +17,30 @@ const BoxStyle = styled(Box)<BoxProps & { size: number }>`
 export const CoinIcons = React.memo(
   ({
     tokenIcon,
-    size = 24,
+    size: _size,
     type = TokenType.single,
   }: {
     tokenIcon: [any, any?]
-    size?: number
+    size?: number | 'middle' | 'small' | 'large'
     type?: TokenType
   }) => {
+    const size = React.useMemo(() => {
+      if (!_size) {
+        return 24
+      } else if (typeof _size === 'string') {
+        switch (_size) {
+          case 'middle':
+            return 24
+          case 'small':
+            return 20
+          case 'large':
+            return 36
+        }
+      } else {
+        return _size
+      }
+    }, [_size])
+
     const [coinAInfo, coinBInfo] = tokenIcon
     return (
       <BoxStyle display={'flex'} justifyContent={'center'} size={size}>

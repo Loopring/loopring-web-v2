@@ -4,14 +4,15 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
+  TokenType,
 } from '@loopring-web/common-resources'
 import { InputCoinProps, InputSize } from './Interface'
 import React from 'react'
 import { useFocusRef } from '../hooks'
 import { CoinWrap, IInput, IWrap } from './style'
-import { CoinIcon } from './Default'
 import { useSettings } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
+import { CoinIcons } from '../../../tableList'
 
 function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   {
@@ -36,16 +37,43 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     coinLabelStyle = undefined,
     coinPrecision = 6,
     CoinIconElement,
+    tokenType,
+    coinIcon,
   }: InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>,
 ) {
   const { t } = useTranslation('common')
   const { balance, belong, tradeValue } = (inputData ? inputData : {}) as IBData<C>
   // myLog("InputCoin", balance, belong, tradeValue);
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
+
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined,
   )
+  const coinType = React.useMemo(() => {
+    let coinType = {
+      type: TokenType.single,
+      tokenIcon: [coinJson[belong]],
+    }
+    if (belong) {
+      const [_, type, coinA, coinB] = belong?.match(/(\w+-)?(\w+)-(\w+)/i) ?? []
+      if (tokenType) {
+        coinType.type = tokenType
+        coinType.tokenIcon = coinIcon ?? [coinJson[belong]]
+      } else if (type) {
+        switch (type?.toLowerCase()) {
+          case TokenType.lp:
+            coinType.type = TokenType.lp
+            coinType.tokenIcon = [coinJson[coinA], coinJson[coinB]]
+            break
+        }
+      } else {
+        coinType.type = TokenType.single
+        coinType.tokenIcon = coinIcon ?? [coinJson[belong]]
+      }
+    }
+    return coinType
+  }, [belong, tokenType, coinJson, coinIcon])
   React.useEffect(() => {
     if (tradeValue === undefined && error.error) {
       setError({ error: false })
@@ -223,7 +251,9 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
                   alignItems={'center'}
                   justifyContent={order === 'left' ? 'flex-start' : 'center'}
                 >
-                  <CoinIcon symbol={belong} />
+                  {coinType && coinType?.tokenIcon && (
+                    <CoinIcons size={size} {...{ ...coinType }} />
+                  )}
                 </Grid>
               )}
               {!isShowCoinIcon && CoinIconElement && (
