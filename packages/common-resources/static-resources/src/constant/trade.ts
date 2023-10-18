@@ -1,4 +1,5 @@
 import {
+  CoinMap,
   CollectionMeta,
   DeFiCalcData,
   DeFiSideCalcData,
@@ -6,6 +7,7 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
+  WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'
@@ -194,6 +196,8 @@ export const REDPACKET_ORDER_NFT_LIMIT = 20000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 1000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
+
+export const VAULT_MAKET_REFRESH = 60000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
   image: 'image',
@@ -331,11 +335,11 @@ export const enum InvestMapType {
 }
 
 export const enum InvestAssetRouter {
-  AMM = 'amm',
-  STAKE = 'stake',
+  AMM = 'ammpool',
+  STAKE = 'defi',
   DUAL = 'dual',
-  STAKELRC = 'sideStake',
-  LEVERAGEETH = 'leverageeth',
+  STAKELRC = 'stakelrc',
+  LEVERAGEETH = 'leverageETH',
   // BTradeInvest = "BTradeInvest",
 }
 
@@ -447,6 +451,7 @@ export type DualCurrentPrice = {
   base: string
   precisionForPrice: number
   currentPrice?: number
+  quoteUnit?: string
 }
 export type DualViewBase = {
   apy: `${string}%`
@@ -730,6 +735,16 @@ export type AmmHistoryItem = {
   close: number
   timeStamp: number
 }
+export enum LocalStorageConfigKey {
+  tokenMap = 'tokenMap',
+  ammpools = 'ammpools',
+  markets = 'markets',
+  btradeMarkets = 'btradeMarkets',
+  vaultMarkets = 'vaultMarkets',
+  vaultTokenMap = 'vaultTokenMap',
+  exchangeInfo = 'exchangeInfo',
+  disableWithdrawTokenList = 'disableWithdrawTokenList',
+}
 
 export enum DualStep {
   ChooseType = 'ChooseType',
@@ -742,6 +757,7 @@ export enum DualViewType {
   DualGain = 'DualGain',
   DualDip = 'DualDip',
   DualBegin = 'DualBegin',
+  DualBTC = 'DualBTC',
   All = 'All',
 }
 export const DualGain = [
@@ -761,8 +777,63 @@ export const DualBegin = [
   { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
   { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]
+export const DualBTC = [
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_BASE' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
+]
+
+export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
+  sdk.VaultMarket,
+  'enabled'
+> & {
+    vaultMarket: string
+    originalBaseSymbol: string
+    originalQuoteSymbol: string
+  }
+
+export type VaultJoinData<I = any> = {
+  walletMap: WalletMap<I>
+  coinMap: CoinMap<I> & { vaultToken: string; vaultId: number }
+  vaultLayer2Map: WalletMap<I>
+  vaultSymbol?: string
+  request?: sdk.VaultJoinRequest
+  maxShowVal: string
+  minShowVal: string
+  maxAmount: string
+  minAmount: string
+  amount: string
+  isMerge: boolean
+  vaultTokenInfo: sdk.TokenInfo
+  // isShouldClean:boolean
+  __request__: sdk.VaultJoinRequest
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultJoinRequest>
+
+export type VaultExitData<I = any> = {
+  __request__: any
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultExitRequest>
+
+export enum VaultLoadType {
+  Borrow = 'Borrow',
+  Repay = 'Repay',
+}
+
+export enum AmmPanelType {
+  Join = 0,
+  Exit = 1,
+}
 
 export enum DualInvestConfirmType {
   USDCOnly = 'USDCOnly',
   all = 'all',
+}
+
+export type MarketTableRawDataItem = sdk.DatacenterTokenQuote & any
+export enum VaultAction {
+  VaultJoin = 'VaultJoin',
+  VaultExit = 'VaultExit',
+  VaultLoad = 'VaultLoad',
+  VaultSwap = 'VaultSwap',
 }

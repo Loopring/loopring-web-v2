@@ -13,6 +13,7 @@ import {
   PriceTag,
   SagaStatus,
   SCENARIO,
+  TableFilterParams,
 } from '@loopring-web/common-resources'
 import {
   Button,
@@ -56,12 +57,6 @@ const PriceTitleStyled = styled(Typography)`
 const PriceValueStyled = styled(Typography)`
   font-size: 1.2rem;
 `
-
-export enum TableFilterParams {
-  all = 'all',
-  favourite = 'favourite',
-  ranking = 'ranking',
-}
 
 export const Toolbar = withTranslation('common')(
   <C extends { [key: string]: any }>({

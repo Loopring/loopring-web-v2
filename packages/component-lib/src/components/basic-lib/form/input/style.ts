@@ -124,7 +124,7 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    border-radius: ${({ theme }) => theme.unit}px;
+    border-radius: ${({ theme }) => theme.unit }px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
 
@@ -161,6 +161,10 @@ export const IWrap = styled(Box)<
 
     .MuiButton-label {
       justify-content: flex-start;
+    }
+    &.icon-wrap-left,
+    &.btn-wrap-left {
+      justify-content: flex-end;
     }
   }
 
@@ -210,6 +214,60 @@ export const IWrap = styled(Box)<
       `
     }
   }};
+  &.swapWrap {
+    .btnInput-wrap {
+      &.error {
+        border: initial !important;
+        border-bottom: 1px solid var(--color-error) !important;
+      }
+      input:focus + label::before {
+        box-shadow: initial;
+        ${({ theme }) => `${theme.border.defaultFrame({ c_key: 'var(--opacity)', d_R: 0.5 })};`}
+      }
+    }
+    //.input-wrap {
+    //  position: initial;
+    //}
+    flex: 1;
+    &:focus-within {
+      box-shadow: initial;
+
+      ${({ theme }) =>
+        `${theme.border.defaultFrame({ c_key: 'var(--color-border-hover)', d_R: 0.5 })};`}
+    }
+
+    height: var(--input-height-swap);
+    background: var(--field-opacity);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    .label-wrap {
+      //margin-left: 40%;
+      //width: 60%;
+
+      .MuiGrid-item {
+        flex-basis: inherit;
+        width: inherit;
+        max-width: inherit;
+      }
+      p {
+        padding-right: 1rem;
+      }
+      padding-top: 0.8rem;
+      height: var(--input-height-swap-label);
+    }
+    .btnInput-wrap {
+      position: initial;
+    }
+    .btn-wrap {
+      position: absolute;
+      top: 0rem;
+    }
+    //.input-wrap-right{
+    //
+    //}
+  }
 ` as (
   props: BoxProps & {
     size: 'middle' | 'small'
@@ -240,7 +298,7 @@ export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
 
   &.icon-wrap-left > div {
     justify-content: flex-end;
-    padding-right: ${({ theme }) => (theme.unit / 2) * 3}px;
+    padding-right: ${({ theme }) => theme.unit}px;
     align-items: center;
   }
 ` as (props: BoxProps & { logoColor?: any }) => JSX.Element
@@ -270,6 +328,19 @@ export const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
     color: var(--color-text-primary);
     background: var(--color-box-hover);
   }
+  &.swapWrap {
+    //.input-wrap-right {
+    //  input[type='text'] {
+    //    text-align: left;
+    //  }
+    //}
+    & {
+      :active {
+        //color: var(--color-text-primary);
+        background: var(--opacity);
+      }
+    }
+  }
 ` as (props: ButtonProps & { logoColor?: any }) => JSX.Element
 
 export const IInput = styled(CurrencyInput)`
@@ -277,7 +348,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-placeholder);;
+    color: var(--color-placeholder);
   }
 
   :disabled {

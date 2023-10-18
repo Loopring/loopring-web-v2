@@ -11,6 +11,7 @@ import {
   WalletAPI,
   WsAPI,
   ContactAPI,
+  VaultAPI,
 } from '@loopring-web/loopring-sdk'
 
 export class LoopringAPI {
@@ -25,6 +26,7 @@ export class LoopringAPI {
   public static defiAPI: DefiAPI | undefined = undefined
   public static luckTokenAPI: LuckTokenAPI | undefined = undefined
   public static contactAPI: ContactAPI | undefined = undefined
+  public static vaultAPI: VaultAPI | undefined = undefined
   public static __chainId__: ChainId | undefined = undefined
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId }, 6000)
@@ -36,8 +38,23 @@ export class LoopringAPI {
     LoopringAPI.wsAPI = new WsAPI({ chainId }, 6000)
     LoopringAPI.nftAPI = new NFTAPI({ chainId }, 6000)
     LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000)
-    LoopringAPI.defiAPI = new DefiAPI({ chainId }, 6000)
+    LoopringAPI.defiAPI = new DefiAPI({ chainId }, 30000)
     LoopringAPI.contactAPI = new ContactAPI({ chainId }, 6000)
+    LoopringAPI.vaultAPI = new VaultAPI({ chainId }, 6000)
     LoopringAPI.__chainId__ = chainId
+  }
+  public static setBaseURL = (baseURL: string) => {
+    LoopringAPI.userAPI?.setBaseUrl(baseURL)
+    LoopringAPI.luckTokenAPI?.setBaseUrl(baseURL)
+    LoopringAPI.exchangeAPI?.setBaseUrl(baseURL)
+    LoopringAPI.globalAPI?.setBaseUrl(baseURL)
+    LoopringAPI.ammpoolAPI?.setBaseUrl(baseURL)
+    LoopringAPI.walletAPI?.setBaseUrl(baseURL)
+    LoopringAPI.wsAPI?.setBaseUrl(baseURL)
+    LoopringAPI.nftAPI?.setBaseUrl(baseURL)
+    LoopringAPI.delegate?.setBaseUrl(baseURL)
+    LoopringAPI.defiAPI?.setBaseUrl(baseURL)
+    LoopringAPI.contactAPI?.setBaseUrl(baseURL)
+    LoopringAPI.vaultAPI?.setBaseUrl(baseURL)
   }
 }

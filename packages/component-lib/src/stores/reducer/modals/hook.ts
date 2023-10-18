@@ -32,6 +32,10 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowVaultJoin,
+  setShowVaultExit,
+  setShowVaultSwap,
+  setShowVaultLoad,
 } from './reducer'
 
 import React from 'react'
@@ -41,10 +45,11 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
-import { AmmPanelType, ToastType } from '../../../components'
+import { ToastType } from '../../../components'
 
 export const useOpenModals = () => {
   const dispatch = useDispatch()
@@ -282,10 +287,28 @@ export const useOpenModals = () => {
       (state: {
         isShow: boolean
         info: {
-          content: string
+          content?: string
           type: ToastType
+          messageKey?: string
         }
       }) => dispatch(setShowGlobalToast(state)),
+      [dispatch],
+    ),
+    setShowVaultExit: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultExit(state)),
+      [dispatch],
+    ),
+    setShowVaultJoin: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultJoin(state)),
+      [dispatch],
+    ),
+    setShowVaultSwap: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultSwap(state)),
+      [dispatch],
+    ),
+    setShowVaultLoad: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction & { type?: string }) =>
+        dispatch(setShowVaultLoad(state)),
       [dispatch],
     ),
   }

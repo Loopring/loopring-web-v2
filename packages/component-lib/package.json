@@ -18,9 +18,10 @@
     "release:build": "lerna run --parallel --scope \"@loopring-web/*\" build",
     "test": "react-scripts-rewired test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "sb": "yarn storybook",
-    "build": "NODE_ENV=production build-storybook -c .storybook --quiet "
+    "build-storybook": "NODE_ENV=production storybook build",
+    "build": "NODE_ENV=production storybook build -c .storybook_back --quiet ",
+    "prepare": "husky install",
+    "storybook": "storybook dev -p 6006"
   },
   "eslintConfig": {
     "extends": [
@@ -64,13 +65,6 @@
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-typescript": "^8.2.1",
     "@rollup/plugin-url": "^6.0.0",
-    "@storybook/addon-actions": "^6.5.13",
-    "@storybook/addon-controls": "^6.5.13",
-    "@storybook/addon-essentials": "^6.5.13",
-    "@storybook/addon-storyshots": "^6.5.13",
-    "@storybook/node-logger": "^6.5.13",
-    "@storybook/react": "^6.5.13",
-    "@storybook/preset-create-react-app": "^3.2.0",
     "babel-plugin-named-asset-import": "0.3.8",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",

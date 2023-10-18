@@ -625,7 +625,6 @@ export default {
   labelL2toL2Confirm: 'Confirm',
   labelL2toL2TokenAmount: 'Token Amount',
 
-  labelL1toL2ThirdPart: '{{type}} Crypto with',
   labelActiveAccountFeeNotEnough: 'Insufficient balance <1>Add assets</1>',
   labelNFTTransferTX: '{{l2Symbol}} \u2192 {{l2Symbol}}',
   labelNFTWithdrawTX: '{{l2Symbol}} \u2192 {{l1Symbol}}',
@@ -696,7 +695,7 @@ export default {
   labelAddAssetTitleActive: 'Add assets & Activate',
   labelFromMyL1: 'From my {{l1Symbol}} account',
   labelFromOtherL1: 'From another {{l1Symbol}} account',
-  labelBuyWithCard: 'Buy with Card',
+  labelBuyWithCard: 'On-Ramp From Fiat',
   labelFromOtherL2: 'From another {{loopringL2}} account',
   labelFromExchange: 'From an exchange',
   labelOpenInWalletApp: 'Open in wallet app/extension',
@@ -1689,7 +1688,7 @@ export default {
   labelDepositTo: 'Deposit to',
   labelReferTitle: 'Invite friends to join in \nLoopring and receive rewards',
   labelReferTitleDes:
-    'As referrer: will receive a one-year commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
+    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
   labelCopy: 'Copy',
   labelReferralRules: 'Reward rules',
   labelReferralMethod1: 'Method 1',
@@ -2006,4 +2005,6 @@ export default {
     '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
     '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelL1toL2ThirdPartOn: 'On-ramp Crypto',
+  labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
 }

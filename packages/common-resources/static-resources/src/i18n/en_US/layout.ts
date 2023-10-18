@@ -16,7 +16,7 @@ export default {
   labelClassicDescription: 'Intuitive trading interface',
   labelAdvanced: 'Order Book',
   labelFiat: 'Fiat',
-  labelFiatDescription: 'Buy/Sell crypto with card', /// Sell
+  labelFiatDescription: 'On-ramp/Off-ramp crypto', /// Sell
   labelAdvancedDescription: 'Full access to all trading tools',
   labelDownloadApp: 'Download Loopring Wallet Mobile Application',
   labelDownloadAppTitle: 'Download Loopring Wallet',
@@ -131,4 +131,10 @@ export default {
   // labelDepositNFTDes:"Receive NFT"
   labelInvestLeverageETH: 'Leveraged ETH Staking',
   labelInvestLeverageETHDes: 'Gain higher APY aggressively',
+  labelVault: 'Vault',
+  labelVaultDes: '',
+  labelVaultHome: 'Home',
+  labelVaultHomeDes: 'Third-party funds to trade',
+  labelVaultDashboard: 'Dashboard',
+  labelVaultDashboardDes: 'Loan & trade freely',
 }

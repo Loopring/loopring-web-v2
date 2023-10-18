@@ -37,7 +37,8 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  FeeSelect, GridWrapStyle,
+  FeeSelect,
+  GridWrapStyle,
   InputSize,
   TextField,
   Toast,
@@ -49,8 +50,6 @@ import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
 import { useSettings } from '../../../stores'
 import { TransferAddressType } from './AddressType'
-
-
 
 export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   t,
@@ -108,7 +107,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
 
   const inputButtonDefaultProps = {
     label: t('labelL2toL2EnterToken'),
-    size: InputSize.middle
+    size: InputSize.middle,
   }
 
   const [showFeeModal, setShowFeeModal] = React.useState(false)
@@ -155,7 +154,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
   const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart
   myLog('transferWrap', realAddr)
   const view = React.useMemo(() => {
-    if (isOtherSmartWallet) {
+    if (isOtherSmartWallet && realAddr) {
       return (
         <Typography
           color={'var(--color-error)'}
@@ -165,6 +164,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           position={'relative'}
         >
           {t('labelNotOtherSmartWallet', {
+            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -173,7 +173,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           })}
         </Typography>
       )
-    } else if (isInvalidAddressOrENS) {
+    } else if (isInvalidAddressOrENS && addressDefault) {
       return (
         <Typography
           color={'var(--color-error)'}
@@ -185,7 +185,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           {t(`labelL2toL2${addrStatus}`)}
         </Typography>
       )
-    } else if (isExchange) {
+    } else if (isExchange && addressDefault) {
       return (
         <Typography
           color={'var(--color-error)'}
@@ -204,7 +204,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           })}
         </Typography>
       )
-    } else if (isSameAddress) {
+    } else if (isSameAddress && addressDefault) {
       return (
         <Typography
           color={'var(--color-error)'}
@@ -332,7 +332,8 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
     isAddressCheckLoading,
   ])
 
-  return <GridWrapStyle
+  return (
+    <GridWrapStyle
       className={'transfer-wrap'}
       container
       paddingLeft={isMobile ? 2 : 5 / 2}
@@ -456,7 +457,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
               <InputAdornment
                 style={{
                   cursor: 'pointer',
-                  paddingRight: '4px'
+                  paddingRight: '4px',
                 }}
                 position='end'
               >
@@ -579,5 +580,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
         }}
         severity={ToastType.success}
       />
-  </GridWrapStyle>
+    </GridWrapStyle>
+  )
 }

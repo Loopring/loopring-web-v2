@@ -17,11 +17,9 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
 import { LoopringAPI, store, useAccount, useContacts, useSystem } from '../../index'
 import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
-import { useTranslation } from 'react-i18next'
 
 export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const [address, setAddress] = React.useState<string>('')
-  const { t } = useTranslation()
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
   const { defaultNetwork } = useSettings()
@@ -147,10 +145,14 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   setCheckAddaccountId(response.accInfo.accountId)
                 }
               }
+            } else {
+              setIsCFAddress(false)
+              setIsLoopringAddress(false)
+              setLoopringSmartWalletVersion({
+                isLoopringSmartWallet: false,
+              })
             }
           }
-          // clearTimeout(nodeTimer.current)
-          // nodeTimer.current = -1
           myLog('address update async', address, realAddr)
           setIsAddressCheckLoading(false)
         } else {
@@ -178,17 +180,18 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         setIsLoopringAddress(false)
         setIsAddressCheckLoading(false)
       }
-      setShowGlobalToast({
-        isShow: true,
-        info: {
-          type: ToastType.error,
-          content: t(
-            SDK_ERROR_MAP_TO_UI[(error as any)?.code ?? UIERROR_CODE.ERROR_ADDRESS_CHECK_ERROR]
-              ?.messageKey,
-            { ns: 'error' },
-          ),
-        },
-      })
+      if (address !== '' && (error as any)?.code !== 500000) {
+        setShowGlobalToast({
+          isShow: true,
+          info: {
+            type: ToastType.info,
+            messageKey: (
+              SDK_ERROR_MAP_TO_UI[(error as any)?.code ?? UIERROR_CODE.ERROR_ADDRESS_CHECK_ERROR] ??
+              SDK_ERROR_MAP_TO_UI[UIERROR_CODE.ERROR_ADDRESS_CHECK_ERROR]
+            )?.messageKey,
+          },
+        })
+      }
     }
   }, [])
 
@@ -243,7 +246,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                     ...found,
                     isHebao: true,
                     accountId: accountId,
-                    addressType: addressType as Number,
+                    addressType: addressType as number,
                   },
                   apiKey,
                 )

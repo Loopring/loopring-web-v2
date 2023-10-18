@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 
 import { Box, Grid } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'

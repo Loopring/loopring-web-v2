@@ -319,6 +319,7 @@ export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>
   inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>
   className?: string
+  isMaxBtn?: boolean
 }
 export type BasicACoinInputProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   type?: TRADE_TYPE.TOKEN
@@ -674,6 +675,7 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     BasicANFTTradeProps<T, I> & {
       handleOnChoose: (value: NFT) => void
       selectNFT: NFT
+      
     }
   > & {
     setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void
@@ -697,6 +699,7 @@ export type TargetRedpacktSelectStepProps = {
   popRedPacket: sdk.LuckTokenClaimDetail | undefined
   popRedPacketAmountStr: string | undefined
   backToScope: () => void
+  idIndex: { [key: string]: string }
 }
 
 export type TargetRedpacktInputAddressStepProps = {
@@ -714,3 +717,14 @@ export type TargetRedpacktInputAddressStepProps = {
   sentAddresses?: string[]
   clearInput: () => void
 }
+
+/**
+ * private props
+ */
+export type VaultJoinInfoProps = {
+  btnStatus?: keyof typeof TradeBtnStatus | undefined
+  title?: string
+  description?: string
+  chargeFeeTokenList?: FeeInfo[]
+  wait?: number
+} & BtnInfoProps

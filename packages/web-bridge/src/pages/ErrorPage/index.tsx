@@ -1,11 +1,11 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Container, Link, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { ErrorObject } from '@loopring-web/common-resources'
+import { ErrorObject, SoursURL } from '@loopring-web/common-resources'
 import { getContactInfo } from '@loopring-web/core'
 
 const StyleBox = styled(Box)`
-  background-image: url('https://static.loopring.io/assets/images/error_bg.png');
+  background-image: url('${SoursURL}/images/error_bg.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: bottom;

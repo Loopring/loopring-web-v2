@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { SwapPanel } from './Swap'
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Box, Grid } from '@mui/material'
 import {
@@ -12,6 +12,7 @@ import {
   SlippageTolerance,
   TRADE_TYPE,
   TradeBtnStatus,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import {
   ammCalcData,
@@ -27,7 +28,6 @@ import { ResetPanel } from './Reset'
 import { useTranslation } from 'react-i18next'
 import {
   AmmPanel,
-  AmmPanelType,
   AmmProps,
   DepositProps,
   DualWrap,

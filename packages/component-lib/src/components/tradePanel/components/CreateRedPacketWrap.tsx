@@ -863,6 +863,7 @@ export const CreateRedPacketStepType = withTranslation()(
     onClickNext,
     showNFT,
     onSelecteValue,
+    redPacketConfig,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tokenMap'> & {
     selectedType: LuckyRedPacketItem
@@ -1438,6 +1439,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
       popRedPacketAmountStr,
       onCloseRedpacketPop,
       backToScope,
+      idIndex,
       t,
     } = props
     const theme = useTheme()
@@ -2269,7 +2271,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
               control={
                 <Checkbox
                   checked={popupChecked}
-                  onChange={(_event: any, _state: boolean) => {
+                  onChange={(_event: any, state: boolean) => {
                     if (popUpOptionDisabled) {
                       setShowPopUpTips(true)
                     } else {

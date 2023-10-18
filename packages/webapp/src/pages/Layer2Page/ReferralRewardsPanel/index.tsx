@@ -1,15 +1,5 @@
 import styled from '@emotion/styled'
-import {
-  Box,
-  BoxProps,
-  Container,
-  Grid,
-  InputAdornment,
-  Link,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material'
+import { Box, Container, Grid, InputAdornment, Link, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useAccount, useIPFS, useSubmitBtn, useToast } from '@loopring-web/core'
@@ -42,6 +32,7 @@ import {
   ToastType,
   useSettings,
   OutlinedInput,
+  BoxBannerStyle,
 } from '@loopring-web/component-lib'
 import { useReferralsTable, useRefundTable } from './hook'
 import { useHistory } from 'react-router-dom'
@@ -61,43 +52,6 @@ const BoxStyled = styled(Box)`
     }
   }
 `
-export const BoxBannerStyle = styled(Box)<
-  BoxProps & { backGroundUrl?: string | number; direction?: 'left' | 'right' }
->`
-  background-color: var(--color-box);
-
-  .bg:after {
-    display: block;
-    content: '';
-    float: ${({ direction }) => direction};
-    width: 35%;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    background-image: url('${({ backGroundUrl }) => backGroundUrl}');
-  }
-
-  &.mobile .bg {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-
-    &:after {
-      opacity: 0.08;
-      z-index: 1;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-  }
-` as (
-  props: BoxProps & {
-    backGroundUrl?: string | number
-    direction?: 'left' | 'right'
-  },
-) => JSX.Element
 
 enum ReferStep {
   method1 = 0,
@@ -122,10 +76,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
   isActive?: boolean
   handleCopy: (selected: 'id' | 'link') => void
 }) => {
-  const {account} = useAccount()
-  const {t} = useTranslation(['common', 'layout'])
-  const {defaultNetwork, isMobile} = useSettings()
-  const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ]
+  const { account } = useAccount()
+  const { t } = useTranslation(['common', 'layout'])
+  const { defaultNetwork, isMobile } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [open, setOpen] = React.useState(false)
   const [images, setImages] = React.useState<CarouselItem[]>([])
   const [loading, setLoading] = React.useState(true)
@@ -136,12 +90,12 @@ const ReferHeader = <R extends ImageReferralBanner>({
     },
     lng: ['en'],
     position: {
-      code: {default: [48, 30, 230, 64, '#000000', 630, 880]},
+      code: { default: [48, 30, 230, 64, '#000000', 630, 880] },
     },
   })
-  const {btnStatus, onBtnClick, btnLabel} = useSubmitBtn({
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
-      return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
     },
     isLoading: loading,
     submitCallback: async () => {
@@ -163,9 +117,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
             setLoading(false)
           }
         }
-      }).catch(() => {
-      setLoading(false)
-    })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }, [])
   const renderImage = React.useCallback(
     (imageList: R) => {
@@ -215,7 +170,11 @@ const ReferHeader = <R extends ImageReferralBanner>({
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
 
           // myLog('imageUrl createObjectURL', canvas.toDataURL())
-          images.push({imageUrl: canvas.toDataURL(), size: [width / 2, height / 2], name: (item ?? '/').split('/')?.pop()})
+          images.push({
+            imageUrl: canvas.toDataURL(),
+            size: [width / 2, height / 2],
+            name: (item ?? '/').split('/')?.pop(),
+          })
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
           }
@@ -284,7 +243,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
     })
   }
 
-  const {ipfsProvides} = useIPFS({
+  const { ipfsProvides } = useIPFS({
     handleSuccessUpload: () => undefined,
     handleFailedUpload: () => undefined,
   })
@@ -336,7 +295,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
         <ShareModal
           onClick={() => onDownloadImage()}
           open={open}
-          message={t("labelShareMessage", {code: account?.accountId})}
+          message={t('labelShareMessage', { code: account?.accountId })}
           loading={btnStatus === TradeBtnStatus.LOADING}
           onClose={() => setOpen(false)}
           imageList={images}
@@ -348,7 +307,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
             <Typography
               component={'h1'}
               variant={isMobile ? 'h4' : 'h2'}
-              sx={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}
+              sx={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}
             >
               {t('labelReferTitle')}
             </Typography>
@@ -392,7 +351,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
                     value={account.accountId}
                     disabled={true}
                     fullWidth={true}
-                    // onChange={(event: any) => {}}
                     startAdornment={
                       <InputAdornment position='start'>
                         <Typography
@@ -406,7 +364,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
                         >
                           #
                         </Typography>
-                        {/*<LinkIcon color={"inherit"} />*/}
                       </InputAdornment>
                     }
                     endAdornment={
@@ -431,14 +388,9 @@ const ReferHeader = <R extends ImageReferralBanner>({
               >
                 {label}
               </Button>
-              {/*{image.map((item, index) => (*/}
-              {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
-              {/*))}*/}
+
               <Box sx={{ display: 'block' }} height={0} width={0} overflow={'hidden'}>
                 <canvas className={'canvas'} />
-                {/*{images.map((item, index) => (*/}
-                {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
-                {/*))}*/}
               </Box>
             </Box>
           </Box>

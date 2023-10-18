@@ -9,6 +9,7 @@ import {
 import React from 'react'
 import { Box, Divider, Grid, Tooltip, Typography } from '@mui/material'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { Mark } from '@mui/base/SliderUnstyled/SliderUnstyledProps'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -35,31 +36,31 @@ export const ModifyParameter = ({
   const { coinJson } = useSettings()
   const {
     stepLength,
-    strike,
-    currentPrice: { currentPrice, precisionForPrice, base, quote },
+    // strike,
+    currentPrice: { currentPrice, precisionForPrice, base, quote, quoteUnit },
   } = dualViewInfo
 
   const stepEle = React.useMemo(() => {
     if (isPriceEditable) {
       const listELE: JSX.Element[] = []
-      let method = sdk
-        .toBig(currentPrice ?? 0)
-        .minus(strike ?? 0)
-        .gte(0)
-        ? 'minus'
-        : 'plus'
-      let start = sdk.toBig(stepLength).times(
+      const method = dualViewInfo.dualType === DUAL_TYPE.DUAL_BASE ? 'plus' : 'minus'
+      // let method = sdk
+      //   .toBig(currentPrice ?? 0)
+      //   .minus(strike ?? 0)
+      //   .gte(0)? 'minus'  : 'plus'
+
+      let start = sdk.toBig(stepLength ?? 0).times(
         sdk
           .toBig(currentPrice ?? 0)
-          .div(stepLength)
+          .div(stepLength ?? 1)
           .toFixed(0),
       )
 
       // if(strike)
       if (method === 'minus' && start.gt(currentPrice ?? 0)) {
-        start = sdk.toBig(start).minus(stepLength)
+        start = sdk.toBig(start).minus(stepLength ?? 0)
       } else if (method === 'plus' && start.lt(currentPrice ?? 0)) {
-        start = sdk.toBig(start).plus(stepLength)
+        start = sdk.toBig(start).plus(stepLength ?? 0)
       }
       for (let index = 0, item = start; index < 12; index++) {
         const dualProduct = dualProducts?.find((dualProduct) =>
@@ -114,7 +115,7 @@ export const ModifyParameter = ({
             </TickCardStyleItem>
           </Grid>,
         )
-        item = method === 'minus' ? item.minus(stepLength) : item.plus(stepLength)
+        item = method === 'minus' ? item.minus(stepLength ?? 0) : item.plus(stepLength ?? 0)
       }
       return listELE.map((item) => item)
     } else {

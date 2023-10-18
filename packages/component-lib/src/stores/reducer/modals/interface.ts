@@ -4,8 +4,9 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
-import { AmmPanelType, ToastType } from '../../../components'
+import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum ModalType {
@@ -26,7 +27,7 @@ export type Transaction = {
 export type Contact = {
   name?: string
   address?: string
-  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
+  addressType?: typeof sdk.AddressType
 }
 
 export interface ModalState {
@@ -88,4 +89,11 @@ export interface ModalState {
       type: ToastType
     } & any
   }
+  isShowVaultExit: ModalStatePlayLoad & Transaction
+  isShowVaultJoin: ModalStatePlayLoad & Transaction
+  isShowVaultSwap: ModalStatePlayLoad & Transaction
+  istShowVaultLoad: ModalStatePlayLoad &
+    Transaction & {
+      type: string
+    }
 }
