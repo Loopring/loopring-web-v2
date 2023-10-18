@@ -17,7 +17,7 @@ import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DualDetail } from './dualDetail'
-import { InputMaxCoin } from '../../../basic-lib/form/input/InputMaxCoin'
+import { InputMaxCoin } from '../../../basic-lib'
 
 export const DualWrap = <
   T extends IBData<I> & { isRenew: boolean; targetPrice: string; duration: string },
