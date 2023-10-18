@@ -15,7 +15,6 @@ import { AssetPanelProps, useAssetAction } from './hook'
 import React from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import MyLiquidity from '../../InvestPage/MyLiquidityPanel'
-import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
 import {
   // AssetL2TabIndex,
   // AssetTabIndex,

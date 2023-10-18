@@ -9,6 +9,7 @@ import React from 'react'
 import { store, useAccount, useTargetRedPackets, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
 import { useAssetAction, useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
+import { MaxWidthContainer } from 'pages/InvestPage'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -22,7 +23,7 @@ export const AssetPage = () => {
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
       case 'history':
-        return <HistoryPanel />
+        return <MaxWidthContainer marginTop={5}><HistoryPanel /></MaxWidthContainer> 
       case 'assets':
       default:
         return (
