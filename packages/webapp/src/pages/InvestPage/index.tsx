@@ -1,15 +1,9 @@
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 
-import { Box, BoxProps, Tab, Tabs, Typography } from '@mui/material'
+import { Box, BoxProps, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
-import {
-  ComingSoonPanel,
-  ConfirmInvestDualAutoRisk,
-  ConfirmInvestDualRisk,
-  ConfirmInvestLRCStakeRisk,
-  useToggle,
-} from '@loopring-web/component-lib'
+import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
 import React from 'react'
 import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
 import MyLiquidityPanel from './MyLiquidityPanel'

@@ -23,7 +23,6 @@ import { updateWalletLayer1 } from '../walletLayer1/reducer'
 import { getTokenMap } from '../token/reducer'
 import { getNotify } from '../notify/reducer'
 import { getTokenPrices } from '../tokenPrices/reducer'
-import { getDefiMap } from '../invest/DefiMap/reducer'
 import { getInvestTokenTypeMap } from '../invest/InvestTokenTypeMap/reducer'
 import { getDualMap } from '../invest/DualMap/reducer'
 import { getStakingMap } from '../invest/StakingMap/reducer'
@@ -37,6 +36,7 @@ import { updateDualSyncMap } from '../invest/DualMap/reducer'
 import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
 import { getVaultMap, updateVaultSyncMap } from '../invest/VaultMap/reducer'
 import { getVaultTickers } from '../invest/VaultTicker/reducer'
+import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 
 enum ENV_KEY {
   Bridge = 'bridge',
@@ -199,7 +199,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       ]: any) => {
         store.dispatch(
           getTokenMap({
-            tokenMap: tokensMap,
+            tokensMap,
             coinMap,
             totalCoinMap,
             idIndex,
@@ -309,20 +309,19 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       store.dispatch(getRedPacketConfigs(undefined))
       store.dispatch(getNotify(undefined))
       store.dispatch(getStakingMap(undefined))
-      store.dispatch(getDualMap(undefined))
-      store.dispatch(getDefiMap(undefined))
       store.dispatch(getBtradeMap(undefined))
-      store.dispatch(getExclusiveRedpacket(undefined))
       store.dispatch(getVaultMap(undefined))
+      store.dispatch(getExclusiveRedpacket(undefined))
       defiAllAsync()
+      yield take('vaultMap/getVaultMapStatus')
+      store.dispatch(getVaultTickers(undefined))
       yield all([
         take('defiMap/getDefiMapStatus'),
         take('dualMap/getDualMapStatus'),
         take('stakingMap/getStakingMapStatus'),
       ])
       store.dispatch(getInvestTokenTypeMap(undefined))
-      yield take('vaultTickerMap/getVaultTickersStatus')
-      store.dispatch(getVaultTickers(undefined))
+
       break
   }
 
@@ -437,7 +436,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
       }
       LoopringAPI.setBaseURL(baseURL)
-
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
         const _exchangeInfo = JSON.parse(
