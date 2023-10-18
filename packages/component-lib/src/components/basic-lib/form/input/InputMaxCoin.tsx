@@ -12,7 +12,7 @@ import { useFocusRef } from '../hooks'
 import { CoinWrap, IInput, IWrap } from './style'
 import { useSettings } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
-import { CoinIcons } from '../../../tableList'
+import { CoinIcon } from './Default'
 
 function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   {
@@ -38,8 +38,8 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     coinPrecision = 6,
     CoinIconElement,
     tokenType,
-    coinIcon,
-  }: InputCoinProps<T, C, I>,
+  }: // coinIcon,
+  InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>,
 ) {
   const { t } = useTranslation('common')
@@ -50,30 +50,32 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined,
   )
-  const coinType = React.useMemo(() => {
-    let coinType = {
-      type: TokenType.single,
-      tokenIcon: [coinJson[belong]],
-    }
-    if (belong) {
-      const [_, type, coinA, coinB] = belong?.match(/(\w+-)?(\w+)-(\w+)/i) ?? []
-      if (tokenType) {
-        coinType.type = tokenType
-        coinType.tokenIcon = coinIcon ?? [coinJson[belong]]
-      } else if (type) {
-        switch (type?.toLowerCase()) {
-          case TokenType.lp:
-            coinType.type = TokenType.lp
-            coinType.tokenIcon = [coinJson[coinA], coinJson[coinB]]
-            break
-        }
-      } else {
-        coinType.type = TokenType.single
-        coinType.tokenIcon = coinIcon ?? [coinJson[belong]]
-      }
-    }
-    return coinType
-  }, [belong, tokenType, coinJson, coinIcon])
+  // const [coinType, setCoinType] = React.useState({
+  //   type: TokenType.single,
+  //   tokenIcon: belong ? [coinJson[belong]] : undefined,
+  // })
+  // React.useEffect(() => {
+  //   // let coinType =
+  //   if (belong) {
+  //     const [_, type, coinA, coinB] = belong?.match(/(\w+-)?(\w+)-(\w+)/i) ?? []
+  //     if (tokenType) {
+  //       setCoinType({
+  //         type: tokenType,
+  //         tokenIcon: coinIcon ?? [coinJson[belong]],
+  //       })
+  //     } else if (type) {
+  //       switch (type?.toLowerCase()) {
+  //         case TokenType.lp:
+  //           setCoinType({ type: TokenType.lp, tokenIcon: [coinJson[coinA], coinJson[coinB]] })
+  //           break
+  //       }
+  //     } else {
+  //       setCoinType({ type: TokenType.single, tokenIcon: coinIcon ?? [coinJson[belong]] })
+  //     }
+  //   } else {
+  //     setCoinType({ type: TokenType.single, tokenIcon: belong ? [coinJson[belong]] : undefined })
+  //   }
+  // }, [belong, tokenType, coinIcon])
   React.useEffect(() => {
     if (tradeValue === undefined && error.error) {
       setError({ error: false })
@@ -251,9 +253,17 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
                   alignItems={'center'}
                   justifyContent={order === 'left' ? 'flex-start' : 'center'}
                 >
-                  {coinType && coinType?.tokenIcon && (
-                    <CoinIcons size={size} {...{ ...coinType }} />
-                  )}
+                  <CoinIcon symbol={belong} type={tokenType ?? undefined} />
+                  {/*/!*{coinType && coinType?.tokenIcon && belong && (*!/*/}
+                  {/*/!*  <CoinIcons*!/*/}
+                  {/*/!*    size={size}*!/*/}
+                  {/*/!*    type={coinType.type}*!/*/}
+                  {/*/!*    tokenIcon={coinType?.tokenIcon as any}*!/*/}
+                  {/*/!*  />*!/*/}
+                  {/*/!*)}*!/*/}
+                  {/*<Typography variant={'body1'} component={'span'} paddingLeft={1}>*/}
+                  {/*  {belong}*/}
+                  {/*</Typography>*/}
                 </Grid>
               )}
               {!isShowCoinIcon && CoinIconElement && (

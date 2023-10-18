@@ -1,4 +1,4 @@
-import { CoinInfo, CoinKey, CoinMap, TokenType } from '@loopring-web/common-resources'
+import { CoinInfo, CoinKey, CoinMap, TokenType, CoinSource } from '@loopring-web/common-resources'
 import React from 'react'
 import { InputProps } from '@mui/material'
 import { XOR } from '../../../../types/lib'
@@ -13,7 +13,7 @@ export type defaultProps<R, I> = {
   size?: InputSize
   order?: 'left' | 'right'
   tokenType?: TokenType
-  coinIcon?: Array<[any, any?]>
+  coinIcon?: [CoinSource, CoinSource?]
   noBalance?: string
 } & XOR<
   { isShowCoinInfo?: true } & XOR<

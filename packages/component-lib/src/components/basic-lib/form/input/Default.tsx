@@ -7,6 +7,7 @@ import {
   LPTokenType,
   MarketType,
   SoursURL,
+  TokenType,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../../stores'
 
@@ -39,10 +40,12 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({
   symbol,
   lpSize = 24,
   size: _size,
+  type,
 }: {
   symbol: R
   lpSize?: number
   size?: number | 'middle' | 'small' | 'large'
+  type?: TokenType
 }) => {
   const { coinJson } = useSettings()
   const size = React.useMemo(() => {

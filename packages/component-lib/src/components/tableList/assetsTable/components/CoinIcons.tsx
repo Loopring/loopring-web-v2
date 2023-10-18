@@ -1,6 +1,6 @@
 import React from 'react'
 import { Avatar, Box, BoxProps, styled, Typography } from '@mui/material'
-import { CoinInfo, SoursURL, TokenType } from '@loopring-web/common-resources'
+import { CoinInfo, SoursURL, TokenType, CoinSource } from '@loopring-web/common-resources'
 import { AvatarCoin } from '../../../basic-lib'
 import { useSettings } from '../../../../stores'
 
@@ -20,7 +20,7 @@ export const CoinIcons = React.memo(
     size: _size,
     type = TokenType.single,
   }: {
-    tokenIcon: [any, any?]
+    tokenIcon: [CoinSource, CoinSource?]
     size?: number | 'middle' | 'small' | 'large'
     type?: TokenType
   }) => {
