@@ -159,7 +159,7 @@ export const DualBTCIcon = (props) => {
   )
 }
 
-export const dualChartDD = (props) => {
+export const DualChartDD = (props) => {
   return (
     <svg {...props} viewBox='0 0 311 122' aria-hidden='true'>
       <path
@@ -182,7 +182,7 @@ export const dualChartDD = (props) => {
     </svg>
   )
 }
-export const dualChartDH = (props) => {
+export const DualChartDH = (props) => {
   return (
     <svg {...props} viewBox='0 0 311 122' aria-hidden='true'>
       <path
@@ -206,7 +206,7 @@ export const dualChartDH = (props) => {
   )
 }
 
-export const dualChartHD = (props) => {
+export const DualChartHD = (props) => {
   return (
     <svg {...props} viewBox='0 0 311 122' aria-hidden='true'>
       <path
@@ -230,7 +230,7 @@ export const dualChartHD = (props) => {
   )
 }
 
-export const dualChartHH = (props) => {
+export const DualChartHH = (props) => {
   return (
     <svg {...props} viewBox='0 0 311 122' aria-hidden='true'>
       <path
