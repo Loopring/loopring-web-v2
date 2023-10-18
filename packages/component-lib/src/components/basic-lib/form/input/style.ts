@@ -162,6 +162,10 @@ export const IWrap = styled(Box)<
     .MuiButton-label {
       justify-content: flex-start;
     }
+    &.icon-input-max,
+    &.bnt-input-max {
+      justify-content: space-around;
+    }
   }
 
   ${({ size, theme, isMobile }) => {
@@ -277,7 +281,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-placeholder);;
+    color: var(--color-placeholder);
   }
 
   :disabled {

@@ -241,9 +241,7 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
-      setTab(
-        match?.params?.type ?? InvestAssetRouter.DUAL,
-      )
+      setTab(match?.params?.type ?? InvestAssetRouter.DUAL)
       if (searchParams?.get('refreshStake')) {
         getStakingList({})
       }
