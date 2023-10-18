@@ -319,6 +319,7 @@ export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>
   inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>
   className?: string
+  isMaxBtn?: boolean
 }
 export type BasicACoinInputProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   type?: TRADE_TYPE.TOKEN

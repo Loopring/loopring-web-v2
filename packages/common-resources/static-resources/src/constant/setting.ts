@@ -162,6 +162,18 @@ export const HEBAO_CONTRACT_MAP = [
 
 export type ContactType = Pick<sdk.GetContactsResponse, 'contacts'>['contacts'][0]
 
+export type CoinSource = {
+  x: number
+  y: number
+  w: number
+  h: number
+  offX: number
+  offY: number
+  sourceW: number
+  sourceH: number
+  simpleName?: string
+}
+
 export enum TableFilterParams {
   all = 'all',
   favourite = 'favourite',

@@ -1,4 +1,4 @@
-import { CoinInfo, CoinKey, CoinMap } from '@loopring-web/common-resources'
+import { CoinInfo, CoinKey, CoinMap, TokenType, CoinSource } from '@loopring-web/common-resources'
 import React from 'react'
 import { InputProps } from '@mui/material'
 import { XOR } from '../../../../types/lib'
@@ -10,7 +10,19 @@ export type defaultProps<R, I> = {
   coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>
   placeholderText?: string
   allowDecimals?: boolean
-}
+  size?: InputSize
+  order?: 'left' | 'right'
+  tokenType?: TokenType
+  coinIcon?: [CoinSource, CoinSource?]
+  noBalance?: string
+} & XOR<
+  { isShowCoinInfo?: true } & XOR<
+    { isShowCoinIcon: true },
+    { isShowCoinIcon: false; CoinIconElement?: JSX.Element }
+  >,
+  { isShowCoinInfo: false }
+>
+
 export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   inputData?: T | undefined
   emptyText: string
@@ -23,9 +35,6 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   wait?: number
   maxValue?: string | number | undefined
   minimum?: string | number | undefined
-  size?: InputSize
-  order?: 'left' | 'right'
-  noBalance?: string
   isHideError?: boolean
   handleCountChange?: (ibData: T, name: string, ref: React.ForwardedRef<any>) => void
   handleOnClick: (event: React.MouseEvent, name: string, ref: React.ForwardedRef<any>) => void
@@ -39,13 +48,7 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   className?: string
   fullwidth?: boolean
   loading?: boolean
-} & XOR<
-    { isShowCoinInfo?: true } & XOR<
-      { isShowCoinIcon: true },
-      { isShowCoinIcon: false; CoinIconElement?: JSX.Element }
-    >,
-    { isShowCoinInfo: false }
-  >
+}
 
 export enum InputSize {
   middle = 'middle',
@@ -60,7 +63,6 @@ export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
   decimalsLimit?: number
   disabled?: boolean
   logoColor?: string
-  noBalance?: string
   wait?: number
   isHideError?: boolean
   handleCountChange?: (ibData: T, name: string, ref: React.ForwardedRef<any>) => void
@@ -69,21 +71,12 @@ export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
     ref: React.ForwardedRef<any>,
   ) => { error: boolean; message?: string | JSX.Element }
   focusOnInput?: boolean
-  size?: InputSize
   maxValue?: string | number | undefined
-  order?: 'left' | 'right'
   name?: string
   coinLabelStyle?: React.CSSProperties
   coinPrecision?: number
   className?: string
-  // inputError?: { error: boolean; message?: string };
-} & XOR<
-    { isShowCoinInfo: true } & XOR<
-      { isShowCoinIcon: true },
-      { CoinIconElement?: JSX.Element | undefined; isShowCoinIcon: false }
-    >,
-    { isShowCoinInfo: false }
-  >
+}
 export type InputSelectProps<T, I = CoinKey<T>> = {
   // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,
   // walletMap: WalletMap<R,I extends CoinInfo?WalletCoin:WalletCoin> | {},
