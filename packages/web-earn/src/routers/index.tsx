@@ -2,11 +2,6 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
 import { Box, Container, Link } from '@mui/material'
 import Header from 'layouts/header'
-import { QuotePage } from 'pages/QuotePage'
-import { SwapPage } from 'pages/SwapPage'
-import { Layer2Page } from 'pages/Layer2Page'
-import { MiningPage } from 'pages/MiningPage'
-import { OrderbookPage } from 'pages/ProTradePage'
 import {
   ModalCoinPairPanel,
   ModalGroup,
@@ -19,12 +14,10 @@ import {
   useTokenMap,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
-import { LandPage } from '../pages/LandPage'
 import {
   ErrorMap,
   GUARDIAN_URL,
   MapChainId,
-  myLog,
   // RouterAllowIndex,
   // RouterMainKey,
   // RouterPath,
@@ -36,7 +29,6 @@ import {
 } from '@loopring-web/common-resources'
 import { ErrorPage } from '../pages/ErrorPage'
 import {
-  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
@@ -45,17 +37,12 @@ import {
 } from '@loopring-web/component-lib'
 import { InvestMarkdownPage, MarkdownPage, NotifyMarkdownPage } from '../pages/MarkdownPage'
 import { TradeRacePage } from '../pages/TradeRacePage'
-import { NFTPage } from '../pages/NFTPage'
 import { useGetAssets } from '../pages/AssetPage/AssetPanel/hook'
 import { Footer } from '../layouts/footer'
 import { InvestPage } from '../pages/InvestPage'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 import { AssetPage } from '../pages/AssetPage'
-import { FiatPage } from '../pages/FiatPage'
-import { RedPacketPage } from '../pages/RedPacketPage'
 import { useTranslation } from 'react-i18next'
-import { BtradeSwapPage } from '../pages/BtradeSwapPage'
-import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
 import { EarnPage } from '../pages/EarnPage'
 import { RouterAllowIndex, RouterMainKey, RouterPath } from '../constant/router'
 
