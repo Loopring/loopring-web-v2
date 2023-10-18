@@ -37,7 +37,7 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
     return disabled || vaultBorrowData === undefined || vaultBorrowData?.coinInfoMap === undefined
   }
   const inputButtonDefaultProps = {
-    label: t('LabelVaultBrowserToken'),
+    label: t('labelVaultBrowserToken'),
   }
   const label = React.useMemo(() => {
     if (vaultBorrowBtnI18nKey) {

@@ -101,7 +101,7 @@ export const DualWrap = <
     handleError: handleError as any,
     handleCountChange,
     isShowCoinInfo: true,
-    isShowCoinIcon: false,
+    isShowCoinIcon: true,
     // CoinIconElement: tokenSell.symbol,
     ...rest,
   } as any

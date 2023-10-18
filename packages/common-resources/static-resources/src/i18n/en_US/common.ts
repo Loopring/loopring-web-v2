@@ -2102,4 +2102,6 @@ export default {
   labelVaultTotalEquity: 'Total Equity',
   labelVaultProfit: 'Profit',
   labelVaultCloseBtn: 'Close',
+  labelGoVaultDashBoard: 'Go to Dashboard',
+  labelVaultBrowserToken: 'Amount',
 }
