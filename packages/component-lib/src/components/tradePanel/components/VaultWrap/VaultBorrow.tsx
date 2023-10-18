@@ -2,17 +2,19 @@ import {
   IBData,
   L1L2_NAME_DEFINED,
   MapChainId,
+  TokenType,
   TRADE_TYPE,
   TradeBtnStatus,
   VaultBorrowData,
 } from '@loopring-web/common-resources'
-import { useTranslation } from 'react-i18next'
 import { VaultBorrowWrapProps } from './Interface'
 import React from 'react'
-import { Grid } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { useSettings } from '../../../../stores'
-import { ButtonStyle } from '../Styled'
+import { InputSize } from '../../../basic-lib'
+import { Grid } from '@mui/material'
 import { BasicACoinTrade } from '../BasicACoinTrade'
+import { ButtonStyle } from '../Styled'
 
 export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I>, I>({
   disabled,
@@ -38,6 +40,8 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
   }
   const inputButtonDefaultProps = {
     label: t('labelVaultBrowserToken'),
+    size: InputSize.small,
+    tokenType: TokenType.vault,
   }
   const label = React.useMemo(() => {
     if (vaultBorrowBtnI18nKey) {
@@ -92,6 +96,7 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
         flexDirection={'column'}
       >
         <BasicACoinTrade
+          isMaxBtn={true}
           {...{
             ...rest,
             t,
