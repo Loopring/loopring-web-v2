@@ -6,14 +6,16 @@ import {
   getValuePrecisionThousand,
   IBData,
   SoursURL,
+  TokenType,
 } from '@loopring-web/common-resources'
 import { InputButtonProps, InputSize } from './Interface'
 import React from 'react'
 import { useFocusRef } from '../hooks'
 import { IInput, ISBtn, IWrap } from './style'
-import { CoinIcon } from './Default'
 import { sanitize } from 'dompurify'
 import { useTranslation } from 'react-i18next'
+import { useSettings } from '../../../../stores'
+import { CoinIcon } from './Default'
 
 function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {
@@ -44,13 +46,43 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
     loading = false,
     className,
     coinPrecision = 6,
-  }: // isAllowBalanceClick
+    tokenType,
+    coinIcon,
+  }: // tokenType = TokenType.single,
+  // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
 ) {
   const { t } = useTranslation('common')
+  const { coinJson } = useSettings()
 
   const { balance, belong, tradeValue } = (inputData ? inputData : {}) as IBData<C>
+  // const [coinType, setCoinType] = React.useState({
+  //   type: TokenType.single,
+  //   tokenIcon: belong ? [coinJson[belong]] : undefined,
+  // })
+  // React.useEffect(() => {
+  //   // let coinType =
+  //   if (belong) {
+  //     const [_, type, coinA, coinB] = belong?.match(/(\w+-)?(\w+)-(\w+)/i) ?? []
+  //     if (tokenType) {
+  //       setCoinType({
+  //         type: tokenType,
+  //         tokenIcon: coinIcon ?? [coinJson[belong]],
+  //       })
+  //     } else if (type) {
+  //       switch (type?.toLowerCase()) {
+  //         case TokenType.lp:
+  //           setCoinType({ type: TokenType.lp, tokenIcon: [coinJson[coinA], coinJson[coinB]] })
+  //           break
+  //       }
+  //     } else {
+  //       setCoinType({ type: TokenType.single, tokenIcon: coinIcon ?? [coinJson[belong]] })
+  //     }
+  //   } else {
+  //     setCoinType({ type: TokenType.single, tokenIcon: belong ? [coinJson[belong]] : undefined })
+  //   }
+  // }, [belong, tokenType, coinIcon])
   const [sValue, setsValue] = React.useState<number | undefined | string>(
     tradeValue ? tradeValue : undefined,
   )
@@ -170,7 +202,8 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
       >
         <Grid
           item
-          order={order === 'left' ? 1 : 2}
+          xs={7}
+          order={order === 'left' ? 0 : 1}
           className={`input-wrap input-wrap-${order}`}
           sx={{ position: 'relative' }}
         >
@@ -211,11 +244,13 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
         <Grid
           item
           className={`btn-wrap btn-wrap-${order} bnt-input-max`}
-          xs={4}
+          xs={5}
+          order={order === 'left' ? 1 : 0}
           display={'flex'}
           direction={'row'}
           alignItems={'center'}
           justifyContent={'space-around'}
+          wrap={'nowrap'}
           paddingY={1}
           paddingX={1}
         >
@@ -241,7 +276,17 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
                     alignItems={'center'}
                     justifyContent={order === 'left' ? 'flex-start' : 'center'}
                   >
-                    <CoinIcon symbol={belong} />
+                    <CoinIcon symbol={belong} type={tokenType ?? undefined} />
+                    {/*/!*{coinType && coinType?.tokenIcon && (*!/*/}
+                    {/*/!*  <CoinIcons*!/*/}
+                    {/*/!*    size={size}*!/*/}
+                    {/*/!*    type={coinType.type}*!/*/}
+                    {/*/!*    tokenIcon={coinType?.tokenIcon as any}*!/*/}
+                    {/*/!*  />*!/*/}
+                    {/*/!*)}*!/*/}
+                    {/*<Typography variant={'body1'} component={'span'} paddingLeft={1}>*/}
+                    {/*  {belong}*/}
+                    {/*</Typography>*/}
                   </Grid>
                 )}
                 {!isShowCoinIcon && CoinIconElement && (
@@ -322,7 +367,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
   )
 }
 
-export const InputMaxButton = React.memo(React.forwardRef(_InputButton)) as <
+export const InputMaxButton = React.memo(React.forwardRef(_InputMaxButton)) as <
   T,
   C,
   I extends CoinInfo<C>,

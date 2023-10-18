@@ -13,17 +13,17 @@ export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5,
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,
-  minHeight: 350
+  minHeight: 350,
 }
 export const RowInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 56,
   rowHeaderHeight: IsMobile.any() ? 48 : 56,
-  minHeight: 350
+  minHeight: 350,
 }
 export const RowDualInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 72,
   rowHeaderHeight: IsMobile.any() ? 48 : 72,
-  minHeight: 350
+  minHeight: 350,
 }
 export const DirectionTag = '\u2192'
 export const FeeChargeOrderDefault = ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']
@@ -170,3 +170,15 @@ export const HEBAO_CONTRACT_MAP = [
 ]
 
 export type ContactType = Pick<sdk.GetContactsResponse, 'contacts'>['contacts'][0]
+
+export type CoinSource = {
+  x: number
+  y: number
+  w: number
+  h: number
+  offX: number
+  offY: number
+  sourceW: number
+  sourceH: number
+  simpleName?: string
+}
