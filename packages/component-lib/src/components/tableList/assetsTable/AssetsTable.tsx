@@ -41,6 +41,10 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
       display: flex;
       align-items: center;
       margin-top: ${({ theme }) => theme.unit / 8}px;
+      padding-left: 0;
+    }
+    .rdg-cell:last-of-type {
+      padding-right: 0;
     }
 
     .rdg-cell.action {
@@ -471,7 +475,7 @@ export const AssetsTable = withTranslation('tables')(
     return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
-          <Box marginX={2}>
+          <Box >
             <Filter
               {...{
                 handleFilterChange,

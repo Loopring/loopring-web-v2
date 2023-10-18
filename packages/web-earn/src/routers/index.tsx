@@ -333,7 +333,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </ContentWrap>
         </Route> */}
         <Route exact path={[RouterPath.l2assets, RouterPath.l2assets + '/*']}>
-          <ContentWrap state={state} value={RouterMainKey.l2assets}>
+          <ContentWrap noContainer state={state} value={RouterMainKey.l2assets}>
             <AssetPage />
           </ContentWrap>
         </Route>

@@ -1,8 +1,14 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 
-import { Box, Tab, Tabs } from '@mui/material'
+import { Box, Tab } from '@mui/material'
 import styled from '@emotion/styled'
-import { AssetsTable, AssetTitle, AssetTitleProps, useSettings } from '@loopring-web/component-lib'
+import {
+  AssetsTable,
+  AssetTitle,
+  AssetTitleProps,
+  Tabs,
+  useSettings,
+} from '@loopring-web/component-lib'
 
 import { StylePaper, useSystem, useTokenMap } from '@loopring-web/core'
 import { AssetPanelProps, useAssetAction } from './hook'
@@ -14,11 +20,13 @@ import {
   // AssetL2TabIndex,
   // AssetTabIndex,
   CircleIcon,
-  MapChainId, myLog,
+  MapChainId,
+  myLog,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import RewardsPanel from '../RewardsPanel'
 import { AssetL2TabEarnIndex, AssetTabIndex } from '../../../constant/router'
+import { MaxWidthContainer, containerColors } from 'pages/InvestPage'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -58,7 +66,7 @@ export const AssetPanel = withTranslation('common')(
     const match: any = useRouteMatch('/l2assets/:assets?/:item?')
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
-    const {onTokenLockHold, tokenLockDetail} = useAssetAction()
+    const { onTokenLockHold, tokenLockDetail } = useAssetAction()
 
     const handleTabChange = (value: AssetTabIndex) => {
       if (AssetL2TabEarnIndex[MapChainId[defaultNetwork]]?.includes(value)) {
@@ -88,7 +96,14 @@ export const AssetPanel = withTranslation('common')(
     return (
       <>
         {!isMobile && (
-          <StyleTitlePaper paddingX={3} paddingY={5 / 2} >
+          <MaxWidthContainer
+            containerProps={{
+              sx: {
+                background: containerColors[0],
+                marginY: 5,
+              },
+            }}
+          >
             <AssetTitle
               {...{
                 t,
@@ -97,24 +112,43 @@ export const AssetPanel = withTranslation('common')(
                 assetBtnStatus,
               }}
             />
-          </StyleTitlePaper>
+          </MaxWidthContainer>
         )}
-
-        <Tabs
-          value={currentTab}
-          onChange={(_event, value) => handleTabChange(value)}
-          aria-label='l2-history-tabs'
-          variant='scrollable'
+        <MaxWidthContainer
+          containerProps={{
+            sx: {
+              background: containerColors[1],
+              paddingY: 2.5,
+              borderBottom: '1px solid var(--color-border)',
+            },
+          }}
         >
-          {AssetL2TabEarnIndex[MapChainId[defaultNetwork]].map((item: string) => {
-            return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
-          })}
-        </Tabs>
+          <Tabs
+            className={'btnTab'}
+            value={currentTab}
+            onChange={(_event, value) => handleTabChange(value)}
+            aria-label='l2-history-tabs'
+            variant='scrollable'
+          >
+            {AssetL2TabEarnIndex[MapChainId[defaultNetwork]].map((item: string) => {
+              return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
+            })}
+          </Tabs>
+        </MaxWidthContainer>
+
         {currentTab === AssetTabIndex.Tokens && (
-          <StylePaper
-            marginTop={1}
-            marginBottom={2}
-            ref={container}
+          <MaxWidthContainer
+            containerProps={{
+              sx: {
+                background: containerColors[1],
+                paddingTop: 2,
+                display: 'flex',
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              },
+            }}
           >
             <Box className='tableWrapper table-divide-short'>
               <AssetsTable
@@ -139,10 +173,16 @@ export const AssetPanel = withTranslation('common')(
                 }}
               />
             </Box>
-          </StylePaper>
+          </MaxWidthContainer>
         )}
+
         {currentTab === AssetTabIndex.DualInvests && (
-          <MyLiquidity noHeader className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
+          <MyLiquidity
+            noHeader
+            className={'assetWrap'}
+            isHideTotal={true}
+            hideAssets={hideAssets}
+          />
         )}
       </>
     )

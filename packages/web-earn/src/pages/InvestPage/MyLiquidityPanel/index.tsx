@@ -382,12 +382,11 @@ const MyLiquidity: any = withTranslation('common')(
         )}
         <MaxWidthContainer
           marginBottom={3}
-          marginTop={3}
           minHeight={'80vh'}
           background={noHeader ? 'var(--color-box-third)' : containerColors[1]}
           containerProps={{
             borderRadius: noHeader ? `${theme.unit}px` : 0,
-            marginTop: noHeader ? 1 : 0,
+            marginTop: 0,
           }}
         >
           {
@@ -396,8 +395,8 @@ const MyLiquidity: any = withTranslation('common')(
                 <TableWrapStyled
                   ref={dualRef}
                   className={`table-divide-short min-height`}
-                  marginTop={2}
-                  paddingY={2}
+                  marginBottom={2}
+                  paddingTop={1}
                   paddingX={0}
                   flex={1}
                   marginLeft={-3}
