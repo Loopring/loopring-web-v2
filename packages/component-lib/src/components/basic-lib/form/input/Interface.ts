@@ -24,9 +24,12 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   maxValue?: string | number | undefined
   minimum?: string | number | undefined
   size?: InputSize
+  order?: 'left' | 'right'
+  noBalance?: string
   isHideError?: boolean
   handleCountChange?: (ibData: T, name: string, ref: React.ForwardedRef<any>) => void
   handleOnClick: (event: React.MouseEvent, name: string, ref: React.ForwardedRef<any>) => void
+  coinPrecision?: number
   handleError?: (
     tradeData: T & { maxAllow?: boolean },
     ref: React.ForwardedRef<any>,
