@@ -162,6 +162,10 @@ export const IWrap = styled(Box)<
     .MuiButton-label {
       justify-content: flex-start;
     }
+    &.icon-input-max,
+    &.bnt-input-max {
+      justify-content: space-around;
+    }
   }
 
   ${({ size, theme, isMobile }) => {
