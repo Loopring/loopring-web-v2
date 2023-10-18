@@ -12,8 +12,9 @@ export type defaultProps<R, I> = {
   allowDecimals?: boolean
   size?: InputSize
   order?: 'left' | 'right'
-  tokenType?: TokenType
+  tokenType?: TokenType | undefined
   coinIcon?: [CoinSource, CoinSource?]
+  tokenImageKey?: string
   noBalance?: string
 } & XOR<
   { isShowCoinInfo?: true } & XOR<

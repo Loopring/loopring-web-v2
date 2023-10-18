@@ -94,7 +94,6 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
   return !switchData.tradeData?.belong ? (
     <Box
       height={'var(--min-height)'}
-      width={'var(--modal-width)'}
       display={'flex'}
       justifyContent={'center'}
       flexDirection={'column'}
@@ -108,6 +107,6 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
       />
     </Box>
   ) : (
-    <SwitchPanel {...{ ...rest, i18n, t, tReady: true, ...props }} />
+    <SwitchPanel _width={'var(--modal-width)'} {...{ ...rest, i18n, t, tReady: true, ...props }} />
   )
 }

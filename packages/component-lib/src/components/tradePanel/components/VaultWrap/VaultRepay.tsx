@@ -9,7 +9,7 @@ import { VaultRepayWrapProps } from './Interface'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { Box, Grid, Typography } from '@mui/material'
-import { ButtonStyle, InputCoin } from '../../../index'
+import { ButtonStyle, InputMaxCoin } from '../../../index'
 
 import { useSettings } from '../../../../stores'
 
@@ -98,7 +98,7 @@ export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C
       spacing={2}
     >
       <Grid item xs={12} minHeight={86} paddingTop={1}>
-        <InputCoin
+        <InputMaxCoin
           ref={coinRef}
           disabled={getDisabled()}
           {...{
@@ -106,7 +106,6 @@ export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C
             handleCountChange: (data, _name, ref) => handleCountChange(data, ref),
             isHideError: true,
             isShowCoinInfo: false,
-            order: 'right',
             inputData: vaultRepayData ? vaultRepayData.tradeData : ({} as any),
             coinMap: vaultRepayData ? vaultRepayData.coinInfoMap : ({} as any),
             ...propsExtends,

@@ -129,6 +129,6 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
       />
     </Box>
   ) : (
-    <SwitchPanel {...{ ...rest, i18n, t, tReady: true, ...props }} />
+    <SwitchPanel _width={'var(--modal-width)'} {...{ ...rest, i18n, t, tReady: true, ...props }} />
   )
 }

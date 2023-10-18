@@ -95,6 +95,7 @@ export const ModalVaultWrap = () => {
               disabled: isSwapLoading || isMarketInit,
               decimalsLimit: tradeCalcData.buyPrecision,
             }}
+            _width={'var(--modal-width)'}
             tokenSellProps={{
               disableInputValue: isMarketInit,
               disabled: isSwapLoading || isMarketInit,

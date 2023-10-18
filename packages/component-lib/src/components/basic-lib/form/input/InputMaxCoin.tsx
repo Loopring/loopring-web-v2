@@ -38,6 +38,7 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     coinPrecision = 6,
     CoinIconElement,
     tokenType,
+    tokenImageKey,
   }: // coinIcon,
   InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -196,7 +197,7 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
           wrap={'nowrap'}
           alignItems={'stretch'}
           alignContent={'stretch'}
-          marginBottom={2}
+          marginBottom={size == 'small' ? 1 : 2}
         >
           <Grid
             order={order === 'left' ? 1 : 2}
@@ -253,7 +254,11 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
                   alignItems={'center'}
                   justifyContent={order === 'left' ? 'flex-start' : 'center'}
                 >
-                  <CoinIcon symbol={belong} type={tokenType ?? undefined} />
+                  <CoinIcon
+                    tokenImageKey={tokenImageKey ?? undefined}
+                    symbol={belong}
+                    type={tokenType ?? undefined}
+                  />
                   {/*/!*{coinType && coinType?.tokenIcon && belong && (*!/*/}
                   {/*/!*  <CoinIcons*!/*/}
                   {/*/!*    size={size}*!/*/}

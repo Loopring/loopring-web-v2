@@ -6,7 +6,6 @@ import {
   getValuePrecisionThousand,
   IBData,
   SoursURL,
-  TokenType,
 } from '@loopring-web/common-resources'
 import { InputButtonProps, InputSize } from './Interface'
 import React from 'react'
@@ -14,7 +13,6 @@ import { useFocusRef } from '../hooks'
 import { IInput, ISBtn, IWrap } from './style'
 import { sanitize } from 'dompurify'
 import { useTranslation } from 'react-i18next'
-import { useSettings } from '../../../../stores'
 import { CoinIcon } from './Default'
 
 function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
@@ -47,14 +45,13 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
     className,
     coinPrecision = 6,
     tokenType,
-    coinIcon,
+    tokenImageKey,
   }: // tokenType = TokenType.single,
   // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
 ) {
   const { t } = useTranslation('common')
-  const { coinJson } = useSettings()
 
   const { balance, belong, tradeValue } = (inputData ? inputData : {}) as IBData<C>
   // const [coinType, setCoinType] = React.useState({
@@ -199,10 +196,12 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
         wrap={'nowrap'}
         alignItems={'stretch'}
         alignContent={'stretch'}
+        marginBottom={size == 'small' ? 1 : 2}
       >
         <Grid
           item
-          xs={7}
+          xs={6}
+          md={7}
           order={order === 'left' ? 0 : 1}
           className={`input-wrap input-wrap-${order}`}
           sx={{ position: 'relative' }}
@@ -244,7 +243,8 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
         <Grid
           item
           className={`btn-wrap btn-wrap-${order} bnt-input-max`}
-          xs={5}
+          xs={6}
+          md={5}
           order={order === 'left' ? 1 : 0}
           display={'flex'}
           direction={'row'}
@@ -263,7 +263,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
             disabled={disabled}
           >
             {belong ? (
-              <Grid container align-items={'center'} display={'flex'}>
+              <Grid container align-items={'center'} display={'flex'} wrap={'nowrap'}>
                 {isShowCoinIcon && (
                   <Grid
                     item
@@ -276,7 +276,11 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
                     alignItems={'center'}
                     justifyContent={order === 'left' ? 'flex-start' : 'center'}
                   >
-                    <CoinIcon symbol={belong} type={tokenType ?? undefined} />
+                    <CoinIcon
+                      tokenImageKey={tokenImageKey ?? undefined}
+                      symbol={belong}
+                      type={tokenType ?? undefined}
+                    />
                     {/*/!*{coinType && coinType?.tokenIcon && (*!/*/}
                     {/*/!*  <CoinIcons*!/*/}
                     {/*/!*    size={size}*!/*/}
@@ -321,6 +325,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
             fontSize={'inherit'}
             className={maxAllow && balance > 0 ? 'max-allow' : 'no-balance'}
             onClick={_handleMaxAllowClick}
+            marginLeft={1 / 2}
           >
             {t('labelInputMax')}
           </Link>
@@ -330,7 +335,11 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
       {subLabel && (
         <Grid container paddingBottom={1}>
           <Grid item xs={12}>
-            <Typography component={'span'} fontSize={'body1'} color={'inherit'}>
+            <Typography
+              component={'span'}
+              fontSize={size === 'small' ? 'body1' : 'body1'}
+              color={'inherit'}
+            >
               <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
                 {subLabel}
                 {/*{t('labelTokenMaxBalance')}*/}

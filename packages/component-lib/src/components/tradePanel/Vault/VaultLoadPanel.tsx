@@ -1,4 +1,4 @@
-import { Box, BoxProps, Tab, Tabs, Toolbar } from '@mui/material'
+import { Box, BoxProps, Divider, Tab, Tabs, Toolbar } from '@mui/material'
 import { VaultRepay, VaultRepayWrapProps } from '../components/VaultWrap'
 import styled from '@emotion/styled'
 import { boxLiner, toolBarPanel } from '../../styled'
@@ -7,6 +7,7 @@ import { useSettings } from '../../../stores'
 import { IBData, VaultBorrowData, VaultLoadType } from '@loopring-web/common-resources'
 import { VaultBorrowPanel } from './VaultBorrowPanel'
 import { VaultBorrowProps } from '../Interface'
+import React from 'react'
 
 export type VaultLoadProps<T, B, I> = {
   vaultLoadType: VaultLoadType
@@ -75,6 +76,7 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
   } = useSettings()
   return (
     <WrapStyle
+      _width={'var(--modal-width)'}
       display={'flex'}
       className={'trade-panel container valut-load'}
       isMobile={isMobile}
@@ -93,6 +95,7 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
             }}
           />
         </Box>
+        <Divider style={{ marginTop: '-1px' }} />
       </Toolbar>
       <Box flex={1} className={'trade-panel'}>
         {vaultLoadType === VaultLoadType.Borrow && (

@@ -41,6 +41,8 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     fullwidth = false,
     loading = false,
     className,
+    tokenType,
+    tokenImageKey,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -209,7 +211,11 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                     alignItems={'center'}
                     justifyContent={'center'}
                   >
-                    <CoinIcon symbol={belong} />
+                    <CoinIcon
+                      tokenImageKey={tokenImageKey ?? undefined}
+                      symbol={belong}
+                      type={tokenType ?? undefined}
+                    />
                   </Grid>
                 )}
                 {!isShowCoinIcon && CoinIconElement && (
