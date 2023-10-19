@@ -21,18 +21,7 @@ import {
   VaultRepayData,
 } from '@loopring-web/common-resources'
 
-export function useTradeVault(): TradeVaultStatus & {
-  updateTradeVault: (tradeVault: Partial<TradeVault>) => void
-  updateVaultJoin: (vaultJoinData: Partial<VaultJoinData>) => void
-  updateVaultExit: (vaultExitData: Partial<VaultExitData>) => void
-  updateVaultBorrow: (vaultBorrowData: Partial<VaultBorrowData<IBData<any>>>) => void
-  updateVaultRepay: (vaultRepayData: Partial<VaultRepayData<IBData<any>>>) => void
-  resetVaultJoin: () => void
-  resetVaultExit: () => void
-  resetTradeVault: () => void
-  resetVaultBorrow: () => void
-  resetVaultRepay: () => void
-} {
+export function useTradeVault() {
   const tradeVaultStatus: TradeVaultStatus = useSelector((state: any) => state._router_tradeVault)
   const dispatch = useDispatch()
   return {
@@ -59,13 +48,13 @@ export function useTradeVault(): TradeVaultStatus & {
       [dispatch],
     ),
     updateVaultBorrow: React.useCallback(
-      (tradeVault: Partial<VaultBorrowData<IBData<any>>>) => {
+      (tradeVault: Partial<VaultBorrowData<IBData<any> & { erc20Symbol: string }>>) => {
         dispatch(updateVaultBorrow(tradeVault))
       },
       [dispatch],
     ),
     updateVaultRepay: React.useCallback(
-      (tradeVault: Partial<VaultRepayData<IBData<any>>>) => {
+      (tradeVault: Partial<VaultRepayData<IBData<any> & { erc20Symbol: string }>>) => {
         dispatch(updateVaultRepay(tradeVault))
       },
       [dispatch],

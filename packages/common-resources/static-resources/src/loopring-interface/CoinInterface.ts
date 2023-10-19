@@ -22,6 +22,7 @@ export interface CoinInfo<R> {
 export interface WalletCoin<R> {
   belong: CoinKey<R>
   count: number
+  [key: string]: any
 }
 
 export type CoinMap<R, I = CoinInfo<R>> = {
@@ -60,7 +61,7 @@ export type PairMap<
 > = {
   [K in PairKey<R>]?: P
 }
-export type WalletMap<R, I = WalletCoin<R>> = {
+export type WalletMap<R, I extends WalletCoin<R> = WalletCoin<R>> = {
   [K in CoinKey<R>]?: I
 }
 
@@ -559,6 +560,17 @@ export const url_test_path = 'https://static.loopring.io/events/testEvents'
 export type VaultLoadData<T> = {
   coinInfoMap: CoinMap<T, CoinInfo<T>>
   tradeData: T
-}
-export type VaultBorrowData<T> = {} & VaultLoadData<T>
+} & T
+export type VaultBorrowData<T = IBData<any> & { erc20Symbol: string }> = {
+  maxBorrowAmount: string
+  maxBorrowStr: string
+  minBorrowAmount: string
+  minBorrowStr: string
+  maxBorrowVol: string
+  minBorrowVol: string
+  maxQuote: string
+  borrowVol: string
+  borrowAmt: string
+  totalQuote: string
+} & VaultLoadData<T>
 export type VaultRepayData<T> = {} & VaultLoadData<T>

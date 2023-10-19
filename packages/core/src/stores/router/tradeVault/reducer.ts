@@ -19,8 +19,10 @@ const initState: TradeVault = {
 } as unknown as TradeVault
 const initJoinState: VaultJoinData = {} as unknown as VaultJoinData
 const initExitState: VaultExitData = {} as unknown as VaultExitData
-const initBorrowState: VaultBorrowData<IBData<any>> = {} as unknown as VaultBorrowData<IBData<any>>
-const initRepayState: VaultRepayData<IBData<any>> = {} as unknown as VaultRepayData<IBData<any>>
+const initBorrowState: VaultBorrowData<IBData<any> & { erc20Symbol: string }> =
+  {} as unknown as VaultBorrowData<IBData<any> & { erc20Symbol: string }>
+const initRepayState: VaultRepayData<IBData<any> & { erc20Symbol: string }> =
+  {} as unknown as VaultRepayData<IBData<any> & { erc20Symbol: string }>
 
 const initialState: TradeVaultStatus = {
   // pageTradePro: initState,
@@ -149,10 +151,16 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
     updateVaultExit(state, action: PayloadAction<Partial<VaultExitData>>) {
       state.vaultExitData = { ...action.payload }
     },
-    updateVaultBorrow(state, action: PayloadAction<Partial<VaultBorrowData>>) {
+    updateVaultBorrow(
+      state,
+      action: PayloadAction<Partial<VaultBorrowData<IBData<any> & { erc20Symbol: string }>>>,
+    ) {
       state.vaultBorrowData = { ...action.payload }
     },
-    updateVaultRepay(state, action: PayloadAction<Partial<VaultRepayData>>) {
+    updateVaultRepay(
+      state,
+      action: PayloadAction<Partial<VaultRepayData<IBData<any> & { erc20Symbol: string }>>>,
+    ) {
       state.vaultRepayData = { ...action.payload }
     },
   },

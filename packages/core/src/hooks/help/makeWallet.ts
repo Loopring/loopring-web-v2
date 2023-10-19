@@ -1,6 +1,7 @@
 import { BIGO, store } from '../../index'
 import { AccountStatus, CoinKey, WalletCoin, WalletMap } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
+export const VaultBorrowFault = 0.9
 
 export type WalletMapExtend<C> = {
   [K in CoinKey<C>]?: WalletCoin<C> & {
@@ -93,36 +94,40 @@ export const makeVaultLayer2 = <
   }
 }
 
-export const makeVaultAvaiable2 = <C extends { [key: string]: any }>({}: // needFilterZero,
-// _isTotal,
-{
-  needFilterZero: boolean
+export const makeVaultAvaiable2 = <C extends { [key: string]: any }>({
+  fault = VaultBorrowFault,
+}: {
+  // needFilterZero: boolean,
+  fault?: number
 }): {
   vaultAvaiable2Map: WalletMap<C> | undefined
 } => {
-  // const { vaultLayer2 } = store.getState().vaultLayer2
-  // const { tokenMap } = store.getState().invest.vaultMap
-  const { readyState } = store.getState().account
-  let vaultAvaiable2Map: WalletMap<C> | undefined = {}
-  // if (vaultLayer2) {
-  //     vaultLayer2Map = Reflect.ownKeys(vaultLayer2).reduce((prev, item) => {
-  //       const vaultAsset: sdk.VaultBalance = vaultLayer2[item as string]
-  //       const countBig = sdk.toBig(vaultAsset.total) //.minus(sdk.toBig(locked))
-  //       if (needFilterZero && countBig.eq(BIGO)) {
-  //         return prev
-  //       }
-  //       return {
-  //         ...prev,
-  //         [item]: {
-  //           belong: item,
-  //           count: sdk.fromWEI(tokenMap, item, countBig.toString()),
-  //           detail: vaultLayer2[item as string],
-  //         },
-  //       }
-  //     }, {} as WalletMap<C>)
-  //   }
-  //TODO:
-  if (readyState === AccountStatus.ACTIVATED) {
+  const {
+    vaultLayer2: { vaultAccountInfo },
+    tokenMap: { tokenMap: erc20TokenMap, idIndex: erc20IdIndex },
+    tokenPrices: { tokenPrices },
+    invest: {
+      vaultMap: { tokenMap, marketCoins, vaultIdIndex },
+    },
+  } = store.getState()
+  //@ts-ignore
+  const { maxBorrowableOfUsd, accountStatus } = vaultAccountInfo ?? {}
+  if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
+    let vaultAvaiable2Map: WalletMap<C> | undefined = marketCoins.reducer((prev, item) => {
+      const erc20Symbol = erc20IdIndex[tokenMap[item]?.tokenId ?? '']
+      const price = tokenPrices[erc20Symbol] ?? 0
+      const vaultSymbol = vaultIdIndex[tokenMap[item].vaultTokenId]
+      let walletCoin = {
+        erc20Symbol,
+        belong: vaultSymbol,
+        count: sdk.toBig(maxBorrowableOfUsd).div(price).times(fault),
+      }
+      prev[item] = {
+        walletCoin,
+      }
+
+      return prev
+    }, {} as WalletMap<C>)
     return { vaultAvaiable2Map }
   } else {
     return { vaultAvaiable2Map: undefined }
