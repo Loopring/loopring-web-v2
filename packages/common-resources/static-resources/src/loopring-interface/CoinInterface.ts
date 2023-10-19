@@ -9,6 +9,10 @@ export interface IBData<R> {
   belong: CoinKey<R>
   balance: number
   tradeValue: number | undefined
+  max?: string
+}
+export interface IBDataMax<R> extends IBData<R> {
+  max?: string
 }
 
 export interface CoinInfo<R> {
