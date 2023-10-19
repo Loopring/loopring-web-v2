@@ -359,4 +359,5 @@ export default {
   labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
   labelDualAssetReInvestYes: 'ReInvest On',
   labelDualAssetReInvestNo: 'ReInvest Off',
+  labelTypeCHANGE_PWD: 'Reset Loopring L2 Keypair',
 }

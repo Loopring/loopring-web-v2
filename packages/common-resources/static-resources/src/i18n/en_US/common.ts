@@ -2022,4 +2022,16 @@ export default {
   labelContactAddressExisted: 'Address already exists',
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelUnlockErrorLine1:
+    'The failure to unlock your wallet most likely is due to network condition or browser issue, which may be recovered via refreshing the page or reopening it',
+  labelUnlockErrorLine2Part1: 'As a last resort, you can ',
+  labelUnlockErrorLine2Part2: 'Reset Loopring L2 keypair',
+  labelUnlockErrorLine2Part3:
+    '. This can be especially helpful if all other retry attempts fail, particularly when using hardware wallets.',
+  labelResetLoopringL2: 'Reset Loopring L2 keypair',
+  labelResetlockedReset1: `Please note that if you have pending Dual Investment subscriptions, the L2 keypair reset won't take immediate effect. Your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.`,
+  labelResetlockedReset2: `Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.`,
+  labelResetunlockedWithDual1: `We’ve detected that you have an active Dual Investment subscription. As a result, the L2 keypair reset won't take effect immediately. Instead, your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.`,
+  labelResetunlockedWithDual2: `Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.`,
+  labelResetunlockedWithoutDual: `Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.`,
 }
