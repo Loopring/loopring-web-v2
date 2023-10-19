@@ -576,5 +576,6 @@ export type VaultBorrowData<T = IBData<any> & { erc20Symbol: string }> = {
   borrowVol: string
   borrowAmt: string
   totalQuote: string
+  request: sdk.VaultLoadRequest
 } & VaultLoadData<T>
 export type VaultRepayData<T> = {} & VaultLoadData<T>
