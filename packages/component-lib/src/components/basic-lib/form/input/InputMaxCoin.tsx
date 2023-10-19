@@ -4,6 +4,7 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
+  IBDataMax,
 } from '@loopring-web/common-resources'
 import { InputCoinProps, InputSize } from './Interface'
 import React from 'react'
@@ -13,7 +14,7 @@ import { useSettings } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
 import { CoinIcon } from './Default'
 
-function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
+function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
   {
     order = 'left',
     label = 'Amount',
@@ -42,7 +43,7 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   ref: React.ForwardedRef<any>,
 ) {
   const { t } = useTranslation('common')
-  const { balance, belong, tradeValue } = (inputData ? inputData : {}) as IBData<C>
+  const { balance, belong, tradeValue, max } = (inputData ? inputData : {}) as IBData<C>
   // myLog("InputCoin", balance, belong, tradeValue);
   const { isMobile, coinJson } = useSettings()
 
@@ -121,7 +122,7 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
       if (maxAllow && !disabled) {
-        _handleContChange(balance, name)
+        _handleContChange(max ?? balance, name)
         //setsValue(balance);
       }
     },
