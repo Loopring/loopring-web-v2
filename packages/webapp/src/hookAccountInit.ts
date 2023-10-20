@@ -156,7 +156,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       default:
         break
     }
-  }, [vaultLayer2Status])
+  }, [vaultTickerStatus])
 
   React.useEffect(() => {
     switch (walletL2CollectionStatus) {

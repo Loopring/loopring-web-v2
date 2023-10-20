@@ -42,7 +42,7 @@ const getVaultTickersApi = async (): Promise<{
       currency: 'USD',
     })
     //@ts-ignore
-    const data = makeTokenTickerMap({ rawData: vaultTickers.raw_data?.data })
+    const data = makeTokenTickerMap({ rawData: vaultTickers.list })
 
     return { data, __timer__ }
   } else {

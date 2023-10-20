@@ -46,7 +46,12 @@ export const CoinIcons = React.memo(
 
     const [coinAInfo, coinBInfo] = tokenIcon
     return (
-      <BoxStyle display={'flex'} justifyContent={'center'} size={size}>
+      <BoxStyle
+        display={'flex'}
+        justifyContent={'center'}
+        size={size}
+        alignItems={[TokenType.vault].includes(type) ? 'flex-end' : 'initial'}
+      >
         <Box
           className={`logo-icon ${type}`}
           display={'flex'}
@@ -102,7 +107,7 @@ export const CoinIcons = React.memo(
                 height: 36,
                 width: 36,
                 transformOrigin: 'bottom',
-                transform: `scale(${size / (36 * 2)})`,
+                transform: `scale(${size / (36 * 4)})`,
               }}
             />
           </Box>

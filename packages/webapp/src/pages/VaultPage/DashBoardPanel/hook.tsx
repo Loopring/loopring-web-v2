@@ -68,7 +68,6 @@ export const useGetVaultAssets = ({
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
   const { status: accountStatus, account } = useAccount()
-
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   // const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
@@ -307,39 +306,55 @@ export const useGetVaultAssets = ({
   const { hideL2Assets, hideSmallBalances, setHideSmallBalances } = useSettings()
   const { status: walletL2Status } = useWalletLayer2()
   const getAssetsRawData = () => {
+    // debugger
     const {
+      // vaultLayer2: { vaultAccountInfo },
+      tokenMap: {
+        // tokenMap: erc20TokenMap,
+        idIndex: erc20IdIndex,
+      },
+      // tokenPrices: { tokenPrices },
       tokenPrices: { tokenPrices },
-      tokenMap: { tokenMap },
+      invest: {
+        vaultMap: { tokenMap, idIndex: vaultIdIndex },
+      },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-    const tokenPriceList = tokenPrices
-      ? Object.entries(tokenPrices).map((o) => ({
-          token: o[0],
-          detail: o[1],
-        }))
-      : []
+    // const tokenPriceList = tokenPrices
+    //   ? Object.entries(tokenPrices).map((o) => ({
+    //       token: o[0],
+    //       detail: o[1],
+    //     }))
+    //   : []
     if (
       tokenMap &&
       !!Object.keys(tokenMap).length &&
-      !!Object.keys(walletMap ?? {}).length &&
-      !!tokenPriceList.length
+      !!Object.keys(walletMap ?? {}).length
+      // &&
+      // !!tokenPriceList.length
     ) {
       let totalAssets = sdk.toBig(0)
       let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
         let item: any = undefined
         // tokenInfo
+        let tokenInfo = {
+          ...tokenMap[key],
+          token: key,
+          erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
+        }
         if (walletMap && walletMap[key]) {
-          let tokenInfo = {
-            token: key,
+          tokenInfo = {
+            ...tokenInfo,
             detail: walletMap[key],
+            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
           let tokenValueDollar = sdk.toBig(0)
 
           const totalAmount = volumeToCountAsBigNumber(
-            tokenInfo.token,
+            tokenInfo.erc20Symbol,
             tokenInfo.detail?.detail?.total ?? 0,
           )
-          const price = tokenPrices?.[tokenInfo.token] || 0
+          const price = tokenPrices?.[tokenInfo.erc20Symbol] || 0
           if (totalAmount && price) {
             tokenValueDollar = totalAmount?.times(price)
           }
@@ -349,16 +364,16 @@ export const useGetVaultAssets = ({
               type: TokenType.vault,
               value: tokenInfo.token,
             },
-            // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
             amount: totalAmount?.toString() || EmptyValueTag,
-            // available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
             available: Number(tokenInfo.detail?.count) || EmptyValueTag,
             smallBalance: isSmallBalance,
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
+            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
         } else {
           item = {
+            ...tokenInfo,
             token: {
               type: TokenType.vault,
               value: key,
@@ -370,6 +385,7 @@ export const useGetVaultAssets = ({
             tokenValueDollar: 0,
             name: key,
             tokenValueYuan: 0,
+            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
         }
         if (item) {
@@ -419,7 +435,12 @@ export const useGetVaultAssets = ({
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
   }, [])
-  useWalletLayer2Socket({ walletLayer2Callback })
+  React.useEffect(() => {
+    if (walletLayer2Callback && vaultAccountInfoStatus === SagaStatus.UNSET) {
+      walletLayer2Callback()
+    }
+  }, [vaultAccountInfoStatus])
+  // useWalletLayer2Socket({ walletLayer2Callback })
 
   myLog('assetsRawData', assetsRawData)
   return {

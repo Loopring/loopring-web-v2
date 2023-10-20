@@ -32,9 +32,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
 
     ${({ isMobile, lan }) =>
       !isMobile
-        ? `--template-columns: 200px 150px auto auto ${
-            lan === 'en_US' ? '184px' : '184px'
-          } !important;`
+        ? `--template-columns: 200px 150px auto auto !important;`
         : `--template-columns: 54% 40% 6% !important;`}
     .rdg-cell:first-of-type {
       display: flex;
@@ -80,6 +78,8 @@ export type RawDataAssetsItem = {
   tradePairList?: TradePairItem[]
   smallBalance: boolean
   tokenValueDollar: number
+  erc20Symbol: string
+  precision: number
 }
 
 export type VaultAssetsTableProps<R = RawDataAssetsItem> = {
@@ -111,7 +111,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       rawData,
       allowTrade,
       showFilter,
-      getMarketArrayListCallback,
+      // getMarketArrayListCallback,
       hideSmallBalances,
       isLoading = false,
       setHideSmallBalances,
@@ -202,11 +202,11 @@ export const VaultAssetsTable = withTranslation('tables')(
         key: 'token',
         name: t('labelToken'),
         formatter: ({ row, column }) => {
-          const token = row[column.key]
-          let tokenIcon: [any, any] = [undefined, undefined]
+          const symbol = row.erc20Symbol
+          let tokenIcon: [any, any] = [coinJson[symbol], undefined]
           return (
             <>
-              <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+              <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
               <Typography
                 variant={'inherit'}
                 color={'textPrimary'}
@@ -217,7 +217,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                 paddingRight={1}
               >
                 <Typography component={'span'} className={'next-coin'}>
-                  {token.value}
+                  {row.token.value}
                 </Typography>
               </Typography>
             </>
@@ -269,6 +269,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         key: 'actions',
         name: t('labelActions'),
         headerCellClass: 'textAlignRight',
+        cellClass: 'textAlignRight',
         // minWidth: 280,
         formatter: ({ row }) => {
           const token = row['token']
@@ -277,32 +278,19 @@ export const VaultAssetsTable = withTranslation('tables')(
         },
       },
     ]
-    const getColumnMobileAssets = (
-      t: TFunction,
-      allowTrade?: any,
-    ): Column<RawDataAssetsItem, unknown>[] => [
+    const getColumnMobileAssets = (t: TFunction): Column<RawDataAssetsItem, unknown>[] => [
       {
         key: 'token',
         name: t('labelToken'),
         formatter: ({ row, column }) => {
-          const token = row[column.key]
-          const value = row['amount']
-          const precision = row['precision']
-          let tokenIcon: [any, any] = [undefined, undefined]
-          const [head, middle, tail] = token.value.split('-')
-          if (token.type === 'lp' && middle && tail) {
-            tokenIcon =
-              coinJson[middle] && coinJson[tail]
-                ? [coinJson[middle], coinJson[tail]]
-                : [undefined, undefined]
-          }
-          if (token.type !== 'lp' && head && head !== 'lp') {
-            tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
-          }
+          const token = row.token
+          const precision = row.precision
+          const symbol = row.erc20Symbol
+          let tokenIcon: [any, any] = [coinJson[symbol], undefined]
           return (
             <>
               <Typography width={'56px'} display={'flex'}>
-                <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+                <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
               </Typography>
               <Typography
                 variant={'body1'}
@@ -315,9 +303,16 @@ export const VaultAssetsTable = withTranslation('tables')(
                 <Typography display={'flex'}>
                   {hideAssets
                     ? HiddenTag
-                    : getValuePrecisionThousand(value, precision, precision, undefined, false, {
-                        floor: true,
-                      })}
+                    : getValuePrecisionThousand(
+                        token.value,
+                        precision,
+                        precision,
+                        undefined,
+                        false,
+                        {
+                          floor: true,
+                        },
+                      )}
                 </Typography>
                 <Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
                   {hideAssets ? HiddenTag : token.value}
@@ -334,13 +329,6 @@ export const VaultAssetsTable = withTranslation('tables')(
         // minWidth: 280,
         formatter: ({ row }) => {
           const token = row['token']
-          const isLp = token.type === TokenType.lp
-          const tokenValue = token.value
-          const isDefi = token.type === TokenType.defi || tokenValue === 'CIETH'
-          const lpPairList = tokenValue.split('-')
-          lpPairList.splice(0, 1)
-          const lpPair = lpPairList.join('-')
-          const renderMarket: MarketType = (isLp ? lpPair : tokenValue) as MarketType
           return <Button> todo traade</Button>
         },
       },
