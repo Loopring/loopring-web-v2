@@ -177,7 +177,7 @@ export default {
   labelProcessing: 'Processing',
   labelProviderProcessing: 'Connect Wallet with {{name}}...',
   labelProviderCommonProcessDescribe:
-    'Please click the ‘Approve’ button on the {{name}} popup window. If the {{name}} popup window is dismissed, please manually click <5></5> on your browser toolbar.',
+    'Please click the ‘Approve’ button on the {{name}} Popup window. If the {{name}} Popup window is dismissed, please manually click <5></5> on your browser toolbar.',
   labelWalletConnectProcessDescribe: 'Please wait for WalletConnect provider to confirm processing',
   labelWalletConnectQRCode: 'Please scan the QR code with a WalletConnect compatible application',
   labelSuccessConnect: 'Successfully Connected with {{providerName}}',

@@ -92,6 +92,7 @@ export const makeTokenTickerView = ({ item }: { item: sdk.DatacenterTokenInfoSim
   const change = getValuePrecisionThousand(item.percentChange24H ?? 0, 2, 2, 2)
   // @ts-ignore
   return {
+    ...tokenInfo,
     ...item,
     timeUnit: '24h',
     volume,
@@ -106,12 +107,13 @@ export const makeTokenTickerMap = <R extends { [key: string]: any }>({
 }: {
   rawData: sdk.DatacenterTokenInfoSimple[]
 }): TickerNewMap<R> => {
-  // const tickerMap = {}
   return rawData.reduce((prev: TickerNewMap<R>, item) => {
     const key = item.symbol as unknown as R
     if (item && item.symbol && item.price) {
       // @ts-ignore
-      prev[key] = item
+      prev[key] = {
+        ...item,
+      }
     }
     return prev
   }, {} as TickerNewMap<R>)

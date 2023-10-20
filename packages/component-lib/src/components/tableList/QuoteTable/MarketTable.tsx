@@ -12,13 +12,15 @@ import {
   getValuePrecisionThousand,
   MarketTableRawDataItem,
   PriceTag,
+  RouterPath,
   RowConfig,
   RowConfigType,
   SCENARIO,
   StarHollowIcon,
   StarSolidIcon,
+  VaultKey,
 } from '@loopring-web/common-resources'
-import { Column, Table } from '../../basic-lib'
+import { Button, Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
@@ -49,7 +51,7 @@ const TableStyled = styled(Table)`
     }};
 
     --template-columns: ${({ ispro, isMobile }: any) =>
-      ispro || isMobile ? '35% 44% auto' : '240px 220px 100px auto auto auto 132px'} !important;
+      ispro || isMobile ? '35% 44% auto' : '240px auto 100px auto'} !important;
 
     .rdg-cell.action {
       display: flex;
@@ -70,26 +72,10 @@ const TableStyled = styled(Table)`
     text-align: center;
   }
 ` as any
-
-// const QuoteTableChangedCell: any = styled.span`
-//   color: ${({ theme: { colorBase }, upColor, value }: any) => {
-//     const isUpColorGreen = upColor === 'green'
-//     return value > 0
-//       ? isUpColorGreen
-//         ? colorBase.success
-//         : colorBase.error
-//       : value < 0
-//       ? isUpColorGreen
-//         ? colorBase.error
-//         : colorBase.success
-//       : colorBase.textPrimary
-//   }};
-// `
-
 export interface MarketTableProps<R = MarketTableRawDataItem> {
   rawData: R[]
   rowConfig: RowConfigType
-  // rowHeight?: number
+  onItemClick: (item: R) => void
   campaignTagConfig: CAMPAIGNTAGCONFIG
   // headerRowHeight?: number
   onVisibleRowsChange?: (startIndex: number) => void
@@ -122,6 +108,7 @@ export const MarketTable = withTranslation('tables')(
       account,
       forexMap,
       isPro = false,
+      onItemClick,
       ...rest
     }: MarketTableProps & WithTranslation & RouteComponentProps) => {
       let userSettings = useSettings()
@@ -146,9 +133,7 @@ export const MarketTable = withTranslation('tables')(
             name: t('labelQuotaPair'),
             sortable: true,
             formatter: ({ row }: any) => {
-              const { coinA, coinB } = row['pair']
-              const pair = `${coinA}-${coinB}`
-              const isFavourite = favoriteMarket?.includes(pair)
+              const isFavourite = favoriteMarket?.includes(row.symbol)
               return (
                 <Box
                   className='rdg-cell-value'
@@ -160,7 +145,7 @@ export const MarketTable = withTranslation('tables')(
                     <IconButton
                       style={{ color: 'var(--color-star)' }}
                       size={'large'}
-                      onClick={(e: any) => handleStartClick(e, isFavourite, pair)}
+                      onClick={(e: any) => handleStartClick(e, isFavourite, row.symbol)}
                     >
                       {isFavourite ? (
                         <StarSolidIcon cursor={'pointer'} />
@@ -169,18 +154,13 @@ export const MarketTable = withTranslation('tables')(
                       )}
                     </IconButton>
                   </Typography>
-                  <Typography component={'span'}>
-                    {coinA}
-                    <Typography component={'span'} color={'textSecondary'}>
-                      /{coinB}
-                    </Typography>
-                  </Typography>
+                  <Typography component={'span'}>{row.symbol}</Typography>
                   &nbsp;
                   {campaignTagConfig && (
                     <TagIconList
                       campaignTagConfig={campaignTagConfig}
-                      symbol={pair}
-                      scenario={SCENARIO.MARKET}
+                      symbol={row.symbol}
+                      scenario={SCENARIO.VAULT}
                     />
                   )}
                 </Box>
@@ -188,24 +168,16 @@ export const MarketTable = withTranslation('tables')(
             },
           },
           {
-            key: 'close',
+            key: 'price',
             name: t('labelQuotaLastPrice'),
             headerCellClass: 'textAlignRight',
             cellClass: 'textAlignRight',
             sortable: true,
             formatter: ({ row }: any) => {
-              const value = row.close
-              const precision = row['precision'] || 6
-              const price = Number.isFinite(value)
-                ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {
-                    isPrice: true,
-                  })
-                : EmptyValueTag
-
-              const faitPrice = Number.isFinite(value)
+              const price = Number.isFinite(row.price)
                 ? PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
-                    row.coinApriceU * (forexMap[currency] ?? 0),
+                    row.price * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
                     2,
@@ -223,18 +195,7 @@ export const MarketTable = withTranslation('tables')(
                   whiteSpace={isMobile ? 'pre-line' : 'pre'}
                   justifyContent={isMobile ? 'flex-end' : 'flex-start'}
                 >
-                  <Typography component={'span'} variant={'inherit'}>
-                    {price}
-                  </Typography>
-                  <Typography
-                    component={'span'}
-                    variant={isMobile ? 'body2' : 'body1'}
-                    color={'var(--color-text-third)'}
-                  >
-                    {'/'}
-                    {/*{isMobile ? "\n" : "/"}*/}
-                    {faitPrice}
-                  </Typography>
+                  {price}
                 </Typography>
               )
             },
@@ -245,13 +206,13 @@ export const MarketTable = withTranslation('tables')(
             sortable: true,
             headerCellClass: 'textAlignCenter',
             formatter: ({ row }: any) => {
-              const value = row.change
+              const value = row.volume24H
               return (
                 <div className='rdg-cell-value textAlignRight'>
                   <QuoteTableChangedCell value={value} upColor={upColor}>
                     {typeof value !== 'undefined'
                       ? (row.floatTag === FloatTag.increase ? '+' : '') +
-                        getValuePrecisionThousand(value, 2, 2, 2, true) +
+                        getValuePrecisionThousand(row.percentChange24H, 2, 2, 2, true) +
                         '%'
                       : EmptyValueTag}
                   </QuoteTableChangedCell>
@@ -268,8 +229,8 @@ export const MarketTable = withTranslation('tables')(
             // resizable: true,
             sortable: true,
             formatter: ({ row }: any) => {
-              const value = row.volume
-              const precision = row.volume || 6
+              const value = row.percentChange24H
+              const precision = row.precision || 6
               const price =
                 value && value !== '0'
                   ? getValuePrecisionThousand(value, precision, undefined, undefined, true, {
@@ -285,25 +246,21 @@ export const MarketTable = withTranslation('tables')(
           },
           {
             key: 'actions',
-            headerCellClass: 'textAlignCenter',
+            headerCellClass: 'textAlignRight',
             name: t('labelQuoteAction'),
+            cellClass: 'textAlignRight',
             formatter: ({ row }: any) => {
-              // const { coinA, coinB } = row['pair']
-              // const tradePair = `${coinA}-${coinB}`
               return (
-                <></>
-                // <div className='rdg-cell-value textAlignCenter'>
-                //   <Button
-                //     variant='outlined'
-                //     onClick={() =>
-                //       history.push({
-                //         pathname: `/trade/lite/${tradePair}`,
-                //       })
-                //     }
-                //   >
-                //     {t('labelTrade')}
-                //   </Button>
-                // </div>
+                <>
+                  <Button
+                    variant='outlined'
+                    onClick={() => {
+                      onItemClick(row)
+                    }}
+                  >
+                    {t('labelTrade')}
+                  </Button>
+                </>
               )
             },
           },
@@ -342,16 +299,13 @@ export const MarketTable = withTranslation('tables')(
           switch (sortColumn) {
             case 'pair':
               sortedRows = sortedRows.sort((a, b) => {
-                const valueA = a.symbol
-                const valueB = b.symbol
-                return valueA?.localeCompare(valueA)
+                return a.symbol?.localeCompare(b.symbol)
               })
               break
-            case 'close':
+            case 'price':
               sortedRows = sortedRows.sort((a, b) => {
-                const valueA = a['close']
-                const valueB = b['close']
-                if (valueA && valueB) {
+                const [valueA, valueB] = [a.price, b.price]
+                if (a.price && b.price) {
                   return valueB - valueA
                 }
                 if (valueA && !valueB) {
@@ -365,8 +319,7 @@ export const MarketTable = withTranslation('tables')(
               break
             case 'change':
               sortedRows = sortedRows.sort((a, b) => {
-                const valueA = a['change']
-                const valueB = b['change']
+                const [valueA, valueB] = [a.percentChange24H, b.percentChange24H]
                 if (valueA && valueB) {
                   return valueB - valueA
                 }
@@ -379,42 +332,12 @@ export const MarketTable = withTranslation('tables')(
                 return 0
               })
               break
-            // case 'high':
-            //   sortedRows = sortedRows.sort((a, b) => {
-            //     const valueA = a['high']
-            //     const valueB = b['high']
-            //     if (valueA && valueB) {
-            //       return valueB - valueA
-            //     }
-            //     if (valueA && !valueB) {
-            //       return -1
-            //     }
-            //     if (!valueA && valueB) {
-            //       return 1
-            //     }
-            //     return 0
-            //   })
-            //   break
-            // case 'low':
-            //   sortedRows = sortedRows.sort((a, b) => {
-            //     const valueA = a['low']
-            //     const valueB = b['low']
-            //     if (valueA && valueB) {
-            //       return valueB - valueA
-            //     }
-            //     if (valueA && !valueB) {
-            //       return -1
-            //     }
-            //     if (!valueA && valueB) {
-            //       return 1
-            //     }
-            //     return 0
-            //   })
-            //   break
             case 'volume':
               sortedRows = sortedRows.sort((a, b) => {
-                const valueA = a['volume']
-                const valueB = b['volume']
+                // const valueA = a['volume24H']
+                // const valueB = b['volume']
+                const [valueA, valueB] = [a.volume24H, b.volume24H]
+
                 if (valueA && valueB) {
                   return valueB - valueA
                 }

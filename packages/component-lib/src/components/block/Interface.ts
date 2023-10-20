@@ -138,7 +138,7 @@ export type RedPacketBlindBoxDetailProps = {
   // Not Started: Phase 1, can't get blind boxs, only red packet sender can view this detail
   // Blind Box Started: Phase 2, can get blind boxs, everyone can view this detail
   // Lottery Started: Phase 3, users can participate in lottery if they have blind boxs, everyone can view this detail
-  // Lottery Started And Open: Phase 3, Same as 'Lottery Started' but one more popup to show if win NFTs
+  // Lottery Started And Open: Phase 3, Same as 'Lottery Started' but one more Popup to show if win NFTs
   // BlindBox Claime Detail: Phase 2 or Phase 3, shows detail of blindboxs distribution.
   type: RedPacketBlindBoxDetailTypes
   blindBoxStartTime?: number

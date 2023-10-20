@@ -107,7 +107,7 @@ export const CoinIcons = React.memo(
                 height: 36,
                 width: 36,
                 transformOrigin: 'bottom',
-                transform: `scale(${size / (36 * 2)})`,
+                transform: `scale(${size / (36 * 4)})`,
               }}
             />
           </Box>

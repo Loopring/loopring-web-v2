@@ -3,11 +3,13 @@ import React, { useCallback } from 'react'
 import { QuoteTableRawDataItem } from '@loopring-web/component-lib'
 
 import {
+  RouterPath,
   RowConfig,
   RowConfigType,
   SagaStatus,
   TableFilterParams,
   VAULT_MAKET_REFRESH,
+  VaultKey,
 } from '@loopring-web/common-resources'
 import {
   favoriteVaultMarket as favoriteMarketReducer,
@@ -26,6 +28,8 @@ export const useVaultMarket = ({
   tableRef: React.Ref<any>
   rowConfig?: RowConfigType
 }) => {
+  let history = useHistory()
+
   const { account } = useAccount()
   const { status: vaultTickerStatus, vaultTickerMap, updateVaultTickers } = useVaultTicker()
   // const { marketMap, tokenMap } = useTokenMap()
@@ -71,8 +75,6 @@ export const useVaultMarket = ({
     },
     [handleCurrentScroll, tableRef],
   )
-
-  let history = useHistory()
 
   React.useEffect(() => {
     if (vaultTickerStatus === SagaStatus.UNSET && vaultTickerMap) {
@@ -130,10 +132,7 @@ export const useVaultMarket = ({
     (row: QuoteTableRawDataItem) => {
       const { coinA, coinB } = row.pair
       const tradePair = `${coinA}-${coinB}`
-      history &&
-        history.push({
-          pathname: `/trade/lite/${tradePair}`,
-        })
+      history && history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
     },
     [history],
   )
@@ -175,5 +174,8 @@ export const useVaultMarket = ({
     account,
     forexMap,
     rowConfig,
+    onItemClick: (item: R) => {
+      //TODO
+    },
   }
 }

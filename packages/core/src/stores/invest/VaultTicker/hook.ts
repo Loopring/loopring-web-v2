@@ -9,7 +9,7 @@ export function useVaultTicker(): VaultTickerStates & {
   updateVaultTickerSync: (item: sdk.DatacenterTokenQuote) => void
   statusUnset: () => void
 } {
-  const vaultTickerMap: VaultTickerStates = useSelector((state: any) => state.vaultTickerMap)
+  const vaultTickerMap: VaultTickerStates = useSelector((state: any) => state.invest.vaultTickerMap)
   const dispatch = useDispatch()
   return {
     ...vaultTickerMap,
