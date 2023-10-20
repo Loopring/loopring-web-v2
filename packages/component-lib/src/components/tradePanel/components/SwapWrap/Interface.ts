@@ -1,12 +1,13 @@
 import { SwapTradeData, SwitchData } from '../../Interface'
 import { InputButtonProps } from '../../../basic-lib'
-import { CoinInfo, TradeBtnStatus } from '@loopring-web/common-resources'
+import { CoinInfo, TokenType, TradeBtnStatus } from '@loopring-web/common-resources'
 
 export type SwapData<ST> = {
   type: 'buy' | 'sell' | 'exchange'
 } & SwitchData<ST>
 
 export type SwapMenuListProps<T, TCD> = {
+  tokenType?: TokenType
   swapData: SwapData<SwapTradeData<T>>
   onChangeEvent: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => void
   tradeCalcData: TCD

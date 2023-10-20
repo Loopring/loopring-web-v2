@@ -103,11 +103,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
     shouldFocusOn: focusOnInput,
     value: tradeValue,
   })
-  // const debounceCount = debounce(({...props}: any) => {
-  //     if (handleCountChange) {
-  //         handleCountChange({...props}, ref)
-  //     }
-  // }, wait)
+
   const _handleContChange = React.useCallback(
     (value: any, _name: any) => {
       _handleError(value)

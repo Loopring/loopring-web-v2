@@ -1,8 +1,11 @@
 import {
+  EmptyValueTag,
   IBData,
+  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   TokenType,
+  TRADE_TYPE,
   TradeBtnStatus,
   VaultBorrowData,
 } from '@loopring-web/common-resources'
@@ -10,11 +13,14 @@ import { VaultBorrowWrapProps } from './Interface'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '../../../../stores'
-import { Grid } from '@mui/material'
+import { Grid, Tooltip, Typography } from '@mui/material'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { ButtonStyle } from '../Styled'
-
-export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I>, I>({
+export const VaultBorrowWrap = <
+  T extends IBData<I> & { erc20Symbol: string },
+  V extends VaultBorrowData<T>,
+  I,
+>({
   disabled,
   vaultBorrowBtnStatus,
   vaultBorrowBtnI18nKey,
@@ -38,8 +44,13 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
   }
   const inputButtonDefaultProps = {
     label: t('labelVaultBrowserToken'),
-    // size: InputSize.small,
     tokenType: TokenType.vault,
+    placeholderText: vaultBorrowData.minBorrowStr
+      ? t('labelInvestMiniDual', {
+          value: vaultBorrowData.minBorrowStr,
+        })
+      : '0.00',
+    tokenImageKey: vaultBorrowData?.tradeData?.erc20Symbol,
   }
   const label = React.useMemo(() => {
     if (vaultBorrowBtnI18nKey) {
@@ -64,7 +75,7 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
             },
       )
     } else {
-      return t(`labelAddLiquidityBtn`, {
+      return t(`labelVaultBorrowBtn`, {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -86,7 +97,7 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
     >
       <Grid
         item
-        marginTop={3}
+        marginTop={2}
         display={'flex'}
         alignSelf={'stretch'}
         justifyContent={''}
@@ -96,6 +107,7 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
         <BasicACoinTrade
           {...{
             ...rest,
+            type: TRADE_TYPE.TOKEN,
             t,
             i18n,
             tReady: true,
@@ -105,9 +117,36 @@ export const VaultBorrowWrap = <T extends IBData<I>, V extends VaultBorrowData<I
             tradeData,
             coinMap,
             inputButtonDefaultProps,
+            ...tokenProps,
             inputBtnRef,
           }}
         />
+        <Typography
+          marginTop={2}
+          component={'span'}
+          display={'flex'}
+          alignSelf={'stretch'}
+          alignItems={'stretch'}
+          flexDirection={'row'}
+        >
+          <Tooltip title={t('labelVaultQuotaTooltips').toString()} placement={'top'}>
+            <Typography
+              component={'span'}
+              variant={'body1'}
+              alignItems={'center'}
+              color={'textSecondary'}
+              display={'inline-flex'}
+            >
+              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+              {t('labelVaultQuota')}
+            </Typography>
+          </Tooltip>
+          <Typography component={'span'} variant={'body1'} color={'textPrimary'} marginLeft={1 / 2}>
+            {vaultBorrowData.maxBorrowStr
+              ? vaultBorrowData.maxBorrowStr + ' ' + vaultBorrowData?.belong?.toString()
+              : EmptyValueTag}
+          </Typography>
+        </Typography>
       </Grid>
 
       <Grid item alignSelf={'stretch'}>

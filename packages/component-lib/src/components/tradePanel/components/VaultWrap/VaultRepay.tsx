@@ -1,37 +1,41 @@
 import {
+  BackIcon,
   IBData,
   L1L2_NAME_DEFINED,
   MapChainId,
+  TokenType,
   TradeBtnStatus,
   VaultRepayData,
 } from '@loopring-web/common-resources'
 import { VaultRepayWrapProps } from './Interface'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 import { ButtonStyle, InputMaxCoin } from '../../../index'
-
 import { useSettings } from '../../../../stores'
 
-export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C>, C = IBData<I>>({
+export const VaultRepayWrap = <
+  T extends IBData<any>,
+  I,
+  VR extends VaultRepayData<C>,
+  C = IBData<I>,
+>({
   disabled,
   vaultRepayBtnStatus,
   onVaultRepayClick,
   vaultRepayBtnI18nKey,
   tokenProps,
   propsExtends,
-  // onRemoveChangeEvent,
-  // handleError,
-  // propsLPExtends = {},
+  tradeData,
   vaultRepayData,
-}: VaultRepayWrapProps<T, I, VR, C>) => {
-  const { coinJson, defaultNetwork } = useSettings()
+  onChangeEvent,
+}: VaultRepayWrapProps<T, I, VR>) => {
+  const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const coinRef = React.useRef()
   const { t } = useTranslation()
-
   const getDisabled = () => {
-    return disabled || vaultRepayData === undefined || vaultRepayData.coinInfoMap === undefined
+    return disabled || vaultRepayData === undefined || vaultRepayData?.coinInfoMap === undefined
   }
   const label = React.useMemo(() => {
     if (vaultRepayBtnI18nKey) {
@@ -64,17 +68,18 @@ export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       })
     }
-  }, [vaultRepayBtnI18nKey])
+  }, [vaultRepayBtnI18nKey, network])
+  const handleCountChange: any = React.useCallback(
+    (_tradeData: T, _name: string, _ref: any) => {
+      //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
+      if (tradeData.tradeValue !== _tradeData.tradeValue) {
+        onChangeEvent(0, {
+          tradeData: { ...tradeData, ..._tradeData },
+          to: 'button',
+        })
+      }
 
-  const handleCountChange = React.useCallback(
-    (ibData: IBData<I>, _name: string, _ref: any) => {
-      // const focus: 'coinA' | 'coinB' = _ref?.current === coinARef.current ? 'coinA' : 'coinB'
-      // if (vaultRepayData[focus].tradeValue !== ibData.tradeValue) {
-      //   onRemoveChangeEvent({
-      //     tradeData: { ...vaultRepayData, [focus]: ibData },
-      //     type: focus,
-      //   })
-      // }
+      // onCoinValueChange(ibData);
     },
     [vaultRepayData],
   )
@@ -93,13 +98,25 @@ export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C
     <Grid
       className={vaultRepayData ? '' : 'loading'}
       container
+      direction={'column'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
       flex={1}
-      overflow={'hidden'}
-      spacing={2}
+      height={'100%'}
+      wrap={'nowrap'}
     >
-      <Grid item xs={12} minHeight={86} paddingTop={1}>
+      <Grid
+        item
+        marginTop={2}
+        display={'flex'}
+        alignSelf={'stretch'}
+        justifyContent={''}
+        alignItems={'stretch'}
+        flexDirection={'column'}
+      >
         <InputMaxCoin
           ref={coinRef}
+          tokenType={TokenType.vault}
           disabled={getDisabled()}
           {...{
             ...propsToken,
@@ -112,43 +129,47 @@ export const VaultRepay = <T extends IBData<any>, I, VR extends VaultRepayData<C
           }}
         />
       </Grid>
-
-      <Grid item xs={12} flexDirection={'column'}>
-        <Box
-          borderRadius={1}
-          style={{ background: 'var(--color-table-header-bg)' }}
-          display={'flex'}
-          fileDirection={'column'}
-          justifyContent={'stretch'}
-          padding={1}
-        >
-          <Typography variant={'body1'} color={'textSecondary'} alignSelf={'flex-start'}>
-            {t('labelMinReceive')}
-          </Typography>
-        </Box>
-      </Grid>
-
-      <Grid item xs={12}>
-        <ButtonStyle
-          variant={'contained'}
-          size={'large'}
-          color={'primary'}
-          onClick={() => {
-            onVaultRepayClick(vaultRepayData)
-            // setSelectedPercentage(0);
-          }}
-          loading={
-            !getDisabled() && vaultRepayBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
-          }
-          disabled={
-            getDisabled() ||
-            vaultRepayBtnStatus === TradeBtnStatus.DISABLED ||
-            vaultRepayBtnStatus === TradeBtnStatus.LOADING
-          }
-          fullWidth={true}
-        >
-          {label}
-        </ButtonStyle>
+      <Grid item xs={12} width={'100%'} alignItems={'flex-end'}>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <ButtonStyle
+              variant={'outlined'}
+              size={'medium'}
+              sx={{ height: 40 }}
+              onClick={() => {
+                onChangeEvent(1, {
+                  tradeData: { ...tradeData, tradeValue: 0 },
+                  to: 'menu',
+                })
+              }}
+              startIcon={<BackIcon />}
+              fullWidth={true}
+            >
+              {t('labelBack')}
+            </ButtonStyle>
+          </Grid>
+          <Grid item xs={6}>
+            <ButtonStyle
+              variant={'contained'}
+              size={'medium'}
+              color={'primary'}
+              onClick={() => {
+                onVaultRepayClick()
+              }}
+              loading={
+                !getDisabled() && vaultRepayBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
+              }
+              disabled={
+                getDisabled() ||
+                vaultRepayBtnStatus === TradeBtnStatus.DISABLED ||
+                vaultRepayBtnStatus === TradeBtnStatus.LOADING
+              }
+              fullWidth={true}
+            >
+              {label}
+            </ButtonStyle>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   )

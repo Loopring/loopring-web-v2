@@ -37,6 +37,7 @@ import {
   WithdrawTypes,
   ContactType,
   RedPacketConfig,
+  TokenType,
 } from '@loopring-web/common-resources'
 
 export enum RedPacketStep {
@@ -66,6 +67,10 @@ export type TradeMenuListProps<T, I> = {
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
   selected?: string
   tradeData: T
+  tokenType?: TokenType
+  className?: string
+  hasCancel?: boolean
+  contentEle?: ({ ele }: { ele: any }) => JSX.Element
 }
 
 /**
@@ -675,7 +680,6 @@ export type CreateRedPacketViewProps<T, I, F, NFT = NFTWholeINFO> = CreateRedPac
     BasicANFTTradeProps<T, I> & {
       handleOnChoose: (value: NFT) => void
       selectNFT: NFT
-      
     }
   > & {
     setActiveStep: (step: RedPacketStep | TargetRedPacketStep) => void

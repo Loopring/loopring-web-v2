@@ -57,19 +57,19 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>({
 
 export const makeVaultLayer2 = <
   C extends { [key: string]: any },
-  I = WalletCoin<C> & { detail: any },
+  _I = WalletCoin<C> & { detail: any },
 >({
   needFilterZero,
 }: // _isTotal,
 {
   needFilterZero: boolean
 }): {
-  vaultLayer2Map: WalletMap<C, I> | undefined
+  vaultLayer2Map: WalletMap<C> | undefined
 } => {
   const { vaultLayer2 } = store.getState().vaultLayer2
   const { tokenMap } = store.getState().invest.vaultMap
   const { readyState } = store.getState().account
-  let vaultLayer2Map: WalletMap<C, I> | undefined
+  let vaultLayer2Map: WalletMap<C> | undefined
   if (vaultLayer2) {
     vaultLayer2Map = Reflect.ownKeys(vaultLayer2).reduce((prev, item) => {
       const vaultAsset: sdk.VaultBalance = vaultLayer2[item as string]
@@ -85,7 +85,7 @@ export const makeVaultLayer2 = <
           detail: vaultLayer2[item as string],
         },
       }
-    }, {} as WalletMap<C, I>)
+    }, {} as WalletMap<C>)
   }
   if (readyState === AccountStatus.ACTIVATED) {
     return { vaultLayer2Map }
@@ -96,34 +96,94 @@ export const makeVaultLayer2 = <
 
 export const makeVaultAvaiable2 = <C extends { [key: string]: any }>({
   fault = VaultBorrowFault,
-}: {
-  // needFilterZero: boolean,
+}: // needFilterZero,
+{
+  // needFilterZero: boolean
   fault?: number
 }): {
   vaultAvaiable2Map: WalletMap<C> | undefined
 } => {
   const {
     vaultLayer2: { vaultAccountInfo },
-    tokenMap: { tokenMap: erc20TokenMap, idIndex: erc20IdIndex },
+    tokenMap: {
+      // tokenMap: erc20TokenMap,
+      idIndex: erc20IdIndex,
+    },
     tokenPrices: { tokenPrices },
     invest: {
-      vaultMap: { tokenMap, marketCoins, vaultIdIndex },
+      vaultMap: { tokenMap, marketCoins, idIndex: vaultIdIndex },
     },
   } = store.getState()
   //@ts-ignore
   const { maxBorrowableOfUsd, accountStatus } = vaultAccountInfo ?? {}
   if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
-    let vaultAvaiable2Map: WalletMap<C> | undefined = marketCoins.reducer((prev, item) => {
+    let vaultAvaiable2Map: WalletMap<C> | undefined = marketCoins?.reduce((prev, item) => {
       const erc20Symbol = erc20IdIndex[tokenMap[item]?.tokenId ?? '']
       const price = tokenPrices[erc20Symbol] ?? 0
       const vaultSymbol = vaultIdIndex[tokenMap[item].vaultTokenId]
+      const tokenInfo = tokenMap[vaultSymbol]
       let walletCoin = {
         erc20Symbol,
         belong: vaultSymbol,
-        count: sdk.toBig(maxBorrowableOfUsd).div(price).times(fault),
+        count: sdk
+          .toBig(maxBorrowableOfUsd ?? 0)
+          .div(price)
+          .times(fault)
+          .toFixed(tokenInfo.precision, 0),
       }
       prev[item] = {
-        walletCoin,
+        ...walletCoin,
+      }
+      return prev
+    }, {} as WalletMap<C>)
+    return { vaultAvaiable2Map }
+  } else {
+    return { vaultAvaiable2Map: undefined }
+  }
+}
+
+export const makeVaultRepay = <C extends { [key: string]: any }>({
+  needFilterZero,
+}: {
+  needFilterZero: boolean
+}): {
+  vaultAvaiable2Map: WalletMap<C> | undefined
+} => {
+  const {
+    vaultLayer2: { vaultAccountInfo },
+    tokenMap: {
+      // tokenMap: erc20TokenMap,
+      idIndex: erc20IdIndex,
+    },
+    tokenPrices: { tokenPrices },
+    invest: {
+      vaultMap: { tokenMap, idIndex: vaultIdIndex },
+    },
+  } = store.getState()
+  //@ts-ignore
+  const { maxBorrowableOfUsd, accountStatus, userAssets } = vaultAccountInfo ?? {}
+  if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
+    let vaultAvaiable2Map: WalletMap<C> | undefined = userAssets?.reduce((prev, item) => {
+      const vaultSymbol = vaultIdIndex[item?.tokenId ?? '']
+      const erc20Symbol = erc20IdIndex[tokenMap[vaultSymbol]?.tokenId ?? '']
+      // const price = tokenPrices[erc20Symbol] ?? 0
+      const vaultToken = tokenMap[vaultSymbol]
+      const tokenInfo = tokenMap[vaultSymbol]
+      if ((vaultSymbol && needFilterZero && sdk.toBig(item.borrowed).gt(0)) || !needFilterZero) {
+        const count = sdk
+          .toBig(item.borrowed)
+          .div('1e' + vaultToken.decimals)
+          .toFixed(tokenInfo.precision, 0)
+        let walletCoin = {
+          erc20Symbol,
+          belong: vaultSymbol,
+          count,
+          usd: sdk.toBig(count).times(tokenPrices[erc20Symbol]).toString(),
+        }
+        // @ts-ignore
+        prev[vaultSymbol] = {
+          ...walletCoin,
+        }
       }
 
       return prev

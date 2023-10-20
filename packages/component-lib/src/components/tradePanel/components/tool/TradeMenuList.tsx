@@ -16,6 +16,9 @@ export const TradeMenuList = <T extends IBData<I>, I>({
   tradeData,
   coinMap,
   _height,
+  tokenType,
+  className,
+  hasCancel = true,
   ...rest
 }: TradeMenuListProps<T, I> & WithTranslation) => {
   const ref = React.useRef<any>(null)
@@ -26,33 +29,19 @@ export const TradeMenuList = <T extends IBData<I>, I>({
     selected: '',
     panelRender: () => <></>,
   }
-  // const PanelEmptyRender = () => {
-  //   return (
-  //     <>
-  //       <EmptyDefault
-  //         height={"calc(100% - 35px)"}
-  //         message={() => {
-  //           return <Trans i18nKey="labelEmptyDefault">Content is Empty</Trans>;
-  //         }}
-  //       />
-  //     </>
-  //   );
-  // };
   const theme = useTheme()
   const backElement = React.useMemo(
     () => (
-      <>
-        <Typography fontSize={'body1'} color='textPrimary'>
-          <Link
-            style={{ color: 'var(--color-text-primary)', textAlign: 'right' }}
-            onClick={() => {
-              onChangeEvent(0, { tradeData, to: 'button' })
-            }}
-          >
-            {t('labelCancel')}
-          </Link>
-        </Typography>
-      </>
+      <Typography fontSize={'body1'} color='textPrimary'>
+        <Link
+          style={{ color: 'var(--color-text-primary)', textAlign: 'right' }}
+          onClick={() => {
+            onChangeEvent(0, { tradeData, to: 'button' })
+          }}
+        >
+          {t('labelCancel')}
+        </Link>
+      </Typography>
     ),
     [onChangeEvent, tradeData],
   )
@@ -62,9 +51,11 @@ export const TradeMenuList = <T extends IBData<I>, I>({
       : true
   }
 
-  const PanelRender = ({ selected, value }: any) => {
+  const panelRender = ({ selected, value }: any) => {
     return (
       <CoinMenu
+        className={className}
+        tokenType={tokenType}
         height={
           _height
             ? typeof _height === 'number'
@@ -105,8 +96,9 @@ export const TradeMenuList = <T extends IBData<I>, I>({
       <InputSelect
         {...{
           ...{ ...inputSelectProps, selected },
-          backElement,
-          panelRender: PanelRender,
+          backElement: hasCancel ? backElement : undefined,
+          panelRender,
+          hasCancel,
           t,
           ...rest,
         }}

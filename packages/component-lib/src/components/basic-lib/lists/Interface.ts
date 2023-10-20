@@ -8,6 +8,7 @@ import {
   GET_IPFS_STRING,
   L2CollectionFilter,
   MakeMeta,
+  TokenType,
   WalletCoin,
   WalletMap,
 } from '@loopring-web/common-resources'
@@ -69,14 +70,17 @@ export type SubMenuListProps<I> = {
 }
 
 export interface CoinItemProps<C> extends ListItemProps {
+  tokenType?: TokenType
   itemKey: CoinKey<C>
   coinInfo: CoinInfo<C>
   walletCoin: WalletCoin<C>
   select: CoinKey<C> | null
   handleListItemClick: (event: React.MouseEvent, selected: CoinKey<C>) => void
+  contentEle?: (props: any) => JSX.Element
 }
 
 export type CoinMenuProps<R, I> = {
+  tokenType?: TokenType
   listProps?: ListProps | any
   selected: CoinKey<R> | null
   nonZero: boolean
@@ -88,6 +92,7 @@ export type CoinMenuProps<R, I> = {
   coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>
   walletMap: WalletMap<R, I extends CoinInfo<R> ? WalletCoin<R> : WalletCoin<R>> | {}
   handleSelect?: (event: React.MouseEvent, selected: CoinKey<R>) => void
+  className?: string
 }
 
 export type CollectionListProps<Co> = {

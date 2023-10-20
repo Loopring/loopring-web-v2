@@ -21,6 +21,7 @@ export interface CoinInfo<R> {
   simpleName: CoinKey<R>
   description?: string
   company: string
+  [key: string]: any
 }
 
 export interface WalletCoin<R> {
@@ -576,6 +577,20 @@ export type VaultBorrowData<T = IBData<any> & { erc20Symbol: string }> = {
   borrowVol: string
   borrowAmt: string
   totalQuote: string
+  borrowAmtStr: string
   request: sdk.VaultLoadRequest
 } & VaultLoadData<T>
-export type VaultRepayData<T> = {} & VaultLoadData<T>
+
+export type VaultRepayData<T> = {
+  maxRepayAmount: string
+  maxRepayStr: string
+  minRepayAmount: string
+  minRepayStr: string
+  maxRepayVol: string
+  minRepayVol: string
+  maxQuote: string
+  repayVol: string
+  repayAmt: string
+  repayAmtStr: string
+  request: sdk.VaultRepayRequest
+} & VaultLoadData<T>
