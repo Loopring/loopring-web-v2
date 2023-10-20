@@ -602,7 +602,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
           >
             loopring Earn
           </Typography>
-          <Typography color={'var(--color-text-button)'} textAlign={'center'} variant={'h5'}>
+          <Typography paddingX={14} color={'var(--color-text-button)'} textAlign={'center'} variant={'h5'}>
             Loopring Earn is built on top of Loopring Protocol to take full advantage of its
             ZKRollup technology and full-stack DEX capability to provide the most innovative DeFi
             products to users.{' '}
