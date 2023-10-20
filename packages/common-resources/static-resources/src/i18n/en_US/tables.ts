@@ -360,4 +360,5 @@ export default {
   labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
   labelDualAssetReInvestYes: 'ReInvest On',
   labelDualAssetReInvestNo: 'ReInvest Off',
+  labelVaultAssetsTableValue: 'Value',
 }

@@ -38,7 +38,7 @@ const vaultLayer2Slice: Slice<VaultLayer2States> = createSlice({
       }
 
       state.__timer__ = action.payload?.__timer__ ?? -1
-      state.activeInfo = action.payload.activeInfo
+      state.activeInfo = action.payload.activeInfo ? action.payload.activeInfo : undefined
       state.vaultLayer2 = { ...action.payload.vaultLayer2 }
       state.vaultAccountInfo = { ...action.payload.vaultAccountInfo } as any
       state.status = SagaStatus.DONE

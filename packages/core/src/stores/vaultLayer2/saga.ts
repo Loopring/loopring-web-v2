@@ -80,7 +80,8 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
         vaultLayer2 = vaultAccountInfo.userAssets.reduce((prev, item) => {
-          return { ...prev, [vaultIdIndex[item.tokenId]]: item }
+          prev[vaultIdIndex[item.tokenId]] = item
+          return prev
         }, {} as VaultLayer2Map<R>)
       }
     } catch (error) {

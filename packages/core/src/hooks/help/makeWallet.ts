@@ -77,23 +77,24 @@ export const makeVaultLayer2 = <
 }): {
   vaultLayer2Map: WalletMap<C> | undefined
 } => {
-  const { vaultLayer2 } = store.getState().vaultLayer2
-  const { tokenMap } = store.getState().invest.vaultMap
+  const { vaultAccountInfo } = store.getState().vaultLayer2
+  const { tokenMap, idIndex } = store.getState().invest.vaultMap
   const { readyState } = store.getState().account
   let vaultLayer2Map: WalletMap<C> | undefined
-  if (vaultLayer2) {
-    vaultLayer2Map = Reflect.ownKeys(vaultLayer2).reduce((prev, item) => {
-      const vaultAsset: sdk.VaultBalance = vaultLayer2[item as string]
+  if (vaultAccountInfo?.userAssets) {
+    vaultLayer2Map = vaultAccountInfo?.userAssets.reduce((prev, item) => {
+      const vaultAsset: sdk.VaultBalance = item
+      const symbol = idIndex[item.tokenId]
       const countBig = sdk.toBig(vaultAsset.total) //.minus(sdk.toBig(locked))
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev
       }
       return {
         ...prev,
-        [item]: {
-          belong: item,
-          count: sdk.fromWEI(tokenMap, item, countBig.toString()),
-          detail: vaultLayer2[item as string],
+        [symbol]: {
+          belong: symbol,
+          count: sdk.fromWEI(tokenMap, symbol, countBig.toString()),
+          detail: item,
         },
       }
     }, {} as WalletMap<C>)
