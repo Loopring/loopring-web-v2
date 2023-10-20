@@ -11,20 +11,9 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const useVaultRedeem = () => {
-  // const { tokenMap, coinMap, idIndex } = useTokenMap()
-
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
-  // const { exchangeInfo, chainId } = useSystem()
   const [isLoading, setIsLoading] = React.useState(false)
-  // const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  // const { updateVaultExit } = useTradeVault()
-  const {
-    // modals: {
-    //   isShowVaultExit: { isShow, info },
-    // },
-    setShowVaultExit,
-    setShowAccount,
-  } = useOpenModals()
+  const { setShowVaultExit, setShowAccount } = useOpenModals()
   const availableTradeCheck = React.useCallback(() => {
     if (
       vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING &&
@@ -36,8 +25,6 @@ export const useVaultRedeem = () => {
     }
   }, [vaultAccountInfoStatus, vaultAccountInfo?.collateralInfo?.orderHash])
   const processRequest = async (request: sdk.VaultExitRequest) => {
-    // const { apiKey, connectName, eddsaKey } = account
-    // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
     try {
       const { apiKey, eddsaKey } = store.getState().account
 

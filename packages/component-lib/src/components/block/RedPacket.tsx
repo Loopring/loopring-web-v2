@@ -938,10 +938,10 @@ export const RedPacketDetail = ({
   onClickClaim,
   claimButton,
   totalNumber,
-  showReceiptListBtn
+  showReceiptListBtn,
 }: RedPacketDetailProps) => {
   const { t } = useTranslation('common')
-  const showLucky = detail.luckyToken.tokenAmount.remainCount == 0
+  const showLucky = detail.luckyToken?.tokenAmount?.remainCount == 0
   const limit = detail.luckyToken.isNft ? RedPacketNFTDetailLimit : RedPacketDetailLimit
   const pageNation = totalNumber - limit > 0 && (
     <TablePagination
@@ -1138,17 +1138,17 @@ export const RedPacketDetail = ({
         </Box>
         {pageNation}
       </Box>
-      {
-        showReceiptListBtn && <Button
+      {showReceiptListBtn && (
+        <Button
           variant={'text'}
           sx={{ fontSize: '13px' }}
           onClick={() => {
             setShowExclusiveReceipt(true)
           }}
         >
-          {t("labelRedPacketReceiptsList")}
+          {t('labelRedPacketReceiptsList')}
         </Button>
-      }
+      )}
       <ReceiptListModal
         open={showExclusiveReceipt}
         t={t}
@@ -1554,7 +1554,7 @@ export const RedPacketBlindBoxDetail = ({
   isTokenBlindbox,
   remainGiftsAmount,
   showReceiptListBtn,
-  targets
+  targets,
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation('common')
   const theme = useTheme()
@@ -1562,6 +1562,7 @@ export const RedPacketBlindBoxDetail = ({
     theme.mode === 'dark'
       ? SoursURL + 'images/redpackBlind1.webp'
       : SoursURL + 'images/redpackBlind2.webp'
+  const [showExclusiveReceipt, setShowExclusiveReceipt] = React.useState(false)
 
   const pageNation = totalClaimedNFTsCount - RedPacketNFTDetailLimit > 0 && (
     <Box width={'100%'}>
@@ -1661,7 +1662,6 @@ export const RedPacketBlindBoxDetail = ({
   ) {
     return LooteryModal
   }
-  const [showExclusiveReceipt, setShowExclusiveReceipt] = React.useState(false)
 
   return (
     <BlindBoxDetailBoxStyle
@@ -2167,7 +2167,7 @@ export const RedPacketBlindBoxDetail = ({
                     setShowExclusiveReceipt(true)
                   }}
                 >
-                  {t("labelRedPacketReceiptsList")}
+                  {t('labelRedPacketReceiptsList')}
                 </Button>
               )}
             </Box>

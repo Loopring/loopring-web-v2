@@ -1,15 +1,18 @@
-import { IBData, SoursURL, TRADE_TYPE, VaultBorrowData } from '@loopring-web/common-resources'
+import {
+  IBData,
+  SoursURL,
+  TokenType,
+  TRADE_TYPE,
+  VaultBorrowData,
+} from '@loopring-web/common-resources'
 import { SwitchPanel, SwitchPanelProps, VaultBorrowProps } from '@loopring-web/component-lib'
 import React from 'react'
 import { Box } from '@mui/material'
 import { TradeMenuList, useBasicTrade } from '../components'
 import { VaultBorrowWrap } from '../components'
-// import { VaultBorrowConfirm } from '../components/VaultWrap'
 import { useTranslation } from 'react-i18next'
-
-export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<I>, I>({
-  onVaultBorrowClick,
-  vaultBorrowBtnStatus,
+export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<T>, I>({
+  // onVaultBorrowClick,
   walletMap = {},
   coinMap = {},
   _width,
@@ -33,7 +36,6 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
     panelList: [
       {
         key: 'trade',
-        // onBack,
         element: React.useMemo(
           () => (
             <VaultBorrowWrap
@@ -44,23 +46,12 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
                 tradeData: switchData.tradeData,
                 onChangeEvent,
                 disabled: !!rest.disabled,
-                onSubmitClick: onVaultBorrowClick,
-                btnStatus: vaultBorrowBtnStatus,
                 walletMap,
                 coinMap,
               }}
             />
           ),
-          [
-            rest,
-            switchData.tradeData,
-            onChangeEvent,
-            onVaultBorrowClick,
-            // onDepositClick,
-            vaultBorrowBtnStatus,
-            walletMap,
-            coinMap,
-          ],
+          [rest, switchData.tradeData, onChangeEvent, walletMap, coinMap],
         ),
         toolBarItem: React.useMemo(() => <></>, []),
       },
@@ -81,6 +72,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
                 tradeData: switchData.tradeData,
                 walletMap,
                 coinMap,
+                tokenType: TokenType.vault,
                 //oinMap
               }}
             />
@@ -94,7 +86,6 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
   return !switchData.tradeData?.belong ? (
     <Box
       height={'var(--min-height)'}
-      width={'var(--modal-width)'}
       display={'flex'}
       justifyContent={'center'}
       flexDirection={'column'}
@@ -108,6 +99,6 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
       />
     </Box>
   ) : (
-    <SwitchPanel {...{ ...rest, i18n, t, tReady: true, ...props }} />
+    <SwitchPanel _width={'var(--modal-width)'} {...{ ...rest, i18n, t, tReady: true, ...props }} />
   )
 }

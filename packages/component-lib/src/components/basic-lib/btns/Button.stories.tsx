@@ -1,5 +1,5 @@
 import React from 'react'
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 
 import { Box, Breadcrumbs, Grid, Link, Pagination, Switch, Typography } from '@mui/material'
 import { ButtonProps, TGItemData, TGItemJSXInterface } from './Interface'

@@ -61,10 +61,7 @@ export const VaultHomePanel = ({
                     variant={'contained'}
                     sx={{ minWidth: 'var(--walletconnect-width)' }}
                   >
-                    {
-                      //TODO go trade
-                      t('labelGoVaultDashBoard')
-                    }
+                    {t('labelGoVaultDashBoard')}
                   </Button>
                 ) : (
                   <Button

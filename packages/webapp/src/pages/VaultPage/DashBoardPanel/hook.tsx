@@ -55,7 +55,6 @@ export const useGetVaultAssets = ({
 } => {
   const { t } = useTranslation('common')
   const {
-    // setShowVaultLoad,
     vaultAccountInfoStatus,
     vaultAccountInfo,
     activeInfo,
@@ -305,18 +304,12 @@ export const useGetVaultAssets = ({
     vaultAccountInfo?.accountStatus,
     isMobile,
   ])
-
   const { hideL2Assets, hideSmallBalances, setHideSmallBalances } = useSettings()
   const { status: walletL2Status } = useWalletLayer2()
-  const { marketArray } = useTokenMap()
   const getAssetsRawData = () => {
-    myLog('assetsRawData', 'getAssetsRawData')
     const {
       tokenPrices: { tokenPrices },
       tokenMap: { tokenMap },
-      // amm: {
-      //   ammMap: { ammMap },
-      // },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
     const tokenPriceList = tokenPrices
@@ -428,7 +421,7 @@ export const useGetVaultAssets = ({
   }, [])
   useWalletLayer2Socket({ walletLayer2Callback })
 
-  myLog('assetsRawData')
+  myLog('assetsRawData', assetsRawData)
   return {
     forexMap,
     rawData: assetsRawData,

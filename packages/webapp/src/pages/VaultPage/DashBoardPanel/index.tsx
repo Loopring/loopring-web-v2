@@ -57,35 +57,33 @@ export const VaultDashBoardPanel = ({
         open={showNoVaultAccount}
         onClose={() => setShowNoVaultAccount({ isShow: false, whichBtn: undefined })}
       >
-        <>
-          <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-            <Box
-              padding={5}
-              bgcolor={'var(--color-box)'}
-              width={'var(--modal-width)'}
-              borderRadius={1}
-              display={'flex'}
-              alignItems={'center'}
-              flexDirection={'column'}
-              position={'relative'}
-            >
-              {/* <Box></Box> */}
-              <ModalCloseButtonPosition
-                right={2}
-                top={2}
-                t={t}
-                onClose={() => setShowNoVaultAccount({ isShow: false, whichBtn: undefined })}
-              />
-              <Typography marginBottom={3} variant={'h3'}>
-                TODO label What is Vault
-              </Typography>
-              <Typography marginBottom={3} variant={'h3'}>
-                TODO label What is des
-              </Typography>
-              <>{dialogBtn}</>
-            </Box>
+        <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <Box
+            padding={5}
+            bgcolor={'var(--color-box)'}
+            width={'var(--modal-width)'}
+            borderRadius={1}
+            display={'flex'}
+            alignItems={'center'}
+            flexDirection={'column'}
+            position={'relative'}
+          >
+            {/* <Box></Box> */}
+            <ModalCloseButtonPosition
+              right={2}
+              top={2}
+              t={t}
+              onClose={() => setShowNoVaultAccount({ isShow: false, whichBtn: undefined })}
+            />
+            <Typography marginBottom={3} variant={'h3'}>
+              TODO label What is Vault
+            </Typography>
+            <Typography marginBottom={3} variant={'h3'}>
+              TODO label What is des
+            </Typography>
+            <>{dialogBtn}</>
           </Box>
-        </>
+        </Box>
       </Modal>
       <Container
         maxWidth='lg'

@@ -17,7 +17,7 @@ import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DualDetail } from './dualDetail'
-import { InputMaxCoin } from '../../../basic-lib/form/input/InputMaxCoin'
+import { InputMaxCoin } from '../../../basic-lib'
 
 export const DualWrap = <
   T extends IBData<I> & { isRenew: boolean; targetPrice: string; duration: string },
@@ -95,13 +95,16 @@ export const DualWrap = <
     order: 'left' as any,
     decimalsLimit: tokenSell?.precision,
     coinPrecision: tokenSell?.precision,
-    inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
+    inputData: {
+      ...(dualCalcData ? dualCalcData.coinSell : ({} as any)),
+      max: dualCalcData.maxSellAmount,
+    },
     coinMap: {},
     ...tokenSellProps,
     handleError: handleError as any,
     handleCountChange,
     isShowCoinInfo: true,
-    isShowCoinIcon: false,
+    isShowCoinIcon: true,
     // CoinIconElement: tokenSell.symbol,
     ...rest,
   } as any

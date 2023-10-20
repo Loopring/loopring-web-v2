@@ -57,7 +57,6 @@ export const DashBoardTitle = () => {
 }
 export const VaultPage = () => {
   let match: any = useRouteMatch(`/vault/:item`)
-  // const selected = match?.params?.item ?? VaultKey.VAULT_HOME
   const { isMobile } = useSettings()
   const { t } = useTranslation()
   const history = useHistory()

@@ -17,12 +17,12 @@ import {
   VaultLoadPanel,
 } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { TOAST_TIME, TRADE_TYPE, VaultLoadType } from '@loopring-web/common-resources'
+import { TOAST_TIME, TokenType, TRADE_TYPE, VaultLoadType } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 
 export const ModalVaultWrap = () => {
   const { t } = useTranslation()
-  const { getVaultMap, tokenMap: vaultTokenMao, idIndex: vaultIndex } = useVaultMap()
+  const { getVaultMap, tokenMap: vaultTokenMao, idIndex: vaultIndex, coinMap } = useVaultMap()
   const theme = useTheme()
   const { campaignTagConfig } = useNotify().notifyMap ?? {}
   const {
@@ -32,11 +32,9 @@ export const ModalVaultWrap = () => {
     setShowVaultLoad,
     setShowVaultSwap,
   } = useOpenModals()
+
   const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
-  React.useEffect(() => {
-    getVaultMap()
-  }, [])
   const {
     isMarketInit,
     toastOpen,
@@ -88,14 +86,19 @@ export const ModalVaultWrap = () => {
         }}
         content={
           <SwapPanel
+            _width={'var(--modal-width)'}
             classWrapName={'vaultSwap'}
             titleI8nKey={'labelVaultSwap'}
             tokenBuyProps={{
+              tokenImageKey: coinMap[tradeData?.sell?.belong?.toString()]?.erc20Symbol,
+              tokenType: TokenType.vault,
               disableInputValue: isMarketInit,
               disabled: isSwapLoading || isMarketInit,
               decimalsLimit: tradeCalcData.buyPrecision,
             }}
             tokenSellProps={{
+              tokenImageKey: coinMap[tradeData?.buy?.belong?.toString()]?.erc20Symbol,
+              tokenType: TokenType.vault,
               disableInputValue: isMarketInit,
               disabled: isSwapLoading || isMarketInit,
               placeholderText:

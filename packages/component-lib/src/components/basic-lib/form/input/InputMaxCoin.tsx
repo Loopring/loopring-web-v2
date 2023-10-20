@@ -1,20 +1,20 @@
 import { Divider, FormHelperText, Grid, Link, Typography } from '@mui/material'
 import {
   CoinInfo,
-  EmptyValueTag,
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
+  IBDataMax,
 } from '@loopring-web/common-resources'
 import { InputCoinProps, InputSize } from './Interface'
 import React from 'react'
 import { useFocusRef } from '../hooks'
 import { CoinWrap, IInput, IWrap } from './style'
-import { CoinIcon } from './Default'
 import { useSettings } from '../../../../stores'
 import { useTranslation } from 'react-i18next'
+import { CoinIcon } from './Default'
 
-function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
+function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
   {
     order = 'left',
     label = 'Amount',
@@ -37,13 +37,17 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     coinLabelStyle = undefined,
     coinPrecision = 6,
     CoinIconElement,
-  }: InputCoinProps<T, C, I>,
+    tokenType,
+    tokenImageKey,
+  }: // coinIcon,
+  InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>,
 ) {
   const { t } = useTranslation('common')
-  const { balance, belong, tradeValue } = (inputData ? inputData : {}) as IBData<C>
+  const { balance, belong, tradeValue, max } = (inputData ? inputData : {}) as IBData<C>
   // myLog("InputCoin", balance, belong, tradeValue);
   const { isMobile } = useSettings()
+
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined,
   )
@@ -119,7 +123,7 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
       if (maxAllow && !disabled) {
-        _handleContChange(balance, name)
+        _handleContChange(max ?? balance, name)
         //setsValue(balance);
       }
     },
@@ -167,7 +171,7 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
           wrap={'nowrap'}
           alignItems={'stretch'}
           alignContent={'stretch'}
-          marginBottom={2}
+          marginBottom={size == 'small' ? 1 : 2}
         >
           <Grid
             order={order === 'left' ? 1 : 2}
@@ -210,29 +214,33 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               alignItems={'center'}
               style={coinLabelStyle}
               justifyContent={order === 'left' ? 'flex-end' : 'flex-start'}
-              className={`icon-wrap icon-wrap-${order}`}
+              className={`icon-wrap icon-wrap-${order} icon-input-max`}
             >
               {isShowCoinIcon && (
                 <Grid
                   item
                   display={'flex'}
-                  order={order === 'left' ? 2 : 1}
-                  paddingLeft={order === 'left' ? 1 : 0}
+                  // order={order === 'left' ? 2 : 1}
+                  paddingLeft={order === 'left' ? 0 : 0}
                   className={'logo-icon'}
                   width={'var(--list-menu-coin-size)'}
                   height={'var(--list-menu-coin-size)'}
                   alignItems={'center'}
-                  justifyContent={'center'}
+                  justifyContent={order === 'left' ? 'flex-start' : 'center'}
                 >
-                  <CoinIcon symbol={belong} />
+                  <CoinIcon
+                    tokenImageKey={tokenImageKey ?? undefined}
+                    symbol={belong}
+                    type={tokenType ?? undefined}
+                  />
                 </Grid>
               )}
               {!isShowCoinIcon && CoinIconElement && (
                 <Grid
                   item
                   display={'flex'}
-                  order={order === 'left' ? 2 : 1}
-                  paddingLeft={order === 'left' ? 1 : 0}
+                  // order={order === 'left' ? 2 : 1}
+                  paddingLeft={order === 'left' ? 0 : 0}
                   className={'logo-icon'}
                   width={'var(--list-menu-coin-size)'}
                   height={'var(--list-menu-coin-size)'}
@@ -248,7 +256,7 @@ function _InputMaxCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
                 </Typography>
               </Grid>
             </CoinWrap>
-            <Divider sx={{ order: 2 }} orientation={'vertical'} />
+            <Divider sx={{ order: 2, marginX: 1 / 2 }} orientation={'vertical'} />
             <Link
               order={order === 'left' ? 3 : 1}
               component={'span'}

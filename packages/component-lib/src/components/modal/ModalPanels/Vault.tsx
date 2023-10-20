@@ -21,7 +21,7 @@ import { useSettings } from '../../../stores'
 
 const TradeDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
-  const { percentage, symbol, vSymbol, sum, status } = props?.info ?? {}
+  const { percentage, symbol, vSymbol, sum } = props?.info ?? {}
   return (
     <Box
       justifySelf={'stretch'}
@@ -267,7 +267,7 @@ export const VaultJoin_Failed = (props: PanelProps) => {
     //TODO
     describe2: (
       <>
-        {props.info && <JoinDes2 {...props} />} {props.error && error?.message}
+        {props.info && <JoinDes2 {...props} />} {props.error && props.error?.message}
       </>
     ),
   }
@@ -289,8 +289,8 @@ const RedeemDes2 = (
     isPending?: boolean
   },
 ) => {
-  const { isMobile, currency } = useSettings()
-  const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
+  const { isMobile } = useSettings()
+  // const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
   return (
     <>
       <Box
@@ -339,12 +339,12 @@ const RedeemDes2 = (
             {props.t('labelVaultExitTotalBalance')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdValue)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {/*{PriceTag[CurrencyToTag[currency]] +*/}
+            {/*  ' ' +*/}
+            {/*  sdk*/}
+            {/*    .toBig(usdValue)*/}
+            {/*    .times(forexMap[currency] ?? 0)*/}
+            {/*    .toFixed(2)}*/}
           </Typography>
         </Typography>
 
@@ -358,12 +358,12 @@ const RedeemDes2 = (
             {props.t('labelVaultExitTotalDebt')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdDebt)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {/*{PriceTag[CurrencyToTag[currency]] +*/}
+            {/*  ' ' +*/}
+            {/*  sdk*/}
+            {/*    .toBig(usdDebt)*/}
+            {/*    .times(forexMap[currency] ?? 0)*/}
+            {/*    .toFixed(2)}*/}
           </Typography>
         </Typography>
         <Typography
@@ -376,12 +376,12 @@ const RedeemDes2 = (
             {props.t('labelVaultExitTotalEquity')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdEquity)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {/*{PriceTag[CurrencyToTag[currency]] +*/}
+            {/*  ' ' +*/}
+            {/*  sdk*/}
+            {/*    .toBig(usdEquity)*/}
+            {/*    .times(forexMap[currency] ?? 0)*/}
+            {/*    .toFixed(2)}*/}
           </Typography>
         </Typography>
         <Typography
@@ -448,8 +448,8 @@ export const BorrowDes2 = (
     isPending?: boolean
   },
 ) => {
-  const { isMobile, currency } = useSettings()
-  const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
+  const { isMobile } = useSettings()
+  const { amount, receiveAmount, status, symbol, time } = props?.info ?? {}
   return (
     <>
       <Box
@@ -468,10 +468,10 @@ export const BorrowDes2 = (
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultExitType')}
+            {props.t('labelVaultBorrowTypeLabel')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelVaultExitTypeClose')}
+            {props.t('labelVaultBorrow')}
           </Typography>
         </Typography>
         <Typography
@@ -481,29 +481,10 @@ export const BorrowDes2 = (
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultExitStatus')}
+            {props.t('labelVaultBorrowStatusLabel')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelVaultExitStatusPending')}
-          </Typography>
-        </Typography>
-
-        <Typography
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-          component={'span'}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultExitTotalBalance')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdValue)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {props.t('labelVaultBorrowStatus', { status })}
           </Typography>
         </Typography>
 
@@ -514,33 +495,10 @@ export const BorrowDes2 = (
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultExitTotalDebt')}
+            {props.t('labelVaultBorrowAmountLabel')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdDebt)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
-          </Typography>
-        </Typography>
-        <Typography
-          component={'span'}
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultExitTotalEquity')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdEquity)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {receiveAmount ? receiveAmount : EmptyValueTag}/{amount} {symbol}
           </Typography>
         </Typography>
         <Typography
@@ -553,7 +511,7 @@ export const BorrowDes2 = (
             {props.t('labelVaultTime')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {moment(new Date())
+            {moment(time ? time : new Date())
               // .utc()
               // .startOf("days")
               .format(YEAR_DAY_MINUTE_FORMAT)}
@@ -587,7 +545,11 @@ export const VaultBorrow_Failed = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    describe2: props.info && <BorrowDes2 {...props} />,
+    describe2: (
+      <>
+        {props.info && <BorrowDes2 {...props} />} {props.error && props.error?.message}
+      </>
+    ),
   }
   return <VaultBorrowBase showTitle={true} {...propsPatch} {...props} />
 }
@@ -608,7 +570,7 @@ export const RepayDes2 = (
   },
 ) => {
   const { isMobile, currency } = useSettings()
-  const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
+  // const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
   return (
     <>
       <Box
@@ -657,12 +619,12 @@ export const RepayDes2 = (
             {props.t('labelVaultExitTotalBalance')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdValue)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {/*{PriceTag[CurrencyToTag[currency]] +*/}
+            {/*  ' ' +*/}
+            {/*  sdk*/}
+            {/*    .toBig(usdValue)*/}
+            {/*    .times(forexMap[currency] ?? 0)*/}
+            {/*    .toFixed(2)}*/}
           </Typography>
         </Typography>
 
@@ -676,12 +638,12 @@ export const RepayDes2 = (
             {props.t('labelVaultExitTotalDebt')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdDebt)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {/*{PriceTag[CurrencyToTag[currency]] +*/}
+            {/*  ' ' +*/}
+            {/*  sdk*/}
+            {/*    .toBig(usdDebt)*/}
+            {/*    .times(forexMap[currency] ?? 0)*/}
+            {/*    .toFixed(2)}*/}
           </Typography>
         </Typography>
         <Typography
@@ -694,12 +656,12 @@ export const RepayDes2 = (
             {props.t('labelVaultExitTotalEquity')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdEquity)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {/*{PriceTag[CurrencyToTag[currency]] +*/}
+            {/*  ' ' +*/}
+            {/*  sdk*/}
+            {/*    .toBig(usdEquity)*/}
+            {/*    .times(forexMap[currency] ?? 0)*/}
+            {/*    .toFixed(2)}*/}
           </Typography>
         </Typography>
         <Typography

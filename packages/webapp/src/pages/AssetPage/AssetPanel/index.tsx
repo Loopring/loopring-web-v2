@@ -91,8 +91,6 @@ export const AssetPanel = withTranslation('common')(
       handleTabChange(match?.params?.item)
     }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
-
-    // myLog('assetsRawData')
     return (
       <>
         {!isMobile && (

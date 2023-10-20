@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { Grid, Typography } from '@mui/material'
@@ -131,14 +131,38 @@ import {
   RiskIcon,
   AnotherIcon,
   LinkSharedIcon,
+  ThreeDIcon,
+  RoundCheckIcon,
+  RoundCircleIcon,
+  DiscordSvg,
+  BorderTickIcon,
+  MarginLevelIcon,
+  LoadIcon,
+  MarginIcon,
+  VaultTradeIcon,
+  CloseOutIcon,
+  SwapExchangeIcon,
+  Overview,
+  AmmLogo,
+  SatkingLogo,
+  DualInvestmentLogo,
+  DualUpIcon,
+  DualDownIcon,
+  DualConvertIcon,
+  DualBTCIcon,
+  DualChartDD,
+  DualChartDH,
+  DualChartHD,
+  DualChartHH,
+  VaultIcon,
 } from '@loopring-web/common-resources'
 
 const Styled = styled.div`
   background: var(--color-global-bg);
 
   svg {
-    height: 24px;
-    width: 24px;
+    height: 24px !important;
+    width: 24px !important;
   }
 `
 
@@ -167,6 +191,8 @@ const listIcon = [
   <MoreIcon />,
   <StarHollowIcon />,
   <StarSolidIcon />,
+  <FavHollowIcon />,
+  <FavSolidIcon />,
   <DownloadIcon />,
   <NotificationIcon />,
   <SettingIcon />,
@@ -243,18 +269,17 @@ const listIcon = [
   <ExchangeAIcon />,
   <AudioIcon />,
   <VideoIcon />,
+  <ThreeDIcon />,
   <PlayIcon />,
   <ProfileIcon />,
   <OrderListIcon />,
   <RefreshIPFSIcon />,
   <ViewMoreIcon />,
+  <UnlikeIcon />,
   <LikeIcon />,
   <ZoomIcon />,
-  <UnlikeIcon />,
-  <LegacyIcon />,
   <SyncIcon />,
-  <FavHollowIcon />,
-  <FavSolidIcon />,
+  <LegacyIcon />,
   <SwapSettingIcon />,
   <WarningIcon2 />,
   <RoundAddIcon />,
@@ -262,16 +287,39 @@ const listIcon = [
   <LockGuardianIcon />,
   <ViewHistoryIcon />,
   <ScanQRIcon />,
-  <CloseRedPacketIcon />,
   <ClockIcon />,
-  <ContactIcon />,
+  <CloseRedPacketIcon />,
   <UploadedIcon />,
+  <ContactIcon />,
   <EditIcon />,
   <ConvertToIcon />,
-  <RiskAlertIcon />,
-  <RiskIcon />,
-  <AnotherIcon />,
   <LinkSharedIcon />,
+  <AnotherIcon />,
+  <RiskIcon />,
+  <RiskAlertIcon />,
+  <RoundCheckIcon />,
+  <RoundCircleIcon />,
+  <DiscordSvg />,
+  <BorderTickIcon />,
+  <MarginLevelIcon />,
+  <LoadIcon />,
+  <MarginIcon />,
+  <VaultTradeIcon />,
+  <CloseOutIcon />,
+  <SwapExchangeIcon />,
+  <Overview />,
+  <AmmLogo />,
+  <SatkingLogo />,
+  <DualInvestmentLogo />,
+  <DualUpIcon />,
+  <DualDownIcon />,
+  <DualConvertIcon />,
+  <DualBTCIcon />,
+  <DualChartDD />,
+  <DualChartDH />,
+  <DualChartHD />,
+  <DualChartHH />,
+  <VaultIcon />,
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {

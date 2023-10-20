@@ -1,8 +1,7 @@
-import { FormHelperText, Grid, Typography } from '@mui/material'
+import { Divider, FormHelperText, Grid, Link, Typography } from '@mui/material'
 import {
   CoinInfo,
   DropDownIcon,
-  EmptyValueTag,
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
@@ -12,14 +11,16 @@ import { InputButtonProps, InputSize } from './Interface'
 import React from 'react'
 import { useFocusRef } from '../hooks'
 import { IInput, ISBtn, IWrap } from './style'
-import { CoinIcon } from './Default'
 import { sanitize } from 'dompurify'
+import { useTranslation } from 'react-i18next'
+import { CoinIcon } from './Default'
 
-function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
+function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {
     label = 'Enter token',
     handleError,
     subLabel,
+    order = 'left',
     // wait = globalSetup.wait,
     // coinMap,
     disableInputValue,
@@ -36,18 +37,23 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     handleOnClick,
     focusOnInput,
     name,
+    noBalance = '0.00',
     size = InputSize.middle,
     isHideError = false,
     fullwidth = false,
     loading = false,
     className,
+    coinPrecision = 6,
     tokenType,
     tokenImageKey,
-  }: // isAllowBalanceClick
+  }: // tokenType = TokenType.single,
+  // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
 ) {
-  const { balance, belong, tradeValue } = (inputData ? inputData : {}) as IBData<C>
+  const { t } = useTranslation('common')
+
+  const { balance, belong, tradeValue, max } = (inputData ? inputData : {}) as IBData<C>
   const [sValue, setsValue] = React.useState<number | undefined | string>(
     tradeValue ? tradeValue : undefined,
   )
@@ -74,7 +80,9 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             belong,
             ...{ tradeValue: value },
             maxAllow,
-          } as T & { maxAllow?: boolean },
+          } as T & {
+            maxAllow?: boolean
+          },
           ref,
         )
         setError(_error ? _error : { error: false })
@@ -97,11 +105,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     shouldFocusOn: focusOnInput,
     value: tradeValue,
   })
-  // const debounceCount = debounce(({...props}: any) => {
-  //     if (handleCountChange) {
-  //         handleCountChange({...props}, ref)
-  //     }
-  // }, wait)
+
   const _handleContChange = React.useCallback(
     (value: any, _name: any) => {
       _handleError(value)
@@ -121,27 +125,20 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
       if (maxAllow && !disabled) {
-        _handleContChange(balance, name)
+        _handleContChange(max ?? balance, name)
         //setsValue(balance);
       }
     },
     [_handleContChange, balance, name, maxAllow],
   )
-  //@ts-ignore
-  // const {coinJson} = useSettings();
-  // const coinIcon: any = coinJson[ belong ];
-  //"x": 248,
-  // "y": 322,
-  // "w": 36,
-  // "h": 35,
-  // "offX": 0,
-  // "offY": 0,
-  // "sourceW": 37,
-  // "sourceH": 36
-  // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
-  // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
-
-  // formatValue(sValue)
+  const formattedBalance = getValuePrecisionThousand(
+    balance,
+    undefined,
+    undefined,
+    coinPrecision,
+    false,
+    { floor: true },
+  )
 
   return (
     <IWrap className={className} component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
@@ -161,24 +158,6 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             {label}
           </Typography>
         </Grid>
-        <Grid item xs={9} className={'sub-label'}>
-          {subLabel && belong ? (
-            <Typography
-              fontSize={'inherit'}
-              className={
-                maxAllow && balance > 0
-                  ? `max-allow ${disabled ? 'disabled' : ''}`
-                  : `no-balance ${disabled ? 'disabled' : ''}`
-              }
-              onClick={_handleMaxAllowClick}
-            >
-              <span>{subLabel}</span>
-              <span>
-                {balance ? getValuePrecisionThousand(balance, 8, 8, 8, false) : EmptyValueTag}
-              </span>
-            </Typography>
-          ) : null}
-        </Grid>
       </Grid>
       <Grid
         container
@@ -189,62 +168,16 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
         wrap={'nowrap'}
         alignItems={'stretch'}
         alignContent={'stretch'}
+        marginBottom={size == 'small' ? 1 : 2}
       >
-        <Grid item className={'btn-wrap'}>
-          <ISBtn
-            variant={'text'}
-            onClick={(event) => handleOnClick(event, name ?? 'inputBtnDefault', ref)}
-            endIcon={
-              <DropDownIcon color={'inherit'} fontSize={'large'} style={{ marginLeft: '-4px' }} />
-            }
-            disabled={disabled}
-          >
-            {belong ? (
-              <Grid container align-items={'center'} display={'flex'}>
-                {isShowCoinIcon && (
-                  <Grid
-                    item
-                    display={'flex'}
-                    className={'logo-icon'}
-                    width={'var(--list-menu-coin-size)'}
-                    height={'var(--list-menu-coin-size)'}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                  >
-                    <CoinIcon
-                      tokenImageKey={tokenImageKey ?? undefined}
-                      symbol={belong}
-                      type={tokenType ?? undefined}
-                    />
-                  </Grid>
-                )}
-                {!isShowCoinIcon && CoinIconElement && (
-                  <Grid
-                    item
-                    display={'flex'}
-                    className={'logo-icon'}
-                    width={'var(--list-menu-coin-size)'}
-                    height={'var(--list-menu-coin-size)'}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                  >
-                    {CoinIconElement}
-                  </Grid>
-                )}
-                <Grid item paddingLeft={1}>
-                  <Typography
-                    fontSize={'inherit'}
-                    color={'inherit'}
-                    dangerouslySetInnerHTML={{ __html: sanitize(belong) }}
-                  />
-                </Grid>
-              </Grid>
-            ) : (
-              <span className={'placeholder'}>{emptyText}</span>
-            )}
-          </ISBtn>
-        </Grid>
-        <Grid item className={'input-wrap input-wrap-right'} sx={{ position: 'relative' }}>
+        <Grid
+          item
+          xs={6}
+          md={7}
+          order={order === 'left' ? 0 : 1}
+          className={`input-wrap input-wrap-${order}`}
+          sx={{ position: 'relative' }}
+        >
           {loading && (
             <img
               style={{
@@ -279,7 +212,112 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
           />
           <label />
         </Grid>
+        <Grid
+          item
+          className={`btn-wrap btn-wrap-${order} bnt-input-max`}
+          xs={6}
+          md={5}
+          order={order === 'left' ? 1 : 0}
+          display={'flex'}
+          direction={'row'}
+          alignItems={'center'}
+          justifyContent={'space-around'}
+          wrap={'nowrap'}
+          paddingY={1}
+          paddingX={1}
+        >
+          <ISBtn
+            variant={'text'}
+            onClick={(event) => handleOnClick(event, name ?? 'inputBtnDefault', ref)}
+            endIcon={
+              <DropDownIcon color={'inherit'} fontSize={'large'} style={{ marginLeft: '-4px' }} />
+            }
+            disabled={disabled}
+          >
+            {belong ? (
+              <Grid container align-items={'center'} display={'flex'} wrap={'nowrap'}>
+                {isShowCoinIcon && (
+                  <Grid
+                    item
+                    display={'flex'}
+                    // order={order === 'left' ? 2 : 1}
+                    paddingLeft={order === 'left' ? 0 : 0}
+                    className={'logo-icon'}
+                    width={'var(--list-menu-coin-size)'}
+                    height={'var(--list-menu-coin-size)'}
+                    alignItems={'center'}
+                    justifyContent={order === 'left' ? 'flex-start' : 'center'}
+                  >
+                    <CoinIcon
+                      tokenImageKey={tokenImageKey ?? undefined}
+                      symbol={belong}
+                      type={tokenType ?? undefined}
+                    />
+                  </Grid>
+                )}
+                {!isShowCoinIcon && CoinIconElement && (
+                  <Grid
+                    item
+                    display={'flex'}
+                    className={'logo-icon'}
+                    width={'var(--list-menu-coin-size)'}
+                    height={'var(--list-menu-coin-size)'}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                  >
+                    {CoinIconElement}
+                  </Grid>
+                )}
+                <Grid item paddingLeft={1}>
+                  <Typography
+                    fontSize={'inherit'}
+                    color={'inherit'}
+                    dangerouslySetInnerHTML={{ __html: sanitize(belong) }}
+                  />
+                </Grid>
+              </Grid>
+            ) : (
+              <span className={'placeholder'}>{emptyText}</span>
+            )}
+          </ISBtn>
+          <Divider sx={{ order: 2 }} orientation={'vertical'} />
+          <Link
+            order={order === 'left' ? 3 : 1}
+            component={'span'}
+            fontSize={'inherit'}
+            className={maxAllow && balance > 0 ? 'max-allow' : 'no-balance'}
+            onClick={_handleMaxAllowClick}
+            marginLeft={1 / 2}
+          >
+            {t('labelInputMax')}
+          </Link>
+        </Grid>
       </Grid>
+
+      {subLabel && (
+        <Grid container paddingBottom={1}>
+          <Grid item xs={12}>
+            <Typography
+              component={'span'}
+              fontSize={size === 'small' ? 'body1' : 'body1'}
+              color={'inherit'}
+            >
+              <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
+                {subLabel}
+                {/*{t('labelTokenMaxBalance')}*/}
+              </Typography>
+              <Typography
+                component={'span'}
+                variant={'inherit'}
+                color={'textPrimary'}
+                marginLeft={1 / 2}
+              >
+                {balance ? formattedBalance : noBalance}
+              </Typography>
+            </Typography>
+          </Grid>
+        </Grid>
+      )}
       {isHideError ? (
         <></>
       ) : (
@@ -300,7 +338,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   )
 }
 
-export const InputButton = React.memo(React.forwardRef(_InputButton)) as <
+export const InputMaxButton = React.memo(React.forwardRef(_InputMaxButton)) as <
   T,
   C,
   I extends CoinInfo<C>,

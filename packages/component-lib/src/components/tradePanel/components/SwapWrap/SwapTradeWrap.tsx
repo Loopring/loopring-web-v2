@@ -14,6 +14,7 @@ import {
   MapChainId,
   myLog,
   ReverseIcon,
+  SwapExchangeIcon,
   SwapTradeCalcData,
   TradeBtnStatus,
   VaultTradeCalcData,
@@ -333,7 +334,7 @@ export const SwapTradeWrap = <
             onClick={covertOnClick}
             aria-label={t('tokenExchange')}
           >
-            <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
+            <SwapExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
           </IconButtonStyled>
         </Box>
 

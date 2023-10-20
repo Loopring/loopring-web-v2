@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import styled from '@emotion/styled'
 import { MemoryRouter } from 'react-router-dom'
 import { HeaderMenu, HeaderMenuSub, HeadMenuItem, Layer2Item } from './HeadMenuItem'
