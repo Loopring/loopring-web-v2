@@ -12,30 +12,30 @@ export const ResetAccountConfirmationPanel = withTranslation('common', { withRef
   } & WithTranslation) => {
     return (
       <Box display={'flex'} flexDirection={'column'} width={'var(--modal-width)'} padding={2}>
-        <Typography textAlign={'center'} marginBottom={3} variant={'h3'}>
+        <Typography textAlign={'center'} marginBottom={2} variant={'h3'}>
           {t("labelResetLoopringL2")}
         </Typography>
         {type === 'lockedReset' ? (
           <>
-            <Typography marginBottom={2} variant={'body2'}>
+            <Typography marginBottom={2} color={'var(--color-text-secondary)'}>
               {t("labelResetlockedReset1")}
             </Typography>
-            <Typography marginBottom={2} variant={'body2'}>
+            <Typography marginBottom={2} color={'var(--color-text-secondary)'}>
               {t("labelResetlockedReset2")}
             </Typography>
           </>
         ) : type === 'unlockedWithDual' ? (
           <>
-            <Typography marginBottom={2} variant={'body2'}>
+            <Typography marginBottom={2} color={'var(--color-text-secondary)'}>
               {t("labelResetunlockedWithDual1")}
             </Typography>
-            <Typography marginBottom={2} variant={'body2'}>
+            <Typography marginBottom={2} color={'var(--color-text-secondary)'}>
               {t("labelResetunlockedWithDual2")}
             </Typography>
           </>
         ) : (
           <>
-            <Typography marginBottom={2} variant={'body2'}>
+            <Typography marginBottom={2} color={'var(--color-text-secondary)'}>
               {t("labelResetunlockedWithoutDual")}
             </Typography>
           </>
