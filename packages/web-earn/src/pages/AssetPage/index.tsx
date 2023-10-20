@@ -9,7 +9,7 @@ import React from 'react'
 import { store, useAccount, useTargetRedPackets, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
 import { useAssetAction, useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
-import { MaxWidthContainer } from 'pages/InvestPage'
+import { MaxWidthContainer } from '../InvestPage'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2

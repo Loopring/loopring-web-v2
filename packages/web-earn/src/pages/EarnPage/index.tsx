@@ -402,312 +402,337 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
   // const highlightedAnimationCard=0
 
   return (
-    <Box
-      display={'flex'}
-      flexDirection={'column'}
-      width={'100%'}
-      marginBottom={2}
-      maxWidth={'1200px'}
-      justifyContent={'center'}
-    >
-      <Box display={'flex'} justifyContent={'center'} flexDirection={'column'} width={'100%'}>
-        <Typography variant={'h1'} textAlign={'center'}>
-          DUAL INVESTMENT
-        </Typography>
-        <Typography
-          marginTop={2}
-          variant={'h5'}
-          color={'var(--color-text-secondary)'}
-          textAlign={'center'}
-        >
-          The most innovative structural products brought to the DeFi world
-        </Typography>
-      </Box>
-
-      <Box marginTop={3} display={'flex'} justifyContent={'center'}>
-        <TextTag>
-          <Typography>Buy Low or Sell High</Typography>
-        </TextTag>
-        <TextTag>
-          <Typography>No Trading Fees</Typography>
-        </TextTag>
-        <TextTag>
-          <Typography>High Rewards</Typography>
-        </TextTag>
-      </Box>
-
+    <Box display={'flex'} justifyContent={'center'} width={'100%'}>
       <Box
-        marginX={'3%'}
-        paddingX={'5%'}
-        marginTop={10}
-        height={'108px'}
-        bgcolor={'var(--color-box-third)'}
-        borderRadius={'54px'}
         display={'flex'}
-        alignItems={'center'}
-        justifyContent={'space-between'}
-      >
-        <Box width={'20%'}>
-          <Typography variant={'h5'} color={'var(--color-text-secondary)'}>
-            Current Locking TVL
-          </Typography>
-          <Typography variant={'h2'}>todo</Typography>
-        </Box>
-        {connectStatus === 'connected' ? (
-          <Box
-            width={'354px'}
-            display={'flex'}
-            flexDirection={'column'}
-            justifyContent={'center'}
-            height={'80px'}
-            borderRadius={'40px'}
-            bgcolor={'var(--color-text-primary)'}
-          >
-            <Typography
-              textAlign={'center'}
-              color={theme.mode === 'light' ? 'var(--color-white)' : 'var(--color-black)'}
-              variant={'h5'}
-            >
-              Your Balance
-            </Typography>
-            <Typography
-              textAlign={'center'}
-              color={theme.mode === 'light' ? 'var(--color-white)' : 'var(--color-black)'}
-              variant={'h2'}
-            >
-              {myBalance}
-            </Typography>
-          </Box>
-        ) : connectStatus === 'notConnected' ? (
-          <ConnectBtn
-            onClick={() => {
-              accountStaticCallBack(_btnClickMap, [])
-            }}
-            variant={'contained'}
-          >
-            <Typography color={'var(--color-text-button)'} variant={'h2'}>
-              Connect Wallet
-            </Typography>
-          </ConnectBtn>
-        ) : (
-          <ConnectBtn
-            onClick={() => {
-              accountStaticCallBack(_btnClickMap, [])
-            }}
-            variant={'contained'}
-          >
-            <Typography color={'var(--color-text-button)'} variant={'h2'}>
-              Unlock
-            </Typography>
-          </ConnectBtn>
-        )}
-
-        <Box width={'20%'}>
-          <Typography textAlign={'right'} variant={'h5'} color={'var(--color-text-secondary)'}>
-            Up To
-          </Typography>
-          <Typography textAlign={'right'} variant={'h2'}>{upTo}</Typography>
-        </Box>
-      </Box>
-
-      <Box marginTop={12.5} display={'flex'} flexWrap={'wrap'}>
-        {dualTokenList.map((info, index) => {
-          return (
-            <EarnCard key={info.symbol} marginRight={index % 3 === 2 ? '0' : '2%'}>
-              {info.tag === 'sellCover' ? (
-                <Typography
-                  sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
-                  color={theme.colorBase.warning}
-                  bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                  position={'absolute'}
-                  right={0}
-                  top={0}
-                >
-                  Sell Hign
-                </Typography>
-              ) : (
-                <Typography
-                  sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
-                  color={theme.colorBase.success}
-                  bgcolor={hexToRGB(theme.colorBase.success, 0.2)}
-                  position={'absolute'}
-                  right={0}
-                  top={0}
-                >
-                  Buy Low
-                </Typography>
-              )}
-              <CoinIcon size={64} symbol={info.symbol} />
-              {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
-              <Typography variant={'h3'} marginTop={2}>
-                Invest {info.symbol}
-              </Typography>
-              <Box
-                marginBottom={4}
-                justifyContent={'center'}
-                alignItems={'center'}
-                marginTop={7}
-                display={'flex'}
-              >
-                <Box>
-                  <Typography color={'var(--color-success)'} textAlign={'center'}>
-                    APY
-                  </Typography>
-                  <Typography variant={'h4'} color={'var(--color-success)'} textAlign={'center'}>
-                    {info.apy}
-                  </Typography>
-                </Box>
-                <Box width={'1px'} height={24} marginX={1.5} bgcolor={'var(--color-border)'} />
-                <Box>
-                  <Typography textAlign={'center'}>Current Price</Typography>
-                  <Typography variant={'h4'} textAlign={'center'}>
-                    {info.price}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Button
-                onClick={() => {
-                  history.push(
-                    `/invest/dual?viewType=${
-                      info.tag === 'buyDip' ? 'DualDip' : 'DualGain'
-                    }&autoChose=${info.symbol}`,
-                  )
-                }}
-                variant={'contained'}
-                fullWidth
-              >
-                View Details
-              </Button>
-            </EarnCard>
-          )
-        })}
-      </Box>
-      <Box
-        marginTop={12.5}
-        paddingTop={7}
-        paddingBottom={10}
+        flexDirection={'column'}
+        width={'100%'}
+        marginBottom={2}
+        maxWidth={'964px'}
         justifyContent={'center'}
-        borderRadius={3}
-        bgcolor={'var(--color-primary)'}
       >
-        <Typography
-          color={'var(--color-text-button)'}
-          textAlign={'center'}
-          marginBottom={3}
-          variant={'h2'}
-        >
-          loopring Earn
-        </Typography>
-        <Typography color={'var(--color-text-button)'} textAlign={'center'} variant={'h5'}>
-          Loopring Earn is built on top of Loopring Protocol to take full advantage of its ZKRollup
-          technology and full-stack DEX capability to provide the most innovative DeFi products to
-          users.{' '}
-        </Typography>
-      </Box>
-      <Box marginTop={12.5}>
-        <Typography textAlign={'center'} variant={'h2'}>
-          Loopring Protocol
-        </Typography>
-        <Typography
-          textAlign={'center'}
-          variant={'h5'}
-          color={'var(--color-text-secondary)'}
-          marginTop={2}
-        >
-          The world's first ZKRollup implementation designed to scale Ethereum, fully optimized for
-          trading.
-        </Typography>
-      </Box>
-      <Box marginTop={5} display={'flex'}>
-        <AnimationCard
-          justifyContent={'space-between'}
-          highlighted={highlightedAnimationCard === 0}
-          onMouseOver={() => setHighlightedAnimationCard(0)}
-          marginRight={'3%'}
-        >
-          <Box>
-            <Typography variant={'h3'} className={'title'}>
-              Ultimate Security
-            </Typography>
-            <Typography className={'sub-title'}>
-              Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
-            </Typography>
-          </Box>
+        <Box marginTop={10} display={'flex'} justifyContent={'center'} flexDirection={'column'} width={'100%'}>
+          <Typography variant={'h1'} textAlign={'center'}>
+            DUAL INVESTMENT
+          </Typography>
+          <Typography
+            marginTop={2}
+            variant={'h5'}
+            color={'var(--color-text-secondary)'}
+            textAlign={'center'}
+          >
+            The most innovative structural products brought to the DeFi world
+          </Typography>
+        </Box>
 
-          <img src={SoursURL + (theme.mode === 'dark' ? 'images/web-earn/animation_card_d1.svg' : 'images/web-earn/animation_card_l1.svg')} />
-        </AnimationCard>
-        <AnimationCard
-          justifyContent={'space-between'}
-          highlighted={highlightedAnimationCard === 1}
-          onMouseOver={() => setHighlightedAnimationCard(1)}
-          marginRight={'3%'}
-        >
-          <Box>
-            <Typography variant={'h3'} className={'title'}>
-              Low Transaction Fees
-            </Typography>
-            <Typography className={'sub-title'}>
-              Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
-            </Typography>
-          </Box>
-          <img src={SoursURL + (theme.mode === 'dark' ? 'images/web-earn/animation_card_d2.svg' : 'images/web-earn/animation_card_l2.svg')} />
-        </AnimationCard>
-        <AnimationCard
-          justifyContent={'space-between'}
-          highlighted={highlightedAnimationCard === 2}
-          onMouseOver={() => setHighlightedAnimationCard(2)}
-        >
-          <Box>
-            <Typography variant={'h3'} className={'title'}>
-              High Throughput
-            </Typography>
-            <Typography variant={'h5'} className={'sub-title'}>
-              Loopring L2 can settle ~2000 transactions per second with near instant finality.
-            </Typography>
-          </Box>
-          <img src={SoursURL + (theme.mode === 'dark' ? 'images/web-earn/animation_card_d3.svg' : 'images/web-earn/animation_card_l3.svg')} />
-        </AnimationCard>
-      </Box>
+        <Box marginTop={3} display={'flex'} justifyContent={'center'}>
+          <TextTag>
+            <Typography>Buy Low or Sell High</Typography>
+          </TextTag>
+          <TextTag>
+            <Typography>No Trading Fees</Typography>
+          </TextTag>
+          <TextTag>
+            <Typography>High Rewards</Typography>
+          </TextTag>
+        </Box>
 
-      <Typography textAlign={'center'} marginTop={12.5} variant={'h2'}>
-        FAQs
-      </Typography>
-      <Box marginTop={5} marginBottom={12.5}>
-        {faqs.map((faq, index) => {
-          const opened = openedFaqs.includes(index)
-          return (
-            <FAQ opend={openedFaqs.includes(index)} key={faq.question}>
-              <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography marginBottom={2} variant={'h3'}>
-                  {faq.question}
+        {/* <Box
+          marginX={'3%'}
+          paddingX={'5%'}
+          marginTop={10}
+          height={'108px'}
+          bgcolor={'var(--color-box-third)'}
+          borderRadius={'54px'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'space-between'}
+        >
+          <Box width={'20%'}>
+            <Typography variant={'h5'} color={'var(--color-text-secondary)'}>
+              Current Locking TVL
+            </Typography>
+            <Typography variant={'h2'}>todo</Typography>
+          </Box>
+          {connectStatus === 'connected' ? (
+            <Box
+              width={'354px'}
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'center'}
+              height={'80px'}
+              borderRadius={'40px'}
+              bgcolor={'var(--color-text-primary)'}
+            >
+              <Typography
+                textAlign={'center'}
+                color={theme.mode === 'light' ? 'var(--color-white)' : 'var(--color-black)'}
+                variant={'h5'}
+              >
+                Your Balance
+              </Typography>
+              <Typography
+                textAlign={'center'}
+                color={theme.mode === 'light' ? 'var(--color-white)' : 'var(--color-black)'}
+                variant={'h2'}
+              >
+                {myBalance}
+              </Typography>
+            </Box>
+          ) : connectStatus === 'notConnected' ? (
+            <ConnectBtn
+              onClick={() => {
+                accountStaticCallBack(_btnClickMap, [])
+              }}
+              variant={'contained'}
+            >
+              <Typography color={'var(--color-text-button)'} variant={'h2'}>
+                Connect Wallet
+              </Typography>
+            </ConnectBtn>
+          ) : (
+            <ConnectBtn
+              onClick={() => {
+                accountStaticCallBack(_btnClickMap, [])
+              }}
+              variant={'contained'}
+            >
+              <Typography color={'var(--color-text-button)'} variant={'h2'}>
+                Unlock
+              </Typography>
+            </ConnectBtn>
+          )}
+
+          <Box width={'20%'}>
+            <Typography textAlign={'right'} variant={'h5'} color={'var(--color-text-secondary)'}>
+              Up To
+            </Typography>
+            <Typography textAlign={'right'} variant={'h2'}>
+              {upTo}
+            </Typography>
+          </Box>
+        </Box> */}
+
+        <Box marginTop={8} display={'flex'} flexWrap={'wrap'}>
+          {dualTokenList.map((info, index) => {
+            return (
+              <EarnCard key={info.symbol} marginRight={index % 3 === 2 ? '0' : '2%'}>
+                {info.tag === 'sellCover' ? (
+                  <Typography
+                    sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
+                    color={theme.colorBase.warning}
+                    bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                    position={'absolute'}
+                    right={0}
+                    top={0}
+                  >
+                    Sell Hign
+                  </Typography>
+                ) : (
+                  <Typography
+                    sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
+                    color={theme.colorBase.success}
+                    bgcolor={hexToRGB(theme.colorBase.success, 0.2)}
+                    position={'absolute'}
+                    right={0}
+                    top={0}
+                  >
+                    Buy Low
+                  </Typography>
+                )}
+                <CoinIcon size={64} symbol={info.symbol} />
+                {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
+                <Typography variant={'h3'} marginTop={2}>
+                  Invest {info.symbol}
                 </Typography>
-                <BackIcon
-                  onClick={() => {
-                    if (opened) {
-                      setOpenedFaqs(difference(openedFaqs, [index]))
-                    } else {
-                      setOpenedFaqs(openedFaqs.concat(index))
-                    }
-                  }}
-                  sx={{
-                    transform: opened ? 'rotate(90deg)' : 'rotate(270deg)',
-                    cursor: 'pointer',
-                  }}
-                  htmlColor={'var(--color-text-secondary)'}
-                />
-              </Box>
-              {opened && (
-                <Box sx={{ '& .MuiTypography-root': { color: 'var(--color-text-secondary)' } }}>
-                  {faq.answer}
+                <Box
+                  marginBottom={4}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  marginTop={7}
+                  display={'flex'}
+                >
+                  <Box>
+                    <Typography color={'var(--color-success)'} textAlign={'center'}>
+                      APY
+                    </Typography>
+                    <Typography variant={'h4'} color={'var(--color-success)'} textAlign={'center'}>
+                      {info.apy}
+                    </Typography>
+                  </Box>
+                  <Box width={'1px'} height={24} marginX={1.5} bgcolor={'var(--color-border)'} />
+                  <Box>
+                    <Typography textAlign={'center'}>Current Price</Typography>
+                    <Typography variant={'h4'} textAlign={'center'}>
+                      {info.price}
+                    </Typography>
+                  </Box>
                 </Box>
-              )}
-            </FAQ>
-          )
-        })}
-      </Box>
 
-      <DualModal open={false} />
+                <Button
+                  onClick={() => {
+                    history.push(
+                      `/invest/dual?viewType=${
+                        info.tag === 'buyDip' ? 'DualDip' : 'DualGain'
+                      }&autoChose=${info.symbol}`,
+                    )
+                  }}
+                  variant={'contained'}
+                  fullWidth
+                >
+                  View Details
+                </Button>
+              </EarnCard>
+            )
+          })}
+        </Box>
+        <Box
+          marginTop={12.5}
+          paddingTop={7}
+          paddingBottom={10}
+          justifyContent={'center'}
+          borderRadius={3}
+          bgcolor={'var(--color-primary)'}
+        >
+          <Typography
+            color={'var(--color-text-button)'}
+            textAlign={'center'}
+            marginBottom={3}
+            variant={'h2'}
+          >
+            loopring Earn
+          </Typography>
+          <Typography color={'var(--color-text-button)'} textAlign={'center'} variant={'h5'}>
+            Loopring Earn is built on top of Loopring Protocol to take full advantage of its
+            ZKRollup technology and full-stack DEX capability to provide the most innovative DeFi
+            products to users.{' '}
+          </Typography>
+        </Box>
+        <Box marginTop={12.5}>
+          <Typography textAlign={'center'} variant={'h2'}>
+            Loopring Protocol
+          </Typography>
+          <Typography
+            textAlign={'center'}
+            variant={'h5'}
+            color={'var(--color-text-secondary)'}
+            marginTop={2}
+          >
+            The world's first ZKRollup implementation designed to scale Ethereum, fully optimized
+            for trading.
+          </Typography>
+        </Box>
+        <Box marginTop={5} display={'flex'}>
+          <AnimationCard
+            justifyContent={'space-between'}
+            highlighted={highlightedAnimationCard === 0}
+            onMouseOver={() => setHighlightedAnimationCard(0)}
+            marginRight={'3%'}
+          >
+            <Box>
+              <Typography variant={'h3'} className={'title'}>
+                Ultimate Security
+              </Typography>
+              <Typography className={'sub-title'}>
+                Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
+              </Typography>
+            </Box>
+
+            <img
+              src={
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'images/web-earn/animation_card_d1.svg'
+                  : 'images/web-earn/animation_card_l1.svg')
+              }
+            />
+          </AnimationCard>
+          <AnimationCard
+            justifyContent={'space-between'}
+            highlighted={highlightedAnimationCard === 1}
+            onMouseOver={() => setHighlightedAnimationCard(1)}
+            marginRight={'3%'}
+          >
+            <Box>
+              <Typography variant={'h3'} className={'title'}>
+                Low Transaction Fees
+              </Typography>
+              <Typography className={'sub-title'}>
+                Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
+              </Typography>
+            </Box>
+            <img
+              src={
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'images/web-earn/animation_card_d2.svg'
+                  : 'images/web-earn/animation_card_l2.svg')
+              }
+            />
+          </AnimationCard>
+          <AnimationCard
+            justifyContent={'space-between'}
+            highlighted={highlightedAnimationCard === 2}
+            onMouseOver={() => setHighlightedAnimationCard(2)}
+          >
+            <Box>
+              <Typography variant={'h3'} className={'title'}>
+                High Throughput
+              </Typography>
+              <Typography variant={'h5'} className={'sub-title'}>
+                Loopring L2 can settle ~2000 transactions per second with near instant finality.
+              </Typography>
+            </Box>
+            <img
+              src={
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'images/web-earn/animation_card_d3.svg'
+                  : 'images/web-earn/animation_card_l3.svg')
+              }
+            />
+          </AnimationCard>
+        </Box>
+
+        <Typography textAlign={'center'} marginTop={12.5} variant={'h2'}>
+          FAQs
+        </Typography>
+        <Box marginTop={5} marginBottom={12.5}>
+          {faqs.map((faq, index) => {
+            const opened = openedFaqs.includes(index)
+            return (
+              <FAQ opend={openedFaqs.includes(index)} key={faq.question}>
+                <Box display={'flex'} justifyContent={'space-between'}>
+                  <Typography marginBottom={2} variant={'h3'}>
+                    {faq.question}
+                  </Typography>
+                  <BackIcon
+                    onClick={() => {
+                      if (opened) {
+                        setOpenedFaqs(difference(openedFaqs, [index]))
+                      } else {
+                        setOpenedFaqs(openedFaqs.concat(index))
+                      }
+                    }}
+                    sx={{
+                      transform: opened ? 'rotate(90deg)' : 'rotate(270deg)',
+                      cursor: 'pointer',
+                    }}
+                    htmlColor={'var(--color-text-secondary)'}
+                  />
+                </Box>
+                {opened && (
+                  <Box sx={{ '& .MuiTypography-root': { color: 'var(--color-text-secondary)' } }}>
+                    {faq.answer}
+                  </Box>
+                )}
+              </FAQ>
+            )
+          })}
+        </Box>
+
+        <DualModal open={false} />
+      </Box>
     </Box>
   )
 })
