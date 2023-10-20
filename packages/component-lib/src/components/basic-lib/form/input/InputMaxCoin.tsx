@@ -46,7 +46,7 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
   const { t } = useTranslation('common')
   const { balance, belong, tradeValue, max } = (inputData ? inputData : {}) as IBData<C>
   // myLog("InputCoin", balance, belong, tradeValue);
-  const { isMobile, coinJson } = useSettings()
+  const { isMobile } = useSettings()
 
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined,
@@ -256,7 +256,7 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
                 </Typography>
               </Grid>
             </CoinWrap>
-            <Divider sx={{ order: 2 }} orientation={'vertical'} />
+            <Divider sx={{ order: 2, marginX: 1 / 2 }} orientation={'vertical'} />
             <Link
               order={order === 'left' ? 3 : 1}
               component={'span'}

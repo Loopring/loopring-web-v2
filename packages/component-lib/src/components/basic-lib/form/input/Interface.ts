@@ -98,6 +98,7 @@ export type InputSelectProps<T, I = CoinKey<T>> = {
     props: useFocusRefProps<I>,
     deps: any[],
   ) => React.RefObject<T>
+  hasCancel?: boolean
 }
 export type useFocusRefProps<I> = {
   selected?: I | null | undefined

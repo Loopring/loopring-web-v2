@@ -2,6 +2,7 @@ import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constan
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import React from 'react'
+
 export type CoinKey<R> = keyof R
 export type PairKey<P> = keyof P
 
@@ -11,6 +12,7 @@ export interface IBData<R> {
   tradeValue: number | undefined
   max?: string
 }
+
 export interface IBDataMax<R> extends IBData<R> {
   max?: string
 }
@@ -21,11 +23,14 @@ export interface CoinInfo<R> {
   simpleName: CoinKey<R>
   description?: string
   company: string
+
+  [key: string]: any
 }
 
 export interface WalletCoin<R> {
   belong: CoinKey<R>
   count: number
+
   [key: string]: any
 }
 
@@ -60,8 +65,13 @@ export enum TokenType {
 }
 
 export type PairMap<
-  R extends { [key: string]: any },
-  P = { coinA: CoinInfo<R>; coinB: CoinInfo<R> },
+  R extends {
+    [key: string]: any
+  },
+  P = {
+    coinA: CoinInfo<R>
+    coinB: CoinInfo<R>
+  },
 > = {
   [K in PairKey<R>]?: P
 }
@@ -98,7 +108,9 @@ export type TradeCalcData<T> = {
   | {
       isBtrade: undefined | boolean
     }
-  | { isVault: undefined | boolean }
+  | {
+      isVault: undefined | boolean
+    }
 )
 
 export type SwapTradeCalcData<T> = TradeCalcData<T> & {
@@ -119,7 +131,9 @@ export type SwapTradeCalcData<T> = TradeCalcData<T> & {
     | {
         isBtrade: undefined | boolean
       }
-    | { isVault: undefined | boolean }
+    | {
+        isVault: undefined | boolean
+      }
   )
 
 export enum BtradeType {
@@ -239,7 +253,9 @@ export type DualCalcData<R, B = DualTrade<any>> = sdk.CalDualResult & {
   buyToken?: sdk.TokenInfo
   coinSell: B
   dualViewInfo: R
-  balance: { [key: string]: sdk.DualBalance }
+  balance: {
+    [key: string]: sdk.DualBalance
+  }
   request?: sdk.DualOrderRequest
 }
 
@@ -343,8 +359,14 @@ export type AmmActivity<I> = {
   maxSpread?: number
 }
 export type Amount<T> = {
-  sell: { belong: T; tradeValue: number }
-  buy: { belong: T; tradeValue: number }
+  sell: {
+    belong: T
+    tradeValue: number
+  }
+  buy: {
+    belong: T
+    tradeValue: number
+  }
 }
 
 export type TradeBasic<T> = {
@@ -460,7 +482,9 @@ export enum EXPLORE_TYPE {
  *
  */
 export type CollectionMeta = sdk.CollectionMeta & {
-  extends: { [key: string]: any }
+  extends: {
+    [key: string]: any
+  }
 }
 export type CollectionMetaJSON = {
   contract: string
@@ -565,7 +589,11 @@ export type VaultLoadData<T> = {
   coinInfoMap: CoinMap<T, CoinInfo<T>>
   tradeData: T
 } & T
-export type VaultBorrowData<T = IBData<any> & { erc20Symbol: string }> = {
+export type VaultBorrowData<
+  T = IBData<any> & {
+    erc20Symbol: string
+  },
+> = {
   maxBorrowAmount: string
   maxBorrowStr: string
   minBorrowAmount: string
@@ -576,6 +604,20 @@ export type VaultBorrowData<T = IBData<any> & { erc20Symbol: string }> = {
   borrowVol: string
   borrowAmt: string
   totalQuote: string
+  borrowAmtStr: string
   request: sdk.VaultLoadRequest
 } & VaultLoadData<T>
-export type VaultRepayData<T> = {} & VaultLoadData<T>
+
+export type VaultRepayData<T> = {
+  maxRepayAmount: string
+  maxRepayStr: string
+  minRepayAmount: string
+  minRepayStr: string
+  maxRepayVol: string
+  minRepayVol: string
+  maxQuote: string
+  repayVol: string
+  repayAmt: string
+  repayAmtStr: string
+  request: sdk.VaultRepayRequestV3WithPatch['request']
+} & VaultLoadData<T>

@@ -16,6 +16,7 @@ import {
   SlippageTolerance,
   SwapSettingIcon,
   SwapTradeCalcData,
+  TokenType,
   TradeCalcData,
   VaultTradeCalcData,
 } from '@loopring-web/common-resources'
@@ -352,6 +353,9 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                 key={'tradeMenuList'}
                 {...{
                   ...rest,
+                  tokenType: (tradeCalcData as VaultTradeCalcData<T>)?.isVault
+                    ? TokenType.vault
+                    : undefined,
                   onChangeEvent,
                   tradeCalcData,
                   swapData: {

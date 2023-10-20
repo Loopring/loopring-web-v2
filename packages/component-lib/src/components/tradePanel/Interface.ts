@@ -38,6 +38,7 @@ import {
   SwapTradeBaseEventProps,
   SwapTradeBaseProps,
   VaultBorrowBaseProps,
+  VaultRepayWrapProps,
 } from './components'
 import {
   StopTradeLimitInfoProps,
@@ -48,6 +49,7 @@ import {
 import React from 'react'
 import { TOASTOPEN } from '../toast'
 import { VaultExitBaseProps, VaultJoinBaseProps } from './components/VaultWrap'
+import { VaultRepayPanel } from './Vault/VaultRepayPanel'
 
 export type SwapTradeData<T> = {
   sell: T
@@ -247,7 +249,7 @@ export type FeeSelectProps = {
 export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>
 export type VaultBorrowProps<T, I, V> = BasicACoinTradeHookProps<T, I> &
   VaultBorrowBaseProps<T, I, V>
-
+export type VaultRepayProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultRepayWrapProps<T, I, V>
 export type VaultExitProps = VaultExitBaseProps
 
 export * from './components/Interface'

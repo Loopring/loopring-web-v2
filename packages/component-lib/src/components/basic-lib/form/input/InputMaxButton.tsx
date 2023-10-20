@@ -53,7 +53,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
 ) {
   const { t } = useTranslation('common')
 
-  const { balance, belong, tradeValue } = (inputData ? inputData : {}) as IBData<C>
+  const { balance, belong, tradeValue, max } = (inputData ? inputData : {}) as IBData<C>
   const [sValue, setsValue] = React.useState<number | undefined | string>(
     tradeValue ? tradeValue : undefined,
   )
@@ -80,7 +80,9 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
             belong,
             ...{ tradeValue: value },
             maxAllow,
-          } as T & { maxAllow?: boolean },
+          } as T & {
+            maxAllow?: boolean
+          },
           ref,
         )
         setError(_error ? _error : { error: false })
@@ -103,11 +105,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
     shouldFocusOn: focusOnInput,
     value: tradeValue,
   })
-  // const debounceCount = debounce(({...props}: any) => {
-  //     if (handleCountChange) {
-  //         handleCountChange({...props}, ref)
-  //     }
-  // }, wait)
+
   const _handleContChange = React.useCallback(
     (value: any, _name: any) => {
       _handleError(value)
@@ -127,7 +125,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
       if (maxAllow && !disabled) {
-        _handleContChange(balance, name)
+        _handleContChange(max ?? balance, name)
         //setsValue(balance);
       }
     },

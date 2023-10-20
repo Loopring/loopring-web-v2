@@ -1,10 +1,14 @@
-import { InvestMapType, InvestOpenType, VaultMarketExtends } from '@loopring-web/common-resources'
+import {
+  CoinMap,
+  InvestMapType,
+  InvestOpenType,
+  VaultMarketExtends,
+} from '@loopring-web/common-resources'
 import { DepartmentRow, RowInvest } from '@loopring-web/component-lib'
 import { InvestTokenTypeMap, store } from '../../stores'
 import { LoopringAPI } from '../../api_wrapper'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { getBtradeMapStatus } from '../../stores/invest/BtradeMap/reducer'
-import { getVaultMapStatus } from '../../stores/invest/VaultMap/reducer'
 
 export const makeInvestRow = <R extends RowInvest>(
   investTokenTypeMap: InvestTokenTypeMap,
@@ -104,7 +108,7 @@ export const makeVault = (
     // tokenMap:erc20TokenMap
   } = store.getState().tokenMap
   if (vaultTokenMap && vaultMarkets && erc20IdIndex) {
-    const { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
+    let { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
     let erc20Array = []
     const reformat: VaultMarketExtends[] = vaultMarkets.reduce((prev, ele) => {
       if (/-/gi.test(ele.market) && ele.enabled) {
@@ -116,7 +120,8 @@ export const makeVault = (
           originalBaseSymbol: erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId],
           originalQuoteSymbol: erc20IdIndex[tokensMap[idIndex[ele.quoteTokenId]].tokenId],
         })
-        erc20Array.push(erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId])
+        // @ts-ignore
+        erc20Array.push(erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]]?.tokenId])
         return prev
       } else {
         return prev as VaultMarketExtends[]
@@ -153,16 +158,19 @@ export const makeVault = (
       }
       return prev
     }, {})
-
-    // if (enabled && enabled == 'isFormLocal') {
-    //
-    // } else {
+    const _coinMap = Reflect.ownKeys(coinMap).reduce((prev, ele) => {
+      prev[ele.toString()] = {
+        ...coinMap[ele.toString()],
+        erc20Symbol: erc20IdIndex[tokensMap[ele.toString()].tokenId],
+      }
+      return prev
+    }, {} as CoinMap<any, any>)
     return {
       marketArray,
       marketCoins,
       marketMap,
       tradeMap,
-      coinMap,
+      coinMap: _coinMap,
       pairs,
       idIndex,
       addressIndex,

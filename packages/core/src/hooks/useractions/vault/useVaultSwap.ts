@@ -335,7 +335,6 @@ export const useVaultSwap = <
     } else {
       if (account.readyState === AccountStatus.ACTIVATED) {
         if (!tradeCalcData || !tradeCalcData.volumeSell || !tradeCalcData.volumeBuy) {
-          myLog('vaultLayer2 swapBtnStatus', TradeBtnStatus.DISABLED)
           return {
             label: 'labelEnterAmount',
             tradeBtnStatus: TradeBtnStatus.DISABLED,

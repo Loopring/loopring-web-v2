@@ -1,15 +1,15 @@
-import { IBData, SoursURL, TRADE_TYPE, VaultJoinData } from '@loopring-web/common-resources'
 import {
-  ModalBackButton,
-  SwitchPanel,
-  SwitchPanelProps,
-  VaultJoinProps,
-} from '@loopring-web/component-lib'
+  IBData,
+  SoursURL,
+  TokenType,
+  TRADE_TYPE,
+  VaultJoinData,
+} from '@loopring-web/common-resources'
+import { SwitchPanel, SwitchPanelProps, VaultJoinProps } from '@loopring-web/component-lib'
 import React from 'react'
 import { Box } from '@mui/material'
 import { TradeMenuList, useBasicTrade } from '../components'
 import { VaultJoinWrap } from '../components/VaultWrap'
-import { VaultJoinConfirm } from '../components/VaultWrap'
 import { useTranslation } from 'react-i18next'
 
 export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, I>({
@@ -27,31 +27,17 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
     walletMap,
     coinMap,
   } as any)
-  const [panelIndex, setPanelIndex] = React.useState(index + 1)
+  const [panelIndex, setPanelIndex] = React.useState(index)
   const handleConfirm = (index: number) => {
     setPanelIndex(index)
   }
   React.useEffect(() => {
-    setPanelIndex(index + 1)
+    setPanelIndex(index)
   }, [index])
 
   const props: SwitchPanelProps<'tradeMenuList' | 'trade' | 'confirm'> = {
     index: panelIndex, // show default show
     panelList: [
-      {
-        key: 'confirm',
-        element: React.useMemo(() => <VaultJoinConfirm key={'confirm'} />, []),
-        toolBarItem: (
-          <ModalBackButton
-            marginTop={0}
-            marginLeft={-2}
-            onBack={() => {
-              setPanelIndex(1)
-            }}
-            {...rest}
-          />
-        ),
-      },
       {
         key: 'trade',
         // onBack,

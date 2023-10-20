@@ -1,4 +1,5 @@
 import {
+  EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   TradeBtnStatus,
@@ -38,10 +39,13 @@ export const useVaultBorrow = <
     setShowAccount,
     setShowVaultLoad,
   } = useOpenModals()
-  const { exchangeInfo } = useSystem()
+  const { exchangeInfo, forexMap } = useSystem()
   const { idIndex } = useTokenMap()
   const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins } = useVaultMap()
-
+  const [walletMap, setWalletMap] = React.useState(() => {
+    const { vaultAvaiable2Map } = makeVaultAvaiable2({})
+    return vaultAvaiable2Map
+  })
   const calcSupportData = (tradeData: T) => {
     let supportData: any = {
       maxBorrowAmount: undefined,
@@ -55,15 +59,13 @@ export const useVaultBorrow = <
       borrowAmt: undefined,
       totalQuote: undefined,
     }
-    if (tradeData.belong) {
+    if (tradeData?.belong) {
       const borrowToken = vaultTokenMap[tradeData.belong]
       const orderAmounts = borrowToken.orderAmounts
       const minBorrowVol = BigNumber.max(orderAmounts.dust, orderAmounts?.minimum)
       const minBorrowAmt = minBorrowVol.div('1e' + borrowToken.decimals)
-      //no decimal vaule
       const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
       const maxBorrowAmt = BigNumber.max(totalQuote, tradeData.balance)
-
       const maxBorrowVol = maxBorrowAmt.times('1e' + borrowToken.decimals)
       const tradeVaule = tradeData.tradeValue
       supportData = {
@@ -88,8 +90,15 @@ export const useVaultBorrow = <
           .toBig(tradeVaule ?? 0)
           .times('1e' + borrowToken.decimals)
           .toString(),
+        borrowAmtStr: getValuePrecisionThousand(
+          tradeVaule ?? 0,
+          borrowToken.precision,
+          borrowToken.precision,
+          undefined,
+        ),
         borrowAmt: tradeVaule ?? 0,
         totalQuote: totalQuote.toString(),
+        coinInfoMap: vaultCoinMap,
       }
     }
     return {
@@ -106,10 +115,12 @@ export const useVaultBorrow = <
       initSymbol = istShowVaultLoad.info?.symbol
     }
     let { vaultAvaiable2Map } = makeVaultAvaiable2({})
+    setWalletMap(vaultAvaiable2Map)
     vaultBorrowData = {
       ...vaultBorrowData,
       vaultAvaiable2Map,
       coinMap: vaultCoinMap,
+      walletMap: vaultAvaiable2Map,
     }
     let walletInfo
     walletInfo = {
@@ -143,6 +154,7 @@ export const useVaultBorrow = <
     return new Promise<void>((res: any) => {
       if (data.to === 'button') {
         let { vaultAvaiable2Map } = makeVaultAvaiable2({})
+        setWalletMap(vaultAvaiable2Map)
         if (vaultAvaiable2Map && data?.tradeData?.belong) {
           let walletInfo: any = vaultAvaiable2Map[data?.tradeData?.belong as string]
           walletInfo = {
@@ -154,6 +166,8 @@ export const useVaultBorrow = <
             ...vaultBorrowData,
             ...walletInfo,
             ...calcSupportData(walletInfo),
+            walletMap: vaultAvaiable2Map,
+            tradeData: walletInfo,
           }
           updateVaultBorrow({
             ...vaultBorrowData,
@@ -171,10 +185,12 @@ export const useVaultBorrow = <
   }, [])
 
   const availableTradeCheck = React.useCallback(() => {
-    // const vaultAccountInfoSymbol =
-    //     vaultIdIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
-    if (!vaultBorrowData?.belong && sdk.toBig(vaultBorrowData?.tradeValue ?? 0).lte(0)) {
+    if (
+      !vaultBorrowData?.tradeValue ||
+      !vaultBorrowData?.belong ||
+      sdk.toBig(vaultBorrowData?.tradeValue ?? 0).lte(0)
+    ) {
       return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: '' }
     } else if (sdk.toBig(vaultBorrowData?.tradeValue ?? 0).lte(vaultBorrowData.minBorrowAmount)) {
       return {
@@ -184,7 +200,7 @@ export const useVaultBorrow = <
     } else if (sdk.toBig(vaultBorrowData.tradeValue ?? 0).gte(vaultBorrowData.balance ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultBorrowNotEnough ${vaultBorrowData.belong}`,
+        label: `labelVaultBorrowNotEnough|${vaultBorrowData.belong}`,
       }
     } else if (
       sdk.toBig(vaultBorrowData.tradeValue ?? 0).gte(vaultBorrowData.maxBorrowAmount ?? 0)
@@ -201,7 +217,6 @@ export const useVaultBorrow = <
     vaultTokenMap,
     vaultBorrowData,
     vaultBorrowData.belong,
-
     vaultBorrowData.tradeValue,
     vaultBorrowData.balance,
     vaultBorrowData.maxBorrowAmount,
@@ -223,11 +238,20 @@ export const useVaultBorrow = <
         }
         walletLayer2Service.sendUserUpdate()
         sdk.sleep(1000).then(() => updateVaultLayer2({}))
-
+        //TODO getHASH check
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultBorrow_Success,
           info: {
+            //TODO getHASH check
+            amount: EmptyValueTag,
+            receiveAmount: vaultBorrowData.borrowAmtStr,
+            //TODO getHASH check
+            status: t('labelPending'),
+            forexMap,
+            symbol: vaultBorrowData.belong,
+            //TODO getHASH check
+            time: Date.now(),
             title: t('labelVaultBorrowTitle'),
           },
         })
@@ -242,7 +266,16 @@ export const useVaultBorrow = <
         isShow: true,
         step: AccountStep.VaultRedeem_Failed,
         info: {
+          amount: EmptyValueTag,
+          receiveAmount: vaultBorrowData.borrowAmtStr,
+          status: t('labelFailed'),
+          forexMap,
+          symbol: vaultBorrowData.belong,
+          time: Date.now(),
           title: t('labelVaultBorrowTitle'),
+        },
+        error: {
+          ...(e as any),
         },
       })
     }
@@ -266,6 +299,12 @@ export const useVaultBorrow = <
           isShow: true,
           step: AccountStep.VaultBorrow_In_Progress,
           info: {
+            amount: EmptyValueTag,
+            receiveAmount: vaultBorrowData.borrowAmtStr,
+            status: t('labelPending'),
+            forexMap,
+            symbol: vaultBorrowData.belong,
+            time: Date.now(),
             title: t('labelVaultBorrowTitle'),
           },
         })
@@ -289,6 +328,15 @@ export const useVaultBorrow = <
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultBorrow_Failed,
+        info: {
+          amount: EmptyValueTag,
+          receiveAmount: vaultBorrowData.borrowAmtStr,
+          status: t('labelFailed'),
+          forexMap,
+          symbol: vaultBorrowData.belong,
+          time: Date.now(),
+          title: t('labelVaultBorrowTitle'),
+        },
         error: {
           ...(e as any),
         },
@@ -312,6 +360,8 @@ export const useVaultBorrow = <
     vaultBorrowBtnStatus: btnStatus,
     vaultBorrowBtnI18nKey: btnLabel,
     onVaultBorrowClick: onBtnClick,
+    walletMap: walletMap as unknown as any,
+    coinMap: vaultCoinMap,
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,
   }
