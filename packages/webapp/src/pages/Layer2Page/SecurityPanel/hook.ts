@@ -43,7 +43,7 @@ export function useResetAccount() {
         confirmationType: hasDualInvest ? 'unlockedWithDual' : 'unlockedWithoutDual',
       },
     })
-  }, [setShowResetAccount])
+  }, [setShowResetAccount, hasDualInvest])
 
   return {
     resetKeypair,

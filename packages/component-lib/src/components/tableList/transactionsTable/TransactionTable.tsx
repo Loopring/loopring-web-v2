@@ -400,7 +400,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 sdk.UserTxTypes.DUAL_INVESTMENT,
                 sdk.UserTxTypes.SEND_LUCKY_TOKEN,
                 sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN,
-                sdk.UserTxTypes.CHANGE_PWD,
+                'change_pwd',
               ].includes(row.side.toLowerCase())
             ) {
               path =
@@ -435,7 +435,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                   href={path}
                   title={from && to ? from + ` ${DirectionTag} ` + to : from + to}
                 >
-                  {row.side.toLowerCase() === sdk.UserTxTypes.CHANGE_PWD
+                  {row.side.toLowerCase() === 'change_pwd'
                     ? hash
                     : from && to
                     ? from + ` ${DirectionTag} ` + to
