@@ -149,7 +149,7 @@ export const useVaultRepay = <
       sdk.toBig(vaultRepayData?.tradeValue ?? 0).lte(0)
     ) {
       return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: '' }
-    } else if (sdk.toBig(vaultRepayData?.tradeValue ?? 0).lte(vaultRepayData.minRepayAmount)) {
+    } else if (sdk.toBig(vaultRepayData?.tradeValue ?? 0).lt(vaultRepayData.minRepayAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: `labelVaultRepayMini|${vaultRepayData.minRepayStr} ${vaultRepayData.belong}`,
@@ -221,8 +221,8 @@ export const useVaultRepay = <
     const account = store.getState().account
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
     try {
-      if (request || vaultRepayData.request) {
-        let response = LoopringAPI.vaultAPI?.submitVaultRepay(
+      if ((request || vaultRepayData.request) && LoopringAPI.vaultAPI) {
+        let response = await LoopringAPI.vaultAPI?.submitVaultRepay(
           {
             // @ts-ignore
             request: request ?? vaultRepayData.request,

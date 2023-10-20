@@ -192,7 +192,7 @@ export const useVaultBorrow = <
       sdk.toBig(vaultBorrowData?.tradeValue ?? 0).lte(0)
     ) {
       return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: '' }
-    } else if (sdk.toBig(vaultBorrowData?.tradeValue ?? 0).lte(vaultBorrowData.minBorrowAmount)) {
+    } else if (sdk.toBig(vaultBorrowData?.tradeValue ?? 0).lt(vaultBorrowData.minBorrowAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: `labelVaultBorrowMini|${vaultBorrowData.minBorrowStr} ${vaultBorrowData.belong}`,
@@ -203,7 +203,7 @@ export const useVaultBorrow = <
         label: `labelVaultBorrowNotEnough|${vaultBorrowData.belong}`,
       }
     } else if (
-      sdk.toBig(vaultBorrowData.tradeValue ?? 0).gte(vaultBorrowData.maxBorrowAmount ?? 0)
+      sdk.toBig(vaultBorrowData.tradeValue ?? 0).gt(vaultBorrowData.maxBorrowAmount ?? 0)
     ) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,

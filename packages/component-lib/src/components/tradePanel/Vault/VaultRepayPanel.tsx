@@ -66,7 +66,12 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
                 tokenType: TokenType.vault,
                 contentEle: ({ ele }: { ele: any }) => {
                   return (
-                    <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+                    <Typography
+                      component={'span'}
+                      display={'flex'}
+                      flexDirection={'row'}
+                      alignItems={'center'}
+                    >
                       <Typography
                         variant={'body1'}
                         flexDirection={'column'}
@@ -111,7 +116,7 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
                       <BackIcon
                         sx={{ transform: 'rotate(180deg)', fill: 'var(--color-text-primary)' }}
                       />
-                    </Box>
+                    </Typography>
                   )
                 },
               }}
