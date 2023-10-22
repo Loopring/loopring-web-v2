@@ -103,7 +103,7 @@ const AnimationCard = styled(Box)<{ highlighted: boolean }>`
   }
 `
 
-export const EarnPage = withTranslation('common', { withRef: true })(() => {
+export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
   const { baseTokenList } = useDualHook()
   const { marketMap } = useDualMap()
   const tokenList: any[] = Object.values(baseTokenList ?? {})
@@ -176,77 +176,58 @@ export const EarnPage = withTranslation('common', { withRef: true })(() => {
     // onClick: () => void
   }[] = [
     {
-      question: 'What is Loopring protocol ?',
+      question: t("labelFAQ1Question"),
       answer: (
         <Typography>
-          As the world's first ZKRollup implementation to scale up Ethereum, Loopring Protocol has
-          run since 2017. There have been more than 210K users and $5.88B trading volume occurred on
-          this protocol. As an app-specific ZKRollup protocol, it has been successfully deployed not
-          only as a Layer 2 on top of Ethereum but also as a Layer 3 on top of other EVM-compatible
-          networks such as Arbitrum.
+          {t("labelFAQ1Answer")}
         </Typography>
       ),
       // opened: openedFaqs.includes(0),
       // onClick: () => setOpenedFaqs( set(openedFaqs) 0)
     },
     {
-      question: 'What is Dual Investment ?',
+      question: t("labelFAQ2Question"),
       answer: (
         <Box>
           <Typography>
-            Dual Investment is a non-principal protected structured product. Upon purchasing, you
-            can select the underlying asset, investment currency, investment amount, and delivery
-            date. Your return will be denominated in the investment currency or alternate currency,
-            depending on the below conditions.
+            {t("labelFAQ2AnswerLine1")}
           </Typography>
           <br />
           <Typography>
-            There are two types of Dual Investment products: “Buy Low” and “Sell High”.
+            {t("labelFAQ2AnswerLine2")}
           </Typography>
           <br />
           <Typography>
-            Buy Low products gives you a chance to buy your desired crypto (such as LRC) at a lower
-            price in the future with stablecoins (USDC).
+            {t("labelFAQ2AnswerLine3")}
           </Typography>
           <br />
           <Typography component={'li'}>
-            Target Reached: On the Settlement Date, if the Market Price is at or below the Target
-            Price, the target currency (LRC) will be bought;
+            {t("labelFAQ2AnswerLine4")}
           </Typography>
           <Typography component={'li'}>
-            Target Not Reached: On the Settlement Date, if the Market Price is above the Target
-            Price, then you will keep your stablecoins; In both scenarios, you will first earn
-            interest in stablecoins. Once the Target Price is reached, your subscription amount and
-            interest income will be used to buy LRC.
+            {t("labelFAQ2AnswerLine5")}
           </Typography>
           <br />
           <Typography>
-            Sell High products gives you a chance to sell your existing crypto (such as LRC) at a
-            higher price in the future (for USDC).
+            {t("labelFAQ2AnswerLine6")}
           </Typography>
           <br />
           <Typography component={'li'}>
-            Target Reached: On the Settlement Date, the Market Price is at or above the Target
-            Price, your LRC will be sold for USDC.
+            {t("labelFAQ2AnswerLine7")}
           </Typography>
           <Typography component={'li'}>
-            Target Not Reached: On the Settlement Date, the Market Price is below the Target Price,
-            then you will keep your LRC. In both scenarios, you will first earn interest in your
-            existing currency (LRC). Once the Target Price is reached, your subscription amount and
-            interest income will be sold for USDC.
+            {t("labelFAQ2AnswerLine8")}
           </Typography>
           <br />
           <Typography>
-            Your token for investment is just locked but still in your account as Loopring is a DEX.
+            {t("labelFAQ2AnswerLine9")}
           </Typography>
           <br />
           <Typography>
-            Each purchased product has a settlement date. We will take an average of the market
-            price in the last 30 minutes before 16:00 (UTC+8) on the delivery date as the settlement
-            price.
+            {t("labelFAQ2AnswerLine10")}
           </Typography>
           <Typography component={'q'}>
-            Please make sure that you fully understand the product and the risks before investing.
+            {t("labelFAQ2AnswerLine11")}
           </Typography>
         </Box>
       ),
@@ -258,51 +239,42 @@ export const EarnPage = withTranslation('common', { withRef: true })(() => {
       answer: (
         <Box>
           <Typography>
-            Covered Gain is an investment strategy to sell digital assets at your Target Price and
-            earn interest while waiting.
+            {t("labelFAQ3AnswerLine1")}
           </Typography>
           <br />
-          <Typography>On the Settlement Date, there can be 2 scenarios:</Typography>
+          <Typography>{t("labelFAQ3AnswerLine2")}</Typography>
 
-          <Typography component={'li'}>{`Market Price > Target Price`}</Typography>
-          <Typography component={'li'}>{`Market Price ≤ Target Price`}</Typography>
+          <Typography component={'li'}>{t("labelFAQ3AnswerLine3")}</Typography>
+          <Typography component={'li'}>{t("labelFAQ3AnswerLine4")}</Typography>
           <br />
 
-          <Typography>{`Market Price > Target Price`}</Typography>
+          <Typography>{t("labelFAQ3AnswerLine5")}</Typography>
           <Typography>
-            Your original investment and earned interest will be sold at the target price.
+            {t("labelFAQ3AnswerLine6")}
           </Typography>
           <br />
           <Typography>
-            This order is then closed regardless of whether "Auto Reinvest" is enabled or not.
+            {t("labelFAQ3AnswerLine7")}
           </Typography>
           <br />
-          <Typography>{`Market Price ≤ Target Price`}</Typography>
-          <Typography>Your original investment and earned interest won’t be sold.</Typography>
+          <Typography>{t("labelFAQ3AnswerLine8")}</Typography>
+          <Typography>{t("labelFAQ3AnswerLine9")}</Typography>
           <br />
           <Typography>
-            If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a
-            suitable dual investment product based on the agreed terms until you either successfully
-            sell crypto at your desired price or disable the feature.
+            {t("labelFAQ3AnswerLine10")}
           </Typography>
           <br />
-          <Typography>Auto Reinvest</Typography>
+          <Typography>{t("labelFAQ3AnswerLine11")}</Typography>
           <Typography>
-            When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your
-            funds into a new product with the same target price when the previous product expires,
-            continuing until you successfully sell your crypto at your Target Price. If there isn’t
-            an available product within 2 hours after the previous settlement, the order will be
-            automatically closed.
+            {t("labelFAQ3AnswerLine12")}
           </Typography>
           <br />
           <Typography>
-            Sell Price: the Target Price at which you want to sell your crypto.
+            {t("labelFAQ3AnswerLine13")}
           </Typography>
           <br />
           <Typography>
-            Longest Settlement Date: your acceptable investment period. If no suitable products are
-            available within this range, “Auto Reinvest” will not subscribe to any products for you,
-            even if it's enabled.
+            {t("labelFAQ3AnswerLine14")}
           </Typography>
         </Box>
       ),
@@ -314,78 +286,45 @@ export const EarnPage = withTranslation('common', { withRef: true })(() => {
       answer: (
         <Box>
           <Typography>
-            Buy The Dip is an investment strategy to buy digital assets at your Target Price and
-            earn interest while waiting.
+            {t("labelFAQ4AnswerLine1")}
           </Typography>
           <br />
-          <Typography>On the Settlement Date, there can be 2 scenarios:</Typography>
+          <Typography>{t("labelFAQ4AnswerLine2")}</Typography>
 
-          <Typography component={'li'}>{`Market Price > Target Price`}</Typography>
-          <Typography component={'li'}>{`Market Price ≤ Target Price`}</Typography>
+          <Typography component={'li'}>{t("labelFAQ4AnswerLine3")}</Typography>
+          <Typography component={'li'}>{t("labelFAQ4AnswerLine4")}</Typography>
           <br />
 
-          <Typography>{`Market Price > Target Price`}</Typography>
+          <Typography>{t("labelFAQ4AnswerLine5")}</Typography>
           <Typography>
-            Your original investment and earned interest won’t be converted. Earned interest is in
-            USDC or USDT.
+            {t("labelFAQ4AnswerLine6")}
           </Typography>
           <br />
           <Typography>
-            If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a
-            suitable dual investment product based on the agreed terms until you either successfully
-            buy crypto at your desired price or disable the feature.
+            {t("labelFAQ4AnswerLine7")}
           </Typography>
           <br />
-          <Typography>{`Market Price ≤ Target Price`}</Typography>
+          <Typography>{t("labelFAQ4AnswerLine8")}</Typography>
           <Typography>
-            Your original investment and earned interest will be converted at the Target Price.
+            {t("labelFAQ4AnswerLine9")}
           </Typography>
           <br />
           <Typography>
-            This order is then closed regardless of whether "Auto Reinvest" is enabled or not.
+            {t("labelFAQ4AnswerLine10")}
           </Typography>
           <br />
-          <Typography>Auto Reinvest</Typography>
+          <Typography>{t("labelFAQ4AnswerLine11")}</Typography>
           <Typography>
-            When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your
-            funds into a new product with the same target price when the previous product expires,
-            continuing until you successfully buy crypto at your desired price. If there isn’t an
-            available product within 2 hours after the previous settlement, the order will be
-            automatically closed.
+            {t("labelFAQ4AnswerLine12")}
           </Typography>
           <br />
-          <Typography>Buy Price: the Target Price at which you want to buy crypto.</Typography>
+          <Typography>{t("labelFAQ4AnswerLine13")}</Typography>
           <br />
           <Typography>
-            Longest Settlement Date: your acceptable investment period. If no suitable products are
-            available within this range, “Auto Reinvest” will not subscribe to any products for you,
-            even if it's enabled.
+            {t("labelFAQ4AnswerLine14")}
           </Typography>
-
-          {/* On the Settlement Date, there can be 2 scenarios:
-Market Price > Target Price
-Market Price ≤ Target Price */}
-
-          {/* Market Price > Target Price
-Your original investment and earned interest won’t be converted. Earned interest is in USDC or USDT.
-
-If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a suitable dual investment product based on the agreed terms until you either successfully buy crypto at your desired price or disable the feature.
-
-Market Price ≤ Target Price
-Your original investment and earned interest will be converted at the Target Price.
-
-This order is then closed regardless of whether "Auto Reinvest" is enabled or not.
-
-Auto Reinvest
-When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.
-
-Buy Price: the Target Price at which you want to buy crypto.
-
-Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled. */}
         </Box>
       ),
-      // opened: openedFaq === 1,
-      // onClick: () => setOpenedFaq(1)
     },
   ]
   const connectStatus: 'connected' | 'locked' | 'notConnected' =
@@ -413,7 +352,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
       >
         <Box marginTop={10} display={'flex'} justifyContent={'center'} flexDirection={'column'} width={'100%'}>
           <Typography variant={'h1'} textAlign={'center'}>
-            DUAL INVESTMENT
+            {t("labelDualEarnTitle")}
           </Typography>
           <Typography
             marginTop={2}
@@ -421,19 +360,19 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
             color={'var(--color-text-secondary)'}
             textAlign={'center'}
           >
-            The most innovative structural products brought to the DeFi world
+            {t("labelDualEarnSubTitle")}
           </Typography>
         </Box>
 
         <Box marginTop={3} display={'flex'} justifyContent={'center'}>
           <TextTag>
-            <Typography>Buy Low or Sell High</Typography>
+            <Typography>{t("labelDualEarnTag1")}</Typography>
           </TextTag>
           <TextTag>
-            <Typography>No Trading Fees</Typography>
+            <Typography>{t("labelDualEarnTag2")}</Typography>
           </TextTag>
           <TextTag>
-            <Typography>High Rewards</Typography>
+            <Typography>{t("labelDualEarnTag3")}</Typography>
           </TextTag>
         </Box>
 
@@ -526,7 +465,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
                     right={0}
                     top={0}
                   >
-                    Sell Hign
+                    {t("labelSellHigh")}
                   </Typography>
                 ) : (
                   <Typography
@@ -537,13 +476,15 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
                     right={0}
                     top={0}
                   >
-                    Buy Low
+                    {t("labelBuyLow")}
                   </Typography>
                 )}
                 <CoinIcon size={64} symbol={info.symbol} />
                 {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
                 <Typography variant={'h3'} marginTop={2}>
-                  Invest {info.symbol}
+                  {t("labelInvestSymbol", {
+                    symbol: info.symbol
+                  })}
                 </Typography>
                 <Box
                   marginBottom={4}
@@ -554,7 +495,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
                 >
                   <Box>
                     <Typography color={'var(--color-success)'} textAlign={'center'}>
-                      APY
+                      {t("labelApy")}
                     </Typography>
                     <Typography variant={'h4'} color={'var(--color-success)'} textAlign={'center'}>
                       {info.apy}
@@ -562,7 +503,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
                   </Box>
                   <Box width={'1px'} height={24} marginX={1.5} bgcolor={'var(--color-border)'} />
                   <Box>
-                    <Typography textAlign={'center'}>Current Price</Typography>
+                    <Typography textAlign={'center'}>{t("labelCurrentPrice")}</Typography>
                     <Typography variant={'h4'} textAlign={'center'}>
                       {info.price}
                     </Typography>
@@ -580,7 +521,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
                   variant={'contained'}
                   fullWidth
                 >
-                  View Details
+                  {t("labelViewDetails")}
                 </Button>
               </EarnCard>
             )
@@ -600,17 +541,15 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
             marginBottom={3}
             variant={'h2'}
           >
-            loopring Earn
+            {t("labelLoopringEarn")}
           </Typography>
           <Typography paddingX={14} color={'var(--color-text-button)'} textAlign={'center'} variant={'h5'}>
-            Loopring Earn is built on top of Loopring Protocol to take full advantage of its
-            ZKRollup technology and full-stack DEX capability to provide the most innovative DeFi
-            products to users.{' '}
+            {t("labelLoopringEarnDes")}{' '}
           </Typography>
         </Box>
         <Box marginTop={12.5}>
           <Typography textAlign={'center'} variant={'h2'}>
-            Loopring Protocol
+            {t("labelLoopringProtocol")}
           </Typography>
           <Typography
             textAlign={'center'}
@@ -618,8 +557,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
             color={'var(--color-text-secondary)'}
             marginTop={2}
           >
-            The world's first ZKRollup implementation designed to scale Ethereum, fully optimized
-            for trading.
+            {t("labelLoopringProtocolDes")}
           </Typography>
         </Box>
         <Box marginTop={5} display={'flex'}>
@@ -631,10 +569,10 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
-                Ultimate Security
+                {t("labelUltimateSecurity")}
               </Typography>
               <Typography className={'sub-title'}>
-                Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
+                {t("labelUltimateSecurityDes")}
               </Typography>
             </Box>
 
@@ -655,10 +593,10 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
-                Low Transaction Fees
+                {t("labelLowTransactionFees")}
               </Typography>
               <Typography className={'sub-title'}>
-                Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
+                {t("labelLowTransactionFeesDes")}
               </Typography>
             </Box>
             <img
@@ -677,10 +615,10 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
-                High Throughput
+                {t("labelHighThroughput")}
               </Typography>
               <Typography variant={'h5'} className={'sub-title'}>
-                Loopring L2 can settle ~2000 transactions per second with near instant finality.
+                {t("labelHighThroughputDes")}
               </Typography>
             </Box>
             <img
@@ -695,7 +633,7 @@ Longest Settlement Date: your acceptable investment period. If no suitable produ
         </Box>
 
         <Typography textAlign={'center'} marginTop={12.5} variant={'h2'}>
-          FAQs
+          {t("labelFAQs")}
         </Typography>
         <Box marginTop={5} marginBottom={12.5}>
           {faqs.map((faq, index) => {

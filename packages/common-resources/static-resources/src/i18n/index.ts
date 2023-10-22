@@ -27,7 +27,7 @@ const initLng = LanguageType.en_US
 
 i18n.use(initReactI18next).init({
   resources,
-  ns: ['common', 'layout', 'tables', 'landPage', 'error'],
+  ns: ['common', 'layout', 'tables', 'landPage', 'error', 'webEarn'],
   defaultNS: 'common',
   lng: initLng,
   load: 'currentOnly',
