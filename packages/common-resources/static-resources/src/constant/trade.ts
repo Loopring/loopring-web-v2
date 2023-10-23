@@ -12,6 +12,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'
 import { VendorProviders } from './vendor'
+import { InvestRouter, InvestType } from './router'
 
 export enum DeFiChgType {
   coinSell = 'coinSell',
@@ -331,7 +332,12 @@ export const enum InvestMapType {
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
   LEVERAGEETH = 'LEVERAGEETH',
+
   // BTradeInvest = "BTradeInvest",
+}
+export const enum InvestMainRouter {
+  OVERVIEW = 'OVERVIEW',
+  BALANCE = 'BALANCE',
 }
 
 export const enum InvestAssetRouter {
@@ -349,7 +355,6 @@ export const InvestOpenType = [
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
   InvestMapType.LEVERAGEETH,
-  // InvestMapType.BTradeInvest,
 ]
 
 export const enum InvestDuration {

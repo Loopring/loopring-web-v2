@@ -6,6 +6,7 @@ import {
   subMenuNFT,
   SUBMIT_PANEL_AUTO_CLOSE,
   RouterPath,
+  NFTSubRouter,
 } from '@loopring-web/common-resources'
 import React from 'react'
 import { onchainHashInfo, store, useAccount, ViewAccountTemplate } from '@loopring-web/core'
@@ -38,23 +39,23 @@ export const NFTPage = () => {
   const [open, setOpen] = React.useState(false)
   const routerNFT = React.useMemo(() => {
     switch (selected) {
-      case 'transactionNFT':
+      case NFTSubRouter.transactionNFT:
         return <MyNFTHistory />
-      case 'mintNFTLanding':
+      case NFTSubRouter.mintNFTLanding:
         return <MintLandingPage />
-      case 'mintNFT':
+      case NFTSubRouter.mintNFT:
         return <MintNFTPanel />
-      case 'mintNFTAdvance':
+      case NFTSubRouter.mintNFTAdvance:
         return <MintNFTAdvancePanel />
-      case 'depositNFT':
+      case NFTSubRouter.depositNFT:
         return <DepositNFTPanel />
-      case 'myCollection':
+      case NFTSubRouter.myCollection:
         return <NFTCollectPanel />
-      case 'addCollection':
-      case 'editCollection':
-      case 'addLegacyCollection':
+      case NFTSubRouter.addCollection:
+      case NFTSubRouter.editCollection:
+      case NFTSubRouter.addLegacyCollection:
         return <EditCollectionPanel type={selected} />
-      case 'importLegacyCollection':
+      case NFTSubRouter.importLegacyCollection:
         return <ImportCollectionPanel />
       default:
         return <MyNFTPanel />
@@ -114,7 +115,7 @@ export const NFTPage = () => {
                 display={'inline-flex'}
                 target='_self'
                 rel='noopener noreferrer'
-                href={`/#${RouterPath.nft}/importLegacyCollection`}
+                href={`/#${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}`}
                 paddingLeft={1 / 2}
               >
                 GO

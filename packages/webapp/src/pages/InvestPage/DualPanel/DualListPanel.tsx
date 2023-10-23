@@ -38,6 +38,7 @@ import {
   getValuePrecisionThousand,
   Info2Icon,
   InvestAssetRouter,
+  InvestMainRouter,
   LOOPRING_DOCUMENT,
   RouterPath,
   SagaStatus,
@@ -373,7 +374,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
               endIcon={<BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />}
-              onClick={() => history.push(`${RouterPath.invest}/balance`)}
+              onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
             >
               {t('labelInvestMyDual')}
             </Button>

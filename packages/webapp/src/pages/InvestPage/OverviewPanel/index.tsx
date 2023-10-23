@@ -19,6 +19,7 @@ import {
   getValuePrecisionThousand,
   EmptyValueTag,
   RouterPath,
+  InvestMainRouter,
 } from '@loopring-web/common-resources'
 import {
   useAccount,
@@ -177,7 +178,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
               {t('labelInvestLoopringEarnDes')}
             </Typography>
             <Button
-              onClick={() => history.push(`${RouterPath.invest}/balance`)}
+              onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >

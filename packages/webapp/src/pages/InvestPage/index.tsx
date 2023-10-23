@@ -15,15 +15,6 @@ import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
 import styled from '@emotion/styled'
 
-export enum InvestType {
-  MyBalance = 0,
-  AmmPool = 1,
-  DeFi = 2,
-  Overview = 3,
-  Dual = 4,
-  Stack = 5,
-  LeverageETH = 6,
-}
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const BoxStyled = styled(Box)`
   display: flex;
@@ -59,15 +50,7 @@ export const MaxWidthContainer = (
     </BoxStyled>
   )
 }
-export const InvestRouter = [
-  'balance',
-  'ammpool',
-  'defi',
-  'overview',
-  'dual',
-  'stakelrc',
-  'leverageETH',
-]
+
 export const BalanceTitle = () => {
   const { t } = useTranslation()
   return (

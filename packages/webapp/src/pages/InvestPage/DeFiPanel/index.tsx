@@ -23,6 +23,7 @@ import {
   hexToRGB,
   Info2Icon,
   InvestAssetRouter,
+  InvestMainRouter,
   MarketType,
   RouterPath,
   SatkingLogo,
@@ -354,7 +355,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
               </Typography>
               <Box display={'flex'} alignItems={'center'}>
                 <Button
-                  onClick={() => history.push(`${RouterPath.invest}/balance`)}
+                  onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
                 >
@@ -382,7 +383,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
               {t('labelInvestDefiTitle')}
             </Button>
             <Button
-              onClick={() => history.push(`${RouterPath.invest}/balance`)}
+              onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
               sx={
                 {
                   // width: isMobile ? 36 * theme.unit : 18 * theme.unit,

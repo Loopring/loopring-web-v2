@@ -16,6 +16,7 @@ import {
   myLog,
   ProfileIndex,
   ProfileKey,
+  RouterPath,
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
@@ -612,7 +613,9 @@ const ReferView = () => {
                               size={'small'}
                               sx={{ marginLeft: 2 }}
                               onClick={() => {
-                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                                history.push(
+                                  `${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`,
+                                )
                               }}
                             >
                               {t('labelClaimBtn')}
@@ -736,7 +739,7 @@ const ReferView = () => {
                             size={'small'}
                             sx={{ marginLeft: 2 }}
                             onClick={() => {
-                              history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                              history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`)
                             }}
                           >
                             {t('labelClaimBtn')}
