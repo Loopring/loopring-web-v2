@@ -137,6 +137,7 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  InvestMainRouter,
   L1L2_NAME_DEFINED,
   MapChainId,
   NFTSubRouter,
@@ -2984,7 +2985,7 @@ export function useAccountModalForUI({
               btnTxt: 'labelDualPanelClose',
               callback: (_e: any) => {
                 setShowAccount({ isShow: false })
-                history.push('/invest/balance')
+                history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)
               },
             }}
             {...{
