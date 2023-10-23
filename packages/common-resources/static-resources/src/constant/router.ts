@@ -10,7 +10,13 @@ import {
   VipIcon,
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
-import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
+import {
+  AddAssetList,
+  InvestAssetRouter,
+  InvestMainRouter,
+  InvestMapType,
+  SendAssetList,
+} from './trade'
 import { WalletSite } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
@@ -320,7 +326,7 @@ export const subMenuLayer2 = {
 export const subMenuInvest = [
   {
     icon: L2MyLiquidityIcon,
-    router: { path: `${RouterPath.invest}/overview` },
+    router: { path: `${RouterPath.invest}/${InvestMainRouter.OVERVIEW}` },
     label: {
       id: 'overview',
       i18nKey: 'labelInvestOverview',
@@ -586,7 +592,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'Invest',
       i18nKey: 'labelInvest',
     },
-    router: { path: `${RouterPath.invest}/overview` },
+    router: { path: `${RouterPath.invest}/${InvestMainRouter.OVERVIEW}` },
     status: HeaderMenuTabStatus.default,
     child: subMenuInvest,
   },
@@ -699,6 +705,24 @@ export enum AssetTabIndex {
   RedPacket = 'RedPacket',
   Rewards = 'Rewards',
 }
+export enum InvestType {
+  MyBalance = 0,
+  AmmPool = 1,
+  DeFi = 2,
+  Overview = 3,
+  Dual = 4,
+  Stack = 5,
+  LeverageETH = 6,
+}
+export const InvestRouter = [
+  'balance',
+  'ammpool',
+  'defi',
+  'overview',
+  'dual',
+  'stakelrc',
+  'leverageETH',
+]
 
 export enum RedPacketRouterIndex {
   create = 'create',

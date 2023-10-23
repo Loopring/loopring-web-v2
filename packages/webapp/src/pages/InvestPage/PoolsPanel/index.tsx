@@ -8,7 +8,13 @@ import { useAmmMapUI } from './hook'
 import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
 
 import { useNotify, useSystem } from '@loopring-web/core'
-import { AmmLogo, BackIcon, RouterPath, RowInvestConfig } from '@loopring-web/common-resources'
+import {
+  AmmLogo,
+  BackIcon,
+  InvestMainRouter,
+  RouterPath,
+  RowInvestConfig,
+} from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
@@ -57,7 +63,7 @@ export const PoolsPanel = withTranslation('common')(
               {t('labelLiquidityPageTitle')}
             </Typography>
             <Button
-              onClick={() => history.push(`${RouterPath.invest}/balance`)}
+              onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >
