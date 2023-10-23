@@ -306,7 +306,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Typography>
                 <Button
                   onClick={() => {
-                    history.push('/invest/overview')
+                    history.push(`${RouterPath.invest}/overview`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2 }}
                   variant={'contained'}
@@ -315,7 +315,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Button>
                 <Button
                   onClick={() => {
-                    history.push('/l2assets/history/Transactions')
+                    history.push(`${RouterPath.l2records}/Transactions`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}

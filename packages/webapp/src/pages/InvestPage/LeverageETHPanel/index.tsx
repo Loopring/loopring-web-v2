@@ -202,7 +202,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             handleClose={(_e, isAgree) => {
               if (!isAgree) {
                 setConfirmedDefiInvest({ isShow: false })
-                history.push('/invest/overview')
+                history.push(`${RouterPath.invest}/overview`)
               } else {
                 confirmedLeverageETHInvest()
                 setConfirmedDefiInvest({ isShow: false })

@@ -36,6 +36,7 @@ import {
   IBData,
   MarketType,
   myLog,
+  RouterPath,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
@@ -230,7 +231,8 @@ export const useBtradeSwap = <
           ...tradeDataTmp,
         }
       })
-      history.push('/trade/btrade/' + _market)
+      history.push(`${RouterPath.btrade}}/${_market}`)
+
       updateTradeBtrade({
         market,
         tradePair,

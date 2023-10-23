@@ -2998,7 +2998,7 @@ export function useAccountModalForUI({
               btnTxt: 'labelDualPanelClose',
               callback: (_e: any) => {
                 setShowAccount({ isShow: false })
-                history.push('/invest/balance')
+                history.push(`${RouterPath.invest}/balance`)
               },
             }}
             {...{

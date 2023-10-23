@@ -187,6 +187,8 @@ export enum RouterPath {
   nft = '/nft',
   invest = '/invest',
   vault = '/vault',
+  //404? loading
+  loading = '/loading',
 }
 
 export enum RouterMainKey {
