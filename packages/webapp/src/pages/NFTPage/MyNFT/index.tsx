@@ -10,6 +10,7 @@ import {
   EmptyValueTag,
   getShortAddr,
   MY_NFT_VIEW,
+  NFTSubRouter,
   NFTWholeINFO,
   RouterPath,
   SoursURL,
@@ -180,7 +181,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
                     // disabled={!toggle.depositNFT}
                     onClick={() => {
                       if (toggle.depositNFT.enable) {
-                        history.push(`${RouterPath.nft}/depositNFT`)
+                        history.push(`${RouterPath.nft}/${NFTSubRouter.depositNFT}`)
                       } else {
                         setShowTradeIsFrozen({ isShow: true, type: 'Deposit' })
                       }
@@ -193,7 +194,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
                   <Button
                     variant={'outlined'}
                     color={'primary'}
-                    onClick={() => history.push(`${RouterPath.nft}/transactionNFT`)}
+                    onClick={() => history.push(`${RouterPath.nft}/${NFTSubRouter.transactionNFT}`)}
                   >
                     {t('labelTransactionNFT')}
                   </Button>

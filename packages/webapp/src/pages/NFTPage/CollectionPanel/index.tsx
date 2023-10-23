@@ -19,6 +19,7 @@ import {
   TOAST_TIME,
   TradeNFT,
   RouterPath,
+  NFTSubRouter,
 } from '@loopring-web/common-resources'
 import {
   getIPFSString,
@@ -93,7 +94,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               <Tooltip title={t('labelCheckImportCollectionDes').toString()}>
                 <Button
                   onClick={() => {
-                    history.push(`${RouterPath.nft}/importLegacyCollection`)
+                    history.push(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}`)
                   }}
                   sx={isMobile ? { marginBottom: 2 } : { marginRight: 1 }}
                   // startIcon={<DownloadIcon />}
@@ -105,7 +106,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               </Tooltip>
               <Button
                 onClick={() => {
-                  history.push(`${RouterPath.nft}/addCollection`)
+                  history.push(`${RouterPath.nft}/${NFTSubRouter.addCollection}`)
                   // setStep(CreateCollectionStep.ChooseMethod);
                   // setCreateOpen(true);
                 }}
@@ -136,16 +137,20 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               size={isMobile ? 'small' : 'large'}
               setShowEdit={(item) => {
                 updateCollectionData({ ...item })
-                history.push(`${RouterPath.nft}/editCollection/${item.contractAddress}--${item.id}`)
+                history.push(
+                  `${RouterPath.nft}/${NFTSubRouter.editCollection}/${item.contractAddress}--${item.id}`,
+                )
               }}
               setShowManageLegacy={(item) => {
                 updateCollectionData({ ...item })
                 history.push(
-                  `${RouterPath.nft}/importLegacyCollection/${item.contractAddress}--${item.id}?isEdit=true`,
+                  `${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${item.contractAddress}--${item.id}?isEdit=true`,
                 )
               }}
               onItemClick={(item) => {
-                history.push(`${RouterPath.nft}/myCollection/${item.contractAddress}--${item.id}`)
+                history.push(
+                  `${RouterPath.nft}/${NFTSubRouter.myCollection}/${item.contractAddress}--${item.id}`,
+                )
                 setDetail(item)
               }}
               setShowMintNFT={(item) => {
@@ -155,7 +160,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
                   mintData: nftMintValue.nftMETA,
                   collection: undefined,
                 })
-                history.push(`${RouterPath.nft}/mintNFT/${item.contractAddress}`)
+                history.push(`${RouterPath.nft}/${NFTSubRouter.mintNFT}/${item.contractAddress}`)
               }}
               setShowTradeIsFrozen={(item, typeKey) => {
                 setShowTradeIsFrozen({
@@ -196,12 +201,14 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
             account={account}
             setShowEdit={(item) => {
               updateCollectionData({ ...item })
-              history.push(`${RouterPath.nft}/editCollection/${item.contractAddress}--${item.id}`)
+              history.push(
+                `${RouterPath.nft}/${NFTSubRouter.editCollection}/${item.contractAddress}--${item.id}`,
+              )
             }}
             setShowManageLegacy={(item) => {
               updateCollectionData({ ...item })
               history.push(
-                `${RouterPath.nft}/importLegacyCollection/${item.contractAddress}--${item.id}?isEdit=true`,
+                `${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${item.contractAddress}--${item.id}?isEdit=true`,
               )
             }}
             count={nftPublicProps?.total}

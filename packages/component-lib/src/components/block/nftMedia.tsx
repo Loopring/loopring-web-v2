@@ -6,6 +6,7 @@ import {
   SoursURL,
   SyncIcon,
   RouterPath,
+  NFTSubRouter,
 } from '@loopring-web/common-resources'
 import { useTheme } from '@emotion/react'
 import React from 'react'
@@ -356,7 +357,7 @@ export const CollectionHadUnknown = withTranslation('common')(
                 size={'large'}
                 color={'primary'}
                 onClick={() => {
-                  history.replace(`${RouterPath.nft}/importLegacyCollection`)
+                  history.replace(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}`)
                   onClose()
                 }}
               >

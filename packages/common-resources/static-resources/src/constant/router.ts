@@ -206,6 +206,20 @@ export enum RouterMainKey {
   vault = 'vault',
 }
 
+export enum NFTSubRouter {
+  transactionNFT = 'transactionNFT',
+  mintNFTLanding = 'mintNFTLanding',
+  mintNFT = 'mintNFT',
+  mintNFTAdvance = 'mintNFTAdvance',
+  depositNFT = 'depositNFT',
+  myCollection = 'myCollection',
+  addCollection = 'addCollection',
+  editCollection = 'editCollection',
+  addLegacyCollection = 'addLegacyCollection',
+  importLegacyCollection = 'importLegacyCollection',
+  assetsNFT = 'assetsNFT',
+}
+
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -418,7 +432,7 @@ export const subMenuNFT = {
   NFTGroup: [
     {
       icon: AssetsIcon,
-      router: { path: `${RouterPath.nft}/assetsNFT` },
+      router: { path: `${RouterPath.nft}/${NFTSubRouter.assetsNFT}` },
       label: {
         id: 'assetsNFT',
         i18nKey: 'labelMyAssetsNFT',
@@ -427,7 +441,7 @@ export const subMenuNFT = {
     },
     {
       icon: MintIcon,
-      router: { path: `${RouterPath.nft}/mintNFTLanding` },
+      router: { path: `${RouterPath.nft}/${NFTSubRouter.mintNFTLanding}` },
       label: {
         id: 'mintNFT',
         i18nKey: 'labelMintNFT',
@@ -436,7 +450,7 @@ export const subMenuNFT = {
     },
     {
       icon: ImageIcon,
-      router: { path: `${RouterPath.nft}/myCollection` },
+      router: { path: `${RouterPath.nft}/${NFTSubRouter.myCollection}` },
       label: {
         id: 'collection',
         i18nKey: 'labelMyCollection',
@@ -556,7 +570,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'Markets',
       i18nKey: 'labelMarkets',
     },
-    router: { path: '/markets' },
+    router: { path: `${RouterPath.markets}` },
     status: HeaderMenuTabStatus.default,
   },
   {
@@ -572,7 +586,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'Invest',
       i18nKey: 'labelInvest',
     },
-    router: { path: '/invest/overview' },
+    router: { path: `${RouterPath.invest}/overview` },
     status: HeaderMenuTabStatus.default,
     child: subMenuInvest,
   },
@@ -581,7 +595,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'NFT',
       i18nKey: 'labelNFT',
     },
-    router: { path: '/nft' },
+    router: { path: `${RouterPath.nft}` },
     status: HeaderMenuTabStatus.default,
     child: subMenuNFT,
   },
