@@ -20,7 +20,7 @@ enum TabIndex {
 
 export const MyNFTHistory = () => {
   const { t } = useTranslation('common')
-  const match: any = useRouteMatch('/NFT/transactionNFT/:tab')
+  const match: any = useRouteMatch('/nft/transactionNFT/:tab')
   const { search } = useLocation()
 
   const [currentTab, setCurrentTab] = React.useState(() => {
@@ -35,7 +35,7 @@ export const MyNFTHistory = () => {
   const handleTabChange = React.useCallback(
     (value: TabIndex, _pageSize?: number) => {
       setCurrentTab(value)
-      history.replace(`/NFT/transactionNFT/${value}?${search.replace('?', '')}`)
+      history.replace(`/nft/transactionNFT/${value}?${search.replace('?', '')}`)
     },
     [history, search],
   )
