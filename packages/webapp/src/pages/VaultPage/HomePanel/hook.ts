@@ -175,7 +175,7 @@ export const useVaultMarket = ({
     forexMap,
     rowConfig,
     onItemClick: (item: R) => {
-      history.push('./')
+      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
     },
   }
 }

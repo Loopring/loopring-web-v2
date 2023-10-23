@@ -15,6 +15,7 @@ import {
   TransactionTable,
   useSettings,
   useToggle,
+  VaultTxTable,
 } from '@loopring-web/component-lib'
 import {
   StylePaper,
@@ -44,6 +45,7 @@ import {
   RowConfig,
   TOAST_TIME,
   TabOrderIndex,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 
@@ -151,7 +153,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const handleTabChange = React.useCallback(
     (value: RecordTabIndex, _pageSize?: number) => {
       setCurrentTab(value)
-      history.replace(`/l2assets/history/${value}?${search.replace('?', '')}`)
+      history.replace(`${RouterPath.l2records}/${value}?${search.replace('?', '')}`)
     },
     [history, search],
   )
@@ -198,11 +200,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
-        <Box
-          marginTop={2}
-          display={'flex'}
-          sx={isMobile ? { maxWidth: 'calc(100vw - 32px)' } : {}}
-        >
+        <Box marginTop={2} display={'flex'} sx={isMobile ? { maxWidth: 'calc(100vw - 32px)' } : {}}>
           <Tabs
             value={currentTab}
             onChange={(_event, value) => handleTabChange(value)}
@@ -455,6 +453,22 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               tokenMap={tokenMap}
               idIndex={idIndex}
             />
+          ) : currentTab === RecordTabIndex.VaultRecords ? (
+            //TODO:
+            <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
+              <VaultTxTable
+                {...{
+                  showloading: showBtradeLoading,
+                  getOrderList: getBtradeOrderList,
+                  rawData: btradeOrderData,
+                }}
+                pagination={{
+                  pageSize: pageSize,
+                  total: btradeTotalNum,
+                }}
+                onItemClick={onDetail}
+              />
+            </Box>
           ) : (
             <></>
           )}

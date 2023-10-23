@@ -2122,4 +2122,11 @@ export default {
   labelVaultRepayMax: 'Maximum of {{arg}}',
   labelVaultRepayBtn: 'Repay',
   labelRepayQuota: 'Total Repay Quota',
+  labelVaultWhatis: 'What is Loopring Vault?',
+  labelVaultDesSimple:
+    'Vault: Using a third-party funds to trade assets. Traders can access additional capital, amplifying trading results.',
+  labelVaultRiskDes:
+    '<p>Loopring Vault acts as an isolated margin account, enabling users to borrow and lend tokens with collateral. Besides supporting leveraged trading, it also facilitates the trading of tokens not available on Loopring DEX by tapping into CEX liquidity depth. </p>' +
+    "<p>It's important to note that all assets in Vault are hedged on CEX, incurring an associated cost known as the Asset Holding Fee, charged on an hourly basis. We strongly recommend closing your position if it's no longer needed for trading to reduce costs.</p>" +
+    '<p>In order to initiate the forced clearing of assets in the event of liquidation, Loopring will require your approval to handle the collateral asset. Additionally, after closing a position, there may be some remaining vault tokens in your account that Loopring will need to clear before allowing you to open a new position.</p>',
 }

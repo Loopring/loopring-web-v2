@@ -717,7 +717,7 @@ export enum RecordTabIndex {
   BtradeSwapRecords = 'BtradeSwapRecords',
   StopLimitRecords = 'StopLimitRecords',
   leverageETHRecords = 'leverageETHRecords',
-  vaultRecords = 'vaultRecords',
+  VaultRecords = 'VaultRecords',
 }
 
 export enum AssetTabIndex {
