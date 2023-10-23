@@ -36,9 +36,33 @@ export const BANXA_URLS = {
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
 export const LOOPRING_DOC = 'https://docs.loopring.io'
 
+export enum RouterPath {
+  lite = '/trade/lite',
+  pro = '/trade/pro',
+  stoplimit = '/trade/stoplimit',
+  btrade = '/trade/btrade',
+  fiat = '/trade/fiat',
+  markets = '/markets',
+  mining = '/mining',
+  redPacket = '/redPacket',
+  l2assets = '/l2assets',
+  l2records = '/l2assets/history',
+  l2assetsDetail = '/l2assets/assets',
+  layer2 = '/layer2',
+  nft = '/nft',
+  invest = '/invest',
+  vault = '/vault',
+}
 //
 //
 export enum Layer2RouterID {
+  security = 'security',
+  vip = 'vip',
+  contact = 'contact',
+  referralrewards = 'referralrewards',
+  forcewithdraw = 'forcewithdraw',
+}
+export enum ProfileKey {
   security = 'security',
   vip = 'vip',
   contact = 'contact',
@@ -87,14 +111,6 @@ export const Profile = {
       },
     },
   ],
-}
-
-export enum ProfileKey {
-  security = 'security',
-  vip = 'vip',
-  contact = 'contact',
-  referralrewards = 'referralrewards',
-  forcewithdraw = 'forcewithdraw',
 }
 
 export enum ButtonComponentsMap {
@@ -177,24 +193,6 @@ export const toolBarMobileAvailableItem = [
   ButtonComponentsMap.Setting,
   ButtonComponentsMap.WalletConnect,
 ]
-
-export enum RouterPath {
-  lite = '/trade/lite',
-  pro = '/trade/pro',
-  stoplimit = '/trade/stoplimit',
-  btrade = '/trade/btrade',
-  fiat = '/trade/fiat',
-  markets = '/markets',
-  mining = '/mining',
-  redPacket = '/redPacket',
-  l2assets = '/l2assets',
-  l2records = '/l2assets/history',
-  l2assetsDetail = '/l2assets/assets',
-  layer2 = '/layer2',
-  nft = '/nft',
-  invest = '/invest',
-  vault = '/vault',
-}
 
 export enum RouterMainKey {
   lite = 'lite',
