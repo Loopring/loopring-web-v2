@@ -42,6 +42,7 @@ import {
   TOAST_TIME,
   TokenType,
   RouterPath,
+  RedPacketRouterIndex,
 } from '@loopring-web/common-resources'
 import { LuckyTokenClaimType, LuckyTokenItemForReceive, SoursURL } from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
@@ -171,7 +172,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           size={'small'}
           // sx={{ color: "var(--color-text-secondary)" }}
           color={'primary'}
-          onClick={() => history.push('/redPacket/markets')}
+          onClick={() => history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.markets}`)}
         >
           {t('labelRedPacketMarketsBtn')}
         </Button>
