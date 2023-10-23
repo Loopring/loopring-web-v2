@@ -1,5 +1,10 @@
 import { Box, Grid, Typography } from '@mui/material'
-import { DualViewType, LOOPRING_DOCUMENT, DualInvestmentLogo } from '@loopring-web/common-resources'
+import {
+  DualViewType,
+  LOOPRING_DOCUMENT,
+  DualInvestmentLogo,
+  RouterPath,
+} from '@loopring-web/common-resources'
 import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -43,7 +48,7 @@ export const ChooseDualType = ({
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Button
-              onClick={() => history.push('/invest/balance')}
+              onClick={() => `${RouterPath.invest}/balance`}
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >

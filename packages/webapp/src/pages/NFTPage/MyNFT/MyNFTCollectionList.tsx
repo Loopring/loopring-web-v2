@@ -1,5 +1,5 @@
 import { Box, Link, Typography } from '@mui/material'
-import { TOAST_TIME } from '@loopring-web/common-resources'
+import { RouterPath, TOAST_TIME } from '@loopring-web/common-resources'
 import { CollectionCardList, Toast, ToastType, useSettings } from '@loopring-web/component-lib'
 import { useAccount, useMyNFTCollection } from '@loopring-web/core'
 import React from 'react'
@@ -40,7 +40,7 @@ export const MyNFTCollectionList = withTranslation('common')(
             Legacy NFTs created in Loopring don't contain collection information. We have added the
             feature to allow creators to import the collection information so that those NFTs can be
             categorized well.
-            <Link href='#/nft/importLegacyCollection' target={'_self'}>
+            <Link href={`/#/${RouterPath.nft}/importLegacyCollection`} target={'_self'}>
               Go to Import Collection for Legacy NFT
             </Link>
           </Trans>

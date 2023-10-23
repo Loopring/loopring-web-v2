@@ -10,6 +10,7 @@ import {
   globalSetup,
   IPFS_LOOPRING_SITE,
   myLog,
+  RouterPath,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
   TradeNFT,
@@ -326,7 +327,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             store.getState().modals.isShowAccount.step == AccountStep.NFTDeposit_Submit
           ) {
             setShowAccount({ isShow: false })
-            history.push('/nft/assetsNFT')
+            history.push(`${RouterPath.nft}/assetsNFT`)
           }
         } catch (error) {
           if (error instanceof Error) {
