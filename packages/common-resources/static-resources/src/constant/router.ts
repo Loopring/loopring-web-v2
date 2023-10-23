@@ -182,9 +182,11 @@ export enum RouterPath {
   mining = '/mining',
   redPacket = '/redPacket',
   l2assets = '/l2assets',
+  l2records = '/l2assets/history',
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
+  vault = '/vault',
 }
 
 export enum RouterMainKey {
@@ -200,6 +202,7 @@ export enum RouterMainKey {
   layer2 = 'layer2',
   nft = 'nft',
   invest = 'invest',
+  vault = 'vault',
 }
 
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
@@ -414,7 +417,7 @@ export const subMenuNFT = {
   NFTGroup: [
     {
       icon: AssetsIcon,
-      router: { path: '/nft/assetsNFT' },
+      router: { path: `${RouterPath.nft}/assetsNFT` },
       label: {
         id: 'assetsNFT',
         i18nKey: 'labelMyAssetsNFT',
@@ -423,7 +426,7 @@ export const subMenuNFT = {
     },
     {
       icon: MintIcon,
-      router: { path: '/nft/mintNFTLanding' },
+      router: { path: `${RouterPath.nft}/mintNFTLanding` },
       label: {
         id: 'mintNFT',
         i18nKey: 'labelMintNFT',
@@ -432,7 +435,7 @@ export const subMenuNFT = {
     },
     {
       icon: ImageIcon,
-      router: { path: '/nft/myCollection' },
+      router: { path: `${RouterPath.nft}/myCollection` },
       label: {
         id: 'collection',
         i18nKey: 'labelMyCollection',

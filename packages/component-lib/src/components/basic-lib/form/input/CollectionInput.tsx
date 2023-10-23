@@ -10,6 +10,7 @@ import {
   MakeMeta,
   myLog,
   TOAST_TIME,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import {
   Button,
@@ -180,7 +181,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
         >
           <MenuItem
             onClick={() => {
-              pushRoute('/nft/addCollection')
+              pushRoute(`${RouterPath.nft}/addCollection`)
             }}
           >
             {t('labelNFTCreateCollection')}
@@ -352,7 +353,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
             <Button
               variant={'contained'}
               onClick={() => {
-                pushRoute('/nft/addCollection')
+                pushRoute(`${RouterPath.nft}/addCollection`)
               }}
             >
               {t('labelNFTCreateCollection')}

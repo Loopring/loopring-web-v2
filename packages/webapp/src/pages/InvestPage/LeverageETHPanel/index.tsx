@@ -16,7 +16,7 @@ import {
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
+import { BackIcon, RouterPath, TOAST_TIME } from '@loopring-web/common-resources'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
@@ -146,7 +146,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             size={'medium'}
             sx={{ color: 'var(--color-text-primary)' }}
             color={'inherit'}
-            onClick={() => history.push(`/invest/overview`)}
+            onClick={() => history.push(`${RouterPath.invest}/overview`)}
           >
             {t('labelBack')}
           </Button>
@@ -154,7 +154,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
           {/* <Typography variant={'h4'}>
             {t('labelLeverageETHStaking')}
           </Typography> */}
-          <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+          <Button onClick={() => history.push(`${RouterPath.invest}/balance`)} variant={'text'}>
             {t('labelMyInvestLRCStaking')}{' '}
             {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
           </Button>

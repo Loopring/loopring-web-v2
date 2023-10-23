@@ -6,10 +6,13 @@ export enum UpColor {
   green = 'green',
   red = 'red',
 }
-
 export const SlippageTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
 export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
-
+export type RowConfigType = {
+  rowHeight?: number
+  rowHeaderHeight?: number
+  minHeight?: number
+}
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,
@@ -86,13 +89,11 @@ export const sizeNFTConfig = (size: 'large' | 'medium' | 'small') => {
       break
   }
 }
-
 export enum TradeBtnStatus {
   AVAILABLE = 'AVAILABLE',
   DISABLED = 'DISABLED',
   LOADING = 'LOADING',
 }
-
 export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
   process.env.REACT_APP_RPC_OTHERS?.split(',') ?? []
 ).reduce(
@@ -144,16 +145,6 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
     ChainIdExtends: { [key: string]: number | string }
   },
 )
-
-// [..._NetworkMap.entries()].reduce((prev, [key, value]) => {
-//   prev[key] = value;
-//   return prev;
-// }, NetworkMap);
-// myLog("NetworkMap", NetworkMap);
-// [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
-//   prev[key] = value;
-//   return prev;
-// }, MapChainId);
 if (window) {
   // @ts-ignore
   window.__ChainIdExtends = ChainIdExtends
@@ -181,4 +172,10 @@ export type CoinSource = {
   sourceW: number
   sourceH: number
   simpleName?: string
+}
+
+export enum TableFilterParams {
+  all = 'all',
+  favourite = 'favourite',
+  ranking = 'ranking',
 }

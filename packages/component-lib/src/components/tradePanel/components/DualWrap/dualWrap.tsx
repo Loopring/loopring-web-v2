@@ -95,7 +95,10 @@ export const DualWrap = <
     order: 'left' as any,
     decimalsLimit: tokenSell?.precision,
     coinPrecision: tokenSell?.precision,
-    inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
+    inputData: {
+      ...(dualCalcData ? dualCalcData.coinSell : ({} as any)),
+      max: dualCalcData.maxSellAmount,
+    },
     coinMap: {},
     ...tokenSellProps,
     handleError: handleError as any,

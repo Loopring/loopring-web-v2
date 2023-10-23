@@ -3,6 +3,7 @@ import {
   ErrorType,
   IPFS_HEAD_URL,
   myLog,
+  RouterPath,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
@@ -231,7 +232,7 @@ export const useEditCollection = <T extends CollectionMeta>({
               content: t('labelEditCollectionSuccess'),
             })
             updateWalletL2Collection({ page: 1 })
-            history.push('/nft/myCollection')
+            history.push(`${RouterPath.nft}/myCollection`)
           }
           updateCollectionData({ ...collectionOldValue })
           setKeys({
@@ -285,7 +286,7 @@ export const useEditCollection = <T extends CollectionMeta>({
               content: t('labelCreateCollectionSuccess'),
             })
             updateWalletL2Collection({ page: 1 })
-            history.push(`/nft/importLegacyCollection/${match.params.tokenAddress}`)
+            history.push(`${RouterPath.nft}/importLegacyCollection/${match.params.tokenAddress}`)
           }
           updateCollectionData({})
           setKeys({
@@ -339,7 +340,7 @@ export const useEditCollection = <T extends CollectionMeta>({
               content: t('labelCreateCollectionSuccess'),
             })
             updateWalletL2Collection({ page: 1 })
-            history.push('/nft/myCollection')
+            history.push(`${RouterPath.nft}/myCollection`)
           }
           updateCollectionData({})
           setKeys({

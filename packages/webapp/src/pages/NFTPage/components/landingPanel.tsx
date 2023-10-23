@@ -10,7 +10,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Modal, Typography } from '@mui/material'
-import { CreateCollectionStep, SoursURL } from '@loopring-web/common-resources'
+import { CreateCollectionStep, RouterPath, SoursURL } from '@loopring-web/common-resources'
 import React from 'react'
 
 export const MintLandingPanel = () => {
@@ -38,7 +38,7 @@ export const MintLandingPanel = () => {
         <CardNFTStyled
           sx={{ marginBottom: isMobile ? 4 : 0 }}
           onClick={() => {
-            history.push('/nft/mintNFT')
+            history.push(`${RouterPath.nft}/mintNFT`)
           }}
         >
           <Box
@@ -78,7 +78,7 @@ export const MintLandingPanel = () => {
         <CardNFTStyled
           sx={{ marginLeft: isMobile ? 0 : 4, marginBottom: isMobile ? 4 : 0 }}
           onClick={() => {
-            history.push('/nft/mintNFTAdvance')
+            history.push(`${RouterPath.nft}/mintNFTAdvance`)
             // setShowNFTMintAdvance({isShow: true});
           }}
         >
@@ -209,7 +209,7 @@ export const CreateUrlPanel = ({
                   background: 'var(--color-global-bg)',
                 }}
                 onClick={() => {
-                  history.push('/nft/addCollection')
+                  history.push(`${RouterPath.nft}/addCollection`)
                 }}
               >
                 <Box
@@ -256,17 +256,6 @@ export const CreateUrlPanel = ({
               </CardNFTStyled>
             </Box>
             <Box marginLeft={1}></Box>
-            {/*<Box marginLeft={1}>*/}
-            {/*  <Button*/}
-            {/*    onClick={() => {*/}
-            {/*      history.push("/nft/CreateCollection");*/}
-            {/*    }}*/}
-            {/*    variant={"outlined"}*/}
-            {/*    color={"primary"}*/}
-            {/*  >*/}
-            {/*    {t("labelMintNFT")}*/}
-            {/*  </Button>*/}
-            {/*</Box>*/}
           </Box>
         ),
         // onBack: () => setStep(CreateCollectionStep.ChooseMethod)
