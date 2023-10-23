@@ -139,6 +139,7 @@ import {
   FeeInfo,
   L1L2_NAME_DEFINED,
   MapChainId,
+  NFTSubRouter,
   NFTWholeINFO,
   RouterPath,
   SendAssetList,
@@ -1216,7 +1217,7 @@ export function useAccountModalForUI({
               },
               callback: () => {
                 setShowAccount({ isShow: false })
-                history.push(`${RouterPath.nft}/depositNFT`)
+                history.push(`${RouterPath.nft}/${NFTSubRouter.depositNFT}`)
               },
             }}
             {...{
@@ -1338,10 +1339,10 @@ export function useAccountModalForUI({
                 setShowAccount({ isShow: false })
                 if (isShowAccount.info?.lastStep === LAST_STEP.nftMint) {
                   history.push(
-                    `${RouterPath.nft}/mintNFT/${isShowAccount.info?.collection?.contractAddress}`,
+                    `${RouterPath.nft}/${NFTSubRouter.mintNFT}/${isShowAccount.info?.collection?.contractAddress}`,
                   )
                 } else {
-                  history.push(`${RouterPath.nft}/mintNFTAdvance`)
+                  history.push(`${RouterPath.nft}/${NFTSubRouter.mintNFTAdvance}`)
                 }
               },
             }}

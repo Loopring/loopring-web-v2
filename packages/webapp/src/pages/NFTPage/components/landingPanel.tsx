@@ -10,7 +10,12 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Modal, Typography } from '@mui/material'
-import { CreateCollectionStep, RouterPath, SoursURL } from '@loopring-web/common-resources'
+import {
+  CreateCollectionStep,
+  NFTSubRouter,
+  RouterPath,
+  SoursURL,
+} from '@loopring-web/common-resources'
 import React from 'react'
 
 export const MintLandingPanel = () => {
@@ -38,7 +43,7 @@ export const MintLandingPanel = () => {
         <CardNFTStyled
           sx={{ marginBottom: isMobile ? 4 : 0 }}
           onClick={() => {
-            history.push(`${RouterPath.nft}/mintNFT`)
+            history.push(`${RouterPath.nft}/${NFTSubRouter.mintNFT}`)
           }}
         >
           <Box
@@ -78,7 +83,7 @@ export const MintLandingPanel = () => {
         <CardNFTStyled
           sx={{ marginLeft: isMobile ? 0 : 4, marginBottom: isMobile ? 4 : 0 }}
           onClick={() => {
-            history.push(`${RouterPath.nft}/mintNFTAdvance`)
+            history.push(`${RouterPath.nft}/${NFTSubRouter.mintNFTAdvance}`)
             // setShowNFTMintAdvance({isShow: true});
           }}
         >
@@ -209,7 +214,7 @@ export const CreateUrlPanel = ({
                   background: 'var(--color-global-bg)',
                 }}
                 onClick={() => {
-                  history.push(`${RouterPath.nft}/addCollection`)
+                  history.push(`${RouterPath.nft}/${NFTSubRouter.addCollection}`)
                 }}
               >
                 <Box

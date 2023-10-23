@@ -6,7 +6,12 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import { useRouteMatch } from 'react-router-dom'
-import { HeaderMenuItemInterface, RouterPath, subMenuLayer2 } from '@loopring-web/common-resources'
+import {
+  HeaderMenuItemInterface,
+  NFTSubRouter,
+  RouterPath,
+  subMenuLayer2,
+} from '@loopring-web/common-resources'
 import { Box, Grid } from '@mui/material'
 
 export const TitleNFTMobile = () => {
@@ -41,7 +46,7 @@ export const TitleNFTMobile = () => {
               variant={'outlined'}
               size={'medium'}
               color={'primary'}
-              href={`/#/${RouterPath.nft}/mintNFT`}
+              href={`/#/${RouterPath.nft}/${NFTSubRouter.mintNFT}`}
             >
               {t('labelMintNFT')}
             </Button>
@@ -52,7 +57,7 @@ export const TitleNFTMobile = () => {
               variant={'outlined'}
               size={'medium'}
               color={'primary'}
-              href={`/#/${RouterPath.nft}/depositNFT`}
+              href={`/#/${RouterPath.nft}/${NFTSubRouter.depositNFT}`}
             >
               {t('labelL1toL2NFT')}
             </Button>

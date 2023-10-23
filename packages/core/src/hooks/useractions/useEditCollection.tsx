@@ -3,6 +3,7 @@ import {
   ErrorType,
   IPFS_HEAD_URL,
   myLog,
+  NFTSubRouter,
   RouterPath,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
@@ -232,7 +233,7 @@ export const useEditCollection = <T extends CollectionMeta>({
               content: t('labelEditCollectionSuccess'),
             })
             updateWalletL2Collection({ page: 1 })
-            history.push(`${RouterPath.nft}/myCollection`)
+            history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)
           }
           updateCollectionData({ ...collectionOldValue })
           setKeys({
@@ -286,7 +287,9 @@ export const useEditCollection = <T extends CollectionMeta>({
               content: t('labelCreateCollectionSuccess'),
             })
             updateWalletL2Collection({ page: 1 })
-            history.push(`${RouterPath.nft}/importLegacyCollection/${match.params.tokenAddress}`)
+            history.push(
+              `${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${match.params.tokenAddress}`,
+            )
           }
           updateCollectionData({})
           setKeys({
@@ -340,7 +343,7 @@ export const useEditCollection = <T extends CollectionMeta>({
               content: t('labelCreateCollectionSuccess'),
             })
             updateWalletL2Collection({ page: 1 })
-            history.push(`${RouterPath.nft}/myCollection`)
+            history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)
           }
           updateCollectionData({})
           setKeys({

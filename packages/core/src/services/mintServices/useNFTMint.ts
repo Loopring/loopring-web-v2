@@ -31,6 +31,7 @@ import {
   MintTradeNFT,
   myLog,
   NFTMETA,
+  NFTSubRouter,
   RouterPath,
   SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   UIERROR_CODE,
@@ -221,7 +222,7 @@ export function useNFTMint<Me extends NFTMETA, Mi extends MintTradeNFT<I>, I, _C
           }
           myLog('nftMintValue', nftMintValue.collection)
           history.push(
-            `${RouterPath.nft}/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`,
+            `${RouterPath.nft}/${NFTSubRouter.assetsNFT}/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`,
           )
           walletLayer2Service.sendUserUpdate()
           mintService.emptyData({
@@ -265,7 +266,7 @@ export function useNFTMint<Me extends NFTMETA, Mi extends MintTradeNFT<I>, I, _C
             } else if ([102040].includes((e as sdk.RESULT_INFO)?.code || 0)) {
               walletLayer2Service.sendUserUpdate()
               history.push(
-                `${RouterPath.nft}/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`,
+                `${RouterPath.nft}/${NFTSubRouter.assetsNFT}/byCollection/${nftMintValue.collection?.contractAddress}--${nftMintValue.collection?.id}`,
               )
               mintService.emptyData({
                 lastStep: LAST_STEP.nftMint,

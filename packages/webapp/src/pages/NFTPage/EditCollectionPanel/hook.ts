@@ -1,6 +1,7 @@
 import {
   AccountStatus,
   CollectionMeta,
+  NFTSubRouter,
   RouterPath,
   SagaStatus,
 } from '@loopring-web/common-resources'
@@ -56,9 +57,9 @@ export const useCollectionPanel = <T extends CollectionMeta>({
     if (match?.params.item === 'addCollection') {
       history.goBack()
     } else if (match?.params.item === 'editCollection') {
-      history.push(`${RouterPath.nft}/myCollection`)
+      history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)
     } else if (match?.params?.item === 'addLegacyCollection') {
-      history.push(`${RouterPath.nft}/importLegacyCollection/${match?.params?.id}`)
+      history.push(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${match?.params?.id}`)
     }
   }, [account.readyState, accountStatus, history, match.params.id, match.params.item])
   React.useEffect(() => {
@@ -72,13 +73,13 @@ export const useCollectionPanel = <T extends CollectionMeta>({
       const loopringId = match?.params?.id.split('--')[1]
       if (collectionValue?.id?.toString() === loopringId.toString()) {
       } else {
-        history.push(`${RouterPath.nft}/myCollection`)
+        history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)
       }
     } else if (match?.params?.item === 'addLegacyCollection' && match?.params?.id) {
       const contract = match?.params?.id
       if (contract.startsWith('0x')) {
       } else {
-        history.push(`${RouterPath.nft}/importLegacyCollection`)
+        history.push(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}`)
       }
     }
   }, [accountStatus, account.readyState, match?.params?.item])
