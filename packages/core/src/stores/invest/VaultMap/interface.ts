@@ -23,6 +23,7 @@ export type VaultMap<
       tradePairs: Array<CoinKey<R>>
     }
   >
+  erc20Map: sdk.LoopringMap<VaultUIMap>
 }
 
 export type VaultMapStates = VaultMap & {

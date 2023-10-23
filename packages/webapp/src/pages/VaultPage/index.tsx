@@ -20,7 +20,6 @@ import { VaultDashBoardPanel } from './DashBoardPanel'
 import { VaultHomePanel } from './HomePanel'
 import { useTranslation } from 'react-i18next'
 import { ModalVaultWrap } from './components/ModalWrap'
-import { useTheme } from '@emotion/react'
 
 export const HomeTitle = () => {
   const { t } = useTranslation()

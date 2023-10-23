@@ -182,6 +182,7 @@ export enum RouterPath {
   mining = '/mining',
   redPacket = '/redPacket',
   l2assets = '/l2assets',
+  l2records = '/l2assets/history',
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',

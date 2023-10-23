@@ -17,11 +17,7 @@ const getVaultTickersApi = async (): Promise<{
   } = store.getState()
   let {
     vaultTickerMap,
-    vaultMap: {
-      // marketArray,
-      erc20Array,
-      // tokenMap:vaultTokenMap
-    },
+    vaultMap: { erc20Array },
   } = invest
   let { __timer__ } = vaultTickerMap
   const tokens = erc20Array.map((item) => {

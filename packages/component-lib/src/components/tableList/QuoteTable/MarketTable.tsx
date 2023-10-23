@@ -12,22 +12,22 @@ import {
   getValuePrecisionThousand,
   MarketTableRawDataItem,
   PriceTag,
-  RouterPath,
   RowConfig,
   RowConfigType,
   SCENARIO,
   StarHollowIcon,
   StarSolidIcon,
-  VaultKey,
+  TokenType,
 } from '@loopring-web/common-resources'
+import { useSettings } from '../../../stores'
 import { Button, Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
-import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
 import { Currency } from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { TagIconList } from '../../block'
 import { QuoteTableChangedCell } from './QuoteTable'
+import { CoinIcons } from '../assetsTable'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -72,6 +72,7 @@ const TableStyled = styled(Table)`
     text-align: center;
   }
 ` as any
+
 export interface MarketTableProps<R = MarketTableRawDataItem> {
   rawData: R[]
   rowConfig: RowConfigType
@@ -111,9 +112,7 @@ export const MarketTable = withTranslation('tables')(
       onItemClick,
       ...rest
     }: MarketTableProps & WithTranslation & RouteComponentProps) => {
-      let userSettings = useSettings()
-      const upColor = userSettings?.upColor
-      const { currency, isMobile } = userSettings
+      const { currency, isMobile, coinJson, upColor } = useSettings()
       const handleStartClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         isFavourite: boolean,
@@ -134,6 +133,8 @@ export const MarketTable = withTranslation('tables')(
             sortable: true,
             formatter: ({ row }: any) => {
               const isFavourite = favoriteMarket?.includes(row.symbol)
+              const symbol = row?.token?.type === TokenType.vault ? row.erc20Symbol : row.symbol
+              let tokenIcon: [any, any] = [coinJson[symbol], undefined]
               return (
                 <Box
                   className='rdg-cell-value'
@@ -154,13 +155,16 @@ export const MarketTable = withTranslation('tables')(
                       )}
                     </IconButton>
                   </Typography>
+                  <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
                   <Typography component={'span'}>{row.symbol}</Typography>
                   &nbsp;
                   {campaignTagConfig && (
                     <TagIconList
                       campaignTagConfig={campaignTagConfig}
                       symbol={row.symbol}
-                      scenario={SCENARIO.VAULT}
+                      scenario={
+                        row?.token?.type === TokenType.vault ? SCENARIO.VAULT : SCENARIO.MARKET
+                      }
                     />
                   )}
                 </Box>

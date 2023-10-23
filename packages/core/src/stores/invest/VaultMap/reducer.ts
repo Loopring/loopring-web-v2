@@ -6,6 +6,7 @@ const initialState: Required<VaultMapStates> = {
   marketArray: [],
   marketCoins: [],
   erc20Array: [],
+  erc20Map: {},
   marketMap: {},
   tradeMap: {},
   tokenMap: {},
@@ -31,7 +32,6 @@ const vaultMapSlice: Slice = createSlice({
       } else {
         const vaultMap = action.payload
         if (vaultMap) {
-          // state.tokenMap =
           state.marketArray = vaultMap.marketArray
           state.marketCoins = vaultMap.marketCoins
           state.marketMap = vaultMap.marketMap
@@ -42,6 +42,7 @@ const vaultMapSlice: Slice = createSlice({
           state.tokenMap = vaultMap.tokenMap
           state.joinTokenMap = vaultMap.joinTokenMap
           state.erc20Array = vaultMap.erc20Array
+          state.erc20Map = vaultMap.erc20Map
           state.raw_data = vaultMap?.raw_data ?? undefined
         }
 

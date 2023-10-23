@@ -830,7 +830,10 @@ export enum DualInvestConfirmType {
   all = 'all',
 }
 
-export type MarketTableRawDataItem = sdk.DatacenterTokenInfoSimple
+export type MarketTableRawDataItem = sdk.DatacenterTokenInfoSimple & {
+  symbol: string
+  erc20Symbol: string
+}
 
 export enum VaultAction {
   VaultJoin = 'VaultJoin',
