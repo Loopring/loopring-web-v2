@@ -566,7 +566,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'L2Assets',
       i18nKey: 'labelAssets',
     },
-    router: { path: '/l2assets' },
+    router: { path: `${RouterPath.l2assets}` },
     status: HeaderMenuTabStatus.default,
   },
   {
@@ -750,7 +750,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
         id: 'L2Assets',
         i18nKey: 'labelAssets',
       },
-      router: { path: '/l2assets' },
+      router: { path: `${RouterPath.l2assets}` },
       status: HeaderMenuTabStatus.default,
     },
     {
@@ -758,7 +758,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
         id: 'Markets',
         i18nKey: 'labelMarkets',
       },
-      router: { path: '/markets' },
+      router: { path: `${RouterPath.markets}` },
       status: HeaderMenuTabStatus.default,
     },
     {
