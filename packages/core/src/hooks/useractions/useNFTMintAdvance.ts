@@ -13,6 +13,7 @@ import {
   LIVE_FEE_TIMES,
   MINT_LIMIT,
   myLog,
+  RouterPath,
   SUBMIT_PANEL_QUICK_AUTO_CLOSE,
   TradeNFT,
   UIERROR_CODE,
@@ -218,7 +219,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
           }
           walletLayer2Service.sendUserUpdate()
           history.push({
-            pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
+            pathname: `${RouterPath.nft}/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
           })
           resetDefault()
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE)
@@ -262,7 +263,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
             } else if ([102040].includes((e as sdk.RESULT_INFO)?.code || 0)) {
               walletLayer2Service.sendUserUpdate()
               history.push({
-                pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
+                pathname: `${RouterPath.nft}/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}--${nftMintAdvanceValue?.collectionMeta?.id}`,
               })
               resetDefault()
             }

@@ -11,6 +11,7 @@ import {
   getShortAddr,
   MY_NFT_VIEW,
   NFTWholeINFO,
+  RouterPath,
   SoursURL,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
@@ -179,7 +180,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
                     // disabled={!toggle.depositNFT}
                     onClick={() => {
                       if (toggle.depositNFT.enable) {
-                        history.push('/nft/depositNFT')
+                        history.push(`${RouterPath.nft}/depositNFT`)
                       } else {
                         setShowTradeIsFrozen({ isShow: true, type: 'Deposit' })
                       }
@@ -192,7 +193,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
                   <Button
                     variant={'outlined'}
                     color={'primary'}
-                    onClick={() => history.push('/nft/transactionNFT')}
+                    onClick={() => history.push(`${RouterPath.nft}/transactionNFT`)}
                   >
                     {t('labelTransactionNFT')}
                   </Button>

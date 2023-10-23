@@ -5,6 +5,7 @@ import {
   SagaStatus,
   subMenuNFT,
   SUBMIT_PANEL_AUTO_CLOSE,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import React from 'react'
 import { onchainHashInfo, store, useAccount, ViewAccountTemplate } from '@loopring-web/core'
@@ -113,7 +114,7 @@ export const NFTPage = () => {
                 display={'inline-flex'}
                 target='_self'
                 rel='noopener noreferrer'
-                href={'/#/nft/importLegacyCollection'}
+                href={`/#${RouterPath.nft}/importLegacyCollection`}
                 paddingLeft={1 / 2}
               >
                 GO

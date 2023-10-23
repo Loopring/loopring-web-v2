@@ -11,6 +11,7 @@ import {
   myLog,
   OrderListIcon,
   RecordTabIndex,
+  RouterPath,
   SCENARIO,
   SlippageBtradeTolerance,
   SlippageTolerance,
@@ -130,7 +131,6 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
       [tradeData, onChangeEvent],
     )
     const theme = useTheme()
-    // @ts-ignore
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
       index: index, // show default show
       panelList: [
@@ -311,15 +311,15 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                         // @ts-ignore
                         tradeCalcData.isBtrade
                           ? history.push(
-                              `/l2assets/history/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,
                             )
-                          : // @ts-ignore
+                          :// @ts-ignore
                           tradeCalcData.isVault
                           ? history.push(
-                              `/l2assets/history/${RecordTabIndex.vaultRecords}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.vaultRecords}?market=${market}`,
                             )
                           : history.push(
-                              `/l2assets/history/${RecordTabIndex.Trades}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,
                             )
                       }}
                       sx={{ backgroundColor: 'var(--field-opacity)' }}

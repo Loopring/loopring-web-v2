@@ -354,7 +354,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
               </Typography>
               <Box display={'flex'} alignItems={'center'}>
                 <Button
-                  onClick={() => history.push('/invest/balance')}
+                  onClick={() => history.push(`${RouterPath.invest}/balance`)}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
                 >
