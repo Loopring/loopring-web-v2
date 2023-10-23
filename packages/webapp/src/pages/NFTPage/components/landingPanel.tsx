@@ -256,17 +256,6 @@ export const CreateUrlPanel = ({
               </CardNFTStyled>
             </Box>
             <Box marginLeft={1}></Box>
-            {/*<Box marginLeft={1}>*/}
-            {/*  <Button*/}
-            {/*    onClick={() => {*/}
-            {/*      history.push("/nft/CreateCollection");*/}
-            {/*    }}*/}
-            {/*    variant={"outlined"}*/}
-            {/*    color={"primary"}*/}
-            {/*  >*/}
-            {/*    {t("labelMintNFT")}*/}
-            {/*  </Button>*/}
-            {/*</Box>*/}
           </Box>
         ),
         // onBack: () => setStep(CreateCollectionStep.ChooseMethod)

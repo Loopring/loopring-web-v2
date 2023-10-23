@@ -11,6 +11,7 @@ import {
   NFTWholeINFO,
   SoursURL,
   ViewMoreIcon,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { Button, CollectionInput, EmptyDefault, MenuItem, TextField } from '../../basic-lib'
 import styled from '@emotion/styled'
@@ -315,7 +316,7 @@ export const ImportCollectionWrap = <Co extends CollectionMeta, NFT extends Part
                     <Trans i18nKey={'labelORCreateCollection'}>
                       or
                       <Link
-                        href={`./#/NFT/addLegacyCollection/${selectContract?.value}`}
+                        href={`/#${RouterPath.nft}/addLegacyCollection/${selectContract?.value}`}
                         variant={'body1'}
                         target={'_self'}
                       >
@@ -394,7 +395,7 @@ export const ImportCollectionWrap = <Co extends CollectionMeta, NFT extends Part
                     className={'step'}
                     fullWidth={true}
                     startIcon={<AddIcon fontSize={'large'} />}
-                    href={`./#/NFT/addLegacyCollection/${selectContract?.value}`}
+                    href={`/#${RouterPath.nft}/addLegacyCollection/${selectContract?.value}`}
                   >
                     {t(`labelCreateLegacyCollection`)}
                   </Button>
@@ -456,7 +457,7 @@ export const ImportCollectionWrap = <Co extends CollectionMeta, NFT extends Part
                     return disabled || !selectCollection
                   },
                   onClick: () => {
-                    history.push('/nft/myCollection')
+                    history.push(`${RouterPath.nft}/myCollection`)
                   },
                 }}
               />
