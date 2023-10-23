@@ -54,8 +54,9 @@ export const DashBoardTitle = () => {
     </Typography>
   )
 }
+const VaultPath = `${RouterPath.vault}/:item`
 export const VaultPage = () => {
-  let match: any = useRouteMatch(`/vault/:item`)
+  let match: any = useRouteMatch(VaultPath)
   const { isMobile } = useSettings()
   const { t } = useTranslation()
   const history = useHistory()
@@ -123,9 +124,7 @@ export const VaultPage = () => {
               variant={'text'}
               startIcon={<OrderListIcon fontSize={'inherit'} color={'inherit'} />}
               sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
-              onClick={() =>
-                history.push(`${RouterPath.l2assets}/history/${RecordTabIndex.vaultRecords}`)
-              }
+              onClick={() => history.push(`${RouterPath.l2records}/${RecordTabIndex.VaultRecords}`)}
             >
               {t('labelVaultRecord')}
             </Button>

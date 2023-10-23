@@ -36,9 +36,35 @@ export const BANXA_URLS = {
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
 export const LOOPRING_DOC = 'https://docs.loopring.io'
 
+export enum RouterPath {
+  lite = '/trade/lite',
+  pro = '/trade/pro',
+  stoplimit = '/trade/stoplimit',
+  btrade = '/trade/btrade',
+  fiat = '/trade/fiat',
+  markets = '/markets',
+  mining = '/mining',
+  redPacket = '/redPacket',
+  l2assets = '/l2assets',
+  l2records = '/l2assets/history',
+  l2assetsDetail = '/l2assets/assets',
+  layer2 = '/layer2',
+  nft = '/nft',
+  invest = '/invest',
+  vault = '/vault',
+  //404? loading
+  loading = '/loading',
+}
 //
 //
 export enum Layer2RouterID {
+  security = 'security',
+  vip = 'vip',
+  contact = 'contact',
+  referralrewards = 'referralrewards',
+  forcewithdraw = 'forcewithdraw',
+}
+export enum ProfileKey {
   security = 'security',
   vip = 'vip',
   contact = 'contact',
@@ -87,14 +113,6 @@ export const Profile = {
       },
     },
   ],
-}
-
-export enum ProfileKey {
-  security = 'security',
-  vip = 'vip',
-  contact = 'contact',
-  referralrewards = 'referralrewards',
-  forcewithdraw = 'forcewithdraw',
 }
 
 export enum ButtonComponentsMap {
@@ -177,26 +195,6 @@ export const toolBarMobileAvailableItem = [
   ButtonComponentsMap.Setting,
   ButtonComponentsMap.WalletConnect,
 ]
-
-export enum RouterPath {
-  lite = '/trade/lite',
-  pro = '/trade/pro',
-  stoplimit = '/trade/stoplimit',
-  btrade = '/trade/btrade',
-  fiat = '/trade/fiat',
-  markets = '/markets',
-  mining = '/mining',
-  redPacket = '/redPacket',
-  l2assets = '/l2assets',
-  l2records = '/l2assets/history',
-  l2assetsDetail = '/l2assets/assets',
-  layer2 = '/layer2',
-  nft = '/nft',
-  invest = '/invest',
-  vault = '/vault',
-  //404? loading
-  loading = '/loading',
-}
 
 export enum RouterMainKey {
   lite = 'lite',
@@ -584,7 +582,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'L2Assets',
       i18nKey: 'labelAssets',
     },
-    router: { path: '/l2assets' },
+    router: { path: `${RouterPath.l2assets}` },
     status: HeaderMenuTabStatus.default,
   },
   {
@@ -618,6 +616,8 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       i18nKey: 'labelVault',
       description: 'labelVaultDescription',
     },
+      router: { path: `${RouterPath.vault}` },
+      status: HeaderMenuTabStatus.default,
     child: vaultItemData,
   },
   {
@@ -773,7 +773,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
         id: 'L2Assets',
         i18nKey: 'labelAssets',
       },
-      router: { path: '/l2assets' },
+      router: { path: `${RouterPath.l2assets}` },
       status: HeaderMenuTabStatus.default,
     },
     {
@@ -781,7 +781,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
         id: 'Markets',
         i18nKey: 'labelMarkets',
       },
-      router: { path: '/markets' },
+      router: { path: `${RouterPath.markets}` },
       status: HeaderMenuTabStatus.default,
     },
     {
@@ -925,7 +925,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
-    // RouterMainKey.vaultLayer2,
+    // RouterMainKey.vault,
   ],
   GOERLI: [
     RouterMainKey.lite,

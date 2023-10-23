@@ -19,7 +19,6 @@ import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
-  DualInvestmentLogo,
   hexToRGB,
   Info2Icon,
   InvestAssetRouter,
@@ -27,7 +26,6 @@ import {
   MarketType,
   RouterPath,
   SatkingLogo,
-  SoursURL,
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
@@ -270,8 +268,11 @@ const ButtonStyled = styled(Button)`
     }
   }
 `
+const InvestRouter = `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`
 
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
+  const match: any = useRouteMatch(InvestRouter)
+
   const { marketArray } = useDefiMap()
 
   const {
@@ -310,7 +311,6 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }
 
-  const match: any = useRouteMatch('/invest/stake/:market?/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()

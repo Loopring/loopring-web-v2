@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router-dom'
 
 import { Box, Container, Typography, Grid, Modal } from '@mui/material'
-import React, { useMemo } from 'react'
+import React from 'react'
 import {
   ConvertToIcon,
   CloseOutIcon,
@@ -72,33 +72,32 @@ export const VaultDashBoardPanel = ({
             <Typography
               component={'span'}
               display={'inline-flex'}
-              marginTop={1}
               variant={'body1'}
               color={'textPrimary'}
             >
               {hideAssets
                 ? HiddenTag
                 : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(profit, 2, 2, 2, true, {
-                    isFait: true,
+                  getValuePrecisionThousand(profit.toString(), 2, 2, 2, false, {
+                    isFait: false,
                     floor: true,
                   })}
             </Typography>
             <Typography
               component={'span'}
               display={'inline-flex'}
-              marginTop={1}
               variant={'body1'}
+              marginLeft={1 / 2}
               color={colors[colorIs]}
             >
               {getValuePrecisionThousand(
                 profit.div(vaultAccountInfo?.totalCollateralOfUsd ?? 1),
-                2,
-                2,
-                2,
-                true,
+                6,
+                6,
+                6,
+                false,
                 {
-                  isFait: true,
+                  isFait: false,
                   floor: true,
                 },
               )}
@@ -116,12 +115,26 @@ export const VaultDashBoardPanel = ({
     return (
       <>
         {vaultAccountInfo?.marginLevel ? (
-          <Typography component={'span'} marginTop={1} variant={'body1'} color={colors[colorIs]}>
+          <Typography
+            component={'span'}
+            display={'inline-flex'}
+            alignItems={'center'}
+            marginTop={1}
+            variant={'body1'}
+            color={colors[colorIs]}
+          >
             <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
             {vaultAccountInfo?.marginLevel}
           </Typography>
         ) : (
-          <Typography component={'span'} marginTop={1} variant={'body1'} color={'textSecondary'}>
+          <Typography
+            component={'span'}
+            display={'inline-flex'}
+            alignItems={'center'}
+            marginTop={1}
+            variant={'body1'}
+            color={'textSecondary'}
+          >
             <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
             {EmptyValueTag}
           </Typography>
@@ -250,8 +263,9 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     variant={'body1'}
-                    color={'textSecondary'}
                     paddingRight={1}
+                    display={'inline-flex'}
+                    color={'textSecondary'}
                   >
                     {t('labelVaultOpenDate')}
                   </Typography>
@@ -281,6 +295,7 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     marginTop={1}
+                    display={'inline-flex'}
                     variant={'body1'}
                     color={'textPrimary'}
                   >
@@ -289,12 +304,12 @@ export const VaultDashBoardPanel = ({
                         ? HiddenTag
                         : PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
-                            (vaultAccountInfo?.totalCollateralOfUsd || 0) *
+                            Number(vaultAccountInfo?.totalCollateralOfUsd ?? 0) *
                               (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
+                            2,
+                            2,
+                            2,
+                            false,
                             { isFait: true, floor: true },
                           )
                       : EmptyValueTag}
@@ -307,6 +322,7 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     marginTop={1}
+                    display={'inline-flex'}
                     variant={'body1'}
                     color={'textPrimary'}
                   >
@@ -315,11 +331,12 @@ export const VaultDashBoardPanel = ({
                         ? HiddenTag
                         : PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
-                            (vaultAccountInfo?.totalDebtOfUsd || 0) * (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
+                            Number(vaultAccountInfo?.totalDebtOfUsd ?? 0) *
+                              (forexMap[currency] ?? 0),
+                            2,
+                            2,
+                            2,
+                            false,
                             { isFait: true, floor: true },
                           )
                       : EmptyValueTag}
@@ -332,19 +349,20 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     marginTop={1}
+                    display={'inline-flex'}
                     variant={'body1'}
                     color={'textPrimary'}
                   >
                     {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
                       ? hideAssets
                         ? HiddenTag
-                        : PriceTag[CurrencyToTag[currency]] +
-                          getValuePrecisionThousand(
-                            (vaultAccountInfo?.totalEquityOfUsd || 0) * (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
+                        : getValuePrecisionThousand(
+                            Number(vaultAccountInfo?.totalEquityOfUsd ?? 0) *
+                              (forexMap[currency] ?? 0),
+                            2,
+                            2,
+                            2,
+                            false,
                             { isFait: true, floor: true },
                           )
                       : EmptyValueTag}

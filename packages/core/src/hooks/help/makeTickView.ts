@@ -5,6 +5,7 @@ import { TickerMap } from '../../stores'
 import {
   getValuePrecisionThousand,
   Ticker,
+  TickerNew,
   TickerNewMap,
   TokenType,
 } from '@loopring-web/common-resources'
@@ -90,7 +91,7 @@ export const makeTokenTickerView = ({
   const {
     tokenMap: { tokenMap: erc20TokenMap },
     invest: {
-      vaultMap: { tokenMap, erc20Map, idIndex },
+      vaultMap: { erc20Map, idIndex },
     },
   } = store.getState()
   const tokenInfo = erc20TokenMap[item.symbol]
@@ -115,19 +116,20 @@ export const makeTokenTickerView = ({
     symbol: isVault ? idIndex[erc20Map[tokenInfo.symbol].baseTokenId] : tokenInfo.symbol,
     __rawTicker__: item,
     rawData: item,
-  } as unknown as Ticker
+  } as unknown as TickerNew
 }
-export const makeTokenTickerMap = <R extends { [key: string]: any }>({
+export const makeTokenTickerMap = <R>({
   rawData,
+  isVault,
 }: {
   rawData: sdk.DatacenterTokenInfoSimple[]
+  isVault?: boolean
 }): TickerNewMap<R> => {
   return rawData.reduce((prev: TickerNewMap<R>, item) => {
-    const key = item.symbol as unknown as R
+    const key = item.symbol
     if (item && item.symbol && item.price) {
-      // @ts-ignore
       prev[key] = {
-        ...item,
+        ...makeTokenTickerView({ isVault, item }),
       }
     }
     return prev

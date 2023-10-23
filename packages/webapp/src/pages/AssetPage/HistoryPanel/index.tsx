@@ -48,6 +48,7 @@ import {
   RouterPath,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+export const l2assetsRouter = `${RouterPath.l2records}/:tab/:orderTab?`
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -57,7 +58,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const {
     toggle: { StopLimit },
   } = useToggle()
-  const match: any = useRouteMatch('/l2assets/:history/:tab/:orderTab?')
+  const match: any = useRouteMatch(l2assetsRouter)
   const [pageSize, setPageSize] = React.useState(0)
   const [currentTab, setCurrentTab] = React.useState<RecordTabIndex>(() => {
     let item = match?.params?.tab ?? RecordTabIndex.Transactions

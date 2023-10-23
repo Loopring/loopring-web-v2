@@ -12,7 +12,6 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'
 import { VendorProviders } from './vendor'
-import { InvestRouter, InvestType } from './router'
 
 export enum DeFiChgType {
   coinSell = 'coinSell',
@@ -833,11 +832,6 @@ export enum AmmPanelType {
 export enum DualInvestConfirmType {
   USDCOnly = 'USDCOnly',
   all = 'all',
-}
-
-export type MarketTableRawDataItem = sdk.DatacenterTokenInfoSimple & {
-  symbol: string
-  erc20Symbol: string
 }
 
 export enum VaultAction {

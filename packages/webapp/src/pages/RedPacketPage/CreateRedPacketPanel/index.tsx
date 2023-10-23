@@ -7,7 +7,6 @@ import {
   StylePaper,
   useContacts,
   useCreateRedPacket,
-  useNotify,
   useSystem,
 } from '@loopring-web/core'
 import {

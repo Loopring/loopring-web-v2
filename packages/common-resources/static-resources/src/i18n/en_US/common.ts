@@ -177,7 +177,7 @@ export default {
   labelProcessing: 'Processing',
   labelProviderProcessing: 'Connect Wallet with {{name}}...',
   labelProviderCommonProcessDescribe:
-    'Please click the ‘Approve’ button on the {{name}} Popup window. If the {{name}} Popup window is dismissed, please manually click <5></5> on your browser toolbar.',
+    'Please click the ‘Approve’ button on the {{name}} popup window. If the {{name}} popup window is dismissed, please manually click <5></5> on your browser toolbar.',
   labelWalletConnectProcessDescribe: 'Please wait for WalletConnect provider to confirm processing',
   labelWalletConnectQRCode: 'Please scan the QR code with a WalletConnect compatible application',
   labelSuccessConnect: 'Successfully Connected with {{providerName}}',
@@ -2124,7 +2124,7 @@ export default {
   labelRepayQuota: 'Total Repay Quota',
   labelVaultWhatis: 'What is Loopring Vault?',
   labelVaultDesSimple:
-    'Vault: Using a third-party funds to trade assets. Traders can access additional capital, amplifying trading results.',
+    '<p>Vault: Using a third-party funds to trade assets. Traders can access additional capital, amplifying trading results.</p>',
   labelVaultRiskDes:
     '<p>Loopring Vault acts as an isolated margin account, enabling users to borrow and lend tokens with collateral. Besides supporting leveraged trading, it also facilitates the trading of tokens not available on Loopring DEX by tapping into CEX liquidity depth. </p>' +
     "<p>It's important to note that all assets in Vault are hedged on CEX, incurring an associated cost known as the Asset Holding Fee, charged on an hourly basis. We strongly recommend closing your position if it's no longer needed for trading to reduce costs.</p>" +

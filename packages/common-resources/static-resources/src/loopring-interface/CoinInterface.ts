@@ -552,6 +552,8 @@ export type LuckyRedPacketItem = {
 
 export type TickerNew<R = sdk.DatacenterTokenInfoSimple> = R & {
   timeUnit: '24h'
+  erc20Symbol: string
+  type: TokenType
   volume: string
   priceU: string
   change: string

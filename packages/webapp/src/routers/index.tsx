@@ -36,7 +36,6 @@ import {
 } from '@loopring-web/common-resources'
 import { ErrorPage } from '../pages/ErrorPage'
 import {
-  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
@@ -232,23 +231,23 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NotifyMarkdownPage />
           </Container>
         </Route>
-        <Route exact path='/investrule/:path'>
-          {searchParams && searchParams.has('noheader') ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} isLandPage />
-          )}
-          <Container
-            maxWidth='lg'
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              flex: 1,
-            }}
-          >
-            <InvestMarkdownPage />
-          </Container>
-        </Route>
+        {/*<Route exact path='/investrule/:path'>*/}
+        {/*  {searchParams && searchParams.has('noheader') ? (*/}
+        {/*    <></>*/}
+        {/*  ) : (*/}
+        {/*    <Header isHideOnScroll={true} isLandPage />*/}
+        {/*  )}*/}
+        {/*  <Container*/}
+        {/*    maxWidth='lg'*/}
+        {/*    style={{*/}
+        {/*      display: 'flex',*/}
+        {/*      flexDirection: 'column',*/}
+        {/*      flex: 1,*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    <InvestMarkdownPage />*/}
+        {/*  </Container>*/}
+        {/*</Route>*/}
         <Route exact path={['/document', '/race-event', '/notification', '/investrule']}>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <ErrorPage messageKey={'error404'} />
