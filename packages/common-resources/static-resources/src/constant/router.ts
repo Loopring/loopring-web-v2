@@ -44,7 +44,7 @@ export const Profile = {
   security: [
     {
       icon: SecurityIcon,
-      router: { path: '/layer2/security' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.security}` },
       label: {
         id: 'security',
         i18nKey: 'labelSecurity',
@@ -54,7 +54,7 @@ export const Profile = {
   vip: [
     {
       icon: VipIcon,
-      router: { path: '/layer2/vip' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.vip}` },
       label: {
         id: 'vip',
         i18nKey: 'labelVipPanel',
@@ -64,7 +64,7 @@ export const Profile = {
   contact: [
     {
       icon: ContactIcon,
-      router: { path: '/layer2/contact' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.contact}` },
       label: {
         id: 'contact',
         i18nKey: 'labelContactsPanel',
@@ -74,7 +74,7 @@ export const Profile = {
   referralrewards: [
     {
       icon: RewardIcon,
-      router: { path: '/layer2/referralrewards' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.referralrewards}` },
       label: {
         id: 'referralrewards',
         i18nKey: 'labelReferralReward',
@@ -183,6 +183,7 @@ export enum RouterPath {
   redPacket = '/redPacket',
   l2assets = '/l2assets',
   l2records = '/l2assets/history',
+  l2assetsDetail = '/l2assets/assets',
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
@@ -265,7 +266,7 @@ export const subMenuLayer2 = {
   assetsGroup: [
     {
       icon: AssetsIcon,
-      router: { path: '/l2assets/assets' },
+      router: { path: RouterPath.l2assetsDetail },
       label: {
         id: 'assets',
         i18nKey: 'labelAssets',
@@ -285,7 +286,7 @@ export const subMenuLayer2 = {
   profileGroup: [
     {
       icon: ProfileIcon,
-      router: { path: '/layer2/security' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.security}` },
       label: {
         id: 'security',
         i18nKey: 'labelSecurity',
@@ -683,6 +684,22 @@ export enum AssetTabIndex {
   Invests = 'Invests',
   RedPacket = 'RedPacket',
   Rewards = 'Rewards',
+}
+
+export enum RedPacketRouterIndex {
+  create = 'create',
+  records = 'records',
+  markets = 'markets',
+}
+export enum RedPacketRecordsTabIndex {
+  Received = 'Received',
+  Send = 'Send',
+  NFTReceived = 'NFTReceived',
+  NFTSend = 'NFTSend',
+  BlindBoxReceived = 'BlindBoxReceived',
+  BlindBoxSend = 'BlindBoxSend',
+  NFTsUnClaimed = 'NFTsUnClaimed',
+  BlindBoxUnClaimed = 'BlindBoxUnClaimed',
 }
 
 export enum TabOrderIndex {

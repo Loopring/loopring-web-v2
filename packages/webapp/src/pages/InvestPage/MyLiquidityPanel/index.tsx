@@ -576,7 +576,9 @@ const MyLiquidity: any = withTranslation('common')(
                               variant={'contained'}
                               size={'small'}
                               onClick={() => {
-                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                                history.push(
+                                  `${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`,
+                                )
                               }}
                             >
                               {t('labelClaimBtn')}
