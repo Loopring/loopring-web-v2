@@ -37,6 +37,7 @@ export const UnlockAccount_Success = (props: PanelProps) => {
 export const UnlockAccount_Failed = ({
   error,
   errorOptions,
+  t,
   ...props
 }: PanelProps & { walletType?: WalletType; resetAccount: () => void }) => {
   const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
@@ -71,25 +72,36 @@ export const UnlockAccount_Failed = ({
                 </Trans>
               </Typography>
             ) : (
-              <Link onClick={props.resetAccount} marginTop={1}>
-                <Trans i18nKey={'labelReActiveAccount'} />
-              </Link>
+              <Box>
+                <Typography variant={'body2'}>
+                  {t("labelUnlockErrorLine1")}
+                </Typography>
+              </Box>
             )}
           </Box>
         ) : (
           <Trans i18nKey={'labelUnlockAccountFailed'} />
         )}
-        {dropdownStatus === 'up' && (
-          <TextareaAutosizeStyled
-            aria-label='Error Description'
-            minRows={5}
-            style={{ maxHeight: '90px', overflow: 'scroll' }}
-            disabled={true}
-            value={`${JSON.stringify(error)}}`}
-          />
-        )}
+        {dropdownStatus === 'up' &&
+          (props.walletType &&
+          (props.walletType.isContract || props.walletType.isInCounterFactualStatus) ? (
+            <TextareaAutosizeStyled
+              aria-label='Error Description'
+              minRows={5}
+              style={{ maxHeight: '90px', overflow: 'scroll' }}
+              disabled={true}
+              value={`${JSON.stringify(error)}}`}
+            />
+          ) : (
+            <Typography onClick={props.resetAccount} marginTop={1} variant={'body2'}>
+              {t('labelUnlockErrorLine2Part1')}
+              <Link>{t('labelUnlockErrorLine2Part2')}</Link>
+              {t('labelUnlockErrorLine2Part3')}
+              
+            </Typography>
+          ))}
       </>
     ),
   }
-  return <UnlockAccountBase {...{ ...propsPatch }} />
+  return <UnlockAccountBase {...{ ...propsPatch, t }} />
 }

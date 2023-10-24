@@ -17,6 +17,7 @@ import {
   modalContentBaseStyle,
   ModalPanelProps,
   NFTDeployProps,
+  ResetAccountConfirmationPanel,
   ResetPanel,
   ResetProps,
   TransferPanel,
@@ -391,29 +392,53 @@ export const ModalPanel = <
         open={isShowResetAccount.isShow}
         onClose={() => setShowResetAccount({ ...isShowResetAccount, isShow: false })}
         content={
-          <ResetPanel<any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: `auto`,
-              ...resetProps,
-              assetsData,
-            }}
-          />
+          isShowResetAccount.info?.confirmationType ? (
+            <ResetAccountConfirmationPanel
+              onConfirmation={() =>
+                setShowResetAccount({
+                  ...isShowResetAccount,
+                  info: { ...isShowResetAccount.info, confirmationType: undefined },
+                })
+              }
+              type={isShowResetAccount?.info?.confirmationType}
+            />
+          ) : (
+            <ResetPanel<any, any>
+              {...{
+                ...rest,
+                _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+                _height: `auto`,
+                ...resetProps,
+                assetsData,
+              }}
+            />
+          )
         }
       />
       <Modal
         open={isShowActiveAccount.isShow}
         onClose={() => setShowActiveAccount({ ...isShowActiveAccount, isShow: false })}
         content={
-          <ActiveAccountPanel<any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: `auto`,
-              ...activeAccountProps,
-            }}
-          />
+          isShowActiveAccount?.info?.confirmationType ? (
+            <ResetAccountConfirmationPanel
+              onConfirmation={() =>
+                setShowActiveAccount({
+                  ...isShowActiveAccount,
+                  info: { ...isShowActiveAccount.info, confirmationType: undefined },
+                })
+              }
+              type={isShowActiveAccount?.info?.confirmationType}
+            />
+          ) : (
+            <ActiveAccountPanel<any, any>
+              {...{
+                ...rest,
+                _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+                _height: `auto`,
+                ...activeAccountProps,
+              }}
+            />
+          )
         }
       />
       <Modal
