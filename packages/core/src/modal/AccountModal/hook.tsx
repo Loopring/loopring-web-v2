@@ -2707,7 +2707,7 @@ export function useAccountModalForUI({
                   }
                 }
               setShowAccount({ isShow: false })
-              setShowActiveAccount({ isShow: true, info: { isReset: true } })
+              setShowActiveAccount({ isShow: true, info: { isReset: true, confirmationType: 'lockedReset' } })
             }}
             {...{
               ...rest,
