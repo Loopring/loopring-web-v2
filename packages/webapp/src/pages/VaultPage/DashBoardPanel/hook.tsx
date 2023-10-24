@@ -66,7 +66,7 @@ export const useGetVaultAssets = ({
     onRedeemPop,
   } = _vaultAccountInfo
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
-  const [totalAsset, setTotalAsset] = React.useState<string>('0')
+  const [totalAsset, setTotalAsset] = React.useState<string | undefined>('0')
   const { status: accountStatus, account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
@@ -320,12 +320,6 @@ export const useGetVaultAssets = ({
       },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-    // const tokenPriceList = tokenPrices
-    //   ? Object.entries(tokenPrices).map((o) => ({
-    //       token: o[0],
-    //       detail: o[1],
-    //     }))
-    //   : []
     if (
       tokenMap &&
       !!Object.keys(tokenMap).length &&
@@ -408,6 +402,9 @@ export const useGetVaultAssets = ({
       }, [] as Array<any>)
       setAssetsRawData(data)
       setTotalAsset(totalAssets.toString())
+    } else {
+      setAssetsRawData([])
+      setTotalAsset(undefined)
     }
   }
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
@@ -436,7 +433,7 @@ export const useGetVaultAssets = ({
     startWorker()
   }, [])
   React.useEffect(() => {
-    if (walletLayer2Callback && vaultAccountInfoStatus === SagaStatus.UNSET) {
+    if (vaultAccountInfoStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
     }
   }, [vaultAccountInfoStatus])

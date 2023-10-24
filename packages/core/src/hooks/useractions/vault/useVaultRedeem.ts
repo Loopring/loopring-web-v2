@@ -1,19 +1,85 @@
-import { AccountStep, useOpenModals } from '@loopring-web/component-lib'
-import { TradeBtnStatus } from '@loopring-web/common-resources'
+import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
+import {
+  EmptyValueTag,
+  getValuePrecisionThousand,
+  SagaStatus,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  SUBMIT_PANEL_CHECK,
+  TradeBtnStatus,
+} from '@loopring-web/common-resources'
 import React from 'react'
 import {
   LoopringAPI,
   store,
   useSubmitBtn,
+  useSystem,
   useVaultLayer2,
   walletLayer2Service,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useTranslation } from 'react-i18next'
 
 export const useVaultRedeem = () => {
+  const { t } = useTranslation('common')
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
   const [isLoading, setIsLoading] = React.useState(false)
   const { setShowVaultExit, setShowAccount } = useOpenModals()
+  const { forexMap } = useSystem()
+  const { currency } = useSettings()
+  const [info, setInfo] = React.useState<
+    | {
+        usdValue: any
+        usdDebt: any
+        usdEquity: any
+        forexMap: any
+      }
+    | undefined
+  >(undefined)
+  React.useEffect(() => {
+    const {
+      vaultLayer2: { vaultAccountInfo },
+    } = store.getState()
+    if (
+      vaultAccountInfoStatus === SagaStatus.UNSET &&
+      vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
+    ) {
+      setInfo(() => {
+        return {
+          usdValue: vaultAccountInfo?.totalBalanceOfUsd
+            ? getValuePrecisionThousand(
+                sdk.toBig(vaultAccountInfo?.totalBalanceOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          usdDebt: vaultAccountInfo?.totalDebtOfUsd
+            ? getValuePrecisionThousand(
+                sdk.toBig(vaultAccountInfo?.totalDebtOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          usdEquity: vaultAccountInfo?.totalEquityOfUsd
+            ? getValuePrecisionThousand(
+                sdk.toBig(vaultAccountInfo?.totalEquityOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          forexMap,
+        }
+      })
+    }
+  }, [vaultAccountInfoStatus])
   const availableTradeCheck = React.useCallback(() => {
     if (
       vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING &&
@@ -26,8 +92,9 @@ export const useVaultRedeem = () => {
   }, [vaultAccountInfoStatus, vaultAccountInfo?.collateralInfo?.orderHash])
   const processRequest = async (request: sdk.VaultExitRequest) => {
     try {
-      const { apiKey, eddsaKey } = store.getState().account
-
+      const {
+        account: { apiKey, eddsaKey, accountId },
+      } = store.getState()
       if (request) {
         let response = await LoopringAPI.vaultAPI?.submitVaultExit({
           // @ts-ignore
@@ -38,20 +105,55 @@ export const useVaultRedeem = () => {
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
-        walletLayer2Service.sendUserUpdate()
+        // submit success
+        setShowVaultExit({ isShow: false })
         updateVaultLayer2({})
+        await sdk.sleep(SUBMIT_PANEL_CHECK)
+        const response2 = await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+          {
+            accountId: accountId?.toString(),
+            hash: (response as any).hash,
+          },
+          apiKey,
+        )
+        let status = ''
+        if (
+          response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+        ) {
+          throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+        } else if (
+          response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_PENDING
+        ) {
+          status = 'labelPending'
+        } else {
+          status = 'labelSuccess'
+        }
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultRedeem_Success,
-          info: {},
+          info: {
+            ...info,
+            status: t(status),
+          },
         })
+        await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+        walletLayer2Service.sendUserUpdate()
+        updateVaultLayer2({})
+        if (
+          store.getState().modals.isShowAccount.isShow &&
+          store.getState().modals.isShowAccount.step == AccountStep.VaultRedeem_Success
+        ) {
+          setShowAccount({ isShow: false })
+        }
       } else {
-        throw 'no data'
+        throw new Error('api not ready')
       }
     } catch (e) {
+      //TODO error
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultRedeem_Failed,
+        info,
       })
     }
     setIsLoading(false)
@@ -75,15 +177,52 @@ export const useVaultRedeem = () => {
           timestamp: Date.now(),
         })
       } else {
+        throw 'accountStatus is not in staking'
       }
     } catch (e) {
-      setShowAccount({
-        isShow: true,
-        step: AccountStep.VaultRedeem_Failed,
-        error: {
-          ...(e as any),
-        },
-      })
+      if (e as any)
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.VaultRedeem_Failed,
+          info: {
+            usdValue: vaultAccountInfo?.totalBalanceOfUsd
+              ? getValuePrecisionThousand(
+                  sdk
+                    .toBig(vaultAccountInfo?.totalBalanceOfUsd ?? 0)
+                    .times(forexMap[currency] ?? 0),
+                  2,
+                  2,
+                  2,
+                  true,
+                  { floor: true },
+                )
+              : EmptyValueTag,
+            usdDebt: vaultAccountInfo?.totalDebtOfUsd
+              ? getValuePrecisionThousand(
+                  sdk.toBig(vaultAccountInfo?.totalDebtOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                  2,
+                  2,
+                  2,
+                  true,
+                  { floor: true },
+                )
+              : EmptyValueTag,
+            usdEquity: vaultAccountInfo?.totalEquityOfUsd
+              ? getValuePrecisionThousand(
+                  sdk.toBig(vaultAccountInfo?.totalEquityOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                  2,
+                  2,
+                  2,
+                  true,
+                  { floor: true },
+                )
+              : EmptyValueTag,
+            forexMap,
+          },
+          error: {
+            ...(e as any),
+          },
+        })
       //TODO: catch
     }
   }

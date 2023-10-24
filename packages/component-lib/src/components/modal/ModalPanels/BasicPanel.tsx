@@ -546,7 +546,7 @@ export const VaultRepayBase = (
   },
 ) => {
   const { showTitle } = props
-  return <BasicPanel title={showTitle ? 'labelVaulRepayTitle' : undefined} {...props} />
+  return <BasicPanel title={showTitle ? 'labelVaultRepayTitle' : undefined} {...props} />
 }
 export const VaultTradeBase = (props: PanelProps & { showTitle: boolean }) => {
   const { showTitle } = props

@@ -2,6 +2,8 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  SUBMIT_PANEL_CHECK,
   TradeBtnStatus,
   VaultBorrowData,
 } from '@loopring-web/common-resources'
@@ -24,7 +26,6 @@ import React from 'react'
 import { makeVaultAvaiable2 } from '../../help'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../../api_wrapper'
-import { walletLayer2Service } from '../../../services'
 import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
 
@@ -224,47 +225,79 @@ export const useVaultBorrow = <
   ])
   const processRequest = async (request?: sdk.VaultLoadRequest) => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
-    const account = store.getState().account
+    const vaultToken = vaultTokenMap[vaultBorrowData.belong]
+    const {
+      account: { eddsaKey, apiKey, accountId },
+    } = store.getState()
     try {
-      if (request || (vaultBorrowData.request && account)) {
+      if (request || (vaultBorrowData.request && accountId)) {
         let response = LoopringAPI.vaultAPI?.submitVaultLoad({
           // @ts-ignore
           request: request ?? vaultBorrowData.request,
-          privateKey: account?.eddsaKey?.sk,
-          apiKey: account.apiKey,
+          privateKey: eddsaKey?.sk,
+          apiKey: apiKey,
         })
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
-        walletLayer2Service.sendUserUpdate()
-        sdk.sleep(1000).then(() => updateVaultLayer2({}))
-        //TODO getHASH check
+        setShowVaultLoad({
+          isShow: false,
+        })
+        updateVaultLayer2({})
+        await sdk.sleep(SUBMIT_PANEL_CHECK)
+        const response2 = await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+          {
+            accountId: accountId?.toString(),
+            hash: (response as any).hash,
+          },
+          apiKey,
+        )
+        let status = ''
+        if (
+          response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+        ) {
+          throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+        } else if (
+          response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_PENDING
+        ) {
+          status = 'labelPending'
+        } else {
+          status = 'labelSuccess'
+        }
+        const amount = getValuePrecisionThousand(
+          sdk.toBig(response2?.raw_data?.order?.fillAmountS ?? 0).div('1e' + vaultToken.decimals),
+          vaultToken.precision,
+          vaultToken.precision,
+          undefined,
+        )
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultBorrow_Success,
           info: {
-            //TODO getHASH check
-            amount: EmptyValueTag,
+            amount,
             receiveAmount: vaultBorrowData.borrowAmtStr,
-            //TODO getHASH check
-            status: t('labelPending'),
+            status: t(status),
             forexMap,
-            symbol: vaultBorrowData.belong,
-            //TODO getHASH check
-            time: Date.now(),
-            title: t('labelVaultBorrowTitle'),
+            symbol: vaultToken.symbol,
+            time: response2?.raw_data?.order?.createdAt,
           },
         })
-        setShowVaultLoad({
-          isShow: false,
-        })
+
+        await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+        updateVaultLayer2({})
+        if (
+          store.getState().modals.isShowAccount.isShow &&
+          store.getState().modals.isShowAccount.step == AccountStep.VaultBorrow_Success
+        ) {
+          setShowAccount({ isShow: false })
+        }
       } else {
-        throw 'no data'
+        throw new Error('api not ready')
       }
     } catch (e) {
       setShowAccount({
         isShow: true,
-        step: AccountStep.VaultRedeem_Failed,
+        step: AccountStep.VaultBorrow_Failed,
         info: {
           amount: EmptyValueTag,
           receiveAmount: vaultBorrowData.borrowAmtStr,

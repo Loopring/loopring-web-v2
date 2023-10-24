@@ -20,11 +20,12 @@ const vaultLayer2Slice: Slice<VaultLayer2States> = createSlice({
     },
     reset(state) {
       state.vaultLayer2 = undefined
+      state.vaultAccountInfo = undefined
       if (state?.__timer__ && state.__timer__ !== -1) {
         clearTimeout(state.__timer__ as any)
         state.__timer__ = -1
       }
-      state.status = SagaStatus.UNSET
+      state.status = SagaStatus.DONE
     },
     socketUpdateBalance(state) {
       state.status = SagaStatus.PENDING

@@ -92,15 +92,16 @@ export const VaultDashBoardPanel = ({
             >
               {getValuePrecisionThousand(
                 profit.div(vaultAccountInfo?.totalCollateralOfUsd ?? 1),
-                6,
-                6,
-                6,
+                4,
+                4,
+                4,
                 false,
                 {
                   isFait: false,
                   floor: true,
                 },
               )}
+              %
             </Typography>
           </>
         ) : (
@@ -167,7 +168,7 @@ export const VaultDashBoardPanel = ({
               t={t}
               onClose={() => setShowNoVaultAccount({ isShow: false, whichBtn: undefined })}
             />
-            <Typography marginBottom={3} variant={'h4'}>
+            <Typography marginBottom={2} variant={'h4'}>
               {t('labelVaultWhatis')}
             </Typography>
             <Trans
@@ -187,7 +188,7 @@ export const VaultDashBoardPanel = ({
                     component={'span'}
                     variant={'body1'}
                     display={'block'}
-                    marginBottom={1}
+                    marginBottom={3}
                     color={'textSecondary'}
                   />
                 ),

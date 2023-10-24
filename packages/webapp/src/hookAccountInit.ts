@@ -13,7 +13,6 @@ import {
   redPacketHistory,
   offFaitService,
   store,
-  useVaultMap,
   useContacts,
   useVaultTicker,
 } from '@loopring-web/core'
