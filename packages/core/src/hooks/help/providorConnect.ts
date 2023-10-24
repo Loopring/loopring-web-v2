@@ -1,6 +1,5 @@
 import { accountReducer, store } from '../../stores'
 import {
-  AvaiableNetwork,
   ConnectProviders,
   connectProvides,
   ErrorType,
@@ -15,7 +14,7 @@ const providerCallback = async () => {
   const { defaultNetwork } = store.getState().settings
   if (connectProvides.usedProvide) {
     let chainId: sdk.ChainId = Number(await connectProvides.usedWeb3?.eth.getChainId())
-    if (!AvaiableNetwork.includes(chainId.toString())) {
+    if (!['1', '5', '421613'].includes(chainId.toString())) {
       chainId = sdk.ChainId.MAINNET
     }
 

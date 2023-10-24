@@ -75,7 +75,7 @@ export const useHebaoMain = <
   const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI'].includes(network)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]
-  // sdk.NetworkWallet[MapChainId[AvaiableNetwork.includes(chainId.toString()) ? chainId : 1]]
+  // sdk.NetworkWallet[MapChainId[['1', '5', '421613'].includes(chainId.toString()) ? chainId : 1]]
   const loadData = React.useCallback(async () => {
     const layer1ActionHistory = store.getState().localStore.layer1ActionHistory
     if (LoopringAPI.walletAPI && account.accAddress) {

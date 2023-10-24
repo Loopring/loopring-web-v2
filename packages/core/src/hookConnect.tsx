@@ -8,7 +8,6 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import {
-  AvaiableNetwork,
   ConnectProviders,
   connectProvides,
   ErrorType,
@@ -271,6 +270,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
+    
     return (
       <>
         {defaultNetwork && (
@@ -286,7 +286,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
             autoWidth
             onChange={(event: SelectChangeEvent<any>) => handleOnNetworkSwitch(event.target.value)}
           >
-            {AvaiableNetwork.reduce((prew, id, index) => {
+            {[1,5,421613].reduce((prew, id, index) => {
               if (NetworkMap[id]) {
                 prew.push(
                   <OutlineSelectItemStyle
