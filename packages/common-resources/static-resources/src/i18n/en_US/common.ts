@@ -2147,4 +2147,9 @@ export default {
   labelVaultRepayTypeLabel: 'Type',
   labelVaultRepayType: 'Repay',
   labelVaultRepayTotalBalance: 'Amount',
+  labelVaultVAULT_STATUS_RECEIVED: 'Received',
+  labelVaultVAULT_STATUS_PROCESSING: 'Processing',
+  labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
+  labelVaultVAULT_STATUS_FAILED: 'Failed',
+  labelVaultVAULT_STATUS_PENDING: 'Pending',
 }

@@ -6,13 +6,8 @@ import { Box, BoxProps, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
-import { RawDataVaultTxItem, VaultRecordType } from './Interface'
-import {
-  EmptyValueTag,
-  globalSetup,
-  Info2Icon,
-  RowInvestConfig,
-} from '@loopring-web/common-resources'
+import { RawDataVaultTxItem } from './Interface'
+import { globalSetup, Info2Icon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment/moment'
 import _ from 'lodash'
@@ -29,8 +24,8 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   & .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 33% 20% auto auto auto !important;`
-        : `--template-columns: 33% 32% auto !important;`}
+        ? `--template-columns: 20% 30% auto auto !important;`
+        : `--template-columns: 20% 30% auto !important;`}
   }
 `
 const TableStyled = styled(Table)`
@@ -81,8 +76,6 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
   <R extends RawDataVaultTxItem>(props: VaultTxsTableProps<R> & WithTranslation) => {
     const { rawData, showloading, onItemClick, pagination, getOrderList, t } = props
     const [page, setPage] = React.useState(0)
-    // const [_pageSize, setPageSize] = React.useState(pagination?.pageSize);
-
     const { isMobile, upColor } = useSettings()
     const history = useHistory()
     const getColumnModeTransaction = React.useCallback(
@@ -101,43 +94,28 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                <Tooltip title={t(`labelVault${VaultRecordType.borrow}Des`).toString()}>
+                <Tooltip title={t(`labelVault${row.type}Des`).toString()}>
                   <Typography component={'span'} display={'flex'}>
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {t(`labelVault${row.type}`)}
                   </Typography>
                 </Tooltip>
-                <Typography component={'span'} display={'inline-flex'}>
-                  {row
-                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
-                    : EmptyValueTag}
-                </Typography>
               </Box>
             )
           },
         },
         {
           key: 'Filled',
-          name: t('labelVaultTxFailed'),
+          name: t('labelVaultTxFilled'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row.filledPercent ? row.filledPercent + '%' : EmptyValueTag}</>
+            return <>{row.mainContentRender}</>
           },
         },
         {
-          key: 'Price',
-          name: t('labelVaultTxPrice'),
+          key: 'status',
+          name: t('labelVaultTxStatus'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <> {row.price?.value + ' ' + row.price?.key} </>
-          },
-        },
-        {
-          key: 'Fee',
-          name: t('labelVaultTxFee'),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>
-                {row.feeAmount !== undefined ? row.feeAmount + ' ' + row.feeSymbol : EmptyValueTag}
-              </>
-            )
+            return <> {t(`labelVault${row.status}`) + `(${row.percentage}%)`} </>
           },
         },
         {
@@ -146,7 +124,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignRight',
           name: t('labelVaultTxTime'),
           formatter: ({ row }: FormatterProps<R>) => {
-            return <>{moment(new Date(row.time)).fromNow()}</>
+            return <>{moment(row?.raw_data?.order?.createdAt).fromNow()}</>
           },
         },
       ],
@@ -165,73 +143,42 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 display={'flex'}
                 justifyContent={'space-between'}
                 paddingRight={3}
-                flexDirection={'column'}
-                alignItems={'flex-start'}
+                alignItems={'center'}
                 height={'100%'}
               >
-                <Tooltip title={t(`labelVault${VaultRecordType.borrow}Des`).toString()}>
+                <Tooltip title={t(`labelVault${row.type}Des`).toString()}>
                   <Typography component={'span'} display={'flex'}>
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {t(`labelVault${row.type}`)}
                   </Typography>
                 </Tooltip>
-                <Typography component={'span'} display={'flex'}>
-                  {row
-                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
-                    : EmptyValueTag}
-                </Typography>
               </Box>
             )
           },
         },
         {
-          key: 'Price',
-          cellClass: 'textAlignRight',
-          headerCellClass: 'textAlignRight',
-          name: t('labelVaultTxPrice') + '/' + t('labelVaultTxFailed'),
+          key: 'Filled',
+          name: t('labelVaultTxFilled'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <Box
-                display={'flex'}
-                justifyContent={'space-between'}
-                paddingRight={3}
-                flexDirection={'column'}
-                alignItems={'flex-end'}
-                height={'100%'}
-              >
-                <Typography component={'span'} display={'flex'}>
-                  {row.price?.value + ' ' + row.price?.key}
-                </Typography>
-                <Typography component={'span'} display={'flex'} color={'textSecondary'}>
-                  {row.filledPercent ? row.filledPercent + '%' : EmptyValueTag}
-                </Typography>
-              </Box>
-            )
+            return <>{row.mainContentRender}</>
           },
         },
         {
-          key: 'Fee',
+          key: 'statusTime',
           cellClass: 'textAlignRight',
           headerCellClass: 'textAlignRight',
-          name: t('labelVaultTxFee') + '/' + t('labelVaultTxTime'),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
+          name: t('labelVaultTxStatus') + '/' + t('labelVaultTxTime'),
+          formatter: ({ row }: FormatterProps<R>) => {
             return (
               <Box
                 display={'flex'}
                 justifyContent={'space-between'}
                 paddingRight={3}
-                flexDirection={'column'}
-                alignItems={'flex-end'}
+                alignItems={'center'}
                 height={'100%'}
               >
-                <Typography component={'span'} display={'flex'}>
-                  {row.feeAmount !== undefined
-                    ? row.feeAmount + ' ' + row.feeSymbol
-                    : EmptyValueTag}
-                </Typography>
-
-                <Typography component={'span'} display={'flex'} color={'textSecondary'}>
-                  {moment(new Date(row.time)).fromNow()}
-                </Typography>
+                <Typography>{t(`labelVault${row.status}`) + `(${row.percentage}%)`}</Typography>
+                <Typography>{moment(row?.raw_data?.order?.createdAt).fromNow()}</Typography>
               </Box>
             )
           },

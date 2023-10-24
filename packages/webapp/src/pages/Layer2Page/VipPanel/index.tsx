@@ -197,7 +197,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({ t }: WithTransl
 
   const handleTradeLinkClick = React.useCallback(() => {
     if (history) {
-      history.push(`${RouterPath.lite}}/LRC-ETH`)
+      history.push(`${RouterPath.lite}/LRC-ETH`)
     }
   }, [history])
 

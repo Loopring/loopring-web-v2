@@ -15,7 +15,6 @@ import {
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
-  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
   TradeBtnStatus,
   UIERROR_CODE,
   VaultTradeCalcData,
@@ -32,7 +31,6 @@ import {
   useToggle,
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
 
 import BigNumber from 'bignumber.js'
 import {
@@ -55,7 +53,6 @@ import {
   useVaultLayer2,
   useVaultMap,
   vaultSwapDependAsync,
-  walletLayer2Service,
 } from '@loopring-web/core'
 
 const useVaultSocket = () => {
@@ -82,11 +79,6 @@ export const useVaultSwap = <
 }: {
   path: string
 }) => {
-  // let match: any = useRouteMatch(`/vault/:l2/:market`)
-  // const { pathname, search } = useLocation()
-  // const searchParams = new URLSearchParams(search)
-  // const history = useHistory()
-
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
   const { tokenPrices } = useTokenPrices()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()

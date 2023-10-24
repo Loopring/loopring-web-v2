@@ -36,6 +36,7 @@ import {
   useGetTrades,
   useGetTxs,
   useOrderList,
+  useVaultTransaction,
 } from './hooks'
 import {
   BackIcon,
@@ -71,6 +72,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { totalCoinMap, tokenMap, idIndex, marketArray } = useTokenMap()
   const { ammMap } = useAmmMap()
+  const { etherscanBaseUrl } = useSystem()
 
   const {
     txs: txTableData,
@@ -135,7 +137,12 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   } = useGetLeverageETHRecord(setToastOpen)
 
   const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
-  const { etherscanBaseUrl } = useSystem()
+  const {
+    getVaultOrderList,
+    vaultOrderData,
+    totalNum: vaultTotal,
+    showLoading: showVaultLoading,
+  } = useVaultTransaction()
   const {
     getBtradeOrderList,
     btradeOrderData,
@@ -455,19 +462,17 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               idIndex={idIndex}
             />
           ) : currentTab === RecordTabIndex.VaultRecords ? (
-            //TODO:
             <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
               <VaultTxTable
                 {...{
-                  showloading: showBtradeLoading,
-                  getOrderList: getBtradeOrderList,
-                  rawData: btradeOrderData,
+                  showloading: showVaultLoading,
+                  getOrderList: getVaultOrderList,
+                  rawData: vaultOrderData,
                 }}
                 pagination={{
                   pageSize: pageSize,
-                  total: btradeTotalNum,
+                  total: vaultTotal,
                 }}
-                onItemClick={onDetail}
               />
             </Box>
           ) : (
