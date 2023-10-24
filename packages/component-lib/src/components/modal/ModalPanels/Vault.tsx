@@ -285,7 +285,7 @@ const RedeemDes2 = (
 ) => {
   const { isMobile } = useSettings()
   const { usdValue, usdDebt, usdEquity, forexMap, time } = props?.info ?? {}
-  return (
+  return forexMap ? (
     <>
       <Box
         justifySelf={'stretch'}
@@ -333,12 +333,7 @@ const RedeemDes2 = (
             {props.t('labelVaultExitTotalBalance')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {/*{PriceTag[CurrencyToTag[currency]] +*/}
-            {/*  ' ' +*/}
-            {/*  sdk*/}
-            {/*    .toBig(usdValue)*/}
-            {/*    .times(forexMap[currency] ?? 0)*/}
-            {/*    .toFixed(2)}*/}
+            {usdValue}
           </Typography>
         </Typography>
 
@@ -352,12 +347,7 @@ const RedeemDes2 = (
             {props.t('labelVaultExitTotalDebt')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdDebt)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {usdDebt}
           </Typography>
         </Typography>
         <Typography
@@ -370,12 +360,7 @@ const RedeemDes2 = (
             {props.t('labelVaultExitTotalEquity')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              ' ' +
-              sdk
-                .toBig(usdEquity)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2)}
+            {usdEquity}
           </Typography>
         </Typography>
         <Typography
@@ -398,6 +383,8 @@ const RedeemDes2 = (
         </Typography>
       )}
     </>
+  ) : (
+    <></>
   )
 }
 export const VaultRedeem_Success = (props: PanelProps) => {
@@ -555,7 +542,7 @@ export const RepayDes2 = (
     isPending?: boolean
   },
 ) => {
-  const { isMobile, currency } = useSettings()
+  const { isMobile } = useSettings()
   const { status, amount, sum, vSymbol, time } = props
   // const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
   return (

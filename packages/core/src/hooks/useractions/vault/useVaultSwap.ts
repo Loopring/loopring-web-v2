@@ -426,7 +426,7 @@ export const useVaultSwap = <
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           {
             accountId: account.accountId,
-            sellTokenId: sellToken?.tokenId ?? 0,
+            sellTokenId: sellToken?.vaultTokenId ?? 0,
           },
           account.apiKey,
         )
@@ -435,11 +435,11 @@ export const useVaultSwap = <
           storageId: storageId.orderId,
           accountId: account.accountId,
           sellToken: {
-            tokenId: sellToken?.tokenId ?? 0,
+            tokenId: sellToken?.vaultTokenId ?? 0,
             volume: sdk.toBig(tradeCalcData.volumeSell).toFixed(0),
           },
           buyToken: {
-            tokenId: buyToken?.tokenId ?? 0,
+            tokenId: buyToken?.vaultTokenId ?? 0,
             volume: sdk.toBig(tradeCalcData.volumeBuy).toFixed(0),
           },
           validUntil: getTimestampDaysLater(DAYS),

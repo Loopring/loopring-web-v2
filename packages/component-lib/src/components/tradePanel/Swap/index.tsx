@@ -255,10 +255,10 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                                 >)
                           }
                           slippage={
-                            tradeData.slippage
-                              ? tradeData.slippage
-                              : tradeCalcData.slippage
-                              ? tradeCalcData.slippage
+                            tradeData?.slippage
+                              ? tradeData?.slippage
+                              : tradeCalcData?.slippage
+                              ? tradeCalcData?.slippage
                               : defaultBlockTradeSlipage
                           }
                           handleChange={(slippage, customSlippage) => {
@@ -311,12 +311,12 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                         // @ts-ignore
                         tradeCalcData.isBtrade
                           ? history.push(
-                              `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
                             )
-                          :// @ts-ignore
+                          : // @ts-ignore
                           tradeCalcData.isVault
                           ? history.push(
-                              `${RouterPath.l2records}/${RecordTabIndex.vaultRecords}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.VaultRecords}?market=${market}`,
                             )
                           : history.push(
                               `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,

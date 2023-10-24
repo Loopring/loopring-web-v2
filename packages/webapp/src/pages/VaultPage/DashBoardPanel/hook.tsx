@@ -6,10 +6,8 @@ import {
   store,
   useAccount,
   useSystem,
-  useTokenMap,
   useTokenPrices,
   useWalletLayer2,
-  useWalletLayer2Socket,
   VaultAccountInfoStatus,
   volumeToCountAsBigNumber,
   WalletConnectL2Btn,
@@ -251,7 +249,8 @@ export const useGetVaultAssets = ({
           )
         } else if (
           activeInfo?.hash ||
-          sdk.VaultAccountStatus.IN_STAKING !== vaultAccountInfo?.accountStatus
+          (vaultAccountInfo?.accountStatus &&
+            sdk.VaultAccountStatus.IN_STAKING !== vaultAccountInfo?.accountStatus)
         ) {
           return (
             <Box
@@ -268,8 +267,7 @@ export const useGetVaultAssets = ({
                 src={`${SoursURL}images/loading-line.gif`}
               />
               <Typography marginY={3} variant={'body1'} textAlign={'center'}>
-                TODO
-                {t('TODO in IN_STAKING account', {
+                {t('labelVaultAccountWait', {
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
