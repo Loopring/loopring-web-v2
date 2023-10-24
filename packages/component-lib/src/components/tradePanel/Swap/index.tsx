@@ -305,7 +305,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                               `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,
                             )
                           : history.push(
-                              `${RouterPath.l2records}/history/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
                             )
                       }}
                       sx={{ backgroundColor: 'var(--field-opacity)' }}
