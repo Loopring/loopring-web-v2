@@ -7,16 +7,20 @@ const initialState: Confirmation = {
   confirmed: false,
   confirmedRETHDefiInvest: false,
   confirmedWSETHDefiInvest: false,
-  // confirmedDualInvest: false,
   confirmedDualInvestV2: undefined,
   confirmDualAutoInvest: false,
   confirmDualDipInvest: false,
   confirmDualGainInvest: false,
-
   confirmedLRCStakeInvest: false,
-  showDualBeginnerHelp: false,
   confirmedBtradeSwap: false,
   confirmedLeverageETHInvest: false,
+  confirmedVault: false,
+  showDualBeginnerHelp: false,
+  showRETHStakignPopup: false,
+  showWSTETHStakignPopup: false,
+  showLRCStakignPopup: false,
+  showLeverageETHPopup: false,
+  confirmationNeeded: true,
 }
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -66,6 +70,37 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmedLeverageETHInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedLeverageETHInvest = true
     },
+    confirmedVault(state: Confirmation, _action: PayloadAction<string>) {
+      state.confirmedVault = true
+    },
+    setShowRETHStakignPopup(
+      state: Confirmation,
+      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showRETHStakignPopup = action.payload.show
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
+    setShowWSTETHStakignPopup(
+      state: Confirmation,
+      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showWSTETHStakignPopup = action.payload.show
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
+    setShowLRCStakingPopup(
+      state: Confirmation,
+      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showLRCStakignPopup = action.payload.show
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
+    setShowLeverageETHPopup(
+      state: Confirmation,
+      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showLeverageETHPopup = action.payload.show
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
   },
 })
 
@@ -77,11 +112,15 @@ export const {
   confirmedLRCStakeInvest,
   confirmDualDipInvest,
   confirmDualGainInvest,
-  // confirmDualInvest,
   confirmDualAutoInvest,
   confirmDualInvestV2,
   confirmedBtradeSwap,
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
   confirmedLeverageETHInvest,
+  confirmedVault,
+  setShowRETHStakignPopup,
+  setShowWSTETHStakignPopup,
+  setShowLRCStakingPopup,
+  setShowLeverageETHPopup,
 } = confirmationSlice.actions

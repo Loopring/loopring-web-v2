@@ -16,22 +16,15 @@ import {
   confirmedLeverageETHInvest,
   confirmDualDipInvest,
   confirmDualGainInvest,
+  confirmedVault,
+  setShowRETHStakignPopup,
+  setShowWSTETHStakignPopup,
+  setShowLRCStakingPopup,
+  setShowLeverageETHPopup,
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
-export const useConfirmation = (): {
-  confirmation: Confirmation
-  confirmWrapper: () => void
-  confirmedRETHDefiInvest: () => void
-  confirmedWSETHDefiInvest: () => void
-  confirmedLRCStakeInvest: () => void
-  confirmDualInvest: (level: DualInvestConfirmType | undefined) => void
-  confirmDualAutoInvest: () => void
-  confirmedBtradeSwap: () => void
-  confirmedLeverageETHInvest: () => void
-  confirmDualDipInvest: () => void
-  confirmDualGainInvest: () => void
-} => {
+export const useConfirmation = () => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation,
   )
@@ -76,5 +69,24 @@ export const useConfirmation = (): {
     confirmDualGainInvest: React.useCallback(() => {
       dispatch(confirmDualGainInvest(undefined))
     }, [dispatch]),
+    confirmedVault() {
+      dispatch(confirmedVault(undefined))
+    },
+    setShowRETHStakignPopup: React.useCallback(
+      (v) => dispatch(setShowRETHStakignPopup(v)),
+      [dispatch],
+    ),
+    setShowWSTETHStakignPopup: React.useCallback(
+      (v) => dispatch(setShowWSTETHStakignPopup(v)),
+      [dispatch],
+    ),
+    setShowLRCStakingPopup: React.useCallback(
+      (v) => dispatch(setShowLRCStakingPopup(v)),
+      [dispatch],
+    ),
+    setShowLeverageETHPopup: React.useCallback(
+      (v) => dispatch(setShowLeverageETHPopup(v)),
+      [dispatch],
+    ),
   }
 }

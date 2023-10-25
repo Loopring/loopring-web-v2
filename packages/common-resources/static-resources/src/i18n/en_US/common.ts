@@ -2138,7 +2138,10 @@ export default {
   labelVaultRiskDes:
     '<p>Loopring Vault acts as an isolated margin account, enabling users to borrow and lend tokens with collateral. Besides supporting leveraged trading, it also facilitates the trading of tokens not available on Loopring DEX by tapping into CEX liquidity depth. </p>' +
     "<p>It's important to note that all assets in Vault are hedged on CEX, incurring an associated cost known as the Asset Holding Fee, charged on an hourly basis. We strongly recommend closing your position if it's no longer needed for trading to reduce costs.</p>" +
-    '<p>In order to initiate the forced clearing of assets in the event of liquidation, Loopring will require your approval to handle the collateral asset. Additionally, after closing a position, there may be some remaining vault tokens in your account that Loopring will need to clear before allowing you to open a new position.</p>',
+    '<p>In order to initiate the forced clearing of assets in the event of liquidation, Loopring will require your approval to handle the collateral asset. Additionally, after closing a position, there may be some remaining vault tokens in your account that Loopring will need to clear before allowing you to open a new position.</p><ul>' +
+    '<li>There is an Asset Holding Fee for assets in Vault.</li>' +
+    '<li>I will grant Loopring authority to deal with my collateral in case of forced liquidation.</li>' +
+    '<li> I will grant Loopring the authority to clear all previously remaining Lv tokens for all new position openings in Vault.</li></ul>',
   labelVaultRepayTitle: 'Repay',
   labelVaultRepayStatus: '{{status}}',
   labelVaultRepayStatusLabel: 'Status',
@@ -2166,4 +2169,5 @@ export default {
   labelVaultRedeemFailed: 'Close Out Failed',
   labelVaultBorrowFailed: 'Borrow Failed',
   labelLayer2HistoryVaultRecords: 'Vault Records',
+  labelVaultTitleRisk: 'What is Loopring Vault?',
 }
