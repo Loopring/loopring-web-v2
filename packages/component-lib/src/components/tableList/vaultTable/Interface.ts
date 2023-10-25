@@ -19,6 +19,8 @@ export type RawDataVaultTxItem = {
   mainContentRender: string | JSX.Element
   fillAmount: string
   percentage: string
+  feeStr: string
+  feeTokenSymbol: string
   raw_data: { operation: sdk.VaultOperation; order: sdk.VaultOrder }
   // fromAmount: string
   // fromSymbol: string
