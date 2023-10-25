@@ -1009,6 +1009,8 @@ export default {
   labelDualCurrentPriceTip:
     'Current Price is based on {{symbol}} derived from some leading exchanges.',
   labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1> {{baseSymbol}}',
+  labelDualCurrentPrice2: 'Current Price:\n <1>{{price}}</1> {{baseSymbol}}',
+
   labelDualSuccess: 'Subscription {{symbol}} Successfully',
   labelDualProcessing: 'Waiting for completion',
   labelDualProcessingDes:
