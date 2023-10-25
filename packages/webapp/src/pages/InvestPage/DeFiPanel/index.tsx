@@ -19,14 +19,13 @@ import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
-  DualInvestmentLogo,
   hexToRGB,
   Info2Icon,
   InvestAssetRouter,
+  InvestMainRouter,
   MarketType,
   RouterPath,
   SatkingLogo,
-  SoursURL,
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
@@ -269,8 +268,11 @@ const ButtonStyled = styled(Button)`
     }
   }
 `
+const InvestRouter = `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`
 
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
+  const match: any = useRouteMatch(InvestRouter)
+
   const { marketArray } = useDefiMap()
 
   const {
@@ -309,7 +311,6 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }
 
-  const match: any = useRouteMatch('/invest/stake/:market?/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()
@@ -354,7 +355,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
               </Typography>
               <Box display={'flex'} alignItems={'center'}>
                 <Button
-                  onClick={() => history.push('/invest/balance')}
+                  onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
                 >
@@ -382,7 +383,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
               {t('labelInvestDefiTitle')}
             </Button>
             <Button
-              onClick={() => history.push(`${RouterPath.invest}/balance`)}
+              onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
               sx={
                 {
                   // width: isMobile ? 36 * theme.unit : 18 * theme.unit,

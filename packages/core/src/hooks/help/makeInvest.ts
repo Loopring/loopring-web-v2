@@ -109,19 +109,25 @@ export const makeVault = (
   } = store.getState().tokenMap
   if (vaultTokenMap && vaultMarkets && erc20IdIndex) {
     let { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
-    let erc20Array = []
+    let erc20Array = [],
+      erc20Map = {}
     const reformat: VaultMarketExtends[] = vaultMarkets.reduce((prev, ele) => {
       if (/-/gi.test(ele.market) && ele.enabled) {
-        prev.push({
+        const item = {
           ...ele,
           enabled: enabled ?? ele.enabled,
           vaultMarket: ele.market,
           market: ele.market.replace(/(\w+)-(\w+)-(\w+)/, '$2-$3'),
           originalBaseSymbol: erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]].tokenId],
           originalQuoteSymbol: erc20IdIndex[tokensMap[idIndex[ele.quoteTokenId]].tokenId],
-        })
+        }
+        prev.push(item)
+        const erc20Symbol = erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]]?.tokenId]
         // @ts-ignore
-        erc20Array.push(erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]]?.tokenId])
+        erc20Array.push(erc20Symbol)
+        erc20Map[erc20Symbol] = {
+          ...item,
+        }
         return prev
       } else {
         return prev as VaultMarketExtends[]
@@ -177,6 +183,7 @@ export const makeVault = (
       tokenMap,
       joinTokenMap,
       erc20Array,
+      erc20Map,
     }
     // }
   } else {
@@ -190,6 +197,7 @@ export const makeVault = (
       idIndex: undefined,
       addressIndex: undefined,
       erc20Array: undefined,
+      erc20Map: undefined,
     }
   }
 }

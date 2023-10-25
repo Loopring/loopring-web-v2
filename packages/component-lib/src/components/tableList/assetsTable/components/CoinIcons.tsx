@@ -1,6 +1,6 @@
 import React from 'react'
 import { Avatar, Box, BoxProps, styled, Typography } from '@mui/material'
-import { CoinInfo, SoursURL, TokenType } from '@loopring-web/common-resources'
+import { CoinInfo, CoinSource, SoursURL, TokenType } from '@loopring-web/common-resources'
 import { AvatarCoin, VaultTag } from '../../../basic-lib'
 import { useSettings } from '../../../../stores'
 
@@ -11,7 +11,7 @@ const BoxStyle = styled(Box)<BoxProps & { size: number }>`
       transform: scale(0.6) translate(${size / 6}px, ${size / 6}px);
     }
     .logo-icon.vault:last-child {
-      transform: scale(0.5) translate(${size / 6}px, ${size / 4}px);
+      transform: bottom;
     }
     `
   }}
@@ -103,11 +103,11 @@ export const CoinIcons = React.memo(
             justifyContent={'center'}
           >
             <VaultTag
-              sx={{
-                height: 36,
-                width: 36,
+              style={{
+                height: size,
+                width: size,
                 transformOrigin: 'bottom',
-                transform: `scale(${size / (36 * 4)})`,
+                transform: `scale(${2 / 3})`,
               }}
             />
           </Box>

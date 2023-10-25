@@ -45,6 +45,7 @@ export const BeginnerMode: any = withTranslation('common')(
     t,
     dualListProps,
     viewType,
+    r,
   }: // setConfirmDualInvest,
   WithTranslation & {
     dualListProps: any

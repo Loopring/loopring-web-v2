@@ -182,6 +182,7 @@ export const HiddenTag = '*****'
 export const DEAULT_NFTID_STRING =
   '0x0000000000000000000000000000000000000000000000000000000000000000'
 export const MINT_LIMIT = 100000
+export const SUBMIT_PANEL_CHECK = 1000
 export const SUBMIT_PANEL_AUTO_CLOSE = 8000
 export const SUBMIT_PANEL_QUICK_AUTO_CLOSE = 3000
 export const SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE = 1000
@@ -331,7 +332,12 @@ export const enum InvestMapType {
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
   LEVERAGEETH = 'LEVERAGEETH',
+
   // BTradeInvest = "BTradeInvest",
+}
+export const enum InvestMainRouter {
+  OVERVIEW = 'OVERVIEW',
+  BALANCE = 'BALANCE',
 }
 
 export const enum InvestAssetRouter {
@@ -349,7 +355,6 @@ export const InvestOpenType = [
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
   InvestMapType.LEVERAGEETH,
-  // InvestMapType.BTradeInvest,
 ]
 
 export const enum InvestDuration {
@@ -829,8 +834,6 @@ export enum DualInvestConfirmType {
   USDCOnly = 'USDCOnly',
   all = 'all',
 }
-
-export type MarketTableRawDataItem = sdk.DatacenterTokenInfoSimple
 
 export enum VaultAction {
   VaultJoin = 'VaultJoin',

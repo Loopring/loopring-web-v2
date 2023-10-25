@@ -2,19 +2,24 @@ import { useRouteMatch } from 'react-router-dom'
 
 import { Box } from '@mui/material'
 import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
-import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
+import { AccountStatus, RouterPath, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { store, useAccount, useTargetRedPackets, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
+import {
+  store,
+  useAccount,
+  useTargetRedPackets,
+  ViewAccountTemplate,
+  walletLayer2Service,
+} from '@loopring-web/core'
 import { useAssetAction, useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 
 export * from './HistoryPanel/hooks'
-export const subMenu = subMenuLayer2
-
+export const l2assetsRouter = `${RouterPath.l2assets}/:item`
 export const AssetPage = () => {
-  let match: any = useRouteMatch('/l2assets/:item')
+  let match: any = useRouteMatch(l2assetsRouter)
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
@@ -29,7 +34,7 @@ export const AssetPage = () => {
           <AssetPanel
             showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
             assetTitleProps={assetTitleProps}
-            assetPanelProps={{...assetPanelProps, assetBtnStatus}}
+            assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
           />
         )
     }
@@ -48,7 +53,7 @@ export const AssetPage = () => {
           {isMobile && (
             <AssetTitleMobile
               assetBtnStatus={assetBtnStatus}
-              {...{...assetTitleProps, ...assetTitleMobileExtendProps}}
+              {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
             />
           )}
           {layer2Router}

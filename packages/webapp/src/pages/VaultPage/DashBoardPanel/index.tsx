@@ -16,6 +16,9 @@ import {
   EmptyValueTag,
   YEAR_DAY_MINUTE_FORMAT,
   VaultAction,
+  L1L2_NAME_DEFINED,
+  UpColor,
+  MapChainId,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -23,9 +26,8 @@ import {
   ModalCloseButtonPosition,
   useSettings,
   VaultAssetsTable,
-  Button,
 } from '@loopring-web/component-lib'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { useSystem, VaultAccountInfoStatus } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
@@ -40,22 +42,112 @@ export const VaultDashBoardPanel = ({
   const history = useHistory()
 
   const { forexMap } = useSystem()
-  const { isMobile, currency, hideL2Assets: hideAssets, defaultNetwork } = useSettings()
+  const { isMobile, currency, hideL2Assets: hideAssets, defaultNetwork, upColor } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
   const priceTag = PriceTag[CurrencyToTag[currency]]
   const {
     onActionBtnClick,
-    showNoVaultAccount,
+    noVaultAccount,
     dialogBtn,
     setShowNoVaultAccount,
     whichBtn,
     ...assetPanelProps
   } = useGetVaultAssets({ vaultAccountInfo: _vaultAccountInfo })
-  const { totalAsset } = assetPanelProps
+  const colors =
+    upColor === UpColor.green
+      ? ['var(--color-success)', 'var(--color-error)']
+      : ['var(--color-error)', 'var(--color-success)']
+  const profitUI = React.useMemo(() => {
+    const profit = sdk
+      .toBig(vaultAccountInfo?.totalEquityOfUsd ?? 0)
+      .minus(vaultAccountInfo?.totalCollateralOfUsd ?? 0)
+      .times(forexMap[currency] ?? 0)
+    const colorIs = profit.gte(0) ? 0 : 1
+
+    return (
+      <>
+        {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING ? (
+          <>
+            <Typography
+              component={'span'}
+              display={'inline-flex'}
+              variant={'body1'}
+              color={'textPrimary'}
+            >
+              {hideAssets
+                ? HiddenTag
+                : PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(profit.toString(), 2, 2, 2, false, {
+                    isFait: false,
+                    floor: true,
+                  })}
+            </Typography>
+            <Typography
+              component={'span'}
+              display={'inline-flex'}
+              variant={'body1'}
+              marginLeft={1 / 2}
+              color={colors[colorIs]}
+            >
+              {getValuePrecisionThousand(
+                profit.div(vaultAccountInfo?.totalCollateralOfUsd ?? 1),
+                4,
+                4,
+                4,
+                false,
+                {
+                  isFait: false,
+                  floor: true,
+                },
+              )}
+              %
+            </Typography>
+          </>
+        ) : (
+          EmptyValueTag
+        )}
+      </>
+    )
+  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsd, vaultAccountInfo?.accountStatus])
+
+  const marginUI = React.useMemo(() => {
+    const colorIs = sdk.toBig('1.2').gte(vaultAccountInfo?.marginLevel ?? 0) ? 0 : 1
+    return (
+      <>
+        {vaultAccountInfo?.marginLevel ? (
+          <Typography
+            component={'span'}
+            display={'inline-flex'}
+            alignItems={'center'}
+            marginTop={1}
+            variant={'body1'}
+            color={colors[colorIs]}
+          >
+            <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+            {vaultAccountInfo?.marginLevel}
+          </Typography>
+        ) : (
+          <Typography
+            component={'span'}
+            display={'inline-flex'}
+            alignItems={'center'}
+            marginTop={1}
+            variant={'body1'}
+            color={'textSecondary'}
+          >
+            <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+            {EmptyValueTag}
+          </Typography>
+        )}
+      </>
+    )
+  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsd, vaultAccountInfo?.accountStatus])
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Modal
-        open={showNoVaultAccount}
+        open={noVaultAccount?.isShow}
         onClose={() => setShowNoVaultAccount({ isShow: false, whichBtn: undefined })}
       >
         <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -76,12 +168,33 @@ export const VaultDashBoardPanel = ({
               t={t}
               onClose={() => setShowNoVaultAccount({ isShow: false, whichBtn: undefined })}
             />
-            <Typography marginBottom={3} variant={'h3'}>
-              TODO label What is Vault
+            <Typography marginBottom={2} variant={'h4'}>
+              {t('labelVaultWhatis')}
             </Typography>
-            <Typography marginBottom={3} variant={'h3'}>
-              TODO label What is des
-            </Typography>
+            <Trans
+              i18nKey={`labelVaultDesSimple`}
+              tOptions={{
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              }}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'span'}
+                    variant={'body1'}
+                    display={'block'}
+                    marginBottom={3}
+                    color={'textSecondary'}
+                  />
+                ),
+              }}
+            ></Trans>
+
             <>{dialogBtn}</>
           </Box>
         </Box>
@@ -151,8 +264,9 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     variant={'body1'}
-                    color={'textSecondary'}
                     paddingRight={1}
+                    display={'inline-flex'}
+                    color={'textSecondary'}
                   >
                     {t('labelVaultOpenDate')}
                   </Typography>
@@ -173,15 +287,7 @@ export const VaultDashBoardPanel = ({
                   <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                     {t('labelVaultMarginLevel')}
                   </Typography>
-                  <Typography
-                    component={'span'}
-                    marginTop={1}
-                    variant={'body1'}
-                    color={'textPrimary'}
-                  >
-                    <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
-                    {vaultAccountInfo?.marginLevel}
-                  </Typography>
+                  <>{marginUI}</>
                 </Box>
                 <Box>
                   <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
@@ -190,6 +296,7 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     marginTop={1}
+                    display={'inline-flex'}
                     variant={'body1'}
                     color={'textPrimary'}
                   >
@@ -198,12 +305,12 @@ export const VaultDashBoardPanel = ({
                         ? HiddenTag
                         : PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
-                            (vaultAccountInfo?.totalCollateralOfUsd || 0) *
+                            Number(vaultAccountInfo?.totalCollateralOfUsd ?? 0) *
                               (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
+                            2,
+                            2,
+                            2,
+                            false,
                             { isFait: true, floor: true },
                           )
                       : EmptyValueTag}
@@ -216,6 +323,7 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     marginTop={1}
+                    display={'inline-flex'}
                     variant={'body1'}
                     color={'textPrimary'}
                   >
@@ -224,11 +332,12 @@ export const VaultDashBoardPanel = ({
                         ? HiddenTag
                         : PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
-                            (vaultAccountInfo?.totalDebtOfUsd || 0) * (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
+                            Number(vaultAccountInfo?.totalDebtOfUsd ?? 0) *
+                              (forexMap[currency] ?? 0),
+                            2,
+                            2,
+                            2,
+                            false,
                             { isFait: true, floor: true },
                           )
                       : EmptyValueTag}
@@ -241,19 +350,20 @@ export const VaultDashBoardPanel = ({
                   <Typography
                     component={'span'}
                     marginTop={1}
+                    display={'inline-flex'}
                     variant={'body1'}
                     color={'textPrimary'}
                   >
                     {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
                       ? hideAssets
                         ? HiddenTag
-                        : PriceTag[CurrencyToTag[currency]] +
-                          getValuePrecisionThousand(
-                            (vaultAccountInfo?.totalEquityOfUsd || 0) * (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
+                        : getValuePrecisionThousand(
+                            Number(vaultAccountInfo?.totalEquityOfUsd ?? 0) *
+                              (forexMap[currency] ?? 0),
+                            2,
+                            2,
+                            2,
+                            false,
                             { isFait: true, floor: true },
                           )
                       : EmptyValueTag}
@@ -265,23 +375,12 @@ export const VaultDashBoardPanel = ({
                   </Typography>
                   <Typography
                     component={'span'}
+                    display={'inline-flex'}
                     marginTop={1}
                     variant={'body1'}
                     color={'textPrimary'}
                   >
-                    {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
-                      ? hideAssets
-                        ? HiddenTag
-                        : PriceTag[CurrencyToTag[currency]] +
-                          getValuePrecisionThousand(
-                            (vaultAccountInfo?.maxBorrowableOfUsd || 0) * (forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
-                            { isFait: true, floor: true },
-                          )
-                      : EmptyValueTag}
+                    {profitUI}
                   </Typography>
                 </Box>
               </Box>

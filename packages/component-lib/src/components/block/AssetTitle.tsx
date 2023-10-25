@@ -6,6 +6,7 @@ import {
   HideIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  RouterPath,
   subMenuLayer2,
   TradeBtnStatus,
   ViewIcon,
@@ -123,7 +124,7 @@ export const AssetTitle = withTranslation('common')(
             variant={'outlined'}
             size={'medium'}
             color={'secondary'}
-            onClick={() => history.push('/l2assets/history')}
+            onClick={() => history.push(`${RouterPath.l2records}`)}
           >
             {t('labelTransactions')}
           </Button>
@@ -256,7 +257,7 @@ export const AssetTitleMobile = ({
               variant={'outlined'}
               size={'medium'}
               color={'secondary'}
-              onClick={() => history.push('/l2assets/history')}
+              onClick={() => history.push(`${RouterPath.l2records}`)}
             >
               {t('labelTransactions')}
             </Button>

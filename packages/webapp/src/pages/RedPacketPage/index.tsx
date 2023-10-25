@@ -5,7 +5,7 @@ import { useToast, ViewAccountTemplate } from '@loopring-web/core'
 import { RedPacketMarketPanel } from './RedPacketMarketPanel'
 import { CreateRedPacketUIPanel } from './CreateRedPacketPanel'
 import { MyRedPacketPanel } from './MyRedPacketPanel'
-import { TOAST_TIME } from '@loopring-web/common-resources'
+import { TOAST_TIME, RedPacketRouterIndex } from '@loopring-web/common-resources'
 import { Toast, ToastType, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 
@@ -17,11 +17,11 @@ export const RedPacketPage = () => {
   const { t } = useTranslation()
   const reaPacketRouter = React.useMemo(() => {
     switch (selected) {
-      case 'create':
+      case RedPacketRouterIndex.create:
         return <CreateRedPacketUIPanel />
-      case 'records':
+      case RedPacketRouterIndex.records:
         return <MyRedPacketPanel setToastOpen={setToastOpen} />
-      case 'markets':
+      case RedPacketRouterIndex.markets:
         return <RedPacketMarketPanel setToastOpen={setToastOpen} />
       default:
         ;<RedPacketMarketPanel setToastOpen={setToastOpen} />

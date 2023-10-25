@@ -43,6 +43,8 @@ import {
   TradeBtnStatus,
   AmmPanelType,
   RouterPath,
+  RecordTabIndex,
+  InvestMainRouter,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
@@ -72,7 +74,7 @@ const MyLiquidity: any = withTranslation('common')(
     hideAssets,
     className,
     noHeader,
-    path = `${RouterPath.invest}/balance`,
+    path = `${RouterPath.invest}/${InvestMainRouter.BALANCE}`,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
@@ -305,7 +307,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Typography>
                 <Button
                   onClick={() => {
-                    history.push('/invest/overview')
+                    history.push(`${RouterPath.invest}/${InvestMainRouter.OVERVIEW}`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2 }}
                   variant={'contained'}
@@ -314,7 +316,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Button>
                 <Button
                   onClick={() => {
-                    history.push('/l2assets/history/Transactions')
+                    history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
@@ -575,7 +577,9 @@ const MyLiquidity: any = withTranslation('common')(
                               variant={'contained'}
                               size={'small'}
                               onClick={() => {
-                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                                history.push(
+                                  `${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`,
+                                )
                               }}
                             >
                               {t('labelClaimBtn')}

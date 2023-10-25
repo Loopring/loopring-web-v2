@@ -14,7 +14,7 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
-  SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE,
+  SUBMIT_PANEL_CHECK,
   TradeBtnStatus,
   UIERROR_CODE,
   VaultTradeCalcData,
@@ -31,7 +31,6 @@ import {
   useToggle,
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
 
 import BigNumber from 'bignumber.js'
 import {
@@ -80,11 +79,6 @@ export const useVaultSwap = <
 }: {
   path: string
 }) => {
-  // let match: any = useRouteMatch(`/vault/:l2/:market`)
-  // const { pathname, search } = useLocation()
-  // const searchParams = new URLSearchParams(search)
-  // const history = useHistory()
-
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
   const { tokenPrices } = useTokenPrices()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
@@ -425,14 +419,14 @@ export const useVaultSwap = <
         tradeCalcData?.volumeBuy &&
         tradeCalcData.maxFeeBips &&
         LoopringAPI.userAPI &&
-        LoopringAPI.defiAPI
+        LoopringAPI.vaultAPI
       ) {
         const sellToken = tokenMap[_sellToken]
         const buyToken = tokenMap[_buyToken]
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           {
             accountId: account.accountId,
-            sellTokenId: sellToken?.tokenId ?? 0,
+            sellTokenId: sellToken?.vaultTokenId ?? 0,
           },
           account.apiKey,
         )
@@ -441,11 +435,11 @@ export const useVaultSwap = <
           storageId: storageId.orderId,
           accountId: account.accountId,
           sellToken: {
-            tokenId: sellToken?.tokenId ?? 0,
+            tokenId: sellToken?.vaultTokenId ?? 0,
             volume: sdk.toBig(tradeCalcData.volumeSell).toFixed(0),
           },
           buyToken: {
-            tokenId: buyToken?.tokenId ?? 0,
+            tokenId: buyToken?.vaultTokenId ?? 0,
             volume: sdk.toBig(tradeCalcData.volumeBuy).toFixed(0),
           },
           validUntil: getTimestampDaysLater(DAYS),
@@ -458,21 +452,6 @@ export const useVaultSwap = <
           fastMode: false,
         }
         myLog('useVaultSwap: submitOrder request', request)
-        const response: { hash: string } | any = await LoopringAPI.vaultAPI?.submitVaultOrder({
-          request,
-          privateKey: account.eddsaKey.sk,
-          apiKey: account.apiKey,
-        })
-        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-          throw new CustomErrorWithCode({
-            code: (response as sdk.RESULT_INFO).code,
-            message: (response as sdk.RESULT_INFO).message,
-            ...SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN],
-          })
-        } else {
-          clearData()
-        }
-
         let info: any = {
           sellToken,
           buyToken,
@@ -498,45 +477,69 @@ export const useVaultSwap = <
             tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
           } ${buyToken.symbol}`,
           feeStr: tradeCalcData?.fee,
-          time: undefined,
+          time: Date.now(),
         }
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultTrade_In_Progress,
           info,
         })
-        updateVaultLayer2({})
-        // walletLayer2Service.sendUserUpdate()
-        await sdk.sleep(SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE)
-        if (refreshRef.current) {
-          // @ts-ignore
-          refreshRef.current.firstElementChild.click()
-        }
-        const orderConfirm: { hash: string } | any =
-          await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
-            {
-              accountId: account.accountId as any,
-              // @ts-ignore
-              hash: response.hash,
-            },
-            account.apiKey,
-          )
-        if ((orderConfirm as sdk.RESULT_INFO).code || (orderConfirm as sdk.RESULT_INFO).message) {
-        } else if (['failed', 'cancelled'].includes(orderConfirm.status)) {
-          throw 'orderConfirm failed'
-        } else if (store.getState().modals.isShowAccount.isShow) {
+        const response = await LoopringAPI.vaultAPI.submitVaultOrder({
+          request,
+          privateKey: account.eddsaKey.sk,
+          apiKey: account.apiKey,
+        })
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          throw new CustomErrorWithCode({
+            code: (response as sdk.RESULT_INFO).code,
+            message: (response as sdk.RESULT_INFO).message,
+            ...SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN],
+          })
+        } else {
+          clearData()
+          updateVaultLayer2({})
+          await sdk.sleep(SUBMIT_PANEL_CHECK)
+          if (refreshRef.current) {
+            // @ts-ignore
+            refreshRef.current.firstElementChild.click()
+          }
+          const response2: { hash: string } | any =
+            await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
+              {
+                accountId: account.accountId as any,
+                // @ts-ignore
+                hash: response.hash,
+              },
+              account.apiKey,
+            )
+          let status = ''
+          if (
+            response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+          ) {
+            throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+          } else if (
+            response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+          ) {
+            status = 'labelPending'
+          } else {
+            status = 'labelFinished'
+          }
           setShowAccount({
             isShow: true,
             step: AccountStep.VaultTrade_Success,
             info: {
               ...info,
+              status: t(status),
             },
           })
-        }
-
-        await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        if (store.getState().modals.isShowAccount.isShow) {
-          setShowAccount({ isShow: false })
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+          updateVaultLayer2({})
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step == AccountStep.VaultTrade_Success
+          ) {
+            setShowAccount({ isShow: false })
+          }
         }
       } else {
         throw new Error('api not ready')

@@ -26,6 +26,7 @@ const StyleTitlePaper = styled(Box)`
   background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
+export const l2assetsRouter = `${RouterPath.l2assets}/:assets?/:item?`
 
 export const AssetPanel = withTranslation('common')(
   ({
@@ -56,7 +57,7 @@ export const AssetPanel = withTranslation('common')(
     const { disableWithdrawList } = useTokenMap()
     const { forexMap } = useSystem()
     const { isMobile, defaultNetwork } = useSettings()
-    const match: any = useRouteMatch('/l2assets/:assets?/:item?')
+    const match: any = useRouteMatch(l2assetsRouter)
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
     const { onTokenLockHold, tokenLockDetail } = useAssetAction()
@@ -65,25 +66,25 @@ export const AssetPanel = withTranslation('common')(
       if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
           case AssetTabIndex.Invests:
-            history.replace('/l2assets/assets/Invests')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Invests}`)
             setCurrentTab(AssetTabIndex.Invests)
             break
           case AssetTabIndex.RedPacket:
-            history.replace('/l2assets/assets/RedPacket')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.RedPacket}`)
             setCurrentTab(AssetTabIndex.RedPacket)
             break
           case AssetTabIndex.Rewards:
-            history.replace('/l2assets/assets/Rewards')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`)
             setCurrentTab(AssetTabIndex.Rewards)
             break
           case AssetTabIndex.Tokens:
           default:
-            history.replace('/l2assets/assets/Tokens')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Tokens}`)
             setCurrentTab(AssetTabIndex.Tokens)
             break
         }
       } else {
-        history.replace('/l2assets/assets/Tokens')
+        history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Tokens}`)
         setCurrentTab(AssetTabIndex.Tokens)
       }
     }

@@ -17,11 +17,7 @@ const getVaultTickersApi = async (): Promise<{
   } = store.getState()
   let {
     vaultTickerMap,
-    vaultMap: {
-      // marketArray,
-      erc20Array,
-      // tokenMap:vaultTokenMap
-    },
+    vaultMap: { erc20Array },
   } = invest
   let { __timer__ } = vaultTickerMap
   const tokens = erc20Array.map((item) => {
@@ -42,7 +38,7 @@ const getVaultTickersApi = async (): Promise<{
       currency: 'USD',
     })
     //@ts-ignore
-    const data = makeTokenTickerMap({ rawData: vaultTickers.list })
+    const data = makeTokenTickerMap({ rawData: vaultTickers.list, isVault: true })
 
     return { data, __timer__ }
   } else {
@@ -66,7 +62,7 @@ function* vaultTickerMakeMap({ payload }: PayloadAction<sdk.DatacenterTokenInfoS
   try {
     const { invest } = store.getState()
     let { vaultTickerMap } = invest
-    const data = makeTokenTickerView({ item: payload })
+    const data = makeTokenTickerView({ item: payload, isVault: true })
     yield put(
       getVaultTickerStatus({
         vaultTickerMap: { ...vaultTickerMap, ...{ [payload?.symbol as any]: data } },

@@ -10,11 +10,9 @@ import {
   ForexMap,
   getValuePrecisionThousand,
   HiddenTag,
-  MarketType,
   PriceTag,
   RowConfig,
   TokenType,
-  VaultAction,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons'

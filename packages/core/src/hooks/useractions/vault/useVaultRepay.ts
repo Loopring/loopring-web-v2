@@ -1,7 +1,13 @@
 import {
+  CustomErrorWithCode,
+  EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
+  SDK_ERROR_MAP_TO_UI,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  SUBMIT_PANEL_CHECK,
   TradeBtnStatus,
+  UIERROR_CODE,
   VaultRepayData,
 } from '@loopring-web/common-resources'
 import { AccountStep, SwitchData, useOpenModals } from '@loopring-web/component-lib'
@@ -18,13 +24,11 @@ import React from 'react'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { makeVaultRepay } from '../../help'
 import { LoopringAPI } from '../../../api_wrapper'
-import { walletLayer2Service } from '../../../services'
 import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
 import { getTimestampDaysLater } from '../../../utils'
 import { DAYS } from '../../../defs'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-
 export const useVaultRepay = <
   T extends IBData<I> & {
     borrowed: string
@@ -33,7 +37,6 @@ export const useVaultRepay = <
   V extends VaultRepayData<T>,
   I,
 >() => {
-  // const { setShowAccount } = useOpenModals()
   const {
     modals: { istShowVaultLoad },
     setShowAccount,
@@ -44,7 +47,7 @@ export const useVaultRepay = <
   const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap } = useVaultMap()
   const { t } = useTranslation()
   const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
-  const { exchangeInfo, forexMap, chainId } = useSystem()
+  const { exchangeInfo, chainId } = useSystem()
   const [isLoading, setIsLoading] = React.useState(false)
   const [walletMap, setWalletMap] = React.useState(() => {
     return makeVaultRepay({ needFilterZero: true }).vaultAvaiable2Map
@@ -55,18 +58,16 @@ export const useVaultRepay = <
     let supportData = {}
     if (tradeData?.belong) {
       const vaultToken = vaultTokenMap[tradeData.belong as any]
-      const borrowToken = vaultTokenMap[tradeData.belong]
-      const borrow = tradeData.borrowed
-
-      const orderAmounts = borrowToken.orderAmounts
+      const borrowed = tradeData.borrowed
+      const orderAmounts = vaultToken.orderAmounts
       const minRepayVol = BigNumber.max(orderAmounts.dust, orderAmounts?.minimum)
-      const minRepayAmt = minRepayVol.div('1e' + borrowToken.decimals)
+      const minRepayAmt = minRepayVol.div('1e' + vaultToken.decimals)
       const tradeVaule = tradeData.tradeValue
 
       supportData = {
-        maxRepayAmount: borrow,
+        maxRepayAmount: borrowed,
         maxRepayStr: getValuePrecisionThousand(
-          borrow,
+          borrowed,
           // sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
           vaultToken.precision,
           vaultToken.precision,
@@ -81,18 +82,18 @@ export const useVaultRepay = <
           undefined,
         ),
         maxRepayVol: sdk
-          .toBig(borrow)
+          .toBig(borrowed)
           .times('1e' + vaultToken.decimals)
           .toString(),
         minRepayVol: minRepayVol.toString(),
         repayVol: sdk
           .toBig(tradeVaule ?? 0)
-          .times('1e' + borrowToken.decimals)
+          .times('1e' + vaultToken.decimals)
           .toString(),
         repayAmtStr: getValuePrecisionThousand(
           tradeVaule ?? 0,
-          borrowToken.precision,
-          borrowToken.precision,
+          vaultToken.precision,
+          vaultToken.precision,
           undefined,
         ),
         repayAmt: tradeVaule ?? 0,
@@ -220,6 +221,7 @@ export const useVaultRepay = <
   const processRequest = async (request?: sdk.VaultRepayRequestV3WithPatch['request']) => {
     const account = store.getState().account
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
+    const vaultToken = vaultTokenMap[vaultRepayData.belong]
     try {
       if ((request || vaultRepayData.request) && LoopringAPI.vaultAPI) {
         let response = await LoopringAPI.vaultAPI?.submitVaultRepay(
@@ -238,47 +240,88 @@ export const useVaultRepay = <
             counterFactualInfo: account.eddsaKey.counterFactualInfo,
           },
         )
+
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
+        } else {
+          setShowVaultLoad({ isShow: false })
+          setIsLoading(false)
+          updateVaultLayer2({})
+          await sdk.sleep(SUBMIT_PANEL_CHECK)
+          const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
+            {
+              accountId: account?.accountId?.toString(),
+              hash: (response as any).hash,
+            },
+            account.apiKey,
+          )
+          let status = ''
+          if (
+            response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+          ) {
+            throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+          } else if (
+            response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+          ) {
+            status = 'labelPending'
+          } else {
+            status = 'labelFinished'
+          }
+
+          const amount = getValuePrecisionThousand(
+            sdk.toBig(response2?.raw_data?.order?.fillAmountS).div('1e' + vaultToken.decimals),
+            vaultToken.precision,
+            vaultToken.precision,
+            undefined,
+          )
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.VaultRepay_Success,
+            info: {
+              status: t(status),
+              amount,
+              sum: vaultRepayData.repayAmtStr,
+              vSymbol: vaultToken.symbol,
+              time: response2?.raw_data?.order?.createdAt,
+            },
+          })
+          await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+          updateVaultLayer2({})
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            store.getState().modals.isShowAccount.step == AccountStep.VaultRepay_Success
+          ) {
+            setShowAccount({ isShow: false })
+          }
         }
-        walletLayer2Service.sendUserUpdate()
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.VaultRepay_In_Progress,
-          info: {
-            title: t('labelVaultRepayTitle'),
-          },
-        })
-        sdk.sleep(1000).then(() => updateVaultLayer2({}))
-        //TODO c
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.VaultRepay_Success,
-          // TODO:
-          info: {
-            usdValue: 0,
-            usdDebt: 0,
-            usdEquity: 0,
-            forexMap,
-            title: t('labelVaultRepayTitle'),
-          },
-        })
-        setShowVaultLoad({
-          isShow: false,
-        })
       } else {
-        throw 'no data'
+        throw new Error('api not ready')
       }
       setIsLoading(false)
     } catch (e) {
+      let error
+      if ((e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+        error = sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+      } else {
+        error = new CustomErrorWithCode({
+          code: (e as sdk.RESULT_INFO).code,
+          message: (e as sdk.RESULT_INFO).message,
+          ...SDK_ERROR_MAP_TO_UI[(e as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN],
+        })
+      }
+      setIsLoading(false)
       setShowAccount({
         isShow: true,
-        step: AccountStep.VaultRedeem_Failed,
+        step: AccountStep.VaultRepay_Failed,
         info: {
-          title: t('labelVaultRepayTitle'),
+          status: t('labelFailed'),
+          amount: EmptyValueTag,
+          sum: vaultRepayData.repayAmtStr,
+          vSymbol: vaultToken.symbol,
+          time: Date.now(),
+          error,
         },
       })
-      setIsLoading(false)
     }
   }
 
@@ -297,6 +340,17 @@ export const useVaultRepay = <
         sdk.toBig(vaultRepayData?.maxRepayAmount).lte(vaultRepayData.maxRepayVol ?? 0)
       ) {
         setIsLoading(true)
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.VaultRepay_In_Progress,
+          info: {
+            status: t('labelPending'),
+            amount: EmptyValueTag,
+            sum: vaultRepayData.repayAmtStr,
+            vSymbol: vaultRepayData.belong,
+            time: Date.now(),
+          },
+        })
         const tokenInfo = vaultTokenMap[vaultRepayData.belong]
         const [{ broker }, { offchainId }] = await Promise.all([
           LoopringAPI.userAPI?.getAvailableBroker({
@@ -348,12 +402,7 @@ export const useVaultRepay = <
     }
   }
 
-  const {
-    btnStatus,
-    onBtnClick,
-    btnLabel,
-    // btnStyle: tradeLimitBtnStyle,
-  } = useSubmitBtn({
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck,
     isLoading,
     submitCallback,

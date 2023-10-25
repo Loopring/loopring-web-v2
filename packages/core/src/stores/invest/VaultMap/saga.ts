@@ -9,7 +9,7 @@ import { makeVault } from '../../../hooks'
 import { VaultMap } from './interface'
 
 const getVaultMapApi = async () => {
-  if (!LoopringAPI.defiAPI) {
+  if (!LoopringAPI.vaultAPI) {
     return undefined
   }
   const { chainId } = store.getState().system
@@ -32,7 +32,7 @@ const getVaultMapApi = async () => {
 
   try {
     const [tokenMapRaw, marketRaw] = await Promise.all([
-      LoopringAPI.vaultAPI?.getVaultTokens().then((response) => {
+      LoopringAPI.vaultAPI.getVaultTokens().then((response) => {
         if (
           !response ||
           (response as sdk.RESULT_INFO).code ||
@@ -53,7 +53,7 @@ const getVaultMapApi = async () => {
           return tokenListRaw
         }
       }),
-      LoopringAPI.vaultAPI?.getVaultMarkets().then((response) => {
+      LoopringAPI.vaultAPI.getVaultMarkets().then((response) => {
         if (
           !response ||
           (response as sdk.RESULT_INFO).code ||

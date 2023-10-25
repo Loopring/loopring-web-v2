@@ -5,6 +5,7 @@ import {
   MarketType,
   myLog,
   PrecisionTree,
+  RouterPath,
   SagaStatus,
   WalletMap,
 } from '@loopring-web/common-resources'
@@ -135,7 +136,7 @@ export const usePro = <C extends { [key: string]: any }>({
         let { market: _market } = sdk.getExistedMarket(marketArray, coinA, coinB)
         if (_market !== market) {
           setMarket(_market)
-          history.push('/trade/pro/' + _market)
+          history.push(`${RouterPath.pro}/${_market}`)
         }
         // @ts-ignore
         ;[, coinA, coinB] = _market?.match(/([\w]+)-([\w]+)/i)

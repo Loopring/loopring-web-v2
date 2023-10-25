@@ -2,7 +2,13 @@ import { LoopringMap, TickerData, toBig } from '@loopring-web/loopring-sdk'
 import { store } from '../../index'
 import { volumeToCount } from './volumeToCount'
 import { TickerMap } from '../../stores'
-import { getValuePrecisionThousand, Ticker, TickerNewMap } from '@loopring-web/common-resources'
+import {
+  getValuePrecisionThousand,
+  Ticker,
+  TickerNew,
+  TickerNewMap,
+  TokenType,
+} from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const makeTickView = (tick: TickerData) => {
@@ -75,13 +81,20 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
   }, {} as TickerMap<R>)
 }
 
-export const makeTokenTickerView = ({ item }: { item: sdk.DatacenterTokenInfoSimple }) => {
+export const makeTokenTickerView = ({
+  item,
+  isVault = false,
+}: {
+  item: sdk.DatacenterTokenInfoSimple
+  isVault?: boolean
+}) => {
   const {
-    // system: { forexMap },
-    tokenMap: { tokenMap },
+    tokenMap: { tokenMap: erc20TokenMap },
+    invest: {
+      vaultMap: { erc20Map, idIndex },
+    },
   } = store.getState()
-  const tokenInfo = tokenMap[item.symbol]
-
+  const tokenInfo = erc20TokenMap[item.symbol]
   const volume = getValuePrecisionThousand(
     item.volume24H,
     tokenInfo.precision,
@@ -98,21 +111,25 @@ export const makeTokenTickerView = ({ item }: { item: sdk.DatacenterTokenInfoSim
     volume,
     priceU,
     change,
+    type: isVault ? TokenType.vault : TokenType.single,
+    erc20Symbol: tokenInfo.symbol,
+    symbol: isVault ? idIndex[erc20Map[tokenInfo.symbol].baseTokenId] : tokenInfo.symbol,
     __rawTicker__: item,
     rawData: item,
-  } as unknown as Ticker
+  } as unknown as TickerNew
 }
-export const makeTokenTickerMap = <R extends { [key: string]: any }>({
+export const makeTokenTickerMap = <R>({
   rawData,
+  isVault,
 }: {
   rawData: sdk.DatacenterTokenInfoSimple[]
+  isVault?: boolean
 }): TickerNewMap<R> => {
   return rawData.reduce((prev: TickerNewMap<R>, item) => {
-    const key = item.symbol as unknown as R
+    const key = item.symbol
     if (item && item.symbol && item.price) {
-      // @ts-ignore
       prev[key] = {
-        ...item,
+        ...makeTokenTickerView({ isVault, item }),
       }
     }
     return prev

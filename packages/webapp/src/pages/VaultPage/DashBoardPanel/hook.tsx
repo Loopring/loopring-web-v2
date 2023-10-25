@@ -6,10 +6,8 @@ import {
   store,
   useAccount,
   useSystem,
-  useTokenMap,
   useTokenPrices,
   useWalletLayer2,
-  useWalletLayer2Socket,
   VaultAccountInfoStatus,
   volumeToCountAsBigNumber,
   WalletConnectL2Btn,
@@ -66,7 +64,7 @@ export const useGetVaultAssets = ({
     onRedeemPop,
   } = _vaultAccountInfo
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
-  const [totalAsset, setTotalAsset] = React.useState<string>('0')
+  const [totalAsset, setTotalAsset] = React.useState<string>(EmptyValueTag)
   const { status: accountStatus, account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
@@ -215,8 +213,7 @@ export const useGetVaultAssets = ({
                 src={`${SoursURL}images/loading-line.gif`}
               />
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                TODO
-                {t('TODO in INREDEEM waiding', {
+                {t('labelVaultInredeemWaiting', {
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
@@ -225,7 +222,9 @@ export const useGetVaultAssets = ({
         } else if (
           [sdk.VaultAccountStatus.UNDEFINED, sdk.VaultAccountStatus.FREE].includes(
             (vaultAccountInfo?.accountStatus ?? '') as any,
-          )
+          ) ||
+          vaultAccountInfo == undefined ||
+          vaultAccountInfo?.accountStatus == undefined
         ) {
           return (
             <Button
@@ -251,7 +250,8 @@ export const useGetVaultAssets = ({
           )
         } else if (
           activeInfo?.hash ||
-          sdk.VaultAccountStatus.IN_STAKING !== vaultAccountInfo?.accountStatus
+          (vaultAccountInfo?.accountStatus &&
+            sdk.VaultAccountStatus.IN_STAKING !== vaultAccountInfo?.accountStatus)
         ) {
           return (
             <Box
@@ -268,8 +268,7 @@ export const useGetVaultAssets = ({
                 src={`${SoursURL}images/loading-line.gif`}
               />
               <Typography marginY={3} variant={'body1'} textAlign={'center'}>
-                TODO
-                {t('TODO in IN_STAKING account', {
+                {t('labelVaultAccountWait', {
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
@@ -302,6 +301,8 @@ export const useGetVaultAssets = ({
     activeInfo?.hash,
     vaultAccountInfo?.accountStatus,
     isMobile,
+    joinBtnStatus,
+    joinBtnLabel,
   ])
   const { hideL2Assets, hideSmallBalances, setHideSmallBalances } = useSettings()
   const { status: walletL2Status } = useWalletLayer2()
@@ -320,12 +321,6 @@ export const useGetVaultAssets = ({
       },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-    // const tokenPriceList = tokenPrices
-    //   ? Object.entries(tokenPrices).map((o) => ({
-    //       token: o[0],
-    //       detail: o[1],
-    //     }))
-    //   : []
     if (
       tokenMap &&
       !!Object.keys(tokenMap).length &&
@@ -408,6 +403,9 @@ export const useGetVaultAssets = ({
       }, [] as Array<any>)
       setAssetsRawData(data)
       setTotalAsset(totalAssets.toString())
+    } else {
+      setAssetsRawData([])
+      setTotalAsset(undefined)
     }
   }
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
@@ -436,7 +434,7 @@ export const useGetVaultAssets = ({
     startWorker()
   }, [])
   React.useEffect(() => {
-    if (walletLayer2Callback && vaultAccountInfoStatus === SagaStatus.UNSET) {
+    if (vaultAccountInfoStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
     }
   }, [vaultAccountInfoStatus])
@@ -454,6 +452,7 @@ export const useGetVaultAssets = ({
     totalAsset,
     showNoVaultAccount,
     whichBtn,
+    noVaultAccount,
     setShowNoVaultAccount,
     onActionBtnClick,
     dialogBtn,

@@ -14,16 +14,8 @@ import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
 import styled from '@emotion/styled'
+import { InvestType, RouterPath } from '@loopring-web/common-resources'
 
-export enum InvestType {
-  MyBalance = 0,
-  AmmPool = 1,
-  DeFi = 2,
-  Overview = 3,
-  Dual = 4,
-  Stack = 5,
-  LeverageETH = 6,
-}
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const BoxStyled = styled(Box)`
   display: flex;
@@ -59,15 +51,7 @@ export const MaxWidthContainer = (
     </BoxStyled>
   )
 }
-export const InvestRouter = [
-  'balance',
-  'ammpool',
-  'defi',
-  'overview',
-  'dual',
-  'stakelrc',
-  'leverageETH',
-]
+
 export const BalanceTitle = () => {
   const { t } = useTranslation()
   return (
@@ -134,9 +118,9 @@ export const DefiTitle = () => {
     </Typography>
   )
 }
-
+const InvestRouter = `${RouterPath.invest}/:item?`
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
-  let match: any = useRouteMatch('/invest/:item?')
+  let match: any = useRouteMatch(InvestRouter)
   const { confirmedLRCStakeInvest: confirmedLRCInvestFun } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },

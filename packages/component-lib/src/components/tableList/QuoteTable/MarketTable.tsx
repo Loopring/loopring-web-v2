@@ -10,24 +10,24 @@ import {
   FloatTag,
   ForexMap,
   getValuePrecisionThousand,
-  MarketTableRawDataItem,
   PriceTag,
-  RouterPath,
   RowConfig,
   RowConfigType,
   SCENARIO,
   StarHollowIcon,
   StarSolidIcon,
-  VaultKey,
+  TickerNew,
+  TokenType,
 } from '@loopring-web/common-resources'
+import { useSettings } from '../../../stores'
 import { Button, Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
-import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
 import { Currency } from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { TagIconList } from '../../block'
 import { QuoteTableChangedCell } from './QuoteTable'
+import { CoinIcons } from '../assetsTable'
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -72,7 +72,8 @@ const TableStyled = styled(Table)`
     text-align: center;
   }
 ` as any
-export interface MarketTableProps<R = MarketTableRawDataItem> {
+
+export interface MarketTableProps<R> {
   rawData: R[]
   rowConfig: RowConfigType
   onItemClick: (item: R) => void
@@ -92,7 +93,7 @@ export interface MarketTableProps<R = MarketTableRawDataItem> {
 
 export const MarketTable = withTranslation('tables')(
   withRouter(
-    <R = MarketTableRawDataItem,>({
+    <R = TickerNew,>({
       t,
       currentheight = 350,
       rowConfig = RowConfig,
@@ -110,10 +111,8 @@ export const MarketTable = withTranslation('tables')(
       isPro = false,
       onItemClick,
       ...rest
-    }: MarketTableProps & WithTranslation & RouteComponentProps) => {
-      let userSettings = useSettings()
-      const upColor = userSettings?.upColor
-      const { currency, isMobile } = userSettings
+    }: MarketTableProps<R> & WithTranslation & RouteComponentProps) => {
+      const { currency, isMobile, coinJson, upColor } = useSettings()
       const handleStartClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         isFavourite: boolean,
@@ -134,6 +133,8 @@ export const MarketTable = withTranslation('tables')(
             sortable: true,
             formatter: ({ row }: any) => {
               const isFavourite = favoriteMarket?.includes(row.symbol)
+              const symbol = row?.type === TokenType.vault ? row.erc20Symbol : row.symbol
+              let tokenIcon: [any, any] = [coinJson[symbol], undefined]
               return (
                 <Box
                   className='rdg-cell-value'
@@ -154,13 +155,18 @@ export const MarketTable = withTranslation('tables')(
                       )}
                     </IconButton>
                   </Typography>
-                  <Typography component={'span'}>{row.symbol}</Typography>
+                  <CoinIcons type={row?.type} tokenIcon={tokenIcon} />
+                  <Typography marginLeft={1 / 2} component={'span'}>
+                    {row.symbol}
+                  </Typography>
                   &nbsp;
                   {campaignTagConfig && (
                     <TagIconList
                       campaignTagConfig={campaignTagConfig}
                       symbol={row.symbol}
-                      scenario={SCENARIO.VAULT}
+                      scenario={
+                        row?.token?.type === TokenType.vault ? SCENARIO.VAULT : SCENARIO.MARKET
+                      }
                     />
                   )}
                 </Box>
@@ -295,7 +301,7 @@ export const MarketTable = withTranslation('tables')(
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,
         generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<R, unknown>[],
-        sortMethod: (sortedRows: R[], sortColumn: string) => {
+        sortMethod: (sortedRows, sortColumn) => {
           switch (sortColumn) {
             case 'pair':
               sortedRows = sortedRows.sort((a, b) => {
