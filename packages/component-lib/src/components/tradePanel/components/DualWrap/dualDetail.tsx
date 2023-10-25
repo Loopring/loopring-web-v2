@@ -111,7 +111,7 @@ export const DualDetail = ({
 }: DualDetailProps) => {
   const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
   const [showEdit, setShowEdit] = React.useState(false)
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'tables'])
   const { upColor, isMobile } = useSettings()
   const { base, quote, precisionForPrice, quoteUnit } = currentPrice
   const [tab, setTab] = React.useState<DualDetailTab>(DualDetailTab.less)
@@ -255,7 +255,7 @@ export const DualDetail = ({
                     variant={'inherit'}
                     color={dualViewInfo?.statusColor}
                   >
-                    {t(dualViewInfo?.side)}
+                    {t(dualViewInfo?.side ?? '')}
                   </Typography>
                 </Typography>
                 {dualViewInfo.outSymbol && (
@@ -398,13 +398,13 @@ export const DualDetail = ({
                         variant={'inherit'}
                         color={'textPrimary'}
                       >
-                        <>{t(dualViewInfo?.autoContent)}</>
+                        <>{t(dualViewInfo?.autoContent ?? '')}</>
                         <>{dualViewInfo.autoIcon}</>
                       </Typography>
                     </Tooltip>
                   ) : (
                     <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-                      {t(dualViewInfo?.autoContent)}
+                      {t(dualViewInfo?.autoContent ?? '')}
                     </Typography>
                   )}
                 </Typography>
