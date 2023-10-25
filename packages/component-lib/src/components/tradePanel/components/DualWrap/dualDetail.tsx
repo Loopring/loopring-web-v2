@@ -241,23 +241,21 @@ export const DualDetail = ({
                   paddingBottom={1}
                   order={0}
                 >
-                  <Tooltip title={t('labelDualCurrentAPRDes').toString()}>
-                    <Typography
-                      component={'span'}
-                      variant={'inherit'}
-                      color={'textSecondary'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                    >
-                      <Trans i18nKey={'labelDualStatus'}>Status</Trans>
-                    </Typography>
-                  </Tooltip>
+                  <Typography
+                    component={'span'}
+                    variant={'inherit'}
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <Trans i18nKey={'labelDualStatus'}>Status</Trans>
+                  </Typography>
                   <Typography
                     component={'span'}
                     variant={'inherit'}
                     color={dualViewInfo?.statusColor}
                   >
-                    {dualViewInfo?.side}
+                    {t(dualViewInfo?.side)}
                   </Typography>
                 </Typography>
                 {dualViewInfo.outSymbol && (
@@ -400,13 +398,13 @@ export const DualDetail = ({
                         variant={'inherit'}
                         color={'textPrimary'}
                       >
-                        <>{t(dualViewInfo.autoContent)}</>
+                        <>{t(dualViewInfo?.autoContent)}</>
                         <>{dualViewInfo.autoIcon}</>
                       </Typography>
                     </Tooltip>
                   ) : (
                     <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-                      {t(dualViewInfo.autoContent)}
+                      {t(dualViewInfo?.autoContent)}
                     </Typography>
                   )}
                 </Typography>
