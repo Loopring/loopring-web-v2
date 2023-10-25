@@ -472,6 +472,7 @@ export type DualViewBase = {
   autoIcon?: JSX.Element
   autoContent?: string
   newStrike?: string
+  deliveryPrice?: string | undefined
   __raw__?: any
 }
 

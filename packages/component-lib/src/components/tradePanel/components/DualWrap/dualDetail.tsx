@@ -111,7 +111,7 @@ export const DualDetail = ({
 }: DualDetailProps) => {
   const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
   const [showEdit, setShowEdit] = React.useState(false)
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'tables'])
   const { upColor, isMobile } = useSettings()
   const { base, quote, precisionForPrice, quoteUnit } = currentPrice
   const [tab, setTab] = React.useState<DualDetailTab>(DualDetailTab.less)
@@ -255,7 +255,7 @@ export const DualDetail = ({
                     variant={'inherit'}
                     color={dualViewInfo?.statusColor}
                   >
-                    {t(dualViewInfo?.side)}
+                    {dualViewInfo?.side ?? ''}
                   </Typography>
                 </Typography>
                 {dualViewInfo.outSymbol && (
@@ -281,6 +281,105 @@ export const DualDetail = ({
                     </Typography>
                   </Typography>
                 )}
+                {dualViewInfo?.deliveryPrice && (
+                  <Typography
+                    variant={'body1'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                    paddingBottom={1}
+                    order={4}
+                  >
+                    <Typography
+                      component={'span'}
+                      variant={'inherit'}
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      {t('labelDualDeliver')}
+                    </Typography>
+                    <Typography
+                      component={'span'}
+                      variant={'inherit'}
+                      color={
+                        upColor == UpColor.green ? 'var(--color-success)' : 'var(--color-error)'
+                      }
+                    >
+                      {dualViewInfo.deliveryPrice + ' ' + quoteAlice}
+                    </Typography>
+                  </Typography>
+                )}
+                {dualViewInfo.enterTime && (
+                  <>
+                    <Typography
+                      variant={'body1'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      justifyContent={'space-between'}
+                      paddingBottom={1}
+                      order={8}
+                    >
+                      <Typography
+                        component={'span'}
+                        variant={'inherit'}
+                        color={'textSecondary'}
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                      >
+                        {t('labelDualSubDate')}
+                      </Typography>
+                      <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
+                        {moment(new Date(dualViewInfo.enterTime)).format(YEAR_DAY_MINUTE_FORMAT)}
+                      </Typography>
+                    </Typography>
+
+                    <Typography
+                      variant={'body1'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      justifyContent={'space-between'}
+                      paddingBottom={1}
+                      order={7}
+                    >
+                      <Typography
+                        component={'span'}
+                        variant={'inherit'}
+                        color={'textSecondary'}
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                      >
+                        {t('labelDualAuto')}
+                      </Typography>
+
+                      {dualViewInfo.autoIcon && dualViewInfo?.autoStatus ? (
+                        <Tooltip
+                          title={t(dualViewInfo?.autoStatus, {
+                            day: dualViewInfo.maxDuration
+                              ? dualViewInfo.maxDuration / 86400000
+                              : EmptyValueTag,
+                            price: dualViewInfo.newStrike ? dualViewInfo.newStrike : EmptyValueTag,
+                          }).toString()}
+                        >
+                          <Typography
+                            component={'span'}
+                            display={'inline-flex'}
+                            alignItems={'center'}
+                            variant={'inherit'}
+                            color={'textPrimary'}
+                          >
+                            <>{t(dualViewInfo?.autoContent ?? '')}</>
+                            <>{dualViewInfo.autoIcon}</>
+                          </Typography>
+                        </Tooltip>
+                      ) : (
+                        <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
+                          {dualViewInfo?.autoContent ?? ''}
+                        </Typography>
+                      )}
+                    </Typography>
+                  </>
+                )}
               </>
             )}
             <Typography
@@ -289,38 +388,28 @@ export const DualDetail = ({
               alignItems={'center'}
               justifyContent={'space-between'}
               paddingBottom={1}
-              order={isOrder ? 4 : 0}
+              order={1}
             >
-              <Tooltip title={t('labelDualCurrentAPRDes').toString()}>
-                <Typography
-                  component={'span'}
-                  variant={'inherit'}
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Trans i18nKey={'labelDualCurrentAPR'}>
-                    APR
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  </Trans>
-                </Typography>
-              </Tooltip>
               <Typography
                 component={'span'}
                 variant={'inherit'}
-                color={upColor == UpColor.green ? 'var(--color-success)' : 'var(--color-error)'}
+                color={'textSecondary'}
+                display={'inline-flex'}
+                alignItems={'center'}
               >
-                {dualViewInfo?.apy}
+                {t('labelDualAmount')}
+              </Typography>
+              <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
+                {dualViewInfo?.amount}
               </Typography>
             </Typography>
-
             <Typography
               variant={'body1'}
               display={'inline-flex'}
               alignItems={'center'}
               justifyContent={'space-between'}
               paddingBottom={1}
-              order={isOrder ? 3 : 1}
+              order={3}
             >
               <Tooltip title={t('labelDualTargetPriceDes').toString()}>
                 <Typography
@@ -340,104 +429,14 @@ export const DualDetail = ({
                 {targetView + ' ' + quoteAlice}
               </Typography>
             </Typography>
-            {isOrder && dualViewInfo.enterTime && (
-              <>
-                <Typography
-                  variant={'body1'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                  justifyContent={'space-between'}
-                  paddingBottom={1}
-                  order={8}
-                >
-                  <Typography
-                    component={'span'}
-                    variant={'inherit'}
-                    color={'textSecondary'}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    {t('labelDualSubDate')}
-                  </Typography>
-                  <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-                    {moment(new Date(dualViewInfo.enterTime)).format(YEAR_DAY_MINUTE_FORMAT)}
-                  </Typography>
-                </Typography>
 
-                <Typography
-                  variant={'body1'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                  justifyContent={'space-between'}
-                  paddingBottom={1}
-                  order={8}
-                >
-                  <Typography
-                    component={'span'}
-                    variant={'inherit'}
-                    color={'textSecondary'}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    {t('labelDualAuto')}
-                  </Typography>
-
-                  {dualViewInfo.autoIcon && dualViewInfo?.autoStatus ? (
-                    <Tooltip
-                      title={t(dualViewInfo?.autoStatus, {
-                        day: dualViewInfo.maxDuration
-                          ? dualViewInfo.maxDuration / 86400000
-                          : EmptyValueTag,
-                        price: dualViewInfo.newStrike ? dualViewInfo.newStrike : EmptyValueTag,
-                      }).toString()}
-                    >
-                      <Typography
-                        component={'span'}
-                        display={'inline-flex'}
-                        alignItems={'center'}
-                        variant={'inherit'}
-                        color={'textPrimary'}
-                      >
-                        <>{t(dualViewInfo?.autoContent)}</>
-                        <>{dualViewInfo.autoIcon}</>
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-                      {t(dualViewInfo?.autoContent)}
-                    </Typography>
-                  )}
-                </Typography>
-                <Typography
-                  variant={'body1'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                  justifyContent={'space-between'}
-                  paddingBottom={1}
-                  order={1}
-                >
-                  <Typography
-                    component={'span'}
-                    variant={'inherit'}
-                    color={'textSecondary'}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    {t('labelDualAmount')}
-                  </Typography>
-                  <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-                    {dualViewInfo?.amount}
-                  </Typography>
-                </Typography>
-              </>
-            )}
             <Typography
               variant={'body1'}
               display={'inline-flex'}
               alignItems={'center'}
               justifyContent={'space-between'}
               paddingBottom={1}
-              order={isOrder ? 6 : 2}
+              order={5}
             >
               <Typography
                 component={'span'}
@@ -458,7 +457,7 @@ export const DualDetail = ({
               alignItems={'center'}
               justifyContent={'space-between'}
               paddingBottom={1}
-              order={isOrder ? 7 : 3}
+              order={6}
             >
               <Typography
                 component={'span'}

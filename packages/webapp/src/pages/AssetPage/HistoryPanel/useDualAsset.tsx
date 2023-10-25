@@ -38,8 +38,7 @@ export const Limit = 15
 export const useDualAsset = <R extends RawDataDualAssetItem>(
   setToastOpen?: (props: any) => void,
 ) => {
-  const { t } = useTranslation(['error'])
-
+  const { t } = useTranslation(['common', 'error'])
   const {
     account: { accountId, apiKey },
   } = useAccount()
@@ -66,22 +65,16 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       sellSymbol,
       buySymbol,
       settleRatio,
-      strike,
       __raw__: {
         order: {
+          strike,
           settlementStatus,
-          tokenInfoOrigin: {
-            amountIn,
-            tokenOut,
-
-            amountOut,
-          },
+          tokenInfoOrigin: { amountIn, tokenOut, amountOut },
           dualReinvestInfo,
           timeOrigin: { expireTime },
           investmentStatus,
           dualType,
-          // tokenInfoOrigin: { amountIn },
-          // timeOrigin: { settlementTime },
+          deliveryPrice,
         },
       },
     } = item
@@ -205,10 +198,17 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       case sdk.DUAL_RETRY_STATUS.NO_RETRY:
         if (dualReinvestInfo?.isRecursive) {
           content = 'labelDualAssetReInvestEnable'
-        } else {
+        } else if (
+          Date.now() - expireTime >= 0 &&
+          (dualType == sdk.DUAL_TYPE.DUAL_BASE
+            ? sdk.toBig(deliveryPrice).gte(strike)
+            : sdk.toBig(strike).gte(deliveryPrice))
+        ) {
           icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
-          status = 'labelDualRetryStatusRetrying'
-          content = 'labelDualRetryStatusTerminated'
+          status = 'labelDualRetryStatusTerminated'
+          content = 'labelDualRetryTerminated'
+        } else {
+          content = 'labelDualAssetReInvestDisable'
         }
         break
       case sdk.DUAL_RETRY_STATUS.RETRYING:
@@ -237,8 +237,21 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         maxDuration: dualReinvestInfo.maxDuration,
         autoIcon: icon,
         autoStatus: status,
-        autoContent: content,
+        autoContent: t(content),
         newStrike: dualReinvestInfo.newStrike,
+        deliveryPrice:
+          Date.now() - expireTime >= 0
+            ? deliveryPrice
+              ? getValuePrecisionThousand(
+                  deliveryPrice,
+                  tokenMap[currentPrice.quote]?.precision,
+                  tokenMap[currentPrice.quote]?.precision,
+                  tokenMap[currentPrice.quote]?.precision,
+                  true,
+                  { isFait: true },
+                )
+              : EmptyValueTag
+            : undefined,
       },
 
       lessEarnTokenSymbol,

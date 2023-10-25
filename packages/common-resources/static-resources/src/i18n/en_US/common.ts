@@ -2055,4 +2055,5 @@ export default {
   labelDualTxsSettlement: 'Settlement',
   labelDualAuto: 'Auto Reinvest',
   labelDualAssetReInvestEnable: 'Enabled',
+  labelDualDeliver: 'Settlement Price',
 }

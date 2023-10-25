@@ -301,12 +301,16 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             const {
               __raw__: {
                 order: {
+                  deliveryPrice,
+                  strike,
+                  dualType,
                   // investmentStatus,
-                  dualReinvestInfo: { retryStatus, maxDuration, newStrike },
+                  dualReinvestInfo,
+                  timeOrigin: { expireTime },
                 },
               },
             } = row
-            switch (retryStatus) {
+            switch (dualReinvestInfo?.retryStatus) {
               case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
                 icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusSuccess'
@@ -318,12 +322,19 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 content = 'labelDualRetryFailed'
                 break
               case sdk.DUAL_RETRY_STATUS.NO_RETRY:
-                if (row?.__raw__.order?.dualReinvestInfo?.isRecursive) {
+                if (dualReinvestInfo?.isRecursive) {
                   content = 'labelDualAssetReInvestEnable'
-                } else {
+                } else if (
+                  Date.now() - expireTime >= 0 &&
+                  (dualType == sdk.DUAL_TYPE.DUAL_BASE
+                    ? sdk.toBig(deliveryPrice).gte(strike)
+                    : sdk.toBig(strike).gte(deliveryPrice))
+                ) {
                   icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
-                  status = 'labelDualRetryStatusRetrying'
-                  content = 'labelDualRetryStatusTerminated'
+                  status = 'labelDualRetryStatusTerminated'
+                  content = 'labelDualRetryTerminated'
+                } else {
+                  content = 'labelDualAssetReInvestDisable'
                 }
                 break
               case sdk.DUAL_RETRY_STATUS.RETRYING:
@@ -332,15 +343,17 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 content = 'labelDualRetryPending'
                 break
               default:
-                content = row?.__raw__.order?.dualReinvestInfo?.isRecursive
+                content = dualReinvestInfo.isRecursive
                   ? 'labelDualAssetReInvestEnable'
                   : 'labelDualAssetReInvestDisable'
             }
             return icon ? (
               <Tooltip
                 title={t(status, {
-                  day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
-                  price: newStrike ? newStrike : EmptyValueTag,
+                  day: dualReinvestInfo.maxDuration
+                    ? dualReinvestInfo.maxDuration / 86400000
+                    : EmptyValueTag,
+                  price: dualReinvestInfo.newStrike ? dualReinvestInfo.newStrike : EmptyValueTag,
                 }).toString()}
               >
                 <Typography display={'inline-flex'} alignItems={'center'} height={'100%'}>
@@ -414,16 +427,12 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 order: {
                   settlementStatus,
                   dualType,
+                  strike,
                   deliveryPrice,
                   investmentStatus,
-                  tokenInfoOrigin: {
-                    amountIn,
-                    tokenOut,
-
-                    amountOut,
-                  },
+                  tokenInfoOrigin: { amountIn, tokenOut, amountOut },
                   timeOrigin: { expireTime },
-                  dualReinvestInfo: { retryStatus, maxDuration, newStrike },
+                  dualReinvestInfo,
                 },
               },
             } = row
@@ -454,7 +463,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 ? 'var(--color-warning)'
                 : 'var(--color-success)'
             let buySymbol, buyAmount
-            if (tokenOut !== undefined) {
+            if (tokenOut !== undefined && tokenOut && tokenOut != 0) {
               buySymbol = tokenMap[idIndex[tokenOut]].symbol
               buyAmount = getValuePrecisionThousand(
                 sdk.toBig(amountOut ? amountOut : 0).div('1e' + tokenMap[buySymbol].decimals),
@@ -474,7 +483,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, _marketBuy] : [_marketBuy, sellSymbol]
 
-            switch (retryStatus) {
+            switch (dualReinvestInfo?.retryStatus) {
               case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
                 icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusSuccess'
@@ -486,12 +495,19 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 content = 'labelDualRetryFailed'
                 break
               case sdk.DUAL_RETRY_STATUS.NO_RETRY:
-                if (row?.__raw__.order?.dualReinvestInfo?.isRecursive) {
+                if (dualReinvestInfo?.isRecursive) {
                   content = 'labelDualAssetReInvestEnable'
-                } else {
+                } else if (
+                  Date.now() - expireTime >= 0 &&
+                  (dualType == sdk.DUAL_TYPE.DUAL_BASE
+                    ? sdk.toBig(deliveryPrice).gte(strike)
+                    : sdk.toBig(strike).gte(deliveryPrice))
+                ) {
                   icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
-                  status = 'labelDualRetryStatusRetrying'
-                  content = 'labelDualRetryStatusTerminated'
+                  status = 'labelDualRetryStatusTerminated'
+                  content = 'labelDualRetryTerminated'
+                } else {
+                  content = 'labelDualAssetReInvestDisable'
                 }
                 break
               case sdk.DUAL_RETRY_STATUS.RETRYING:
@@ -500,15 +516,17 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 content = 'labelDualRetryPending'
                 break
               default:
-                content = row?.__raw__.order?.dualReinvestInfo?.isRecursive
+                content = dualReinvestInfo.isRecursive
                   ? 'labelDualAssetReInvestEnable'
                   : 'labelDualAssetReInvestDisable'
             }
             const recursiveStatus = icon ? (
               <Tooltip
                 title={t(status, {
-                  day: maxDuration ? maxDuration / 86400000 : EmptyValueTag,
-                  price: newStrike ? newStrike : EmptyValueTag,
+                  day: dualReinvestInfo.maxDuration
+                    ? dualReinvestInfo.maxDuration / 86400000
+                    : EmptyValueTag,
+                  price: dualReinvestInfo.newStrike ? dualReinvestInfo.newStrike : EmptyValueTag,
                 }).toString()}
               >
                 <Typography display={'inline-flex'} alignItems={'center'} height={'100%'}>
