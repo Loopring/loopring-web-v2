@@ -447,7 +447,7 @@ export type DualCurrentPrice = {
   base: string
   precisionForPrice: number
   currentPrice?: number
-  quoteUnit?: string
+  quoteUnit: string
 }
 export type DualViewBase = {
   apy: `${string}%`

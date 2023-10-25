@@ -396,6 +396,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 quote: item.tokenInfoOrigin.quote,
                 currentPrice: findIndex?.index,
                 precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market].precisionForPrice,
+                quoteUnit: item.tokenInfoOrigin.quote,
               }
               prev.push({
                 ...format,

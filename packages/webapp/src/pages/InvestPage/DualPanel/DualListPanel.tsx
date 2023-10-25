@@ -246,9 +246,9 @@ export const DualListBlock = ({
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
-                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                          baseSymbol: /USD/gi.test(currentPrice.quoteUnit ?? '')
                             ? 'USDT'
-                            : currentPrice.quote, //currentPrice.quote,
+                            : currentPrice.quoteUnit, //currentPrice.quote,
                         }}
                       >
                         LRC Current price:

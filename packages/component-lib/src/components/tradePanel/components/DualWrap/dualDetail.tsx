@@ -138,8 +138,8 @@ export const DualDetail = ({
   const [showEdit, setShowEdit] = React.useState(false)
   const { t } = useTranslation()
   const { upColor, isMobile } = useSettings()
-  const { base, quote, precisionForPrice } = currentPrice
-  const quoteAlice = /USD/gi.test(dualViewInfo?.quote ?? '') ? 'USDT' : dualViewInfo?.quote
+  const { base, quote, precisionForPrice, quoteUnit } = currentPrice
+  const quoteAlice = /USD/gi.test(quoteUnit ?? '') ? 'USDT' : quoteUnit
 
   const currentView = React.useMemo(
     () =>
