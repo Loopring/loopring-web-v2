@@ -64,7 +64,7 @@ export const useGetVaultAssets = ({
     onRedeemPop,
   } = _vaultAccountInfo
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
-  const [totalAsset, setTotalAsset] = React.useState<string | undefined>('0')
+  const [totalAsset, setTotalAsset] = React.useState<string>(EmptyValueTag)
   const { status: accountStatus, account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
@@ -213,8 +213,7 @@ export const useGetVaultAssets = ({
                 src={`${SoursURL}images/loading-line.gif`}
               />
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                TODO
-                {t('TODO in INREDEEM waiding', {
+                {t('labelVaultInredeemWaiting', {
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
@@ -223,7 +222,9 @@ export const useGetVaultAssets = ({
         } else if (
           [sdk.VaultAccountStatus.UNDEFINED, sdk.VaultAccountStatus.FREE].includes(
             (vaultAccountInfo?.accountStatus ?? '') as any,
-          )
+          ) ||
+          vaultAccountInfo == undefined ||
+          vaultAccountInfo?.accountStatus == undefined
         ) {
           return (
             <Button
@@ -300,6 +301,8 @@ export const useGetVaultAssets = ({
     activeInfo?.hash,
     vaultAccountInfo?.accountStatus,
     isMobile,
+    joinBtnStatus,
+    joinBtnLabel,
   ])
   const { hideL2Assets, hideSmallBalances, setHideSmallBalances } = useSettings()
   const { status: walletL2Status } = useWalletLayer2()
@@ -449,6 +452,7 @@ export const useGetVaultAssets = ({
     totalAsset,
     showNoVaultAccount,
     whichBtn,
+    noVaultAccount,
     setShowNoVaultAccount,
     onActionBtnClick,
     dialogBtn,

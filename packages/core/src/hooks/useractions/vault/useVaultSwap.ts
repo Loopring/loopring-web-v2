@@ -419,7 +419,7 @@ export const useVaultSwap = <
         tradeCalcData?.volumeBuy &&
         tradeCalcData.maxFeeBips &&
         LoopringAPI.userAPI &&
-        LoopringAPI.defiAPI
+        LoopringAPI.vaultAPI
       ) {
         const sellToken = tokenMap[_sellToken]
         const buyToken = tokenMap[_buyToken]
@@ -484,7 +484,7 @@ export const useVaultSwap = <
           step: AccountStep.VaultTrade_In_Progress,
           info,
         })
-        const response: { hash: string } | any = await LoopringAPI.vaultAPI?.submitVaultOrder({
+        const response = await LoopringAPI.vaultAPI.submitVaultOrder({
           request,
           privateKey: account.eddsaKey.sk,
           apiKey: account.apiKey,
@@ -504,7 +504,7 @@ export const useVaultSwap = <
             refreshRef.current.firstElementChild.click()
           }
           const response2: { hash: string } | any =
-            await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+            await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
               {
                 accountId: account.accountId as any,
                 // @ts-ignore

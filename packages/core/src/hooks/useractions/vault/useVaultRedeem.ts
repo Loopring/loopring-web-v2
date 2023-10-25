@@ -95,8 +95,8 @@ export const useVaultRedeem = () => {
       const {
         account: { apiKey, eddsaKey, accountId },
       } = store.getState()
-      if (request) {
-        let response = await LoopringAPI.vaultAPI?.submitVaultExit({
+      if (request && LoopringAPI.vaultAPI) {
+        let response = await LoopringAPI.vaultAPI.submitVaultExit({
           // @ts-ignore
           request: request,
           privateKey: eddsaKey.sk,
@@ -109,7 +109,7 @@ export const useVaultRedeem = () => {
         setShowVaultExit({ isShow: false })
         updateVaultLayer2({})
         await sdk.sleep(SUBMIT_PANEL_CHECK)
-        const response2 = await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+        const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
           {
             accountId: accountId?.toString(),
             hash: (response as any).hash,
@@ -136,6 +136,7 @@ export const useVaultRedeem = () => {
             status: t(status),
           },
         })
+        setIsLoading(false)
         await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
         walletLayer2Service.sendUserUpdate()
         updateVaultLayer2({})
@@ -180,7 +181,8 @@ export const useVaultRedeem = () => {
         throw 'accountStatus is not in staking'
       }
     } catch (e) {
-      if (e as any)
+      if (e as any) {
+        setIsLoading(false)
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultRedeem_Failed,
@@ -223,7 +225,7 @@ export const useVaultRedeem = () => {
             ...(e as any),
           },
         })
-      //TODO: catch
+      }
     }
   }
 
@@ -234,7 +236,7 @@ export const useVaultRedeem = () => {
     // btnStyle: tradeLimitBtnStyle,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: isLoading,
+    isLoading,
     submitCallback,
   })
   return {

@@ -167,6 +167,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           key: 'statusTime',
           cellClass: 'textAlignRight',
           headerCellClass: 'textAlignRight',
+
           name: t('labelVaultTxStatus') + '/' + t('labelVaultTxTime'),
           formatter: ({ row }: FormatterProps<R>) => {
             return (

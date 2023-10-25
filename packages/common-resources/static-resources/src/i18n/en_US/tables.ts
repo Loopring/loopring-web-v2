@@ -374,4 +374,8 @@ export default {
   labelVaultmarginDes: 'Margin Call des',
   labelVaultrepayDes: 'Repay des',
   labelVaulttradeDes: 'Trade des',
+  labelVaultTxType: 'Type',
+  labelVaultTxFilled: 'Filled Amount',
+  labelVaultTxStatus: 'Status',
+  labelVaultTxTime: 'Time',
 }

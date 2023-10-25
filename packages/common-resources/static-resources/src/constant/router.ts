@@ -616,8 +616,8 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       i18nKey: 'labelVault',
       description: 'labelVaultDescription',
     },
-      router: { path: `${RouterPath.vault}` },
-      status: HeaderMenuTabStatus.default,
+    router: { path: `${RouterPath.vault}` },
+    status: HeaderMenuTabStatus.default,
     child: vaultItemData,
   },
   {
@@ -844,6 +844,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
     RecordTabIndex.leverageETHRecords,
+    RecordTabIndex.VaultRecords,
   ],
 }
 

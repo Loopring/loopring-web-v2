@@ -40,6 +40,8 @@ export const useVaultBorrow = <
     setShowAccount,
     setShowVaultLoad,
   } = useOpenModals()
+  const [isLoading, setIsLoading] = React.useState(false)
+
   const { exchangeInfo, forexMap } = useSystem()
   const { idIndex } = useTokenMap()
   const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins } = useVaultMap()
@@ -230,9 +232,8 @@ export const useVaultBorrow = <
       account: { eddsaKey, apiKey, accountId },
     } = store.getState()
     try {
-      if (request || (vaultBorrowData.request && accountId)) {
-        let response = LoopringAPI.vaultAPI?.submitVaultLoad({
-          // @ts-ignore
+      if ((LoopringAPI.vaultAPI && request) || (vaultBorrowData.request && accountId)) {
+        let response = await LoopringAPI.vaultAPI.submitVaultLoad({
           request: request ?? vaultBorrowData.request,
           privateKey: eddsaKey?.sk,
           apiKey: apiKey,
@@ -243,9 +244,10 @@ export const useVaultBorrow = <
         setShowVaultLoad({
           isShow: false,
         })
+        setIsLoading(false)
         updateVaultLayer2({})
         await sdk.sleep(SUBMIT_PANEL_CHECK)
-        const response2 = await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+        const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
           {
             accountId: accountId?.toString(),
             hash: (response as any).hash,
@@ -275,7 +277,7 @@ export const useVaultBorrow = <
           step: AccountStep.VaultBorrow_Success,
           info: {
             amount,
-            receiveAmount: vaultBorrowData.borrowAmtStr,
+            sum: vaultBorrowData.borrowAmtStr,
             status: t(status),
             forexMap,
             symbol: vaultToken.symbol,
@@ -295,12 +297,13 @@ export const useVaultBorrow = <
         throw new Error('api not ready')
       }
     } catch (e) {
+      setIsLoading(false)
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultBorrow_Failed,
         info: {
           amount: EmptyValueTag,
-          receiveAmount: vaultBorrowData.borrowAmtStr,
+          sum: vaultBorrowData.borrowAmtStr,
           status: t('labelFailed'),
           forexMap,
           symbol: vaultBorrowData.belong,
@@ -317,6 +320,7 @@ export const useVaultBorrow = <
   const submitCallback = async () => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const account = store.getState().account
+    setIsLoading(true)
     try {
       if (
         vaultBorrowData &&
@@ -333,7 +337,7 @@ export const useVaultBorrow = <
           step: AccountStep.VaultBorrow_In_Progress,
           info: {
             amount: EmptyValueTag,
-            receiveAmount: vaultBorrowData.borrowAmtStr,
+            sum: vaultBorrowData.borrowAmtStr,
             status: t('labelPending'),
             forexMap,
             symbol: vaultBorrowData.belong,
@@ -358,12 +362,13 @@ export const useVaultBorrow = <
         processRequest(vaultBorrowRequest)
       }
     } catch (e) {
+      setIsLoading(false)
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultBorrow_Failed,
         info: {
           amount: EmptyValueTag,
-          receiveAmount: vaultBorrowData.borrowAmtStr,
+          sum: vaultBorrowData.borrowAmtStr,
           status: t('labelFailed'),
           forexMap,
           symbol: vaultBorrowData.belong,
@@ -384,7 +389,7 @@ export const useVaultBorrow = <
     // btnStyle: tradeLimitBtnStyle,
   } = useSubmitBtn({
     availableTradeCheck,
-    isLoading: false,
+    isLoading,
     submitCallback,
   })
 

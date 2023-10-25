@@ -58,18 +58,16 @@ export const useVaultRepay = <
     let supportData = {}
     if (tradeData?.belong) {
       const vaultToken = vaultTokenMap[tradeData.belong as any]
-      const borrowToken = vaultTokenMap[tradeData.belong]
-      const borrow = tradeData.borrowed
-
-      const orderAmounts = borrowToken.orderAmounts
+      const borrowed = tradeData.borrowed
+      const orderAmounts = vaultToken.orderAmounts
       const minRepayVol = BigNumber.max(orderAmounts.dust, orderAmounts?.minimum)
-      const minRepayAmt = minRepayVol.div('1e' + borrowToken.decimals)
+      const minRepayAmt = minRepayVol.div('1e' + vaultToken.decimals)
       const tradeVaule = tradeData.tradeValue
 
       supportData = {
-        maxRepayAmount: borrow,
+        maxRepayAmount: borrowed,
         maxRepayStr: getValuePrecisionThousand(
-          borrow,
+          borrowed,
           // sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
           vaultToken.precision,
           vaultToken.precision,
@@ -84,18 +82,18 @@ export const useVaultRepay = <
           undefined,
         ),
         maxRepayVol: sdk
-          .toBig(borrow)
+          .toBig(borrowed)
           .times('1e' + vaultToken.decimals)
           .toString(),
         minRepayVol: minRepayVol.toString(),
         repayVol: sdk
           .toBig(tradeVaule ?? 0)
-          .times('1e' + borrowToken.decimals)
+          .times('1e' + vaultToken.decimals)
           .toString(),
         repayAmtStr: getValuePrecisionThousand(
           tradeVaule ?? 0,
-          borrowToken.precision,
-          borrowToken.precision,
+          vaultToken.precision,
+          vaultToken.precision,
           undefined,
         ),
         repayAmt: tradeVaule ?? 0,
@@ -247,6 +245,7 @@ export const useVaultRepay = <
           throw response
         } else {
           setShowVaultLoad({ isShow: false })
+          setIsLoading(false)
           updateVaultLayer2({})
           await sdk.sleep(SUBMIT_PANEL_CHECK)
           const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
@@ -310,7 +309,7 @@ export const useVaultRepay = <
           ...SDK_ERROR_MAP_TO_UI[(e as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN],
         })
       }
-
+      setIsLoading(false)
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultRepay_Failed,
@@ -324,7 +323,6 @@ export const useVaultRepay = <
         },
       })
     }
-    setIsLoading(false)
   }
 
   const submitCallback = async () => {

@@ -8,14 +8,7 @@ import {
   VaultTradeBase,
 } from './BasicPanel'
 import { Box, Typography } from '@mui/material'
-import * as sdk from '@loopring-web/loopring-sdk'
-
-import {
-  CurrencyToTag,
-  EmptyValueTag,
-  PriceTag,
-  YEAR_DAY_MINUTE_FORMAT,
-} from '@loopring-web/common-resources'
+import { EmptyValueTag, YEAR_DAY_MINUTE_FORMAT } from '@loopring-web/common-resources'
 import moment from 'moment/moment'
 import { useSettings } from '../../../stores'
 
@@ -427,7 +420,7 @@ export const BorrowDes2 = (
   },
 ) => {
   const { isMobile } = useSettings()
-  const { amount, receiveAmount, status, symbol, time } = props?.info ?? {}
+  const { amount, sum, status, symbol, time } = props?.info ?? {}
   return (
     <>
       <Box
@@ -476,7 +469,7 @@ export const BorrowDes2 = (
             {props.t('labelVaultBorrowAmountLabel')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {receiveAmount ? receiveAmount : EmptyValueTag}/{amount} {symbol}
+            {amount}/{sum} {symbol}
           </Typography>
         </Typography>
         <Typography
@@ -503,7 +496,7 @@ export const BorrowDes2 = (
 export const VaultBorrow_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
-    describe1: props.t('labelVaultRedeemSuccess', {
+    describe1: props.t('labelVaultBorrowSuccess', {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -514,7 +507,7 @@ export const VaultBorrow_Success = (props: PanelProps) => {
 export const VaultBorrow_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t('labelVaultRedeemFailed', {
+    describe1: props.t('labelVaultBorrowFailed', {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -529,7 +522,7 @@ export const VaultBorrow_Failed = (props: PanelProps) => {
 export const VaultBorrow_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t('labelVaultRedeemInProgress', {
+    describe1: props.t('labelVaultBorrowInProgress', {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -629,6 +622,7 @@ export const RepayDes2 = (
     </>
   )
 }
+
 export const VaultRepay_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
