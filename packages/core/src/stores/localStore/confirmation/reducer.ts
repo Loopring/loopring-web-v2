@@ -87,7 +87,7 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
       state.showWSTETHStakignPopup = action.payload.show
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
-    setShowLRCStakignPopup(
+    setShowLRCStakingPopup(
       state: Confirmation,
       action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
     ) {
@@ -121,6 +121,6 @@ export const {
   confirmedVault,
   setShowRETHStakignPopup,
   setShowWSTETHStakignPopup,
-  setShowLRCStakignPopup,
+  setShowLRCStakingPopup,
   setShowLeverageETHPopup,
 } = confirmationSlice.actions

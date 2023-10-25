@@ -102,11 +102,6 @@ const LandDefiInvest = ({
   const {
     confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
   } = confirmation.useConfirmation()
-  // const {
-  //   confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
-  //   confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
-  // } = confirmation.useConfirmation();
-
   const investAdviceList = [
     {
       ...defiWSTETHAdvice,
@@ -278,11 +273,13 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const {
     confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
-    confirmationNeeded,
-    showRETHStakignPopup,
-    showWSTETHStakignPopup,
-    setShowRETHStakignPopup,
-    setShowWSTETHStakignPopup,
+    confirmation: {
+      confirmationNeeded,
+      showRETHStakignPopup,
+      showWSTETHStakignPopup,
+      setShowRETHStakignPopup,
+      setShowWSTETHStakignPopup,
+    },
   } = confirmation.useConfirmation()
 
   const _confirmedDefiInvest = {

@@ -3081,7 +3081,7 @@ export const ConfirmVaultRisk = withTranslation('common')(
                   />
                 ),
                 li: <li style={{ display: 'list', listStyle: 'inside' }} />,
-                ul: <ul style={{ display: 'initial' }} />,
+                ul: <ol style={{ listStyle: 'decimal', paddingLeft: 24 }} />,
               }}
             />
           </DialogContentText>

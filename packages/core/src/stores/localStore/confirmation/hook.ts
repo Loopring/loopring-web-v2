@@ -19,7 +19,7 @@ import {
   confirmedVault,
   setShowRETHStakignPopup,
   setShowWSTETHStakignPopup,
-  setShowLRCStakignPopup,
+  setShowLRCStakingPopup,
   setShowLeverageETHPopup,
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
@@ -80,8 +80,8 @@ export const useConfirmation = () => {
       (v) => dispatch(setShowWSTETHStakignPopup(v)),
       [dispatch],
     ),
-    setShowLRCStakignPopup: React.useCallback(
-      (v) => dispatch(setShowLRCStakignPopup(v)),
+    setShowLRCStakingPopup: React.useCallback(
+      (v) => dispatch(setShowLRCStakingPopup(v)),
       [dispatch],
     ),
     setShowLeverageETHPopup: React.useCallback(

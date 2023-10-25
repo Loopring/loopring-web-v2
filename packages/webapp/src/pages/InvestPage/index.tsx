@@ -14,7 +14,7 @@ import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
 import styled from '@emotion/styled'
-import { InvestType, RouterPath } from '@loopring-web/common-resources'
+import { InvestType, RouterPath, InvestRouter } from '@loopring-web/common-resources'
 
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const BoxStyled = styled(Box)`
@@ -118,21 +118,20 @@ export const DefiTitle = () => {
     </Typography>
   )
 }
-const InvestRouter = `${RouterPath.invest}/:item?`
+const InvestRouterMatch = `${RouterPath.invest}/:item?`
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
-  let match: any = useRouteMatch(InvestRouter)
+  let match: any = useRouteMatch(InvestRouterMatch)
   const {
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
-    showLRCStakignPopup: confirmedLRCStakeInvest,
-    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
-    confirmationNeeded,
+    setShowLRCStakingPopup: setConfirmedLRCStakeInvestInvest,
+    confirmation: { confirmationNeeded, showLRCStakignPopup: confirmedLRCStakeInvest },
   } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
 
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
-    (InvestRouter.includes(match?.params?.item)
+    (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
       ? InvestType[match?.params?.item]
       : InvestType.Overview) as any,
     // InvestType.Overview

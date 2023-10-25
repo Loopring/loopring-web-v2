@@ -42,8 +42,7 @@ export const DeFiTradePanel = ({
     ? { flex: 1, background: 'var(--color-box-third)' }
     : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
   const { t } = useTranslation()
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } =
-    confirmation.useConfirmation()
+  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup } = confirmation.useConfirmation()
 
   return (
     <>
