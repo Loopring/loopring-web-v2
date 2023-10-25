@@ -38,7 +38,8 @@ import {
   getValuePrecisionThousand,
   Info2Icon,
   InvestAssetRouter,
-  InvestMainRouter,
+  InvestRouter,
+  InvestType,
   LOOPRING_DOCUMENT,
   RouterPath,
   SagaStatus,
@@ -216,7 +217,18 @@ export const DualListBlock = ({
                 {currentPrice &&
                   (!isMobile ? (
                     <>
-                      <Tooltip title={<>{t('labelDualCurrentPriceTip')}</>} placement={'top'}>
+                      <Tooltip
+                        title={
+                          <>
+                            {t('labelDualCurrentPriceTip', {
+                              symbol: /USD/gi.test(currentPrice?.quoteUnit ?? '')
+                                ? 'USDT'
+                                : currentPrice?.quoteUnit,
+                            })}
+                          </>
+                        }
+                        placement={'top'}
+                      >
                         <Typography
                           component={'p'}
                           variant='body2'
@@ -247,9 +259,9 @@ export const DualListBlock = ({
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
-                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                          baseSymbol: /USD/gi.test(currentPrice.quoteUnit ?? '')
                             ? 'USDT'
-                            : currentPrice.quote, //currentPrice.quote,
+                            : currentPrice.quoteUnit, //currentPrice.quote,
                         }}
                       >
                         LRC Current price:
@@ -374,7 +386,9 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
               endIcon={<BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />}
-              onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
             >
               {t('labelInvestMyDual')}
             </Button>

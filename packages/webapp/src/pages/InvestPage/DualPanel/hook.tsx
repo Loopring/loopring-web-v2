@@ -353,6 +353,7 @@ export const useDualHook = () => {
           quote: marketSymbolB,
           currentPrice: index.index,
           precisionForPrice: marketMap[market].precisionForPrice,
+          quoteUnit: marketSymbolB,
         })
 
         const rule = rules[0]
