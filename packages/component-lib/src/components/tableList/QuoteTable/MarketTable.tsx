@@ -76,11 +76,11 @@ const TableStyled = styled(Table)`
 export interface MarketTableProps<R> {
   rawData: R[]
   rowConfig: RowConfigType
-  onItemClick: (item: R) => void
+  onItemClick?: (item: R) => void
+  onRowClick?: (item: R) => void
   campaignTagConfig: CAMPAIGNTAGCONFIG
   // headerRowHeight?: number
   onVisibleRowsChange?: (startIndex: number) => void
-  onRowClick?: (row: R, column: any) => void
   account: Account
   favoriteMarket: string[]
   addFavoriteMarket: (pair: string) => void
@@ -261,7 +261,7 @@ export const MarketTable = withTranslation('tables')(
                   <Button
                     variant='outlined'
                     onClick={() => {
-                      onItemClick(row)
+                      onItemClick && onItemClick(row)
                     }}
                   >
                     {t('labelTrade')}
@@ -371,6 +371,7 @@ export const MarketTable = withTranslation('tables')(
             currentheight={currentheight}
             ispro={isPro}
             className={'scrollable'}
+            onRowClick={(index: any, row: any, col: any) => onRowClick && onRowClick(row)}
             {...{
               ...defaultArgs,
               ...rest,

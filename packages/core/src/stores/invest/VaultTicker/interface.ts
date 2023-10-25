@@ -1,9 +1,9 @@
-import { MarketTableRawDataItem, StateBase } from '@loopring-web/common-resources'
+import { StateBase, TickerNew } from '@loopring-web/common-resources'
 
-export type VaultTickerMap<R = { [key: string]: any }> = {
-  [key in keyof R]: MarketTableRawDataItem
+export type TickerMap<R = { [key: string]: any }> = {
+  [key in keyof R]: TickerNew
 }
 export type VaultTickerStates<C = { [key: string]: any }> = {
-  vaultTickerMap: VaultTickerMap<C>
+  vaultTickerMap: TickerMap<C>
   __timer__?: number
 } & StateBase

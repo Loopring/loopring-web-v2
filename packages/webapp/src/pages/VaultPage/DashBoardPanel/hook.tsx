@@ -2,11 +2,14 @@ import React from 'react'
 import {
   accountReducer,
   accountStaticCallBack,
+  LoopringAPI,
   makeVaultLayer2,
   store,
   useAccount,
   useSystem,
   useTokenPrices,
+  useVaultMap,
+  useVaultTicker,
   useWalletLayer2,
   VaultAccountInfoStatus,
   volumeToCountAsBigNumber,
@@ -25,7 +28,6 @@ import {
   fnType,
   globalSetup,
   L1L2_NAME_DEFINED,
-  LoadingIcon,
   MapChainId,
   myLog,
   SagaStatus,
@@ -41,17 +43,18 @@ import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 
-export const useGetVaultAssets = ({
+export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   vaultAccountInfo: _vaultAccountInfo,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
-}): VaultAssetsTableProps & {
+}): VaultAssetsTableProps<R> & {
   totalAsset: string
   onActionBtnClick: (key: VaultAction) => void
   setShowNoVaultAccount: (props: { isShow: boolean; whichBtn: VaultAction | undefined }) => void
   [key: string]: any
 } => {
   const { t } = useTranslation('common')
+
   const {
     vaultAccountInfoStatus,
     vaultAccountInfo,
@@ -63,7 +66,7 @@ export const useGetVaultAssets = ({
     onBorrowPop,
     onRedeemPop,
   } = _vaultAccountInfo
-  const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
+  const [assetsRawData, setAssetsRawData] = React.useState<R[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>(EmptyValueTag)
   const { status: accountStatus, account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
@@ -405,7 +408,7 @@ export const useGetVaultAssets = ({
       setTotalAsset(totalAssets.toString())
     } else {
       setAssetsRawData([])
-      setTotalAsset(undefined)
+      setTotalAsset(EmptyValueTag)
     }
   }
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
@@ -438,12 +441,13 @@ export const useGetVaultAssets = ({
       walletLayer2Callback()
     }
   }, [vaultAccountInfoStatus])
+
   // useWalletLayer2Socket({ walletLayer2Callback })
 
   myLog('assetsRawData', assetsRawData)
   return {
     forexMap,
-    rawData: assetsRawData,
+    rawData: assetsRawData as R[],
     hideAssets: hideL2Assets,
     allowTrade,
     setHideSmallBalances,
