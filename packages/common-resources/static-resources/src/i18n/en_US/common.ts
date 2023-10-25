@@ -1006,7 +1006,8 @@ export default {
   labelDualInvestBaseTitle: 'Invest {{symbolA}} (Sell High for {{symbolB}})',
   labelDualInvestQuoteTitle: 'Invest {{symbolA}} (Buy {{symbolB}} Low)',
   labelDualInvestDes: 'Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}',
-  labelDualCurrentPriceTip: 'Current Price is based on USDT derived from some leading exchanges.',
+  labelDualCurrentPriceTip:
+    'Current Price is based on {{symbol}} derived from some leading exchanges.',
   labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1> {{baseSymbol}}',
   labelDualSuccess: 'Subscription {{symbol}} Successfully',
   labelDualProcessing: 'Waiting for completion',
@@ -1019,8 +1020,8 @@ export default {
   labelDualNoEnough: 'Insufficient balance',
   labelDualSettleDate: 'Settlement Date',
   labelDualSubDate: 'Subscription Date',
-  labelDualCurrentPrice2: 'Current {{symbol}} Price',
-  labelDualCurrentPrice3: 'Current  Price',
+  // labelDualCurrentPrice2: '{{symbol}} Current Price',
+  // labelDualCurrentPrice3: '{{symbol}} current Price',
   labelDualCurrentAPR: 'APR <1>\u2139</1>',
   labelDualCurrentAPRDes:
     'APR is refreshed in real time. We will use the lastest APR at the time you complete the subscription successfully.',
@@ -2034,4 +2035,5 @@ export default {
   labelTokenEnterDualToken: 'Amount',
   labelTokenMaxBalance: 'Available Balance',
   labelInvestMiniDual: 'Min {{value}}',
+  labelDualAutoSearchingDes: 'Auto reinvesting. Searching for the product...',
 }

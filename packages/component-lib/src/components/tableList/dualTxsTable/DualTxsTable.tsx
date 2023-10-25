@@ -253,7 +253,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                   tokenInfoOrigin: { quote },
                 },
               },
-              // currentPrice: { currentPrice, quote },
             } = row
             return (
               <>

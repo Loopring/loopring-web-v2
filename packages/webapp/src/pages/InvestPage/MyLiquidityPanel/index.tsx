@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Modal, Tab, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Modal, Tab, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
@@ -17,6 +17,7 @@ import {
   useOpenModals,
   useSettings,
   Tabs,
+  CoinIcons,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -44,7 +45,10 @@ import {
   AmmPanelType,
   RouterPath,
   RecordTabIndex,
-  InvestMainRouter,
+  InvestRouter,
+  InvestType,
+  WarningIcon2,
+  DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
@@ -67,6 +71,7 @@ import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
+import moment from 'moment/moment'
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -75,7 +80,7 @@ const MyLiquidity: any = withTranslation('common')(
     hideAssets,
     className,
     noHeader,
-    path = `${RouterPath.invest}/${InvestMainRouter.BALANCE}`,
+    path = `${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
@@ -106,7 +111,7 @@ const MyLiquidity: any = withTranslation('common')(
       useGetAssets()
     const { account } = useAccount()
     const history = useHistory()
-    const { currency, hideSmallBalances, defaultNetwork } = useSettings()
+    const { currency, hideSmallBalances, defaultNetwork, coinJson } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { setShowAmm } = useOpenModals()
     const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
@@ -308,7 +313,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Typography>
                 <Button
                   onClick={() => {
-                    history.push(`${RouterPath.invest}/${InvestMainRouter.OVERVIEW}`)
+                    history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2 }}
                   variant={'contained'}
@@ -727,6 +732,44 @@ const MyLiquidity: any = withTranslation('common')(
                     >
                       <SwitchPanelStyled width={'var(--modal-width)'}>
                         <ModalCloseButton onClose={(_e: any) => setDualOpen(false)} t={t} />
+                        <Box
+                          display={'flex'}
+                          flexDirection={'column'}
+                          alignItems={'flex-start'}
+                          alignSelf={'stretch'}
+                          marginTop={-4}
+                          justifyContent={'stretch'}
+                        >
+                          <Typography
+                            display={'flex'}
+                            flexDirection={'row'}
+                            component={'header'}
+                            alignItems={'center'}
+                            height={'var(--toolbar-row-height)'}
+                            paddingX={3}
+                          >
+                            <Typography component={'span'} display={'inline-flex'}>
+                              {/* eslint-disable-next-line react/jsx-no-undef */}
+                              <CoinIcons
+                                type={TokenType.dual}
+                                size={32}
+                                tokenIcon={[
+                                  coinJson[dualDetail?.dualViewInfo?.sellSymbol ?? ''],
+                                  coinJson[dualDetail?.dualViewInfo?.buySymbol ?? ''],
+                                ]}
+                              />
+                            </Typography>
+                            <Typography
+                              component={'span'}
+                              display={'inline-flex'}
+                              color={'textPrimary'}
+                            >
+                              {`${dualDetail?.dualViewInfo?.sellSymbol} / ${dualDetail?.dualViewInfo?.buySymbol}`}
+                            </Typography>
+                          </Typography>
+                          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                        </Box>
+
                         {dualDetail && dualDetail.dualViewInfo && (
                           <Box
                             flex={1}
@@ -760,6 +803,14 @@ const MyLiquidity: any = withTranslation('common')(
                                     {label}
                                   </ButtonStyle>
                                 )
+                              }
+                              showClock={
+                                dualDetail?.__raw__?.order?.settlementStatus?.dualReinvestInfo
+                                  ?.isRecursive &&
+                                dualDetail?.__raw__?.order?.settlementStatus?.toUpperCase() ==
+                                  sdk.SETTLEMENT_STATUS.PAID &&
+                                dualDetail?.__raw__?.order?.settlementStatus?.dualReinvestInfo?.retryStatus?.toUpperCase() ===
+                                  sdk.DUAL_RETRY_STATUS.RETRYING
                               }
                               dualProducts={dualProducts}
                               dualViewInfo={dualDetail.dualViewInfo as DualViewBase}

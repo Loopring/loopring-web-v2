@@ -34,23 +34,6 @@ export const makeDefiSideStaking = (
     .div((expireTime - Date.now()) / 86400000)
     .times(36500) // year APY
   const term = moment().to(new Date(expireTime), true)
-
-  myLog('dual', {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + '%',
-    settleRatio, //targetPrice
-    term,
-    productId: info.productId,
-    expireTime,
-    currentPrice: {
-      base,
-      quote,
-      precisionForPrice,
-      currentPrice: index.index,
-      quoteUnit: index.quote,
-    },
-    sellSymbol,
-    buySymbol,
-  })
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
     settleRatio,
@@ -64,7 +47,7 @@ export const makeDefiSideStaking = (
       quote,
       precisionForPrice,
       currentPrice: Number(index.index),
-      quoteUnit: index.quote,
+      quoteUnit: quote, //index.quote,
     },
     sellSymbol,
     buySymbol,
@@ -76,54 +59,6 @@ export const makeDefiSideStaking = (
   }
 }
 
-export const makeDefiSideStakingItem = (
-  props: sdk.UserDualTxsHistory,
-  sellSymbol: string,
-  buySymbol: string,
-  currentPrice: number,
-  market: sdk.DefiMarketInfo,
-): DualViewOrder => {
-  const {
-    settleRatio,
-    dualType,
-    strike,
-    productId,
-    createdAt,
-    timeOrigin: { expireTime },
-  } = props
-  const [base, quote] =
-    dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
-      ? [sellSymbol, buySymbol]
-      : [buySymbol, sellSymbol]
-
-  const apy = toBig(settleRatio)
-    .div((expireTime - createdAt) / 86400000)
-    .times(36500) // year APY
-  const term = moment().to(new Date(expireTime), true)
-  const { precisionForPrice } = market
-
-  return {
-    apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
-    settleRatio: settleRatio.toString(), // quote Interest
-    term,
-    strike: strike.toString(),
-    isUp: dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE ? true : false,
-    productId,
-    enterTime: createdAt,
-    expireTime,
-    currentPrice: {
-      precisionForPrice,
-      base,
-      quote,
-      currentPrice: currentPrice ?? 0,
-    },
-    sellSymbol,
-    buySymbol,
-    __raw__: {
-      order: props,
-    },
-  }
-}
 export const calcSideStaking = <T>({
   inputValue,
   deFiSideCalcData,
