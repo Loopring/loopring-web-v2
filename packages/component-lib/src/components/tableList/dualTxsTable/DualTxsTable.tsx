@@ -365,16 +365,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignRight',
           title: t('labelDualAutoInvestTip'),
           formatter: ({ row }) => {
-            // let icon = <></>,
-            //   status = ''
-            // const row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
-            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
-            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
-            // renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
-            //   renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
-
-            // dualReinvestInfo
-
             return (
               <Box
                 className={'textAlignRight'}
