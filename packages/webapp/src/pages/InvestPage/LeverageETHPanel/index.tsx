@@ -18,8 +18,8 @@ import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
-  InvestAssetRouter,
-  InvestMainRouter,
+  InvestRouter,
+  InvestType,
   RouterPath,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
@@ -158,7 +158,9 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             size={'medium'}
             sx={{ color: 'var(--color-text-primary)' }}
             color={'inherit'}
-            onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.OVERVIEW}`)}
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
+            }
           >
             {t('labelBack')}
           </Button>
@@ -167,7 +169,9 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             {t('labelLeverageETHStaking')}
           </Typography> */}
           <Button
-            onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+            }
             variant={'text'}
           >
             {t('labelMyInvestLRCStaking')}{' '}
@@ -217,7 +221,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             handleClose={(_e, isAgree) => {
               if (!isAgree) {
                 setConfirmedDefiInvest({ isShow: false })
-                history.push(`${RouterPath.invest}/${InvestMainRouter.OVERVIEW}`)
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
               } else {
                 confirmedLeverageETHInvest()
                 setConfirmedDefiInvest({ isShow: false })

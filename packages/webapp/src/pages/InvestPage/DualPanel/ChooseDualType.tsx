@@ -4,7 +4,8 @@ import {
   LOOPRING_DOCUMENT,
   DualInvestmentLogo,
   RouterPath,
-  InvestMainRouter,
+  InvestRouter,
+  InvestType,
 } from '@loopring-web/common-resources'
 import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
@@ -49,7 +50,7 @@ export const ChooseDualType = ({
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Button
-              onClick={() => `${RouterPath.invest}/${InvestMainRouter.BALANCE}`}
+              onClick={() => `${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`}
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >

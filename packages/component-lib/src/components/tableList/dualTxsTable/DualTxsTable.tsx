@@ -253,7 +253,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                   tokenInfoOrigin: { quote },
                 },
               },
-              // currentPrice: { currentPrice, quote },
             } = row
             return (
               <>
@@ -298,6 +297,14 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             let icon: any = undefined,
               status = ''
+            let content = ''
+            // row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
+            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
+            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
+            //   'labelDualAssetReInvestEnable'
+            // ) : (
+            //   <>{t('labelDualAssetReInvestDisable')} </>
+            // )
             const {
               __raw__: {
                 order: {
@@ -310,26 +317,31 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
                 icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusSuccess'
+                content = 'labelDualRetrySuccess'
                 break
               case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
                 icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusError'
-
+                content = 'labelDualRetryFailed'
+                break
+              case sdk.DUAL_RETRY_STATUS.NO_RETRY:
+                icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
+                status = 'labelDualRetryStatusTerminated'
+                content = 'labelDualRetryTerminated'
                 break
               case sdk.DUAL_RETRY_STATUS.RETRYING:
                 icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusRetrying'
+                content = row?.__raw__.order?.dualReinvestInfo?.isRecursive
+                  ? 'labelDualAssetReInvestEnable'
+                  : 'labelDualRetryPending'
                 break
+              default:
+                content = row?.__raw__.order?.dualReinvestInfo?.isRecursive
+                  ? 'labelDualAssetReInvestEnable'
+                  : 'labelDualAssetReInvestDisable'
             }
 
-            const content =
-              row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
-              row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
-                sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
-                <>{t('labelDualAssetReInvestEnable')}</>
-              ) : (
-                <>{t('labelDualAssetReInvestDisable')} </>
-              )
             return icon ? (
               <Tooltip
                 title={t(status, {
@@ -338,7 +350,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 }).toString()}
               >
                 <Typography display={'inline-flex'} alignItems={'center'} height={'100%'}>
-                  <>{content}</>
+                  <>{t(content)}</>
                   <>{icon}</>
                 </Typography>
               </Tooltip>
@@ -353,16 +365,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignRight',
           title: t('labelDualAutoInvestTip'),
           formatter: ({ row }) => {
-            // let icon = <></>,
-            //   status = ''
-            // const row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
-            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
-            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS
-            // renewDuration: dualViewInfo?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
-            //   renewTargetPrice: dualViewInfo?.__raw__?.order.dualReinvestInfo.newStrike,
-
-            // dualReinvestInfo
-
             return (
               <Box
                 className={'textAlignRight'}

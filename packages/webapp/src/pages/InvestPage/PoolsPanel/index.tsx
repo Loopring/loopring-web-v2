@@ -10,8 +10,8 @@ import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
 import { useNotify, useSystem } from '@loopring-web/core'
 import {
   AmmLogo,
-  BackIcon,
-  InvestMainRouter,
+  InvestRouter,
+  InvestType,
   RouterPath,
   RowInvestConfig,
 } from '@loopring-web/common-resources'
@@ -63,7 +63,9 @@ export const PoolsPanel = withTranslation('common')(
               {t('labelLiquidityPageTitle')}
             </Typography>
             <Button
-              onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >

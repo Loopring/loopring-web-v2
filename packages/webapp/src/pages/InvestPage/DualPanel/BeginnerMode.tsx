@@ -45,7 +45,6 @@ export const BeginnerMode: any = withTranslation('common')(
     t,
     dualListProps,
     viewType,
-    r,
   }: WithTranslation & {
     dualListProps: any
     viewType: DualViewType
@@ -438,9 +437,9 @@ export const BeginnerMode: any = withTranslation('common')(
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
-                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                          baseSymbol: /USD/gi.test(currentPrice.quoteUnit ?? '')
                             ? 'USDT'
-                            : currentPrice.quote,
+                            : currentPrice.quoteUnit,
                         }}
                       >
                         LRC Current price:

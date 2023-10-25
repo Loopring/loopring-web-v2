@@ -10,6 +10,7 @@ import {
   myLog,
   SoursURL,
   UpColor,
+  WarningIcon2,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import {
@@ -85,9 +86,11 @@ const BoxChartStyle = styled(Box)`
     padding-left: ${({ theme }) => 2 * theme.unit}px;
     //text-align: left;
   }
-  .returnV1 {
-  }
   .returnV2 {
+    color: var(--color-warning);
+  }
+  .returnV1 {
+    color: var(--color-success);
     top: 0;
   }
 `
@@ -103,6 +106,7 @@ export const DualDetail = ({
   toggle,
   btnConfirm,
   inputPart,
+  showClock = false,
   ...rest
 }: DualDetailProps) => {
   const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
@@ -110,7 +114,7 @@ export const DualDetail = ({
   const { t } = useTranslation()
   const { upColor, isMobile } = useSettings()
   const { base, quote, precisionForPrice, quoteUnit } = currentPrice
-  // const quoteAlice = /USD/gi.test(dualViewInfo?.quote ?? '') ? 'USDT' : dualViewInfo?.quote
+  // const quoteAlice = /USD/gi.test(quoteUnit ?? '') ? 'USDT' : quoteUnit
 
   const [tab, setTab] = React.useState<DualDetailTab>(DualDetailTab.less)
   const currentView = React.useMemo(
@@ -127,7 +131,7 @@ export const DualDetail = ({
         : EmptyValueTag,
     [dualViewInfo.currentPrice.currentPrice, precisionForPrice, tokenMap],
   )
-  const quoteAlice = quoteUnit ?? quote
+  const quoteAlice = /USD/gi.test(quoteUnit ?? '') ? 'USDT' : quoteUnit
 
   const renewTargetPriceView = React.useMemo(() => {
     return coinSell?.renewTargetPrice
@@ -184,6 +188,35 @@ export const DualDetail = ({
       </Modal>
 
       <Box display={'flex'} flexDirection={'column'}>
+        {isOrder && showClock && (
+          <Typography
+            component={'span'}
+            variant={'body1'}
+            display={'flex'}
+            flexDirection={'column'}
+            sx={{
+              background: 'var(--vip-bg)',
+            }}
+            padding={2}
+            marginBottom={2}
+          >
+            <Typography
+              component={'span'}
+              color={'textPrimary'}
+              display={'inline-flex'}
+              alignItems={'center'}
+            >
+              <WarningIcon2
+                color={'warning'}
+                fontSize={'large'}
+                sx={{
+                  marginRight: 1,
+                }}
+              />
+              {t('labelDualAutoSearchingDes')}
+            </Typography>
+          </Typography>
+        )}
         {displayMode !== DualDisplayMode.beginnerModeStep2 && (
           <Box
             display={'flex'}
@@ -200,20 +233,20 @@ export const DualDetail = ({
               background: 'var(--field-opacity)',
             }}
           >
-            {isOrder && (
-              <Box paddingBottom={1}>
-                <Typography
-                  variant={isMobile ? 'h5' : 'h4'}
-                  marginTop={-6}
-                  textAlign={'center'}
-                  paddingBottom={2}
-                  color={'textSecondary'}
-                >
-                  {t('labelDuaInvestmentDetails', { ns: 'common' })}
-                </Typography>
-                {/*<Divider />*/}
-              </Box>
-            )}
+            {/*{isOrder && (*/}
+            {/*  <Box paddingBottom={1}>*/}
+            {/*    <Typography*/}
+            {/*      variant={isMobile ? 'h5' : 'h4'}*/}
+            {/*      marginTop={-6}*/}
+            {/*      textAlign={'center'}*/}
+            {/*      paddingBottom={2}*/}
+            {/*      color={'textSecondary'}*/}
+            {/*    >*/}
+            {/*      {t('labelDuaInvestmentDetails', { ns: 'common' })}*/}
+            {/*    </Typography>*/}
+            {/*    /!*<Divider />*!/*/}
+            {/*  </Box>*/}
+            {/*)}*/}
             <Typography
               variant={'body1'}
               display={'inline-flex'}
@@ -556,21 +589,21 @@ export const DualDetail = ({
                 >
                   {t('labelDualSettlementCalculator')}
                 </Typography>
-                <Typography component={'span'} variant={'body1'} color={'textSecondary'}>
-                  <Typography component={'span'} variant={'inherit'}>
-                    {t('labelDualCurrentPrice3', {
-                      symbol: base,
-                    })}
-                  </Typography>
-                  <Typography
-                    component={'span'}
-                    variant={'inherit'}
-                    paddingLeft={1 / 2}
-                    color={upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'}
-                  >
-                    {currentView + ' ' + quoteAlice}
-                  </Typography>
-                </Typography>
+                {/*<Typography component={'span'} variant={'body1'} color={'textSecondary'}>*/}
+                {/*  <Typography component={'span'} variant={'inherit'}>*/}
+                {/*    {t('labelDualCurrentPrice3', {*/}
+                {/*      symbol: base,*/}
+                {/*    })}*/}
+                {/*  </Typography>*/}
+                {/*  <Typography*/}
+                {/*    component={'span'}*/}
+                {/*    variant={'inherit'}*/}
+                {/*    paddingLeft={1 / 2}*/}
+                {/*    color={upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'}*/}
+                {/*  >*/}
+                {/*    {currentView + ' ' + quoteAlice}*/}
+                {/*  </Typography>*/}
+                {/*</Typography>*/}
               </Box>
               <Box
                 display={'flex'}
@@ -658,40 +691,49 @@ export const DualDetail = ({
                       //   : '25%',
                     }}
                   >
-                    <Typography variant={'body2'} color={'textPrimary'}>
-                      {t('labelDualCurrentPrice3', {
-                        symbol: base,
-                      })}
-                    </Typography>
                     <Typography
-                      color={
-                        upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'
-                      }
+                      display={'inline-block'}
+                      width={'120px'}
+                      whiteSpace={'pre-wrap'}
+                      // flexWrap={'wrap'}
+                      // variant={'body2'}
+                      color={'textPrimary'}
+                      component={'span'}
+                      // alignItems={'center'}
                     >
-                      {currentView}
+                      <Trans
+                        i18nKey={'labelDualCurrentPrice2'}
+                        tOptions={{
+                          price: ' ' + currentView,
+                          symbol: '', //base,
+                          baseSymbol: quoteAlice,
+                        }}
+                      >
+                        LRC Current price:
+                        <Typography
+                          component={'span'}
+                          color={
+                            upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'
+                          }
+                        >
+                          price
+                        </Typography>
+                      </Trans>
                     </Typography>
                   </Box>
                   <Box className={'returnV1 returnV'}>
-                    <Typography
-                      variant={'body2'}
-                      color={'var(--color-warning)'}
-                      whiteSpace={'pre-line'}
-                    >
+                    <Typography variant={'body2'} color={'inherit'} whiteSpace={'pre-line'}>
                       {quote &&
                         t('labelDualReturn', {
                           symbol:
                             (greaterEarnView === '0' ? EmptyValueTag : greaterEarnView) +
                             ' ' +
-                            quote,
+                            quoteAlice,
                         })}
                     </Typography>
                   </Box>
                   <Box className={'returnV2 returnV'}>
-                    <Typography
-                      variant={'body2'}
-                      color={'var(--color-success)'}
-                      whiteSpace={'pre-line'}
-                    >
+                    <Typography variant={'body2'} color={'inherit'} whiteSpace={'pre-line'}>
                       {base &&
                         t('labelDualReturn', {
                           symbol:
