@@ -50,7 +50,6 @@ export const BeginnerMode: any = withTranslation('common')(
     viewType: DualViewType
   }) => {
     const viewStepType = ViewStepType[viewType]
-
     const theme = useTheme()
     const { tradeMap } = useDualMap()
     const { coinJson } = useSettings()
