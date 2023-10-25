@@ -354,11 +354,18 @@ export default {
   labelDualFailed: 'Failed',
   labelDualPending: 'pending',
   labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
-  labelDualRetryStatusSuccess: 'Auto reinvested successful.',
+  labelDualRetryStatusSuccess:
+    'Auto reinvested successful. A new order has been generated for you.',
   labelDualRetryStatusError:
     'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
   labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
   labelDualAssetReInvestYes: 'ReInvest On',
   labelDualAssetReInvestNo: 'ReInvest Off',
+  labelDualRetryPending: 'Pending',
+  labelDualRetryTerminated: 'Terminated',
+  labelDualRetryFailed: 'Failed',
+  labelDualRetrySuccess: 'successful',
+  labelDualRetryStatusTerminated:
+    'Auto Reinvest terminated. You successfully purchased the target token.',
   labelTypeCHANGE_PWD: 'Reset Loopring L2 Keypair',
 }

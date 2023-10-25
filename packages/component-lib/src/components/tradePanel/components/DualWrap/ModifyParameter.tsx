@@ -176,7 +176,7 @@ export const ModifyParameter = ({
             </Typography>
             <Typography component={'span'} color={'textPrimary'}>
               <WarningIcon2
-                htmlColor={'var(--color-warning)'}
+                color={'warning'}
                 fontSize={'large'}
                 sx={{
                   visibility: 'hidden',

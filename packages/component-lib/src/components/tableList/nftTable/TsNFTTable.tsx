@@ -53,11 +53,11 @@ const CellStatus = ({ row: { status } }: any) => {
   `
   const svg =
     status === 'processed' ? (
-      <CompleteIcon />
+      <CompleteIcon color={'success'} />
     ) : status === 'processing' || status === 'received' ? (
-      <WaitingIcon />
+      <WaitingIcon color={'warning'} />
     ) : (
-      <WarningIcon />
+      <WarningIcon color={'error'} />
     )
   const RenderValueWrapper = <RenderValue>{svg}</RenderValue>
   return RenderValueWrapper
