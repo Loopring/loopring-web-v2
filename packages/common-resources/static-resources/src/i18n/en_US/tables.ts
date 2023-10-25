@@ -233,7 +233,7 @@ export default {
   labelDualAction: 'Action',
   labelInvestmentStatusSettled: 'Settled',
   labelInvestmentStatusDelivering: 'Delivering',
-  labelInvestmentStatusSubscribe: 'Subscribe',
+  labelInvestmentStatusSubscribe: 'Earning',
   labelDualAssetProduct: 'Product',
   labelDualAssetFrozen: 'Frozen',
   labelDualAssetPrice: 'Target Price',
