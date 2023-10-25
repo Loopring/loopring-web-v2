@@ -298,13 +298,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             let icon: any = undefined,
               status = ''
             let content = ''
-            // row?.__raw__.order?.dualReinvestInfo?.isRecursive ||
-            // row?.__raw__.order?.dualReinvestInfo?.retryStatus ==
-            // sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS ? (
-            //   'labelDualAssetReInvestEnable'
-            // ) : (
-            //   <>{t('labelDualAssetReInvestDisable')} </>
-            // )
             const {
               __raw__: {
                 order: {
@@ -325,23 +318,24 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 content = 'labelDualRetryFailed'
                 break
               case sdk.DUAL_RETRY_STATUS.NO_RETRY:
-                icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
-                status = 'labelDualRetryStatusTerminated'
-                content = 'labelDualRetryTerminated'
+                if (row?.__raw__.order?.dualReinvestInfo?.isRecursive) {
+                  content = 'labelDualAssetReInvestEnable'
+                } else {
+                  icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+                  status = 'labelDualRetryStatusRetrying'
+                  content = 'labelDualRetryStatusTerminated'
+                }
                 break
               case sdk.DUAL_RETRY_STATUS.RETRYING:
                 icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusRetrying'
-                content = row?.__raw__.order?.dualReinvestInfo?.isRecursive
-                  ? 'labelDualAssetReInvestEnable'
-                  : 'labelDualRetryPending'
+                content = 'labelDualRetryPending'
                 break
               default:
                 content = row?.__raw__.order?.dualReinvestInfo?.isRecursive
                   ? 'labelDualAssetReInvestEnable'
                   : 'labelDualAssetReInvestDisable'
             }
-
             return icon ? (
               <Tooltip
                 title={t(status, {
@@ -410,7 +404,8 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             let icon: any = undefined,
-              status = ''
+              status = '',
+              content
             const {
               sellSymbol,
               apy,
@@ -483,16 +478,31 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
                 icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusSuccess'
+                content = 'labelDualRetrySuccess'
                 break
               case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
                 icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusError'
-
+                content = 'labelDualRetryFailed'
+                break
+              case sdk.DUAL_RETRY_STATUS.NO_RETRY:
+                if (row?.__raw__.order?.dualReinvestInfo?.isRecursive) {
+                  content = 'labelDualAssetReInvestEnable'
+                } else {
+                  icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+                  status = 'labelDualRetryStatusRetrying'
+                  content = 'labelDualRetryStatusTerminated'
+                }
                 break
               case sdk.DUAL_RETRY_STATUS.RETRYING:
                 icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
                 status = 'labelDualRetryStatusRetrying'
+                content = 'labelDualRetryPending'
                 break
+              default:
+                content = row?.__raw__.order?.dualReinvestInfo?.isRecursive
+                  ? 'labelDualAssetReInvestEnable'
+                  : 'labelDualAssetReInvestDisable'
             }
             const recursiveStatus = icon ? (
               <Tooltip
@@ -502,7 +512,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 }).toString()}
               >
                 <Typography display={'inline-flex'} alignItems={'center'} height={'100%'}>
-                  {/*<>{content}</>*/}
+                  <>{content}</>
                   <>{icon}</>
                 </Typography>
               </Tooltip>

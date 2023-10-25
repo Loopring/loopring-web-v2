@@ -780,6 +780,7 @@ const MyLiquidity: any = withTranslation('common')(
                           >
                             <DualDetail
                               isOrder={true}
+                              order={dualDetail.__raw__?.order}
                               btnConfirm={
                                 dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
                                   <ButtonStyle

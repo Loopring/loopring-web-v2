@@ -11,18 +11,27 @@ import {
 } from '@loopring-web/core'
 import React from 'react'
 import {
+  CompleteIcon,
   DualViewInfo,
   EmptyValueTag,
   getValuePrecisionThousand,
   myLog,
   SDK_ERROR_MAP_TO_UI,
+  WaitingIcon,
+  WarningIcon,
 } from '@loopring-web/common-resources'
-import { DualDetailType, RawDataDualAssetItem, ToastType } from '@loopring-web/component-lib'
+import {
+  DualDetailType,
+  LABEL_INVESTMENT_STATUS_MAP,
+  RawDataDualAssetItem,
+  ToastType,
+} from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
+import { DUAL_TYPE, LABEL_INVESTMENT_STATUS } from '@loopring-web/loopring-sdk'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
+import { Tooltip, Typography } from '@mui/material'
 
 export const Limit = 15
 
@@ -53,25 +62,75 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   const [refreshErrorInfo, setRefreshErrorInfo] = React.useState<[string, string]>(['', ''])
 
   const getDetail = (item: R, index?: number) => {
-    const {
+    let {
       sellSymbol,
       buySymbol,
       settleRatio,
       strike,
       __raw__: {
         order: {
+          settlementStatus,
+          tokenInfoOrigin: {
+            amountIn,
+            tokenOut,
+
+            amountOut,
+          },
+          dualReinvestInfo,
+          timeOrigin: { expireTime },
+          investmentStatus,
           dualType,
-          tokenInfoOrigin: { amountIn },
+          // tokenInfoOrigin: { amountIn },
           // timeOrigin: { settlementTime },
         },
       },
     } = item
+    let icon: any = undefined,
+      status = ''
+    let content = ''
     const currentPrice = _.cloneDeep(item.currentPrice)
     if (index) {
       currentPrice.currentPrice = index
     }
     let lessEarnTokenSymbol, greaterEarnTokenSymbol, lessEarnVol, greaterEarnVol
     const sellAmount = sdk.toBig(amountIn ? amountIn : 0).div('1e' + tokenMap[sellSymbol].decimals)
+    const side =
+      settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+        ? t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_RECEIVED)
+        : Date.now() - expireTime >= 0 &&
+          investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+          investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
+        ? t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
+        : t(LABEL_INVESTMENT_STATUS_MAP.INVESTMENT_SUBSCRIBE)
+    const statusColor =
+      settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+        ? 'var(--color-tag)'
+        : Date.now() - expireTime >= 0 &&
+          investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+          investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED
+        ? 'var(--color-warning)'
+        : 'var(--color-text-primary)'
+    let outSymbol: string | undefined = undefined,
+      outAmount
+
+    if (
+      (settlementStatus === sdk.SETTLEMENT_STATUS.PAID ||
+        (Date.now() - expireTime >= 0 &&
+          investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+          investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED)) &&
+      tokenOut !== undefined &&
+      tokenOut &&
+      tokenOut != 0
+    ) {
+      outSymbol = tokenMap[idIndex[tokenOut]].symbol
+      outAmount = getValuePrecisionThousand(
+        sdk.toBig(amountOut ? amountOut : 0).div('1e' + tokenMap[outSymbol].decimals),
+        tokenMap[outSymbol].precision,
+        tokenMap[outSymbol].precision,
+        tokenMap[outSymbol].precision,
+        false,
+      )
+    }
     if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
       lessEarnTokenSymbol = sellSymbol
       greaterEarnTokenSymbol = buySymbol
@@ -132,6 +191,36 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       tokenMap[sellSymbol].precision,
       false,
     )
+    switch (dualReinvestInfo.retryStatus) {
+      case sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS:
+        icon = <CompleteIcon color={'success'} sx={{ paddingLeft: 1 / 2 }} />
+        status = 'labelDualRetryStatusSuccess'
+        content = 'labelDualRetrySuccess'
+        break
+      case sdk.DUAL_RETRY_STATUS.RETRY_FAILED:
+        icon = <WarningIcon color={'error'} sx={{ paddingLeft: 1 / 2 }} />
+        status = 'labelDualRetryStatusError'
+        content = 'labelDualRetryFailed'
+        break
+      case sdk.DUAL_RETRY_STATUS.NO_RETRY:
+        if (dualReinvestInfo?.isRecursive) {
+          content = 'labelDualAssetReInvestEnable'
+        } else {
+          icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+          status = 'labelDualRetryStatusRetrying'
+          content = 'labelDualRetryStatusTerminated'
+        }
+        break
+      case sdk.DUAL_RETRY_STATUS.RETRYING:
+        icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+        status = 'labelDualRetryStatusRetrying'
+        content = 'labelDualRetryPending'
+        break
+      default:
+        content = dualReinvestInfo?.isRecursive
+          ? 'labelDualAssetReInvestEnable'
+          : 'labelDualAssetReInvestDisable'
+    }
     return {
       dualViewInfo: {
         ...item?.__raw__?.order,
@@ -140,7 +229,18 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         amount: amount + ' ' + sellSymbol,
         currentPrice,
         __raw__: item.__raw__,
+        outSymbol,
+        outAmount,
+        side,
+        status: settlementStatus,
+        statusColor,
+        maxDuration: dualReinvestInfo.maxDuration,
+        autoIcon: icon,
+        autoStatus: status,
+        autoContent: content,
+        newStrike: dualReinvestInfo.newStrike,
       },
+
       lessEarnTokenSymbol,
       greaterEarnTokenSymbol,
       lessEarnView,

@@ -50,7 +50,9 @@ export const ChooseDualType = ({
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Button
-              onClick={() => `${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >

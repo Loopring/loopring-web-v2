@@ -114,8 +114,6 @@ export const DualDetail = ({
   const { t } = useTranslation()
   const { upColor, isMobile } = useSettings()
   const { base, quote, precisionForPrice, quoteUnit } = currentPrice
-  // const quoteAlice = /USD/gi.test(quoteUnit ?? '') ? 'USDT' : quoteUnit
-
   const [tab, setTab] = React.useState<DualDetailTab>(DualDetailTab.less)
   const currentView = React.useMemo(
     () =>
@@ -233,20 +231,60 @@ export const DualDetail = ({
               background: 'var(--field-opacity)',
             }}
           >
-            {/*{isOrder && (*/}
-            {/*  <Box paddingBottom={1}>*/}
-            {/*    <Typography*/}
-            {/*      variant={isMobile ? 'h5' : 'h4'}*/}
-            {/*      marginTop={-6}*/}
-            {/*      textAlign={'center'}*/}
-            {/*      paddingBottom={2}*/}
-            {/*      color={'textSecondary'}*/}
-            {/*    >*/}
-            {/*      {t('labelDuaInvestmentDetails', { ns: 'common' })}*/}
-            {/*    </Typography>*/}
-            {/*    /!*<Divider />*!/*/}
-            {/*  </Box>*/}
-            {/*)}*/}
+            {isOrder && (
+              <>
+                <Typography
+                  variant={'body1'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                  paddingBottom={1}
+                  order={0}
+                >
+                  <Tooltip title={t('labelDualCurrentAPRDes').toString()}>
+                    <Typography
+                      component={'span'}
+                      variant={'inherit'}
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      <Trans i18nKey={'labelDualStatus'}>Status</Trans>
+                    </Typography>
+                  </Tooltip>
+                  <Typography
+                    component={'span'}
+                    variant={'inherit'}
+                    color={dualViewInfo?.statusColor}
+                  >
+                    {dualViewInfo?.side}
+                  </Typography>
+                </Typography>
+                {dualViewInfo.outSymbol && (
+                  <Typography
+                    variant={'body1'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                    paddingBottom={1}
+                    order={2}
+                  >
+                    <Typography
+                      component={'span'}
+                      variant={'inherit'}
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      {t('labelDualTxsSettlement')}
+                    </Typography>
+                    <Typography component={'span'} variant={'inherit'}>
+                      {dualViewInfo.outAmount + ' ' + dualViewInfo.outSymbol}
+                    </Typography>
+                  </Typography>
+                )}
+              </>
+            )}
             <Typography
               variant={'body1'}
               display={'inline-flex'}
@@ -284,7 +322,7 @@ export const DualDetail = ({
               alignItems={'center'}
               justifyContent={'space-between'}
               paddingBottom={1}
-              order={isOrder ? 5 : 1}
+              order={isOrder ? 3 : 1}
             >
               <Tooltip title={t('labelDualTargetPriceDes').toString()}>
                 <Typography
@@ -312,7 +350,7 @@ export const DualDetail = ({
                   alignItems={'center'}
                   justifyContent={'space-between'}
                   paddingBottom={1}
-                  order={1}
+                  order={8}
                 >
                   <Typography
                     component={'span'}
@@ -327,13 +365,58 @@ export const DualDetail = ({
                     {moment(new Date(dualViewInfo.enterTime)).format(YEAR_DAY_MINUTE_FORMAT)}
                   </Typography>
                 </Typography>
+
                 <Typography
                   variant={'body1'}
                   display={'inline-flex'}
                   alignItems={'center'}
                   justifyContent={'space-between'}
                   paddingBottom={1}
-                  order={0}
+                  order={8}
+                >
+                  <Typography
+                    component={'span'}
+                    variant={'inherit'}
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    {t('labelDualAuto')}
+                  </Typography>
+
+                  {dualViewInfo.autoIcon && dualViewInfo?.autoStatus ? (
+                    <Tooltip
+                      title={t(dualViewInfo?.autoStatus, {
+                        day: dualViewInfo.maxDuration
+                          ? dualViewInfo.maxDuration / 86400000
+                          : EmptyValueTag,
+                        price: dualViewInfo.newStrike ? dualViewInfo.newStrike : EmptyValueTag,
+                      }).toString()}
+                    >
+                      <Typography
+                        component={'span'}
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                        variant={'inherit'}
+                        color={'textPrimary'}
+                      >
+                        <>{t(dualViewInfo.autoContent)}</>
+                        <>{dualViewInfo.autoIcon}</>
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
+                      {t(dualViewInfo.autoContent)}
+                    </Typography>
+                  )}
+                </Typography>
+                <Typography
+                  variant={'body1'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                  paddingBottom={1}
+                  order={1}
                 >
                   <Typography
                     component={'span'}
@@ -356,7 +439,7 @@ export const DualDetail = ({
               alignItems={'center'}
               justifyContent={'space-between'}
               paddingBottom={1}
-              order={isOrder ? 2 : 2}
+              order={isOrder ? 6 : 2}
             >
               <Typography
                 component={'span'}
@@ -377,7 +460,7 @@ export const DualDetail = ({
               alignItems={'center'}
               justifyContent={'space-between'}
               paddingBottom={1}
-              order={isOrder ? 3 : 3}
+              order={isOrder ? 7 : 3}
             >
               <Typography
                 component={'span'}

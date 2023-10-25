@@ -1642,7 +1642,6 @@ export default {
   labelStopLimitFromDropsDown: 'drops down',
   labelStopLimitBehaviorAbove: 'above',
   labelStopLimitBehaviorBelow: 'below',
-
   labelStopLimitType: 'Stop-Limit / {{tradeType}}',
   labelStopLimitStopPrice: 'Stop Price',
   labelStopLimitPriceLimitPrice: 'Limit Price',
@@ -2038,4 +2037,22 @@ export default {
   labelTokenMaxBalance: 'Available Balance',
   labelInvestMiniDual: 'Min {{value}}',
   labelDualAutoSearchingDes: 'Auto reinvesting. Searching for the product...',
+  labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
+  labelDualRetryStatusSuccess:
+    'Auto reinvested successful. A new order has been generated for you.',
+  labelDualRetryStatusError:
+    'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
+  labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
+  labelDualRetryPending: 'Pending',
+  labelDualRetryTerminated: 'Terminated',
+  labelDualRetryFailed: 'Failed',
+  labelDualRetrySuccess: 'successful',
+  labelDualRetryStatusTerminated:
+    'Auto Reinvest terminated. You successfully purchased the target token.',
+  labelInvestmentStatusSettled: 'Settled',
+  labelInvestmentStatusDelivering: 'Delivering',
+  labelInvestmentStatusSubscribe: 'Earning',
+  labelDualTxsSettlement: 'Settlement',
+  labelDualAuto: 'Auto Reinvest',
+  labelDualAssetReInvestEnable: 'Enabled',
 }
