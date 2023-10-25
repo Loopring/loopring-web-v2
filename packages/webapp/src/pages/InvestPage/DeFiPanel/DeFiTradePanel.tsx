@@ -1,4 +1,4 @@
-import { useDefiMap, useDefiTrade, usePopup } from '@loopring-web/core'
+import { confirmation, useDefiMap, useDefiTrade, usePopup } from '@loopring-web/core'
 import { DEFI_ADVICE_MAP, MarketType, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
@@ -42,7 +42,8 @@ export const DeFiTradePanel = ({
     ? { flex: 1, background: 'var(--color-box-third)' }
     : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
   const { t } = useTranslation()
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
+  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } =
+    confirmation.useConfirmation()
 
   return (
     <>

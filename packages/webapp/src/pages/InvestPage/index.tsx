@@ -5,7 +5,7 @@ import { Box, BoxProps, Typography } from '@mui/material'
 import { useTranslation, withTranslation } from 'react-i18next'
 import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
 import React from 'react'
-import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
+import { confirmation, ViewAccountTemplate } from '@loopring-web/core'
 import MyLiquidityPanel from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
@@ -121,16 +121,15 @@ export const DefiTitle = () => {
 const InvestRouter = `${RouterPath.invest}/:item?`
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
   let match: any = useRouteMatch(InvestRouter)
-  const { confirmedLRCStakeInvest: confirmedLRCInvestFun } = confirmation.useConfirmation()
   const {
-    toggle: { CIETHInvest },
-  } = useToggle()
-
-  const {
+    confirmedLRCStakeInvest: confirmedLRCInvestFun,
     showLRCStakignPopup: confirmedLRCStakeInvest,
     setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
     confirmationNeeded,
-  } = usePopup()
+  } = confirmation.useConfirmation()
+  const {
+    toggle: { CIETHInvest },
+  } = useToggle()
 
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)

@@ -46,15 +46,11 @@ export const BeginnerMode: any = withTranslation('common')(
     dualListProps,
     viewType,
     r,
-  }: // setConfirmDualInvest,
-  WithTranslation & {
+  }: WithTranslation & {
     dualListProps: any
     viewType: DualViewType
-    // setConfirmDualInvest: (state: any) => void
   }) => {
-    // const viewType ===
     const viewStepType = ViewStepType[viewType]
-
     const theme = useTheme()
     const { tradeMap } = useDualMap()
     const { coinJson } = useSettings()
@@ -78,7 +74,6 @@ export const BeginnerMode: any = withTranslation('common')(
       isDualBalanceSufficient,
     } = dualListProps
     const { isMobile } = useSettings()
-    const { marketArray } = useDualMap()
     const tokenList: any[] = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
       a?.tokenName?.toString().localeCompare(b?.tokenName?.toString()),
     )

@@ -8,7 +8,7 @@ import {
   VaultTradeBase,
 } from './BasicPanel'
 import { Box, Typography } from '@mui/material'
-import { EmptyValueTag, YEAR_DAY_MINUTE_FORMAT } from '@loopring-web/common-resources'
+import { YEAR_DAY_MINUTE_FORMAT } from '@loopring-web/common-resources'
 import moment from 'moment/moment'
 import { useSettings } from '../../../stores'
 
@@ -482,10 +482,7 @@ export const BorrowDes2 = (
             {props.t('labelVaultTime')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {moment(time ? time : new Date())
-              // .utc()
-              // .startOf("days")
-              .format(YEAR_DAY_MINUTE_FORMAT)}
+            {moment(time ? time : new Date()).format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>
         </Typography>
       </Box>
