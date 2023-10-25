@@ -86,9 +86,11 @@ const BoxChartStyle = styled(Box)`
     padding-left: ${({ theme }) => 2 * theme.unit}px;
     //text-align: left;
   }
-  .returnV1 {
-  }
   .returnV2 {
+    color: var(--color-warning);
+  }
+  .returnV1 {
+    color: var(--color-success);
     top: 0;
   }
 `
@@ -689,17 +691,27 @@ export const DualDetail = ({
                       //   : '25%',
                     }}
                   >
-                    <Typography variant={'body2'} color={'textPrimary'}>
+                    <Typography
+                      display={'inline-block'}
+                      width={'120px'}
+                      whiteSpace={'pre-wrap'}
+                      // flexWrap={'wrap'}
+                      // variant={'body2'}
+                      color={'textPrimary'}
+                      component={'span'}
+                      // alignItems={'center'}
+                    >
                       <Trans
-                        i18nKey={'labelDualCurrentPrice'}
+                        i18nKey={'labelDualCurrentPrice2'}
                         tOptions={{
-                          price: currentView,
+                          price: ' ' + currentView,
                           symbol: '', //base,
                           baseSymbol: quoteAlice,
                         }}
                       >
                         LRC Current price:
                         <Typography
+                          component={'span'}
                           color={
                             upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)'
                           }
@@ -710,11 +722,7 @@ export const DualDetail = ({
                     </Typography>
                   </Box>
                   <Box className={'returnV1 returnV'}>
-                    <Typography
-                      variant={'body2'}
-                      color={'var(--color-warning)'}
-                      whiteSpace={'pre-line'}
-                    >
+                    <Typography variant={'body2'} color={'inherit'} whiteSpace={'pre-line'}>
                       {quote &&
                         t('labelDualReturn', {
                           symbol:
@@ -725,11 +733,7 @@ export const DualDetail = ({
                     </Typography>
                   </Box>
                   <Box className={'returnV2 returnV'}>
-                    <Typography
-                      variant={'body2'}
-                      color={'var(--color-success)'}
-                      whiteSpace={'pre-line'}
-                    >
+                    <Typography variant={'body2'} color={'inherit'} whiteSpace={'pre-line'}>
                       {base &&
                         t('labelDualReturn', {
                           symbol:
