@@ -205,7 +205,7 @@ export const DualDetail = ({
               alignItems={'center'}
             >
               <WarningIcon2
-                htmlColor={'var(--color-warning)'}
+                color={'warning'}
                 fontSize={'large'}
                 sx={{
                   marginRight: 1,

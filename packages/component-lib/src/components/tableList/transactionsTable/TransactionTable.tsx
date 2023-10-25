@@ -71,11 +71,11 @@ const CellStatus = ({ row }: any) => {
   `
   const svg =
     status === 'processed' ? (
-      <CompleteIcon />
+      <CompleteIcon color={'success'} />
     ) : status === 'processing' || status === 'received' ? (
-      <WaitingIcon />
+      <WaitingIcon color={'warning'} />
     ) : (
-      <WarningIcon />
+      <WarningIcon color={'error'} />
     )
   return <RenderValue>{svg}</RenderValue>
 }
