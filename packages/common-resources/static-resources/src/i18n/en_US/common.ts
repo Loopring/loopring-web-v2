@@ -2046,7 +2046,7 @@ export default {
   labelDualRetryPending: 'Pending',
   labelDualRetryTerminated: 'Terminated',
   labelDualRetryFailed: 'Failed',
-  labelDualRetrySuccess: 'successful',
+  labelDualRetrySuccess: 'Successful',
   labelDualRetryStatusTerminated:
     'Auto Reinvest terminated. You successfully purchased the target token.',
   labelInvestmentStatusSettled: 'Settled',
