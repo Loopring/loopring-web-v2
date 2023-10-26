@@ -242,10 +242,6 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
           isNft: true,
         },
       })
-      // updateData({
-      //   page,
-      //   filter: { isNft: tokenType === TokenType.nft },
-      // })
     } else if (
       [
         RedPacketRecordsTabIndex.BlindBoxReceived,
@@ -255,20 +251,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
     }
     getRedPacketReceiveList_BlindBox({ pageBlindBox })
   }, [currentTab])
-
-  // const onRefresh = React.useCallback(() => {
-  //
-  // }, [page, tokenType])
-  // const subject = React.useMemo(() => redpacketService.onRefresh(), [])
-  // React.useEffect(() => {
-  //   const subscription = subject.subscribe(() => {
-  //     onRefresh()
-  //   })
-  //   return () => {
-  //     subscription.unsubscribe()
-  //   }
-  // }, [])
-
+	
   const subject = React.useMemo(() => redpacketService.onRefresh(), [])
   React.useEffect(() => {
     const subscription = subject.subscribe(() => {
