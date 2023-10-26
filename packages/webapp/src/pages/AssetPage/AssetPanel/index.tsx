@@ -15,7 +15,6 @@ import {
   AssetTabIndex,
   CircleIcon,
   MapChainId,
-  myLog,
   RouterPath,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
