@@ -318,7 +318,7 @@ export const DualDetail = ({
                       alignItems={'center'}
                       justifyContent={'space-between'}
                       paddingBottom={1}
-                      order={8}
+                      order={9}
                     >
                       <Typography
                         component={'span'}
@@ -382,6 +382,36 @@ export const DualDetail = ({
                 )}
               </>
             )}
+            <Typography
+              variant={'body1'}
+              display={'inline-flex'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
+              paddingBottom={1}
+              order={8}
+            >
+              <Tooltip title={t('labelDualCurrentAPRDes').toString()}>
+                <Typography
+                  component={'span'}
+                  variant={'inherit'}
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  <Trans i18nKey={'labelDualCurrentAPR'}>
+                    APR
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  </Trans>
+                </Typography>
+              </Tooltip>
+              <Typography
+                component={'span'}
+                variant={'inherit'}
+                color={upColor == UpColor.green ? 'var(--color-success)' : 'var(--color-error)'}
+              >
+                {dualViewInfo?.apy}
+              </Typography>
+            </Typography>
             <Typography
               variant={'body1'}
               display={'inline-flex'}
@@ -704,10 +734,6 @@ export const DualDetail = ({
                     key={DualDetailTab.less}
                     value={DualDetailTab.less}
                     label={
-                      // <Tooltip
-                      //   placement={'top'}
-                      //   title={t(`labelImportCollection${item}Des`).toString()}
-                      // >
                       <Typography component={'span'} color={'inherit'}>
                         {t(
                           dualViewInfo.isUp

@@ -1105,7 +1105,7 @@ export default {
   labelEditRestCollectionBtn: 'Reset',
   labelEditCollectionERC1155: 'Edit My Collection',
   labelDualSettlementCalculator: 'Settlement Calculator',
-  labelDualSettleDateDur: 'Days Till Settlement',
+  labelDualSettleDateDur: 'Subscription Length (days)',
   labelNoInvestContent:
     'You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments',
   labelImportCollection: 'Import Collection for Legacy NFT',
