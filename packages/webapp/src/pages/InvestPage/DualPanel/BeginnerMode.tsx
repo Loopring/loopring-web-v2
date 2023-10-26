@@ -295,7 +295,7 @@ export const BeginnerMode: any = withTranslation('common')(
               {t(viewStepType[2].labelKey)}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
-              {tradeMap[step1SelectedToken ?? '']?.tokenList?.map((token) => {
+              {tradeMap[step1SelectedToken ?? '']?.quoteList?.map((token) => {
                 return (
                   <Box marginRight={2} key={token}>
                     <TickCardStyleItem

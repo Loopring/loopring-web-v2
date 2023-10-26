@@ -5,7 +5,7 @@ export type DualMap = {
   marketArray: string[]
   marketCoins: string[]
   marketMap: sdk.LoopringMap<sdk.DefiMarketInfo>
-  tradeMap: sdk.LoopringMap<{ tokenId: number; tokenList: string[] }>
+  tradeMap: sdk.LoopringMap<{ tokenId: number; tokenList: string[]; quoteList }>
 }
 
 export type DualMapStates = DualMap & {

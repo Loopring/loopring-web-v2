@@ -36,7 +36,6 @@ export const useDualEdit = <
   refresh?: (item: R) => void
 }) => {
   const { exchangeInfo } = useSystem()
-  // const { dualViewInfo } = detail ?? {}
   const { setShowAccount } = useOpenModals()
   const { t } = useTranslation()
   const { account } = useAccount()
@@ -148,10 +147,10 @@ export const useDualEdit = <
 
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
-              storageId: tradeDual.tokenInfoOrigin.storageId,
+              storageId: storageId.orderId,
               accountId: account.accountId,
               sellToken: {
-                tokenId: storageId.orderId, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
+                tokenId: tradeDual.tokenInfoOrigin.tokenIn, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
                 volume: tradeDual.tokenInfoOrigin.amountIn,
               },
               buyToken: {
