@@ -183,15 +183,16 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             )
             return (
               <Box display={'flex'} alignItems={'center'} flexDirection={'row'}>
-                <Typography color={statusColor}>{side}</Typography>
+                {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED ? (
+                  failed
+                ) : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING ? (
+                  pending
+                ) : (
+                  <Typography color={statusColor}>{side}</Typography>
+                )}
                 &nbsp;&nbsp;
                 <Typography component={'span'}>{sentence}</Typography>
-                {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
-                investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
-                  ? failed
-                  : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-                  ? pending
-                  : null}
               </Box>
             )
           },
@@ -572,19 +573,20 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     display={'inline-flex'}
                     alignItems={'center'}
                   >
-                    <Typography component={'span'} variant={'inherit'} color={statusColor}>
-                      {side}
-                    </Typography>
+                    {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                    investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED ? (
+                      failed
+                    ) : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING ? (
+                      pending
+                    ) : (
+                      <Typography component={'span'} variant={'inherit'} color={statusColor}>
+                        {side}
+                      </Typography>
+                    )}
                     &nbsp;
                     <Typography component={'span'} color={'textPrimary'} variant={'inherit'}>
                       {sentence}
                     </Typography>
-                    {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
-                    investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
-                      ? failed
-                      : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-                      ? pending
-                      : null}
                   </Typography>
                   <Typography
                     component={'span'}
