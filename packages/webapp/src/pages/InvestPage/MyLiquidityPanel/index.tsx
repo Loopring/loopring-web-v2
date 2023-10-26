@@ -67,7 +67,7 @@ import {
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
-import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
+import { useDualAsset } from '../../AssetPage/HistoryPanel'
 import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
@@ -777,9 +777,18 @@ const MyLiquidity: any = withTranslation('common')(
                             width={'100%'}
                             display={'flex'}
                             flexDirection={'column'}
+                            sx={
+                              isMobile
+                                ? {
+                                    maxHeight: 'initial',
+                                    overflowY: 'initial',
+                                  }
+                                : { maxHeight: 'var(--lage-modal-height)', overflowY: 'scroll' }
+                            }
                           >
                             <DualDetail
                               isOrder={true}
+                              order={dualDetail?.__raw__?.order}
                               btnConfirm={
                                 dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
                                   <ButtonStyle

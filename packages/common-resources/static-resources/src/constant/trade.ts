@@ -467,6 +467,17 @@ export type DualViewBase = {
   enterTime?: number
   stepLength?: string
   quote?: string
+  outSymbol?: string
+  outAmount?: string
+  side?: string
+  status?: string
+  statusColor?: string
+  maxDuration?: number
+  autoStatus?: string
+  autoIcon?: JSX.Element
+  autoContent?: string
+  newStrike?: string
+  deliveryPrice?: string | undefined
   __raw__?: any
 }
 

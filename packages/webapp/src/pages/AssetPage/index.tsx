@@ -2,19 +2,16 @@ import { useRouteMatch } from 'react-router-dom'
 
 import { Box } from '@mui/material'
 import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
-import { AccountStatus, RouterPath, subMenuLayer2 } from '@loopring-web/common-resources'
+import { RouterPath } from '@loopring-web/common-resources'
 
-import HistoryPanel from './HistoryPanel'
 import React from 'react'
 import {
-  store,
-  useAccount,
   useTargetRedPackets,
   ViewAccountTemplate,
-  walletLayer2Service,
 } from '@loopring-web/core'
-import { useAssetAction, useGetAssets } from './AssetPanel/hook'
+import {  useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
+import { HistoryPanel } from './HistoryPanel'
 
 export * from './HistoryPanel/hooks'
 export const l2assetsRouter = `${RouterPath.l2assets}/:item`

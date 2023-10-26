@@ -26,6 +26,7 @@ import {
   useToast,
   useTokenMap,
 } from '@loopring-web/core'
+import { useDualAsset } from './useDualAsset'
 import {
   useBtradeTransaction,
   useDefiSideRecord,
@@ -484,4 +485,4 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   )
 })
 
-export default HistoryPanel
+export { HistoryPanel, useDualAsset }

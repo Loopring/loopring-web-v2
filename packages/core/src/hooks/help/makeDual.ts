@@ -20,7 +20,7 @@ export const makeDualViewItem = (
   const { expireTime, strike, ratio, profit, dualType } = info
   // @ts-ignore
   const { precisionForPrice, stepLength } = market
-  myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
+  // myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
       ? [sellSymbol, buySymbol]

@@ -1105,7 +1105,7 @@ export default {
   labelEditRestCollectionBtn: 'Reset',
   labelEditCollectionERC1155: 'Edit My Collection',
   labelDualSettlementCalculator: 'Settlement Calculator',
-  labelDualSettleDateDur: 'Days Till Settlement',
+  labelDualSettleDateDur: 'Subscription Length (days)',
   labelNoInvestContent:
     'You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments',
   labelImportCollection: 'Import Collection for Legacy NFT',
@@ -2037,6 +2037,25 @@ export default {
   labelTokenMaxBalance: 'Available Balance',
   labelInvestMiniDual: 'Min {{value}}',
   labelDualAutoSearchingDes: 'Auto reinvesting. Searching for the product...',
+  labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
+  labelDualRetryStatusSuccess:
+    'Auto reinvested successful. A new order has been generated for you.',
+  labelDualRetryStatusError:
+    'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
+  labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
+  labelDualRetryPending: 'Pending',
+  labelDualRetryTerminated: 'Terminated',
+  labelDualRetryFailed: 'Failed',
+  labelDualRetrySuccess: 'successful',
+  labelDualRetryStatusTerminated:
+    'Auto Reinvest terminated. You successfully purchased the target token.',
+  labelInvestmentStatusSettled: 'Settled',
+  labelInvestmentStatusDelivering: 'Delivering',
+  labelInvestmentStatusSubscribe: 'Earning',
+  labelDualTxsSettlement: 'Settlement',
+  labelDualAuto: 'Auto Reinvest',
+  labelDualAssetReInvestEnable: 'Enabled',
+  labelDualDeliver: 'Settlement Price',
   labelUnlockErrorLine1:
     'The failure to unlock your wallet most likely is due to network condition or browser issue, which may be recovered via refreshing the page or reopening it',
   labelUnlockErrorLine2Part1: 'As a last resort, you can ',
