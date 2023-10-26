@@ -1108,17 +1108,12 @@ export const InformationForAccountFrozen = withTranslation('common', {
         open={open}
         onClose={() => setShowTradeIsFrozen({ isShow: false })}
         aria-describedby='alert-dialog-slide-description'
+        maxWidth={'xs'}
       >
-        <DialogTitle> {t('labelInformation')}</DialogTitle>
+        <DialogTitle> Account Locked - Unable to Operate</DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
-            {messageKey === 'labelNoticeForForAccountFrozen' ? (
-              <Trans i18nKey={messageKey} tOptions={{ type: t('label' + type?.toLowerCase()) }}>
-                please waiting a while, {{ type }} is on updating.
-              </Trans>
-            ) : (
-              t(messageKey, { type })
-            )}
+            {t(messageKey, { type })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

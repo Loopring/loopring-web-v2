@@ -14,7 +14,7 @@ export function useResetAccount() {
   const {
     account: { accountId, apiKey },
   } = useAccount()
-  const [hasDualInvest, setHasDualInvest] = React.useState<boolean>(false)
+  const [hasDualInvest, setHasDualInvest] = React.useState<boolean | undefined>(undefined)
   React.useEffect(() => {
     ;(async () => {
       if (LoopringAPI.defiAPI && accountId && apiKey) {
@@ -40,7 +40,12 @@ export function useResetAccount() {
     setShowResetAccount({
       isShow: true,
       info: {
-        confirmationType: hasDualInvest ? 'unlockedWithDual' : 'unlockedWithoutDual',
+        confirmationType:
+          hasDualInvest === undefined
+            ? 'lockedReset'
+            : hasDualInvest === true
+            ? 'unlockedWithDual'
+            : 'unlockedWithoutDual',
       },
     })
   }, [setShowResetAccount, hasDualInvest])
