@@ -2,6 +2,8 @@ import { ChartType, ScaleAreaChart } from '../../charts'
 import React from 'react'
 import { Grid, Link } from '@mui/material'
 import { AmmHistoryItem } from '@loopring-web/common-resources'
+import { useTranslation } from 'react-i18next'
+
 enum TradingInterval {
   hr1 = '1hr',
   d1 = '1d',
@@ -31,10 +33,10 @@ export const MarketDetail = ({ trends, isShow }: { trends: any; isShow: boolean 
   const { t } = useTranslation()
   const [data, setData] = React.useState([])
   const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr1)
-  const [trends, settTrends] = React.useState<AmmHistoryItem[] | undefined>([])
+  const [trend, settTrend] = React.useState<AmmHistoryItem[] | undefined>([])
 
   const handleTimeIntervalChange = React.useCallback((timeInterval: TradingInterval) => {
-    settTrends()
+    // settTrends()
     setTimeInterval(timeInterval)
   }, [])
 

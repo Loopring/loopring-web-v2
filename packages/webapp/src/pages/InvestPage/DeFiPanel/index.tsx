@@ -22,7 +22,6 @@ import {
   hexToRGB,
   Info2Icon,
   InvestAssetRouter,
-  InvestRouter,
   InvestType,
   MarketType,
   RouterPath,
@@ -264,10 +263,10 @@ const ButtonStyled = styled(Button)`
     }
   }
 `
-const InvestRouter = `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`
+const InvestRouterMatch = `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`
 
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
-  const match: any = useRouteMatch(InvestRouter)
+  const match: any = useRouteMatch(InvestRouterMatch)
 
   const { marketArray } = useDefiMap()
 

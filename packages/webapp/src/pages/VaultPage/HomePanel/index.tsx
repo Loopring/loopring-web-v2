@@ -1,22 +1,15 @@
 import { Box, Container, Modal, Typography } from '@mui/material'
 import React from 'react'
-import {
-  L1L2_NAME_DEFINED,
-  RouterPath,
-  TradeBtnStatus,
-  VaultIcon,
-  VaultKey,
-} from '@loopring-web/common-resources'
+import { RouterPath, TradeBtnStatus, VaultIcon, VaultKey } from '@loopring-web/common-resources'
 import {
   BoxBannerStyle,
   Button,
-  ChartType,
+  MarketDetail,
   MarketTable,
   ModalCloseButtonPosition,
-  ScaleAreaChart,
   useSettings,
 } from '@loopring-web/component-lib'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
@@ -146,10 +139,10 @@ export const VaultHomePanel = ({
               right={2}
               top={2}
               t={t}
-              onClose={() => detail({ isShow: false })}
+              onClose={() => setShowDetail({ isShow: false })}
             />
 
-            <MarketDetail />
+            <MarketDetail {...{ ...detail }} />
           </Box>
         </Box>
       </Modal>

@@ -23,8 +23,9 @@ import {
 } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
+import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useVaultMarket = ({
+export const useVaultMarket = <R extends any>({
   tableRef,
   rowConfig = RowConfig,
 }: {
@@ -44,38 +45,30 @@ export const useVaultMarket = ({
   })
   const autoRefresh = React.useRef<NodeJS.Timeout | -1>(-1)
   const { status: vaultTickerStatus, vaultTickerMap, updateVaultTickers } = useVaultTicker()
-  const handleRowClick = React.useCallback(
-    (row: R) => {
+  const handleRowClick = React.useCallback(async (row: R) => {
+    setShowDetail({
+      isShow: true,
+      isLoading: true,
+      row,
+      detail: undefined,
+    })
+    try {
+      const [tokneInfoDetail, quoteTokenTrend] = await Promise.all([
+        LoopringAPI.exchangeAPI.getTokenInfo({ tokens: tokenMap[row.erc20Symbol].address }),
+        LoopringAPI.exchangeAPI.getQuoteTokenInfo({ tokens: tokenMap[row.erc20Symbol].address }),
+      ])
       setShowDetail({
         isShow: true,
         isLoading: true,
         row,
-        detail: undefined,
+        detail: {},
       })
-      try {
-        const [tokneInfoDetail, quoteTokenTrend] = await Promise.all([
-          LoopringAPI.exchangeAPI.getTokenInfo({ tokens: tokenMap[row.erc20Symbol].address }),
-          LoopringAPI.exchangeAPI.getQuoteTokenInfo({ tokens: tokenMap[row.erc20Symbol].address }),
-        ])
-        setShowDetail({
-          isShow: true,
-          isLoading: true,
-          row,
-          detail: {},
-        })
-      } catch (e) {}
-
-      const item = await
-
-      // const { coinA, coinB } = row.pair
-      // const tradePair = `${coinA}-${coinB}`
-      // history && history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
-    },
-    [history],
-  )
+    } catch (e) {}
+    //
+  }, [])
   const handleItemClick = React.useCallback(
     (row: R) => {
-      history && history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
     },
     [history],
   )
