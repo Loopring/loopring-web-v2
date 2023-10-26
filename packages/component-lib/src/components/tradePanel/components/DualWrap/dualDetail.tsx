@@ -258,6 +258,27 @@ export const DualDetail = ({
                     {dualViewInfo?.side ?? ''}
                   </Typography>
                 </Typography>
+                <Typography
+                  variant={'body1'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                  paddingBottom={1}
+                  order={1}
+                >
+                  <Typography
+                    component={'span'}
+                    variant={'inherit'}
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    {t('labelDualAmount')}
+                  </Typography>
+                  <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
+                    {dualViewInfo?.amount}
+                  </Typography>
+                </Typography>
                 {dualViewInfo.outSymbol && (
                   <Typography
                     variant={'body1'}
@@ -412,27 +433,7 @@ export const DualDetail = ({
                 {dualViewInfo?.apy}
               </Typography>
             </Typography>
-            <Typography
-              variant={'body1'}
-              display={'inline-flex'}
-              alignItems={'center'}
-              justifyContent={'space-between'}
-              paddingBottom={1}
-              order={1}
-            >
-              <Typography
-                component={'span'}
-                variant={'inherit'}
-                color={'textSecondary'}
-                display={'inline-flex'}
-                alignItems={'center'}
-              >
-                {t('labelDualAmount')}
-              </Typography>
-              <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-                {dualViewInfo?.amount}
-              </Typography>
-            </Typography>
+
             <Typography
               variant={'body1'}
               display={'inline-flex'}
