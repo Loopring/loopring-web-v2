@@ -362,7 +362,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 </Typography>
               </Tooltip>
             ) : (
-              <>{content}</>
+              <>{t(content)}</>
             )
           },
         },
@@ -493,7 +493,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     ? sdk.toBig(deliveryPrice).gte(strike)
                     : sdk.toBig(strike).gte(deliveryPrice))
                 ) {
-                  icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
+                  icon = <WarningIcon color={'warning'} sx={{ paddingLeft: 1 / 2 }} />
                   status = 'labelDualRetryStatusTerminated'
                   content = 'labelDualRetryTerminated'
                 } else {
