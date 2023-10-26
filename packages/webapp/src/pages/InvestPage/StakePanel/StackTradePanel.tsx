@@ -1,4 +1,4 @@
-import { confirmation, usePopup, useStakeTradeJOIN, useToast } from '@loopring-web/core'
+import { confirmation, useStakeTradeJOIN, useToast } from '@loopring-web/core'
 
 import {
   Button,
