@@ -162,22 +162,12 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 ? `${amount} ${sellSymbol}`
                 : `${amount} ${sellSymbol}`
             const pending = (
-              <Typography
-                borderRadius={1}
-                marginLeft={1}
-                paddingX={1 / 2}
-                bgcolor={'var(--color-warning)'}
-              >
+              <Typography borderRadius={1} paddingX={1 / 2} bgcolor={'var(--color-warning)'}>
                 {t('labelDualPending')}
               </Typography>
             )
             const failed = (
-              <Typography
-                borderRadius={1}
-                marginLeft={1}
-                paddingX={1 / 2}
-                bgcolor={'var(--color-error)'}
-              >
+              <Typography borderRadius={1} paddingX={1 / 2} bgcolor={'var(--color-error)'}>
                 {t('labelDualFailed')}
               </Typography>
             )
@@ -531,7 +521,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             const pending = (
               <Typography
                 borderRadius={1}
-                marginLeft={1}
                 paddingX={1 / 2}
                 component={'span'}
                 fontSize={'9px'}
@@ -543,7 +532,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             const failed = (
               <Typography
                 borderRadius={1}
-                marginLeft={1}
                 paddingX={1 / 2}
                 component={'span'}
                 fontSize={'9px'}
