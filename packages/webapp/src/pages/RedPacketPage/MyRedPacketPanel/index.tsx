@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react'
-import { useHistory, useRouteMatch, useLocation } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   RedPacketReceiveTable,
@@ -20,6 +20,7 @@ import {
   RouterPath,
   TokenType,
   RedPacketRecordsTabIndex,
+  AssetTabIndex,
 } from '@loopring-web/common-resources'
 import { Box, Button, Checkbox, FormControlLabel, Tab, Tabs, Typography } from '@mui/material'
 import styled from '@emotion/styled'
@@ -278,9 +279,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
           color={'inherit'}
           onClick={() => {
             if (isUnClaimed) {
-              history.push(
-                `${RouterPath.l2assetsDetail}/${AssetRedPacketRecordsTabIndex.RedPacket}`,
-              )
+              history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.RedPacket}`)
             } else {
               history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.markets}`)
             }
