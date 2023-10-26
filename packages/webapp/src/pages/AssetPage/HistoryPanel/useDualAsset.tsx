@@ -470,11 +470,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
             (prev: RawDataDualAssetItem[], item: sdk.UserDualTxsHistory) => {
               const [, , coinA, coinB] =
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
+              // [] =  item.tokenInfoOrigin.market
               const findIndex = indexes?.find((_item) => {
-                return (
-                  _item.base === item.tokenInfoOrigin.base &&
-                  _item.quote === item.tokenInfoOrigin.quote
-                )
+                return _item.base === item.tokenInfoOrigin.base && _item.quote === coinB
               })
               let [sellTokenSymbol, buyTokenSymbol] =
                 item.dualType === DUAL_TYPE.DUAL_BASE
