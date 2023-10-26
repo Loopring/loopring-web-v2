@@ -41,6 +41,9 @@ const EarnCard = styled(Box)`
   align-items: center;
   position: relative;
   overflow: hidden;
+  :hover{
+    border: 1px solid var(--color-primary);
+  }
 `
 
 const FAQ = styled(Box)<{ opend: boolean }>`
@@ -83,23 +86,25 @@ const AnimationCard = styled(Box)<{ highlighted: boolean }>`
   padding-right: ${({ theme }) => theme.unit * 4}px;
   padding-bottom: ${({ theme }) => theme.unit * 2.5}px;
   height: 390px;
-  width: ${({ highlighted }) => (highlighted ? '54%' : '20%')};
-  transition: width 0.5s ease;
+  width: ${({ highlighted }) => (highlighted ? '55.08%' : '20.4%')};
+  transition: all 0.5s ease;
   border: 0.5px solid var(--color-border);
-
+  overflow: hidden;
   .title {
     margin-bottom: ${({ theme }) => theme.unit * 3}px;
   }
   .sub-title {
     color: var(--color-text-secondary);
-    /* margin-bottom: ${({ theme }) => theme.unit * 9}px; */
-    /* visibility: visible; */
     display: ${({ highlighted }) => (highlighted ? '' : 'none')};
+    max-height: 30px;
   }
   img {
     height: 134px;
     width: 134px;
     align-self: end;
+    margin-right: ${({ highlighted }) => (highlighted ? '0px' : '-60px')};
+    opacity: ${({ highlighted }) => (highlighted ? '1' : '0.5')};
+    transition: all 0.5s ease;
   }
 `
 
@@ -350,7 +355,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
         maxWidth={'964px'}
         justifyContent={'center'}
       >
-        <Box marginTop={10} display={'flex'} justifyContent={'center'} flexDirection={'column'} width={'100%'}>
+        <Box marginTop={12} display={'flex'} justifyContent={'center'} flexDirection={'column'} width={'100%'}>
           <Typography variant={'h1'} textAlign={'center'}>
             {t("labelDualEarnTitle")}
           </Typography>
@@ -452,11 +457,11 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
           </Box>
         </Box> */}
 
-        <Box marginTop={8} display={'flex'} flexWrap={'wrap'}>
+        <Box marginTop={15} display={'flex'} flexWrap={'wrap'}>
           {dualTokenList.map((info, index) => {
             return (
               <EarnCard key={info.symbol} marginRight={index % 3 === 2 ? '0' : '2%'}>
-                {info.tag === 'sellCover' ? (
+                {/* {info.tag === 'sellCover' ? (
                   <Typography
                     sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
                     color={theme.colorBase.warning}
@@ -478,13 +483,20 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
                   >
                     {t("labelBuyLow")}
                   </Typography>
-                )}
-                <CoinIcon size={64} symbol={info.symbol} />
+                )} */}
+                <Box sx={{height: 64, display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
+                  <CoinIcon size={64} symbol={info.symbol} />
+                </Box>
+                
                 {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
                 <Typography variant={'h3'} marginTop={2}>
-                  {t("labelInvestSymbol", {
-                    symbol: info.symbol
-                  })}
+                  {info.tag === 'sellCover'
+                    ? t('labelInvestSymbolSellHigh', {
+                        symbol: info.symbol,
+                      })
+                    : t('labelInvestSymbolBuyLow', {
+                        symbol: info.symbol,
+                      })}
                 </Typography>
                 <Box
                   marginBottom={4}
@@ -495,7 +507,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
                 >
                   <Box>
                     <Typography color={'var(--color-success)'} textAlign={'center'}>
-                      {t("labelApy")}
+                      {t('labelApy')}
                     </Typography>
                     <Typography variant={'h4'} color={'var(--color-success)'} textAlign={'center'}>
                       {info.apy}
@@ -503,7 +515,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
                   </Box>
                   <Box width={'1px'} height={24} marginX={1.5} bgcolor={'var(--color-border)'} />
                   <Box>
-                    <Typography textAlign={'center'}>{t("labelCurrentPrice")}</Typography>
+                    <Typography textAlign={'center'}>{t('labelCurrentPrice')}</Typography>
                     <Typography variant={'h4'} textAlign={'center'}>
                       {info.price}
                     </Typography>
@@ -521,7 +533,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
                   variant={'contained'}
                   fullWidth
                 >
-                  {t("labelViewDetails")}
+                  {t('labelViewDetails')}
                 </Button>
               </EarnCard>
             )
@@ -565,7 +577,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             justifyContent={'space-between'}
             highlighted={highlightedAnimationCard === 0}
             onMouseOver={() => setHighlightedAnimationCard(0)}
-            marginRight={'3%'}
+            marginRight={'2.06%'}
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
@@ -589,7 +601,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             justifyContent={'space-between'}
             highlighted={highlightedAnimationCard === 1}
             onMouseOver={() => setHighlightedAnimationCard(1)}
-            marginRight={'3%'}
+            marginRight={'2.06%'}
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
@@ -640,18 +652,22 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             const opened = openedFaqs.includes(index)
             return (
               <FAQ opend={openedFaqs.includes(index)} key={faq.question}>
-                <Box display={'flex'} justifyContent={'space-between'}>
+                <Box
+                  onClick={() => {
+                    if (opened) {
+                      setOpenedFaqs(difference(openedFaqs, [index]))
+                    } else {
+                      setOpenedFaqs(openedFaqs.concat(index))
+                    }
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                >
                   <Typography marginBottom={2} variant={'h3'}>
                     {faq.question}
                   </Typography>
                   <BackIcon
-                    onClick={() => {
-                      if (opened) {
-                        setOpenedFaqs(difference(openedFaqs, [index]))
-                      } else {
-                        setOpenedFaqs(openedFaqs.concat(index))
-                      }
-                    }}
                     sx={{
                       transform: opened ? 'rotate(90deg)' : 'rotate(270deg)',
                       cursor: 'pointer',

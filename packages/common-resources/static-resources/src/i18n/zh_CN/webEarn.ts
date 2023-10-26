@@ -161,6 +161,8 @@ export default {
   labelSellHigh: 'Sell Hign',
   labelBuyLow: 'Buy Low',
   labelInvestSymbol: 'Invest {{symbol}}',
+  labelInvestSymbolSellHigh: 'Sell {{symbol}} High',
+  labelInvestSymbolBuyLow: 'Buy {{symbol}} Low',
   labelApy: 'APY',
   labelCurrentPrice: 'Current Price',
   labelViewDetails: 'View Details',
