@@ -143,7 +143,7 @@ export const useDualHook = () => {
     if (index == -1) {
       list.pop()
     }
-    return list
+    return list ?? []
   }, [ChooseDualTypeContent, marketArray])
 
   const handleOnPairChange = React.useCallback(

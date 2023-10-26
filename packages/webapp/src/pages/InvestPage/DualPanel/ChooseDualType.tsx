@@ -14,8 +14,8 @@ import styled from '@emotion/styled'
 import { containerColors, MaxWidthContainer } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
-import { findDualMarket, useDualMap } from '@loopring-web/core'
-import { ChooseDualTypeContent, ChooseDualTypeContentType } from './hook'
+import { useDualMap } from '@loopring-web/core'
+import { ChooseDualTypeContentType } from './hook'
 
 export const TypographyStyle = styled(Typography)`
   svg {
@@ -82,7 +82,7 @@ export const ChooseDualType = ({
           spacing={2}
           flexDirection={isMobile ? 'column' : 'row'}
         >
-          {chooseDualTypeContent.map((item) => {
+          {chooseDualTypeContent?.map((item) => {
             return (
               <Grid
                 item

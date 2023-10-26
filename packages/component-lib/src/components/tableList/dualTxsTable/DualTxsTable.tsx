@@ -162,36 +162,27 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 ? `${amount} ${sellSymbol}`
                 : `${amount} ${sellSymbol}`
             const pending = (
-              <Typography
-                borderRadius={1}
-                marginLeft={1}
-                paddingX={1 / 2}
-                bgcolor={'var(--color-warning)'}
-              >
+              <Typography borderRadius={1} paddingX={1 / 2} bgcolor={'var(--color-warning)'}>
                 {t('labelDualPending')}
               </Typography>
             )
             const failed = (
-              <Typography
-                borderRadius={1}
-                marginLeft={1}
-                paddingX={1 / 2}
-                bgcolor={'var(--color-error)'}
-              >
+              <Typography borderRadius={1} paddingX={1 / 2} bgcolor={'var(--color-error)'}>
                 {t('labelDualFailed')}
               </Typography>
             )
             return (
               <Box display={'flex'} alignItems={'center'} flexDirection={'row'}>
-                <Typography color={statusColor}>{side}</Typography>
+                {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED ? (
+                  failed
+                ) : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING ? (
+                  pending
+                ) : (
+                  <Typography color={statusColor}>{side}</Typography>
+                )}
                 &nbsp;&nbsp;
                 <Typography component={'span'}>{sentence}</Typography>
-                {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
-                investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
-                  ? failed
-                  : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-                  ? pending
-                  : null}
               </Box>
             )
           },
@@ -530,7 +521,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             const pending = (
               <Typography
                 borderRadius={1}
-                marginLeft={1}
                 paddingX={1 / 2}
                 component={'span'}
                 fontSize={'9px'}
@@ -542,7 +532,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             const failed = (
               <Typography
                 borderRadius={1}
-                marginLeft={1}
                 paddingX={1 / 2}
                 component={'span'}
                 fontSize={'9px'}
@@ -572,19 +561,20 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                     display={'inline-flex'}
                     alignItems={'center'}
                   >
-                    <Typography component={'span'} variant={'inherit'} color={statusColor}>
-                      {side}
-                    </Typography>
+                    {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
+                    investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED ? (
+                      failed
+                    ) : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING ? (
+                      pending
+                    ) : (
+                      <Typography component={'span'} variant={'inherit'} color={statusColor}>
+                        {side}
+                      </Typography>
+                    )}
                     &nbsp;
                     <Typography component={'span'} color={'textPrimary'} variant={'inherit'}>
                       {sentence}
                     </Typography>
-                    {investmentStatus === sdk.LABEL_INVESTMENT_STATUS.FAILED ||
-                    investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
-                      ? failed
-                      : investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-                      ? pending
-                      : null}
                   </Typography>
                   <Typography
                     component={'span'}

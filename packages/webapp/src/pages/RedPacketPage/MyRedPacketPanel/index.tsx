@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react'
-import { useHistory, useRouteMatch, useLocation } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   RedPacketReceiveTable,
@@ -20,6 +20,7 @@ import {
   RouterPath,
   TokenType,
   RedPacketRecordsTabIndex,
+  AssetTabIndex,
 } from '@loopring-web/common-resources'
 import { Box, Button, Checkbox, FormControlLabel, Tab, Tabs, Typography } from '@mui/material'
 import styled from '@emotion/styled'
@@ -242,10 +243,6 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
           isNft: true,
         },
       })
-      // updateData({
-      //   page,
-      //   filter: { isNft: tokenType === TokenType.nft },
-      // })
     } else if (
       [
         RedPacketRecordsTabIndex.BlindBoxReceived,
@@ -255,20 +252,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
     }
     getRedPacketReceiveList_BlindBox({ pageBlindBox })
   }, [currentTab])
-
-  // const onRefresh = React.useCallback(() => {
-  //
-  // }, [page, tokenType])
-  // const subject = React.useMemo(() => redpacketService.onRefresh(), [])
-  // React.useEffect(() => {
-  //   const subscription = subject.subscribe(() => {
-  //     onRefresh()
-  //   })
-  //   return () => {
-  //     subscription.unsubscribe()
-  //   }
-  // }, [])
-
+	
   const subject = React.useMemo(() => redpacketService.onRefresh(), [])
   React.useEffect(() => {
     const subscription = subject.subscribe(() => {
@@ -295,9 +279,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
           color={'inherit'}
           onClick={() => {
             if (isUnClaimed) {
-              history.push(
-                `${RouterPath.l2assetsDetail}/${AssetRedPacketRecordsTabIndex.RedPacket}`,
-              )
+              history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.RedPacket}`)
             } else {
               history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.markets}`)
             }

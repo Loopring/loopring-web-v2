@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, CardContent, Grid, Typography } from '@mui/material'
+import { Box, CardContent, Grid } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { TradePanel } from './TradePanel'
 import {
