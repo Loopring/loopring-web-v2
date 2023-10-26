@@ -14,7 +14,8 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
   const { _chainId: accountChainId, accAddress, readyState } = store.getState().account
   if (chainId && chainId !== defaultNetwork) {
     let _chainId = Number(chainId)
-    if (['1', '5', '421613'].includes(_chainId.toString())) {
+    myLog('_chainId', chainId)
+    if ( ['1', '5', '421613'].includes(_chainId.toString())) {
       store.dispatch(setDefaultNetwork(_chainId))
       if (systemStatus !== SagaStatus.UNSET) {
         await sdk.sleep(10)
