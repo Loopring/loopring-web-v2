@@ -125,7 +125,7 @@ export const MarketDetail = ({
               {tokenInfo.price
                 ? PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
-                    row.price * (forexMap[currency] ?? 0),
+                    tokenInfo.price * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
                     2,
@@ -137,7 +137,7 @@ export const MarketDetail = ({
                 : EmptyValueTag}
             </Typography>
             <Typography component={'span'} flexDirection={'column'} display={'flex'}>
-              {}
+              {tokenInfo.percentChange24H + '%'}
             </Typography>
           </Typography>
         </Box>
@@ -185,6 +185,9 @@ export const MarketDetail = ({
           display={'flex'}
           alignItems={'stretch'}
           width={'100%'}
+          magingTop={2}
+          padding={1}
+          sx={{ background: 'var(--color-box-enhance)' }}
         >
           <Typography component={'p'} variant={'h5'}>
             {t('labelStats')}
@@ -199,20 +202,17 @@ export const MarketDetail = ({
               {t('label24Volume')}
             </Typography>
             <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {tokenInfo?.tokenId}
-            </Typography>
-          </Typography>
-          <Typography
-            component={'p'}
-            display={'inline-flex'}
-            justifyContent={'space-between'}
-            marginTop={2}
-          >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              {t('label24Volume')}
-            </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {}
+              {tokenInfo.volume24H
+                ? PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    tokenInfo.volume24H,
+                    tokenInfo.precision,
+                    tokenInfo.precision,
+                    tokenInfo.precision,
+                    false,
+                    { isAbbreviate: true, abbreviate: 6 },
+                  )
+                : EmptyValueTag}
             </Typography>
           </Typography>
           <Typography
@@ -225,7 +225,7 @@ export const MarketDetail = ({
               {t('label24PriceChange')}
             </Typography>
             <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {}
+              {tokenInfo.percentChange24H + '%'}
             </Typography>
           </Typography>
 
@@ -239,7 +239,7 @@ export const MarketDetail = ({
               {t('label7dPriceChange')}
             </Typography>
             <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {}
+              {tokenInfo.percentChange7D + '%'}
             </Typography>
           </Typography>
         </Box>
