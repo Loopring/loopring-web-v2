@@ -103,10 +103,17 @@ const LandDefiInvest = ({
   const {
     confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
   } = confirmation.useConfirmation()
-  // const {
-  //   confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
-  //   confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
-  // } = confirmation.useConfirmation();
+  const { marketArray } = useDefiMap()
+
+  // const _market: MarketType = [...(marketArray ? marketArray : [])].find((_item) => {
+  //   if (match?.params?.market) {
+  //     //@ts-ignore
+  //     const [, , base] = _item.match(/(defi-)?(\w+)(-\w+)?/i)
+  //     //@ts-ignore
+  //     const [_base] = match?.params?.market?.split('-')
+  //     return base.toUpperCase() == _base.toUpperCase()
+  //   }
+  // }) as MarketType
 
   const investAdviceList = [
     {
@@ -141,7 +148,7 @@ const LandDefiInvest = ({
         {investAdviceList.map((item, index) => {
           return (
             <React.Fragment key={item.type + index}>
-              {item.enable ? (
+              {item.enable && marketArray.includes(item.market) ? (
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }}
@@ -309,7 +316,9 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }
 
-  const match: any = useRouteMatch('/invest/stake/:market?/:isJoin?')
+  const match: any = useRouteMatch(
+    `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`,
+  )
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()
