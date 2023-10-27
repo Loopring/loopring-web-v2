@@ -2015,7 +2015,7 @@ export const ConfirmInvestDualGainRisk = withTranslation('common')(
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <DialogContentText id='alert-dialog-slide-description'>
+          <Box>
             <Trans
               i18nKey={'labelInvestDualGainGuid'}
               tOptions={{
@@ -2096,7 +2096,7 @@ export const ConfirmInvestDualGainRisk = withTranslation('common')(
                 for you, even if it's enabled.
               </p>
             </Trans>
-          </DialogContentText>
+          </Box>
           <MuiFormControlLabel
             control={
               <Checkbox

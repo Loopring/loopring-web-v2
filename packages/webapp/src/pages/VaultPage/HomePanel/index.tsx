@@ -11,7 +11,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
+import { useSystem, useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from './hook'
@@ -22,6 +22,7 @@ export const VaultHomePanel = ({
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
   const { isMobile } = useSettings()
+  const { forexMap } = useSystem()
   const theme = useTheme()
   const { t } = useTranslation()
   const { vaultAccountInfo, activeInfo } = useVaultLayer2()
@@ -139,10 +140,10 @@ export const VaultHomePanel = ({
               right={2}
               top={2}
               t={t}
-              onClose={() => setShowDetail({ isShow: false })}
+              onClose={() => setShowDetail({ isShow: false } as any)}
             />
 
-            <MarketDetail {...{ ...detail }} />
+            <MarketDetail isShow={detail.isShow} forexMap={forexMap} {...{ ...detail?.detail }} />
           </Box>
         </Box>
       </Modal>

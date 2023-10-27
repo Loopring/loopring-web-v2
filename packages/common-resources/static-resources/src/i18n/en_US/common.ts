@@ -2193,4 +2193,10 @@ export default {
   labelVaultBorrowFailed: 'Borrow Failed',
   labelLayer2HistoryVaultRecords: 'Vault Records',
   labelVaultTitleRisk: 'What is Loopring Vault?',
+  labelProTime1h: '1h',
+  labelProTime1d: '1d',
+  labelProTime1w: '1w',
+  labelStats: 'Stats',
+  label24PriceChange: '24h Price Change',
+  label7dPriceChange: '7d Price Change',
 }

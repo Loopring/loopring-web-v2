@@ -3,11 +3,13 @@ import React, { useCallback } from 'react'
 import { QuoteTableRawDataItem } from '@loopring-web/component-lib'
 
 import {
+  myLog,
   RouterPath,
   RowConfig,
   RowConfigType,
   SagaStatus,
   TableFilterParams,
+  TickerNew,
   VAULT_MAKET_REFRESH,
   VaultKey,
 } from '@loopring-web/common-resources'
@@ -25,7 +27,7 @@ import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useVaultMarket = <R extends any>({
+export const useVaultMarket = <R = TickerNew>({
   tableRef,
   rowConfig = RowConfig,
 }: {
@@ -38,32 +40,62 @@ export const useVaultMarket = <R extends any>({
     isShow: boolean
     isLoading: true
     row?: R
-    detail?: { tokenInfo: sdk.DatacenterTokenInfo }
+    detail?: { tokenInfo: Partial<sdk.DatacenterTokenInfo & sdk.TokenInfo>; tenders: any }
   }>({
     isShow: false,
     isLoading: true,
   })
   const autoRefresh = React.useRef<NodeJS.Timeout | -1>(-1)
   const { status: vaultTickerStatus, vaultTickerMap, updateVaultTickers } = useVaultTicker()
-  const handleRowClick = React.useCallback(async (row: R) => {
+  const handleRowClick = React.useCallback(async (_index, row: R) => {
     setShowDetail({
       isShow: true,
       isLoading: true,
       row,
-      detail: undefined,
+      detail: {
+        tokenInfo: {
+          ...tokenMap[row?.erc20Symbol ?? ''],
+          ...row,
+        },
+        tenders: undefined,
+      },
     })
     try {
       const [tokneInfoDetail, quoteTokenTrend] = await Promise.all([
-        LoopringAPI.exchangeAPI.getTokenInfo({ tokens: tokenMap[row.erc20Symbol].address }),
-        LoopringAPI.exchangeAPI.getQuoteTokenInfo({ tokens: tokenMap[row.erc20Symbol].address }),
+        LoopringAPI?.exchangeAPI?.getTokenInfo({
+          token: tokenMap[row?.erc20Symbol ?? '']?.address,
+          currency: 'USD',
+        }),
+        LoopringAPI?.exchangeAPI?.getQuoteTokenInfo({
+          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          currency: 'USD',
+        }),
       ])
+      if (
+        (tokneInfoDetail as sdk.RESULT_INFO).code ||
+        (tokneInfoDetail as sdk.RESULT_INFO).message ||
+        (quoteTokenTrend as sdk.RESULT_INFO).code ||
+        (quoteTokenTrend as sdk.RESULT_INFO).message
+      ) {
+        // throw tokneInfoDetail
+      }
       setShowDetail({
         isShow: true,
         isLoading: true,
         row,
-        detail: {},
+        detail: {
+          tokenInfo: {
+            ...tokenMap[row?.erc20Symbol ?? ''],
+            ...tokneInfoDetail?.data[0],
+            ...row,
+            // symbol: row.symbol,
+          },
+          tenders: quoteTokenTrend?.list?.data,
+        },
       })
-    } catch (e) {}
+    } catch (e) {
+      myLog('handleRowClick', e)
+    }
     //
   }, [])
   const handleItemClick = React.useCallback(

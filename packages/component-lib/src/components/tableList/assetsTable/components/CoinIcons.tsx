@@ -101,6 +101,7 @@ export const CoinIcons = React.memo(
             width={'var(--btn-icon-size-small)'}
             alignItems={'center'}
             justifyContent={'center'}
+            width={size}
           >
             <VaultTag
               style={{

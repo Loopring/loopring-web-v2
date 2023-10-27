@@ -131,10 +131,6 @@ export const useMarket = <R>({
     forexMap,
     rowConfig,
     handleTableFilterChange,
-    onRowClick: (item: R) => {
-      handleRowClick && handleRowClick(item)
-      // history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
-    },
     onItemClick: (item: R) => {
       handleItemClick && handleItemClick(item)
     },
