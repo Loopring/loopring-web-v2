@@ -2056,5 +2056,5 @@ export default {
   labelDualAuto: 'Auto Reinvest',
   labelDualAssetReInvestEnable: 'Enabled',
   labelDualDeliver: 'Settlement Price',
-  labelDualAssetRelnvestDisable:'Disabled'
+  labelDualAssetRelnvestDisable: 'Disabled',
 }
