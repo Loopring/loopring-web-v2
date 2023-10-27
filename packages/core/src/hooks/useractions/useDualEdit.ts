@@ -168,7 +168,7 @@ export const useDualEdit = <
                       volume: sdk
                         .toBig(tradeDual.tokenInfoOrigin.amountIn)
                         .div('1e' + sellToken.decimals)
-                        .times(request.newStrike)
+                        .div(request.newStrike)
                         .times('1e' + buyToken.decimals)
                         .toString(),
                     }),
