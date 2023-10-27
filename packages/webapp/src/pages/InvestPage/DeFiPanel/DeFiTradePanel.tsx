@@ -1,4 +1,4 @@
-import { confirmation, useDefiMap, useDefiTrade, usePopup } from '@loopring-web/core'
+import { confirmation, useDefiMap, useDefiTrade } from '@loopring-web/core'
 import { DEFI_ADVICE_MAP, MarketType, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,

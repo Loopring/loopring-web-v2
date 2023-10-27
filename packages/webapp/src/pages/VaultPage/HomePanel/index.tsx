@@ -1,10 +1,17 @@
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Container, Modal, Typography } from '@mui/material'
 import React from 'react'
 import { RouterPath, TradeBtnStatus, VaultIcon, VaultKey } from '@loopring-web/common-resources'
-import { BoxBannerStyle, Button, MarketTable, useSettings } from '@loopring-web/component-lib'
+import {
+  BoxBannerStyle,
+  Button,
+  MarketDetail,
+  MarketTable,
+  ModalCloseButtonPosition,
+  useSettings,
+} from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
+import { useSystem, useVaultLayer2, VaultAccountInfoStatus } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from './hook'
@@ -15,12 +22,13 @@ export const VaultHomePanel = ({
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
   const { isMobile } = useSettings()
+  const { forexMap } = useSystem()
   const theme = useTheme()
   const { t } = useTranslation()
   const { vaultAccountInfo, activeInfo } = useVaultLayer2()
   const history = useHistory()
   const tableRef = React.useRef<HTMLDivElement>()
-  const vaultMarketProps = useVaultMarket({ tableRef })
+  const { marketProps: vaultMarketProps, detail, setShowDetail } = useVaultMarket({ tableRef })
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -115,6 +123,30 @@ export const VaultHomePanel = ({
           <MarketTable {...{ ...vaultMarketProps }} />
         </Container>
       </Box>
+      <Modal open={detail?.isShow} onClose={() => setShowDetail({ isShow: false })}>
+        <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <Box
+            padding={5}
+            bgcolor={'var(--color-box)'}
+            width={'var(--modal-width)'}
+            borderRadius={1}
+            display={'flex'}
+            alignItems={'center'}
+            flexDirection={'column'}
+            position={'relative'}
+          >
+            {/* <Box></Box> */}
+            <ModalCloseButtonPosition
+              right={2}
+              top={2}
+              t={t}
+              onClose={() => setShowDetail({ isShow: false } as any)}
+            />
+
+            <MarketDetail isShow={detail.isShow} forexMap={forexMap} {...{ ...detail?.detail }} />
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   )
 }

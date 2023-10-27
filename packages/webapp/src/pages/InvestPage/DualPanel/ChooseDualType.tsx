@@ -4,7 +4,8 @@ import {
   LOOPRING_DOCUMENT,
   DualInvestmentLogo,
   RouterPath,
-  InvestMainRouter,
+  InvestRouter,
+  InvestType,
 } from '@loopring-web/common-resources'
 import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
@@ -13,8 +14,8 @@ import styled from '@emotion/styled'
 import { containerColors, MaxWidthContainer } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
-import { findDualMarket, useDualMap } from '@loopring-web/core'
-import { ChooseDualTypeContent, ChooseDualTypeContentType } from './hook'
+import { useDualMap } from '@loopring-web/core'
+import { ChooseDualTypeContentType } from './hook'
 
 export const TypographyStyle = styled(Typography)`
   svg {
@@ -49,7 +50,9 @@ export const ChooseDualType = ({
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Button
-              onClick={() => `${RouterPath.invest}/${InvestMainRouter.BALANCE}`}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >
@@ -79,7 +82,7 @@ export const ChooseDualType = ({
           spacing={2}
           flexDirection={isMobile ? 'column' : 'row'}
         >
-          {chooseDualTypeContent.map((item) => {
+          {chooseDualTypeContent?.map((item) => {
             return (
               <Grid
                 item

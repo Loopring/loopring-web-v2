@@ -108,7 +108,13 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           key: 'Filled',
           name: t('labelVaultTxFilled'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row.mainContentRender}</>
+            return (
+              <>
+                {row.mainContentRender + row.feeStr
+                  ? `fee: ${row.feeStr} ${row.feeTokenSymbol}`
+                  : ''}
+              </>
+            )
           },
         },
         {
@@ -160,7 +166,13 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           key: 'Filled',
           name: t('labelVaultTxFilled'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <>{row.mainContentRender}</>
+            return (
+              <>
+                {row.mainContentRender + row.feeStr
+                  ? `fee: ${row.feeStr} ${row.feeTokenSymbol}`
+                  : ''}
+              </>
+            )
           },
         },
         {

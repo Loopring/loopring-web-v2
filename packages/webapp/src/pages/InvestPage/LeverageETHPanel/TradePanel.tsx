@@ -1,4 +1,4 @@
-import { confirmation, useLeverageETHTrade, usePopup } from '@loopring-web/core'
+import { confirmation, useLeverageETHTrade } from '@loopring-web/core'
 import { MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,

@@ -381,7 +381,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, network],
   )
 
   return {
@@ -436,7 +436,7 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, tokenMap],
   )
 
   return {
@@ -842,7 +842,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
-                item.dualType == sdk.DUAL_TYPE.DUAL_BASE
+                item.dualType === sdk.DUAL_TYPE.DUAL_BASE
                   ? [
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -1193,7 +1193,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, network],
   )
 
   return {
@@ -1268,8 +1268,17 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
             setTotalNum(userOrders.total)
             const data = userOrders.data.map(
               ({ operation, order }: { operation: sdk.VaultOperation; order: sdk.VaultOrder }) => {
-                const { operateSubType, status } = operation
-                const { fillAmountS, amountS, tokenS, tokenB, amountB, fillAmountB, price } = order
+                const {
+                  operateSubType,
+                  status,
+                  amountIn: amountS,
+                  tokenIn: tokenS,
+                  tokenOut: tokenB,
+                  amountOut: amountB,
+                } = operation
+                let fillAmountB, fillAmountS
+                const { fee, price } = order
+                // const { fillAmountS, amountS, tokenS, tokenB, amountB, fillAmountB, price } = order
                 let type,
                   mainContentRender,
                   erc20Symbol,
@@ -1283,7 +1292,11 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   amount,
                   vTokenB,
                   vSymbolB,
-                  percentage
+                  percentage,
+                  fillAmountSStr,
+                  fillAmountBStr,
+                  feeStr,
+                  feeToken
                 switch (operateSubType) {
                   case sdk.VaultOperationType.VAULT_OPEN_POSITION:
                   case sdk.VaultOperationType.VAULT_MARGIN_CALL:
@@ -1299,12 +1312,15 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     vSymbol = vToken.symbol
                     erc20Symbol = erc20Token.symbol
                     amount = sdk.toBig(amountS ?? 0).div('1e' + erc20Token.decimals)
+                    fillAmountS =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + erc20Token.decimals)
-                    percentage = sdk
-                      .toBig(fillAmountS ?? 0)
-                      .div(amountS ?? 1)
-                      .times(100)
-                      .toFixed(2)
+                    percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
+                    // percentage = sdk
+                    //   .toBig(fillAmountS ?? 0)
+                    //   .div(amountS ?? 1)
+                    //   .times(100)
+                    //   .toFixed(2)
                     mainContentRender = `${
                       fillAmount.gte(0)
                         ? getValuePrecisionThousand(fillAmount, precision, precision)
@@ -1323,6 +1339,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     precision = erc20Token.precision
                     vSymbol = vToken.symbol
                     amount = sdk.toBig(amountB ?? 0).div('1e' + vToken.decimals)
+                    fillAmountB =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountB : 0
                     fillAmount = sdk.toBig(fillAmountB).div('1e' + vToken.decimals)
                     percentage = sdk
                       .toBig(fillAmountB ?? 0)
@@ -1348,12 +1366,15 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     precision = vToken?.precision
                     vSymbol = vToken?.symbol
                     amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals)
+                    fillAmountS =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + vToken.decimals)
-                    percentage = sdk
-                      .toBig(fillAmountS ?? 0)
-                      .div(amountS ?? 1)
-                      .times(100)
-                      .toFixed(2)
+                    percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
+                    // percentage = sdk
+                    //   .toBig(fillAmountS ?? 0)
+                    //   .div(amountS ?? 1)
+                    //   .times(100)
+                    //   .toFixed(2)
 
                     mainContentRender = `${
                       fillAmount.gte(0)
@@ -1371,42 +1392,60 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     vToken = vaultTokenMap[vaultIdIndex(tokenS ?? '')]
                     //@ts-ignore
                     vTokenB = vaultTokenMap[vaultIdIndex(tokenB ?? '')]
+                    feeToken = vTokenB
                     erc20Symbol = idIndex[vToken.tokenId]
                     erc20SymbolB = idIndex[vTokenB.tokenId]
                     precision = vToken.precision
                     precisionB = vTokenB.precision
                     vSymbol = vToken.symbol
                     vSymbolB = vTokenB.symbol
-                    // amount = sdk.toBig(amountS??0).div('1e' + vToken.decimals)
-                    fillAmount = sdk.toBig(fillAmountS).div('1e' + vToken.decimals)
-                    let fillAmountBStr = sdk.toBig(fillAmountB ?? 0).div('1e' + vTokenB.decimals)
+                    fillAmountS = sdk.toBig(order.fillAmountS ?? 0).div('1e' + vToken.decimals)
+                    fillAmountB = sdk.toBig(order.fillAmountB ?? 0).div('1e' + vSymbolB.decimals)
+                    fillAmountBStr = getValuePrecisionThousand(fillAmountB, precisionB, precisionB)
+                    fillAmountSStr = getValuePrecisionThousand(fillAmountS, precision, precision)
                     percentage = sdk
-                      .toBig(fillAmountS ?? 0)
+                      .toBig(order.fillAmountS ?? 0)
                       .div(amountS ?? 1)
                       .times(100)
                       .toFixed(2)
+                    feeStr = getValuePrecisionThousand(
+                      sdk.toBig(fee ?? 0).div('1e' + feeToken.decimals),
+                      precisionB,
+                      precisionB,
+                    )
 
                     mainContentRender = `${
-                      fillAmount.gte(0)
-                        ? getValuePrecisionThousand(fillAmount, precision, precision)
-                        : EmptyValueTag
+                      fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag
                     }  ${vSymbol} \u2248 ${
-                      fillAmountBStr.gte(0)
-                        ? getValuePrecisionThousand(fillAmountBStr, precisionB, precisionB)
-                        : EmptyValueTag
+                      fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
                     } ${vSymbolB} ${t('labelPrice')}: ${price}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
+                    //@ts-ignore
+                    vTokenB = vaultTokenMap[vaultIdIndex(tokenB ?? '')]
+                    amount = sdk.toBig(amountB ?? 0).div('1e' + vTokenB.decimals)
+                    //@ts-ignore
+                    precision = vTokenB.precision
+                    fillAmountB =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountB : 0
+                    vSymbolB = vTokenB.symbol
+                    fillAmount = sdk.toBig(fillAmountB).div('1e' + vTokenB.decimals)
+                    percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
+                    // percentage = sdk
+                    //   .toBig(amountB ?? 0)
+                    //   .div(fillAmountB ?? 1)
+                    //   .times(100)
+                    //   .toFixed(2)
                     mainContentRender = `${
                       fillAmount.gte(0)
-                        ? getValuePrecisionThousand(fillAmount, precision, precision)
+                        ? getValuePrecisionThousand(fillAmountB, precision, precision)
                         : EmptyValueTag
                     }/${
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${vSymbolB}`
                     break
                 }
 
@@ -1415,6 +1454,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   type,
                   vSymbol,
                   vTokenB,
+                  feeStr,
+                  feeTokenSymbol: feeToken?.symbol,
                   erc20SymbolB,
                   erc20Symbol,
                   mainContentRender,

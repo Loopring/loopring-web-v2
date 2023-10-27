@@ -133,8 +133,8 @@ export const VaultTag = (props: SvgIconProps) => {
           y2='48'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stop-color='#68E19B' />
-          <stop offset='1' stop-color='#4EADEB' />
+          <stop stopColor='#68E19B' />
+          <stop offset='1' stopColor='#4EADEB' />
         </linearGradient>
       </defs>
     </svg>

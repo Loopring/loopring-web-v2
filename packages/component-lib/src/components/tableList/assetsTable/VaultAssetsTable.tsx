@@ -86,6 +86,7 @@ export type VaultAssetsTableProps<R = RawDataAssetsItem> = {
   pagination?: {
     pageSize: number
   }
+  onRowClick?: (row: R) => void
   allowTrade?: any
   tableHeight?: number
   onVisibleRowsChange?: (props: any) => void
@@ -109,6 +110,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       rawData,
       allowTrade,
       showFilter,
+      onRowClick,
       // getMarketArrayListCallback,
       hideSmallBalances,
       isLoading = false,
@@ -353,6 +355,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           style={{
             height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
           }}
+          onRowClick={(index: any, row: any, col: any) => onRowClick && onRowClick(row)}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}
@@ -360,11 +363,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
           showloading={isLoading}
           // onScroll={handleScroll}
-          columnMode={
-            (isMobile
-              ? getColumnMobileAssets(t, allowTrade)
-              : getColumnModeAssets(t, allowTrade)) as any
-          }
+          columnMode={(isMobile ? getColumnMobileAssets(t) : getColumnModeAssets(t)) as any}
         />
         {hasMore && (
           <Typography

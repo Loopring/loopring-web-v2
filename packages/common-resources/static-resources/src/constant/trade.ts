@@ -332,12 +332,6 @@ export const enum InvestMapType {
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
   LEVERAGEETH = 'LEVERAGEETH',
-
-  // BTradeInvest = "BTradeInvest",
-}
-export const enum InvestMainRouter {
-  OVERVIEW = 'OVERVIEW',
-  BALANCE = 'BALANCE',
 }
 
 export const enum InvestAssetRouter {
@@ -456,7 +450,7 @@ export type DualCurrentPrice = {
   base: string
   precisionForPrice: number
   currentPrice?: number
-  quoteUnit?: string
+  quoteUnit: string
 }
 export type DualViewBase = {
   apy: `${string}%`
@@ -473,6 +467,17 @@ export type DualViewBase = {
   enterTime?: number
   stepLength?: string
   quote?: string
+  outSymbol?: string
+  outAmount?: string
+  side?: string
+  status?: string
+  statusColor?: string
+  maxDuration?: number
+  autoStatus?: string
+  autoIcon?: JSX.Element
+  autoContent?: string
+  newStrike?: string
+  deliveryPrice?: string | undefined
   __raw__?: any
 }
 

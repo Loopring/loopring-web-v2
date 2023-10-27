@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, CardContent, Grid, Typography } from '@mui/material'
+import { Box, CardContent, Grid } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { TradePanel } from './TradePanel'
 import {
@@ -14,12 +14,13 @@ import {
   useToggle,
   useSettings,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
   InvestAssetRouter,
-  InvestMainRouter,
+  InvestRouter,
+  InvestType,
   RouterPath,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
@@ -95,10 +96,10 @@ const ButtonStyled = styled(Button)`
     }
   }
 `
-const InvestRouter = `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}/:isJoin?`
+const InvestRouterMatch = `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}/:isJoin?`
 
 const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
-  const match: any = useRouteMatch(InvestRouter)
+  const match: any = useRouteMatch(InvestRouterMatch)
 
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
@@ -158,7 +159,9 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             size={'medium'}
             sx={{ color: 'var(--color-text-primary)' }}
             color={'inherit'}
-            onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.OVERVIEW}`)}
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
+            }
           >
             {t('labelBack')}
           </Button>
@@ -167,7 +170,9 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             {t('labelLeverageETHStaking')}
           </Typography> */}
           <Button
-            onClick={() => history.push(`${RouterPath.invest}/${InvestMainRouter.BALANCE}`)}
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+            }
             variant={'text'}
           >
             {t('labelMyInvestLRCStaking')}{' '}
@@ -217,7 +222,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             handleClose={(_e, isAgree) => {
               if (!isAgree) {
                 setConfirmedDefiInvest({ isShow: false })
-                history.push(`${RouterPath.invest}/${InvestMainRouter.OVERVIEW}`)
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
               } else {
                 confirmedLeverageETHInvest()
                 setConfirmedDefiInvest({ isShow: false })

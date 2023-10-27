@@ -45,7 +45,6 @@ export const BeginnerMode: any = withTranslation('common')(
     t,
     dualListProps,
     viewType,
-    r,
   }: WithTranslation & {
     dualListProps: any
     viewType: DualViewType
@@ -83,7 +82,7 @@ export const BeginnerMode: any = withTranslation('common')(
     const tableRef = React.useRef(null)
     const quoteList = _.cloneDeep(tradeMap[step1SelectedToken ?? '']?.tokenList ?? [])
     // const last = quoteList.pop()
-    const scroolStep3ToMiddle = () => {
+    const scrollStep3ToMiddle = () => {
       setTimeout(() => {
         const element = step3Ref.current as any
         const elementRect = element.getBoundingClientRect()
@@ -92,7 +91,7 @@ export const BeginnerMode: any = withTranslation('common')(
         window.scrollTo(0, middle)
       }, 100)
     }
-    const scroolTableToMiddle = () => {
+    const scrollTableToMiddle = () => {
       setTimeout(() => {
         const element = tableRef.current as any
         const elementRect = element.getBoundingClientRect()
@@ -196,7 +195,7 @@ export const BeginnerMode: any = withTranslation('common')(
                   selected={step2BuyOrSell === 'Sell'}
                   onClick={() => {
                     onSelectStep2BuyOrSell('Sell')
-                    scroolStep3ToMiddle()
+                    scrollStep3ToMiddle()
                   }}
                   width={'310px'}
                 >
@@ -246,7 +245,7 @@ export const BeginnerMode: any = withTranslation('common')(
                   selected={step2BuyOrSell === 'Buy'}
                   onClick={() => {
                     onSelectStep2BuyOrSell('Buy')
-                    scroolStep3ToMiddle()
+                    scrollStep3ToMiddle()
                   }}
                   width={'310px'}
                 >
@@ -296,7 +295,7 @@ export const BeginnerMode: any = withTranslation('common')(
               {t(viewStepType[2].labelKey)}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
-              {tradeMap[step1SelectedToken ?? '']?.tokenList?.map((token) => {
+              {tradeMap[step1SelectedToken ?? '']?.quoteList?.map((token) => {
                 return (
                   <Box marginRight={2} key={token}>
                     <TickCardStyleItem
@@ -308,7 +307,7 @@ export const BeginnerMode: any = withTranslation('common')(
                       selected={step3Token === token}
                       onClick={() => {
                         onSelectStep3Token(token)
-                        scroolTableToMiddle()
+                        scrollTableToMiddle()
                       }}
                       width={'280px'}
                     >
@@ -438,9 +437,9 @@ export const BeginnerMode: any = withTranslation('common')(
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
-                          baseSymbol: /USD/gi.test(currentPrice.quote ?? '')
+                          baseSymbol: /USD/gi.test(currentPrice.quoteUnit ?? '')
                             ? 'USDT'
-                            : currentPrice.quote,
+                            : currentPrice.quoteUnit,
                         }}
                       >
                         LRC Current price:

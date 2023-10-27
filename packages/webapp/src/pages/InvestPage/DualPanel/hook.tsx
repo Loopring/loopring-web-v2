@@ -90,9 +90,9 @@ export const ChooseDualTypeContent: ChooseDualTypeContentType[] = [
     desKey: 'labelDualBTCDes',
   },
 ]
-const InvestRouter = `${RouterPath.invest}/${InvestAssetRouter.DUAL}/:market?`
+const InvestRouterMatch = `${RouterPath.invest}/${InvestAssetRouter.DUAL}/:market?`
 export const useDualHook = () => {
-  const match: any = useRouteMatch(InvestRouter)
+  const match: any = useRouteMatch(InvestRouterMatch)
   const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
   const viewType = searchParams.get('viewType')
@@ -143,7 +143,7 @@ export const useDualHook = () => {
     if (index == -1) {
       list.pop()
     }
-    return list
+    return list ?? []
   }, [ChooseDualTypeContent, marketArray])
 
   const handleOnPairChange = React.useCallback(
@@ -353,6 +353,7 @@ export const useDualHook = () => {
           quote: marketSymbolB,
           currentPrice: index.index,
           precisionForPrice: marketMap[market].precisionForPrice,
+          quoteUnit: marketSymbolB,
         })
 
         const rule = rules[0]

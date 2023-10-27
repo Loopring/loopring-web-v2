@@ -3,7 +3,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Box, Container, Divider, Tab, Tabs, Typography } from '@mui/material'
 
 import React from 'react'
-import { confirmation, store, useAccountInfo, usePopup, useVaultMap } from '@loopring-web/core'
+import { confirmation, store, useAccountInfo, useVaultMap } from '@loopring-web/core'
 
 import {
   RouterPath,
@@ -14,15 +14,8 @@ import {
   LOOPRING_DOCUMENT,
   RecordTabIndex,
   OrderListIcon,
-  InvestMainRouter,
 } from '@loopring-web/common-resources'
-import {
-  Button,
-  ConfirmInvestDefiRisk,
-  ConfirmVaultRisk,
-  EmptyDefault,
-  useSettings,
-} from '@loopring-web/component-lib'
+import { Button, ConfirmVaultRisk, EmptyDefault, useSettings } from '@loopring-web/component-lib'
 import { VaultDashBoardPanel } from './DashBoardPanel'
 import { VaultHomePanel } from './HomePanel'
 import { useTranslation } from 'react-i18next'

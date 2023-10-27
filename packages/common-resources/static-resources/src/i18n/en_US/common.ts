@@ -541,7 +541,7 @@ export default {
   labelBuyToken: 'Buy {{token}}',
   labelCurrentlyLevel: 'Currently {{value}} {{token}}',
   labelLRCBalance: 'LRC Balance',
-  labelNoticeForForAccountFrozen: 'Please wait while {{ type }} is updating.',
+  labelNoticeForForAccountFrozen: 'Your wallet’s L2 account is locked. While locked, you can’t perform any L2 operations. If you require further assistance, please send an email to support@loopring.io.',
   labelAction: 'action',
   labelGoExplore: 'View transactions on the <1>Loopring Block Explorer</1>.',
   labelNOETH: 'Need ETH for gas',
@@ -1006,8 +1006,11 @@ export default {
   labelDualInvestBaseTitle: 'Invest {{symbolA}} (Sell High for {{symbolB}})',
   labelDualInvestQuoteTitle: 'Invest {{symbolA}} (Buy {{symbolB}} Low)',
   labelDualInvestDes: 'Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}',
-  labelDualCurrentPriceTip: 'Current Price is based on USDT derived from some leading exchanges.',
+  labelDualCurrentPriceTip:
+    'Current Price is based on {{symbol}} derived from some leading exchanges.',
   labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1> {{baseSymbol}}',
+  labelDualCurrentPrice2: 'Current Price:\n <1>{{price}}</1> {{baseSymbol}}',
+
   labelDualSuccess: 'Subscription {{symbol}} Successfully',
   labelDualProcessing: 'Waiting for completion',
   labelDualProcessingDes:
@@ -1019,8 +1022,8 @@ export default {
   labelDualNoEnough: 'Insufficient balance',
   labelDualSettleDate: 'Settlement Date',
   labelDualSubDate: 'Subscription Date',
-  labelDualCurrentPrice2: 'Current {{symbol}} Price',
-  labelDualCurrentPrice3: 'Current  Price',
+  // labelDualCurrentPrice2: '{{symbol}} Current Price',
+  // labelDualCurrentPrice3: '{{symbol}} current Price',
   labelDualCurrentAPR: 'APR <1>\u2139</1>',
   labelDualCurrentAPRDes:
     'APR is refreshed in real time. We will use the lastest APR at the time you complete the subscription successfully.',
@@ -1102,7 +1105,7 @@ export default {
   labelEditRestCollectionBtn: 'Reset',
   labelEditCollectionERC1155: 'Edit My Collection',
   labelDualSettlementCalculator: 'Settlement Calculator',
-  labelDualSettleDateDur: 'Days Till Settlement',
+  labelDualSettleDateDur: 'Subscription Length (days)',
   labelNoInvestContent:
     'You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments',
   labelImportCollection: 'Import Collection for Legacy NFT',
@@ -2033,6 +2036,27 @@ export default {
   labelTokenEnterDualToken: 'Amount',
   labelTokenMaxBalance: 'Available Balance',
   labelInvestMiniDual: 'Min {{value}}',
+  labelDualAutoSearchingDes: 'Auto reinvesting. Searching for the product...',
+  labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
+  labelDualRetryStatusSuccess:
+    'Auto reinvested successful. A new order has been generated for you.',
+  labelDualRetryStatusError:
+    'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
+  labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
+  labelDualRetryPending: 'Pending',
+  labelDualRetryTerminated: 'Terminated',
+  labelDualRetryFailed: 'Failed',
+  labelDualRetrySuccess: 'Successful',
+  labelDualRetryStatusTerminated:
+    'Auto Reinvest terminated. You successfully purchased the target token.',
+  labelInvestmentStatusSettled: 'Settled',
+  labelInvestmentStatusDelivering: 'Delivering',
+  labelInvestmentStatusSubscribe: 'Earning',
+  labelDualTxsSettlement: 'Settlement',
+  labelDualAuto: 'Auto Reinvest',
+  labelDualAssetReInvestEnable: 'Enabled',
+  labelDualDeliver: 'Settlement Price',
+  labelDualAssetReInvestDisable: 'Disabled',
   labelUnlockErrorLine1:
     'The failure to unlock your wallet most likely is due to network condition or browser issue, which may be recovered via refreshing the page or reopening it',
   labelUnlockErrorLine2Part1: 'As a last resort, you can ',
@@ -2170,4 +2194,10 @@ export default {
   labelVaultBorrowFailed: 'Borrow Failed',
   labelLayer2HistoryVaultRecords: 'Vault Records',
   labelVaultTitleRisk: 'What is Loopring Vault?',
+  labelProTime1h: '1h',
+  labelProTime1d: '1d',
+  labelProTime1w: '1w',
+  labelStats: 'Stats',
+  label24PriceChange: '24h Price Change',
+  label7dPriceChange: '7d Price Change',
 }

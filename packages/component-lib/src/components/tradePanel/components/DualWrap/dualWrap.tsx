@@ -18,6 +18,7 @@ import { ButtonStyle } from '../Styled'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DualDetail } from './dualDetail'
 import { InputMaxCoin } from '../../../basic-lib'
+import BigNumber from 'bignumber.js'
 
 export const DualWrap = <
   T extends IBData<I> & { isRenew: boolean; targetPrice: string; duration: string },
@@ -97,7 +98,11 @@ export const DualWrap = <
     coinPrecision: tokenSell?.precision,
     inputData: {
       ...(dualCalcData ? dualCalcData.coinSell : ({} as any)),
-      max: dualCalcData.maxSellAmount,
+      max: BigNumber.min(
+        dualCalcData.maxSellAmount ?? 0,
+        dualCalcData?.coinSell?.balance ?? 0,
+        dualCalcData?.quota ?? 0,
+      ),
     },
     coinMap: {},
     ...tokenSellProps,
@@ -146,10 +151,10 @@ export const DualWrap = <
   }, [t, btnInfo])
   const lessEarnView = React.useMemo(
     () =>
-      dualCalcData.lessEarnVol && tokenMap[dualCalcData.lessEarnTokenSymbol]
+      dualCalcData?.lessEarnVol && tokenMap[dualCalcData.lessEarnTokenSymbol]
         ? getValuePrecisionThousand(
             sdk
-              .toBig(dualCalcData.lessEarnVol)
+              .toBig(dualCalcData?.lessEarnVol ?? 0)
               .div('1e' + tokenMap[dualCalcData.lessEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
@@ -162,10 +167,10 @@ export const DualWrap = <
   )
   const greaterEarnView = React.useMemo(
     () =>
-      dualCalcData.greaterEarnVol && tokenMap[dualCalcData.greaterEarnTokenSymbol]
+      dualCalcData?.greaterEarnVol && tokenMap[dualCalcData.greaterEarnTokenSymbol]
         ? getValuePrecisionThousand(
             sdk
-              .toBig(dualCalcData.greaterEarnVol)
+              .toBig(dualCalcData?.greaterEarnVol)
               .div('1e' + tokenMap[dualCalcData.greaterEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
