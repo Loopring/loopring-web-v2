@@ -88,11 +88,8 @@ const AnimationCard = styled(Box)<{ highlighted: boolean }>`
   height: 390px;
   width: ${({ highlighted }) => (highlighted ? '55.08%' : '20.4%')};
   transition: all 0.5s ease;
-  border: 0.5px solid var(--color-border);
+  border: ${({ highlighted }) => (highlighted ? '1px solid var(--color-primary)' : '0.5px solid var(--color-border)')};
   overflow: hidden;
-  :hover{
-    border: 1px solid var(--color-primary);
-  }
   .title {
     margin-bottom: ${({ theme }) => theme.unit * 3}px;
   }
