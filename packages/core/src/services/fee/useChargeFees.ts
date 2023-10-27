@@ -203,10 +203,7 @@ export function useChargeFees({
           let fees: any
           if (isActiveAccount && requestType !== undefined) {
             const response = await LoopringAPI.globalAPI.getActiveFeeInfo({
-              accountId:
-                account._accountIdNotActive && account._accountIdNotActive !== -1
-                  ? account._accountIdNotActive
-                  : undefined,
+              accountId: -1,
             })
 
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {

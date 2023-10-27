@@ -7,6 +7,7 @@ export function lockAccount() {
 }
 
 export function goErrorNetWork() {
+  alert('goErrorNetWork')
   accountServices.sendUpdateAccStatusAndReset(AccountStatus.ERROR_NETWORK)
 }
 

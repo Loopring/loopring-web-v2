@@ -27,6 +27,8 @@ export const makeDualViewItem = (
       : [buySymbol, sellSymbol]
 
   const settleRatio = toBig(profit).times(ratio).toFixed(6, BigNumber.ROUND_DOWN)
+  myLog('settleRatio', ratio)
+  myLog('settleRatio', settleRatio)
 
   const apy = toBig(settleRatio)
     .div((expireTime - Date.now()) / 86400000)
