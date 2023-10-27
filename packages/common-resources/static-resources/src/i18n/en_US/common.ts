@@ -541,7 +541,7 @@ export default {
   labelBuyToken: 'Buy {{token}}',
   labelCurrentlyLevel: 'Currently {{value}} {{token}}',
   labelLRCBalance: 'LRC Balance',
-  labelNoticeForForAccountFrozen: 'Please wait while {{ type }} is updating.',
+  labelNoticeForForAccountFrozen: 'Your wallet’s L2 account is locked. While locked, you can’t perform any L2 operations. If you require further assistance, please send an email to support@loopring.io.',
   labelAction: 'action',
   labelGoExplore: 'View transactions on the <1>Loopring Block Explorer</1>.',
   labelNOETH: 'Need ETH for gas',
