@@ -813,11 +813,10 @@ const MyLiquidity: any = withTranslation('common')(
                                 )
                               }
                               showClock={
-                                dualDetail?.__raw__?.order?.settlementStatus?.dualReinvestInfo
-                                  ?.isRecursive &&
+                                dualDetail?.__raw__?.order?.dualReinvestInfo?.isRecursive &&
                                 dualDetail?.__raw__?.order?.settlementStatus?.toUpperCase() ==
                                   sdk.SETTLEMENT_STATUS.PAID &&
-                                dualDetail?.__raw__?.order?.settlementStatus?.dualReinvestInfo?.retryStatus?.toUpperCase() ===
+                                dualDetail?.__raw__?.order?.dualReinvestInfo?.retryStatus?.toUpperCase() ===
                                   sdk.DUAL_RETRY_STATUS.RETRYING
                               }
                               dualProducts={dualProducts}

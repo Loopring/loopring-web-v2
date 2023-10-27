@@ -22,6 +22,7 @@ import {
   hexToRGB,
   Info2Icon,
   InvestAssetRouter,
+  InvestRouter,
   InvestType,
   MarketType,
   RouterPath,
@@ -102,6 +103,7 @@ const LandDefiInvest = ({
   const {
     confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
   } = confirmation.useConfirmation()
+  const { marketArray } = useDefiMap()
   const investAdviceList = [
     {
       ...defiWSTETHAdvice,
@@ -135,7 +137,7 @@ const LandDefiInvest = ({
         {investAdviceList.map((item, index) => {
           return (
             <React.Fragment key={item.type + index}>
-              {item.enable ? (
+              {item.enable && marketArray.includes(item.market) ? (
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }}
@@ -305,6 +307,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
       setShowWSTETHStakignPopup({ show: false, confirmationNeeded: true })
     }
   }
+
 
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()

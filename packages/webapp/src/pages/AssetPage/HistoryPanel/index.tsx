@@ -143,7 +143,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     vaultOrderData,
     totalNum: vaultTotal,
     showLoading: showVaultLoading,
-  } = useVaultTransaction()
+  } = useVaultTransaction(setToastOpen)
   const {
     getBtradeOrderList,
     btradeOrderData,
