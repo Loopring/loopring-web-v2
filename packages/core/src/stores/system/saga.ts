@@ -27,6 +27,7 @@ import { getStakingMap } from '../invest/StakingMap/reducer'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
+import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
 import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
@@ -345,7 +346,7 @@ const should15MinutesUpdateDataGroup = async (
 }
 
 const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) => {
-  const extendsChain: string[] = (['1', '5', '421613'] ?? []).filter(
+  const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
     (item) => ![1, 5].includes(Number(item)),
   )
   const env =
@@ -355,7 +356,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       ? ENV.UAT
       : ENV.PROD
   const chainId: sdk.ChainId = (
-    ['1', '5', '421613'].includes(_chainId.toString()) ? Number(_chainId) : ChainIdExtends.NONETWORK
+    AvaiableNetwork.includes(_chainId.toString()) ? Number(_chainId) : ChainIdExtends.NONETWORK
   ) as sdk.ChainId
   if (_chainId === ChainIdExtends.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR)

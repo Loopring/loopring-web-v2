@@ -10,6 +10,7 @@ import {
 import { ChainId } from '@loopring-web/loopring-sdk'
 import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
 import {
+  AvaiableNetwork,
   ConnectProviders,
   ConnectProvides,
   connectProvides,
@@ -80,8 +81,8 @@ export function useInit() {
               connectProvides.usedProvide?.connection?.chainId ??
                 (await connectProvides.usedWeb3.eth.getChainId()),
             )
-            // myLog('['1', '5', '421613']', ['1', '5', '421613'])
-            if (!['1', '5', '421613'].includes(chainId.toString())) {
+            myLog('AvaiableNetwork', AvaiableNetwork)
+            if (!AvaiableNetwork.includes(chainId.toString())) {
               chainId =
                 account._chainId && account._chainId !== 'unknown'
                   ? account._chainId

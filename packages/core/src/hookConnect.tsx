@@ -8,6 +8,7 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import {
+  AvaiableNetwork,
   ConnectProviders,
   connectProvides,
   ErrorType,
@@ -39,7 +40,6 @@ import { useTranslation } from 'react-i18next'
 import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
-alert(JSON.stringify(NetworkMap))
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
@@ -271,7 +271,6 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
-    
     return (
       <>
         {defaultNetwork && (
@@ -287,7 +286,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
             autoWidth
             onChange={(event: SelectChangeEvent<any>) => handleOnNetworkSwitch(event.target.value)}
           >
-            {['1','5','421613'].reduce((prew, id, index) => {
+            {AvaiableNetwork.reduce((prew, id, index) => {
               if (NetworkMap[id]) {
                 prew.push(
                   <OutlineSelectItemStyle
@@ -297,7 +296,6 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
                     value={id}
                     key={'viewNetwork' + NetworkMap[id] + index}
                   >
-                    {id}
                     <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
                       <Icon label={MapChainId[id]} />
                       <span className={'label'}>{t(NetworkMap[id].label)}</span>
