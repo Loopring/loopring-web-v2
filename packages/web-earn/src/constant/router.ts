@@ -198,6 +198,22 @@ export const RouterAllowIndex = {
     // RouterMainKey.nft,
     RouterMainKey.invest,
   ],
+  ARBGOERLI: [
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    // RouterMainKey.lite,
+    // RouterMainKey.pro,
+    // RouterMainKey.stoplimit,
+    // RouterMainKey.btrade,
+    // RouterMainKey.fiat,
+    // RouterMainKey.markets,
+    // RouterMainKey.mining,
+    // RouterMainKey.redPacket,
+    // RouterMainKey.l2assets,
+    // RouterMainKey.layer2,
+    // RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
 }
 
 export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] } = {
@@ -213,12 +229,14 @@ export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] }
   ],
   ETHEREUM: headerMenuEartData,
   GOERLI: headerMenuEartData,
+  ARBGOERLI: headerMenuEartData,
 }
 
 export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
   TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
   ETHEREUM: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
   GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
+  ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
 }
 export enum AssetTabIndex {
   Tokens = 'Tokens',
@@ -228,10 +246,12 @@ export const AssetL2TabEarnIndex = {
   TAIKO: [AssetTabIndex.Tokens],
   ETHEREUM: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
   GOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
+  ARBGOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
   Arbitrum: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
 }
 export const RouterAllowEarnIndex = {
   TAIKO: [RouterMainKey.l2assets],
   ETHEREUM: [RouterMainKey.l2assets, RouterMainKey.invest],
   GOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
+  ARBGOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
 }

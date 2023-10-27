@@ -132,7 +132,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                   dualType,
                   // investmentStatus,
                   settlementStatus,
-                  dualReinvestInfo: { retryStatus, isRecursive },
+                  dualReinvestInfo
                 },
               },
             } = row
@@ -140,9 +140,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
 
             const showClock =
-              isRecursive &&
+              dualReinvestInfo?.isRecursive &&
               settlementStatus?.toUpperCase() == sdk.SETTLEMENT_STATUS.PAID &&
-              retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
+              dualReinvestInfo?.retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
             return (
               <Typography
                 component={'span'}
@@ -294,7 +294,8 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
             const investmentStatus = row.__raw__.order.investmentStatus
             const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
             const dualType = row.__raw__.order?.dualType
-            const { isRecursive, newStrike } = row.__raw__.order?.dualReinvestInfo
+            const isRecursive = row.__raw__.order?.dualReinvestInfo?.isRecursive
+            const newStrike = row.__raw__.order?.dualReinvestInfo?.newStrike
             const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice
             const currentView = currentPrice
               ? getValuePrecisionThousand(
@@ -373,15 +374,15 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                   dualType,
                   investmentStatus,
                   settlementStatus,
-                  dualReinvestInfo: { retryStatus, isRecursive },
+                  dualReinvestInfo
                 },
               },
             } = row
             // const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
             const showClock =
-              isRecursive &&
+              dualReinvestInfo?.isRecursive &&
               settlementStatus?.toUpperCase() == sdk.SETTLEMENT_STATUS.PAID &&
-              retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
+              dualReinvestInfo?.retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
             return (
               <Typography
                 component={'span'}
@@ -417,7 +418,8 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignCenter',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const dualType = row.__raw__.order?.dualType
-            const { isRecursive, newStrike } = row.__raw__.order?.dualReinvestInfo
+            const newStrike = row.__raw__.order?.dualReinvestInfo?.newStrike
+            const isRecursive = row.__raw__.order?.dualReinvestInfo?.isRecursive
             const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice ?? {}
             const currentView = currentPrice
               ? getValuePrecisionThousand(

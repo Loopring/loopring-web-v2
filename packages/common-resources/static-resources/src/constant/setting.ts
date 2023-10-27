@@ -118,7 +118,7 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
     return { NetworkMap, ChainTests, MapChainId, ChainIdExtends }
   },
   {
-    MapChainId: { 1: 'ETHEREUM', 5: 'GOERLI' },
+    MapChainId: { 1: 'ETHEREUM', 5: 'GOERLI', 421613: 'ARBGOERLI' },
     NetworkMap: {
       1: {
         label: 'Ethereum',
@@ -132,8 +132,14 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         isTest: true,
         walletType: 'ETHEREUM',
       },
+      421613: {
+        label: 'ARBGOERLI',
+        chainId: '421613',
+        isTest: true,
+        walletType: 'ETHEREUM',
+      },
     },
-    ChainTests: [5],
+    ChainTests: [5, 421613],
     ChainIdExtends: {
       NONETWORK: 'unknown',
     },
