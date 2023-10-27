@@ -15,11 +15,11 @@ import {
   BackIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
-  SatkingLogo,
-  SoursURL,
   TOAST_TIME,
-  UpIcon,
   hexToRGB,
+  RouterPath,
+  InvestRouter,
+  InvestType,
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -104,11 +104,18 @@ export const StackTradePanel = ({
                 size={'medium'}
                 sx={{ color: 'var(--color-text-primary)' }}
                 color={'inherit'}
-                onClick={() => history.push(`/invest/overview`)}
+                onClick={() =>
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
+                }
               >
                 {t('labelBack')}
               </Button>
-              <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+              <Button
+                onClick={() =>
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+                }
+                variant={'text'}
+              >
                 {t('labelMyInvestLRCStaking')}{' '}
                 {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
               </Button>

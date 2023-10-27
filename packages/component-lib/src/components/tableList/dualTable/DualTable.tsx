@@ -27,8 +27,11 @@ const TableWrapperStyled = styled(Box)`
   height: 100%;
   ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table)<{ isMobile: boolean }>`
   &.rdg {
+    --template-columns: ${({ isMobile }: any) =>
+      isMobile ? '20% 44% auto !important' : '18% auto 18% 18% 20% !important'};
+
     height: ${(props: any) => {
       if (props.ispro === 'pro') {
         return '620px'
@@ -310,6 +313,7 @@ export const DualTable = withTranslation(['tables', 'common'])(
     return (
       <TableWrapperStyled>
         <TableStyled
+          isMobile={isMobile}
           currentheight={
             rawData.length > 0
               ? RowDualInvestConfig.rowHeaderHeight + rawData.length * RowDualInvestConfig.rowHeight

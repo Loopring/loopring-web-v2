@@ -20,7 +20,7 @@ export const makeDualViewItem = (
   const { expireTime, strike, ratio, profit, dualType } = info
   // @ts-ignore
   const { precisionForPrice, stepLength } = market
-  myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
+  // myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
       ? [sellSymbol, buySymbol]
@@ -32,23 +32,6 @@ export const makeDualViewItem = (
     .div((expireTime - Date.now()) / 86400000)
     .times(36500) // year APY
   const term = moment().to(new Date(expireTime), true)
-
-  myLog('dual', {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + '%',
-    settleRatio, //targetPrice
-    term,
-    productId: info.productId,
-    expireTime,
-    currentPrice: {
-      base,
-      quote,
-      precisionForPrice,
-      currentPrice: index.index,
-      quoteUnit: index.quote,
-    },
-    sellSymbol,
-    buySymbol,
-  })
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
     settleRatio,
@@ -62,6 +45,7 @@ export const makeDualViewItem = (
       quote,
       precisionForPrice,
       currentPrice: Number(index.index),
+      quoteUnit: quote, //quote index.quote,
     },
     sellSymbol,
     buySymbol,
@@ -115,6 +99,7 @@ export const makeDualOrderedItem = (
       base,
       quote,
       currentPrice: currentPrice ?? {},
+      quoteUnit: quote, //quote index.quote,
     },
     sellSymbol,
     buySymbol,
