@@ -40,7 +40,7 @@ import {
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
-import _ from 'lodash'
+import _, { omitBy } from 'lodash'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
   assetsRawData: R[]
@@ -89,7 +89,7 @@ export const useGetAssets = (): AssetPanelProps & {
     myLog('assetsRawData', 'getAssetsRawData')
     const {
       tokenPrices: { tokenPrices },
-      tokenMap: { tokenMap },
+      tokenMap: { tokenMap: tokenMapRaw },
       amm: {
         ammMap: { ammMap },
       },
@@ -101,7 +101,7 @@ export const useGetAssets = (): AssetPanelProps & {
         }))
       : []
     const { walletMap } = makeWalletLayer2({ needFilterZero: false })
-
+    const tokenMap = omitBy(tokenMapRaw, token => token.isLpToken)
     if (
       tokenMap &&
       !!Object.keys(tokenMap).length &&

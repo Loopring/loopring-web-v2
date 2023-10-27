@@ -49,6 +49,7 @@ export const AssetPage = () => {
           {isMobile && (
             <AssetTitleMobile
               assetBtnStatus={assetBtnStatus}
+              isWebEarn={true}
               {...{...assetTitleProps, ...assetTitleMobileExtendProps}}
             />
           )}

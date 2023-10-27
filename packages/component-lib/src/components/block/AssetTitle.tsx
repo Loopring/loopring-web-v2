@@ -36,6 +36,7 @@ export const AssetTitle = withTranslation('common')(
     hideL2Assets,
     setHideL2Assets,
     assetBtnStatus,
+    isWebEarn
   }: AssetTitleProps & WithTranslation) => {
     const history = useHistory()
     const { defaultNetwork } = useSettings()
@@ -56,10 +57,17 @@ export const AssetTitle = withTranslation('common')(
               paddingRight={3}
               color={'textSecondary'}
             >
-              {t('labelAssetTitle', {
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-              })}
-              {` (UID: ${accountId})`}
+              {isWebEarn ? (
+                t('labelEarnVaultTitle')
+              ) : (
+                <>
+                  {t('labelAssetTitle', {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  })}
+                  {` (UID: ${accountId})`}
+                </>
+              )}
+
               <IconButton
                 size={'small'}
                 // color={'secondary'}
@@ -108,7 +116,7 @@ export const AssetTitle = withTranslation('common')(
             disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowSend()}
           >
-            {t('labelSendAssetBtn')}
+            {isWebEarn ? t('labelWithdrawBtn') : t('labelSendAssetBtn')}
           </Button>
           <Button
             variant={'outlined'}
@@ -117,7 +125,7 @@ export const AssetTitle = withTranslation('common')(
             disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowReceive()}
           >
-            {t('labelAddAssetBtn')}
+            {isWebEarn ? t('labelDeposit') : t('labelAddAssetBtn')}
           </Button>
           <Button
             variant={'outlined'}

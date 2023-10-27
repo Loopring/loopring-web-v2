@@ -141,7 +141,7 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   {
     label: {
       id: 'L2Assets',
-      i18nKey: 'labelAssets',
+      i18nKey: 'labelVault',
     },
     router: { path: '/l2assets' },
     status: HeaderMenuTabStatus.default,

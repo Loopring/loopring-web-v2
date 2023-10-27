@@ -2007,4 +2007,5 @@ export default {
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelEarnVaultTitle: 'Total Vault',
 }

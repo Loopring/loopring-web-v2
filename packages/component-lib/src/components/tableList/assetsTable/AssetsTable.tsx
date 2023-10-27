@@ -23,7 +23,7 @@ import { XOR } from '../../../types/lib'
 import { LockDetailPanel } from './components/modal'
 import _ from 'lodash';
 
-const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
+const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string; isWebEarn?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -31,12 +31,14 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   .rdg {
     flex: 1;
 
-    ${({ isMobile, lan }) =>
-      !isMobile
-        ? `--template-columns: 200px 150px auto auto ${
-            lan === 'en_US' ? '184px' : '184px'
-          } !important;`
-        : `--template-columns: 54% 40% 6% !important;`}
+    ${({ isMobile, lan, isWebEarn }) =>
+      isWebEarn
+        ? isMobile
+          ? `--template-columns: 54% 40% 6% !important;`
+          : `--template-columns: 200px 150px auto auto 220px !important;`
+        : isMobile
+        ? `--template-columns: 54% 40% 6% !important;`
+        : `--template-columns: 200px 150px auto auto 184px !important;`}
     .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -67,7 +69,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
 }
 
 ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element
+` as (props: { isMobile?: boolean; lan: string; isWebEarn?: boolean } & BoxProps) => JSX.Element
 
 
 
@@ -116,6 +118,7 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
       }
   hideAssets?: boolean
   isLeverageETH?: boolean
+  isWebEarn?: boolean
 } & XOR<
   {
     hideInvestToken: boolean
@@ -149,6 +152,7 @@ export const AssetsTable = withTranslation('tables')(
       onTokenLockHold,
       tokenLockDetail,
       searchValue,
+      isWebEarn,
       ...rest
     } = props
     const gridRef = React.useRef(null);
@@ -362,6 +366,7 @@ export const AssetsTable = withTranslation('tables')(
                 onReceive,
                 onSend,
                 isLeverageETH: false,
+                isWebEarn: isWebEarn
               }}
             />
           )
@@ -465,6 +470,7 @@ export const AssetsTable = withTranslation('tables')(
                 onReceive,
                 onSend,
                 isLeverageETH: false,
+                isWebEarn: isWebEarn
               }}
             />
           )
@@ -473,21 +479,7 @@ export const AssetsTable = withTranslation('tables')(
     ]
 
     return (
-      <TableWrap lan={language} isMobile={isMobile}>
-        {showFilter && (
-          <Box >
-            <Filter
-              {...{
-                handleFilterChange,
-                filter,
-                hideInvestToken,
-                hideSmallBalances,
-                setHideLpToken,
-                setHideSmallBalances,
-              }}
-            />
-          </Box>
-        )}
+      <TableWrap lan={language} isMobile={isMobile} isWebEarn={isWebEarn}>
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <>
             <LockDetailPanel tokenLockDetail={tokenLockDetail} />

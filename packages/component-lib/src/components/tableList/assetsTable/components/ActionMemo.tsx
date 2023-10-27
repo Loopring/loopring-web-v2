@@ -33,6 +33,7 @@ export type ActionProps = {
 
   getMarketArrayListCallback: (token: string) => string[]
   isLeverageETH: boolean
+  isWebEarn?: boolean
 }
 const ActionPopContent = React.memo(
   ({
@@ -190,6 +191,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     // onShowTransfer,
     // onShowWithdraw,
     isLeverageETH,
+    isWebEarn
   } = props
   const popoverProps: PopoverWrapProps = {
     type: PopoverType.click,
@@ -210,7 +212,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const coins = LEVERAGE_ETH_CONFIG.coins[network]
   return (
-    <GridStyled container spacing={1} justifyContent={'space-between'} alignItems={'center'}>
+    <GridStyled container spacing={1} justifyContent={isWebEarn ? 'flex-end' : 'space-between'} alignItems={'center'}>
       {isMobile ? (
         <>
           {((!isLp && allowTrade?.order?.enable) || isLp || isDefi || isLeverageETH) && (
@@ -293,7 +295,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     color={'primary'}
                     onClick={() => onReceive(tokenValue)}
                   >
-                    {t('labelReceive')}
+                    {isWebEarn ? t('labelDeposit') : t('labelReceive')}
                   </Button>
                 </Grid>
                 <Grid item>
@@ -303,13 +305,13 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     color={'primary'}
                     onClick={() => onSend(tokenValue, isLp)}
                   >
-                    {t('labelSend')}
+                    {isWebEarn ? t('labelWithdraw') : t('labelSend')}
                   </Button>
                 </Grid>
               </>
             )}
           </Box>
-          {!isLp && !isInvest && allowTrade?.order?.enable && (
+          {!isWebEarn && !isLp && !isInvest && allowTrade?.order?.enable && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>

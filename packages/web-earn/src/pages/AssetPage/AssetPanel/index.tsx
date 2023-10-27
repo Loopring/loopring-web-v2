@@ -26,6 +26,7 @@ import {
 import RewardsPanel from '../RewardsPanel'
 import { AssetL2TabEarnIndex, AssetTabIndex } from '../../../constant/router'
 import { MaxWidthContainer, containerColors } from 'pages/InvestPage'
+import { RowEarnConfig } from 'constant/setting'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -109,6 +110,7 @@ export const AssetPanel = withTranslation('common')(
                 ...rest,
                 ...assetTitleProps,
                 assetBtnStatus,
+                isWebEarn: true
               }}
             />
           </MaxWidthContainer>
@@ -149,7 +151,7 @@ export const AssetPanel = withTranslation('common')(
               },
             }}
           >
-            <Box className='tableWrapper table-divide-short'>
+            <Box className='tableWrapper'>
               <AssetsTable
                 {...{
                   rawData: assetsRawData,
@@ -168,6 +170,8 @@ export const AssetPanel = withTranslation('common')(
                   setHideLpToken,
                   setHideSmallBalances,
                   hideAssets,
+                  isWebEarn: true,
+                  rowConfig: RowEarnConfig,
                   ...rest,
                 }}
               />

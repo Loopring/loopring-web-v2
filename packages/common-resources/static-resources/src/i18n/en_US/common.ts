@@ -2024,4 +2024,5 @@ export default {
   labelContactAddressExisted: 'Address already exists',
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelEarnVaultTitle: 'Total Vault',
 }
