@@ -2056,6 +2056,7 @@ export default {
   labelDualAuto: 'Auto Reinvest',
   labelDualAssetReInvestEnable: 'Enabled',
   labelDualDeliver: 'Settlement Price',
+  labelDualAssetRelnvestDisable: 'Disabled',
   labelUnlockErrorLine1:
     'The failure to unlock your wallet most likely is due to network condition or browser issue, which may be recovered via refreshing the page or reopening it',
   labelUnlockErrorLine2Part1: 'As a last resort, you can ',
