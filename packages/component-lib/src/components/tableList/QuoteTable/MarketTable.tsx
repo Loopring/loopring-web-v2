@@ -23,7 +23,7 @@ import { useSettings } from '../../../stores'
 import { Button, Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
 import { useDispatch } from 'react-redux'
-import { Currency } from '@loopring-web/loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { TagIconList } from '../../block'
 import { QuoteTableChangedCell } from './QuoteTable'
@@ -88,7 +88,7 @@ export interface MarketTableProps<R> {
   currentheight?: number
   showLoading?: boolean
   isPro?: boolean
-  forexMap: ForexMap<Currency>
+  forexMap: ForexMap<sdk.Currency>
 }
 
 export const MarketTable = withTranslation('tables')(
@@ -212,13 +212,13 @@ export const MarketTable = withTranslation('tables')(
             sortable: true,
             headerCellClass: 'textAlignCenter',
             formatter: ({ row }: any) => {
-              const value = row.volume24H
+              const value = row.percentChange24H
               return (
                 <div className='rdg-cell-value textAlignRight'>
                   <QuoteTableChangedCell value={value} upColor={upColor}>
                     {typeof value !== 'undefined'
-                      ? (row.floatTag === FloatTag.increase ? '+' : '') +
-                        getValuePrecisionThousand(row.percentChange24H, 2, 2, 2, true) +
+                      ? (sdk.toBig(value).gt(0) ? '+' : '') +
+                        getValuePrecisionThousand(value, 2, 2, 2, true) +
                         '%'
                       : EmptyValueTag}
                   </QuoteTableChangedCell>
@@ -235,17 +235,19 @@ export const MarketTable = withTranslation('tables')(
             // resizable: true,
             sortable: true,
             formatter: ({ row }: any) => {
-              const value = row.percentChange24H
-              const precision = row.precision || 6
-              const price =
-                value && value !== '0'
-                  ? getValuePrecisionThousand(value, precision, undefined, undefined, true, {
-                      isTrade: true,
-                    })
-                  : EmptyValueTag
               return (
                 <div className='rdg-cell-value textAlignRight'>
-                  <span>{price}</span>
+                  {row.volume24H
+                    ? PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        row.volume24H,
+                        row.precision,
+                        row.precision,
+                        row.precision,
+                        false,
+                        { isAbbreviate: true, abbreviate: 6 },
+                      )
+                    : EmptyValueTag}
                 </div>
               )
             },

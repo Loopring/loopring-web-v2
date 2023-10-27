@@ -16,12 +16,13 @@ import { useTranslation } from 'react-i18next'
 import { CoinIcons } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useSettings } from '../../../stores'
+import { QuoteTableChangedCell } from './QuoteTable'
 
 enum TradingInterval {
-  hr1 = '1hr',
-  d1 = '1d',
-  w1 = '1w',
-  m1 = '1m',
+  hr1 = 'hr1',
+  d1 = 'd1',
+  w1 = 'w1',
+  m1 = 'm1',
 }
 const TimeMarketIntervalData = [
   {
@@ -41,6 +42,12 @@ const TimeMarketIntervalData = [
     i18nKey: 'labelProTime1m',
   },
 ]
+enum TimeMarketIntervalDataIndex {
+  hr1,
+  d1,
+  w1,
+  m1,
+}
 
 export const MarketDetail = ({
   tokenInfo,
@@ -56,22 +63,25 @@ export const MarketDetail = ({
   timeIntervalData: typeof TimeMarketIntervalData
 }) => {
   const { t } = useTranslation()
-  const { coinJson, currency } = useSettings()
+  const { coinJson, currency, upColor } = useSettings()
   // const [data, setData] = React.useState([])
   const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr1)
-  const [trend, settTrend] = React.useState<AmmHistoryItem[] | undefined>([])
-
+  const [trend, setTrend] = React.useState<AmmHistoryItem[] | undefined>([])
+  const makeTenderData = React.useCallback(() => {
+    setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
+  }, [timeInterval, trends])
   const handleTimeIntervalChange = React.useCallback((timeInterval: TradingInterval) => {
-    settTrend([])
     setTimeInterval(timeInterval)
   }, [])
 
-  const a = ''
   React.useEffect(() => {
     if (isShow) {
       handleTimeIntervalChange(TradingInterval.hr1)
     }
-  }, [isShow])
+    if (trends?.length) {
+      makeTenderData()
+    }
+  }, [isShow, trends?.length])
   return (
     tokenInfo?.symbol && (
       <>
@@ -143,29 +153,35 @@ export const MarketDetail = ({
                   )
                 : EmptyValueTag}
             </Typography>
-            <Typography component={'span'} flexDirection={'column'} display={'flex'}>
-              {tokenInfo.percentChange24H + '%'}
-            </Typography>
+            <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
+              {typeof tokenInfo.percentChange24H !== 'undefined'
+                ? (sdk.toBig(tokenInfo.percentChange24H).gt(0) ? '+' : '') +
+                  getValuePrecisionThousand(tokenInfo.percentChange24H, 2, 2, 2, true) +
+                  '%'
+                : EmptyValueTag}
+            </QuoteTableChangedCell>
           </Typography>
         </Box>
-        {!trend?.length ? (
-          <Box
-            flex={1}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            height={'90%'}
-          >
+        <Box
+          width={'100%'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          // height={"60%"}
+          height={'calc(var(--swap-box-height) - 262px)'}
+          maxHeight={420}
+        >
+          {!trend?.length ? (
             <img
               className='loading-gif'
               alt={'loading'}
               width='36'
               src={`${SoursURL}images/loading-line.gif`}
             />
-          </Box>
-        ) : (
-          <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
-        )}
+          ) : (
+            <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
+          )}
+        </Box>
         <Grid container spacing={1} marginRight={1} minWidth={296}>
           {timeIntervalData.map((item) => {
             const { id, i18nKey } = item
@@ -231,9 +247,13 @@ export const MarketDetail = ({
             <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
               {t('label24PriceChange')}
             </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {tokenInfo.percentChange24H + '%'}
-            </Typography>
+            <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
+              {typeof tokenInfo.percentChange24H !== 'undefined'
+                ? (sdk.toBig(tokenInfo.percentChange24H).gt(0) ? '+' : '') +
+                  getValuePrecisionThousand(tokenInfo.percentChange24H, 2, 2, 2, true) +
+                  '%'
+                : EmptyValueTag}
+            </QuoteTableChangedCell>
           </Typography>
 
           <Typography
@@ -245,9 +265,14 @@ export const MarketDetail = ({
             <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
               {t('label7dPriceChange')}
             </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {tokenInfo.percentChange7D + '%'}
-            </Typography>
+
+            <QuoteTableChangedCell value={tokenInfo.percentChange7D} upColor={upColor}>
+              {typeof tokenInfo.percentChange7D !== 'undefined'
+                ? (sdk.toBig(tokenInfo.percentChange7D).gt(0) ? '+' : '') +
+                  getValuePrecisionThousand(tokenInfo.percentChange7D, 2, 2, 2, true) +
+                  '%'
+                : EmptyValueTag}
+            </QuoteTableChangedCell>
           </Typography>
         </Box>
       </>

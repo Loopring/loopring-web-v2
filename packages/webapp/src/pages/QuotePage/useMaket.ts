@@ -1,34 +1,45 @@
-import { RowConfig, RowConfigType, TableFilterParams } from '@loopring-web/common-resources'
+import {
+  RowConfig,
+  RowConfigType,
+  TableFilterParams,
+  TickerNew,
+} from '@loopring-web/common-resources'
 import React, { useCallback } from 'react'
 import {
   favoriteVaultMarket as favoriteMarketReducer,
   LAYOUT,
   LoopringAPI,
+  store,
   TickerMap,
+  TokenMap,
   useAccount,
   useSystem,
 } from '@loopring-web/core'
+import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useMarket = <R>({
+export const useMarket = <R = TickerNew>({
   tableRef,
   rowConfig = RowConfig,
   tickerMap,
   handleRowClick,
   handleItemClick,
+  tokenMap = store.getState().tokenMap.tokenMap,
 }: {
-  tickerMap: TickerMap
+  tickerMap: TickerMap<R>
   tableRef: React.Ref<any>
   rowConfig?: RowConfigType
-  handleRowClick?: (props: R) => void
-  handleItemClick?: (props: R) => void
+  handleRowClick?: (props: sdk.TokenInfo & R) => void
+  handleItemClick?: (props: sdk.TokenInfo & R) => void
+  tokenMap: TokenMap<any>
 }) => {
   const { account } = useAccount()
   // const { marketMap, tokenMap } = useTokenMap()
   const [tableTabValue, setTableTabValue] = React.useState(TableFilterParams.all)
   const [searchValue, setSearchValue] = React.useState<string>('')
-  const [filteredData, setFilteredData] = React.useState<any[]>([])
+  const [filteredData, setFilteredData] = React.useState<(sdk.TokenInfo & R)[]>([])
   const [tableHeight, setTableHeight] = React.useState(0)
   const { favoriteMarket, removeMarket, addMarket } = favoriteMarketReducer.useFavoriteMarket()
+
   // const { tickList } = useQuote()
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
     if (currentTarget && tableRef.current) {
@@ -65,6 +76,9 @@ export const useMarket = <R>({
         return filter
       })
       let data = Object.values(tickerMap)
+      data = data.map((item) => {
+        return { ...tokenMap[item.symbol], ...item }
+      })
       if (type === TableFilterParams.favourite) {
         // myLog("tickList", data);
         data = data.filter((o: any) => {
