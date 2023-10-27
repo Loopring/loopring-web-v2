@@ -61,7 +61,7 @@ export const useVaultMarket = <R = TickerNew>({
       },
     })
     try {
-      const [tokneInfoDetail, quoteTokenTrend] = await Promise.all([
+      const [tokneInfoDetail, quoteTokenTrend, ...quoteTokenTrends] = await Promise.all([
         LoopringAPI?.exchangeAPI?.getTokenInfo({
           token: tokenMap[row?.erc20Symbol ?? '']?.address,
           currency: 'USD',
@@ -70,6 +70,36 @@ export const useVaultMarket = <R = TickerNew>({
           token: tokenMap[row?.erc20Symbol ?? ''].address,
           currency: 'USD',
         }),
+        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          currency: 'USD',
+          //@ts-ignore
+          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ALL,
+        }),
+        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          currency: 'USD',
+          //@ts-ignore
+          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_DAY,
+        }),
+        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          currency: 'USD',
+          //@ts-ignore
+          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_WEEK,
+        }),
+        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          currency: 'USD',
+          //@ts-ignore
+          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_MONTH,
+        }),
+        // LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+        //   token: tokenMap[row?.erc20Symbol ?? ''].address,
+        //   currency: 'USD',
+        //   //@ts-ignore
+        //   range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_YEAR,
+        // }),
       ])
       if (
         (tokneInfoDetail as sdk.RESULT_INFO).code ||
@@ -90,7 +120,7 @@ export const useVaultMarket = <R = TickerNew>({
             ...row,
             // symbol: row.symbol,
           },
-          tenders: quoteTokenTrend?.list?.data,
+          tenders: [...quoteTokenTrends],
         },
       })
     } catch (e) {

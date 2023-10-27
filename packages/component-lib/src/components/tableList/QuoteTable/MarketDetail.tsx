@@ -47,11 +47,13 @@ export const MarketDetail = ({
   trends,
   isShow,
   forexMap,
+  timeIntervalData = TimeMarketIntervalData,
 }: {
   tokenInfo: sdk.TokenInfo
   trends: any
   isShow: boolean
   forexMap: ForexMap
+  timeIntervalData: typeof TimeMarketIntervalData
 }) => {
   const { t } = useTranslation()
   const { coinJson, currency } = useSettings()
@@ -165,7 +167,7 @@ export const MarketDetail = ({
           <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
         )}
         <Grid container spacing={1} marginRight={1} minWidth={296}>
-          {TimeMarketIntervalData.map((item) => {
+          {timeIntervalData.map((item) => {
             const { id, i18nKey } = item
             return (
               <Grid key={id} item>
