@@ -45,6 +45,7 @@ import { AssetPage } from '../pages/AssetPage'
 import { useTranslation } from 'react-i18next'
 import { EarnPage } from '../pages/EarnPage'
 import { RouterAllowIndex, RouterMainKey, RouterPath } from '../constant/router'
+import { Layer2Page } from '../pages/Layer2Page'
 
 // RouterAllowIndex
 const ContentWrap = ({
@@ -287,6 +288,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={RouterPath.dualIntro}>
           <ContentWrap state={state} value={RouterMainKey.dualIntro}>
             <EarnPage />
+          </ContentWrap>
+        </Route>
+        <Route path={[RouterPath.layer2, RouterPath.layer2 + '/*']}>
+          <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
+            <Layer2Page />
           </ContentWrap>
         </Route>
         {/* <Route exact path={RouterPath.mining}>

@@ -117,7 +117,7 @@ export enum RouterPath {
   // mining = '/mining',
   // redPacket = '/redPacket',
   l2assets = '/l2assets',
-  // layer2 = '/layer2',
+  layer2 = '/layer2',
   // nft = '/nft',
   invest = '/invest',
   dualIntro = '/dual-intro',
@@ -127,6 +127,7 @@ export enum RouterMainKey {
   l2assets = 'l2assets',
   dualIntro = 'dualIntro',
   invest = 'invest',
+  layer2 = 'layer2',
 }
 
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
@@ -161,7 +162,7 @@ export const RouterAllowIndex = {
     // RouterMainKey.mining,
     // RouterMainKey.redPacket,
     // RouterMainKey.l2assets,
-    // RouterMainKey.layer2,
+    RouterMainKey.layer2,
     // RouterMainKey.nft,
     RouterMainKey.invest,
   ],
@@ -177,7 +178,7 @@ export const RouterAllowIndex = {
     // RouterMainKey.mining,
     // RouterMainKey.redPacket,
     // RouterMainKey.l2assets,
-    // RouterMainKey.layer2,
+    RouterMainKey.layer2,
     // RouterMainKey.nft,
     RouterMainKey.invest,
   ],
@@ -193,7 +194,7 @@ export const RouterAllowIndex = {
     // RouterMainKey.mining,
     // RouterMainKey.redPacket,
     // RouterMainKey.l2assets,
-    // RouterMainKey.layer2,
+    RouterMainKey.layer2,
     // RouterMainKey.nft,
     RouterMainKey.invest,
   ],
