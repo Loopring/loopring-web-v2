@@ -295,7 +295,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                   deliveryPrice,
                   strike,
                   dualType,
-                  // investmentStatus,
+                  investmentStatus,
                   dualReinvestInfo,
                   timeOrigin: { expireTime },
                 },

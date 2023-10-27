@@ -155,12 +155,23 @@ export const useDualEdit = <
               },
               buyToken: {
                 tokenId: tradeDual.tokenInfoOrigin.tokenOut ?? 0,
-                volume: sdk
-                  .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                  .div('1e' + sellToken.decimals)
-                  .times(request.newStrike)
-                  .times('1e' + buyToken.decimals)
-                  .toString(),
+                ...(tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE
+                  ? {
+                      volume: sdk
+                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                        .div('1e' + sellToken.decimals)
+                        .times(request.newStrike)
+                        .times('1e' + buyToken.decimals)
+                        .toString(),
+                    }
+                  : {
+                      volume: sdk
+                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                        .div('1e' + sellToken.decimals)
+                        .div(request.newStrike)
+                        .times('1e' + buyToken.decimals)
+                        .toString(),
+                    }),
               },
               validUntil: getTimestampDaysLater(DAYS * 12),
               maxFeeBips: 5,
