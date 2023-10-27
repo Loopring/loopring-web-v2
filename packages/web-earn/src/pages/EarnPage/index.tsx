@@ -90,6 +90,9 @@ const AnimationCard = styled(Box)<{ highlighted: boolean }>`
   transition: all 0.5s ease;
   border: 0.5px solid var(--color-border);
   overflow: hidden;
+  :hover{
+    border: 1px solid var(--color-primary);
+  }
   .title {
     margin-bottom: ${({ theme }) => theme.unit * 3}px;
   }
