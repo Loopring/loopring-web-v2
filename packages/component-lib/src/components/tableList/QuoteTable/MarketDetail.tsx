@@ -120,7 +120,12 @@ export const MarketDetail = ({
               </Typography>
             </Typography>
           </Typography>
-          <Typography display={'flex'} flexDirection={'row'}>
+          <Typography
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'space-between'}
+            alignItems={'flex-end'}
+          >
             <Typography component={'span'} display={'inline-flex'}>
               {tokenInfo.price
                 ? PriceTag[CurrencyToTag[currency]] +
@@ -185,7 +190,7 @@ export const MarketDetail = ({
           display={'flex'}
           alignItems={'stretch'}
           width={'100%'}
-          magingTop={2}
+          marginTop={2}
           padding={1}
           sx={{ background: 'var(--color-box-enhance)' }}
         >

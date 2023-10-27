@@ -180,7 +180,7 @@ export const MarketTable = withTranslation('tables')(
             cellClass: 'textAlignRight',
             sortable: true,
             formatter: ({ row }: any) => {
-              const price = Number.isFinite(row.price)
+              const price = row.price
                 ? PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
                     row.price * (forexMap[currency] ?? 0),
