@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { ModalVaultWrap } from './components/ModalWrap'
 
 export const HomeTitle = () => {
+  u
   const { t } = useTranslation()
   return (
     <Typography display={'inline-flex'} alignItems={'center'}>
