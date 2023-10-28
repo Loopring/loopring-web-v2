@@ -8,6 +8,7 @@ import {
   SUBMIT_PANEL_AUTO_CLOSE,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
+import BigNumber from 'bignumber.js'
 
 import {
   DAYS,
@@ -144,7 +145,21 @@ export const useDualEdit = <
             request.newStrike = _tradeData.renewTargetPrice
             const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
-
+            // myLog(
+            //   'value',
+            //   sdk
+            //     .toBig(tradeDual.tokenInfoOrigin.amountIn)
+            //     .div('1e' + sellToken.decimals)
+            //     .toString(),
+            //   sdk
+            //     .toBig(sdk.toBig(tradeDual.tokenInfoOrigin.amountIn).div('1e' + sellToken.decimals))
+            //     .div(request.newStrike)
+            //     .toString(),
+            //   sdk
+            //     .toBig(sdk.toBig(tradeDual.tokenInfoOrigin.amountIn).div('1e' + sellToken.decimals))
+            //     .div(request.newStrike)
+            //     .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+            // )
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
               storageId: storageId.orderId,
@@ -166,11 +181,18 @@ export const useDualEdit = <
                     }
                   : {
                       volume: sdk
-                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                        .div('1e' + sellToken.decimals)
-                        .div(request.newStrike)
+                        .toBig(
+                          sdk
+                            .toBig(
+                              sdk
+                                .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                                .div('1e' + sellToken.decimals),
+                            )
+                            .div(request.newStrike)
+                            .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+                        )
                         .times('1e' + buyToken.decimals)
-                        .toString(),
+                        .toFixed(0, BigNumber.ROUND_FLOOR),
                     }),
               },
               validUntil: getTimestampDaysLater(DAYS * 12),
