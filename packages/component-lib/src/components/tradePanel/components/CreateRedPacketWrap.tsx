@@ -47,6 +47,7 @@ import {
   ScopeQR,
   ScopeTarget,
   isAddress,
+  BiArrow,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import {
@@ -1445,6 +1446,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
     const [showReceipts, setShowReceipts] = React.useState(false)
+    const [enlarged, setEnlarged] = React.useState(false)
 
     return (
       <RedPacketBoxStyle
@@ -1456,131 +1458,191 @@ export const TargetRedpacktSelectStep = withTranslation()(
         paddingX={isMobile ? 2 : 5}
         position={'absolute'}
       >
-        {targetRedPackets?.length > 0 ? (
-          <Box width={'100%'}>
-            <Typography marginTop={5} marginBottom={2}>
-              {targetRedPackets?.length === 0
-                ? t('labelRedpacketExclusiveEmpty')
-                : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
-            </Typography>
-            <Box display={'flex'} flexWrap={'wrap'} maxHeight={'300px'} overflow={'scroll'}>
-              {targetRedPackets &&
-                targetRedPackets
-                  .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
-                  .map((redpacket) => (
-                    <TargetRedpacktOption
-                      onClick={() => {
-                        onClickExclusiveRedpacket({
-                          hash: redpacket.hash,
-                          remainCount: (redpacket.tokenAmount as any).remainTargetCount as number,
-                        })
-                      }}
-                      selected={false}
-                      key={redpacket.hash}
-                    >
-                      <Box
-                        display={'flex'}
-                        marginBottom={1}
-                        justifyContent={'space-between'}
-                        alignItems={'start'}
-                      >
-                        <Box display={'flex'}>
-                          {redpacket.isNft ? (
-                            <NftImageStyle
-                              src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
-                              style={{
-                                width: `${theme.unit * 4}px`,
-                                height: `${theme.unit * 4}px`,
-                                borderRadius: `${theme.unit * 0.5}px`,
-                              }}
-                            />
-                          ) : (
-                            <Box width={theme.unit * 4} height={theme.unit * 4}>
-                              <CoinIcons
-                                size={theme.unit * 4}
-                                type={TokenType.single}
-                                tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
-                              />
-                            </Box>
-                          )}
-                          <Box width={'125px'} marginLeft={1} marginBottom={1}>
-                            <Typography
-                              textOverflow={'ellipsis'}
-                              whiteSpace={'nowrap'}
-                              overflow={'hidden'}
-                            >
-                              {redpacket.isNft
-                                ? redpacket.nftTokenInfo?.metadata?.base.name
-                                : idIndex[redpacket.tokenId]}
-                            </Typography>
-                            <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                              {redpacket.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                                ? t('labelLuckyBlindBox')
-                                : redpacket.type.mode === sdk.LuckyTokenClaimType.RELAY
-                                ? t('labelRelayRedPacket')
-                                : redpacket.type.partition === sdk.LuckyTokenAmountType.RANDOM
-                                ? t('labelLuckyRedPacket')
-                                : t('labelNormalRedPacket')}
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <Typography
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onClickViewDetail(redpacket.hash)
-                          }}
-                          color={'var(--color-primary)'}
-                        >
-                          {t('labelRedPacketExclusiveViewDetails')}
-                        </Typography>
-                      </Box>
-                      <hr
-                        style={{
-                          background: 'var(--color-border)',
-                          border: 'none',
-                          height: '0.5px',
-                        }}
-                      />
-                      <Box
-                        marginTop={1}
-                        marginLeft={5}
-                        display={'flex'}
-                        justifyContent={'space-between'}
-                      >
-                        <Typography color={'var(--color-text-secondary)'}>
-                          {t('labelRedpacketSentMaxLimit')}
-                        </Typography>
-                        <Typography color={'var(--color-text-secondary)'}>
-                          {redpacket.tokenAmount.totalCount -
-                            (redpacket.tokenAmount as any).remainTargetCount}{' '}
-                          / {redpacket.tokenAmount.totalCount}
-                        </Typography>
-                      </Box>
-                    </TargetRedpacktOption>
-                  ))}
-            </Box>
-          </Box>
-        ) : (
+        {!enlarged && (
           <Box
             display={'flex'}
-            justifyContent={'center'}
             alignItems={'center'}
             flexDirection={'column'}
-            width={'100%'}
-            paddingTop={'10%'}
+            marginX={9}
+            marginTop={8}
+            bgcolor={'var(--color-global-bg)'}
+            padding={2.5}
+            border={'1px solid var(--color-border)'}
+            borderRadius={2}
+            height={'276px'}
           >
-            <img
-              height={160}
-              width={160}
-              src={SoursURL + '/images/exclusive_redpacket_empty.png'}
-            />
-            <Typography marginTop={2} variant={'body2'} textAlign={'center'}>
-              {t('labelRedpacketExclusiveListEmpty')}
+            <Typography width={'100%'}>Option 1</Typography>
+            <Typography color={'var(--color-text-secondary)'}>
+              创建一个新钱包需要以下步骤
             </Typography>
+            <Typography color={'var(--color-text-secondary)'} marginTop={2}>
+              1.选择发送的红包类型 2.发送红包的数量/发送时间
+            </Typography>
+            <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
+              3.该红包发送给谁 4.收到红包的人通知样式
+            </Typography>
+            <BtnMain
+              {...{
+                defaultLabel: 'labelRedpacketCreateNew',
+                disabled: () => false,
+                onClick: () => {
+                  onClickCreateNew()
+                },
+              }}
+            />
           </Box>
         )}
+        <Box
+          height={enlarged ? '590px' : '290px'}
+          marginX={9}
+          marginTop={3}
+          bgcolor={'var(--color-global-bg)'}
+          padding={2.5}
+          border={'1px solid var(--color-border)'}
+          borderRadius={2}
+          position={'relative'}
+        >
+          <Typography marginBottom={3} width={'100%'}>
+            Option 2:{' '}
+            {targetRedPackets?.length === 0
+              ? t('labelRedpacketExclusiveEmpty')
+              : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
+          </Typography>
+          {targetRedPackets?.length > 0 ? (
+            <Box width={'100%'}>
+              <Box display={'flex'} flexWrap={'wrap'} maxHeight={enlarged ? '480px' : '190px'} overflow={'scroll'}>
+                {targetRedPackets &&
+                  targetRedPackets
+                    .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
+                    .map((redpacket) => (
+                      <TargetRedpacktOption
+                        onClick={() => {
+                          onClickExclusiveRedpacket({
+                            hash: redpacket.hash,
+                            remainCount: (redpacket.tokenAmount as any).remainTargetCount as number,
+                          })
+                        }}
+                        selected={false}
+                        key={redpacket.hash}
+                      >
+                        <Box
+                          display={'flex'}
+                          marginBottom={1}
+                          justifyContent={'space-between'}
+                          alignItems={'start'}
+                        >
+                          <Box display={'flex'}>
+                            {redpacket.isNft ? (
+                              <NftImageStyle
+                                src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
+                                style={{
+                                  width: `${theme.unit * 4}px`,
+                                  height: `${theme.unit * 4}px`,
+                                  borderRadius: `${theme.unit * 0.5}px`,
+                                }}
+                              />
+                            ) : (
+                              <Box width={theme.unit * 4} height={theme.unit * 4}>
+                                <CoinIcons
+                                  size={theme.unit * 4}
+                                  type={TokenType.single}
+                                  tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
+                                />
+                              </Box>
+                            )}
+                            <Box width={'125px'} marginLeft={1} marginBottom={1}>
+                              <Typography
+                                textOverflow={'ellipsis'}
+                                whiteSpace={'nowrap'}
+                                overflow={'hidden'}
+                              >
+                                {redpacket.isNft
+                                  ? redpacket.nftTokenInfo?.metadata?.base.name
+                                  : idIndex[redpacket.tokenId]}
+                              </Typography>
+                              <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
+                                {redpacket.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                                  ? t('labelLuckyBlindBox')
+                                  : redpacket.type.mode === sdk.LuckyTokenClaimType.RELAY
+                                  ? t('labelRelayRedPacket')
+                                  : redpacket.type.partition === sdk.LuckyTokenAmountType.RANDOM
+                                  ? t('labelLuckyRedPacket')
+                                  : t('labelNormalRedPacket')}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Typography
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onClickViewDetail(redpacket.hash)
+                            }}
+                            color={'var(--color-primary)'}
+                          >
+                            {t('labelRedPacketExclusiveViewDetails')}
+                          </Typography>
+                        </Box>
+                        <hr
+                          style={{
+                            background: 'var(--color-border)',
+                            border: 'none',
+                            height: '0.5px',
+                          }}
+                        />
+                        <Box
+                          marginTop={1}
+                          marginLeft={5}
+                          display={'flex'}
+                          justifyContent={'space-between'}
+                        >
+                          <Typography color={'var(--color-text-secondary)'}>
+                            {t('labelRedpacketSentMaxLimit')}
+                          </Typography>
+                          <Typography color={'var(--color-text-secondary)'}>
+                            {redpacket.tokenAmount.totalCount -
+                              (redpacket.tokenAmount as any).remainTargetCount}{' '}
+                            / {redpacket.tokenAmount.totalCount}
+                          </Typography>
+                        </Box>
+                      </TargetRedpacktOption>
+                    ))}
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              flexDirection={'column'}
+              width={'100%'}
+            >
+              <img
+                height={160}
+                width={160}
+                src={SoursURL + '/images/exclusive_redpacket_empty.png'}
+              />
+              <Typography marginTop={-4} variant={'body2'} textAlign={'center'}>
+                You do not have an existing wallet yet
+              </Typography>
+              <Typography width={'300px'} marginTop={2} variant={'body2'} textAlign={'center'}>
+                If your prepared but unaddressed Red Packets will be displayed here !
+              </Typography>
+            </Box>
+          )}
 
-        <Box width={'100%'} marginTop={10} display={'flex'} justifyContent={'center'}>
+          {targetRedPackets?.length > 0 && (
+            <BiArrow
+              sx={{
+                position: 'absolute',
+                bottom: 10,
+                left: '50%',
+                transform: enlarged ? 'rotate(180deg)' : 'none',
+              }}
+              onClick={() => setEnlarged(!enlarged)}
+            />
+          )}
+        </Box>
+
+        {/* <Box width={'100%'} marginTop={10} display={'flex'} justifyContent={'center'}>
           <Box width={'48%'} marginRight={'4%'}>
             <Button
               variant={'outlined'}
@@ -1609,7 +1671,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
               }}
             />
           </Box>
-        </Box>
+        </Box> */}
         <Modal
           open={popRedPacket ? true : false}
           onClose={() => {

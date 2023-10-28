@@ -1886,7 +1886,7 @@ export default {
   labelRedpacketPopPpDes:
     'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
-  labelRedPacketChooseTarget: 'Create Red Packet',
+  labelRedPacketChooseTarget: 'Select existing red packet or create a new one',
   labelRedPacketRecipientList: 'Recipient List',
   labelRedPacketPublicTooltip:
     'Your Red Packet is public, and everyone can participate in claiming it.',
