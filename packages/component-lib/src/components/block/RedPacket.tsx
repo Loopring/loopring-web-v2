@@ -232,6 +232,43 @@ export const RedPacketSize = {
   },
 }
 
+const qrCode = new QRCodeStyling({
+  type: 'svg',
+  width: 200,
+  height: 200,
+  image: `${SoursURL + 'svg/loopring.svg'}`,
+  dotsOptions: {
+    gradient: {
+      type: 'linear',
+      rotation: 45,
+      colorStops: [
+        {
+          offset: 0,
+          color: '#4169FF', // hardcode for export png
+        },
+        {
+          offset: 1,
+          color: '#000',
+        },
+      ],
+    },
+    type: 'dots',
+  },
+  backgroundOptions: {
+    color: '#ffffff', //colorConfig.bgColor
+  },
+  imageOptions: {
+    crossOrigin: 'anonymous',
+    margin: 4,
+  },
+  cornersSquareOptions: {
+    type: 'extra-rounded',
+  },
+  cornersDotOptions: {
+    type: 'square',
+  },
+})
+
 export const RedPacketQRCode = ({
   type = 'default',
   imageEleUrl,
@@ -240,42 +277,7 @@ export const RedPacketQRCode = ({
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>()
   const ref = React.useRef()
-  const qrCode = new QRCodeStyling({
-    type: 'svg',
-    width: 200,
-    height: 200,
-    image: `${SoursURL + 'svg/loopring.svg'}`,
-    dotsOptions: {
-      gradient: {
-        type: 'linear',
-        rotation: 45,
-        colorStops: [
-          {
-            offset: 0,
-            color: '#4169FF', // hardcode for export png
-          },
-          {
-            offset: 1,
-            color: '#000',
-          },
-        ],
-      },
-      type: 'dots',
-    },
-    backgroundOptions: {
-      color: '#ffffff', //colorConfig.bgColor
-    },
-    imageOptions: {
-      crossOrigin: 'anonymous',
-      margin: 4,
-    },
-    cornersSquareOptions: {
-      type: 'extra-rounded',
-    },
-    cornersDotOptions: {
-      type: 'square',
-    },
-  })
+  
   const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined)
 
   const updateSvg = React.useCallback(async () => {

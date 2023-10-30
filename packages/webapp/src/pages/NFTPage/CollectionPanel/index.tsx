@@ -107,8 +107,6 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               <Button
                 onClick={() => {
                   history.push(`${RouterPath.nft}/${NFTSubRouter.addCollection}`)
-                  // setStep(CreateCollectionStep.ChooseMethod);
-                  // setCreateOpen(true);
                 }}
                 startIcon={<AddIcon />}
                 variant={'contained'}
