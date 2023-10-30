@@ -235,7 +235,14 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
         },
       })
     } else if ([RedPacketRecordsTabIndex.BlindBoxReceived, RedPacketRecordsTabIndex.BlindBoxUnClaimed].includes(currentTab)) {
-      getRedPacketReceiveList_BlindBox({ pageBlindBox })
+      getRedPacketReceiveList_BlindBox({ 
+        offset: (pageReceive - 1) * (pageSize ?? 12),
+        limit: pageSize ?? 12,
+        filter: {
+          statuses: showActionableRecords ? [0] : undefined,
+          isNft: true,
+        },
+      })
     }
   }, [currentTab])
 
