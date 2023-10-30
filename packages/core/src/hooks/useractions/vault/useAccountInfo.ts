@@ -54,7 +54,7 @@ export const useAccountInfo = () => {
       switch (vaultAccountInfo?.accountStatus) {
         // @ts-ignore
         case sdk.VaultAccountStatus.IN_REDEEM: //sdk.VaultAccountStatus.IN_REDEEM:
-          return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultPendingBtn|` }
+          return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultREDEEMPendingBtn|` }
         // @ts-ignore
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
           return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultAddBtn|` }
