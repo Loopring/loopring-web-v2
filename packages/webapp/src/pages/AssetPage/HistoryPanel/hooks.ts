@@ -1270,6 +1270,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               ({ operation, order }: { operation: sdk.VaultOperation; order: sdk.VaultOrder }) => {
                 const {
                   operateSubType,
+                  operateType,
                   status,
                   amountIn: amountS,
                   tokenIn: tokenS,
@@ -1297,7 +1298,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   fillAmountBStr,
                   feeStr,
                   feeToken
-                switch (operateSubType) {
+                switch (operateType) {
                   case sdk.VaultOperationType.VAULT_OPEN_POSITION:
                   case sdk.VaultOperationType.VAULT_MARGIN_CALL:
                     type =

@@ -541,7 +541,8 @@ export default {
   labelBuyToken: 'Buy {{token}}',
   labelCurrentlyLevel: 'Currently {{value}} {{token}}',
   labelLRCBalance: 'LRC Balance',
-  labelNoticeForForAccountFrozen: 'Your wallet’s L2 account is locked. While locked, you can’t perform any L2 operations. If you require further assistance, please send an email to support@loopring.io.',
+  labelNoticeForForAccountFrozen:
+    'Your wallet’s L2 account is locked. While locked, you can’t perform any L2 operations. If you require further assistance, please send an email to support@loopring.io.',
   labelAction: 'action',
   labelGoExplore: 'View transactions on the <1>Loopring Block Explorer</1>.',
   labelNOETH: 'Need ETH for gas',
@@ -2200,4 +2201,6 @@ export default {
   labelStats: 'Stats',
   label24PriceChange: '24h Price Change',
   label7dPriceChange: '7d Price Change',
+  labelVaultREDEEMPendingBtn: 'Closeout in Processing',
+  labelVaultlnredeemWaiting: 'Closeout in Processing',
 }
