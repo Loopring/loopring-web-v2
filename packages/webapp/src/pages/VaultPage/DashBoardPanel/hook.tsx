@@ -53,7 +53,7 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   setShowNoVaultAccount: (props: { isShow: boolean; whichBtn: VaultAction | undefined }) => void
   [key: string]: any
 } => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation(['common'])
 
   const {
     vaultAccountInfoStatus,
@@ -215,8 +215,8 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
                 width='60'
                 src={`${SoursURL}images/loading-line.gif`}
               />
-              <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                {t('labelVaultInredeemWaiting', {
+              <Typography marginY={3} variant={'body1'} textAlign={'center'}>
+                {t('labelVaultInRedeemWaiting', {
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>

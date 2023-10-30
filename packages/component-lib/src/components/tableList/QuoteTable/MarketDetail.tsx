@@ -182,7 +182,7 @@ export const MarketDetail = ({
             <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
           )}
         </Box>
-        <Grid container spacing={1} marginRight={1} minWidth={296}>
+        <Grid container spacing={1} marginRight={1} minWidth={296} justifyContent={'center'}>
           {timeIntervalData.map((item) => {
             const { id, i18nKey } = item
             return (
