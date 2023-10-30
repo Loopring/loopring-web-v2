@@ -104,17 +104,6 @@ const LandDefiInvest = ({
     confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
   } = confirmation.useConfirmation()
   const { marketArray } = useDefiMap()
-
-  // const _market: MarketType = [...(marketArray ? marketArray : [])].find((_item) => {
-  //   if (match?.params?.market) {
-  //     //@ts-ignore
-  //     const [, , base] = _item.match(/(defi-)?(\w+)(-\w+)?/i)
-  //     //@ts-ignore
-  //     const [_base] = match?.params?.market?.split('-')
-  //     return base.toUpperCase() == _base.toUpperCase()
-  //   }
-  // }) as MarketType
-
   const investAdviceList = [
     {
       ...defiWSTETHAdvice,
