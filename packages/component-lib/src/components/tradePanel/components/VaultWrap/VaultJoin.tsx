@@ -70,7 +70,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             },
       )
     } else {
-      return t(isActiveAccount ? `labelVaultAddBtn` : `labelVaultJoinBtn`, {
+      return t(isActiveAccount ? `labelVaultJoinBtn` : `labelVaultAddBtn`, {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -78,7 +78,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       })
     }
-  }, [btnI18nKey])
+  }, [btnI18nKey, isActiveAccount])
 
   return (
     <Grid
