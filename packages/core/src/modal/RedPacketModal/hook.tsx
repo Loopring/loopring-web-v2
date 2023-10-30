@@ -1217,7 +1217,7 @@ export function useRedPacketModal() {
                   tokenInfo!.precision,
                   false,
                 ),
-              symbol: tokenInfo!.symbol,
+              symbol: tokenInfo?.symbol,
               isNFT: false,
             },
         handlePageChange: (page: number = 1) => {
