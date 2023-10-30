@@ -145,21 +145,7 @@ export const useDualEdit = <
             request.newStrike = _tradeData.renewTargetPrice
             const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
-            // myLog(
-            //   'value',
-            //   sdk
-            //     .toBig(tradeDual.tokenInfoOrigin.amountIn)
-            //     .div('1e' + sellToken.decimals)
-            //     .toString(),
-            //   sdk
-            //     .toBig(sdk.toBig(tradeDual.tokenInfoOrigin.amountIn).div('1e' + sellToken.decimals))
-            //     .div(request.newStrike)
-            //     .toString(),
-            //   sdk
-            //     .toBig(sdk.toBig(tradeDual.tokenInfoOrigin.amountIn).div('1e' + sellToken.decimals))
-            //     .div(request.newStrike)
-            //     .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
-            // )
+
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
               storageId: storageId.orderId,
@@ -173,9 +159,13 @@ export const useDualEdit = <
                 ...(tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE
                   ? {
                       volume: sdk
-                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                        .div('1e' + sellToken.decimals)
-                        .times(request.newStrike)
+                        .toBig(
+                          sdk
+                            .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                            .div('1e' + sellToken.decimals)
+                            .times(request.newStrike)
+                            .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+                        )
                         .times('1e' + buyToken.decimals)
                         .toString(),
                     }
