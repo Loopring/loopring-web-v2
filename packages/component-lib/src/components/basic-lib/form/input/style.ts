@@ -245,7 +245,6 @@ export const IWrap = styled(Box)<
     .label-wrap {
       //margin-left: 40%;
       //width: 60%;
-
       .MuiGrid-item {
         flex-basis: inherit;
         width: inherit;
