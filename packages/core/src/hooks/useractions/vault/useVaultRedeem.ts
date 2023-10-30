@@ -1,11 +1,14 @@
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import {
+  CustomErrorWithCode,
   EmptyValueTag,
   getValuePrecisionThousand,
   SagaStatus,
+  SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
   TradeBtnStatus,
+  UIERROR_CODE,
 } from '@loopring-web/common-resources'
 import React from 'react'
 import {
@@ -150,11 +153,20 @@ export const useVaultRedeem = () => {
         throw new Error('api not ready')
       }
     } catch (e) {
-      //TODO error
+      const code =
+        (e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+          ? UIERROR_CODE.ERROR_ORDER_FAILED
+          : (e as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN
+      const error = new CustomErrorWithCode({
+        code,
+        message: (e as sdk.RESULT_INFO)?.message,
+        ...SDK_ERROR_MAP_TO_UI[code],
+      })
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultRedeem_Failed,
         info,
+        error,
       })
     }
     setIsLoading(false)

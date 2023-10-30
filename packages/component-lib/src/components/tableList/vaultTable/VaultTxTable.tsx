@@ -95,7 +95,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
               >
                 <Tooltip title={t(`labelVault${row.type}Des`).toString()}>
-                  <Typography component={'span'} display={'flex'}>
+                  <Typography component={'span'} display={'flex'} alignItems={'center'}>
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                     {t(`labelVault${row.type}`)}
                   </Typography>
@@ -110,9 +110,8 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
-                {row.mainContentRender + row.feeStr
-                  ? `fee: ${row.feeStr} ${row.feeTokenSymbol}`
-                  : ''}
+                {row.mainContentRender +
+                  (row.feeStr ? `fee: ${row.feeStr} ${row.feeTokenSymbol}` : '')}
               </>
             )
           },

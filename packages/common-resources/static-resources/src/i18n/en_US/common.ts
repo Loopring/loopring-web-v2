@@ -2180,7 +2180,7 @@ export default {
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelVaultTradeFailed: 'Vault Trade Failed',
   labelVaultAccountWait: 'Vault account in loading...',
-  labelVaultInRedeemWaiting: 'Vault account is in process of settlement...',
+  labelVaultInRedeemWaiting: 'Vault account is in process of closeout...',
   labelVaultJoinSymbolNotSame: 'Only {{symbol}} allow Margin Call',
   labelVaultJoinInProgress: 'Processing...',
   labelVaultJoinSuccess: 'Open Position Successfully',

@@ -299,16 +299,15 @@ export const useVaultRepay = <
       }
       setIsLoading(false)
     } catch (e) {
-      let error
-      if ((e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
-        error = sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-      } else {
-        error = new CustomErrorWithCode({
-          code: (e as sdk.RESULT_INFO).code,
-          message: (e as sdk.RESULT_INFO).message,
-          ...SDK_ERROR_MAP_TO_UI[(e as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN],
-        })
-      }
+      const code =
+        (e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+          ? UIERROR_CODE.ERROR_ORDER_FAILED
+          : (e as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN
+      const error = new CustomErrorWithCode({
+        code,
+        message: (e as sdk.RESULT_INFO)?.message,
+        ...SDK_ERROR_MAP_TO_UI[code],
+      })
       setIsLoading(false)
       setShowAccount({
         isShow: true,
