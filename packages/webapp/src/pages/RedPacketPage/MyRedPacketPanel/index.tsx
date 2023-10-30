@@ -7,7 +7,7 @@ import {
   useSettings,
   RedPacketBlindBoxReceiveTable,
 } from '@loopring-web/component-lib'
-import { redpacketService, StylePaper, useSystem } from '@loopring-web/core'
+import { ClaimCommands, claimServices, redpacketService, StylePaper, useSystem } from '@loopring-web/core'
 import React from 'react'
 import {
   useMyRedPacketBlindBoxReceiveTransaction,
@@ -212,14 +212,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
   const [pageBlindBox, setBlindBoxPage] = React.useState(1)
 
   const onRefresh = React.useCallback(async () => {
-    if (
-      currentTab === TabIndex.NFTReceived ||
-      currentTab === TabIndex.NFTSend ||
-      currentTab ===
-        TabIndex.NFTsUnClaimed[
-          (TabIndex.NFTsUnClaimed, TabIndex.NFTReceived, TabIndex.NFTSend)
-        ].includes(currentTab)
-    ) {
+    if ([TabIndex.NFTsUnClaimed, TabIndex.NFTReceived, TabIndex.NFTSend].includes(currentTab)) {
       await getRedPacketReceiveList({
         offset: (pageReceive - 1) * (pageSize ?? 12),
         limit: pageSize ?? 12,
@@ -228,27 +221,27 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
           isNft: true,
         },
       })
-      // updateData({
-      //   page,
-      //   filter: { isNft: tokenType === TokenType.nft },
-      // })
     } else if ([TabIndex.BlindBoxReceived, TabIndex.BlindBoxUnClaimed].includes(currentTab)) {
+      getRedPacketReceiveList_BlindBox({ pageBlindBox })
     }
-    getRedPacketReceiveList_BlindBox({ pageBlindBox })
   }, [currentTab])
 
-  // const onRefresh = React.useCallback(() => {
-  //
-  // }, [page, tokenType])
-  // const subject = React.useMemo(() => redpacketService.onRefresh(), [])
-  // React.useEffect(() => {
-  //   const subscription = subject.subscribe(() => {
-  //     onRefresh()
-  //   })
-  //   return () => {
-  //     subscription.unsubscribe()
-  //   }
-  // }, [])
+  const claimeSubject = React.useMemo(() => claimServices.onSocket(), [])
+  React.useEffect(() => {
+    const subscription = claimeSubject.subscribe((props) => {
+      switch (props.status) {
+        case ClaimCommands.Success: {
+          onRefresh()
+          break
+        }
+        default:
+          break
+      }
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [claimeSubject])
 
   const subject = React.useMemo(() => redpacketService.onRefresh(), [])
   React.useEffect(() => {
