@@ -308,7 +308,9 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }
 
-
+  const match: any = useRouteMatch(
+    `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`,
+  )
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()

@@ -173,9 +173,13 @@ export const useDualEdit = <
                 ...(tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE
                   ? {
                       volume: sdk
-                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                        .div('1e' + sellToken.decimals)
-                        .times(request.newStrike)
+                        .toBig(
+                          sdk
+                            .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                            .div('1e' + sellToken.decimals)
+                            .times(request.newStrike)
+                            .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+                        )
                         .times('1e' + buyToken.decimals)
                         .toString(),
                     }
