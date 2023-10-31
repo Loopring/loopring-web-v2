@@ -18,6 +18,7 @@ import {
 import {
   Button,
   setShowWrongNetworkGuide,
+  useOpenModals,
   useSettings,
   VaultAssetsTableProps,
 } from '@loopring-web/component-lib'
@@ -71,12 +72,13 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   const { status: accountStatus, account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
-  // const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
-  const [noVaultAccount, setShowNoVaultAccount] = React.useState<{
-    isShow: boolean
-    whichBtn: VaultAction | undefined
-  }>({ isShow: true, whichBtn: undefined })
-  const { isShow: showNoVaultAccount, whichBtn } = noVaultAccount
+
+  const {
+    setShowNoVaultAccount,
+    modals: {
+      isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn },
+    },
+  } = useOpenModals()
 
   const { isMobile, currency, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -414,19 +416,19 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
   React.useEffect(() => {
     if (
-      noVaultAccount?.isShow === true &&
+      showNoVaultAccount === true &&
       vaultAccountInfoStatus === SagaStatus.UNSET &&
       vaultAccountInfo?.accountStatus &&
       tokenPriceStatus === SagaStatus.UNSET &&
       walletL2Status === SagaStatus.UNSET &&
-      noVaultAccount.whichBtn &&
+      whichBtn &&
       vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
     ) {
-      onActionBtnClick(noVaultAccount.whichBtn)
+      onActionBtnClick(whichBtn)
     }
     // enableBtn()
   }, [
-    noVaultAccount,
+    whichBtn,
     walletL2Status,
     vaultAccountInfo?.accountStatus,
     activeInfo,
@@ -441,9 +443,16 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
       walletLayer2Callback()
     }
   }, [vaultAccountInfoStatus])
-
-  // useWalletLayer2Socket({ walletLayer2Callback })
-
+  const onRowClick = React.useCallback(
+    ({ row }: { row: R }) => {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(accountStatus as any) || activeInfo?.hash) {
+        onSwapPop({ symbol: row.token.value })
+      } else {
+        setShowNoVaultAccount({ isShow: true, whichBtn: VaultAction.VaultJoin })
+      }
+    },
+    [accountStatus],
+  )
   myLog('assetsRawData', assetsRawData)
   return {
     forexMap,
@@ -456,9 +465,24 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
     totalAsset,
     showNoVaultAccount,
     whichBtn,
-    noVaultAccount,
     setShowNoVaultAccount,
     onActionBtnClick,
     dialogBtn,
+    showNoVaultAccount,
+    actionRow: ({ row }) => {
+      return (
+        <Button
+          onClick={() => {
+            onRowClick({ row })
+          }}
+        >
+          {' '}
+          {t('labelTrade')}
+        </Button>
+      )
+    },
+    onRowClick: (_, row) => {
+      onRowClick({ row })
+    },
   }
 }

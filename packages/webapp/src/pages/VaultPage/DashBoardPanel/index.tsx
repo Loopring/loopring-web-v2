@@ -48,8 +48,8 @@ export const VaultDashBoardPanel = ({
   const priceTag = PriceTag[CurrencyToTag[currency]]
   const {
     onActionBtnClick,
-    noVaultAccount,
     dialogBtn,
+    showNoVaultAccount,
     setShowNoVaultAccount,
     whichBtn,
     ...assetPanelProps
@@ -147,7 +147,7 @@ export const VaultDashBoardPanel = ({
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Modal
-        open={noVaultAccount?.isShow}
+        open={showNoVaultAccount}
         onClose={() => setShowNoVaultAccount({ isShow: false, whichBtn: undefined })}
       >
         <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>

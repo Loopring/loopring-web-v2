@@ -8,6 +8,7 @@ import {
   TradeNFT,
   AmmPanelType,
   VaultLoadType,
+  VaultAction,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { ToastType } from '@loopring-web/component-lib'
@@ -58,6 +59,7 @@ const initialState: ModalState = {
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
   istShowVaultLoad: { isShow: false, type: VaultLoadType.Borrow, symbol: undefined },
+  isShowNoVaultAccount: { isShow: false },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -393,6 +395,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     ) {
       state.istShowVaultLoad = { ...action.payload }
     },
+    setShowNoVaultAccount(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & { whichBtn: VaultAction | undefined }>,
+    ) {
+      state.isShowNoVaultAccount = { ...action.payload }
+    },
   },
 })
 export const {
@@ -431,4 +439,5 @@ export const {
   setShowVaultJoin,
   setShowVaultSwap,
   setShowVaultLoad,
+  setShowNoVaultAccount,
 } = modalsSlice.actions
