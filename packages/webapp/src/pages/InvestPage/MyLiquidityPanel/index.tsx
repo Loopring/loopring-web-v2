@@ -51,7 +51,6 @@ import {
   DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
 import {
   TableWrapStyled,

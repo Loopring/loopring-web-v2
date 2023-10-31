@@ -31,11 +31,13 @@ import {
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
+  RouterPath,
   SagaStatus,
   SoursURL,
   TokenType,
   TradeBtnStatus,
   VaultAction,
+  VaultKey,
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -43,6 +45,10 @@ import _ from 'lodash'
 import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
+import { useRouteMatch } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+
+const VaultPath = `${RouterPath.vault}/:item`
 
 export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   vaultAccountInfo: _vaultAccountInfo,
@@ -54,6 +60,8 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   setShowNoVaultAccount: (props: { isShow: boolean; whichBtn: VaultAction | undefined }) => void
   [key: string]: any
 } => {
+  let match: any = useRouteMatch(VaultPath)
+  const history = useHistory()
   const { t } = useTranslation(['common'])
 
   const {
@@ -76,13 +84,19 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   const {
     setShowNoVaultAccount,
     modals: {
-      isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn },
+      isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
     },
   } = useOpenModals()
 
-  const { isMobile, currency, defaultNetwork } = useSettings()
+  const {
+    isMobile,
+    currency,
+    defaultNetwork,
+    hideL2Assets,
+    hideSmallBalances,
+    setHideSmallBalances,
+  } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-
   const btnClickCallbackArray = {
     [fnType.ERROR_NETWORK]: [
       function () {
@@ -136,7 +150,7 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
             case VaultAction.VaultExit:
               onRedeemPop({ isShow: true })
               break
-            case VaultAction.VaultLoad:
+            case VaultAction.VaultLoan:
               // debugger
               onBorrowPop({ isShow: true })
               break
@@ -154,6 +168,32 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   const onActionBtnClick = (props: string) => {
     accountStaticCallBack(btnClickCallbackArray, [props])
   }
+  React.useEffect(() => {
+    if (match.params.item == VaultKey.VAULT_DASHBOARD) {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
+        setShowNoVaultAccount({
+          isShow: false,
+          des: '',
+          title: '',
+        })
+      } else if (
+        [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
+      ) {
+        setShowNoVaultAccount({
+          isShow: true,
+          des: 'labelRedeemDesMessage',
+          title: 'labelRedeemTitle',
+        })
+      } else {
+        setShowNoVaultAccount({
+          isShow: true,
+          whichBtn: VaultAction.VaultJoin,
+          des: 'labelJoinDesMessage',
+          title: 'labelJoinTitle',
+        })
+      }
+    }
+  }, [vaultAccountInfo?.accountStatus, match.params.item])
   const dialogBtn = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
@@ -217,11 +257,11 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
                 width='60'
                 src={`${SoursURL}images/loading-line.gif`}
               />
-              <Typography marginY={3} variant={'body1'} textAlign={'center'}>
-                {t('labelVaultInRedeemWaiting', {
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                })}
-              </Typography>
+              {/*<Typography marginY={3} variant={'body1'} textAlign={'center'}>*/}
+              {/*  {t('labelVaultInRedeemWaiting', {*/}
+              {/*    l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,*/}
+              {/*  })}*/}
+              {/*</Typography>*/}
             </Box>
           )
         } else if (
@@ -309,7 +349,6 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
     joinBtnStatus,
     joinBtnLabel,
   ])
-  const { hideL2Assets, hideSmallBalances, setHideSmallBalances } = useSettings()
   const { status: walletL2Status } = useWalletLayer2()
   const getAssetsRawData = () => {
     // debugger
@@ -455,6 +494,14 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   )
   myLog('assetsRawData', assetsRawData)
   return {
+    btnProps,
+    onBtnClose: () => {
+      setShowNoVaultAccount({ isShow: false, whichBtn: undefined })
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+      } else if (match.params.item == VaultKey.VAULT_DASHBOARD) {
+        history.push(`${RouterPath.vault}/${VaultKey.VAULT_HOME}`)
+      }
+    },
     forexMap,
     rawData: assetsRawData as R[],
     hideAssets: hideL2Assets,
@@ -476,7 +523,6 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
             onRowClick({ row })
           }}
         >
-          {' '}
           {t('labelTrade')}
         </Button>
       )

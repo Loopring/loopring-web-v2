@@ -142,7 +142,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     getVaultOrderList,
     vaultOrderData,
     totalNum: vaultTotal,
-    showLoading: showVaultLoading,
+    showLoading: showVaultLoaning,
   } = useVaultTransaction(setToastOpen)
   const {
     getBtradeOrderList,
@@ -466,7 +466,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
               <VaultTxTable
                 {...{
-                  showloading: showVaultLoading,
+                  showloading: showVaultLoaning,
                   getOrderList: getVaultOrderList,
                   rawData: vaultOrderData,
                 }}
