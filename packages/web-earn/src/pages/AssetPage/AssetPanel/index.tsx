@@ -141,13 +141,15 @@ export const AssetPanel = withTranslation('common')(
           <MaxWidthContainer
             containerProps={{
               sx: {
-                background: containerColors[1],
-                paddingTop: 2,
-                display: 'flex',
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
+                '&': {
+                  background: containerColors[1],
+                  paddingTop: 2,
+                  display: 'flex',
+                  flex: 1,
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }
               },
             }}
           >
