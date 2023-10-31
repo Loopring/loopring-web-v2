@@ -7,16 +7,18 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  VaultLoadType,
+  VaultAction,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { ToastType } from '../../../components'
+import { ToastType } from '@loopring-web/component-lib'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
     isShow: false,
     info: {
       content: '',
-      type: ToastType.info,
+      type: 'info',
     },
   },
   isShowNFTMetaNotReady: { isShow: false },
@@ -53,6 +55,11 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
+  isShowVaultExit: { isShow: false },
+  isShowVaultJoin: { isShow: false },
+  isShowVaultSwap: { isShow: false },
+  istShowVaultLoad: { isShow: false, type: VaultLoadType.Borrow, symbol: undefined },
+  isShowNoVaultAccount: { isShow: false },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -373,6 +380,27 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
+    setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+      state.isShowVaultExit = { ...action.payload }
+    },
+    setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+      state.isShowVaultJoin = { ...action.payload }
+    },
+    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+      state.isShowVaultSwap = { ...action.payload }
+    },
+    setShowVaultLoad(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Transaction & { type: string }>,
+    ) {
+      state.istShowVaultLoad = { ...action.payload }
+    },
+    setShowNoVaultAccount(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & { whichBtn: VaultAction | undefined }>,
+    ) {
+      state.isShowNoVaultAccount = { ...action.payload }
+    },
   },
 })
 export const {
@@ -407,4 +435,9 @@ export const {
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
+  setShowVaultExit,
+  setShowVaultJoin,
+  setShowVaultSwap,
+  setShowVaultLoad,
+  setShowNoVaultAccount,
 } = modalsSlice.actions

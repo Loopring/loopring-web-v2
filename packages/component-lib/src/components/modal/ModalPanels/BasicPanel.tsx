@@ -518,6 +518,40 @@ export const DualBase = (props: PanelProps & { showTitle: boolean }) => {
   return <BasicPanel title={showTitle ? 'labelDualTitle' : undefined} {...props} />
 }
 
+export const VaultJoinBase = (
+  props: PanelProps & {
+    title: string
+  },
+) => {
+  // const { showTitle, title } = props
+  return <BasicPanel title={'labelValueJoinTitle'} {...props} />
+}
+
+export const VaultExitBase = (props: PanelProps & { showTitle: boolean }) => {
+  const { showTitle } = props
+  return <BasicPanel title={showTitle ? 'labelVaultExitTitle' : undefined} {...props} />
+}
+
+export const VaultBorrowBase = (
+  props: PanelProps & {
+    showTitle: boolean
+  },
+) => {
+  const { showTitle } = props
+  return <BasicPanel title={showTitle ? 'labelVaultBorrowTitle' : undefined} {...props} />
+}
+export const VaultRepayBase = (
+  props: PanelProps & {
+    showTitle: boolean
+  },
+) => {
+  const { showTitle } = props
+  return <BasicPanel title={showTitle ? 'labelVaultRepayTitle' : undefined} {...props} />
+}
+export const VaultTradeBase = (props: PanelProps & { showTitle: boolean }) => {
+  const { showTitle } = props
+  return <BasicPanel title={showTitle ? 'labelVaultTradeTitle' : undefined} {...props} />
+}
 export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
     title: 'labelSendRedPacketTitle',

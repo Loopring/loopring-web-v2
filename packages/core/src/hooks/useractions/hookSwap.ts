@@ -44,6 +44,7 @@ import {
   IBData,
   MarketType,
   myLog,
+  RouterPath,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   SwapTradeCalcData,
@@ -241,7 +242,7 @@ export const useSwap = <
         }
       })
       setTradeData({ ...tradeDataTmp })
-      history.push('/trade/lite/' + _market)
+      history.push(`${RouterPath.lite}/${_market}`)
       updatePageTradeLite({ market, tradePair })
       myLog('hookSwap: Market change getAmount', market)
     }

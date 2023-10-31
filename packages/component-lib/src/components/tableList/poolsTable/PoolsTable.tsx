@@ -1,7 +1,6 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
-import { bindHover } from 'material-ui-popup-state/es'
+import { bindPopper, bindHover } from 'material-ui-popup-state'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import {
@@ -40,6 +39,7 @@ import { ActionPopContent } from '../myPoolTable/components/ActionPop'
 import { CoinIcons } from '../assetsTable'
 import _ from 'lodash'
 import { useHistory, useLocation } from 'react-router-dom'
+import { usePopupState } from 'material-ui-popup-state/hooks'
 
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
@@ -147,6 +147,13 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
       },
       [rawData],
     )
+
+    const getPopoverState = React.useCallback((label: string) => {
+      return usePopupState({
+        variant: 'popover',
+        popupId: `popup-poolsTable-${label}`,
+      })
+    }, [])
     const columnMode = (): Column<T, any>[] => [
       {
         key: 'pools',
@@ -217,10 +224,7 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
         name: t('labelLiquidity'),
         formatter: ({ row, rowIdx }) => {
           const { coinA, coinB, totalAStr, totalBStr, amountU } = row
-          const popoverState = usePopupState({
-            variant: 'popover',
-            popupId: `popup-poolsTable-${rowIdx.toString()}`,
-          })
+          const popoverState = getPopoverState(rowIdx.toString())
           return (
             <Box className={'textAlignRight'}>
               <Typography
@@ -304,11 +308,7 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
         headerCellClass: 'textAlignRight',
         formatter: ({ row, rowIdx }) => {
           const APR = typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag
-          const popoverState = usePopupState({
-            variant: 'popover',
-            popupId: `popup-poolsTable-${rowIdx.toString()}`,
-          })
-
+          const popoverState = getPopoverState(rowIdx.toString())
           return (
             <Box className={'textAlignRight'}>
               <Typography
@@ -574,7 +574,9 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
     return (
       <TableStyled flex={1} flexDirection={'column'} display={'flex'} isMobile={isMobile}>
         <Box marginY={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-          <Typography variant={isMobile ? 'h3' : 'h1'}>{t("labelTitleOverviewAllPrd", { ns: 'common' })}</Typography>
+          <Typography variant={isMobile ? 'h3' : 'h1'}>
+            {t('labelTitleOverviewAllPrd', { ns: 'common' })}
+          </Typography>
           {showFilter && (
             <Box
               display={'inline-flex'}

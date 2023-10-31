@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { Box, Grid, Typography } from '@mui/material'
 import { ColorDarkDefault, ColorLightDefault } from '@loopring-web/common-resources'

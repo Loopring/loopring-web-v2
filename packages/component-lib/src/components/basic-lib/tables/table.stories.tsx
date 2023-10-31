@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { CellDepthFormatter } from './components/Formatters'
 import { Column, DataGridProps, generateColumns, generateRows, Table } from './index'
 

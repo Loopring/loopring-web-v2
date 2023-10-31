@@ -8,6 +8,7 @@ import {
   useDefiMap,
   useDualMap,
   useTokenMap,
+  useVaultMap,
   useWalletLayer2,
   volumeToCount,
   volumeToCountAsBigNumber,
@@ -24,13 +25,14 @@ import {
   RawDataDualTxsItem,
   RawDataTradeItem,
   RawDataTransactionItem,
+  RawDataVaultTxItem,
   ToastType,
   TransactionStatus,
   useOpenModals,
   useSettings,
+  VaultRecordType,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { DUAL_TYPE, GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import {
   AccountStatus,
   BTRDE_PRE,
@@ -41,6 +43,8 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
+  EmptyValueTag,
+  DirectionTag,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
@@ -378,7 +382,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, network],
   )
 
   return {
@@ -433,7 +437,7 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, tokenMap],
   )
 
   return {
@@ -479,7 +483,10 @@ export const useOrderList = ({
     async ({
       isScroll,
       ...props
-    }: Omit<GetOrdersRequest, 'accountId'> & { isScroll?: boolean; extraOrderTypes?: string }) => {
+    }: Omit<sdk.GetOrdersRequest, 'accountId'> & {
+      isScroll?: boolean
+      extraOrderTypes?: string
+    }) => {
       setShowLoading(true)
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         const userOrders = await LoopringAPI.userAPI.getOrders(
@@ -512,7 +519,7 @@ export const useOrderList = ({
                 marketList.shift()
               }
               // due to AMM case, we cannot use first index
-              const side = order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+              const side = order.side === sdk.Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
               const isBuy = side === TradeTypes.Buy
               const [tokenFirst, tokenLast] = marketList
               const baseToken = isBuy ? tokenLast : tokenFirst
@@ -682,7 +689,7 @@ export const useOrderList = ({
             marketList.shift()
           }
           // due to AMM case, we cannot use first index
-          const side = order.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+          const side = order.side === sdk.Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
           const isBuy = side === TradeTypes.Buy
           const role = isBuy ? t('labelOrderDetailMaker') : t('labelOrderDetailTaker')
           const [tokenFirst, tokenLast] = marketList
@@ -836,7 +843,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
-                item.dualType == DUAL_TYPE.DUAL_BASE
+                item.dualType === sdk.DUAL_TYPE.DUAL_BASE
                   ? [
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -897,7 +904,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
   const { tokenMap } = useTokenMap()
   const { setShowAccount } = useOpenModals()
   const getBtradeOrderList = React.useCallback(
-    async (props: Omit<GetOrdersRequest, 'accountId'>) => {
+    async (props: Omit<sdk.GetOrdersRequest, 'accountId'>) => {
       if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
         setShowLoading(true)
         const userOrders = await LoopringAPI.defiAPI.getBtradeOrders({
@@ -1187,7 +1194,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, network],
   )
 
   return {
@@ -1195,5 +1202,294 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
     showLoading,
     getLeverageETHTxList,
     leverageETHTotal,
+  }
+}
+
+export const useVaultTransaction = <R extends RawDataVaultTxItem>(
+  setToastOpen: (props: any) => void,
+) => {
+  const { t } = useTranslation(['error'])
+  const [vaultOrderData, setVaultOrderData] = React.useState<R[]>([])
+  const [totalNum, setTotalNum] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
+  const {
+    account: { accountId, apiKey },
+  } = useAccount()
+  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, erc20Map } = useVaultMap()
+  const { tokenMap, idIndex } = useTokenMap()
+  const { setShowAccount } = useOpenModals()
+  const getVaultOrderList = React.useCallback(
+    async (
+      props: Omit<
+        {
+          operateTypes: string
+          offset: number
+          start?: number
+          end?: number
+          limit: number
+        },
+        'accountId'
+      >,
+    ) => {
+      if (LoopringAPI && LoopringAPI.vaultAPI && accountId && apiKey) {
+        setShowLoading(true)
+        const response = await LoopringAPI.vaultAPI.getVaultGetOperationHistory(
+          {
+            accountId,
+            limit: props.limit ?? 20,
+            offset: props.offset ?? 0,
+            operateTypes:
+              props?.operateTypes ??
+              [
+                0, 1, 2, 3, 4, 5,
+                // sdk.VaultOperationType.VAULT_OPEN_POSITION,
+                // sdk.VaultOperationType.VAULT_MARGIN_CALL,
+                // sdk.VaultOperationType.VAULT_BORROW,
+                // sdk.VaultOperationType.VAULT_REPAY,
+                // sdk.VaultOperationType.VAULT_TRADE,
+                // sdk.VaultOperationType.VAULT_CLOSE_OUT,
+              ].join(','),
+          },
+          apiKey,
+        )
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
+          if (setToastOpen) {
+            setToastOpen({
+              open: true,
+              type: ToastType.error,
+              content:
+                'error : ' + errorItem
+                  ? t(errorItem.messageKey)
+                  : (response as sdk.RESULT_INFO).message,
+            })
+          }
+        } else {
+          const { list, totalNum } = response as any
+          if (list && Array.isArray(list) && vaultIdIndex) {
+            setTotalNum(totalNum)
+            const data = list.map(
+              ({ operation, order }: { operation: sdk.VaultOperation; order: sdk.VaultOrder }) => {
+                const {
+                  operateSubType,
+                  operateType,
+                  status,
+                  amountIn: amountS,
+                  tokenIn: tokenS,
+                  tokenOut: tokenB,
+                  amountOut: amountB,
+                } = operation
+                let fillAmountB, fillAmountS
+                const { fee, price } = order ?? {}
+                // const { fillAmountS, amountS, tokenS, tokenB, amountB, fillAmountB, price } = order
+                let type,
+                  mainContentRender,
+                  erc20Symbol,
+                  erc20SymbolB,
+                  vSymbol,
+                  precision,
+                  precisionB,
+                  erc20Token,
+                  vToken,
+                  fillAmount,
+                  amount,
+                  vTokenB,
+                  tokenBSymbol,
+                  vSymbolB,
+                  symbolB,
+                  percentage,
+                  fillAmountSStr,
+                  fillAmountBStr,
+                  feeStr,
+                  feeToken
+                switch (operateType) {
+                  case sdk.VaultOperationType.VAULT_OPEN_POSITION:
+                  case sdk.VaultOperationType.VAULT_MARGIN_CALL:
+                    type =
+                      sdk.VaultOperationType.VAULT_OPEN_POSITION == operateSubType
+                        ? VaultRecordType.margin
+                        : VaultRecordType.open
+                    //@ts-ignore
+                    erc20Token = tokenMap[idIndex[tokenS ?? '']]
+                    precision = erc20Token?.precision
+                    //@ts-ignore
+                    vToken = vaultTokenMap[vaultIdIndex[erc20Map[erc20Token.symbol].baseTokenId]]
+                    vSymbol = vToken.symbol
+                    erc20Symbol = erc20Token.symbol
+                    amount = sdk.toBig(amountS ?? 0).div('1e' + erc20Token.decimals)
+                    fillAmountS =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
+                    fillAmount = sdk.toBig(fillAmountS).div('1e' + erc20Token.decimals)
+                    percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
+                    // percentage = sdk
+                    //   .toBig(fillAmountS ?? 0)
+                    //   .div(amountS ?? 1)
+                    //   .times(100)
+                    //   .toFixed(2)
+                    mainContentRender = `${
+                      fillAmount.gte(0)
+                        ? getValuePrecisionThousand(fillAmount, precision, precision)
+                        : EmptyValueTag
+                    }/${
+                      amount.gte(0)
+                        ? getValuePrecisionThousand(amount, precision, precision)
+                        : EmptyValueTag
+                    } ${erc20Symbol}  ${DirectionTag}  ${vSymbol}`
+                    break
+                  case sdk.VaultOperationType.VAULT_BORROW:
+                    type = VaultRecordType.borrow
+                    //@ts-ignore
+                    vToken = vaultTokenMap[vaultIdIndex[tokenB ?? '']] ?? {}
+                    erc20Symbol = idIndex[vToken.tokenId] ?? {}
+                    erc20Token = tokenMap[erc20Symbol]
+                    precision = erc20Token.precision
+                    vSymbol = vToken?.symbol
+                    amount = sdk.toBig(amountB ?? 0).div('1e' + vToken.decimals)
+                    fillAmountB =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountB : 0
+                    fillAmount = sdk.toBig(fillAmountB).div('1e' + vToken.decimals)
+                    percentage = sdk
+                      .toBig(fillAmountB ?? 0)
+                      .div(amountB ?? 1)
+                      .times(100)
+                      .toFixed(2)
+
+                    mainContentRender = `${
+                      fillAmount.gte(0)
+                        ? getValuePrecisionThousand(fillAmount, precision, precision)
+                        : EmptyValueTag
+                    }/${
+                      amount.gte(0)
+                        ? getValuePrecisionThousand(amount, precision, precision)
+                        : EmptyValueTag
+                    } ${vSymbol}`
+                    break
+                  case sdk.VaultOperationType.VAULT_REPAY:
+                    type = VaultRecordType.repay
+                    //@ts-ignore
+                    vToken = vaultTokenMap[vaultIdIndex[tokenS ?? '']] ?? {}
+                    erc20Symbol = idIndex[vToken.tokenId]
+                    precision = vToken?.precision
+                    vSymbol = vToken?.symbol
+                    amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals)
+                    fillAmountS =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
+                    fillAmount = sdk.toBig(fillAmountS).div('1e' + vToken.decimals)
+                    percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
+                    // percentage = sdk
+                    //   .toBig(fillAmountS ?? 0)
+                    //   .div(amountS ?? 1)
+                    //   .times(100)
+                    //   .toFixed(2)
+
+                    mainContentRender = `${
+                      fillAmount.gte(0)
+                        ? getValuePrecisionThousand(fillAmount, precision, precision)
+                        : EmptyValueTag
+                    }/${
+                      amount.gte(0)
+                        ? getValuePrecisionThousand(amount, precision, precision)
+                        : EmptyValueTag
+                    } ${vSymbol}`
+                    break
+                  case sdk.VaultOperationType.VAULT_TRADE:
+                    type = VaultRecordType.trade
+                    //@ts-ignore
+                    vToken = vaultTokenMap[vaultIdIndex[tokenS ?? '']]
+                    //@ts-ignore
+                    vTokenB = vaultTokenMap[vaultIdIndex[tokenB ?? '']]
+                    feeToken = vTokenB
+                    erc20Symbol = idIndex[vToken.tokenId]
+                    erc20SymbolB = idIndex[vTokenB.tokenId]
+                    precision = vToken.precision
+                    precisionB = vTokenB.precision
+                    vSymbol = vToken.symbol
+                    vSymbolB = vTokenB.symbol
+                    fillAmountS = sdk.toBig(order.fillAmountS ?? 0).div('1e' + vToken.decimals)
+                    fillAmountB = sdk.toBig(order.fillAmountB ?? 0).div('1e' + vSymbolB.decimals)
+                    fillAmountBStr = getValuePrecisionThousand(fillAmountB, precisionB, precisionB)
+                    fillAmountSStr = getValuePrecisionThousand(fillAmountS, precision, precision)
+                    percentage = sdk
+                      .toBig(order.fillAmountS ?? 0)
+                      .div(amountS ?? 1)
+                      .times(100)
+                      .toFixed(2)
+                    feeStr = getValuePrecisionThousand(
+                      sdk.toBig(fee ?? 0).div('1e' + feeToken.decimals),
+                      precisionB,
+                      precisionB,
+                    )
+
+                    mainContentRender = `${
+                      fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag
+                    }  ${vSymbol} \u2248 ${
+                      fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
+                    } ${vSymbolB} ${t('labelPrice')}: ${price}`
+                    break
+                  case sdk.VaultOperationType.VAULT_CLOSE_OUT:
+                    type = VaultRecordType.closeout
+                    let erc20B = tokenMap[idIndex[tokenB ?? '']]
+                    tokenBSymbol = erc20B.symbol
+                    //@ts-ignore
+                    // vTokenB = vaultTokenMap[vaultIdIndex[tokenB ?? '']]
+                    amount = sdk.toBig(amountB ?? 0).div('1e' + erc20B.decimals)
+                    //@ts-ignore
+                    precision = erc20B.precision
+                    fillAmountB =
+                      status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountB : 0
+                    fillAmount = sdk.toBig(fillAmountB).div('1e' + erc20B.decimals)
+                    percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
+                    // percentage = sdk
+                    //   .toBig(amountB ?? 0)
+                    //   .div(fillAmountB ?? 1)
+                    //   .times(100)
+                    //   .toFixed(2)
+                    mainContentRender = `${
+                      fillAmount.gte(0)
+                        ? getValuePrecisionThousand(fillAmount, precision, precision)
+                        : EmptyValueTag
+                    }/${
+                      amount.gte(0)
+                        ? getValuePrecisionThousand(amount, precision, precision)
+                        : EmptyValueTag
+                    } ${tokenBSymbol}`
+                    break
+                }
+
+                let item = {
+                  status,
+                  type,
+                  vSymbol,
+                  vTokenB,
+                  symbolB,
+                  feeStr,
+                  feeTokenSymbol: feeToken?.symbol,
+                  erc20SymbolB,
+                  erc20Symbol,
+                  mainContentRender,
+                  fillAmount: fillAmount.toString(),
+                  percentage,
+                  raw_data: {
+                    operateSubType,
+                    order,
+                  },
+                }
+                return item
+              },
+            )
+            setVaultOrderData(data)
+          }
+        }
+        setShowLoading(false)
+      }
+    },
+    [accountId, apiKey, setToastOpen, t, tokenMap, vaultIdIndex],
+  )
+
+  return {
+    getVaultOrderList,
+    vaultOrderData,
+    totalNum,
+    showLoading,
   }
 }

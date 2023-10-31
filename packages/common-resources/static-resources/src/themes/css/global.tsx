@@ -23,6 +23,14 @@ export const fontDefault = {
   body1: '1.4rem',
   body2: '1.2rem',
 }
+export enum SvgSize {
+  svgSize = 14,
+  svgSizeMedium = 16,
+  svgSizeCover = 32,
+  svgSizeLarge = 24,
+  svgSizeHuge2 = 40,
+  svgSizeHuge = 48,
+}
 
 export const refreshTime = 15
 export const colorBase = ({ theme }: any) => css`
@@ -261,12 +269,12 @@ export const globalCss = ({ theme }: any) => css`
     --btn-icon-size-medium: 24px;
     --btn-icon-size-large: 28px;
     --btn-icon-size: 36px;
-    --svg-size: 14px;
-    --svg-size-medium: 16px;
-    --svg-size-cover: 32px;
-    --svg-size-large: 24px;
-    --svg-size-huge2: 40px;
-    --svg-size-huge: 48px;
+    --svg-size: ${SvgSize.svgSize}px;
+    --svg-size-medium: ${SvgSize.svgSizeMedium}px;
+    --svg-size-cover: ${SvgSize.svgSizeCover}px;
+    --svg-size-large: ${SvgSize.svgSizeLarge}px;
+    --svg-size-huge2: ${SvgSize.svgSizeHuge2}px;
+    --svg-size-huge: ${SvgSize.svgSizeHuge}px;
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
@@ -305,7 +313,7 @@ export const globalCss = ({ theme }: any) => css`
     --input-height-huge: 56px;
     --dual-type-width: 320px;
     --min-height: 350px;
-
+    --input-height-swap: 86px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;

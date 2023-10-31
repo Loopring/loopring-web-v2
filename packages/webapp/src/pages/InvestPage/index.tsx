@@ -5,7 +5,7 @@ import { Box, BoxProps, Typography } from '@mui/material'
 import { useTranslation, withTranslation } from 'react-i18next'
 import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
 import React from 'react'
-import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
+import { confirmation, ViewAccountTemplate } from '@loopring-web/core'
 import MyLiquidityPanel from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
@@ -14,7 +14,7 @@ import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
 import styled from '@emotion/styled'
-import { InvestRouter, InvestType } from '@loopring-web/common-resources'
+import { InvestType, RouterPath, InvestRouter } from '@loopring-web/common-resources'
 
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const BoxStyled = styled(Box)`
@@ -118,22 +118,20 @@ export const DefiTitle = () => {
     </Typography>
   )
 }
-
+const InvestRouterMatch = `${RouterPath.invest}/:item?`
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
-  let match: any = useRouteMatch('/invest/:item?')
-  const { confirmedLRCStakeInvest: confirmedLRCInvestFun } = confirmation.useConfirmation()
+  let match: any = useRouteMatch(InvestRouterMatch)
+  const {
+    confirmedLRCStakeInvest: confirmedLRCInvestFun,
+    setShowLRCStakingPopup: setConfirmedLRCStakeInvestInvest,
+    confirmation: { confirmationNeeded, showLRCStakignPopup: confirmedLRCStakeInvest },
+  } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
 
-  const {
-    showLRCStakignPopup: confirmedLRCStakeInvest,
-    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
-    confirmationNeeded,
-  } = usePopup()
-
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
-    (InvestRouter.includes(match?.params?.item)
+    (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
       ? InvestType[match?.params?.item]
       : InvestType.Overview) as any,
     // InvestType.Overview

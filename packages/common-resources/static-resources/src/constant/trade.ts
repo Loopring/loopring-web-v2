@@ -1,4 +1,5 @@
 import {
+  CoinMap,
   CollectionMeta,
   DeFiCalcData,
   DeFiSideCalcData,
@@ -6,6 +7,7 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
+  WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'
@@ -180,6 +182,7 @@ export const HiddenTag = '*****'
 export const DEAULT_NFTID_STRING =
   '0x0000000000000000000000000000000000000000000000000000000000000000'
 export const MINT_LIMIT = 100000
+export const SUBMIT_PANEL_CHECK = 1000
 export const SUBMIT_PANEL_AUTO_CLOSE = 8000
 export const SUBMIT_PANEL_QUICK_AUTO_CLOSE = 3000
 export const SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE = 1000
@@ -194,6 +197,8 @@ export const REDPACKET_ORDER_NFT_LIMIT = 20000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 1000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
+
+export const VAULT_MAKET_REFRESH = 60000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
   image: 'image',
@@ -740,6 +745,16 @@ export type AmmHistoryItem = {
   close: number
   timeStamp: number
 }
+export enum LocalStorageConfigKey {
+  tokenMap = 'tokenMap',
+  ammpools = 'ammpools',
+  markets = 'markets',
+  btradeMarkets = 'btradeMarkets',
+  vaultMarkets = 'vaultMarkets',
+  vaultTokenMap = 'vaultTokenMap',
+  exchangeInfo = 'exchangeInfo',
+  disableWithdrawTokenList = 'disableWithdrawTokenList',
+}
 
 export enum DualStep {
   ChooseType = 'ChooseType',
@@ -778,7 +793,56 @@ export const DualBTC = [
   { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]
 
+export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
+  sdk.VaultMarket,
+  'enabled'
+> & {
+    vaultMarket: string
+    originalBaseSymbol: string
+    originalQuoteSymbol: string
+  }
+
+export type VaultJoinData<I = any> = {
+  walletMap: WalletMap<I>
+  coinMap: CoinMap<I> & { vaultToken: string; vaultId: number }
+  vaultLayer2Map: WalletMap<I>
+  vaultSymbol?: string
+  request?: sdk.VaultJoinRequest
+  maxShowVal: string
+  minShowVal: string
+  maxAmount: string
+  minAmount: string
+  amount: string
+  isMerge: boolean
+  vaultTokenInfo: sdk.TokenInfo
+  // isShouldClean:boolean
+  __request__: sdk.VaultJoinRequest
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultJoinRequest>
+
+export type VaultExitData<I = any> = {
+  __request__: any
+} & Partial<IBData<I>> &
+  Partial<sdk.VaultExitRequest>
+
+export enum VaultLoadType {
+  Borrow = 'Borrow',
+  Repay = 'Repay',
+}
+
+export enum AmmPanelType {
+  Join = 0,
+  Exit = 1,
+}
+
 export enum DualInvestConfirmType {
   USDCOnly = 'USDCOnly',
   all = 'all',
+}
+
+export enum VaultAction {
+  VaultJoin = 'VaultJoin',
+  VaultExit = 'VaultExit',
+  VaultLoad = 'VaultLoad',
+  VaultSwap = 'VaultSwap',
 }

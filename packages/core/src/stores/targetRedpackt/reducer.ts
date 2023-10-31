@@ -43,5 +43,9 @@ const targetRedpacketSlice: Slice = createSlice({
   },
 })
 export { targetRedpacketSlice }
-export const { getExclusiveRedpacket, getExclusiveRedpacketStatus, statusUnset, setShowRedPacketsPopup } =
-  targetRedpacketSlice.actions
+export const {
+  getExclusiveRedpacket,
+  getExclusiveRedpacketStatus,
+  statusUnset,
+  setShowRedPacketsPopup,
+} = targetRedpacketSlice.actions

@@ -2,7 +2,14 @@ import { LoopringMap, TickerData, toBig } from '@loopring-web/loopring-sdk'
 import { store } from '../../index'
 import { volumeToCount } from './volumeToCount'
 import { TickerMap } from '../../stores'
-import { Ticker } from '@loopring-web/common-resources'
+import {
+  getValuePrecisionThousand,
+  Ticker,
+  TickerNew,
+  TickerNewMap,
+  TokenType,
+} from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export const makeTickView = (tick: TickerData) => {
   const { tokenPrices } = store.getState().tokenPrices
@@ -72,4 +79,59 @@ export const makeTickerMap = <R extends { [key: string]: any }>({
     }
     return prev
   }, {} as TickerMap<R>)
+}
+
+export const makeTokenTickerView = ({
+  item,
+  isVault = false,
+}: {
+  item: sdk.DatacenterTokenInfoSimple
+  isVault?: boolean
+}) => {
+  const {
+    tokenMap: { tokenMap: erc20TokenMap },
+    invest: {
+      vaultMap: { erc20Map, idIndex },
+    },
+  } = store.getState()
+  const tokenInfo = erc20TokenMap[item.symbol]
+  const volume = getValuePrecisionThousand(
+    item.volume24H,
+    tokenInfo.precision,
+    tokenInfo.precision,
+    undefined,
+  ) //volumeToCount(item.symbol, item.volume24H)
+  const priceU = sdk.toBig(item.volume24H ?? 0).times(item.price ?? 0)
+  const change = getValuePrecisionThousand(item.percentChange24H ?? 0, 2, 2, 2)
+  // @ts-ignore
+  return {
+    ...tokenInfo,
+    ...item,
+    timeUnit: '24h',
+    volume,
+    priceU,
+    change,
+    type: isVault ? TokenType.vault : TokenType.single,
+    erc20Symbol: tokenInfo.symbol,
+    symbol: isVault ? idIndex[erc20Map[tokenInfo.symbol].baseTokenId] : tokenInfo.symbol,
+    __rawTicker__: item,
+    rawData: item,
+  } as unknown as TickerNew
+}
+export const makeTokenTickerMap = <R>({
+  rawData,
+  isVault,
+}: {
+  rawData: sdk.DatacenterTokenInfoSimple[]
+  isVault?: boolean
+}): TickerNewMap<R> => {
+  return rawData.reduce((prev: TickerNewMap<R>, item) => {
+    const key = item.symbol
+    if (item && item.symbol && item.price) {
+      prev[key] = {
+        ...makeTokenTickerView({ isVault, item }),
+      }
+    }
+    return prev
+  }, {} as TickerNewMap<R>)
 }

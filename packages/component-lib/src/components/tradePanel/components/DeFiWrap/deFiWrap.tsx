@@ -12,6 +12,7 @@ import {
   myLog,
   OrderListIcon,
   RecordTabIndex,
+  RouterPath,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { DeFiWrapProps } from './Interface'
@@ -305,9 +306,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             <IconButtonStyled
               onClick={() => {
                 if (isLeverageETH) {
-                  history.push('/l2assets/history/leverageETHRecords')
+                  history.push(`${RouterPath.l2records}/leverageETHRecords`)
                 } else {
-                  history.push(`/l2assets/history/${RecordTabIndex.DefiRecords}?market=${market}`)
+                  history.push(
+                    `${RouterPath.l2records}/${RecordTabIndex.DefiRecords}?market=${market}`,
+                  )
                 }
               }}
               sx={{ backgroundColor: 'var(--field-opacity)' }}

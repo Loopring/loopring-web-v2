@@ -29,6 +29,7 @@ import { tickerMapSlice } from './ticker/reducer'
 import { systemSlice } from './system/reducer'
 import { walletLayer1Slice } from './walletLayer1/reducer'
 import { walletLayer2Slice } from './walletLayer2/reducer'
+import { vaultLayer2Slice } from './vaultLayer2/reducer'
 import { socketSlice } from './socket'
 import { userRewardsMapSlice } from './userRewards/reducer'
 import { amountMapSlice } from './amount/reducer'
@@ -61,6 +62,7 @@ import {
   pageTradeProSlice,
   redeemStakeSlice,
   tradeStakeSlice,
+  tradeVaultSlice,
 } from './router'
 import { firebaseReducer, ReactReduxFirebaseProviderProps } from 'react-redux-firebase'
 import firebase from 'firebase/compat/app'
@@ -106,6 +108,10 @@ const perisitWalletLayer2SessionStoreConfig = persistReducer(
   { key: 'walletLayer2', storage: storageSession, timeout: DEFAULT_TIMEOUT },
   walletLayer2Slice.reducer,
 )
+const perisitVaultLayer2SessionStoreConfig = persistReducer(
+  { key: 'vaultLayer2', storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  vaultLayer2Slice.reducer,
+)
 const perisitWalletLayer1SessionStoreConfig = persistReducer(
   { key: 'walletLayer1', storage: storageSession, timeout: DEFAULT_TIMEOUT },
   walletLayer1Slice.reducer,
@@ -149,6 +155,7 @@ const reducer = combineReducers({
   tokenPrices: perisitTokenPricesSessionStoreConfig,
   walletLayer2: perisitWalletLayer2SessionStoreConfig,
   walletLayer1: perisitWalletLayer1SessionStoreConfig,
+  vaultLayer2: perisitVaultLayer2SessionStoreConfig,
   tickerMap: perisitTickerMapSessionStoreConfig,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,
   walletL2Collection: walletL2CollectionSlice.reducer,
@@ -169,6 +176,7 @@ const reducer = combineReducers({
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
   _router_tradeLeverageETH: tradeLeverageETHSlice.reducer,
+  _router_tradeVault: tradeVaultSlice.reducer,
 })
 
 export const store = configureStore({
@@ -268,7 +276,7 @@ export * from './walletLayer2'
 export * from './walletLayer2NFT'
 export * from './walletL2Collection'
 export * from './walletL2NFTCollection'
-
+export * from './vaultLayer2'
 export * from './invest'
 export * from './contacts'
 export * from './targetRedpackt'

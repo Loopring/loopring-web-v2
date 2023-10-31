@@ -40,6 +40,9 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     isHideError = false,
     fullwidth = false,
     loading = false,
+    className,
+    tokenType,
+    tokenImageKey,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -141,7 +144,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   // formatValue(sValue)
 
   return (
-    <IWrap component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
+    <IWrap className={className} component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
       <Grid
         container
         component={'div'}
@@ -208,7 +211,11 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                     alignItems={'center'}
                     justifyContent={'center'}
                   >
-                    <CoinIcon symbol={belong} />
+                    <CoinIcon
+                      tokenImageKey={tokenImageKey ?? undefined}
+                      symbol={belong}
+                      type={tokenType ?? undefined}
+                    />
                   </Grid>
                 )}
                 {!isShowCoinIcon && CoinIconElement && (

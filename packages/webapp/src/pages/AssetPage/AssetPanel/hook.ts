@@ -295,7 +295,6 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
 
-  myLog('assetsRawData')
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,

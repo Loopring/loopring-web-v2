@@ -265,22 +265,25 @@ const ButtonStyled = styled(Button)`
     }
   }
 `
+const InvestRouterMatch = `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`
 
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
+  const match: any = useRouteMatch(InvestRouterMatch)
+
   const { marketArray } = useDefiMap()
 
   const {
     confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
+    confirmation: {
+      confirmationNeeded,
+      showRETHStakignPopup,
+      showWSTETHStakignPopup,
+      setShowRETHStakignPopup,
+      setShowWSTETHStakignPopup,
+    },
   } = confirmation.useConfirmation()
-  // const []
-  const {
-    confirmationNeeded,
-    showRETHStakignPopup,
-    showWSTETHStakignPopup,
-    setShowRETHStakignPopup,
-    setShowWSTETHStakignPopup,
-  } = usePopup()
+
   const _confirmedDefiInvest = {
     isShow: showRETHStakignPopup || showWSTETHStakignPopup,
     type: showRETHStakignPopup ? 'RETH' : showWSTETHStakignPopup ? 'WSETH' : undefined,
@@ -305,9 +308,6 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }
 
-  const match: any = useRouteMatch(
-    `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`,
-  )
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()

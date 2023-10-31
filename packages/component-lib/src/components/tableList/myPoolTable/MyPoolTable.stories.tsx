@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { MemoryRouter } from 'react-router-dom'
 import { MyPoolRow as Row, MyPoolTable } from './index'
 import { coinMap } from '../../../static'

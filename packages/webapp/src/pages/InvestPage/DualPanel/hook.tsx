@@ -90,9 +90,9 @@ export const ChooseDualTypeContent: ChooseDualTypeContentType[] = [
     desKey: 'labelDualBTCDes',
   },
 ]
-
+const InvestRouterMatch = `${RouterPath.invest}/${InvestAssetRouter.DUAL}/:market?`
 export const useDualHook = () => {
-  const match: any = useRouteMatch('/invest/dual/:market?')
+  const match: any = useRouteMatch(InvestRouterMatch)
   const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
   const viewType = searchParams.get('viewType')

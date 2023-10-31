@@ -62,10 +62,7 @@ export const useContactAdd = ({
   const [loading, setLoading] = React.useState(false)
   const [isNameExit, setIsNameExit] = React.useState(false)
   const [isContactExit, setIsContactExit] = React.useState(false)
-  const {
-    setShowOtherExchange,
-    // modals: { isShowOtherExchange },
-  } = useOpenModals()
+  const { setShowOtherExchange } = useOpenModals()
   const {
     address,
     realAddr,

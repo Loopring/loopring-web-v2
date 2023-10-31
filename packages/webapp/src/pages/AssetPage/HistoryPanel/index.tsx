@@ -15,6 +15,7 @@ import {
   TransactionTable,
   useSettings,
   useToggle,
+  VaultTxTable,
 } from '@loopring-web/component-lib'
 import {
   StylePaper,
@@ -36,6 +37,7 @@ import {
   useGetTrades,
   useGetTxs,
   useOrderList,
+  useVaultTransaction,
 } from './hooks'
 import {
   BackIcon,
@@ -45,8 +47,10 @@ import {
   RowConfig,
   TOAST_TIME,
   TabOrderIndex,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+export const l2assetsRouter = `${RouterPath.l2records}/:tab/:orderTab?`
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -56,7 +60,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const {
     toggle: { StopLimit },
   } = useToggle()
-  const match: any = useRouteMatch('/l2assets/:history/:tab/:orderTab?')
+  const match: any = useRouteMatch(l2assetsRouter)
   const [pageSize, setPageSize] = React.useState(0)
   const [currentTab, setCurrentTab] = React.useState<RecordTabIndex>(() => {
     let item = match?.params?.tab ?? RecordTabIndex.Transactions
@@ -69,6 +73,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { totalCoinMap, tokenMap, idIndex, marketArray } = useTokenMap()
   const { ammMap } = useAmmMap()
+  const { etherscanBaseUrl } = useSystem()
 
   const {
     txs: txTableData,
@@ -133,7 +138,12 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   } = useGetLeverageETHRecord(setToastOpen)
 
   const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
-  const { etherscanBaseUrl } = useSystem()
+  const {
+    getVaultOrderList,
+    vaultOrderData,
+    totalNum: vaultTotal,
+    showLoading: showVaultLoading,
+  } = useVaultTransaction(setToastOpen)
   const {
     getBtradeOrderList,
     btradeOrderData,
@@ -152,7 +162,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const handleTabChange = React.useCallback(
     (value: RecordTabIndex, _pageSize?: number) => {
       setCurrentTab(value)
-      history.replace(`/l2assets/history/${value}?${search.replace('?', '')}`)
+      history.replace(`${RouterPath.l2records}/${value}?${search.replace('?', '')}`)
     },
     [history, search],
   )
@@ -452,6 +462,20 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               tokenMap={tokenMap}
               idIndex={idIndex}
             />
+          ) : currentTab === RecordTabIndex.VaultRecords ? (
+            <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
+              <VaultTxTable
+                {...{
+                  showloading: showVaultLoading,
+                  getOrderList: getVaultOrderList,
+                  rawData: vaultOrderData,
+                }}
+                pagination={{
+                  pageSize: pageSize,
+                  total: vaultTotal,
+                }}
+              />
+            </Box>
           ) : (
             <></>
           )}
