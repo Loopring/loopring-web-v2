@@ -1492,7 +1492,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
             alignItems={'center'}
             flexDirection={'column'}
             marginX={9}
-            marginTop={8}
+            marginTop={2}
             bgcolor={'var(--color-global-bg)'}
             padding={2.5}
             border={'1px solid var(--color-border)'}
@@ -1537,7 +1537,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
         <Box
           height={enlarged ? '590px' : '290px'}
           marginX={9}
-          marginTop={enlarged ? 8 : 3}
+          marginTop={enlarged ? 2 : 3}
           bgcolor={'var(--color-global-bg)'}
           padding={2.5}
           border={'1px solid var(--color-border)'}
