@@ -4,23 +4,23 @@ import styled from '@emotion/styled'
 import { boxLiner, toolBarPanel } from '../../styled'
 import { useTranslation, WithTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
-import { IBData, VaultBorrowData, VaultLoadType } from '@loopring-web/common-resources'
+import { IBData, VaultBorrowData, VaultLoanType } from '@loopring-web/common-resources'
 import { VaultBorrowPanel } from './VaultBorrowPanel'
 import { VaultBorrowProps } from '../Interface'
 import { VaultRepayPanel } from './VaultRepayPanel'
 import { useSystem } from '@loopring-web/core'
 
-export type VaultLoadProps<T, B, I> = {
-  vaultLoadType: VaultLoadType
-  handleTabChange: (index: VaultLoadType) => void
+export type VaultLoanProps<T, B, I> = {
+  vaultLoanType: VaultLoanType
+  handleTabChange: (index: VaultLoanType) => void
   vaultRepayProps: VaultRepayWrapProps<T, B, I>
   vaultBorrowProps: VaultBorrowProps<T, B, I>
 }
 const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
   return (
     <Tabs value={value} onChange={handleChange} aria-label='Amm Method Tab'>
-      <Tab label={t('labelVaultBorrow')} value={VaultLoadType.Borrow} />
-      <Tab label={t('labelVaultRepay')} value={VaultLoadType.Repay} />
+      <Tab label={t('labelVaultBorrow')} value={VaultLoanType.Borrow} />
+      <Tab label={t('labelVaultRepay')} value={VaultLoanType.Repay} />
     </Tabs>
   )
 }
@@ -47,7 +47,9 @@ const WrapStyle = styled(Box)<
   ${({ theme }) => boxLiner({ theme })}
   ${({ theme }) => toolBarPanel({ theme })}
   border-radius: ${({ theme }) => theme.unit}px;
-
+  .trade-panel .menu-panel > div {
+    padding: 8px 0px;
+  }
   .trade-panel .coinInput-wrap {
     background: var(--field-opacity);
   }
@@ -63,11 +65,10 @@ const WrapStyle = styled(Box)<
       .MuiListItemText-root {
         align-items: center;
       }
-
       width: auto;
       padding: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit / 2}px
         ${({ theme }) => theme.unit}px ${({ theme }) => 2 * theme.unit}px;
-      margin: ${({ theme }) => theme.unit}px ${({ theme }) => 2 * theme.unit}px;
+      margin: ${({ theme }) => theme.unit}px ${({ theme }) => 0 * theme.unit}px;
       ${({ theme }) =>
         theme.border.defaultFrame({
           d_W: 1,
@@ -94,12 +95,12 @@ const WrapStyle = styled(Box)<
     isMobile: boolean
   },
 ) => JSX.Element
-export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>, I>({
+export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>, I>({
   handleTabChange,
-  vaultLoadType,
+  vaultLoanType,
   vaultRepayProps,
   vaultBorrowProps,
-}: VaultLoadProps<T, V, I>) => {
+}: VaultLoanProps<T, V, I>) => {
   const { t } = useTranslation()
   const { forexMap } = useSystem()
   const {
@@ -126,7 +127,7 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
           <TabPanelBtn
             {...{
               t,
-              value: vaultLoadType,
+              value: vaultLoanType,
               handleChange: (_e: any, value: any) => handleTabChange(value),
             }}
           />
@@ -134,7 +135,7 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
       </Toolbar>
       <Divider style={{ marginTop: '-1px' }} />
       <Box flex={1} className={'trade-panel'} marginTop={1}>
-        {vaultLoadType === VaultLoadType.Borrow && (
+        {vaultLoanType === VaultLoanType.Borrow && (
           <Box
             display={'flex'}
             justifyContent={'space-evenly'}
@@ -150,7 +151,7 @@ export const VaultLoadPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
             />
           </Box>
         )}
-        {vaultLoadType === VaultLoadType.Repay && (
+        {vaultLoanType === VaultLoanType.Repay && (
           <Box
             display={'flex'}
             justifyContent={'space-evenly'}

@@ -39,9 +39,9 @@ export const useVaultBorrow = <
 >(): Partial<VaultBorrowProps<T, I, V>> => {
   const { t } = useTranslation()
   const {
-    modals: { istShowVaultLoad },
+    modals: { istShowVaultLoan },
     setShowAccount,
-    setShowVaultLoad,
+    setShowVaultLoan,
   } = useOpenModals()
   const [isLoading, setIsLoading] = React.useState(false)
 
@@ -117,8 +117,8 @@ export const useVaultBorrow = <
   const initData = () => {
     let vaultBorrowData: any = {}
     let initSymbol = marketCoins[0]
-    if (istShowVaultLoad.info?.symbol) {
-      initSymbol = istShowVaultLoad.info?.symbol
+    if (istShowVaultLoan.info?.symbol) {
+      initSymbol = istShowVaultLoan.info?.symbol
     }
     let { vaultAvaiable2Map } = makeVaultAvaiable2({})
     setWalletMap(vaultAvaiable2Map)
@@ -148,12 +148,12 @@ export const useVaultBorrow = <
     })
   }
   React.useEffect(() => {
-    if (istShowVaultLoad.isShow) {
+    if (istShowVaultLoan.isShow) {
       initData()
     } else {
       resetVaultBorrow()
     }
-  }, [istShowVaultLoad.isShow])
+  }, [istShowVaultLoan.isShow])
 
   const handlePanelEvent = React.useCallback(async (data: SwitchData<T>) => {
     let vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
@@ -228,7 +228,7 @@ export const useVaultBorrow = <
     vaultBorrowData.maxBorrowAmount,
     vaultBorrowData.minBorrowAmount,
   ])
-  const processRequest = async (request?: sdk.VaultLoadRequest) => {
+  const processRequest = async (request?: sdk.VaultLoanRequest) => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const vaultToken = vaultTokenMap[vaultBorrowData.belong]
     const {
@@ -236,7 +236,7 @@ export const useVaultBorrow = <
     } = store.getState()
     try {
       if ((LoopringAPI.vaultAPI && request) || (vaultBorrowData.request && accountId)) {
-        let response = await LoopringAPI.vaultAPI.submitVaultLoad({
+        let response = await LoopringAPI.vaultAPI.submitVaultLoan({
           request: request ?? vaultBorrowData.request,
           privateKey: eddsaKey?.sk,
           apiKey: apiKey,
@@ -244,7 +244,7 @@ export const useVaultBorrow = <
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
-        setShowVaultLoad({
+        setShowVaultLoan({
           isShow: false,
         })
         setIsLoading(false)
@@ -356,7 +356,7 @@ export const useVaultBorrow = <
           },
         })
 
-        const vaultBorrowRequest: sdk.VaultLoadRequest = {
+        const vaultBorrowRequest: sdk.VaultLoanRequest = {
           accountId: account.accountId,
           token: {
             tokenId: vaultTokenMap[vaultBorrowData.belong].vaultTokenId as unknown as number,

@@ -38,9 +38,9 @@ export const useVaultRepay = <
   I,
 >() => {
   const {
-    modals: { istShowVaultLoad },
+    modals: { istShowVaultLoan },
     setShowAccount,
-    setShowVaultLoad,
+    setShowVaultLoan,
   } = useOpenModals()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { account } = useAccount()
@@ -136,12 +136,12 @@ export const useVaultRepay = <
     })
   }
   React.useEffect(() => {
-    if (istShowVaultLoad.isShow) {
+    if (istShowVaultLoan.isShow) {
       initData()
     } else {
       resetVaultRepay()
     }
-  }, [istShowVaultLoad.isShow])
+  }, [istShowVaultLoan.isShow])
   const availableTradeCheck = React.useCallback(() => {
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
     if (
@@ -244,7 +244,7 @@ export const useVaultRepay = <
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         } else {
-          setShowVaultLoad({ isShow: false })
+          setShowVaultLoan({ isShow: false })
           setIsLoading(false)
           updateVaultLayer2({})
           await sdk.sleep(SUBMIT_PANEL_CHECK)
