@@ -607,7 +607,7 @@ export type VaultBorrowData<
   borrowAmt: string
   totalQuote: string
   borrowAmtStr: string
-  request: sdk.VaultLoanRequest
+  request: sdk.VaultBorrowRequest
 } & VaultLoanData<T>
 
 export type VaultRepayData<T> = {

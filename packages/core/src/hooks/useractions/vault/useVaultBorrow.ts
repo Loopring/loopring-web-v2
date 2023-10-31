@@ -203,7 +203,7 @@ export const useVaultBorrow = <
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: `labelVaultBorrowMini|${vaultBorrowData.minBorrowStr} ${vaultBorrowData.belong}`,
       }
-    } else if (sdk.toBig(vaultBorrowData.tradeValue ?? 0).gte(vaultBorrowData.balance ?? 0)) {
+    } else if (sdk.toBig(vaultBorrowData.tradeValue ?? 0).gt(vaultBorrowData.balance ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: `labelVaultBorrowNotEnough|${vaultBorrowData.belong}`,
@@ -228,7 +228,7 @@ export const useVaultBorrow = <
     vaultBorrowData.maxBorrowAmount,
     vaultBorrowData.minBorrowAmount,
   ])
-  const processRequest = async (request?: sdk.VaultLoanRequest) => {
+  const processRequest = async (request?: sdk.VaultBorrowRequest) => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const vaultToken = vaultTokenMap[vaultBorrowData.belong]
     const {
@@ -236,7 +236,7 @@ export const useVaultBorrow = <
     } = store.getState()
     try {
       if ((LoopringAPI.vaultAPI && request) || (vaultBorrowData.request && accountId)) {
-        let response = await LoopringAPI.vaultAPI.submitVaultLoan({
+        let response = await LoopringAPI.vaultAPI.submitVaultBorrow({
           request: request ?? vaultBorrowData.request,
           privateKey: eddsaKey?.sk,
           apiKey: apiKey,
@@ -356,7 +356,7 @@ export const useVaultBorrow = <
           },
         })
 
-        const vaultBorrowRequest: sdk.VaultLoanRequest = {
+        const vaultBorrowRequest: sdk.VaultBorrowRequest = {
           accountId: account.accountId,
           token: {
             tokenId: vaultTokenMap[vaultBorrowData.belong].vaultTokenId as unknown as number,

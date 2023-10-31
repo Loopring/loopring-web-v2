@@ -264,7 +264,12 @@ export const VaultJoin_Failed = (props: PanelProps) => {
       <>
         {props.info && <JoinDes2 {...props} />}
         {props?.error && props.error?.message && (
-          <Typography variant={'body1'} component={'span'} color={'warning'}>
+          <Typography
+            width={'var(--modal-min-width)'}
+            variant={'body1'}
+            component={'span'}
+            color={'warning'}
+          >
             {props.error?.message}
           </Typography>
         )}
@@ -415,7 +420,12 @@ export const VaultRedeem_Failed = (props: PanelProps) => {
       <>
         {props.info && <RedeemDes2 {...props} />}
         {props?.error && props.error?.message && (
-          <Typography variant={'body1'} component={'span'} color={'warning'}>
+          <Typography
+            width={'var(--modal-min-width)'}
+            variant={'body1'}
+            component={'span'}
+            color={'warning'}
+          >
             {props.error?.message}
           </Typography>
         )}
@@ -534,7 +544,12 @@ export const VaultBorrow_Failed = (props: PanelProps) => {
       <>
         {props.info && <BorrowDes2 {...props} />}{' '}
         {props?.error && props.error?.message && (
-          <Typography variant={'body1'} component={'span'} color={'warning'}>
+          <Typography
+            width={'var(--modal-min-width)'}
+            variant={'body1'}
+            component={'span'}
+            color={'warning'}
+          >
             {props.error?.message}
           </Typography>
         )}
@@ -593,10 +608,10 @@ export const RepayDes2 = (
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultRepayStatus')}
+            {props.t('labelVaultRepayStatusLabel')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelVaultRepayStatusLabel', { status })}
+            {props.t('labelVaultRepayStatus', { status })}
           </Typography>
         </Typography>
 
@@ -639,7 +654,12 @@ export const RepayDes2 = (
         </Typography>
       </Box>
       {props.isPending && (
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+        <Typography
+          width={'var(--modal-min-width)'}
+          variant={'body1'}
+          component={'span'}
+          color={'var(--color-text-secondary)'}
+        >
           {props.t('labelVaultExitPendingDes')}
         </Typography>
       )}
@@ -669,7 +689,13 @@ export const VaultRepay_Failed = (props: PanelProps) => {
       <>
         {props.info && <RepayDes2 {...props} />}
         {props?.error && props.error?.message && (
-          <Typography variant={'body1'} component={'span'} color={'warning'}>
+          <Typography
+            width={'var(--modal-min-width)'}
+            variant={'body1'}
+            component={'span'}
+            color={'warning'}
+            marginTop={2}
+          >
             {props.error?.message}
           </Typography>
         )}
