@@ -124,7 +124,16 @@ export const VaultTrade_Failed = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    describe2: props.info && <TradeDes2 {...props} />,
+    describe2: (
+      <>
+        {props.info && <TradeDes2 {...props} />}
+        {props?.error && props.error?.message && (
+          <Typography variant={'body1'} component={'span'} color={'warning'}>
+            {props.error?.message}
+          </Typography>
+        )}
+      </>
+    ),
   }
   return <VaultTradeBase showTitle={true} {...propsPatch} {...props} />
 }
@@ -402,7 +411,16 @@ export const VaultRedeem_Failed = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    describe2: props.info && <RedeemDes2 {...props} />,
+    describe2: (
+      <>
+        {props.info && <RedeemDes2 {...props} />}
+        {props?.error && props.error?.message && (
+          <Typography variant={'body1'} component={'span'} color={'warning'}>
+            {props.error?.message}
+          </Typography>
+        )}
+      </>
+    ),
   }
   return <VaultExitBase showTitle={true} {...propsPatch} {...props} />
 }
@@ -514,7 +532,12 @@ export const VaultBorrow_Failed = (props: PanelProps) => {
     }),
     describe2: (
       <>
-        {props.info && <BorrowDes2 {...props} />} {props.error && props.error?.message}
+        {props.info && <BorrowDes2 {...props} />}{' '}
+        {props?.error && props.error?.message && (
+          <Typography variant={'body1'} component={'span'} color={'warning'}>
+            {props.error?.message}
+          </Typography>
+        )}
       </>
     ),
   }
@@ -642,7 +665,16 @@ export const VaultRepay_Failed = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    describe2: props.info && <RepayDes2 {...props} />,
+    describe2: (
+      <>
+        {props.info && <RepayDes2 {...props} />}
+        {props?.error && props.error?.message && (
+          <Typography variant={'body1'} component={'span'} color={'warning'}>
+            {props.error?.message}
+          </Typography>
+        )}
+      </>
+    ),
   }
   return <VaultRepayBase showTitle={true} {...propsPatch} {...props} />
 }
