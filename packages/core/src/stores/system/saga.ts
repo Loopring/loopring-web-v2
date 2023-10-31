@@ -293,7 +293,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     }
   }
 
-  //TODO: APP_NAME
+  //APP_NAME
   switch (APP_NAME.toLowerCase()) {
     case ENV_KEY.Bridge.toLowerCase():
     case ENV_KEY.Guardian.toLowerCase():

@@ -397,7 +397,6 @@ export const useVaultRepay = <
           ...(e as any),
         },
       })
-      //TODO: catch
     }
   }
 

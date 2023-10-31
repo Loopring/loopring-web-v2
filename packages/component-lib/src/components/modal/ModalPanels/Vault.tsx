@@ -251,11 +251,14 @@ export const VaultJoin_Failed = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    //TODO
     describe2: (
       <>
         {props.info && <JoinDes2 {...props} />}
-        <Typography>{props.error && props.error?.message}</Typography>
+        {props?.error && props.error?.message && (
+          <Typography variant={'body1'} component={'span'} color={'warning'}>
+            {props.error?.message}
+          </Typography>
+        )}
       </>
     ),
   }

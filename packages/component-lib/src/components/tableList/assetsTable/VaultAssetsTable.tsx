@@ -324,10 +324,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: '',
         headerCellClass: 'textAlignRight',
         // minWidth: 280,
-        formatter: ({ row }) => {
-          const token = row['token']
-          return <Button> todo traade</Button>
-        },
+        formatter: actionRow,
       },
     ]
 
