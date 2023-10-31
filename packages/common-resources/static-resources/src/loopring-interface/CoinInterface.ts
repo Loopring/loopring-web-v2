@@ -587,7 +587,7 @@ export type NetworkItemInfo = {
 export const url_path = 'https://static.loopring.io/events'
 export const url_test_path = 'https://static.loopring.io/events/testEvents'
 
-export type VaultLoadData<T> = {
+export type VaultLoanData<T> = {
   coinInfoMap: CoinMap<T, CoinInfo<T>>
   tradeData: T
 } & T
@@ -607,8 +607,8 @@ export type VaultBorrowData<
   borrowAmt: string
   totalQuote: string
   borrowAmtStr: string
-  request: sdk.VaultLoadRequest
-} & VaultLoadData<T>
+  request: sdk.VaultBorrowRequest
+} & VaultLoanData<T>
 
 export type VaultRepayData<T> = {
   maxRepayAmount: string
@@ -622,4 +622,4 @@ export type VaultRepayData<T> = {
   repayAmt: string
   repayAmtStr: string
   request: sdk.VaultRepayRequestV3WithPatch['request']
-} & VaultLoadData<T>
+} & VaultLoanData<T>

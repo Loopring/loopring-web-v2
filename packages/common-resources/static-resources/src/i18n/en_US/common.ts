@@ -2080,7 +2080,7 @@ export default {
   labelVaultRecord: 'Records',
   labelEnterToken: 'Select Token',
   labelVaultExitBtn: 'Close Out',
-  labelVaultLoadBtn: 'Load',
+  labelVaultLoanBtn: 'Loan',
   labelVaultTutorial: 'Tutorial',
   labelVaultTotalToken: 'Vault Token',
   labelVaultJoinMini: 'Minimum of {{arg}}',
@@ -2203,4 +2203,11 @@ export default {
   label7dPriceChange: '7d Price Change',
   labelVaultREDEEMPendingBtn: 'Closeout in Processing',
   labelVaultlnredeemWaiting: 'Closeout in Processing',
+  labelJoinTitle: 'Open Position',
+  labelRedeemTitle: 'Closeout',
+  labelRedeemDesMessage:
+    'Loopring Vault acts as an isolated margin account, enabling users to borrow and lend tokens with collateral. Besides supporting leveraged trading, it also facilitates the trading of tokens not available on Loopring DEX by tapping into CEX liquidity depth.',
+  labelJoinDesMessage:
+    'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
+  labelFailed: 'Failed',
 }

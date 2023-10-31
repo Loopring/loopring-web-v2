@@ -161,6 +161,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
       </Grid>
       <Grid
         container
+        columns={24}
         className={`btnInput-wrap
                   ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''}
                   ${error.error ? 'error' : ''}
@@ -172,8 +173,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
       >
         <Grid
           item
-          xs={6}
-          md={7}
+          xs={10}
           order={order === 'left' ? 0 : 1}
           className={`input-wrap input-wrap-${order}`}
           sx={{ position: 'relative' }}
@@ -215,8 +215,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
         <Grid
           item
           className={`btn-wrap btn-wrap-${order} bnt-input-max`}
-          xs={6}
-          md={5}
+          xs={10}
           order={order === 'left' ? 1 : 0}
           display={'flex'}
           direction={'row'}
@@ -280,9 +279,20 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
               <span className={'placeholder'}>{emptyText}</span>
             )}
           </ISBtn>
-          <Divider sx={{ order: 2 }} orientation={'vertical'} />
+        </Grid>
+        <Grid
+          item
+          order={2}
+          xs={4}
+          display={'flex'}
+          direction={'row'}
+          alignItems={'center'}
+          justifyContent={'space-around'}
+          paddingY={1}
+          paddingX={1}
+        >
+          <Divider orientation={'vertical'} />
           <Link
-            order={order === 'left' ? 3 : 1}
             component={'span'}
             fontSize={'inherit'}
             className={maxAllow && balance > 0 ? 'max-allow' : 'no-balance'}

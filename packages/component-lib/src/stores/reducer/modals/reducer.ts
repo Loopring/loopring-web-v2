@@ -7,7 +7,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
-  VaultLoadType,
+  VaultLoanType,
   VaultAction,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO } from '@loopring-web/loopring-sdk'
@@ -58,7 +58,7 @@ const initialState: ModalState = {
   isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
-  istShowVaultLoad: { isShow: false, type: VaultLoadType.Borrow, symbol: undefined },
+  istShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
   isShowNoVaultAccount: { isShow: false },
 }
 
@@ -389,11 +389,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultSwap = { ...action.payload }
     },
-    setShowVaultLoad(
+    setShowVaultLoan(
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & { type: string }>,
     ) {
-      state.istShowVaultLoad = { ...action.payload }
+      state.istShowVaultLoan = { ...action.payload }
     },
     setShowNoVaultAccount(
       state,
@@ -438,6 +438,6 @@ export const {
   setShowVaultExit,
   setShowVaultJoin,
   setShowVaultSwap,
-  setShowVaultLoad,
+  setShowVaultLoan,
   setShowNoVaultAccount,
 } = modalsSlice.actions
