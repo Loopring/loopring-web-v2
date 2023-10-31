@@ -95,6 +95,7 @@ export type VaultAssetsTableProps<R = RawDataAssetsItem> = {
   rowConfig?: typeof RowConfig
   forexMap: ForexMap<sdk.Currency>
   hideAssets?: boolean
+  actionRow: (props: { row }) => JSX.Element
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -111,7 +112,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       allowTrade,
       showFilter,
       onRowClick,
-      // getMarketArrayListCallback,
+      actionRow,
       hideSmallBalances,
       isLoading = false,
       setHideSmallBalances,
@@ -271,11 +272,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         headerCellClass: 'textAlignRight',
         cellClass: 'textAlignRight',
         // minWidth: 280,
-        formatter: ({ row }) => {
-          const token = row['token']
-          const tokenValue = token.value
-          return <Button> TODO trade</Button>
-        },
+        formatter: actionRow,
       },
     ]
     const getColumnMobileAssets = (t: TFunction): Column<RawDataAssetsItem, unknown>[] => [
@@ -355,7 +352,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           style={{
             height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
           }}
-          onRowClick={(index: any, row: any, col: any) => onRowClick && onRowClick(row)}
+          onRowClick={onRowClick}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}

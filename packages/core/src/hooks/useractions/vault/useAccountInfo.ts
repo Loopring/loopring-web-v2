@@ -17,7 +17,7 @@ export type VaultAccountInfoStatus = VaultLayer2States & {
   onJoinPop: (props: any) => void
   swapBtnStatus: TradeBtnStatus
   swapBtnLabel: string
-  onSwapPop: (props: any) => void
+  onSwapPop: (props: any & { symbol: string }) => void
   redeemBtnStatus: TradeBtnStatus
   onRedeemPop: (props: any) => void
   redeemBtnLabel: string
@@ -120,12 +120,13 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableSwapCheck,
     isLoading: false,
-    submitCallback: async (key?: string) => {
+    submitCallback: async ({ symbol }: { symbol?: string }) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
-      switch (vaultAccountInfo?.accountStatus) {
-        case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultSwap({ isShow: true, symbol: key ?? '' })
-          break
+      if (vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING) {
+        //sdk.VaultAccountStatus.IN_STAKING:
+        setShowVaultSwap({ isShow: true, symbol })
+      } else {
+        set
       }
     },
   })
