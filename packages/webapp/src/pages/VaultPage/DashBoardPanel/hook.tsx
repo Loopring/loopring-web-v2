@@ -170,13 +170,15 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   }
   React.useEffect(() => {
     if (match.params.item == VaultKey.VAULT_DASHBOARD) {
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(accountStatus as any)) {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
         setShowNoVaultAccount({
           isShow: false,
           des: '',
           title: '',
         })
-      } else if ([sdk.VaultAccountStatus.IN_REDEEM].includes(accountStatus as any)) {
+      } else if (
+        [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
+      ) {
         setShowNoVaultAccount({
           isShow: true,
           des: 'labelRedeemDesMessage',
@@ -191,7 +193,7 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
         })
       }
     }
-  }, [accountStatus, match.params.item])
+  }, [vaultAccountInfo?.accountStatus, match.params.item])
   const dialogBtn = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
@@ -495,7 +497,7 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
     btnProps,
     onBtnClose: () => {
       setShowNoVaultAccount({ isShow: false, whichBtn: undefined })
-      if ([sdk.VaultAccountStatus.IN_STAKING]) {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
       } else if (match.params.item == VaultKey.VAULT_DASHBOARD) {
         history.push(`${RouterPath.vault}/${VaultKey.VAULT_HOME}`)
       }
