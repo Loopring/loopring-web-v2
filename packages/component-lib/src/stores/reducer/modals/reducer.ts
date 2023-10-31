@@ -251,8 +251,9 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       }
     },
     setShowResetAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload
+      const { isShow, info } = action.payload
       state.isShowResetAccount.isShow = isShow
+      state.isShowResetAccount.info = info
     },
     setShowActiveAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow, info } = action.payload

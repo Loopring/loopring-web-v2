@@ -2,7 +2,7 @@ import { CoinInfo, CoinMap, IBData } from '@loopring-web/common-resources'
 import { WithTranslation } from 'react-i18next'
 import React from 'react'
 import { BasicACoinTradeProps } from './Interface'
-import { InputButton, InputButtonProps } from '../../basic-lib'
+import { InputButton, InputButtonProps, InputMaxButton } from '../../basic-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
@@ -16,6 +16,8 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
   handleError,
   inputBtnRef,
   inputButtonProps,
+  className,
+  isMaxBtn = false,
   ...rest
 }: BasicACoinTradeProps<T, I> & WithTranslation) => {
   const getDisabled = () => {
@@ -104,11 +106,24 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
     ...rest,
   } as InputButtonProps<T, CoinInfo<I>, I>
 
-  return (
+  return isMaxBtn ? (
+    <InputMaxButton
+      ref={inputBtnRef}
+      isShowCoinIcon={true}
+      disabled={getDisabled()}
+      className={className}
+      {...{
+        ...(inputBtnProps as any),
+        inputData: tradeData ? tradeData : ({} as T),
+        coinMap: coinMap ? coinMap : ({} as CoinMap<I, CoinInfo<I>>),
+      }}
+    />
+  ) : (
     <InputButton
       ref={inputBtnRef}
       isShowCoinIcon={true}
       disabled={getDisabled()}
+      className={className}
       {...{
         ...(inputBtnProps as any),
         inputData: tradeData ? tradeData : ({} as T),

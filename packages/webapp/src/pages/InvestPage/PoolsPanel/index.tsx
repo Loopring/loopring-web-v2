@@ -8,11 +8,16 @@ import { useAmmMapUI } from './hook'
 import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
 
 import { useNotify, useSystem } from '@loopring-web/core'
-import { AmmLogo, BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
+import {
+  AmmLogo,
+  InvestRouter,
+  InvestType,
+  RouterPath,
+  RowInvestConfig,
+} from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
-import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -55,10 +60,16 @@ export const PoolsPanel = withTranslation('common')(
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
-              {t("labelLiquidityPageTitle")}
+              {t('labelLiquidityPageTitle')}
             </Typography>
-            <Button onClick={() => history.push('/invest/balance')} sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }} variant={'contained'}>
-              {t("labelInvestMyAmm")}
+            <Button
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
+              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+              variant={'contained'}
+            >
+              {t('labelInvestMyAmm')}
             </Button>
           </Box>
           {!isMobile && <AmmLogo />}

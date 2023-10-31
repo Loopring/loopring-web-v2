@@ -316,9 +316,10 @@ export const useDualTrade = <
             (dualPriceResponse as sdk.RESULT_INFO).message
           ) {
           }
-          if (dualInfo?.__raw__?.info) {
+          if (dualInfo?.__raw__?.info && dualPriceResponse.infos) {
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
+              ...dualPriceResponse.infos[0],
             }
           }
           if (

@@ -11,7 +11,8 @@ import {
   useTokenMap,
   useTokenPrices,
   useWalletLayer2,
-  useWalletLayer2Socket, volumeToCountAsBigNumber,
+  useWalletLayer2Socket,
+  volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
   AccountStep,
@@ -25,11 +26,13 @@ import {
   AssetsRawDataItem,
   CurrencyToTag,
   EmptyValueTag,
-  getValuePrecisionThousand, globalSetup,
+  getValuePrecisionThousand,
+  globalSetup,
   InvestAssetRouter,
   myLog,
   PriceTag,
   RecordTabIndex,
+  RouterPath,
   SagaStatus,
   TabOrderIndex,
   TokenType,
@@ -38,7 +41,7 @@ import {
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
-import _ from 'lodash';
+import _ from 'lodash'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
   assetsRawData: R[]
@@ -63,12 +66,12 @@ export const useGetAssets = (): AssetPanelProps & {
   // const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({})
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
-  const {status: accountStatus, account} = useAccount()
-  const {sendSocketTopic, socketEnd} = useSocket()
-  const {allowTrade, forexMap} = useSystem()
-  const {status: tokenPriceStatus} = useTokenPrices()
-  const {btnStatus: assetBtnStatus, enableBtn, setLoadingBtn} = useBtnStatus()
-  const {setShowAccount} = useOpenModals()
+  const { status: accountStatus, account } = useAccount()
+  const { sendSocketTopic, socketEnd } = useSocket()
+  const { allowTrade, forexMap } = useSystem()
+  const { status: tokenPriceStatus } = useTokenPrices()
+  const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
+  const { setShowAccount } = useOpenModals()
   const {
     themeMode,
     currency,
@@ -79,28 +82,34 @@ export const useGetAssets = (): AssetPanelProps & {
     setHideSmallBalances,
     setHideL2Assets,
   } = useSettings()
-  const {status: walletL2Status} = useWalletLayer2()
+  const { status: walletL2Status } = useWalletLayer2()
 
-  const {marketArray} = useTokenMap()
-  const {marketCoins: defiCoinArray} = useDefiMap()
+  const { marketArray } = useTokenMap()
+  const { marketCoins: defiCoinArray } = useDefiMap()
   const getAssetsRawData = () => {
     myLog('assetsRawData', 'getAssetsRawData')
-    const {tokenPrices: {tokenPrices}, tokenMap: {tokenMap}, amm: {ammMap: {ammMap}}} = store.getState()
+    const {
+      tokenPrices: { tokenPrices },
+      tokenMap: { tokenMap },
+      amm: {
+        ammMap: { ammMap },
+      },
+    } = store.getState()
     const tokenPriceList = tokenPrices
-        ? Object.entries(tokenPrices).map((o) => ({
+      ? Object.entries(tokenPrices).map((o) => ({
           token: o[0],
           detail: o[1],
         }))
-        : []
-    const {walletMap} = makeWalletLayer2({needFilterZero: false})
+      : []
+    const { walletMap } = makeWalletLayer2({ needFilterZero: false })
 
     if (
-        tokenMap &&
-        !!Object.keys(tokenMap).length &&
-        !!Object.keys(walletMap ?? {}).length &&
-        !!tokenPriceList.length
+      tokenMap &&
+      !!Object.keys(tokenMap).length &&
+      !!Object.keys(walletMap ?? {}).length &&
+      !!tokenPriceList.length
     ) {
-      let totalAssets = sdk.toBig(0);
+      let totalAssets = sdk.toBig(0)
       let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
         let item: any = undefined
         const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key)
@@ -112,18 +121,20 @@ export const useGetAssets = (): AssetPanelProps & {
           }
           let tokenValueDollar = sdk.toBig(0)
           const withdrawAmount = volumeToCountAsBigNumber(
-              tokenInfo.token,
-              tokenInfo.detail?.detail?.pending?.withdraw ?? 0,
+            tokenInfo.token,
+            tokenInfo.detail?.detail?.pending?.withdraw ?? 0,
           )
           const depositAmount = volumeToCountAsBigNumber(
-              tokenInfo.token,
-              tokenInfo.detail?.detail?.pending?.deposit ?? 0,
+            tokenInfo.token,
+            tokenInfo.detail?.detail?.pending?.deposit ?? 0,
           )
 
           const totalAmount = volumeToCountAsBigNumber(
-              tokenInfo.token,
-              tokenInfo.detail?.detail?.total ?? 0,
-          )?.plus(depositAmount || 0).plus(withdrawAmount || 0)
+            tokenInfo.token,
+            tokenInfo.detail?.detail?.total ?? 0,
+          )
+            ?.plus(depositAmount || 0)
+            .plus(withdrawAmount || 0)
           // ?.plus(depositAmount || 0)
           // .plus(withdrawAmount || 0)
           const price = tokenPrices?.[tokenInfo.token] || 0
@@ -132,18 +143,17 @@ export const useGetAssets = (): AssetPanelProps & {
           }
           const isSmallBalance = tokenValueDollar.lt(1)
           const lockedAmount = volumeToCountAsBigNumber(
-              tokenInfo.token,
-              tokenInfo.detail?.detail?.locked ?? 0,
+            tokenInfo.token,
+            tokenInfo.detail?.detail?.locked ?? 0,
           )
-          const frozenAmount
-              = lockedAmount?.plus(withdrawAmount || 0).plus(depositAmount || 0)
+          const frozenAmount = lockedAmount?.plus(withdrawAmount || 0).plus(depositAmount || 0)
           item = {
             token: {
               type: isDefi
-                  ? TokenType.defi
-                  : tokenInfo.token.split('-')[0] === 'LP'
-                      ? TokenType.lp
-                      : TokenType.single,
+                ? TokenType.defi
+                : tokenInfo.token.split('-')[0] === 'LP'
+                ? TokenType.lp
+                : TokenType.single,
               value: tokenInfo.token,
             },
             // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
@@ -162,10 +172,10 @@ export const useGetAssets = (): AssetPanelProps & {
           item = {
             token: {
               type: isDefi
-                  ? TokenType.defi
-                  : key.split('-')[0] === 'LP'
-                      ? TokenType.lp
-                      : TokenType.single,
+                ? TokenType.defi
+                : key.split('-')[0] === 'LP'
+                ? TokenType.lp
+                : TokenType.single,
               value: key,
             },
             amount: EmptyValueTag,
@@ -186,7 +196,8 @@ export const useGetAssets = (): AssetPanelProps & {
             const rawList = token.split('-')
             rawList.splice(0, 1, 'AMM')
             const ammToken = rawList.join('-')
-            precision = ammMap[ammToken]?.precisions?.amount ?? tokenMap[item.token.value]?.precision ?? 0
+            precision =
+              ammMap[ammToken]?.precisions?.amount ?? tokenMap[item.token.value]?.precision ?? 0
           } else {
             precision = tokenMap[item.token.value].precision
           }
@@ -194,7 +205,9 @@ export const useGetAssets = (): AssetPanelProps & {
             ...item,
             precision: precision,
           })
-          totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0))
+          totalAssets = totalAssets.plus(
+            sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0),
+          )
           // totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0))
         }
         pre?.sort((a, b) => {
@@ -209,10 +222,10 @@ export const useGetAssets = (): AssetPanelProps & {
       setTotalAsset(totalAssets.toString())
     }
   }
-  const startWorker = _.debounce(getAssetsRawData, globalSetup.wait);
+  const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
-      sendSocketTopic({[WsTopicType.account]: true})
+      sendSocketTopic({ [WsTopicType.account]: true })
       myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
       setLoadingBtn()
     }
@@ -223,48 +236,47 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [account.readyState])
 
   React.useEffect(() => {
-    if (tokenPriceStatus === SagaStatus.UNSET &&
-        walletL2Status === SagaStatus.UNSET &&
-        assetsRawData.length && assetBtnStatus !== TradeBtnStatus.AVAILABLE) {
+    if (
+      tokenPriceStatus === SagaStatus.UNSET &&
+      walletL2Status === SagaStatus.UNSET &&
+      assetsRawData.length &&
+      assetBtnStatus !== TradeBtnStatus.AVAILABLE
+    ) {
       enableBtn()
     }
   }, [walletL2Status, assetsRawData, tokenPriceStatus, assetBtnStatus])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
   }, [])
-  useWalletLayer2Socket({walletLayer2Callback})
-  const getTokenRelatedMarketArray = React.useCallback(
-      (token: string) => {
-        const {marketArray} = store.getState().tokenMap
-        if (!marketArray) return []
-        return marketArray.filter((market) => {
-          const [coinA, coinB] = market.split('-')
-          return token === coinA || token === coinB
-        })
-      },
-      [],
-  )
-
+  useWalletLayer2Socket({ walletLayer2Callback })
+  const getTokenRelatedMarketArray = React.useCallback((token: string) => {
+    const { marketArray } = store.getState().tokenMap
+    if (!marketArray) return []
+    return marketArray.filter((market) => {
+      const [coinA, coinB] = market.split('-')
+      return token === coinA || token === coinB
+    })
+  }, [])
 
   const onReceive = React.useCallback(
-      (token?: any) => {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.AddAssetGateway,
-          info: (token) ? {symbol: token} : undefined,
-        })
-      },
-      [setShowAccount],
+    (token?: any) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.AddAssetGateway,
+        info: token ? { symbol: token } : undefined,
+      })
+    },
+    [setShowAccount],
   )
   const onSend = React.useCallback(
-      (token?: any, isToL1?: boolean) => {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.SendAssetGateway,
-          info: (token || isToL1) ? {symbol: token, isToL1} : undefined,
-        })
-      },
-      [setShowAccount],
+    (token?: any, isToL1?: boolean) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.SendAssetGateway,
+        info: token || isToL1 ? { symbol: token, isToL1 } : undefined,
+      })
+    },
+    [setShowAccount],
   )
 
   const assetTitleProps: AssetTitleProps = {
@@ -276,7 +288,7 @@ export const useGetAssets = (): AssetPanelProps & {
     accountId: account.accountId,
     hideL2Assets,
     onShowReceive: onReceive,
-    onShowSend: onSend
+    onShowSend: onSend,
   } as any
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
@@ -305,30 +317,33 @@ export const useGetAssets = (): AssetPanelProps & {
 }
 export const useAssetAction = () => {
   const [tokenLockDetail, setTokenLockDetail] = React.useState<
-      | undefined
-      | {
-    list: any[]
-    row: any
-  }
+    | undefined
+    | {
+        list: any[]
+        row: any
+      }
   >(undefined)
   const onTokenLockHold = async (_item) => {
     setTokenLockDetail(undefined)
-    const {account, tokenMap: {tokenMap}} = store.getState()
+    const {
+      account,
+      tokenMap: { tokenMap },
+    } = store.getState()
     if (LoopringAPI.userAPI && account.accountId) {
       const response = await LoopringAPI.userAPI.getUserLockSummary(
-          {
-            accountId: account.accountId,
-            tokenId: tokenMap[_item.name].tokenId,
-            // @ts-ignore
-            lockTags: [
-              sdk.LOCK_TYPE.DUAL_CURRENCY,
-              sdk.LOCK_TYPE.DUAL_BASE,
-              sdk.LOCK_TYPE.BTRADE,
-              sdk.LOCK_TYPE.L2STAKING,
-              sdk.LOCK_TYPE.STOP_LIMIT,
-            ].join(','),
-          } as any,
-          account.apiKey,
+        {
+          accountId: account.accountId,
+          tokenId: tokenMap[_item.name].tokenId,
+          // @ts-ignore
+          lockTags: [
+            sdk.LOCK_TYPE.DUAL_CURRENCY,
+            sdk.LOCK_TYPE.DUAL_BASE,
+            sdk.LOCK_TYPE.BTRADE,
+            sdk.LOCK_TYPE.L2STAKING,
+            sdk.LOCK_TYPE.STOP_LIMIT,
+          ].join(','),
+        } as any,
+        account.apiKey,
       )
 
       if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
@@ -336,84 +351,84 @@ export const useAssetAction = () => {
         setTokenLockDetail(() => {
           // @ts-ignore
           const sum: { key: string; value: string; link: string }[] = response.lockRecord.reduce(
-              // @ts-ignore
-              (prev, record) => {
-                const amount = sdk
-                    .toBig(record.amount)
-                    .div('1e' + tokenMap[_item.name].decimals)
-                    .toString()
-                prev[0] = {
-                  ...prev[0],
-                  value: sdk.toBig(prev[0].value?.replaceAll(sdk.SEP, '')).minus(amount).toString(),
-                }
-                let link = ''
-                switch (record.lockTag) {
-                  case sdk.LOCK_TYPE.DUAL_CURRENCY:
-                    link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
-                    break
-                  case sdk.LOCK_TYPE.DUAL_BASE:
-                    link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
-                    break
-                  case sdk.LOCK_TYPE.L2STAKING:
-                    link = `/#/invest/balance/${InvestAssetRouter.STAKELRC}`
-                    break
-                  case sdk.LOCK_TYPE.BTRADE:
-                    link = `/#/l2assets/history/${RecordTabIndex.BtradeSwapRecords}`
-                    break
-                  case sdk.LOCK_TYPE.STOP_LIMIT:
-                    link = `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
-                    break
-                }
-                prev.push({
-                  key: `label${record.lockTag}`,
-                  value: getValuePrecisionThousand(
-                      amount,
-                      tokenMap[_item.name].precision,
-                      tokenMap[_item.name].precision,
-                      undefined,
-                  ),
-                  link,
-                })
-                return prev
+            // @ts-ignore
+            (prev, record) => {
+              const amount = sdk
+                .toBig(record.amount)
+                .div('1e' + tokenMap[_item.name].decimals)
+                .toString()
+              prev[0] = {
+                ...prev[0],
+                value: sdk.toBig(prev[0].value?.replaceAll(sdk.SEP, '')).minus(amount).toString(),
+              }
+              let link = ''
+              switch (record.lockTag) {
+                case sdk.LOCK_TYPE.DUAL_CURRENCY:
+                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
+                  break
+                case sdk.LOCK_TYPE.DUAL_BASE:
+                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
+                  break
+                case sdk.LOCK_TYPE.L2STAKING:
+                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.STAKELRC}`
+                  break
+                case sdk.LOCK_TYPE.BTRADE:
+                  link = `/#/${RouterPath.l2assets}/history/${RecordTabIndex.BtradeSwapRecords}`
+                  break
+                case sdk.LOCK_TYPE.STOP_LIMIT:
+                  link = `/#/${RouterPath.l2assets}/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
+                  break
+              }
+              prev.push({
+                key: `label${record.lockTag}`,
+                value: getValuePrecisionThousand(
+                  amount,
+                  tokenMap[_item.name].precision,
+                  tokenMap[_item.name].precision,
+                  undefined,
+                ),
+                link,
+              })
+              return prev
+            },
+            [
+              {
+                key: `labelMarketOrderUnfilled`,
+                value: sdk
+                  .toBig(_item.locked ?? '0')
+                  .minus(_item?.withdrawAmount ?? 0)
+                  .minus(_item?.depositAmount ?? 0)
+                  .toString(),
+                link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
               },
-              [
-                {
-                  key: `labelMarketOrderUnfilled`,
-                  value: sdk
-                      .toBig(_item.locked ?? '0')
-                      .minus(_item?.withdrawAmount ?? 0)
-                      .minus(_item?.depositAmount ?? 0)
-                      .toString(),
-                  link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
-                },
-                ...(sdk.toBig(_item?.depositAmount ?? 0).gt(0)
-                    ? [
-                      {
-                        key: `labelDepositPending`,
-                        value: sdk.toBig(_item?.depositAmount ?? '0').toString(),
-                        link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
-                      },
-                    ]
-                    : []),
-                ...(sdk.toBig(_item?.withdrawAmount ?? 0).gt(0)
-                    ? [
-                      {
-                        key: `labelWithDrawPending`,
-                        value: sdk.toBig(_item?.withdrawAmount ?? '0').toString(),
-                        link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
-                      },
-                    ]
-                    : []),
-              ] as { key: string; value: string; link: string }[],
+              ...(sdk.toBig(_item?.depositAmount ?? 0).gt(0)
+                ? [
+                    {
+                      key: `labelDepositPending`,
+                      value: sdk.toBig(_item?.depositAmount ?? '0').toString(),
+                      link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
+                    },
+                  ]
+                : []),
+              ...(sdk.toBig(_item?.withdrawAmount ?? 0).gt(0)
+                ? [
+                    {
+                      key: `labelWithDrawPending`,
+                      value: sdk.toBig(_item?.withdrawAmount ?? '0').toString(),
+                      link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
+                    },
+                  ]
+                : []),
+            ] as { key: string; value: string; link: string }[],
           )
           if (_item.locked && sdk.toBig(sum[0].value).gt(0)) {
             sum[0] = {
               ...sum[0],
               value: getValuePrecisionThousand(
-                  sum[0].value,
-                  tokenMap[_item.name].precision,
-                  tokenMap[_item.name].precision,
-                  undefined,
+                sum[0].value,
+                tokenMap[_item.name].precision,
+                tokenMap[_item.name].precision,
+                undefined,
               ),
             }
           } else {
