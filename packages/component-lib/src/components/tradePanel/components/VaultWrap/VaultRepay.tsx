@@ -51,6 +51,7 @@ export const VaultRepayWrap = <T extends IBData<any>, I, VR extends VaultRepayDa
       : '0.00',
     maxAllow: true,
     tokenType: TokenType.vault,
+    order: 'right',
     // maxValue: vaultRepayData?.tradeData?.borrowed,
     ...tokenProps,
   }

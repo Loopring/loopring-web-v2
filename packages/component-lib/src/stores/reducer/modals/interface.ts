@@ -93,7 +93,7 @@ export interface ModalState {
   isShowVaultExit: ModalStatePlayLoad & Transaction
   isShowVaultJoin: ModalStatePlayLoad & Transaction
   isShowVaultSwap: ModalStatePlayLoad & Transaction
-  isShowVaultLoad: ModalStatePlayLoad &
+  isShowVaultLoan: ModalStatePlayLoad &
     Transaction & {
       type: string
     }

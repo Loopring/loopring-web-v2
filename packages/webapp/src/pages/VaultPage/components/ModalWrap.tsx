@@ -2,7 +2,7 @@ import React from 'react'
 import {
   useNotify,
   useVaultJoin,
-  useVaultLoad,
+  useVaultLoan,
   useVaultMap,
   useVaultRedeem,
   useVaultSwap,
@@ -14,10 +14,10 @@ import {
   useOpenModals,
   VaultExitPanel,
   VaultJoinPanel,
-  VaultLoadPanel,
+  VaultLoanPanel,
 } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { TOAST_TIME, TokenType, TRADE_TYPE, VaultLoadType } from '@loopring-web/common-resources'
+import { TOAST_TIME, TokenType, TRADE_TYPE, VaultLoanType } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 
 export const ModalVaultWrap = () => {
@@ -26,10 +26,10 @@ export const ModalVaultWrap = () => {
   const theme = useTheme()
   const { campaignTagConfig } = useNotify().notifyMap ?? {}
   const {
-    modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap, istShowVaultLoad },
+    modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap, istShowVaultLoan },
     setShowVaultJoin,
     setShowVaultExit,
-    setShowVaultLoad,
+    setShowVaultLoan,
     setShowVaultSwap,
   } = useOpenModals()
 
@@ -52,7 +52,7 @@ export const ModalVaultWrap = () => {
     market,
     isMobile,
   } = useVaultSwap({ path: 'vault' })
-  const { vaultRepayProps, vaultBorrowProps, vaultLoadType, handleTabChange } = useVaultLoad()
+  const { vaultRepayProps, vaultBorrowProps, vaultLoanType, handleTabChange } = useVaultLoan()
   return (
     <>
       <Toast
@@ -136,15 +136,15 @@ export const ModalVaultWrap = () => {
         content={<VaultExitPanel {...{ ...exitVaultProps }} />}
       />
       <Modal
-        open={istShowVaultLoad.isShow}
+        open={istShowVaultLoan.isShow}
         onClose={() => {
-          setShowVaultLoad({ isShow: false })
+          setShowVaultLoan({ isShow: false })
         }}
         content={
-          <VaultLoadPanel
+          <VaultLoanPanel
             vaultRepayProps={vaultRepayProps as any}
             vaultBorrowProps={vaultBorrowProps as any}
-            vaultLoadType={vaultLoadType as VaultLoadType}
+            vaultLoanType={vaultLoanType as VaultLoanType}
             handleTabChange={handleTabChange}
           />
         }

@@ -5,7 +5,7 @@ import {
   MapChainId,
   SagaStatus,
   TradeBtnStatus,
-  VaultLoadType,
+  VaultLoanType,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
@@ -38,7 +38,7 @@ export const useAccountInfo = () => {
     activeInfo,
   } = useVaultLayer2()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
-  const { setShowVaultJoin, setShowVaultSwap, setShowVaultExit, setShowVaultLoad } = useOpenModals()
+  const { setShowVaultJoin, setShowVaultSwap, setShowVaultExit, setShowVaultLoan } = useOpenModals()
   const { t } = useTranslation()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -198,7 +198,7 @@ export const useAccountInfo = () => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultLoad({ isShow: true, symbol: key ?? '', type: VaultLoadType.Borrow })
+          setShowVaultLoan({ isShow: true, symbol: key ?? '', type: VaultLoanType.Borrow })
           break
       }
     },
@@ -234,7 +234,7 @@ export const useAccountInfo = () => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultLoad({ isShow: true, symbol: key ?? '', type: VaultLoadType.Repay })
+          setShowVaultLoan({ isShow: true, symbol: key ?? '', type: VaultLoanType.Repay })
           break
       }
     },

@@ -825,7 +825,7 @@ export type VaultExitData<I = any> = {
 } & Partial<IBData<I>> &
   Partial<sdk.VaultExitRequest>
 
-export enum VaultLoadType {
+export enum VaultLoanType {
   Borrow = 'Borrow',
   Repay = 'Repay',
 }
@@ -843,6 +843,6 @@ export enum DualInvestConfirmType {
 export enum VaultAction {
   VaultJoin = 'VaultJoin',
   VaultExit = 'VaultExit',
-  VaultLoad = 'VaultLoad',
+  VaultLoan = 'VaultLoan',
   VaultSwap = 'VaultSwap',
 }
