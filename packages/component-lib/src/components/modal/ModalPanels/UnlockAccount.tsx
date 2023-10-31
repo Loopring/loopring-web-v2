@@ -37,8 +37,14 @@ export const UnlockAccount_Success = (props: PanelProps) => {
 export const UnlockAccount_Failed = ({
   error,
   errorOptions,
+  t,
   ...props
 }: PanelProps & { walletType?: WalletType; resetAccount: () => void }) => {
+  const isContractOrInCounterFactual =
+    props.walletType && (props.walletType.isContract || props.walletType.isInCounterFactualStatus)
+  const showDropdown =
+    error?.message === 'timeout of 6000ms exceeded' || isContractOrInCounterFactual
+  
   const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
   const propsPatch = {
     ...props,
@@ -57,10 +63,9 @@ export const UnlockAccount_Failed = ({
               alignItems={'center'}
             >
               <TransErrorHelp error={error} options={errorOptions} />
-              <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
+              {showDropdown && <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />}
             </Typography>
-            {props.walletType &&
-            (props.walletType.isContract || props.walletType.isInCounterFactualStatus) ? (
+            {isContractOrInCounterFactual ? (
               <Typography color={'textSecondary'} paddingLeft={2}>
                 <Trans i18nKey={'labelConnectUsSimple'} ns={'error'}>
                   Please
@@ -71,25 +76,35 @@ export const UnlockAccount_Failed = ({
                 </Trans>
               </Typography>
             ) : (
-              <Link onClick={props.resetAccount} marginTop={1}>
-                <Trans i18nKey={'labelReActiveAccount'} />
-              </Link>
+              error?.message === 'timeout of 6000ms exceeded' && (
+                <Box>
+                  <Typography variant={'body2'}>{t('labelUnlockErrorLine1')}</Typography>
+                </Box>
+              )
             )}
           </Box>
         ) : (
           <Trans i18nKey={'labelUnlockAccountFailed'} />
         )}
-        {dropdownStatus === 'up' && (
-          <TextareaAutosizeStyled
-            aria-label='Error Description'
-            minRows={5}
-            style={{ maxHeight: '90px', overflow: 'scroll' }}
-            disabled={true}
-            value={`${JSON.stringify(error)}}`}
-          />
-        )}
+        {showDropdown &&
+          dropdownStatus === 'up' &&
+          (isContractOrInCounterFactual ? (
+            <TextareaAutosizeStyled
+              aria-label='Error Description'
+              minRows={5}
+              style={{ maxHeight: '90px', overflow: 'scroll' }}
+              disabled={true}
+              value={`${JSON.stringify(error)}}`}
+            />
+          ) : (
+            <Typography onClick={props.resetAccount} marginTop={1} variant={'body2'}>
+              {t('labelUnlockErrorLine2Part1')}
+              <Link>{t('labelUnlockErrorLine2Part2')}</Link>
+              {t('labelUnlockErrorLine2Part3')}
+            </Typography>
+          ))}
       </>
     ),
   }
-  return <UnlockAccountBase {...{ ...propsPatch }} />
+  return <UnlockAccountBase {...{ ...propsPatch, t }} />
 }

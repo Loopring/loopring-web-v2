@@ -7,7 +7,6 @@ import {
   StylePaper,
   useContacts,
   useCreateRedPacket,
-  useNotify,
   useSystem,
 } from '@loopring-web/core'
 import {
@@ -17,6 +16,8 @@ import {
   NFTWholeINFO,
   RedPacketOrderData,
   TradeBtnStatus,
+  RouterPath,
+  RedPacketRouterIndex,
 } from '@loopring-web/common-resources'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useTranslation } from 'react-i18next'
@@ -102,7 +103,7 @@ export const CreateRedPacketUIPanel = <
           size={'medium'}
           sx={{ color: 'var(--color-text-secondary)' }}
           color={'inherit'}
-          onClick={() => history.push('/redPacket/markets')}
+          onClick={() => history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.markets}`)}
         >
           {t('labelCreateRedPacketTitle')}
         </Button>

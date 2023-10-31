@@ -20,9 +20,11 @@ import {
   CLAIM_TYPE,
   ClaimToken,
   RedPacketLimit,
-  SagaStatus,
+  RouterPath,
   SDK_ERROR_MAP_TO_UI,
   TokenType,
+  RedPacketRouterIndex,
+  RedPacketRecordsTabIndex,
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 
@@ -106,9 +108,13 @@ export const useClaimRedPacket = <R extends RawDataRedPacketClaimItem>(
   const history = useHistory()
   const onViewMoreClick = (type: 'NFTs' | 'blindbox') => {
     if (type === 'NFTs') {
-      history.push('/redPacket/records/NFTsUnClaimed')
+      history.push(
+        `${RouterPath.redPacket}/${RedPacketRouterIndex.records}/${RedPacketRecordsTabIndex.NFTsUnClaimed}`,
+      )
     } else {
-      history.push('/redPacket/records/BlindBoxUnClaimed')
+      history.push(
+        `${RouterPath.redPacket}/${RedPacketRouterIndex.records}/${RedPacketRecordsTabIndex.BlindBoxUnClaimed}`,
+      )
     }
   }
   const onCloseNFts = () => {

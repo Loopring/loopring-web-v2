@@ -38,11 +38,11 @@ import {
   RecordTabIndex,
   RedPacketColorConfig,
   RedPacketIcon,
-  RowConfig,
   SagaStatus,
   TOAST_TIME,
   TokenType,
-  myLog,
+  RouterPath,
+  RedPacketRouterIndex,
 } from '@loopring-web/common-resources'
 import { LuckyTokenClaimType, LuckyTokenItemForReceive, SoursURL } from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
@@ -92,7 +92,11 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     undefined as number | undefined,
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
-  const {redPackets: exclusiveRedPackets, setShowRedPacketsPopup, showPopup,} = useTargetRedPackets()
+  const {
+    redPackets: exclusiveRedPackets,
+    setShowRedPacketsPopup,
+    showPopup,
+  } = useTargetRedPackets()
   const { setShowRedPacket } = useOpenModals()
 
   const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
@@ -158,7 +162,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           variant={'text'}
           target='_self'
           rel='noopener noreferrer'
-          href={`/#/l2assets/history/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.redPacket}`}
+          href={`/#${RouterPath.l2records}/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.redPacket}`}
         >
           {t('labelTransactionsLink')}
         </Button>
@@ -168,7 +172,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           size={'small'}
           // sx={{ color: "var(--color-text-secondary)" }}
           color={'primary'}
-          onClick={() => history.push('/redPacket/markets')}
+          onClick={() => history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.markets}`)}
         >
           {t('labelRedPacketMarketsBtn')}
         </Button>
@@ -352,65 +356,75 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
               </DialogTitle>
               <DialogContent style={{ width: '480px', height: '480px' }}>
                 <Box marginTop={5} paddingX={4}>
-                  {exclusiveRedPackets && exclusiveRedPackets.map((redpacket) => (
-                    <Box
-                      display={'flex'}
-                      paddingX={2.5}
-                      paddingY={1.5}
-                      borderRadius={1}
-                      bgcolor={'var(--field-opacity)'}
-                      justifyContent={'space-between'}
-                      marginBottom={2}
-                      key={redpacket.hash}
-                    >
-                      <Box display={'flex'} alignItems={'center'}>
-                        {redpacket.isNft ? (
-                          <NftImageStyle
-                            src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
-                            style={{
-                              width: `${theme.unit * 4}px`,
-                              height: `${theme.unit * 4}px`,
-                              borderRadius: `${theme.unit * 0.5}px`,
-                            }}
-                          />
-                        ) : (
-                          <Box width={theme.unit * 4} height={theme.unit * 4}>
-                            <CoinIcons
-                              size={theme.unit * 4}
-                              type={TokenType.single}
-                              tokenIcon={[coinJson[idIndex[redpacket.tokenId ?? 0]]]}
-                            />
-                          </Box>
-                        )}
-                        
-                        <Typography whiteSpace={'nowrap'} maxWidth={'150px'} overflow={'hidden'} textOverflow={'ellipsis'} marginLeft={1} marginRight={1}>
-                          {redpacket.isNft
-                            ? redpacket.nftTokenInfo?.metadata?.base.name
-                            : idIndex[redpacket.tokenId]}
-                        </Typography>
-                        {redpacket.type.mode === LuckyTokenClaimType.BLIND_BOX && <Tooltip title={<>{t('labelRedpacketFromBlindbox')}</>}>
-                          <img
-                            width={24}
-                            height={24}
-                            style={{ marginLeft: `${0.5 * theme.unit}px` }}
-                            src={
-                              theme.mode === 'dark'
-                                ? SoursURL + '/images/from_blindbox_dark.png'
-                                : SoursURL + '/images/from_blindbox_light.png'
-                            }
-                          />
-                        </Tooltip>}
-                      </Box>
-                      <Button
-                        variant={'contained'}
-                        onClick={() => {
-                          onClickOpenExclusive(redpacket)
-                        }}
+                  {exclusiveRedPackets &&
+                    exclusiveRedPackets.map((redpacket) => (
+                      <Box
+                        display={'flex'}
+                        paddingX={2.5}
+                        paddingY={1.5}
+                        borderRadius={1}
+                        bgcolor={'var(--field-opacity)'}
+                        justifyContent={'space-between'}
+                        marginBottom={2}
+                        key={redpacket.hash}
                       >
-                        {t('labelRedPacketOpen')}
-                      </Button>
-                    </Box>
-                  ))}
+                        <Box display={'flex'} alignItems={'center'}>
+                          {redpacket.isNft ? (
+                            <NftImageStyle
+                              src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
+                              style={{
+                                width: `${theme.unit * 4}px`,
+                                height: `${theme.unit * 4}px`,
+                                borderRadius: `${theme.unit * 0.5}px`,
+                              }}
+                            />
+                          ) : (
+                            <Box width={theme.unit * 4} height={theme.unit * 4}>
+                              <CoinIcons
+                                size={theme.unit * 4}
+                                type={TokenType.single}
+                                tokenIcon={[coinJson[idIndex[redpacket.tokenId ?? 0]]]}
+                              />
+                            </Box>
+                          )}
+
+                          <Typography
+                            whiteSpace={'nowrap'}
+                            maxWidth={'150px'}
+                            overflow={'hidden'}
+                            textOverflow={'ellipsis'}
+                            marginLeft={1}
+                            marginRight={1}
+                          >
+                            {redpacket.isNft
+                              ? redpacket.nftTokenInfo?.metadata?.base.name
+                              : idIndex[redpacket.tokenId]}
+                          </Typography>
+                          {redpacket.type.mode === LuckyTokenClaimType.BLIND_BOX && (
+                            <Tooltip title={<>{t('labelRedpacketFromBlindbox')}</>}>
+                              <img
+                                width={24}
+                                height={24}
+                                style={{ marginLeft: `${0.5 * theme.unit}px` }}
+                                src={
+                                  theme.mode === 'dark'
+                                    ? SoursURL + '/images/from_blindbox_dark.png'
+                                    : SoursURL + '/images/from_blindbox_light.png'
+                                }
+                              />
+                            </Tooltip>
+                          )}
+                        </Box>
+                        <Button
+                          variant={'contained'}
+                          onClick={() => {
+                            onClickOpenExclusive(redpacket)
+                          }}
+                        >
+                          {t('labelRedPacketOpen')}
+                        </Button>
+                      </Box>
+                    ))}
                 </Box>
               </DialogContent>
             </>

@@ -8,6 +8,7 @@ import {
   SUBMIT_PANEL_AUTO_CLOSE,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
+import BigNumber from 'bignumber.js'
 
 import {
   DAYS,
@@ -36,7 +37,6 @@ export const useDualEdit = <
   refresh?: (item: R) => void
 }) => {
   const { exchangeInfo } = useSystem()
-  // const { dualViewInfo } = detail ?? {}
   const { setShowAccount } = useOpenModals()
   const { t } = useTranslation()
   const { account } = useAccount()
@@ -143,35 +143,50 @@ export const useDualEdit = <
             }
             const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
             request.newStrike = _tradeData.renewTargetPrice
-            const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
+            const buyToken =
+              tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE
+                ? tokenMap[tradeDual?.tokenInfoOrigin?.quote]
+                : tokenMap[tradeDual?.tokenInfoOrigin?.base] //tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
 
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
-              storageId: tradeDual.tokenInfoOrigin.storageId,
+              storageId: storageId.orderId,
               accountId: account.accountId,
               sellToken: {
-                tokenId: storageId.orderId, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
+                tokenId: tradeDual.tokenInfoOrigin.tokenIn, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
                 volume: tradeDual.tokenInfoOrigin.amountIn,
               },
               buyToken: {
-                tokenId: tradeDual.tokenInfoOrigin.tokenOut ?? 0,
+                tokenId: buyToken.tokenId,
+                //tradeDual.tokenInfoOrigin.tokenOut ?? 0,
                 ...(tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE
                   ? {
                       volume: sdk
-                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                        .div('1e' + sellToken.decimals)
-                        .times(tradeDual.dualReinvestInfo.newStrike)
+                        .toBig(
+                          sdk
+                            .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                            .div('1e' + sellToken.decimals)
+                            .times(request.newStrike)
+                            .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+                        )
                         .times('1e' + buyToken.decimals)
                         .toString(),
                     }
                   : {
                       volume: sdk
-                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                        .div('1e' + sellToken.decimals)
-                        .div(tradeDual.dualReinvestInfo.newStrike)
+                        .toBig(
+                          sdk
+                            .toBig(
+                              sdk
+                                .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                                .div('1e' + sellToken.decimals),
+                            )
+                            .div(request.newStrike)
+                            .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+                        )
                         .times('1e' + buyToken.decimals)
-                        .toString(),
+                        .toFixed(0, BigNumber.ROUND_FLOOR),
                     }),
               },
               validUntil: getTimestampDaysLater(DAYS * 12),
