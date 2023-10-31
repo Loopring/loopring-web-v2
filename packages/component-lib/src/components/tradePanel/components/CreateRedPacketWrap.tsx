@@ -21,7 +21,7 @@ import {
   NftImageStyle,
   TextField,
 } from '../../basic-lib'
-import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
+import { useTranslation, WithTranslation, withTranslation, Trans } from 'react-i18next'
 import {
   BackIcon,
   CoinInfo,
@@ -1288,7 +1288,35 @@ export const CreateRedPacketScope = withTranslation()(
               <Typography marginRight={0.5} variant={'h4'}>
                 {t('labelLuckyTokenViewTypePrivate')}{' '}
               </Typography>
-              <Tooltip title={t('labelRedPacketPrivateTooltip')}>
+              <Tooltip
+                title={
+                  <Trans
+                    i18nKey={'labelRedPacketPrivateTooltip'}
+                    components={{
+                      p: (
+                        <Typography
+                          whiteSpace={'pre-line'}
+                          component={'span'}
+                          variant={'body1'}
+                          display={'block'}
+                          color={'textSecondary'}
+                          paddingY={1}
+                        />
+                      ),
+                      br: <br />,
+                      li: (
+                        <Typography
+                          whiteSpace={'pre-line'}
+                          component={'ol'}
+                          display={'list-item'}
+                          variant={'body1'}
+                          color={'textSecondary'}
+                        />
+                      ),
+                    }}
+                  />
+                }
+              >
                 <Box>
                   <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
                 </Box>
@@ -1469,18 +1497,32 @@ export const TargetRedpacktSelectStep = withTranslation()(
             padding={2.5}
             border={'1px solid var(--color-border)'}
             borderRadius={2}
-            height={'276px'}
+            height={'316px'}
           >
-            <Typography width={'100%'}>Option 1</Typography>
-            <Typography color={'var(--color-text-secondary)'}>
-              创建一个新钱包需要以下步骤
-            </Typography>
-            <Typography color={'var(--color-text-secondary)'} marginTop={2}>
-              1.选择发送的红包类型 2.发送红包的数量/发送时间
-            </Typography>
-            <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
-              3.该红包发送给谁 4.收到红包的人通知样式
-            </Typography>
+            <Typography width={'100%'}>{t("labelTargetRedpacketOption1")}</Typography>
+            <img
+              height={100}
+              width={100}
+              src={SoursURL + '/images/exclusive_redpacket_empty.png'}
+            />
+            <Box>
+              <Typography marginTop={-3} color={'var(--color-text-secondary)'}>
+                {t("labelTargetRedpacketCreateTitle")}
+              </Typography>
+              <Typography color={'var(--color-text-secondary)'}>
+                {t("labelTargetRedpacketCreateStep1")}
+              </Typography>
+              <Typography color={'var(--color-text-secondary)'}>
+                {t("labelTargetRedpacketCreateStep2")}
+              </Typography>
+              <Typography color={'var(--color-text-secondary)'}>
+                {t("labelTargetRedpacketCreateStep3")}
+              </Typography>
+              <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
+                {t("labelTargetRedpacketCreateStep4")}
+              </Typography>
+            </Box>
+
             <BtnMain
               {...{
                 defaultLabel: 'labelRedpacketCreateNew',
@@ -1495,7 +1537,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
         <Box
           height={enlarged ? '590px' : '290px'}
           marginX={9}
-          marginTop={3}
+          marginTop={enlarged ? 8 : 3}
           bgcolor={'var(--color-global-bg)'}
           padding={2.5}
           border={'1px solid var(--color-border)'}
@@ -1503,14 +1545,19 @@ export const TargetRedpacktSelectStep = withTranslation()(
           position={'relative'}
         >
           <Typography marginBottom={3} width={'100%'}>
-            Option 2:{' '}
+            {t("labelTargetRedpacketOption2")}{' '}
             {targetRedPackets?.length === 0
               ? t('labelRedpacketExclusiveEmpty')
               : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
           </Typography>
           {targetRedPackets?.length > 0 ? (
             <Box width={'100%'}>
-              <Box display={'flex'} flexWrap={'wrap'} maxHeight={enlarged ? '480px' : '190px'} overflow={'scroll'}>
+              <Box
+                display={'flex'}
+                flexWrap={'wrap'}
+                maxHeight={enlarged ? '480px' : '190px'}
+                overflow={'scroll'}
+              >
                 {targetRedPackets &&
                   targetRedPackets
                     .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
@@ -1616,15 +1663,15 @@ export const TargetRedpacktSelectStep = withTranslation()(
               width={'100%'}
             >
               <img
-                height={160}
-                width={160}
+                height={100}
+                width={100}
                 src={SoursURL + '/images/exclusive_redpacket_empty.png'}
               />
-              <Typography marginTop={-4} variant={'body2'} textAlign={'center'}>
-                You do not have an existing wallet yet
+              <Typography marginTop={-3} variant={'body2'} textAlign={'center'}>
+                {t("labelTargetRedpacketNoRedpacket")}
               </Typography>
               <Typography width={'300px'} marginTop={2} variant={'body2'} textAlign={'center'}>
-                If your prepared but unaddressed Red Packets will be displayed here !
+                {t("labelTargetRedpacketNoRedpacketDes")}
               </Typography>
             </Box>
           )}

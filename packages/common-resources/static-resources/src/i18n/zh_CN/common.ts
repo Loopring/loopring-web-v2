@@ -1878,8 +1878,16 @@ export default {
   labelRedPacketRecipientList: 'Recipient List',
   labelRedPacketPublicTooltip:
     'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip:
-    'Your Red Packet is private, and only the addresses you specify can claim it.',
+  labelRedPacketPrivateTooltip: `
+    <p>Your Red Packet is private, and only the addresses you specify can claim it.</p>
+    <p>To create a new Exclusive Red Packet, please follow these steps:</p>
+    <li>1. Select the type of Red Packet</li>
+    <li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>
+    <li>3. Designate the recipients</li>
+    <li>4. Set the Notification Display</li>
+    <p>For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>
+    <p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>
+  `,
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
@@ -2007,4 +2015,13 @@ export default {
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelTargetRedpacketOption1: 'Option 1',
+  labelTargetRedpacketCreateTitle: 'The following steps are required to create a new Exclusive Red Packet',
+  labelTargetRedpacketCreateStep1: '1. Select the type of red packet to be sent.',
+  labelTargetRedpacketCreateStep2: '2. Number of red packets to be sent/transmission time',
+  labelTargetRedpacketCreateStep3: '3. Designated Red Packet Recipients',
+  labelTargetRedpacketCreateStep4: '4. Notification display for red packet recipients',
+  labelTargetRedpacketNoRedpacket: 'You do not have an existing wallet yet',
+  labelTargetRedpacketNoRedpacketDes: 'If your prepared but unaddressed Red Packets will be displayed here !',
+  labelTargetRedpacketOption2: 'Option 2:',
 }
