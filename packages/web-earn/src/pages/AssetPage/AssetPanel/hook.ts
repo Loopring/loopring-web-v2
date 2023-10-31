@@ -6,6 +6,7 @@ import {
   useAccount,
   useBtnStatus,
   useDefiMap,
+  useModalData,
   useSocket,
   useSystem,
   useTokenMap,
@@ -70,7 +71,13 @@ export const useGetAssets = (): AssetPanelProps & {
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
-  const { setShowAccount } = useOpenModals()
+  const {
+    setShowAccount,
+    setShowDeposit,
+    setShowWithdraw,
+    modals: { isShowAccount },
+  } = useOpenModals()
+  const { resetDepositData, resetWithdrawData } = useModalData()
   const {
     themeMode,
     currency,
@@ -260,9 +267,15 @@ export const useGetAssets = (): AssetPanelProps & {
   const onReceive = React.useCallback(
     (token?: any) => {
       setShowAccount({
+        isShow: false,
+        info: { lastFailed: undefined },
+      })
+      if (isShowAccount?.info?.symbol) {
+        resetDepositData()
+      }
+      setShowDeposit({
         isShow: true,
-        step: AccountStep.AddAssetGateway,
-        info: token ? { symbol: token } : undefined,
+        symbol: token,
       })
     },
     [setShowAccount],
@@ -270,9 +283,16 @@ export const useGetAssets = (): AssetPanelProps & {
   const onSend = React.useCallback(
     (token?: any, isToL1?: boolean) => {
       setShowAccount({
+        isShow: false,
+        info: { lastFailed: undefined },
+      })
+      if (isShowAccount?.info?.symbol) {
+        resetWithdrawData()
+      }
+      setShowWithdraw({
         isShow: true,
-        step: AccountStep.SendAssetGateway,
-        info: token || isToL1 ? { symbol: token, isToL1 } : undefined,
+        symbol: token,
+        info: { isToMyself: true }
       })
     },
     [setShowAccount],
