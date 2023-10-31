@@ -81,13 +81,18 @@ export const useVaultSwap = <
 }) => {
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
   const { tokenPrices } = useTokenPrices()
+  const {
+    setShowSupport,
+    setShowTradeIsFrozen,
+    modals: { isShowVaultSwap },
+    setShowAccount,
+  } = useOpenModals()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
-  const [_, coinA, coinB] = marketArray[0]?.match(/(\w+)-(\w+)/i) ?? ['', 'VLRC', 'VETH']
-  //High: No not Move!!!!!!
+  // //High: No not Move!!!!!!
   const { realMarket } = usePairMatch({
     path,
-    coinA,
-    coinB,
+    coinA: isShowVaultSwap?.symbol ?? marketArray[0]?.match(/(\w+)-(\w+)/i)[1] ?? '#null',
+    coinB: '#null',
     marketArray,
     tokenMap,
   })
@@ -97,11 +102,7 @@ export const useVaultSwap = <
   const refreshRef = React.createRef()
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { isMobile } = useSettings()
-  const {
-    setShowSupport,
-    setShowTradeIsFrozen,
-    modals: { isShowVaultSwap },
-  } = useOpenModals()
+
   const { account } = useAccount()
   const {
     toggle: { VaultInvest },
@@ -109,8 +110,6 @@ export const useVaultSwap = <
 
   /** loaded from loading **/
   const { exchangeInfo, allowTrade } = useSystem()
-  // const { coinMap, tokenMap } = useTokenMap()
-  const { setShowAccount } = useOpenModals()
 
   const { status: vaultLayerStatus } = useVaultLayer2()
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
@@ -141,6 +140,7 @@ export const useVaultSwap = <
       marketArray,
       marketMap,
       tokenMap,
+      coinMap,
       defaultA: result && result[1],
       defaultB: result && result[2],
     })
@@ -239,7 +239,7 @@ export const useVaultSwap = <
   }>({ market: undefined })
   React.useEffect(() => {
     if (isShowVaultSwap.isShow) {
-      resetMarket(realMarket ?? '#null-#null', 'sell')
+      resetMarket(`${isShowVaultSwap?.symbol ?? '#null'}-#null`, 'sell')
     } else {
       resetTradeVault()
       setIsMarketStatus({ market: undefined })

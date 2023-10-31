@@ -445,13 +445,13 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
   }, [vaultAccountInfoStatus])
   const onRowClick = React.useCallback(
     ({ row }: { row: R }) => {
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(accountStatus as any) || activeInfo?.hash) {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
         onSwapPop({ symbol: row.token.value })
       } else {
         setShowNoVaultAccount({ isShow: true, whichBtn: VaultAction.VaultJoin })
       }
     },
-    [accountStatus],
+    [vaultAccountInfo?.accountStatus],
   )
   myLog('assetsRawData', assetsRawData)
   return {

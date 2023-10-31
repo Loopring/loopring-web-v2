@@ -303,6 +303,7 @@ export const marketInitCheck = ({
   tokenMap,
   marketMap,
   defaultA = 'LRC',
+  coinMap,
 }: // defaultB = 'ETH',
 {
   market: string
@@ -311,20 +312,26 @@ export const marketInitCheck = ({
   marketArray?: any
   tokenMap?: any
   marketMap?: any
+  coinMap?: any
   defaultA?: string | null
   defaultB?: string | null
 }): { tradePair: MarketType } => {
   const {
-    coinMap,
+    coinMap: _coinMap,
     marketMap: _marketMap,
     marketArray: _marketArray,
     tokenMap: _tokenMap,
   } = store.getState().tokenMap
+  if (coinMap) {
+  } else {
+    coinMap = _coinMap
+  }
   if (marketArray) {
   } else {
     marketArray = _marketArray
     tokenMap = _tokenMap
     marketMap = _marketMap
+    coinMap = _coinMap
   }
   const { ammMap } = store.getState().amm.ammMap
   if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
