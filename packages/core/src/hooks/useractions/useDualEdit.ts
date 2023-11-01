@@ -144,7 +144,7 @@ export const useDualEdit = <
             const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
             request.newStrike = _tradeData.renewTargetPrice
             const [, , base, quote] =
-              (tradeDual.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/gi) ?? []
+              (tradeDual.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
             const buyToken =
               tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE ? tokenMap[quote] : tokenMap[base] //tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
