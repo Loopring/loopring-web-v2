@@ -84,7 +84,7 @@ const MyLiquidity: any = withTranslation('common')(
   }: WithTranslation & {
     isHideTotal?: boolean
     className?: string
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
+    ammActivityMap: sdk.LoopringMap<sdk.LoopringMap<sdk.AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
     noHeader?: boolean
     path?: string
