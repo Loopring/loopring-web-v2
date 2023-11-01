@@ -231,7 +231,7 @@ export const useBtradeSwap = <
           ...tradeDataTmp,
         }
       })
-      history.push(`${RouterPath.btrade}}/${_market}`)
+      history.push(`${RouterPath.btrade}/${_market}`)
 
       updateTradeBtrade({
         market,
