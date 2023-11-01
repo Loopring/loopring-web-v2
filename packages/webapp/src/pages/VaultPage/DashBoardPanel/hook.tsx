@@ -169,7 +169,7 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
     accountStaticCallBack(btnClickCallbackArray, [props])
   }
   React.useEffect(() => {
-    if (match.params.item == VaultKey.VAULT_DASHBOARD) {
+    if (match?.params?.item == VaultKey.VAULT_DASHBOARD) {
       if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
         setShowNoVaultAccount({
           isShow: false,
