@@ -53,7 +53,6 @@ export const VaultRepayWrap = <T extends IBData<any>, I, VR extends VaultRepayDa
     tokenType: TokenType.vault,
     order: 'right',
     // maxValue: vaultRepayData?.tradeData?.borrowed,
-    ...tokenProps,
   }
   const label = React.useMemo(() => {
     if (vaultRepayBtnI18nKey) {
@@ -121,6 +120,7 @@ export const VaultRepayWrap = <T extends IBData<any>, I, VR extends VaultRepayDa
             tradeData: tradeData as any,
             coinMap: vaultRepayData?.coinInfoMap as any,
             inputButtonDefaultProps,
+            ...tokenProps,
             coinRef,
           }}
         />

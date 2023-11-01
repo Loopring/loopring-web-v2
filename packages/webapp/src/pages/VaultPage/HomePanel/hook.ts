@@ -383,7 +383,9 @@ export const useVaultMarket = <R = TickerNew>({
     [history],
   )
   const marketProps = useMarket({
-    handleItemClick,
+    handleItemClick: (row) => {
+      handleRowClick(0, row)
+    },
     handleRowClick,
     tickerMap: vaultTickerMap,
     tokenMap: vaultTokenMap,

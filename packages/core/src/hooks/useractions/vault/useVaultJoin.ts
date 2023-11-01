@@ -46,21 +46,18 @@ import {
   connectProvides,
 } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
+import BigNumber from 'bignumber.js'
 
 export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { t } = useTranslation()
-  const { tokenMap: vaultTokenMap, joinTokenMap, coinMap: vaultCoinMap } = useVaultMap()
+  const { tokenMap: vaultTokenMap, joinTokenMap, coinMap: vaultCoinMap, erc20Map } = useVaultMap()
   const { tokenMap, coinMap, idIndex } = useTokenMap()
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
   const { exchangeInfo, chainId, baseURL } = useSystem()
   const { account } = useAccount()
   const { updateVaultJoin, vaultJoinData } = useTradeVault()
   const [isLoading, setIsLoading] = React.useState(false)
-  const [tradeData, setTradeData] = React.useState<T>({
-    belong: undefined,
-    balance: undefined,
-    tradeValue: undefined,
-  } as unknown as T)
+
   const isActiveAccount =
     [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
       vaultAccountInfo?.accountStatus ?? ('' as any),
@@ -78,15 +75,15 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       supportData = {
         maxShowVal: getValuePrecisionThousand(
           sdk.toBig(vaultTokenInfo.btradeAmount).div('1e' + ercToken.decimals),
-          ercToken.precision,
-          ercToken.precision,
+          vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
+          vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
 
         minShowVal: getValuePrecisionThousand(
           sdk.toBig(vaultTokenInfo.vaultTokenAmounts.minAmount).div('1e' + vaultTokenInfo.decimals),
-          ercToken.precision,
-          ercToken.precision,
+          vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
+          vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
         maxAmount: vaultTokenInfo.btradeAmount,
@@ -198,19 +195,21 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           } else {
             status = 'labelFinished'
           }
-          const amount = getValuePrecisionThousand(
-            sdk.toBig(response2?.raw_data?.order?.fillAmountS).div('1e' + ercToken.decimals),
-            ercToken.precision,
-            ercToken.precision,
-            undefined,
-          )
+
           setShowAccount({
             isShow: true,
             step: AccountStep.VaultJoin_Success,
             info: {
               title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
               status: t(status),
-              amount,
+              amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+                ? getValuePrecisionThousand(
+                    vaultJoinData.tradeValue,
+                    ercToken.precision,
+                    ercToken.precision,
+                    undefined,
+                  )
+                : 0,
               sum: getValuePrecisionThousand(
                 vaultJoinData.tradeValue,
                 ercToken.precision,
@@ -238,15 +237,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       }
     } catch (e) {
       let error
-      const code =
-        (e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-          ? UIERROR_CODE.ERROR_ORDER_FAILED
-          : (e as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN
-      error = new CustomErrorWithCode({
-        code,
-        message: (e as sdk.RESULT_INFO)?.message,
-        ...SDK_ERROR_MAP_TO_UI[code],
-      })
       setIsLoading(false)
       setShowAccount({
         isShow: true,
@@ -549,14 +539,11 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       ...vaultJoinData,
       walletInfo,
     }
-    // const =
-    setTradeData({
-      ...walletInfo,
-    })
     updateVaultJoin({
       ...walletInfo,
       ...vaultJoinData,
       ...calcSupportData(walletInfo),
+      tradeData: walletInfo,
     })
   }
   const vaultLayer2Callback = React.useCallback(() => {
@@ -592,19 +579,32 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       updateVaultLayer2({})
     }
   }, [isShow])
-  const handlePanelEvent = async (props: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
-    setTradeData(props.tradeData as T)
-    const tokenSymbol = props.tradeData.belong
+  const handlePanelEvent = async (data: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
+    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
+    const tokenSymbol = data.tradeData.belong
+    let walletInfo: any = {
+      ...walletMap[tokenSymbol],
+      balance: (walletMap && walletMap[tokenSymbol]?.count) ?? 0,
+      tradeValue: data.tradeData?.tradeValue
+        ? sdk
+            .toBig(data.tradeData?.tradeValue)
+            .toFixed(
+              erc20Map[data.tradeData.belong]?.tokenInfo?.vaultTokenAmounts?.qtyStepScale,
+              BigNumber.ROUND_DOWN,
+            )
+        : data.tradeData?.tradeValue,
+    }
     // debugger
     if (tokenSymbol) {
       updateVaultJoin({
         ...vaultJoinData,
         amount: sdk
-          .toBig(props.tradeData.tradeValue ?? 0)
+          .toBig(walletInfo.tradeValue ?? 0)
           .times('1e' + tokenMap[tokenSymbol].decimals)
           .toString(),
-        ...calcSupportData(props.tradeData),
-        ...props.tradeData,
+        tradeData: walletInfo,
+        ...calcSupportData(data.tradeData),
+        ...walletInfo,
         // walletMap: makeWalletLayer2({ needFilterZero: true }).walletMap ?? {},
       })
     }
@@ -624,10 +624,18 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     disabled: false,
     onSubmitClick: (_data: T) => onBtnClick(),
     propsExtends: {},
-    tradeData: tradeData as unknown as T,
+    tradeData: vaultJoinData.tradeData as unknown as T,
     handlePanelEvent,
     walletMap: vaultJoinData.walletMap as WalletMap<any>,
     vaultJoinData,
     coinMap: isActiveAccount ? walletAllowMap : walletAllowCoin,
+    tokenProps: {
+      decimalsLimit:
+        erc20Map[vaultJoinData?.tradeData?.belong]?.tokenInfo?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: erc20Map[vaultJoinData?.tradeData?.belong]?.tokenInfo?.vaultTokenAmounts
+        ?.qtyStepScale
+        ? true
+        : false,
+    },
   }
 }

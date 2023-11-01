@@ -1179,7 +1179,7 @@ export const useVaultSwap = <
       updateTradeVault({ market, tradeCalcData: _tradeCalcData })
     }
   }, [market, tradeVault, tradeData, tradeCalcData, setTradeCalcData])
-  myLog('vaultLayer2 swapBtnStatus', btnStatus)
+  // myLog('vaultLayer2 swapBtnStatus', btnStatus)
   return {
     isMarketInit,
     toastOpen,
