@@ -127,6 +127,7 @@ export const makeVault = (
         erc20Array.push(erc20Symbol)
         erc20Map[erc20Symbol] = {
           ...item,
+          tokenInfo: tokensMap[idIndex[ele.baseTokenId]],
         }
         return prev
       } else {

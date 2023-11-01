@@ -14,6 +14,7 @@ import { useFocusRef } from '../hooks'
 import { IInput, ISBtn, IWrap } from './style'
 import { CoinIcon } from './Default'
 import { sanitize } from 'dompurify'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {
@@ -268,7 +269,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             value={typeof sValue === 'undefined' ? '' : sValue}
             allowNegativeValue={false}
             decimalSeparator='.'
-            groupSeparator=','
+            groupSeparator={sdk.SEP}
             name={name}
             disabled={!(!disabled || belong) || disableInputValue || loading}
             placeholder={placeholderText}

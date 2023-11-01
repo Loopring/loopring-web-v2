@@ -255,18 +255,19 @@ export const useAccountInfo = () => {
   }, [])
 
   const refresh = () => {
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as any)
+    }
     updateVaultLayer2({})
     nodeTimer.current = setTimeout(() => {
       refresh()
     }, 10000)
   }
   React.useEffect(() => {
-    if (vaultAccountInfo?.accountStatus) {
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as any)
-      }
-      refresh()
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer.current as any)
     }
+    refresh()
     return () => {
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer.current as any)

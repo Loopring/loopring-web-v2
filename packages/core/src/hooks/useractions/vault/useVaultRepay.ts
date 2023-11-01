@@ -69,16 +69,16 @@ export const useVaultRepay = <
         maxRepayStr: getValuePrecisionThousand(
           borrowed,
           // sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
-          vaultToken.precision,
-          vaultToken.precision,
+          vaultToken?.vaultTokenAmounts?.qtyStepScale,
+          vaultToken?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
         minRepayAmount: minRepayAmt,
         minRepayStr: getValuePrecisionThousand(
           minRepayAmt,
           // sdk.toBig(vaultToken.btradeAmount).div('1e' + vaultToken.decimals),
-          vaultToken.precision,
-          vaultToken.precision,
+          vaultToken?.vaultTokenAmounts?.qtyStepScale,
+          vaultToken?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
         maxRepayVol: sdk
@@ -92,8 +92,8 @@ export const useVaultRepay = <
           .toString(),
         repayAmtStr: getValuePrecisionThousand(
           tradeVaule ?? 0,
-          vaultToken.precision,
-          vaultToken.precision,
+          vaultToken?.vaultTokenAmounts?.qtyStepScale,
+          vaultToken?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
         repayAmt: tradeVaule ?? 0,
@@ -190,7 +190,14 @@ export const useVaultRepay = <
             walletInfo = {
               ...walletInfo,
               balance: walletInfo ? walletInfo.count : 0,
-              tradeValue: data.tradeData?.tradeValue,
+              tradeValue: data.tradeData?.tradeValue
+                ? sdk
+                    .toBig(data.tradeData?.tradeValue)
+                    .toFixed(
+                      vaultTokenMap[data?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
+                      BigNumber.ROUND_DOWN,
+                    )
+                : data.tradeData?.tradeValue,
               max: BigNumber.min(walletInfo.borrowed, walletInfo.count),
             }
             setTradeData(walletInfo)
@@ -269,9 +276,9 @@ export const useVaultRepay = <
           }
 
           const amount = getValuePrecisionThousand(
-            sdk.toBig(response2?.raw_data?.order?.fillAmountS).div('1e' + vaultToken.decimals),
-            vaultToken.precision,
-            vaultToken.precision,
+            sdk.toBig(response2?.raw_data?.operation?.amountIn).div('1e' + vaultToken.decimals),
+            vaultToken?.vaultTokenAmounts?.qtyStepScale,
+            vaultToken?.vaultTokenAmounts?.qtyStepScale,
             undefined,
           )
           setShowAccount({
@@ -279,7 +286,9 @@ export const useVaultRepay = <
             step: AccountStep.VaultRepay_Success,
             info: {
               status: t(status),
-              amount,
+              amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+                ? vaultRepayData.repayAmtStr
+                : 0,
               sum: vaultRepayData.repayAmtStr,
               vSymbol: vaultToken.symbol,
               time: response2?.raw_data?.order?.createdAt,
@@ -415,5 +424,12 @@ export const useVaultRepay = <
     tradeData: { ...vaultRepayData.tradeData },
     vaultRepayData: vaultRepayData as unknown as V,
     tokenInfo: vaultTokenMap[vaultRepayData?.belong],
+    tokenProps: {
+      decimalsLimit: vaultTokenMap[vaultRepayData?.belong]?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: vaultTokenMap[vaultRepayData?.tradeData?.belong]?.vaultTokenAmounts
+        ?.qtyStepScale
+        ? true
+        : false,
+    },
   }
 }

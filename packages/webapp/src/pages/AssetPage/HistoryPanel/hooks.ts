@@ -1321,11 +1321,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + erc20Token.decimals)
                     percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
-                    // percentage = sdk
-                    //   .toBig(fillAmountS ?? 0)
-                    //   .div(amountS ?? 1)
-                    //   .times(100)
-                    //   .toFixed(2)
                     mainContentRender = `${
                       fillAmount.gte(0)
                         ? getValuePrecisionThousand(fillAmount, precision, precision)

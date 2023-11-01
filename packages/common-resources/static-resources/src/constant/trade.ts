@@ -802,29 +802,6 @@ export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
     originalQuoteSymbol: string
   }
 
-export type VaultJoinData<I = any> = {
-  walletMap: WalletMap<I>
-  coinMap: CoinMap<I> & { vaultToken: string; vaultId: number }
-  vaultLayer2Map: WalletMap<I>
-  vaultSymbol?: string
-  request?: sdk.VaultJoinRequest
-  maxShowVal: string
-  minShowVal: string
-  maxAmount: string
-  minAmount: string
-  amount: string
-  isMerge: boolean
-  vaultTokenInfo: sdk.TokenInfo
-  // isShouldClean:boolean
-  __request__: sdk.VaultJoinRequest
-} & Partial<IBData<I>> &
-  Partial<sdk.VaultJoinRequest>
-
-export type VaultExitData<I = any> = {
-  __request__: any
-} & Partial<IBData<I>> &
-  Partial<sdk.VaultExitRequest>
-
 export enum VaultLoanType {
   Borrow = 'Borrow',
   Repay = 'Repay',

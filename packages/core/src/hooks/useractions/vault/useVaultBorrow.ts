@@ -166,7 +166,14 @@ export const useVaultBorrow = <
           walletInfo = {
             ...walletInfo,
             balance: walletInfo ? walletInfo.count : 0,
-            tradeValue: data.tradeData?.tradeValue,
+            tradeValue: data.tradeData?.tradeValue
+              ? sdk
+                  .toBig(data.tradeData?.tradeValue)
+                  .toFixed(
+                    vaultTokenMap[data?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
+                    BigNumber.ROUND_DOWN,
+                  )
+              : data.tradeData?.tradeValue,
           }
           vaultBorrowData = {
             ...vaultBorrowData,
@@ -269,17 +276,12 @@ export const useVaultBorrow = <
         } else {
           status = 'labelSuccess'
         }
-        const amount = getValuePrecisionThousand(
-          sdk.toBig(response2?.raw_data?.order?.fillAmountS ?? 0).div('1e' + vaultToken.decimals),
-          vaultToken.precision,
-          vaultToken.precision,
-          undefined,
-        )
+
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultBorrow_Success,
           info: {
-            amount,
+            amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? vaultBorrowData.repayAmtStr : 0,
             sum: vaultBorrowData.borrowAmtStr,
             status: t(status),
             forexMap,
@@ -412,5 +414,13 @@ export const useVaultBorrow = <
     coinMap: vaultCoinMap,
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,
+    tokenProps: {
+      decimalsLimit:
+        vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts
+        ?.qtyStepScale
+        ? true
+        : false,
+    },
   }
 }

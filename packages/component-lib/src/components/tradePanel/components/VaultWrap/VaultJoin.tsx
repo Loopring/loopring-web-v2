@@ -33,6 +33,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   isActiveAccount,
   // coinAPrecision,
   // coinBPrecision,
+  tokenProps,
   ...rest
 }: Required<VaultJoinWrapProps<T, I, V>>) => {
   const { t, ...i18n } = useTranslation()
@@ -112,8 +113,9 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
               type: TRADE_TYPE.TOKEN,
               disabled,
               onChangeEvent: onChangeEvent as any,
-              inputCoinRef: inputBtnRef,
               inputCoinDefaultProps: inputButtonDefaultProps,
+              ...tokenProps,
+              inputCoinRef: inputBtnRef,
               // inputCoinProps: rest?.inputCoinProps,
             }}
           />
