@@ -193,7 +193,7 @@ export const useGetVaultAssets = <R = AssetsRawDataItem,>({
         })
       }
     }
-  }, [vaultAccountInfo?.accountStatus, match.params.item])
+  }, [vaultAccountInfo?.accountStatus, match?.params?.item])
   const dialogBtn = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
