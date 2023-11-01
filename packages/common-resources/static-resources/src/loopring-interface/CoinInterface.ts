@@ -607,7 +607,7 @@ export type VaultBorrowData<
   borrowAmt: string
   totalQuote: string
   borrowAmtStr: string
-  request: sdk.VaultBorrowRequest
+  request: sdk.VaultLoanRequest
 } & VaultLoanData<T>
 
 export type VaultRepayData<T> = {
@@ -625,26 +625,27 @@ export type VaultRepayData<T> = {
 } & VaultLoanData<T>
 
 export type VaultJoinData<I = any, T = IBData<I>> = {
-  walletMap: WalletMap<I>
-  coinMap: CoinMap<I> & { vaultToken: string; vaultId: number }
-  vaultLayer2Map: WalletMap<I>
-  vaultSymbol?: string
-  request?: sdk.VaultJoinRequest
-  maxShowVal: string
-  minShowVal: string
-  maxAmount: string
-  minAmount: string
-  amount: string
-  isMerge: boolean
-  vaultTokenInfo: sdk.TokenInfo
-  tradeData: T
-  // isShouldClean:boolean
-  __request__: sdk.VaultJoinRequest
+	walletMap: WalletMap<I>
+	coinMap: CoinMap<I> & { vaultToken: string; vaultId: number }
+	vaultLayer2Map: WalletMap<I>
+	vaultSymbol?: string
+	request?: sdk.VaultJoinRequest
+	maxShowVal: string
+	minShowVal: string
+	maxAmount: string
+	minAmount: string
+	amount: string
+	isMerge: boolean
+	vaultTokenInfo: sdk.TokenInfo
+	tradeData: T
+	// isShouldClean:boolean
+	__request__: sdk.VaultJoinRequest
 } & Partial<IBData<I>> &
-  Partial<sdk.VaultJoinRequest>
+	Partial<sdk.VaultJoinRequest>
 
 export type VaultExitData<I = any, T = IBData<I>> = {
-  __request__: any
-  tradeData: T
+	__request__: any
+	tradeData: T
 } & Partial<IBData<I>> &
-  Partial<sdk.VaultExitRequest>
+	Partial<sdk.VaultExitRequest>
+
