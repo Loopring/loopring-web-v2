@@ -21,7 +21,7 @@ import {
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { LoopringAPI, store, useAccount, useSystem } from '../../index'
+import { LoopringAPI, store, useSystem } from '../../index'
 import { useTranslation } from 'react-i18next'
 
 export const useDualEdit = <
@@ -39,7 +39,6 @@ export const useDualEdit = <
   const { exchangeInfo } = useSystem()
   const { setShowAccount } = useOpenModals()
   const { t } = useTranslation()
-  const { account } = useAccount()
   const { setShowDual } = useOpenModals()
   const {
     editDual: { dualViewInfo },
@@ -107,6 +106,7 @@ export const useDualEdit = <
 
   const onSubmitBtnClick = React.useCallback(async () => {
     const editDual = store.getState()._router_tradeDual.editDual
+    const account = store.getState().account
     let { tradeData: _tradeData } = editDual
     _tradeData = { ..._tradeData, ...tradeData }
     const tradeDual = editDual?.dualViewInfo?.__raw__?.order
@@ -224,12 +224,6 @@ export const useDualEdit = <
             content: t('labelDualEditSuccess'),
           })
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-          // if (
-          //   store.getState().modals.isShowAccount.isShow &&
-          //   store.getState().modals.isShowAccount.step == AccountStep.Dual_Success
-          // ) {
-          //   setShowAccount({ isShow: false })
-          // }
         }
         refresh &&
           refresh({
@@ -261,9 +255,6 @@ export const useDualEdit = <
     }
     setIsLoading(false)
   }, [
-    account.accountId,
-    account.apiKey,
-    account.eddsaKey.sk,
     exchangeInfo,
     setShowAccount,
     setShowDual,

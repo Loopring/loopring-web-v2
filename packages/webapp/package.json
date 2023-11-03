@@ -47,8 +47,8 @@
   "homepage": ".",
   "scripts": {
     "prettier": "prettier . --write",
-    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && git rev-parse --short HEAD; cross-env REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production  craco build",
-    "dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development craco start",
+    "build": "cross-env REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production  craco build",
+    "dev": "cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development craco start",
     "build_dev": "REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development craco build"
   },
   "browserslist": {
