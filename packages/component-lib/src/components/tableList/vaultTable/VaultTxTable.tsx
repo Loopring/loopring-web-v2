@@ -6,7 +6,7 @@ import { Box, BoxProps, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
-import { RawDataVaultTxItem } from './Interface'
+import { RawDataVaultTxItem, VaultRecordType } from './Interface'
 import { globalSetup, Info2Icon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment/moment'
@@ -94,12 +94,12 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                <Tooltip title={t(`labelVault${row.type}Des`).toString()}>
-                  <Typography component={'span'} display={'flex'} alignItems={'center'}>
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {t(`labelVault${row.type}`)}
-                  </Typography>
-                </Tooltip>
+                {/*<Tooltip title={t(`labelVault${row.type}Des`).toString()}>*/}
+                <Typography component={'span'} display={'flex'} alignItems={'center'}>
+                  {/*<Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />*/}
+                  {t(`labelVault${row.type}`)}
+                </Typography>
+                {/*</Tooltip>*/}
               </Box>
             )
           },
@@ -120,7 +120,26 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           key: 'status',
           name: t('labelVaultTxStatus'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return <> {t(`labelVault${row.status}`) + `(${row.percentage}%)`} </>
+            const color =
+              row.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+                ? 'var(--color-success)'
+                : row.status === sdk.VaultOperationStatus.VAULT_STATUS_PENDING
+                ? 'var(--color-primary)'
+                : row.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+                ? 'var(--color-error)'
+                : 'var(--color-text-primary)'
+            return (
+              <Typography
+                variant={'body1'}
+                display={'inline-flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                color={color}
+              >
+                {t(`labelVault${row.status}`) +
+                  `${row.type === VaultRecordType.trade ? '(' + row.percentage + '%)' : ''}`}
+              </Typography>
+            )
           },
         },
         {
@@ -151,12 +170,12 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                <Tooltip title={t(`labelVault${row.type}Des`).toString()}>
-                  <Typography component={'span'} display={'flex'}>
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {t(`labelVault${row.type}`)}
-                  </Typography>
-                </Tooltip>
+                {/*<Tooltip title={t(`labelVault${row.type}Des`).toString()}>*/}
+                <Typography component={'span'} display={'flex'}>
+                  {/*<Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />*/}
+                  {t(`labelVault${row.type}`)}
+                </Typography>
+                {/*</Tooltip>*/}
               </Box>
             )
           },
@@ -181,6 +200,14 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
 
           name: t('labelVaultTxStatus') + '/' + t('labelVaultTxTime'),
           formatter: ({ row }: FormatterProps<R>) => {
+            const color =
+              row.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+                ? 'var(--color-success)'
+                : row.status === sdk.VaultOperationStatus.VAULT_STATUS_PENDING
+                ? 'var(--color-primary)'
+                : row.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+                ? 'var(--color-error)'
+                : 'var(--color-text-primary)'
             return (
               <Box
                 display={'flex'}
@@ -189,7 +216,17 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                <Typography>{t(`labelVault${row.status}`) + `(${row.percentage}%)`}</Typography>
+                <Typography
+                  component={'span'}
+                  color={color}
+                  variant={'body1'}
+                  display={'inline-flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                >
+                  {t(`labelVault${row.status}`) +
+                    `${row.type === VaultRecordType.trade ? '(' + row.percentage + '%)' : ''}`}
+                </Typography>
                 <Typography>{moment(row?.raw_data?.order?.createdAt).fromNow()}</Typography>
               </Box>
             )

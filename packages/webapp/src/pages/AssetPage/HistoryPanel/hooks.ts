@@ -1456,6 +1456,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   type,
                   vSymbol,
                   vTokenB,
+                  operateType,
                   symbolB,
                   feeStr,
                   feeTokenSymbol: feeToken?.symbol,
