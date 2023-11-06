@@ -367,7 +367,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
     if (LoopringAPI.exchangeAPI) {
       let baseURL, socketURL, etherscanBaseUrl
       if (extendsChain.includes(chainId.toString())) {
-        const socketPrefix = `${process.env['REACT_APP_API_WS_' + chainId.toString() + '_RREV']}`
+        const socketPrefix = process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
         baseURL = `https://${process.env['REACT_APP_API_URL_' + chainId.toString()]}`
         socketURL = `wss://${socketPrefix}${
           process.env['REACT_APP_API_URL_' + chainId.toString()]
@@ -379,7 +379,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           socketURL = `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
         } else {
           const isDevToggle = store.getState().settings.isDevToggle
-          let socketPrefix = `${process.env['REACT_APP_API_WS_' + chainId.toString() + '_RREV']}`
+          let socketPrefix = process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
           if (isDevToggle === true && process.env?.REACT_APP_TEST_ENV) {
             socketPrefix = ''
             baseURL = `https://${process.env.REACT_APP_API_URL_5}`.replace('uat2', 'dev')
