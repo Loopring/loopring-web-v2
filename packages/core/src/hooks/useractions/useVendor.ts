@@ -260,7 +260,7 @@ export const useVendor = () => {
 
   const closeBanxa = () => {
     // @ts-ignore
-    var parentsNode: undefined | HTMLElement = window.document.getElementById('#iframeBanxaTarget')
+    var parentsNode: undefined | HTMLElement = window.document.getElementById('iframeBanxaTarget')
     if (parentsNode && parentsNode.style) {
       // @ts-ignore
       parentsNode.style.display = 'none'

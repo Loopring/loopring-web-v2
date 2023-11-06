@@ -316,9 +316,10 @@ export const useDualTrade = <
             (dualPriceResponse as sdk.RESULT_INFO).message
           ) {
           }
-          if (dualInfo?.__raw__?.info) {
+          if (dualInfo?.__raw__?.info && dualPriceResponse.infos) {
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
+              ...dualPriceResponse.infos[0],
             }
           }
           if (
@@ -379,6 +380,8 @@ export const useDualTrade = <
   useWalletLayer2Socket({ walletLayer2Callback })
   const sendRequest = React.useCallback(async () => {
     const tradeDual = store.getState()._router_tradeDual.tradeDual
+    const account = store.getState().account
+
     try {
       setIsLoading(true)
       if (
@@ -495,15 +498,7 @@ export const useDualTrade = <
     } finally {
       should15sRefresh(true)
     }
-  }, [
-    account.accountId,
-    account.apiKey,
-    account.eddsaKey.sk,
-    exchangeInfo,
-    setShowAccount,
-    setShowDual,
-    tokenMap,
-  ])
+  }, [exchangeInfo, setShowAccount, setShowDual, tokenMap])
 
   // const isNoBalance = ;
   const onSubmitBtnClick = React.useCallback(async () => {

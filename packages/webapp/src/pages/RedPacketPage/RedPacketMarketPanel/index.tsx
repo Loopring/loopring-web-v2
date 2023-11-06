@@ -29,7 +29,9 @@ import {
   BackIcon,
   CheckBoxIcon,
   CheckedIcon,
+  RedPacketRouterIndex,
   RefreshIcon,
+  RouterPath,
   ScanQRIcon,
   SoursURL,
   TabTokenTypeIndex,
@@ -76,12 +78,16 @@ export const RedPacketMarketPanel = ({ setToastOpen }: { setToastOpen: (props: a
   const handleTabChange = (value: TabTokenTypeIndex) => {
     switch (value) {
       case TabTokenTypeIndex.ERC20:
-        history.push('/redPacket/markets/ERC20')
+        history.push(
+          `${RouterPath.redPacket}/${RedPacketRouterIndex.markets}/${TabTokenTypeIndex.ERC20}`,
+        )
         setCurrentTab(TabTokenTypeIndex.ERC20)
         break
       case TabTokenTypeIndex.NFT:
       default:
-        history.replace('/redPacket/markets/NFT')
+        history.replace(
+          `${RouterPath.redPacket}/${RedPacketRouterIndex.markets}/${TabTokenTypeIndex.NFT}`,
+        )
         setCurrentTab(TabTokenTypeIndex.NFT)
         break
     }
@@ -177,7 +183,7 @@ export const RedPacketMarketPanel = ({ setToastOpen }: { setToastOpen: (props: a
           size={'medium'}
           sx={{ color: 'var(--color-text-secondary)' }}
           color={'inherit'}
-          onClick={() => history.push(`/l2assets/assets/${AssetTabIndex.RedPacket}`)}
+          onClick={() => history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.RedPacket}`)}
         >
           {t('labelRedPacketMarkets')}
         </Button>
@@ -186,7 +192,7 @@ export const RedPacketMarketPanel = ({ setToastOpen }: { setToastOpen: (props: a
             variant={'contained'}
             size={'small'}
             sx={{ marginLeft: 1 }}
-            onClick={() => history.push('/redPacket/create')}
+            onClick={() => history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.create}`)}
           >
             <Typography variant={'body1'}>{t('labelCreateRedPacket')}</Typography>
           </Button>
@@ -195,7 +201,7 @@ export const RedPacketMarketPanel = ({ setToastOpen }: { setToastOpen: (props: a
             size={'medium'}
             color={'inherit'}
             sx={{ marginLeft: 1 }}
-            onClick={() => history.push('/redPacket/records')}
+            onClick={() => history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.records}`)}
           >
             {t('labelMyRedPacket')}
           </Button>

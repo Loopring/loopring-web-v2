@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, CardContent, Grid, Typography } from '@mui/material'
+import { Box, CardContent, Grid } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { TradePanel } from './TradePanel'
 import {
@@ -16,7 +16,13 @@ import {
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
+import {
+  BackIcon,
+  InvestRouter,
+  InvestType,
+  RouterPath,
+  TOAST_TIME,
+} from '@loopring-web/common-resources'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
@@ -79,12 +85,12 @@ export const StyleCardContent = styled(CardContent)`
   }
 ` as typeof CardContent
 
-const ButtonStyled = styled(Button)`  
+const ButtonStyled = styled(Button)`
   background-color: var(--color-button-outlined);
   color: var(--color-text-primary);
   :hover {
     background-color: var(--color-button-outlined);
-    ::before{
+    ::before {
       border-radius: 4px;
     }
   }
@@ -115,7 +121,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
       setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
     }
   }
-  const match: any = useRouteMatch('/invest/leverageETH/:isJoin?')
+  const match: any = useRouteMatch('/invest/leverageeth/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()
@@ -136,7 +142,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
         height={6 * theme.unit}
         alignItems={'center'}
         containerProps={{
-          borderBottom: '1px solid var(--color-border)'
+          borderBottom: '1px solid var(--color-border)',
         }}
       >
         <Box width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
@@ -146,15 +152,22 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             size={'medium'}
             sx={{ color: 'var(--color-text-primary)' }}
             color={'inherit'}
-            onClick={() => history.push(`/invest/overview`)}
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
+            }
           >
-            {t("labelBack")}
+            {t('labelBack')}
           </Button>
 
           {/* <Typography variant={'h4'}>
             {t('labelLeverageETHStaking')}
           </Typography> */}
-          <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+          <Button
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+            }
+            variant={'text'}
+          >
             {t('labelMyInvestLRCStaking')}{' '}
             {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
           </Button>
@@ -202,7 +215,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             handleClose={(_e, isAgree) => {
               if (!isAgree) {
                 setConfirmedDefiInvest({ isShow: false })
-                history.push('/invest/overview')
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
               } else {
                 confirmedLeverageETHInvest()
                 setConfirmedDefiInvest({ isShow: false })

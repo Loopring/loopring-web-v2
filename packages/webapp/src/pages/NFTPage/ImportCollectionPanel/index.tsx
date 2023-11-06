@@ -1,6 +1,12 @@
 import { Box } from '@mui/material'
 import React from 'react'
-import { AccountStatus, BackIcon, CollectionMeta } from '@loopring-web/common-resources'
+import {
+  AccountStatus,
+  BackIcon,
+  CollectionMeta,
+  NFTSubRouter,
+  RouterPath,
+} from '@loopring-web/common-resources'
 import { useAccount, useModalData } from '@loopring-web/core'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -39,7 +45,7 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>() => {
         setView(CollectionImportView.Item)
       } else {
         setView(CollectionImportView.Guide)
-        history.replace('/nft/importLegacyCollection')
+        history.replace(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}`)
       }
     }
   }, [search, account.readyState])
@@ -52,7 +58,7 @@ export const ImportCollectionPanel = <Co extends CollectionMeta>() => {
           size={'medium'}
           sx={{ color: 'var(--color-text-secondary)' }}
           color={'inherit'}
-          onClick={() => history.push('/nft/myCollection')}
+          onClick={() => history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)}
         >
           {searchParams.get('isEdit')
             ? t('labelManageCollectionTitle')
