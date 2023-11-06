@@ -44,7 +44,11 @@ const getAccount = async (): Promise<{
     clearTimeout(__timer__ as any)
   }
   return {
-    account,
+    account: {
+      ...account,
+      isContractAddress: walletType?.loopringWalletContractVersion ? true : false,
+      isCFAddress: walletType?.isInCounterFactualStatus ? true : false
+    },
     walletType: {
       ...walletType,
       isContract1XAddress: walletType?.loopringWalletContractVersion?.startsWith('V1_') ?? false,

@@ -5,14 +5,11 @@ import {
   dexSwapDependAsync,
   getTimestampDaysLater,
   LoopringAPI,
-  makeMarketArray,
   makeWalletLayer2,
   MAPFEEBIPS,
   marketInitCheck,
   reCalcStoB,
   store,
-  tickerService,
-  updatePageTradePro,
   useAccount,
   useBtradeMap,
   usePairMatch,
@@ -36,7 +33,6 @@ import {
   defaultBlockTradeSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
-  globalSetup,
   IBData,
   MarketType,
   myLog,
@@ -48,6 +44,7 @@ import {
   UIERROR_CODE,
   WalletMap,
   RouterPath,
+  globalSetup,
 } from '@loopring-web/common-resources'
 import {
   AccountStep,
@@ -66,13 +63,16 @@ import { useTradeBtrade } from '../../stores/router/tradeBtrade'
 import BigNumber from 'bignumber.js'
 import { merge } from 'rxjs'
 import { btradeOrderbookService } from '../../services'
+import _ from 'lodash'
 
 const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
   const { sendSocketTopic, socketEnd } = useSocket()
   const { account } = useAccount()
-  const { tradeBtrade } = useTradeBtrade()
+  const { tradeBtrade, updateTradeBtrade } = useTradeBtrade()
+  const { marketMap } = useBtradeMap()
+
   const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
-  const debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
+  const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade?.depth?.symbol) {
       sendSocketTopic({
@@ -81,7 +81,8 @@ const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
           showOverlap: false,
           markets: [tradeBtrade?.depth?.symbol],
           level: 0,
-          snapshot: true,
+          count: 50,
+          snapshot: false,
         },
       })
     } else if (tradeBtrade?.depth?.symbol) {
@@ -90,7 +91,8 @@ const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
           showOverlap: false,
           markets: [tradeBtrade?.depth?.symbol],
           level: 0,
-          snapshot: true,
+          count: 50,
+          snapshot: false,
         },
       })
     }
@@ -99,15 +101,19 @@ const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
     }
   }, [account.readyState, tradeBtrade?.depth?.symbol])
   React.useEffect(() => {
+    const { tradeBtrade } = store.getState()._router_tradeBtrade
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
       // const { market } = store.getState()._router_tradeBtrade.tradeBtrade
-      if (
-        btradeOrderbookMap &&
-        // @ts-ignore
-        btradeOrderbookMap?.symbol &&
-        btradeOrderbookMap.market === btradeOrderbookMap?.symbol
-      ) {
-        debonceCall()
+      const item = marketMap[tradeBtrade.market]
+      if (btradeOrderbookMap && item.btradeMarket && btradeOrderbookMap[item?.btradeMarket]) {
+        updateTradeBtrade({
+          // @ts-ignore
+          market: item.market,
+          depth: btradeOrderbookMap[item?.btradeMarket],
+          ...item,
+        })
+        myLog('useBtradeSwap: depth', btradeOrderbookMap[item?.btradeMarket])
+        // debonceCall()
       }
     })
     return () => subscription.unsubscribe()
@@ -710,7 +716,7 @@ export const useBtradeSwap = <
           depth,
           ...marketMap[market],
         })
-        myLog('useBtradeSwap:', market, depth?.symbol)
+        myLog('useBtradeSwap: depth', depth)
       } catch (error: any) {
         myLog('useBtradeSwap:', error, 'go to LRC-ETH')
         setToastOpen({
