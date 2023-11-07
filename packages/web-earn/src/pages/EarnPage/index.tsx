@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
-import { CoinIcon, ConfirmInvestDualRisk } from '@loopring-web/component-lib'
-import { Box, Button, Modal, Typography } from '@mui/material'
+import { CoinIcon, useSettings } from '@loopring-web/component-lib'
+import { Box, Button, Typography } from '@mui/material'
 
 import { withTranslation } from 'react-i18next'
 import { DualModal } from './component'
@@ -8,31 +8,23 @@ import {
   BackIcon,
   EmptyValueTag,
   SoursURL,
-  UpIcon,
   getValuePrecisionThousand,
   hexToRGB,
-  myLog,
 } from '@loopring-web/common-resources'
 import { useTheme } from '@emotion/react'
 import { useDualHook } from 'pages/InvestPage/DualPanel/hook'
-import {
-  accountStaticCallBack,
-  btnClickMap,
-  useAccount,
-  useDualMap,
-  useTokenPrices,
-} from '@loopring-web/core'
+import { btnClickMap, useAccount, useDualMap, useTokenPrices } from '@loopring-web/core'
 import { cloneDeep, difference, max } from 'lodash'
 import { toBig } from '@loopring-web/loopring-sdk'
-import { useHistory, useLocation, useRouteMatch } from 'react-router'
+import { useHistory, useLocation } from 'react-router'
 import { useGetAssets } from 'pages/AssetPage/AssetPanel/hook'
-import React, { useEffect } from 'react'
+import React from 'react'
 
-const EarnCard = styled(Box)`
+const EarnCard = styled(Box)<{ isMobile: boolean }>`
   background-color: var(--color-box-third);
   padding: ${({ theme }) => theme.unit * 6}px ${({ theme }) => theme.unit * 4}px
     ${({ theme }) => theme.unit * 4}px ${({ theme }) => theme.unit * 4}px;
-  width: 32%;
+  width: ${({ isMobile }) => (isMobile ? '100%' : '32%')};
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
   border-radius: ${({ theme }) => theme.unit * 1.5}px;
   border: 0.5px solid var(--color-border);
@@ -41,7 +33,7 @@ const EarnCard = styled(Box)`
   align-items: center;
   position: relative;
   overflow: hidden;
-  :hover{
+  :hover {
     border: 1px solid var(--color-primary);
   }
 `
@@ -54,7 +46,7 @@ const FAQ = styled(Box)<{ opend: boolean }>`
   margin-bottom: ${({ theme }) => theme.unit * 2}px;
 `
 
-const TextTag = styled(Box)`
+const TextTag = styled(Box)<{ isMobile: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,6 +56,8 @@ const TextTag = styled(Box)`
   padding: 0px ${({ theme }) => theme.unit * 2}px;
   margin: 0px ${({ theme }) => theme.unit * 1}px;
   color: var(--color-text-primary);
+  width: ${({ isMobile }) => (isMobile ? '50%' : 'auto')};
+  margin-bottom: ${({ isMobile, theme }) => (isMobile ? `${theme.unit}px` : 'auto')};
 `
 const ConnectBtn = styled(Button)`
   height: 80px;
@@ -76,7 +70,7 @@ const ConnectBtn = styled(Button)`
     }
   }
 `
-const AnimationCard = styled(Box)<{ highlighted: boolean }>`
+const AnimationCard = styled(Box)<{ highlighted: boolean; isMobile: boolean }>`
   display: flex;
   flex-direction: column;
   background-color: var(--color-box-third);
@@ -86,29 +80,34 @@ const AnimationCard = styled(Box)<{ highlighted: boolean }>`
   padding-right: ${({ theme }) => theme.unit * 4}px;
   padding-bottom: ${({ theme }) => theme.unit * 2.5}px;
   height: 390px;
-  width: ${({ highlighted }) => (highlighted ? '55.08%' : '20.4%')};
+  height: ${({ isMobile }) => (isMobile ? '290px' : '390px')};
+  width: ${({ highlighted, isMobile }) => (isMobile ? '100%' : highlighted ? '55.08%' : '20.4%')};
   transition: all 0.5s ease;
-  border: ${({ highlighted }) => (highlighted ? '1px solid var(--color-primary)' : '0.5px solid var(--color-border)')};
+  border: ${({ highlighted, isMobile }) =>
+    !isMobile && highlighted
+      ? '1px solid var(--color-primary)'
+      : '0.5px solid var(--color-border)'};
   overflow: hidden;
   .title {
     margin-bottom: ${({ theme }) => theme.unit * 3}px;
   }
   .sub-title {
     color: var(--color-text-secondary);
-    display: ${({ highlighted }) => (highlighted ? '' : 'none')};
+    display: ${({ highlighted, isMobile }) => (isMobile || highlighted ? '' : 'none')};
     max-height: 30px;
   }
   img {
     height: 134px;
     width: 134px;
     align-self: end;
-    margin-right: ${({ highlighted }) => (highlighted ? '0px' : '-60px')};
-    opacity: ${({ highlighted }) => (highlighted ? '1' : '0.5')};
+    margin-right: ${({ highlighted, isMobile }) => (isMobile || highlighted ? '0px' : '-60px')};
+    opacity: ${({ highlighted, isMobile }) => (isMobile || highlighted ? '1' : '0.5')};
     transition: all 0.5s ease;
   }
+  margin-bottom: ${({ isMobile, theme }) => (isMobile ? `${theme.unit * 2.5}px` : 'auto')};
 `
 
-export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
+export const EarnPage = withTranslation('webEarn', { withRef: true })(({ t }) => {
   const { baseTokenList } = useDualHook()
   const { marketMap } = useDualMap()
   const tokenList: any[] = Object.values(baseTokenList ?? {})
@@ -170,69 +169,39 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
           floor: true,
         })
       : '$0.00'
-  // assetTitleProps.assetInfo.totalAsset
+  const { isMobile } = useSettings()
 
   const [openedFaqs, setOpenedFaqs] = React.useState([0])
   const faqs: {
     question: string
     answer: React.ReactNode
-    // opened: boolean
-    // onClick: () => void
   }[] = [
     {
-      question: t("labelFAQ1Question"),
-      answer: (
-        <Typography>
-          {t("labelFAQ1Answer")}
-        </Typography>
-      ),
-      // opened: openedFaqs.includes(0),
-      // onClick: () => setOpenedFaqs( set(openedFaqs) 0)
+      question: t('labelFAQ1Question'),
+      answer: <Typography>{t('labelFAQ1Answer')}</Typography>,
     },
     {
-      question: t("labelFAQ2Question"),
+      question: t('labelFAQ2Question'),
       answer: (
         <Box>
-          <Typography>
-            {t("labelFAQ2AnswerLine1")}
-          </Typography>
+          <Typography>{t('labelFAQ2AnswerLine1')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ2AnswerLine2")}
-          </Typography>
+          <Typography>{t('labelFAQ2AnswerLine2')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ2AnswerLine3")}
-          </Typography>
+          <Typography>{t('labelFAQ2AnswerLine3')}</Typography>
           <br />
-          <Typography component={'li'}>
-            {t("labelFAQ2AnswerLine4")}
-          </Typography>
-          <Typography component={'li'}>
-            {t("labelFAQ2AnswerLine5")}
-          </Typography>
+          <Typography component={'li'}>{t('labelFAQ2AnswerLine4')}</Typography>
+          <Typography component={'li'}>{t('labelFAQ2AnswerLine5')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ2AnswerLine6")}
-          </Typography>
+          <Typography>{t('labelFAQ2AnswerLine6')}</Typography>
           <br />
-          <Typography component={'li'}>
-            {t("labelFAQ2AnswerLine7")}
-          </Typography>
-          <Typography component={'li'}>
-            {t("labelFAQ2AnswerLine8")}
-          </Typography>
+          <Typography component={'li'}>{t('labelFAQ2AnswerLine7')}</Typography>
+          <Typography component={'li'}>{t('labelFAQ2AnswerLine8')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ2AnswerLine9")}
-          </Typography>
+          <Typography>{t('labelFAQ2AnswerLine9')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ2AnswerLine10")}
-          </Typography>
-          <Typography component={'q'}>
-            {t("labelFAQ2AnswerLine11")}
-          </Typography>
+          <Typography>{t('labelFAQ2AnswerLine10')}</Typography>
+          <Typography component={'q'}>{t('labelFAQ2AnswerLine11')}</Typography>
         </Box>
       ),
       // opened: openedFaq === 1,
@@ -242,44 +211,30 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
       question: `What is the Dual Investment Sell covered gain ?`,
       answer: (
         <Box>
-          <Typography>
-            {t("labelFAQ3AnswerLine1")}
-          </Typography>
+          <Typography>{t('labelFAQ3AnswerLine1')}</Typography>
           <br />
-          <Typography>{t("labelFAQ3AnswerLine2")}</Typography>
+          <Typography>{t('labelFAQ3AnswerLine2')}</Typography>
 
-          <Typography component={'li'}>{t("labelFAQ3AnswerLine3")}</Typography>
-          <Typography component={'li'}>{t("labelFAQ3AnswerLine4")}</Typography>
+          <Typography component={'li'}>{t('labelFAQ3AnswerLine3')}</Typography>
+          <Typography component={'li'}>{t('labelFAQ3AnswerLine4')}</Typography>
           <br />
 
-          <Typography>{t("labelFAQ3AnswerLine5")}</Typography>
-          <Typography>
-            {t("labelFAQ3AnswerLine6")}
-          </Typography>
+          <Typography>{t('labelFAQ3AnswerLine5')}</Typography>
+          <Typography>{t('labelFAQ3AnswerLine6')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ3AnswerLine7")}
-          </Typography>
+          <Typography>{t('labelFAQ3AnswerLine7')}</Typography>
           <br />
-          <Typography>{t("labelFAQ3AnswerLine8")}</Typography>
-          <Typography>{t("labelFAQ3AnswerLine9")}</Typography>
+          <Typography>{t('labelFAQ3AnswerLine8')}</Typography>
+          <Typography>{t('labelFAQ3AnswerLine9')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ3AnswerLine10")}
-          </Typography>
+          <Typography>{t('labelFAQ3AnswerLine10')}</Typography>
           <br />
-          <Typography>{t("labelFAQ3AnswerLine11")}</Typography>
-          <Typography>
-            {t("labelFAQ3AnswerLine12")}
-          </Typography>
+          <Typography>{t('labelFAQ3AnswerLine11')}</Typography>
+          <Typography>{t('labelFAQ3AnswerLine12')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ3AnswerLine13")}
-          </Typography>
+          <Typography>{t('labelFAQ3AnswerLine13')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ3AnswerLine14")}
-          </Typography>
+          <Typography>{t('labelFAQ3AnswerLine14')}</Typography>
         </Box>
       ),
       // opened: openedFaq === 1,
@@ -289,44 +244,30 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
       question: `What is the Dual Investment Buy the dip ?`,
       answer: (
         <Box>
-          <Typography>
-            {t("labelFAQ4AnswerLine1")}
-          </Typography>
+          <Typography>{t('labelFAQ4AnswerLine1')}</Typography>
           <br />
-          <Typography>{t("labelFAQ4AnswerLine2")}</Typography>
+          <Typography>{t('labelFAQ4AnswerLine2')}</Typography>
 
-          <Typography component={'li'}>{t("labelFAQ4AnswerLine3")}</Typography>
-          <Typography component={'li'}>{t("labelFAQ4AnswerLine4")}</Typography>
+          <Typography component={'li'}>{t('labelFAQ4AnswerLine3')}</Typography>
+          <Typography component={'li'}>{t('labelFAQ4AnswerLine4')}</Typography>
           <br />
 
-          <Typography>{t("labelFAQ4AnswerLine5")}</Typography>
-          <Typography>
-            {t("labelFAQ4AnswerLine6")}
-          </Typography>
+          <Typography>{t('labelFAQ4AnswerLine5')}</Typography>
+          <Typography>{t('labelFAQ4AnswerLine6')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ4AnswerLine7")}
-          </Typography>
+          <Typography>{t('labelFAQ4AnswerLine7')}</Typography>
           <br />
-          <Typography>{t("labelFAQ4AnswerLine8")}</Typography>
-          <Typography>
-            {t("labelFAQ4AnswerLine9")}
-          </Typography>
+          <Typography>{t('labelFAQ4AnswerLine8')}</Typography>
+          <Typography>{t('labelFAQ4AnswerLine9')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ4AnswerLine10")}
-          </Typography>
+          <Typography>{t('labelFAQ4AnswerLine10')}</Typography>
           <br />
-          <Typography>{t("labelFAQ4AnswerLine11")}</Typography>
-          <Typography>
-            {t("labelFAQ4AnswerLine12")}
-          </Typography>
+          <Typography>{t('labelFAQ4AnswerLine11')}</Typography>
+          <Typography>{t('labelFAQ4AnswerLine12')}</Typography>
           <br />
-          <Typography>{t("labelFAQ4AnswerLine13")}</Typography>
+          <Typography>{t('labelFAQ4AnswerLine13')}</Typography>
           <br />
-          <Typography>
-            {t("labelFAQ4AnswerLine14")}
-          </Typography>
+          <Typography>{t('labelFAQ4AnswerLine14')}</Typography>
         </Box>
       ),
     },
@@ -345,19 +286,18 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
   // const highlightedAnimationCard=0
   const productsRef = React.useRef<HTMLDivElement>()
   const location = useLocation()
-  
-  React.useEffect(() => {  
+
+  React.useEffect(() => {
     if (new URLSearchParams(location.search).get('scrollToProducts') === 'true') {
       setTimeout(() => {
         productsRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "nearest"
-        })  
-      }, 500);
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest',
+        })
+      }, 500)
     }
   }, [productsRef])
-  
 
   return (
     <Box display={'flex'} justifyContent={'center'} width={'100%'}>
@@ -389,123 +329,34 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
           </Typography>
         </Box>
 
-        <Box marginTop={3} display={'flex'} justifyContent={'center'}>
-          <TextTag>
+        <Box
+          marginTop={3}
+          display={'flex'}
+          flexDirection={isMobile ? 'column' : 'row'}
+          alignItems={isMobile ? 'center' : 'auto'}
+          justifyContent={'center'}
+        >
+          <TextTag isMobile={isMobile}>
             <Typography>{t('labelDualEarnTag1')}</Typography>
           </TextTag>
-          <TextTag>
+          <TextTag isMobile={isMobile}>
             <Typography>{t('labelDualEarnTag2')}</Typography>
           </TextTag>
-          <TextTag>
+          <TextTag isMobile={isMobile}>
             <Typography>{t('labelDualEarnTag3')}</Typography>
           </TextTag>
         </Box>
 
-        {/* <Box
-          marginX={'3%'}
-          paddingX={'5%'}
-          marginTop={10}
-          height={'108px'}
-          bgcolor={'var(--color-box-third)'}
-          borderRadius={'54px'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'space-between'}
-        >
-          <Box width={'20%'}>
-            <Typography variant={'h5'} color={'var(--color-text-secondary)'}>
-              Current Locking TVL
-            </Typography>
-            <Typography variant={'h2'}>todo</Typography>
-          </Box>
-          {connectStatus === 'connected' ? (
-            <Box
-              width={'354px'}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'center'}
-              height={'80px'}
-              borderRadius={'40px'}
-              bgcolor={'var(--color-text-primary)'}
-            >
-              <Typography
-                textAlign={'center'}
-                color={theme.mode === 'light' ? 'var(--color-white)' : 'var(--color-black)'}
-                variant={'h5'}
-              >
-                Your Balance
-              </Typography>
-              <Typography
-                textAlign={'center'}
-                color={theme.mode === 'light' ? 'var(--color-white)' : 'var(--color-black)'}
-                variant={'h2'}
-              >
-                {myBalance}
-              </Typography>
-            </Box>
-          ) : connectStatus === 'notConnected' ? (
-            <ConnectBtn
-              onClick={() => {
-                accountStaticCallBack(_btnClickMap, [])
-              }}
-              variant={'contained'}
-            >
-              <Typography color={'var(--color-text-button)'} variant={'h2'}>
-                Connect Wallet
-              </Typography>
-            </ConnectBtn>
-          ) : (
-            <ConnectBtn
-              onClick={() => {
-                accountStaticCallBack(_btnClickMap, [])
-              }}
-              variant={'contained'}
-            >
-              <Typography color={'var(--color-text-button)'} variant={'h2'}>
-                Unlock
-              </Typography>
-            </ConnectBtn>
-          )}
-
-          <Box width={'20%'}>
-            <Typography textAlign={'right'} variant={'h5'} color={'var(--color-text-secondary)'}>
-              Up To
-            </Typography>
-            <Typography textAlign={'right'} variant={'h2'}>
-              {upTo}
-            </Typography>
-          </Box>
-        </Box> */}
-
         <Box ref={productsRef} component={'div'} id={'products'} marginTop={15}>
           {dualTokenList && dualTokenList.length !== 0 ? (
-            <Box display={'flex'} flexWrap={'wrap'}>
+            <Box display={'flex'} flexDirection={isMobile ? 'column' : 'row'} flexWrap={'wrap'}>
               {dualTokenList.map((info, index) => {
                 return (
-                  <EarnCard key={info.symbol} marginRight={index % 3 === 2 ? '0' : '2%'}>
-                    {/* {info.tag === 'sellCover' ? (
-        <Typography
-          sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
-          color={theme.colorBase.warning}
-          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-          position={'absolute'}
-          right={0}
-          top={0}
-        >
-          {t("labelSellHigh")}
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
-          color={theme.colorBase.success}
-          bgcolor={hexToRGB(theme.colorBase.success, 0.2)}
-          position={'absolute'}
-          right={0}
-          top={0}
-        >
-          {t("labelBuyLow")}
-        </Typography>
-      )} */}
+                  <EarnCard
+                    isMobile={isMobile}
+                    key={info.symbol}
+                    marginRight={index % 3 === 2 ? '0' : '2%'}
+                  >
                     <Box
                       sx={{
                         height: 64,
@@ -627,12 +478,13 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             {t('labelLoopringProtocolDes')}
           </Typography>
         </Box>
-        <Box marginTop={5} display={'flex'}>
+        <Box marginTop={5} display={'flex'} flexDirection={isMobile ? 'column' : 'row'}>
           <AnimationCard
             justifyContent={'space-between'}
             highlighted={highlightedAnimationCard === 0}
             onMouseOver={() => setHighlightedAnimationCard(0)}
             marginRight={'2.06%'}
+            isMobile={isMobile}
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
@@ -655,6 +507,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             highlighted={highlightedAnimationCard === 1}
             onMouseOver={() => setHighlightedAnimationCard(1)}
             marginRight={'2.06%'}
+            isMobile={isMobile}
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
@@ -675,6 +528,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             justifyContent={'space-between'}
             highlighted={highlightedAnimationCard === 2}
             onMouseOver={() => setHighlightedAnimationCard(2)}
+            isMobile={isMobile}
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
