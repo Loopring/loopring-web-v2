@@ -21,12 +21,14 @@ import {
   CircleIcon,
   MapChainId,
   myLog,
+  SoursURL,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import RewardsPanel from '../RewardsPanel'
 import { AssetL2TabEarnIndex, AssetTabIndex } from '../../../constant/router'
 import { MaxWidthContainer, containerColors } from 'pages/InvestPage'
 import { RowEarnConfig } from 'constant/setting'
+import { useTheme } from '@emotion/react'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -66,6 +68,7 @@ export const AssetPanel = withTranslation('common')(
     const match: any = useRouteMatch('/l2assets/:assets?/:item?')
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
+    const theme = useTheme()
     const { onTokenLockHold, tokenLockDetail } = useAssetAction()
 
     const handleTabChange = (value: AssetTabIndex) => {
@@ -99,18 +102,36 @@ export const AssetPanel = withTranslation('common')(
           <MaxWidthContainer
             containerProps={{
               sx: {
-                background: containerColors[0],
-                marginY: 5,
+                background: 'transparent',
+                paddingY: 5,
+                position: 'relative',
               },
             }}
           >
+            <Box
+              sx={{
+                position: 'absolute',
+                zIndex: -1,
+                top: 'calc(var(--header-height) * -1)',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundImage:
+                  theme.mode === 'light'
+                    ? `url(${SoursURL + 'images/asset_page_bg_light.png'})`
+                    : `url(${SoursURL + 'images/asset_page_bg_dark.png'})`,
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+              }}
+            />
             <AssetTitle
               {...{
                 t,
                 ...rest,
                 ...assetTitleProps,
                 assetBtnStatus,
-                isWebEarn: true
+                isWebEarn: true,
               }}
             />
           </MaxWidthContainer>
@@ -148,8 +169,8 @@ export const AssetPanel = withTranslation('common')(
                   flex: 1,
                   flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'flex-start'
-                }
+                  justifyContent: 'flex-start',
+                },
               },
             }}
           >

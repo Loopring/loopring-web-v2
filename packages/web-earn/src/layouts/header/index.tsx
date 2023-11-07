@@ -104,6 +104,7 @@ const Header = withTranslation('common')(
               onClickExclusiveredPacket={onClickExclusiveredPacket}
               showExclusiveRedpacket={showExclusiveRedpacket}
               exclusiveRedpacketCount={exclusiveRedpacketCount}
+              transparent
             />
           )}
           <Toolbar id='back-to-top-anchor' />
