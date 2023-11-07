@@ -186,8 +186,16 @@ export const AssetsTable = withTranslation('tables')(
       }
     }, 200);
     const updateData = React.useCallback((page) => {
+      if (isWebEarn) {
+        setViewData(
+          (rawData && rawData.length > 0 ? rawData : []).filter(o => {
+            return o.amount !== '--'
+          })
+        )
+        return
+      }
+      
       let resultData = rawData && !!rawData.length ? [...rawData] : []
-      // if (filter.hideSmallBalance) {
       if (hideSmallBalances) {
         resultData = resultData.filter((o) => !o.smallBalance)
       }
