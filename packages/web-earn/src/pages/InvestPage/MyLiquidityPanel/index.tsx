@@ -64,6 +64,7 @@ import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
+import { RowEarnConfig } from '../../../constant/setting'
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -434,6 +435,7 @@ const MyLiquidity: any = withTranslation('common')(
                       hideAssets={hideAssets}
                       cancelReInvest={_cancelReInvest as any}
                       getProduct={getProduct}
+                      rowConfig={RowEarnConfig}
                     />
                     <Modal
                       open={dualOpen}

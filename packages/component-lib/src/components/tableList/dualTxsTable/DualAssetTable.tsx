@@ -9,7 +9,6 @@ import {
   globalSetup,
   HiddenTag,
   MoreIcon,
-  RowConfig,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -83,6 +82,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
       refresh,
       cancelReInvest,
       hideAssets,
+      rowConfig,
       t,
     } = props
 
@@ -563,8 +563,10 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
           currentheight={
-            rawData.length ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight : 350
+            rawData.length ? rowConfig.rowHeaderHeight! + rawData.length * rowConfig.rowHeight! : 350
           }
+          rowHeight={rowConfig.rowHeight}
+          headerRowHeight={rowConfig.rowHeaderHeight}
           sortMethod={sortMethod}
           {...{
             ...defaultArgs,
