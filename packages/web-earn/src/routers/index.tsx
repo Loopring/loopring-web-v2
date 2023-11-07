@@ -123,6 +123,7 @@ const WrapModal = () => {
         depositProps={depositProps}
         isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '')}
         hideDepositWithdrawBack
+        isWebEarn
       />
       <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
     </>

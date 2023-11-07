@@ -24,6 +24,7 @@ export type ModalBasicProps = {
     height?: any
     width?: any
   }>
+  isWebEarn?: boolean
 }
 export type ModalWalletConnectProps = ModalBasicProps
 export type ModalAccountProps = ModalWalletConnectProps

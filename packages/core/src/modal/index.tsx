@@ -25,6 +25,7 @@ export const ModalGroup = withTranslation('common')(
     depositProps,
     assetsRawData,
     hideDepositWithdrawBack,
+    isWebEarn,
     ...rest
   }: WithTranslation & {
     isLayer1Only?: boolean
@@ -32,6 +33,7 @@ export const ModalGroup = withTranslation('common')(
     assetsRawData: AssetsRawDataItem[]
     onWalletConnectPanelClose?: (event: MouseEvent) => void
     hideDepositWithdrawBack?: boolean
+    isWebEarn?: boolean
   }) => {
     const { etherscanBaseUrl } = useSystem()
     const {
@@ -113,7 +115,8 @@ export const ModalGroup = withTranslation('common')(
             open: isShowAccount.isShow,
             depositProps,
             isLayer1Only,
-            hideDepositWithdrawBack
+            hideDepositWithdrawBack,
+            isWebEarn
           }}
         />
         <ModalSettingFee

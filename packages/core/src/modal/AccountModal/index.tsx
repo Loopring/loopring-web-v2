@@ -21,6 +21,7 @@ export const ModalAccountInfo = withTranslation('common')(
     isLayer1Only,
     depositProps,
     hideDepositWithdrawBack,
+    isWebEarn,
     t,
     ...rest
   }: {
@@ -31,6 +32,7 @@ export const ModalAccountInfo = withTranslation('common')(
     etherscanBaseUrl: string
     assetsRawData: AssetsRawDataItem[]
     hideDepositWithdrawBack?: boolean
+    isWebEarn?: boolean
   } & WithTranslation) => {
     const { baseURL } = useSystem()
     const {
@@ -74,6 +76,7 @@ export const ModalAccountInfo = withTranslation('common')(
       depositProps,
       etherscanBaseUrl,
       isLayer1Only,
+      isWebEarn,
       ...rest,
     })
     // const closeToast = React.useCallback(() => {
