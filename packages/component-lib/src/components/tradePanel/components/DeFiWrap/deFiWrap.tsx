@@ -35,11 +35,9 @@ const GridStyle = styled(Grid)`
   }
 `
 const InputCoinStyled = styled(InputCoin)`
-  && {
-    .coinInput-wrap {
-      background-color: var(--color-global-bg);
-      border: 1px solid var(--color-border);
-    }
+  &&& .coinInput-wrap {
+    background-color: var(--color-global-bg);
+    border: 1px solid var(--color-border);
   }
 `
 

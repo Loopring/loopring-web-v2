@@ -19,12 +19,14 @@ import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
-  DualInvestmentLogo,
   hexToRGB,
   Info2Icon,
+  InvestAssetRouter,
+  InvestRouter,
+  InvestType,
   MarketType,
+  RouterPath,
   SatkingLogo,
-  SoursURL,
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
@@ -101,11 +103,7 @@ const LandDefiInvest = ({
   const {
     confirmation: { confirmedRETHDefiInvest, confirmedWSETHDefiInvest },
   } = confirmation.useConfirmation()
-  // const {
-  //   confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
-  //   confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
-  // } = confirmation.useConfirmation();
-
+  const { marketArray } = useDefiMap()
   const investAdviceList = [
     {
       ...defiWSTETHAdvice,
@@ -139,9 +137,12 @@ const LandDefiInvest = ({
         {investAdviceList.map((item, index) => {
           return (
             <React.Fragment key={item.type + index}>
-              {item.enable ? (
+              {item.enable && marketArray.includes(item.market) ? (
                 <Grid item xs={12} md={4} lg={3}>
-                  <Card sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }} onClick={item.click}>
+                  <Card
+                    sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }}
+                    onClick={item.click}
+                  >
                     <StyleCardContent className={isMobile ? 'isMobile' : 'tableLap'}>
                       <Box
                         className={'content'}
@@ -254,12 +255,12 @@ const LandDefiInvest = ({
   )
 }
 
-const ButtonStyled = styled(Button)`  
+const ButtonStyled = styled(Button)`
   background-color: var(--color-button-outlined);
   color: var(--color-text-primary);
   :hover {
     background-color: var(--color-button-outlined);
-    ::before{
+    ::before {
       border-radius: 4px;
     }
   }
@@ -304,7 +305,9 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }
 
-  const match: any = useRouteMatch('/invest/defi/:market?/:isJoin?')
+  const match: any = useRouteMatch(
+    `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`,
+  )
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()
@@ -322,9 +325,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const theme = useTheme()
   const { isMobile } = useSettings()
   const isMainView = !(match?.params?.market && _market)
-  const height = isMainView 
-    ? isMobile ? 34 * theme.unit : 30 * theme.unit
-    : 6 * theme.unit
+  const height = isMainView ? (isMobile ? 34 * theme.unit : 30 * theme.unit) : 6 * theme.unit
 
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1}>
@@ -335,28 +336,34 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         height={height}
         alignItems={'center'}
         containerProps={{
-          borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`
+          borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
         }}
       >
         {isMainView ? (
-          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
-            <Box >
-          <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
-            {t('labelInvestDefiTitle')}
-          </Typography>
-          <Box display={'flex'} alignItems={'center'}>
-            <Button
-              onClick={() => history.push('/invest/balance')}
-              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
-              variant={'contained'}
-            >
-              {t('labelInvestMyAmm')}
-            </Button>
-          </Box>
-          </Box>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+            width={'100%'}
+          >
+            <Box>
+              <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
+                {t('labelInvestDefiTitle')}
+              </Typography>
+              <Box display={'flex'} alignItems={'center'}>
+                <Button
+                  onClick={() =>
+                    history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+                  }
+                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+                  variant={'contained'}
+                >
+                  {t('labelInvestMyAmm')}
+                </Button>
+              </Box>
+            </Box>
             {!isMobile && <SatkingLogo />}
           </Box>
-          
         ) : (
           <Box
             width={'100%'}
@@ -370,12 +377,14 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
               size={'medium'}
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
-              onClick={() => history.push(`/invest/defi`)}
+              onClick={() => history.push(`${RouterPath.invest}/${InvestAssetRouter.STAKE}`)}
             >
               {t('labelInvestDefiTitle')}
             </Button>
             <Button
-              onClick={() => history.push('/invest/balance')}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
               sx={
                 {
                   // width: isMobile ? 36 * theme.unit : 18 * theme.unit,
@@ -390,7 +399,10 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         )}
       </MaxWidthContainer>
 
-      <MaxWidthContainer height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'} background={isMainView ? containerColors[1] : 'transparent'}>
+      <MaxWidthContainer
+        height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'}
+        background={isMainView ? containerColors[1] : 'transparent'}
+      >
         <StyleWrapper
           display={'flex'}
           flexDirection={'column'}

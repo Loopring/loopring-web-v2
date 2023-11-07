@@ -32,6 +32,7 @@ import {
   MapChainId,
   MenuIcon,
   RouterMainKey,
+  RouterPath,
   SoursURL,
   subMenuLayer2,
   toolBarAvailableItem as _toolBarAvailableItem,
@@ -78,7 +79,7 @@ const HeaderStyled = styled(AppBar)`
     box-sizing: border-box;
     ${({ theme }) => theme.border.borderConfig({ d_W: 1, c_key: 'blur' })};
     border-radius: 0;
-    border:0;
+    border: 0;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
     }
   }
@@ -479,7 +480,8 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                   size={'small'}
                   disabled={isMaintaining}
                   variant={'contained'}
-                  onClick={() => history.push('/trade/lite/LRC-ETH')}
+                  // history.push(`${RouterPath.l2records}`)}
+                  onClick={() => history.push(`${RouterPath.lite}/LRC-ETH`)}
                 >
                   {t('labelLaunchApp')}
                 </ButtonStyled>
@@ -555,7 +557,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                     size={'small'}
                     disabled={isMaintaining}
                     variant={'contained'}
-                    onClick={() => history.push('/trade/lite/LRC-ETH')}
+                    onClick={() => history.push(`${RouterPath.lite}/LRC-ETH`)}
                   >
                     {t('labelLaunchMobileApp', '')}
                   </ButtonStyled>

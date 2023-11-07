@@ -15,9 +15,10 @@ import { useTranslation } from 'react-i18next'
 import { Box, Grid, Typography } from '@mui/material'
 import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
-import { InputCoin } from '../../../basic-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DualDetail } from './dualDetail'
+import { InputCoin, InputMaxCoin } from '../../../basic-lib'
+import BigNumber from 'bignumber.js'
 
 export const DualWrap = <
   T extends IBData<I> & { isRenew: boolean; targetPrice: string; duration: string },
@@ -55,7 +56,6 @@ export const DualWrap = <
   const [displayMode, setDisplayMode] = React.useState<DualDisplayMode>(
     isBeginnerMode ? DualDisplayMode.beginnerModeStep1 : DualDisplayMode.nonBeginnerMode,
   )
-
   const getDisabled = React.useMemo(() => {
     return disabled || dualCalcData === undefined
   }, [btnStatus, dualCalcData, disabled])
@@ -74,13 +74,13 @@ export const DualWrap = <
   )
 
   const propsSell = {
-    label: t('tokenEnterPaymentToken'),
-    subLabel: t('tokenMax'),
+    label: t('labelTokenEnterDualToken'),
+    subLabel: t('labelTokenMaxBalance'),
     emptyText: t('tokenSelectToken'),
-    placeholderText: dualCalcData.maxSellAmount
-      ? t('labelInvestMaxDual', {
+    placeholderText: dualCalcData.miniSellVol
+      ? t('labelInvestMiniDual', {
           value: getValuePrecisionThousand(
-            dualCalcData.maxSellAmount,
+            sdk.toBig(dualCalcData.miniSellVol).div('1e' + dualCalcData.sellToken?.decimals),
             dualCalcData.sellToken?.precision,
             dualCalcData.sellToken?.precision,
             dualCalcData.sellToken?.precision,
@@ -90,18 +90,27 @@ export const DualWrap = <
         })
       : '0.00',
     maxAllow: true,
+    noBalance: EmptyValueTag,
     name: 'coinSell',
     isHideError: true,
-    order: 'right' as any,
+    order: 'left' as any,
     decimalsLimit: tokenSell?.precision,
     coinPrecision: tokenSell?.precision,
-    inputData: dualCalcData ? dualCalcData.coinSell : ({} as any),
+    inputData: {
+      ...(dualCalcData ? dualCalcData.coinSell : ({} as any)),
+      max: BigNumber.min(
+        dualCalcData.maxSellAmount ?? 0,
+        dualCalcData?.coinSell?.balance ?? 0,
+        dualCalcData?.quota ?? 0,
+      ),
+    },
     coinMap: {},
     ...tokenSellProps,
     handleError: handleError as any,
     handleCountChange,
     isShowCoinInfo: true,
-    isShowCoinIcon: true,
+    isShowCoinIcon: false,
+    // CoinIconElement: tokenSell.symbol,
     ...rest,
   } as any
   const label = React.useMemo(() => {
@@ -142,10 +151,10 @@ export const DualWrap = <
   }, [t, btnInfo])
   const lessEarnView = React.useMemo(
     () =>
-      dualCalcData.lessEarnVol && tokenMap[dualCalcData.lessEarnTokenSymbol]
+      dualCalcData?.lessEarnVol && tokenMap[dualCalcData.lessEarnTokenSymbol]
         ? getValuePrecisionThousand(
             sdk
-              .toBig(dualCalcData.lessEarnVol)
+              .toBig(dualCalcData?.lessEarnVol ?? 0)
               .div('1e' + tokenMap[dualCalcData.lessEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
@@ -158,10 +167,10 @@ export const DualWrap = <
   )
   const greaterEarnView = React.useMemo(
     () =>
-      dualCalcData.greaterEarnVol && tokenMap[dualCalcData.greaterEarnTokenSymbol]
+      dualCalcData?.greaterEarnVol && tokenMap[dualCalcData.greaterEarnTokenSymbol]
         ? getValuePrecisionThousand(
             sdk
-              .toBig(dualCalcData.greaterEarnVol)
+              .toBig(dualCalcData?.greaterEarnVol)
               .div('1e' + tokenMap[dualCalcData.greaterEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
@@ -282,7 +291,48 @@ export const DualWrap = <
               isPriceEditable={false}
               dualProducts={dualProducts ?? []}
               toggle={toggle}
-              // getProduct={getDualProduct}
+              inputPart={
+                displayMode !== DualDisplayMode.beginnerModeStep2 ? (
+                  <Box
+                    display={'flex'}
+                    alignItems={'stretch'}
+                    justifyContent={'space-between'}
+                    flexDirection={'column'}
+                    order={1}
+                    marginTop={2}
+                    marginBottom={1}
+                  >
+                    <Box paddingX={2}>
+                      <InputMaxCoin<any, I, any>
+                        ref={coinSellRef}
+                        disabled={getDisabled}
+                        {...{
+                          ...propsSell,
+                        }}
+                      />
+                    </Box>
+                    <Typography
+                      variant={'body1'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      paddingX={2}
+                      paddingBottom={1}
+                    >
+                      <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
+                        {t('labelDualQuota')}
+                      </Typography>
+                      <Typography
+                        component={'span'}
+                        variant={'inherit'}
+                        color={'textPrimary'}
+                        marginLeft={1 / 2}
+                      >
+                        {totalQuota + ' ' + dualCalcData.coinSell.belong}
+                      </Typography>
+                    </Typography>
+                  </Box>
+                ) : undefined
+              }
               onChange={(data) => {
                 onChangeEvent({
                   tradeData: {
@@ -293,7 +343,7 @@ export const DualWrap = <
                   } as any,
                 })
               }}
-              inputView={inputView}
+              // inputView={inputView}
             />
           </Grid>
           <Grid item xs={12}>

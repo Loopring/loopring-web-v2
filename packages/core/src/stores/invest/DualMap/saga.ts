@@ -29,9 +29,13 @@ const getDualMapApi = async () => {
   const marketArray = marketArr?.sort((b, a) => a.localeCompare(b))
   const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
     const tokenList = pairs[key as string]?.tokenList?.sort()
+    const quoteList = pairs[key as string]?.tokenList?.filter((item) => {
+      return marketMap[`DUAL-${key as string}-${item}`] !== undefined
+    })
     prev[key] = {
       ...pairs[key as string],
       tokenList,
+      quoteList,
     }
     return prev
   }, {})
@@ -86,9 +90,13 @@ export function* getDualSyncSaga({
       const marketArray = marketArr?.sort((b, a) => a.localeCompare(b))
       const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
         const tokenList = pairs[key as string]?.tokenList?.sort()
+        const quoteList = pairs[key as string]?.tokenList?.filter((item) => {
+          return marketMap[`DUAL-${key as string}-${item}`] !== undefined
+        })
         prev[key] = {
           ...pairs[key as string],
           tokenList,
+          quoteList,
         }
         return prev
       }, {})

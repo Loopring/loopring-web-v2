@@ -6,24 +6,27 @@ export enum UpColor {
   green = 'green',
   red = 'red',
 }
-
 export const SlippageTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
 export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
-
+export type RowConfigType = {
+  rowHeight?: number
+  rowHeaderHeight?: number
+  minHeight?: number
+}
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,
-  minHeight: 350
+  minHeight: 350,
 }
 export const RowInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 56,
   rowHeaderHeight: IsMobile.any() ? 48 : 56,
-  minHeight: 350
+  minHeight: 350,
 }
 export const RowDualInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 72,
   rowHeaderHeight: IsMobile.any() ? 48 : 72,
-  minHeight: 350
+  minHeight: 350,
 }
 export const DirectionTag = '\u2192'
 export const FeeChargeOrderDefault = ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']
@@ -86,13 +89,11 @@ export const sizeNFTConfig = (size: 'large' | 'medium' | 'small') => {
       break
   }
 }
-
 export enum TradeBtnStatus {
   AVAILABLE = 'AVAILABLE',
   DISABLED = 'DISABLED',
   LOADING = 'LOADING',
 }
-
 export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
   process.env.REACT_APP_RPC_OTHERS?.split(',') ?? []
 ).reduce(
@@ -150,16 +151,6 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
     ChainIdExtends: { [key: string]: number | string }
   },
 )
-
-// [..._NetworkMap.entries()].reduce((prev, [key, value]) => {
-//   prev[key] = value;
-//   return prev;
-// }, NetworkMap);
-// myLog("NetworkMap", NetworkMap);
-// [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
-//   prev[key] = value;
-//   return prev;
-// }, MapChainId);
 if (window) {
   // @ts-ignore
   window.__ChainIdExtends = ChainIdExtends
@@ -176,3 +167,21 @@ export const HEBAO_CONTRACT_MAP = [
 ]
 
 export type ContactType = Pick<sdk.GetContactsResponse, 'contacts'>['contacts'][0]
+
+export type CoinSource = {
+  x: number
+  y: number
+  w: number
+  h: number
+  offX: number
+  offY: number
+  sourceW: number
+  sourceH: number
+  simpleName?: string
+}
+
+export enum TableFilterParams {
+  all = 'all',
+  favourite = 'favourite',
+  ranking = 'ranking',
+}

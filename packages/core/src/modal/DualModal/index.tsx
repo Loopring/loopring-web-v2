@@ -118,7 +118,7 @@ export const ModalDualPanel = withTranslation('common')(
           aria-describedby='modal-modal-description'
         >
           <BoxLinear
-            width={isMobile ? '90%' : '600px'}
+            width={isMobile ? '90%' : 'var(--modal-width)'}
             height={isMobile ? 'auto' : 'inherit'}
             // width={"80%"}
             // minWidth={isMobile ? "initial" : 720}
@@ -177,7 +177,7 @@ export const ModalDualPanel = withTranslation('common')(
                 />
               </Box>
             </Box>
-            <Divider sx={{ marginX: 2 }} />
+            <Divider sx={{ marginX: 0 }} />
             <Box
               flex={1}
               // flexDirection={!isMobile ? "row" : "column"}
@@ -186,7 +186,6 @@ export const ModalDualPanel = withTranslation('common')(
               display={'flex'}
               paddingTop={2}
               paddingBottom={1}
-              paddingX={1}
               sx={
                 isMobile
                   ? {
@@ -238,7 +237,9 @@ export const ModalDualPanel = withTranslation('common')(
           open={
             !confirmedDualInvestV2 &&
             showDualAlert &&
-            [DualViewType.All, DualViewType.DualBegin].includes(viewType as any)
+            [DualViewType.All, DualViewType.DualBegin, DualViewType.DualBTC].includes(
+              viewType as any,
+            )
           }
           USDCOnly={confirmedDualInvestV2 === 'USDCOnly'}
           handleClose={(_e, isAgree: DualInvestConfirmType | undefined) => {
