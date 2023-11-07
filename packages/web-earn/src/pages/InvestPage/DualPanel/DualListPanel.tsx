@@ -118,7 +118,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
               sx={{ color: 'var(--color-text-primary)' }}
               color={'inherit'}
               onClick={() => {
-                history.goBack()
+                history.push('/dual-intro?scrollToProducts=true')
               }}
             >
               {t('labelBack')}

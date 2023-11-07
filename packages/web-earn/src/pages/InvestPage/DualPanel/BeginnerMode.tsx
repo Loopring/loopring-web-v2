@@ -125,13 +125,13 @@ export const BeginnerMode: any = withTranslation('common')(
             {tokenList?.map(({ tokenName, minAPY, maxAPY }: any) => {
               const selected = step1SelectedToken === tokenName
               return (
-                <Box marginRight={2} key={tokenName.toString()}>
+                <Box marginRight={2} key={tokenName?.toString()}>
                   <TickCardStyleItem
                     className={
                       selected ? 'btnCard dualInvestCard selected' : 'btnCard dualInvestCard '
                     }
                     selected={selected}
-                    onClick={() => onSelectStep1Token(tokenName.toString())}
+                    onClick={() => onSelectStep1Token(tokenName?.toString())}
                     width={'280px'}
                   >
                     <CardContent

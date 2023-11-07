@@ -24,9 +24,9 @@ import {
 } from '@loopring-web/core'
 import { cloneDeep, difference, max } from 'lodash'
 import { toBig } from '@loopring-web/loopring-sdk'
-import { useHistory } from 'react-router'
+import { useHistory, useLocation, useRouteMatch } from 'react-router'
 import { useGetAssets } from 'pages/AssetPage/AssetPanel/hook'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const EarnCard = styled(Box)`
   background-color: var(--color-box-third);
@@ -115,7 +115,6 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
   const { tokenPrices } = useTokenPrices()
 
   const account = useAccount()
-  // myLog('account',account)
 
   const sellCoverTokens: {
     symbol: string
@@ -344,6 +343,21 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
   const [highlightedAnimationCard, setHighlightedAnimationCard] = React.useState(0)
 
   // const highlightedAnimationCard=0
+  const productsRef = React.useRef<HTMLDivElement>()
+  const location = useLocation()
+  
+  React.useEffect(() => {  
+    if (new URLSearchParams(location.search).get('scrollToProducts') === 'true') {
+      setTimeout(() => {
+        productsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest"
+        })  
+      }, 500);
+    }
+  }, [productsRef])
+  
 
   return (
     <Box display={'flex'} justifyContent={'center'} width={'100%'}>
@@ -355,9 +369,15 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
         maxWidth={'964px'}
         justifyContent={'center'}
       >
-        <Box marginTop={12} display={'flex'} justifyContent={'center'} flexDirection={'column'} width={'100%'}>
+        <Box
+          marginTop={12}
+          display={'flex'}
+          justifyContent={'center'}
+          flexDirection={'column'}
+          width={'100%'}
+        >
           <Typography variant={'h1'} textAlign={'center'}>
-            {t("labelDualEarnTitle")}
+            {t('labelDualEarnTitle')}
           </Typography>
           <Typography
             marginTop={2}
@@ -365,19 +385,19 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             color={'var(--color-text-secondary)'}
             textAlign={'center'}
           >
-            {t("labelDualEarnSubTitle")}
+            {t('labelDualEarnSubTitle')}
           </Typography>
         </Box>
 
         <Box marginTop={3} display={'flex'} justifyContent={'center'}>
           <TextTag>
-            <Typography>{t("labelDualEarnTag1")}</Typography>
+            <Typography>{t('labelDualEarnTag1')}</Typography>
           </TextTag>
           <TextTag>
-            <Typography>{t("labelDualEarnTag2")}</Typography>
+            <Typography>{t('labelDualEarnTag2')}</Typography>
           </TextTag>
           <TextTag>
-            <Typography>{t("labelDualEarnTag3")}</Typography>
+            <Typography>{t('labelDualEarnTag3')}</Typography>
           </TextTag>
         </Box>
 
@@ -457,87 +477,117 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
           </Box>
         </Box> */}
 
-        <Box marginTop={15} display={'flex'} flexWrap={'wrap'}>
-          {dualTokenList.map((info, index) => {
-            return (
-              <EarnCard key={info.symbol} marginRight={index % 3 === 2 ? '0' : '2%'}>
-                {/* {info.tag === 'sellCover' ? (
-                  <Typography
-                    sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
-                    color={theme.colorBase.warning}
-                    bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                    position={'absolute'}
-                    right={0}
-                    top={0}
-                  >
-                    {t("labelSellHigh")}
-                  </Typography>
-                ) : (
-                  <Typography
-                    sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
-                    color={theme.colorBase.success}
-                    bgcolor={hexToRGB(theme.colorBase.success, 0.2)}
-                    position={'absolute'}
-                    right={0}
-                    top={0}
-                  >
-                    {t("labelBuyLow")}
-                  </Typography>
-                )} */}
-                <Box sx={{height: 64, display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
-                  <CoinIcon size={64} symbol={info.symbol} />
-                </Box>
-                
-                {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
-                <Typography variant={'h3'} marginTop={2}>
-                  {info.tag === 'sellCover'
-                    ? t('labelInvestSymbolSellHigh', {
-                        symbol: info.symbol,
-                      })
-                    : t('labelInvestSymbolBuyLow', {
-                        symbol: info.symbol,
-                      })}
-                </Typography>
-                <Box
-                  marginBottom={4}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  marginTop={7}
-                  display={'flex'}
-                >
-                  <Box>
-                    <Typography color={'var(--color-success)'} textAlign={'center'}>
-                      {t('labelApy')}
-                    </Typography>
-                    <Typography variant={'h4'} color={'var(--color-success)'} textAlign={'center'}>
-                      {info.apy}
-                    </Typography>
-                  </Box>
-                  <Box width={'1px'} height={24} marginX={1.5} bgcolor={'var(--color-border)'} />
-                  <Box>
-                    <Typography textAlign={'center'}>{t('labelCurrentPrice')}</Typography>
-                    <Typography variant={'h4'} textAlign={'center'}>
-                      {info.price}
-                    </Typography>
-                  </Box>
-                </Box>
+        <Box ref={productsRef} component={'div'} id={'products'} marginTop={15}>
+          {dualTokenList && dualTokenList.length !== 0 ? (
+            <Box display={'flex'} flexWrap={'wrap'}>
+              {dualTokenList.map((info, index) => {
+                return (
+                  <EarnCard key={info.symbol} marginRight={index % 3 === 2 ? '0' : '2%'}>
+                    {/* {info.tag === 'sellCover' ? (
+        <Typography
+          sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
+          color={theme.colorBase.warning}
+          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+          position={'absolute'}
+          right={0}
+          top={0}
+        >
+          {t("labelSellHigh")}
+        </Typography>
+      ) : (
+        <Typography
+          sx={{ borderBottomLeftRadius: 12, paddingX: 2 }}
+          color={theme.colorBase.success}
+          bgcolor={hexToRGB(theme.colorBase.success, 0.2)}
+          position={'absolute'}
+          right={0}
+          top={0}
+        >
+          {t("labelBuyLow")}
+        </Typography>
+      )} */}
+                    <Box
+                      sx={{
+                        height: 64,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <CoinIcon size={64} symbol={info.symbol} />
+                    </Box>
 
-                <Button
-                  onClick={() => {
-                    history.push(
-                      `/invest/dual?viewType=${
-                        info.tag === 'buyDip' ? 'DualDip' : 'DualGain'
-                      }&autoChose=${info.symbol}`,
-                    )
-                  }}
-                  variant={'contained'}
-                  fullWidth
-                >
-                  {t('labelViewDetails')}
-                </Button>
-              </EarnCard>
-            )
-          })}
+                    {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
+                    <Typography variant={'h3'} marginTop={2}>
+                      {info.tag === 'sellCover'
+                        ? t('labelInvestSymbolSellHigh', {
+                            symbol: info.symbol,
+                          })
+                        : t('labelInvestSymbolBuyLow', {
+                            symbol: info.symbol,
+                          })}
+                    </Typography>
+                    <Box
+                      marginBottom={4}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      marginTop={7}
+                      display={'flex'}
+                    >
+                      <Box>
+                        <Typography color={'var(--color-success)'} textAlign={'center'}>
+                          {t('labelApy')}
+                        </Typography>
+                        <Typography
+                          variant={'h4'}
+                          color={'var(--color-success)'}
+                          textAlign={'center'}
+                        >
+                          {info.apy}
+                        </Typography>
+                      </Box>
+                      <Box
+                        width={'1px'}
+                        height={24}
+                        marginX={1.5}
+                        bgcolor={'var(--color-border)'}
+                      />
+                      <Box>
+                        <Typography textAlign={'center'}>{t('labelCurrentPrice')}</Typography>
+                        <Typography variant={'h4'} textAlign={'center'}>
+                          {info.price}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Button
+                      onClick={() => {
+                        history.push(
+                          `/invest/dual?viewType=${
+                            info.tag === 'buyDip' ? 'DualDip' : 'DualGain'
+                          }&autoChose=${info.symbol}`,
+                        )
+                      }}
+                      variant={'contained'}
+                      fullWidth
+                    >
+                      {t('labelViewDetails')}
+                    </Button>
+                  </EarnCard>
+                )
+              })}
+            </Box>
+          ) : (
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              height={'150px'}
+              width={'100%'}
+            >
+              <img width={60} src={SoursURL + 'images/loading-line.gif'} />
+            </Box>
+          )}
         </Box>
         <Box
           marginTop={12.5}
@@ -553,15 +603,20 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             marginBottom={3}
             variant={'h2'}
           >
-            {t("labelLoopringEarn")}
+            {t('labelLoopringEarn')}
           </Typography>
-          <Typography paddingX={14} color={'var(--color-text-button)'} textAlign={'center'} variant={'h5'}>
-            {t("labelLoopringEarnDes")}{' '}
+          <Typography
+            paddingX={14}
+            color={'var(--color-text-button)'}
+            textAlign={'center'}
+            variant={'h5'}
+          >
+            {t('labelLoopringEarnDes')}{' '}
           </Typography>
         </Box>
         <Box marginTop={12.5}>
           <Typography textAlign={'center'} variant={'h2'}>
-            {t("labelLoopringProtocol")}
+            {t('labelLoopringProtocol')}
           </Typography>
           <Typography
             textAlign={'center'}
@@ -569,7 +624,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
             color={'var(--color-text-secondary)'}
             marginTop={2}
           >
-            {t("labelLoopringProtocolDes")}
+            {t('labelLoopringProtocolDes')}
           </Typography>
         </Box>
         <Box marginTop={5} display={'flex'}>
@@ -581,11 +636,9 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
-                {t("labelUltimateSecurity")}
+                {t('labelUltimateSecurity')}
               </Typography>
-              <Typography className={'sub-title'}>
-                {t("labelUltimateSecurityDes")}
-              </Typography>
+              <Typography className={'sub-title'}>{t('labelUltimateSecurityDes')}</Typography>
             </Box>
 
             <img
@@ -605,11 +658,9 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
-                {t("labelLowTransactionFees")}
+                {t('labelLowTransactionFees')}
               </Typography>
-              <Typography className={'sub-title'}>
-                {t("labelLowTransactionFeesDes")}
-              </Typography>
+              <Typography className={'sub-title'}>{t('labelLowTransactionFeesDes')}</Typography>
             </Box>
             <img
               src={
@@ -627,10 +678,10 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
           >
             <Box>
               <Typography variant={'h3'} className={'title'}>
-                {t("labelHighThroughput")}
+                {t('labelHighThroughput')}
               </Typography>
               <Typography variant={'h5'} className={'sub-title'}>
-                {t("labelHighThroughputDes")}
+                {t('labelHighThroughputDes')}
               </Typography>
             </Box>
             <img
@@ -645,7 +696,7 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({t}) => {
         </Box>
 
         <Typography textAlign={'center'} marginTop={12.5} variant={'h2'}>
-          {t("labelFAQs")}
+          {t('labelFAQs')}
         </Typography>
         <Box marginTop={5} marginBottom={12.5}>
           {faqs.map((faq, index) => {

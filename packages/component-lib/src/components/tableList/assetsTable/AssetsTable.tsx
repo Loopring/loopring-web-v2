@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, BoxProps, Modal, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-import { Column, Table } from '../../basic-lib'
+import { CoinIcon, Column, Table } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TablePaddingX } from '../../styled'
 import {
@@ -254,7 +254,23 @@ export const AssetsTable = withTranslation('tables')(
           }
           return (
             <>
-              <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+              {isWebEarn ? (
+                <Box
+                  sx={{
+                    height: 36,
+                    width: 36,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft: 1
+                  }}
+                >
+                  <CoinIcons size={'large'} type={token.type} tokenIcon={tokenIcon} />
+                </Box>
+              ) : (
+                <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+              )}
+
               <Typography
                 variant={'inherit'}
                 color={'textPrimary'}
