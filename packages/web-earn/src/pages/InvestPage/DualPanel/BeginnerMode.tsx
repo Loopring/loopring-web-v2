@@ -280,7 +280,7 @@ export const BeginnerMode: any = withTranslation('common')(
           </Box>
         )}
 
-        {step1SelectedToken !== undefined && step2BuyOrSell !== undefined && (
+        {step1SelectedToken !== undefined && step2BuyOrSell !== undefined && tokenList && tokenList.length > 0 && (
           <Box ref={step3Ref} marginBottom={2}>
             <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t(viewStepType[2].labelKey)}
