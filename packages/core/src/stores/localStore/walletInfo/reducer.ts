@@ -17,9 +17,9 @@ const walletInfoSlice: Slice<WalletInfo> = createSlice<
     clearAll(state: WalletInfo) {
       state = initialState
     },
-    updateWallet(state: WalletInfo, action: PayloadAction<{ address: string; isHW: boolean }>) {
-      const walletInfo = action.payload
-      state.walletTypeMap[walletInfo.address] = walletInfo.isHW
+    updateWallet(_state: WalletInfo, _action: PayloadAction<{ address: string; isHW: boolean }>) {
+      // const walletInfo = action.payload
+      // state.walletTypeMap[walletInfo.address] = walletInfo.isHW
     },
   },
 })
