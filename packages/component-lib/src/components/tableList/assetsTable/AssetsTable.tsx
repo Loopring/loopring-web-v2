@@ -11,6 +11,7 @@ import {
   getValuePrecisionThousand,
   HiddenTag,
   MarketType,
+  myLog,
   PriceTag,
   RowConfig,
   TokenType,
@@ -503,7 +504,7 @@ export const AssetsTable = withTranslation('tables')(
     ]
 
     return (
-      <TableWrap lan={language} isMobile={isMobile} isWebEarn={isWebEarn}>
+      <TableWrap marginBottom={isWebEarn ? 4 : 0} lan={language} isMobile={isMobile} isWebEarn={isWebEarn}>
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <>
             <LockDetailPanel tokenLockDetail={tokenLockDetail} />
@@ -513,7 +514,7 @@ export const AssetsTable = withTranslation('tables')(
             ref={gridRef}
           className={isInvest ? 'investAsset' : ''}
           {...{ ...rest, t }}
-            style={{height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350}}
+            style={{height: viewData.length > 0 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight : 350}}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}
