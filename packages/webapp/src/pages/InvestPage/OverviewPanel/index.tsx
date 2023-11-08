@@ -5,7 +5,13 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useOverview } from './hook'
 
-import { Button, useSettings, InvestOverviewTable, useToggle } from '@loopring-web/component-lib'
+import {
+  Button,
+  useSettings,
+  InvestOverviewTable,
+  useToggle,
+  MaxWidthContainer,
+} from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
@@ -31,7 +37,7 @@ import {
   useStakingMap,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import _ from 'lodash'
 
 const WrapperStyled = styled(Box)`

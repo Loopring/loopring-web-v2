@@ -1,6 +1,6 @@
 import { useRouteMatch } from 'react-router-dom'
 
-import { Box, BoxProps, Typography } from '@mui/material'
+import { Box, BoxProps, Container, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
 import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
@@ -17,40 +17,6 @@ import styled from '@emotion/styled'
 import { InvestRouter, InvestType } from '@loopring-web/common-resources'
 
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
-const BoxStyled = styled(Box)`
-  display: flex;
-  justify-content: center;
-  @media only screen and (max-width: 1200px) {
-    .inner-box {
-      width: 100%;
-    }
-  }
-`
-export const MaxWidthContainer = (
-  props: {
-    children: React.ReactNode
-    background?: string
-    containerProps?: BoxProps
-  } & BoxProps,
-) => {
-  const { containerProps, children, background, sx, ...otherProps } = props
-  return (
-    <BoxStyled sx={{ background, ...containerProps?.sx }} {...containerProps}>
-      <Box
-        sx={{
-          width: '1200px',
-          maxWidth: '100%',
-          ...sx,
-        }}
-        className={'inner-box'}
-        paddingX={3}
-        {...otherProps}
-      >
-        {children}
-      </Box>
-    </BoxStyled>
-  )
-}
 
 export const BalanceTitle = () => {
   const { t } = useTranslation()

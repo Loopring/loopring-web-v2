@@ -25,7 +25,7 @@ import {
   MapChainId,
   myLog,
   ProfileIndex,
-  ProfileKey,
+  Layer2RouterID,
   RouterPath,
   SoursURL,
   TOAST_TIME,
@@ -490,7 +490,7 @@ const ReferView = () => {
   myLog('refundData', refundData, referralsData)
   return (
     <>
-      {ProfileIndex[network]?.includes(ProfileKey.referralrewards) ? (
+      {ProfileIndex[network]?.includes(Layer2RouterID.referralrewards) ? (
         <>
           <Toast
             alertText={toastOpen?.content ?? ''}

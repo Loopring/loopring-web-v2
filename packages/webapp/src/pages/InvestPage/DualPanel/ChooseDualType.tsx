@@ -7,11 +7,11 @@ import {
   InvestRouter,
   InvestType,
 } from '@loopring-web/common-resources'
-import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
+import { Button, MenuBtnStyled, useSettings, MaxWidthContainer } from '@loopring-web/component-lib'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { containerColors, MaxWidthContainer } from '../index'
+import { containerColors } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
 import { useDualMap } from '@loopring-web/core'

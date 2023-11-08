@@ -13,6 +13,8 @@ import {
   ModalRedPacketPanel,
   store,
   useDeposit,
+  useNotificationSocket,
+  useNotify,
   useOffFaitModal,
   useSystem,
   useTicker,
@@ -105,8 +107,14 @@ const WrapModal = () => {
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
   const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
-
+  const [notificationPush, setNotificationPush] = React.useState({ isShow: false, item: {} })
   const { open, actionEle, handleClose } = useOffFaitModal()
+  const notificationCallback = React.useCallback((notification) => {
+    if (notification) {
+      setNotificationPush({ isShow: true, item: {} })
+    }
+  }, [])
+  useNotificationSocket({ notificationCallback })
 
   const noticeSnacksElEs = React.useMemo(() => {
     return [
@@ -120,8 +128,19 @@ const WrapModal = () => {
           message: t('labelOrderBanxaIsReadyToPay'),
         }}
       />,
+      <NoticeSnack
+        actionEle={notificationPush?.item?.actionEle}
+        open={notificationPush?.isShow}
+        handleClose={handleClose}
+        messageInfo={{
+          message: notificationPush?.item?.message,
+          // svgIcon: 'BanxaIcon',
+          // key: VendorProviders.Banxa,
+          // message: t('labelOrderBanxaIsReadyToPay'),
+        }}
+      />,
     ] as any
-  }, [open, actionEle])
+  }, [open, actionEle, notificationPush])
   return (
     <>
       <ModalCoinPairPanel />

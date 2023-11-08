@@ -13,6 +13,7 @@ import {
   ToastType,
   useToggle,
   useSettings,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -23,7 +24,7 @@ import {
   RouterPath,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`

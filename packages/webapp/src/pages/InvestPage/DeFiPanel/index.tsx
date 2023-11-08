@@ -12,6 +12,7 @@ import {
   LoadingBlock,
   ConfirmInvestDefiRisk,
   ToastType,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, useNotify, usePopup, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -30,7 +31,7 @@ import {
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`

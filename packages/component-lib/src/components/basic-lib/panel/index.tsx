@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
-import { Box, Card, Typography } from '@mui/material'
+import { Box, Card, Typography, BoxProps, Container } from '@mui/material'
 import { FirstPlaceIcon, SecondPlaceIcon, ThirdPlaceIcon } from '@loopring-web/common-resources'
+import React from 'react'
 
 export * from './SwitchPanel'
 export * from './SubMenu'
@@ -57,5 +58,42 @@ export const PlaceComponent = ({ rank }: { rank: number }) => {
         </Typography>
       </>
     </Typography>
+  )
+}
+
+export const MaxWidthContainer = (
+  props: {
+    children: React.ReactNode
+    background?: string
+    containerProps?: BoxProps
+  } & BoxProps,
+) => {
+  const { containerProps, children, background, sx, ...otherProps } = props
+  return (
+    <Box
+      display={'flex'}
+      justifyContent={'center'}
+      sx={{ background, ...containerProps?.sx }}
+      {...containerProps}
+    >
+      <Container
+        // display={'flex'}
+        // justifyContent={'stretch'}
+        maxWidth={'lg'}
+        className={'inner-box'}
+      >
+        <Box
+          flex={1}
+          display={'flex'}
+          width={'100%'}
+          sx={{
+            ...sx,
+          }}
+          {...otherProps}
+        >
+          {children}
+        </Box>
+      </Container>
+    </Box>
   )
 }

@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useAmmMapUI } from './hook'
 
-import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
+import { Button, PoolsTable, useSettings, MaxWidthContainer } from '@loopring-web/component-lib'
 
 import { useNotify, useSystem } from '@loopring-web/core'
 import {
@@ -16,7 +16,7 @@ import {
   RowInvestConfig,
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 const WrapperStyled = styled(Box)`

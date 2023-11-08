@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
-import { getNotify, getNotifyStatus } from './reducer'
+import { getNotify, getNotifyStatus, getUserNotify } from './reducer'
 
 import { Lang, Notify, url_path, url_test_path } from '@loopring-web/common-resources'
 import { store } from '../index'
@@ -34,6 +34,16 @@ const getNotifyApi = async <_R extends { [key: string]: any }>(): Promise<{
   }
 }
 
+const getNotifyUserApi = async () => {
+  return {
+    myNotifyMap: {
+      items: [],
+      totals: 1,
+      unReads: 1,
+    },
+  }
+}
+
 export function* getPostsSaga() {
   try {
     const { notifyMap } = yield call(getNotifyApi)
@@ -43,8 +53,21 @@ export function* getPostsSaga() {
   }
 }
 
-function* notifySaga() {
+export function* getPostsUserSaga() {
+  try {
+    const { myNotifyMap } = yield call(getNotifyUserApi)
+    yield put(getNotifyStatus({ myNotifyMap }))
+  } catch (err) {
+    yield put(getNotifyStatus({ error: err }))
+  }
+}
+
+function* notifyUserSaga() {
   yield all([takeLatest(getNotify, getPostsSaga)])
 }
 
-export const notifyForks = [fork(notifySaga)]
+function* notifySaga() {
+  yield all([takeLatest(getUserNotify, getPostsUserSaga)])
+}
+
+export const notifyForks = [fork(notifySaga), fork(notifyUserSaga)]

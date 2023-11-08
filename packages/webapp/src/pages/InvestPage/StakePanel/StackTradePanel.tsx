@@ -8,6 +8,7 @@ import {
   ToastType,
   useSettings,
   useToggle,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
@@ -24,7 +25,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { ErrorPage } from '../../ErrorPage'
