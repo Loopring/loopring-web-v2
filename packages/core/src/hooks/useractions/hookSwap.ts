@@ -659,7 +659,7 @@ export const useSwap = <
   /*** Btn related end ***/
   const toPro = React.useCallback(() => {
     history.push({
-      pathname: `/trade/pro/${market}`,
+      pathname: `${RouterPath.pro}/${market}`,
     })
   }, [market])
 
@@ -739,9 +739,6 @@ export const useSwap = <
         calcTradeParams: {},
         priceImpactObj: undefined,
       })
-      // setFeeBips('0')
-      // setTotalFee('0')
-      // setTakerRate('0')
       setTradeCalcData((state) => {
         return {
           ...state,
@@ -757,9 +754,6 @@ export const useSwap = <
 
   useSwapSocket()
   useWalletLayer2Socket({ walletLayer2Callback })
-
-  // let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
-  // setMarket(market);
 
   /*** user Action function ***/
   //High: effect by wallet state update

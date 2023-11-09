@@ -31,4 +31,5 @@ export interface HeaderProps<R> {
   isLandPage?: boolean
   toolBarAvailableItem?: number[]
   toolBarMap?: typeof ButtonComponentsMap
+  transparent?: boolean
 }

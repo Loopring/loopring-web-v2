@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, BoxProps, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-import { Button, Column, Table } from '../../basic-lib'
+import { Column, Table } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TablePaddingX } from '../../styled'
 import {

@@ -210,6 +210,7 @@ export function useAccountModalForUI({
   assetsRawData,
   isLayer1Only = false,
   depositProps,
+  isWebEarn,
   ...rest
 }: {
   t: any
@@ -218,6 +219,7 @@ export function useAccountModalForUI({
   depositProps: DepositProps<any, any>
   account: Account
   assetsRawData: AssetsRawDataItem[]
+  isWebEarn?: boolean
   // onClose?: any;
 }) {
   const { chainInfos, updateDepositHash, clearDepositHash } = onchainHashInfo.useOnChainInfo()
@@ -3000,8 +3002,14 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: 'labelDualPanelClose',
               callback: (_e: any) => {
-                setShowAccount({ isShow: false })
-                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+                if (isWebEarn) {
+                  setShowAccount({ isShow: false })
+                  history.push('/l2assets/assets/Invests')
+                } else {
+                  setShowAccount({ isShow: false })
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+                }
+                
               },
             }}
             {...{

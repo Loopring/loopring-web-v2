@@ -43,8 +43,7 @@ export const UnlockAccount_Failed = ({
   const isContractOrInCounterFactual =
     props.walletType && (props.walletType.isContract || props.walletType.isInCounterFactualStatus)
   const showDropdown =
-    error?.message === 'timeout of 6000ms exceeded' || isContractOrInCounterFactual
-  
+    error?.code === 500000 || isContractOrInCounterFactual
   const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
   const propsPatch = {
     ...props,
@@ -76,7 +75,7 @@ export const UnlockAccount_Failed = ({
                 </Trans>
               </Typography>
             ) : (
-              error?.message === 'timeout of 6000ms exceeded' && (
+              error?.code === 500000 && (
                 <Box>
                   <Typography variant={'body2'}>{t('labelUnlockErrorLine1')}</Typography>
                 </Box>

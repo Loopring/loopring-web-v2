@@ -131,6 +131,7 @@ export default {
   // labelDepositNFTDes:"Receive NFT"
   labelInvestLeverageETH: 'Leveraged ETH Staking',
   labelInvestLeverageETHDes: 'Gain higher APY aggressively',
+  labelDualInvest: 'Dual Investment',
   labelVault: 'Vault',
   labelVaultDes: '',
   labelVaultHome: 'Home',
