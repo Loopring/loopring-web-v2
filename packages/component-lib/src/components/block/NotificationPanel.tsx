@@ -78,7 +78,7 @@ export const NotificationPanel = ({
             justifyContent={'space-between'}
           >
             <Typography component={'span'}>
-              {t('labelTotalUnRead', { total: myNotifyMap?.unReads ?? 0 })}
+              {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}
             </Typography>
             <Link href={`/#${RouterPath.layer2}/${Layer2RouterID.notification}`} color={'primary'}>
               {t('labelReadAll')}

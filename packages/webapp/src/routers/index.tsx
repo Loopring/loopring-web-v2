@@ -148,7 +148,13 @@ const WrapModal = () => {
         noticeSnacksElEs={[
           ...noticeSnacksElEs,
           ...(notificationPush.isShow && notificationPush?.item
-            ? [<NoticePop {...notificationPush?.item} />]
+            ? [
+                <NoticePop
+                  {...notificationPush?.item}
+                  isShow={notificationPush.isShow}
+                  setNotificationPush={setNotificationPush}
+                />,
+              ]
             : []),
         ]}
       />

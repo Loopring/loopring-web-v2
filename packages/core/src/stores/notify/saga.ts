@@ -57,61 +57,64 @@ const getNotifyUserApi = async () => {
     if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
     } else {
       //TODO
-      const { totalNum, notifications } = {
-        totalNum: 5,
-        notifications: [
-          {
-            id: 59,
-            walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
-            network: 'ETHEREUM',
-            messageType: 4,
-            message: 'You have received 1 USDC in your Loopring L2 wallet.',
-            read: false,
-            createAt: 1682075417910,
-            redirectionContext: '',
-          },
-          {
-            id: 60,
-            walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
-            network: 'ETHEREUM',
-            messageType: 6,
-            message: 'Your deposit to Loopring L2 succeeded.',
-            read: false,
-            createAt: 1682078478712,
-            redirectionContext: '',
-          },
-          {
-            id: 61,
-            walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
-            network: 'ETHEREUM',
-            messageType: 4,
-            message: 'You have received 25.2886 USDT in your Loopring L2 wallet.',
-            read: false,
-            createAt: 1682080502006,
-            redirectionContext: '',
-          },
-          {
-            id: 62,
-            walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
-            network: 'ETHEREUM',
-            messageType: 4,
-            message: 'You have received 0.483106 USDT in your Loopring L2 wallet.',
-            read: false,
-            createAt: 1682081803957,
-            redirectionContext: '',
-          },
-          {
-            id: 63,
-            walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
-            network: 'ETHEREUM',
-            messageType: 2,
-            message: 'You have received 94.739021912 LRC in your Ethereum L1 wallet.',
-            read: false,
-            createAt: 1682081861589,
-            redirectionContext: '',
-          },
-        ],
-      }
+      const { totalNum, notifications } = response
+      //   {
+      //
+      //   totalNum: 5,
+      //   notifications:
+      //     [
+      //     {
+      //       id: 59,
+      //       walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
+      //       network: 'ETHEREUM',
+      //       messageType: 4,
+      //       message: 'You have received 1 USDC in your Loopring L2 wallet.',
+      //       read: false,
+      //       createAt: 1682075417910,
+      //       redirectionContext: '',
+      //     },
+      //     {
+      //       id: 60,
+      //       walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
+      //       network: 'ETHEREUM',
+      //       messageType: 6,
+      //       message: 'Your deposit to Loopring L2 succeeded.',
+      //       read: false,
+      //       createAt: 1682078478712,
+      //       redirectionContext: '',
+      //     },
+      //     {
+      //       id: 61,
+      //       walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
+      //       network: 'ETHEREUM',
+      //       messageType: 4,
+      //       message: 'You have received 25.2886 USDT in your Loopring L2 wallet.',
+      //       read: false,
+      //       createAt: 1682080502006,
+      //       redirectionContext: '',
+      //     },
+      //     {
+      //       id: 62,
+      //       walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
+      //       network: 'ETHEREUM',
+      //       messageType: 4,
+      //       message: 'You have received 0.483106 USDT in your Loopring L2 wallet.',
+      //       read: false,
+      //       createAt: 1682081803957,
+      //       redirectionContext: '',
+      //     },
+      //     {
+      //       id: 63,
+      //       walletAddress: '0xadfdd447e817a5008a57c892e4430567892305fe',
+      //       network: 'ETHEREUM',
+      //       messageType: 2,
+      //       message: 'You have received 94.739021912 LRC in your Ethereum L1 wallet.',
+      //       read: false,
+      //       createAt: 1682081861589,
+      //       redirectionContext: '',
+      //     },
+      //   ],
+      // }
       return {
         //TODO
         myNotifyMap: {

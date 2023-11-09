@@ -55,16 +55,23 @@ const BoxStyle = styled(Box)`
     }
   }
 `
-export const NoticePop = (rest: sdk.UserNotification) => {
+export const NoticePop = ({
+  isShow,
+  setNotificationPush,
+  ...rest
+}: sdk.UserNotification & {
+  isShow: boolean
+  setNotificationPush: (props: { isShow: boolean; item: any }) => void
+}) => {
   const history = useHistory()
   const { t } = useTranslation()
-  const [open, setOpen] = React.useState(false)
+  // const [open, setOpen] = React.useState(false)
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const onReadClick = () => undefined
 
   const handleClose = () => {
-    setOpen(false)
+    setNotificationPush({ isShow: false })
   }
   const ele = useNotification({
     ...rest,
@@ -103,8 +110,13 @@ export const NoticePop = (rest: sdk.UserNotification) => {
   }, [ele])
   return (
     <Snackbar
-      open={open}
+      open={isShow}
       autoHideDuration={20000}
+      ContentProps={{
+        sx: {
+          flexDirection: 'column',
+        },
+      }}
       sx={{
         pointerEvents: 'all',
         flexDirection: 'column',
@@ -114,7 +126,12 @@ export const NoticePop = (rest: sdk.UserNotification) => {
       }}
       onClose={handleClose}
       message={
-        <Box display={'flex'} flexDirection={'column'}>
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'start'}
+          alignItems={'flex-start'}
+        >
           <Typography variant={'body1'} color={'textSecondary'}>
             {t(ele.i18nKey, {
               l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
