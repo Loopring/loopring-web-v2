@@ -44,10 +44,10 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string; isWe
       display: flex;
       align-items: center;
       margin-top: ${({ theme }) => theme.unit / 8}px;
-      padding-left: 0;
+      padding-left: ${({ isWebEarn }) => isWebEarn && 0};
     }
     .rdg-cell:last-of-type {
-      padding-right: 0;
+      padding-right: ${({ isWebEarn }) => isWebEarn && 0};
     }
 
     .rdg-cell.action {

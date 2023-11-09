@@ -133,12 +133,12 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         isTest: true,
         walletType: 'ETHEREUM',
       },
-      421613: {
-        label: 'ARBGOERLI',
-        chainId: '421613',
-        isTest: true,
-        walletType: 'ETHEREUM',
-      },
+      // 421613: {
+      //   label: 'ARBGOERLI',
+      //   chainId: '421613',
+      //   isTest: true,
+      //   walletType: 'ETHEREUM',
+      // },
     },
     ChainTests: [5, 421613],
     ChainIdExtends: {
