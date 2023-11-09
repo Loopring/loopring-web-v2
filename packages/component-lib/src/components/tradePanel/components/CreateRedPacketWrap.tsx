@@ -196,6 +196,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         if (isToken) {
           return {
             total:
+              tokenMap[tradeData?.belong as string] &&
               getValuePrecisionThousand(
                 total,
                 tokenMap[tradeData?.belong as string].precision,
