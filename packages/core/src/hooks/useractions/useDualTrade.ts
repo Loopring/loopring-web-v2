@@ -144,12 +144,8 @@ export const useDualTrade = <
               balance: _updateInfo?.coinSell?.balance ?? 0,
               tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
               belong: baseSymbol,
-              isRenew:
-                _updateInfo?.coinSell?.isRenew ??
-                (dual_reinvest?.enable &&
-                  [DualViewType.DualDip, DualViewType.DualGain].includes(viewType as DualViewType))
-                  ? true
-                  : false,
+              isRenew: false
+              // isRenew: _updateInfo?.coinSell?.isRenew ?? dual_reinvest?.enable ? true : false,
             } as unknown as T)
       const existedMarket = sdk.getExistedMarket(marketArray, baseSymbol, quoteSymbol)
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
@@ -196,15 +192,7 @@ export const useDualTrade = <
   )
 
   const handleOnchange = ({ tradeData }: DualChgData<T>) => {
-    if (
-      tradeData?.isRenew &&
-      !confirmDualAutoInvest &&
-      [DualViewType.All, DualViewType.DualBegin].includes(viewType as DualViewType)
-    ) {
-      setConfirmDualAutoInvest(true)
-    } else {
-      refreshDual({ tradeData })
-    }
+    refreshDual({ tradeData })
   }
 
   const availableTradeCheck = React.useCallback((): {

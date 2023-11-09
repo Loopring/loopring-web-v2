@@ -334,6 +334,7 @@ export const DualWrap = <
                 ) : undefined
               }
               onChange={(data) => {
+                debugger
                 onChangeEvent({
                   tradeData: {
                     ...dualCalcData?.coinSell,
