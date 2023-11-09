@@ -30,8 +30,8 @@ export const SystemColor = {
   orange: '#FBA95C',
   red: '#FF5677',
   white: '#FFFFFF',
-  balck: '#000000',
-  optional: '#F0B90B',
+  black: '#000000',
+  optional: '#F0B90B'
 }
 
 export const GrayLight = {
@@ -105,6 +105,7 @@ export const ColorDarkDefault = Object.freeze({
 
   /********************Case for provider*******************/
   white: SystemColor.white,
+  black: SystemColor.black,
   dark: GrayBlack.gray700,
   opacity: `${hexToRGB(GrayBlack.gray700, '0')}`,
   providerBtn: `${hexToRGB(GrayBlack.gray100, '0.1')}`,
@@ -181,6 +182,7 @@ export const ColorLightDefault = Object.freeze({
 
   /********************Case for provider*******************/
   white: SystemColor.white,
+  black: SystemColor.black,
   dark: GrayBlack.gray700,
   opacity: `${hexToRGB(GrayBlack.gray100, '0')}`,
   providerBtn: `${hexToRGB(SystemColor.blue, '0.1')}`,

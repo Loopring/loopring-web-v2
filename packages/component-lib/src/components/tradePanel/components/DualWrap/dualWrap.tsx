@@ -17,7 +17,7 @@ import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DualDetail } from './dualDetail'
-import { InputMaxCoin } from '../../../basic-lib'
+import { InputCoin, InputMaxCoin } from '../../../basic-lib'
 import BigNumber from 'bignumber.js'
 
 export const DualWrap = <
@@ -207,6 +207,48 @@ export const DualWrap = <
         : Math.floor(calc)
       : dualCalcData.coinSell?.renewDuration ?? 0
 
+  const inputView = displayMode !== DualDisplayMode.beginnerModeStep2 && (
+    <Grid
+      item
+      xs={12}
+      flexDirection={'column'}
+      alignItems={'stretch'}
+      justifyContent={'space-between'}
+      display={'flex'}
+    >
+      <Box
+        paddingX={2}
+        display={'flex'}
+        alignItems={'stretch'}
+        justifyContent={'space-between'}
+        flexDirection={'column'}
+      >
+        <InputCoin<any, I, any>
+          ref={coinSellRef}
+          disabled={getDisabled}
+          {...{
+            ...propsSell,
+          }}
+        />
+        <Typography
+          variant={'body1'}
+          display={'inline-flex'}
+          alignItems={'center'}
+          justifyContent={'space-between'}
+          paddingTop={1}
+          paddingBottom={2}
+        >
+          <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
+            {t('labelDualQuota')}
+          </Typography>
+          <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
+            {totalQuota + ' ' + dualCalcData.coinSell.belong}
+          </Typography>
+        </Typography>
+      </Box>
+    </Grid>
+  )
+
   return (
     <Grid
       className={dualCalcData.dualViewInfo ? '' : 'loading'}
@@ -301,6 +343,7 @@ export const DualWrap = <
                   } as any,
                 })
               }}
+              // inputView={inputView}
             />
           </Grid>
           <Grid item xs={12}>

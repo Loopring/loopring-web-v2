@@ -1983,6 +1983,7 @@ export default {
   labelDefiRate: 'Rate',
   labelDefiLido: 'Lido',
   labelDefiRocketPool: 'Rocket Pool',
+  
   labelDualIsHigh: 'is significantly higher',
   labelDualIsLow: 'is significantly lower',
   labelDualAutoAlert:
@@ -2020,12 +2021,14 @@ export default {
     '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
     '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelAssetDualInvests: 'Dual Investment',
   labelTxGuardian_upgrade_contract: 'upgrade contract',
   labelTxGuardian_approve_token: 'approve token',
   labelContactNameExisted: 'Name already exists',
   labelContactAddressExisted: 'Address already exists',
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelEarnVaultTitle: 'Total Vault',
   labelDualBTC: 'ETH - WBTC Dual Investment',
   labelDualBTCDes: 'Select based on Token and Settlement Date',
   labelDualTypeDualBTC: 'ETH - WBTC Dual Investment',
