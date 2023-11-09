@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": "src/",
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": [
+    "src",
+    "src/*",
+    "src/**/*.json",
+    "src/types.d.ts"
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": true,
+    "transpileOnly": true
+  }
+}

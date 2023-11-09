@@ -61,6 +61,7 @@ export const useActiveAccount = <T>(): {
       )
     },
   })
+  myLog('chargeFeeTokenList', chargeFeeTokenList)
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2({ needFilterZero: true, isActive: true }).walletMap ?? {}
     setWalletMap(walletMap)

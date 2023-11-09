@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, BoxProps, Modal, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-import { Column, Table } from '../../basic-lib'
+import { CoinIcon, Column, Table } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TablePaddingX } from '../../styled'
 import {
@@ -11,6 +11,7 @@ import {
   getValuePrecisionThousand,
   HiddenTag,
   MarketType,
+  myLog,
   PriceTag,
   RowConfig,
   TokenType,
@@ -23,7 +24,7 @@ import { XOR } from '../../../types/lib'
 import { LockDetailPanel } from './components/modal'
 import _ from 'lodash';
 
-const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
+const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string; isWebEarn?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -31,16 +32,22 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   .rdg {
     flex: 1;
 
-    ${({ isMobile, lan }) =>
-      !isMobile
-        ? `--template-columns: 200px 150px auto auto ${
-            lan === 'en_US' ? '184px' : '184px'
-          } !important;`
-        : `--template-columns: 54% 40% 6% !important;`}
+    ${({ isMobile, lan, isWebEarn }) =>
+      isWebEarn
+        ? isMobile
+          ? `--template-columns: 54% 40% 6% !important;`
+          : `--template-columns: 200px 150px auto auto 220px !important;`
+        : isMobile
+        ? `--template-columns: 54% 40% 6% !important;`
+        : `--template-columns: 200px 150px auto auto 184px !important;`}
     .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
       margin-top: ${({ theme }) => theme.unit / 8}px;
+      padding-left: ${({ isWebEarn }) => isWebEarn && 0};
+    }
+    .rdg-cell:last-of-type {
+      padding-right: ${({ isWebEarn }) => isWebEarn && 0};
     }
 
     .rdg-cell.action {
@@ -63,7 +70,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
 }
 
 ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element
+` as (props: { isMobile?: boolean; lan: string; isWebEarn?: boolean } & BoxProps) => JSX.Element
 
 
 
@@ -112,6 +119,7 @@ export type AssetsTableProps<R = RawDataAssetsItem> = {
       }
   hideAssets?: boolean
   isLeverageETH?: boolean
+  isWebEarn?: boolean
 } & XOR<
   {
     hideInvestToken: boolean
@@ -145,6 +153,7 @@ export const AssetsTable = withTranslation('tables')(
       onTokenLockHold,
       tokenLockDetail,
       searchValue,
+      isWebEarn,
       ...rest
     } = props
     const gridRef = React.useRef(null);
@@ -178,8 +187,16 @@ export const AssetsTable = withTranslation('tables')(
       }
     }, 200);
     const updateData = React.useCallback((page) => {
+      if (isWebEarn) {
+        setViewData(
+          (rawData && rawData.length > 0 ? rawData : []).filter(o => {
+            return o.amount !== '--'
+          })
+        )
+        return
+      }
+      
       let resultData = rawData && !!rawData.length ? [...rawData] : []
-      // if (filter.hideSmallBalance) {
       if (hideSmallBalances) {
         resultData = resultData.filter((o) => !o.smallBalance)
       }
@@ -246,7 +263,23 @@ export const AssetsTable = withTranslation('tables')(
           }
           return (
             <>
-              <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+              {isWebEarn ? (
+                <Box
+                  sx={{
+                    height: 36,
+                    width: 36,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft: 1
+                  }}
+                >
+                  <CoinIcons size={'large'} type={token.type} tokenIcon={tokenIcon} />
+                </Box>
+              ) : (
+                <CoinIcons type={token.type} tokenIcon={tokenIcon} />
+              )}
+
               <Typography
                 variant={'inherit'}
                 color={'textPrimary'}
@@ -358,6 +391,7 @@ export const AssetsTable = withTranslation('tables')(
                 onReceive,
                 onSend,
                 isLeverageETH: false,
+                isWebEarn: isWebEarn
               }}
             />
           )
@@ -461,6 +495,7 @@ export const AssetsTable = withTranslation('tables')(
                 onReceive,
                 onSend,
                 isLeverageETH: false,
+                isWebEarn: isWebEarn
               }}
             />
           )
@@ -469,21 +504,7 @@ export const AssetsTable = withTranslation('tables')(
     ]
 
     return (
-      <TableWrap lan={language} isMobile={isMobile}>
-        {showFilter && (
-          <Box marginX={2}>
-            <Filter
-              {...{
-                handleFilterChange,
-                filter,
-                hideInvestToken,
-                hideSmallBalances,
-                setHideLpToken,
-                setHideSmallBalances,
-              }}
-            />
-          </Box>
-        )}
+      <TableWrap marginBottom={isWebEarn ? 4 : 0} lan={language} isMobile={isMobile} isWebEarn={isWebEarn}>
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <>
             <LockDetailPanel tokenLockDetail={tokenLockDetail} />
@@ -493,7 +514,7 @@ export const AssetsTable = withTranslation('tables')(
             ref={gridRef}
           className={isInvest ? 'investAsset' : ''}
           {...{ ...rest, t }}
-            style={{height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350}}
+            style={{height: viewData.length > 0 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight : 350}}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}
