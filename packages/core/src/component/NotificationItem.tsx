@@ -8,7 +8,6 @@ import {
   Layer2RouterID,
   MapChainId,
   MessageIcon,
-  RecordTabIndex,
   RouterPath,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
@@ -57,7 +56,7 @@ const BoxStyle = styled(Box)`
     }
   }
 `
-const NoticePop = (rest: sdk.UserNotification) => {
+export const NoticePop = (rest: sdk.UserNotification) => {
   const history = useHistory()
   const { t } = useTranslation()
   const [open, setOpen] = React.useState(false)
@@ -169,7 +168,7 @@ export const NotificationItem = React.memo(
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { t } = useTranslation()
-    const ele = useNotification({ index, onReadClick, rest })
+    const ele = useNotification({ index, onReadClick, ...rest })
     return (
       <BoxStyle display={'flex'} justifyContent={'stretch'} paddingY={1} className={className}>
         <Box position={'relative'} marginRight={2}>
