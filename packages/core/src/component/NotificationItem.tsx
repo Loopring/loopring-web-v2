@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { Box, IconButton, Link, Snackbar, Typography } from '@mui/material'
 import moment from 'moment'
 import styled from '@emotion/styled'
-import { useNotification } from '../hooks/common/useNotification'
+import { useNotification } from '../hooks'
 
 const BoxStyle = styled(Box)`
   .point {
@@ -33,7 +33,6 @@ const BoxStyle = styled(Box)`
     }
     .message {
       word-wrap: break-word;
-      display: inline-flex;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
