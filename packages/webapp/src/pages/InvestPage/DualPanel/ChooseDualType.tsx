@@ -38,6 +38,7 @@ export const ChooseDualType = ({
   return (
     <>
       <MaxWidthContainer
+        sx={{ flexDirection: 'row' }}
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}

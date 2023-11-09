@@ -332,12 +332,14 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     <Box display={'flex'} flexDirection={'column'} flex={1}>
       <MaxWidthContainer
         display={'flex'}
+        sx={{ flexDirection: 'row' }}
         justifyContent={'space-between'}
         background={containerColors[0]}
-        height={height}
         alignItems={'center'}
         containerProps={{
-          borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
+          sx: {
+            borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
+          },
         }}
       >
         {isMainView ? (
@@ -371,6 +373,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
             display={'flex'}
             alignItems={'center'}
             justifyContent={'space-between'}
+            paddingY={2}
           >
             <Button
               startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
@@ -382,6 +385,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
             >
               {t('labelInvestDefiTitle')}
             </Button>
+
             <Button
               onClick={() =>
                 history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
@@ -401,8 +405,9 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
       </MaxWidthContainer>
 
       <MaxWidthContainer
-        height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'}
+        // height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'}
         background={isMainView ? containerColors[1] : 'transparent'}
+        containerProps={{ sx: { flex: 1 } }}
       >
         <StyleWrapper
           display={'flex'}

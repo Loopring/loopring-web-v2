@@ -3,7 +3,7 @@ import { walletLayer2Service } from './services/walletLayer2Service'
 import { tickerService } from './services/tickerService'
 import { ammPoolService } from './services/ammPoolService'
 import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources'
-import { LoopringAPI, SocketMap } from '../../index'
+import { LoopringAPI, notificationService, SocketMap, SocketUserMap } from '../../index'
 import { bookService } from './services/bookService'
 import { orderbookService } from './services/orderbookService'
 import { tradeService } from './services/tradeService'
@@ -30,6 +30,9 @@ export class LoopringSocket {
   private static SocketEventMap: SocketEventMap = {
     [sdk.WsTopicType.account]: (_data: { [key: string]: any }) => {
       walletLayer2Service.sendUserUpdate()
+    },
+    [sdk.WsTopicType.notification]: (data: sdk.UserNotification, _topic: any) => {
+      notificationService.sendNotification(data)
     },
     [sdk.WsTopicType.order]: (data: sdk.OrderDetail) => {
       bookService.sendBook({
@@ -271,7 +274,7 @@ export class LoopringSocket {
   private makeMessageArray = ({
     socket,
   }: {
-    socket: SocketMap
+    socket: SocketMap & SocketUserMap
   }): {
     topics: any[]
   } => {
@@ -307,6 +310,14 @@ export class LoopringSocket {
             this.addSocketEvents(sdk.WsTopicType.account)
             topics = [...topics, ...list]
           }
+          break
+        case sdk.WsTopicType.notification:
+          const params = socket[sdk.WsTopicType.notification]
+          if (params) {
+            this.addSocketEvents(sdk.WsTopicType.notification)
+            topics = [...topics, sdk.getNotificationArg(params)]
+          }
+
           break
         case sdk.WsTopicType.order:
           const orderSocket = socket[sdk.WsTopicType.order]

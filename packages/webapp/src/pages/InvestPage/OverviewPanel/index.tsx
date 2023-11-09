@@ -167,6 +167,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
       <WrapperStyled>
         <MaxWidthContainer
           display={'flex'}
+          sx={{ flexDirection: 'row' }}
           justifyContent={'space-between'}
           background={containerColors[0]}
           height={isMobile ? 60 * theme.unit : 30 * theme.unit}

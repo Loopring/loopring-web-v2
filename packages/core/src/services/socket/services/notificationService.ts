@@ -1,16 +1,18 @@
 import { Subject } from 'rxjs'
-import { BasicListItem, NotificationItem } from '@loopring-web/component-lib'
+import * as sdk from '@loopring-web/loopring-sdk'
+
+// import { BasicListItem } from '@loopring-web/component-lib'
 
 // export type NotificationMap<R> = {
 //   [key in keyof R]: { pooled: [string, string]; lp: string }
 // }
 // <R extends {[key:string]:any}>
 const subject = new Subject<{
-  notification: BasicListItem
+  notification: sdk.UserNotification
 }>()
 
 export const notificationService = {
-  sendNotification: (notification: BasicListItem) => subject.next({ notification }),
+  sendNotification: (notification: sdk.UserNotification) => subject.next({ notification }),
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),
 }

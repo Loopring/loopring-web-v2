@@ -2074,4 +2074,7 @@ export default {
   labelResetunlockedWithDual2: `Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.`,
   labelResetunlockedWithoutDual: `Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.`,
   labelNoticeTitle: 'Notifications',
+  labelNotificationTime: 'Time {{time}}',
+  labelNotificationClear: 'Clear all',
+  labelNotificationReadAll: 'Read all',
 }

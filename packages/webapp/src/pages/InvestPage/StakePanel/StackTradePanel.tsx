@@ -86,6 +86,7 @@ export const StackTradePanel = ({
             background={containerColors[0]}
             alignItems={'center'}
             flexDirection={'column'}
+            paddingY={2}
             containerProps={{
               borderBottom: `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
             }}
@@ -97,7 +98,6 @@ export const StackTradePanel = ({
               justifyItems={'center'}
               flexDirection={'row'}
               justifyContent={'space-between'}
-              height={6 * theme.unit}
             >
               <Button
                 startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}

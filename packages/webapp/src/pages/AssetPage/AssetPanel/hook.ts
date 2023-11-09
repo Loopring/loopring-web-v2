@@ -66,8 +66,7 @@ export const useGetAssets = (): AssetPanelProps & {
   // const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({})
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
-  const { status: accountStatus, account } = useAccount()
-  const { sendSocketTopic, socketEnd } = useSocket()
+  const { account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
@@ -225,12 +224,12 @@ export const useGetAssets = (): AssetPanelProps & {
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
-      sendSocketTopic({ [WsTopicType.account]: true })
+      // sendSocketTopic({ [WsTopicType.account]: true })
       myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
       setLoadingBtn()
     }
     return () => {
-      socketEnd()
+      // socketEnd()
       startWorker.cancel()
     }
   }, [account.readyState])

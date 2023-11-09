@@ -140,11 +140,12 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
-        height={6 * theme.unit}
+        // height={6 * theme.unit}
         alignItems={'center'}
         containerProps={{
-          borderBottom: '1px solid var(--color-border)',
+          sx: { borderBottom: '1px solid var(--color-border)' },
         }}
+        paddingY={2}
       >
         <Box width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
           <Button

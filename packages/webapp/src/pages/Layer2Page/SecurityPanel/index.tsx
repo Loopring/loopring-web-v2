@@ -43,7 +43,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({ t }: WithT
   return (
     <>
       <MaxWidthContainer
-        background={'var(--color-pop-bg)'}
+        background={'var(--color-global-bg)'}
         display={'flex'}
         justifyContent={'space-between'}
         paddingY={2}

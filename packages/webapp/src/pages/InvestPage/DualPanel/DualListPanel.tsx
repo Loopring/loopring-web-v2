@@ -367,6 +367,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
             display={'flex'}
             justifyContent={'space-between'}
             paddingY={2}
+            sx={{ flexDirection: 'row' }}
           >
             <Button
               startIcon={<BackIcon fontSize={'small'} />}

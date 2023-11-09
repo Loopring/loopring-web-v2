@@ -13,10 +13,13 @@ import {
   offFaitService,
   store,
   useContacts,
+  useNotify,
+  useSocket,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state })
+  const { sendSocketTopic, socketUserEnd } = useSocket()
   const {
     updateWalletLayer1,
     status: walletLayer1Status,
@@ -38,15 +41,16 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2()
-    const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
+  const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
+  const { getUserNotify, restUerNotify } = useNotify()
 
-    const {
-      updateWalletL2Collection,
-      updateLegacyContracts,
-      resetL2Collection,
-      status: walletL2CollectionStatus,
-      statusUnset: walletL2CollectionstatusUnset,
-    } = useWalletL2Collection()
+  const {
+    updateWalletL2Collection,
+    updateLegacyContracts,
+    resetL2Collection,
+    status: walletL2CollectionStatus,
+    statusUnset: walletL2CollectionstatusUnset,
+  } = useWalletL2Collection()
 
   const {
     updateWalletL2NFTCollection,
@@ -64,6 +68,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
         case AccountStatus.ERROR_NETWORK:
+          socketUserEnd()
           break
         case AccountStatus.DEPOSITING:
         case AccountStatus.NOT_ACTIVE:
@@ -77,7 +82,9 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             resetLayer2NFT()
             resetL2NFTCollection()
             resetL2Collection()
+            restUerNotify()
           }
+          socketUserEnd()
           break
         case AccountStatus.ACTIVATED:
           getUserRewards()
@@ -91,8 +98,10 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletL2NFTCollection({ page: 1 })
             updateWalletL2Collection({ page: 1 })
           }
+          sendSocketTopic({})
           updateLegacyContracts()
           updateContacts()
+          getUserNotify()
           break
       }
     }

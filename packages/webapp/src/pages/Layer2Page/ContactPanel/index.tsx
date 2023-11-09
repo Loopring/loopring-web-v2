@@ -310,7 +310,8 @@ export const ContractPanel = () => {
       />
       <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
       <MaxWidthContainer
-        background={'var(--color-pop-bg)'}
+        sx={{ flexDirection: 'row' }}
+        background={'var(--color-global-bg)'}
         display={'flex'}
         justifyContent={'space-between'}
       >

@@ -17,6 +17,10 @@ const notifyMapSlice: Slice<NotifyStates> = createSlice({
   name: 'notifyMap',
   initialState,
   reducers: {
+    restUerNotify(state) {
+      state.status = SagaStatus.DONE
+      state.myNotifyMap = initialState.myNotifyMap
+    },
     getNotify(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING
     },
@@ -45,5 +49,5 @@ const notifyMapSlice: Slice<NotifyStates> = createSlice({
   },
 })
 export { notifyMapSlice }
-export const { getNotify, getUserNotify, resetNotify, getNotifyStatus, statusUnset } =
+export const { restUerNotify, getNotify, getUserNotify, getNotifyStatus, statusUnset } =
   notifyMapSlice.actions

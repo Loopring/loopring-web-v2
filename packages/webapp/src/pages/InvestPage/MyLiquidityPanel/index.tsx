@@ -392,11 +392,13 @@ const MyLiquidity: any = withTranslation('common')(
             borderRadius: noHeader ? `${theme.unit}px` : 0,
             marginTop: noHeader ? 1 : 0,
           }}
+          // sx={{ flexDirection: 'column' }}
         >
           {
             <>
               <Box width={'100%'} display={'flex'}>
                 <Tabs
+                  variant='scrollable'
                   className={'btnTab'}
                   value={tab}
                   onChange={(_event: any, newValue: any) => {

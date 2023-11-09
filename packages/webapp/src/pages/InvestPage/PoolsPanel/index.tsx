@@ -52,6 +52,7 @@ export const PoolsPanel = withTranslation('common')(
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1}>
         <MaxWidthContainer
+          sx={{ flexDirection: 'row' }}
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}

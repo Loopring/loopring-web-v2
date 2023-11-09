@@ -40,7 +40,7 @@ export const ForcewithdrawPanel = withTranslation(['common', 'layout'])(
     return (
       <>
         <MaxWidthContainer
-          background={'var(--color-pop-bg)'}
+          background={'var(--color-global-bg)'}
           display={'flex'}
           justifyContent={'space-between'}
           paddingY={2}

@@ -1,4 +1,5 @@
-import { NOTIFICATION_ITEM, Notify, StateBase } from '@loopring-web/common-resources'
+import { Notify, StateBase } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 /**
  * @notifyMap is only update
@@ -6,8 +7,8 @@ import { NOTIFICATION_ITEM, Notify, StateBase } from '@loopring-web/common-resou
 export type NotifyStates = {
   notifyMap: Notify | undefined
   myNotifyMap: {
-    items: NOTIFICATION_ITEM[]
-    totals: number
+    items: sdk.UserNotification[]
+    total: number
     unReads: number
   }
 } & StateBase
