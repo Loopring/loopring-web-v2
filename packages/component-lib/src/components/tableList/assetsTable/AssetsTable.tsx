@@ -504,7 +504,21 @@ export const AssetsTable = withTranslation('tables')(
     ]
 
     return (
-      <TableWrap marginBottom={isWebEarn ? 4 : 0} lan={language} isMobile={isMobile} isWebEarn={isWebEarn}>
+      <TableWrap lan={language} isMobile={isMobile}>
+        {!isWebEarn && showFilter && (
+          <Box marginX={2}>
+            <Filter
+              {...{
+                handleFilterChange,
+                filter,
+                hideInvestToken,
+                hideSmallBalances,
+                setHideLpToken,
+                setHideSmallBalances,
+              }}
+            />
+          </Box>
+        )}
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <>
             <LockDetailPanel tokenLockDetail={tokenLockDetail} />
