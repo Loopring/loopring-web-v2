@@ -457,7 +457,7 @@ export const ViewAccountTemplate = React.memo(
               flexDirection={'column'}
               alignItems={'center'}
             >
-              <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+              <Typography maxWidth={'1156px'} marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
                 {t('describeTitleConnectToWallet', {
                   layer2: L1L2_NAME_DEFINED[network].layer2,
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,

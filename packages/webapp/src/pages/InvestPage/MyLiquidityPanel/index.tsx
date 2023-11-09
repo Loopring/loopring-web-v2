@@ -49,6 +49,7 @@ import {
   InvestType,
   WarningIcon2,
   DAY_MINUTE_FORMAT,
+  RowConfig
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
@@ -722,6 +723,7 @@ const MyLiquidity: any = withTranslation('common')(
                       hideAssets={hideAssets}
                       cancelReInvest={_cancelReInvest as any}
                       getProduct={getProduct}
+                      rowConfig={RowConfig}
                     />
                     <Modal
                       open={dualOpen}

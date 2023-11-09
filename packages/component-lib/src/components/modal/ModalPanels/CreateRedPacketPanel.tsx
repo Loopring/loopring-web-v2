@@ -299,7 +299,7 @@ export const CreateRedPacketPanel = <
   const props: SwitchPanelProps<string> = React.useMemo(() => {
     const isTarget = tradeData.type?.scope === LuckyTokenViewType.TARGET
     let showNFT = isTarget
-      ? redPacketConfig.showNFT && isWhiteListed
+      ? redPacketConfig.showNFT
       : redPacketConfig.showNFT && tradeData.type?.scope !== LuckyTokenViewType.PUBLIC
 
     const tradeMenuListPanel = {

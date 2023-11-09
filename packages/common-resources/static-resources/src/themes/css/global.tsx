@@ -115,6 +115,7 @@ export const colorBase = ({ theme }: any) => css`
     --auto-refresh-color: ${theme.colorBase.primary};
     --opacity: ${theme.colorBase.opacity};
     --color-white: white;
+    --color-black: ${theme.colorBase.black};
     --color-settlet: ${theme.colorBase.opacity};
 
     --color-redPacket0: ${theme.colorBase.redPacket0};
