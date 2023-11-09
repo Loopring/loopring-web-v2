@@ -334,7 +334,6 @@ export const DualWrap = <
                 ) : undefined
               }
               onChange={(data) => {
-                debugger
                 onChangeEvent({
                   tradeData: {
                     ...dualCalcData?.coinSell,
@@ -344,7 +343,6 @@ export const DualWrap = <
                   } as any,
                 })
               }}
-              // inputView={inputView}
             />
           </Grid>
           <Grid item xs={12}>
