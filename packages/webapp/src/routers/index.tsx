@@ -1,6 +1,6 @@
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import React from 'react'
-import { Box, Container, Link } from '@mui/material'
+import { Box, Container, Link, Snackbar, Typography } from '@mui/material'
 import Header from 'layouts/header'
 import { QuotePage } from 'pages/QuotePage'
 import { SwapPage } from 'pages/SwapPage'
@@ -19,6 +19,7 @@ import {
   useSystem,
   useTicker,
   useTokenMap,
+  NoticePop,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
 import { LandPage } from '../pages/LandPage'
@@ -37,7 +38,6 @@ import {
 } from '@loopring-web/common-resources'
 import { ErrorPage } from '../pages/ErrorPage'
 import {
-  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
@@ -106,12 +106,16 @@ const WrapModal = () => {
   const location = useLocation()
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
+  const { getUserNotify } = useNotify()
+
   const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
   const [notificationPush, setNotificationPush] = React.useState({ isShow: false, item: {} })
   const { open, actionEle, handleClose } = useOffFaitModal()
+
   const notificationCallback = React.useCallback((notification) => {
     if (notification) {
-      setNotificationPush({ isShow: true, item: {} })
+      setNotificationPush({ isShow: true, item: { ...notification } })
+      getUserNotify()
     }
   }, [])
   useNotificationSocket({ notificationCallback })
@@ -128,17 +132,7 @@ const WrapModal = () => {
           message: t('labelOrderBanxaIsReadyToPay'),
         }}
       />,
-      <NoticeSnack
-        actionEle={notificationPush?.item?.actionEle}
-        open={notificationPush?.isShow}
-        handleClose={handleClose}
-        messageInfo={{
-          message: notificationPush?.item?.message,
-          // svgIcon: 'BanxaIcon',
-          // key: VendorProviders.Banxa,
-          // message: t('labelOrderBanxaIsReadyToPay'),
-        }}
-      />,
+      ,
     ] as any
   }, [open, actionEle, notificationPush])
   return (
@@ -150,7 +144,14 @@ const WrapModal = () => {
         depositProps={depositProps}
         isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '')}
       />
-      <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
+      <NoticePanelSnackBar
+        noticeSnacksElEs={[
+          ...noticeSnacksElEs,
+          ...(notificationPush.isShow && notificationPush?.item
+            ? [<NoticePop {...notificationPush?.item} />]
+            : []),
+        ]}
+      />
     </>
   )
 }

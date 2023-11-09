@@ -62,6 +62,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     onClearAllClick,
   } = useNotification({ setToastOpen })
   const handlePageChange = ({ page }: { page: number }) => {
+    setPage(page)
     getNotification({ offset: page - 1, limit: pageSize, filter })
   }
   React.useEffect(() => {
@@ -131,7 +132,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
                 return (
                   <Grid item xs={12} key={ele.id}>
                     <NotificationItem {...ele} index={index} onReadClick={onReadClick} />
-                    {index !== rawData?.length && <Divider />}
+                    {index !== rawData?.length - 1 && <Divider />}
                   </Grid>
                 )
               })

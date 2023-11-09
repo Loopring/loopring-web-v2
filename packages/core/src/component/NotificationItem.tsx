@@ -1,19 +1,21 @@
 import React from 'react'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router-dom'
-import { useSettings } from '@loopring-web/component-lib'
+import { Button, useSettings } from '@loopring-web/component-lib'
 import {
   ConvertToIcon,
   L1L2_NAME_DEFINED,
+  Layer2RouterID,
   MapChainId,
   MessageIcon,
   RecordTabIndex,
   RouterPath,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
-import { Box, IconButton, Link, Typography } from '@mui/material'
+import { Box, IconButton, Link, Snackbar, Typography } from '@mui/material'
 import moment from 'moment'
 import styled from '@emotion/styled'
+import { useNotification } from '../hooks/common/useNotification'
 
 const BoxStyle = styled(Box)`
   .point {
@@ -55,6 +57,101 @@ const BoxStyle = styled(Box)`
     }
   }
 `
+const NoticePop = (rest: sdk.UserNotification) => {
+  const history = useHistory()
+  const { t } = useTranslation()
+  const [open, setOpen] = React.useState(false)
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const onReadClick = () => undefined
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const ele = useNotification({
+    ...rest,
+    index: 0,
+    onReadClick,
+  })
+  const actionEle = React.useMemo(() => {
+    return (
+      <Box display={'inline-flex'} justifyContent={'flex-end'} flexDirection={'row-reverse'}>
+        <Button
+          sx={{ marginLeft: 1 }}
+          variant={'contained'}
+          size={'small'}
+          color={'primary'}
+          onClick={() => {
+            ele?.active
+              ? ele?.active()
+              : history.push(`/#${RouterPath.layer2}/${Layer2RouterID.notification}`)
+            handleClose()
+          }}
+        >
+          {t('labelDetail')}
+        </Button>
+        <Button
+          sx={{ marginLeft: 1 }}
+          variant={'text'}
+          size={'medium'}
+          onClick={() => {
+            handleClose()
+          }}
+        >
+          {t('labelClose')}
+        </Button>
+      </Box>
+    )
+  }, [ele])
+  return (
+    <Snackbar
+      open={open}
+      autoHideDuration={20000}
+      sx={{
+        pointerEvents: 'all',
+        flexDirection: 'column',
+        top: '80% !important',
+        height: 'fit-content',
+        '.MuiPaper-root': { background: 'var(--color-pop-bg)' },
+      }}
+      onClose={handleClose}
+      message={
+        <Box display={'flex'} flexDirection={'column'}>
+          <Typography variant={'body1'} color={'textSecondary'}>
+            {t(ele.i18nKey, {
+              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+            })}
+          </Typography>
+          <Typography variant={'body1'} color={'textPrimary'} marginTop={1} className={'message'}>
+            {rest.message}
+          </Typography>
+
+          <Typography
+            variant={'body1'}
+            color={'textSecondary'}
+            marginTop={1}
+            textAlign={'center'}
+            className={'time'}
+          >
+            {t('labelNotificationTime', {
+              time: moment(rest.createAt).fromNow(),
+              interpolation: {
+                escapeValue: false,
+              },
+            })}
+          </Typography>
+        </Box>
+      }
+      action={actionEle}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    />
+  )
+}
+
 export const NotificationItem = React.memo(
   ({
     index,
@@ -68,86 +165,22 @@ export const NotificationItem = React.memo(
     size
     onReadClick: (index: number, rest: any) => void
   }) => {
-    const { messageType, message, createAt } = rest
-    const history = useHistory()
+    const { message, createAt } = rest
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { t } = useTranslation()
-    let ele: any = {
-      i18nKey: '',
-      active: undefined,
-    }
-
-    switch (messageType) {
-      case sdk.NotificationMessageType.L1_CREATED:
-        ele.i18nKey = 'labelActiveL1successfulNote' //Active L1 Account successful
-        ele.active = undefined
-        break
-      case sdk.NotificationMessageType.L2_CREATED:
-        ele.i18nKey = 'labelActiveL2successfulNote' //Active L2 Account successful
-        ele.active = () => {
-          onReadClick(index, rest)
-          history.push(`${RouterPath.l2assetsDetail}`)
-        }
-        break
-      case 12: //sdk.NotificationMessageType.L1_CREATING:
-        ele.i18nKey = 'labelActivatingL1AccountNote' //Active L2 Account successful
-        ele.active = undefined
-        break
-      case sdk.NotificationMessageType.L1_RECEIVE:
-        ele.i18nKey = 'labelL1ReceiveNote'
-        ele.active = undefined
-        break
-      case sdk.NotificationMessageType.L1_SEND:
-        ele.i18nKey = 'labelL1SendNote'
-        ele.active = undefined
-        break
-      case sdk.NotificationMessageType.L2_RECEIVE:
-        ele.i18nKey = 'labelL2ReceiveNote'
-        ele.active = () => {
-          onReadClick(index, rest)
-          history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
-        }
-        break
-      case sdk.NotificationMessageType.L2_SEND:
-        ele.i18nKey = 'labelL2SendNote'
-        ele.active = undefined
-        ele.active = () => {
-          onReadClick(index, rest)
-          history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
-        }
-        break
-      case sdk.NotificationMessageType.DEPOSIT:
-        ele.i18nKey = 'labelL2DepositNote'
-        ele.active = () => {
-          onReadClick(index, rest)
-          history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
-        }
-        break
-      case sdk.NotificationMessageType.WITHDRAW:
-        ele.i18nKey = 'labelL2WithdrawNote'
-        ele.active = () => {
-          onReadClick(index, rest)
-          history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
-        }
-        break
-      default:
-        ele.i18nKey = 'labelNotificationLabel'
-        ele.active = undefined
-        break
-    }
-
+    const ele = useNotification({ index, onReadClick, rest })
     return (
       <BoxStyle display={'flex'} justifyContent={'stretch'} paddingY={1} className={className}>
         <Box position={'relative'} marginRight={2}>
-          {!ele.read ? (
-            <IconButton size={size} onClick={() => onReadClick(index, ele)}>
+          {!rest.read ? (
+            <IconButton size={size} onClick={() => onReadClick(index, rest)}>
               <MessageIcon htmlColor={'var(--color-text-secondary)'} />
             </IconButton>
           ) : (
             <MessageIcon fontSize={size} htmlColor={'var(--color-text-third)'} />
           )}
-          {!ele.read && <Typography className={'point'} component={'i'} display={'block'} />}
+          {!rest.read && <Typography className={'point'} component={'i'} display={'block'} />}
         </Box>
         <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'flex-start'}>
           <Typography variant={'body1'} color={'textSecondary'}>
@@ -168,7 +201,7 @@ export const NotificationItem = React.memo(
               className={'message'}
               display={'inline-flex'}
               justifyContent={'space-between'}
-              alignItmes={'center'}
+              alignItems={'center'}
               width={'100%'}
             >
               <span>{message}</span>
