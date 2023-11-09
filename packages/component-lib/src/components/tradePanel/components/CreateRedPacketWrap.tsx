@@ -207,6 +207,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               ' ' +
               tradeData.belong,
             splitValue:
+              tokenMap[tradeData?.belong as string] && 
               getValuePrecisionThousand(
                 splitValue,
                 tokenMap[tradeData?.belong as string].precision,
