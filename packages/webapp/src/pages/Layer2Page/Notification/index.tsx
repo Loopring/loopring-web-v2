@@ -3,7 +3,6 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import {
-  useSettings,
   MaxWidthContainer,
   TablePagination,
   ToastType,
@@ -11,19 +10,17 @@ import {
   LoadingStyled,
   Button,
 } from '@loopring-web/component-lib'
-import { useToast } from '@loopring-web/core'
+import { useToast, NotificationItem } from '@loopring-web/core'
 
 import {
+  DeleteIcon,
   EmptyValueTag,
-  MessageIcon,
   NotificationIcon,
-  RowConfig,
+  ReadIcon,
   SoursURL,
   TOAST_TIME,
-  YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import { useNotification } from './hook'
-import moment from 'moment/moment'
 
 const StylePaper = styled(Box)`
   background: var(--color-box);
@@ -40,6 +37,7 @@ const StylePaper = styled(Box)`
     }
   }
 `
+const RowHeight = 95
 const StyledPaper = styled(Box)`
   width: 100%;
   height: 100%;
@@ -70,15 +68,12 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     let height = container?.current?.offsetHeight
     if (height) {
       // const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
-      setPageSize(Math.floor(height / RowConfig.rowHeight) - 2)
+      setPageSize(Math.floor(height / RowHeight))
       // handleTabChange(currentTab, pageSize);
       // getNotification({})
       handlePageChange({ page: 1 })
     }
   }, [container?.current?.offsetHeight])
-  const typeEle = React.useCallback((type) => {
-    return type
-  })
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -93,11 +88,23 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           <NotificationIcon color={'inherit'} sx={{ marginRight: 1 }} /> {t('labelNoticeTitle')}
         </Typography>
         <Box>
-          <Button variant={'text'} size={'small'} onClick={onClearAllClick}>
-            {t('labelNotificationClear')}
-          </Button>
-          <Button variant={'text'} size={'small'} onClick={onReadAllClick}>
+          <Button
+            startIcon={<ReadIcon color={'inherit'} fontSize={'small'} />}
+            variant={'text'}
+            size={'small'}
+            sx={{ color: 'var(--color-text-primary)' }}
+            onClick={onReadAllClick}
+          >
             {t('labelNotificationReadAll')}
+          </Button>
+          <Button
+            startIcon={<DeleteIcon color={'inherit'} fontSize={'small'} />}
+            variant={'text'}
+            size={'small'}
+            sx={{ color: 'var(--color-text-primary)' }}
+            onClick={onClearAllClick}
+          >
+            {t('labelNotificationClear')}
           </Button>
         </Box>
       </MaxWidthContainer>
@@ -118,58 +125,13 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           flex={1}
           ref={container}
         >
-          <Grid container spacing={2} paddingBottom={2}>
+          <Grid container paddingBottom={2}>
             {rawData.length ? (
               rawData.map((ele, index) => {
                 return (
-                  <Grid item xs={12} key={ele.id} onClick={() => onReadClick(index, ele)}>
-                    <Box display={'flex'} justifyContent={'stretch'} paddingY={1}>
-                      <Box position={'relative'} marginRight={2}>
-                        <MessageIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
-                        {ele.read && (
-                          <Typography
-                            component={'i'}
-                            display={'block'}
-                            sx={{
-                              right: 0,
-                              top: 0,
-                              position: 'absolute',
-                              width: 8,
-                              height: 8,
-                              background: 'var(--color-error)',
-                              borderRadius: '50%',
-                            }}
-                          />
-                        )}
-                      </Box>
-                      <Box
-                        flex={1}
-                        display={'flex'}
-                        flexDirection={'column'}
-                        alignItems={'flex-start'}
-                      >
-                        <Typography variant={'body1'} color={'textSecondary'}>
-                          {ele.typeEle}
-                        </Typography>
-                        <Typography variant={'body1'} color={'textPrimary'}>
-                          {ele.message}
-                        </Typography>
-                        <Typography
-                          variant={'body1'}
-                          color={'textSecondary'}
-                          marginTop={1}
-                          textAlign={'center'}
-                        >
-                          {t('labelNotificationTime', {
-                            time: moment(ele.createAt).fromNow(),
-                            interpolation: {
-                              escapeValue: false,
-                            },
-                          })}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Divider />
+                  <Grid item xs={12} key={ele.id}>
+                    <NotificationItem {...ele} index={index} onReadClick={onReadClick} />
+                    {index !== rawData?.length && <Divider />}
                   </Grid>
                 )
               })

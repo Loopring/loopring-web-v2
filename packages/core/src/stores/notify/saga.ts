@@ -48,13 +48,11 @@ const getNotifyUserApi = async () => {
     : sdk.NetworkWallet[network]
   if (accAddress && apiKey && LoopringAPI.userAPI) {
     const response = await LoopringAPI.userAPI?.getNotificationAll({
-      // walletAddress: accAddress,
-      // network: networkWallet,
       walletAddress: accAddress,
       offset: 0,
       limit: 5,
       network: networkWallet,
-      notRead: false,
+      notRead: true,
     })
     if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
     } else {

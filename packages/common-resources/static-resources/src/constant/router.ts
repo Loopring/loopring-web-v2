@@ -990,11 +990,11 @@ export const ProfileIndex = {
     Layer2RouterID.notification,
   ],
   ARBGOERLI: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
   ],
 }
 

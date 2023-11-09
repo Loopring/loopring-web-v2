@@ -93,7 +93,7 @@ export const useNotification = <R = any>({
                   network: 'ETHEREUM',
                   messageType: 2,
                   message: 'You have received 94.739021912 LRC in your Ethereum L1 wallet.',
-                  read: false,
+                  read: true,
                   createAt: 1682081861589,
                   redirectionContext: '',
                 },

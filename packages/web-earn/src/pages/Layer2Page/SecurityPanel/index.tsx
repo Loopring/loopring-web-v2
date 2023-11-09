@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom'
 import {
   ProfileIndex,
   MapChainId,
-  ProfileKey,
+  Layer2RouterID,
   L1L2_NAME_DEFINED,
 } from '@loopring-web/common-resources'
 
@@ -179,7 +179,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({ t }: WithT
             </Grid>
           </Grid>
         </Box>
-        {ProfileIndex[network]?.includes(ProfileKey.forcewithdraw) && (
+        {ProfileIndex[network]?.includes(Layer2RouterID.forcewithdraw) && (
           <>
             <StyledDivider />
             <Box component={'section'} display={'flex'} flexDirection={'column'} padding={5 / 2}>

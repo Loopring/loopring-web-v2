@@ -1983,7 +1983,7 @@ export default {
   labelDefiRate: 'Rate',
   labelDefiLido: 'Lido',
   labelDefiRocketPool: 'Rocket Pool',
-  
+
   labelDualIsHigh: 'is significantly higher',
   labelDualIsLow: 'is significantly lower',
   labelDualAutoAlert:
@@ -2074,7 +2074,19 @@ export default {
   labelResetunlockedWithDual2: `Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.`,
   labelResetunlockedWithoutDual: `Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.`,
   labelNoticeTitle: 'Notifications',
-  labelNotificationTime: 'Time {{time}}',
+  labelNotificationTime: '{{time}}',
   labelNotificationClear: 'Clear all',
-  labelNotificationReadAll: 'Read all',
+  labelNotificationReadAll: 'Mark all as read',
+  labelNotificationLabel: 'Notification',
+  labelActiveL1successfulNote: 'Active {{ethereumL1}} successful',
+  labelActiveL2successfulNote: 'Active {{loopringL2}} successful',
+  labelActivatingL1AccountNote: 'Activating {{ethereumL1}} successful',
+  labelL1ReceiveNote: 'Receive token in {{ethereumL1}}',
+  labelL1SendNote: ' Send token from {{ethereumL1}}',
+  labelL2ReceiveNote: 'Receive token in {{loopringL2}}',
+  labelL2SendNote: 'Send token from {{loopringL2}} successful',
+  labelL2DepositNote: 'Receive token in {{loopringL2}}',
+  labelL2WithdrawNote: 'Send token in {{loopringL2}}',
+  labelTotalUnRead: '{{total}} unread(s)',
+  labelReadAll: 'Read all',
 }
