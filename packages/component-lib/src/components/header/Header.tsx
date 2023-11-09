@@ -36,6 +36,7 @@ import {
   SoursURL,
   subMenuLayer2,
   toolBarAvailableItem as _toolBarAvailableItem,
+  myLog,
 } from '@loopring-web/common-resources'
 import {
   BtnDownload,
@@ -243,6 +244,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
         toolBarMap = ButtonComponentsMap,
         i18n,
         t,
+        transparent,
         ...rest
       }: HeaderProps<R> & WithTranslation,
       ref: React.ForwardedRef<any>,
@@ -338,6 +340,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                           new RegExp(label.id?.toLowerCase(), 'ig').test(
                             match?.params[LAYERMAP[layer + 1]],
                           )
+                        
                         return [
                           ...prev,
                           <HeadMenuItem
@@ -658,7 +661,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       }
 
       return (
-        <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
+        <HeaderStyled sx={{'&&&': {background: transparent ? 'transparent' : ''}}} elevation={4} ref={ref} className={`${rest?.className}`}>
           {isWrap ? (
             <Container style={paddingStyle} className={'wrap'} maxWidth='lg'>
               {isMobile ? displayMobile : displayDesktop}
