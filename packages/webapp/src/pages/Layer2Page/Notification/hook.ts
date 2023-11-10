@@ -36,6 +36,7 @@ export const useNotification = <R extends sdk.UserNotification>({
   ].includes(network as sdk.NetworkWallet)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]
+
   const { onReadClick, onReadAllClick, onClearAllClick } = useNotificationFunc({ setToastOpen })
   const getNotification = React.useCallback(
     async ({ offset = 0, limit = 20, filter }: any) => {
