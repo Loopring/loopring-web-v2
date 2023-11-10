@@ -295,7 +295,6 @@ export class LoopringSocket {
           break
         case sdk.WsTopicType.notification:
           const params = socket[sdk.WsTopicType.notification]
-          debugger
           if (params) {
             this.addSocketEvents(sdk.WsTopicType.notification)
             topics = [...topics, sdk.getNotificationArg(params)]
