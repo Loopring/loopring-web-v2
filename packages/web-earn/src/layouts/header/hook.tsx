@@ -3,12 +3,8 @@ import React from 'react'
 import {
   ButtonComponentsMap,
   fnType,
-  // headerMenuData,
-  // headerMenuDataMap,
   headerMenuLandingData,
-  headerToolBarData as _initHeaderToolBarData,
   MapChainId,
-  Profile,
   ProfileIndex,
   SagaStatus,
 } from '@loopring-web/common-resources'
@@ -27,7 +23,7 @@ import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
-import { headerMenuDataEarnMap } from '../../constant/router'
+import { earnHeaderToolBarData, EarnProfile, headerMenuDataEarnMap } from '../../constant/router'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
@@ -78,8 +74,8 @@ export const useHeader = () => {
 
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
-  const [headerToolBarData, setHeaderToolBarData] = React.useState<typeof _initHeaderToolBarData>({
-    ..._initHeaderToolBarData,
+  const [headerToolBarData, setHeaderToolBarData] = React.useState<typeof earnHeaderToolBarData>({
+    ...earnHeaderToolBarData,
   })
 
   React.useEffect(() => {
@@ -94,7 +90,7 @@ export const useHeader = () => {
         }
         headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
           ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
-          subMenu: profile.map((item: string) => Profile[item]),
+          subMenu: profile.map((item: string) => EarnProfile[item]),
           readyState: account.readyState,
         }
         return headerToolBarData
@@ -102,6 +98,7 @@ export const useHeader = () => {
     }
   }, [accountStatus, account?.readyState])
   const { notifyMap } = useNotify()
+  myLog('headerToolBarData', headerToolBarData)
   
   return {
     headerToolBarData,

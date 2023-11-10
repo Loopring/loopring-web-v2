@@ -1,73 +1,12 @@
-//
-//
-// export enum Layer2RouterID {
-//   security = 'security',
-//   vip = 'vip',
-//   contact = 'contact',
-//   referralrewards = 'referralrewards',
-//   forcewithdraw = 'forcewithdraw',
-// }
 
-// export const Profile = {
-//   security: [
-//     {
-//       icon: SecurityIcon,
-//       router: { path: '/layer2/security' },
-//       label: {
-//         id: 'security',
-//         i18nKey: 'labelSecurity',
-//       },
-//     },
-//   ],
-//   vip: [
-//     {
-//       icon: VipIcon,
-//       router: { path: '/layer2/vip' },
-//       label: {
-//         id: 'vip',
-//         i18nKey: 'labelVipPanel',
-//       },
-//     },
-//   ],
-//   contact: [
-//     {
-//       icon: ContactIcon,
-//       router: { path: '/layer2/contact' },
-//       label: {
-//         id: 'contact',
-//         i18nKey: 'labelContactsPanel',
-//       },
-//     },
-//   ],
-//   referralrewards: [
-//     {
-//       icon: RewardIcon,
-//       router: { path: '/layer2/referralrewards' },
-//       label: {
-//         id: 'referralrewards',
-//         i18nKey: 'labelReferralReward',
-//       },
-//     },
-//   ],
-// }
-
-// export enum ProfileKey {
-//   security = 'security',
-//   vip = 'vip',
-//   contact = 'contact',
-//   referralrewards = 'referralrewards',
-//   forcewithdraw = 'forcewithdraw',
-// }
 
 import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
   RecordTabIndex,
-  // RouterMainKey,
   WalletSite,
   ButtonComponentsMap,
-  subMenuInvest,
-  // RouterPath,
+  SecurityIcon,
 } from '@loopring-web/common-resources'
 
 export const toolBarAvailableEarnItem: number[] = [
@@ -254,4 +193,49 @@ export const RouterAllowEarnIndex = {
   ETHEREUM: [RouterMainKey.l2assets, RouterMainKey.invest],
   GOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
   ARBGOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
+}
+
+export const earnHeaderToolBarData: Array<{
+  buttonComponent: number
+  handleClick?: (props: any) => void
+  [key: string]: any
+}> = [
+  {
+    buttonComponent: ButtonComponentsMap.Download,
+    url: WalletSite,
+  },
+  {
+    buttonComponent: ButtonComponentsMap.Notification,
+    label: 'labelNotification',
+    hidden: true
+  },
+  { buttonComponent: ButtonComponentsMap.Setting, label: 'labelSetting' },
+  {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: 'labelProfile',
+    readyState: undefined,
+  },
+  {
+    buttonComponent: ButtonComponentsMap.WalletConnect,
+    label: 'labelConnectWallet',
+    accountState: undefined,
+    handleClick: undefined,
+  },
+]
+
+export enum EarnLayer2RouterID {
+  security = 'security',
+}
+
+export const EarnProfile = {
+  security: [
+    {
+      icon: SecurityIcon,
+      router: { path: `${RouterPath.layer2}/${EarnLayer2RouterID.security}` },
+      label: {
+        id: 'security',
+        i18nKey: 'labelSecurity',
+      },
+    },
+  ],
 }
