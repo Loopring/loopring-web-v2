@@ -86,20 +86,21 @@ const useVaultSocket = () => {
     }
   }, [tradeVault?.depth?.symbol])
   React.useEffect(() => {
-    const { tradeVault } = store.getState()._router_tradeVault
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
       // const { market } = store.getState()._router_tradeBtrade.tradeBtrade
+      const { tradeVault } = store.getState()._router_tradeVault
       const item = marketMap[tradeVault.market]
       if (
         btradeOrderbookMap &&
         item.wsMarket &&
         btradeOrderbookMap[item.wsMarket] &&
+        tradeVault?.depth?.symbol &&
         item.wsMarket === btradeOrderbookMap[item.wsMarket]?.symbol
       ) {
         updateTradeVault({
           // @ts-ignore
           market: item.market,
-          depth: { ...btradeOrderbookMap[item.wsMarket], symbol: item?.depth?.symbol },
+          depth: { ...btradeOrderbookMap[item.wsMarket], symbol: tradeVault.depth.symbol },
           ...item,
         })
         myLog('useBtradeSwap: depth', btradeOrderbookMap[item.wsMarket])
@@ -128,8 +129,10 @@ export const useVaultSwap = <
   } = useOpenModals()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   // //High: No not Move!!!!!!
+  //@ts-ignore
   const { realMarket } = usePairMatch({
     path,
+    //@ts-ignore
     coinA: isShowVaultSwap?.symbol ?? marketArray[0]?.match(/(\w+)-(\w+)/i)[1] ?? '#null',
     coinB: '#null',
     marketArray,
