@@ -12,7 +12,7 @@ import { withTranslation, WithTranslation } from 'react-i18next'
 import { SubMenuListProps } from './Interface'
 
 import { Link as RouterLink } from 'react-router-dom'
-import { L1L2_NAME_DEFINED, MapChainId, myLog } from '@loopring-web/common-resources'
+import { L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import React from 'react'
 
