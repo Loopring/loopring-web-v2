@@ -6,14 +6,13 @@ import { useTranslation, withTranslation } from 'react-i18next'
 import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
 import React from 'react'
 import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
-import MyLiquidityPanel from './MyLiquidityPanel'
+import { MyLiquidity } from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
 import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
-import styled from '@emotion/styled'
 import { InvestRouter, InvestType } from '@loopring-web/common-resources'
 
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
@@ -149,7 +148,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Dual && <DualListPanel />}
         {tabIndex === InvestType.MyBalance && (
           <Box flex={1} alignItems={'stretch'} display={'flex'} flexDirection={'column'}>
-            <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
+            <ViewAccountTemplate activeViewTemplate={<MyLiquidity />} />
           </Box>
         )}
         {tabIndex === InvestType.Stack && (
