@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { Box, IconButton, Link, Snackbar, Typography } from '@mui/material'
 import moment from 'moment'
 import styled from '@emotion/styled'
-import { useNotification } from '../hooks'
+import { useNotification, useNotificationFunc } from '../hooks'
 
 const BoxStyle = styled(Box)`
   .point {
@@ -65,13 +65,14 @@ export const NoticePop = ({
 }) => {
   const history = useHistory()
   const { t } = useTranslation()
+  const { onReadClick } = useNotificationFunc({})
   // const [open, setOpen] = React.useState(false)
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const onReadClick = () => undefined
 
   const handleClose = () => {
-    setNotificationPush({ isShow: false })
+    onReadClick(0, rest)
+    setNotificationPush({ isShow: false, item: null })
   }
   const ele = useNotification({
     ...rest,
@@ -176,8 +177,8 @@ export const NotificationItem = React.memo(
     ...rest
   }: sdk.UserNotification & {
     index: number
-    className: string
-    size
+    className?: string
+    size?: 'small' | 'medium' | 'large'
     onReadClick: (index: number, rest: any) => void
   }) => {
     const { message, createAt } = rest
@@ -223,7 +224,13 @@ export const NotificationItem = React.memo(
               <ConvertToIcon fontSize={'medium'} color={'inherit'} />
             </Link>
           ) : (
-            <Typography variant={'body1'} color={'textPrimary'} marginTop={1} className={'message'}>
+            <Typography
+              onClick={() => onReadClick(index, rest)}
+              variant={'body1'}
+              color={'textPrimary'}
+              marginTop={1}
+              className={'message'}
+            >
               {message}
             </Typography>
           )}

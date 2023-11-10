@@ -1,11 +1,122 @@
 import * as sdk from '@loopring-web/loopring-sdk'
-import { RecordTabIndex, RouterPath } from '@loopring-web/common-resources'
+import {
+  MapChainId,
+  RecordTabIndex,
+  RouterPath,
+  SDK_ERROR_MAP_TO_UI,
+} from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
-export const useNotification = ({
+import React from 'react'
+import { LoopringAPI } from '../../api_wrapper'
+import { TOASTOPEN, ToastType, useSettings } from '@loopring-web/component-lib'
+import { useAccount } from '../../stores'
+import { useTranslation } from 'react-i18next'
+export const useNotificationFunc = <R extends sdk.UserNotification>({
+  setToastOpen,
+}: {
+  setToastOpen?: (state: TOASTOPEN) => void
+}) => {
+  const { account } = useAccount()
+  const { t } = useTranslation()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const networkWallet: sdk.NetworkWallet = [
+    sdk.NetworkWallet.ETHEREUM,
+    sdk.NetworkWallet.GOERLI,
+  ].includes(network as sdk.NetworkWallet)
+    ? sdk.NetworkWallet.ETHEREUM
+    : sdk.NetworkWallet[network]
+  const onReadClick = React.useCallback(
+    async (_index: number, item: R) => {
+      try {
+        const response = await LoopringAPI.userAPI?.submitNotificationReadOne({
+          id: item.id,
+          walletAddress: account.accAddress,
+        })
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          throw response
+        } else {
+        }
+      } catch (error) {
+        let errorItem
+        if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
+          errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
+        } else {
+          errorItem = SDK_ERROR_MAP_TO_UI[700012]
+        }
+        setToastOpen &&
+          setToastOpen({
+            open: true,
+            type: ToastType.error,
+            content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
+          })
+      }
+    },
+    [account.accAddress],
+  )
+  // setShowLoading(true)
+  const onReadAllClick = React.useCallback(async () => {
+    try {
+      const response = await LoopringAPI.userAPI?.submitNotificationReadAll({
+        walletAddress: account.accAddress,
+        network: networkWallet,
+      })
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        throw response
+      } else {
+      }
+    } catch (error) {
+      let errorItem
+      if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
+        errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
+      } else {
+        errorItem = SDK_ERROR_MAP_TO_UI[700012]
+      }
+      setToastOpen &&
+        setToastOpen({
+          open: true,
+          type: ToastType.error,
+          content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
+        })
+    }
+  }, [account.accAddress])
+
+  const onClearAllClick = React.useCallback(async () => {
+    try {
+      const response = await LoopringAPI.userAPI?.submitNotificationClear({
+        walletAddress: account.accAddress,
+        network: networkWallet,
+      })
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        throw response
+      } else {
+      }
+    } catch (error) {
+      let errorItem
+      if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
+        errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
+      } else {
+        errorItem = SDK_ERROR_MAP_TO_UI[700012]
+      }
+      setToastOpen &&
+        setToastOpen({
+          open: true,
+          type: ToastType.error,
+          content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
+        })
+    }
+  }, [account.accAddress])
+  return {
+    onReadClick,
+    onReadAllClick,
+    onClearAllClick,
+  }
+}
+export const useNotification = <R extends sdk.UserNotification>({
   onReadClick,
   index,
   ...rest
-}: sdk.UserNotification & {
+}: R & {
   index: number
   onReadClick: (index: number, rest: any) => void
 }) => {
@@ -23,10 +134,7 @@ export const useNotification = ({
       break
     case sdk.NotificationMessageType.L2_CREATED:
       ele.i18nKey = 'labelActiveL2successfulNote' //Active L2 Account successful
-      ele.active = () => {
-        onReadClick(index, rest)
-        history.push(`${RouterPath.l2assetsDetail}`)
-      }
+      ele.active = undefined
       break
     case 12: //sdk.NotificationMessageType.L1_CREATING:
       ele.i18nKey = 'labelActivatingL1AccountNote' //Active L2 Account successful

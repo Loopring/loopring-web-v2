@@ -1,14 +1,24 @@
-import { LoopringAPI, notificationService, useAccount, useNotify } from '@loopring-web/core'
+import {
+  LoopringAPI,
+  notificationService,
+  useAccount,
+  useNotificationFunc,
+  useNotify,
+} from '@loopring-web/core'
 import React from 'react'
 import { MapChainId, SDK_ERROR_MAP_TO_UI } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ToastType, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 
-export const useNotification = <R = any>({
+export const useNotification = <R extends sdk.UserNotification>({
   setToastOpen,
+  page,
+  pageSize,
 }: {
   setToastOpen: (state: any) => void
+  page: number
+  pageSize: number
   // pageSize: number
 }) => {
   const { t } = useTranslation()
@@ -26,6 +36,7 @@ export const useNotification = <R = any>({
   ].includes(network as sdk.NetworkWallet)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]
+  const { onReadClick, onReadAllClick, onClearAllClick } = useNotificationFunc({ setToastOpen })
   const getNotification = React.useCallback(
     async ({ offset = 0, limit = 20, filter }: any) => {
       setShowLoading(true)
@@ -123,86 +134,7 @@ export const useNotification = <R = any>({
     },
     [account.accAddress],
   )
-  const onItemClick = React.useCallback(
-    async (index, item: R) => {
-      try {
-        const response = await LoopringAPI.userAPI?.submitNotificationReadOne({
-          id: item?.id,
-          walletAddress: account.accAddress,
-        })
-        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-          throw response
-        } else {
-        }
-      } catch (error) {
-        let errorItem
-        if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
-          errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
-        } else {
-          errorItem = SDK_ERROR_MAP_TO_UI[700012]
-        }
-        setToastOpen({
-          open: true,
-          type: ToastType.error,
-          content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
-        })
-      }
-    },
-    [account.accAddress],
-  )
-  const onReadAllClick = React.useCallback(async () => {
-    setShowLoading(true)
-    try {
-      const response = await LoopringAPI.userAPI?.submitNotificationReadAll({
-        walletAddress: account.accAddress,
-        network: networkWallet,
-      })
-      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-        throw response
-      } else {
-      }
-    } catch (error) {
-      let errorItem
-      if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
-        errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
-      } else {
-        errorItem = SDK_ERROR_MAP_TO_UI[700012]
-      }
-      setToastOpen({
-        open: true,
-        type: ToastType.error,
-        content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
-      })
-    }
-    setShowLoading(false)
-  }, [account.accAddress])
 
-  const onClearAllClick = React.useCallback(async () => {
-    setShowLoading(true)
-    try {
-      const response = await LoopringAPI.userAPI?.submitNotificationClear({
-        walletAddress: account.accAddress,
-        network: networkWallet,
-      })
-      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-        throw response
-      } else {
-      }
-    } catch (error) {
-      let errorItem
-      if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
-        errorItem = SDK_ERROR_MAP_TO_UI[(error as sdk.RESULT_INFO)?.code ?? 700001]
-      } else {
-        errorItem = SDK_ERROR_MAP_TO_UI[700012]
-      }
-      setToastOpen({
-        open: true,
-        type: ToastType.error,
-        content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
-      })
-    }
-    setShowLoading(false)
-  }, [account.accAddress])
   //TODO  test use
   // function doAgain() {
   //   notificationService.sendNotification({
@@ -226,8 +158,22 @@ export const useNotification = <R = any>({
     rawData,
     total: myNotifyMap.total,
     unReads: myNotifyMap.unReads,
-    onReadClick: onItemClick,
-    onReadAllClick,
-    onClearAllClick,
+    onReadClick: (index: number, item: R) => {
+      setShowLoading(true)
+      onReadClick(index, item).finally(() => {
+        rawData[index].read = true
+        setShowLoading(false)
+      })
+    },
+    onReadAllClick: async () => {
+      setShowLoading(true)
+      await onReadAllClick()
+      setShowLoading(false)
+    },
+    onClearAllClick: async () => {
+      setShowLoading(true)
+      await onClearAllClick()
+      setShowLoading(false)
+    },
   }
 }

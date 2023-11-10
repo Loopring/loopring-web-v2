@@ -9,6 +9,7 @@ import {
   Toast,
   LoadingStyled,
   Button,
+  EmptyDefault,
 } from '@loopring-web/component-lib'
 import { useToast, NotificationItem } from '@loopring-web/core'
 
@@ -60,10 +61,10 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     onReadClick,
     onReadAllClick,
     onClearAllClick,
-  } = useNotification({ setToastOpen })
-  const handlePageChange = ({ page }: { page: number }) => {
+  } = useNotification({ setToastOpen, page, pageSize })
+  const handlePageChange = async ({ page }: { page: number }) => {
     setPage(page)
-    getNotification({ offset: page - 1, limit: pageSize, filter })
+    await getNotification({ offset: page - 1, limit: pageSize, filter })
   }
   React.useEffect(() => {
     let height = container?.current?.offsetHeight
@@ -94,7 +95,10 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
             variant={'text'}
             size={'small'}
             sx={{ color: 'var(--color-text-primary)' }}
-            onClick={onReadAllClick}
+            onClick={async () => {
+              await onReadAllClick()
+              handlePageChange({ page })
+            }}
           >
             {t('labelNotificationReadAll')}
           </Button>
@@ -103,7 +107,10 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
             variant={'text'}
             size={'small'}
             sx={{ color: 'var(--color-text-primary)' }}
-            onClick={onClearAllClick}
+            onClick={async () => {
+              await onClearAllClick()
+              handlePageChange({ page })
+            }}
           >
             {t('labelNotificationClear')}
           </Button>
@@ -126,7 +133,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           flex={1}
           ref={container}
         >
-          <Grid container paddingBottom={2}>
+          <Grid container paddingBottom={2} display={'flex'}>
             {rawData.length ? (
               rawData.map((ele, index) => {
                 return (
@@ -137,15 +144,15 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
                 )
               })
             ) : (
-              <Typography
-                color={'var(--color-text-third)'}
-                whiteSpace={'break-spaces'}
-                style={{ wordBreak: 'break-all' }}
-                title={'ERC1155'}
-                component={'span'}
-              >
-                {EmptyValueTag}
-              </Typography>
+              <EmptyDefault
+                style={{ flex: 1 }}
+                height={'100%'}
+                message={() => (
+                  <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                    {t('labelNoContent')}
+                  </Box>
+                )}
+              />
             )}
             {showLoading && (
               <LoadingStyled color={'inherit'}>
