@@ -181,7 +181,7 @@ const ToolBarItem = ({
         return undefined
     }
   }, [buttonComponent, match?.params, props, notification, account])
-  return <TabItemPlus>{render}</TabItemPlus>
+  return <TabItemPlus sx={{display: props.hidden ? 'none' : ''}}>{render}</TabItemPlus>
 }
 
 export const HideOnScroll = React.forwardRef(({ children, window, ...rest }: any, ref) => {
