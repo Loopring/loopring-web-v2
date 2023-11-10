@@ -98,7 +98,6 @@ export const useHeader = () => {
     }
   }, [accountStatus, account?.readyState])
   const { notifyMap } = useNotify()
-  myLog('headerToolBarData', headerToolBarData)
   
   return {
     headerToolBarData,
