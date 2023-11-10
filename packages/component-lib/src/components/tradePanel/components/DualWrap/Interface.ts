@@ -27,6 +27,7 @@ export type DualDetailType = {
   isOrder?: boolean
   dualProducts?: DualViewInfo[]
   getProduct?: () => void
+  order: any | undefined
   __raw__?: any
 }
 export type DualChgData<T> = {

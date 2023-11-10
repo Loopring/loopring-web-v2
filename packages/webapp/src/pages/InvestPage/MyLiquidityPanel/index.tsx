@@ -31,8 +31,7 @@ import {
   HiddenTag,
   INVEST_TABS,
   InvestAssetRouter,
-  // InvestTab,
-  // investTabs,
+  AmmPanelType,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -43,12 +42,11 @@ import {
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
-  AmmPanelType,
   RouterPath,
   RecordTabIndex,
   InvestRouter,
   InvestType,
-  RowConfig
+  RowConfig,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
@@ -304,6 +302,7 @@ const MyLiquidity: any = withTranslation('common')(
               justifyContent={'space-between'}
               flexDirection={isMobile ? 'column' : 'row'}
               alignItems={isMobile ? 'start' : 'center'}
+              alignSelf={'stretch'}
             >
               <Box paddingY={7}>
                 <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
@@ -953,4 +952,4 @@ const MyLiquidity: any = withTranslation('common')(
   },
 )
 
-export default MyLiquidity
+export { MyLiquidity }
