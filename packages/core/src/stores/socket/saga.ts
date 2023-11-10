@@ -1,4 +1,4 @@
-import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
+import { all, fork, put, takeLatest } from 'redux-saga/effects'
 import { getSocketStatus, sendSocketTopic, socketEnd, socketUserEnd } from './reducer'
 import { SocketMap, SocketUserMap, store } from '../index'
 import { AccountStatus, MapChainId, myLog } from '@loopring-web/common-resources'
@@ -9,45 +9,42 @@ const getSocket = async ({ socket, apiKey }: { socket: any; apiKey?: string }) =
   myLog('socketStatus get', socket)
   return
 }
-function* getEndSocket() {
-  const {
-    settings: { defaultNetwork },
-    account,
-  } = store.getState()
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const networkWallet: sdk.NetworkWallet = [
-    sdk.NetworkWallet.ETHEREUM,
-    sdk.NetworkWallet.GOERLI,
-  ].includes(network as sdk.NetworkWallet)
-    ? sdk.NetworkWallet.ETHEREUM
-    : sdk.NetworkWallet[network]
-  let socket = {}
-  if (account.readyState !== AccountStatus.ACTIVATED) {
-    yield (window as any).loopringSocket.socketClose()
-    myLog('socketStatus end')
-  } else {
-    socket = {
-      [sdk.WsTopicType.account]: true,
-      [sdk.WsTopicType.notification]: {
-        address: account.accAddress,
-        network: networkWallet,
-      },
-    }
-    // SocketUserMap
-    yield getSocket({
-      socket,
-      apiKey: account.apiKey,
-    })
-    // yield getSocket({ payload: { socket: SocketUserMap } })
-  }
-
-  return { socket }
-}
 
 export function* closeSocket() {
   try {
+    const {
+      settings: { defaultNetwork },
+      account,
+    } = store.getState()
     if ((window as any).loopringSocket) {
-      const { socket } = yield call(getEndSocket)
+      // const { socket } = yield call(getEndSocket)
+      // function* getEndSocket() {
+
+      const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+      const networkWallet: sdk.NetworkWallet = [
+        sdk.NetworkWallet.ETHEREUM,
+        sdk.NetworkWallet.GOERLI,
+      ].includes(network as sdk.NetworkWallet)
+        ? sdk.NetworkWallet.ETHEREUM
+        : sdk.NetworkWallet[network]
+      let socket = {}
+      if (account.readyState !== AccountStatus.ACTIVATED) {
+        yield (window as any).loopringSocket.socketClose()
+        myLog('socketStatus end')
+      } else {
+        socket = {
+          [sdk.WsTopicType.account]: true,
+          [sdk.WsTopicType.notification]: {
+            address: account.accAddress,
+            network: networkWallet,
+          },
+        }
+        // SocketUserMap
+        yield getSocket({
+          socket,
+          apiKey: account.apiKey,
+        })
+      }
       yield put(getSocketStatus({ socket }))
     } else {
       yield put(getSocketStatus(undefined))
@@ -101,7 +98,7 @@ export function* sendMessage({ payload }: { payload: { socket: SocketMap } }) {
           },
         }
       }
-      yield call(getSocket, {
+      yield getSocket({
         socket: userSocket,
         apiKey: account.apiKey,
       })
