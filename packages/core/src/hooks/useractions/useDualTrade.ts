@@ -144,8 +144,7 @@ export const useDualTrade = <
               balance: _updateInfo?.coinSell?.balance ?? 0,
               tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
               belong: baseSymbol,
-              isRenew: false
-              // isRenew: _updateInfo?.coinSell?.isRenew ?? dual_reinvest?.enable ? true : false,
+              isRenew: _updateInfo?.coinSell?.isRenew ?? dual_reinvest?.enable ? true : false,
             } as unknown as T)
       const existedMarket = sdk.getExistedMarket(marketArray, baseSymbol, quoteSymbol)
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
