@@ -922,6 +922,7 @@ export function useAccountModalForUI({
               addressShort,
               etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
               mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
+              hideVIPlevel: isWebEarn ? true : false
             }}
           />
         ),
