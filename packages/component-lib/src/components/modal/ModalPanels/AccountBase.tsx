@@ -44,6 +44,7 @@ export const AccountBasePanel = ({
   connectName,
   etherscanUrl,
   onCopy,
+  hideVIPlevel,
   t,
 }: AccountBaseProps & { t: TFunction }) => {
   const addressShort = getShortAddr(accAddress)
@@ -87,7 +88,7 @@ export const AccountBasePanel = ({
         <Typography paddingRight={1} component={'span'} fontSize={'3rem'}>
           {addressShort}
         </Typography>
-        {level && getImagePath}
+        {!hideVIPlevel && level && getImagePath}
       </Typography>
 
       <BoxStyled

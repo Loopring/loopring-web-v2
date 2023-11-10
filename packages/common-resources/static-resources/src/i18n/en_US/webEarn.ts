@@ -183,7 +183,7 @@ export default {
   `,
   labelLowTransactionFees: 'Low Transaction Fees',
   labelLowTransactionFeesDes: `
-  Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
+  Loopring performs most operations, including trade and transfer settlement, off the Ethereum blockchain. This dramatically reduces gas consumption and overall transaction cost to small fractions of comparable on-chain cost.
   `,
   labelHighThroughput: 'High Throughput',
   labelHighThroughputDes: `
