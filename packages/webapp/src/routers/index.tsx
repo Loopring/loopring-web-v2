@@ -1,6 +1,6 @@
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import React from 'react'
-import { Box, Container, Link } from '@mui/material'
+import { Box, Container, Link, Snackbar, Typography } from '@mui/material'
 import Header from 'layouts/header'
 import { QuotePage } from 'pages/QuotePage'
 import { SwapPage } from 'pages/SwapPage'
@@ -13,11 +13,14 @@ import {
   ModalRedPacketPanel,
   store,
   useDeposit,
+  useNotificationSocket,
+  useNotify,
   useOffFaitModal,
   useSystem,
   useTicker,
   useTokenMap,
   useVaultMap,
+  NoticePop,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
 import { LandPage } from '../pages/LandPage'
@@ -105,9 +108,19 @@ const WrapModal = () => {
   const location = useLocation()
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
-  const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
+  const { getUserNotify } = useNotify()
 
+  const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
+  const [notificationPush, setNotificationPush] = React.useState({ isShow: false, item: {} })
   const { open, actionEle, handleClose } = useOffFaitModal()
+
+  const notificationCallback = React.useCallback((notification) => {
+    if (notification) {
+      setNotificationPush({ isShow: true, item: { ...notification } })
+      getUserNotify()
+    }
+  }, [])
+  useNotificationSocket({ notificationCallback })
 
   const noticeSnacksElEs = React.useMemo(() => {
     return [
@@ -121,8 +134,9 @@ const WrapModal = () => {
           message: t('labelOrderBanxaIsReadyToPay'),
         }}
       />,
+      ,
     ] as any
-  }, [open, actionEle])
+  }, [open, actionEle, notificationPush])
   return (
     <>
       <ModalCoinPairPanel />
@@ -132,7 +146,20 @@ const WrapModal = () => {
         depositProps={depositProps}
         isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '')}
       />
-      <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
+      <NoticePanelSnackBar
+        noticeSnacksElEs={[
+          ...noticeSnacksElEs,
+          ...(notificationPush.isShow && notificationPush?.item
+            ? [
+                <NoticePop
+                  {...notificationPush?.item}
+                  isShow={notificationPush.isShow}
+                  setNotificationPush={setNotificationPush}
+                />,
+              ]
+            : []),
+        ]}
+      />
     </>
   )
 }

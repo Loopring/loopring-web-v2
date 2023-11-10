@@ -13,6 +13,7 @@ import {
   ToastType,
   useToggle,
   useSettings,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -24,7 +25,7 @@ import {
   RouterPath,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`
@@ -146,11 +147,12 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
-        height={6 * theme.unit}
+        // height={6 * theme.unit}
         alignItems={'center'}
         containerProps={{
-          borderBottom: '1px solid var(--color-border)',
+          sx: { borderBottom: '1px solid var(--color-border)' },
         }}
+        paddingY={2}
       >
         <Box width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
           <Button

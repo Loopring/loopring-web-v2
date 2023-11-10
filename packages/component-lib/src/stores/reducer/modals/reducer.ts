@@ -58,8 +58,8 @@ const initialState: ModalState = {
   isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
-  istShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
-  isShowNoVaultAccount: { isShow: false },
+  isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
+  isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -393,7 +393,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction & { type: string }>,
     ) {
-      state.istShowVaultLoan = { ...action.payload }
+      state.isShowVaultLoan = { ...action.payload }
     },
     setShowNoVaultAccount(
       state,

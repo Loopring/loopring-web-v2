@@ -34,6 +34,7 @@ import { useTranslation } from 'react-i18next'
 
 import BigNumber from 'bignumber.js'
 import {
+  btradeOrderbookService,
   DAYS,
   getTimestampDaysLater,
   LoopringAPI,
@@ -54,21 +55,60 @@ import {
   useVaultMap,
   vaultSwapDependAsync,
 } from '@loopring-web/core'
+import { merge } from 'rxjs'
 
 const useVaultSocket = () => {
+  const { tradeVault, updateTradeVault } = useTradeVault()
   const { sendSocketTopic, socketEnd } = useSocket()
-  const { account } = useAccount()
-  const { tradeVault } = useTradeVault()
+  // const { account } = useAccount()
+  const { marketMap } = useVaultMap()
+
+  const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
+  // const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && tradeVault?.depth?.symbol) {
+    const { tradeVault } = store.getState()._router_tradeVault
+    const item = marketMap[tradeVault.market]
+    if (tradeVault?.depth?.symbol && item.wsMarket) {
       sendSocketTopic({
-        [sdk.WsTopicType.account]: true,
+        [sdk.WsTopicType.btradedepth]: {
+          showOverlap: false,
+          markets: [item.wsMarket],
+          level: 0,
+          count: 50,
+          snapshot: false,
+        },
       })
+    } else {
+      socketEnd()
     }
     return () => {
       socketEnd()
     }
-  }, [account.readyState, tradeVault?.depth?.symbol])
+  }, [tradeVault?.depth?.symbol])
+  React.useEffect(() => {
+    const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
+      // const { market } = store.getState()._router_tradeBtrade.tradeBtrade
+      const { tradeVault } = store.getState()._router_tradeVault
+      const item = marketMap[tradeVault.market]
+      if (
+        btradeOrderbookMap &&
+        item.wsMarket &&
+        btradeOrderbookMap[item.wsMarket] &&
+        tradeVault?.depth?.symbol &&
+        item.wsMarket === btradeOrderbookMap[item.wsMarket]?.symbol
+      ) {
+        updateTradeVault({
+          // @ts-ignore
+          market: item.market,
+          depth: { ...btradeOrderbookMap[item.wsMarket], symbol: tradeVault.depth.symbol },
+          ...item,
+        })
+        myLog('useBtradeSwap: depth', btradeOrderbookMap[item.wsMarket])
+        // debonceCall()
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [tradeVault.market])
 }
 export const useVaultSwap = <
   T extends SwapTradeData<IBData<C>>,
@@ -89,8 +129,10 @@ export const useVaultSwap = <
   } = useOpenModals()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   // //High: No not Move!!!!!!
+  //@ts-ignore
   const { realMarket } = usePairMatch({
     path,
+    //@ts-ignore
     coinA: isShowVaultSwap?.symbol ?? marketArray[0]?.match(/(\w+)-(\w+)/i)[1] ?? '#null',
     coinB: '#null',
     marketArray,

@@ -93,17 +93,36 @@ export const useAlert = () => {
 
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket()
-  const { account } = useAccount()
+  // const { account } = useAccount()
+  const { ammMap } = useAmmMap()
+  const { pageTradeLite } = usePageTradeLite()
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
-      sendSocketTopic({ [sdk.WsTopicType.account]: true })
+    // const { pageTradeLite } = store.getState()?._router_pageTradeLite
+    // if (account.readyState === AccountStatus.ACTIVATED) {
+    //   // sendSocketTopic({ [sdk.WsTopicType.account]: true })
+    // } else {
+    // socketEnd()
+    if (pageTradeLite.market) {
+      sendSocketTopic({
+        [sdk.WsTopicType.ammpool]: ammMap['AMM-' + pageTradeLite.market]
+          ? [ammMap['AMM-' + pageTradeLite.market].address]
+          : [],
+        [sdk.WsTopicType.mixorder]: {
+          markets: [pageTradeLite.market],
+          level: 0,
+          count: 50,
+          snapshot: true,
+        },
+      })
     } else {
       socketEnd()
     }
+
+    // }
     return () => {
       socketEnd()
     }
-  }, [account.readyState])
+  }, [pageTradeLite?.market])
 }
 
 export const useSwap = <

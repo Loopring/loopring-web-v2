@@ -4,6 +4,11 @@ import { SagaStatus } from '@loopring-web/common-resources'
 
 const initialState: NotifyStates = {
   notifyMap: undefined,
+  myNotifyMap: {
+    items: [],
+    totals: 0,
+    unReads: 0,
+  },
   status: SagaStatus.PENDING,
   errorMessage: null,
 }
@@ -12,7 +17,14 @@ const notifyMapSlice: Slice<NotifyStates> = createSlice({
   name: 'notifyMap',
   initialState,
   reducers: {
+    restUerNotify(state) {
+      state.status = SagaStatus.DONE
+      state.myNotifyMap = initialState.myNotifyMap
+    },
     getNotify(state, _action: PayloadAction<undefined>) {
+      state.status = SagaStatus.PENDING
+    },
+    getUserNotify(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING
     },
     getNotifyStatus(state, action: PayloadAction<NotifyStates>) {
@@ -22,7 +34,12 @@ const notifyMapSlice: Slice<NotifyStates> = createSlice({
         // @ts-ignoreis                                                  i
         state.errorMessage = action.error
       }
-      state.notifyMap = action.payload.notifyMap
+      if (action.payload.notifyMap) {
+        state.notifyMap = action.payload.notifyMap
+      }
+      if (action.payload.myNotifyMap) {
+        state.myNotifyMap = action.payload.myNotifyMap
+      }
       state.status = SagaStatus.DONE
     },
 
@@ -32,4 +49,5 @@ const notifyMapSlice: Slice<NotifyStates> = createSlice({
   },
 })
 export { notifyMapSlice }
-export const { getNotify, resetNotify, getNotifyStatus, statusUnset } = notifyMapSlice.actions
+export const { restUerNotify, getNotify, getUserNotify, getNotifyStatus, statusUnset } =
+  notifyMapSlice.actions

@@ -456,6 +456,8 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
+              maxWidth={'calc(1200px - 32px)'}
+              alignSelf={'center'}
             >
               <Typography maxWidth={'1156px'} marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
                 {t('describeTitleConnectToWallet', {
@@ -475,6 +477,8 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
+              maxWidth={'calc(1200px - 32px)'}
+              alignSelf={'center'}
             >
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
                 {t('describeTitleLocked')}
@@ -491,6 +495,8 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
+              maxWidth={'calc(1200px - 32px)'}
+              alignSelf={'center'}
             >
               <Typography
                 marginY={3}
@@ -516,6 +522,8 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
+              maxWidth={'calc(1200px - 32px)'}
+              alignSelf={'center'}
             >
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
                 {t('describeTitleNotActive', {
@@ -536,6 +544,8 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
+              maxWidth={'calc(1200px - 32px)'}
+              alignSelf={'center'}
             >
               <img
                 className='loading-gif'
@@ -559,6 +569,8 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
+              maxWidth={'calc(1200px - 32px)'}
+              alignSelf={'center'}
             >
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
                 {t('describeTitleOnErrorNetwork', {
