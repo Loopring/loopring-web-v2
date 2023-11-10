@@ -1,4 +1,11 @@
-import { store, useSubmitBtn, useVaultLayer2, VaultLayer2States } from '@loopring-web/core'
+import {
+  store,
+  useSubmitBtn,
+  useTokenMap,
+  useVaultLayer2,
+  useVaultMap,
+  VaultLayer2States,
+} from '@loopring-web/core'
 import React from 'react'
 import {
   L1L2_NAME_DEFINED,
@@ -38,6 +45,9 @@ export const useAccountInfo = () => {
     activeInfo,
   } = useVaultLayer2()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
+  const { erc20Map } = useVaultMap()
+  const { idIndex } = useTokenMap()
+
   const { setShowVaultJoin, setShowVaultSwap, setShowVaultExit, setShowVaultLoan } = useOpenModals()
   const { t } = useTranslation()
   const { defaultNetwork } = useSettings()
@@ -122,11 +132,15 @@ export const useAccountInfo = () => {
     isLoading: false,
     submitCallback: async ({ symbol }: { symbol?: string }) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
-      if (vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING) {
-        //sdk.VaultAccountStatus.IN_STAKING:
-        setShowVaultSwap({ isShow: true, symbol })
-      } else {
-        set
+      const vaultAccountInfoSymbol =
+        idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
+      switch (vaultAccountInfo?.accountStatus) {
+        case sdk.VaultAccountStatus.IN_STAKING:
+          setShowVaultSwap({
+            isShow: true,
+            symbol: symbol ?? erc20Map[vaultAccountInfoSymbol]?.tokenInfo?.symbol ?? undefined,
+          })
+          break
       }
     },
   })

@@ -8,7 +8,7 @@ import { useVaultBorrow } from './useVaultBorrow'
 export const useVaultLoan = () => {
   const {
     modals: {
-      istShowVaultLoan: { type, isShow, symbol },
+      isShowVaultLoan: { type, isShow, symbol },
     },
   } = useOpenModals()
   const [vaultLoanType, setVaultLoanType] = React.useState(type ?? VaultLoanType.Borrow)
@@ -18,7 +18,7 @@ export const useVaultLoan = () => {
   React.useEffect(() => {
     if (isShow) {
       setVaultLoanType(() => {
-        return store.getState().modals?.istShowVaultLoan?.type ?? VaultLoanType.Borrow
+        return store.getState().modals?.isShowVaultLoan?.type ?? VaultLoanType.Borrow
       })
       // const withdrawValue =
     }

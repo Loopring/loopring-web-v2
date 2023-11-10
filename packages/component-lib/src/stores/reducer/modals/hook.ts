@@ -47,6 +47,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  VaultAction,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
@@ -313,8 +314,10 @@ export const useOpenModals = () => {
       [dispatch],
     ),
     setShowNoVaultAccount: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction & { type?: string }) =>
-        dispatch(setShowNoVaultAccount(state)),
+      (
+        state: ModalStatePlayLoad &
+          Transaction & { whichBtn: VaultAction | undefined; des: string },
+      ) => dispatch(setShowNoVaultAccount(state)),
       [dispatch],
     ),
   }

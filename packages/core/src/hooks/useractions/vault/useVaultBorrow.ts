@@ -39,7 +39,7 @@ export const useVaultBorrow = <
 >(): Partial<VaultBorrowProps<T, I, V>> => {
   const { t } = useTranslation()
   const {
-    modals: { istShowVaultLoan },
+    modals: { isShowVaultLoan },
     setShowAccount,
     setShowVaultLoan,
   } = useOpenModals()
@@ -117,8 +117,8 @@ export const useVaultBorrow = <
   const initData = () => {
     let vaultBorrowData: any = {}
     let initSymbol = marketCoins[0]
-    if (istShowVaultLoan.info?.symbol) {
-      initSymbol = istShowVaultLoan.info?.symbol
+    if (isShowVaultLoan.info?.symbol) {
+      initSymbol = isShowVaultLoan.info?.symbol
     }
     let { vaultAvaiable2Map } = makeVaultAvaiable2({})
     setWalletMap(vaultAvaiable2Map)
@@ -148,12 +148,12 @@ export const useVaultBorrow = <
     })
   }
   React.useEffect(() => {
-    if (istShowVaultLoan.isShow) {
+    if (isShowVaultLoan.isShow) {
       initData()
     } else {
       resetVaultBorrow()
     }
-  }, [istShowVaultLoan.isShow])
+  }, [isShowVaultLoan.isShow])
 
   const handlePanelEvent = React.useCallback(async (data: SwitchData<T>) => {
     let vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData

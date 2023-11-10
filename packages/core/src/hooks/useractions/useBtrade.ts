@@ -74,18 +74,6 @@ const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
   const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
   const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
   React.useEffect(() => {
-    // if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade?.depth?.symbol) {
-    //   sendSocketTopic({
-    //     [sdk.WsTopicType.account]: true,
-    //     [sdk.WsTopicType.btradedepth]: {
-    //       showOverlap: false,
-    //       markets: [tradeBtrade?.depth?.symbol],
-    //       level: 0,
-    //       count: 50,
-    //       snapshot: false,
-    //     },
-    //   })
-    // } else
     if (tradeBtrade?.depth?.symbol) {
       sendSocketTopic({
         [sdk.WsTopicType.btradedepth]: {

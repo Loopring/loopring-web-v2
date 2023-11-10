@@ -26,7 +26,7 @@ export const ModalVaultWrap = () => {
   const theme = useTheme()
   const { campaignTagConfig } = useNotify().notifyMap ?? {}
   const {
-    modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap, istShowVaultLoan },
+    modals: { isShowVaultExit, isShowVaultJoin, isShowVaultSwap, isShowVaultLoan },
     setShowVaultJoin,
     setShowVaultExit,
     setShowVaultLoan,
@@ -136,7 +136,7 @@ export const ModalVaultWrap = () => {
         content={<VaultExitPanel {...{ ...exitVaultProps }} />}
       />
       <Modal
-        open={istShowVaultLoan.isShow}
+        open={isShowVaultLoan.isShow}
         onClose={() => {
           setShowVaultLoan({ isShow: false })
         }}

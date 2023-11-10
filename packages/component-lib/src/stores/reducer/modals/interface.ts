@@ -97,5 +97,5 @@ export interface ModalState {
     Transaction & {
       type: string
     }
-  isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des: string }
+  isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des?: string }
 }

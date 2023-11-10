@@ -38,7 +38,7 @@ export const useVaultRepay = <
   I,
 >() => {
   const {
-    modals: { istShowVaultLoan },
+    modals: { isShowVaultLoan },
     setShowAccount,
     setShowVaultLoan,
   } = useOpenModals()
@@ -136,12 +136,12 @@ export const useVaultRepay = <
     })
   }
   React.useEffect(() => {
-    if (istShowVaultLoan.isShow) {
+    if (isShowVaultLoan.isShow) {
       initData()
     } else {
       resetVaultRepay()
     }
-  }, [istShowVaultLoan.isShow])
+  }, [isShowVaultLoan.isShow])
   const availableTradeCheck = React.useCallback(() => {
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
     if (
