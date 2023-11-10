@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
-import { Box, Card, Typography } from '@mui/material'
+import { Box, Card, Typography, BoxProps, Container, IconButton } from '@mui/material'
 import { FirstPlaceIcon, SecondPlaceIcon, ThirdPlaceIcon } from '@loopring-web/common-resources'
+import React from 'react'
 
 export * from './SwitchPanel'
 export * from './SubMenu'
@@ -14,6 +15,13 @@ export const CardNFTStyled = styled(Card)`
   justify-content: space-between;
   position: relative;
   width: var(--nft-card);
+`
+export const LoadingStyled = styled(IconButton)`
+  position: absolute;
+  z-index: 21;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `
 
 export const ImageUploadWrapper = styled(Box)`
@@ -57,5 +65,49 @@ export const PlaceComponent = ({ rank }: { rank: number }) => {
         </Typography>
       </>
     </Typography>
+  )
+}
+
+export const MaxWidthContainer = ({
+  containerProps = {},
+  ...props
+}: {
+  children: React.ReactNode
+  background?: string
+  containerProps?: BoxProps
+} & BoxProps) => {
+  const { children, background, sx, ...otherProps } = props
+  const { sx: containerPropsSX, ..._containerProps } = containerProps
+  return (
+    <Box
+      display={'flex'}
+      justifyContent={'center'}
+      sx={{ background, ...(containerPropsSX ?? {}) }}
+      {..._containerProps}
+    >
+      <Container
+        sx={{
+          display: 'flex',
+          flex: 1,
+          flexDirection: 'column',
+        }}
+        // justifyContent={'stretch'}
+        maxWidth={'lg'}
+        className={'inner-box'}
+      >
+        <Box
+          flex={1}
+          display={'flex'}
+          flexDirection={'column'}
+          width={'100%'}
+          sx={{
+            ...sx,
+          }}
+          {...otherProps}
+        >
+          {children}
+        </Box>
+      </Container>
+    </Box>
   )
 }

@@ -3,7 +3,7 @@ import { walletLayer2Service } from './services/walletLayer2Service'
 import { tickerService } from './services/tickerService'
 import { ammPoolService } from './services/ammPoolService'
 import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources'
-import { LoopringAPI, SocketMap } from '../../index'
+import { LoopringAPI, notificationService, SocketMap, SocketUserMap } from '../../index'
 import { bookService } from './services/bookService'
 import { orderbookService } from './services/orderbookService'
 import { tradeService } from './services/tradeService'
@@ -31,16 +31,16 @@ export class LoopringSocket {
     [sdk.WsTopicType.account]: (_data: { [key: string]: any }) => {
       walletLayer2Service.sendUserUpdate()
     },
+    [sdk.WsTopicType.notification]: (data: sdk.UserNotification, _topic: any) => {
+      notificationService.sendNotification(data)
+    },
     [sdk.WsTopicType.order]: (data: sdk.OrderDetail) => {
       bookService.sendBook({
         [data.market]: data as any,
       })
     },
     [sdk.WsTopicType.orderbook]: (data: sdk.DepthData, topic: any) => {
-      // const bids = genAB(data['bids'], true)
-      // const asks = genAB(data['asks'])
       const timestamp = Date.now()
-      // const _data = getMidPrice({_asks:data['asks'], _bids:data['bids']})
       orderbookService.sendOrderbook({
         [topic.market]: {
           ...data,
@@ -95,14 +95,6 @@ export class LoopringSocket {
         } as unknown as sdk.MarketTradeInfo
       })
       tradeService.sendTrade(marketTrades)
-      // [
-      //     "1584717910000",  //timestamp
-      //     "123456789",  //tradeId
-      //     "buy",  //side
-      //     "500000",  //size
-      //     "0.0008",  //price
-      //     "100"  //fee
-      // ]
     },
     [sdk.WsTopicType.mixtrade]: (datas: string[][]) => {
       const marketTrades: sdk.MarketTradeInfo[] = datas.map((data) => {
@@ -118,14 +110,6 @@ export class LoopringSocket {
         } as unknown as sdk.MarketTradeInfo
       })
       mixtradeService.sendMixtrade(marketTrades)
-      // ["1649258921102",//timestamp
-      // "0",  //tradeId
-      // "SELL", //side
-      // "900000000000000000000", //size
-      // "0.9897",  //price
-      // "AMM-LRC-USDC", //market
-      // "0",//fee
-      // ]
     },
     [sdk.WsTopicType.ticker]: (data: string[]) => {
       const [symbol, timestamp, size, volume, open, high, low, close, count, bid, ask] = data
@@ -158,10 +142,11 @@ export class LoopringSocket {
         } as any,
       })
     },
+    //TODO
     [sdk.WsTopicType.candlestick]: (_e: any) => {},
-    // [ sdk.WsTopicType.candlestick ]: (data: string) => {
-    //
-    // },
+    //TODO
+    [sdk.WsTopicType.crawlTokenPrices]: (_e: any) => {},
+
     [sdk.WsTopicType.ammpool]: (data: [[string, string], string], topic: any) => {
       if (data.length) {
         ammPoolService.sendAmmPool({
@@ -271,7 +256,7 @@ export class LoopringSocket {
   private makeMessageArray = ({
     socket,
   }: {
-    socket: SocketMap
+    socket: SocketMap & SocketUserMap
   }): {
     topics: any[]
   } => {
@@ -307,6 +292,14 @@ export class LoopringSocket {
             this.addSocketEvents(sdk.WsTopicType.account)
             topics = [...topics, ...list]
           }
+          break
+        case sdk.WsTopicType.notification:
+          const params = socket[sdk.WsTopicType.notification]
+          if (params) {
+            this.addSocketEvents(sdk.WsTopicType.notification)
+            topics = [...topics, sdk.getNotificationArg(params)]
+          }
+
           break
         case sdk.WsTopicType.order:
           const orderSocket = socket[sdk.WsTopicType.order]

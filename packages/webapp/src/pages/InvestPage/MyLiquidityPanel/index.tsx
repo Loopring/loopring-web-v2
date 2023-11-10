@@ -18,6 +18,7 @@ import {
   useSettings,
   Tabs,
   CoinIcons,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -47,8 +48,6 @@ import {
   RecordTabIndex,
   InvestRouter,
   InvestType,
-  WarningIcon2,
-  DAY_MINUTE_FORMAT,
   RowConfig
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -67,11 +66,10 @@ import {
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
-import { useDualAsset } from '../../AssetPage/HistoryPanel'
 import React from 'react'
-import { containerColors, MaxWidthContainer } from '..'
+import { containerColors } from '..'
 import _ from 'lodash'
-import moment from 'moment/moment'
+import { useDualAsset } from '../../AssetPage/HistoryPanel'
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -394,11 +392,13 @@ const MyLiquidity: any = withTranslation('common')(
             borderRadius: noHeader ? `${theme.unit}px` : 0,
             marginTop: noHeader ? 1 : 0,
           }}
+          // sx={{ flexDirection: 'column' }}
         >
           {
             <>
               <Box width={'100%'} display={'flex'}>
                 <Tabs
+                  variant='scrollable'
                   className={'btnTab'}
                   value={tab}
                   onChange={(_event: any, newValue: any) => {

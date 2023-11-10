@@ -35,15 +35,18 @@ const Header = withTranslation('common')(
       isWrap = false,
       ...rest
     }: any & RouteComponentProps) => {
-      const { headerToolBarData, headerMenuData, notifyMap, headerMenuLandingData } = useHeader()
+      const { headerToolBarData, headerMenuData, notifyMap, myNotifyMap, headerMenuLandingData } =
+        useHeader()
       const { isMobile } = useSettings()
       const { pathname } = useLocation()
       const { confirmWrapper } = confirmation.useConfirmation()
       const { allowTrade, chainId } = useSystem()
       const { account } = useAccount()
       const [view, setView] = React.useState(false)
-      const { redPackets, setShowRedPacketsPopup} = useTargetRedPackets()
-      const popUpRedpackets = redPackets ? redPackets.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") : []
+      const { redPackets, setShowRedPacketsPopup } = useTargetRedPackets()
+      const popUpRedpackets = redPackets
+        ? redPackets.filter((redpacket) => (redpacket as any).notifyType === 'NOTIFY_WINDOW')
+        : []
       const showExclusiveRedpacket = popUpRedpackets.length > 0
       const exclusiveRedpacketCount = popUpRedpackets.length
       const { setShowRedPacket } = useOpenModals()
@@ -59,7 +62,7 @@ const Header = withTranslation('common')(
             step: RedPacketViewStep.OpenPanel,
           })
         }
-      } 
+      }
 
       return (
         <>
@@ -79,7 +82,7 @@ const Header = withTranslation('common')(
                 toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
                 toolBarMap={ButtonComponentsMap}
                 headerToolBarData={headerToolBarData}
-                notification={notifyMap}
+                notification={{ notifyMap, myNotifyMap }}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}
                 onClickExclusiveredPacket={onClickExclusiveredPacket}
                 showExclusiveRedpacket={showExclusiveRedpacket}
@@ -99,7 +102,7 @@ const Header = withTranslation('common')(
               toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
               toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
-              notification={notifyMap}
+              notification={{ notifyMap, myNotifyMap }}
               selected={location.pathname === '/' ? headerRoot : location.pathname}
               onClickExclusiveredPacket={onClickExclusiveredPacket}
               showExclusiveRedpacket={showExclusiveRedpacket}

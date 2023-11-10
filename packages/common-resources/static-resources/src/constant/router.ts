@@ -76,14 +76,16 @@ export enum Layer2RouterID {
   contact = 'contact',
   referralrewards = 'referralrewards',
   forcewithdraw = 'forcewithdraw',
+  notification = 'notification',
 }
-export enum ProfileKey {
-  security = 'security',
-  vip = 'vip',
-  contact = 'contact',
-  referralrewards = 'referralrewards',
-  forcewithdraw = 'forcewithdraw',
-}
+// export enum ProfileKey {
+//   security = 'security',
+//   vip = 'vip',
+//   contact = 'contact',
+//   referralrewards = 'referralrewards',
+//   forcewithdraw = 'forcewithdraw',
+//   notification = 'notification',
+// }
 
 export const Profile = {
   security: [
@@ -996,27 +998,29 @@ export const RouterAllowIndex = {
 }
 
 export const ProfileIndex = {
-  TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
+  TAIKO: [Layer2RouterID.security, Layer2RouterID.referralrewards],
   ETHEREUM: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
   ],
   GOERLI: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
   ],
   ARBGOERLI: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
   ],
 }
 
