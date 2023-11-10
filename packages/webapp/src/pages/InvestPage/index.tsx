@@ -5,15 +5,14 @@ import { Box, BoxProps, Container, Typography } from '@mui/material'
 import { useTranslation, withTranslation } from 'react-i18next'
 import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
 import React from 'react'
-import { confirmation, ViewAccountTemplate } from '@loopring-web/core'
-import MyLiquidityPanel from './MyLiquidityPanel'
+import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
+import { MyLiquidity } from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
 import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
-import styled from '@emotion/styled'
 import { InvestType, RouterPath, InvestRouter } from '@loopring-web/common-resources'
 
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
@@ -96,12 +95,12 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
     toggle: { CIETHInvest },
   } = useToggle()
 
-  const [tabIndex, setTabIndex] = React.useState<InvestType>(
-    (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
-      ? InvestType[match?.params?.item]
-      : InvestType.Overview) as any,
-    // InvestType.Overview
-  )
+    const [tabIndex, setTabIndex] = React.useState<InvestType>(
+        (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
+            ? InvestType[match?.params?.item]
+            : InvestType.Overview) as any,
+        // InvestType.Overview
+    )
   const [isShowTab, setIsShowTab] = React.useState<Boolean>(false)
   React.useEffect(() => {
     switch (match?.params.item) {
@@ -147,7 +146,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Dual && <DualListPanel />}
         {tabIndex === InvestType.MyBalance && (
           <Box flex={1} alignItems={'stretch'} display={'flex'} flexDirection={'column'}>
-            <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
+            <ViewAccountTemplate activeViewTemplate={<MyLiquidity />} />
           </Box>
         )}
         {tabIndex === InvestType.Stack && (
