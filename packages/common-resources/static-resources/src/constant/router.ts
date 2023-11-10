@@ -45,6 +45,7 @@ export enum RouterPath {
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
+  investBalance = '/invest/balance',
   vault = '/vault',
   //404? loading
   loading = '/loading',

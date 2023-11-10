@@ -362,19 +362,19 @@ export const useAssetAction = () => {
               let link = ''
               switch (record.lockTag) {
                 case sdk.LOCK_TYPE.DUAL_CURRENCY:
-                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
+                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.DUAL}`
                   break
                 case sdk.LOCK_TYPE.DUAL_BASE:
-                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
+                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.DUAL}`
                   break
                 case sdk.LOCK_TYPE.L2STAKING:
-                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.STAKELRC}`
+                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.STAKELRC}`
                   break
                 case sdk.LOCK_TYPE.BTRADE:
-                  link = `/#/${RouterPath.l2assets}/history/${RecordTabIndex.BtradeSwapRecords}`
+                  link = `/#${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}`
                   break
                 case sdk.LOCK_TYPE.STOP_LIMIT:
-                  link = `/#/${RouterPath.l2assets}/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
+                  link = `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
                   break
               }
               prev.push({
@@ -397,14 +397,14 @@ export const useAssetAction = () => {
                   .minus(_item?.withdrawAmount ?? 0)
                   .minus(_item?.depositAmount ?? 0)
                   .toString(),
-                link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
+                link: `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
               },
               ...(sdk.toBig(_item?.depositAmount ?? 0).gt(0)
                 ? [
                     {
                       key: `labelDepositPending`,
                       value: sdk.toBig(_item?.depositAmount ?? '0').toString(),
-                      link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
+                      link: `/#${RouterPath.l2records}/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
                     },
                   ]
                 : []),
@@ -413,7 +413,7 @@ export const useAssetAction = () => {
                     {
                       key: `labelWithDrawPending`,
                       value: sdk.toBig(_item?.withdrawAmount ?? '0').toString(),
-                      link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
+                      link: `/#${RouterPath.l2records}/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
                     },
                   ]
                 : []),
