@@ -66,15 +66,15 @@ import {
 } from './router'
 import { firebaseReducer, ReactReduxFirebaseProviderProps } from 'react-redux-firebase'
 import firebase from 'firebase/compat/app'
-import { tradeDefiSlice } from './router/tradeDefi'
-import { tradeDualSlice } from './router/tradeDual'
+import { tradeDefiSlice } from './router'
+import { tradeDualSlice } from './router'
 
 import { investReducer } from './invest'
 import { walletL2CollectionSlice } from './walletL2Collection/reducer'
 import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
 import { tradeBtradeSlice } from './router/tradeBtrade'
 import { contactsSlice } from './contacts/reducer'
-import { tradeLeverageETHSlice } from './router/tradeLeverageETH'
+import { tradeLeverageETHSlice } from './router'
 import { targetRedpacketSlice } from './targetRedpackt/reducer'
 
 const sagaMiddleware = createSagaMiddleware()
@@ -137,6 +137,7 @@ const persistedLocalStoreReducer = persistReducer<
     nftHashInfos: NFTHashInfos
     redPacketHistory: RedPacketHashInfos
     offRampHistory: OffRampHashInfos
+    favoriteVaultMarket: FavoriteMarketStates
   }>
 >(persistLocalStoreConfig, localStoreReducer)
 
