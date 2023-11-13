@@ -423,7 +423,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           LoopringAPI.defiAPI.getDualTransactions(
             {
               accountId,
-              settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
+              settlementStatuses: [sdk.SETTLEMENT_STATUS.UNSETTLED, sdk.SETTLEMENT_STATUS.SETTLED],
               offset,
               limit,
               start,
