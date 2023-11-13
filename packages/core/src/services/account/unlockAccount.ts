@@ -48,12 +48,10 @@ export async function unlockAccount() {
           throw error
         })
 
-      const nonce = 100
-      // account ? account.nonce : accounStore.nonce
-
+      const nonce = account ? account.nonce : accounStore.nonce
 
       const msg =
-        (account.keySeed && account.keySeed !== '' && false)
+        account.keySeed && account.keySeed !== ''
           ? account.keySeed
           : sdk.GlobalAPI.KEY_MESSAGE.replace(
               '${exchangeAddress}',
