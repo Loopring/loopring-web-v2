@@ -552,7 +552,8 @@ export const DualDetail = ({
                         sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
                         sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
                       ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus) ||
-                      dualViewInfo?.side === t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING)
+                      (dualViewInfo?.side === t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING) &&
+                        !coinSell.isRenew)
                     }
                     onChange={(_e, checked) => {
                       if (isOrder) {
