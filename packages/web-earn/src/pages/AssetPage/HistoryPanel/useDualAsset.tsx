@@ -199,9 +199,11 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         if (dualReinvestInfo?.isRecursive) {
           content = 'labelDualAssetReInvestEnable'
         } else if (
-          investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
-          investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED &&
-          Date.now() - expireTime >= 0 &&
+          !(
+            investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
+            investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED &&
+            Date.now() - expireTime >= 0
+          ) &&
           (dualType == sdk.DUAL_TYPE.DUAL_BASE
             ? sdk.toBig(deliveryPrice).gte(strike)
             : sdk.toBig(strike).gte(deliveryPrice))

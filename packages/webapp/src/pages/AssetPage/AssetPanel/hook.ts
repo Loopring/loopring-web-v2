@@ -364,13 +364,13 @@ export const useAssetAction = () => {
               let link = ''
               switch (record.lockTag) {
                 case sdk.LOCK_TYPE.DUAL_CURRENCY:
-                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
+                  link = `/#${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
                   break
                 case sdk.LOCK_TYPE.DUAL_BASE:
-                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
+                  link = `/#${RouterPath.invest}/balance/${InvestAssetRouter.DUAL}`
                   break
                 case sdk.LOCK_TYPE.L2STAKING:
-                  link = `/#/${RouterPath.invest}/balance/${InvestAssetRouter.STAKELRC}`
+                  link = `/#${RouterPath.invest}/balance/${InvestAssetRouter.STAKELRC}`
                   break
                 case sdk.LOCK_TYPE.BTRADE:
                   link = `/#/${RouterPath.l2assets}/history/${RecordTabIndex.BtradeSwapRecords}`
