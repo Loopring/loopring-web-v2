@@ -84,7 +84,7 @@ export const useDualEdit = <
       if (!tradeData.isRenew) {
         return {
           tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          label: 'labelTurnOffDualAutoInvest',
+          label: 'labelConfirm',
         }
       } else if (
         tradeData.isRenew &&

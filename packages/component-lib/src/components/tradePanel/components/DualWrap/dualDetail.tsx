@@ -556,7 +556,7 @@ export const DualDetail = ({
                     }
                     onChange={(_e, checked) => {
                       if (isOrder) {
-                        if (dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
+                        if (coinSell.isRenew) {
                           onChangeOrderReinvest({ on: false }, coinSell)
                         } else {
                           setShowEdit(true)

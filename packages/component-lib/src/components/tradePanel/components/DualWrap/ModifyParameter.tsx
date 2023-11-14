@@ -314,6 +314,7 @@ export const ModifyParameter = ({
                     renewDuration: coinSell.renewDuration,
                     renewTargetPrice: coinSell.renewTargetPrice
                   }, coinSell);
+                  onClose()
                 } else {
                   onClose()
                 }
