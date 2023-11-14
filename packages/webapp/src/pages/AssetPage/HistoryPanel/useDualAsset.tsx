@@ -547,6 +547,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   // TODO:
   const getProduct = async (detail) => {
     if (detail && detail.dualViewInfo) {
+      const { marketMap: dualMarketMap } = store.getState().invest.dualMap
       const market =
         detail.dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE
           ? detail.dualViewInfo.sellSymbol + '-' + detail.dualViewInfo.buySymbol
