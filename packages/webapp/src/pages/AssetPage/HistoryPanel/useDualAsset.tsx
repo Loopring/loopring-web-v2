@@ -354,6 +354,16 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           setRefreshErrorInfo([refreshedRecord.buySymbol, refreshedRecord.sellSymbol])
           setShowRefreshError(true)
           setShowLoading(false)
+        } else if (
+          refreshedRecord.__raw__.order.settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED &&
+          !refreshedRecord.__raw__.order.dualReinvestInfo.isRecursive
+        ) {
+          setDualList((state) => {
+            return state?.filter((x) => {
+              return x.__raw__.order.id !== refreshedRecord.__raw__.order.id
+            })
+          })
+          setShowLoading(false)
         } else {
           setDualList((state) => {
             return state.map((x) => {
