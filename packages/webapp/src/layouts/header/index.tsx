@@ -10,7 +10,7 @@ import {
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'
 
 import { useHeader } from './hook'
-import { confirmation, useSystem, useAccount, useTargetRedPackets } from '@loopring-web/core'
+import { confirmation, useSystem, useAccount, useTargetRedPackets, useTokenMap } from '@loopring-web/core'
 import { withTranslation } from 'react-i18next'
 
 import {
@@ -36,7 +36,7 @@ const Header = withTranslation('common')(
       ...rest
     }: any & RouteComponentProps) => {
       const { headerToolBarData, headerMenuData, notifyMap, headerMenuLandingData } = useHeader()
-      const { isMobile } = useSettings()
+      const { isMobile, coinJson } = useSettings()
       const { pathname } = useLocation()
       const { confirmWrapper } = confirmation.useConfirmation()
       const { allowTrade, chainId } = useSystem()
@@ -46,10 +46,25 @@ const Header = withTranslation('common')(
       const popUpRedpackets = redPackets ? redPackets.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") : []
       const showExclusiveRedpacket = popUpRedpackets.length > 0
       const exclusiveRedpacketCount = popUpRedpackets.length
-      const { setShowRedPacket } = useOpenModals()
+      const { setShowRedPacket, setShowTargetRedpacketPop } = useOpenModals()
+      const { idIndex } = useTokenMap()
       const onClickExclusiveredPacket = () => {
         if (exclusiveRedpacketCount > 1) {
-          setShowRedPacketsPopup(true)
+          setShowTargetRedpacketPop({
+            isShow: true,
+            info: {
+              exclusiveRedPackets: popUpRedpackets.map(redpacket => {
+                return {
+                  ...redpacket,
+                  tokenName: 
+                    redpacket.isNft
+                    ? (redpacket.nftTokenInfo?.metadata?.base.name ?? '')
+                    : idIndex[redpacket.tokenId],
+                  tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]] 
+                }
+              })
+            }
+          })
         } else {
           setShowRedPacket({
             isShow: true,

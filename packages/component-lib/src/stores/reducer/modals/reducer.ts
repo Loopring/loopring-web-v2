@@ -7,8 +7,9 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  CoinSource,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 import { ToastType } from '../../../components'
 
 const initialState: ModalState = {
@@ -53,6 +54,7 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
+  isShowTargetRedpacketPop: { isShow: false, info: {} },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -373,6 +375,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
+    setShowTargetRedpacketPop(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          info: {
+            exclusiveRedPackets?: (LuckyTokenItemForReceive & {
+              tokenIcon: CoinSource
+              tokenName: string
+            })[]
+          }
+        }
+      >,
+    ) {
+      const {
+        isShow,
+        info: { exclusiveRedPackets },
+      } = action.payload
+      state.isShowTargetRedpacketPop = {
+        isShow,
+        info: {
+          exclusiveRedPackets,
+        },
+      }
+    },
   },
 })
 export const {
@@ -407,4 +433,5 @@ export const {
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
+  setShowTargetRedpacketPop
 } = modalsSlice.actions
