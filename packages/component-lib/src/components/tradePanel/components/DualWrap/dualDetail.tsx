@@ -233,6 +233,28 @@ export const DualDetail = ({
             </Typography>
           </Typography>
         )}
+        {isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo.onceRecursive && (
+          <Typography
+            component={'span'}
+            variant={'body1'}
+            display={'flex'}
+            flexDirection={'column'}
+            sx={{
+              background: 'var(--vip-bg)',
+            }}
+            padding={2}
+            marginBottom={2}
+          >
+            <Typography
+              component={'span'}
+              color={'textPrimary'}
+              display={'inline-flex'}
+              alignItems={'center'}
+            >
+              Auto Reinvest terminated. You successfully purchased the target token.
+            </Typography>
+          </Typography>
+        )}
         {displayMode !== DualDisplayMode.beginnerModeStep2 && (
           <Box
             display={'flex'}
