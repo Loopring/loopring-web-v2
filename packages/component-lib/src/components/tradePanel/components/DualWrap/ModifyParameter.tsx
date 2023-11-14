@@ -31,6 +31,8 @@ export const ModifyParameter = ({
   btnConfirm,
   // getProduct,
   maxDuration = 10,
+  isOrder,
+  onChangeOrderReinvest
 }: DualDetailProps & { maxDuration?: number; onClose: () => void }) => {
   const { t } = useTranslation()
   const { coinJson } = useSettings()
@@ -285,7 +287,17 @@ export const ModifyParameter = ({
               variant={'contained'}
               size={'medium'}
               color={'primary'}
-              onClick={onClose}
+              onClick={() => {
+                if (isOrder) {
+                  onChangeOrderReinvest({
+                    on: true,
+                    renewDuration: coinSell.renewDuration,
+                    renewTargetPrice: coinSell.renewTargetPrice
+                  }, coinSell);
+                } else {
+                  onClose()
+                }
+              }}
             >
               {t('labelDualModifyConfirm')}
             </ButtonStyle>

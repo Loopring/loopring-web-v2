@@ -131,9 +131,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       greaterEarnVol = sdk
         .toBig(
           sdk
-            .toBig(settleRatio)
-            .plus(1)
-            .times(sellAmount ? sellAmount : 0)
+            .toBig(sellAmount ? sellAmount : 0)
             .times(strike)
             .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL),
         )
@@ -144,9 +142,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       lessEarnVol = sdk
         .toBig(
           sdk
-            .toBig(settleRatio)
-            .plus(1)
-            .times(sellAmount ? sellAmount : 0)
+            .toBig(sellAmount ? sellAmount : 0)
             // .times(1 + info.ratio)
             .div(strike)
             .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL),
@@ -383,9 +379,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     handleOnchange,
     onEditDualClick,
   } = useDualEdit({
-    refresh: (item) => {
+    refresh: (item, dontCloseModal: boolean) => {
       refresh(item as any)
-      setOpen(false)
+      !dontCloseModal && setOpen(false)
     },
   })
   const showDetail = async (item: R) => {
@@ -511,7 +507,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 base: item.tokenInfoOrigin.base,
                 quote: item.tokenInfoOrigin.quote,
                 currentPrice: findIndex?.index,
-                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market].precisionForPrice,
+                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice,
                 quoteUnit: item.tokenInfoOrigin.quote,
               }
               prev.push({
