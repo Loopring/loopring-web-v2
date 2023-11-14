@@ -20,6 +20,8 @@ import {
   WarningIcon2,
 } from '@loopring-web/common-resources'
 import moment from 'moment'
+import _ from 'lodash'
+import BigNumber from 'bignumber.js'
 
 export const ModifyParameter = ({
   dualViewInfo,
@@ -64,62 +66,80 @@ export const ModifyParameter = ({
       } else if (method === 'plus' && start.lt(currentPrice ?? 0)) {
         start = sdk.toBig(start).plus(stepLength ?? 0)
       }
-      for (let index = 0, item = start; index < 12; index++) {
-        const dualProduct = dualProducts?.find((dualProduct) =>
-          sdk.toBig(dualProduct.strike).eq(item),
+      const strikes = _.range(12).map((index) =>
+        method === 'minus'
+          ? start.minus(sdk.toBig(stepLength ?? 0).times(index) ?? 0)
+          : start.plus(sdk.toBig(stepLength ?? 0).times(index) ?? 0),
+      )
+      let strikes2: BigNumber[]
+      if (
+        !strikes.find((strike) => coinSell.renewTargetPrice && strike.eq(coinSell.renewTargetPrice))
+      ) {
+        strikes2 = [sdk.toBig(coinSell.renewTargetPrice ?? 0), ...strikes.slice(0, 11)]
+      } else {
+        strikes2 = strikes
+      }
+      return strikes2
+        .sort((a, b) =>
+          a
+            .minus(b)
+            .times(method === 'minus' ? '-1' : '1')
+            .toNumber(),
         )
-        const value = item.toString()
-        listELE.push(
-          <Grid item key={index} xs={3}>
-            <TickCardStyleItem
-              selected={item.eq(coinSell.renewTargetPrice ?? 0)}
-              className={
-                item.eq(coinSell.renewTargetPrice ?? 0)
-                  ? 'btnCard dualInvestCard selected dualPrice'
-                  : 'btnCard dualInvestCard dualPrice'
-              }
-              // selected={coinSell.renewTargetPrice ?? 0}
-              onClick={() =>
-                onChange({
-                  ...coinSell,
-                  renewDuration: coinSell.renewDuration,
-                  renewTargetPrice: value,
-                })
-              }
-            >
-              <Typography
-                variant={'body1'}
-                component={'span'}
-                display={'flex'}
-                flexDirection={'column'}
-                alignItems={'center'}
-                justifyContent={'center'}
-                width={'100%'}
+        .map((item, index) => {
+          const dualProduct = dualProducts?.find((dualProduct) =>
+            sdk.toBig(dualProduct.strike).eq(item),
+          )
+          const value = item.toString()
+          return (
+            <Grid item key={index} xs={3}>
+              <TickCardStyleItem
+                selected={item.eq(coinSell.renewTargetPrice ?? 0)}
+                className={
+                  item.eq(coinSell.renewTargetPrice ?? 0)
+                    ? 'btnCard dualInvestCard selected dualPrice'
+                    : 'btnCard dualInvestCard dualPrice'
+                }
+                // selected={coinSell.renewTargetPrice ?? 0}
+                onClick={() =>
+                  onChange({
+                    ...coinSell,
+                    renewDuration: coinSell.renewDuration,
+                    renewTargetPrice: value,
+                  })
+                }
               >
                 <Typography
-                  variant={'inherit'}
+                  variant={'body1'}
                   component={'span'}
                   display={'flex'}
                   flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  width={'100%'}
                 >
-                  {value}
+                  <Typography
+                    variant={'inherit'}
+                    component={'span'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                  >
+                    {value}
+                  </Typography>
+                  <Typography
+                    component={'span'}
+                    display={'flex'}
+                    variant={'body2'}
+                    flexDirection={'column'}
+                    color={'textSecondary'}
+                  >
+                    {dualProduct && t('labelDualModifyAPR', { value: dualProduct.apy })}
+                  </Typography>
                 </Typography>
-                <Typography
-                  component={'span'}
-                  display={'flex'}
-                  variant={'body2'}
-                  flexDirection={'column'}
-                  color={'textSecondary'}
-                >
-                  {dualProduct && t('labelDualModifyAPR', { value: dualProduct.apy })}
-                </Typography>
-              </Typography>
-            </TickCardStyleItem>
-          </Grid>,
-        )
-        item = method === 'minus' ? item.minus(stepLength ?? 0) : item.plus(stepLength ?? 0)
-      }
-      return listELE.map((item) => item)
+              </TickCardStyleItem>
+            </Grid>
+          )
+        })
     } else {
       return []
     }
