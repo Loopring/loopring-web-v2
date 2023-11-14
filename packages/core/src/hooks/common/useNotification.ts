@@ -29,10 +29,14 @@ export const useNotificationFunc = <R extends sdk.UserNotification>({
   const onReadClick = React.useCallback(
     async (_index: number, item: R) => {
       try {
-        const response = await LoopringAPI.userAPI?.submitNotificationReadOne({
-          id: item.id,
-          walletAddress: account.accAddress,
-        })
+        const response = await LoopringAPI.userAPI?.submitNotificationReadOne(
+          {
+            id: item.id,
+            accountId: account.accountId,
+          },
+          account?.eddsaKey?.sk,
+          account.apiKey,
+        )
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         } else {
@@ -57,10 +61,14 @@ export const useNotificationFunc = <R extends sdk.UserNotification>({
   // setShowLoading(true)
   const onReadAllClick = React.useCallback(async () => {
     try {
-      const response = await LoopringAPI.userAPI?.submitNotificationReadAll({
-        walletAddress: account.accAddress,
-        network: networkWallet,
-      })
+      const response = await LoopringAPI.userAPI?.submitNotificationReadAll(
+        {
+          network: networkWallet,
+          accountId: account.accountId,
+        },
+        account?.eddsaKey?.sk,
+        account.apiKey,
+      )
       if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
         throw response
       } else {
@@ -83,10 +91,14 @@ export const useNotificationFunc = <R extends sdk.UserNotification>({
 
   const onClearAllClick = React.useCallback(async () => {
     try {
-      const response = await LoopringAPI.userAPI?.submitNotificationClear({
-        walletAddress: account.accAddress,
-        network: networkWallet,
-      })
+      const response = await LoopringAPI.userAPI?.submitNotificationClear(
+        {
+          network: networkWallet,
+          accountId: account.accountId,
+        },
+        account?.eddsaKey?.sk,
+        account.apiKey,
+      )
       if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
         throw response
       } else {
