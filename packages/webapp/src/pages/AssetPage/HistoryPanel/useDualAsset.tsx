@@ -131,7 +131,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       greaterEarnVol = sdk
         .toBig(
           sdk
-            .toBig(sellAmount ? sellAmount : 0)
+            .toBig(settleRatio)
+            .plus(1)
+            .times(sellAmount ? sellAmount : 0)
             .times(strike)
             .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL),
         )
@@ -142,7 +144,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       lessEarnVol = sdk
         .toBig(
           sdk
-            .toBig(sellAmount ? sellAmount : 0)
+            .toBig(settleRatio)
+            .plus(1)
+            .times(sellAmount ? sellAmount : 0)
             // .times(1 + info.ratio)
             .div(strike)
             .toFixed(tokenMap[buySymbol].precision, BigNumber.ROUND_CEIL),

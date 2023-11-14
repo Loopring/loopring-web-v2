@@ -209,87 +209,58 @@ export const useDualHook = () => {
   }, [marketArray])
   const baseTokenList = React.useMemo(() => {
     if (dualStatus === SagaStatus.UNSET) {
-      return Reflect.ownKeys(marketMap ?? {}).reduce(
+      const object = Reflect.ownKeys(marketMap ?? {}).reduce(
         (prev, key) => {
           if (!marketMap[key.toString()].enabled) {
             return prev
           }
-          const { marketMap: dualMarketMap } = store.getState().invest.dualMap
           const baseSymbol = idIndex[marketMap[key.toString()].baseTokenId]
-          // let sortList = [
-          //   dualMarketMap[baseSymbol].DUAL?.replace('%', ''),
-          //   dualMarketMap[baseSymbol].quoteTokenApy?.replace('%', ''),
-          // ]
           prev[baseSymbol] = {
             tokenName: baseSymbol,
-            // minAPY: dualMarketMap[key.toString()].apy?.replace('%', ''),
-            // maxAPY: dualMarketMap[key.toString()].apy?.replace('%', ''),
             tokenList: tradeMap[baseSymbol]?.tokenList,
           }
-
           if (viewType === DualViewType.DualGain) {
-            let sortList = [
-              dualMarketMap[key]?.baseTokenApy?.min,
-              dualMarketMap[key]?.baseTokenApy?.max,
-            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
-            sortList = sortList
-              .filter((item) => item)
-              .sort(
-                (a, b) =>
-                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
-              )
-            // sortList = [...sortList, ]
             prev[baseSymbol] = {
               ...prev[baseSymbol],
-              minAPY: sortList[0],
-              maxAPY: sortList[sortList.length - 1],
             }
           } else if (viewType === DualViewType.DualDip) {
-            let sortList = [
-              dualMarketMap[key]?.quoteTokenApy?.min,
-              dualMarketMap[key]?.quoteTokenApy?.max,
-            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
-            sortList = sortList
-              .filter((item) => item)
-              .sort(
-                (a, b) =>
-                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
-              )
-            // sortList = [...sortList, ]
             prev[baseSymbol] = {
               ...prev[baseSymbol],
-              minAPY: sortList[0],
-              maxAPY: sortList[sortList.length - 1],
             }
           } else {
-            let sortList = [
-              dualMarketMap[key]?.baseTokenApy?.min,
-              dualMarketMap[key]?.baseTokenApy?.max,
-              dualMarketMap[key]?.quoteTokenApy?.min,
-              dualMarketMap[key]?.quoteTokenApy?.max,
-            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
-            sortList = sortList
-              .filter((item) => item)
-              .sort(
-                (a, b) =>
-                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
-              )
-            // sortList = [...sortList, ]
             prev[baseSymbol] = {
               ...prev[baseSymbol],
-              minAPY: sortList[0],
-              maxAPY: sortList[sortList.length - 1],
             }
           }
 
           return prev
         },
-        {} as {
-          tokenName: string
-          minAPY: number
-          maxAPY: number
-        },
+        {} as any,
       )
+      return _.mapValues(object, (token) => {
+        const keys = Object.keys(marketMap).filter((key) => key.includes(token.tokenName))
+        if (viewType === DualViewType.DualGain) {            
+          var maxAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number))
+          var minAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.min as number))
+        } else if (viewType === DualViewType.DualDip) {
+          maxAPY = _.max(keys.map((key) => (marketMap[key] as any).quoteTokenApy?.max as number))
+          minAPY = _.max(keys.map((key) => (marketMap[key] as any).quoteTokenApy?.min as number))
+        } else {
+          maxAPY = _.max([
+            ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.max as number),
+            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number)
+          ])
+          minAPY = _.max([
+            ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.min as number),
+            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.min as number),
+          ])
+        }
+        return {
+          ...token,
+          maxAPY,
+          minAPY
+        }
+      })
     } else {
       return {}
     }
