@@ -31,6 +31,7 @@ import moment from 'moment/moment'
 import styled from '@emotion/styled'
 import { SwitchPanelStyled } from '../../../styled'
 import { LABEL_INVESTMENT_STATUS_MAP } from '../../../tableList'
+import { CancelDualAlert } from '../tool'
 
 
 const BoxChartStyle = styled(Box)`
@@ -163,6 +164,10 @@ export const DualDetail = ({
       : EmptyValueTag
   }, [dualViewInfo?.strike])
   myLog('dualViewInfo?.__raw__?.order?.investmentStatus', dualViewInfo?.__raw__?.order?.investmentStatus)
+  const [showCancelOneAlert, setShowCancelOneAlert] = React.useState({
+    open: false,
+    row: undefined as any
+  })
   return (
     <>
       <Modal
@@ -186,6 +191,17 @@ export const DualDetail = ({
           </Box>
         </SwitchPanelStyled>
       </Modal>
+
+      <CancelDualAlert
+        open={showCancelOneAlert.open}
+        row={showCancelOneAlert.row}
+        handleCancelOne={async () => {
+          onChangeOrderReinvest({ on: false }, coinSell)
+        }}
+        handleClose={() => setShowCancelOneAlert({ open: false, row: undefined })}
+      />
+
+
 
       <Box display={'flex'} flexDirection={'column'}>
         {isOrder && showClock && (
@@ -558,7 +574,12 @@ export const DualDetail = ({
                     onChange={(_e, checked) => {
                       if (isOrder) {
                         if (coinSell.isRenew) {
-                          onChangeOrderReinvest({ on: false }, coinSell)
+                          setShowCancelOneAlert({
+                            open: true,
+                            row: {
+                              expireTime: dualViewInfo.__raw__?.order?.timeOrigin?.expireTime,
+                            },
+                          })
                         } else {
                           setShowEdit(true)
                         }
