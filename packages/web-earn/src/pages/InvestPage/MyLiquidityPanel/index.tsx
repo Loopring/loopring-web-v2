@@ -502,7 +502,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       renewDuration: info.renewDuration,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({dontCloseModal: false})
                                 } else {
                                   handleOnchange({
                                     tradeData: {
