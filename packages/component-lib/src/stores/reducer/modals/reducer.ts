@@ -7,12 +7,12 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
-  CoinSource,
   VaultLoanType,
   VaultAction,
+  CoinSource,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
-import { ToastType } from '../../../components'
+import { ToastType } from '@loopring-web/component-lib'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
@@ -58,11 +58,10 @@ const initialState: ModalState = {
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
 	isShowTargetRedpacketPop: { isShow: false, info: {} },
 	isShowVaultExit: { isShow: false },
-	isShowVaultJoin: { isShow: false },
-	isShowVaultSwap: { isShow: false },
-	isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
-	isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
-
+  isShowVaultJoin: { isShow: false },
+  isShowVaultSwap: { isShow: false },
+  isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
+  isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({

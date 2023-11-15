@@ -5,8 +5,8 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
-  CoinSource,
   VaultAction,
+  CoinSource,
 } from '@loopring-web/common-resources'
 import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
