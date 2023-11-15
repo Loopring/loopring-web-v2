@@ -492,6 +492,27 @@ const MyLiquidity: any = withTranslation('common')(
                               onChange={(item) => {
                                 handleOnchange({ tradeData: item })
                               }}
+                              onChangeOrderReinvest={(info, item) => {
+                                if (info.on) {
+                                  handleOnchange({
+                                    tradeData: {
+                                      ...item,
+                                      isRenew: info.on,
+                                      renewTargetPrice: info.renewTargetPrice,
+                                      renewDuration: info.renewDuration,
+                                    } as any,
+                                  })
+                                  onEditDualClick({dontCloseModal: false})
+                                } else {
+                                  handleOnchange({
+                                    tradeData: {
+                                      ...item,
+                                      isRenew: false,
+                                    } as any,
+                                  })
+                                  onEditDualClick({dontCloseModal: true})
+                                }
+                              }}
                               coinSell={{
                                 ...editDualTrade,
                               }}

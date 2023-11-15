@@ -6,6 +6,7 @@ import {
   TradeNFT,
   AmmPanelType,
   VaultAction,
+  CoinSource,
 } from '@loopring-web/common-resources'
 import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -89,6 +90,13 @@ export interface ModalState {
       content?: string
       type: ToastType
     } & any
+  }
+  isShowTargetRedpacketPop: {
+    isShow: boolean
+    info: {
+      exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {tokenIcon: CoinSource, tokenName: string})[]
+      
+    }
   }
   isShowVaultExit: ModalStatePlayLoad & Transaction
   isShowVaultJoin: ModalStatePlayLoad & Transaction

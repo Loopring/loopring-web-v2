@@ -9,8 +9,9 @@ import {
   AmmPanelType,
   VaultLoanType,
   VaultAction,
+  CoinSource,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 import { ToastType } from '@loopring-web/component-lib'
 
 const initialState: ModalState = {
@@ -55,7 +56,8 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
-  isShowVaultExit: { isShow: false },
+	isShowTargetRedpacketPop: { isShow: false, info: {} },
+	isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
   isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
@@ -380,6 +382,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
+    setShowTargetRedpacketPop(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          info: {
+            exclusiveRedPackets?: (LuckyTokenItemForReceive & {
+              tokenIcon: CoinSource
+              tokenName: string
+            })[]
+          }
+        }
+      >,
+    ) {
+      const {
+        isShow,
+        info: { exclusiveRedPackets },
+      } = action.payload
+      state.isShowTargetRedpacketPop = {
+        isShow,
+        info: {
+          exclusiveRedPackets,
+        },
+      }
+    },
     setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultExit = { ...action.payload }
     },
@@ -435,6 +461,7 @@ export const {
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
+  setShowTargetRedpacketPop,
   setShowVaultExit,
   setShowVaultJoin,
   setShowVaultSwap,

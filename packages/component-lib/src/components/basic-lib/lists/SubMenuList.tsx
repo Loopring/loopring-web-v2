@@ -73,9 +73,10 @@ export const SubMenuList = withTranslation(['layout', 'common'], {
 })(<I extends any>({ t, selected, subMenu }: SubMenuListProps<I> & WithTranslation<'layout'>) => {
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const filteredSubMenus = Object.keys(subMenu).filter(key => subMenu[key])
   return (
     <>
-      {Object.keys(subMenu).map((list: any, index) => {
+      {filteredSubMenus.map((list: any, index) => {
         const subList = subMenu[list]?.map((item: any) => {
           return (
             <SubMenuItem
@@ -134,7 +135,7 @@ export const SubMenuList = withTranslation(['layout', 'common'], {
             {subList ? (
               <div key={`group-${list}`}>
                 {subList}
-                {index + 1 !== Object.keys(subMenu).length ? (
+                {index + 1 !== filteredSubMenus.length ? (
                   <Box marginX={3}>
                     <Divider />
                   </Box>
