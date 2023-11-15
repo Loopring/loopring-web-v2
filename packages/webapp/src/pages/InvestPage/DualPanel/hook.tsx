@@ -272,75 +272,81 @@ export const useDualHook = () => {
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true)
-    setIsDualBalanceSufficient(undefined)
-    const market = marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol)
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout)
-    }
-    // @ts-ignore
-    const currency = market ? marketMap[market]?.currency : undefined
-    if (pairASymbol && pairBSymbol && market) {
-      // @ts-ignore
-      const [, , marketSymbolA, marketSymbolB] = (market ?? '').match(/(dual-)?(\w+)-(\w+)/i)
-      const dualType =
-        marketSymbolA === pairASymbol ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
-      const { quoteAlias } = marketMap[market]
-
-      const response = await LoopringAPI.defiAPI?.getDualInfos({
-        baseSymbol: marketSymbolA,
-        quoteSymbol: quoteAlias ?? marketSymbolB,
-        currency: currency ?? '',
-        dualType,
-        startTime: Date.now() + 1000 * 60 * 60,
-        timeSpan: 1000 * 60 * 60 * 24 * 9,
-        limit: DUALLimit,
-      })
-
-      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-        setDualProducts([])
-      } else {
-        const {
-          // totalNum,
-          dualInfo: { infos, index, balance, rules },
-        } = response as any
-        const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
-        const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
-        const sellToken = tokenMap[balanceCoin]
-        if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
-          var minSellVol = marketMap[market].baseLimitAmount
-        } else {
-          minSellVol = marketMap[market].quoteLimitAmount
-        }
-        setIsDualBalanceSufficient(
-          found && sellToken
-            ? sdk
-                .toBig(found.free)
-                .times('1e' + sellToken.decimals)
-                .isGreaterThanOrEqualTo(minSellVol)
-            : undefined,
-        )
-        setCurrentPrice({
-          base: marketSymbolA,
-          quote: marketSymbolB,
-          currentPrice: index.index,
-          precisionForPrice: marketMap[market].precisionForPrice,
-          quoteUnit: marketSymbolB,
-        })
-
-        const rule = rules[0]
-        const rawData = infos.map((item: sdk.DualProductAndPrice) => {
-          return makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol, marketMap[market])
-        })
-        myLog('setDualProducts', rawData)
-        setDualProducts(rawData)
-        // setIsLoading(false)
+    try {
+      setIsDualBalanceSufficient(undefined)
+      const market = marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol)
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout)
       }
-      // }
+      // @ts-ignore
+      const currency = market ? marketMap[market]?.currency : undefined
+      if (pairASymbol && pairBSymbol && market) {
+        // @ts-ignore
+        const [, , marketSymbolA, marketSymbolB] = (market ?? '').match(/(dual-)?(\w+)-(\w+)/i)
+        const dualType =
+          marketSymbolA === pairASymbol ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
+        const { quoteAlias } = marketMap[market]
+
+        const response = await LoopringAPI.defiAPI?.getDualInfos({
+          baseSymbol: marketSymbolA,
+          quoteSymbol: quoteAlias ?? marketSymbolB,
+          currency: currency ?? '',
+          dualType,
+          startTime: Date.now() + 1000 * 60 * 60,
+          timeSpan: 1000 * 60 * 60 * 24 * 9,
+          limit: DUALLimit,
+        })
+
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          setDualProducts([])
+        } else {
+          const {
+            // totalNum,
+            dualInfo: { infos, index, balance, rules },
+          } = response as any
+          const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
+          const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
+          const sellToken = tokenMap[balanceCoin]
+          if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+            var minSellVol = marketMap[market].baseLimitAmount
+          } else {
+            minSellVol = marketMap[market].quoteLimitAmount
+          }
+          setIsDualBalanceSufficient(
+            found && sellToken
+              ? sdk
+                  .toBig(found.free)
+                  .times('1e' + sellToken.decimals)
+                  .isGreaterThanOrEqualTo(minSellVol)
+              : undefined,
+          )
+          setCurrentPrice({
+            base: marketSymbolA,
+            quote: marketSymbolB,
+            currentPrice: index.index,
+            precisionForPrice: marketMap[market].precisionForPrice,
+            quoteUnit: marketSymbolB,
+          })
+
+          const rule = rules[0]
+          const rawData = infos.map((item: sdk.DualProductAndPrice) => {
+            return makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol, marketMap[market])
+          })
+          myLog('setDualProducts', rawData)
+          setDualProducts(rawData)
+          // setIsLoading(false)
+        }
+        // }
+      }
+
+      nodeTimer.current = setTimeout(() => {
+        getProduct()
+      }, 60000)
+    } catch {
+      setDualProducts([])
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
-    nodeTimer.current = setTimeout(() => {
-      getProduct()
-    }, 60000)
   }, 100)
 
   const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(undefined)
