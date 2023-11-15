@@ -343,6 +343,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           ...format,
           amount,
         } as R
+        if (refreshedRecord.__raw__.order.id === detail?.__raw__.order.id) {
+          setDetail(getDetail(refreshedRecord))
+        }
         if (
           refreshedRecord.__raw__.order.investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
         ) {
@@ -418,7 +421,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       })
       if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
         getProduct(_item)
-        
       }
       handleOnchange({
         tradeData,
