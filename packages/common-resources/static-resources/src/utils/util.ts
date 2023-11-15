@@ -215,7 +215,11 @@ export const getValuePrecisionThousand = (
     if (floor === false) {
       result = getFloatCeil(result, fixed || precision).toString()
     } else {
-      result = fixed ? result.toFixed(fixed) : toBig(result).toPrecision(precision)
+      result = fixed
+        ? result.toFixed(fixed)
+        : precision
+        ? toBig(result).toPrecision(precision)
+        : toBig(result).toFixed(0)
     }
   }
 
