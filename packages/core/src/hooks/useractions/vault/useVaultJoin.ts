@@ -8,17 +8,14 @@ import {
   AccountStatus,
   CoinInfo,
   CoinMap,
-  CustomErrorWithCode,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   SagaStatus,
-  SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
   TRADE_TYPE,
   TradeBtnStatus,
-  UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
 import React from 'react'
@@ -334,7 +331,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                 result.map((item, index) => {
                   return (
                     item &&
-                    LoopringAPI.vaultAPI.sendVaultResetToken(
+                    LoopringAPI.vaultAPI?.sendVaultResetToken(
                       {
                         request: {
                           exchange: exchangeInfo.exchangeAddress,
