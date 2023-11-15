@@ -169,7 +169,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
         totalCurrentInvest.stakeETHDollar += Number(
           // @ts-ignore
           (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
-            tokenPrices[defiCoinKey] ?? 0,
+            (tokenPrices ? tokenPrices[defiCoinKey] : 0),
         )
       }, [])
       resultData.forEach((item) => {

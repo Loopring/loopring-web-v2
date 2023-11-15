@@ -17,6 +17,7 @@ import {
   modalContentBaseStyle,
   ModalPanelProps,
   NFTDeployProps,
+  RedPacketViewStep,
   ResetAccountConfirmationPanel,
   ResetPanel,
   ResetProps,
@@ -40,6 +41,7 @@ import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
+import { TargetRedpacketWrap } from './components/TargetRedpacketWrap'
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -191,6 +193,8 @@ export const ModalPanel = <
     setShowClaimWithdraw,
     setShowCollectionAdvance,
     setShowSideStakingRedeem,
+    setShowTargetRedpacketPop,
+    setShowRedPacket
     // setShowDual,
   } = useOpenModals()
 
@@ -210,6 +214,7 @@ export const ModalPanel = <
     isShowAnotherNetwork,
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
+    isShowTargetRedpacketPop
   } = modals
   const theme = useTheme()
   return (
@@ -502,6 +507,28 @@ export const ModalPanel = <
           >
             <DeFiStackRedeemWrap isJoin={false} {...(sideStackRedeemProps as any)} />
           </Box>
+        }
+      />
+      <Modal
+        // maxWidth={'md'}
+        open={isShowTargetRedpacketPop.isShow}
+        onClose={() => {
+          setShowTargetRedpacketPop({isShow: false, info: {}})
+        }}
+        content={
+          <TargetRedpacketWrap
+            exclusiveRedPackets={isShowTargetRedpacketPop.info.exclusiveRedPackets}
+            onClickOpenExclusive={(redpacket) => {
+              setShowTargetRedpacketPop({isShow: false, info: {}})
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...redpacket,
+                },
+                step: RedPacketViewStep.OpenPanel,
+              })
+            }}
+          />
         }
       />
     </>

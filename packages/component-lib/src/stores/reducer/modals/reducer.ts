@@ -7,11 +7,12 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  CoinSource,
   VaultLoanType,
   VaultAction,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { ToastType } from '@loopring-web/component-lib'
+import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
+import { ToastType } from '../../../components'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
@@ -55,11 +56,13 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
-  isShowVaultExit: { isShow: false },
-  isShowVaultJoin: { isShow: false },
-  isShowVaultSwap: { isShow: false },
-  isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
-  isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
+	isShowTargetRedpacketPop: { isShow: false, info: {} },
+	isShowVaultExit: { isShow: false },
+	isShowVaultJoin: { isShow: false },
+	isShowVaultSwap: { isShow: false },
+	isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
+	isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
+
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -380,6 +383,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
+    setShowTargetRedpacketPop(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          info: {
+            exclusiveRedPackets?: (LuckyTokenItemForReceive & {
+              tokenIcon: CoinSource
+              tokenName: string
+            })[]
+          }
+        }
+      >,
+    ) {
+      const {
+        isShow,
+        info: { exclusiveRedPackets },
+      } = action.payload
+      state.isShowTargetRedpacketPop = {
+        isShow,
+        info: {
+          exclusiveRedPackets,
+        },
+      }
+    },
     setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultExit = { ...action.payload }
     },
@@ -435,6 +462,7 @@ export const {
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
+  setShowTargetRedpacketPop,
   setShowVaultExit,
   setShowVaultJoin,
   setShowVaultSwap,

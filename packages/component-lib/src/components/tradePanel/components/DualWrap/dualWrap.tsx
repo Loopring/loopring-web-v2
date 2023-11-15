@@ -343,7 +343,6 @@ export const DualWrap = <
                   } as any,
                 })
               }}
-              // inputView={inputView}
             />
           </Grid>
           <Grid item xs={12}>

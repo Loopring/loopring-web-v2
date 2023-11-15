@@ -2020,4 +2020,5 @@ export default {
   labelResetunlockedWithDual1: `We’ve detected that you have an active Dual Investment subscription. As a result, the L2 keypair reset won't take effect immediately. Instead, your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.`,
   labelResetunlockedWithDual2: `Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.`,
   labelResetunlockedWithoutDual: `Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.`,
+  labelDualAutoReinvest: 'Auto Reinvest',
 }
