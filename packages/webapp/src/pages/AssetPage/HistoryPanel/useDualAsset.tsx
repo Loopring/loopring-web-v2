@@ -418,10 +418,12 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       })
       if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
         getProduct(_item)
-        handleOnchange({
-          tradeData,
-        })
+        
       }
+      handleOnchange({
+        tradeData,
+      })
+      
       setOpen(true)
     }
   }
