@@ -2020,6 +2020,7 @@ export default {
     '<h5>Auto Reinvest</h5>' +
     '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
     '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell crypto.</p>' +
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
   labelAssetDualInvests: 'Dual Investment',
   labelTxGuardian_upgrade_contract: 'upgrade contract',
@@ -2068,11 +2069,23 @@ export default {
   labelUnlockErrorLine2Part3:
     '. This can be especially helpful if all other retry attempts fail, particularly when using hardware wallets.',
   labelResetLoopringL2: 'Reset Loopring L2 keypair',
-  labelResetlockedReset1: `Please note that if you have pending Dual Investment subscriptions, the L2 keypair reset won't take immediate effect. Your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.`,
-  labelResetlockedReset2: `Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.`,
-  labelResetunlockedWithDual1: `We’ve detected that you have an active Dual Investment subscription. As a result, the L2 keypair reset won't take effect immediately. Instead, your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.`,
-  labelResetunlockedWithDual2: `Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.`,
-  labelResetunlockedWithoutDual: `Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.`,
+  labelResetlockedReset1:
+    "Please note that if you have pending Dual Investment subscriptions, the L2 keypair reset won't take immediate effect. Your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.",
+  labelResetlockedReset2:
+    'Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.',
+  labelResetunlockedWithDual1:
+    "We’ve detected that you have an active Dual Investment subscription. As a result, the L2 keypair reset won't take effect immediately. Instead, your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.",
+  labelResetunlockedWithDual2:
+    'Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.',
+  labelResetunlockedWithoutDual:
+    'Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.',
+  labelDualAutoReinvest: 'Auto Reinvest',
+  labelInvestDualTutorialContent2:
+    '<h6>Auto Reinvest</h6>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
   labelNoticeTitle: 'Notifications',
   labelNotificationTime: '{{time}}',
   labelNotificationClear: 'Clear all',
@@ -2229,4 +2242,5 @@ export default {
   labelJoinDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelFailed: 'Failed',
+  labelVaultJoinNotEnough: 'Insufficient {{arg}} balance',
 }
