@@ -297,6 +297,7 @@ export const BeginnerMode: any = withTranslation('common')(
                       }
                       selected={step3Token === token}
                       onClick={() => {
+                        if (isLoading) return
                         onSelectStep3Token(token)
                         scroolTableToMiddle()
                       }}
