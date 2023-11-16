@@ -112,7 +112,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
           })
         } else {
           const formattedList: RawDataTransactionItem[] = response.userTxs.map((order) => {
-            const feePrecision = tokenMap ? tokenMap[order.feeTokenSymbol].precision : undefined
+            const feePrecision = tokenMap ? tokenMap[order.feeTokenSymbol]?.precision : undefined
             return {
               ...order,
               side: order.txType as any,
