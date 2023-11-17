@@ -34,7 +34,7 @@ export const useDualEdit = <
 >({
   refresh,
 }: {
-  refresh?: (item: R) => void
+  refresh?: (item: R, dontCloseModal: boolean) => void
 }) => {
   const { exchangeInfo } = useSystem()
   const { setShowAccount } = useOpenModals()
@@ -65,7 +65,7 @@ export const useDualEdit = <
     })
   }, [dualViewInfo?.__raw__?.order?.hash])
 
-  const handleOnchange = ({ tradeData }: { tradeData: T }) => {
+  const handleOnchange = ({ tradeData }: { tradeData: T }, ) => {
     setTradeData(tradeData)
     const editDual = store.getState()._router_tradeDual.editDual
     updateEditDual({
@@ -84,7 +84,7 @@ export const useDualEdit = <
       if (!tradeData.isRenew) {
         return {
           tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          label: 'labelTurnOffDualAutoInvest',
+          label: 'labelConfirm',
         }
       } else if (
         tradeData.isRenew &&
@@ -103,12 +103,11 @@ export const useDualEdit = <
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
   }, [dualViewInfo, tradeData.isRenew, tradeData.renewDuration, tradeData.renewTargetPrice])
-
-  const onSubmitBtnClick = React.useCallback(async () => {
+  const onSubmitBtnClick = React.useCallback(async (props?: any) => {
     const editDual = store.getState()._router_tradeDual.editDual
     const account = store.getState().account
     let { tradeData: _tradeData } = editDual
-    _tradeData = { ..._tradeData, ...tradeData }
+    _tradeData = { ...tradeData, ..._tradeData }
     const tradeDual = editDual?.dualViewInfo?.__raw__?.order
     const dualViewInfo = editDual?.dualViewInfo
     try {
@@ -239,7 +238,7 @@ export const useDualEdit = <
                 },
               },
             },
-          } as any)
+          } as any, props && props.dontCloseModal)
       } else {
         throw new Error('api not ready')
       }

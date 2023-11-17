@@ -28,6 +28,7 @@ import {
   setShowSideStakingRedeem,
   setShowSupport,
   setShowSwap,
+  setShowTargetRedpacketPop,
   setShowTradeIsFrozen,
   setShowTransfer,
   setShowWithdraw,
@@ -42,6 +43,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  CoinSource,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
@@ -288,6 +290,15 @@ export const useOpenModals = () => {
           messageKey?: string
         }
       }) => dispatch(setShowGlobalToast(state)),
+      [dispatch],
+    ),
+    setShowTargetRedpacketPop: React.useCallback(
+      (state: {
+        isShow: boolean
+        info: {
+          exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {tokenIcon: CoinSource, tokenName: string})[]
+        }
+      }) => dispatch(setShowTargetRedpacketPop(state)),
       [dispatch],
     ),
   }
