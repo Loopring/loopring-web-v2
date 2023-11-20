@@ -71,7 +71,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       // tradeData.belong
       supportData = {
         maxShowVal: getValuePrecisionThousand(
-          sdk.toBig(vaultTokenInfo?.btradeAmount ?? 0).div('1e' + ercToken.decimals),
+          //@ts-ignore
+          sdk.toBig(vaultTokenInfo?.maxAmount ?? 0).div('1e' + ercToken.decimals),
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
@@ -85,7 +86,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
-        maxAmount: vaultTokenInfo.btradeAmount,
+        //@ts-ignore
+        maxAmount: vaultTokenInfo.maxAmount,
         minAmount: vaultTokenInfo?.vaultTokenAmounts?.minAmount,
         vaultSymbol: vaultTokenSymbol,
         vaultTokenInfo,
