@@ -27,12 +27,12 @@ import {
   RouterMainKey,
   SoursURL,
   subMenuLayer2,
-  toolBarAvailableItem as _toolBarAvailableItem,
 } from '@loopring-web/common-resources'
 import {
   BtnDownload,
   BtnNotification,
   BtnSetting,
+  ColorSwitch,
   ProfileMenu,
   WalletConnectBtn,
   WalletConnectL1Btn,
@@ -140,7 +140,6 @@ const ToolBarItem = ({
   account,
   chainId,
   isLayer1Only = false,
-  ButtonComponentsMap,
   ...props
 }: any) => {
   const match = useRouteMatch('/:l1/:l2?')
@@ -162,7 +161,8 @@ const ToolBarItem = ({
         return <BtnSetting {...props} />
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />
-
+      case ButtonComponentsMap.ColorSwitch:
+        return <ColorSwitch {...props} />
       case ButtonComponentsMap.WalletConnect:
         return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} />
       default:
@@ -229,7 +229,6 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         landBtn,
         isLandPage = false,
         isMobile = false,
-        toolBarAvailableItem = _toolBarAvailableItem,
         toolBarMap = ButtonComponentsMap,
         i18n,
         t,
@@ -246,7 +245,8 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
       const _headerToolBarData = isLandPage
         ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
             if ((key as unknown as ButtonComponentsMap) !== ButtonComponentsMap.WalletConnect) {
-              return (prev[key] = headerToolBarData[key])
+              prev[key] = headerToolBarData[key]
+              return prev
             }
             return prev
           }, {} as { [key: number]: R })
@@ -258,11 +258,11 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         }: {
           toolbarList: { [key: number]: R }
         } & WithTranslation) => {
-          return toolBarAvailableItem.map((index: number) => {
+          return Reflect.ownKeys(toolbarList ?? {}).map((item, index) => {
             return (
               <ToolBarItem
                 {...{
-                  ...toolbarList[index],
+                  ...toolbarList[item],
                   account,
                   chainId,
                   notification,
