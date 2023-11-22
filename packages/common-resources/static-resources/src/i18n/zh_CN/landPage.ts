@@ -95,7 +95,7 @@ export default {
   labelInvestLeverageETHDes:
     'CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform.',
   labelInvestDefiDes:
-    'Earn steady income while HODLing! Stake ETH or LRC via L2 to accumulate daily rewards.',
+    'Earn steady income while holding! Stake ETH to accumulate daily rewards.',
   labelInvestAmmDes: 'Trade Smarter, Not Harder! while maintaining full custody of your assets!',
   labelProductsTitleDes: 'A wide variety of trading tools to choose from',
   labelProductsTitle: 'Our Core Products',

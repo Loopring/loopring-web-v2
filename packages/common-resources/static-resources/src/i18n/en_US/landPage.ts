@@ -93,7 +93,7 @@ export default {
   labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield.',
   labelInvestLeverageETHDes:
     "Boost your earnings with CIAN protocol's leveraged ETH staking strategy.",
-  labelInvestDefiDes: 'Earn steady income while HODLing! Stake ETH to accumulate daily rewards.',
+  labelInvestDefiDes: 'Earn steady income while holding! Stake ETH to accumulate daily rewards.',
   labelInvestAmmDes:
     'Participate in farming pools; earn additional protocol fee incentives for HOT pools.',
   labelProductsTitleDes: 'A wide variety of trading tools to choose from',

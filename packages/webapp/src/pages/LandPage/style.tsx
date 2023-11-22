@@ -111,7 +111,9 @@ export const ContainerStyle = styled(Box)`
     display: flex;
     align-items: center;
     font-size: var(--h5);
-
+    .MuiButton-endIcon {
+      color: inherit;
+    }
     &:hover {
       //--color-text: var(--color-text);
       background: var(--color-primary-pressed);
