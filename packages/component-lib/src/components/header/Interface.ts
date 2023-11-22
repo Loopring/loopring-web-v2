@@ -3,7 +3,6 @@ import {
   ButtonComponentsMap,
   HeaderMenuItemInterface,
   NOTIFICATIONHEADER,
-  Notify,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -30,8 +29,7 @@ export interface HeaderProps<R, N = sdk.UserNotification> {
   selected: string
   className?: string
   isLandPage?: boolean
-  toolBarAvailableItem?: number[]
   toolBarMap?: typeof ButtonComponentsMap
   transparent?: boolean
-  LandBtn?: JSX.Element
+  landBtn?: JSX.Element
 }

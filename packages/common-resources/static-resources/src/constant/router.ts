@@ -132,15 +132,16 @@ export const Profile = {
 }
 
 export enum ButtonComponentsMap {
-  Download,
-  Notification,
-  Setting,
-  ProfileMenu,
-  WalletConnect,
-  TestNet,
+  Download = 'Download',
+  Notification = 'Notification',
+  Setting = 'Setting',
+  ProfileMenu = 'ProfileMenu',
+  WalletConnect = 'WalletConnect',
+  TestNet = 'TestNet',
+  ColorSwitch = 'ColorSwitch',
 }
 
-export const toolBarAvailableItem: number[] = [
+export const toolBarAvailableItem: ButtonComponentsMap[] = [
   ButtonComponentsMap.Download,
   ButtonComponentsMap.Notification,
   ButtonComponentsMap.Setting,
@@ -149,16 +150,16 @@ export const toolBarAvailableItem: number[] = [
   ButtonComponentsMap.TestNet,
 ]
 
-export enum GuardianToolBarComponentsMap {
-  Notification,
-  TestNet,
-  WalletConnect,
-}
+// export enum GuardianToolBarComponentsMap {
+//   Notification,
+//   TestNet,
+//   WalletConnect,
+// }
 
-export const GuardianToolBarAvailableItem = [
-  GuardianToolBarComponentsMap.Notification,
-  GuardianToolBarComponentsMap.TestNet,
-  GuardianToolBarComponentsMap.WalletConnect,
+export const GuardianToolBarAvailableItem: ButtonComponentsMap[] = [
+  ButtonComponentsMap.Notification,
+  ButtonComponentsMap.TestNet,
+  ButtonComponentsMap.WalletConnect,
 ]
 export let headerGuardianToolBarData: Array<{
   buttonComponent: number
@@ -166,12 +167,12 @@ export let headerGuardianToolBarData: Array<{
   [key: string]: any
 }> = [
   {
-    buttonComponent: GuardianToolBarComponentsMap.Notification,
+    buttonComponent: ButtonComponentsMap.Notification,
     label: 'labelNotification',
   },
-  { buttonComponent: GuardianToolBarComponentsMap.TestNet },
+  { buttonComponent: ButtonComponentsMap.TestNet },
   {
-    buttonComponent: GuardianToolBarComponentsMap.WalletConnect,
+    buttonComponent: ButtonComponentsMap.WalletConnect,
     label: 'labelConnectWallet',
     accountState: undefined,
     handleClick: undefined,
@@ -179,7 +180,7 @@ export let headerGuardianToolBarData: Array<{
 ]
 
 export let headerToolBarData: Array<{
-  buttonComponent: number
+  buttonComponent: ButtonComponentsMap
   handleClick?: (props: any) => void
   [key: string]: any
 }> = [
@@ -359,7 +360,7 @@ export const subMenuLayer2 = {
     },
     {
       icon: VipIcon,
-      router: { path: '/layer2/vip' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.vip}` },
       label: {
         id: 'vip',
         i18nKey: 'labelVipPanel',
