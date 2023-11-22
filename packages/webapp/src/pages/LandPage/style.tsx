@@ -111,9 +111,7 @@ export const ContainerStyle = styled(Box)`
     display: flex;
     align-items: center;
     font-size: var(--h5);
-    svg {
-      fill: var(--color-text);
-    }
+
     &:hover {
       //--color-text: var(--color-text);
       background: var(--color-primary-pressed);
@@ -191,14 +189,16 @@ export const ContainerStyle = styled(Box)`
       background: var(--color-box);
       border-radius: 12px;
       padding: 48px;
-      h4 {
-        margin-bottom: ${({ theme }) => theme.unit * 3}px;
-      }
-      // .MuiButton-root {
-      //   margin-top: ${({ theme }) => theme.unit * 3}px;
-      // }
     }
   }
+  .box1,
+  .box5,
+  .box3 {
+    h4 {
+      margin-bottom: ${({ theme }) => theme.unit * 3}px;
+    }
+  }
+
   .box6 {
     > div {
       flex: 1;
@@ -219,12 +219,22 @@ export const ContainerStyle = styled(Box)`
     }
   }
   .box4 {
+    flex-wrap: nowrap;
     margin-bottom: 80px;
-    &.MuiGrid-grid-md-8 {
-      width: calc(46% - 20px);
+    & .MuiGrid-grid-md-8 {
+      flex-basis: auto;
+      width: calc(66% - 48px);
+      max-width: inherit;
     }
-    &.MuiGrid-grid-md-2 {
-      width: calc(32% - 20px);
+    & .MuiGrid-grid-md-2 {
+      flex-basis: auto;
+      width: 22%;
+      max-width: inherit;
+      position: relative;
+      svg {
+        position: relative;
+        right: -72px;
+      }
     }
 
     > .MuiGrid-root {
@@ -274,6 +284,9 @@ export const ContainerStyle = styled(Box)`
     h4 {
       margin-bottom: ${({ theme }) => theme.unit * 3}px;
     }
+    .MuiButton-endIcon {
+      color: inherit;
+    }
     .MuiButton-root {
       margin-top: ${({ theme }) => theme.unit * 3}px;
     }
@@ -283,6 +296,10 @@ export const ContainerStyle = styled(Box)`
     > .MuiGrid-root:first-child div {
       //margin-left: -48px;
       //color: var(--color-text-button);
+      .MuiButton-root {
+        background: white;
+        color: var(--color-primary);
+      }
       .MuiTypography-root {
         color: var(--color-text-button);
       }
@@ -291,6 +308,10 @@ export const ContainerStyle = styled(Box)`
     }
     > .MuiGrid-root:last-child div {
       background: var(--light1000);
+      .MuiButton-root {
+        background: var(--color-primary);
+        color: var(--color-text-button);
+      }
       .MuiTypography-root {
         color: var(--dark);
       }

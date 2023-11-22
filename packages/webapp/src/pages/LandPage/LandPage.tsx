@@ -226,7 +226,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     display={'inline-flex'}
                     alignItems={'center'}
                     textAlign={'left'}
-                    marginBottom={3}
+                    marginBottom={1}
                   >
                     {t('labelProductsTitle')}
                   </Typography>
