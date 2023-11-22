@@ -129,6 +129,9 @@ import {
   RiskIcon,
   AnotherIcon,
   LinkSharedIcon,
+  ReadIcon,
+  MessageIcon,
+  GoIcon,
   ThreeDIcon,
   RoundCheckIcon,
   RoundCircleIcon,
@@ -153,9 +156,6 @@ import {
   DualChartHD,
   DualChartHH,
   VaultIcon,
-  ReadIcon,
-  MessageIcon,
-  GoIcon,
 } from '@loopring-web/common-resources'
 
 const Styled = styled.div`
@@ -296,7 +296,6 @@ const listIcon = [
   <UploadedIcon />,
   <EditIcon />,
   <ConvertToIcon />,
-  <LinkSharedIcon />,
   <AnotherIcon />,
   <RiskIcon />,
   <RiskAlertIcon />,
@@ -323,7 +322,6 @@ const listIcon = [
   <DualChartHD />,
   <DualChartHH />,
   <VaultIcon />,
-  <AnotherIcon />,
   <LinkSharedIcon />,
   <ReadIcon />,
   <MessageIcon />,

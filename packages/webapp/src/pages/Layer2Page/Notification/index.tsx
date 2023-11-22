@@ -70,7 +70,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     let height = container?.current?.offsetHeight
     if (height) {
       // const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
-      setPageSize(Math.floor((height - 44) / RowHeight))
+     setPageSize(Math.floor((height - 44) / RowHeight))
       // handleTabChange(currentTab, pageSize);
       // getNotification({})
       handlePageChange({ page: 1 })

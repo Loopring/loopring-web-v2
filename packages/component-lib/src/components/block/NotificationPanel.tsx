@@ -66,7 +66,7 @@ export const NotificationPanel = ({
       alignItems={'center'}
       // paddingBottom={1}
     >
-      {myNotifyMap?.total !== undefined && (
+      {myNotifyMap && (
         <>
           <Typography
             alignSelf={'stretch'}

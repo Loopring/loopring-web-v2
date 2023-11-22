@@ -222,7 +222,6 @@ export const useGetAssets = (): AssetPanelProps & {
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
-      // sendSocketTopic({ [WsTopicType.account]: true })
       myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
       setLoadingBtn()
     }

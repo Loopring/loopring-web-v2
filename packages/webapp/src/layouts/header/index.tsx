@@ -63,16 +63,17 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
           setShowTargetRedpacketPop({
             isShow: true,
             info: {
-              exclusiveRedPackets: popUpRedpackets.map((redpacket) => {
+              exclusiveRedPackets: popUpRedpackets.map(redpacket => {
                 return {
                   ...redpacket,
-                  tokenName: redpacket.isNft
-                    ? redpacket.nftTokenInfo?.metadata?.base.name ?? ''
+                  tokenName:
+                    redpacket.isNft
+                    ? (redpacket.nftTokenInfo?.metadata?.base.name ?? '')
                     : idIndex[redpacket.tokenId],
-                  tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]],
+                  tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]]
                 }
-              }),
-            },
+              })
+            }
           })
         } else {
           setShowRedPacket({

@@ -51,7 +51,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2()
   const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
-  const { getUserNotify, restUerNotify } = useNotify()
+  const { getUserNotify, restUserNotify } = useNotify()
 
   const {
     updateWalletL2Collection,
@@ -91,7 +91,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             resetLayer2NFT()
             resetL2NFTCollection()
             resetL2Collection()
-            restUerNotify()
+            restUserNotify()
           }
           socketUserEnd()
           break
