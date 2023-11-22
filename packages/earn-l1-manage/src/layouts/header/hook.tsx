@@ -3,7 +3,6 @@ import React from 'react'
 import {
   ButtonComponentsMap,
   fnType,
-  headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
   myLog,
 } from '@loopring-web/common-resources'
@@ -21,7 +20,12 @@ import {
 import { AccountStep, useOpenModals } from '@loopring-web/component-lib'
 
 import _ from 'lodash'
-
+export enum RouterPath {
+  dashboard = '/dashboard',
+  record = '/record',
+  //404? loading
+  loading = '/loading',
+}
 export const useHeader = () => {
   const accountTotal = useAccount()
   const { account, setShouldShow, status: accountStatus } = accountTotal
@@ -80,7 +84,22 @@ export const useHeader = () => {
 
   return {
     headerToolBarData,
-    headerMenuLandingData: [],
+    headerMenuLandingData: [
+      {
+        label: {
+          id: 'dashboard',
+          i18nKey: 'labelDashboard',
+        },
+        router: { path: '/' },
+      },
+      {
+        label: {
+          id: 'record',
+          i18nKey: 'labelRecord',
+        },
+        router: { path: RouterPath.record },
+      },
+    ],
     account,
     notifyMap,
   }
