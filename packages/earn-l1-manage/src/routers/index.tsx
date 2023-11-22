@@ -7,7 +7,6 @@ import { ErrorPage } from '../pages/ErrorPage'
 import { useSettings } from '@loopring-web/component-lib'
 import { Footer } from '../layouts/footer'
 import { ModalGroup } from '.././modal'
-import { AssetPage } from '../pages/AssetPage'
 import Header from 'layouts/header'
 const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation()
@@ -50,7 +49,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
               flexDirection={'row'}
               marginTop={3}
             >
-              <AssetPage />
+              {/*<AssetPage />*/}
             </Box>
           </Container>
         </Route>

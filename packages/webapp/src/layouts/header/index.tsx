@@ -3,7 +3,6 @@ import {
   CloseIcon,
   headerRoot,
   hexToRGB,
-  toolBarMobileAvailableItem,
 } from '@loopring-web/common-resources'
 
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'
@@ -62,17 +61,16 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
           setShowTargetRedpacketPop({
             isShow: true,
             info: {
-              exclusiveRedPackets: popUpRedpackets.map(redpacket => {
+              exclusiveRedPackets: popUpRedpackets.map((redpacket) => {
                 return {
                   ...redpacket,
-                  tokenName:
-                    redpacket.isNft
-                    ? (redpacket.nftTokenInfo?.metadata?.base.name ?? '')
+                  tokenName: redpacket.isNft
+                    ? redpacket.nftTokenInfo?.metadata?.base.name ?? ''
                     : idIndex[redpacket.tokenId],
-                  tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]]
+                  tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]],
                 }
-              })
-            }
+              }),
+            },
           })
         } else {
           setShowRedPacket({
@@ -127,9 +125,7 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
               allowTrade={allowTrade}
               isMobile={isMobile}
               chainId={chainId}
-              headerMenuData={
-                /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
-              }
+              headerMenuData={headerMenuData}
               toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
               notification={{ notifyMap, myNotifyMap }}

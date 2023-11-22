@@ -1,7 +1,418 @@
-import * as dualManageConfig from '../../config/dualConfig.json'
 import { useTokenMap } from '@loopring-web/core'
+import { Box, Grid, Tab, Tabs, Typography } from '@mui/material'
+import { useData } from './hook'
+import { Button, CoinIcon, useSettings } from '@loopring-web/component-lib'
+import React from 'react'
+import { getValuePrecisionThousand, TokenType } from '@loopring-web/common-resources'
+import { DualProductTable } from './DualProductTable'
+
+enum ProductsIndex {
+  delivering = 'delivering',
+  progress = 'progress',
+}
+
 export const AssetPage = () => {
   // dualManageConfig.tokenList
   const { tokenMap } = useTokenMap()
-  return <></>
+  const [value, setValue] = React.useState(ProductsIndex)
+  const {
+    assetData,
+    assetTotal,
+    protocolData,
+    protocolTotal,
+    delivering,
+    progress,
+    deposit,
+    withdraw,
+    settle,
+    products,
+  } = useData()
+  const { coinJson } = useSettings()
+  const [item, setItem] = React.useState(products[value as any])
+  return (
+    <>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={5} height={'100%'}>
+          <Box border={'1px solid var(--color-border)'} borderRadius={1} padding={2}>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
+              Wallet Assets
+            </Typography>
+            <Typography marginBottom={2} display={'flex'} variant={'h5'}>
+              ${getValuePrecisionThousand(assetTotal, 2, 2)}
+            </Typography>
+            <Grid container display={'flex'} flex={1}>
+              <>
+                <Grid item xs={5}>
+                  <Typography
+                    marginBottom={2}
+                    display={'flex'}
+                    variant={'body1'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Assets
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography
+                    marginBottom={2}
+                    display={'flex'}
+                    variant={'body1'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Wallet Balance
+                  </Typography>
+                </Grid>
+              </>
+              {assetData.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Grid item xs={5} display={'flex'} flexDirection={'row'}>
+                      <Typography display={'inline-flex'} alignItems={'center'}>
+                        <CoinIcon symbol={item.symbol} type={TokenType.single} size={'middle'} />
+                        <Typography component={'span'} variant={'h5'} paddingLeft={1}>
+                          {item.symbol}
+                        </Typography>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={7}>
+                      <Typography display={'inline-flex'} alignItems={'center'}>
+                        {`${getValuePrecisionThousand(
+                          item.amount,
+                          tokenMap[item.symbol].decimals,
+                          tokenMap[item.symbol].decimals,
+                          undefined,
+                        )}/$${getValuePrecisionThousand(item.value, 2, 2)}`}
+                      </Typography>
+                    </Grid>
+                  </React.Fragment>
+                )
+              })}
+            </Grid>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={7} height={'100%'}>
+          <Box border={'1px solid var(--color-border)'} borderRadius={1} padding={2}>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
+              Your Protocol Supplies
+            </Typography>
+            <Typography marginBottom={2} display={'flex'} variant={'h5'}>
+              ${getValuePrecisionThousand(protocolTotal, 2, 2)}
+            </Typography>
+            <Grid container display={'flex'} flex={1}>
+              <>
+                <Grid item xs={3}>
+                  <Typography
+                    marginBottom={2}
+                    display={'flex'}
+                    variant={'body1'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Assets
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography
+                    marginBottom={2}
+                    display={'flex'}
+                    variant={'body1'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Your Supply
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography
+                    marginBottom={2}
+                    display={'flex'}
+                    variant={'body1'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Action
+                  </Typography>
+                </Grid>
+              </>
+              {protocolData.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Grid item xs={3} display={'flex'} flexDirection={'row'}>
+                      <Typography display={'inline-flex'} alignItems={'center'}>
+                        <CoinIcon symbol={item.symbol} type={TokenType.single} size={'middle'} />
+                        <Typography component={'span'} variant={'h5'} paddingLeft={1}>
+                          {item.symbol}
+                        </Typography>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography display={'inline-flex'} alignItems={'center'}>
+                        {`${getValuePrecisionThousand(
+                          item.amount,
+                          tokenMap[item.symbol].decimals,
+                          tokenMap[item.symbol].decimals,
+                          undefined,
+                        )}/$${getValuePrecisionThousand(item.value, 2, 2)}`}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Typography display={'inline-flex'} alignItems={'center'}>
+                        <Button variant={'text'} onClick={() => deposit(item.symbol)}>
+                          deposit
+                        </Button>
+                        <Button variant={'text'} onClick={() => withdraw(item.symbol)}>
+                          withdraw
+                        </Button>
+                      </Typography>
+                    </Grid>
+                  </React.Fragment>
+                )
+              })}
+            </Grid>
+          </Box>
+        </Grid>
+      </Grid>
+
+      <Box border={'1px solid var(--color-border)'} borderRadius={1} padding={2}>
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          <Typography marginBottom={2} display={'flex'} variant={'h4'}>
+            Assets in delivering to be supplied
+          </Typography>
+          <Button onClick={settle}>settle</Button>
+        </Box>
+        <Grid container display={'flex'} flex={1}>
+          <>
+            <Grid item xs={3}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                Assets
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                To be supplied
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                To be received
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                Your supply
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                Status
+              </Typography>
+            </Grid>
+          </>
+
+          {delivering.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                <Grid item xs={2} display={'flex'} flexDirection={'row'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    <CoinIcon symbol={item.symbol} type={TokenType.single} size={'middle'} />
+                    <Typography component={'span'} variant={'h5'} paddingLeft={1}>
+                      {item.symbol}
+                    </Typography>
+                  </Typography>
+                </Grid>
+                <Grid item xs={2} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {`${getValuePrecisionThousand(
+                      item.amount,
+                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].decimals,
+                      undefined,
+                    )}`}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {`${getValuePrecisionThousand(
+                      item.amount,
+                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].decimals,
+                      undefined,
+                    )}`}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {`${getValuePrecisionThousand(
+                      item.amount,
+                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].decimals,
+                      undefined,
+                    )}`}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {item.status}
+                  </Typography>
+                </Grid>
+              </React.Fragment>
+            )
+          })}
+        </Grid>
+      </Box>
+
+      <Box border={'1px solid var(--color-border)'} borderRadius={1} padding={2}>
+        <Typography marginBottom={2} display={'flex'} variant={'h4'}>
+          Assets in progress to be supplied
+        </Typography>
+        <Typography marginBottom={2} display={'flex'} variant={'h5'}>
+          ${getValuePrecisionThousand(assetTotal, 2, 2)}
+        </Typography>
+        <Grid container display={'flex'} flex={1}>
+          <>
+            <Grid item xs={3}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                Assets
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                To be supplied
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                To be received
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                Your supply
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography
+                marginBottom={2}
+                display={'flex'}
+                variant={'body1'}
+                color={'var(--color-text-third)'}
+              >
+                Status
+              </Typography>
+            </Grid>
+          </>
+          {progress.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                <Grid item xs={2} display={'flex'} flexDirection={'row'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    <CoinIcon symbol={item.symbol} type={TokenType.single} size={'middle'} />
+                    <Typography component={'span'} variant={'h5'} paddingLeft={1}>
+                      {item.symbol}
+                    </Typography>
+                  </Typography>
+                </Grid>
+                <Grid item xs={2} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {`${getValuePrecisionThousand(
+                      item.amount,
+                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].decimals,
+                      undefined,
+                    )}`}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {`${getValuePrecisionThousand(
+                      item.amount,
+                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].decimals,
+                      undefined,
+                    )}`}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {`${getValuePrecisionThousand(
+                      item.amount,
+                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].decimals,
+                      undefined,
+                    )}`}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3} display={'flex'}>
+                  <Typography display={'inline-flex'} alignItems={'center'}>
+                    {item.status}
+                  </Typography>
+                </Grid>
+              </React.Fragment>
+            )
+          })}
+        </Grid>
+      </Box>
+
+      <Box border={'1px solid var(--color-border)'} borderRadius={1} padding={2}>
+        <Tabs
+          value={value}
+          onChange={(_, value) => {
+            setValue(value)
+            setItem(products[value])
+          }}
+        >
+          <Tab value={ProductsIndex.delivering} label={'Products in delivering'} />
+          <Tab value={ProductsIndex.progress} label={'Products in progress'} />
+        </Tabs>
+        <Box flex={1}>
+          <Typography marginBottom={2} display={'flex'} variant={'h5'}>
+            Total Investment ${getValuePrecisionThousand(item.total, 2, 2)}
+          </Typography>
+          {/*<DualProductTable rawData={item.list ?? []} showloading={true} />*/}
+        </Box>
+      </Box>
+    </>
+  )
 }
