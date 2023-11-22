@@ -13,6 +13,7 @@ import {
   offFaitService,
   store,
   useContacts,
+  sendSocketTopic,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -91,6 +92,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletL2NFTCollection({ page: 1 })
             updateWalletL2Collection({ page: 1 })
           }
+          sendSocketTopic({})
           updateLegacyContracts()
           updateContacts()
           break

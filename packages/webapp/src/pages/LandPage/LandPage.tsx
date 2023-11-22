@@ -49,7 +49,6 @@ const BgStyle = styled(Box)`
   background-position-y: 0;
   background-position-x: right;
   background-size: 1804px 1073px;
-  min-width: 1200px;
   @media only screen and (max-width: 768px) {
     min-width: 360px;
   }
@@ -356,6 +355,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             display: 'flex',
             flexDirection: 'column',
             flex: 1,
+            width: '100%',
           }}
         >
           {isMobile ? (
