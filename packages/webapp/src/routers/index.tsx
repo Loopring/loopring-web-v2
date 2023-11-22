@@ -307,11 +307,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <ErrorPage {...ErrorMap.TRADE_404} />
           )}
         </Route>
-        <Route path={[RouterPath.lite, RouterPath.trade]}>
-          <ContentWrap state={state} value={RouterMainKey.lite}>
-            <SwapPage />
-          </ContentWrap>
-        </Route>
         <Route path={RouterPath.btrade}>
           <ContentWrap state={state} value={RouterMainKey.btrade}>
             <BtradeSwapPage />
@@ -320,6 +315,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={[RouterPath.fiat, RouterPath.fiat + '/*']}>
           <ContentWrap state={state} value={RouterMainKey.fiat}>
             <FiatPage />
+          </ContentWrap>
+        </Route>
+        <Route path={[RouterPath.lite, RouterPath.trade]}>
+          <ContentWrap state={state} value={RouterMainKey.lite}>
+            <SwapPage />
           </ContentWrap>
         </Route>
         <Route exact path={RouterPath.markets}>
