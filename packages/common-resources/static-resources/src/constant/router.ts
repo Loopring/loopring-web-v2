@@ -159,57 +159,63 @@ export const GuardianToolBarAvailableItem: ButtonComponentsMap[] = [
   ButtonComponentsMap.TestNet,
   ButtonComponentsMap.WalletConnect,
 ]
-export let headerGuardianToolBarData: Array<{
-  buttonComponent: number
-  handleClick?: (props: any) => void
-  [key: string]: any
-}> = [
-  {
+export let headerGuardianToolBarData: {
+  [key in ButtonComponentsMap]: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  [ButtonComponentsMap.Notification]: {
     buttonComponent: ButtonComponentsMap.Notification,
     label: 'labelNotification',
   },
-  { buttonComponent: ButtonComponentsMap.TestNet },
-  {
+  [ButtonComponentsMap.TestNet]: { buttonComponent: ButtonComponentsMap.TestNet },
+  [ButtonComponentsMap.WalletConnect]: {
     buttonComponent: ButtonComponentsMap.WalletConnect,
     label: 'labelConnectWallet',
     accountState: undefined,
     handleClick: undefined,
   },
-]
-
-export let headerToolBarData: Array<{
-  buttonComponent: ButtonComponentsMap
-  handleClick?: (props: any) => void
-  [key: string]: any
-}> = [
-  {
+}
+export let headerToolBarData: {
+  [key in ButtonComponentsMap]: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  [ButtonComponentsMap.Download]: {
     buttonComponent: ButtonComponentsMap.Download,
     url: WalletSite,
   },
-  {
+  [ButtonComponentsMap.Notification]: {
     buttonComponent: ButtonComponentsMap.Notification,
     label: 'labelNotification',
   },
-  { buttonComponent: ButtonComponentsMap.Setting, label: 'labelSetting' },
-  {
+  [ButtonComponentsMap.Setting]: {
+    buttonComponent: ButtonComponentsMap.Setting,
+    label: 'labelSetting',
+  },
+  [ButtonComponentsMap.ProfileMenu]: {
     buttonComponent: ButtonComponentsMap.ProfileMenu,
     i18nDescription: 'labelProfile',
     readyState: undefined,
   },
-  {
+  [ButtonComponentsMap.WalletConnect]: {
     buttonComponent: ButtonComponentsMap.WalletConnect,
     label: 'labelConnectWallet',
     accountState: undefined,
     handleClick: undefined,
   },
-]
+}
 
-export const toolBarMobileAvailableItem = [
-  ButtonComponentsMap.Download,
-  ButtonComponentsMap.Notification,
-  ButtonComponentsMap.Setting,
-  ButtonComponentsMap.WalletConnect,
-]
+// export const toolBarMobileAvailableItem = [
+//   ButtonComponentsMap.Download,
+//   ButtonComponentsMap.Notification,
+//   ButtonComponentsMap.Setting,
+//   ButtonComponentsMap.WalletConnect,
+// ]
 
 export enum RouterMainKey {
   lite = 'lite',
