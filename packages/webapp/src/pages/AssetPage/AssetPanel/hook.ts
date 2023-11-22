@@ -6,12 +6,12 @@ import {
   useAccount,
   useBtnStatus,
   useDefiMap,
-  useSocket,
   useTokenMap,
   useTokenPrices,
   useWalletLayer2,
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
+  useSystem,
 } from '@loopring-web/core'
 import {
   AccountStep,
