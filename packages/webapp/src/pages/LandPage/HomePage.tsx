@@ -129,7 +129,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             </Typography>
           </Box>
 
-          <Box component='section' ref={boxRef}>
+          <Box component='section'>
             <Box
               style={{
                 display: 'flex',
@@ -191,7 +191,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               </CardBox>
             </Box>
           </Box>
-          <Box component='section'>
+          <Box component='section' ref={boxRef}>
             <Box
               style={{
                 display: 'flex',
@@ -336,12 +336,18 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             </Box>
           </Box>
           <Box>
-            <Grid container spacing={3} className='box4' id='detailBox'>
+            <Grid
+              container
+              spacing={3}
+              sx={{ flexWrap: isMobile ? 'wrap' : 'nowrap' }}
+              className='box4'
+              id='detailBox'
+            >
               <Grid
                 item
                 className={value == 'detail1' ? 'selected' : ''}
                 onMouseOver={() => setValue('detail1')}
-                md={value == 'detail1' ? 8 : 2}
+                md={isMobile ? 12 : value == 'detail1' ? 8 : 2}
                 xs={12}
                 id='detail1'
               >
@@ -403,7 +409,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 item
                 className={value == 'detail2' ? 'selected' : ''}
                 onMouseOver={() => setValue('detail2')}
-                md={value == 'detail2' ? 8 : 2}
+                md={isMobile ? 12 : value == 'detail2' ? 8 : 2}
                 xs={12}
                 id='detail2'
               >
@@ -466,7 +472,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 item
                 className={value == 'detail3' ? 'selected' : ''}
                 onMouseOver={() => setValue('detail3')}
-                md={value == 'detail3' ? 8 : 2}
+                md={isMobile ? 12 : value == 'detail3' ? 8 : 2}
                 xs={12}
                 id='detail3'
               >
