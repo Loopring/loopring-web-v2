@@ -13,7 +13,7 @@ import {
   offFaitService,
   store,
   useContacts,
-  sendSocketTopic,
+  useSocket,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -23,7 +23,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer1Status,
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1()
-
   const {
     resetLayer2NFT,
     status: wallet2statusNFTStatus,
@@ -57,6 +56,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   } = useWalletL2NFTCollection()
   const { clearRedPacketHash } = redPacketHistory.useRedPacketHistory()
   const { account, status: accountStatus } = useAccount()
+  const { sendSocketTopic, socketUserEnd } = useSocket()
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
@@ -65,6 +65,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
         case AccountStatus.ERROR_NETWORK:
+          socketUserEnd()
           break
         case AccountStatus.DEPOSITING:
         case AccountStatus.NOT_ACTIVE:
