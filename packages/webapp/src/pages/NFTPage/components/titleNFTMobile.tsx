@@ -46,7 +46,7 @@ export const TitleNFTMobile = () => {
               variant={'outlined'}
               size={'medium'}
               color={'primary'}
-              href={`/#/${RouterPath.nft}/${NFTSubRouter.mintNFT}`}
+              href={`/#${RouterPath.nft}/${NFTSubRouter.mintNFT}`}
             >
               {t('labelMintNFT')}
             </Button>
@@ -57,7 +57,7 @@ export const TitleNFTMobile = () => {
               variant={'outlined'}
               size={'medium'}
               color={'primary'}
-              href={`/#/${RouterPath.nft}/${NFTSubRouter.depositNFT}`}
+              href={`/#${RouterPath.nft}/${NFTSubRouter.depositNFT}`}
             >
               {t('labelL1toL2NFT')}
             </Button>

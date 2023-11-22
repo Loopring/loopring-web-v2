@@ -1,7 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-
 import { Box, Tab } from '@mui/material'
-import styled from '@emotion/styled'
 import {
   AssetsTable,
   AssetTitle,
@@ -10,31 +8,16 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 
-import { StylePaper, useSystem, useTokenMap } from '@loopring-web/core'
+import { useSystem, useTokenMap } from '@loopring-web/core'
 import { AssetPanelProps, useAssetAction } from './hook'
 import React from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import MyLiquidity from '../../InvestPage/MyLiquidityPanel'
-import {
-  // AssetL2TabIndex,
-  // AssetTabIndex,
-  CircleIcon,
-  MapChainId,
-  myLog,
-  SoursURL,
-  TradeBtnStatus,
-} from '@loopring-web/common-resources'
-import RewardsPanel from '../RewardsPanel'
+import { MapChainId, SoursURL, TradeBtnStatus } from '@loopring-web/common-resources'
 import { AssetL2TabEarnIndex, AssetTabIndex } from '../../../constant/router'
 import { MaxWidthContainer, containerColors } from 'pages/InvestPage'
 import { RowEarnConfig } from 'constant/setting'
 import { useTheme } from '@emotion/react'
-
-const StyleTitlePaper = styled(Box)`
-  width: 100%;
-  background: var(--color-box-third);
-  border-radius: ${({ theme }) => theme.unit}px;
-`
 
 export const AssetPanel = withTranslation('common')(
   ({
@@ -61,7 +44,6 @@ export const AssetPanel = withTranslation('common')(
     assetTitleProps: AssetTitleProps
     assetPanelProps: AssetPanelProps
   } & WithTranslation) => {
-    const container = React.useRef(null)
     const { disableWithdrawList } = useTokenMap()
     const { forexMap } = useSystem()
     const { isMobile, defaultNetwork } = useSettings()

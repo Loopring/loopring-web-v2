@@ -13,14 +13,7 @@ import {
 } from '@mui/material'
 import { Link as RouterLink, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import {
-  Button,
-  HeaderMenuSub,
-  HeadMenuItem,
-  Layer2Item,
-  PopoverPure,
-  TabItemPlus,
-} from '../basic-lib'
+import { HeaderMenuSub, HeadMenuItem, Layer2Item, PopoverPure, TabItemPlus } from '../basic-lib'
 import { HeaderProps, HeaderToolBarInterface } from './Interface'
 import {
   ButtonComponentsMap,
@@ -32,11 +25,9 @@ import {
   MapChainId,
   MenuIcon,
   RouterMainKey,
-  RouterPath,
   SoursURL,
   subMenuLayer2,
   toolBarAvailableItem as _toolBarAvailableItem,
-  myLog,
 } from '@loopring-web/common-resources'
 import {
   BtnDownload,
@@ -53,12 +44,6 @@ import { useTheme } from '@emotion/react'
 import _ from 'lodash'
 import { useSettings } from '../../stores'
 
-const ButtonStyled = styled(Button)`
-  background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
-  padding-left: ${({ theme }) => 3 * theme.unit}px;
-  padding-right: ${({ theme }) => 3 * theme.unit}px;
-`
-
 const logoSVG = SoursURL + 'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
   && {
@@ -69,7 +54,7 @@ const ToolBarStyled = styled(Toolbar)`
   }
 `
 const HeaderStyled = styled(AppBar)`
-  && {
+  & {
     z-index: 400;
     box-shadow: none;
     height: var(--header-height);
@@ -82,6 +67,9 @@ const HeaderStyled = styled(AppBar)`
     border: 0;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
     }
+  }
+  &.scrollable {
+    background-color: initial;
   }
 `
 
@@ -181,7 +169,7 @@ const ToolBarItem = ({
         return undefined
     }
   }, [buttonComponent, match?.params, props, notification, account])
-  return <TabItemPlus sx={{display: props.hidden ? 'none' : ''}}>{render}</TabItemPlus>
+  return <TabItemPlus sx={{ display: props.hidden ? 'none' : '' }}>{render}</TabItemPlus>
 }
 
 export const HideOnScroll = React.forwardRef(({ children, window, ...rest }: any, ref) => {
@@ -226,7 +214,7 @@ export const LAYERMAP = {
   '2': 'l2',
 }
 
-export const Header = withTranslation(['layout', 'common'], { withRef: true })(
+export const Header = withTranslation(['layout', 'landPage', 'common'], { withRef: true })(
   React.forwardRef(
     <R extends HeaderToolBarInterface>(
       {
@@ -238,6 +226,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
         account,
         chainId,
         isWrap = true,
+        landBtn,
         isLandPage = false,
         isMobile = false,
         toolBarAvailableItem = _toolBarAvailableItem,
@@ -340,7 +329,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                           new RegExp(label.id?.toLowerCase(), 'ig').test(
                             match?.params[LAYERMAP[layer + 1]],
                           )
-                        
+
                         return [
                           ...prev,
                           <HeadMenuItem
@@ -476,17 +465,19 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                 t,
                 ...rest,
               })}
-              {!!isLandPage && (
-                <ButtonStyled
-                  size={'small'}
-                  disabled={isMaintaining}
-                  variant={'contained'}
-                  // history.push(`${RouterPath.l2records}`)}
-                  onClick={() => history.push(`${RouterPath.lite}/LRC-ETH`)}
-                >
-                  {t('labelLaunchApp')}
-                </ButtonStyled>
-              )}
+              {!!isLandPage && landBtn ? landBtn : <></>}
+
+              {/*{!!isLandPage && (*/}
+              {/*  <ButtonStyled*/}
+              {/*    size={'small'}*/}
+              {/*    disabled={isMaintaining}*/}
+              {/*    variant={'contained'}*/}
+              {/*    // history.push(`${RouterPath.l2records}`)}*/}
+              {/*    onClick={() => history.push(`${RouterPath.lite}/LRC-ETH`)}*/}
+              {/*  >*/}
+              {/*    {t('labelLaunchApp')}*/}
+              {/*  </ButtonStyled>*/}
+              {/*)}*/}
             </Box>
           </ToolBarStyled>
         )
@@ -539,29 +530,65 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
             <Box display={'flex'} alignItems={'center'}>
               {isLandPage && headerMenuLandingData[0] ? (
                 <>
-                  {
-                    <NodeMenuItem
-                      {...{ ...headerMenuLandingData[0], ...rest, t }}
-                      handleListKeyDown={() => {
-                        window.location.href = headerMenuLandingData[0].router!.path
-                      }}
-                    />
-                  }
-
                   {getMenuButtons({
                     toolbarList: _headerToolBarData,
                     i18n,
                     t,
                     ...rest,
                   })}
-                  <ButtonStyled
-                    size={'small'}
-                    disabled={isMaintaining}
-                    variant={'contained'}
-                    onClick={() => history.push(`${RouterPath.lite}/LRC-ETH`)}
+                  {landBtn ? landBtn : <></>}
+                  <ClickAwayListener
+                    onClickAway={() => {
+                      popupState.close()
+                    }}
                   >
-                    {t('labelLaunchMobileApp', '')}
-                  </ButtonStyled>
+                    <Box
+                      display='flex'
+                      alignContent='center'
+                      justifyContent={'flex-start'}
+                      alignItems={'stretch'}
+                      flexDirection={'row'} //!isMobile ? "row" : "column"}
+                    >
+                      <Typography
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                        {...bindTrigger(popupState)}
+                      >
+                        <MenuIcon
+                          // fontSize={"large"}
+                          style={{ height: 28, width: 28 }}
+                          // color={"primary"}
+                        />
+                      </Typography>
+
+                      <PopoverPure
+                        {...bindPopper(popupState)}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'center',
+                        }}
+                      >
+                        <Box
+                          className={'mobile'}
+                          display={'flex'}
+                          alignItems={'stretch'}
+                          flexDirection={'column'}
+                        >
+                          {getDrawerChoices({
+                            menuList: headerMenuLandingData, // _headerMenuData,
+                            i18n,
+                            t,
+                            handleListKeyDown: popupState.close,
+                            ...rest,
+                          })}
+                        </Box>
+                      </PopoverPure>
+                    </Box>
+                  </ClickAwayListener>
                 </>
               ) : (
                 <>
@@ -661,7 +688,12 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       }
 
       return (
-        <HeaderStyled sx={{'&&&': {background: transparent ? 'transparent' : ''}}} elevation={4} ref={ref} className={`${rest?.className}`}>
+        <HeaderStyled
+          sx={{ '&&&': { background: transparent ? 'transparent' : '' } }}
+          elevation={4}
+          ref={ref}
+          className={`${rest?.className}`}
+        >
           {isWrap ? (
             <Container style={paddingStyle} className={'wrap'} maxWidth='lg'>
               {isMobile ? displayMobile : displayDesktop}
