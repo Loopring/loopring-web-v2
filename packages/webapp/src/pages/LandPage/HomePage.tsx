@@ -10,7 +10,6 @@ import {
 } from '@loopring-web/common-resources'
 import { Trans, withTranslation } from 'react-i18next'
 import { useHistory, useLocation } from 'react-router-dom'
-import { LoopringAPI } from '@loopring-web/core'
 import { useSettings, Button } from '@loopring-web/component-lib'
 import { ContainerStyle, CardBox } from './style'
 import { useTheme } from '@emotion/react'
@@ -31,7 +30,6 @@ const BgStyle = styled(Box)`
   background-position-y: 0;
   background-position-x: -360px;
   background-size: 1804px 1073px;
-  min-width: 1200px;
   @media only screen and (max-width: 768px) {
     min-width: 360px;
   }

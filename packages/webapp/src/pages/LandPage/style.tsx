@@ -8,7 +8,11 @@ import { withTranslation } from 'react-i18next'
 
 export const ContainerStyle = styled(Box)`
   .MuiContainer-root {
-    min-width: 1200px;
+    width: fit-content;
+
+    @media only screen and (min-width: 1200px) {
+      min-width: 1200px;
+    }
     @media only screen and (max-width: 768px) {
       min-width: 360px;
     }
