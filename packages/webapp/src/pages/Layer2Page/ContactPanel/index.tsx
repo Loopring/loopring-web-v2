@@ -1,5 +1,14 @@
-import { Box, Button, Grid, IconButton, MenuItem, Popover, Typography } from '@mui/material'
-import styled from '@emotion/styled'
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography,
+} from '@mui/material'
 import {
   AddressTypeTag,
   InputSearch,
@@ -8,6 +17,7 @@ import {
   ToastType,
   useSettings,
   InitialNameAvatar,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -18,6 +28,7 @@ import {
   MoreIcon,
   TOAST_TIME,
   ContactType,
+  NotificationIcon,
 } from '@loopring-web/common-resources'
 import { EditContact } from './add'
 import { Delete } from './delete'
@@ -29,25 +40,14 @@ import React from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
 import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
+import styled from '@emotion/styled'
 
-const ContactPageStyle = styled(Box)`
-  background: var(--color-box-third);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  height: 85vh;
-  /* padding-bottom: 5%  */
+const StyledPaper = styled(Box)`
   width: 100%;
+  height: 100%;
+  background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
-
-const Line = styled('div')`
-  border-radius: ${({ theme }) => theme.unit / 2}px;
-  height: 1px;
-  margin-top: ${({ theme }) => theme.unit * 2}px;
-  background: var(--color-divide);
-`
-
 export enum ContactL3Router {
   list = 'list',
   transactions = 'transactions',
@@ -282,7 +282,7 @@ export const ContractPanel = () => {
     </>
   )
   return (
-    <ContactPageStyle className={'MuiPaper-elevation2'} paddingX={4} paddingY={3}>
+    <>
       <Toast
         alertText={toastInfo.content ?? ''}
         severity={toastInfo?.type}
@@ -309,8 +309,20 @@ export const ContractPanel = () => {
         loading={deleteLoading}
       />
       <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
-      <Box display={'flex'} justifyContent={'space-between'}>
-        <Typography variant={'h2'} paddingRight={2}>
+      <MaxWidthContainer
+        sx={{ flexDirection: 'row' }}
+        background={'var(--color-global-bg)'}
+        display={'flex'}
+        justifyContent={'space-between'}
+      >
+        <Typography
+          component={'h3'}
+          variant={'h5'}
+          paddingX={5 / 2}
+          display={'inline-flex'}
+          alignItems={'center'}
+          paddingY={2}
+        >
           {t('labelContacts')}
         </Typography>
         <Box display={'flex'} alignItems={'center'}>
@@ -333,11 +345,27 @@ export const ContractPanel = () => {
             </Button>
           </Box>
         </Box>
-      </Box>
-      <Box className='table-divide'>
-        <Line />
-        <Box>{!contacts || contacts.length === 0 ? noContact : normalView}</Box>
-      </Box>
-    </ContactPageStyle>
+      </MaxWidthContainer>
+      <Divider />
+      <MaxWidthContainer
+        background={'var(--color-pop-bg)'}
+        display={'flex'}
+        justifyContent={'space-between'}
+        paddingY={2}
+        flexDirection={'column'}
+      >
+        <StyledPaper
+          className={'MuiPaper-elevation2'}
+          margin={0}
+          marginBottom={2}
+          paddingX={2}
+          paddingY={2}
+        >
+          <Box className='table-divide'>
+            {!contacts || contacts.length === 0 ? noContact : normalView}
+          </Box>
+        </StyledPaper>
+      </MaxWidthContainer>
+    </>
   )
 }

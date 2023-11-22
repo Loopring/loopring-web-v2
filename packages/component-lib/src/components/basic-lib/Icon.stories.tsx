@@ -112,7 +112,6 @@ import {
   TrophyIcon,
   TwitterIcon,
   UnConnectIcon,
-  UnlikeIcon,
   UpIcon,
   UploadedIcon,
   VideoIcon,
@@ -131,6 +130,9 @@ import {
   RiskIcon,
   AnotherIcon,
   LinkSharedIcon,
+  ReadIcon,
+  MessageIcon,
+  GoIcon,
 } from '@loopring-web/common-resources'
 
 const Styled = styled.div`
@@ -248,9 +250,7 @@ const listIcon = [
   <OrderListIcon />,
   <RefreshIPFSIcon />,
   <ViewMoreIcon />,
-  <LikeIcon />,
   <ZoomIcon />,
-  <UnlikeIcon />,
   <LegacyIcon />,
   <SyncIcon />,
   <FavHollowIcon />,
@@ -272,6 +272,9 @@ const listIcon = [
   <RiskIcon />,
   <AnotherIcon />,
   <LinkSharedIcon />,
+  <ReadIcon />,
+  <MessageIcon />,
+  <GoIcon />,
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {

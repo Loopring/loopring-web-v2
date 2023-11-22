@@ -35,6 +35,7 @@ export type AssetTitleProps = {
   hideL2Assets: boolean
   setHideL2Assets: (value: boolean) => void
   assetBtnStatus: TradeBtnStatus
+  isWebEarn?: boolean
 }
 
 export type AssetTitleMobileProps = AssetTitleProps & {

@@ -25,7 +25,6 @@ import {
   useToast,
   useTokenMap,
 } from '@loopring-web/core'
-import { useDualAsset } from './useDualAsset'
 import {
   useBtradeTransaction,
   useDefiSideRecord,
@@ -47,6 +46,7 @@ import {
   TabOrderIndex,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useDualAsset } from './useDualAsset'
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()

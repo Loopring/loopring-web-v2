@@ -47,7 +47,7 @@ export default {
     'Based on smart contracts, the Loopring Wallet adopts a pluggable, modular design which can be continuously upgraded under your authorization to use future standards and new technologies.',
   labelWalletUnleashed: 'ETHEREUM UNLEASHED',
   labelWalletUnleashedDetail: 'Your mobile gateway to Ethereum DeFi, collectibles, and more.',
-  labelLaunchApp: 'LAUNCH APP',
+  labelLaunchApp: 'View Dapps',
   labelLaunchMobileApp: 'Exchange',
   labelUpgradeHide:
     'Loopring System Service Upgrade: Loopring will perform a temporary system upgrade starting at 2021/12/20 2:00pm (UTC+8), which will take approximately 2 hours.',
@@ -55,4 +55,64 @@ export default {
     'Loopring System Service Upgrade: Loopring will perform a temporary system upgrade starting at 2021/12/20 2:00pm (UTC+8), which will take approximately 2 hours.   During this period, the following relayer services will be suspended: deposits, withdrawals, trading and wallet creation. Deposits that are not completed before the start of the upgrade   will be processed after the completion of the upgrade.   We apologize for any inconvenience this may cause, and thank you for your patience! Please note: The 2 hours is our best estimation and may vary. As usual, we will maintain regular communication on the progress of the upgrade on our Twitter and Discord.',
   labelGoGuardian: 'Manage Security',
   labelHaveWallet: 'Already have a wallet?',
+  labelMainDes:
+    'Unleash the Power of DeFi and Advanced Trading on \n Top of an App-Specific ZK-Rollup',
+  labelEthereum: 'Ethereum ',
+  labelGoDapps: 'Go Dapps',
+  labelNavPro: 'Loopring pro',
+  labelNavEarn: 'Loopring Earn',
+  labelNavWallet: 'Wallet',
+  labelNavLanuch: 'View Dapps',
+  labelLoopringSmartWallet: 'Loopring Smart Wallet',
+  labelLoopringSmartWalletDes: 'Your Gateway to Ethereum, DeFi, NFTs, and <br/>Financial Freedom',
+  labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer2</1>",
+  labelGatewayToEthereum:
+    'Your gateway to Ethereum, DeFi, NFTs, and Financial Freedom.\n Fast, Low-cost, & Secure',
+  labelTitleLite: 'Loopring Earn',
+  labelLoopringProtocol: 'Loopring Protocol',
+  labelLoopringProtocolDes:
+    "The world's first ZKRollup implementation designed to scale Ethereum, fully optimized for trading.",
+  labelUltimateSecurity: 'Ultimate Security',
+  labelUltimateSecurityDes:
+    'Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.',
+  labelLowTransactionFees: 'Low Transaction Fees',
+  labelLowTransactionFeesDes:
+    'Loopring performs most operations, including trade and transfer settlement, off the Ethereum blockchain. This dramatically reduces gas consumption and overall transaction cost to small fractions of comparable on-chain cost.',
+  labelHighThroughput: 'High Throughput',
+  labelHighThroughputDes:
+    'Loopring L2 can settle ~2000 transactions per second with near instant finality.',
+  labelReadyForDevelopers: 'Ready for Developers',
+  labelReadyForDevelopersDes:
+    "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
+  labelFeatureDes8: 'Loopring Layer2',
+  labelFeatureDes8_2: 'Crypto exchange on the go',
+  labelGo: 'Go',
+  labelTitleLiteDes:
+    'Access the best DeFi Strategy just like the pros! Simply deposit stETH, and Instadapp Lite will put it to work for you using the most popular DeFi protocols.',
+  labelInvestStakeLRCDes:
+    'The staked LRC will be locked in Looping L2, meaning it cannot be used for other purposes',
+  labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield.',
+  labelInvestLeverageETHDes:
+    'CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform.',
+  labelInvestDefiDes:
+    'Earn steady income while HODLing! Stake ETH or LRC via L2 to accumulate daily rewards.',
+  labelInvestAmmDes: 'Trade Smarter, Not Harder! while maintaining full custody of your assets!',
+  labelProductsTitleDes: 'A wide variety of trading tools to choose from',
+  labelProductsTitle: 'Our Core Products',
+  labelSpotDes: 'Full access to all trading tools',
+  labelSpot: 'Spot',
+  labelSwapDes: 'Intuitive trading interface',
+  labelSwap: 'Swap',
+  labelBlockTradeDes: 'Trade via CEX liquidity',
+  labelBlockTrade: 'Block Trade',
+  labelFiatDes: 'On & Off Ramp Solutions',
+  labelFiat: 'Fiat',
+  labelNFTCollections: 'Manage and Display Your NFT Collections',
+  labelNFTCollectionsDes:
+    'In close collaboration with your business, we’ll develop a strategic plan to integrate NFTs into your ecosystem.',
+  labelRedPackets: 'Red Packets',
+  labelRedPacketsDes:
+    'Explore the various use cases of our revolutionary Red Packets! Send token or NFT gifts directly or gamify the experience with blind boxes.',
+  labelEndProductTitle: 'Earn Product',
+  labelEndProductTitleDes: 'Choose from a variety of financial products',
 }
