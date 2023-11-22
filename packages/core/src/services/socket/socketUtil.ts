@@ -142,6 +142,7 @@ export class LoopringSocket {
         } as any,
       })
     },
+    //TODO
     [sdk.WsTopicType.candlestick]: (_e: any) => {},
     //TODO
     [sdk.WsTopicType.crawlTokenPrices]: (_e: any) => {},
