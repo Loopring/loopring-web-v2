@@ -61,13 +61,16 @@ const ButtonStyled = styled(Button)`
 export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => {
   const { search, pathname } = useLocation()
   const searchParams = new URLSearchParams(search)
+
+  const { isMobile } = useSettings()
+
   const history = useHistory()
   const boxRef = React.useRef()
   const [value, setValue] = React.useState('detail1')
   const theme = useTheme()
   React.useEffect(() => {
     if (searchParams?.has('goProd')) {
-      boxRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      boxRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       searchParams?.delete('goProd')
       history.push(pathname + '?' + searchParams.toString())
     }
@@ -115,7 +118,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               component='p'
               variant={'h4'}
               textAlign={'center'}
-              whiteSpace={'pre-line'}
+              whiteSpace={isMobile ? 'inherit' : 'pre-line'}
               aria-label='Your gateway to Ethereum, DeFi, NFTs, and Financial Freedom. Fast, Low-cost, & Secure'
               id='labelGatewayToEthereum'
             >
@@ -199,6 +202,8 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               <Grid container spacing={3} className='box2'>
                 <Grid item xs={12} md={6}>
                   <Box
+                    flex={1}
+                    height={'100%'}
                     padding={6}
                     className={'boxDetail'}
                     display={'flex'}
@@ -234,20 +239,20 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       rel='noopener'
                       title={ExchangePro}
                       onClick={() => window.open(ExchangePro, '_blank')}
+                      endIcon={<GoIcon color='inherit' />}
                     >
                       <span aria-label={ExchangePro} id='labelGo1'>
                         <Trans i18nKey={'labelGo'} ns={['landPage']}>
                           Go
                         </Trans>
                       </span>
-                      <span className='iconGo'>
-                        <GoIcon color='inherit' />
-                      </span>
                     </Button>
                   </Box>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Box
+                    flex={1}
+                    height={'100%'}
                     onClick={() => window.open(Earnlite, '_blank')}
                     padding={6}
                     className={'boxDetail'}
@@ -272,9 +277,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                         aria-label='Access the best DeFi Strategy just like the pros! Simply deposit stETH, and Instadapp Lite will put it to work for you using the most popular DeFi protocols.'
                       >
                         <Trans i18nKey={'labelTitleLiteDes'} ns={['landPage']}>
-                          Access the best DeFi Strategy just like the pros! Simply deposit stETH,
-                          and Instadapp Lite will put it to work for you using the most popular DeFi
-                          protocols.
+                          Access the most innovative structural products brought to the DeFi world.
                         </Trans>
                       </Typography>
                     </div>
@@ -282,15 +285,13 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       rel='noopener'
                       className='light'
                       title={Earnlite}
+                      endIcon={<GoIcon color='inherit' />}
                       onClick={() => window.open(Earnlite, '_blank')}
                     >
                       <span aria-label={Earnlite} id='labelGo2'>
                         <Trans i18nKey={'labelGo'} ns={['landPage']}>
                           Go
                         </Trans>
-                      </span>
-                      <span className='iconGo'>
-                        <GoIcon color='inherit' />
                       </span>
                     </Button>
                   </Box>
@@ -335,12 +336,18 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             </Box>
           </Box>
           <Box>
-            <Grid container spacing={3} className='box4' id='detailBox'>
+            <Grid
+              container
+              spacing={3}
+              sx={{ flexWrap: isMobile ? 'wrap' : 'nowrap' }}
+              className='box4'
+              id='detailBox'
+            >
               <Grid
                 item
                 className={value == 'detail1' ? 'selected' : ''}
                 onMouseOver={() => setValue('detail1')}
-                md={value == 'detail1' ? 8 : 2}
+                md={isMobile ? 12 : value == 'detail1' ? 8 : 2}
                 xs={12}
                 id='detail1'
               >
@@ -356,27 +363,32 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   flexDirection={'column'}
                   justifyContent={'space-between'}
                 >
-                  <Typography
-                    component='h4'
-                    variant={'h3'}
-                    paddingTop={3}
-                    aria-label='Ultimate Security'
-                    id='labelUltimateSecurity'
-                  >
-                    <Trans i18nKey={'labelUltimateSecurity'} ns={['landPage']}>
-                      Ultimate Security
-                    </Trans>
-                  </Typography>
-                  <Typography
-                    component='p'
-                    variant={'h5'}
-                    id='labelUltimateSecurityDes'
-                    aria-label='Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.'
-                  >
-                    <Trans i18nKey={'labelUltimateSecurityDes'} ns={['landPage']}>
-                      Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.
-                    </Trans>
-                  </Typography>
+                  <Box padding={2}>
+                    <Typography
+                      component='h4'
+                      variant={'h3'}
+                      paddingTop={3}
+                      aria-label='Ultimate Security'
+                      id='labelUltimateSecurity'
+                    >
+                      <Trans i18nKey={'labelUltimateSecurity'} ns={['landPage']}>
+                        Ultimate Security
+                      </Trans>
+                    </Typography>
+                    <Typography
+                      component='p'
+                      variant={'h5'}
+                      color={'textSecondary'}
+                      marginTop={3}
+                      id='labelUltimateSecurityDes'
+                      aria-label='Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.'
+                    >
+                      <Trans i18nKey={'labelUltimateSecurityDes'} ns={['landPage']}>
+                        Assets on Loopring L2 are equally secure as they are on the Ethereum
+                        mainnet.
+                      </Trans>
+                    </Typography>
+                  </Box>
                   <svg width='180' height='180' viewBox='0 0 24 24'>
                     <path
                       className='fill-light'
@@ -397,7 +409,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 item
                 className={value == 'detail2' ? 'selected' : ''}
                 onMouseOver={() => setValue('detail2')}
-                md={value == 'detail2' ? 8 : 2}
+                md={isMobile ? 12 : value == 'detail2' ? 8 : 2}
                 xs={12}
                 id='detail2'
               >
@@ -413,29 +425,33 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   flexDirection={'column'}
                   justifyContent={'space-between'}
                 >
-                  <Typography
-                    component='h4'
-                    variant={'h3'}
-                    paddingTop={3}
-                    aria-label='Low Transaction Fees'
-                    id='labelLowTransactionFees'
-                  >
-                    <Trans i18nKey={'labelLowTransactionFees'} ns={['landPage']}>
-                      Low Transaction Fees
-                    </Trans>
-                  </Typography>
-                  <Typography
-                    component='p'
-                    variant={'h5'}
-                    id='labelLowTransactionFeesDes'
-                    aria-label='Loopring performs most operations, including trade and transfer settlement, off the Ethereum blockchain. This dramatically reduces gas consumption and overall transaction cost to small fractions of comparable on-chain cost.'
-                  >
-                    <Trans i18nKey={'labelLowTransactionFeesDes'} ns={['landPage']}>
-                      Loopring performs most operations, including trade and transfer settlement,
-                      off the Ethereum blockchain. This dramatically reduces gas consumption and
-                      overall transaction cost to small fractions of comparable on-chain cost.
-                    </Trans>
-                  </Typography>
+                  <Box padding={2}>
+                    <Typography
+                      component='h4'
+                      variant={'h3'}
+                      paddingTop={3}
+                      aria-label='Low Transaction Fees'
+                      id='labelLowTransactionFees'
+                    >
+                      <Trans i18nKey={'labelLowTransactionFees'} ns={['landPage']}>
+                        Low Transaction Fees
+                      </Trans>
+                    </Typography>
+                    <Typography
+                      component='p'
+                      variant={'h5'}
+                      color={'textSecondary'}
+                      marginTop={3}
+                      id='labelLowTransactionFeesDes'
+                      aria-label='Loopring performs most operations, including trade and transfer settlement, off the Ethereum blockchain. This dramatically reduces gas consumption and overall transaction cost to small fractions of comparable on-chain cost.'
+                    >
+                      <Trans i18nKey={'labelLowTransactionFeesDes'} ns={['landPage']}>
+                        Loopring performs most operations, including trade and transfer settlement,
+                        off the Ethereum blockchain. This dramatically reduces gas consumption and
+                        overall transaction cost to small fractions of comparable on-chain cost.
+                      </Trans>
+                    </Typography>
+                  </Box>
                   <svg width='180' height='180' viewBox='0 0 24 24'>
                     <path
                       className='fill-light'
@@ -456,7 +472,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 item
                 className={value == 'detail3' ? 'selected' : ''}
                 onMouseOver={() => setValue('detail3')}
-                md={value == 'detail3' ? 8 : 2}
+                md={isMobile ? 12 : value == 'detail3' ? 8 : 2}
                 xs={12}
                 id='detail3'
               >
@@ -472,28 +488,32 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   flexDirection={'column'}
                   justifyContent={'space-between'}
                 >
-                  <Typography
-                    component='h4'
-                    variant={'h3'}
-                    paddingTop={3}
-                    aria-label='High Throughput'
-                    id='labelHighThroughput'
-                  >
-                    <Trans i18nKey={'labelHighThroughput'} ns={['landPage']}>
-                      High Throughput
-                    </Trans>
-                  </Typography>
-                  <Typography
-                    component='p'
-                    variant={'h5'}
-                    id='labelHighThroughputDes'
-                    aria-label='Loopring L2 can settle ~2000 transactions per second with near instant finality.'
-                  >
-                    <Trans i18nKey={'labelHighThroughputDes'} ns={['landPage']}>
-                      Loopring L2 can settle ~2000 transactions per second with near instant
-                      finality.
-                    </Trans>
-                  </Typography>
+                  <Box padding={2}>
+                    <Typography
+                      component='h4'
+                      variant={'h3'}
+                      paddingTop={3}
+                      aria-label='High Throughput'
+                      id='labelHighThroughput'
+                    >
+                      <Trans i18nKey={'labelHighThroughput'} ns={['landPage']}>
+                        High Throughput
+                      </Trans>
+                    </Typography>
+                    <Typography
+                      component='p'
+                      variant={'h4'}
+                      color={'textSecondary'}
+                      marginTop={3}
+                      id='labelHighThroughputDes'
+                      aria-label='Loopring L2 can settle ~2000 transactions per second with near instant finality.'
+                    >
+                      <Trans i18nKey={'labelHighThroughputDes'} ns={['landPage']}>
+                        Loopring L2 can settle ~2000 transactions per second with near instant
+                        finality.
+                      </Trans>
+                    </Typography>
+                  </Box>
                   <svg width='180' height='180' viewBox='0 0 24 24'>
                     <path
                       className='fill-light'

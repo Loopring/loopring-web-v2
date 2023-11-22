@@ -81,6 +81,9 @@ const ButtonStyled = styled(Button)`
       width: 48px;
     }
   }
+  span:last-child {
+    text-transform: initial;
+  }
 `
 
 export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => {
@@ -226,7 +229,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     display={'inline-flex'}
                     alignItems={'center'}
                     textAlign={'left'}
-                    marginBottom={3}
+                    marginBottom={1}
                   >
                     {t('labelProductsTitle')}
                   </Typography>
