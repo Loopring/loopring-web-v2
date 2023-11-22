@@ -219,7 +219,6 @@ export const ContainerStyle = styled(Box)`
     }
   }
   .box4 {
-    flex-wrap: nowrap;
     margin-bottom: 80px;
     & .MuiGrid-grid-md-8 {
       flex-basis: auto;
@@ -248,6 +247,12 @@ export const ContainerStyle = styled(Box)`
     p {
       display: none;
       opacity: 0;
+    }
+    & .MuiGrid-grid-md-12 {
+      p {
+        display: block;
+        opacity: 1;
+      }
     }
     svg {
       .fill-light {
@@ -441,7 +446,13 @@ export const CardBox = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit * 2}px;
   cursor: pointer;
+  box-sizing: border-box;
+  &.hasHover {
+    p {
+      text-transform: initial;
+    }
+  }
   &.hasHover:hover {
-    outline: 1px solid var(--color-border-hover);
+    border: 1px solid var(--color-border-hover);
   }
 ` as typeof Box
