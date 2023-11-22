@@ -68,5 +68,8 @@ export type DualDetailProps<
   toggle: { enable: boolean; reason?: string }
   inputPart?: JSX.Element | undefined
   showClock?: boolean
-  onChangeOrderReinvest: (info: {on: boolean, renewTargetPrice?: string, renewDuration?: number}, item: R) => void
+  onChangeOrderReinvest: (
+    info: { on: boolean; renewTargetPrice?: string; renewDuration?: number },
+    item: R,
+  ) => void
 }

@@ -153,6 +153,9 @@ import {
   DualChartHD,
   DualChartHH,
   VaultIcon,
+  ReadIcon,
+  MessageIcon,
+  GoIcon,
 } from '@loopring-web/common-resources'
 
 const Styled = styled.div`
@@ -320,6 +323,11 @@ const listIcon = [
   <DualChartHD />,
   <DualChartHH />,
   <VaultIcon />,
+  <AnotherIcon />,
+  <LinkSharedIcon />,
+  <ReadIcon />,
+  <MessageIcon />,
+  <GoIcon />,
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {

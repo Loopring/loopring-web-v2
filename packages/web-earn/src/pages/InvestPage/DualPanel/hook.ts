@@ -98,74 +98,82 @@ export const useDualHook = () => {
   // const [productRawData,setProductRawData] = React.useState([])
   const getProduct = _.debounce(async () => {
     setIsLoading(true)
-    setIsDualBalanceSufficient(undefined)
-    const market = marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol)
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as NodeJS.Timeout)
-    }
-    // @ts-ignore
-    const currency = market ? marketMap[market]?.currency : undefined
-    if (pairASymbol && pairBSymbol && market) {
-      // @ts-ignore
-      const [, , marketSymbolA, marketSymbolB] = (market ?? '').match(/(dual-)?(\w+)-(\w+)/i)
-      const dualType =
-        marketSymbolA === pairASymbol ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
-      const { quoteAlias } = marketMap[market]
-
-      const response = await LoopringAPI.defiAPI?.getDualInfos({
-        baseSymbol: marketSymbolA,
-        quoteSymbol: quoteAlias ?? marketSymbolB,
-        currency: currency ?? '',
-        dualType,
-        startTime: Date.now() + 1000 * 60 * 60,
-        timeSpan: 1000 * 60 * 60 * 24 * 9,
-        limit: DUALLimit,
-      })
-
-      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-        setDualProducts([])
-      } else {
-        const {
-          // totalNum,
-          dualInfo: { infos, index, balance, rules },
-        } = response as any
-        const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
-        const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
-        const sellToken = tokenMap[balanceCoin]
-        if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
-          var minSellVol = marketMap[market].baseLimitAmount
-        } else {
-          minSellVol = marketMap[market].quoteLimitAmount
-        }
-        setIsDualBalanceSufficient(
-          found && sellToken
-            ? sdk
-                .toBig(found.free)
-                .times('1e' + sellToken.decimals)
-                .isGreaterThanOrEqualTo(minSellVol)
-            : undefined,
-        )
-        setCurrentPrice({
-          base: marketSymbolA,
-          quote: marketSymbolB,
-          currentPrice: index.index,
-          precisionForPrice: marketMap[market].precisionForPrice,
-        })
-
-        const rule = rules[0]
-        const rawData = infos.map((item: sdk.DualProductAndPrice) => {
-          return makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol, marketMap[market])
-        })
-        myLog('setDualProducts', rawData)
-        setDualProducts(rawData)
-        // setIsLoading(false)
+    try {
+      setIsDualBalanceSufficient(undefined)
+      const market = marketArray && findDualMarket(marketArray, pairASymbol, pairBSymbol)
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout)
       }
-      // }
+      // @ts-ignore
+      const currency = market ? marketMap[market]?.currency : undefined
+      if (pairASymbol && pairBSymbol && market) {
+        // @ts-ignore
+        const [, , marketSymbolA, marketSymbolB] = (market ?? '').match(/(dual-)?(\w+)-(\w+)/i)
+        const dualType =
+          marketSymbolA === pairASymbol ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
+        const { quoteAlias } = marketMap[market]
+
+        const response = await LoopringAPI.defiAPI?.getDualInfos({
+          baseSymbol: marketSymbolA,
+          quoteSymbol: quoteAlias ?? marketSymbolB,
+          currency: currency ?? '',
+          dualType,
+          startTime: Date.now() + 1000 * 60 * 60,
+          timeSpan: 1000 * 60 * 60 * 24 * 9,
+          limit: DUALLimit,
+        })
+
+        if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+          setDualProducts([])
+        } else {
+          const {
+            // totalNum,
+            dualInfo: { infos, index, balance, rules },
+          } = response as any
+          const balanceCoin = pairASymbol === 'USDC' ? 'USDT' : pairASymbol
+          const found = balance.find((_balance: any) => _balance.coin === balanceCoin)
+          const sellToken = tokenMap[balanceCoin]
+          if (dualType === sdk.DUAL_TYPE.DUAL_BASE) {
+            var minSellVol = marketMap[market].baseLimitAmount
+          } else {
+            minSellVol = marketMap[market].quoteLimitAmount
+          }
+          setIsDualBalanceSufficient(
+            found && sellToken
+              ? sdk
+                  .toBig(found.free)
+                  .times('1e' + sellToken.decimals)
+                  .isGreaterThanOrEqualTo(minSellVol)
+              : undefined,
+          )
+          setCurrentPrice({
+            base: marketSymbolA,
+            quote: marketSymbolB,
+            currentPrice: index.index,
+            precisionForPrice: marketMap[market].precisionForPrice,
+          })
+
+          const rule = rules[0]
+          const rawData = infos.map((item: sdk.DualProductAndPrice) => {
+            return makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol, marketMap[market])
+          })
+          myLog('setDualProducts', rawData)
+          setDualProducts(rawData)
+          // setIsLoading(false)
+        }
+        // }
+      }
+
+      nodeTimer.current = setTimeout(() => {
+        getProduct()
+      }, 60000)
+
+    } catch {
+      setDualProducts([])
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
-    nodeTimer.current = setTimeout(() => {
-      getProduct()
-    }, 60000)
+    
   }, 100)
   React.useEffect(() => {
     if (dualStatus === SagaStatus.UNSET && pair) {
@@ -256,87 +264,59 @@ export const useDualHook = () => {
   )
   const baseTokenList = React.useMemo(() => {
     if (dualStatus === SagaStatus.UNSET) {
-      return Reflect.ownKeys(marketMap ?? {}).reduce(
+      const object = Reflect.ownKeys(marketMap ?? {}).reduce(
         (prev, key) => {
           if (!marketMap[key.toString()].enabled) {
             return prev
           }
-          const { marketMap: dualMarketMap } = store.getState().invest.dualMap
           const baseSymbol = idIndex[marketMap[key.toString()].baseTokenId]
-          // let sortList = [
-          //   dualMarketMap[baseSymbol].DUAL?.replace('%', ''),
-          //   dualMarketMap[baseSymbol].quoteTokenApy?.replace('%', ''),
-          // ]
           prev[baseSymbol] = {
             tokenName: baseSymbol,
-            // minAPY: dualMarketMap[key.toString()].apy?.replace('%', ''),
-            // maxAPY: dualMarketMap[key.toString()].apy?.replace('%', ''),
             tokenList: tradeMap[baseSymbol]?.tokenList,
           }
-
           if (viewType === DualViewType.DualGain) {
-            let sortList = [
-              dualMarketMap[key]?.baseTokenApy?.min,
-              dualMarketMap[key]?.baseTokenApy?.max,
-            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
-            sortList = sortList
-              .filter((item) => item)
-              .sort(
-                (a, b) =>
-                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
-              )
-            // sortList = [...sortList, ]
             prev[baseSymbol] = {
               ...prev[baseSymbol],
-              minAPY: sortList[0],
-              maxAPY: sortList[sortList.length - 1],
             }
           } else if (viewType === DualViewType.DualDip) {
-            let sortList = [
-              dualMarketMap[key]?.quoteTokenApy?.min,
-              dualMarketMap[key]?.quoteTokenApy?.max,
-            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
-            sortList = sortList
-              .filter((item) => item)
-              .sort(
-                (a, b) =>
-                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
-              )
-            // sortList = [...sortList, ]
             prev[baseSymbol] = {
               ...prev[baseSymbol],
-              minAPY: sortList[0],
-              maxAPY: sortList[sortList.length - 1],
             }
           } else {
-            let sortList = [
-              dualMarketMap[key]?.baseTokenApy?.min,
-              dualMarketMap[key]?.baseTokenApy?.max,
-              dualMarketMap[key]?.quoteTokenApy?.min,
-              dualMarketMap[key]?.quoteTokenApy?.max,
-            ].concat(prev[baseSymbol] ? [prev[baseSymbol]?.minAPY, prev[baseSymbol].maxAPY] : [])
-            sortList = sortList
-              .filter((item) => item)
-              .sort(
-                (a, b) =>
-                  Number(a.toString().replace('%', '')) - Number(b.toString().replace('%', '')),
-              )
-            // sortList = [...sortList, ]
             prev[baseSymbol] = {
               ...prev[baseSymbol],
-              minAPY: sortList[0],
-              maxAPY: sortList[sortList.length - 1],
             }
           }
 
           return prev
         },
-        {} as {
-          tokenName: string
-          minAPY: number
-          maxAPY: number
-        },
+        {} as any,
       )
+      myLog('asdhksjahdjs')
+      return _.mapValues(object, (token) => {
+        const keys = Object.keys(marketMap).filter((key) => key.includes(token.tokenName))
+        if (viewType === DualViewType.DualGain) {            
+          var maxAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number))
+          var minAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.min as number))
+        } else if (viewType === DualViewType.DualDip) {
+          maxAPY = _.max(keys.map((key) => (marketMap[key] as any).quoteTokenApy?.max as number))
+          minAPY = _.max(keys.map((key) => (marketMap[key] as any).quoteTokenApy?.min as number))
+        } else {
+          maxAPY = _.max([
+            ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.max as number),
+            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number)
+          ])
+          minAPY = _.max([
+            ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.min as number),
+            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.min as number),
+          ])
+        }
+        return {
+          ...token,
+          maxAPY,
+          minAPY
+        }
+      })
     } else {
       return {}
     }

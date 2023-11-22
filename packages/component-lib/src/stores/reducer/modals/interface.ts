@@ -95,15 +95,16 @@ export interface ModalState {
     isShow: boolean
     info: {
       exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {tokenIcon: CoinSource, tokenName: string})[]
-      
+
     }
   }
   isShowVaultExit: ModalStatePlayLoad & Transaction
   isShowVaultJoin: ModalStatePlayLoad & Transaction
   isShowVaultSwap: ModalStatePlayLoad & Transaction
   isShowVaultLoan: ModalStatePlayLoad &
-    Transaction & {
+      Transaction & {
       type: string
-    }
+  }
   isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des?: string }
 }
+

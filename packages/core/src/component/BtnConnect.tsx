@@ -1,6 +1,12 @@
 import { withTranslation } from 'react-i18next'
 import { accountStaticCallBack, btnClickMap, btnLabel, store, useAccount } from '../index'
-import { Button, setShowConnect, useSettings, WalletConnectStep } from '@loopring-web/component-lib'
+import {
+  Button,
+  setShowConnect,
+  useSettings,
+  WalletConnectStep,
+  ButtonProps,
+} from '@loopring-web/component-lib'
 import React from 'react'
 import _ from 'lodash'
 
@@ -17,28 +23,20 @@ import { changeShowModel } from '../stores/account/reducer'
 
 export const WalletConnectL2Btn = withTranslation(['common'], {
   withRef: true,
-})(({ t }: any) => {
+})(({ t, btnLabelProps = {}, btnClickMapProps = {}, className }: any) => {
   const { status: accountStatus, account } = useAccount()
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-
-  // const { setShowAccount } = useOpenModals();
-
-  // const {setShowAccount} = useOpenModals();
   const [label, setLabel] = React.useState(undefined)
 
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
-    // [fnType.NO_ACCOUNT]: [
-    //   function () {
-    //     return `depositAndActiveBtn`;
-    //   },
-    // ],
     [fnType.ERROR_NETWORK]: [
       function () {
         return `labelWrongNetwork`
       },
     ],
+    ...btnLabelProps,
   })
 
   React.useEffect(() => {
@@ -47,7 +45,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
     }
   }, [accountStatus, account.readyState, i18n.language])
 
-  const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {})
+  const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
 
   return (
     <Button
@@ -56,6 +54,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
       color={'primary'}
       fullWidth={true}
       style={{ maxWidth: '280px' }}
+      className={className}
       onClick={() => {
         accountStaticCallBack(_btnClickMap, [])
       }}
@@ -72,7 +71,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
       )}
     </Button>
   )
-}) as typeof Button
+}) as (props: ButtonProps & { [key: string]: any }) => JSX.Element
 
 export const BtnConnectL1 = withTranslation(['common', 'layout'], {
   withRef: true,

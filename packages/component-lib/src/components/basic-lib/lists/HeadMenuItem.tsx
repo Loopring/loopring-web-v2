@@ -228,12 +228,11 @@ Layer2Item = React.memo(
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     return (
       <StyledLayer2Item className={'layer-sub'} key={label.id}>
-        {/*<Box className={'dot'} paddingTop={0}>&#x25CF;</Box>*/}
-        {/*<Box display={"flex"} paddingRight={1.5} flexDirection={"column"} justifyContent={"space-around"}>*/}
         <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
           {t(label.i18nKey, {
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            ns: ['layout', 'landPage', 'common'],
           })}
         </Typography>
         <Typography
@@ -281,6 +280,7 @@ export const HeaderMenuSub = React.memo(
                 {t(label.i18nKey, {
                   loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                   l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  ns: ['layout', 'landPage', 'common'],
                 })}
               </Typography>
             </StyledTabBtn>
@@ -296,6 +296,7 @@ export const HeaderMenuSub = React.memo(
                   {t(label.i18nKey, {
                     loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
                     l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    ns: ['layout', 'landPage', 'common'],
                   })}
                 </Typography>
                 <ListItemAvatar

@@ -33,4 +33,5 @@ export interface HeaderProps<R, N = sdk.UserNotification> {
   toolBarAvailableItem?: number[]
   toolBarMap?: typeof ButtonComponentsMap
   transparent?: boolean
+  LandBtn?: JSX.Element
 }

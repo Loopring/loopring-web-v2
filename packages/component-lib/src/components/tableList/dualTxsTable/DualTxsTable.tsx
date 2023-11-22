@@ -297,9 +297,9 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                   dualType,
                   investmentStatus,
                   dualReinvestInfo,
-                  timeOrigin: { expireTime,  },
+                  timeOrigin: { expireTime },
                   tokenInfoOrigin,
-                  settlementStatus
+                  settlementStatus,
                 },
               },
             } = row
@@ -318,7 +318,9 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 if (dualReinvestInfo?.isRecursive) {
                   content = 'labelDualAssetReInvestEnable'
                 } else if (
-                  dualReinvestInfo.onceRecursive && settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                  dualReinvestInfo.onceRecursive &&
+                  settlementStatus === sdk.SETTLEMENT_STATUS.PAID &&
+                  tokenInfoOrigin.tokenOut !== tokenInfoOrigin.tokenIn
                 ) {
                   icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
                   status = 'labelDualRetryStatusTerminated'
@@ -410,7 +412,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                   strike,
                   deliveryPrice,
                   investmentStatus,
-                  tokenInfoOrigin: { amountIn, tokenOut, amountOut },
+                  tokenInfoOrigin: { amountIn, tokenOut, amountOut, tokenIn },
                   timeOrigin: { expireTime },
                   dualReinvestInfo,
                 },
@@ -478,7 +480,9 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 if (dualReinvestInfo?.isRecursive) {
                   content = 'labelDualAssetReInvestEnable'
                 } else if (
-                  dualReinvestInfo.onceRecursive && settlementStatus === sdk.SETTLEMENT_STATUS.PAID
+                  dualReinvestInfo.onceRecursive &&
+                  settlementStatus === sdk.SETTLEMENT_STATUS.PAID &&
+                  tokenIn !== tokenOut
                 ) {
                   icon = <WarningIcon color={'warning'} sx={{ paddingLeft: 1 / 2 }} />
                   status = 'labelDualRetryStatusTerminated'

@@ -6,13 +6,12 @@ import {
   useAccount,
   useBtnStatus,
   useDefiMap,
-  useSocket,
-  useSystem,
   useTokenMap,
   useTokenPrices,
   useWalletLayer2,
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
+  useSystem,
 } from '@loopring-web/core'
 import {
   AccountStep,
@@ -40,7 +39,6 @@ import {
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
-import { WsTopicType } from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
@@ -229,7 +227,6 @@ export const useGetAssets = (): AssetPanelProps & {
       setLoadingBtn()
     }
     return () => {
-      // socketEnd()
       startWorker.cancel()
     }
   }, [account.readyState])
@@ -294,6 +291,7 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
 
+  myLog('assetsRawData')
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
