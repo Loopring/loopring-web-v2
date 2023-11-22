@@ -417,6 +417,8 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       LoopringAPI.delegate?.setBaseUrl(baseURL)
       LoopringAPI.defiAPI?.setBaseUrl(baseURL)
       LoopringAPI.contactAPI?.setBaseUrl(baseURL)
+      LoopringAPI.coworkerAPI?.setBaseUrl(baseURL)
+
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
         const _exchangeInfo = JSON.parse(window.localStorage.getItem('exchangeInfo') ?? '{}')

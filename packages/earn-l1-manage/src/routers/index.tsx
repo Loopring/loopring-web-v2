@@ -1,30 +1,17 @@
 import { Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
 import { Box, Container } from '@mui/material'
-import { ModalGroup, useDeposit, useSystem } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
 import { SagaStatus, setMyLog, ThemeType } from '@loopring-web/common-resources'
 import { ErrorPage } from '../pages/ErrorPage'
 import { useSettings } from '@loopring-web/component-lib'
-import { DepositToPage } from '../pages/DepositPage'
 import { Footer } from '../layouts/footer'
-
-export const useWrapModal = () => {
-  const { search } = useLocation()
-  const searchParams = new URLSearchParams(search)
-  const token = searchParams.get('token')
-  const l2account = searchParams.get('l2account') || searchParams.get('owner')
-  const { depositProps } = useDeposit(true, { token, owner: l2account })
-  return {
-    depositProps,
-    view: <ModalGroup assetsRawData={[]} depositProps={depositProps} isLayer1Only={true} />,
-  }
-}
+import { ModalGroup } from '.././modal'
+import { AssetPage } from '../pages/AssetPage'
+import Header from 'layouts/header'
 const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation()
   const { setTheme } = useSettings()
-  const { depositProps, view: modalView } = useWrapModal()
-  // const { depositProps } = useDeposit(true, { token, owner });
   const searchParams = new URLSearchParams(location.search)
   React.useEffect(() => {
     if (searchParams.has('theme')) {
@@ -46,8 +33,8 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
         <Route exact path='/loading'>
           <LoadingPage />
         </Route>
-        <Route exact path={['/', '/depositto', '/depositto/*']}>
-          {/*{searchParams && searchParams.has("noheader") ? <></> : <Header />}*/}
+        <Route exact path={['/']}>
+          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <Container
             maxWidth='lg'
             style={{
@@ -63,7 +50,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
               flexDirection={'row'}
               marginTop={3}
             >
-              <DepositToPage depositProps={depositProps} />
+              <AssetPage />
             </Box>
           </Container>
         </Route>
@@ -75,7 +62,7 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
           )}
         />
       </Switch>
-      {modalView}
+      {<ModalGroup assetsRawData={[]} isLayer1Only={true} />}
       {searchParams && searchParams.has('nofooter') ? <></> : <Footer />}
     </>
   )

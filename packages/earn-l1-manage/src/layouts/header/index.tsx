@@ -20,7 +20,6 @@ const Header = withTranslation('common')(
   withRouter(({ t, location, ...rest }: any & RouteComponentProps) => {
     const { headerToolBarData, notifyMap, headerMenuLandingData } = useHeader()
     const { isMobile } = useSettings()
-    const { pathname } = useLocation()
     const { confirmWrapper } = confirmation.useConfirmation()
     const { allowTrade, chainId } = useSystem()
     const { account } = useAccount()
@@ -32,23 +31,16 @@ const Header = withTranslation('common')(
             isWrap={false}
             {...rest}
             chainId={chainId}
-            isLandPage={true}
             isMobile={isMobile}
             allowTrade={allowTrade}
+            headerToolBarData={headerToolBarData}
             headerMenuData={headerMenuLandingData}
-            headerToolBarData={{}}
             notification={notifyMap}
             selected={location.pathname === '/' ? headerRoot : location.pathname}
           />
         </HideOnScroll>
         <Toolbar id='back-to-top-anchor' />
         {/* <BottomRule isShow={!confirmation?.confirmed} */}
-        <BottomRule
-          isShow={false}
-          content={t('labelAgreeLoopringTxt')}
-          btnTxt={t('labelCookiesAgree')}
-          clickToConfirm={() => confirmWrapper()}
-        />
       </>
     )
   }),
