@@ -41,7 +41,8 @@ export function useInit() {
       return SagaStatus.PENDING
     }
   })
-  const { isMobile } = useSettings()
+
+  const { isMobile, defaultNetwork } = useSettings()
   const theme = useTheme()
 
   const {

@@ -88,7 +88,7 @@ export const useHeader = () => {
       {
         label: {
           id: 'dashboard',
-          i18nKey: 'labelDashboard',
+          i18nKey: 'labelDashBoard',
         },
         router: { path: '/' },
       },

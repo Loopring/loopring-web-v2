@@ -39,7 +39,7 @@ export interface DualsTableProps<R, C = sdk.Currency> {
   showloading: boolean
 }
 
-export const DualProductTable = withTranslation(['tables', 'common'])(
+export const DualInvestTable = withTranslation(['tables', 'common'])(
   <R extends any>(props: DualsTableProps<R> & WithTranslation) => {
     const { rawData, showloading, t } = props
     const history = useHistory()

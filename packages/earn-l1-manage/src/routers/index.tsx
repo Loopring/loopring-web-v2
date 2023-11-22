@@ -9,6 +9,7 @@ import { Footer } from '../layouts/footer'
 import { ModalGroup } from '.././modal'
 import { AssetPage } from '../pages/AssetPage'
 import Header from 'layouts/header'
+import { RecordPage } from '../pages/HistoryPage'
 const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation()
   const { setTheme } = useSettings()
@@ -35,24 +36,11 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
         </Route>
         <Route exact path={['/']}>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
-          <Container
-            maxWidth='lg'
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              flex: 1,
-            }}
-          >
-            <Box
-              display={'flex'}
-              flex={1}
-              alignItems={'stretch'}
-              flexDirection={'row'}
-              marginTop={3}
-            >
-              <AssetPage />
-            </Box>
-          </Container>
+          <AssetPage />
+        </Route>
+        <Route exact path={['/record']}>
+          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
+          <RecordPage />
         </Route>
         <Route
           component={() => (
