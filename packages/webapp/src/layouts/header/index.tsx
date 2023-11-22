@@ -3,6 +3,7 @@ import {
   CloseIcon,
   headerRoot,
   hexToRGB,
+  toolBarMobileAvailableItem,
 } from '@loopring-web/common-resources'
 
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'
@@ -125,7 +126,9 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
               allowTrade={allowTrade}
               isMobile={isMobile}
               chainId={chainId}
-              headerMenuData={headerMenuData}
+              headerMenuData={
+                /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
+              }
               toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
               notification={{ notifyMap, myNotifyMap }}
