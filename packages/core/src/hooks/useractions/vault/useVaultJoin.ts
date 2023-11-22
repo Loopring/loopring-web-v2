@@ -88,8 +88,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
-        //@ts-ignore
-        maxAmount: vaultTokenInfo.maxAmount,
+        maxAmount: vaultTokenInfo?.vaultTokenAmounts?.maxAmount,
         minAmount: vaultTokenInfo?.vaultTokenAmounts?.minAmount,
         vaultSymbol: vaultTokenSymbol,
         vaultTokenInfo,

@@ -1983,6 +1983,7 @@ export default {
   labelDefiRate: 'Rate',
   labelDefiLido: 'Lido',
   labelDefiRocketPool: 'Rocket Pool',
+  
   labelDualIsHigh: 'is significantly higher',
   labelDualIsLow: 'is significantly lower',
   labelDualAutoAlert:
@@ -2241,5 +2242,4 @@ export default {
   labelJoinDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelFailed: 'Failed',
-  labelVaultJoinNotEnough: 'Insufficient {{arg}} balance',
 }
