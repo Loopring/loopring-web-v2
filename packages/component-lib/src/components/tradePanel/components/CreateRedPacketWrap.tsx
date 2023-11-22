@@ -2085,6 +2085,8 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     setShowChangeTips({
                       ...showChangeTips,
                       contactImportCaches: undefined,
+                      previousInputType: undefined,
+                      confirmCallBack: undefined
                     })
                     onClickSend()
                   }}
@@ -2355,6 +2357,8 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                       setShowChangeTips({
                         ...showChangeTips,
                         contactImportCaches: undefined,
+                        previousInputType: undefined,
+                        confirmCallBack: undefined
                       })
                       onClickSend()
                     }

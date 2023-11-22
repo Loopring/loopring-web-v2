@@ -30,6 +30,9 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import moment from 'moment/moment'
 import styled from '@emotion/styled'
 import { SwitchPanelStyled } from '../../../styled'
+import { LABEL_INVESTMENT_STATUS_MAP } from '../../../tableList'
+import { CancelDualAlert } from '../tool'
+
 
 const BoxChartStyle = styled(Box)`
   background-clip: content-box;
@@ -109,7 +112,7 @@ export const DualDetail = ({
   showClock = false,
   ...rest
 }: DualDetailProps) => {
-  const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange } = rest
+  const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange, onChangeOrderReinvest } = rest
   const [showEdit, setShowEdit] = React.useState(false)
   const { t } = useTranslation(['common', 'tables'])
   const { upColor, isMobile } = useSettings()
@@ -160,8 +163,11 @@ export const DualDetail = ({
         )
       : EmptyValueTag
   }, [dualViewInfo?.strike])
-
-  myLog('dualViewInfo', dualViewInfo)
+  myLog('dualViewInfo?.__raw__?.order?.investmentStatus', dualViewInfo?.__raw__?.order?.investmentStatus)
+  const [showCancelOneAlert, setShowCancelOneAlert] = React.useState({
+    open: false,
+    row: undefined as any
+  })
   return (
     <>
       <Modal
@@ -180,10 +186,22 @@ export const DualDetail = ({
               btnConfirm={btnConfirm}
               coinSell={coinSell}
               isPriceEditable={isPriceEditable}
+              isOrder={isOrder}
             />
           </Box>
         </SwitchPanelStyled>
       </Modal>
+
+      <CancelDualAlert
+        open={showCancelOneAlert.open}
+        row={showCancelOneAlert.row}
+        handleCancelOne={async () => {
+          onChangeOrderReinvest({ on: false }, coinSell)
+        }}
+        handleClose={() => setShowCancelOneAlert({ open: false, row: undefined })}
+      />
+
+
 
       <Box display={'flex'} flexDirection={'column'}>
         {isOrder && showClock && (
@@ -516,7 +534,7 @@ export const DualDetail = ({
         )}
         {inputPart ? <>{inputPart}</> : <></>}
         {(displayMode !== DualDisplayMode.beginnerModeStep2 && toggle?.enable && !isOrder) ||
-        (isOrder && dualViewInfo?.__raw__?.order?.dualReinvestInfo?.isRecursive) ? (
+        isOrder ? (
           // RETRY_SUCCESS  ｜ RETRY_FAILED  ｜ isRecursive=false
           <Box
             display={'flex'}
@@ -540,27 +558,42 @@ export const DualDetail = ({
                     </Trans>
                   </Typography>
                 </Tooltip>
-                {!isOrder && (
-                  <Typography component={'span'} variant={'inherit'}>
-                    <FormControlLabel
-                      sx={{
-                        marginRight: 0,
-                      }}
-                      disabled={[
+                <Typography component={'span'} variant={'inherit'}>
+                  <FormControlLabel
+                    sx={{
+                      marginRight: 0,
+                    }}
+                    disabled={
+                      [
                         sdk.DUAL_RETRY_STATUS.RETRY_SUCCESS,
                         sdk.DUAL_RETRY_STATUS.RETRY_FAILED,
-                      ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus)}
-                      onChange={(_e, checked) =>
+                      ].includes(dualViewInfo?.__raw__?.order?.dualReinvestInfo.retryStatus) ||
+                      (dualViewInfo?.side === t(LABEL_INVESTMENT_STATUS_MAP.DELIVERING) &&
+                        !coinSell.isRenew)
+                    }
+                    onChange={(_e, checked) => {
+                      if (isOrder) {
+                        if (coinSell.isRenew) {
+                          setShowCancelOneAlert({
+                            open: true,
+                            row: {
+                              expireTime: dualViewInfo.__raw__?.order?.timeOrigin?.expireTime,
+                            },
+                          })
+                        } else {
+                          setShowEdit(true)
+                        }
+                      } else {
                         onChange({
                           ...coinSell,
                           isRenew: checked,
                         })
                       }
-                      control={<Switch color={'primary'} checked={coinSell.isRenew} />}
-                      label={''}
-                    />
-                  </Typography>
-                )}
+                    }}
+                    control={<Switch color={'primary'} checked={coinSell.isRenew} />}
+                    label={''}
+                  />
+                </Typography>
               </Box>
 
               <Typography

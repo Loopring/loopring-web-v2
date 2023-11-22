@@ -1,11 +1,11 @@
 import styled from '@emotion/styled'
-import { Box, Grid, LinearProgress, Link, Typography } from '@mui/material'
+import { Box, Divider, Grid, LinearProgress, Link, Typography } from '@mui/material'
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { LoopringAPI, useAccount, useTokenMap, useWalletLayer2 } from '@loopring-web/core'
 import { getValuePrecisionThousand, SoursURL } from '@loopring-web/common-resources'
-import { useSettings, VipPanel as VipView } from '@loopring-web/component-lib'
+import { MaxWidthContainer, useSettings, VipPanel as VipView } from '@loopring-web/component-lib'
 import { useGetVIPInfo } from './hooks'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -251,233 +251,252 @@ export const VipPanel = withTranslation(['common', 'layout'])(({ t }: WithTransl
 
   return (
     <>
-      <StyledPaper
-        container
-        className={'MuiPaper-elevation2'}
-        margin={0}
-        marginBottom={2}
-        paddingBottom={5 / 2}
-        spacing={3}
+      <MaxWidthContainer
+        background={'var(--color-global-bg)'}
+        display={'flex'}
+        justifyContent={'space-between'}
+        paddingY={2}
       >
-        <Grid item xs={12}>
-          <Typography component={'h3'} variant={'h4'}>
-            {t('labelVipTitle')}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography
-            variant={isMobile ? 'body1' : 'h5'}
-            component={'h2'}
-            marginY={1}
-            display={'flex'}
-            flexDirection={'column'}
+        <Typography component={'h3'} variant={'h5'} paddingX={5 / 2}>
+          {t('labelVipTitle')}
+        </Typography>
+      </MaxWidthContainer>
+      <Divider />
+      <MaxWidthContainer
+        background={'var(--color-pop-bg)'}
+        display={'flex'}
+        justifyContent={'space-between'}
+        paddingY={2}
+      >
+        <Box flex={1} display={'flex'} flexDirection={'column'}>
+          <StyledPaper
+            container
+            className={'MuiPaper-elevation2'}
+            margin={0}
+            marginBottom={2}
+            paddingBottom={5 / 2}
+            spacing={3}
           >
-            <Typography
-              component={'div'}
-              flexDirection={'row'}
-              display={'flex'}
-              alignSelf={'flex-start'}
-            >
+            <Grid item xs={12}>
               <Typography
-                component={'p'}
-                variant={isMobile ? 'h5' : 'h4'}
-                color={'text.primary'}
-                paddingRight={1}
-              >
-                {t('labelTradeFeeLevel')}
-              </Typography>
-              <Typography
-                variant={'body1'}
-                component={'span'}
+                variant={isMobile ? 'body1' : 'h5'}
+                component={'h2'}
+                marginY={1}
                 display={'flex'}
-                flexDirection={'row'}
-                alignItems={'center'}
+                flexDirection={'column'}
               >
-                <Typography component={'span'} variant={'body1'}>
-                  {level && userVIPInfo?.vipInfo?.vipTag ? getImagePath : ''}
+                <Typography
+                  component={'div'}
+                  flexDirection={'row'}
+                  display={'flex'}
+                  alignSelf={'flex-start'}
+                >
+                  <Typography
+                    component={'p'}
+                    variant={isMobile ? 'h5' : 'h4'}
+                    color={'text.primary'}
+                    paddingRight={1}
+                  >
+                    {t('labelTradeFeeLevel')}
+                  </Typography>
+                  <Typography
+                    variant={'body1'}
+                    component={'span'}
+                    display={'flex'}
+                    flexDirection={'row'}
+                    alignItems={'center'}
+                  >
+                    <Typography component={'span'} variant={'body1'}>
+                      {level && userVIPInfo?.vipInfo?.vipTag ? getImagePath : ''}
+                    </Typography>
+                  </Typography>
+                </Typography>
+                <Typography
+                  variant={isMobile ? 'body1' : 'h5'}
+                  component={'p'}
+                  color={'var(--color-text-secondary)'}
+                  marginTop={2}
+                >
+                  {isVIP4
+                    ? 'Congratulations you have reached the highest level'
+                    : isSVIP
+                    ? 'Congratulations! You are already a super VIP, enjoying the highest discount privileges, and will not be affected by balance and trading volume.'
+                    : `Upgrade to VIP ${getNextVIPlevel()} by either trading ${getValuePrecisionThousand(
+                        getNextLevelAmount('eth', getNextVIPlevel()),
+                      )} ETH on our spot exchange and/or increase your LRC holdings by ${getValuePrecisionThousand(
+                        getNextLevelAmount('lrc', getNextVIPlevel()),
+                      )} LRC`}
                 </Typography>
               </Typography>
-            </Typography>
-            <Typography
-              variant={isMobile ? 'body1' : 'h5'}
-              component={'p'}
-              color={'var(--color-text-secondary)'}
-              marginTop={2}
-            >
-              {isVIP4
-                ? 'Congratulations you have reached the highest level'
-                : isSVIP
-                ? 'Congratulations! You are already a super VIP, enjoying the highest discount privileges, and will not be affected by balance and trading volume.'
-                : `Upgrade to VIP ${getNextVIPlevel()} by either trading ${getValuePrecisionThousand(
-                    getNextLevelAmount('eth', getNextVIPlevel()),
-                  )} ETH on our spot exchange and/or increase your LRC holdings by ${getValuePrecisionThousand(
-                    getNextLevelAmount('lrc', getNextVIPlevel()),
-                  )} LRC`}
-            </Typography>
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography fontWeight={400} variant={'h6'} color={'var(--color-text-secondary)'}>
-            {t('labelSpotTrading')}
-          </Typography>
-          <Typography
-            display={'inline-flex'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            width={'100%'}
-            paddingRight={2}
-          >
-            <Typography variant={isMobile ? 'h5' : 'h4'} marginTop={0.5}>
-              {t('labelCurrentlyLevel', {
-                value: getValuePrecisionThousand(getCurrentETHTradeAmount()),
-                token: 'ETH',
-              })}
-            </Typography>
-            {isMobile && (
-              <Link
-                variant={'body1'}
-                onClick={handleTradeLinkClick}
-                style={{
-                  textDecoration: 'underline',
-                  color: 'var(--color-text-secondary)',
-                }}
-              >
-                {t('labelTradeSpot')}
-              </Link>
-            )}
-          </Typography>
-          <Box width={'100%'} paddingRight={2} marginY={1.5}>
-            <LinearProgress variant='determinate' value={getTradeVolETHLinear} />
-            <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
-              <Typography
-                fontWeight={400}
-                color={isVIP4 ? 'var(--color-text-secondary)' : 'var(--color-star)'}
-              >
-                {getCurrVIPLevel('left')}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography fontWeight={400} variant={'h6'} color={'var(--color-text-secondary)'}>
+                {t('labelSpotTrading')}
               </Typography>
               <Typography
-                fontWeight={400}
-                color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}
+                display={'inline-flex'}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                width={'100%'}
+                paddingRight={2}
               >
-                {getCurrVIPLevel('right')}
+                <Typography variant={isMobile ? 'h5' : 'h4'} marginTop={0.5}>
+                  {t('labelCurrentlyLevel', {
+                    value: getValuePrecisionThousand(getCurrentETHTradeAmount()),
+                    token: 'ETH',
+                  })}
+                </Typography>
+                {isMobile && (
+                  <Link
+                    variant={'body1'}
+                    onClick={handleTradeLinkClick}
+                    style={{
+                      textDecoration: 'underline',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                  >
+                    {t('labelTradeSpot')}
+                  </Link>
+                )}
               </Typography>
-            </Box>
-          </Box>
-          {!isMobile && (
-            <Link
-              variant={'body1'}
-              onClick={handleTradeLinkClick}
-              style={{
-                textDecoration: 'underline',
-                color: 'var(--color-text-secondary)',
-              }}
+              <Box width={'100%'} paddingRight={2} marginY={1.5}>
+                <LinearProgress variant='determinate' value={getTradeVolETHLinear} />
+                <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
+                  <Typography
+                    fontWeight={400}
+                    color={isVIP4 ? 'var(--color-text-secondary)' : 'var(--color-star)'}
+                  >
+                    {getCurrVIPLevel('left')}
+                  </Typography>
+                  <Typography
+                    fontWeight={400}
+                    color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}
+                  >
+                    {getCurrVIPLevel('right')}
+                  </Typography>
+                </Box>
+              </Box>
+              {!isMobile && (
+                <Link
+                  variant={'body1'}
+                  onClick={handleTradeLinkClick}
+                  style={{
+                    textDecoration: 'underline',
+                    color: 'var(--color-text-secondary)',
+                  }}
+                >
+                  {t('labelTradeSpot')}
+                </Link>
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography fontWeight={400} variant={'h6'} color={'var(--color-text-secondary)'}>
+                {t('labelLRCBalance')}
+              </Typography>
+              <Typography
+                display={'inline-flex'}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                width={'100%'}
+                paddingRight={2}
+              >
+                <Typography variant={isMobile ? 'h5' : 'h4'} marginTop={0.5}>
+                  {t('labelCurrentlyLevel', {
+                    value: getValuePrecisionThousand(
+                      currentBalanceLRC,
+                      tokenMap?.LRC.precision,
+                      tokenMap?.LRC.precision,
+                      tokenMap?.LRC.precision,
+                      false,
+                      { floor: true },
+                    ),
+                    token: 'LRC',
+                  })}
+                </Typography>
+                {isMobile && (
+                  <Link
+                    variant={'body1'}
+                    onClick={handleTradeLinkClick}
+                    style={{
+                      textDecoration: 'underline',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                  >
+                    {t('labelBuyToken', { token: 'LRC' })}
+                  </Link>
+                )}
+              </Typography>
+              <Box width={'100%'} paddingRight={2} marginY={1.5}>
+                <LinearProgress variant='determinate' value={balanceLinearLRC} />
+                <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
+                  <Typography
+                    fontWeight={400}
+                    color={isVIP4 ? 'var(--color-text-secondary)' : 'var(--color-star)'}
+                  >
+                    {getCurrVIPLevel('left')}
+                  </Typography>
+                  <Typography
+                    fontWeight={400}
+                    color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}
+                  >
+                    {getCurrVIPLevel('right')}
+                  </Typography>
+                </Box>
+              </Box>
+              {!isMobile && (
+                <Link
+                  variant={'body1'}
+                  onClick={handleTradeLinkClick}
+                  style={{
+                    textDecoration: 'underline',
+                    color: 'var(--color-text-secondary)',
+                  }}
+                >
+                  {t('labelBuyToken', { token: 'LRC' })}
+                </Link>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <Typography
+                variant={'h6'}
+                component={'p'}
+                fontWeight={400}
+                color={'var(--color-text-secondary)'}
+              >
+                The cumulative 30-day trading volume ( in ETH ) and 24-hour LRC balance are updated
+                at 0:00 (UTC+0) each day. After the update, you can access the corresponding fee
+                discount in the table below.
+              </Typography>
+            </Grid>
+          </StyledPaper>
+          {isMobile ? (
+            <Typography variant={'body1'} paddingY={2} textAlign={'center'}>
+              For details, please view on desktop.
+            </Typography>
+          ) : (
+            <StyledPaper
+              container
+              className={'MuiPaper-elevation2'}
+              margin={0}
+              marginBottom={2}
+              spacing={3}
             >
-              {t('labelTradeSpot')}
-            </Link>
+              <Grid item xs={12}>
+                <Typography
+                  component={'h4'}
+                  variant={isMobile ? 'h6' : 'h5'}
+                  color={'text.secondary'}
+                >
+                  {t('labelFeeTitleList')}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} paddingRight={2}>
+                <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
+              </Grid>
+            </StyledPaper>
           )}
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography fontWeight={400} variant={'h6'} color={'var(--color-text-secondary)'}>
-            {t('labelLRCBalance')}
-          </Typography>
-          <Typography
-            display={'inline-flex'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            width={'100%'}
-            paddingRight={2}
-          >
-            <Typography variant={isMobile ? 'h5' : 'h4'} marginTop={0.5}>
-              {t('labelCurrentlyLevel', {
-                value: getValuePrecisionThousand(
-                  currentBalanceLRC,
-                  tokenMap?.LRC.precision,
-                  tokenMap?.LRC.precision,
-                  tokenMap?.LRC.precision,
-                  false,
-                  { floor: true },
-                ),
-                token: 'LRC',
-              })}
-            </Typography>
-            {isMobile && (
-              <Link
-                variant={'body1'}
-                onClick={handleTradeLinkClick}
-                style={{
-                  textDecoration: 'underline',
-                  color: 'var(--color-text-secondary)',
-                }}
-              >
-                {t('labelBuyToken', { token: 'LRC' })}
-              </Link>
-            )}
-          </Typography>
-          <Box width={'100%'} paddingRight={2} marginY={1.5}>
-            <LinearProgress variant='determinate' value={balanceLinearLRC} />
-            <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
-              <Typography
-                fontWeight={400}
-                color={isVIP4 ? 'var(--color-text-secondary)' : 'var(--color-star)'}
-              >
-                {getCurrVIPLevel('left')}
-              </Typography>
-              <Typography
-                fontWeight={400}
-                color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}
-              >
-                {getCurrVIPLevel('right')}
-              </Typography>
-            </Box>
-          </Box>
-          {!isMobile && (
-            <Link
-              variant={'body1'}
-              onClick={handleTradeLinkClick}
-              style={{
-                textDecoration: 'underline',
-                color: 'var(--color-text-secondary)',
-              }}
-            >
-              {t('labelBuyToken', { token: 'LRC' })}
-            </Link>
-          )}
-        </Grid>
-        <Grid item xs={12}>
-          <Typography
-            variant={'h6'}
-            component={'p'}
-            fontWeight={400}
-            color={'var(--color-text-secondary)'}
-          >
-            The cumulative 30-day trading volume ( in ETH ) and 24-hour LRC balance are updated at
-            0:00 (UTC+0) each day. After the update, you can access the corresponding fee discount
-            in the table below.
-          </Typography>
-        </Grid>
-      </StyledPaper>
-      {isMobile ? (
-        <Typography variant={'body1'} paddingY={2} textAlign={'center'}>
-          For details, please view on desktop.
-        </Typography>
-      ) : (
-        <StyledPaper
-          container
-          className={'MuiPaper-elevation2'}
-          margin={0}
-          marginBottom={2}
-          spacing={3}
-        >
-          <Grid item xs={12}>
-            <Typography component={'h4'} variant={isMobile ? 'h6' : 'h5'} color={'text.secondary'}>
-              {t('labelFeeTitleList')}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} paddingRight={2}>
-            <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
-          </Grid>
-        </StyledPaper>
-      )}
+        </Box>
+      </MaxWidthContainer>
     </>
   )
 })

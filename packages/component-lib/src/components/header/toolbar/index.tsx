@@ -1,15 +1,13 @@
 import { Badge, Box, IconButton } from '@mui/material'
 import {
-  ACTIVITY,
   Account,
   AccountStatus,
   CircleIcon,
   DownloadIcon,
-  NOTIFICATION_ITEM,
   NotificationIcon,
-  Notify,
   ProfileIcon,
   SettingIcon,
+  NOTIFICATIONHEADER,
 } from '@loopring-web/common-resources'
 import { WithTranslation } from 'react-i18next'
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks'
@@ -90,15 +88,15 @@ export const BtnDownload = ({
 //   );
 // };
 
-export const BtnNotification = ({
-  notification,
+export const BtnNotification = <N = sdk.UserNotification,>({
+  notification, //:{notifyMap,myNotifyMap},
   account,
   chainId,
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
   exclusiveRedpacketCount,
 }: {
-  notification: Notify
+  notification: NOTIFICATIONHEADER<N>
   account: Account
   chainId: sdk.ChainId
   onClickExclusiveredPacket: () => void
@@ -118,8 +116,7 @@ export const BtnNotification = ({
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {((notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 ||
-        showExclusiveRedpacket) && (
+      {notification?.myNotifyMap?.total && (
         <CircleIcon
           sx={{
             position: 'absolute',

@@ -8,8 +8,9 @@ import React, { ForwardedRef } from 'react'
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './'
 import { EmptyDefault } from '../empty'
 import { RowConfig, SoursURL } from '@loopring-web/common-resources'
-import { Box, IconButton } from '@mui/material'
+import { Box } from '@mui/material'
 import { css } from '@emotion/react'
+import { LoadingStyled } from '../panel'
 
 interface TableWrapperStyledProps {
   showloading: 'true' | 'false'
@@ -189,14 +190,6 @@ export const DataGridStyled = styled(DataGrid)`
     }
   }
 ` as typeof DataGrid
-
-const LoadingStyled = styled(IconButton)`
-  position: absolute;
-  z-index: 21;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`
 
 export const generateColumns = <Row, SR>({
   columnsRaw,

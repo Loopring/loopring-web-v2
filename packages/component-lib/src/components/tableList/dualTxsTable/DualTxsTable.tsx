@@ -298,6 +298,8 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                   investmentStatus,
                   dualReinvestInfo,
                   timeOrigin: { expireTime },
+                  tokenInfoOrigin,
+                  settlementStatus,
                 },
               },
             } = row
@@ -316,12 +318,9 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 if (dualReinvestInfo?.isRecursive) {
                   content = 'labelDualAssetReInvestEnable'
                 } else if (
-                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
-                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED &&
-                  Date.now() - expireTime >= 0 &&
-                  (dualType == sdk.DUAL_TYPE.DUAL_BASE
-                    ? sdk.toBig(deliveryPrice).gte(strike)
-                    : sdk.toBig(strike).gte(deliveryPrice))
+                  dualReinvestInfo.onceRecursive &&
+                  settlementStatus === sdk.SETTLEMENT_STATUS.PAID &&
+                  tokenInfoOrigin.tokenOut !== tokenInfoOrigin.tokenIn
                 ) {
                   icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
                   status = 'labelDualRetryStatusTerminated'
@@ -413,7 +412,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                   strike,
                   deliveryPrice,
                   investmentStatus,
-                  tokenInfoOrigin: { amountIn, tokenOut, amountOut },
+                  tokenInfoOrigin: { amountIn, tokenOut, amountOut, tokenIn },
                   timeOrigin: { expireTime },
                   dualReinvestInfo,
                 },
@@ -481,12 +480,9 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 if (dualReinvestInfo?.isRecursive) {
                   content = 'labelDualAssetReInvestEnable'
                 } else if (
-                  investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
-                  investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED &&
-                  Date.now() - expireTime >= 0 &&
-                  (dualType == sdk.DUAL_TYPE.DUAL_BASE
-                    ? sdk.toBig(deliveryPrice).gte(strike)
-                    : sdk.toBig(strike).gte(deliveryPrice))
+                  dualReinvestInfo.onceRecursive &&
+                  settlementStatus === sdk.SETTLEMENT_STATUS.PAID &&
+                  tokenIn !== tokenOut
                 ) {
                   icon = <WarningIcon color={'warning'} sx={{ paddingLeft: 1 / 2 }} />
                   status = 'labelDualRetryStatusTerminated'

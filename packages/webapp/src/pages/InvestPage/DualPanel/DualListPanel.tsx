@@ -23,6 +23,7 @@ import {
   EmptyDefault,
   useOpenModals,
   useSettings,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import {
   ModalDualPanel,
@@ -46,7 +47,7 @@ import {
   SoursURL,
 } from '@loopring-web/common-resources'
 import { BeginnerMode } from './BeginnerMode'
-import { containerColors, MaxWidthContainer } from '..'
+import { containerColors } from '..'
 import { ChooseDualType } from './ChooseDualType'
 
 const StyleDual = styled(Box)`
@@ -366,6 +367,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
             display={'flex'}
             justifyContent={'space-between'}
             paddingY={2}
+            sx={{ flexDirection: 'row' }}
           >
             <Button
               startIcon={<BackIcon fontSize={'small'} />}
