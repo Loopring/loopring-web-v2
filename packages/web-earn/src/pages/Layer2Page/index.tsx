@@ -9,7 +9,7 @@ import { VipPanel } from './VipPanel'
 import { ForcewithdrawPanel } from './ForcewithdrawPanel'
 import { ReferralRewardsPanel } from './ReferralRewardsPanel'
 import { ContactPage } from './ContactPanel'
-import { ProfileKey, ProfileIndex, MapChainId } from '@loopring-web/common-resources'
+import { Layer2RouterID, ProfileIndex, MapChainId } from '@loopring-web/common-resources'
 import { useSettings } from '@loopring-web/component-lib'
 
 export const Layer2Page = () => {
@@ -26,20 +26,20 @@ export const Layer2Page = () => {
       _selected = ''
     }
     switch (_selected) {
-      case ProfileKey.forcewithdraw:
+      case Layer2RouterID.forcewithdraw:
         return <ForcewithdrawPanel />
-      case ProfileKey.security:
+      case Layer2RouterID.security:
         return <SecurityPanel />
-      case ProfileKey.vip:
+      case Layer2RouterID.vip:
         return <VipPanel />
-      case ProfileKey.contact:
+      case Layer2RouterID.contact:
         return <ContactPage />
       default:
         return <SecurityPanel />
     }
   }, [selected])
 
-  return selected === ProfileKey.referralrewards ? (
+  return selected === Layer2RouterID.referralrewards ? (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <ReferralRewardsPanel />
     </Box>
