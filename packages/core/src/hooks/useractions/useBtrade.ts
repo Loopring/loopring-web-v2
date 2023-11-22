@@ -67,7 +67,6 @@ import _ from 'lodash'
 
 const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
   const { sendSocketTopic, socketEnd } = useSocket()
-  // const { account } = useAccount()
   const { tradeBtrade, updateTradeBtrade } = useTradeBtrade()
   const { marketMap } = useBtradeMap()
 

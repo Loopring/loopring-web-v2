@@ -3,7 +3,6 @@ import React from 'react'
 import {
   ButtonComponentsMap,
   fnType,
-  headerMenuData,
   headerMenuDataMap,
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,

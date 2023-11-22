@@ -1,13 +1,10 @@
 import { Badge, Box, IconButton } from '@mui/material'
 import {
-  ACTIVITY,
   Account,
   AccountStatus,
   CircleIcon,
   DownloadIcon,
-  NOTIFICATION_ITEM,
   NotificationIcon,
-  Notify,
   ProfileIcon,
   SettingIcon,
   NOTIFICATIONHEADER,

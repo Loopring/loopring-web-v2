@@ -11,7 +11,7 @@ import {
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
-import { WalletSite } from './setting'
+import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -28,9 +28,9 @@ export const BANXA_URLS = {
   5: 'https://loopring.banxa-sandbox.com',
 }
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
-export const LOOPRING_DOC = 'https://docs.loopring.io'
 
 export enum RouterPath {
+  trade = '/trade',
   lite = '/trade/lite',
   pro = '/trade/pro',
   stoplimit = '/trade/stoplimit',
@@ -317,8 +317,22 @@ export const ammDisableList = ['Liquidity']
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
+      id: 'loopringPro',
+      i18nKey: 'labelNavPro',
+    },
+    router: { path: ExchangePro },
+  },
+  {
+    label: {
+      id: 'loopringLite',
+      i18nKey: 'labelNavEarn',
+    },
+    router: { path: Earnlite },
+  },
+  {
+    label: {
       id: 'wallet',
-      i18nKey: 'labelWallet',
+      i18nKey: 'labelNavWallet',
     },
     router: { path: WalletSite },
   },
@@ -566,7 +580,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'L2Explorer', //Layer2 Explorer
-      linkHref: 'https://explorer.loopring.io',
+      linkHref: `${Explorer}`,
     },
     {
       linkName: 'BugBounty', //BugBounty

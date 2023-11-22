@@ -70,7 +70,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     let height = container?.current?.offsetHeight
     if (height) {
       // const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
-      setPageSize(Math.floor(height / RowHeight))
+     setPageSize(Math.floor((height - 44) / RowHeight))
       // handleTabChange(currentTab, pageSize);
       // getNotification({})
       handlePageChange({ page: 1 })
@@ -133,40 +133,40 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           flex={1}
           ref={container}
         >
-          <Grid container paddingBottom={2} display={'flex'}>
-            {rawData.length ? (
-              rawData.map((ele, index) => {
+          {rawData.length ? (
+            <Grid container paddingBottom={2} display={'flex'} flex={1}>
+              {rawData.map((ele, index) => {
                 return (
                   <Grid item xs={12} key={ele.id}>
                     <NotificationItem {...ele} index={index} onReadClick={onReadClick} />
                     {index !== rawData?.length - 1 && <Divider />}
                   </Grid>
                 )
-              })
-            ) : (
-              <EmptyDefault
-                style={{ flex: 1 }}
-                height={'100%'}
-                message={() => (
-                  <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                    {t('labelNoContent')}
-                  </Box>
-                )}
-              />
-            )}
-            {showLoading && (
-              <LoadingStyled color={'inherit'}>
-                <img
-                  className='loading-gif'
-                  alt={'loading'}
-                  width='36'
-                  src={`${SoursURL}images/loading-line.gif`}
-                />
-              </LoadingStyled>
-            )}
-          </Grid>
+              })}
+              {showLoading && (
+                <LoadingStyled color={'inherit'}>
+                  <img
+                    className='loading-gif'
+                    alt={'loading'}
+                    width='36'
+                    src={`${SoursURL}images/loading-line.gif`}
+                  />
+                </LoadingStyled>
+              )}
+            </Grid>
+          ) : (
+            <EmptyDefault
+              style={{ flex: 1 }}
+              height={'100%'}
+              message={() => (
+                <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                  {t('labelNoContent')}
+                </Box>
+              )}
+            />
+          )}
           <Box>
-            {total > pageSize && (
+            {total && total > pageSize && (
               <TablePagination
                 page={page}
                 pageSize={pageSize}

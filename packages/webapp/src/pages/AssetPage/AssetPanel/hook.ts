@@ -6,13 +6,12 @@ import {
   useAccount,
   useBtnStatus,
   useDefiMap,
-  useSocket,
-  useSystem,
   useTokenMap,
   useTokenPrices,
   useWalletLayer2,
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
+  useSystem,
 } from '@loopring-web/core'
 import {
   AccountStep,
@@ -40,7 +39,6 @@ import {
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
-import { WsTopicType } from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
@@ -224,12 +222,10 @@ export const useGetAssets = (): AssetPanelProps & {
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
-      // sendSocketTopic({ [WsTopicType.account]: true })
       myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
       setLoadingBtn()
     }
     return () => {
-      // socketEnd()
       startWorker.cancel()
     }
   }, [account.readyState])

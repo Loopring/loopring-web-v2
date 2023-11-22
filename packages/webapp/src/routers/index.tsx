@@ -23,7 +23,7 @@ import {
   NoticePop,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
-import { LandPage } from '../pages/LandPage'
+import { LandPage, HomePage, LandBtn } from '../pages/LandPage'
 import {
   ErrorMap,
   GUARDIAN_URL,
@@ -220,8 +220,13 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           {searchParams && searchParams.has('noheader') ? (
             <></>
           ) : (
-            <Header isHideOnScroll={true} isLandPage />
+            <Header isHideOnScroll={true} isLandPage landBtn={<LandBtn />} />
+            // <Header isHideOnScroll={true} isLandPage />
           )}
+          <HomePage />
+        </Route>
+        <Route exact path='/pro'>
+          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <LandPage />
         </Route>
         <Route path='/document'>
@@ -306,11 +311,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <ErrorPage {...ErrorMap.TRADE_404} />
           )}
         </Route>
-        <Route path={RouterPath.lite}>
-          <ContentWrap state={state} value={RouterMainKey.lite}>
-            <SwapPage />
-          </ContentWrap>
-        </Route>
         <Route path={RouterPath.btrade}>
           <ContentWrap state={state} value={RouterMainKey.btrade}>
             <BtradeSwapPage />
@@ -319,6 +319,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={[RouterPath.fiat, RouterPath.fiat + '/*']}>
           <ContentWrap state={state} value={RouterMainKey.fiat}>
             <FiatPage />
+          </ContentWrap>
+        </Route>
+        <Route path={[RouterPath.lite, RouterPath.trade]}>
+          <ContentWrap state={state} value={RouterMainKey.lite}>
+            <SwapPage />
           </ContentWrap>
         </Route>
         <Route exact path={RouterPath.markets}>

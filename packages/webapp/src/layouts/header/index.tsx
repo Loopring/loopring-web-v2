@@ -10,7 +10,13 @@ import {
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'
 
 import { useHeader } from './hook'
-import { confirmation, useSystem, useAccount, useTargetRedPackets, useTokenMap } from '@loopring-web/core'
+import {
+  confirmation,
+  useSystem,
+  useAccount,
+  useTargetRedPackets,
+  useTokenMap,
+} from '@loopring-web/core'
 import { withTranslation } from 'react-i18next'
 
 import {
@@ -25,7 +31,7 @@ import { withRouter, useLocation } from 'react-router-dom'
 import { RouteComponentProps } from 'react-router'
 import React from 'react'
 
-const Header = withTranslation('common')(
+const Header = withTranslation(['common', 'layout', 'landPage'])(
   withRouter(
     ({
       t,
@@ -33,18 +39,21 @@ const Header = withTranslation('common')(
       isHideOnScroll = false,
       isLandPage = false,
       isWrap = false,
+      landBtn,
       ...rest
     }: any & RouteComponentProps) => {
       const { headerToolBarData, headerMenuData, notifyMap, myNotifyMap, headerMenuLandingData } =
         useHeader()
-      const { isMobile,coinJson } = useSettings()
+      const { isMobile, coinJson } = useSettings()
       const { pathname } = useLocation()
       const { confirmWrapper } = confirmation.useConfirmation()
       const { allowTrade, chainId } = useSystem()
       const { account } = useAccount()
       const [view, setView] = React.useState(false)
-      const { redPackets, setShowRedPacketsPopup} = useTargetRedPackets()
-      const popUpRedpackets = redPackets ? redPackets.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") : []
+      const { redPackets, setShowRedPacketsPopup } = useTargetRedPackets()
+      const popUpRedpackets = redPackets
+        ? redPackets.filter((redpacket) => (redpacket as any).notifyType === 'NOTIFY_WINDOW')
+        : []
       const showExclusiveRedpacket = popUpRedpackets.length > 0
       const exclusiveRedpacketCount = popUpRedpackets.length
       const { setShowRedPacket, setShowTargetRedpacketPop } = useOpenModals()
@@ -84,6 +93,7 @@ const Header = withTranslation('common')(
               <HeaderUI
                 account={account}
                 isWrap={isLandPage || isWrap}
+                landBtn={landBtn}
                 chainId={chainId}
                 {...rest}
                 isLandPage={isLandPage}
@@ -92,6 +102,7 @@ const Header = withTranslation('common')(
                 headerMenuData={
                   /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
                 }
+                className={isHideOnScroll ? 'scrollable' : ''}
                 toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
                 toolBarMap={ButtonComponentsMap}
                 headerToolBarData={headerToolBarData}

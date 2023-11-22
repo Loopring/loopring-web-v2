@@ -3,7 +3,6 @@ import { CoinIcon, useSettings } from '@loopring-web/component-lib'
 import { Box, Button, Typography } from '@mui/material'
 
 import { withTranslation } from 'react-i18next'
-import { DualModal } from './component'
 import {
   BackIcon,
   EmptyValueTag,
@@ -589,8 +588,6 @@ export const EarnPage = withTranslation('webEarn', { withRef: true })(({ t }) =>
             )
           })}
         </Box>
-
-        <DualModal open={false} />
       </Box>
     </Box>
   )

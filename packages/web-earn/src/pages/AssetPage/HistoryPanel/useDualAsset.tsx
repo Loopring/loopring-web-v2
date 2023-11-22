@@ -69,7 +69,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         order: {
           strike,
           settlementStatus,
-          tokenInfoOrigin: { amountIn, tokenOut, amountOut },
+          tokenInfoOrigin: { amountIn, tokenOut, amountOut, tokenIn },
           dualReinvestInfo,
           timeOrigin: { expireTime },
           investmentStatus,
@@ -195,14 +195,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         if (dualReinvestInfo?.isRecursive) {
           content = 'labelDualAssetReInvestEnable'
         } else if (
-          !(
-            investmentStatus !== LABEL_INVESTMENT_STATUS.CANCELLED &&
-            investmentStatus !== LABEL_INVESTMENT_STATUS.FAILED &&
-            Date.now() - expireTime >= 0
-          ) &&
-          (dualType == sdk.DUAL_TYPE.DUAL_BASE
-            ? sdk.toBig(deliveryPrice).gte(strike)
-            : sdk.toBig(strike).gte(deliveryPrice))
+          dualReinvestInfo.onceRecursive && settlementStatus === sdk.SETTLEMENT_STATUS.PAID && tokenIn !== tokenOut
         ) {
           icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
           status = 'labelDualRetryStatusTerminated'
@@ -339,6 +332,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           ...format,
           amount,
         } as R
+        if (refreshedRecord.__raw__.order.id === detail?.__raw__.order.id) {
+          setDetail(getDetail(refreshedRecord))
+        }
         if (
           refreshedRecord.__raw__.order.investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
         ) {
@@ -349,6 +345,16 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           })
           setRefreshErrorInfo([refreshedRecord.buySymbol, refreshedRecord.sellSymbol])
           setShowRefreshError(true)
+          setShowLoading(false)
+        } else if (
+          refreshedRecord.__raw__.order.settlementStatus === sdk.SETTLEMENT_STATUS.SETTLED &&
+          !refreshedRecord.__raw__.order.dualReinvestInfo.isRecursive
+        ) {
+          setDualList((state) => {
+            return state?.filter((x) => {
+              return x.__raw__.order.id !== refreshedRecord.__raw__.order.id
+            })
+          })
           setShowLoading(false)
         } else {
           setDualList((state) => {
@@ -404,10 +410,10 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       })
       if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
         getProduct(_item)
-        handleOnchange({
-          tradeData,
-        })
       }
+      handleOnchange({
+        tradeData,
+      })
       setOpen(true)
     }
   }
@@ -509,7 +515,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 base: item.tokenInfoOrigin.base,
                 quote: item.tokenInfoOrigin.quote,
                 currentPrice: findIndex?.index,
-                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market].precisionForPrice,
+                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice,
                 quoteUnit: item.tokenInfoOrigin.quote,
               }
               prev.push({
@@ -545,6 +551,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
   // TODO:
   const getProduct = async (detail) => {
     if (detail && detail.dualViewInfo) {
+      const { marketMap: dualMarketMap } = store.getState().invest.dualMap
       const market =
         detail.dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE
           ? detail.dualViewInfo.sellSymbol + '-' + detail.dualViewInfo.buySymbol

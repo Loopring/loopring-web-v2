@@ -8,7 +8,7 @@ export function useNotify() {
   const dispatch = useDispatch()
   return {
     ...notifyMap,
-    restUerNotify: React.useCallback(() => dispatch(restUerNotify(undefined)), [dispatch]),
+    restUserNotify: React.useCallback(() => dispatch(restUerNotify(undefined)), [dispatch]),
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
     getNotify: React.useCallback(() => dispatch(getNotify(undefined)), [dispatch]),
     getUserNotify: React.useCallback(() => dispatch(getUserNotify(undefined)), [dispatch]),
