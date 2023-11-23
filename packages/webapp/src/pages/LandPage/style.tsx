@@ -48,9 +48,6 @@ export const ContainerStyle = styled(Box)`
   --header-height: 64px;
   --header-submenu-item-height: 52px;
   --header-submenu-item-width: 250px;
-  && .MuiButton-endIcon {
-    color: inherit;
-  }
   ${({ theme }) => {
     let result = `
        --img-banner-url: url("${SoursURL}landPage/img_home_banner_${theme.mode}@2x.png");
@@ -98,29 +95,24 @@ export const ContainerStyle = styled(Box)`
     }
     return result
   }};
-  //background: var(--main-page-bg);
 
   .MuiButton-root {
     min-height: 48px;
     padding: 0 48px;
     --color-text: var(--color-text-button);
-    //border: 1px solid var(--color-border);
-    //border-radius: 2px;
     box-sizing: border-box;
     background: var(--color-primary);
     color: var(--color-text);
-    //padding: 4px 8px;
+
     width: fit-content;
     display: flex;
     align-items: center;
     font-size: var(--h5);
-    .MuiButton-endIcon {
+    & .MuiButton-endIcon {
       color: inherit;
     }
     &:hover {
-      //--color-text: var(--color-text);
       background: var(--color-primary-pressed);
-      //border: 1px solid var(--color-border-hover);
       svg {
         fill: var(--color-text);
       }
@@ -141,12 +133,9 @@ export const ContainerStyle = styled(Box)`
         width: 32px;
         color: var(--color-text-primary);
         outline: 2px solid var(--color-text-primary);
-        //background: var(--color-primary);
-        border-radius: 50%;
-        //opacity: 0.6;
-      }
 
-      //background: var(--color-field);
+        border-radius: 50%;
+      }
     }
     .MuiTab-root {
       display: flex;
@@ -162,7 +151,6 @@ export const ContainerStyle = styled(Box)`
     .MuiTabs-scrollButtons:last-child {
       right: 0;
     }
-    //margin-left: -32px;
   }
   .MuiButton-root.walletConnectL2Btn {
     width: 100%;
@@ -171,7 +159,7 @@ export const ContainerStyle = styled(Box)`
   .MuiButton-root.menuItem {
     display: flex;
     justify-content: flex-start;
-    //background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
+
     padding-left: 2rem;
     height: 80px;
     min-width: 320px;
@@ -212,13 +200,6 @@ export const ContainerStyle = styled(Box)`
     > div {
       flex: 1;
       justify-content: space-between;
-      // .MuiButton-root {
-      //   margin-top: ${({ theme }) => theme.unit}px;
-      //   padding-left: ${({ theme }) => 2 * theme.unit}px;
-      //   .MuiBox-root {
-      //     align-items: flex-start;
-      //   }
-      // }
     }
   }
   .box1 {
@@ -366,7 +347,6 @@ export const ContainerStyle = styled(Box)`
         margin-left: 0px;
         > div {
           margin-bottom: 24px;
-          //margin-left: 0px;
         }
         margin-bottom: 24px;
       }
@@ -422,8 +402,7 @@ export const TitleTypography = styled(Typography)<TypographyProps & { isMobile?:
   &:before {
     margin-top: 24px;
     content: '';
-    // top: ${({ isMobile }) => (isMobile ? '-16px' : '-30px')};
-    // left: 0;
+
     height: 6px;
     width: 96px;
     display: block;
